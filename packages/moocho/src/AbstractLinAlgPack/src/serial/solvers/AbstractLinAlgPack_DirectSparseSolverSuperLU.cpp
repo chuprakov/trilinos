@@ -107,7 +107,7 @@ DirectSparseSolverSuperLU::BasisMatrixSuperLU::create_matrix() const
 }
 
 void DirectSparseSolverSuperLU::BasisMatrixSuperLU::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const VectorWithOp& x
+	VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
 	) const 
 {
 	using DynamicCastHelperPack::dyn_cast;

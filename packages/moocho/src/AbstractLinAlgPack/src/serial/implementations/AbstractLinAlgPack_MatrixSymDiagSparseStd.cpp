@@ -30,9 +30,9 @@ void MatrixSymDiagonalSparseStd::initialize( const SpVectorSlice& diag )
 	diag_ = diag;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-MatrixWithOp& MatrixSymDiagonalSparseStd::operator=(const MatrixWithOp& m)
+MatrixOp& MatrixSymDiagonalSparseStd::operator=(const MatrixOp& m)
 {
 	if(&m == this) return *this;	// assignment to self
 	const MatrixSymDiagonalSparseStd
@@ -43,7 +43,7 @@ MatrixWithOp& MatrixSymDiagonalSparseStd::operator=(const MatrixWithOp& m)
 	else {
 		THROW_EXCEPTION(
 			true, std::invalid_argument
-			,"MatrixSymDiagonalSparseStd::operator=(const MatrixWithOp& m) : Error!"
+			,"MatrixSymDiagonalSparseStd::operator=(const MatrixOp& m) : Error!"
 			"The concrete type of m = \'" << typeid(m).name() << "\' is not a subclass of "
 			"MatrixSymDiagonalSparseStd as expected"
 			);

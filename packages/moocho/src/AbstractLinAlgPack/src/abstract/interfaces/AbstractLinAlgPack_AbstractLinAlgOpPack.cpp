@@ -19,7 +19,7 @@
 
 // M_lhs = op(M_rhs).
 
-void LinAlgOpPack::assign(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
+void LinAlgOpPack::assign(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
 {
 	Mp_M_assert_compatibility( M_lhs, BLAS_Cpp::no_trans, M_rhs, trans_rhs );
 	M_lhs->zero_out();
@@ -28,7 +28,7 @@ void LinAlgOpPack::assign(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs, BLAS_C
 
 // M_lhs = alpha * op(M_rhs).
 
-void LinAlgOpPack::M_StM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
+void LinAlgOpPack::M_StM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
 {
 	Mp_M_assert_compatibility( M_lhs, BLAS_Cpp::no_trans, M_rhs, trans_rhs );
 	M_lhs->zero_out();
@@ -37,8 +37,8 @@ void LinAlgOpPack::M_StM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWith
 
 // M_lhs = op(M_rhs1) + op(M_rhs2).
 
-void LinAlgOpPack::M_MpM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void LinAlgOpPack::M_MpM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
+	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_M_assert_compatibility(M_lhs,BLAS_Cpp::no_trans,M_rhs1,trans_rhs1);
 	MopM_assert_compatibility(M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
@@ -49,8 +49,8 @@ void LinAlgOpPack::M_MpM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1, BLAS_C
 
 // M_lhs = op(M_rhs1) - op(M_rhs2).
 
-void LinAlgOpPack::M_MmM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void LinAlgOpPack::M_MmM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
+	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_M_assert_compatibility(M_lhs,BLAS_Cpp::no_trans,M_rhs1,trans_rhs1);
 	MopM_assert_compatibility(M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
@@ -61,8 +61,8 @@ void LinAlgOpPack::M_MmM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1, BLAS_C
 
 // M_lhs = alpha * op(M_rhs1) + op(m_rhs2).
 
-void LinAlgOpPack::M_StMpM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWithOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void LinAlgOpPack::M_StMpM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
+	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_M_assert_compatibility(M_lhs,BLAS_Cpp::no_trans,M_rhs1,trans_rhs1);
 	MopM_assert_compatibility(M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
@@ -74,8 +74,8 @@ void LinAlgOpPack::M_StMpM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWi
 
 // M_lhs = alpha * op(M_rhs1) * op(M_rhs2).
 
-void LinAlgOpPack::M_StMtM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWithOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void LinAlgOpPack::M_StMtM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_MtM_assert_compatibility(M_lhs,BLAS_Cpp::no_trans,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
 	Mp_StMtM(M_lhs,alpha,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,0.0);
@@ -83,8 +83,8 @@ void LinAlgOpPack::M_StMtM(MatrixWithOp* M_lhs, value_type alpha, const MatrixWi
 
 // M_lhs = op(M_rhs1) * op(M_rhs2).
 
-void LinAlgOpPack::M_MtM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void LinAlgOpPack::M_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_MtM_assert_compatibility(M_lhs,BLAS_Cpp::no_trans,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
 	Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,0.0);

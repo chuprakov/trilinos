@@ -17,7 +17,7 @@
 #define MATRIX_WITH_OP_GET_GMS_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -27,7 +27,7 @@ namespace SparseLinAlgPack {
 /** Abstract interface that allows the extraction of a const <tt>DMatrixSlice</tt>
  * view of an abstract matrix.
  *
- * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
+ * This interface is ment to be used by <tt>MatrixOp</tt> objects
  * that store all of their matrix elements in the local address space or can easily
  * access all of the elements from this process.
  *
@@ -40,7 +40,7 @@ namespace SparseLinAlgPack {
  * class type <tt>MatrixDenseEncap</tt>.
  */
 class MatrixWithOpGetGMS 
-	: virtual public AbstractLinAlgPack::MatrixWithOp // doxygen needs full path
+	: virtual public AbstractLinAlgPack::MatrixOp // doxygen needs full path
 {
 public:
 
@@ -108,12 +108,12 @@ public:
 	 */
 	MatrixDenseEncap( const MatrixWithOpGetGMS&  mat_get );
 	///
-	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixWithOpGetGMS*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
-	MatrixDenseEncap( const MatrixWithOp& mat );
+	MatrixDenseEncap( const MatrixOp& mat );
 	/// Frees the <tt>DMatrixSlice</tt> view.
 	~MatrixDenseEncap();
 	/// Returns a constant view of the <tt>DMatrixSlice</tt> view.
@@ -141,7 +141,7 @@ MatrixDenseEncap::MatrixDenseEncap( const MatrixWithOpGetGMS&  mat_get )
 {}
 
 inline
-MatrixDenseEncap::MatrixDenseEncap( const MatrixWithOp& mat )
+MatrixDenseEncap::MatrixDenseEncap( const MatrixOp& mat )
 	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixWithOpGetGMS>(mat))
 	,gms_view_(mat_get_.get_gms_view())
 {}

@@ -17,7 +17,7 @@
 #define SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 
 #include "MatrixNonsingularSerial.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymNonsing.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -30,12 +30,12 @@ namespace SparseLinAlgPack {
  */
 class MatrixSymNonsingularSerial
 	: virtual public MatrixNonsingularSerial
-	, virtual public AbstractLinAlgPack::MatrixSymNonsingular // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixSymNonsing // doxygen needs full name
 {
 public:
 
 	///
-	using MatrixSymNonsingular::M_StMtInvMtM;
+	using MatrixSymNonsing::M_StMtInvMtM;
 
 	/** @name Level-3 */
 	//@{
@@ -55,12 +55,12 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymNonsingular */
+	/** @name Overridden from MatrixSymNonsing */
 	//@{
 
 	void M_StMtInvMtM(
-		MatrixSymWithOp* sym_lhs, value_type alpha
-		,const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans
+		MatrixSymOp* sym_lhs, value_type alpha
+		,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
 		,EMatrixDummyArg
 		) const;
 

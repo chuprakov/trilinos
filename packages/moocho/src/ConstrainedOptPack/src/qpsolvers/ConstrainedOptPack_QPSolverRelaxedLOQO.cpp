@@ -60,7 +60,7 @@
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedLOQO.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/EtaVector.hpp"
@@ -86,10 +86,10 @@ namespace ConstrainedOptimizationPack {
 // Members for QPSolverRelaxedLOQO::InitLOQOHessianJacobian
 
 void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
-	const MatrixWithOp& G, const value_type bigM
-	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
+	const MatrixOp& G, const value_type bigM
+	, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 	, const int loqo_b_stat[], const size_type num_inequal
-	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
+	, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 	, void* _loqo_lp
 	) const
 {
@@ -214,12 +214,12 @@ void QPSolverRelaxedLOQO::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedLOQO::imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const DVectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
+		, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
+		, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
 		, value_type* eta, DVectorSlice* d
 		, SpVector* nu

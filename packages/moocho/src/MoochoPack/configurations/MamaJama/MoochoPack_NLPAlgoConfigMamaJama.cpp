@@ -28,7 +28,7 @@
 //#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
-//#include "SparseLinAlgPack/src/MatrixSymDiagonalStd.hpp"                          // |
+//#include "SparseLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
 
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 
@@ -473,7 +473,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		// Add reduced Hessian
 
 		if( !cov_.exact_reduced_hessian_ ) {
-			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
+			ref_count_ptr<afp::AbstractFactory<MatrixSymOp> >
 				abstract_factory_rHL = mmp::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
@@ -488,7 +488,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			switch( cov_.quasi_newton_ ) {
 				case QN_BFGS:
 					abstract_factory_rHL = mmp::rcp(
-						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 							MatrixSymPosDefCholFactor::PostMod(
 								maintain_original      // maintain_original
 								,maintain_inverse      // maintain_factor
@@ -499,7 +499,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					break;
 				case QN_LBFGS:
 					abstract_factory_rHL = mmp::rcp(
-						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
+						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
 							MatrixSymPosDefLBFGS::PostMod(
 								cov_.num_lbfgs_updates_stored_  //
 								,maintain_original              // maintain_original
@@ -516,7 +516,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			state->set_iter_quant(
 				rHL_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixSymWithOp>(
+					new IterQuantityAccessContiguous<MatrixSymOp>(
 						1
 						,rHL_name
 						,abstract_factory_rHL
@@ -577,14 +577,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			state->set_iter_quant(
 				dl_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<VectorWithOpMutable>(
+					new IterQuantityAccessContiguous<VectorMutable>(
 						2, dl_name
 						, nlp.space_x() ) )
 				);
 			state->set_iter_quant(
 				du_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<VectorWithOpMutable>(
+					new IterQuantityAccessContiguous<VectorMutable>(
 						2, du_name
 						, nlp.space_x() ) )
 				);
@@ -611,7 +611,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		//
 		
 		typedef IterQuantityAccessContiguous<value_type>            IQ_scalar_cngs;
-		typedef IterQuantityAccessContiguous<VectorWithOpMutable>   IQ_vector_cngs;
+		typedef IterQuantityAccessContiguous<VectorMutable>   IQ_vector_cngs;
 
 		dyn_cast<IQ_vector_cngs>(state->x()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);

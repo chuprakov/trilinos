@@ -198,11 +198,11 @@ void MatrixNonsingularSerial::M_StMtInvM(
 	assert(0);	// ToDo: Implement this!
 }
 
-// Overridden from MatrixNonsingular
+// Overridden from MatrixNonsing
 
 void MatrixNonsingularSerial::V_InvMtV(
-	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-	,const VectorWithOp& v_rhs2) const
+	VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	,const Vector& v_rhs2) const
 {
 	VectorDenseMutableEncap       vs_lhs(*v_lhs);
 	const VectorWithOpGetSparse   *sv_rhs2 = dynamic_cast<const VectorWithOpGetSparse*>(&v_rhs2);
@@ -213,15 +213,15 @@ void MatrixNonsingularSerial::V_InvMtV(
 }
 
 void MatrixNonsingularSerial::V_InvMtV(
-	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	,const SpVectorSlice& sv_rhs2) const
 {
 	this->V_InvMtV( &VectorDenseMutableEncap(*v_lhs)(), trans_rhs1, sv_rhs2 );
 }
 
 value_type MatrixNonsingularSerial::transVtInvMtV(
-	const VectorWithOp& v_rhs1
-	,BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3) const
+	const Vector& v_rhs1
+	,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3) const
 {
 	VectorDenseEncap              vs_rhs1(v_rhs1);
 	VectorDenseEncap              vs_rhs3(v_rhs3);
@@ -229,9 +229,9 @@ value_type MatrixNonsingularSerial::transVtInvMtV(
 }
 
 void MatrixNonsingularSerial::M_StInvMtM(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	,BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -245,8 +245,8 @@ void MatrixNonsingularSerial::M_StInvMtM(
 }
 
 void MatrixNonsingularSerial::M_StMtInvM(
-	MatrixWithOp* m_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	MatrixOp* m_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,BLAS_Cpp::Transp trans_rhs2
 	) const
 {

@@ -208,15 +208,15 @@ public:
 		std::ostream                                          *out
 		,EOutputLevel                                         olevel
 		,ERunTests                                            test_what
-		,MatrixWithOp                                         *Z
-		,MatrixWithOp                                         *Y
-		,MatrixWithOpNonsingular                              *R
-		,MatrixWithOp                                         *Uz
-		,MatrixWithOp                                         *Uy
-		,MatrixWithOp                                         *Vz
-		,MatrixWithOp                                         *Vy
-		,MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>   *C_ptr
-		,MemMngPack::ref_count_ptr<MatrixWithOp>              *D_ptr
+		,MatrixOp                                         *Z
+		,MatrixOp                                         *Y
+		,MatrixOpNonsing                              *R
+		,MatrixOp                                         *Uz
+		,MatrixOp                                         *Uy
+		,MatrixOp                                         *Vz
+		,MatrixOp                                         *Vy
+		,MemMngPack::ref_count_ptr<MatrixOpNonsing>   *C_ptr
+		,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
 		);
 
 	///
@@ -256,10 +256,10 @@ public:
 		std::ostream                                               *out
 		,EOutputLevel                                              olevel
 		,ERunTests                                                 test_what
-		,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
-		,const MemMngPack::ref_count_ptr<MatrixWithOp>             &D_ptr
-		,MatrixWithOp                                              *Uz
-		,MatrixWithOp                                              *Vz
+		,const MemMngPack::ref_count_ptr<MatrixOpNonsing>  &C_ptr
+		,const MemMngPack::ref_count_ptr<MatrixOp>             &D_ptr
+		,MatrixOp                                              *Uz
+		,MatrixOp                                              *Vz
 		,const basis_sys_ptr_t                                     &basis_sys   = MemMngPack::null
 		);
 
@@ -301,15 +301,15 @@ public:
 		std::ostream              *out
 		,EOutputLevel             olevel
 		,ERunTests                test_what
-		,const MatrixWithOp       &Gc
-		,const MatrixWithOp       *Gh
-		,MatrixWithOp             *Z
-		,MatrixWithOp             *Y
-		,MatrixWithOpNonsingular  *R
-		,MatrixWithOp             *Uz
-		,MatrixWithOp             *Uy
-		,MatrixWithOp             *Vz
-		,MatrixWithOp             *Vy
+		,const MatrixOp       &Gc
+		,const MatrixOp       *Gh
+		,MatrixOp             *Z
+		,MatrixOp             *Y
+		,MatrixOpNonsing  *R
+		,MatrixOp             *Uz
+		,MatrixOp             *Uy
+		,MatrixOp             *Vz
+		,MatrixOp             *Vy
 		,EMatRelations            mat_rel
 		) const;
 	///
@@ -345,10 +345,10 @@ protected:
 	virtual	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
 		std::ostream                             *out
 		,EOutputLevel                            olevel
-		,MatrixWithOp                            *Y
-		,MatrixWithOpNonsingular                 *R
-		,MatrixWithOp                            *Uy
-		,MatrixWithOp                            *Vy
+		,MatrixOp                            *Y
+		,MatrixOpNonsing                 *R
+		,MatrixOp                            *Uy
+		,MatrixOp                            *Vy
 		) const = 0;
 
 	///
@@ -365,10 +365,10 @@ protected:
 		,EOutputLevel                                          olevel
 		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C_ptr
 		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D_ptr
-		,MatrixWithOp                                          *Y
-		,MatrixWithOpNonsingular                               *R
-		,MatrixWithOp                                          *Uy
-		,MatrixWithOp                                          *Vy
+		,MatrixOp                                          *Y
+		,MatrixOpNonsing                               *R
+		,MatrixOp                                          *Uy
+		,MatrixOp                                          *Vy
 		,EMatRelations                                         mat_rel
 		) const = 0;
 
@@ -399,8 +399,8 @@ private:
 	VectorSpace::space_ptr_t              space_h_;
 	VectorSpace::space_ptr_t              space_range_;
 	VectorSpace::space_ptr_t              space_null_;
-	mutable MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr_;
-	mutable MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr_;
+	mutable MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr_;
+	mutable MemMngPack::ref_count_ptr<MatrixOp>             D_ptr_;
 	mutable EExplicitImplicit                                   D_imp_used_;
 #endif
 	// //////////////////////////////////
@@ -410,7 +410,7 @@ private:
 	void alloc_new_D_matrix( 
 		std::ostream                             *out
 		,EOutputLevel                            olevel
-		,MemMngPack::ref_count_ptr<MatrixWithOp> *D_ptr
+		,MemMngPack::ref_count_ptr<MatrixOp> *D_ptr
 		) const;
 	
 	// not defined and not to be called!

@@ -25,11 +25,11 @@ namespace AbstractLinAlgPack {
 ///
 /** Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
- * This interface acts primarily as an "Abstract Factory" interface for creating \c VectorWithOpMutable
+ * This interface acts primarily as an "Abstract Factory" interface for creating \c VectorMutable
  * objects using the \c create_member() method.  A <tt>%VectorSpace</tt> object may also be able
  * to create \c MultiVectorMutable objects which represent a compact collection of vectors.
  * Every application area should be able to define a <tt>%MultiVectorMutable</tt> subclass if
- * it can define a <tt>%VectorWithOpMutable</tt> subclass.
+ * it can define a <tt>%VectorMutable</tt> subclass.
  * A secondary role for <tt>%VectorSpace</tt> objects is to test for compatibility of vector spaces
  * (and the vectors and matrix using those spaces) objects using the \c is_compatible() method.
  *
@@ -40,9 +40,9 @@ namespace AbstractLinAlgPack {
  * Any <tt>%VectorSpace</tt> object can be copied using the \c clone() method.  Therefore,
  * clients have complete control over the lifetime of <tt>%VectorSpace</tt> objects.
  *
- * A <tt>%VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
+ * A <tt>%VectorSpace</tt> object can exist independent from any individual <tt>VectorMutable</tt>
  * (or \c MutiVectorMutable) object; Or, a <tt>%VectorSpace</tt> object can have a lifetime that is
- * dependent on a single <tt>VectorWithOp</tt> ( or \c MultiVector) object.  The same interface can
+ * dependent on a single <tt>Vector</tt> ( or \c MultiVector) object.  The same interface can
  * serve both roles.
  *
  * Note that a <tt>%VectorSpace</tt> object can create <tt>MultiVectorMutable</tt> objects
@@ -107,7 +107,7 @@ namespace AbstractLinAlgPack {
  * properly.
  */
 class VectorSpace
-	: public MemMngPack::AbstractFactory<VectorWithOpMutable>
+	: public MemMngPack::AbstractFactory<VectorMutable>
 {
 public:
 
@@ -121,7 +121,7 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpaceFactory>    space_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>         vec_mut_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 

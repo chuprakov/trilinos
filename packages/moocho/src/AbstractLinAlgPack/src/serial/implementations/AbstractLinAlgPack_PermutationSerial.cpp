@@ -119,8 +119,8 @@ std::ostream& PermutationSerial::output(std::ostream& out) const
 
 void PermutationSerial::permute( 
 	BLAS_Cpp::Transp          P_trans
-	,const VectorWithOp       &x
-	,VectorWithOpMutable      *y
+	,const Vector       &x
+	,VectorMutable      *y
 	) const
 {
 #ifdef _DEBUG
@@ -170,7 +170,7 @@ void PermutationSerial::permute(
 
 void PermutationSerial::permute( 
 	BLAS_Cpp::Transp          P_trans
-	,VectorWithOpMutable      *y
+	,VectorMutable      *y
 	) const
 {
 #ifdef _DEBUG

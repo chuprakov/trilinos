@@ -22,11 +22,11 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 //#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -56,14 +56,14 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 
 	// Get iteration quantities
 	const value_type& mu = s.barrier_parameter().get_k(0);
-	const VectorWithOp &d_k = s.d().get_k(0);
-	const MatrixSymDiagonalStd& invXl = s.invXl().get_k(0);
-	const MatrixSymDiagonalStd& invXu = s.invXu().get_k(0);
-	const MatrixSymDiagonalStd& Vl = s.Vl().get_k(0);
-	const MatrixSymDiagonalStd& Vu = s.Vu().get_k(0);
+	const Vector &d_k = s.d().get_k(0);
+	const MatrixSymDiagStd& invXl = s.invXl().get_k(0);
+	const MatrixSymDiagStd& invXu = s.invXu().get_k(0);
+	const MatrixSymDiagStd& Vl = s.Vl().get_k(0);
+	const MatrixSymDiagStd& Vu = s.Vu().get_k(0);
 
-	VectorWithOpMutable& dvl_k = s.dvl().set_k(0);
-	VectorWithOpMutable& dvu_k = s.dvu().set_k(0);
+	VectorMutable& dvl_k = s.dvl().set_k(0);
+	VectorMutable& dvu_k = s.dvu().set_k(0);
 
 	lowerbound_multipliers_step(mu, invXl.diag(), Vl.diag(), d_k, &dvl_k);
 	upperbound_multipliers_step(mu, invXu.diag(), Vu.diag(), d_k, &dvu_k);

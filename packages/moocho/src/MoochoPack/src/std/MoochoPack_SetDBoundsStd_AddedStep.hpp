@@ -45,8 +45,8 @@ public:
 	//@}
 
 private:
-	IterationPack::CastIQMember<VectorWithOpMutable> dl_iq_;
-	IterationPack::CastIQMember<VectorWithOpMutable> du_iq_;
+	IterationPack::CastIQMember<VectorMutable> dl_iq_;
+	IterationPack::CastIQMember<VectorMutable> du_iq_;
 
 }; // end class SetDBoundsStd_AddedStep
 

@@ -20,10 +20,10 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 //#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
@@ -49,9 +49,9 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	}
 
 	// d = Ypy + Zpz
-	VectorWithOpMutable    &d_k    = s.d().set_k(0);
-	const VectorWithOp     &Ypy_k = s.Ypy().get_k(0);
-	const VectorWithOp     &Zpz_k = s.Zpz().get_k(0);
+	VectorMutable    &d_k    = s.d().set_k(0);
+	const Vector     &Ypy_k = s.Ypy().get_k(0);
+	const Vector     &Zpz_k = s.Zpz().get_k(0);
 	V_VpV( &d_k, Ypy_k, Zpz_k );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {

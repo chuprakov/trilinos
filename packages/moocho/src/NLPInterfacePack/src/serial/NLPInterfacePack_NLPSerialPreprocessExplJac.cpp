@@ -23,7 +23,7 @@
 #include "SparseLinAlgPack/src/PermutationSerial.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemFactory.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
@@ -61,14 +61,14 @@ void NLPSerialPreprocessExplJac::set_mat_factories(
 		factory_Gc_full_ = factory_Gc_full;
 	else 
 		factory_Gc_full_ = rcp::rcp(
-			new afp::AbstractFactoryStd<MatrixWithOp,MatrixSparseCOORSerial>() );
+			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
 	if(factory_Gh_full.get())
 		factory_Gh_full_ = factory_Gh_full;
 	else 
 		factory_Gc_full_ = rcp::rcp(
-			new afp::AbstractFactoryStd<MatrixWithOp,MatrixSparseCOORSerial>() );
-	factory_Gc_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
-	factory_Gh_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
+			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
+	factory_Gc_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
+	factory_Gh_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
 }
 
 // Overridden public members from NLP
@@ -149,7 +149,7 @@ NLPSerialPreprocessExplJac::basis_sys() const
 	return fcty.create();
 }
 
-void NLPSerialPreprocessExplJac::set_Gc(MatrixWithOp* Gc)
+void NLPSerialPreprocessExplJac::set_Gc(MatrixOp* Gc)
 {
 	using DynamicCastHelperPack::dyn_cast;
 	assert_initialized();
@@ -159,7 +159,7 @@ void NLPSerialPreprocessExplJac::set_Gc(MatrixWithOp* Gc)
 	NLPFirstOrderInfo::set_Gc(Gc);
 }
 
-void NLPSerialPreprocessExplJac::set_Gh(MatrixWithOp* Gh)
+void NLPSerialPreprocessExplJac::set_Gh(MatrixOp* Gh)
 {
 	using DynamicCastHelperPack::dyn_cast;
 	assert_initialized();
@@ -203,7 +203,7 @@ void NLPSerialPreprocessExplJac::set_basis(
 // Overridden protected members from NLPFirstOrderInfo
 
 void NLPSerialPreprocessExplJac::imp_calc_Gc(
-	const VectorWithOp& x, bool newx
+	const Vector& x, bool newx
 	,const FirstOrderInfo& first_order_info
 	) const
 {
@@ -215,7 +215,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 }
 
 void NLPSerialPreprocessExplJac::imp_calc_Gh(
-	const VectorWithOp& x, bool newx
+	const Vector& x, bool newx
 	,const FirstOrderInfo& first_order_info
 	) const
 {
@@ -239,7 +239,7 @@ void NLPSerialPreprocessExplJac::assert_initialized() const
 
 void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	bool calc_Gc
-	,const VectorWithOp& x, bool newx
+	,const Vector& x, bool newx
 	,const FirstOrderInfo& first_order_info
 	) const
 {
@@ -284,15 +284,15 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 											? *first_order_info.Gc
 											: *first_order_info.Gh );
 	// Get smart pointers to the constituent members
-	rcp::ref_count_ptr<MatrixWithOp>
-		G_full = rcp::rcp_const_cast<MatrixWithOp>( G_aggr.mat_orig() );
+	rcp::ref_count_ptr<MatrixOp>
+		G_full = rcp::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
 	rcp::ref_count_ptr<PermutationSerial>
 		P_row = rcp::rcp_dynamic_cast<PermutationSerial>(
 			rcp::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
 	rcp::ref_count_ptr<PermutationSerial>
 		P_col = rcp::rcp_dynamic_cast<PermutationSerial>(
 			rcp::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
-	rcp::ref_count_ptr<const MatrixWithOp>
+	rcp::ref_count_ptr<const MatrixOp>
 		G_perm = G_aggr.mat_perm();
 	// Remove references to G_full, G_perm, P_row and P_col.
 	G_aggr.set_uninitialized();

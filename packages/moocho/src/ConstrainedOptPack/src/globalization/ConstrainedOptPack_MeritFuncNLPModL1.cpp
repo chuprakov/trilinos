@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 
@@ -28,10 +28,10 @@ MeritFuncNLPModL1::MeritFuncNLPModL1()
 
 value_type MeritFuncNLPModL1::value(
 	value_type             f
-	,const VectorWithOp    *c
-	,const VectorWithOp    *h
-	,const VectorWithOp    *hl
-	,const VectorWithOp    *hu
+	,const Vector    *c
+	,const Vector    *h
+	,const Vector    *hl
+	,const Vector    *hu
 	) const
 {
 	THROW_EXCEPTION(
@@ -65,12 +65,12 @@ void MeritFuncNLPModL1::print_merit_func(
 // Overridden from MeritFuncNLPDirecDeriv
 
 value_type MeritFuncNLPModL1::calc_deriv(
-	const VectorWithOp    &Gf_k
-	,const VectorWithOp   *c_k
-	,const VectorWithOp   *h_k
-	,const VectorWithOp   *hl
-	,const VectorWithOp   *hu
-	,const VectorWithOp   &d_k
+	const Vector    &Gf_k
+	,const Vector   *c_k
+	,const Vector   *h_k
+	,const Vector   *hl
+	,const Vector   *hu
+	,const Vector   &d_k
 	)
 {
 	THROW_EXCEPTION(
@@ -92,12 +92,12 @@ void MeritFuncNLPModL1::set_space_c( const VectorSpace::space_ptr_t& space_c )
 	*mu_ = 0.0;
 }
 
-VectorWithOpMutable& MeritFuncNLPModL1::set_mu()
+VectorMutable& MeritFuncNLPModL1::set_mu()
 {
 	return *mu_;
 }
 
-const VectorWithOp& MeritFuncNLPModL1::get_mu() const
+const Vector& MeritFuncNLPModL1::get_mu() const
 {
 	return *mu_;
 }

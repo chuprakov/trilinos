@@ -28,7 +28,7 @@ namespace ConstrainedOptimizationPack {
 ///
 /** Node base clase for the primal QP solvers QPOPT and QPSOL.
   *
-  * In this implementation it is required that G only support the \Ref{MatrixWithOp}
+  * In this implementation it is required that G only support the \Ref{MatrixOp}
   * interface and is therefore quite flexible in the QPs it can solve.
   */
 class QPSolverRelaxedQPOPTSOL : public QPSolverRelaxed
@@ -55,7 +55,7 @@ public:
 	~QPSolverRelaxedQPOPTSOL();
 
 	/// Return a pointer to the matrix G to be used in the calculation of H*x by QPOPT and QPSOL.
-	virtual const MatrixWithOp* G() const;
+	virtual const MatrixOp* G() const;
 
 	/// Return the value of the "big M" used in the relaxation (called by QPHESS functions).
 	virtual value_type use_as_bigM() const;
@@ -77,12 +77,12 @@ protected:
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const DVectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
+		, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
+		, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
 		, value_type* eta, DVectorSlice* d
 		, SpVector* nu
@@ -189,7 +189,7 @@ private:
 											// needed to map from CLAMDA_ to mu.
 	value_type			bigM_;				// Big M value used to construct relaxation.
 	value_type			use_as_bigM_;		// Big M value used in QPHESS.
-	const MatrixWithOp*	G_;					// used to compute HESS * x = [ G, 0; 0, bigM ] * x products.
+	const MatrixOp*	G_;					// used to compute HESS * x = [ G, 0; 0, bigM ] * x products.
 
 	// ///////////////////////////
 	// Private member functions

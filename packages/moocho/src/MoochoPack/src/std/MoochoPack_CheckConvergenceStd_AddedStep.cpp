@@ -63,7 +63,7 @@ bool CheckConvergenceStd_AddedStep::do_step(
 			m  = nlp.m(),
 			mI = nlp.mI();
 		
-		IterQuantityAccess<VectorWithOpMutable>
+		IterQuantityAccess<VectorMutable>
 			&x_iq       = s.x(),
 			*lambda_iq  = m  ? &s.lambda()  : NULL,
 			*lambdaI_iq = mI ? &s.lambdaI() : NULL,

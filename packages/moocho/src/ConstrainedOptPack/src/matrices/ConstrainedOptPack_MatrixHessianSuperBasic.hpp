@@ -60,7 +60,7 @@ namespace ConstrainedOptimizationPack {
  * matrix to uninitialized by default.
  */
 class MatrixHessianSuperBasic
-	: public virtual MatrixSymWithOp
+	: public virtual MatrixSymOp
 {
 public:
 
@@ -68,10 +68,10 @@ public:
 	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>
 		B_RR_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>
 		B_RX_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixSymOp>
 		B_XX_ptr_t;
 	///
 	typedef std::vector<EBounds>
@@ -186,7 +186,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///

@@ -19,8 +19,8 @@
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "ThrowException.hpp"
 
 // boilerplate code
@@ -60,7 +60,7 @@ std::ostream& operator<<( std::ostream& o, const dump_vec_spaces& d )
 enum EM_VS { SPACE_COLS, SPACE_ROWS };
 
 const AbstractLinAlgPack::VectorSpace& op(
-	const AbstractLinAlgPack::MatrixWithOp&     M
+	const AbstractLinAlgPack::MatrixOp&     M
 	,BLAS_Cpp::Transp                           M_trans
 	,EM_VS                                      M_VS
 	)
@@ -131,38 +131,38 @@ ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 
 #ifdef ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
 
-void AbstractLinAlgPack::Vp_V_assert_compatibility(VectorWithOpMutable* v_lhs, const VectorWithOp& v_rhs)
+void AbstractLinAlgPack::Vp_V_assert_compatibility(VectorMutable* v_lhs, const Vector& v_rhs)
 {
 	const char func_name[] = "Vp_V_assert_compatibility(v_lhs,v_rhs)";
 	ASSERT_LHS_ARG(func_name,v_lhs)
 	ASSERT_VEC_SPACES("Vp_V_assert_compatibility(v_lhs,v_rhs)",v_lhs->space(),v_rhs.space());
 }
 
-void AbstractLinAlgPack::Vp_V_assert_compatibility(VectorWithOpMutable* v_lhs, const SpVectorSlice& sv_rhs)
+void AbstractLinAlgPack::Vp_V_assert_compatibility(VectorMutable* v_lhs, const SpVectorSlice& sv_rhs)
 {
 	// ToDo: Check compatibility!
 } 
 
-void AbstractLinAlgPack::VopV_assert_compatibility(const VectorWithOp& v_rhs1, const VectorWithOp&  v_rhs2)
+void AbstractLinAlgPack::VopV_assert_compatibility(const Vector& v_rhs1, const Vector&  v_rhs2)
 {
 	const char func_name[] = "VopV_assert_compatibility(v_rhs1,v_rhs2)";
 	ASSERT_VEC_SPACES(func_name,v_rhs1.space(),v_rhs2.space());
 }
 
 
-void AbstractLinAlgPack::VopV_assert_compatibility(const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2)
+void AbstractLinAlgPack::VopV_assert_compatibility(const Vector& v_rhs1, const SpVectorSlice& sv_rhs2)
 {
 	// ToDo: Check compatibility!
 } 
 
-void AbstractLinAlgPack::VopV_assert_compatibility(const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2)
+void AbstractLinAlgPack::VopV_assert_compatibility(const SpVectorSlice& sv_rhs1, const Vector& v_rhs2)
 {
 	// ToDo: Check compatibility!
 } 
 
 void AbstractLinAlgPack::Mp_M_assert_compatibility(
-	MatrixWithOp* m_lhs, BLAS_Cpp::Transp trans_lhs
-	,const MatrixWithOp& m_rhs, BLAS_Cpp::Transp trans_rhs )
+	MatrixOp* m_lhs, BLAS_Cpp::Transp trans_lhs
+	,const MatrixOp& m_rhs, BLAS_Cpp::Transp trans_rhs )
 {
 	const char func_name[] = "Mp_M_assert_compatibility(m_lhs,trans_lhs,m_rhs,trans_rhs)";
 	ASSERT_LHS_ARG(func_name,m_lhs)
@@ -171,8 +171,8 @@ void AbstractLinAlgPack::Mp_M_assert_compatibility(
 }
 
 void AbstractLinAlgPack::MopM_assert_compatibility(
-	const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
+	const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
 {
 	const char func_name[] = "MopM_assert_compatibility(m_rhs1,trans_rhs1,m_rhs2,trans_rhs2)";
 	ASSERT_MAT_MAT_SPACES(func_name,m_rhs1,trans_rhs1,SPACE_COLS,m_rhs2,trans_rhs2,SPACE_COLS)
@@ -180,21 +180,21 @@ void AbstractLinAlgPack::MopM_assert_compatibility(
 }
 
 void AbstractLinAlgPack::MtV_assert_compatibility(
-	const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorWithOp& v_rhs2 )
+	const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2 )
 {
 	const char func_name[] = "MtV_assert_compatibility(m_rhs1,trans_rhs1,v_rhs2)";
 	ASSERT_MAT_VEC_SPACES(func_name,m_rhs1,trans_rhs1,SPACE_ROWS,v_rhs2.space())
 }
 
 void AbstractLinAlgPack::MtV_assert_compatibility(
-	const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 )
+	const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 )
 {
 	// ToDo: Check compatibility!
 } 
 
 void AbstractLinAlgPack::Vp_MtV_assert_compatibility(
-	VectorWithOpMutable* v_lhs
-	,const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorWithOp& v_rhs2 )
+	VectorMutable* v_lhs
+	,const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2 )
 {
 	const char func_name[] = "Vp_MtV_assert_compatibility(v_lhs,m_rhs1,trans_rhs1,v_rhs2)";
 	ASSERT_LHS_ARG(func_name,v_lhs)
@@ -203,15 +203,15 @@ void AbstractLinAlgPack::Vp_MtV_assert_compatibility(
 }
 
 void AbstractLinAlgPack::Vp_MtV_assert_compatibility(
-	VectorWithOpMutable* v_lhs
-	,const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 )
+	VectorMutable* v_lhs
+	,const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 )
 {
 	// ToDo: Check compatibility!
 } 
 
 void AbstractLinAlgPack::MtM_assert_compatibility(
-	const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
+	const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
 {
 	const char func_name[] = "MtM_assert_compatibility(m_rhs1,trans_rhs1,m_rhs2,trans_rhs2)";
 	ASSERT_MAT_MAT_SPACES(func_name,m_rhs1,trans_rhs1,SPACE_COLS,m_rhs2,trans_rhs2,SPACE_ROWS)
@@ -219,9 +219,9 @@ void AbstractLinAlgPack::MtM_assert_compatibility(
 }
 
 void AbstractLinAlgPack::Mp_MtM_assert_compatibility(
-	MatrixWithOp* m_lhs, BLAS_Cpp::Transp trans_lhs
-	,const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
+	MatrixOp* m_lhs, BLAS_Cpp::Transp trans_lhs
+	,const MatrixOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
 {
 	const char func_name[] = "Mp_MtM_assert_compatibility(m_lhs,trans_lhsm_rhs1,trans_rhs1,m_rhs2,trans_rhs2)";
 	ASSERT_LHS_ARG(func_name,m_lhs)

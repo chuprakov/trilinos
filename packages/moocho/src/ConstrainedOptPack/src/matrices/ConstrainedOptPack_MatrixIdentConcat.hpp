@@ -17,7 +17,7 @@
 #define MATRIX_IDENT_CONCAT_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -45,7 +45,7 @@ namespace ConstrainedOptimizationPack {
  * the full matrix \c M is of order <tt>(op(D).rows() + op(D).cols()) x op(D).cols()</tt>.
  */
 class MatrixIdentConcat
-	: virtual public AbstractLinAlgPack::MatrixWithOp
+	: virtual public AbstractLinAlgPack::MatrixOp
 {
 public:
 
@@ -59,7 +59,7 @@ public:
 	///
 	virtual value_type alpha() const = 0;
 	///
-	virtual const MatrixWithOp& D() const = 0;
+	virtual const MatrixOp& D() const = 0;
 	///
 	virtual BLAS_Cpp::Transp D_trans() const = 0;
 	//@}
@@ -74,18 +74,18 @@ public:
 	size_type nz() const;
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& vs_rhs2, value_type beta
+		VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& vs_rhs2, value_type beta
 		) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		,const SpVectorSlice& sv_rhs2, value_type beta
 		) const;
 	//@}

@@ -18,9 +18,9 @@
 
 #include "ExampleNLPObjGradient.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceBlock.hpp"
 
 namespace NLPInterfacePack {
 
@@ -41,7 +41,7 @@ namespace NLPInterfacePack {
  * This implementation is defined entirely based on an arbitrary
  * <tt>VectorSpace</tt> object that is passed to the constructor
  * \c ExampleNLPFirstOrderDirect().  This %NLP subclass uses a
- * <tt>\ref AbstractLinAlgPack::VectorSpaceCompositeStd "VectorSpaceCompositeStd"</tt>
+ * <tt>\ref AbstractLinAlgPack::VectorSpaceBlock "VectorSpaceBlock"</tt>
  * object to represent the space for <tt>[ x_dep; x_indep ]</tt>
  *
  * The quantities computed by this subclass include:
@@ -112,9 +112,9 @@ public:
 	/// Returns <tt>return.get() == NULL</tt>.
 	vec_space_ptr_t space_h() const;
 	/// Throws exception.
-	const VectorWithOp& hl() const;
+	const Vector& hl() const;
 	/// Throws exception.
-	const VectorWithOp& hu() const;
+	const Vector& hu() const;
 
 	//@}
 
@@ -129,26 +129,26 @@ public:
 	const mat_fcty_ptr_t factory_D() const;
 	///
 	void calc_point(
-		const VectorWithOp     &x
+		const Vector     &x
 		,value_type            *f
-		,VectorWithOpMutable   *c
+		,VectorMutable   *c
 		,bool                  recalc_c
-		,VectorWithOpMutable   *h
-		,VectorWithOpMutable   *Gf
-		,VectorWithOpMutable   *py
-		,VectorWithOpMutable   *rGf
-		,MatrixWithOp          *GcU
-		,MatrixWithOp          *Gh
-		,MatrixWithOp          *D
-		,MatrixWithOp          *V
-		,MatrixWithOp          *P
+		,VectorMutable   *h
+		,VectorMutable   *Gf
+		,VectorMutable   *py
+		,VectorMutable   *rGf
+		,MatrixOp          *GcU
+		,MatrixOp          *Gh
+		,MatrixOp          *D
+		,MatrixOp          *V
+		,MatrixOp          *P
 		) const;
 	///
 	void calc_semi_newton_step(
-		const VectorWithOp    &x
-		,VectorWithOpMutable  *c
+		const Vector    &x
+		,VectorMutable  *c
 		,bool                 recalc_c
-		,VectorWithOpMutable  *py
+		,VectorMutable  *py
 		) const;
 
 	//@}
@@ -159,7 +159,7 @@ protected:
 	//@{
 
 	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
+	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
 

@@ -24,7 +24,7 @@ namespace SparseLinAlgPack {
 /** Abstract interface that allows the extraction of a non-const <tt>DMatrixSlice</tt>
  * view of an abstract matrix.
  *
- * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
+ * This interface is ment to be used by <tt>MatrixOp</tt> objects
  * that store all of their matrix elements in the local address space or can easily
  * access all of the elements from this process and can modify the elements in their
  * data structures.
@@ -109,12 +109,12 @@ public:
 	 */
 	MatrixDenseMutableEncap( MatrixWithOpGetGMSMutable*  mat_get );
 	///
-	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<MatrixWithOpGetGMSMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
-	MatrixDenseMutableEncap( MatrixWithOp* mat );
+	MatrixDenseMutableEncap( MatrixOp* mat );
 	/// Frees the <tt>DMatrixSlice</tt> view and commits the changes.
 	~MatrixDenseMutableEncap();
 	/// Returns a non-const view of the <tt>DMatrixSlice</tt> view.
@@ -144,7 +144,7 @@ MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixWithOpGetGMSMutable*  ma
 {}
 
 inline
-MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixWithOp* mat )
+MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixOp* mat )
 	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixWithOpGetGMSMutable>(*mat))
 	,gms_view_(mat_get_->get_gms_view())
 {}

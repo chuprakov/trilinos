@@ -23,7 +23,7 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "ThrowException.hpp"
@@ -135,12 +135,12 @@ bool UpdateBarrierParameter_Step::do_step(
 					}
 
 
-	        	        /*VectorWithOpMutable& vu = s.Vu().set_k(0).diag();
+	        	        /*VectorMutable& vu = s.Vu().set_k(0).diag();
         	        	vu = 0;
 		                Vp_StV(&vu, mu_k, s.invXu().get_k(0).diag());
                 		correct_upper_bound_multipliers(nlp.xu(), NLP::infinite_bound(), &vu); 
                 
-		                VectorWithOpMutable& vl = s.Vl().set_k(0).diag();
+		                VectorMutable& vl = s.Vl().set_k(0).diag();
                 		vl = 0;
 		                Vp_StV(&vl, mu_k, s.invXl().get_k(0).diag());
                 		correct_lower_bound_multipliers(nlp.xl(), -NLP::infinite_bound(), &vl);*/

@@ -15,7 +15,7 @@
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFixedFree.hpp"
 #include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
@@ -32,11 +32,11 @@ namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	const DVectorSlice&    g
-	,const MatrixWithOp&  G
+	,const MatrixOp&  G
 	,value_type           etaL
 	,const SpVectorSlice& dL
 	,const SpVectorSlice& dU
-	,const MatrixWithOp*  F
+	,const MatrixOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const DVectorSlice*   f
 	,const DVectorSlice&   d
@@ -63,11 +63,11 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 
 	// Validate type of and convert G
 #ifdef _WINDOWS
-	const MatrixSymWithOp&
-		G_sym = dynamic_cast<const MatrixSymWithOp&>(G);
+	const MatrixSymOp&
+		G_sym = dynamic_cast<const MatrixSymOp&>(G);
 #else
-	const MatrixSymWithOp&
-		G_sym = dyn_cast<const MatrixSymWithOp>(G);
+	const MatrixSymOp&
+		G_sym = dyn_cast<const MatrixSymOp>(G);
 #endif
 
 	const size_type nd = g.size();
@@ -186,7 +186,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	DMatrix G_RR_dense(*n_R,*n_R);
 	DMatrixSliceSym sym_G_RR_dense(G_RR_dense(),BLAS_Cpp::lower);
 	SparseLinAlgPack::Mp_StPtMtP(
-		&sym_G_RR_dense, 1.0, MatrixSymWithOp::DUMMY_ARG
+		&sym_G_RR_dense, 1.0, MatrixSymOp::DUMMY_ARG
 		,G_sym, Q_R, BLAS_Cpp::no_trans, 0.0 );
 	// Initialize a factorization object for this matrix
 	typedef rcp::ref_count_ptr<MatrixSymPosDefCholFactor> G_RR_ptr_t;

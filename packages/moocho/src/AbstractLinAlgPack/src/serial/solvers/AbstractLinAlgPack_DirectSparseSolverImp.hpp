@@ -61,7 +61,7 @@ public:
 	 * The only methods that subclasses must override for a complete
 	 * basis matrix object are:
 	 * 
-	 * <tt>AbstractLinAlgPack::MatrixNonsingular::V_InvMtV()</tt>,
+	 * <tt>AbstractLinAlgPack::MatrixNonsing::V_InvMtV()</tt>,
 	 * and  <tt>create_matrix()</tt>.
 	 *
 	 * Note that is if very important that subclasses do not maintain their

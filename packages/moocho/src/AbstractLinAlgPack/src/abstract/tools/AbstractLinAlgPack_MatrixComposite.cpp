@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixCompositeStd.cpp
+// MatrixComposite.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutableCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorMutableBlock.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 //#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "WorkspacePack.hpp"
@@ -30,7 +30,7 @@ namespace {
 
 inline
 AbstractLinAlgPack::value_type
-get_element( const AbstractLinAlgPack::VectorWithOp& v, AbstractLinAlgPack::index_type i )
+get_element( const AbstractLinAlgPack::Vector& v, AbstractLinAlgPack::index_type i )
 {
  	return v.get_ele(i);
 }
@@ -47,9 +47,9 @@ get_element( const AbstractLinAlgPack::SpVectorSlice& v, AbstractLinAlgPack::ind
 // Get a view of a vector (two versions)
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::Vector>
 get_view(
-	const AbstractLinAlgPack::VectorWithOp& v
+	const AbstractLinAlgPack::Vector& v
 	,AbstractLinAlgPack::index_type l
 	,AbstractLinAlgPack::index_type u
 	)
@@ -73,10 +73,10 @@ get_view(
 
 template<class V>
 void Vp_StMtV_imp(
-	AbstractLinAlgPack::VectorWithOpMutable* y, AbstractLinAlgPack::value_type a
+	AbstractLinAlgPack::VectorMutable* y, AbstractLinAlgPack::value_type a
 	,AbstractLinAlgPack::size_type M_rows, AbstractLinAlgPack::size_type M_cols
-	,const AbstractLinAlgPack::MatrixCompositeStd::matrix_list_t& mat_list
-	,const AbstractLinAlgPack::MatrixCompositeStd::vector_list_t& vec_list
+	,const AbstractLinAlgPack::MatrixComposite::matrix_list_t& mat_list
+	,const AbstractLinAlgPack::MatrixComposite::vector_list_t& vec_list
 	,BLAS_Cpp::Transp M_trans
 	,const V& x, AbstractLinAlgPack::value_type b
 	)
@@ -86,8 +86,8 @@ void Vp_StMtV_imp(
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	using AbstractLinAlgPack::dot;  // We should not have to do this but some compiles &%!#$
-	typedef AbstractLinAlgPack::MatrixCompositeStd::matrix_list_t  mat_list_t;
-	typedef AbstractLinAlgPack::MatrixCompositeStd::vector_list_t  vec_list_t;
+	typedef AbstractLinAlgPack::MatrixComposite::matrix_list_t  mat_list_t;
+	typedef AbstractLinAlgPack::MatrixComposite::vector_list_t  vec_list_t;
 
     AbstractLinAlgPack::Vt_S( y, b );  // Will take care of b == 0.0
 
@@ -124,7 +124,7 @@ void Vp_StMtV_imp(
 					// y(r) += a * beta * v'*x(c,c+n-1)
 					//
 //					y->set_ele( r, y->get_ele(r) + a * itr->beta_ * dot( *itr->v_, *get_view(x,c,c+itr->v_->dim()-1) ) );
-					assert(0); // ToDo: Implement the above method in VectorStdOps for VectorWithOp,SpVectorSlice!
+					assert(0); // ToDo: Implement the above method in VectorStdOps for Vector,SpVectorSlice!
 				}
 			}
 			else { // op(op(G)*v) or op(v(rng_G))
@@ -229,12 +229,12 @@ private:
 
 namespace AbstractLinAlgPack {
 
-MatrixCompositeStd::MatrixCompositeStd( size_type rows, size_type cols )
+MatrixComposite::MatrixComposite( size_type rows, size_type cols )
 {
 	reinitialize(rows,cols);
 }
 
-void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
+void MatrixComposite::reinitialize( size_type rows, size_type cols )
 {
 	namespace rcp = MemMngPack;
 	
@@ -251,14 +251,14 @@ void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
 	space_cols_  = rcp::null;
 }
 
-void MatrixCompositeStd::add_vector(
+void MatrixComposite::add_vector(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    beta
 	,const GenPermMatrixSlice      *G
 	,const release_resource_ptr_t  &G_release
 	,BLAS_Cpp::Transp              G_trans
-	,const VectorWithOp            *v
+	,const Vector            *v
 	,const release_resource_ptr_t  &v_release
 	,BLAS_Cpp::Transp              v_trans
 	)
@@ -267,12 +267,12 @@ void MatrixCompositeStd::add_vector(
 	assert(0); // ToDo: Finish!
 }
 
-void MatrixCompositeStd::add_vector(
+void MatrixComposite::add_vector(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    beta
 	,const Range1D                 &rng_G
-	,const VectorWithOp            *v
+	,const Vector            *v
 	,const release_resource_ptr_t  &v_release
 	,BLAS_Cpp::Transp              v_trans
 	)
@@ -281,11 +281,11 @@ void MatrixCompositeStd::add_vector(
 	assert(0); // ToDo: Finish!
 }
 
-void MatrixCompositeStd::add_vector(
+void MatrixComposite::add_vector(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    beta
-	,const VectorWithOp            *v
+	,const Vector            *v
 	,const release_resource_ptr_t  &v_release
 	,BLAS_Cpp::Transp              v_trans
 	)
@@ -311,20 +311,20 @@ void MatrixCompositeStd::add_vector(
 			,v,v_release,v_trans ) );
 }
 
-void MatrixCompositeStd::remove_vector( vector_list_t::iterator itr )
+void MatrixComposite::remove_vector( vector_list_t::iterator itr )
 {
 	fully_constructed_ = false;
 	vector_list_.erase(itr);
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
 	,const GenPermMatrixSlice      *P
 	,const release_resource_ptr_t  &P_release
 	,BLAS_Cpp::Transp              P_trans
-	,const MatrixWithOp            *A
+	,const MatrixOp            *A
 	,const release_resource_ptr_t  &A_release
 	,BLAS_Cpp::Transp              A_trans
 	,const GenPermMatrixSlice      *Q
@@ -336,12 +336,12 @@ void MatrixCompositeStd::add_matrix(
 	assert(0); // ToDo: Finish!
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
 	,const Range1D                 &rng_P
-	,const MatrixWithOp            *A
+	,const MatrixOp            *A
 	,const release_resource_ptr_t  &A_release
 	,BLAS_Cpp::Transp              A_trans
 	,const GenPermMatrixSlice      *Q
@@ -353,14 +353,14 @@ void MatrixCompositeStd::add_matrix(
 	assert(0); // ToDo: Finish!
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
 	,const GenPermMatrixSlice      *P
 	,const release_resource_ptr_t  &P_release
 	,BLAS_Cpp::Transp              P_trans
-	,const MatrixWithOp            *A
+	,const MatrixOp            *A
 	,const release_resource_ptr_t  &A_release
 	,BLAS_Cpp::Transp              A_trans
 	,const Range1D                 &rng_Q
@@ -370,12 +370,12 @@ void MatrixCompositeStd::add_matrix(
 	assert(0); // ToDo: Finish!
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
 	,const Range1D                 &rng_P_in
-	,const MatrixWithOp            *A
+	,const MatrixOp            *A
 	,const release_resource_ptr_t  &A_release
 	,BLAS_Cpp::Transp              A_trans
 	,const Range1D                 &rng_Q_in
@@ -388,10 +388,10 @@ void MatrixCompositeStd::add_matrix(
 
 	THROW_EXCEPTION(
 		alpha == 0.0, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 	THROW_EXCEPTION(
 		A == NULL, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 
 	const size_type
 		A_rows   = A->rows(),
@@ -407,10 +407,10 @@ void MatrixCompositeStd::add_matrix(
 
 	THROW_EXCEPTION(
 		row_offset + opPopAopQ_rows > rows_, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 	THROW_EXCEPTION(
 		col_offset + opPopAopQ_cols > cols_, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 
 	fully_constructed_ = false;
 	
@@ -433,11 +433,11 @@ void MatrixCompositeStd::add_matrix(
 	// the matrix list using the public iterators.
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
-	,const MatrixWithOp            *A
+	,const MatrixOp            *A
 	,const release_resource_ptr_t  &A_release
 	,BLAS_Cpp::Transp              A_trans
 	)
@@ -448,10 +448,10 @@ void MatrixCompositeStd::add_matrix(
 
 	THROW_EXCEPTION(
 		alpha == 0.0, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 	THROW_EXCEPTION(
 		A == NULL, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 
 	const size_type
 		A_rows   = A->rows(),
@@ -461,10 +461,10 @@ void MatrixCompositeStd::add_matrix(
 
 	THROW_EXCEPTION(
 		row_offset + opA_rows > rows_, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 	THROW_EXCEPTION(
 		col_offset + opA_cols > cols_, std::invalid_argument
-		,"MatrixCompositeStd::add_matrix(...) : Error!" );
+		,"MatrixComposite::add_matrix(...) : Error!" );
 
 	fully_constructed_ = false;
 
@@ -482,7 +482,7 @@ void MatrixCompositeStd::add_matrix(
 		);
 }
 
-void MatrixCompositeStd::add_matrix(
+void MatrixComposite::add_matrix(
 	size_type                      row_offset
 	,size_type                     col_offset
 	,value_type                    alpha
@@ -521,30 +521,30 @@ void MatrixCompositeStd::add_matrix(
 		);
 }
 
-void MatrixCompositeStd::remove_matrix( matrix_list_t::iterator itr )
+void MatrixComposite::remove_matrix( matrix_list_t::iterator itr )
 {
 	fully_constructed_ = false;
 	matrix_list_.erase(itr);
 }
 
-void MatrixCompositeStd::finish_construction(
+void MatrixComposite::finish_construction(
 	const VectorSpace::space_ptr_t&  space_cols
 	,const VectorSpace::space_ptr_t& space_rows
 	)
 {
 	THROW_EXCEPTION(
 		!space_cols.get(), std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_cols.get() can not be NULL" );
+		,"MatrixComposite::finish_construction(...): Error, space_cols.get() can not be NULL" );
 	THROW_EXCEPTION(
 		!space_rows.get(), std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_rows.get() can not be NULL" );
+		,"MatrixComposite::finish_construction(...): Error, space_rows.get() can not be NULL" );
 	THROW_EXCEPTION(
 		space_cols->dim() != rows_, std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_colss->dim() = " << space_cols->dim()
+		,"MatrixComposite::finish_construction(...): Error, space_colss->dim() = " << space_cols->dim()
 		<< " != rows = " << rows_ << " where cols was passed to this->reinitialize(...)" );
 	THROW_EXCEPTION(
 		space_rows->dim() != cols_, std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
+		,"MatrixComposite::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
 		<< " != cols = " << cols_ << " where cols was passed to this->reinitialize(...)" );
 
 	space_rows_ = space_rows;
@@ -554,77 +554,77 @@ void MatrixCompositeStd::finish_construction(
 
 // Member access
 
-int MatrixCompositeStd::num_vectors() const
+int MatrixComposite::num_vectors() const
 {
 	return vector_list_.size();
 }
 
-MatrixCompositeStd::vector_list_t::iterator
-MatrixCompositeStd::vectors_begin()
+MatrixComposite::vector_list_t::iterator
+MatrixComposite::vectors_begin()
 {
 	return vector_list_.begin();
 }
 
-MatrixCompositeStd::vector_list_t::iterator
-MatrixCompositeStd::vectors_end()
+MatrixComposite::vector_list_t::iterator
+MatrixComposite::vectors_end()
 {
 	return vector_list_.end();
 }
 
-MatrixCompositeStd::vector_list_t::const_iterator
-MatrixCompositeStd::vectors_begin() const
+MatrixComposite::vector_list_t::const_iterator
+MatrixComposite::vectors_begin() const
 {
 	return vector_list_.begin();
 }
 
-MatrixCompositeStd::vector_list_t::const_iterator
-MatrixCompositeStd::vectors_end() const
+MatrixComposite::vector_list_t::const_iterator
+MatrixComposite::vectors_end() const
 {
 	return vector_list_.end();
 }
 
-int MatrixCompositeStd::num_matrices() const
+int MatrixComposite::num_matrices() const
 {
 	return matrix_list_.size();
 }
 
-MatrixCompositeStd::matrix_list_t::iterator
-MatrixCompositeStd::matrices_begin()
+MatrixComposite::matrix_list_t::iterator
+MatrixComposite::matrices_begin()
 {
 	return matrix_list_.begin();
 }
 
-MatrixCompositeStd::matrix_list_t::iterator
-MatrixCompositeStd::matrices_end()
+MatrixComposite::matrix_list_t::iterator
+MatrixComposite::matrices_end()
 {
 	return matrix_list_.end();
 }
 
-MatrixCompositeStd::matrix_list_t::const_iterator
-MatrixCompositeStd::matrices_begin() const
+MatrixComposite::matrix_list_t::const_iterator
+MatrixComposite::matrices_begin() const
 {
 	return matrix_list_.begin();
 }
 
-MatrixCompositeStd::matrix_list_t::const_iterator
-MatrixCompositeStd::matrices_end() const
+MatrixComposite::matrix_list_t::const_iterator
+MatrixComposite::matrices_end() const
 {
 	return matrix_list_.end();
 }
 
 // Overridden from Matrix
 
-size_type MatrixCompositeStd::rows() const
+size_type MatrixComposite::rows() const
 {
 	return fully_constructed_ ? rows_ : 0;
 }
 
-size_type MatrixCompositeStd::cols() const
+size_type MatrixComposite::cols() const
 {
 	return fully_constructed_ ? cols_ : 0;
 }
 
-size_type MatrixCompositeStd::nz() const
+size_type MatrixComposite::nz() const
 {
 	if(fully_constructed_) {
 		size_type nz = 0;
@@ -643,22 +643,22 @@ size_type MatrixCompositeStd::nz() const
 	return 0;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-const VectorSpace& MatrixCompositeStd::space_rows() const
+const VectorSpace& MatrixComposite::space_rows() const
 {
 	assert_fully_constructed();
 	return *space_rows_;
 }
 
-const VectorSpace& MatrixCompositeStd::space_cols() const
+const VectorSpace& MatrixComposite::space_cols() const
 {
 	assert_fully_constructed();
 	return *space_cols_;
 }
 
-MatrixWithOp::mat_ptr_t
-MatrixCompositeStd::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
+MatrixOp::mat_ptr_t
+MatrixComposite::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	assert_fully_constructed();
 	// For this initial implementation we will just look through the list of matrices
@@ -668,71 +668,71 @@ MatrixCompositeStd::sub_view(const Range1D& row_rng, const Range1D& col_rng) con
 	// ToDo: Implement!
 
 	// Just return the default sub-view
-	return MatrixWithOp::sub_view(row_rng,col_rng);
+	return MatrixOp::sub_view(row_rng,col_rng);
 }
 
-void MatrixCompositeStd::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorWithOp& x, value_type b
+void MatrixComposite::Vp_StMtV(
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const Vector& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...DVectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixComposite::Vp_StMtV(...DVectorSlice...)" );
 #endif
 	assert_fully_constructed();
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
 	Vp_StMtV_imp(y,a,rows_,cols_,matrix_list_,vector_list_,M_trans,x,b);
 }
 
-void MatrixCompositeStd::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+void MatrixComposite::Vp_StMtV(
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...SpVectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixComposite::Vp_StMtV(...SpVectorSlice...)" );
 #endif
 	assert_fully_constructed();
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
 	Vp_StMtV_imp(y,a,rows_,cols_,matrix_list_,vector_list_,M_trans,x,b);
 }
 
-void MatrixCompositeStd::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+void MatrixComposite::Vp_StPtMtV(
+	VectorMutable* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
-	, const VectorWithOp& x, value_type b
+	, const Vector& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StPtMtV(...DVectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixComposite::Vp_StPtMtV(...DVectorSlice...)" );
 #endif
 	assert_fully_constructed();
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement when needed!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement when needed!
 }
 
-void MatrixCompositeStd::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+void MatrixComposite::Vp_StPtMtV(
+	VectorMutable* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b
 	) const
 {	
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StPtMtV(...SpVectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixComposite::Vp_StPtMtV(...SpVectorSlice...)" );
 #endif
 	assert_fully_constructed();
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement when needed!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement when needed!
 }
 
 // private
 
-void MatrixCompositeStd::assert_fully_constructed() const
+void MatrixComposite::assert_fully_constructed() const
 {
 	const bool fully_constructed = fully_constructed_;
 	THROW_EXCEPTION(
 		!fully_constructed, std::logic_error
-		,"MatrixCompositeStd::assert_fully_constructed() : Error, not fully constructed!");
+		,"MatrixComposite::assert_fully_constructed() : Error, not fully constructed!");
 }
 
 } // end namespace AbstractLinAlgPack

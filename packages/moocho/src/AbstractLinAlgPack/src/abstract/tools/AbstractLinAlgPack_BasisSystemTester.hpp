@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
  * The method \c test_basis_system() should only be called after
  * <tt>basis_sys\ref BasisSystem::update_basis ".update_basis(...)"</tt> is called on the <tt>BasisSystem</tt>
  * object <tt>basis_sys</tt>.  The output basis matrix \a C and/or direct sensitivity matrix \a D are passed through
- * a series of tests using the testing classes <tt>MatrixWithOpNonsingularTester</tt> and <tt>MatrixWithOpTester</tt>
+ * a series of tests using the testing classes <tt>MatrixOpNonsingTester</tt> and <tt>MatrixWithOpTester</tt>
  * respectively.  The compatibility of the matrices \c Gc, \c Gh, \c C and/or \c D are also checked in a series of
  * tests.  If the method \c test_basis_system() returns true, then the client can feel fairly confident that the
  * basis matrix object is functioning properly.
@@ -141,13 +141,13 @@ public:
 	 */
 	bool test_basis_system(
 		const BasisSystem               &basis_sys
-		,const MatrixWithOp             *Gc
-		,const MatrixWithOp             *Gh
-		,const MatrixWithOpNonsingular  *C
-		,const MatrixWithOp             *N
-		,const MatrixWithOp             *D
-		,const MatrixWithOp             *GcUP
-		,const MatrixWithOp             *GhUP
+		,const MatrixOp             *Gc
+		,const MatrixOp             *Gh
+		,const MatrixOpNonsing  *C
+		,const MatrixOp             *N
+		,const MatrixOp             *D
+		,const MatrixOp             *GcUP
+		,const MatrixOp             *GhUP
 		,std::ostream                   *out
 		);
 

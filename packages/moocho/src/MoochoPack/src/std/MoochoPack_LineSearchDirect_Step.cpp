@@ -22,9 +22,9 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
@@ -73,21 +73,21 @@ bool LineSearchDirect_Step::do_step(
 		&f_iq     = s.f(),
 		&alpha_iq = s.alpha(),
 		&phi_iq   = s.phi();
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq    = s.x(),
 		&d_iq    = s.d(),
 		&c_iq    = s.c(),
 		&h_iq    = s.h();
 	
-	VectorWithOpMutable        &x_kp1   = x_iq.get_k(+1);
-	const VectorWithOp         &x_k     = x_iq.get_k(0);
+	VectorMutable        &x_kp1   = x_iq.get_k(+1);
+	const Vector         &x_k     = x_iq.get_k(0);
 	value_type                 &f_kp1   = f_iq.get_k(+1);
 	const value_type           &f_k     = f_iq.get_k(0);
-	VectorWithOpMutable        *c_kp1   = m  ? &c_iq.get_k(+1) : NULL;
-	const VectorWithOp         *c_k     = m  ? &c_iq.get_k(0)  : NULL;
-	VectorWithOpMutable        *h_kp1   = mI ? &h_iq.get_k(+1) : NULL;
-	const VectorWithOp         *h_k     = mI ? &h_iq.get_k(0)  : NULL;
-	const VectorWithOp         &d_k     = d_iq.get_k(0);
+	VectorMutable        *c_kp1   = m  ? &c_iq.get_k(+1) : NULL;
+	const Vector         *c_k     = m  ? &c_iq.get_k(0)  : NULL;
+	VectorMutable        *h_kp1   = mI ? &h_iq.get_k(+1) : NULL;
+	const Vector         *h_k     = mI ? &h_iq.get_k(0)  : NULL;
+	const Vector         &d_k     = d_iq.get_k(0);
 	value_type                 &alpha_k = alpha_iq.get_k(0);
 
 	// /////////////////////////////////////
@@ -144,7 +144,7 @@ bool LineSearchDirect_Step::do_step(
 	// //////////////////////
 	// Do the line search
 	
-	const VectorWithOp* xd[2] = { &x_k, &d_k };
+	const Vector* xd[2] = { &x_k, &d_k };
 	MeritFuncCalc1DQuadratic
 		phi_calc_1d( phi_calc, 1, xd, &x_kp1 );
 	

@@ -94,10 +94,10 @@ protected:
 	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
 		std::ostream                                           *out
 		,EOutputLevel                                          olevel
-		,MatrixWithOp                                          *Y
-		,MatrixWithOpNonsingular                               *R
-		,MatrixWithOp                                          *Uy
-		,MatrixWithOp                                          *Vy
+		,MatrixOp                                          *Y
+		,MatrixOpNonsing                               *R
+		,MatrixOp                                          *Uy
+		,MatrixOp                                          *Vy
 		) const;
 	///
 	void initialize_matrices(
@@ -105,10 +105,10 @@ protected:
 		,EOutputLevel                                          olevel
 		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-		,MatrixWithOp                                          *Y
-		,MatrixWithOpNonsingular                               *R
-		,MatrixWithOp                                          *Uy
-		,MatrixWithOp                                          *Vy
+		,MatrixOp                                          *Y
+		,MatrixOpNonsing                               *R
+		,MatrixOp                                          *Uy
+		,MatrixOp                                          *Vy
 		,EMatRelations                                         mat_rel
 		) const;
 	///
@@ -122,7 +122,7 @@ private:
 	// ////////////////////////
 	// Private types
 
-	typedef MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>  S_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymOpNonsing>  S_ptr_t;
 
 	// ////////////////////////
 	// Private data members

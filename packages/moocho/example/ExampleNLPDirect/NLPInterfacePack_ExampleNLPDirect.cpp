@@ -19,9 +19,9 @@
 
 #include "ExampleNLPFirstOrderDirect.hpp"
 #include "ExampleNLPFirstOrderDirectRTOps.h"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
@@ -70,12 +70,12 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 	namespace rcp = MemMngPack;
 
 	// Create the factory object for D
-	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>());
+	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>());
 	NLPFirstOrderDirect::set_factories(
 		MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())               // D'*D
+			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())               // D'*D
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())    // S
+			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
 		);
 }
 
@@ -106,12 +106,12 @@ NLP::vec_space_ptr_t ExampleNLPFirstOrderDirect::space_h() const
 	return ExampleNLPObjGradient::space_h();
 }
 
-const VectorWithOp& ExampleNLPFirstOrderDirect::hl() const
+const Vector& ExampleNLPFirstOrderDirect::hl() const
 {
 	return ExampleNLPObjGradient::hl();
 }
 
-const VectorWithOp& ExampleNLPFirstOrderDirect::hu() const
+const Vector& ExampleNLPFirstOrderDirect::hu() const
 {
 	return ExampleNLPObjGradient::hl();
 }
@@ -135,19 +135,19 @@ ExampleNLPFirstOrderDirect::factory_D() const
 }
 
 void ExampleNLPFirstOrderDirect::calc_point(
-	const VectorWithOp     &x
+	const Vector     &x
 	,value_type            *f
-	,VectorWithOpMutable   *c
+	,VectorMutable   *c
 	,bool                  recalc_c
-	,VectorWithOpMutable   *h
-	,VectorWithOpMutable   *Gf
-	,VectorWithOpMutable   *py
-	,VectorWithOpMutable   *rGf
-	,MatrixWithOp          *GcU
-	,MatrixWithOp          *Gh
-	,MatrixWithOp          *D
-	,MatrixWithOp          *V
-	,MatrixWithOp          *P
+	,VectorMutable   *h
+	,VectorMutable   *Gf
+	,VectorMutable   *py
+	,VectorMutable   *rGf
+	,MatrixOp          *GcU
+	,MatrixOp          *Gh
+	,MatrixOp          *D
+	,MatrixOp          *V
+	,MatrixOp          *P
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -188,7 +188,7 @@ void ExampleNLPFirstOrderDirect::calc_point(
 		Gh, std::invalid_argument
 		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no inequalities h(x)" );
 	THROW_EXCEPTION(
-		D && !dynamic_cast<MatrixSymDiagonalStd*>(D), std::invalid_argument
+		D && !dynamic_cast<MatrixSymDiagStd*>(D), std::invalid_argument
 		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, D is not compatible" );
 	THROW_EXCEPTION(
 		V, std::invalid_argument
@@ -223,8 +223,8 @@ void ExampleNLPFirstOrderDirect::calc_point(
 
 	// Remember what references are already set
 	value_type             *f_saved  = const_cast<this_t*>(this)->get_f();
-	VectorWithOpMutable    *c_saved  = const_cast<this_t*>(this)->get_c();
-	VectorWithOpMutable    *Gf_saved = const_cast<this_t*>(this)->get_Gf();
+	VectorMutable    *c_saved  = const_cast<this_t*>(this)->get_c();
+	VectorMutable    *Gf_saved = const_cast<this_t*>(this)->get_Gf();
 	// Set and compute the quantities
 	const_cast<this_t*>(this)->set_f(f);
 	const_cast<this_t*>(this)->set_c(c);
@@ -256,10 +256,10 @@ void ExampleNLPFirstOrderDirect::calc_point(
 	//				[									.					]
 	//				[										x(m) - 10		]
 
-	MatrixSymDiagonalStd
-		*D_diag = dynamic_cast<MatrixSymDiagonalStd*>(D);
+	MatrixSymDiagStd
+		*D_diag = dynamic_cast<MatrixSymDiagStd*>(D);
 
-	VectorWithOp::vec_ptr_t
+	Vector::vec_ptr_t
 		xD= x.sub_view(this->var_dep()),
 		xI = x.sub_view(this->var_indep());
 
@@ -271,10 +271,10 @@ void ExampleNLPFirstOrderDirect::calc_point(
 	assert(0==RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
 
 	const int                    num_vecs = task < 2 ? 2 : 3;
-	const VectorWithOp*          vecs[3] = { NULL, NULL, NULL };
+	const Vector*          vecs[3] = { NULL, NULL, NULL };
 	const int                    num_targ_vecs = task < 2 ? 0 : 1;
-	VectorWithOpMutable*         targ_vec0 = NULL;
-	VectorWithOpMutable*         targ_vec1 = NULL;
+	VectorMutable*         targ_vec0 = NULL;
+	VectorMutable*         targ_vec1 = NULL;
 
 	// targ_vec0 will have apply_transformation(...) called on it.
 	if(D) {
@@ -307,10 +307,10 @@ void ExampleNLPFirstOrderDirect::calc_point(
 }
 
 void ExampleNLPFirstOrderDirect::calc_semi_newton_step(
-	const VectorWithOp    &x
-	,VectorWithOpMutable  *c
+	const Vector    &x
+	,VectorMutable  *c
 	,bool                 recalc_c
-	,VectorWithOpMutable  *py
+	,VectorMutable  *py
 	) const
 {
 	// In this case just call calc_point(...).
@@ -321,7 +321,7 @@ void ExampleNLPFirstOrderDirect::calc_semi_newton_step(
 // Overriden protected members for NLP
 
 void ExampleNLPFirstOrderDirect::imp_calc_h(
-	const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const
+	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!
 }

@@ -20,13 +20,13 @@
 #include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularTester.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsingTester.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
@@ -54,15 +54,15 @@ DecompositionSystemTester::DecompositionSystemTester(
  
 bool DecompositionSystemTester::test_decomp_system(
 	const DecompositionSystem       &ds
-	,const MatrixWithOp             &Gc
-	,const MatrixWithOp             *Gh
-	,const MatrixWithOp             *Z
-	,const MatrixWithOp             *Y
-	,const MatrixWithOpNonsingular  *R
-	,const MatrixWithOp             *Uz
-	,const MatrixWithOp             *Uy
-	,const MatrixWithOp             *Vz
-	,const MatrixWithOp             *Vy
+	,const MatrixOp             &Gc
+	,const MatrixOp             *Gh
+	,const MatrixOp             *Z
+	,const MatrixOp             *Y
+	,const MatrixOpNonsing  *R
+	,const MatrixOp             *Uz
+	,const MatrixOp             *Uy
+	,const MatrixOp             *Vz
+	,const MatrixOp             *Vy
 	,std::ostream                   *out
 	)
 {
@@ -737,7 +737,7 @@ bool DecompositionSystemTester::test_decomp_system(
 			*out
 				<< std::endl
 				<< "\n3.b) Check consistency of: op(op(inv(R))*op(R)) == I ...\n";
-		typedef MatrixWithOpNonsingularTester  MWONST_t;
+		typedef MatrixOpNonsingTester  MWONST_t;
 		MWONST_t::EPrintTestLevel
 			olevel;
 		switch(print_tests) {

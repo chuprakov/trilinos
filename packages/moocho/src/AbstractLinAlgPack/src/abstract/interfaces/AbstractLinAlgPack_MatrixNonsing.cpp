@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-//  MatrixNonsingular.cpp
+//  MatrixNonsing.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
@@ -32,22 +32,22 @@ namespace AbstractLinAlgPack {
 
 // Clone
 
-MatrixNonsingular::mat_mns_mut_ptr_t
-MatrixNonsingular::clone_mns()
+MatrixNonsing::mat_mns_mut_ptr_t
+MatrixNonsing::clone_mns()
 {
 	return MemMngPack::null;
 }
 
-MatrixNonsingular::mat_mns_ptr_t
-MatrixNonsingular::clone_mns() const
+MatrixNonsing::mat_mns_ptr_t
+MatrixNonsing::clone_mns() const
 {
-	return const_cast<MatrixNonsingular*>(this)->clone_mns(); // Implicit conversion to const
+	return const_cast<MatrixNonsing*>(this)->clone_mns(); // Implicit conversion to const
 }
 
 // Level-2 BLAS
 
-void MatrixNonsingular::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const SpVectorSlice& sx
+void MatrixNonsing::V_InvMtV(
+	VectorMutable* y, BLAS_Cpp::Transp M_trans, const SpVectorSlice& sx
 	) const
 {
 	if( sx.nz() ) {
@@ -64,8 +64,8 @@ void MatrixNonsingular::V_InvMtV(
 	}
 }
 
-value_type MatrixNonsingular::transVtInvMtV(
-	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3
+value_type MatrixNonsing::transVtInvMtV(
+	const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3
 	) const
 {
 	VectorSpace::vec_mut_ptr_t
@@ -77,7 +77,7 @@ value_type MatrixNonsingular::transVtInvMtV(
 	return dot(v_rhs1,*v);
 }
 
-value_type MatrixNonsingular::transVtInvMtV(
+value_type MatrixNonsing::transVtInvMtV(
 	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3
 	) const
 {
@@ -92,10 +92,10 @@ value_type MatrixNonsingular::transVtInvMtV(
 
 // Level-3 BLAS
 
-void MatrixNonsingular::M_StInvMtM(
-	MatrixWithOp* C_lhs, value_type alpha
+void MatrixNonsing::M_StInvMtM(
+	MatrixOp* C_lhs, value_type alpha
 	,BLAS_Cpp::Transp M_trans
-	,const MatrixWithOp& B, BLAS_Cpp::Transp B_trans
+	,const MatrixOp& B, BLAS_Cpp::Transp B_trans
 	) const
 {
 	//
@@ -107,7 +107,7 @@ void MatrixNonsingular::M_StInvMtM(
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		C_lhs == NULL, std::invalid_argument
-		,"MatrixNonsingular::M_StInvMtM(...) : Error!" );
+		,"MatrixNonsing::M_StInvMtM(...) : Error!" );
 	
 #endif
 	const size_type
@@ -116,8 +116,8 @@ void MatrixNonsingular::M_StInvMtM(
 	const size_type
 		op_B_cols = BLAS_Cpp::cols( B.rows(), B.cols(), B_trans );
 #ifdef _DEBUG
-	// We can't check vector spaces since *this may not support MatrixWithOp
-	// However, we could dynamic cast to see if MatrixWithOp is supported and then
+	// We can't check vector spaces since *this may not support MatrixOp
+	// However, we could dynamic cast to see if MatrixOp is supported and then
 	// be able to use Mp_MtM_assert_compatibility() but this is okay for now.
 	const size_type
 		M_rows    = this->rows(),
@@ -126,7 +126,7 @@ void MatrixNonsingular::M_StInvMtM(
 	THROW_EXCEPTION(
 		C_rows != M_rows || M_rows != M_cols || M_cols != op_B_rows || C_cols != op_B_cols
 		, std::invalid_argument
-		,"MatrixNonsingular::M_StInvMtM(...) : Error!" );
+		,"MatrixNonsing::M_StInvMtM(...) : Error!" );
 #endif
 	//
 	// Compute C = a * inv(op(M)) * op(B) one column at a time:
@@ -147,9 +147,9 @@ void MatrixNonsingular::M_StInvMtM(
 	}
 }
 
-void MatrixNonsingular::M_StMtInvM(
-	MatrixWithOp* g_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+void MatrixNonsing::M_StMtInvM(
+	MatrixOp* g_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,BLAS_Cpp::Transp trans_rhs2
 	) const
 {

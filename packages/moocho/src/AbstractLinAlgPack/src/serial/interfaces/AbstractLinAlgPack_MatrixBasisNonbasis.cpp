@@ -23,7 +23,7 @@
 
 namespace SparseLinAlgPack {
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 void MatrixBasisNonbasis::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const DVectorSlice& vs_rhs2, value_type beta) const

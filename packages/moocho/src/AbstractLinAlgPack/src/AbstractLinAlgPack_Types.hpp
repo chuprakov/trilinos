@@ -42,22 +42,22 @@ class InnerProduct;
 
 class VectorSpaceFactory;
 class VectorSpace;
-class VectorWithOp;
-class VectorWithOpMutable;
+class Vector;
+class VectorMutable;
 
 class MatrixBase;
-class MatrixWithOp;
-class MatrixNonsingular;
-class MatrixWithOpNonsingular;
-class MatrixSymWithOp;
-class MatrixSymNonsingular;
-class MatrixSymWithOpNonsingular;
-class MatrixSymDiagonal;
+class MatrixOp;
+class MatrixNonsing;
+class MatrixOpNonsing;
+class MatrixSymOp;
+class MatrixSymNonsing;
+class MatrixSymOpNonsing;
+class MatrixSymDiag;
 
 class MultiVector;
 class MultiVectorMutable;
 
-class MatrixSymSecantUpdateable;
+class MatrixSymSecant;
 
 class BasisSystem;
 class BasisSystemPerm;
@@ -93,27 +93,27 @@ typedef SparseVectorSlice<
 
 class PermVector;
 
-class MatrixSymInitDiagonal;
-class MatrixSymDiagonal;
+class MatrixSymInitDiag;
+class MatrixSymDiag;
 
 // concrete subclasses
 
-class BasisSystemCompositeStd;
-class VectorSpaceCompositeStd;
-class VectorWithOpMutableCompositeStd;
-class MatrixWithOpSubView;
-class MatrixCompositeStd;
-class MatrixSymIdentity;
-class MatrixSymDiagonalStd;
+class BasisSystemComposite;
+class VectorSpaceBlock;
+class VectorMutableBlock;
+class MatrixOpSubView;
+class MatrixComposite;
+class MatrixSymIdent;
+class MatrixSymDiagStd;
 class MatrixZero;
 class MatrixPermAggr;
-class MatrixWithOpNonsingularAggr;
+class MatrixOpNonsingAggr;
 
 // testing classes
 
 class VectorSpaceTester;
 class VectorSpaceTesterSetOptions;
-class MatrixWithOpNonsingularTester;
+class MatrixOpNonsingTester;
 class BasisSystemTester;
 class BasisSystemTesterSetOptions;
 

@@ -22,7 +22,7 @@
 #include "MatrixSymWithOpNonsingularSerial.hpp"
 #include "MatrixSymDenseInitialize.hpp"
 #include "MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "ref_count_ptr.hpp"
@@ -53,12 +53,12 @@ namespace SparseLinAlgPack {
  *
  * This class allows you to do a bunch of stuff with these matrix objects:
  * \begin{itemize}
- * \item BLAS operations (\Ref{MatrixSymWithOp})
+ * \item BLAS operations (\Ref{MatrixSymOp})
  * \item Solve for linear systems (\Ref{MatrixSymFactorized})
  * \item Initialize from a dense symmetric matrix, provided that the matrix
  *   is positive definite (\Ref{MatrixSymDenseInitialize}) (default implementation)
  * \item Extract a dense inverse cholesky factor (\Ref{MatrixExtractInvCholFactor})
- * \item Perform BFGS positive definite secant updates (\Ref{MatrixSymSecantUpdateable})
+ * \item Perform BFGS positive definite secant updates (\Ref{MatrixSymSecant})
  *       (default implementation)
  * \item Add rows/cols (provided new matrix is p.d. (scale > 0) or n.d. (scale < 0)) and
  *   remove rows/cols (\Ref{MatrixSymAddDelUpdateable}) and update the factors.
@@ -95,7 +95,7 @@ class MatrixSymPosDefCholFactor
 	, virtual public SparseLinAlgPack::MatrixSymDenseInitialize          // ""
 	, virtual public SparseLinAlgPack::MatrixSymWithOpGetGMSSymMutable   // ""
 	, virtual public MatrixExtractInvCholFactor
-	, virtual public MatrixSymSecantUpdateable
+	, virtual public MatrixSymSecant
 	, virtual public MatrixSymAddDelUpdateable
 {
 public:
@@ -343,7 +343,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -352,12 +352,12 @@ public:
 	std::ostream& output(std::ostream& out) const;
 	///
 	bool Mp_StM(
-		MatrixWithOp* m_lhs, value_type alpha
+		MatrixOp* m_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs
 		) const;
 	///
 	bool Mp_StM(
-		value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 		);
 
 	//@}
@@ -459,9 +459,9 @@ public:
 	/// Will reset view and set scale
 	void init_identity( const VectorSpace& space_diag, value_type alpha );
 	/// Will reset view and set scale
-	void init_diagonal( const VectorWithOp& diag );
+	void init_diagonal( const Vector& diag );
 	/// Must agree with current scale
-	void secant_update(VectorWithOpMutable* s, VectorWithOpMutable* y, VectorWithOpMutable* Bs);
+	void secant_update(VectorMutable* s, VectorMutable* y, VectorMutable* Bs);
 
 	//@}
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/src/MatrixZero.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 
@@ -64,7 +64,7 @@ size_type MatrixZero::nz() const
 	return 0;
 }
 
-// Overridden form MatrixWithOp
+// Overridden form MatrixOp
 
 const VectorSpace& MatrixZero::space_cols() const
 {
@@ -90,7 +90,7 @@ void MatrixZero::Mt_S( value_type alpha )
 	// Automatically satisfied!
 }
 
-MatrixWithOp& MatrixZero::operator=(const MatrixWithOp& M)
+MatrixOp& MatrixZero::operator=(const MatrixOp& M)
 {
 	assert_initialized();
 	assert(0); // ToDo: Implement!
@@ -106,7 +106,7 @@ std::ostream& MatrixZero::output(std::ostream& out) const
 // Level-1 BLAS
 
 bool MatrixZero::Mp_StM(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
 	assert_initialized();
@@ -114,7 +114,7 @@ bool MatrixZero::Mp_StM(
 }
 
 bool MatrixZero::Mp_StMtP(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
@@ -124,7 +124,7 @@ bool MatrixZero::Mp_StMtP(
 }
 
 bool MatrixZero::Mp_StPtM(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	, BLAS_Cpp::Transp M_trans
 	) const
@@ -134,7 +134,7 @@ bool MatrixZero::Mp_StPtM(
 }
 
 bool MatrixZero::Mp_StPtMtP(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -147,8 +147,8 @@ bool MatrixZero::Mp_StPtMtP(
 // Level-2 BLAS
 
 void MatrixZero::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans_in
-	, const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans_in
+	, const Vector& x, value_type b
 	) const
 {
 	assert_initialized();
@@ -156,7 +156,7 @@ void MatrixZero::Vp_StMtV(
 }
 
 void MatrixZero::Vp_StMtV(
-	VectorWithOpMutable* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	VectorMutable* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
@@ -164,17 +164,17 @@ void MatrixZero::Vp_StMtV(
 }
 
 void MatrixZero::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type alpha
+	VectorMutable* y, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, BLAS_Cpp::Transp M_rhs2_trans
-	, const VectorWithOp& x, value_type b) const
+	, const Vector& x, value_type b) const
 {
 	assert_initialized();
 	Vt_S(y,b);
 }
 
 void MatrixZero::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type alpha
+	VectorMutable* y, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& x, value_type b) const
@@ -184,8 +184,8 @@ void MatrixZero::Vp_StPtMtV(
 }
 
 value_type MatrixZero::transVtMtV(
-	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
-	, const VectorWithOp& v_rhs3) const
+	const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
+	, const Vector& v_rhs3) const
 {
 	assert_initialized();
 	return 0.0; // Nothing to do!
@@ -203,7 +203,7 @@ void MatrixZero::syr2k(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+	, value_type beta, MatrixSymOp* sym_lhs ) const
 {
 	assert_initialized();
 	sym_lhs->Mt_S(beta);
@@ -212,8 +212,8 @@ void MatrixZero::syr2k(
 // Level-3 BLAS
 
 bool MatrixZero::Mp_StMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
+	MatrixOp* m_lhs, value_type alpha
+	, BLAS_Cpp::Transp trans_rhs1, const MatrixOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
 	assert_initialized();
@@ -222,8 +222,8 @@ bool MatrixZero::Mp_StMtM(
 }
 
 bool MatrixZero::Mp_StMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	, const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	MatrixOp* m_lhs, value_type alpha
+	, const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
 	assert_initialized();
@@ -233,7 +233,7 @@ bool MatrixZero::Mp_StMtM(
 
 bool MatrixZero::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+	, value_type beta, MatrixSymOp* sym_lhs ) const
 {
 	assert_initialized();
 	sym_lhs->Mt_S(beta);

@@ -44,7 +44,7 @@ public:
 	 *
 	 * @return  Returns some inner product of two vectors within a vector space..
 	 */
-	virtual value_type inner_prod(const VectorWithOp& v1, const VectorWithOp& v2) const = 0;
+	virtual value_type inner_prod(const Vector& v1, const Vector& v2) const = 0;
 
 }; // end class InnerProduct
 

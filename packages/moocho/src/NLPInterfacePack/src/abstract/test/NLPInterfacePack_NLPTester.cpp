@@ -21,8 +21,8 @@
 #include "NLPTester.hpp"
 #include "NLPInterfacePack/src/NLP.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
@@ -39,7 +39,7 @@ NLPTester::NLPTester(
 
 bool NLPTester::test_interface(
 	NLP                           *nlp
-	,const VectorWithOp           &xo
+	,const Vector           &xo
 	,bool                         print_all_warnings
 	,std::ostream                 *out
 	)
@@ -132,7 +132,7 @@ bool NLPTester::test_interface(
 
 		// Validate the bounds on the unknowns.
 
-		const VectorWithOp &xinit = nlp->xinit();
+		const Vector &xinit = nlp->xinit();
 		if(out)
 			*out << "\n||nlp->xinit()||inf = " << xinit.norm_inf() << std::endl;
 		if(out && print_all())
@@ -142,7 +142,7 @@ bool NLPTester::test_interface(
 
 		if(out)
 			*out << "\n*** Validate that the initial starting point is in bounds ...\n";
-		const VectorWithOp
+		const Vector
 			&xl = nlp->xl(),
 			&xu = nlp->xu();
 		if(out && print_all())
@@ -193,13 +193,13 @@ bool NLPTester::test_interface(
 		nlp->get_init_lagrange_mult(
 			(  nlp->m()
 			   ? (lambda  = nlp->space_c()->create_member()).get() 
-			   : (VectorWithOpMutable*)NULL )
+			   : (VectorMutable*)NULL )
 			,( nlp->mI()
 			   ? (lambdaI = nlp->space_h()->create_member()).get()
-			   : (VectorWithOpMutable*)NULL )
+			   : (VectorMutable*)NULL )
 			,( nlp->num_bounded_x()
 			   ? (nu = nlp->space_x()->create_member()).get()
-			   : (VectorWithOpMutable*)NULL )
+			   : (VectorMutable*)NULL )
 			);
 
 		if(out) {
@@ -230,8 +230,8 @@ bool NLPTester::test_interface(
 
 		// Save the current reference that are set to be set back at the end
 		value_type            *f_saved = NULL;
-		VectorWithOpMutable   *c_saved = NULL;
-		VectorWithOpMutable   *h_saved = NULL;
+		VectorMutable   *c_saved = NULL;
+		VectorMutable   *h_saved = NULL;
 		f_saved = nlp->get_f();
 		if( nlp->m() )  c_saved = nlp->get_c();
 		if( nlp->mI() ) h_saved = nlp->get_h();

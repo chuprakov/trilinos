@@ -27,7 +27,7 @@ namespace AbstractLinAlgPack {
  * There is not much to this subclass.  It basically implements all
  * of its methods based on the external VectorSpace interface to
  * implement is_compatible() and sub_space() and and relys
- * on a default subclass VectorWithOpMutableSubView to implement
+ * on a default subclass VectorMutableSubView to implement
  * create_member(). 
  *
  * The default constructor, copy constructor and assignment operator

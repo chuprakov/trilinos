@@ -20,7 +20,7 @@
 #include <string>
 
 #include "NLPInterfacePackTypes.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
 #include "ref_count_ptr.hpp"
 
@@ -251,8 +251,8 @@ namespace NLPInterfacePack {
 class NLP {
 public:
 
-	typedef AbstractLinAlgPack::VectorWithOp         VectorWithOp;         // doxygen likes typedef?
-	typedef AbstractLinAlgPack::VectorWithOpMutable  VectorWithOpMutable;  // doxygen likes typedef?
+	typedef AbstractLinAlgPack::Vector         Vector;         // doxygen likes typedef?
+	typedef AbstractLinAlgPack::VectorMutable  VectorMutable;  // doxygen likes typedef?
 	
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpace>  vec_space_ptr_t;
@@ -456,7 +456,7 @@ public:
 	 *
 	 * Any bounds that are non-existant will return <tt>this->xl().get_ele(i) == -NLP::infinite_bound()</tt>.
 	 */
-	virtual const VectorWithOp& xl() const = 0;
+	virtual const Vector& xl() const = 0;
 	///
 	/** Returns a reference to the vector of upper bounds on the variables <tt>x</tt>.
 	 *
@@ -466,7 +466,7 @@ public:
 	 *
 	 * Any bounds that are non-existant will return <tt>this->xu().get_ele(i) == +NLP::infinite_bound()</tt>.
 	 */
-	virtual const VectorWithOp& xu() const = 0;
+	virtual const Vector& xu() const = 0;
 
 	///
 	/** Set the maximum absolute value for which the variable bounds may be violated
@@ -500,7 +500,7 @@ public:
 	 *
 	 * Any bounds that are non-existant will return <tt>this->hl().get_ele(j) == -NLP::infinite_bound()</tt>.
 	 */
-	virtual const VectorWithOp& hl() const = 0;
+	virtual const Vector& hl() const = 0;
 	///
 	/** Returns upper bounds on the inequality constraints <tt>h(x)</tt>.
 	 *
@@ -515,7 +515,7 @@ public:
 	 *
 	 * Any bounds that are non-existant will return <tt>this->hu().get_ele(j) == +NLP::infinite_bound()</tt>.
 	 */
-	virtual const VectorWithOp& hu() const = 0;
+	virtual const Vector& hu() const = 0;
 
 	//@}
 
@@ -533,7 +533,7 @@ public:
 	 * <li> <tt>return.space().is_compatible(*this->space_x()) == true)</tt>
 	 * </ul>
 	 */
-	virtual const VectorWithOp& xinit() const = 0;
+	virtual const Vector& xinit() const = 0;
 	///
 	/** Get the initial value of the Lagrange multipliers lambda.
 	 *
@@ -563,9 +563,9 @@ public:
 	 * </ul>
 	 */
 	virtual void get_init_lagrange_mult(
-		VectorWithOpMutable*   lambda
-		,VectorWithOpMutable*  lambdaI
-		,VectorWithOpMutable*  nu
+		VectorMutable*   lambda
+		,VectorMutable*  lambdaI
+		,VectorMutable*  nu
 		) const;
 
 	//@}
@@ -634,11 +634,11 @@ public:
 	 * <li> <tt>this->get_c() == c</tt>
 	 * </ul>
 	 */
-	virtual void set_c(VectorWithOpMutable* c);
+	virtual void set_c(VectorMutable* c);
 	///
 	/** Return pointer passed to <tt>this->set_c()</tt>.
 	 */
-	virtual VectorWithOpMutable* get_c();
+	virtual VectorMutable* get_c();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_c()</tt>.
 	 *
@@ -647,7 +647,7 @@ public:
 	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual VectorWithOpMutable& c();
+	virtual VectorMutable& c();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_c()</tt>.
 	 *
@@ -656,7 +656,7 @@ public:
 	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const VectorWithOp& c() const;
+	virtual const Vector& c() const;
 
 	//@}
 
@@ -678,7 +678,7 @@ public:
 	 * <li> <tt>this->get_h() == h</tt>
 	 * </ul>
 	 */
-	virtual void set_h(VectorWithOpMutable* h);
+	virtual void set_h(VectorMutable* h);
 	///
 	/** Return pointer passed to <tt>this->set_h()</tt>.
 	 *
@@ -686,7 +686,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual VectorWithOpMutable* get_h();
+	virtual VectorMutable* get_h();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_h()</tt>.
 	 *
@@ -695,7 +695,7 @@ public:
 	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual VectorWithOpMutable& h();
+	virtual VectorMutable& h();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_h()</tt>.
 	 *
@@ -704,7 +704,7 @@ public:
 	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const VectorWithOp& h() const;
+	virtual const Vector& h() const;
 
 	//@}
 
@@ -780,7 +780,7 @@ public:
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
-	virtual void calc_f(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_f(const Vector& x, bool newx = true) const;
 	///
 	/** Update the constraint residual vector for <tt>c</tt> at the point <tt>x</tt> and put it in the stored reference.
 	 *
@@ -804,7 +804,7 @@ public:
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
-	virtual void calc_c(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_c(const Vector& x, bool newx = true) const;
 	///
 	/** Update the vector for <tt>h</tt> at the point <tt>x</tt> and put it in the stored reference.
 	 *
@@ -828,7 +828,7 @@ public:
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
-	virtual void calc_h(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_h(const Vector& x, bool newx = true) const;
 
 	//@}
 
@@ -851,10 +851,10 @@ public:
 	 * The default behavior is to just ignore this.
 	 */
 	virtual void report_final_solution(
-		const VectorWithOp&    x
-		,const VectorWithOp*   lambda
-		,const VectorWithOp*   lambdaI
-		,const VectorWithOp*   nu
+		const Vector&    x
+		,const Vector*   lambda
+		,const Vector*   lambdaI
+		,const Vector*   nu
 		,bool                  is_optimal
 		) const;
 
@@ -905,15 +905,15 @@ public:
         ZeroOrderInfo() : f(NULL), c(NULL), h(NULL)
 		{}
 		///
-		ZeroOrderInfo( value_type* f_in, VectorWithOpMutable* c_in, VectorWithOpMutable* h_in )
+		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in, VectorMutable* h_in )
 			: f(f_in), c(c_in), h(h_in)
 		{}
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*           f;
 		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
-		VectorWithOpMutable*  c;
+		VectorMutable*  c;
 		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		VectorWithOpMutable*  h;
+		VectorMutable*  h;
 	}; // end struct ZeroOrderInfo
 
 	/// Return pointer to set quantities
@@ -945,7 +945,7 @@ protected:
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
-	virtual void imp_calc_f(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+	virtual void imp_calc_f(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 	///
 	/** Overridden to compute c(x) and perhaps f(x) and/or h(x) (if multiple calculaiton = true).
 	 *
@@ -967,7 +967,7 @@ protected:
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
-	virtual void imp_calc_c(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+	virtual void imp_calc_c(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 	///
 	/** Overridden to compute h(x) and perhaps f(x) and/or c(x) (if multiple calculaiton = true).
 	 *
@@ -989,7 +989,7 @@ protected:
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
-	virtual void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+	virtual void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 
 	//@}
 

@@ -56,7 +56,7 @@ public:
 	 */
  	virtual bool compute_feasibility_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
+		,const Vector& xo, const Vector& c_xo, VectorMutable* w
 	  	) = 0;
 
 	///

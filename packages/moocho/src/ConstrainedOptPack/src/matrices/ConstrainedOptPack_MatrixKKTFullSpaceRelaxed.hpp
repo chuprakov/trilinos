@@ -125,7 +125,7 @@ public:
 	  *
 	  * Important: It is vital that the definitions of G and A do not change
 	  * externally while this object is being used.  To do so may invalidate
-	  * the behavior of this object (especially the MatrixWithOp functions).
+	  * the behavior of this object (especially the MatrixOp functions).
 	  *
 	  * This class will try to reuse the factorization structure from the
 	  * last call to initialze(...) or initialize_relaxed(...) when possible.
@@ -141,7 +141,7 @@ public:
 	/** Initialize the nonrelaxed matrix.
 	  *
 	  */
-	void initialize( const MatrixWithOp& G, const MatrixWithOp& A
+	void initialize( const MatrixOp& G, const MatrixOp& A
 		, std::ostream* out = 0, EPrintMoreOrLess print_what = PRINT_LESS
 		, ERunTests test_what = NO_TESTS );
 
@@ -151,7 +151,7 @@ public:
 	  * If the unrelaxed QP is well scaled (near 1.0) then a reasonable
 	  * value for bigM = M might be 1e+10 however this is problem specific.
 	  */
-	void initialize_relaxed( const MatrixWithOp& G, const MatrixWithOp& A
+	void initialize_relaxed( const MatrixOp& G, const MatrixOp& A
 		, const DVectorSlice& c, value_type bigM = 1e+10
 		, std::ostream* out = 0, EPrintMoreOrLess print_what = PRINT_LESS
 		, ERunTests test_what = NO_TESTS );
@@ -190,13 +190,13 @@ public:
 	size_type cols() const;
 
 	// /////////////////////////////////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
 	std::ostream& output(std::ostream& out) const;
 
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 
 	/// (2) vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
 	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
@@ -240,11 +240,11 @@ private:
 	EPrintMoreOrLess	print_what_;
 	ERunTests			test_what_;
 	std::ostream		*out_;
-	const MatrixWithOp	*G_;
+	const MatrixOp	*G_;
 	const MatrixConvertToSparseFortranCompatible
 						*convG_;
 	size_type			G_nz_;	// Remember the number of nonzeros of G
-	const MatrixWithOp	*A_;
+	const MatrixOp	*A_;
 	const MatrixConvertToSparseFortranCompatible
 						*convA_;
 	size_type			A_nz_;	// Remember the number of nonzeros of A
@@ -262,7 +262,7 @@ private:
 	/** Validate the types and sizes of G and A, set the member pointers G_ and A_
 	  * and return the conversion interfaces convG and convA.
 	  */
-	void validate_and_set_matrices( const MatrixWithOp& G, const MatrixWithOp& A );
+	void validate_and_set_matrices( const MatrixOp& G, const MatrixOp& A );
 
 };	// end class MatrixKKTFullSpaceRelaxed
 

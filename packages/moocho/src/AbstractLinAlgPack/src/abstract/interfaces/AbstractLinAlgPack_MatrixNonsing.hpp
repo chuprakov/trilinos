@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// MatrixNonsingular.hpp
+// MatrixNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -45,12 +45,12 @@ namespace AbstractLinAlgPack {
  * get correct results.
  *
  * Any nonsingular matrix abstraction that can be used to solve for nonlinear
- * systems should also be able to support the \c MatrixWithOp interface.
+ * systems should also be able to support the \c MatrixOp interface.
  * Therefore, this interface is more of an implementation artifact than
  * an a legitimate domain abstraction.  However, some linear solvers that
- * can implement this interface, can not easily implement the <tt>%MatrixWithOp</tt>
+ * can implement this interface, can not easily implement the <tt>%MatrixOp</tt>
  * interface and therefore this interface is justified.  A general client should never
- * use this interface directly.  Instead, the combined interface \c MatrixWithOpNonsingular
+ * use this interface directly.  Instead, the combined interface \c MatrixOpNonsing
  * should be used with fully formed matrix abstractions.
  *
  * All these Level-2 and Level-3 BLAS operations have default implementations
@@ -63,13 +63,13 @@ namespace AbstractLinAlgPack {
  * The member functions should not be called directly but instead through
  * the \ref MatrixNonsingular_funcs_grp "provided non-member functions".
  *
- * The multiple dispatch approach taken in <tt>MatrixWithOp</tt> is not taken
+ * The multiple dispatch approach taken in <tt>MatrixOp</tt> is not taken
  * in this interface.  This is because it is considered here that the
  * nonsingular matrix takes procedence of a general matrix arguemnt and
  * we can not expect a general matrix to know how to solve for a linear
  * system with some other nonsigular matrix.
  */
-class MatrixNonsingular : public virtual MatrixBase {
+class MatrixNonsing : public virtual MatrixBase {
 public:
 
 	/** @name Public types */
@@ -77,9 +77,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixNonsingular>    mat_mns_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixNonsing>    mat_mns_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixNonsingular>          mat_mns_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixNonsing>          mat_mns_mut_ptr_t;
 #endif
 
 	///
@@ -121,16 +121,16 @@ public:
 
 	/// v_lhs	= inv(op(M_rhs1)) * vs_rhs2
 	virtual void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2) const = 0;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2) const = 0;
 	/// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
 	virtual void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2) const;
 	/// result	= vs_rhs1' * inv(op(M_rhs2)) * vs_rhs3
 	virtual value_type transVtInvMtV(
-		const VectorWithOp& v_rhs1
-		,BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3) const;
+		const Vector& v_rhs1
+		,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3) const;
 	/// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
 	virtual value_type transVtInvMtV(
 		const SpVectorSlice& sv_rhs1
@@ -152,9 +152,9 @@ public:
 	 * (<tt>std::invalid_argument</tt>).
 	 */
 	virtual void M_StInvMtM(
-		MatrixWithOp* m_lhs, value_type alpha
+		MatrixOp* m_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		) const;
 	///
 	/** m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
@@ -166,17 +166,17 @@ public:
 	 * (<tt>std::invalid_argument</tt>).
 	 */
 	virtual void M_StMtInvM(
-		MatrixWithOp* m_lhs, value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		MatrixOp* m_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
 		) const;
 
 	//		end Level-3 BLAS
 	//@}
 
-};	// end class MatrixNonsingular
+};	// end class MatrixNonsing
 
-/** \defgroup MatrixNonsingular_funcs_grp MatrixNonsingular inline non-member operation functions
+/** \defgroup MatrixNonsingular_funcs_grp MatrixNonsing inline non-member operation functions
   * that call virtual functions.
   *
   * These allow nonmember functions to act like virtual functions
@@ -189,15 +189,15 @@ public:
 
 /// v_lhs	= inv(op(M_rhs1)) * v_rhs2
 inline void V_InvMtV(
-	VectorWithOpMutable* v_lhs, const MatrixNonsingular& M_rhs1
-	,BLAS_Cpp::Transp trans_rhs1, const VectorWithOp& v_rhs2)
+	VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+	,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2)
 {
 	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,v_rhs2);
 }
 
 /// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
 inline void V_InvMtV(
-	VectorWithOpMutable* v_lhs, const MatrixNonsingular& M_rhs1
+	VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2)
 {
 	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,sv_rhs2);
@@ -205,15 +205,15 @@ inline void V_InvMtV(
 
 /// result	= v_rhs1' * inv(op(M_rhs2)) * v_rhs3
 inline value_type transVtInvMtV(
-	const VectorWithOp& v_rhs1, const MatrixNonsingular& M_rhs2
-	,BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3)
+	const Vector& v_rhs1, const MatrixNonsing& M_rhs2
+	,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3)
 {
 	return M_rhs2.transVtInvMtV(v_rhs1,trans_rhs2,v_rhs3);
 }
 
 /// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
 inline value_type transVtInvMtV(
-	const SpVectorSlice& sv_rhs1, const MatrixNonsingular& M_rhs2
+	const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
 	,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
 {
 	return M_rhs2.transVtInvMtV(sv_rhs1,trans_rhs2,sv_rhs3);
@@ -227,18 +227,18 @@ inline value_type transVtInvMtV(
 
 /// m_lhs	= alpha * inv(op(mwo_rhs1)) * op(mwo_rhs2) (right)
 inline void M_StInvMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	,const MatrixNonsingular&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 )
+	MatrixOp* m_lhs, value_type alpha
+	,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 )
 {
 	M_rhs1.M_StInvMtM(m_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
 }
 
 /// m_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 inline void M_StMtInvM(
-	MatrixWithOp* m_lhs, value_type alpha
-	,const MatrixWithOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsingular& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 )
+	MatrixOp* m_lhs, value_type alpha
+	,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
+	,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 )
 {
 	M_rhs2.M_StMtInvM(m_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);
 }

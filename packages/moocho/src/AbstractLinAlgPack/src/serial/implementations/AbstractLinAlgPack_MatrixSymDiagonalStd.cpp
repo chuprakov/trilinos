@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalStd.cpp
+// MatrixSymDiagStd.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "SparseLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -21,43 +21,43 @@
 
 namespace SparseLinAlgPack {
 
-MatrixSymDiagonalStd::MatrixSymDiagonalStd()
+MatrixSymDiagStd::MatrixSymDiagStd()
 {}
 
-DVectorSlice MatrixSymDiagonalStd::diag()
+DVectorSlice MatrixSymDiagStd::diag()
 {
 	return diag_();
 }
 
-const DVectorSlice MatrixSymDiagonalStd::diag() const
+const DVectorSlice MatrixSymDiagStd::diag() const
 {
 	return diag_();
 }
 
-// Overridden from MatrixSymInitDiagonal
+// Overridden from MatrixSymInitDiag
 
-void MatrixSymDiagonalStd::init_identity( size_type n, value_type alpha = 1.0 )
+void MatrixSymDiagStd::init_identity( size_type n, value_type alpha = 1.0 )
 {
 	diag_.resize(n);
 	if(n)
 		diag_ = alpha;
 }
 
-void MatrixSymDiagonalStd::init_diagonal( const DVectorSlice& diag )
+void MatrixSymDiagStd::init_diagonal( const DVectorSlice& diag )
 {
 	diag_ = diag;
 }
 
 // Overridden from Matrix
 
-size_type MatrixSymDiagonalStd::rows() const
+size_type MatrixSymDiagStd::rows() const
 {
 	return diag_.size();
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-void MatrixSymDiagonalStd::Mp_StM(
+void MatrixSymDiagStd::Mp_StM(
 	DMatrixSlice* gms_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const
 {
 	using DenseLinAlgPack::Vp_StV;
@@ -68,7 +68,7 @@ void MatrixSymDiagonalStd::Mp_StM(
 	Vp_StV( &gms_lhs->diag(), alpha, diag_ );
 }
 
-void MatrixSymDiagonalStd::Vp_StMtV(
+void MatrixSymDiagStd::Vp_StMtV(
 	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
@@ -126,7 +126,7 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	}
 }
 
-void MatrixSymDiagonalStd::Vp_StMtV(
+void MatrixSymDiagStd::Vp_StMtV(
 	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
@@ -159,7 +159,7 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 
 // Overridden from MatrixWithOpFactorized
 
-void MatrixSymDiagonalStd::V_InvMtV(
+void MatrixSymDiagStd::V_InvMtV(
 	DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2) const
 {
@@ -203,7 +203,7 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	}
 }
 
-void MatrixSymDiagonalStd::V_InvMtV(
+void MatrixSymDiagStd::V_InvMtV(
 	DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {

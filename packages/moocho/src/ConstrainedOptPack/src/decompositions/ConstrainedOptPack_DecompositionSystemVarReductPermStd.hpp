@@ -113,15 +113,15 @@ public:
 		std::ostream              *out
 		,EOutputLevel             olevel
 		,ERunTests                test_what
-		,const MatrixWithOp       &Gc
-		,const MatrixWithOp       *Gh
-		,MatrixWithOp             *Z
-		,MatrixWithOp             *Y
-		,MatrixWithOpNonsingular  *R
-		,MatrixWithOp             *Uz
-		,MatrixWithOp             *Uy
-		,MatrixWithOp             *Vz
-		,MatrixWithOp             *Vy
+		,const MatrixOp       &Gc
+		,const MatrixOp       *Gh
+		,MatrixOp             *Z
+		,MatrixOp             *Y
+		,MatrixOpNonsing  *R
+		,MatrixOp             *Uz
+		,MatrixOp             *Uy
+		,MatrixOp             *Vz
+		,MatrixOp             *Vy
 		,EMatRelations            mat_rel
 		) const;
 	///
@@ -158,15 +158,15 @@ public:
 		,const Range1D            &var_dep
 		,const Permutation        *P_equ
 		,const Range1D            *equ_decomp
-		,const MatrixWithOp       &Gc
-		,const MatrixWithOp       *Gh
-		,MatrixWithOp             *Z
-		,MatrixWithOp             *Y
-		,MatrixWithOpNonsingular  *R
-		,MatrixWithOp             *Uz
-		,MatrixWithOp             *Uy
-		,MatrixWithOp             *Vz
-		,MatrixWithOp             *Vy
+		,const MatrixOp       &Gc
+		,const MatrixOp       *Gh
+		,MatrixOp             *Z
+		,MatrixOp             *Y
+		,MatrixOpNonsing  *R
+		,MatrixOp             *Uz
+		,MatrixOp             *Uy
+		,MatrixOp             *Vz
+		,MatrixOp             *Vy
 		,EMatRelations            mat_rel
 		);
 	///
@@ -174,20 +174,20 @@ public:
 		std::ostream              *out
 		,EOutputLevel             olevel
 		,ERunTests                test_what
-		,const VectorWithOp       *nu
-		,MatrixWithOp             *Gc
-		,MatrixWithOp             *Gh
+		,const Vector       *nu
+		,MatrixOp             *Gc
+		,MatrixOp             *Gh
 		,Permutation              *P_var
 		,Range1D                  *var_dep
 		,Permutation              *P_equ
 		,Range1D                  *equ_decomp
-		,MatrixWithOp             *Z
-		,MatrixWithOp             *Y
-		,MatrixWithOpNonsingular  *R
-		,MatrixWithOp             *Uz
-		,MatrixWithOp             *Uy
-		,MatrixWithOp             *Vz
-		,MatrixWithOp             *Vy
+		,MatrixOp             *Z
+		,MatrixOp             *Y
+		,MatrixOpNonsing  *R
+		,MatrixOp             *Uz
+		,MatrixOp             *Uy
+		,MatrixOp             *Vz
+		,MatrixOp             *Vy
 		,EMatRelations            mat_rel
 		);
 

@@ -21,11 +21,11 @@
 #include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "SparseLinAlgPack/src/MatrixOpOut.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOut.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
@@ -51,7 +51,7 @@ ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGS
 bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 	,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,MatrixWithOp *rHL_k
+	,MatrixOp *rHL_k
 	)
 {
 	using std::setw;
@@ -202,14 +202,14 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 					}
 					// Initialize rHL_XX = rHL_XX_scale*I
 #ifdef _WINDOWS
-					MatrixSymInitDiagonal
-						&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
-							const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+					MatrixSymInitDiag
+						&rHL_XX = dynamic_cast<MatrixSymInitDiag&>(
+							const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr())
 							);
 #else
-					MatrixSymInitDiagonal
-						&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
-							const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+					MatrixSymInitDiag
+						&rHL_XX = dyn_cast<MatrixSymInitDiag>(
+							const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr())
 							);
 #endif
 					rHL_XX.init_identity(n_pz_X,rHL_XX_scale);
@@ -274,14 +274,14 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		// for the estimate i_x_free[].  This is needed to change the behavior of *rHL_k which
 		// is used below to compute s_R'*B_RR*s_R
 #ifdef _WINDOWS
-		MatrixSymInitDiagonal
-			&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
-				const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+		MatrixSymInitDiag
+			&rHL_XX = dynamic_cast<MatrixSymInitDiag&>(
+				const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr())
 				);
 #else
-		MatrixSymInitDiagonal
-			&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
-				const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+		MatrixSymInitDiag
+			&rHL_XX = dyn_cast<MatrixSymInitDiag>(
+				const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr())
 				);
 #endif
 		rHL_XX.init_identity(rHL_XX.rows(),rHL_XX_scale); // Don't change its size yet!
@@ -476,7 +476,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		}
 		bfgs_update().perform_update(
 			&s_bfgs_R(),&y_bfgs_R(),first_update,out,olevel,algo->algo_cntr().check_results()
-			,const_cast<MatrixWithOp*>(static_cast<const MatrixWithOp*>(rHL_super.B_RR_ptr().get()))
+			,const_cast<MatrixOp*>(static_cast<const MatrixOp*>(rHL_super.B_RR_ptr().get()))
 			,&quasi_newton_stats_(*s).set_k(0)
 			);
 	}
@@ -487,7 +487,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		}
 		bfgs_update().perform_update(
 			s_bfgs,y_bfgs,first_update,out,olevel,algo->algo_cntr().check_results()
-			,const_cast<MatrixWithOp*>(static_cast<const MatrixWithOp*>(rHL_super.B_RR_ptr().get()))
+			,const_cast<MatrixOp*>(static_cast<const MatrixOp*>(rHL_super.B_RR_ptr().get()))
 			,&quasi_newton_stats_(*s).set_k(0)
 			);
 	}

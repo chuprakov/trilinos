@@ -86,7 +86,7 @@ void VectorWithOpMutableDense::initialize(
 	this->has_changed();
 }
 
-// Overridden from VectorWithOp
+// Overridden from Vector
 
 const VectorSpace& VectorWithOpMutableDense::space() const
 {
@@ -96,8 +96,8 @@ const VectorSpace& VectorWithOpMutableDense::space() const
 
 void VectorWithOpMutableDense::apply_reduction(
 	const RTOpPack::RTOp& op
-	,const size_t num_vecs_in, const VectorWithOp** vecs_in
-	,const size_t num_targ_vecs_in, VectorWithOpMutable** targ_vecs_in
+	,const size_t num_vecs_in, const Vector** vecs_in
+	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
 	,RTOp_ReductTarget reduct_obj
 	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 	) const
@@ -106,7 +106,7 @@ void VectorWithOpMutableDense::apply_reduction(
  	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
-	wsp::Workspace<const VectorWithOp*>  vecs(wss,num_vecs_in+1);
+	wsp::Workspace<const Vector*>  vecs(wss,num_vecs_in+1);
 	vecs[0] = this; // I am the first argument!
 	std::copy( vecs_in, vecs_in + num_vecs_in, &vecs[1] );
 
@@ -156,12 +156,12 @@ void VectorWithOpMutableDense::free_sub_vector( RTOp_SubVector* sub_vec ) const
 	RTOp_sub_vector_null( sub_vec ); // No memory to deallocate!
 }
 
-// Overriddenn from VectorWithOpMutable
+// Overriddenn from VectorMutable
 
 void VectorWithOpMutableDense::apply_transformation(
 	const RTOpPack::RTOp& op
-	,const size_t num_vecs_in, const VectorWithOp** vecs_in
-	,const size_t num_targ_vecs_in, VectorWithOpMutable** targ_vecs_in
+	,const size_t num_vecs_in, const Vector** vecs_in
+	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
 	,RTOp_ReductTarget reduct_obj
 	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 	)
@@ -170,7 +170,7 @@ void VectorWithOpMutableDense::apply_transformation(
  	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
-	wsp::Workspace<VectorWithOpMutable*>  targ_vecs(wss,num_targ_vecs_in+1);
+	wsp::Workspace<VectorMutable*>  targ_vecs(wss,num_targ_vecs_in+1);
 	targ_vecs[0] = this; // I am the first argument!
 	std::copy( targ_vecs_in, targ_vecs_in + num_targ_vecs_in, &targ_vecs[1] );
 
@@ -182,7 +182,7 @@ void VectorWithOpMutableDense::apply_transformation(
 		);
 }
 
-VectorWithOpMutable&
+VectorMutable&
 VectorWithOpMutableDense::operator=(value_type alpha)
 {
 	CLASS_MEMBER_PTRS
@@ -191,26 +191,26 @@ VectorWithOpMutableDense::operator=(value_type alpha)
 	return *this;
 }
 
-VectorWithOpMutable&
-VectorWithOpMutableDense::operator=(const VectorWithOp& v)
+VectorMutable&
+VectorWithOpMutableDense::operator=(const Vector& v)
 {
 	CLASS_MEMBER_PTRS
 	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
-		return VectorWithOpMutable::operator=(v); // Try the default implementation?
+		return VectorMutable::operator=(v); // Try the default implementation?
 	this->has_changed();
 	return *this;
 }
 
-VectorWithOpMutable&
-VectorWithOpMutableDense::operator=(const VectorWithOpMutable& v)
+VectorMutable&
+VectorWithOpMutableDense::operator=(const VectorMutable& v)
 {
 	CLASS_MEMBER_PTRS
 	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
-		return VectorWithOpMutable::operator=(v); // Try the default implementation?
+		return VectorMutable::operator=(v); // Try the default implementation?
 	this->has_changed();
 	return *this;
 }
@@ -276,14 +276,14 @@ void VectorWithOpMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec
 void VectorWithOpMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
 	CLASS_MEMBER_PTRS
-	VectorWithOpMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?
+	VectorMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?
 }
 
 void VectorWithOpMutableDense::Vp_StMtV(
 	value_type                       alpha
 	,const GenPermMatrixSlice        &P
 	,BLAS_Cpp::Transp                P_trans
-	,const VectorWithOp              &x
+	,const Vector              &x
 	,value_type                      beta
 	)
 {
@@ -296,8 +296,8 @@ void VectorWithOpMutableDense::Vp_StMtV(
 
 void VectorWithOpMutableDense::apply_op(
 	const RTOpPack::RTOp& op
-	,const size_t num_vecs,      const VectorWithOp**  vecs
-	,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+	,const size_t num_vecs,      const Vector**  vecs
+	,const size_t num_targ_vecs, VectorMutable** targ_vecs
 	,RTOp_ReductTarget reduct_obj
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const

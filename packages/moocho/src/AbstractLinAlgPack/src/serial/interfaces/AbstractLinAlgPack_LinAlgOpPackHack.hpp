@@ -33,14 +33,14 @@ using AbstractLinAlgPack::GenPermMatrixSlice;
  */
 void Mp_StM(
 	DMatrixSlice* vs_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	);
 
 ///
 /** <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * vs_lhs</tt>.
  */
 void Vp_StMtV(
-	DVectorSlice* vs_lhs, value_type alpha, const MatrixWithOp& mwo_rhs1
+	DVectorSlice* vs_lhs, value_type alpha, const MatrixOp& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2
 	,value_type beta = 1.0 );
 
@@ -48,7 +48,7 @@ void Vp_StMtV(
 /** <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * sv_lhs</tt>.
  */
 void Vp_StMtV(
-	DVectorSlice* vs_lhs, value_type alpha, const MatrixWithOp& mwo_rhs1
+	DVectorSlice* vs_lhs, value_type alpha, const MatrixOp& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2
 	,value_type beta = 1.0 );
 
@@ -56,28 +56,28 @@ void Vp_StMtV(
 /** <tt>vs_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
  */
 void V_InvMtV(
-	DVectorSlice* vs_lhs, const MatrixWithOpNonsingular& mwo_rhs1
+	DVectorSlice* vs_lhs, const MatrixOpNonsing& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2 );
 
 ///
 /** <tt>v_lhs = inv(op(mwo_rhs1)) * vs_rhs2</tt>.
  */
 void V_InvMtV(
-	DVector* v_lhs, const MatrixWithOpNonsingular& mwo_rhs1
+	DVector* v_lhs, const MatrixOpNonsing& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2 );
 
 ///
 /** <tt>vs_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
  */
 void V_InvMtV(
-	DVectorSlice* vs_lhs, const MatrixWithOpNonsingular& mwo_rhs1
+	DVectorSlice* vs_lhs, const MatrixOpNonsing& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 );
 
 ///
 /** <tt>v_lhs = inv(op(mwo_rhs1)) * sv_rhs2</tt>.
  */
 void V_InvMtV(
-	DVector* v_lhs, const MatrixWithOpNonsingular& mwo_rhs1
+	DVector* v_lhs, const MatrixOpNonsing& mwo_rhs1
 	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2 );
 
 ///
@@ -86,7 +86,7 @@ void V_InvMtV(
 void Vp_StPtMtV(
 	DVectorSlice* vs_lhs, value_type alpha
 	,const GenPermMatrixSlice& gpms_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	,const DVectorSlice& vs_rhs3, value_type beta = 1.0 );
 
 ///
@@ -95,7 +95,7 @@ void Vp_StPtMtV(
 void Vp_StPtMtV(
 	DVectorSlice* vs_lhs, value_type alpha
 	,const GenPermMatrixSlice& gpms_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	,const SpVectorSlice& sv_rhs3, value_type beta = 1.0 );
 
 } // end namespace LinAlgOpPack

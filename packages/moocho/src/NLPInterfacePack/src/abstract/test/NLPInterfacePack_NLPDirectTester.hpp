@@ -244,19 +244,19 @@ public:
 	 */
 	bool finite_diff_check(
 		NLPFirstOrderDirect     *nlp
-		,const VectorWithOp     &xo
-		,const VectorWithOp     *xl
-		,const VectorWithOp     *xu
-		,const VectorWithOp     *c
-		,const VectorWithOp     *h
-		,const VectorWithOp     *Gf
-		,const VectorWithOp     *py
-		,const VectorWithOp     *rGf
-		,const MatrixWithOp     *GcU
-		,const MatrixWithOp     *Gh
-		,const MatrixWithOp     *D
-		,const MatrixWithOp     *Uz
-		,const MatrixWithOp     *Vz
+		,const Vector     &xo
+		,const Vector     *xl
+		,const Vector     *xu
+		,const Vector     *c
+		,const Vector     *h
+		,const Vector     *Gf
+		,const Vector     *py
+		,const Vector     *rGf
+		,const MatrixOp     *GcU
+		,const MatrixOp     *Gh
+		,const MatrixOp     *D
+		,const MatrixOp     *Uz
+		,const MatrixOp     *Vz
 		,bool                   print_all_warnings
 		,std::ostream           *out
 		) const;

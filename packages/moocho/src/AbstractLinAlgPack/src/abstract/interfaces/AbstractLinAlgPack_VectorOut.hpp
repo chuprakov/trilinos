@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// VectorWithOpOut.hpp
+// VectorOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,10 +23,10 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Output operator for \Ref{VectorWithOp} objects.
+/** Output operator for \Ref{Vector} objects.
  */
 inline
-std::ostream& operator<<( std::ostream& o, const VectorWithOp& v )
+std::ostream& operator<<( std::ostream& o, const Vector& v )
 {
 	return v.output(o);
 }

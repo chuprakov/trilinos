@@ -73,9 +73,9 @@ public:
 	 */
 	virtual bool check_in_bounds(
 		std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& xL, const char xL_name[]
-		,const VectorWithOp& xU, const char xU_name[]
-		,const VectorWithOp& x,  const char x_name[]
+		,const Vector& xL, const char xL_name[]
+		,const Vector& xU, const char xU_name[]
+		,const Vector& x,  const char x_name[]
 		);
 
 };	// end class VariableBoundsTester

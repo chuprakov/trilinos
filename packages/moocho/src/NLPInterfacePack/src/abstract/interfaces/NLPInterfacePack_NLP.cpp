@@ -16,7 +16,7 @@
 #include <limits>
 
 #include "NLPInterfacePack/src/NLP.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "ThrowException.hpp"
 
@@ -85,9 +85,9 @@ NLPInterfacePack::NLP::mI() const
 // initial guess
 
 void NLPInterfacePack::NLP::get_init_lagrange_mult(
-	VectorWithOpMutable*   lambda
-	,VectorWithOpMutable*  lambdaI
-	,VectorWithOpMutable*  nu
+	VectorMutable*   lambda
+	,VectorMutable*  lambdaI
+	,VectorMutable*  nu
 	) const
 {
 #ifdef _DEBUG
@@ -139,7 +139,7 @@ const NLPInterfacePack::value_type& NLPInterfacePack::NLP::f() const
 
 // <<std comp>> members for c
 
-void NLPInterfacePack::NLP::set_c(VectorWithOpMutable* c)
+void NLPInterfacePack::NLP::set_c(VectorMutable* c)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -148,7 +148,7 @@ void NLPInterfacePack::NLP::set_c(VectorWithOpMutable* c)
 	first_order_info_.c = c;
 }
 
-NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_c()
+NLPInterfacePack::VectorMutable* NLPInterfacePack::NLP::get_c()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -156,7 +156,7 @@ NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_c()
 	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.c, false, name_c);
 }
 
-NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::c()
+NLPInterfacePack::VectorMutable& NLPInterfacePack::NLP::c()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -164,7 +164,7 @@ NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::c()
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_.c, false, name_c);
 }
 
-const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::c() const
+const NLPInterfacePack::Vector& NLPInterfacePack::NLP::c() const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -174,7 +174,7 @@ const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::c() const
 
 // <<std comp>> members for h
 
-void NLPInterfacePack::NLP::set_h(VectorWithOpMutable* h)
+void NLPInterfacePack::NLP::set_h(VectorMutable* h)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -183,7 +183,7 @@ void NLPInterfacePack::NLP::set_h(VectorWithOpMutable* h)
 	first_order_info_.h = h;
 }
 
-NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_h()
+NLPInterfacePack::VectorMutable* NLPInterfacePack::NLP::get_h()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -191,7 +191,7 @@ NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_h()
 	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.h, false, name_h);
 }
 
-NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::h()
+NLPInterfacePack::VectorMutable& NLPInterfacePack::NLP::h()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -199,7 +199,7 @@ NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::h()
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_.h, false, name_h);
 }
 
-const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::h() const
+const NLPInterfacePack::Vector& NLPInterfacePack::NLP::h() const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -217,14 +217,14 @@ bool NLPInterfacePack::NLP::multi_calc() const
 	return false;
 }
 
-void NLPInterfacePack::NLP::calc_f(const VectorWithOp& x, bool newx) const
+void NLPInterfacePack::NLP::calc_f(const Vector& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_.f, "NLP::calc_f()", name_f);
 	imp_calc_f(x,newx,zero_order_info());
 	num_f_evals_++;
 }
 
-void NLPInterfacePack::NLP::calc_c(const VectorWithOp& x, bool newx) const
+void NLPInterfacePack::NLP::calc_c(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -234,7 +234,7 @@ void NLPInterfacePack::NLP::calc_c(const VectorWithOp& x, bool newx) const
 	num_c_evals_++;
 }
 
-void NLPInterfacePack::NLP::calc_h(const VectorWithOp& x, bool newx) const
+void NLPInterfacePack::NLP::calc_h(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -245,10 +245,10 @@ void NLPInterfacePack::NLP::calc_h(const VectorWithOp& x, bool newx) const
 }
 
 void NLPInterfacePack::NLP::report_final_solution(
-	const VectorWithOp&    x
-	,const VectorWithOp*   lambda
-	,const VectorWithOp*   lambdaI
-	,const VectorWithOp*   nu
+	const Vector&    x
+	,const Vector*   lambda
+	,const Vector*   lambdaI
+	,const Vector*   nu
 	,bool                  optimal
 	) const
 {

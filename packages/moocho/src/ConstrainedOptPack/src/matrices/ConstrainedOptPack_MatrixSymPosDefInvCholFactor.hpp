@@ -17,7 +17,7 @@
 #define MATRIX_SYM_POS_DEF_INV_CHOL_FACTOR_H
 
 #include "SymInvCholMatrixClass.hpp"
-#include "MatrixSymSecantUpdateable.hpp"
+#include "MatrixSymSecant.hpp"
 #include "MatrixExtractInvCholFactor.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpConcreteEncap.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
@@ -25,12 +25,12 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Implementation of MatrixWithOp abstract interface for SymInvCholMatrix
+/** Implementation of MatrixOp abstract interface for SymInvCholMatrix
   */
 class MatrixSymPosDefInvCholFactor
 	: public virtual MatrixWithOpConcreteEncap<SymInvCholMatrix>
 	, public virtual MatrixSymWithOpFactorized
-	, public MatrixSymSecantUpdateable
+	, public MatrixSymSecant
 	, public MatrixExtractInvCholFactor
 {
 public:
@@ -54,11 +54,11 @@ public:
 	//@}
 
 	// /////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
@@ -107,13 +107,13 @@ public:
 
 	///
 	void M_StMtInvMtM( DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		, const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
+		, const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
 		) const;
 
 	//@}
 
 	// ///////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixSymSecantUpdateable */
+	/** @name Overridden from MatrixSymSecant */
 	//@{
 
 	///

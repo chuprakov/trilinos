@@ -19,9 +19,9 @@
 
 #include "AbstractLinAlgPack/src/VectorSpaceTester.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "update_success.hpp"
 #include "ThrowException.hpp"
 
@@ -69,12 +69,12 @@ bool VectorSpaceTester::check_vector_space(
 		rand_l = -10.0,
 		rand_u = +10.0;
 
-	typedef VectorWithOpMutable::vec_ptr_t       vec_ptr_t;
-	typedef VectorWithOpMutable::vec_mut_ptr_t   vec_mut_ptr_t;
+	typedef VectorMutable::vec_ptr_t       vec_ptr_t;
+	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 
 	// Create three random non-mutable vectors
 	vec_ptr_t            v_array[3];
-	const VectorWithOp*  v[3];
+	const Vector*  v[3];
 	{for(int k = 0; k < 3; ++k) {
 		vec_mut_ptr_t  r = space.create_member();
 		random_vector( rand_l, rand_u, r.get() );
@@ -84,7 +84,7 @@ bool VectorSpaceTester::check_vector_space(
 
 	// Create six random mutable vectors
 	vec_mut_ptr_t          z_array[6];
-	VectorWithOpMutable*   z[6];
+	VectorMutable*   z[6];
 	{for(int k = 0; k < 6; ++k) {
 		random_vector( rand_l, rand_u, (z_array[k]= space.create_member()).get() );
 		z[k] = z_array[k].get();
@@ -129,7 +129,7 @@ bool VectorSpaceTester::check_vector_space(
 		*out << "\n*** Testing the obvious assertions\n";
 	{
 		{for(int k = 0; k < 6; ++k) {
-			const VectorWithOp *vec = NULL;
+			const Vector *vec = NULL;
 			if( k < 3 ) {
 				sprintf( v_name, "v[%d]", k );
 				vec = v[k];
@@ -222,7 +222,7 @@ bool VectorSpaceTester::check_vector_space(
 	{
 		{for( int k = 0; k < 3; ++k ) {
 			sprintf( z_name, "z[%d]", k );
-			const AbstractLinAlgPack::VectorWithOp *vec = NULL;
+			const AbstractLinAlgPack::Vector *vec = NULL;
 			sprintf( v_name, "v[%d]", k );
 			if(out && print_all_tests())
 				*out << "\n" << v_name << " -> " << z_name << "\n";
@@ -262,7 +262,7 @@ bool VectorSpaceTester::check_vector_space(
 			if(out && print_all_tests())
 				*out << "\nsub_vec_mut = " << z_name
 					 << ".sub_view(" << i1 << "," << i2 << ")\n";
-			VectorWithOpMutable::vec_mut_ptr_t
+			VectorMutable::vec_mut_ptr_t
 				sub_vec_mut = z[k]->sub_view(i1,i2);
 			if(out && print_all_tests())
 				*out << "sub_vec_mut = " << val << std::endl;
@@ -302,8 +302,8 @@ bool VectorSpaceTester::check_vector_space(
 			   
 			if(out && print_all_tests())
 				*out << "sub_vec = "<<z_name<<"{const}.sub_view("<<i1<<","<<i2<<")\n";
-			VectorWithOp::vec_ptr_t
-				sub_vec = static_cast<const VectorWithOp*>(z[k])->sub_view(i1,i2);
+			Vector::vec_ptr_t
+				sub_vec = static_cast<const Vector*>(z[k])->sub_view(i1,i2);
 
 			err = sub_vec_dim - sub_vec->dim();
 			if(out && print_all_tests())
@@ -331,10 +331,10 @@ bool VectorSpaceTester::check_vector_space(
 		*out << "\n*** Testing explicit sub-vector access\n";
 	{
 		const index_type k = 0;
-		const VectorWithOp
+		const Vector
 			&v_from = *v[k];
 		sprintf( v_name, "v[%d]", k );
-		VectorWithOpMutable
+		VectorMutable
 			&z_to = *z[k];
 		sprintf( z_name, "z[%d]", k );
 		
@@ -355,7 +355,7 @@ bool VectorSpaceTester::check_vector_space(
 				*out << std::endl << v_name << ".get_sub_vector(Rang1D("<<i1<<","<<i2<<"),SPARSE,&sub_vec)\n";
 			RTOp_SubVector sub_vec;
 			RTOp_sub_vector_null(&sub_vec);
-			v_from.get_sub_vector(Range1D(i1,i2),VectorWithOp::SPARSE,&sub_vec);	
+			v_from.get_sub_vector(Range1D(i1,i2),Vector::SPARSE,&sub_vec);	
 
 			err = sub_vec_dim - sub_vec.sub_dim;
 			if(out && (print_all_tests() || ::fabs(err) >= warning_tol()))

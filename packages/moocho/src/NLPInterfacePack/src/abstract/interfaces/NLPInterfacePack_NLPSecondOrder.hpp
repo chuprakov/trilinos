@@ -57,7 +57,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymWithOp> >    mat_sym_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -117,7 +117,7 @@ public:
 	 * <li> <tt>this->get_HL() == HL</tt>
 	 * </ul>
 	 */
-	virtual void set_HL(MatrixSymWithOp* HL);
+	virtual void set_HL(MatrixSymOp* HL);
 	///
 	/** Return pointer passed to <tt>this->set_HL()</tt>.
 	 *
@@ -125,7 +125,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual MatrixSymWithOp* get_HL();
+	virtual MatrixSymOp* get_HL();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_HL()</tt>.
 	 *
@@ -134,7 +134,7 @@ public:
 	 * <li> <tt>this->get_HL() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual MatrixSymWithOp& HL();
+	virtual MatrixSymOp& HL();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_HL()</tt>.
 	 *
@@ -143,7 +143,7 @@ public:
 	 * <li> <tt>this->get_HL() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const MatrixSymWithOp& HL() const;
+	virtual const MatrixSymOp& HL() const;
 
 	//@}
 
@@ -188,7 +188,7 @@ public:
 	 * </ul>
 	 */ 
 	virtual void calc_HL(
-		const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint = true) const;
+		const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint = true) const;
 
 	//@}
 
@@ -216,24 +216,24 @@ protected:
 			: HL(NULL), Gc(NULL), Gh(NULL), Gf(NULL), f(NULL), c(NULL), h(NULL)
 			{}
 		///
-		SecondOrderInfo( MatrixSymWithOp* HL_in, const FirstOrderInfo& first_order_info )
+		SecondOrderInfo( MatrixSymOp* HL_in, const FirstOrderInfo& first_order_info )
 			: HL(HL_in), Gc(first_order_info.Gc), Gh(first_order_info.Gh), Gf(first_order_info.Gf)
 			, f(first_order_info.f), c(first_order_info.c), h(first_order_info.h)
 			{}
 		/// Pointer to Hessiand of the Lagrangian <tt>HL</tt>) (may be NULL is not set)
-		MatrixSymWithOp*        HL;
+		MatrixSymOp*        HL;
 		/// Pointer to Hessian of the equality constraints <tt>Gc</tt> (may be NULL if not set)
-		MatrixWithOp*           Gc;
+		MatrixOp*           Gc;
 		/// Pointer to Hessian of the inequality constraints <tt>Gh</tt> (may be NULL if not set)
-		MatrixWithOp*           Gh;
+		MatrixOp*           Gh;
 		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		VectorWithOpMutable*    Gf;
+		VectorMutable*    Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*             f;
 		/// Pointer to equality constraints residule <tt>c</tt> (may be NULL if not set)
-		VectorWithOpMutable*    c;
+		VectorMutable*    c;
 		/// Pointer to inequality constraints residule <tt>h</tt> (may be NULL if not set)
-		VectorWithOpMutable*    h;
+		VectorMutable*    h;
 	}; // end struct SecondOrderInfo
 
 	/// Return objective gradient and zero order information.
@@ -269,7 +269,7 @@ protected:
 	 * </ul>
 	 */
 	virtual void imp_calc_HL(
-		const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint
+		const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint
 		, const SecondOrderInfo& second_order_info) const = 0;
 
 	//@}
@@ -277,9 +277,9 @@ protected:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixSymWithOp>  *factory_HL;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixSymOp>  *factory_HL;
 #endif
-	mutable MatrixSymWithOp   *HL_;
+	mutable MatrixSymOp   *HL_;
 	mutable bool              num_HL_evals_;
 
 };	// end class NLPSecondOrderInfo

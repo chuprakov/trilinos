@@ -28,11 +28,11 @@ namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	const DVectorSlice&    g
-	,const MatrixWithOp&  G
+	,const MatrixOp&  G
 	,value_type           etaL
 	,const SpVectorSlice& dL
 	,const SpVectorSlice& dU
-	,const MatrixWithOp*  F
+	,const MatrixOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const DVectorSlice*   f
 	,const DVectorSlice&   d

@@ -15,10 +15,10 @@
 
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
 #include "AbstractLinAlgPack/src/PermutationOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -143,15 +143,15 @@ void DecompositionSystemVarReductPermStd::update_decomp(
 	std::ostream              *out
 	,EOutputLevel             olevel
 	,ERunTests                test_what
-	,const MatrixWithOp       &Gc
-	,const MatrixWithOp       *Gh
-	,MatrixWithOp             *Z
-	,MatrixWithOp             *Y
-	,MatrixWithOpNonsingular  *R
-	,MatrixWithOp             *Uz
-	,MatrixWithOp             *Uy
-	,MatrixWithOp             *Vz
-	,MatrixWithOp             *Vy
+	,const MatrixOp       &Gc
+	,const MatrixOp       *Gh
+	,MatrixOp             *Z
+	,MatrixOp             *Y
+	,MatrixOpNonsing  *R
+	,MatrixOp             *Uz
+	,MatrixOp             *Uy
+	,MatrixOp             *Vz
+	,MatrixOp             *Vy
 	,EMatRelations            mat_rel
 	) const
 {
@@ -208,15 +208,15 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	,const Range1D            &var_dep
 	,const Permutation        *P_equ
 	,const Range1D            *equ_decomp
-	,const MatrixWithOp       &Gc
-	,const MatrixWithOp       *Gh
-	,MatrixWithOp             *Z
-	,MatrixWithOp             *Y
-	,MatrixWithOpNonsingular  *R
-	,MatrixWithOp             *Uz
-	,MatrixWithOp             *Uy
-	,MatrixWithOp             *Vz
-	,MatrixWithOp             *Vy
+	,const MatrixOp       &Gc
+	,const MatrixOp       *Gh
+	,MatrixOp             *Z
+	,MatrixOp             *Y
+	,MatrixOpNonsing  *R
+	,MatrixOp             *Uz
+	,MatrixOp             *Uy
+	,MatrixOp             *Vz
+	,MatrixOp             *Vy
 	,EMatRelations            mat_rel
 	)
 {
@@ -227,8 +227,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
-	MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr;
-	MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr;
+	MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr;
+	MemMngPack::ref_count_ptr<MatrixOp>             D_ptr;
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
@@ -295,20 +295,20 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	std::ostream              *out
 	,EOutputLevel             olevel
 	,ERunTests                test_what
-	,const VectorWithOp       *nu
-	,MatrixWithOp             *Gc
-	,MatrixWithOp             *Gh
+	,const Vector       *nu
+	,MatrixOp             *Gc
+	,MatrixOp             *Gh
 	,Permutation              *P_var
 	,Range1D                  *var_dep
 	,Permutation              *P_equ
 	,Range1D                  *equ_decomp
-	,MatrixWithOp             *Z
-	,MatrixWithOp             *Y
-	,MatrixWithOpNonsingular  *R
-	,MatrixWithOp             *Uz
-	,MatrixWithOp             *Uy
-	,MatrixWithOp             *Vz
-	,MatrixWithOp             *Vy
+	,MatrixOp             *Z
+	,MatrixOp             *Y
+	,MatrixOpNonsing  *R
+	,MatrixOp             *Uz
+	,MatrixOp             *Uy
+	,MatrixOp             *Vz
+	,MatrixOp             *Vy
 	,EMatRelations            mat_rel
 	)
 {
@@ -319,8 +319,8 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
-	MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr;
-	MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr;
+	MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr;
+	MemMngPack::ref_count_ptr<MatrixOp>             D_ptr;
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what

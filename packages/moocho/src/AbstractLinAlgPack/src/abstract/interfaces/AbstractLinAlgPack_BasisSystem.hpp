@@ -144,26 +144,26 @@ namespace AbstractLinAlgPack {
  * basis matrix \a C and perhaps the direct sensitivity matrix \a D
  * and it's auxillary projected sensistivity matrix \c GcUP
  * Strictly speaking, it would be possible to form the matrix
- * \a D externally through the <tt>MatrixNonsingular</tt> interface
+ * \a D externally through the <tt>MatrixNonsing</tt> interface
  * using the returned \a C and an \a N matrix object, but this may not
  * take advantage of any special application specific tricks that can
  * be used to form \a D.  Note that this interface does not return a
  * nonbasis matrix object for \a N.  However, this matrix object will
  * be needed for an implicit \a D matrix object that the client will
  * undoubtably want to create.  Creating such a matrix object is
- * simple given the method <tt>MatrixWithOp::sub_view()</tt>.  The
+ * simple given the method <tt>MatrixOp::sub_view()</tt>.  The
  * following code example shows how to create a matrix object for \a N
  * (given the matrix \c Gc input to <tt>bs.update_basis(Gc,...)</tt> and \c bs):
  \code
-MemMngPack::ref_count_ptr<const MatrixWithOp>
+MemMngPack::ref_count_ptr<const MatrixOp>
 create_N(
-    const AbstractLinAlgPack::MatrixWithOp*   Gc
+    const AbstractLinAlgPack::MatrixOp*   Gc
     ,const AbstractLinAlgPack::BasisSystem&   bs
     )
 {
     namespace mmp = MemMngPack;
 	return mmp::rcp(
-        new MatrixWithOpSubView(
+        new MatrixOpSubView(
             Gc->sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
             )
         );
@@ -179,9 +179,9 @@ create_N(
  *
  * The client can also form matrices of the form <tt>S = I + D'*D</tt> as follows:
  \code
- MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>
+ MemMngPack::ref_count_ptr<MatrixSymOpNonsing>
      S = basis_sys.factory_S()->create();
- DynamicCastHelperPack::dyn_cast<MatrixSymInitDiagonal>(*S).init_identity(D.space_rows());
+ DynamicCastHelperPack::dyn_cast<MatrixSymInitDiag>(*S).init_identity(D.space_rows());
  syrk(D,BLAS_Cpp::trans,1.0,1.0,S.get();
  \endcode
  * The matrix <tt>S</tt> must then be fully initialized and ready to go.
@@ -202,16 +202,16 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymWithOp> >            mat_sym_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymWithOpNonsingular> > mat_sym_nonsing_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 	///
 	class SingularBasis : public std::runtime_error
 	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
@@ -294,7 +294,7 @@ public:
 	 * The resulting matrix is symmetric and is guarrenteed to be nonsingular.
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>dynamic_cast<MatrixSymInitDiagonal*>(return->create().get()) != NULL</tt>
+	 * <li><tt>dynamic_cast<MatrixSymInitDiag*>(return->create().get()) != NULL</tt>
 	 * </ul>
 	 */
 	virtual const mat_sym_nonsing_fcty_ptr_t factory_S() const;
@@ -469,12 +469,12 @@ public:
 	 * (as defined by the underlying implementation by some means) to being numerically singular.
 	 */
 	virtual void update_basis(
-		const MatrixWithOp*         Gc
-		,const MatrixWithOp*        Gh
-		,MatrixWithOpNonsingular*   C
-		,MatrixWithOp*              D
-		,MatrixWithOp*              GcUP
-		,MatrixWithOp*              GhUP
+		const MatrixOp*         Gc
+		,const MatrixOp*        Gh
+		,MatrixOpNonsing*   C
+		,MatrixOp*              D
+		,MatrixOp*              GcUP
+		,MatrixOp*              GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		,std::ostream               *out    = NULL
 		) const = 0;

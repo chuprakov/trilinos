@@ -49,7 +49,7 @@ size_type MatrixSymDiagonalSparse::rows() const
 	return diag().dim();
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 std::ostream& MatrixSymDiagonalSparse::output(std::ostream& out) const
 {

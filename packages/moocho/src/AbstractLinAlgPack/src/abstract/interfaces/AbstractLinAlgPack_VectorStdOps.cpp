@@ -17,7 +17,7 @@
 
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/SpVectorView.hpp"
@@ -138,7 +138,7 @@ init_rtop_server_t  init_rtop_server;
 } // end namespace
 
 AbstractLinAlgPack::value_type
-AbstractLinAlgPack::sum( const VectorWithOp& v_rhs )
+AbstractLinAlgPack::sum( const Vector& v_rhs )
 {
 	sum_targ.reinit();
 	v_rhs.apply_reduction(sum_op,0,NULL,0,NULL,sum_targ.obj() );
@@ -146,18 +146,18 @@ AbstractLinAlgPack::sum( const VectorWithOp& v_rhs )
 }
 
 AbstractLinAlgPack::value_type
-AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 )
+AbstractLinAlgPack::dot( const Vector& v_rhs1, const Vector& v_rhs2 )
 {
 	dot_prod_targ.reinit();
 	const int num_vecs = 1;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { &v_rhs2 };
 	v_rhs1.apply_reduction(dot_prod_op,num_vecs,vecs,0,NULL,dot_prod_targ.obj() );
 	return RTOp_ROp_dot_prod_val(dot_prod_targ.obj());
 }
 
 AbstractLinAlgPack::value_type
-AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2 )
+AbstractLinAlgPack::dot( const Vector& v_rhs1, const SpVectorSlice& sv_rhs2 )
 {
 	VopV_assert_compatibility(v_rhs1,sv_rhs2 );
 	if( sv_rhs2.nz() ) {
@@ -170,7 +170,7 @@ AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs
 }
 
 void AbstractLinAlgPack::max_abs_ele(
-	const VectorWithOp& v, value_type* max_v_j, index_type* max_j
+	const Vector& v, value_type* max_v_j, index_type* max_j
 	)
 {
 	assert( max_v_j && max_j );
@@ -185,7 +185,7 @@ void AbstractLinAlgPack::max_abs_ele(
 }
 
 void AbstractLinAlgPack::Vp_S(
-	VectorWithOpMutable* v_lhs, const value_type& alpha )
+	VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
@@ -195,7 +195,7 @@ void AbstractLinAlgPack::Vp_S(
 }
 
 void AbstractLinAlgPack::Vt_S(
-	VectorWithOpMutable* v_lhs, const value_type& alpha )
+	VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
@@ -210,20 +210,20 @@ void AbstractLinAlgPack::Vt_S(
 }
 
 void AbstractLinAlgPack::Vp_StV(
-	VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWithOp& v_rhs)
+	VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
 	assert(0==RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
 	const int num_vecs = 1;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { &v_rhs };
 	v_lhs->apply_transformation(axpy_op,num_vecs,vecs,0,NULL,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::Vp_StV(
-	VectorWithOpMutable* y, const value_type& a, const SpVectorSlice& sx )
+	VectorMutable* y, const value_type& a, const SpVectorSlice& sx )
 {
 	Vp_V_assert_compatibility(y,sx);
 	if( sx.nz() ) {
@@ -235,30 +235,30 @@ void AbstractLinAlgPack::Vp_StV(
 }
 
 void AbstractLinAlgPack::ele_wise_prod(
-	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
-	, VectorWithOpMutable* v_lhs )
+	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+	, VectorMutable* v_lhs )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
 	assert(0==RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op()));
 	const int num_vecs = 2;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
 	v_lhs->apply_transformation(
 		ele_wise_prod_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 }
 
 void AbstractLinAlgPack::ele_wise_divide(
-	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
-	, VectorWithOpMutable* v_lhs )
+	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+	, VectorMutable* v_lhs )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
 	assert(0==RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
 	const int num_vecs = 2;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
 	v_lhs->apply_transformation(
 		ele_wise_divide_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
@@ -270,7 +270,7 @@ void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 }
 
 void AbstractLinAlgPack::random_vector(
-	value_type l, value_type u, VectorWithOpMutable* v )
+	value_type l, value_type u, VectorMutable* v )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
@@ -280,14 +280,14 @@ void AbstractLinAlgPack::random_vector(
 }
 
 void AbstractLinAlgPack::sign(
-	const VectorWithOp      &v
-	,VectorWithOpMutable    *z
+	const Vector      &v
+	,VectorMutable    *z
 	)
 {
 	RTOpPack::RTOpC op;
 	assert(0==RTOp_TOp_sign_construct(&op.op()));
 	const int num_vecs = 1;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { &v };
 	z->apply_transformation( op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 }

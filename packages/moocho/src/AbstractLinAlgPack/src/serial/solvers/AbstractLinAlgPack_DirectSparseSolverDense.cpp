@@ -67,7 +67,7 @@ DirectSparseSolverDense::BasisMatrixDense::create_matrix() const
 }
 
 void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const VectorWithOp& x
+	VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
 	) const 
 {
 	using DynamicCastHelperPack::dyn_cast;

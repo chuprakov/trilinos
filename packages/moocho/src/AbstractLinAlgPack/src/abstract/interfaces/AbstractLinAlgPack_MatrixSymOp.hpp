@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymWithOp.hpp
+// MatrixSymOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,42 +16,42 @@
 #ifndef MATRIX_SYM_WITH_OP_H
 #define MATRIX_SYM_WITH_OP_H
 
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 
 namespace AbstractLinAlgPack {
 
 ///
 /** Interface adding operations specific for a symmetric matrix {abstract}.
  *
- * This interface defines two addition methods to those found in \c MatrixWithOp:
+ * This interface defines two addition methods to those found in \c MatrixOp:
  *
  * <tt>sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs</tt><br>
  * <tt>sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs</tt><br>
  *
- * The reason that these methods could not be defined in the \c MatrixWithOp interface
+ * The reason that these methods could not be defined in the \c MatrixOp interface
  * is that the lhs matrix matrix argument \c sym_lhs is only guaranteed to be
  * symmetric if the rhs matrix argument \c M (which is \c this matrix) is guaranteed
- * to be symmetric.  Since a \c MatrixWithOp matrix object may be unsymmetric (as
+ * to be symmetric.  Since a \c MatrixOp matrix object may be unsymmetric (as
  * well as rectangular), it can not implement this operation, only a symmetric
  * matrix can.
  *
  * Clients should use the \ref MatrixSymWithOp_funcs_grp "provided non-member functions"
  * to call the methods and not the methods themselves.
  */
-class MatrixSymWithOp : public virtual MatrixWithOp {
+class MatrixSymOp : public virtual MatrixOp {
 public:
 
 	///
-	using MatrixWithOp::Mp_StPtMtP;
+	using MatrixOp::Mp_StPtMtP;
 
 	/** @name Public types */
 	//@{
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOp>    mat_mswo_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymOp>    mat_mswo_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixSymWithOp>          mat_mswo_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymOp>          mat_mswo_mut_ptr_t;
 #endif
 	///
 	enum EMatRhsPlaceHolder { DUMMY_ARG };
@@ -91,7 +91,7 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StPtMtP(
-		MatrixSymWithOp* sym_lhs, value_type alpha
+		MatrixSymOp* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		,value_type beta
@@ -110,15 +110,15 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StMtMtM(
-		MatrixSymWithOp* sym_lhs, value_type alpha
+		MatrixSymOp* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
-		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		,value_type beta
 		) const;
 
 	//@}
 
-	/** Overridden from MatrixWithOp */
+	/** Overridden from MatrixOp */
 	//@{
 	/// Returns <tt>this->rows()</tt>
 	size_type cols() const;
@@ -130,13 +130,13 @@ public:
 	mat_ptr_t clone() const;
 	//@}
 
-	/// Calls operator=(MatrixWithOp&)
-	virtual MatrixSymWithOp& operator=(const MatrixSymWithOp& M)
-	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
+	/// Calls operator=(MatrixOp&)
+	virtual MatrixSymOp& operator=(const MatrixSymOp& M)
+	{ static_cast<MatrixOp*>(this)->operator=(M); return *this; }
 
-};	// end class MatrixSymWithOp
+};	// end class MatrixSymOp
 
-/** \defgroup MatrixSymWithOp_funcs_grp Inline nonmeber functions for MatrixSymWithOp to call methods.
+/** \defgroup MatrixSymWithOp_funcs_grp Inline nonmeber functions for MatrixSymOp to call methods.
   *
   * These allow nonmember functions to act like virtual functions.
   */
@@ -145,9 +145,9 @@ public:
 inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
-	MatrixSymWithOp* sym_lhs, value_type alpha
-	,MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymWithOp& M
+	MatrixSymOp* sym_lhs, value_type alpha
+	,MatrixSymOp::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymOp& M
 	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	,value_type beta = 1.0
 	)
@@ -158,10 +158,10 @@ void Mp_StPtMtP(
 inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
-	MatrixSymWithOp* sym_lhs, value_type alpha
-	,MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymWithOp& M
-	,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	MatrixSymOp* sym_lhs, value_type alpha
+	,MatrixSymOp::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymOp& M
+	,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	,value_type beta = 1.0
 	)
 {

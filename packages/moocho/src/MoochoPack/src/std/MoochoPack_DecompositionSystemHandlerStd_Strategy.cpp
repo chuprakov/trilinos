@@ -22,11 +22,11 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -66,10 +66,10 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>
 		&num_basis_iq = s.num_basis();
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		&nu_iq  = s.nu();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0                  ? &s.Gc() : NULL,
 		*Gh_iq  = mI > 0                  ? &s.Gh() : NULL,
 		*Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL,
@@ -78,7 +78,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 		*Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL,
 		*Vz_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vz() : NULL,
 		*Vy_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vy() : NULL;
-	IterQuantityAccess<MatrixWithOpNonsingular>
+	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = ( m > 0 )               ? &s.R()  : NULL;
 	
 	//

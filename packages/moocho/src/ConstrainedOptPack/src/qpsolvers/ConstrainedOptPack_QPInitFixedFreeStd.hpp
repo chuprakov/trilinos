@@ -105,14 +105,14 @@ public:
 	 */
 	void initialize(
 		const DVectorSlice						&g
-		,const MatrixSymWithOp					&G
-		,const MatrixWithOp						*A
+		,const MatrixSymOp					&G
+		,const MatrixOp						*A
 		,size_type								n_R
 		,const size_type						i_x_free[]
 		,const size_type						i_x_fixed[]
 		,const EBounds							bnd_fixed[]
 		,const DVectorSlice						&b_X
-		,const MatrixSymWithOpNonsingular		&Ko
+		,const MatrixSymOpNonsing		&Ko
 		,const DVectorSlice						&fo
 		,Constraints							*constraints
 		,std::ostream							*out				= NULL
@@ -132,9 +132,9 @@ public:
 	///
 	const DVectorSlice g() const;
 	///
-	const MatrixSymWithOp& G() const;
+	const MatrixSymOp& G() const;
 	///
-	const MatrixWithOp& A() const;
+	const MatrixOp& A() const;
 	///
 	size_type n_R() const;
 	///
@@ -150,7 +150,7 @@ public:
 	///
 	const GenPermMatrixSlice& Q_X() const;
 	///
-	const MatrixSymWithOpNonsingular& Ko() const;
+	const MatrixSymOpNonsing& Ko() const;
 	///
 	const DVectorSlice fo() const;
 	///
@@ -176,8 +176,8 @@ private:
 	size_type				n_R_;
 	size_type				m_;
 	DVectorSlice				g_;	// will not be modified!
-	const MatrixSymWithOp	*G_;
-	const MatrixWithOp		*A_;	// If NULL not no equalities in Ko
+	const MatrixSymOp	*G_;
+	const MatrixOp		*A_;	// If NULL not no equalities in Ko
 	x_init_t				x_init_;
 	l_x_X_map_t				l_x_X_map_;
 	i_x_X_map_t				i_x_X_map_;
@@ -188,7 +188,7 @@ private:
 	GenPermMatrixSlice		Q_X_;
 	row_i_t					Q_X_row_i_;
 	col_j_t					Q_X_col_j_;
-	const MatrixSymWithOpNonsingular
+	const MatrixSymOpNonsing
 							*Ko_;
 	DVectorSlice				fo_;	// will not be modified
 	Constraints				*constraints_;

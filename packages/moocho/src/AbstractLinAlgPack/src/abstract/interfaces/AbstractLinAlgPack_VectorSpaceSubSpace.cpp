@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/src/VectorSpaceSubSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.hpp"
+#include "AbstractLinAlgPack/src/VectorMutableSubView.hpp"
 #include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
@@ -93,7 +93,7 @@ VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 	namespace rcp = MemMngPack;
 	if( full_space_.get() )
 		return rcp::rcp(
-			new VectorWithOpMutableSubView(
+			new VectorMutableSubView(
 				full_space_->create_member(), rng_ 
 				) );
 	return rcp::null;

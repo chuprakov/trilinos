@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymDiagonal.hpp
+// MatrixSymDiag.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,22 +16,22 @@
 #ifndef MATRIX_SYM_DIAGONAL_H
 #define MATRIX_SYM_DIAGONAL_H
 
-#include "MatrixSymWithOpNonsingular.hpp"
+#include "MatrixSymOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 
 ///
 /** Interface to all diagonal matrices {abstract}.
  */
-class MatrixSymDiagonal
-	: public virtual MatrixSymWithOpNonsingular
+class MatrixSymDiag
+	: public virtual MatrixSymOpNonsing
 {
 public:
 
 	/// Give const access to the diagonal
-	virtual const VectorWithOp& diag() const = 0;
+	virtual const Vector& diag() const = 0;
 
-}; // end class MatrixSymDiagonal
+}; // end class MatrixSymDiag
 
 } // end namespace AbstractLinAlgPack
 

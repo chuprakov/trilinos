@@ -23,12 +23,12 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -69,12 +69,12 @@ bool NullSpaceStepIP_Step::do_step(
 	// minimize round off error by calc'ing Z'*(Gf + mu*(invXu*e-invXl*e))
 
 	// qp_grad_k = Z'*(Gf + mu*(invXu*e-invXl*e))
-	const MatrixSymDiagonalStd  &invXu = s.invXu().get_k(0);
-	const MatrixSymDiagonalStd  &invXl = s.invXl().get_k(0);
+	const MatrixSymDiagStd  &invXu = s.invXu().get_k(0);
+	const MatrixSymDiagStd  &invXl = s.invXl().get_k(0);
 	const value_type            &mu    = s.barrier_parameter().get_k(0);
-	const MatrixWithOp          &Z_k   = s.Z().get_k(0);
+	const MatrixOp          &Z_k   = s.Z().get_k(0);
 
-	MemMngPack::ref_count_ptr<VectorWithOpMutable> rhs = s.Gf().get_k(0).clone();
+	MemMngPack::ref_count_ptr<VectorMutable> rhs = s.Gf().get_k(0).clone();
 	Vp_StV( rhs.get(), mu,      invXu.diag() );
 	Vp_StV( rhs.get(), -1.0*mu, invXl.diag() );
 	
@@ -87,7 +87,7 @@ bool NullSpaceStepIP_Step::do_step(
 		out << "\nGf_k + mu_k*(invXu_k-invXl_k) =\n" << *rhs;
 		}
 
-	VectorWithOpMutable &qp_grad_k = s.qp_grad().set_k(0);
+	VectorMutable &qp_grad_k = s.qp_grad().set_k(0);
 	V_MtV(&qp_grad_k, Z_k, BLAS_Cpp::trans, *rhs);
 	
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) 
@@ -101,7 +101,7 @@ bool NullSpaceStepIP_Step::do_step(
 
 	// error check for cross term
 	value_type         &zeta    = s.zeta().set_k(0);
-	const VectorWithOp &w_sigma = s.w_sigma().get_k(0);
+	const Vector &w_sigma = s.w_sigma().get_k(0);
 	
 	// need code to calculate damping parameter
 	zeta = 1.0;
@@ -118,14 +118,14 @@ bool NullSpaceStepIP_Step::do_step(
 		}
 
 	// build the "Hessian" term B = rHL + rHB
-	// should this be MatrixSymWithOpNonsingular
-	const MatrixSymWithOp      &rHL_k = s.rHL().get_k(0);
-	const MatrixSymWithOp      &rHB_k = s.rHB().get_k(0);
-	MatrixSymWithOpNonsingular &B_k   = dyn_cast<MatrixSymWithOpNonsingular>(s.B().set_k(0));
+	// should this be MatrixSymOpNonsing
+	const MatrixSymOp      &rHL_k = s.rHL().get_k(0);
+	const MatrixSymOp      &rHB_k = s.rHB().get_k(0);
+	MatrixSymOpNonsing &B_k   = dyn_cast<MatrixSymOpNonsing>(s.B().set_k(0));
 	if (B_k.cols() != Z_k.cols())
 		{
 		// Initialize space in rHB
-		dyn_cast<MatrixSymInitDiagonal>(B_k).init_identity(Z_k.space_rows(), 0.0);
+		dyn_cast<MatrixSymInitDiag>(B_k).init_identity(Z_k.space_rows(), 0.0);
 		}
 
 	//	M_StM(&B_k, 1.0, rHL_k, no_trans);
@@ -141,7 +141,7 @@ bool NullSpaceStepIP_Step::do_step(
 		}
 
 	// Solve the system pz = - inv(rHL) * qp_grad
-	VectorWithOpMutable   &pz_k  = s.pz().set_k(0);
+	VectorMutable   &pz_k  = s.pz().set_k(0);
 	V_InvMtV( &pz_k, B_k, no_trans, qp_grad_k );
 	Vt_S( &pz_k, -1.0 );
 

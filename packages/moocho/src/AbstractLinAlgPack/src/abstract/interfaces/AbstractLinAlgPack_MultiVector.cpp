@@ -4,8 +4,8 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonal.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiag.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "WorkspacePack.hpp"
@@ -60,13 +60,13 @@ vec(
 //
 bool mat_vec(
 	const AbstractLinAlgPack::value_type        &a
-	,const AbstractLinAlgPack::MatrixWithOp     &D_mwo  // Diagonal matrix?
+	,const AbstractLinAlgPack::MatrixOp     &D_mwo  // Diagonal matrix?
 	,BLAS_Cpp::Transp                           D_trans
 	,const AbstractLinAlgPack::MultiVector      &B
 	,BLAS_Cpp::Transp                           B_trans
 	,const AbstractLinAlgPack::value_type       &b
 	,BLAS_Cpp::Transp                           C_trans
-	,AbstractLinAlgPack::MatrixWithOp           *C
+	,AbstractLinAlgPack::MatrixOp           *C
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -75,10 +75,10 @@ bool mat_vec(
 	typedef AbstractLinAlgPack::MultiVector          MV;
 	typedef AbstractLinAlgPack::MultiVectorMutable   MVM;
 	using AbstractLinAlgPack::size_type;
-	using AbstractLinAlgPack::VectorWithOp;
-	using AbstractLinAlgPack::MatrixWithOp;
+	using AbstractLinAlgPack::Vector;
+	using AbstractLinAlgPack::MatrixOp;
 	using AbstractLinAlgPack::MultiVectorMutable;
-	using AbstractLinAlgPack::MatrixSymDiagonal;
+	using AbstractLinAlgPack::MatrixSymDiag;
 	using AbstractLinAlgPack::ele_wise_prod;
 	using LinAlgOpPack::Vt_S;
 	
@@ -86,8 +86,8 @@ bool mat_vec(
 
 	MultiVectorMutable
 		*Cmv = dynamic_cast<MultiVectorMutable*>(C);
-	const MatrixSymDiagonal
-		*D = dynamic_cast<const MatrixSymDiagonal*>(&D_mwo);
+	const MatrixSymDiag
+		*D = dynamic_cast<const MatrixSymDiag*>(&D_mwo);
 	if( !Cmv || !D || !(Cmv->access_by() & ( C_trans == no_trans ? MV::COL_ACCESS : MV::ROW_ACCESS ))
 		|| !(B.access_by() & ( B_trans == no_trans ? MV::COL_ACCESS : MV::ROW_ACCESS ))
 		)
@@ -97,7 +97,7 @@ bool mat_vec(
 	//
 	// op(C).col(j) = b*op(C).col(j) + a*ele_wise_prod(D_diag,op(B).col(j)), for j = 1...op(C).cols()
 	//
-	const VectorWithOp  &D_diag = D->diag();
+	const Vector  &D_diag = D->diag();
 	const size_type
 		opC_cols = BLAS_Cpp::cols( Cmv->rows(), Cmv->cols(), C_trans );
 	for( size_type j = 1; j <= opC_cols; ++j ) {
@@ -119,8 +119,8 @@ MultiVector::multi_vec_ptr_t
 MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	assert(0); // ToDo: return a MultiVectorSubView object.
-	// Note that the MultiVectorSubView class should derive from MatrixWithOpSubView
-	// so that a client can rely on the MatrixWithOpSubView interface.
+	// Note that the MultiVectorSubView class should derive from MatrixOpSubView
+	// so that a client can rely on the MatrixOpSubView interface.
 	return MemMngPack::null;
 }
 
@@ -182,17 +182,17 @@ void MultiVector::apply_reduction(
 		);
 }
 
-// Overridden form MatrixWithOp
+// Overridden form MatrixOp
 
-MatrixWithOp::mat_ptr_t
+MatrixOp::mat_ptr_t
 MultiVector::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	return mv_sub_view(row_rng,col_rng);
 }
 
 bool MultiVector::Mp_StMtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	MatrixOp* mwo_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta
 	) const
@@ -206,9 +206,9 @@ bool MultiVector::Mp_StMtM(
 }
 
 bool MultiVector::Mp_StMtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	,BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	,value_type beta
 	) const
 {
@@ -251,9 +251,9 @@ void MultiVector::apply_op(
 	//
 
 	wsp::Workspace<MultiVector::vec_ptr_t>             vecs_s(wss,num_multi_vecs);
-	wsp::Workspace<const VectorWithOp*>                vecs(wss,num_multi_vecs);
+	wsp::Workspace<const Vector*>                vecs(wss,num_multi_vecs);
 	wsp::Workspace<MultiVectorMutable::vec_mut_ptr_t>  targ_vecs_s(wss,num_targ_multi_vecs);
-	wsp::Workspace<VectorWithOpMutable*>               targ_vecs(wss,num_multi_vecs);
+	wsp::Workspace<VectorMutable*>               targ_vecs(wss,num_multi_vecs);
 
 	{for(size_type j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments 

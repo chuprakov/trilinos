@@ -168,7 +168,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -176,25 +176,25 @@ public:
 	///
 	void Mt_S( value_type alpha );
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
+	MatrixOp& operator=(const MatrixOp& mwo_rhs);
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
 	bool syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
-		,value_type beta, MatrixSymWithOp* sym_lhs
+		,value_type beta, MatrixSymOp* sym_lhs
 		) const;
 	///
 	bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		MatrixOp* mwo_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 	///
 	bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 
 	//@}

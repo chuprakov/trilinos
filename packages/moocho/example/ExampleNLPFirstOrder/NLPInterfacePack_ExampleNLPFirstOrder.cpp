@@ -19,9 +19,9 @@
 
 #include "ExampleNLPFirstOrderInfo.hpp"
 #include "ExampleBasisSystem.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "Range1D.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
@@ -50,10 +50,10 @@ ExampleNLPFirstOrderInfo::ExampleNLPFirstOrderInfo(
 
 // Overridden public members from NLPFirstOrderInfo
 
-void ExampleNLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)
+void ExampleNLPFirstOrderInfo::set_Gc(MatrixOp* Gc)
 {
 	if(Gc) // Throw an exception if this matrix is the wrong type!
-		DynamicCastHelperPack::dyn_cast<AbstractLinAlgPack::MatrixCompositeStd>(*Gc);
+		DynamicCastHelperPack::dyn_cast<AbstractLinAlgPack::MatrixComposite>(*Gc);
 	NLPFirstOrderInfo::set_Gc(Gc);
 }
 
@@ -84,7 +84,7 @@ void ExampleNLPFirstOrderInfo::initialize(bool test_setup)
 	ExampleNLPObjGradient::initialize(test_setup);
 	NLPFirstOrderInfo::initialize(test_setup);
 
-	factory_Gc_ = BasisSystemCompositeStd::factory_Gc();
+	factory_Gc_ = BasisSystemComposite::factory_Gc();
 	
 	initialized_ = true;
 }
@@ -97,7 +97,7 @@ bool ExampleNLPFirstOrderInfo::is_initialized() const
 // Overridden protected members from NLPFirstOrderInfo
 
 void ExampleNLPFirstOrderInfo::imp_calc_Gc(
-	const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const
+	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
@@ -111,35 +111,35 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 		var_indep = this->var_indep();
 
 	// Get references to aggregate C and N matrices (if allocated)
-	MatrixWithOpNonsingular
+	MatrixOpNonsing
 		*C_aggr = NULL;
-	MatrixWithOp
+	MatrixOp
 		*N_aggr = NULL;
-	BasisSystemCompositeStd::get_C_N(
+	BasisSystemComposite::get_C_N(
 		first_order_info.Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
 
 	// Allocate C and N matrix objects if not done yet!
-	rcp::ref_count_ptr<MatrixWithOpNonsingular>
+	rcp::ref_count_ptr<MatrixOpNonsing>
 		C_ptr = rcp::null;
-	rcp::ref_count_ptr<MatrixWithOp>
+	rcp::ref_count_ptr<MatrixOp>
 		N_ptr = rcp::null;
 	if( C_aggr == NULL ) {
 		const VectorSpace::space_ptr_t
 			space_x  = this->space_x(),
 			space_xD = space_x->sub_space(var_dep);
-		C_ptr  = rcp::rcp(new MatrixSymDiagonalStd(space_xD->create_member()));
-		N_ptr  = rcp::rcp(new MatrixSymDiagonalStd(space_xD->create_member()));
+		C_ptr  = rcp::rcp(new MatrixSymDiagStd(space_xD->create_member()));
+		N_ptr  = rcp::rcp(new MatrixSymDiagStd(space_xD->create_member()));
 		C_aggr = C_ptr.get();
 		N_aggr = N_ptr.get();
 	}
 
 	// Get references to concreate C and N matrices
-	MatrixSymDiagonalStd
-		&C = dyn_cast<MatrixSymDiagonalStd>(*C_aggr);
-	MatrixSymDiagonalStd
-		&N = dyn_cast<MatrixSymDiagonalStd>(*N_aggr);
+	MatrixSymDiagStd
+		&C = dyn_cast<MatrixSymDiagStd>(*C_aggr);
+	MatrixSymDiagStd
+		&N = dyn_cast<MatrixSymDiagStd>(*N_aggr);
 	// Get x = [ x_D' x_I ]
-	VectorWithOp::vec_ptr_t
+	Vector::vec_ptr_t
 		x_D = x.sub_view(var_dep),
 		x_I = x.sub_view(var_indep);
 	// Set the diagonals of C and N (this is the only computation going on here)
@@ -149,7 +149,7 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	Vp_S( &N.diag(), -10.0 ); // ...
 	// Initialize the matrix object Gc if not done so yet
 	if( C_ptr.get() != NULL ) {
-		BasisSystemCompositeStd::initialize_Gc(
+		BasisSystemComposite::initialize_Gc(
 			this->space_x(), var_dep, var_indep
 			,this->space_c()
 			,C_ptr, N_ptr
@@ -159,7 +159,7 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 }
 
 void ExampleNLPFirstOrderInfo::imp_calc_Gh(
-	const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const
+	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	assert(0); // This should never be called!
 }

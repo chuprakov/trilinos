@@ -51,11 +51,11 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 
 	//@}
 

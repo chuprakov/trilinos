@@ -24,7 +24,7 @@ namespace ConstrainedOptimizationPack {
 /** Implementation of initial KKT system for all variables initially free
  * and <tt>Ko = G</tt>.
  *
- * In this implementation, \c G must support the \c MatrixSymWithOpNonsingular
+ * In this implementation, \c G must support the \c MatrixSymOpNonsing
  * interface.  Using this initial KKT system essentially make QPSchur use
  * a range space approach (Nocedal & Wright, 1999) for factorizing the KKT
  * system for the current active set.
@@ -53,16 +53,16 @@ public:
 	 * <tt>fo = -g</tt>\\
 	 */
 	void initialize_kkt_system(
-		const VectorWithOp    &g
-		,const MatrixWithOp   &G
+		const Vector    &g
+		,const MatrixOp   &G
 		,value_type           etaL
-		,const VectorWithOp   *dL
-		,const VectorWithOp   *dU
-		,const MatrixWithOp   *F
+		,const Vector   *dL
+		,const Vector   *dU
+		,const MatrixOp   *F
 		,BLAS_Cpp::Transp     trans_F
-		,const VectorWithOp   *f
-		,const VectorWithOp   *d
-		,const VectorWithOp   *nu
+		,const Vector   *f
+		,const Vector   *d
+		,const Vector   *nu
 		,size_type            *n_R
 		,i_x_free_t           *i_x_free
 		,i_x_fixed_t          *i_x_fixed

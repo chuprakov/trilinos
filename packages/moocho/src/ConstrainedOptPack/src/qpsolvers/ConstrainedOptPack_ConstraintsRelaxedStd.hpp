@@ -19,8 +19,8 @@
 #include <list>
 
 #include "QPSchur.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceBlock.hpp"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {
@@ -58,7 +58,7 @@ namespace QPSchurPack {
   (4)	cl_bar <= A_bar'*x <= cu_bar
  \endverbatim
  * The main responsibilities of this class are to expose a
- * \c MatrixWithOp object for \c A_bar shown in (2) and to pick
+ * \c MatrixOp object for \c A_bar shown in (2) and to pick
  * violated constraints.
  */
 class ConstraintsRelaxedStd : public Constraints {
@@ -78,7 +78,7 @@ public:
 	 \endverbatim
 	 *
 	 */
-	class MatrixConstraints : public MatrixWithOp {
+	class MatrixConstraints : public MatrixOp {
 	public:
 
 		///
@@ -102,12 +102,12 @@ public:
 			const VectorSpace::space_ptr_t   &space_d_eta
 			,const size_type                 m_in
 			,const size_type                 m_eq
-			,const MatrixWithOp              *E
+			,const MatrixOp              *E
 			,BLAS_Cpp::Transp                trans_E
-			,const VectorWithOp              *b
-			,const MatrixWithOp              *F
+			,const Vector              *b
+			,const MatrixOp              *F
 			,BLAS_Cpp::Transp                trans_F
-			,const VectorWithOp              *f
+			,const Vector              *f
 			,size_type                       m_undecomp
 			,const size_type                 j_f_undecomp[]
 			);
@@ -125,22 +125,22 @@ public:
 		size_type			m_eq() const
 		{	return m_eq_;	}
 		///
-		const MatrixWithOp*	E() const
+		const MatrixOp*	E() const
 		{	return E_;	}
 		///
 		BLAS_Cpp::Transp	trans_E() const
 		{	return trans_E_;	}
 		///
-		const VectorWithOp*	b() const
+		const Vector*	b() const
 		{	return b_;	}
 		///
-		const MatrixWithOp*	F() const
+		const MatrixOp*	F() const
 		{	return F_;	}
 		///
 		BLAS_Cpp::Transp	trans_F() const
 		{	return trans_F_;	}
 		///
-		const VectorWithOp*	f() const
+		const Vector*	f() const
 		{	return f_;	}
 		///
 		const GenPermMatrixSlice& P_u() const
@@ -148,7 +148,7 @@ public:
 
 		//@}
 
-		/** @name Overridden from MatrixWithOp */
+		/** @name Overridden from MatrixOp */
 		//@{
 
 		///
@@ -156,7 +156,7 @@ public:
 		///
 		const VectorSpace& space_rows() const;
 		///
-		MatrixWithOp& operator=(const MatrixWithOp& m);
+		MatrixOp& operator=(const MatrixOp& m);
 //		///
 //		void Mp_StPtMtP(
 //			DMatrixSlice* gms_lhs, value_type alpha
@@ -166,12 +166,12 @@ public:
 //			) const ;
 		///
 		void Vp_StMtV(
-			VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-			,const VectorWithOp& vs_rhs2, value_type beta
+			VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			,const Vector& vs_rhs2, value_type beta
 			) const;
 		///
 		void Vp_StPtMtV(
-			VectorWithOpMutable* vs_lhs, value_type alpha
+			VectorMutable* vs_lhs, value_type alpha
 			,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 			,BLAS_Cpp::Transp M_rhs2_trans
 			,const SpVectorSlice& sv_rhs3, value_type beta
@@ -185,17 +185,17 @@ public:
 		size_type			nd_;	// # unknowns d
 		size_type			m_in_;	// # op(E)*d inequality constraints
 		size_type			m_eq_;	// # op(F)*d equality constraints
-		const MatrixWithOp	*E_;	// If NULL then no general inequalities
+		const MatrixOp	*E_;	// If NULL then no general inequalities
 		BLAS_Cpp::Transp	trans_E_;
-		const VectorWithOp	*b_;
-		const MatrixWithOp	*F_;	// If NULL then no general equalities
+		const Vector	*b_;
+		const MatrixOp	*F_;	// If NULL then no general equalities
 		BLAS_Cpp::Transp	trans_F_;
-		const VectorWithOp	*f_;
+		const Vector	*f_;
 		GenPermMatrixSlice  P_u_;
 		row_i_t             P_u_row_i_;
 		col_j_t             P_u_col_j_;
 		VectorSpace::space_ptr_t   space_cols_;
-		VectorSpaceCompositeStd    space_rows_;
+		VectorSpaceBlock    space_rows_;
 	};	// end class MatrixConstraints
 
 	///
@@ -278,19 +278,19 @@ public:
 	void initialize(
 		const VectorSpace::space_ptr_t   &space_d_eta
 		,value_type                      etaL
-		,const VectorWithOp              *dL
-		,const VectorWithOp              *dU
-		,const MatrixWithOp              *E
+		,const Vector              *dL
+		,const Vector              *dU
+		,const MatrixOp              *E
 		,BLAS_Cpp::Transp                trans_E
-		,const VectorWithOp              *b
-		,const VectorWithOp              *eL
-		,const VectorWithOp              *eU
-		,const MatrixWithOp              *F
+		,const Vector              *b
+		,const Vector              *eL
+		,const Vector              *eU
+		,const MatrixOp              *F
 		,BLAS_Cpp::Transp                trans_F
-		,const VectorWithOp              *f
+		,const Vector              *f
 		,size_type                       m_undecomp
 		,const size_type                 j_f_undecomp[]
-		,VectorWithOpMutable             *Ed
+		,VectorMutable             *Ed
 		,bool                            check_F           = true
 		,value_type                      bounds_tol        = 1e-10
 		,value_type                      inequality_tol    = 1e-10
@@ -318,7 +318,7 @@ public:
 		        [  0   1   -b'       -f'*P_u   ]
 	 \endverbatim
 	 */
-	const MatrixWithOp& A_bar() const;
+	const MatrixOp& A_bar() const;
 	///
 	void pick_violated_policy( EPickPolicy pick_policy );
 	///
@@ -386,11 +386,11 @@ private:
 
 	MatrixConstraints   A_bar_;
 	value_type          etaL_;
-	const VectorWithOp  *dL_;	// If NULL then no simple bounds
-	const VectorWithOp  *dU_;
-	const VectorWithOp  *eL_;
-	const VectorWithOp  *eU_;
-	VectorWithOpMutable *Ed_;
+	const Vector  *dL_;	// If NULL then no simple bounds
+	const Vector  *dU_;
+	const Vector  *eL_;
+	const Vector  *eU_;
+	VectorMutable *Ed_;
 	bool                check_F_;
 	mutable size_type   last_added_j_;          // Remember the last bound added so that
 	mutable value_type  last_added_bound_;      // we can save our selfs some work.

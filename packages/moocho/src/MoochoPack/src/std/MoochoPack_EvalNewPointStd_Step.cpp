@@ -21,13 +21,13 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymIdentity.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack/src/PermutationOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -96,13 +96,13 @@ bool EvalNewPointStd_Step::do_step(
 		&num_basis_iq = s.num_basis();
 	IterQuantityAccess<value_type>
 		&f_iq   = s.f();
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		&nu_iq  = s.nu(),
 		*c_iq   = m > 0  ? &s.c() : NULL,
 		*h_iq   = mI > 0 ? &s.h() : NULL,
 		&Gf_iq  = s.Gf();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0 ? &s.Gc() : NULL,
 		*Gh_iq  = mI > 0 ? &s.Gh() : NULL,
 		*Z_iq   = &s.Z(),
@@ -111,10 +111,10 @@ bool EvalNewPointStd_Step::do_step(
 		*Uy_iq  = NULL,
 		*Vz_iq  = NULL,
 		*Vy_iq  = NULL;
-	IterQuantityAccess<MatrixWithOpNonsingular>
+	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = NULL;
 
-	MatrixWithOp::EMatNormType mat_nrm_inf = MatrixWithOp::MAT_NORM_INF;
+	MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
 	
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -147,7 +147,7 @@ bool EvalNewPointStd_Step::do_step(
 		}
 	}
 
-	VectorWithOp &x = x_iq.get_k(0);
+	Vector &x = x_iq.get_k(0);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
@@ -291,7 +291,7 @@ bool EvalNewPointStd_Step::do_step(
 	}
 	else {
 		// Unconstrained problem
-		dyn_cast<MatrixSymIdentity>(Z_iq->set_k(0)).initialize( nlp.space_x() );
+		dyn_cast<MatrixSymIdent>(Z_iq->set_k(0)).initialize( nlp.space_x() );
 		s.var_dep(Range1D::Invalid);
 		s.var_indep(Range1D(1,n));
 		s.equ_decomp(Range1D::Invalid);

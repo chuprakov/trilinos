@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
@@ -106,17 +106,17 @@ void QPSolverRelaxedQPSchur::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPSchur::imp_solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp* dL, const VectorWithOp* dU
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-	,const VectorWithOp* eL, const VectorWithOp* eU
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const Vector* dL, const Vector* dU
+	,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+	,const Vector* eL, const Vector* eU
+	,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
-	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu, VectorMutable* Ed
+	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
 	namespace mmp = MemMngPack;
@@ -197,7 +197,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	bigM_vec_.initialize(1); // dim == 1
 	bigM_vec_ = bigM();	
 	G_relaxed_.initialize(
-		mmp::rcp(&dyn_cast<const MatrixSymWithOpNonsingular>(G),false)
+		mmp::rcp(&dyn_cast<const MatrixSymOpNonsing>(G),false)
 		,mmp::rcp(&bigM_vec_,false)
 		,space_d_eta
 		);

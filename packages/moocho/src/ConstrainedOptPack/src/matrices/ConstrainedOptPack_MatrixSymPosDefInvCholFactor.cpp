@@ -39,9 +39,9 @@ size_type MatrixSymPosDefInvCholFactor::cols() const
 	return rows();
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-MatrixWithOp& MatrixSymPosDefInvCholFactor::operator=(const MatrixWithOp& m)
+MatrixOp& MatrixSymPosDefInvCholFactor::operator=(const MatrixOp& m)
 {
 	return MatrixWithOpConcreteEncap<SymInvCholMatrix>::operator=(m);
 }
@@ -122,7 +122,7 @@ value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const SpVectorSlice& sv_r
 // Overridden from MatrixSymFactorized
 
 void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
-	  DMatrixSliceSym* S, value_type a, const MatrixWithOp& B
+	  DMatrixSliceSym* S, value_type a, const MatrixOp& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg dummy_arg ) const
 {
 //	// Uncomment to use the defalut implementation (for debugging)
@@ -169,7 +169,7 @@ void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
 	syrk( trans, a, T(), 0.0, S );
 }
 
-// Overridden from MatrixSymSecantUpdateable
+// Overridden from MatrixSymSecant
 
 void MatrixSymPosDefInvCholFactor::init_identity(size_type n, value_type alpha)
 {

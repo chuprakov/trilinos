@@ -15,7 +15,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
@@ -23,12 +23,12 @@ namespace ReducedSpaceSQPPack {
 
 bool QuasiRangeSpaceStepStd_Strategy::solve_quasi_range_space_step(
 	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* v
+	,const Vector& xo, const Vector& c_xo, VectorMutable* v
   	)
 {
 	using LinAlgOpPack::V_InvMtV;
 	using LinAlgOpPack::V_StMtV;
-	const MatrixWithOpNonsingular
+	const MatrixOpNonsing
 		&R_k = s->R().get_k(0);
 	VectorSpace::vec_mut_ptr_t
 		vy = R_k.space_rows().create_member();

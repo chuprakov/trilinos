@@ -17,9 +17,9 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
@@ -71,9 +71,9 @@ bool PreEvalNewPointBarrier_Step::do_step(
 		}
 
 	IterQuantityAccess<value_type>           &barrier_parameter_iq = s.barrier_parameter();
-	IterQuantityAccess<VectorWithOpMutable>  &x_iq  = s.x();
-	IterQuantityAccess<MatrixSymDiagonalStd> &Vl_iq = s.Vl();
-	IterQuantityAccess<MatrixSymDiagonalStd> &Vu_iq = s.Vu();
+	IterQuantityAccess<VectorMutable>  &x_iq  = s.x();
+	IterQuantityAccess<MatrixSymDiagStd> &Vl_iq = s.Vl();
+	IterQuantityAccess<MatrixSymDiagStd> &Vu_iq = s.Vu();
 
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) 
 		{
@@ -82,7 +82,7 @@ bool PreEvalNewPointBarrier_Step::do_step(
 			out << "\nInitialize x with x_k = nlp.xinit() ...\n"
 				<< " and push x_k within bounds.\n";
 			}
-		VectorWithOpMutable& x_k = x_iq.set_k(0) = nlp.xinit();
+		VectorMutable& x_k = x_iq.set_k(0) = nlp.xinit();
   
 		// apply transformation operator to push x sufficiently within bounds
 		force_in_bounds_buffer(relative_bound_push_, 
@@ -94,10 +94,10 @@ bool PreEvalNewPointBarrier_Step::do_step(
 		// evaluate the func and constraints
 		IterQuantityAccess<value_type>
 			&f_iq    = s.f();
-		IterQuantityAccess<VectorWithOpMutable>
+		IterQuantityAccess<VectorMutable>
 			&Gf_iq   = s.Gf(),
 			*c_iq    = nlp.m() > 0 ? &s.c() : NULL;
-		IterQuantityAccess<MatrixWithOp>
+		IterQuantityAccess<MatrixOp>
 			*Gc_iq   = nlp_foi ? &s.Gc() : NULL;
 
 		using AbstractLinAlgPack::assert_print_nan_inf;

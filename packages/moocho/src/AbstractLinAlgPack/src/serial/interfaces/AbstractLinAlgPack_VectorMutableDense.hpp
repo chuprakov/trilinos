@@ -17,7 +17,7 @@
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
 #include "VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
@@ -56,7 +56,7 @@ namespace SparseLinAlgPack {
  * an exception if the <tt>dynamic_cast<></tt> fails.
  */
 class VectorWithOpMutableDense
-	: virtual public AbstractLinAlgPack::VectorWithOpMutable
+	: virtual public AbstractLinAlgPack::VectorMutable
 {
 public:
 
@@ -124,7 +124,7 @@ public:
 
 	//@}
 
-	/** @name Overriddenn from VectorWithOp */
+	/** @name Overriddenn from Vector */
 	//@{
 
 	///
@@ -132,8 +132,8 @@ public:
 	///
 	void apply_reduction(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;
@@ -149,23 +149,23 @@ public:
 
 	//@}
 
-	/** @name Overriddenn from VectorWithOpMutable */
+	/** @name Overriddenn from VectorMutable */
 	//@{
 
 	///
 	void apply_transformation(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		);
 	///
-	VectorWithOpMutable& operator=(value_type alpha);
+	VectorMutable& operator=(value_type alpha);
 	///
-	VectorWithOpMutable& operator=(const VectorWithOp& v);
+	VectorMutable& operator=(const Vector& v);
 	///
-	VectorWithOpMutable& operator=(const VectorWithOpMutable& v);
+	VectorMutable& operator=(const VectorMutable& v);
 	///
 	void set_ele( index_type i, value_type val );
 	///
@@ -182,7 +182,7 @@ public:
 		value_type                       alpha
 		,const GenPermMatrixSlice        &P
 		,BLAS_Cpp::Transp                P_trans
-		,const VectorWithOp              &x
+		,const Vector              &x
 		,value_type                      beta
 		);
 
@@ -210,8 +210,8 @@ private:
 	 */
 	void apply_op(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs,      const VectorWithOp**       vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable**      targ_vecs
+		,const size_t num_vecs,      const Vector**       vecs
+		,const size_t num_targ_vecs, VectorMutable**      targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;

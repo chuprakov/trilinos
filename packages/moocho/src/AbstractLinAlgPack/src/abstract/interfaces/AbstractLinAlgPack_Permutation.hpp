@@ -76,8 +76,8 @@ public:
 	 */
 	virtual void permute( 
 		BLAS_Cpp::Transp          P_trans
-		,const VectorWithOp       &x
-		,VectorWithOpMutable      *y
+		,const Vector       &x
+		,VectorMutable      *y
 		) const = 0;
 
 	///
@@ -95,7 +95,7 @@ public:
 	 */
 	virtual void permute( 
 		BLAS_Cpp::Transp          P_trans
-		,VectorWithOpMutable      *y
+		,VectorMutable      *y
 		) const = 0;
 
 	//@}

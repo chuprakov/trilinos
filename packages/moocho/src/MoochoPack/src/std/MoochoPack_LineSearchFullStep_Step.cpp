@@ -19,10 +19,10 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "ThrowException.hpp"
@@ -74,9 +74,9 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	}
 
 	// x_kp1 = x_k + d_k
-	IterQuantityAccess<VectorWithOpMutable>  &x_iq = s.x();
-	const VectorWithOp                       &x_k   = x_iq.get_k(0);
-	VectorWithOpMutable                      &x_kp1 = x_iq.set_k(+1);
+	IterQuantityAccess<VectorMutable>  &x_iq = s.x();
+	const Vector                       &x_k   = x_iq.get_k(0);
+	VectorMutable                      &x_kp1 = x_iq.set_k(+1);
 	x_kp1 = x_k;
 	Vp_StV( &x_kp1, alpha_iq.get_k(0), s.d().get_k(0) );
 

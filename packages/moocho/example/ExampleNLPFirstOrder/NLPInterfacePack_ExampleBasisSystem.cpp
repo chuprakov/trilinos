@@ -14,8 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ExampleBasisSystem.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "RTOpPack/src/RTOpCppC.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -29,19 +29,19 @@ ExampleBasisSystem::ExampleBasisSystem(
 	,const Range1D                       &var_dep
 	,const Range1D                       &var_indep
 	)
-	:BasisSystemCompositeStd(
+	:BasisSystemComposite(
 		space_x
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())       // C
+			new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())               // D'*D
+			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())               // D'*D
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())    // S
+			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())                  // D
+			new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())                  // D
 		)
 {}
 	
@@ -56,22 +56,22 @@ void ExampleBasisSystem::initialize(
 		space_x.get() == NULL, std::invalid_argument
 		,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
 		);
-	BasisSystemCompositeStd::initialize(
+	BasisSystemComposite::initialize(
 		space_x
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())      // C
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())              // D'*D
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())   // S
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())                 // D
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())              // D'*D
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())                 // D
 		);
 }
 
 void ExampleBasisSystem::update_D(
-	const MatrixWithOpNonsingular&  C
-	,const MatrixWithOp&            N
-	,MatrixWithOp*                  D
+	const MatrixOpNonsing&  C
+	,const MatrixOp&            N
+	,MatrixOp*                  D
 	,EMatRelations                  mat_rel
 	) const
 {
@@ -81,11 +81,11 @@ void ExampleBasisSystem::update_D(
 		D == NULL, std::logic_error
 		,"ExampleBasisSystem::update_D(...): Error!" );
 
-	const MatrixSymDiagonalStd
-		&C_aggr = dyn_cast<const MatrixSymDiagonalStd>(C),
-		&N_aggr = dyn_cast<const MatrixSymDiagonalStd>(N);
-	MatrixSymDiagonalStd
-		&D_sym_diag = dyn_cast<MatrixSymDiagonalStd>(*D);
+	const MatrixSymDiagStd
+		&C_aggr = dyn_cast<const MatrixSymDiagStd>(C),
+		&N_aggr = dyn_cast<const MatrixSymDiagStd>(N);
+	MatrixSymDiagStd
+		&D_sym_diag = dyn_cast<MatrixSymDiagStd>(*D);
 	if( D_sym_diag.rows() != C.rows() )
 		D_sym_diag.initialize(
 			this->space_x()->sub_space(this->var_dep())->create_member()

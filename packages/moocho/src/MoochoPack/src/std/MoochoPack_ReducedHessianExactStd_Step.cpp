@@ -23,7 +23,7 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
@@ -42,7 +42,7 @@ bool ReducedHessianExactStd_Step::do_step(
 	using DenseLinAlgPack::nonconst_sym;
 	using SparseLinAlgPack::Mp_StMtMtM;
 	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
-	typedef SparseLinAlgPack::MatrixSymWithOp			MatrixSymWithOp;
+	typedef SparseLinAlgPack::MatrixSymOp			MatrixSymOp;
 	using ConstrainedOptimizationPack::NLPSecondOrderInfo;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -53,8 +53,8 @@ bool ReducedHessianExactStd_Step::do_step(
 #else
 				&nlp	= dyn_cast<NLPSecondOrderInfo>(algo.nlp());
 #endif
-	MatrixSymWithOp
-		*HL_sym_op = dynamic_cast<MatrixSymWithOp*>(&s.HL().get_k(0));
+	MatrixSymOp
+		*HL_sym_op = dynamic_cast<MatrixSymOp*>(&s.HL().get_k(0));
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -101,7 +101,7 @@ bool ReducedHessianExactStd_Step::do_step(
 				<< "ReducedHessianExactStd_Step::do_step(...) : Error, "
 				<< "The matrix HL with the concrete type "
 				<< typeid(s.HL().get_k(0)).name() << " does not support the "
-				<< "MatrixSymWithOp iterface";
+				<< "MatrixSymOp iterface";
 			throw std::logic_error( omsg.str() );
 		}		
 
@@ -120,7 +120,7 @@ bool ReducedHessianExactStd_Step::do_step(
 		// Compute the dense reduced Hessian
 		DMatrix rHL_sym_store(nind,nind);
 		DMatrixSliceSym rHL_sym(rHL_sym_store(),BLAS_Cpp::lower);
-		Mp_StMtMtM( &rHL_sym, 1.0, MatrixSymWithOp::DUMMY_ARG, *HL_sym_op
+		Mp_StMtMtM( &rHL_sym, 1.0, MatrixSymOp::DUMMY_ARG, *HL_sym_op
 					, s.Z().get_k(0), BLAS_Cpp::no_trans, 0.0 );
 
 		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
@@ -149,7 +149,7 @@ void ReducedHessianExactStd_Step::print_step(
 		<< L << "end\n"
 		<< L << "HL_k = HL(x_k,lambda_km1) <: R^(n+m) -> R^(n x n)\n"
 		<< L << "if rHL_k is not updated then\n"
-		<< L << "    rHL_dense = Z_k' * HL_k * Z_k  (MatrixSymWithOp interface for HL_k)\n"
+		<< L << "    rHL_dense = Z_k' * HL_k * Z_k  (MatrixSymOp interface for HL_k)\n"
 		<< L << "    rHL_k = rHL_dense (MatrixSymDenseInitialize interface for rHL_k)\n"
 		<< L << "end\n";
 }

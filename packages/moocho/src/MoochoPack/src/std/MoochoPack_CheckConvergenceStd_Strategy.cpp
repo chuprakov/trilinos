@@ -24,11 +24,11 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -79,7 +79,7 @@ bool CheckConvergenceStd_Strategy::Converged(
 		&feas_kkt_err_iq = s.feas_kkt_err(),
 	    &comp_kkt_err_iq = s.comp_kkt_err();
 	
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq       = s.x(),
 		&d_iq       = s.d(),
 		&Gf_iq      = s.Gf(),

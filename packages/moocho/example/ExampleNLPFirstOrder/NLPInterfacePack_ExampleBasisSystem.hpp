@@ -17,7 +17,7 @@
 #define EXAMPLE_BASIS_SYSTEM_H
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemComposite.hpp"
 
 namespace NLPInterfacePack {
 
@@ -27,7 +27,7 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 class ExampleBasisSystem
-	: public AbstractLinAlgPack::BasisSystemCompositeStd
+	: public AbstractLinAlgPack::BasisSystemComposite
 {
 public:
 
@@ -53,14 +53,14 @@ public:
 		,const Range1D                       &var_indep
 		);
 
-	/** @name Overridden from BasisSystemCompositeStd */
+	/** @name Overridden from BasisSystemComposite */
 	//@{
 
 	///
 	void update_D(
-		const MatrixWithOpNonsingular&  C
-		,const MatrixWithOp&            N
-		,MatrixWithOp*                  D
+		const MatrixOpNonsing&  C
+		,const MatrixOp&            N
+		,MatrixOp*                  D
 		,EMatRelations                  mat_rel
 		) const;
 

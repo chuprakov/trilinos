@@ -93,7 +93,7 @@ DirectSparseSolverMA28::BasisMatrixMA28::create_matrix() const
 }
 
 void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const VectorWithOp& x
+	VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
 	) const 
 {
 	using DynamicCastHelperPack::dyn_cast;

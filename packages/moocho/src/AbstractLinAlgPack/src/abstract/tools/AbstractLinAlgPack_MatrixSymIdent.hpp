@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// MatrixSymIdentity.hpp
+// MatrixSymIdent.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_MATRIX_SYM_IDENTITY_H
 #define ALAP_MATRIX_SYM_IDENTITY_H
 
-#include "MatrixSymWithOpNonsingular.hpp"
+#include "MatrixSymOpNonsing.hpp"
 #include "VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
@@ -26,14 +26,14 @@ namespace AbstractLinAlgPack {
  *
  * More operations will be overridden as they are needed by various applications.
  */
-class MatrixSymIdentity : virtual public MatrixSymWithOpNonsingular {
+class MatrixSymIdent : virtual public MatrixSymOpNonsing {
 public:
 	
 	/** @name Constructors/initializers */
 	//@{
 
 	/// Calls <tt>this->initialize()</tt>.
-	MatrixSymIdentity(
+	MatrixSymIdent(
 		const VectorSpace::space_ptr_t&          vec_space = VectorSpace::space_ptr_t(NULL)
 		,const value_type                        scale     = 1.0
 		);
@@ -64,7 +64,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -73,18 +73,18 @@ public:
 	std::ostream& output(std::ostream& out) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2, value_type beta ) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2, value_type beta ) const;
 
 	//@}
 
-	/** @name Overridden from MatrixNonsingular */
+	/** @name Overridden from MatrixNonsing */
 	//@{
 
 	///
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2 ) const;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2 ) const;
 
 	//@}
 
@@ -93,13 +93,13 @@ private:
 	VectorSpace::space_ptr_t  vec_space_;
 	value_type                scale_;
 	
-}; // end class MatrixSymIdentity
+}; // end class MatrixSymIdent
 
 // ///////////////////////////////////////////
 // Inline members
 
 inline
-value_type MatrixSymIdentity::scale() const
+value_type MatrixSymIdent::scale() const
 {
 	return scale_;
 }

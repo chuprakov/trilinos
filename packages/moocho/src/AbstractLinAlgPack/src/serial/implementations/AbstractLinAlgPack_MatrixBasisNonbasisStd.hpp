@@ -34,13 +34,13 @@ class MatrixBasisNonbasisStd
 public:
 	
     ///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>
 		C_ptr_t;
     ///
 	typedef MemMngPack::ref_count_ptr<const MatrixFactorized>
 		C_nonsingular_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>
 		N_ptr_t;
 
 	///
@@ -120,11 +120,11 @@ public:
 	// Overridden from MatrixBasisNonbasis
 
 	///
-	const MatrixWithOp& C() const;
+	const MatrixOp& C() const;
 	///
 	const MatrixFactorized& C_nonsingular() const;
 	///
-	const MatrixWithOp& N() const;
+	const MatrixOp& N() const;
 
 private:
 	C_ptr_t               C_;

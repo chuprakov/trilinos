@@ -17,12 +17,12 @@
 #define SLAP_MATRIX_NONSINGULAR_SERIAL_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixNonsingular</tt> objects
+/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixNonsing</tt> objects
  * implemented in shared memory space.
  *
  * This base class does a mapping from fully abstract linear algebra to shared memory
@@ -32,7 +32,7 @@ namespace SparseLinAlgPack {
  * the line \ref MatrixNonsingularSerial_funcs "non-member functions" that are provided.
  */
 class MatrixNonsingularSerial
-	: virtual public AbstractLinAlgPack::MatrixNonsingular // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixNonsing // doxygen needs full name
 {
 public:
 
@@ -112,32 +112,32 @@ public:
 	//		end Level-3 BLAS
 	//@}
 
-	/** Overridden from MatrixNonsingular */
+	/** Overridden from MatrixNonsing */
 	//@{
 
 	/// v_lhs	= inv(op(M_rhs1)) * vs_rhs2
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2) const;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2) const;
 	/// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		,const SpVectorSlice& sv_rhs2) const;
 	/// result	= vs_rhs1' * inv(op(M_rhs2)) * vs_rhs3
 	value_type transVtInvMtV(
-		const VectorWithOp& v_rhs1
+		const Vector& v_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
-		,const VectorWithOp& v_rhs3) const;
+		,const Vector& v_rhs3) const;
 	/// m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
 	void M_StInvMtM(
-		MatrixWithOp* m_lhs, value_type alpha
+		MatrixOp* m_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		) const;
 	/// m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
 	void M_StMtInvM(
-		MatrixWithOp* m_lhs, value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		MatrixOp* m_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
 		) const;
 

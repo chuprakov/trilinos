@@ -87,7 +87,7 @@ public:
 	 */
 	bool test_interface(
 		NLP                           *nlp
-		,const VectorWithOp           &xo
+		,const Vector           &xo
 		,bool                         print_all_warnings
 		,std::ostream                 *out
 		);

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatrixSymWithOpNonsingular.cpp
+// MatrixSymOpNonsing.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,88 +13,88 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 
-MatrixSymWithOpNonsingular::mat_mswons_mut_ptr_t
-MatrixSymWithOpNonsingular::clone_mswons()
+MatrixSymOpNonsing::mat_mswons_mut_ptr_t
+MatrixSymOpNonsing::clone_mswons()
 {
 	return MemMngPack::null;
 }
 
-MatrixSymWithOpNonsingular::mat_mswons_ptr_t
-MatrixSymWithOpNonsingular::clone_mswons() const
+MatrixSymOpNonsing::mat_mswons_ptr_t
+MatrixSymOpNonsing::clone_mswons() const
 {
 	return MemMngPack::null;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-MatrixSymWithOpNonsingular::mat_mut_ptr_t
-MatrixSymWithOpNonsingular::clone()
+MatrixSymOpNonsing::mat_mut_ptr_t
+MatrixSymOpNonsing::clone()
 {
 	return clone_mswons();
 }
 
-MatrixSymWithOpNonsingular::mat_ptr_t
-MatrixSymWithOpNonsingular::clone() const
+MatrixSymOpNonsing::mat_ptr_t
+MatrixSymOpNonsing::clone() const
 {
 	return clone_mswons();
 }
 
-// Overridden from MatrixNonsingular
+// Overridden from MatrixNonsing
 
-MatrixSymWithOpNonsingular::mat_mns_mut_ptr_t
-MatrixSymWithOpNonsingular::clone_mns()
+MatrixSymOpNonsing::mat_mns_mut_ptr_t
+MatrixSymOpNonsing::clone_mns()
 {
 	return clone_mswons();
 }
 
-MatrixSymWithOpNonsingular::mat_mns_ptr_t
-MatrixSymWithOpNonsingular::clone_mns() const
+MatrixSymOpNonsing::mat_mns_ptr_t
+MatrixSymOpNonsing::clone_mns() const
 {
 	return clone_mswons();
 }
 
-// Overridden from MatrixSymWithOp
+// Overridden from MatrixSymOp
 
-MatrixSymWithOpNonsingular::mat_mswo_mut_ptr_t
-MatrixSymWithOpNonsingular::clone_mswo()
+MatrixSymOpNonsing::mat_mswo_mut_ptr_t
+MatrixSymOpNonsing::clone_mswo()
 {
 	return clone_mswons();
 }
 
-MatrixSymWithOpNonsingular::mat_mswo_ptr_t
-MatrixSymWithOpNonsingular::clone_mswo() const
+MatrixSymOpNonsing::mat_mswo_ptr_t
+MatrixSymOpNonsing::clone_mswo() const
 {
 	return clone_mswons();
 }
 
-// Overridden from MatrixSymNonsingular
+// Overridden from MatrixSymNonsing
 
-MatrixSymWithOpNonsingular::mat_msns_mut_ptr_t
-MatrixSymWithOpNonsingular::clone_msns()
+MatrixSymOpNonsing::mat_msns_mut_ptr_t
+MatrixSymOpNonsing::clone_msns()
 {
 	return clone_mswons();
 }
 
-MatrixSymWithOpNonsingular::mat_msns_ptr_t
-MatrixSymWithOpNonsingular::clone_msns() const
+MatrixSymOpNonsing::mat_msns_ptr_t
+MatrixSymOpNonsing::clone_msns() const
 {
 	return clone_mswons();
 }
 
-// Overridden from MatrixWithOpNonsingular
+// Overridden from MatrixOpNonsing
 
-MatrixSymWithOpNonsingular::mat_mwons_mut_ptr_t
-MatrixSymWithOpNonsingular::clone_mwons()
+MatrixSymOpNonsing::mat_mwons_mut_ptr_t
+MatrixSymOpNonsing::clone_mwons()
 {
 	return clone_mswons();
 }
 
-MatrixSymWithOpNonsingular::mat_mwons_ptr_t
-MatrixSymWithOpNonsingular::clone_mwons() const
+MatrixSymOpNonsing::mat_mwons_ptr_t
+MatrixSymOpNonsing::clone_mwons() const
 {
 	return clone_mswons();
 }

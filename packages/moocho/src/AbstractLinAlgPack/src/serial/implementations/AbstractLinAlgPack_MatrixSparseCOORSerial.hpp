@@ -16,7 +16,7 @@
 #ifndef MATRIX_SPARSE_COOR_SERIAL_H
 #define MATRIX_SPARSE_COOR_SERIAL_H
 
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "VectorSpaceSerial.hpp"
 #include "MatrixLoadSparseElements.hpp"
 #include "MatrixExtractSparseElements.hpp"
@@ -30,7 +30,7 @@ namespace SparseLinAlgPack {
  * ToDo: Finish documentation!
  */
 class MatrixSparseCOORSerial
-	: virtual public AbstractLinAlgPack::MatrixWithOp
+	: virtual public AbstractLinAlgPack::MatrixOp
 	, virtual public MatrixLoadSparseElements
 	, virtual public MatrixExtractSparseElements
 {
@@ -200,7 +200,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -208,13 +208,13 @@ public:
 	///
 	const VectorSpace& space_rows() const;
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& M);
+	MatrixOp& operator=(const MatrixOp& M);
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const;
+		VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const;
 
 	// ToDo: Add more method overrides as they are needed!
 	

@@ -21,8 +21,8 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 using std::endl;
@@ -118,7 +118,7 @@ void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 		o << setw(w) << "-";
 
 	{
-		const IterQuantityAccess<VectorWithOpMutable>
+		const IterQuantityAccess<VectorMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )
@@ -285,7 +285,7 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 		o << setw(w) << "-";
 
 	{
-		const IterQuantityAccess<VectorWithOpMutable>
+		const IterQuantityAccess<VectorMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )

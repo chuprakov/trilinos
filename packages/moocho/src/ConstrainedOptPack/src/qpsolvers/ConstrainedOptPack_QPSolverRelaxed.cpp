@@ -18,10 +18,10 @@
 #include <limits>
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
@@ -37,17 +37,17 @@ QPSolverRelaxed::QPSolverRelaxed()
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp& dL, const VectorWithOp& dU
-	,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
-	,const VectorWithOp& eL, const VectorWithOp& eU
-	,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+	,const Vector& dL, const Vector& dU
+	,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+	,const Vector& eL, const Vector& eU
+	,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
-	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu, VectorMutable* Ed
+	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
 	return solve_qp(out,olevel,test_what,g,G,etaL,&dL,&dU
@@ -58,15 +58,15 @@ QPSolverRelaxed::solve_qp(
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp& dL, const VectorWithOp& dU
-	,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
-	,const VectorWithOp& eL, const VectorWithOp& eU
+	,const Vector& dL, const Vector& dU
+	,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+	,const Vector& eL, const Vector& eU
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu, VectorMutable* Ed
 	)
 {
 	return solve_qp(out,olevel,test_what,g,G,etaL,&dL,&dU
@@ -77,14 +77,14 @@ QPSolverRelaxed::solve_qp(
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp& dL, const VectorWithOp& dU
-	,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+	,const Vector& dL, const Vector& dU
+	,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
 	return solve_qp(out,olevel,test_what,g,G,etaL,&dL,&dU
@@ -96,11 +96,11 @@ QPSolverRelaxed::solve_qp(
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
-	,const VectorWithOp& dL, const VectorWithOp& dU
+	,const Vector& g, const MatrixSymOp& G
+	,const Vector& dL, const Vector& dU
 	,value_type* obj_d
-	,VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
+	,VectorMutable* d
+	,VectorMutable* nu
 	)
 {
 	return solve_qp(out,olevel,test_what,g,G,0,&dL,&dU
@@ -112,17 +112,17 @@ QPSolverRelaxed::solve_qp(
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp* dL, const VectorWithOp* dU
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-	,const VectorWithOp* eL, const VectorWithOp* eU
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const Vector* dL, const Vector* dU
+	,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+	,const Vector* eL, const Vector* eU
+	,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
-	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu, VectorMutable* Ed
+	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
 #ifdef PROFILE_HACK_ENABLED
@@ -147,17 +147,17 @@ QPSolverRelaxed::solve_qp(
 
 void QPSolverRelaxed::validate_input(
 	const value_type infinite_bound
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp* dL, const VectorWithOp* dU
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-	,const VectorWithOp* eL, const VectorWithOp* eU
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const Vector* dL, const Vector* dU
+	,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+	,const Vector* eL, const Vector* eU
+	,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 	,const value_type* obj_d
-	,const value_type* eta, const VectorWithOp* d
-	,const VectorWithOp* nu
-	,const VectorWithOp* mu, const VectorWithOp* Ed
-	,const VectorWithOp* lambda, const VectorWithOp* Fd
+	,const value_type* eta, const Vector* d
+	,const Vector* nu
+	,const Vector* mu, const Vector* Ed
+	,const Vector* lambda, const Vector* Fd
 	)
 {
 	// Validate output arguments
@@ -247,16 +247,16 @@ void QPSolverRelaxed::validate_input(
 void QPSolverRelaxed::print_qp_input( 
 	const value_type infinite_bound
 	,std::ostream* out, EOutputLevel olevel
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp* dL, const VectorWithOp* dU
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-	,const VectorWithOp* eL, const VectorWithOp* eU
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu
-	,VectorWithOpMutable* lambda
+	,const Vector* dL, const Vector* dU
+	,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+	,const Vector* eL, const Vector* eU
+	,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu
+	,VectorMutable* lambda
 	)
 {
 	using AbstractLinAlgPack::num_bounded;
@@ -343,10 +343,10 @@ void QPSolverRelaxed::print_qp_output(
 	const value_type infinite_bound
 	,std::ostream* out, EOutputLevel olevel
 	,const value_type* obj_d
-	,const value_type* eta, const VectorWithOp* d
-	,const VectorWithOp* nu
-	,const VectorWithOp* mu, const VectorWithOp* Ed
-	,const VectorWithOp* lambda, const VectorWithOp* Fd
+	,const value_type* eta, const Vector* d
+	,const Vector* nu
+	,const Vector* mu, const Vector* Ed
+	,const Vector* lambda, const Vector* Fd
 	)
 {
 	if( out && (int)olevel > (int)PRINT_ITER_STEPS ) {

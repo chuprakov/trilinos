@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixWithOp.hpp
+// MatrixOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -69,7 +69,7 @@ namespace AbstractLinAlgPack {
  * The vector space objects returned by the methods \c space_cols() and \c space_rows() 
  * are specifically bound to this matrix object.  The vector space objects returned should
  * only be considered to be transient and may become invalid if \c this is modified in some
- * significant way (but not through this <tt>%MatrixWithOp</tt> interface obviously).
+ * significant way (but not through this <tt>%MatrixOp</tt> interface obviously).
  *
  * Most of the Level-1 through Level-3 BLAS methods should not be called directly by clients,
  * but instead be called through the \ref MatrixWithOp_func_grp "provided non-member functions".
@@ -102,7 +102,7 @@ namespace AbstractLinAlgPack {
  * ToDo: Add more detailed documentation for the default Level-1 and Level-3 BLAS
  * methods.
  */
-class MatrixWithOp : public virtual MatrixBase {
+class MatrixOp : public virtual MatrixBase {
 public:
 
 	/** @name Public types */
@@ -110,9 +110,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>    mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>    mat_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOp>          mat_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixOp>          mat_mut_ptr_t;
 #endif
 
 	/// Type of matrix norm
@@ -174,7 +174,7 @@ public:
 	  * implementation could use this to copy the state to <tt>this</tt> matrix
 	  * object from a compatible <tt>M</tt> matrix object.
 	  */
-	virtual MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
+	virtual MatrixOp& operator=(const MatrixOp& mwo_rhs);
 
 	//@}
 
@@ -249,7 +249,7 @@ public:
 	 * referenced algorithm by Highman.  This algorithm only requires mat-vecs and transposed
 	 * mat-vecs so every matrix object can implement this method.  The main purpose of this default
 	 * implementation is to allow a default implementation of the estimation of the <tt>||.||1</tt>
-	 * or <tt>||.||inf</tt> normed condition number in the class <tt>MatrixWithOpNonsingular</tt>.
+	 * or <tt>||.||inf</tt> normed condition number in the class <tt>MatrixOpNonsing</tt>.
 	 * The default arguments for this function will compute a norm and will not thrown an
 	 * exception.  The default implementation will throw an exception for any other norm type than
 	 * <tt>requested_norm_type == MAT_NORM_1</tt> or <tt>requested_norm_type = MAT_NORM_INF</tt>.
@@ -276,7 +276,7 @@ public:
 	 * It is allows for a matrix implementation to return <tt>return.get() == NULL</tt>
 	 * for any arbitrary subview.
 	 *
-	 * The default implementation uses the matrix subclass \c MatrixWithOpSubView
+	 * The default implementation uses the matrix subclass \c MatrixOpSubView
 	 * and therefore, can return any arbitrary subview.  More specialized implementations
 	 * may want to restrict the subview that can be created somewhat.
 	 */
@@ -400,7 +400,7 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StM()</tt>
 	 */
 	virtual bool Mp_StM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		, BLAS_Cpp::Transp trans_rhs) const;
 
 	///
@@ -413,7 +413,7 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StM()</tt>.
 	 */
 	virtual bool Mp_StM(
-		value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
+		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
 
 	///
 	/** mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
@@ -425,7 +425,7 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StMtP()</tt>.
 	 */
 	virtual bool Mp_StMtP(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		) const;
@@ -441,7 +441,7 @@ public:
 	 */
 	virtual bool Mp_StMtP(
 		value_type alpha
-		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		);
 
@@ -455,7 +455,7 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StPtM()</tt>.
 	 */
 	virtual bool Mp_StPtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		,BLAS_Cpp::Transp M_trans
 		) const;
@@ -472,7 +472,7 @@ public:
 	virtual bool Mp_StPtM(
 		value_type alpha
 		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp M_trans
 		);
 
 	///
@@ -485,7 +485,7 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StPtMtP()</tt>.
 	 */
 	virtual bool Mp_StPtMtP(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -503,7 +503,7 @@ public:
 	virtual bool Mp_StPtMtP(
 		value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 		);
 
@@ -515,32 +515,32 @@ public:
 
 	/// v_lhs = alpha * op(M_rhs1) * v_rhs2 + beta * v_lhs (BLAS xGEMV)
 	virtual void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const = 0;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const = 0;
 
 	/// v_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * v_lhs (BLAS xGEMV)
 	virtual void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 	/// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * v_rhs3 + beta * v_rhs
 	virtual void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorWithOp& v_rhs3, value_type beta) const;
+		, const Vector& v_rhs3, value_type beta) const;
 
 	/// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * v_rhs
 	virtual void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
 
 	/// result = v_rhs1' * op(M_rhs2) * v_rhs3
 	virtual value_type transVtMtV(
-		const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const VectorWithOp& v_rhs3) const;
+		const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
+		, const Vector& v_rhs3) const;
 
 	/// result = sv_rhs1' * op(M_rhs2) * sv_rhs3
 	virtual value_type transVtMtV(
@@ -563,7 +563,7 @@ public:
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 		, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-		, value_type beta, MatrixSymWithOp* symwo_lhs ) const;
+		, value_type beta, MatrixSymOp* symwo_lhs ) const;
 
 	//@}
 
@@ -580,9 +580,9 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StMtM()</tt>.
 	 */
 	virtual bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 
 	///
@@ -595,8 +595,8 @@ public:
 	 * <tt>AbstractLinAlgPack::Mp_StMtM()</tt>.
 	 */
 	virtual bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		MatrixOp* mwo_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 
@@ -611,8 +611,8 @@ public:
 	 */
 	virtual bool Mp_StMtM(
 		value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 		,value_type beta );
 	
 	///
@@ -631,7 +631,7 @@ public:
 		BLAS_Cpp::Transp   M_trans
 		,value_type        alpha
 		,value_type        beta
-		,MatrixSymWithOp   *sym_lhs
+		,MatrixSymOp   *sym_lhs
 		) const;
 	
 	///
@@ -647,7 +647,7 @@ public:
 	 * The default implementation returns <tt>false</tt> and does nothing.
 	 */
 	virtual bool syrk(
-		const MatrixWithOp  &mwo_rhs
+		const MatrixOp  &mwo_rhs
 		,BLAS_Cpp::Transp   M_trans
 		,value_type         alpha
 		,value_type         beta
@@ -656,14 +656,14 @@ public:
 	//		end Level-3 BLAS
 	//@}
 
-};	// end class MatrixWithOp
+};	// end class MatrixOp
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////
-/** \defgroup MatrixWithOp_func_grp MatrixWithOp non-member functions that call virtual functions.
+/** \defgroup MatrixWithOp_func_grp MatrixOp non-member functions that call virtual functions.
   *
   * These allow nonmember functions to act like virtual functions.  If any of these methods
   * on the subclasses are not implemented for a particular set of matrix arguments, then the
-  * exception <tt>AbstractLinAlgPack::MatrixWithOp::MethodNotImplemented</tt> is thrown.
+  * exception <tt>AbstractLinAlgPack::MatrixOp::MethodNotImplemented</tt> is thrown.
   * This will not happen as long as a compatible (vector spaces are compatible) lhs matrix
   * argument is passed in and <tt>dynamic_cast<MultiVectorMatrix*>(lhs) != NULL</tt>.
   */
@@ -679,7 +679,7 @@ public:
  * otherwise <tt>mwo_lhs->Mt_S(alpha)</tt> will be called.  If <tt>alpha == 1.0</tt>
  * then nothing is done.
  */
-void Mt_S( MatrixWithOp* mwo_lhs, value_type alpha );
+void Mt_S( MatrixOp* mwo_lhs, value_type alpha );
 
 //
 /** mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY).
@@ -697,7 +697,7 @@ void Mt_S( MatrixWithOp* mwo_lhs, value_type alpha );
  * then an exception is thrown.
  */
 void Mp_StM(
-	MatrixWithOp* mwo_lhs, value_type alpha, const MatrixWithOp& M_rhs
+	MatrixOp* mwo_lhs, value_type alpha, const MatrixOp& M_rhs
 	, BLAS_Cpp::Transp trans_rhs);
 
 ///
@@ -708,8 +708,8 @@ void Mp_StM(
  * ToDo: Finish documentation!
  */
 void Mp_StMtP(
-	MatrixWithOp* mwo_lhs, value_type alpha
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	MatrixOp* mwo_lhs, value_type alpha
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	);
 
@@ -721,9 +721,9 @@ void Mp_StMtP(
  * ToDo: Finish documentation!
  */
 void Mp_StPtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	);
 
 ///
@@ -734,9 +734,9 @@ void Mp_StPtM(
  * ToDo: Finish documentation!
  */
 void Mp_StPtMtP(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	);
 
@@ -748,15 +748,15 @@ void Mp_StPtMtP(
 
 /// v_lhs = alpha * op(M_rhs1) * v_rhs2 + beta * v_lhs (BLAS xGEMV)
 inline void Vp_StMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha, const MatrixWithOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const VectorWithOp& v_rhs2, value_type beta = 1.0)
+	VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Vp_StMtV(v_lhs,alpha,trans_rhs1,v_rhs2,beta);
 }
 
 /// v_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * v_lhs (BLAS xGEMV)
 inline void Vp_StMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha, const MatrixWithOp& M_rhs1
+	VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Vp_StMtV(v_lhs,alpha,trans_rhs1,sv_rhs2,beta);
@@ -764,19 +764,19 @@ inline void Vp_StMtV(
 
 /// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * v_rhs3 + beta * v_rhs
 inline void Vp_StPtMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha
+	VectorMutable* v_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
-	, const VectorWithOp& v_rhs3, value_type beta = 1.0) 
+	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+	, const Vector& v_rhs3, value_type beta = 1.0) 
 {
 	M_rhs2.Vp_StPtMtV(v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,v_rhs3,beta);
 }
 
 /// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * v_rhs
 inline void Vp_StPtMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha
+	VectorMutable* v_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& sv_rhs3, value_type beta = 1.0)
 {
 	M_rhs2.Vp_StPtMtV(v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,sv_rhs3,beta);
@@ -784,15 +784,15 @@ inline void Vp_StPtMtV(
 
 /// result = v_rhs1' * op(M_rhs2) * v_rhs3
 inline value_type transVtMtV(
-	const VectorWithOp& v_rhs1, const MatrixWithOp& M_rhs2
-	, BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3)
+	const Vector& v_rhs1, const MatrixOp& M_rhs2
+	, BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3)
 {
 	return M_rhs2.transVtMtV(v_rhs1,trans_rhs2,v_rhs3);
 }
 
 /// result = sv_rhs1' * op(M_rhs2) * sv_rhs3
 inline value_type transVtMtV(
-	const SpVectorSlice& sv_rhs1, const MatrixWithOp& M_rhs2
+	const SpVectorSlice& sv_rhs1, const MatrixOp& M_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
 {
 	return M_rhs2.transVtMtV(sv_rhs1,trans_rhs2,sv_rhs3);
@@ -818,9 +818,9 @@ inline value_type transVtMtV(
  * Otherwise, the operation is implemented in terms of <tt>Vp_StMtV()</tt>.
  */
 void Mp_StMtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	MatrixOp* mwo_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0 );
 
 ///
@@ -831,11 +831,11 @@ void Mp_StMtM(
  * The default implementation returns <tt>false</tt> and does nothing.
  */
 void syrk(
-	const MatrixWithOp  &mwo_rhs
+	const MatrixOp  &mwo_rhs
 	,BLAS_Cpp::Transp   M_trans
 	,value_type         alpha
 	,value_type         beta
-	,MatrixSymWithOp    *sym_lhs
+	,MatrixSymOp    *sym_lhs
 	);
 
 //		end Level-3 BLAS
@@ -845,11 +845,11 @@ void syrk(
 //@}
 
 // //////////////////////////////////////////////////
-// Inlined methods for MatrixWithOp
+// Inlined methods for MatrixOp
 
 inline
-MatrixWithOp::mat_ptr_t
-MatrixWithOp::sub_view(
+MatrixOp::mat_ptr_t
+MatrixOp::sub_view(
 	const index_type& rl, const index_type& ru
 	,const index_type& cl, const index_type& cu
 	) const

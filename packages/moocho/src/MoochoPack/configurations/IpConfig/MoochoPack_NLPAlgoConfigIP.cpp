@@ -30,7 +30,7 @@
 //#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"                          // |
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
 
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
 #include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
@@ -432,11 +432,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  Vu_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Vu_name,
-			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
-						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
 			)
@@ -445,11 +445,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  Vl_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Vl_name,
-			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
-						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
 			)
@@ -458,11 +458,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  invXu_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  invXu_name,
-			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
-						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
 			)
@@ -471,11 +471,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  invXl_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  invXl_name,
-			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
-						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
 			)
@@ -484,11 +484,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  rHB_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymWithOp>(
+			new IterQuantityAccessContiguous<MatrixSymOp>(
 			  1,
 			  rHB_name,
 			  mmp::rcp(
-				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
 					,false    // maintain_factor
@@ -503,11 +503,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  B_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymWithOp>(
+			new IterQuantityAccessContiguous<MatrixSymOp>(
 			  1,
 			  B_name,
 			  mmp::rcp(
-				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
 					,false    // maintain_factor
@@ -522,11 +522,11 @@ void Algo_ConfigIP::config_algo_cntr(
 		state->set_iter_quant(
 		  Sigma_name
 		  ,mmp::rcp(
-			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Sigma_name,
-			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
-						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
 			)
@@ -535,14 +535,14 @@ void Algo_ConfigIP::config_algo_cntr(
 		// These iteration quantities are defined in ipState, 		
 		// force their creation and resize them
 		dyn_cast< IterQuantityAccessContiguous<value_type> >(state->barrier_obj()).resize(2);
-		dyn_cast< IterQuantityAccessContiguous<VectorWithOpMutable> >(state->grad_barrier_obj()).resize(2);
+		dyn_cast< IterQuantityAccessContiguous<VectorMutable> >(state->grad_barrier_obj()).resize(2);
 
 		// Add reduced Hessian of the Lagrangian
 
 		if( !cov_.exact_reduced_hessian_ ) {
-			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
+			ref_count_ptr<afp::AbstractFactory<MatrixSymOp> >
 				abstract_factory_rHL = mmp::rcp(
-					new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+					new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 						MatrixSymPosDefCholFactor::PostMod(
 							true    // maintain_original
 							,false  // maintain_factor
@@ -553,7 +553,7 @@ void Algo_ConfigIP::config_algo_cntr(
 			state->set_iter_quant(
 				rHL_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixSymWithOp>(
+					new IterQuantityAccessContiguous<MatrixSymOp>(
 						1
 						,rHL_name
 						,abstract_factory_rHL
@@ -618,7 +618,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		//
 		
 		typedef IterQuantityAccessContiguous<value_type>            IQ_scalar_cngs;
-		typedef IterQuantityAccessContiguous<VectorWithOpMutable>   IQ_vector_cngs;
+		typedef IterQuantityAccessContiguous<VectorMutable>   IQ_vector_cngs;
 
 		dyn_cast<IQ_vector_cngs>(state->x()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);

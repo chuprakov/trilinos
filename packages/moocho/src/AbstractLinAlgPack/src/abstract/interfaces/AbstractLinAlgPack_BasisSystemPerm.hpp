@@ -76,12 +76,12 @@ public:
 		,const Range1D             *equ_decomp
 		,const Permutation         *P_inequ
 		,const Range1D             *inequ_decomp
-		,const MatrixWithOp        *Gc
-		,const MatrixWithOp        *Gh
-		,MatrixWithOpNonsingular   *C
-		,MatrixWithOp              *D
-		,MatrixWithOp              *GcUP
-		,MatrixWithOp              *GhUP
+		,const MatrixOp        *Gc
+		,const MatrixOp        *Gh
+		,MatrixOpNonsing   *C
+		,MatrixOp              *D
+		,MatrixOp              *GcUP
+		,MatrixOp              *GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		,std::ostream               *out    = NULL
 		) = 0;
@@ -92,20 +92,20 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void select_basis(
-		const VectorWithOp          *nu
-		,const VectorWithOp         *lambdaI
-		,MatrixWithOp               *Gc
-		,MatrixWithOp               *Gh
+		const Vector          *nu
+		,const Vector         *lambdaI
+		,MatrixOp               *Gc
+		,MatrixOp               *Gh
 		,Permutation                *P_var
 		,Range1D                    *var_dep
 		,Permutation                *P_equ
 		,Range1D                    *equ_decomp
 		,Permutation                *P_inequ
 		,Range1D                    *inequ_decomp
-		,MatrixWithOpNonsingular    *C
-		,MatrixWithOp               *D
-		,MatrixWithOp               *GcUP
-		,MatrixWithOp               *GhUP
+		,MatrixOpNonsing    *C
+		,MatrixOp               *D
+		,MatrixOp               *GcUP
+		,MatrixOp               *GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		,std::ostream               *out    = NULL
 		) = 0;

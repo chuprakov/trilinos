@@ -20,7 +20,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -41,7 +41,7 @@ bool MeritFunc_PenaltyParamUpdateMultFree_AddedStep::min_mu(
 {
 	using AbstractLinAlgPack::dot;
 
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&Gf_iq    = s.Gf(),
 		&nu_iq    = s.nu(),
 		&Ypy_iq   = s.Ypy(),

@@ -21,7 +21,7 @@
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -55,7 +55,7 @@ public:
 	MultiVectorMutableCols(
 		const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
 		,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-		,MemMngPack::ref_count_ptr<VectorWithOpMutable>       col_vecs[] = NULL
+		,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[] = NULL
 		);
 	
 	///
@@ -94,7 +94,7 @@ public:
 	void initialize(
 		const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
 		,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-		,MemMngPack::ref_count_ptr<VectorWithOpMutable>       col_vecs[] = NULL
+		,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[] = NULL
 		);
 
 	/// Set uninitalized.
@@ -112,7 +112,7 @@ public:
 
 	//@}
 	
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -124,23 +124,23 @@ public:
 	///
 	void Mt_S( value_type alpha );
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
+	MatrixOp& operator=(const MatrixOp& mwo_rhs);
 	///
 	mat_mut_ptr_t clone();
 	///
 	mat_ptr_t clone() const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
 	bool syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
-		, value_type beta, MatrixSymWithOp* sym_lhs ) const;
+		, value_type beta, MatrixSymOp* sym_lhs ) const;
 
 	/** @name Overridden from MultiVector */
 	//@{
@@ -165,11 +165,11 @@ private:
 #ifdef DOXYGEN_COMPILE
 	const VectorSpace                  *space_cols;
 	const VectorSpace                  *space_rows;
-	VectorWithOpMutable                *column_vectors;
+	VectorMutable                *column_vectors;
 #else
 	MemMngPack::ref_count_ptr<const VectorSpace>                  space_cols_;
 	MemMngPack::ref_count_ptr<const VectorSpace>                  space_rows_;
-	std::vector< MemMngPack::ref_count_ptr<VectorWithOpMutable> > col_vecs_;
+	std::vector< MemMngPack::ref_count_ptr<VectorMutable> > col_vecs_;
 #endif
 	
 }; // end class MultiVectorMutableCols

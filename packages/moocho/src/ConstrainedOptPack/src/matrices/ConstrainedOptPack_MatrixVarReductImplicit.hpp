@@ -20,7 +20,7 @@
 #include <list>
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "ref_count_ptr.hpp"
 
@@ -65,7 +65,7 @@ namespace ConstrainedOptimizationPack {
  * called then all of these computed rows are discarded and they must be generated again.
  */
 class MatrixVarReductImplicit
-	: public AbstractLinAlgPack::MatrixWithOp
+	: public AbstractLinAlgPack::MatrixOp
 {
 public:
 
@@ -73,9 +73,9 @@ public:
 	//@{
 	
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>   mat_nonsing_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>              mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>              mat_ptr_t;
 
 	//@}
 
@@ -173,7 +173,7 @@ public:
 	size_type cols() const;
 	//@}
 
-	/** @name Overridden from MatrixWithOp. */
+	/** @name Overridden from MatrixOp. */
 	//@{
 
 	///
@@ -181,31 +181,31 @@ public:
 	///
 	const VectorSpace& space_rows() const;
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& M);
+	MatrixOp& operator=(const MatrixOp& M);
 	///
 	std::ostream& output(std::ostream&) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2, value_type beta
+		,const Vector& v_rhs2, value_type beta
 		) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
 		,const SpVectorSlice& sv_rhs2, value_type beta
 		) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_rhs2_trans
-		,const VectorWithOp& v_rhs3, value_type beta
+		,const Vector& v_rhs3, value_type beta
 		) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_rhs2_trans
 		,const SpVectorSlice& sv_rhs3, value_type beta
@@ -225,9 +225,9 @@ private:
 	// Private data members
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::MatrixWithOpNonsingular  *C;
-	AbstractLinAlgPack::MatrixWithOp             *N;
-	AbstractLinAlgPack::MatrixWithOp             *D_direct;
+	AbstractLinAlgPack::MatrixOpNonsing  *C;
+	AbstractLinAlgPack::MatrixOp             *N;
+	AbstractLinAlgPack::MatrixOp             *D_direct;
 #else
 	mat_nonsing_ptr_t                   C_;
 	mat_ptr_t                           N_;

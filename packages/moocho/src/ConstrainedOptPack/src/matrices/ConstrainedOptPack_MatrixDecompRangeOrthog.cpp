@@ -16,8 +16,8 @@
 #include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
@@ -77,7 +77,7 @@ void MatrixDecompRangeOrthog::set_uninitialized()
 	S_ptr_ = rcp::null;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 size_type MatrixDecompRangeOrthog::rows() const
 {
@@ -110,8 +110,8 @@ std::ostream& MatrixDecompRangeOrthog::output(std::ostream& out) const
 }
 
 void MatrixDecompRangeOrthog::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp R_trans
-	, const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp R_trans
+	, const Vector& x, value_type b
 	) const
 {
 	using BLAS_Cpp::no_trans;
@@ -126,9 +126,9 @@ void MatrixDecompRangeOrthog::Vp_StMtV(
 	assert_initialized("MatrixDecompRangeOrthog::Vp_StMtV(...)");
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,R_trans,x);
 
-	const MatrixWithOpNonsingular      &C = *C_ptr_;
-	const MatrixWithOp                 &D = *D_ptr_;
-	const MatrixSymWithOpNonsingular   &S = *S_ptr_;
+	const MatrixOpNonsing      &C = *C_ptr_;
+	const MatrixOp                 &D = *D_ptr_;
+	const MatrixSymOpNonsing   &S = *S_ptr_;
 	//
 	// y = b*y + a*op(R)*x
 	//
@@ -169,11 +169,11 @@ void MatrixDecompRangeOrthog::Vp_StMtV(
 	}
 }
 
-// Overridden from MatrixWithOpNonsingular
+// Overridden from MatrixOpNonsing
 
 void MatrixDecompRangeOrthog::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp R_trans
-	, const VectorWithOp& x
+	VectorMutable* y, BLAS_Cpp::Transp R_trans
+	, const Vector& x
 	) const
 {
 	using BLAS_Cpp::no_trans;
@@ -188,9 +188,9 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 	assert_initialized("MatrixDecompRangeOrthog::V_InvMtV(...)");
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,BLAS_Cpp::trans_not(R_trans),x);
 
-	const MatrixWithOpNonsingular      &C = *C_ptr_;
-	const MatrixWithOp                 &D = *D_ptr_;
-	const MatrixSymWithOpNonsingular   &S = *S_ptr_;
+	const MatrixOpNonsing      &C = *C_ptr_;
+	const MatrixOp                 &D = *D_ptr_;
+	const MatrixSymOpNonsing   &S = *S_ptr_;
 	//
 	// y = inv(op(R))*x
 	//

@@ -53,10 +53,10 @@ public:
 	///
 	value_type value(
 		value_type             f
-		,const VectorWithOp    *c
-		,const VectorWithOp    *h
-		,const VectorWithOp    *hl
-		,const VectorWithOp    *hu
+		,const Vector    *c
+		,const Vector    *h
+		,const Vector    *hl
+		,const Vector    *hu
 		) const;
 
 	///
@@ -78,12 +78,12 @@ public:
 	  * will be thrown.
 	  */
 	value_type calc_deriv(
-		const VectorWithOp    &Gf_k
-		,const VectorWithOp   *c_k
-		,const VectorWithOp   *h_k
-		,const VectorWithOp   *hl
-		,const VectorWithOp   *hu
-		,const VectorWithOp   &d_k
+		const Vector    &Gf_k
+		,const Vector   *c_k
+		,const Vector   *h_k
+		,const Vector   *hl
+		,const Vector   *hu
+		,const Vector   &d_k
 		);
 	
 	//@}
@@ -95,10 +95,10 @@ public:
 	void set_space_c( const VectorSpace::space_ptr_t& space_c );
 
 	///
-	VectorWithOpMutable& set_mu();
+	VectorMutable& set_mu();
 
 	///
-	const VectorWithOp& get_mu() const;
+	const Vector& get_mu() const;
 
 	//@}
 

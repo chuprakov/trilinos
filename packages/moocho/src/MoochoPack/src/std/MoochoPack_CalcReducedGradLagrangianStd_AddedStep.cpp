@@ -18,10 +18,10 @@
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
@@ -57,17 +57,17 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 
 	// Calculate: rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)
 
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&rGL_iq  = s.rGL(),
 		&nu_iq   = s.nu(),
 		&Gf_iq   = s.Gf();
 
-	VectorWithOpMutable &rGL_k = rGL_iq.set_k(0);
+	VectorMutable &rGL_k = rGL_iq.set_k(0);
 
 	if( nu_iq.updated_k(0) ) {
 		// Compute rGL = Z'*(Gf + nu) to reduce the effect of roundoff in this
 		// catastropic cancelation
-		const VectorWithOp &nu_k = nu_iq.get_k(0);
+		const Vector &nu_k = nu_iq.get_k(0);
 		VectorSpace::vec_mut_ptr_t
 			tmp = nu_k.space().create_member();
 

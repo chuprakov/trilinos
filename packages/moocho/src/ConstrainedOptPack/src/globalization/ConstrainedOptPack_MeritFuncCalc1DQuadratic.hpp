@@ -31,7 +31,7 @@ class MeritFuncCalc1DQuadratic : public MeritFuncCalc1D {
 public:
 
 	///
-	typedef const VectorWithOp*   const_VectorWithOp_ptr;
+	typedef const Vector*   const_VectorWithOp_ptr;
 
 	/** @name Constructors */
 	//@{
@@ -58,7 +58,7 @@ public:
 		const MeritFuncCalc&      phi
 		,size_type                p
 		,const_VectorWithOp_ptr   d[]
-		,VectorWithOpMutable*     x
+		,VectorMutable*     x
 		);
 
 	//@}
@@ -82,7 +82,7 @@ private:
 	const MeritFuncCalc&        phi_;
 	size_type                   p_;
 	const_VectorWithOp_ptr      d_[3];
-	VectorWithOpMutable         *x_;
+	VectorMutable         *x_;
 
 	// not defined and not to be called
 	MeritFuncCalc1DQuadratic();

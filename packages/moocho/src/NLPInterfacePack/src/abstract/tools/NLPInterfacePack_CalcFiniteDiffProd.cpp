@@ -24,7 +24,7 @@
 #include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
 #include "NLPInterfacePack/src/NLP.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
@@ -53,18 +53,18 @@ CalcFiniteDiffProd::CalcFiniteDiffProd(
 {}
 
 bool CalcFiniteDiffProd::calc_deriv_product(
-	const VectorWithOp     &xo
-	,const VectorWithOp    *xl
-	,const VectorWithOp    *xu
-	,const VectorWithOp    &v
+	const Vector     &xo
+	,const Vector    *xl
+	,const Vector    *xu
+	,const Vector    &v
 	,const value_type      *fo
-	,const VectorWithOp    *co
-	,const VectorWithOp    *ho
+	,const Vector    *co
+	,const Vector    *ho
 	,bool                  check_nan_inf
 	,NLP                   *nlp
 	,value_type            *Gf_prod
-	,VectorWithOpMutable   *Gc_prod
-	,VectorWithOpMutable   *Gh_prod
+	,VectorMutable   *Gc_prod
+	,VectorMutable   *Gh_prod
 	,std::ostream          *out
 	) const
 {
@@ -341,8 +341,8 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	//
 	
 	value_type              *f_saved = NULL;
-	VectorWithOpMutable     *c_saved = NULL;
-	VectorWithOpMutable     *h_saved = NULL;
+	VectorMutable     *c_saved = NULL;
+	VectorMutable     *h_saved = NULL;
 
 	f_saved = nlp->get_f();
 	if(m)  c_saved = nlp->get_c();

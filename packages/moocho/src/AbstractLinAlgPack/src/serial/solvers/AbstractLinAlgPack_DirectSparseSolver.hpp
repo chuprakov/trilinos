@@ -18,7 +18,7 @@
 
 #include "SparseSolverPackTypes.hpp"
 #include "SparseLinAlgPack/src/MatrixConvertToSparse.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
 #include "ref_count_ptr.hpp"
 #include "AbstractFactory.hpp"
 
@@ -66,7 +66,7 @@ namespace SparseSolverPack {
  * objects to be completely decoupled from the \c DSS object that created them.
  * This behavior is explained in more detail later.
  *
- * It is through the \c MatrixNonsingular interface of the \c BasisMatrix object
+ * It is through the \c MatrixNonsing interface of the \c BasisMatrix object
  * that clients can solve for linear systems.
  *
  * The usage of this interface will be illustrated by considering
@@ -237,7 +237,7 @@ public:
 	  * This object encapsulates the factorzation structure and the nonzero
 	  * values of the factorized basis matrix.
 	  */
-	class BasisMatrix : public AbstractLinAlgPack::MatrixNonsingular {
+	class BasisMatrix : public AbstractLinAlgPack::MatrixNonsing {
 	public:
 		///
 		typedef MemMngPack::ref_count_ptr<FactorizationStructure>  fact_struc_ptr_t;

@@ -20,27 +20,27 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
 /** Base class for all matrices implemented in a shared memory address space.
  * 
- * This base class inherites from <tt>AbstractLinAlgPack::MatrixWithOp</tt> and
+ * This base class inherites from <tt>AbstractLinAlgPack::MatrixOp</tt> and
  * provides a means of transition from purely abstract (i.e. parallel, out-of-core)
  * linear algebra to serial linear algebra (with explicit dense vectors and
  * matrices.
  *
  * This matrix subclass simply uses <tt>dynamic_cast<></tt> to map from the abstract interfaces
- * <tt>AbstractLinAlgPack::VectorWithOp</tt>, <tt>AbstractLinAlgPack::VectorWithOpMutable</tt>,
- * <tt>AbstractLinAlgPack::MatrixWithOp</tt> to a concreate types using a few standarized serial
+ * <tt>AbstractLinAlgPack::Vector</tt>, <tt>AbstractLinAlgPack::VectorMutable</tt>,
+ * <tt>AbstractLinAlgPack::MatrixOp</tt> to a concreate types using a few standarized serial
  * interfaces <tt>VectorWithOpGetSparse</tt>, <tt>VectorWithOpMutableDense</tt> ...
  * If these interfaces are not supported by the vector and matrix arguments, then exceptions may
  * be thrown.
  *
- * Note that every method from \c MatrixWithOp is not overridden here.  Specifically, the methods
- * <tt>MatrixWithOp::zero_out()</tt>  and <tt>MatrixWithOp::sub_view()</tt>
+ * Note that every method from \c MatrixOp is not overridden here.  Specifically, the methods
+ * <tt>MatrixOp::zero_out()</tt>  and <tt>MatrixOp::sub_view()</tt>
  * are not overridden.  These methods have default implementations that should be sufficient
  * for most uses but subclasses may want to provide specialized implementations anyway.
  *
@@ -50,22 +50,22 @@ namespace SparseLinAlgPack {
  * ToDo: Finish documentation!
  */
 class MatrixWithOpSerial
-	: virtual public AbstractLinAlgPack::MatrixWithOp // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixOp // doxygen needs full name
 {
 public:
 
 	///
-	using MatrixWithOp::Mp_StM;
+	using MatrixOp::Mp_StM;
 	///
-	using MatrixWithOp::Mp_StMtP;
+	using MatrixOp::Mp_StMtP;
 	///
-	using MatrixWithOp::Mp_StPtM;
+	using MatrixOp::Mp_StPtM;
 	///
-	using MatrixWithOp::Mp_StPtMtP;
+	using MatrixOp::Mp_StPtMtP;
 	///
-	using MatrixWithOp::Vp_StMtV;
+	using MatrixOp::Vp_StMtV;
 	///
-	using MatrixWithOp::Mp_StMtM;
+	using MatrixOp::Mp_StMtM;
 
 	/** @name Level-1 BLAS */
 	//@{
@@ -193,7 +193,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -204,52 +204,52 @@ public:
 	std::ostream& output(std::ostream& out) const;
 	///
 	bool Mp_StM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs
 		) const;
 	///
 	bool Mp_StMtP(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		, BLAS_Cpp::Transp M_trans
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		) const;
 	///
 	bool Mp_StPtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		, BLAS_Cpp::Transp M_trans
 		) const;
 	///
 	bool Mp_StPtMtP(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 		) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorWithOp& v_rhs3, value_type beta) const;
+		, const Vector& v_rhs3, value_type beta) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
 	///
 	value_type transVtMtV(
-		const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const VectorWithOp& v_rhs3) const;
+		const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
+		, const Vector& v_rhs3) const;
 	///
 	value_type transVtMtV(
 		const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
@@ -259,17 +259,17 @@ public:
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 		, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-		, value_type beta, MatrixSymWithOp* symwo_lhs ) const;
+		, value_type beta, MatrixSymOp* symwo_lhs ) const;
 	///
 	bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 	///
 	bool syrk(
 		BLAS_Cpp::Transp M_trans, value_type alpha
-		,value_type beta, MatrixSymWithOp* sym_lhs ) const;
+		,value_type beta, MatrixSymOp* sym_lhs ) const;
 
 	//@}
 

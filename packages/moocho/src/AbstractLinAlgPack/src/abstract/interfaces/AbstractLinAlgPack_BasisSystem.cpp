@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/src/BasisSystem.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {

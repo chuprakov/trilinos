@@ -60,7 +60,7 @@ public:
 	 */
  	virtual bool solve_quasi_range_space_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* v
+		,const Vector& xo, const Vector& c_xo, VectorMutable* v
 	  	) = 0;
 
 	///

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// VectorWithOpSubView.hpp
+// VectorSubView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,16 +16,16 @@
 #ifndef VECTOR_WITH_OP_SUB_VIEW_H
 #define VECTOR_WITH_OP_SUB_VIEW_H
 
-#include "VectorWithOp.hpp"
+#include "Vector.hpp"
 #include "VectorSpaceSubSpace.hpp"
 
 namespace AbstractLinAlgPack {
 
 ///
-/** Concrete subclass for a default sub-view implementation for a VectorWithOp
+/** Concrete subclass for a default sub-view implementation for a Vector
  * object.
  *
- * Not all of the methods from VectorWithOp are overridden, only those that
+ * Not all of the methods from Vector are overridden, only those that
  * need to be or may result in better performance.
  *
  * There is really not much to this vector subclass.  The subclass is only possible
@@ -36,7 +36,7 @@ namespace AbstractLinAlgPack {
  * The default constructor and copy constructors are allowed but the default
  * assignment operator is not allowed.
  */
-class VectorWithOpSubView : virtual public VectorWithOp {
+class VectorSubView : virtual public Vector {
 public:
 
 	///
@@ -44,11 +44,11 @@ public:
 	 *
 	 * Postconditions: see \c set_uninitialized().
 	 */
-	VectorWithOpSubView();
+	VectorSubView();
 	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
-	VectorWithOpSubView( const vec_ptr_t& full_vec, const Range1D& rng );
+	VectorSubView( const vec_ptr_t& full_vec, const Range1D& rng );
 	///
 	/** Initialize a sub-view based on a full vector.
 	 *
@@ -82,7 +82,7 @@ public:
 	///
 	const VectorSpaceSubSpace& space_impl() const;
 
-	/** @name Overridden from VectorWithOp */
+	/** @name Overridden from Vector */
 	//@{
 
 	///
@@ -93,22 +93,22 @@ public:
 	/** Calls \c apply_reduction() on the underlying full vectors.
 	 *
 	 * Preconditions:<ul>
-	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
+	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
 	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
+	 * <li> <tt>dynamic_cast<VectorMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
 	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k])->full_vec()->space().is_compatible(
+	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k])->full_vec()->space().is_compatible(
 	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
 	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
+	 * <li> <tt>dynamic_cast<VectorMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
 	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
 	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 */
 	void apply_reduction(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;
@@ -130,26 +130,26 @@ private:
 	VectorSpaceSubSpace        space_;      ///< The space that this vector belongs to.
 
 	// Not defined and not to be called
-	VectorWithOpSubView& operator=(const VectorWithOpSubView&);
+	VectorSubView& operator=(const VectorSubView&);
 	
-}; // end class VectorWithOpSubView
+}; // end class VectorSubView
 
 // /////////////////////////////////////////////
 // Inline members
 
 inline
-VectorWithOpSubView::VectorWithOpSubView()
+VectorSubView::VectorSubView()
 {}
 
 inline
-const VectorWithOpSubView::vec_ptr_t&
-VectorWithOpSubView::full_vec() const
+const VectorSubView::vec_ptr_t&
+VectorSubView::full_vec() const
 {
 	return full_vec_;
 }
 
 inline
-const VectorSpaceSubSpace& VectorWithOpSubView::space_impl() const
+const VectorSpaceSubSpace& VectorSubView::space_impl() const
 {
 	return space_;
 }

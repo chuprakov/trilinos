@@ -99,7 +99,7 @@ value_type MatrixIdentConcatStd::alpha() const
 	return alpha_;
 }
 
-const MatrixWithOp& MatrixIdentConcatStd::D() const
+const MatrixOp& MatrixIdentConcatStd::D() const
 {
 	return *D_ptr_;
 }
@@ -109,7 +109,7 @@ BLAS_Cpp::Transp MatrixIdentConcatStd::D_trans() const
 	return D_trans_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& MatrixIdentConcatStd::space_cols() const
 {
@@ -121,7 +121,7 @@ const VectorSpace& MatrixIdentConcatStd::space_rows() const
 	return *space_rows_;
 }
 
-MatrixWithOp& MatrixIdentConcatStd::operator=(const MatrixWithOp& m)
+MatrixOp& MatrixIdentConcatStd::operator=(const MatrixOp& m)
 {
 	assert(0); // Finish!
 	return *this;

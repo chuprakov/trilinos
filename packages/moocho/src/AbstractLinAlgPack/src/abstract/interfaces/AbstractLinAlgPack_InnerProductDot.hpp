@@ -31,7 +31,7 @@ public:
 	/** @name Overridden from InnerProduct */
 	//@{
 	///
-	value_type inner_prod(const VectorWithOp& v1, const VectorWithOp& v2) const;
+	value_type inner_prod(const Vector& v1, const Vector& v2) const;
 	//@}
 
 }; // end class InnerProductDot

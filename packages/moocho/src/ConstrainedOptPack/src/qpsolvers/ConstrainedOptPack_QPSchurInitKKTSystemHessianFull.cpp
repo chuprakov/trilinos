@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -23,16 +23,16 @@
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
-	const VectorWithOp    &g
-	,const MatrixWithOp   &G
+	const Vector    &g
+	,const MatrixOp   &G
 	,value_type           etaL
-	,const VectorWithOp   *dL
-	,const VectorWithOp   *dU
-	,const MatrixWithOp   *F
+	,const Vector   *dL
+	,const Vector   *dU
+	,const MatrixOp   *F
 	,BLAS_Cpp::Transp     trans_F
-	,const VectorWithOp   *f
-	,const VectorWithOp   *d
-	,const VectorWithOp   *nu
+	,const Vector   *f
+	,const Vector   *d
+	,const Vector   *nu
 	,size_type            *n_R
 	,i_x_free_t           *i_x_free
 	,i_x_fixed_t          *i_x_fixed
@@ -48,8 +48,8 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	using LinAlgOpPack::V_mV;
 
 	// Validate type of and convert G
-	const MatrixSymWithOpNonsingular&
-		G_sym = dyn_cast<const MatrixSymWithOpNonsingular>(G);
+	const MatrixSymOpNonsing&
+		G_sym = dyn_cast<const MatrixSymOpNonsing>(G);
 
 	const size_type nd = g.dim();
 	

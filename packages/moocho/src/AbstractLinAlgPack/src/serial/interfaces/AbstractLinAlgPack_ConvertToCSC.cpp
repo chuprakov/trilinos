@@ -18,7 +18,7 @@
 #include <algorithm>
 
 #include "ConvertToSparseCompressedColumn.hpp"
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
@@ -112,7 +112,7 @@ value_type ConvertToSparseCompressedColumnPack::dense_insert_scaled_nonzeros(
 }
 
 size_type ConvertToSparseCompressedColumnPack::num_in_column(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, size_type							col_offset
 	, const IVector::value_type*		col_perm
@@ -127,7 +127,7 @@ size_type ConvertToSparseCompressedColumnPack::num_in_column(
 }
 
 void ConvertToSparseCompressedColumnPack::insert_nonzeros(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, value_type						alpha
 	, size_type							row_offset
@@ -154,7 +154,7 @@ void ConvertToSparseCompressedColumnPack::insert_nonzeros(
 }
 
 value_type ConvertToSparseCompressedColumnPack::insert_scaled_nonzeros(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, value_type						scaled_max_ele
 	, size_type							row_offset

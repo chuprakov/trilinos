@@ -79,7 +79,7 @@ public:
 	bool perform_update(
 		DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 		,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,MatrixWithOp *rHL_k
+		,MatrixOp *rHL_k
 		);
 	///
 	void print_step( std::ostream& out, const std::string& leading_str ) const;

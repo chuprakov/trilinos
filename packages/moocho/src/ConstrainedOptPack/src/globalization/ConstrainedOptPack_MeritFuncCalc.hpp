@@ -36,7 +36,7 @@ public:
 	///
 	/** Return the value of the merit function at \a x.
 	  */
-	virtual value_type operator()(const VectorWithOp& x) const= 0;
+	virtual value_type operator()(const Vector& x) const= 0;
 
 	/// Calls value(d_k) on aggregate merit_func.
 	virtual value_type deriv() const = 0;

@@ -208,18 +208,18 @@ public:
 	 * ToDo: Discuss options!
 	 */
 	virtual bool calc_deriv_product(
-		const VectorWithOp     &xo
-		,const VectorWithOp    *xl
-		,const VectorWithOp    *xu
-		,const VectorWithOp    &v
+		const Vector     &xo
+		,const Vector    *xl
+		,const Vector    *xu
+		,const Vector    &v
 		,const value_type      *fo
-		,const VectorWithOp    *co
-		,const VectorWithOp    *ho
+		,const Vector    *co
+		,const Vector    *ho
 		,bool                  check_nan_inf
 		,NLP                   *nlp
 		,value_type            *Gf_prod
-		,VectorWithOpMutable   *Gc_prod
-		,VectorWithOpMutable   *Gh_prod
+		,VectorMutable   *Gc_prod
+		,VectorMutable   *Gh_prod
 		,std::ostream          *out
 		) const;
 

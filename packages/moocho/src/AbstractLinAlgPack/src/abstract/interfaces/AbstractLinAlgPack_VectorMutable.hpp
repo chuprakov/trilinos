@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// VectorWithOpMutable.hpp
+// VectorMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_H
 #define VECTOR_WITH_OP_MUTABLE_H
 
-#include "VectorWithOp.hpp"
+#include "Vector.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
@@ -25,7 +25,7 @@ namespace AbstractLinAlgPack {
 /** \brief Abstract interface for mutable coordinate vectors {abstract}.
  *
  * Objects of this type can act as a target vector of a transformation operation.
- * Similarly to \c VectorWithOp this interface contains very few (only one extra) pure
+ * Similarly to \c Vector this interface contains very few (only one extra) pure
  * virtual methods that must be overridden.  However, more efficient and more general
  * implementations will choose to override more methods.
  * 
@@ -34,11 +34,11 @@ namespace AbstractLinAlgPack {
  * non-standard element-wise vector operation can be performed using a reduction/transformation
  * operator.  As long as the individual sub-vectors are large enough, reduction/transformation
  * operators will be nearly as efficient as specialized operations for most vector subclasses.
- * Similarly to \c VectorWithOp::apply_reduction(), the \c apply_transformation() method allows
+ * Similarly to \c Vector::apply_reduction(), the \c apply_transformation() method allows
  * clients to include only subsets of elements in a reduction/transformation operation.
  *
  * In addition to being able to create non-mutable (\c const) abstract sub-views of a vector
- * object thorugh the \c VectorWithOp interface, this interface allows the creation of
+ * object thorugh the \c Vector interface, this interface allows the creation of
  * mutable (non-<tt>const</tt>) sub-views using \c sub_view().  Also, in addition to being
  * able to extract an explicit non-mutable view of some (small?) sub-set of elements, this
  * interface allows a client to either extract a explicit mutable sub-views using
@@ -46,22 +46,22 @@ namespace AbstractLinAlgPack {
  * as possible, abstract views should be preferred (i.e. \c sub_view()) over explict views (i.e.
  * get_sub_vector() and set_sub_vector()).
  *
- * There are only three pure virtual methods that a concreate \c VectorWithOpMutable
- * subclass must override.  The \c space() and \c apply_reduction() methods from the \c VectorWithOp
+ * There are only three pure virtual methods that a concreate \c VectorMutable
+ * subclass must override.  The \c space() and \c apply_reduction() methods from the \c Vector
  * base class inteface must be defined.  Also, as mentioned above, the \c apply_transforamtion()
  * method must be overridden and defined.
  *
- * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>VectorWithOp</tt>
+ * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>Vector</tt>
  * interface has a default implementation defined here that will be adequate for most subclasses.
  */
-class VectorWithOpMutable : virtual public VectorWithOp
+class VectorMutable : virtual public Vector
 {
 public:
 
 	///
-	using VectorWithOp::get_sub_vector;
+	using Vector::get_sub_vector;
 	///
-	using VectorWithOp::free_sub_vector;
+	using Vector::free_sub_vector;
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
@@ -75,11 +75,11 @@ public:
 	 * Therefore, the number of mutable vectors passed to <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt>
 	 * will be <tt>num_targ_vecs+1</tt>.
 	 *
-	 * See <tt>\ref VectorWithOp::apply_reduction "apply_reduction(...)" for a discussion of the significance of the
+	 * See <tt>\ref Vector::apply_reduction "apply_reduction(...)" for a discussion of the significance of the
 	 * arguments <tt>first_ele</tt>, <tt>sub_dim</tt> and <tt>global_offset</tt>.
 	 *
 	 * Preconditions:<ul>
-	 * <li> See <tt>\ref VectorWithOp::apply_reduction "apply_reduction(...)".
+	 * <li> See <tt>\ref Vector::apply_reduction "apply_reduction(...)".
 	 * </ul>
 	 *
 	 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
@@ -129,8 +129,8 @@ public:
 	 
 	 void MyVector::apply_transformation(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		)
@@ -142,8 +142,8 @@ public:
 	 */
 	virtual void apply_transformation(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele = 1, const index_type sub_dim = 0, const index_type global_offset = 0
 		) = 0;
@@ -159,7 +159,7 @@ public:
 	 * The default implementation of this function uses a transforamtion operator class
 	 * (see RTOp_TOp_assign_scalar.h) and calls this->apply_transformation() .
 	 */
-	virtual VectorWithOpMutable& operator=(value_type alpha);
+	virtual VectorMutable& operator=(value_type alpha);
 
 	///
 	/** Assign the elements of a vector to <tt>this</tt>.
@@ -167,12 +167,12 @@ public:
 	 * The default implementation of this function uses a transforamtion operator class
 	 * (see RTOp_TOp_assign_vectors.h) and calls <tt>this</tt>->apply_transformation() .
 	 */
-	virtual VectorWithOpMutable& operator=(const VectorWithOp& v);
+	virtual VectorMutable& operator=(const Vector& v);
 
 	///
-	/** Default implementation calls <tt>operator=((const &VectorWithOp)v)</tt>.
+	/** Default implementation calls <tt>operator=((const &Vector)v)</tt>.
 	 */
-	virtual VectorWithOpMutable& operator=(const VectorWithOpMutable& v);
+	virtual VectorMutable& operator=(const VectorMutable& v);
 
 	///
 	/** Set a specific element of a vector.
@@ -218,7 +218,7 @@ public:
 	 * vector elements.  It is allowed for the vector implementation to refuse to
 	 * create arbitrary views in which case this function will return
 	 * <tt>return.get() == NULL</tt>. In most applications, only specific views are
-	 * every required.  The default implementation uses the subclass VectorWithOpSubView
+	 * every required.  The default implementation uses the subclass VectorSubView
 	 * to represent any arbitrary sub-view but this can be inefficient if the sub-view is very
 	 * small compared this this full vector space but not necessarily.  Note that the underlying
 	 * vector <tt>this</tt> is not guarrenteed to show the changes made the sub-view
@@ -245,7 +245,7 @@ public:
 	 * Calls <tt>this->apply_transformation()</tt> with an operator class
 	 * (see RTOp_TOp_axpy.h).
 	 */
-	virtual void axpy( value_type alpha, const VectorWithOp& x );
+	virtual void axpy( value_type alpha, const Vector& x );
 
 	///
 	/** Get a mutable explicit view of a sub-vector.
@@ -347,13 +347,13 @@ public:
 		value_type                       alpha
 		,const GenPermMatrixSlice        &P
 		,BLAS_Cpp::Transp                P_trans
-		,const VectorWithOp              &x
+		,const Vector              &x
 		,value_type                      beta
 		);
 
 	//@}
 
-	/** @name Overridden from VectorWithOp */
+	/** @name Overridden from Vector */
 	//@{
 
 	///
@@ -362,7 +362,7 @@ public:
 	 *
 	 * This function override is actually needed here for another reason.  Without, the
 	 * override, the non-const version defined in this interface hides the const version
-	 * defined in VectorWithOp.
+	 * defined in Vector.
 	 */
 	vec_ptr_t sub_view( const Range1D& rng ) const;
 
@@ -380,21 +380,21 @@ protected:
 	 * vector objects.
 	 */
 	virtual void finalize_apply_transformation(
-		const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		const size_t num_targ_vecs, VectorMutable** targ_vecs
 		);
 
 	//@}
 
-}; // end class VectorWithOpMutable
+}; // end class VectorMutable
 
 inline
 /// <tt>y = alpha * op(P) * x + beta *y</tt>
 void Vp_StMtV(
-	VectorWithOpMutable              *y	
+	VectorMutable              *y	
 	,value_type                      alpha
 	,const GenPermMatrixSlice        &P
 	,BLAS_Cpp::Transp                P_trans
-	,const VectorWithOp              &x
+	,const Vector              &x
 	,value_type                      beta = 1.0
 	)
 {
@@ -405,8 +405,8 @@ void Vp_StMtV(
 // Inline members
 
 inline
-VectorWithOpMutable::vec_mut_ptr_t
-VectorWithOpMutable::sub_view( const index_type& l, const index_type& u )
+VectorMutable::vec_mut_ptr_t
+VectorMutable::sub_view( const index_type& l, const index_type& u )
 {
 	return this->sub_view(Range1D(l,u));
 }

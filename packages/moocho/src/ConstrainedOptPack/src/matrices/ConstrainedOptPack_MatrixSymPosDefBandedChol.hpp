@@ -148,7 +148,7 @@ public:
 	BLAS_Cpp::Uplo UB_uplo() const;
 
 	// /////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
 	size_type rows() const;

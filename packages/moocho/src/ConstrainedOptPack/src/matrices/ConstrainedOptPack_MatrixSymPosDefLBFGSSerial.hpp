@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "MatrixSymSecantUpdateable.hpp"
+#include "MatrixSymSecant.hpp"
 #include "MatrixSymAddDelUpdateable.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
@@ -93,7 +93,7 @@ namespace ConstrainedOptimizationPack {
  */
 class MatrixSymPosDefLBFGS
 	: public MatrixSymWithOpFactorized
-	, public MatrixSymSecantUpdateable
+	, public MatrixSymSecant
 	, public MatrixSymAddDelUpdateable
 {
 public:
@@ -192,13 +192,13 @@ public:
 	size_type rows() const;
 
 	// /////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 	///
 	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const DVectorSlice& vs_rhs2, value_type beta) const;
@@ -216,7 +216,7 @@ public:
 	//@}
 
 	// ///////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixSymSecantUpdateable */
+	/** @name Overridden from MatrixSymSecant */
 	//@{
 
 	///
@@ -232,7 +232,7 @@ public:
 	///
 	void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
-	//		end Overridden from MatrixSymSecantUpdateable
+	//		end Overridden from MatrixSymSecant
 	//@}
 
 	// ////////////////////////////////////////////////////////

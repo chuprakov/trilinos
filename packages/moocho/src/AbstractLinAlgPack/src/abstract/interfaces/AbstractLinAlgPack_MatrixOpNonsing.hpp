@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatrixWithOpNonsingular.hpp
+// MatrixOpNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_WITH_OP_NONSINGULAR_H
 
-#include "MatrixWithOp.hpp"
-#include "MatrixNonsingular.hpp"
+#include "MatrixOp.hpp"
+#include "MatrixNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -26,9 +26,9 @@ namespace AbstractLinAlgPack {
  * that can be used to compute matrix-vector products and solve
  * for linear systems efficiently.
  */
-class MatrixWithOpNonsingular
-	: virtual public MatrixWithOp
-	, virtual public MatrixNonsingular
+class MatrixOpNonsing
+	: virtual public MatrixOp
+	, virtual public MatrixNonsing
 {
 public:
 
@@ -37,9 +37,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>    mat_mwons_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOpNonsing>    mat_mwons_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>          mat_mwons_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
 #endif
 
 	//@}
@@ -106,7 +106,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 	/// Returns <tt>this->clone_mwons()</tt>.
 	mat_mut_ptr_t clone();
@@ -114,7 +114,7 @@ public:
 	mat_ptr_t clone() const;
 	//@}
 
-	/** @name Overridden from MatrixNonsingular */
+	/** @name Overridden from MatrixNonsing */
 	//@{
 	/// Returns <tt>this->clone_mwons()</tt>.
 	mat_mns_mut_ptr_t clone_mns();
@@ -122,11 +122,11 @@ public:
 	mat_mns_ptr_t clone_mns() const;
 	//@}
 
-	/// Calls operator=(MatrixWithOp&)
-	MatrixWithOpNonsingular& operator=(const MatrixWithOpNonsingular& M)
-	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
+	/// Calls operator=(MatrixOp&)
+	MatrixOpNonsing& operator=(const MatrixOpNonsing& M)
+	{ static_cast<MatrixOp*>(this)->operator=(M); return *this; }
 
-}; // end class MatrixWithOpNonsingular
+}; // end class MatrixOpNonsing
 
 }	// end namespace AbstractLinAlgPack
 

@@ -34,7 +34,7 @@ namespace SparseLinAlgPack {
  * generating rows of op(M) is cheap compared to computing op(M)*x.
  *
  * This function is not ment to be used by clients directly but instead
- * by #MatrixWithOp# subclasses that want to use it.
+ * by #MatrixOp# subclasses that want to use it.
  */
 template<class M_t, class V_t>
 void dense_Vp_StPtMtV(
@@ -75,7 +75,7 @@ void dense_Vp_StPtMtV(
 	if(    ny != rows( P.rows(), P.cols(), P_trans )
 		   || nx != opM_cols
 		   || cols( P.rows(), P.cols(), P_trans ) != opM_rows )
-		throw std::length_error( "MatrixWithOp::Vp_StPtMtV(...) : Error, "
+		throw std::length_error( "MatrixOp::Vp_StPtMtV(...) : Error, "
 			"sizes of arguments does not match up" );
 	//
 	// Compute y = b*y + a*op(P)*op(M)*x in a resonably efficient manner.  This

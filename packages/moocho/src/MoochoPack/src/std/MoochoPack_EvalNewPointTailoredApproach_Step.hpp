@@ -47,7 +47,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
 	/// <<std comp>> members for testing object for NLPFirstOrderDirect
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstOrderDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object
@@ -87,9 +87,9 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void uninitialize_Y_Uv_Uy(
-		MatrixWithOp         *Y
-		,MatrixWithOp        *Uy
-		,MatrixWithOp        *Vy
+		MatrixOp         *Y
+		,MatrixOp        *Uy
+		,MatrixOp        *Vy
 		) = 0;
 
 	///
@@ -110,10 +110,10 @@ public:
 	virtual void calc_py_Y_Uy_Vy(
 		const NLPFirstOrderDirect   &nlp
 		,const D_ptr_t              &D
-		,VectorWithOpMutable        *py
-		,MatrixWithOp               *Y
-		,MatrixWithOp               *Uy
-		,MatrixWithOp               *Vy
+		,VectorMutable        *py
+		,MatrixOp               *Y
+		,MatrixOp               *Uy
+		,MatrixOp               *Vy
 		,EJournalOutputLevel        olevel
 		,std::ostream               &out
 		) = 0;
@@ -126,8 +126,8 @@ public:
 	 *              On output <tt>py = -inv((Gc(decomp)'*Y)*c(decomp)</tt>
 	 */
 	virtual void recalc_py(
-		const MatrixWithOp       &D
-		,VectorWithOpMutable     *py
+		const MatrixOp       &D
+		,VectorMutable     *py
 		,EJournalOutputLevel     olevel
 		,std::ostream            &out
 		) = 0;

@@ -20,10 +20,10 @@
 #include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -53,7 +53,7 @@ DecompositionSystemOrthogonal::factory_Y() const
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
 
@@ -62,20 +62,20 @@ DecompositionSystemOrthogonal::factory_R() const
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixDecompRangeOrthog>()
+		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixDecompRangeOrthog>()
 		);
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Vy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -89,10 +89,10 @@ DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemOrthogonal::uninitialize_matrices(
 	std::ostream                                           *out
 	,EOutputLevel                                          olevel
-	,MatrixWithOp                                          *Y
-	,MatrixWithOpNonsingular                               *R
-	,MatrixWithOp                                          *Uy
-	,MatrixWithOp                                          *Vy
+	,MatrixOp                                          *Y
+	,MatrixOpNonsing                               *R
+	,MatrixOp                                          *Uy
+	,MatrixOp                                          *Vy
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -108,10 +108,10 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)    : NULL;
 	MatrixDecompRangeOrthog
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
-	MatrixWithOpSubView
-		*Uy_cpst = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy)  : NULL;			
-	MatrixWithOpSubView
-		*Vy_cpst = Vy ? &dyn_cast<MatrixWithOpSubView>(*Vy)  : NULL;
+	MatrixOpSubView
+		*Uy_cpst = Uy ? &dyn_cast<MatrixOpSubView>(*Uy)  : NULL;			
+	MatrixOpSubView
+		*Vy_cpst = Vy ? &dyn_cast<MatrixOpSubView>(*Vy)  : NULL;
 
 	//
 	// Get the smart pointer to the basis matrix object C and the
@@ -120,8 +120,8 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	
 	C_ptr_t C_ptr = rcp::null;
 	if(R_orth) {
-		C_ptr  = rcp::rcp_const_cast<MatrixWithOpNonsingular>(    R_orth->C_ptr() ); // This could be NULL!
-		S_ptr_ = rcp::rcp_const_cast<MatrixSymWithOpNonsingular>( R_orth->S_ptr() ); // ""
+		C_ptr  = rcp::rcp_const_cast<MatrixOpNonsing>(    R_orth->C_ptr() ); // This could be NULL!
+		S_ptr_ = rcp::rcp_const_cast<MatrixSymOpNonsing>( R_orth->S_ptr() ); // ""
 	}
 	
 	//
@@ -150,10 +150,10 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 	,EOutputLevel                                          olevel
 	,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 	,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-	,MatrixWithOp                                          *Y
-	,MatrixWithOpNonsingular                               *R
-	,MatrixWithOp                                          *Uy
-	,MatrixWithOp                                          *Vy
+	,MatrixOp                                          *Y
+	,MatrixOpNonsing                               *R
+	,MatrixOp                                          *Uy
+	,MatrixOp                                          *Vy
 	,EMatRelations                                         mat_rel
 	) const
 {
@@ -183,10 +183,10 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)    : NULL;
 	MatrixDecompRangeOrthog
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
-	MatrixWithOpSubView
-		*Uy_cpst = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy)      : NULL;			
-	MatrixWithOpSubView
-		*Vy_cpst = Vy ? &dyn_cast<MatrixWithOpSubView>(*Vy)      : NULL;
+	MatrixOpSubView
+		*Uy_cpst = Uy ? &dyn_cast<MatrixOpSubView>(*Uy)      : NULL;			
+	MatrixOpSubView
+		*Vy_cpst = Vy ? &dyn_cast<MatrixOpSubView>(*Vy)      : NULL;
 
 	//
 	// Initialize the matrices
@@ -238,10 +238,10 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		}
 		try {
 			// S = I + (D)'*(D')'
-			dyn_cast<MatrixSymInitDiagonal>(*S_ptr_).init_identity(D_ptr->space_rows());
+			dyn_cast<MatrixSymInitDiag>(*S_ptr_).init_identity(D_ptr->space_rows());
 			syrk(*D_ptr,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 		}
-		catch( const MatrixNonsingular::SingularMatrix& except ) {
+		catch( const MatrixNonsing::SingularMatrix& except ) {
 			THROW_EXCEPTION(
 				true, SingularDecomposition
 				,"DecompositionSystemOrthogonal::initialize_matrices(...) : Error, update of S failed : "

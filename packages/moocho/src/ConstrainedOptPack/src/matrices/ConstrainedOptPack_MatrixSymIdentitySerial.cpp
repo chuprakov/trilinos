@@ -49,7 +49,7 @@ size_type MatrixSymIdentitySerial::nz() const
 	return size_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 std::ostream& MatrixSymIdentitySerial::output(std::ostream& out) const
 {
@@ -79,7 +79,7 @@ void MatrixSymIdentitySerial::V_InvMtV(
 	LinAlgOpPack::V_StV(y,scale_,x);
 }
 
-// Overridden from MatrixSymNonsingular
+// Overridden from MatrixSymNonsing
 
 void MatrixSymIdentitySerial::M_StMtInvMtM(
 	  DMatrixSliceSym* S, value_type a

@@ -62,25 +62,25 @@ class ipState
 		STATE_SCALAR_IQ_DECL(e_tol)
 
 		/// Vu - diagonal matrix of upper bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Vu)
+		STATE_IQ_DECL(MatrixSymDiagStd, Vu)
 
 		/// Vl - diagonal matrix of lower bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Vl)
+		STATE_IQ_DECL(MatrixSymDiagStd, Vl)
 
 		/// invXu - (Xu)^-1 - matrix of 1/(xu-x) diagonal
-		STATE_IQ_DECL(MatrixSymDiagonalStd, invXu)
+		STATE_IQ_DECL(MatrixSymDiagStd, invXu)
 
 		/// invXl - (Xl)^-1 - matrix of 1/(x-xl) diagonal
-		STATE_IQ_DECL(MatrixSymDiagonalStd, invXl)
+		STATE_IQ_DECL(MatrixSymDiagStd, invXl)
 
 		/// rHB - reduced Hessian of the barrier term (Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymWithOp, rHB)
+		STATE_IQ_DECL(MatrixSymOp, rHB)
 
 		/// B - overall reduced 'Hessian' (Z_W_Z+Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymWithOp, B)
+		STATE_IQ_DECL(MatrixSymOp, B)
 
 		/// Full space Sigma (invXl*Vl-invXu*Vu)
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Sigma)
+		STATE_IQ_DECL(MatrixSymDiagStd, Sigma)
 
 		/// w_sigma:  crossterm correction for sigma (Z' * Sigma * Y * py)
 		STATE_VECTOR_IQ_DECL(w_sigma) 

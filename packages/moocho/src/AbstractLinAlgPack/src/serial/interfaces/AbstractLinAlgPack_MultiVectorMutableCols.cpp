@@ -30,7 +30,7 @@ MultiVectorMutableCols::MultiVectorMutableCols()
 MultiVectorMutableCols::MultiVectorMutableCols(
 	const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
 	,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-	,MemMngPack::ref_count_ptr<VectorWithOpMutable>       col_vecs[]
+	,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[]
 	)
 {
 	this->initialize(space_cols,space_rows,col_vecs);
@@ -39,7 +39,7 @@ MultiVectorMutableCols::MultiVectorMutableCols(
 void MultiVectorMutableCols::initialize(
 	const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
 	,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-	,MemMngPack::ref_count_ptr<VectorWithOpMutable>       col_vecs[]
+	,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[]
 	)
 {
 	space_cols_ = space_cols;
@@ -75,7 +75,7 @@ size_type MultiVectorMutableCols::cols() const
 	return space_rows_.get() ? space_rows_->dim() : 0;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& MultiVectorMutableCols::space_cols() const
 {
@@ -99,26 +99,26 @@ void MultiVectorMutableCols::Mt_S( value_type alpha )
 		LinAlgOpPack::Vt_S(col_vecs_[j-1].get(),alpha);
 }
 
-MatrixWithOp&
-MultiVectorMutableCols::operator=(const MatrixWithOp& mwo_rhs)
+MatrixOp&
+MultiVectorMutableCols::operator=(const MatrixOp& mwo_rhs)
 {
 	const MultiVector
 		*mv_rhs = dynamic_cast<const MultiVector*>(&mwo_rhs);
 	if(!mv_rhs)
-		return MatrixWithOp::operator=(mwo_rhs);
+		return MatrixOp::operator=(mwo_rhs);
 	for( size_type j = 1; j <= col_vecs_.size(); ++j )
 		*col_vecs_[j-1] = *mv_rhs->col(j);
 	return *this;
 }
 
-MatrixWithOp::mat_mut_ptr_t
+MatrixOp::mat_mut_ptr_t
 MultiVectorMutableCols::clone()
 {
 	assert(0); // ToDo: Implement!
 	return MemMngPack::null;
 }
 
-MatrixWithOp::mat_ptr_t
+MatrixOp::mat_ptr_t
 MultiVectorMutableCols::clone() const
 {
 	assert(0); // ToDo: Implement!
@@ -126,8 +126,8 @@ MultiVectorMutableCols::clone() const
 }
 
 void MultiVectorMutableCols::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const Vector& x, value_type b
 	) const
 {
 	using AbstractLinAlgPack::dot;
@@ -165,7 +165,7 @@ void MultiVectorMutableCols::Vp_StMtV(
 }
 
 void MultiVectorMutableCols::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type b
 	) const
 {
@@ -208,13 +208,13 @@ void MultiVectorMutableCols::Vp_StMtV(
 
 bool MultiVectorMutableCols::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+	, value_type beta, MatrixSymOp* sym_lhs ) const
 {
 	using LinAlgOpPack::dot;
 	MatrixSymWithOpGetGMSSymMutable
 		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(sym_lhs);
 	if(!symwo_gms_lhs) {
-		return MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
+		return MatrixOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
 	}
 	MatrixDenseSymMutableEncap  DMatrixSliceSym(symwo_gms_lhs);
 	const int num_vecs = this->col_vecs_.size();

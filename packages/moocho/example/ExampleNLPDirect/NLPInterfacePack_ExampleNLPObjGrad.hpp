@@ -17,9 +17,9 @@
 #define EXAMPLE_NLP_OBJ_GRADIENT_H
 
 #include "NLPInterfacePack/src/NLPObjGradient.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceBlock.hpp"
 
 namespace NLPInterfacePack {
 
@@ -103,27 +103,27 @@ public:
 	///
 	bool force_xinit_in_bounds() const;
 	///
-	const VectorWithOp& xinit() const;
+	const Vector& xinit() const;
 	///
-	const VectorWithOp& xl() const;
+	const Vector& xl() const;
 	///
-	const VectorWithOp& xu() const;
+	const Vector& xu() const;
 	///
 	value_type max_var_bounds_viol() const;
 	/// Throws exception.
-	const VectorWithOp& hl() const;
+	const Vector& hl() const;
 	/// Throws exception.
-	const VectorWithOp& hu() const;
+	const Vector& hu() const;
 	///
 	void scale_f( value_type scale_f );
 	///
 	value_type scale_f() const;
 	///
 	void report_final_solution(
-		const VectorWithOp&    x
-		,const VectorWithOp*   lambda
-		,const VectorWithOp*   lambdaI
-		,const VectorWithOp*   nu
+		const Vector&    x
+		,const Vector*   lambda
+		,const Vector*   lambdaI
+		,const Vector*   nu
 		,bool                  optimal
 		) const;
 
@@ -136,14 +136,14 @@ protected:
 
 	///
 	void imp_calc_f(
-		const VectorWithOp& x, bool newx
+		const Vector& x, bool newx
 		,const ZeroOrderInfo& zero_order_info) const;
 	///
 	void imp_calc_c(
-		const VectorWithOp& x, bool newx
+		const Vector& x, bool newx
 		,const ZeroOrderInfo& zero_order_info) const;
 	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
+	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
 
@@ -152,7 +152,7 @@ protected:
 
 	///
 	void imp_calc_Gf(
-		const VectorWithOp& x, bool newx
+		const Vector& x, bool newx
 		,const ObjGradInfo& obj_grad_info) const;
 
 	//@}

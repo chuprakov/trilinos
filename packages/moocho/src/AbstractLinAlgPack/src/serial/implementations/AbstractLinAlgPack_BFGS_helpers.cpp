@@ -18,12 +18,12 @@
 #include <ostream>
 
 #include "SparseLinAlgPack/src/BFGS_helpers.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 
 bool SparseLinAlgPack::BFGS_sTy_suff_p_d(
-	const VectorWithOp    &s
-	,const VectorWithOp   &y
+	const Vector    &s
+	,const Vector   &y
 	,const value_type     *sTy_in
 	,std::ostream         *out
 	,const char           func_name[]

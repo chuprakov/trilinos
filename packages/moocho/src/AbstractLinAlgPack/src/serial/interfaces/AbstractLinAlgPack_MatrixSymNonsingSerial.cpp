@@ -82,11 +82,11 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	}
 }
 
-// Overridden from MatrixSymNonsingular
+// Overridden from MatrixSymNonsing
 
 void MatrixSymNonsingularSerial::M_StMtInvMtM(
-	MatrixSymWithOp* symwo_lhs, value_type alpha
-	,const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans
+	MatrixSymOp* symwo_lhs, value_type alpha
+	,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
 	,EMatrixDummyArg dummy
 	) const
 {

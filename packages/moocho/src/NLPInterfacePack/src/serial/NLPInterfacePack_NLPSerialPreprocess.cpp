@@ -355,40 +355,40 @@ size_type NLPSerialPreprocess::num_bounded_x() const
 	return num_bounded_x_;
 }
 
-const VectorWithOp& NLPSerialPreprocess::xl() const 
+const Vector& NLPSerialPreprocess::xl() const 
 {
 	assert_initialized();
 	return xl_;
 }
 
-const VectorWithOp& NLPSerialPreprocess::xu() const 
+const Vector& NLPSerialPreprocess::xu() const 
 {
 	assert_initialized();
 	return xu_;
 }
 
-const VectorWithOp& NLPSerialPreprocess::hl() const 
+const Vector& NLPSerialPreprocess::hl() const 
 {
 	assert_initialized();
 	return hl_;
 }
 
-const VectorWithOp& NLPSerialPreprocess::hu() const 
+const Vector& NLPSerialPreprocess::hu() const 
 {
 	assert_initialized();
 	return hu_;
 }
 
-const VectorWithOp& NLPSerialPreprocess::xinit() const 
+const Vector& NLPSerialPreprocess::xinit() const 
 {
 	assert_initialized();
 	return xinit_;
 }
 
 void NLPSerialPreprocess::get_init_lagrange_mult(
-	VectorWithOpMutable*   lambda
-	,VectorWithOpMutable*  lambdaI
-	,VectorWithOpMutable*  nu
+	VectorMutable*   lambda
+	,VectorMutable*  lambdaI
+	,VectorMutable*  nu
 	) const
 {
 	// ToDo: Get subclass to define what these are!
@@ -411,10 +411,10 @@ value_type NLPSerialPreprocess::scale_f() const
 }
 
 void NLPSerialPreprocess::report_final_solution(
-	const VectorWithOp&    x
-	,const VectorWithOp*   lambda
-	,const VectorWithOp*   lambdaI
-	,const VectorWithOp*   nu
+	const Vector&    x
+	,const Vector*   lambda
+	,const Vector*   lambdaI
+	,const Vector*   nu
 	,bool                  is_optimal
 	) const
 {
@@ -643,7 +643,7 @@ void NLPSerialPreprocess::get_basis(
 // Overridden protected members from NLP
 
 void NLPSerialPreprocess::imp_calc_f(
-	const VectorWithOp      &x
+	const Vector      &x
 	,bool                   newx
 	,const ZeroOrderInfo    &zero_order_info
 	) const
@@ -656,7 +656,7 @@ void NLPSerialPreprocess::imp_calc_f(
 }
 
 void NLPSerialPreprocess::imp_calc_c(
-	const VectorWithOp      &x
+	const Vector      &x
 	,bool                   newx
 	,const ZeroOrderInfo    &zero_order_info
 	) const
@@ -678,7 +678,7 @@ void NLPSerialPreprocess::imp_calc_c(
 }
 
 void NLPSerialPreprocess::imp_calc_h(
-	const VectorWithOp      &x
+	const Vector      &x
 	,bool                   newx
 	,const ZeroOrderInfo    &zero_order_info
 	) const
@@ -696,7 +696,7 @@ void NLPSerialPreprocess::imp_calc_h(
 // Overridden protected members from NLPObjGradient
 
 void NLPSerialPreprocess::imp_calc_Gf(
-	const VectorWithOp      &x
+	const Vector      &x
 	,bool                   newx
 	,const ObjGradInfo      &obj_grad_info
 	) const

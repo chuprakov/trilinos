@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_WITH_OP_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_WITH_OP_NONSINGULAR_SERIAL_H
 
-#include "MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -29,7 +29,7 @@ namespace SparseLinAlgPack {
 class MatrixWithOpNonsingularSerial
 	: virtual public MatrixWithOpSerial
 	, virtual public MatrixNonsingularSerial
-	, virtual public AbstractLinAlgPack::MatrixWithOpNonsingular  // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixOpNonsing  // doxygen needs full name
 {};
 
 }	// end namespace SparseLinAlgPack

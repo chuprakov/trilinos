@@ -95,8 +95,8 @@ public:
 	//@}
 
 private:
-	IterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
-	IterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
+	IterationPack::CastIQMember<VectorMutable>  dl_iq_;
+	IterationPack::CastIQMember<VectorMutable>  du_iq_;
 	qp_solver_stats_iq_member                                qp_solver_stats_;
 	act_set_stats_iq_member                                  act_set_stats_;
 

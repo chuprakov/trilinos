@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "VectorWithOpMutable.hpp"
+#include "VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -38,7 +38,7 @@ namespace AbstractLinAlgPack {
  max{ v(i), i = 1...n }
  \endverbatim
  */
-value_type max( const VectorWithOp& v ); 
+value_type max( const Vector& v ); 
 
 ///
 /** Computes the maximum positive and negative step that can be taken
@@ -58,8 +58,8 @@ value_type max( const VectorWithOp& v );
   */
 std::pair<value_type,value_type>
 max_near_feas_step(
-	const VectorWithOp& x, const VectorWithOp& d
-	,const VectorWithOp& xl, const VectorWithOp& xu
+	const Vector& x, const Vector& d
+	,const Vector& xl, const Vector& xu
 	,value_type max_bnd_viol
 	); 
 
@@ -72,7 +72,7 @@ max_near_feas_step(
   \endverbatim
   */
 value_type max_rel_step(
-	const VectorWithOp& x, const VectorWithOp& d
+	const Vector& x, const Vector& d
 	);
 
 /// 
@@ -82,10 +82,10 @@ value_type max_rel_step(
  */
 value_type fraction_to_boundary(
   const value_type    tau,
-  const VectorWithOp  &x,
-  const VectorWithOp  &d,
-  const VectorWithOp  &xl,
-  const VectorWithOp  &xu
+  const Vector  &x,
+  const Vector  &d,
+  const Vector  &xl,
+  const Vector  &xu
   );
 
 /// 
@@ -96,8 +96,8 @@ value_type fraction_to_boundary(
  */
 value_type fraction_to_zero_boundary(
   const value_type    tau,
-  const VectorWithOp  &x,
-  const VectorWithOp  &d
+  const Vector  &x,
+  const Vector  &d
   );
 
 ///
@@ -106,7 +106,7 @@ value_type fraction_to_zero_boundary(
  * ToDo: Finish documentation!
  */
 size_type num_bounded(
-	const VectorWithOp& xl, const VectorWithOp& xu
+	const Vector& xl, const Vector& xu
 	,value_type inf_bound );
 
 ///
@@ -118,9 +118,9 @@ size_type num_bounded(
  \endverbatim
  */
 value_type log_bound_barrier(
-	const VectorWithOp    &x
-	,const VectorWithOp   &xl
-	,const VectorWithOp   &xu
+	const Vector    &x
+	,const Vector   &xl
+	,const Vector   &xu
 	); 
 
 ///
@@ -133,10 +133,10 @@ value_type log_bound_barrier(
 \endverbatim
  */
 value_type combined_nu_comp_err(
-	const VectorWithOp    &v
-	,const VectorWithOp   &x
-	,const VectorWithOp   &xl
-	,const VectorWithOp   &xu
+	const Vector    &v
+	,const Vector   &x
+	,const Vector   &xl
+	,const Vector   &xu
 	); 
 
 
@@ -155,9 +155,9 @@ NOTE: equivalent to
 \endverbatim
  */
 value_type combined_nu_comp_err_lower(
-	const VectorWithOp    &v
-	,const VectorWithOp    &x
-	,const VectorWithOp   &xl
+	const Vector    &v
+	,const Vector    &x
+	,const Vector   &xl
   );
 
 ///
@@ -171,9 +171,9 @@ value_type combined_nu_comp_err_lower(
 \endverbatim
  */
 value_type combined_nu_comp_err_upper(
-	const VectorWithOp    &v
-	,const VectorWithOp   &x
-	,const VectorWithOp   &xu
+	const Vector    &v
+	,const Vector   &x
+	,const Vector   &xu
   );
 
 
@@ -193,11 +193,11 @@ value_type combined_nu_comp_err_upper(
 value_type IP_comp_err_with_mu(
   const value_type    mu
   ,const value_type   inf_bound
-  ,const VectorWithOp &x
-  ,const VectorWithOp &xl
-  ,const VectorWithOp &xu
-  ,const VectorWithOp &vl
-  ,const VectorWithOp &vu
+  ,const Vector &x
+  ,const Vector &xl
+  ,const Vector &xu
+  ,const Vector &vl
+  ,const Vector &vu
   );
 
 ///
@@ -247,9 +247,9 @@ value_type IP_comp_err_with_mu(
  *
  */
 bool max_inequ_viol(
-	const AbstractLinAlgPack::VectorWithOp   &v
-	,const AbstractLinAlgPack::VectorWithOp  &vL
-	,const AbstractLinAlgPack::VectorWithOp  &vU
+	const AbstractLinAlgPack::Vector   &v
+	,const AbstractLinAlgPack::Vector  &vL
+	,const AbstractLinAlgPack::Vector  &vU
 	,AbstractLinAlgPack::size_type           *max_viol_i
 	,AbstractLinAlgPack::value_type          *max_viol
 	,AbstractLinAlgPack::value_type          *v_i
@@ -274,7 +274,7 @@ bool max_inequ_viol(
   , for 1 = 1...n
  \endverbatim
  */
-void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWithOpMutable* x );
+void force_in_bounds( const Vector& xl, const Vector& xu, VectorMutable* x );
 
 ///
 /** Force a vector sufficiently within bounds according
@@ -284,9 +284,9 @@ void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWith
 void force_in_bounds_buffer(
   const value_type     rel_push,
   const value_type     abs_push,
-  const VectorWithOp   &xl, 
-  const VectorWithOp   &xu, 
-  VectorWithOpMutable  *x 
+  const Vector   &xl, 
+  const Vector   &xu, 
+  VectorMutable  *x 
   );
 
 ///
@@ -299,9 +299,9 @@ void force_in_bounds_buffer(
  */
 void inv_of_difference(
   const value_type       alpha
-  ,const VectorWithOp    &v0
-  ,const VectorWithOp    &v1
-  ,VectorWithOpMutable   *z
+  ,const Vector    &v0
+  ,const Vector    &v1
+  ,VectorMutable   *z
   );
 
 ///
@@ -313,9 +313,9 @@ void inv_of_difference(
  \endverbatim
  */
 void correct_lower_bound_multipliers(
-  const VectorWithOp      &xl
+  const Vector      &xl
   ,const value_type       inf_bound_limit
-  ,VectorWithOpMutable    *vl
+  ,VectorMutable    *vl
   );
 
 ///
@@ -327,9 +327,9 @@ void correct_lower_bound_multipliers(
  \endverbatim
  */
 void correct_upper_bound_multipliers(
-  const VectorWithOp       &xu
+  const Vector       &xu
   ,const value_type        inf_bound_limit
-  ,VectorWithOpMutable     *vu
+  ,VectorMutable     *vu
   );
 
 ///
@@ -341,10 +341,10 @@ dvl(i) = -vl(i) + mu*invXl(i)*e - invXl(i)*Vl(i)*d_k(i)
 */
 void lowerbound_multipliers_step(
   const value_type         mu,
-  const VectorWithOp       &invXl,
-  const VectorWithOp       &vl,
-  const VectorWithOp       &d_k,
-  VectorWithOpMutable      *dvl
+  const Vector       &invXl,
+  const Vector       &vl,
+  const Vector       &d_k,
+  VectorMutable      *dvl
   );
 
 ///
@@ -357,10 +357,10 @@ dvu(i) = -vu(i) + mu*invXl(i)*e + invXl(i)*Vl(i)*d_k(i)
 */
 void upperbound_multipliers_step(
   const value_type       mu,
-  const VectorWithOp     &invXu,
-  const VectorWithOp     &vu,
-  const VectorWithOp     &d_k,
-  VectorWithOpMutable    *dvu
+  const Vector     &invXu,
+  const Vector     &vu,
+  const Vector     &d_k,
+  VectorMutable    *dvu
   );
 
 
@@ -374,7 +374,7 @@ void upperbound_multipliers_step(
  \endverbatim
  */
 void ele_wise_sqrt(
-	VectorWithOpMutable* z
+	VectorMutable* z
   	);		
 
 ///
@@ -387,7 +387,7 @@ void ele_wise_sqrt(
  */
 void max_vec_scalar(
 	value_type              min_ele
-	,VectorWithOpMutable    *y
+	,VectorMutable    *y
 	);
 
 ///
@@ -400,7 +400,7 @@ void max_vec_scalar(
  */
 void max_abs_vec_scalar(
 	value_type              min_ele
-	,VectorWithOpMutable    *y
+	,VectorMutable    *y
 	);
 
 //@}

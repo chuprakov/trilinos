@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/src/MatrixHessianRelaxed.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
@@ -37,7 +37,7 @@ MatrixHessianRelaxed::MatrixHessianRelaxed()
 {}
 
 void MatrixHessianRelaxed::initialize(
-	  const MatrixSymWithOp	&H
+	  const MatrixSymOp	&H
 	, value_type			bigM
 	)
 {
@@ -53,7 +53,7 @@ size_type MatrixHessianRelaxed::rows() const
 	return n_ ? n_ + 1 : 0;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 void MatrixHessianRelaxed::Vp_StMtV(
 	  DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
@@ -171,7 +171,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == trans ) )
 	{
 		// Call the default implementation
-		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b);
+		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b);
 		return;
 	}
 
@@ -238,7 +238,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == trans ) )
 	{
 		// Call the default implementation
-		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b);
+		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b);
 		return;
 	}
 

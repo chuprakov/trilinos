@@ -21,15 +21,15 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPObjGradient.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 //#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 //#include "SparseLinAlgPack/src/max_near_feas_step.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace {
@@ -91,22 +91,22 @@ bool InitFinDiffReducedHessian_Step::do_step(
 		// Compute a finite difference along the null space of the
 		// constraints
 
-		IterQuantityAccess<VectorWithOpMutable>
+		IterQuantityAccess<VectorMutable>
 			&x_iq     = s.x(),
 			&rGf_iq   = s.rGf();
-		IterQuantityAccess<MatrixWithOp>
+		IterQuantityAccess<MatrixOp>
 			&Z_iq     = s.Z();
-		IterQuantityAccess<MatrixSymWithOp>
+		IterQuantityAccess<MatrixSymOp>
 			&rHL_iq   = s.rHL();
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 			out << "\nReinitializing the reduced Hessain using a finite difference\n";
 		}
 
-		MatrixSymInitDiagonal &rHL_diag = dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0));
-		const MatrixWithOp    &Z_k      = Z_iq.get_k(0);
-		const VectorWithOp    &x_k      = x_iq.get_k(0);
-		const VectorWithOp    &rGf_k    = rGf_iq.get_k(0);
+		MatrixSymInitDiag &rHL_diag = dyn_cast<MatrixSymInitDiag>(rHL_iq.set_k(0));
+		const MatrixOp    &Z_k      = Z_iq.get_k(0);
+		const Vector    &x_k      = x_iq.get_k(0);
+		const Vector    &rGf_k    = rGf_iq.get_k(0);
 
 		// one vector
 		VectorSpace::vec_mut_ptr_t  e = Z_k.space_rows().create_member(1.0);
@@ -270,7 +270,7 @@ void InitFinDiffReducedHessian_Step::print_step(
 	out
 		<< L << "*** Initialize the reduced Hessian using a single finite difference.\n"
 		<< L << "*** Where the nlp must support the NLPObjGradient interface and\n"
-		<< L << "*** rHL_k must support the MatrixSymInitDiagonal interface or exceptions\n"
+		<< L << "*** rHL_k must support the MatrixSymInitDiag interface or exceptions\n"
 		<< L << "*** will be thrown.\n"
 		<< L << "default: num_basis_remembered = NO_BASIS_UPDATED_YET\n"
 		<< L << "         initialization_method = SCALE_DIAGONAL\n"

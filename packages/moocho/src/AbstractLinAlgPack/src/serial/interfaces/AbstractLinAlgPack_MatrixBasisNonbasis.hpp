@@ -32,7 +32,7 @@ namespace SparseLinAlgPack {
   * M = [ C' ]
   *
   * If this matrix is not initialized then rows() == cols() == 0.
-  * If rows() > 0 then all of the MatrixWithOp functions can be
+  * If rows() > 0 then all of the MatrixOp functions can be
   * called with success.
   *
   * Note that it is not required that the nonsigular version of C be
@@ -41,7 +41,7 @@ namespace SparseLinAlgPack {
   * are consistent.
   */
 class MatrixBasisNonbasis
-	: public MatrixWithOp
+	: public MatrixOp
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 	/**
 	  * Only call if rows() > 0 otherwise throws std::logic_error
 	  */
-	virtual const MatrixWithOp& C() const = 0;
+	virtual const MatrixOp& C() const = 0;
 
 	/// Get reference to nonsingular version of the basis Matrix C ([m,m] = size(C))
 	/**
@@ -67,10 +67,10 @@ public:
 	/**
 	  * Only call if cols() > rows() otherwise throws std::logic_error
 	  */
-	virtual const MatrixWithOp& N() const = 0;
+	virtual const MatrixOp& N() const = 0;
 
 	// //////////////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
 	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1

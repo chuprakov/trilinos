@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// VectorWithOp.cpp
+// Vector.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 #include <limits>
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSubView.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_get_ele.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_norms.h"
@@ -131,16 +131,16 @@ init_rtop_server_t  init_rtop_server;
 
 namespace AbstractLinAlgPack {
 
-VectorWithOp::VectorWithOp()
+Vector::Vector()
 	:num_nonzeros_(-1), norm_1_(-1.0), norm_2_(-1.0), norm_inf_(-1.0) // uninitalized
 {}
 
-index_type VectorWithOp::dim() const
+index_type Vector::dim() const
 {
 	return this->space().dim();
 }
 
-index_type VectorWithOp::nz() const
+index_type Vector::nz() const
 {
 	if( num_nonzeros_ < 0 ) {
 		num_nonzeros_targ.reinit();
@@ -150,7 +150,7 @@ index_type VectorWithOp::nz() const
 	return num_nonzeros_;
 }
 
-std::ostream& VectorWithOp::output(
+std::ostream& Vector::output(
 	std::ostream& out, bool print_dim , bool newline
 	,index_type global_offset
 	) const
@@ -165,7 +165,7 @@ std::ostream& VectorWithOp::output(
 	return out;
 }
 
-VectorWithOpMutable::vec_mut_ptr_t VectorWithOp::clone() const
+VectorMutable::vec_mut_ptr_t Vector::clone() const
 {
 	vec_mut_ptr_t
 		vec = this->space().create_member();
@@ -173,7 +173,7 @@ VectorWithOpMutable::vec_mut_ptr_t VectorWithOp::clone() const
 	return vec;
 }
 
-value_type VectorWithOp::get_ele(index_type i) const {
+value_type Vector::get_ele(index_type i) const {
 	assert(0==RTOp_ROp_get_ele_set_i( i, &get_ele_op.op() ));
 	get_ele_targ.reinit();
 	this->apply_reduction(
@@ -183,7 +183,7 @@ value_type VectorWithOp::get_ele(index_type i) const {
 	return RTOp_ROp_get_ele_val(get_ele_targ.obj());
 }
 
-value_type VectorWithOp::norm_1() const {
+value_type Vector::norm_1() const {
 	if( norm_1_ < 0.0 ) {
 		norm_1_targ.reinit();
 		this->apply_reduction(norm_1_op,0,NULL,0,NULL,norm_1_targ.obj());
@@ -192,7 +192,7 @@ value_type VectorWithOp::norm_1() const {
 	return norm_1_;
 }
 
-value_type VectorWithOp::norm_2() const {
+value_type Vector::norm_2() const {
 	if( 1 /*norm_2_ < 0.0*/ ) {
 		norm_2_targ.reinit();
 		this->apply_reduction(norm_2_op,0,NULL,0,NULL,norm_2_targ.obj());
@@ -201,7 +201,7 @@ value_type VectorWithOp::norm_2() const {
 	return norm_2_;
 }
 
-value_type VectorWithOp::norm_inf() const {
+value_type Vector::norm_inf() const {
 	if( 1 /*norm_inf_ < 0.0*/ ) {
 		norm_inf_targ.reinit();
 		this->apply_reduction(norm_inf_op,0,NULL,0,NULL,norm_inf_targ.obj());
@@ -210,13 +210,13 @@ value_type VectorWithOp::norm_inf() const {
 	return norm_inf_;
 }
 
-value_type VectorWithOp::inner_product(  const VectorWithOp& v ) const
+value_type Vector::inner_product(  const Vector& v ) const
 {
 	return this->space().inner_prod()->inner_prod(*this,v);
 }
 
-VectorWithOp::vec_ptr_t
-VectorWithOp::sub_view( const Range1D& rng_in ) const
+Vector::vec_ptr_t
+Vector::sub_view( const Range1D& rng_in ) const
 {
 	namespace rcp = MemMngPack;
 	const index_type dim = this->dim();
@@ -224,18 +224,18 @@ VectorWithOp::sub_view( const Range1D& rng_in ) const
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		rng.ubound() > dim, std::out_of_range
-		,"VectorWithOp::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		,"Vector::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return vec_ptr_t( this, false );
 	return rcp::rcp(
-		new VectorWithOpSubView(
+		new VectorSubView(
 			vec_ptr_t( this, false )
 			,rng ) );
 }
 
-void VectorWithOp::get_sub_vector(
+void Vector::get_sub_vector(
 	const Range1D& rng_in, ESparseOrDense sparse_or_dense
 	, RTOp_SubVector* sub_vec
 	) const
@@ -244,7 +244,7 @@ void VectorWithOp::get_sub_vector(
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		this->dim() < rng.ubound(), std::out_of_range
-		,"VectorWithOp::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
+		,"Vector::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
 		<<"] is not in range = [1,"<<this->dim()<<"]" );
 #endif
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
@@ -280,7 +280,7 @@ void VectorWithOp::get_sub_vector(
 	free(reduct_obj); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
-void VectorWithOp::free_sub_vector( RTOp_SubVector* sub_vec ) const
+void Vector::free_sub_vector( RTOp_SubVector* sub_vec ) const
 {
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
 	if( sub_vec->values )
@@ -290,7 +290,7 @@ void VectorWithOp::free_sub_vector( RTOp_SubVector* sub_vec ) const
 	RTOp_sub_vector_null( sub_vec );
 }
 
-void VectorWithOp::has_changed() const
+void Vector::has_changed() const
 {
 	num_nonzeros_= -1;  // uninitalized;
 	norm_1_ = norm_2_ = norm_inf_ = -1.0;
@@ -298,8 +298,8 @@ void VectorWithOp::has_changed() const
 
 // protected
 
-void VectorWithOp::finalize_apply_reduction(
-	const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+void Vector::finalize_apply_reduction(
+	const size_t num_targ_vecs, VectorMutable** targ_vecs
 	) const
 {
 	for( int k = 0; k < num_targ_vecs; ++k )

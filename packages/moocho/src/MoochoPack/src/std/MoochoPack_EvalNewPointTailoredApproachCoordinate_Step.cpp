@@ -16,9 +16,9 @@
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/MatrixZero.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -34,9 +34,9 @@ EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordin
 // protected
 
 void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uv_Uy(
-	MatrixWithOp         *Y
-	,MatrixWithOp        *Uy
-	,MatrixWithOp        *Vy
+	MatrixOp         *Y
+	,MatrixOp        *Uy
+	,MatrixOp        *Vy
 	)
 {
 	// Nothing to free
@@ -45,10 +45,10 @@ void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uv_Uy(
 void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
 	const NLPFirstOrderDirect   &nlp
 	,const D_ptr_t              &D
-	,VectorWithOpMutable        *py
-	,MatrixWithOp               *Y
-	,MatrixWithOp               *Uy
-	,MatrixWithOp               *Vy
+	,VectorMutable        *py
+	,MatrixOp               *Y
+	,MatrixOp               *Uy
+	,MatrixOp               *Vy
 	,EJournalOutputLevel        olevel
 	,std::ostream               &out
 	)
@@ -83,8 +83,8 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::recalc_py(
-	const MatrixWithOp       &D
-	,VectorWithOpMutable     *py
+	const MatrixOp       &D
+	,VectorMutable     *py
 	,EJournalOutputLevel     olevel
 	,std::ostream            &out
 	)

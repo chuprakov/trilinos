@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// TestMatrixSymSecantUpdate.cpp
+// TestMatrixSymSecant.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,20 +18,20 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/TestMatrixSymSecantUpdate.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "AbstractLinAlgPack/src/TestMatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 
-bool AbstractLinAlgPack::TestMatrixSymSecantUpdate(
-	const MatrixWithOp        &B
-	,const VectorWithOp       &s
-	,const VectorWithOp       &y
+bool AbstractLinAlgPack::TestMatrixSymSecant(
+	const MatrixOp        &B
+	,const Vector       &s
+	,const Vector       &y
 	,value_type               warning_tol
 	,value_type               error_tol
 	,bool                     print_all_warnings
@@ -88,8 +88,8 @@ bool AbstractLinAlgPack::TestMatrixSymSecantUpdate(
 		}
 	}
 	// Check the secant property (s = inv(B)*y)
-	const MatrixNonsingular
-		*B_nonsing = dynamic_cast<const MatrixNonsingular*>(&B);
+	const MatrixNonsing
+		*B_nonsing = dynamic_cast<const MatrixNonsing*>(&B);
 	if( B_nonsing ) {
 		if( out && trase )
 			*out

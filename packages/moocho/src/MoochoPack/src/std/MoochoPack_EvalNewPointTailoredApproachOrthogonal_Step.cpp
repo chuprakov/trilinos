@@ -16,12 +16,12 @@
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -40,19 +40,19 @@ EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogo
 // protected
 
 void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
-	MatrixWithOp         *Y
-	,MatrixWithOp        *Uy
-	,MatrixWithOp        *Vy
+	MatrixOp         *Y
+	,MatrixOp        *Uy
+	,MatrixOp        *Vy
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
 
 	MatrixIdentConcatStd
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
-	MatrixCompositeStd
-		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy) : NULL;			
-	MatrixCompositeStd
-		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy) : NULL;
+	MatrixComposite
+		*Uy_cpst = Uy ? &dyn_cast<MatrixComposite>(*Uy) : NULL;			
+	MatrixComposite
+		*Vy_cpst = Vy ? &dyn_cast<MatrixComposite>(*Vy) : NULL;
 
 	if(Y_orth)
 		Y_orth->set_uninitialized();
@@ -63,10 +63,10 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
 void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 	const NLPFirstOrderDirect   &nlp
 	,const D_ptr_t              &D
-	,VectorWithOpMutable        *py
-	,MatrixWithOp               *Y
-	,MatrixWithOp               *Uy
-	,MatrixWithOp               *Vy
+	,VectorMutable        *py
+	,MatrixOp               *Y
+	,MatrixOp               *Uy
+	,MatrixOp               *Vy
 	,EJournalOutputLevel        olevel
 	,std::ostream               &out
 	)
@@ -91,10 +91,10 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 	
 	MatrixIdentConcatStd
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
-	MatrixCompositeStd
-		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy) : NULL;			
-	MatrixCompositeStd
-		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy) : NULL;
+	MatrixComposite
+		*Uy_cpst = Uy ? &dyn_cast<MatrixComposite>(*Uy) : NULL;			
+	MatrixComposite
+		*Vy_cpst = Vy ? &dyn_cast<MatrixComposite>(*Vy) : NULL;
 
 	//
 	// Initialize the matrices
@@ -127,7 +127,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 		S_ptr_ = nlp.factory_S()->create();
 	}
 	// S = I + (D)'*(D')'
-	dyn_cast<MatrixSymInitDiagonal>(*S_ptr_).init_identity(D->space_rows());
+	dyn_cast<MatrixSymInitDiag>(*S_ptr_).init_identity(D->space_rows());
 	syrk(*D,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 
 	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
@@ -138,8 +138,8 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
-	const MatrixWithOp       &D
-	,VectorWithOpMutable     *py
+	const MatrixOp       &D
+	,VectorMutable     *py
 	,EJournalOutputLevel     olevel
 	,std::ostream            &out
 	)
@@ -150,7 +150,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
 	using AbstractLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::V_MtV;
 
-	const MatrixSymWithOpNonsingular   &S = *S_ptr_;
+	const MatrixSymOpNonsing   &S = *S_ptr_;
 
 	VectorSpace::vec_mut_ptr_t               // ToDo: make workspace!
 		tIa = D.space_rows().create_member(),

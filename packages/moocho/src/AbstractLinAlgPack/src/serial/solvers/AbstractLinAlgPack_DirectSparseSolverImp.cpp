@@ -94,7 +94,7 @@ size_type DirectSparseSolverImp::BasisMatrixImp::cols() const
 
 // Overridden from MatrixNonsinguar
 
-MatrixNonsingular::mat_mns_mut_ptr_t
+MatrixNonsing::mat_mns_mut_ptr_t
 DirectSparseSolverImp::BasisMatrixImp::clone_mns()
 {
 	namespace rcp = MemMngPack;

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// MatrixSymWithOpNonsingular.hpp
+// MatrixSymOpNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 
-#include "MatrixSymWithOp.hpp"
-#include "MatrixSymNonsingular.hpp"
-#include "MatrixWithOpNonsingular.hpp"
+#include "MatrixSymOp.hpp"
+#include "MatrixSymNonsing.hpp"
+#include "MatrixOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -27,10 +27,10 @@ namespace AbstractLinAlgPack {
  * can be used to compute matrix-vector products and solve for
  * linear systems relatively efficently.
  */
-class MatrixSymWithOpNonsingular 
-	: virtual public MatrixSymWithOp
-	, virtual public MatrixSymNonsingular
-	, virtual public MatrixWithOpNonsingular
+class MatrixSymOpNonsing 
+	: virtual public MatrixSymOp
+	, virtual public MatrixSymNonsing
+	, virtual public MatrixOpNonsing
 {
 public:
 
@@ -39,9 +39,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>    mat_mswons_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymOpNonsing>    mat_mswons_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>          mat_mswons_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymOpNonsing>          mat_mswons_mut_ptr_t;
 #endif
 
 	//@}
@@ -68,7 +68,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_mut_ptr_t clone();
@@ -76,7 +76,7 @@ public:
 	mat_ptr_t clone() const;
 	//@}
 
-	/** @name Overridden from MatrixNonsingular */
+	/** @name Overridden from MatrixNonsing */
 	//@{
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_mns_mut_ptr_t clone_mns();
@@ -84,7 +84,7 @@ public:
 	mat_mns_ptr_t clone_mns() const;
 	//@}
 
-	/** @name Overridden from MatrixSymWithOp */
+	/** @name Overridden from MatrixSymOp */
 	//@{
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_mswo_mut_ptr_t clone_mswo();
@@ -92,7 +92,7 @@ public:
 	mat_mswo_ptr_t clone_mswo() const;
 	//@}
 
-	/** @name Overridden from MatrixSymNonsingular */
+	/** @name Overridden from MatrixSymNonsing */
 	//@{
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_msns_mut_ptr_t clone_msns();
@@ -100,7 +100,7 @@ public:
 	mat_msns_ptr_t clone_msns() const;
 	//@}
 
-	/** @name Overridden from MatrixWithOpNonsingular */
+	/** @name Overridden from MatrixOpNonsing */
 	//@{
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_mwons_mut_ptr_t clone_mwons();
@@ -108,11 +108,11 @@ public:
 	mat_mwons_ptr_t clone_mwons() const;
 	//@}
 
-	/// Calls operator=(MatrixWithOp&)
-	MatrixSymWithOpNonsingular& operator=(const MatrixSymWithOpNonsingular& M)
-	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
+	/// Calls operator=(MatrixOp&)
+	MatrixSymOpNonsing& operator=(const MatrixSymOpNonsing& M)
+	{ static_cast<MatrixOp*>(this)->operator=(M); return *this; }
 
-}; // end class MatrixSymWithOpNonsingular
+}; // end class MatrixSymOpNonsing
 
 }	// end namespace AbstractLinAlgPack
 

@@ -20,7 +20,7 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"

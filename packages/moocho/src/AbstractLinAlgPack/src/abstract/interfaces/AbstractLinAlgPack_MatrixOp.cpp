@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// MatrixWithOp.cpp
+// MatrixOp.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,12 +19,12 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/Permutation.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/SpVectorView.hpp"
@@ -34,34 +34,34 @@
 
 namespace AbstractLinAlgPack {
 
-void MatrixWithOp::zero_out()
+void MatrixOp::zero_out()
 {
 	THROW_EXCEPTION(
-		true, std::logic_error, "MatrixWithOp::zero_out(): "
+		true, std::logic_error, "MatrixOp::zero_out(): "
 		"Error, this method as not been defined by the subclass \'"
 		<<typeid(*this).name()<<"\'" );
 }
 
-void MatrixWithOp::Mt_S(value_type alpha)
+void MatrixOp::Mt_S(value_type alpha)
 {
 	THROW_EXCEPTION(
-		true, std::logic_error, "MatrixWithOp::Mt_S(): "
+		true, std::logic_error, "MatrixOp::Mt_S(): "
 		"Error, this method as not been defined by the subclass \'"
 		<<typeid(*this).name()<<"\'" );
 }
 
-MatrixWithOp& MatrixWithOp::operator=(const MatrixWithOp& M)
+MatrixOp& MatrixOp::operator=(const MatrixOp& M)
 {
 	const bool assign_to_self = dynamic_cast<const void*>(this) == dynamic_cast<const void*>(&M);
 	THROW_EXCEPTION(
 		!assign_to_self, std::logic_error
-		,"MatrixWithOp::operator=(M) : Error, this is not assignment "
+		,"MatrixOp::operator=(M) : Error, this is not assignment "
 		"to self and this method is not overridden for the subclass \'"
 		<< typeid(*this).name() << "\'" );
 	return *this; // assignment to self
 }
 
-std::ostream& MatrixWithOp::output(std::ostream& out) const
+std::ostream& MatrixOp::output(std::ostream& out) const
 {
 	const size_type m = this->rows(), n = this->cols();
 	VectorSpace::vec_mut_ptr_t
@@ -76,22 +76,22 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 
 // Clone
 
-MatrixWithOp::mat_mut_ptr_t
-MatrixWithOp::clone()
+MatrixOp::mat_mut_ptr_t
+MatrixOp::clone()
 {
 	return MemMngPack::null;
 }
 
-MatrixWithOp::mat_ptr_t
-MatrixWithOp::clone() const
+MatrixOp::mat_ptr_t
+MatrixOp::clone() const
 {
 	return MemMngPack::null;
 }
 
 // Norms
 
-const MatrixWithOp::MatNorm
-MatrixWithOp::calc_norm(
+const MatrixOp::MatNorm
+MatrixOp::calc_norm(
 	EMatNormType  requested_norm_type
 	,bool         allow_replacement
 	) const
@@ -107,14 +107,14 @@ MatrixWithOp::calc_norm(
 		num_cols = space_rows.dim();
 	THROW_EXCEPTION(
 		!(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
-		,"MatrixWithOp::calc_norm(...): Error, This default implemenation can only "
+		,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
 		"compute the one norm or the infinity norm!"
 		);
 	//
 	// Here we implement Algorithm 2.5 in "Applied Numerical Linear Algebra", Demmel (1997)
 	// using the momenclature in the text.
 	//
-	const MatrixWithOp
+	const MatrixOp
 		&B = *this;
 	bool
 		do_trans = requested_norm_type == MAT_NORM_INF;
@@ -147,8 +147,8 @@ MatrixWithOp::calc_norm(
 
 // Subview
 
-MatrixWithOp::mat_ptr_t
-MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
+MatrixOp::mat_ptr_t
+MatrixOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	namespace rcp = MemMngPack;
 
@@ -163,15 +163,15 @@ MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 		return rcp::rcp(this,false); // don't clean up memory
 	}
 	return rcp::rcp(
-		new MatrixWithOpSubView(
-			rcp::rcp(const_cast<MatrixWithOp*>(this),false) // don't clean up memory
+		new MatrixOpSubView(
+			rcp::rcp(const_cast<MatrixOp*>(this),false) // don't clean up memory
 			,row_rng,col_rng ) );
 }
 
 // Permuted views
 
-MatrixWithOp::mat_ptr_t
-MatrixWithOp::perm_view(
+MatrixOp::mat_ptr_t
+MatrixOp::perm_view(
 	const Permutation          *P_row
 	,const index_type          row_part[]
 	,int                       num_row_part
@@ -190,8 +190,8 @@ MatrixWithOp::perm_view(
 			) );
 }
 
-MatrixWithOp::mat_ptr_t
-MatrixWithOp::perm_view_update(
+MatrixOp::mat_ptr_t
+MatrixOp::perm_view_update(
 	const Permutation          *P_row
 	,const index_type          row_part[]
 	,int                       num_row_part
@@ -208,21 +208,21 @@ MatrixWithOp::perm_view_update(
 
 // Level-1 BLAS
 
-bool MatrixWithOp::Mp_StM(
-	MatrixWithOp* m_lhs, value_type alpha
+bool MatrixOp::Mp_StM(
+	MatrixOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StM(
-	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
+bool MatrixOp::Mp_StM(
+	value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StMtP(
-	MatrixWithOp* m_lhs, value_type alpha
+bool MatrixOp::Mp_StMtP(
+	MatrixOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
@@ -230,17 +230,17 @@ bool MatrixWithOp::Mp_StMtP(
 	return false;
 }
 
-bool MatrixWithOp::Mp_StMtP(
+bool MatrixOp::Mp_StMtP(
 	value_type alpha
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	)
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StPtM(
-	MatrixWithOp* m_lhs, value_type alpha
+bool MatrixOp::Mp_StPtM(
+	MatrixOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	, BLAS_Cpp::Transp M_trans
 	) const
@@ -248,17 +248,17 @@ bool MatrixWithOp::Mp_StPtM(
 	return false;
 }
 
-bool MatrixWithOp::Mp_StPtM(
+bool MatrixOp::Mp_StPtM(
 	value_type alpha
 	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	)
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StPtMtP(
-	MatrixWithOp* m_lhs, value_type alpha
+bool MatrixOp::Mp_StPtMtP(
+	MatrixOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -267,10 +267,10 @@ bool MatrixWithOp::Mp_StPtMtP(
 	return false;
 }
 
-bool MatrixWithOp::Mp_StPtMtP(
+bool MatrixOp::Mp_StPtMtP(
 	value_type alpha
 	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	)
 {
@@ -279,8 +279,8 @@ bool MatrixWithOp::Mp_StPtMtP(
 
 // Level-2 BLAS
 
-void MatrixWithOp::Vp_StMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+void MatrixOp::Vp_StMtV(
+	VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
 	Vp_MtV_assert_compatibility(v_lhs,*this,trans_rhs1,sv_rhs2 );
@@ -298,11 +298,11 @@ void MatrixWithOp::Vp_StMtV(
 	}
 }
 
-void MatrixWithOp::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+void MatrixOp::Vp_StPtMtV(
+	VectorMutable* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp M_trans
-	,const VectorWithOp& x, value_type b
+	,const Vector& x, value_type b
 	) const
 {
 	VectorSpace::vec_mut_ptr_t
@@ -313,8 +313,8 @@ void MatrixWithOp::Vp_StPtMtV(
 	AbstractLinAlgPack::Vp_StMtV( y, a, P, P_trans, *t, b );
 }
 
-void MatrixWithOp::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+void MatrixOp::Vp_StPtMtV(
+	VectorMutable* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type b
@@ -328,15 +328,15 @@ void MatrixWithOp::Vp_StPtMtV(
 	AbstractLinAlgPack::Vp_StMtV( y, a, P, P_trans, *t, b );
 }
 
-value_type MatrixWithOp::transVtMtV(
-	const VectorWithOp& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-	, const VectorWithOp& vs_rhs3) const
+value_type MatrixOp::transVtMtV(
+	const Vector& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+	, const Vector& vs_rhs3) const
 {
 	assert(0); // ToDo: Implement!
 	return 0.0;
 }
 
-value_type MatrixWithOp::transVtMtV(
+value_type MatrixOp::transVtMtV(
 	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const SpVectorSlice& sv_rhs3) const
 {
@@ -344,54 +344,54 @@ value_type MatrixWithOp::transVtMtV(
 	return 0.0;
 }
 
-void MatrixWithOp::syr2k(
+void MatrixOp::syr2k(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+	, value_type beta, MatrixSymOp* sym_lhs ) const
 {
 	assert(0); // ToDo: Implement!
 }
 
 // Level-3 BLAS
 
-bool MatrixWithOp::Mp_StMtM(
-	MatrixWithOp* C, value_type a
-	,BLAS_Cpp::Transp A_trans, const MatrixWithOp& B
+bool MatrixOp::Mp_StMtM(
+	MatrixOp* C, value_type a
+	,BLAS_Cpp::Transp A_trans, const MatrixOp& B
 	,BLAS_Cpp::Transp B_trans, value_type b) const
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+bool MatrixOp::Mp_StMtM(
+	MatrixOp* m_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
 	return false;
 }
 
-bool MatrixWithOp::Mp_StMtM(
+bool MatrixOp::Mp_StMtM(
 	value_type alpha
-	,const MatrixWithOp& mvw_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mvw_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta )
 {
 	return false;
 }
 
-bool MatrixWithOp::syrk(
+bool MatrixOp::syrk(
 	BLAS_Cpp::Transp   M_trans
 	,value_type        alpha
 	,value_type        beta
-	,MatrixSymWithOp   *sym_lhs
+	,MatrixSymOp   *sym_lhs
 	) const
 {
 	return false;
 }
 
-bool MatrixWithOp::syrk(
-	const MatrixWithOp  &mwo_rhs
+bool MatrixOp::syrk(
+	const MatrixOp  &mwo_rhs
 	,BLAS_Cpp::Transp   M_trans
 	,value_type         alpha
 	,value_type         beta
@@ -406,7 +406,7 @@ bool MatrixWithOp::syrk(
 
 // level-1 BLAS
 
-void AbstractLinAlgPack::Mt_S( MatrixWithOp* m_lhs, value_type alpha )
+void AbstractLinAlgPack::Mt_S( MatrixOp* m_lhs, value_type alpha )
 {
 	if(alpha == 0.0)
 		m_lhs->zero_out();
@@ -415,7 +415,7 @@ void AbstractLinAlgPack::Mt_S( MatrixWithOp* m_lhs, value_type alpha )
 }
 
 void AbstractLinAlgPack::Mp_StM(
-	MatrixWithOp* mwo_lhs, value_type alpha, const MatrixWithOp& M_rhs
+	MatrixOp* mwo_lhs, value_type alpha, const MatrixOp& M_rhs
 	, BLAS_Cpp::Transp trans_rhs)
 {
 	using BLAS_Cpp::no_trans;
@@ -434,8 +434,8 @@ void AbstractLinAlgPack::Mp_StM(
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
 	THROW_EXCEPTION(
 		!m_mut_lhs || !(m_mut_lhs->access_by() & MultiVector::COL_ACCESS)
-		,MatrixWithOp::MethodNotImplemented
-		,"MatrixWithOp::Mp_StM(...) : Error, mwo_lhs of type \'"
+		,MatrixOp::MethodNotImplemented
+		,"MatrixOp::Mp_StM(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' could not implement the operation "
 		"and does not support the "
 		"\'MultiVectorMutable\' interface.  Furthermore, "
@@ -448,8 +448,8 @@ void AbstractLinAlgPack::Mp_StM(
 			trans_rhs == no_trans ? M_rhs.space_rows() : M_rhs.space_cols() )
 		|| !mwo_lhs->space_cols().is_compatible(
 			trans_rhs == no_trans ? M_rhs.space_cols() : M_rhs.space_rows() )
-		, MatrixWithOp::IncompatibleMatrices
-		,"MatrixWithOp::Mp_StM(mwo_lhs,...): Error, mwo_lhs of type \'"<<typeid(*mwo_lhs).name()<<"\' "
+		, MatrixOp::IncompatibleMatrices
+		,"MatrixOp::Mp_StM(mwo_lhs,...): Error, mwo_lhs of type \'"<<typeid(*mwo_lhs).name()<<"\' "
 		<<"is not compatible with M_rhs of type \'"<<typeid(M_rhs).name()<<"\'" );
 #endif
 
@@ -462,8 +462,8 @@ void AbstractLinAlgPack::Mp_StM(
 }
 
 void AbstractLinAlgPack::Mp_StMtP(
-	MatrixWithOp* mwo_lhs, value_type alpha
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	MatrixOp* mwo_lhs, value_type alpha
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	)
 {
@@ -480,8 +480,8 @@ void AbstractLinAlgPack::Mp_StMtP(
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
 	THROW_EXCEPTION(
-		!m_mut_lhs, MatrixWithOp::MethodNotImplemented
-		,"MatrixWithOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
+		!m_mut_lhs, MatrixOp::MethodNotImplemented
+		,"MatrixOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
 		"\'MultiVectorMutable\' interface!" );
 
@@ -489,9 +489,9 @@ void AbstractLinAlgPack::Mp_StMtP(
 }
 
 void AbstractLinAlgPack::Mp_StPtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	)
 {
 
@@ -507,8 +507,8 @@ void AbstractLinAlgPack::Mp_StPtM(
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
 	THROW_EXCEPTION(
-		!m_mut_lhs, MatrixWithOp::MethodNotImplemented
-		,"MatrixWithOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
+		!m_mut_lhs, MatrixOp::MethodNotImplemented
+		,"MatrixOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
 		"\'MultiVectorMutable\' interface!" );
 
@@ -517,9 +517,9 @@ void AbstractLinAlgPack::Mp_StPtM(
 }
 
 void AbstractLinAlgPack::Mp_StPtMtP(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+	, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	)
 {
@@ -536,8 +536,8 @@ void AbstractLinAlgPack::Mp_StPtMtP(
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
 	THROW_EXCEPTION(
-		!m_mut_lhs, MatrixWithOp::MethodNotImplemented
-		,"MatrixWithOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
+		!m_mut_lhs, MatrixOp::MethodNotImplemented
+		,"MatrixOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
 		"\'MultiVectorMutable\' interface!" );
 
@@ -548,9 +548,9 @@ void AbstractLinAlgPack::Mp_StPtMtP(
 // level-3 blas
 
 void AbstractLinAlgPack::Mp_StMtM(
-	MatrixWithOp* C, value_type a
-	,const MatrixWithOp& A, BLAS_Cpp::Transp A_trans
-	,const MatrixWithOp& B, BLAS_Cpp::Transp B_trans
+	MatrixOp* C, value_type a
+	,const MatrixOp& A, BLAS_Cpp::Transp A_trans
+	,const MatrixOp& B, BLAS_Cpp::Transp B_trans
 	,value_type b
 	)
 {
@@ -581,7 +581,7 @@ void AbstractLinAlgPack::Mp_StMtM(
 	MultiVectorMutable *Cmv = dynamic_cast<MultiVectorMutable*>(C);
 	THROW_EXCEPTION(
 		!Cmv || !(Cmv->access_by() & MultiVector::COL_ACCESS)
-		,MatrixWithOp::MethodNotImplemented
+		,MatrixOp::MethodNotImplemented
 		,"AbstractLinAlgPack::Mp_StMtM(...) : Error, mwo_lhs of type \'"
 		<< typeid(*C).name() << "\' does not support the "
 		"\'MultiVectorMutable\' interface or does not support column access!" );
@@ -600,11 +600,11 @@ void AbstractLinAlgPack::Mp_StMtM(
 }
 
 void AbstractLinAlgPack::syrk(
-	const MatrixWithOp  &A
+	const MatrixOp  &A
 	,BLAS_Cpp::Transp   A_trans
 	,value_type         a
 	,value_type         b
-	,MatrixSymWithOp    *B
+	,MatrixSymOp    *B
 	)
 {
 	// Give A a chance
@@ -615,7 +615,7 @@ void AbstractLinAlgPack::syrk(
 		return;
 	
 	THROW_EXCEPTION(
-		true, MatrixWithOp::MethodNotImplemented
+		true, MatrixOp::MethodNotImplemented
 		,"AbstractLinAlgPack::syrk(...) : Error, neither the right-hand-side matrix "
 		"argument mwo_rhs of type \'" << typeid(A).name() << " nore the left-hand-side matrix "
 		"argument sym_lhs of type \'" << typeid(*B).name() << "\' could implement this operation!"

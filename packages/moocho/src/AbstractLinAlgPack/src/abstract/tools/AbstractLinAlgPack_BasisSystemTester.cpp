@@ -20,12 +20,12 @@
 #include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/BasisSystem.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
@@ -49,13 +49,13 @@ BasisSystemTester::BasisSystemTester(
 
 bool BasisSystemTester::test_basis_system(
 	const BasisSystem               &bs
-	,const MatrixWithOp             *Gc
-	,const MatrixWithOp             *Gh
-	,const MatrixWithOpNonsingular  *C
-	,const MatrixWithOp             *N_in
-	,const MatrixWithOp             *D
-	,const MatrixWithOp             *GcUP
-	,const MatrixWithOp             *GhUP
+	,const MatrixOp             *Gc
+	,const MatrixOp             *Gh
+	,const MatrixOpNonsing  *C
+	,const MatrixOp             *N_in
+	,const MatrixOp             *D
+	,const MatrixOp             *GcUP
+	,const MatrixOp             *GhUP
 	,std::ostream                   *out
 	)
 {
@@ -85,7 +85,7 @@ bool BasisSystemTester::test_basis_system(
 	EPrintTestLevel
 		print_tests = ( this->print_tests() == PRINT_NOT_SELECTED ? PRINT_NONE : this->print_tests() );
 
-	MatrixWithOp::EMatNormType mat_nrm_inf = MatrixWithOp::MAT_NORM_INF;
+	MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
 	
 	// Print the input?
 	if( out && print_tests != PRINT_NONE ) {
@@ -200,7 +200,7 @@ bool BasisSystemTester::test_basis_system(
 		*out << " : " << ( lresult ? "passed" : "failed" );
 
 	// Create the N matrix if not input
-	rcp::ref_count_ptr<const AbstractLinAlgPack::MatrixWithOp>
+	rcp::ref_count_ptr<const AbstractLinAlgPack::MatrixOp>
 		N = rcp::rcp(N_in,false);
 	if( (Gc || Gh) && C && N.get() == NULL ) {
 		if(out && print_tests >= PRINT_BASIC)
@@ -209,8 +209,8 @@ bool BasisSystemTester::test_basis_system(
 		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl;
-		rcp::ref_count_ptr<AbstractLinAlgPack::MatrixCompositeStd>
-			N_comp = rcp::rcp(new AbstractLinAlgPack::MatrixCompositeStd(var_dep.size(),var_indep.size()));
+		rcp::ref_count_ptr<AbstractLinAlgPack::MatrixComposite>
+			N_comp = rcp::rcp(new AbstractLinAlgPack::MatrixComposite(var_dep.size(),var_indep.size()));
 		if( equ_decomp.size() )
 			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, rcp::null, BLAS_Cpp::trans, var_indep );
 		if( Gh && inequ_decomp.size() )

@@ -19,9 +19,9 @@
 #include <math.h>
 
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "NLPInterfacePack/src/BarrierNLP.hpp"
 #include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
@@ -75,7 +75,7 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 	value_type& f_kp1 = s.f().set_k(+1);
 	f_kp1 = barrier_nlp_->objective_term();
 
-	VectorWithOpMutable& Gf_kp1 = s.Gf().set_k(+1);
+	VectorMutable& Gf_kp1 = s.Gf().set_k(+1);
 	Gf_kp1 = *(barrier_nlp_->grad_objective_term());
 	
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 

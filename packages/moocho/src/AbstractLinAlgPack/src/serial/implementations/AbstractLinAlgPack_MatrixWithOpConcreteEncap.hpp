@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_CONCRETE_ENCAP_H
 #define MATRIX_WITH_OP_CONCRETE_ENCAP_H
 
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -27,7 +27,7 @@ namespace SparseLinAlgPack {
   * The default copy constructor and assignment operator are allowed.
   */
 template<class M>
-class MatrixWithOpConcreteEncap : public virtual MatrixWithOp
+class MatrixWithOpConcreteEncap : public virtual MatrixOp
 {
 public:
 
@@ -65,10 +65,10 @@ public:
 	size_type cols() const;
 
 	// /////////////////////////////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 
 private:
 	M m_;
@@ -88,14 +88,14 @@ size_type MatrixWithOpConcreteEncap<M>::cols() const {
 }
 
 template<class M>
-MatrixWithOp& MatrixWithOpConcreteEncap<M>::operator=(const MatrixWithOp& m) {
+MatrixOp& MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m) {
 	if(&m == this) return *this;	// assignment to self
 	const MatrixWithOpConcreteEncap<M> *p_m = dynamic_cast<const MatrixWithOpConcreteEncap<M>*>(&m);
 	if(p_m) {
 		m_ = p_m->m_;
 	}
 	else {
-		throw std::invalid_argument("MatrixWithOpConcreteEncap<M>::operator=(const MatrixWithOp& m)"
+		throw std::invalid_argument("MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m)"
 			" : The concrete type of m is not a subclass of MatrixWithOpConcreteEncap<M> as expected" );
 	}
 	return *this;

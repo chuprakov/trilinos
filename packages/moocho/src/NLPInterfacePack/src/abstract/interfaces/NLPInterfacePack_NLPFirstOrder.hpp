@@ -66,7 +66,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >        mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<BasisSystem>               basis_sys_ptr_t;
 
@@ -153,7 +153,7 @@ public:
 	 * <li> <tt>this->get_Gc() == Gc</tt>
 	 * </ul>
 	 */
-	virtual void set_Gc(MatrixWithOp* Gc);
+	virtual void set_Gc(MatrixOp* Gc);
 	///
 	/** Return pointer passed to <tt>this->set_Gc()</tt>.
 	 *
@@ -161,7 +161,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual MatrixWithOp* get_Gc();
+	virtual MatrixOp* get_Gc();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_Gc()</tt>.
 	 *
@@ -170,7 +170,7 @@ public:
 	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual MatrixWithOp& Gc();
+	virtual MatrixOp& Gc();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_Gc()</tt>.
 	 *
@@ -179,7 +179,7 @@ public:
 	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const MatrixWithOp& Gc() const;
+	virtual const MatrixOp& Gc() const;
 
 	//@}
 
@@ -201,7 +201,7 @@ public:
 	 * <li> <tt>this->get_Gh() == Gh</tt>
 	 * </ul>
 	 */
-	virtual void set_Gh(MatrixWithOp* Gh);
+	virtual void set_Gh(MatrixOp* Gh);
 	///
 	/** Return pointer passed to <tt>this->set_Gh()</tt>.
 	 *
@@ -209,7 +209,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual MatrixWithOp* get_Gh();
+	virtual MatrixOp* get_Gh();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_Gh()</tt>.
 	 *
@@ -218,7 +218,7 @@ public:
 	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual MatrixWithOp& Gh();
+	virtual MatrixOp& Gh();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_Gh()</tt>.
 	 *
@@ -227,7 +227,7 @@ public:
 	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const MatrixWithOp& Gh() const;
+	virtual const MatrixOp& Gh() const;
 
 	//@}
 
@@ -258,7 +258,7 @@ public:
 	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
-	virtual void calc_Gc(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_Gc(const Vector& x, bool newx = true) const;
 
 	///
 	/** Update the matrix for \c Gh at the point \c x and put it in the stored reference.
@@ -283,7 +283,7 @@ public:
 	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
-	virtual void calc_Gh(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_Gh(const Vector& x, bool newx = true) const;
 
 	//@}
 
@@ -319,21 +319,21 @@ protected:
 			: Gc(NULL), Gf(NULL), f(NULL), c(NULL)
 		{}
 		///
-		FirstOrderInfo( MatrixWithOp* Gc_in, MatrixWithOp* Gh_in, const ObjGradInfo& obj_grad )
+		FirstOrderInfo( MatrixOp* Gc_in, MatrixOp* Gh_in, const ObjGradInfo& obj_grad )
 			: Gc(Gc_in), Gh(Gh_in), Gf(obj_grad.Gf), f(obj_grad.f), c(obj_grad.c), h(obj_grad.h)
 		{}
 		/// Pointer to Jacobian of equality constraints <tt>Gc</tt> (may be NULL if not set)
-		MatrixWithOp*           Gc;
+		MatrixOp*           Gc;
 		/// Pointer to Jacobian of inequality constraints <tt>Gh</tt> (may be NULL if not set)
-		MatrixWithOp*           Gh;
+		MatrixOp*           Gh;
 		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		VectorWithOpMutable*    Gf;
+		VectorMutable*    Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*             f;
 		/// Pointer to equality constraints residule <tt>c</tt> (may be NULL if not set)
-		VectorWithOpMutable*    c;
+		VectorMutable*    c;
 		/// Pointer to inequality constraints residule <tt>h</tt> (may be NULL if not set)
-		VectorWithOpMutable*    h;
+		VectorMutable*    h;
 	}; // end struct FirstOrderInfo
 
 	/// Return objective gradient and zero order information.
@@ -363,7 +363,7 @@ protected:
 	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
 	 *                now guaranteed to be.
 	 */
-	virtual void imp_calc_Gc(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
+	virtual void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
 
 	///
 	/** Overridden to compute \a Gh(x) and perhaps \a Gh(x), \a Gf(x), \a f(x) and \a c(x).
@@ -386,7 +386,7 @@ protected:
 	 * <li> <tt>*obj_grad_info.Gh</tt> is updated to \a Gh(x).
 	 * </ul>
 	 */
-	virtual void imp_calc_Gh(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
+	virtual void imp_calc_Gh(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
 
 	//@}
 
@@ -394,11 +394,11 @@ private:
 
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::BasisSystem                                *basis_sys;
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gc;
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gh;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixOp>  *factory_Gc;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixOp>  *factory_Gh;
 #endif
-	mutable MatrixWithOp      *Gc_;
-	mutable MatrixWithOp      *Gh_;
+	mutable MatrixOp      *Gc_;
+	mutable MatrixOp      *Gh_;
 	mutable size_type         num_Gc_evals_;
 	mutable size_type         num_Gh_evals_;
 

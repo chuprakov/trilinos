@@ -40,7 +40,7 @@ MatrixKKTFullSpaceRelaxed::MatrixKKTFullSpaceRelaxed(
 {}
 
 void MatrixKKTFullSpaceRelaxed::initialize(
-	  const MatrixWithOp& G, const MatrixWithOp& A
+	  const MatrixOp& G, const MatrixOp& A
 	, std::ostream* out, EPrintMoreOrLess print_what, ERunTests test_what )
 {
 	// Set some members first
@@ -66,7 +66,7 @@ void MatrixKKTFullSpaceRelaxed::initialize(
 }
 
 void MatrixKKTFullSpaceRelaxed::initialize_relaxed(
-	  const MatrixWithOp& G, const MatrixWithOp& A
+	  const MatrixOp& G, const MatrixOp& A
 	, const DVectorSlice& c, value_type M
 	, std::ostream* out, EPrintMoreOrLess print_what, ERunTests test_what )
 {
@@ -103,7 +103,7 @@ size_type MatrixKKTFullSpaceRelaxed::cols() const
 	return n_ + m_ + (use_relaxation_ ? 1 : 0 );
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 std::ostream& MatrixKKTFullSpaceRelaxed::output(std::ostream& out) const
 {
@@ -113,7 +113,7 @@ std::ostream& MatrixKKTFullSpaceRelaxed::output(std::ostream& out) const
 	return out;
 }
 
-MatrixWithOp& MatrixKKTFullSpaceRelaxed::operator=(const MatrixWithOp& m)
+MatrixOp& MatrixKKTFullSpaceRelaxed::operator=(const MatrixOp& m)
 {
 	assert_initialized();
 	// ToDo: Finish me!
@@ -372,7 +372,7 @@ void MatrixKKTFullSpaceRelaxed::assert_matrices_set() const
 }
 
 void MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(
-	  const MatrixWithOp& G, const MatrixWithOp& A )
+	  const MatrixOp& G, const MatrixOp& A )
 {
 	const size_type
 		n = G.rows(),

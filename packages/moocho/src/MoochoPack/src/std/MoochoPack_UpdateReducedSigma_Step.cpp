@@ -17,12 +17,12 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
@@ -136,18 +136,18 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 
 	// Get the iteration quantities
 	const MatrixIdentConcat     &Z     = dyn_cast<MatrixIdentConcat>(s.Z().get_k(0));
-	const MatrixSymDiagonalStd  &invXl = s.invXl().get_k(0);
-	const MatrixSymDiagonalStd  &invXu = s.invXu().get_k(0);
-	const MatrixSymDiagonalStd  &Vl    = s.Vl().get_k(0);
-	const MatrixSymDiagonalStd  &Vu    = s.Vu().get_k(0);
+	const MatrixSymDiagStd  &invXl = s.invXl().get_k(0);
+	const MatrixSymDiagStd  &invXu = s.invXu().get_k(0);
+	const MatrixSymDiagStd  &Vl    = s.Vl().get_k(0);
+	const MatrixSymDiagStd  &Vu    = s.Vu().get_k(0);
 	
-	MatrixSymDiagonalStd  &Sigma = s.Sigma().set_k(0);
+	MatrixSymDiagStd  &Sigma = s.Sigma().set_k(0);
 
-	MatrixSymWithOpNonsingular& rHB = dyn_cast<MatrixSymWithOpNonsingular>(s.rHB().set_k(0));
+	MatrixSymOpNonsing& rHB = dyn_cast<MatrixSymOpNonsing>(s.rHB().set_k(0));
 	if (rHB.cols() != Z.cols())
 		{
 		// Initialize space in rHB
-		dyn_cast<MatrixSymInitDiagonal>(rHB).init_identity(Z.space_rows(), 0.0);
+		dyn_cast<MatrixSymInitDiag>(rHB).init_identity(Z.space_rows(), 0.0);
 		}
 	
 	// Calculate Sigma = invXl*Vl + invXu*Vu
@@ -169,7 +169,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 	// Calculate the cross term (Z'*Sigma*Ypy) first
 	VectorSpace::vec_mut_ptr_t temp = Z.space_cols().create_member(0.0);
 	ele_wise_prod(1.0, s.Ypy().get_k(0), Sigma.diag(), temp.get());
-	VectorWithOpMutable& w_sigma = s.w_sigma().set_k(0);
+	VectorMutable& w_sigma = s.w_sigma().set_k(0);
 	V_MtV(&w_sigma, Z, BLAS_Cpp::trans, *temp);
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
@@ -180,7 +180,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 	// Calculate Reduced Sigma
 	// Try sigma^1/2 making use of dependent and independent variables
 
-	mmp::ref_count_ptr<const VectorWithOpMutable>
+	mmp::ref_count_ptr<const VectorMutable>
 		Sigma_D_diag = Sigma.diag().sub_view(Z.D_rng()),
 		Sigma_I_diag = Sigma.diag().sub_view(Z.I_rng());
 	const size_type
@@ -202,7 +202,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 		if( Sigma_D_nz )
 			{
 
-			MatrixSymDiagonalStd Sigma_D_sqrt(Sigma_D_diag->clone());
+			MatrixSymDiagStd Sigma_D_sqrt(Sigma_D_diag->clone());
 
 			ele_wise_sqrt(&Sigma_D_sqrt.diag());
 
@@ -214,7 +214,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 			mmp::ref_count_ptr<MultiVectorMutable>
 				J = Sigma_D_sqrt.space_cols().create_members(Z.cols());
 			M_MtM(
-				static_cast<MatrixWithOp*>(J.get())
+				static_cast<MatrixOp*>(J.get())
 				,Sigma_D_sqrt, BLAS_Cpp::no_trans, Z.D(), BLAS_Cpp::no_trans);
 
 			J->syrk(BLAS_Cpp::trans, 1.0, 0.0, &rHB);
@@ -230,8 +230,8 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 		if( Sigma_I_nz )
 			{
 
-			const MatrixSymDiagonalStd Sigma_I(
-				mmp::rcp_const_cast<VectorWithOpMutable>(Sigma_I_diag)
+			const MatrixSymDiagStd Sigma_I(
+				mmp::rcp_const_cast<VectorMutable>(Sigma_I_diag)
 				);
 
 			if(Sigma_D_nz)
@@ -259,13 +259,13 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 	// serve as a debug for the more efficient calculations.
 
 	VectorSpace::multi_vec_mut_ptr_t Sigma_Z = Z.space_cols().create_members(Z.cols());
-	M_MtM((MatrixWithOp*)Sigma_Z.get(), Sigma, BLAS_Cpp::no_trans, Z, BLAS_Cpp::no_trans);
+	M_MtM((MatrixOp*)Sigma_Z.get(), Sigma, BLAS_Cpp::no_trans, Z, BLAS_Cpp::no_trans);
 
 	//std::cout << "Sigma_Z\n";
 	//Sigma_Z->output(std::cout);
 
 	VectorSpace::multi_vec_mut_ptr_t ZT_Sigma_Z = Z.space_rows().create_members(Z.cols());
-	M_MtM((MatrixWithOp*)ZT_Sigma_Z.get(), (MatrixWithOp&)Z, BLAS_Cpp::trans, (MatrixWithOp&)*Sigma_Z, BLAS_Cpp::no_trans);
+	M_MtM((MatrixOp*)ZT_Sigma_Z.get(), (MatrixOp&)Z, BLAS_Cpp::trans, (MatrixOp&)*Sigma_Z, BLAS_Cpp::no_trans);
 
 	std::cout << "ZT_Sigma_Z=\n";
 	ZT_Sigma_Z->output(std::cout);

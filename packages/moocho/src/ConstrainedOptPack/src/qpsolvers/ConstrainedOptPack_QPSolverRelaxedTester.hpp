@@ -203,17 +203,17 @@ public:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
+		,const Vector& g, const MatrixSymOp& G
 		,value_type etaL
-		,const VectorWithOp& dL, const VectorWithOp& dU
-		,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
-		,const VectorWithOp& eL, const VectorWithOp& eU
-		,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+		,const Vector& dL, const Vector& dU
+		,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+		,const Vector& eL, const Vector& eU
+		,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
 		,const value_type* obj_d
-		,const value_type* eta, const VectorWithOp* d
-		,const VectorWithOp* nu
-		,const VectorWithOp* mu, const VectorWithOp* Ed
-		,const VectorWithOp* lambda, const VectorWithOp* Fd
+		,const value_type* eta, const Vector* d
+		,const Vector* nu
+		,const Vector* mu, const Vector* Ed
+		,const Vector* lambda, const Vector* Fd
 		);
 
 	///
@@ -223,15 +223,15 @@ public:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
+		,const Vector& g, const MatrixSymOp& G
 		,value_type etaL
-		,const VectorWithOp& dL, const VectorWithOp& dU
-		,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
-		,const VectorWithOp& eL, const VectorWithOp& eU
+		,const Vector& dL, const Vector& dU
+		,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+		,const Vector& eL, const Vector& eU
 		,const value_type* obj_d
-		,const value_type* eta, const VectorWithOp* d
-		,const VectorWithOp* nu
-		,const VectorWithOp* mu, const VectorWithOp* Ed
+		,const value_type* eta, const Vector* d
+		,const Vector* nu
+		,const Vector* mu, const Vector* Ed
 		);
 
 	///
@@ -241,14 +241,14 @@ public:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
+		,const Vector& g, const MatrixSymOp& G
 		,value_type etaL
-		,const VectorWithOp& dL, const VectorWithOp& dU
-		,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+		,const Vector& dL, const Vector& dU
+		,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
 		,const value_type* obj_d
-		,const value_type* eta, const VectorWithOp* d
-		,const VectorWithOp* nu
-		,const VectorWithOp* lambda, const VectorWithOp* Fd
+		,const value_type* eta, const Vector* d
+		,const Vector* nu
+		,const Vector* lambda, const Vector* Fd
 		);
 
 
@@ -260,11 +260,11 @@ public:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
-		,const VectorWithOp& dL, const VectorWithOp& dU
+		,const Vector& g, const MatrixSymOp& G
+		,const Vector& dL, const Vector& dU
 		,const value_type* obj_d
-		,const VectorWithOp* d
-		,const VectorWithOp* nu
+		,const Vector* d
+		,const Vector* nu
 		);
 
 	///
@@ -276,17 +276,17 @@ public:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
+		,const Vector& g, const MatrixSymOp& G
 		,value_type etaL
-		,const VectorWithOp* dL, const VectorWithOp* dU
-		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-		,const VectorWithOp* eL, const VectorWithOp* eU
-		,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+		,const Vector* dL, const Vector* dU
+		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+		,const Vector* eL, const Vector* eU
+		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 		,const value_type* obj_d
-		,const value_type* eta, const VectorWithOp* d
-		,const VectorWithOp* nu
-		,const VectorWithOp* mu, const VectorWithOp* Ed
-		,const VectorWithOp* lambda, const VectorWithOp* Fd
+		,const value_type* eta, const Vector* d
+		,const Vector* nu
+		,const Vector* mu, const Vector* Ed
+		,const Vector* lambda, const Vector* Fd
 		);
 
 protected:
@@ -301,17 +301,17 @@ protected:
 		QPSolverStats::ESolutionType solution_type
 		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const VectorWithOp& g, const MatrixSymWithOp& G
+		,const Vector& g, const MatrixSymOp& G
 		,value_type etaL
-		,const VectorWithOp* dL, const VectorWithOp* dU
-		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-		,const VectorWithOp* eL, const VectorWithOp* eU
-		,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+		,const Vector* dL, const Vector* dU
+		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+		,const Vector* eL, const Vector* eU
+		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 		,const value_type* obj_d
-		,const value_type* eta, const VectorWithOp* d
-		,const VectorWithOp* nu
-		,const VectorWithOp* mu, const VectorWithOp* Ed
-		,const VectorWithOp* lambda, const VectorWithOp* Fd
+		,const value_type* eta, const Vector* d
+		,const Vector* nu
+		,const Vector* mu, const Vector* Ed
+		,const Vector* lambda, const Vector* Fd
 		);
 
 };	// end class QPSolverRelaxedTester

@@ -20,8 +20,8 @@
 
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "NLPInterfacePack/src/BarrierNLP.hpp"
 #include "ReducedSpaceSQPPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
@@ -117,18 +117,18 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 	value_type& alpha_vl_k = s.alpha_vl().set_k(0);
 	value_type& alpha_vu_k = s.alpha_vu().set_k(0);
 
-	const VectorWithOp& x_k = s.x().get_k(0);
-	VectorWithOpMutable& x_kp1 = s.x().set_k(+1);
+	const Vector& x_k = s.x().get_k(0);
+	VectorMutable& x_kp1 = s.x().set_k(+1);
 
-	const VectorWithOp& d_k = s.d().get_k(0);
-	const VectorWithOp& dvl_k = s.dvl().get_k(0);
-	const VectorWithOp& dvu_k = s.dvu().get_k(0);
+	const Vector& d_k = s.d().get_k(0);
+	const Vector& dvl_k = s.dvl().get_k(0);
+	const Vector& dvu_k = s.dvu().get_k(0);
 
-	const VectorWithOp& vl_k = s.Vl().get_k(0).diag();
-	VectorWithOpMutable& vl_kp1 = s.Vl().set_k(+1).diag();
+	const Vector& vl_k = s.Vl().get_k(0).diag();
+	VectorMutable& vl_kp1 = s.Vl().set_k(+1).diag();
 
-	const VectorWithOp& vu_k = s.Vu().get_k(0).diag();
-	VectorWithOpMutable& vu_kp1 = s.Vu().set_k(+1).diag();
+	const Vector& vu_k = s.Vu().get_k(0).diag();
+	VectorMutable& vu_kp1 = s.Vu().set_k(+1).diag();
 
 	alpha_k = fraction_to_boundary(
 	  tau_boundary_frac_, 
@@ -165,7 +165,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 	Vp_StV( &vu_kp1, alpha_vu_k, dvu_k);
  
 
-    IterQuantityAccess<VectorWithOpMutable>
+    IterQuantityAccess<VectorMutable>
 		*c_iq   = nlp.m() > 0 ? &s.c() : NULL;
 
     if (assert_print_nan_inf(x_kp1, "x", true, NULL))

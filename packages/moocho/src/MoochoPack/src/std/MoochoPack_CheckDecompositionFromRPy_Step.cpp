@@ -18,8 +18,8 @@
 #include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromRPy_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -58,10 +58,10 @@ bool CheckDecompositionFromRPy_Step::do_step( Algorithm& _algo, poss_type step_p
 	bool select_new_decomposition = false;
 
 	// Compute: resid = (Gc(decomp)'*Y) * py + c(decomp)
-	const VectorWithOp                  &py_k       = s.py().get_k(0);
-	const VectorWithOp                  &c_k        = s.c().get_k(0);
-	VectorWithOp::vec_ptr_t             c_decomp_k  = c_k.sub_view(equ_decomp);
-	VectorWithOpMutable::vec_mut_ptr_t  resid       = c_decomp_k->space().create_member();
+	const Vector                  &py_k       = s.py().get_k(0);
+	const Vector                  &c_k        = s.c().get_k(0);
+	Vector::vec_ptr_t             c_decomp_k  = c_k.sub_view(equ_decomp);
+	VectorMutable::vec_mut_ptr_t  resid       = c_decomp_k->space().create_member();
 
 	// resid = R*py + c(equ_decomp)
 	LinAlgOpPack::V_MtV( resid.get(), s.R().get_k(0), BLAS_Cpp::no_trans, py_k );

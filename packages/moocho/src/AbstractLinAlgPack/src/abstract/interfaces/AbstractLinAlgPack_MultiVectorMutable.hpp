@@ -51,7 +51,7 @@ namespace AbstractLinAlgPack {
  * here and cast the pointers.
  *
  * Many of the default implementations of the linear algebra operations in
- * \c MatrixWithOp and the other matrix interfaces rely on the left hand side
+ * \c MatrixOp and the other matrix interfaces rely on the left hand side
  * matrix objects supporting the \c MultiVectorMutable interface.
  *
  * Collective \c apply_transformation() methods are declared in this
@@ -68,7 +68,7 @@ public:
 	using MultiVector::diag;
 
 	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>         vec_mut_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const MultiVectorMutable>    multi_vec_mut_ptr_t;
 

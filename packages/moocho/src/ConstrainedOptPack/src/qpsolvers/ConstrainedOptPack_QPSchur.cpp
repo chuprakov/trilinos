@@ -38,8 +38,8 @@
 #include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSliceOut.hpp"
 #include "AbstractLinAlgPack/src/SpVectorOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
@@ -165,9 +165,9 @@ void insert_pair_sorted(
 // z_hat = inv(S_hat) * ( d_hat - U_hat'*vo )
 //
 void calc_z(
-	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &S_hat
+	const AbstractLinAlgPack::MatrixSymOpNonsing   &S_hat
 	,const DenseLinAlgPack::DVectorSlice                         &d_hat
-	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
+	,const AbstractLinAlgPack::MatrixOp                &U_hat
 	,const DenseLinAlgPack::DVectorSlice                         *vo       // If NULL then assumed zero
 	,DenseLinAlgPack::DVectorSlice                               *z_hat
 	)
@@ -189,9 +189,9 @@ void calc_z(
 // v = inv(Ko) * ( fo - U_hat * z_hat )
 //
 void calc_v(
-	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &Ko
+	const AbstractLinAlgPack::MatrixSymOpNonsing   &Ko
 	,const DenseLinAlgPack::DVectorSlice                         *fo    // If NULL then assumed to be zero
-	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
+	,const AbstractLinAlgPack::MatrixOp                &U_hat
 	,const DenseLinAlgPack::DVectorSlice                         &z_hat // Only accessed if U_hat.cols() > 0
 	,DenseLinAlgPack::DVectorSlice                               *v
 	)
@@ -251,7 +251,7 @@ void calc_mu_D(
 
 	const AbstractLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
 	const DenseLinAlgPack::DVectorSlice			 g = qp.g();
-	const AbstractLinAlgPack::MatrixSymWithOp &G = qp.G();
+	const AbstractLinAlgPack::MatrixSymOp &G = qp.G();
 	// mu_D_hat = - Q_XD_hat' * g
 	V_StMtV( mu_D, -1.0, Q_XD_hat, trans, g ); 
 	// mu_D_hat += - Q_XD_hat' * G * x
@@ -303,7 +303,7 @@ void calc_p_mu_D(
 		m = qp.m();
 
 	const AbstractLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
-	const AbstractLinAlgPack::MatrixSymWithOp &G = qp.G();
+	const AbstractLinAlgPack::MatrixSymOp &G = qp.G();
 	// p_mu_D_hat = - Q_XD_hat' * G * Q_R * p_v(1:n_R)
 	{
 		AbstractLinAlgPack::SpVector Q_R_p_v1;
@@ -701,9 +701,9 @@ QPSchur::U_hat_t::U_hat_t()
 {}
 
 void QPSchur::U_hat_t::initialize( 
-	const MatrixSymWithOp       *G
-	,const MatrixWithOp         *A
-	,const MatrixWithOp         *A_bar
+	const MatrixSymOp       *G
+	,const MatrixOp         *A
+	,const MatrixOp         *A_bar
 	,const GenPermMatrixSlice   *Q_R
 	,const GenPermMatrixSlice   *P_XF_hat
 	,const GenPermMatrixSlice   *P_plus_hat
@@ -886,7 +886,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	) const
 {
 //	// Uncomment to use the default version
-//	MatrixWithOp::Vp_StMtV(y,a,M_trans,x,b); return;
+//	MatrixOp::Vp_StMtV(y,a,M_trans,x,b); return;
 
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1042,7 +1042,7 @@ void QPSchur::ActiveSet::initialize(
 		b_X = qp.b_X();
 	const DVectorSlice
 		g = qp.g();
-	const MatrixSymWithOp
+	const MatrixSymOp
 		&G = qp.G();
 	const QP::Constraints
 		&constraints = qp.constraints();
@@ -1348,11 +1348,11 @@ void QPSchur::ActiveSet::initialize(
 		MatrixSymPosDefCholFactor S(&S_store());
 		// S = -1.0 * U_hat' * inv(Ko) * U_hat
 		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::trans, qp.Ko()
-			, MatrixSymNonsingular::DUMMY_ARG );
+			, MatrixSymNonsing::DUMMY_ARG );
 		// Now add parts of V_hat
 		if( q_F_hat ) {
 			// S += P_XF_hat' * G * P_XF_hat
-			Mp_StPtMtP( &S, 1.0, MatrixSymWithOp::DUMMY_ARG, qp_->G(), P_XF_hat_, BLAS_Cpp::no_trans );
+			Mp_StPtMtP( &S, 1.0, MatrixSymOp::DUMMY_ARG, qp_->G(), P_XF_hat_, BLAS_Cpp::no_trans );
 		}
 		if( q_F_hat && q_plus_hat ) {
 			// S += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar' * P_XF_hat
@@ -1595,7 +1595,7 @@ bool QPSchur::ActiveSet::add_constraint(
 			// u_p = [ Q_R' * A_bar * e(ja) ] n_R
 			//       [        0             ] m
 			const eta_t e_ja = eta_t(ja,n_+m_breve_);
-			const MatrixWithOp &A_bar = constraints.A_bar();
+			const MatrixOp &A_bar = constraints.A_bar();
 			DVector u_p( n_R_ + m_ );	// ToDo: make this sparse
 			Vp_StPtMtV( &u_p(1,n_R_), 1.0, qp_->Q_R(), trans, A_bar, no_trans, e_ja(), 0.0 );
 			if( m_ )
@@ -1731,15 +1731,15 @@ bool QPSchur::ActiveSet::drop_constraint(
 		}}
 		assert( kd <= q_D_hat );
 		// Get references
-		const MatrixSymWithOp
+		const MatrixSymOp
 			&G           = qp_->G();
 		const DVectorSlice
 			g            = qp_->g();
-		const MatrixWithOp
+		const MatrixOp
 			&A_bar       = qp_->constraints().A_bar();
-		const MatrixSymWithOpNonsingular
+		const MatrixSymOpNonsing
 			&Ko          = qp_->Ko();
-		const MatrixWithOp
+		const MatrixOp
 			&U_hat       = this->U_hat();
 		const GenPermMatrixSlice
 			&Q_R         = qp_->Q_R(),
@@ -2006,7 +2006,7 @@ const QPSchur::U_hat_t& QPSchur::ActiveSet::U_hat() const
 	return U_hat_;
 }
 
-const MatrixSymWithOpNonsingular& QPSchur::ActiveSet::S_hat() const
+const MatrixSymOpNonsing& QPSchur::ActiveSet::S_hat() const
 {
 	assert_initialized();
 	return schur_comp().op_interface();
@@ -4615,10 +4615,10 @@ QPSchur::iter_refine(
 
 	const QPSchurPack::QP
 		&qp    = act_set.qp();
-	const MatrixSymWithOpNonsingular
+	const MatrixSymOpNonsing
 		&Ko    = qp.Ko(),
 		&S_hat = act_set.S_hat();
-	const MatrixWithOp
+	const MatrixOp
 		&U_hat = act_set.U_hat();
 	const DenseLinAlgPack::size_type
 		n          = qp.n(),

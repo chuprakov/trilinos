@@ -21,9 +21,9 @@
 
 #include "NLPFirstDerivativesTester.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
@@ -57,12 +57,12 @@ NLPFirstDerivativesTester::NLPFirstDerivativesTester(
 
 bool NLPFirstDerivativesTester::finite_diff_check(
 	NLP                     *nlp
-	,const VectorWithOp     &xo
-	,const VectorWithOp     *xl
-	,const VectorWithOp     *xu
-	,const MatrixWithOp     *Gc
-	,const MatrixWithOp     *Gh
-	,const VectorWithOp     *Gf
+	,const Vector     &xo
+	,const Vector     *xl
+	,const Vector     *xu
+	,const MatrixOp     *Gc
+	,const MatrixOp     *Gh
+	,const Vector     *Gf
 	,bool                   print_all_warnings
 	,std::ostream           *out
 	) const
@@ -121,12 +121,12 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 bool NLPFirstDerivativesTester::fd_check_all(
 	NLP                     *nlp
-	,const VectorWithOp     &xo
-	,const VectorWithOp     *xl
-	,const VectorWithOp     *xu
-	,const MatrixWithOp     *Gc
-	,const MatrixWithOp     *Gh
-	,const VectorWithOp     *Gf
+	,const Vector     &xo
+	,const Vector     *xl
+	,const Vector     *xu
+	,const MatrixOp     *Gc
+	,const MatrixOp     *Gh
+	,const Vector     *Gf
 	,bool                   print_all_warnings
 	,std::ostream           *out
 	) const
@@ -314,12 +314,12 @@ bool NLPFirstDerivativesTester::fd_check_all(
 
 bool NLPFirstDerivativesTester::fd_directional_check(
 	NLP                     *nlp
-	,const VectorWithOp     &xo
-	,const VectorWithOp     *xl
-	,const VectorWithOp     *xu
-	,const MatrixWithOp     *Gc
-	,const MatrixWithOp     *Gh
-	,const VectorWithOp     *Gf
+	,const Vector     &xo
+	,const Vector     *xl
+	,const Vector     *xu
+	,const MatrixOp     *Gc
+	,const MatrixOp     *Gh
+	,const Vector     *Gf
 	,bool                   print_all_warnings
 	,std::ostream           *out
 	) const

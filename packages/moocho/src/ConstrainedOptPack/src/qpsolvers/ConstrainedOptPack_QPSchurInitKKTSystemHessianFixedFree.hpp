@@ -24,7 +24,7 @@ namespace ConstrainedOptimizationPack {
 /** Implementation of initial KKT system using the Hessian for the free
  * variables only.
  *
- * In this implementation, #G# must support the #MatrixSymWithOp#
+ * In this implementation, #G# must support the #MatrixSymOp#
  * interface.
  */
 class QPSchurInitKKTSystemHessianFixedFree
@@ -45,11 +45,11 @@ public:
 	 */
 	void initialize_kkt_system(
 		const DVectorSlice&    g
-		,const MatrixWithOp&  G
+		,const MatrixOp&  G
 		,value_type           etaL
 		,const SpVectorSlice& dL
 		,const SpVectorSlice& dU
-		,const MatrixWithOp*  F
+		,const MatrixOp*  F
 		,BLAS_Cpp::Transp     trans_F
 		,const DVectorSlice*   f
 		,const DVectorSlice&   d

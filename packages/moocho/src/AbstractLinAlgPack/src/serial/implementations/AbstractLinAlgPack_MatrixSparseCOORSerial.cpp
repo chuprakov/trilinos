@@ -134,7 +134,7 @@ size_type MatrixSparseCOORSerial::nz() const
 	return nz_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& MatrixSparseCOORSerial::space_cols() const
 {
@@ -146,7 +146,7 @@ const VectorSpace& MatrixSparseCOORSerial::space_rows() const
 	return space_rows_;
 }
 
-MatrixWithOp& MatrixSparseCOORSerial::operator=(const MatrixWithOp& M)
+MatrixOp& MatrixSparseCOORSerial::operator=(const MatrixOp& M)
 {
 	using DynamicCastHelperPack::dyn_cast;
 	const MatrixSparseCOORSerial
@@ -189,15 +189,15 @@ std::ostream& MatrixSparseCOORSerial::output(std::ostream& out) const
 	
 	if( rows * cols <= 400 ) {
 		out << "Converted to dense =\n";
-		MatrixWithOp::output(out);
+		MatrixOp::output(out);
 	}
 
 	return out;
 }
 
 void MatrixSparseCOORSerial::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const Vector& x, value_type b
 	) const
 {
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );

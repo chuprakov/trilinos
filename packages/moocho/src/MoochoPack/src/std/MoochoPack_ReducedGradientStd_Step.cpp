@@ -18,9 +18,9 @@
 #include "ReducedSpaceSQPPack/src/std/ReducedGradientStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -46,10 +46,10 @@ bool ReducedGradientStd_Step::do_step(
 	}
 
 	// Get iteration quantities
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&Gf_iq  = s.Gf(),
 		&rGf_iq = s.rGf();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		&Z_iq = s.Z();
 
 	// rGf = Z' * Gf

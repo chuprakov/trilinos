@@ -178,7 +178,7 @@ class LineSearchFilter_Step
 		CastIQMember<value_type> obj_f_;
 
 		/// ITeration quantity access for objective gradient
-		CastIQMember<VectorWithOpMutable> grad_obj_f_;
+		CastIQMember<VectorMutable> grad_obj_f_;
 
 		
 
@@ -186,10 +186,10 @@ class LineSearchFilter_Step
 		MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp_;
 
 		// Validate input parameters - fix if possible
-		bool ValidatePoint( IterQuantityAccess<VectorWithOpMutable>& x,
+		bool ValidatePoint( IterQuantityAccess<VectorMutable>& x,
 							IterQuantityAccess<value_type>& f,
-							IterQuantityAccess<VectorWithOpMutable>* c,
-							IterQuantityAccess<VectorWithOpMutable>* h,
+							IterQuantityAccess<VectorMutable>* c,
+							IterQuantityAccess<VectorMutable>* h,
 							bool throw_excpt ) const;
 
 
@@ -212,12 +212,12 @@ class LineSearchFilter_Step
 
 
 		// Calculate the new point given d and alpha
-		void UpdatePoint( const VectorWithOpMutable& d,
+		void UpdatePoint( const VectorMutable& d,
 						  value_type alpha, 
-						  IterQuantityAccess<VectorWithOpMutable>& x,
+						  IterQuantityAccess<VectorMutable>& x,
 						  IterQuantityAccess<value_type>& f,
-						  IterQuantityAccess<VectorWithOpMutable>* c,
-						  IterQuantityAccess<VectorWithOpMutable>* h,
+						  IterQuantityAccess<VectorMutable>* c,
+						  IterQuantityAccess<VectorMutable>* h,
 						  NLP& nlp ) const;
 
 
@@ -228,8 +228,8 @@ class LineSearchFilter_Step
 
 
 		// Calculate the constraint norm
-		value_type CalculateTheta_k( IterQuantityAccess<VectorWithOpMutable>* c,
-									 IterQuantityAccess<VectorWithOpMutable>* h,
+		value_type CalculateTheta_k( IterQuantityAccess<VectorMutable>* c,
+									 IterQuantityAccess<VectorMutable>* h,
 									 int k ) const;
 
 

@@ -18,8 +18,8 @@
 #include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
 #include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
 #include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularAggr.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsingAggr.hpp"
 #include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
 #include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -33,9 +33,9 @@ BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	)
 	:BasisSystemPerm(
 		MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor>())               // D'*D
+			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())               // D'*D
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymPosDefCholFactor>())    // S
+			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())    // S
 		)
 {
 	this->initialize(direct_solver);
@@ -63,7 +63,7 @@ const BasisSystem::mat_nonsing_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_C() const
 {
 	return MemMngPack::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixWithOpNonsingularAggr>()
+		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixOpNonsingAggr>()
 		);
 }
 
@@ -71,7 +71,7 @@ const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_D() const
 {
 	return MemMngPack::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MultiVectorMutableDense>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
 
@@ -79,7 +79,7 @@ const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_GcUP() const
 {
 	return MemMngPack::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MultiVectorMutableDense>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
 
@@ -87,7 +87,7 @@ const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_GhUP() const
 {
 	return MemMngPack::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MultiVectorMutableDense>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
 
@@ -112,12 +112,12 @@ Range1D BasisSystemPermDirectSparse::equ_undecomp() const
 }
 
 void BasisSystemPermDirectSparse::update_basis(
-	const MatrixWithOp*         Gc
-	,const MatrixWithOp*        Gh
-	,MatrixWithOpNonsingular*   C
-	,MatrixWithOp*              D
-	,MatrixWithOp*              GcUP
-	,MatrixWithOp*              GhUP
+	const MatrixOp*         Gc
+	,const MatrixOp*        Gh
+	,MatrixOpNonsing*   C
+	,MatrixOp*              D
+	,MatrixOp*              GcUP
+	,MatrixOp*              GhUP
 	,EMatRelations              mat_rel
 	,std::ostream               *out
 	) const
@@ -156,8 +156,8 @@ void BasisSystemPermDirectSparse::update_basis(
 	const MatrixPermAggr	
 		&Gc_pa = dyn_cast<const MatrixPermAggr>(*Gc);
 	// Get the basis matrix object from the aggregate or allocate one
-	MatrixWithOpNonsingularAggr
-		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
+	MatrixOpNonsingAggr
+		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
 	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Setup the encapulated convert-to-sparse matrix object
@@ -215,12 +215,12 @@ void BasisSystemPermDirectSparse::set_basis(
 	,const Range1D             *equ_decomp
 	,const Permutation         *P_inequ
 	,const Range1D             *inequ_decomp
-	,const MatrixWithOp        *Gc
-	,const MatrixWithOp        *Gh
-	,MatrixWithOpNonsingular   *C
-	,MatrixWithOp              *D
-	,MatrixWithOp              *GcUP
-	,MatrixWithOp              *GhUP
+	,const MatrixOp        *Gc
+	,const MatrixOp        *Gh
+	,MatrixOpNonsing   *C
+	,MatrixOp              *D
+	,MatrixOp              *GcUP
+	,MatrixOp              *GhUP
 	,EMatRelations              mat_rel
 	,std::ostream               *out
 	)
@@ -266,8 +266,8 @@ void BasisSystemPermDirectSparse::set_basis(
 	const MatrixPermAggr	
 		&Gc_pa = dyn_cast<const MatrixPermAggr>(*Gc);
 	// Get the basis matrix object from the aggregate or allocate one
-	MatrixWithOpNonsingularAggr
-		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
+	MatrixOpNonsingAggr
+		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
 	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Get at the concreate permutation vectors
@@ -300,20 +300,20 @@ void BasisSystemPermDirectSparse::set_basis(
 }
 
 void BasisSystemPermDirectSparse::select_basis(
-	const VectorWithOp          *nu
-	,const VectorWithOp         *lambdaI
-	,MatrixWithOp               *Gc
-	,MatrixWithOp               *Gh
+	const Vector          *nu
+	,const Vector         *lambdaI
+	,MatrixOp               *Gc
+	,MatrixOp               *Gh
 	,Permutation                *P_var
 	,Range1D                    *var_dep
 	,Permutation                *P_equ
 	,Range1D                    *equ_decomp
 	,Permutation                *P_inequ
 	,Range1D                    *inequ_decomp
-	,MatrixWithOpNonsingular    *C
-	,MatrixWithOp               *D
-	,MatrixWithOp               *GcUP
-	,MatrixWithOp               *GhUP
+	,MatrixOpNonsing    *C
+	,MatrixOp               *D
+	,MatrixOp               *GcUP
+	,MatrixOp               *GhUP
 	,EMatRelations              mat_rel
 	,std::ostream               *out
 	)
@@ -354,8 +354,8 @@ void BasisSystemPermDirectSparse::select_basis(
 	MatrixPermAggr	
 		&Gc_pa = dyn_cast<MatrixPermAggr>(*Gc);
 	// Get the basis matrix object from the aggregate or allocate one
-	MatrixWithOpNonsingularAggr
-		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
+	MatrixOpNonsingAggr
+		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
 	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Setup the encapulated convert-to-sparse matrix object
@@ -414,14 +414,14 @@ void BasisSystemPermDirectSparse::select_basis(
 // private
 
 MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
-BasisSystemPermDirectSparse::get_basis_matrix( MatrixWithOpNonsingularAggr &C_aggr ) const
+BasisSystemPermDirectSparse::get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const
 {
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix> C_bm;
 	if( C_aggr.mns().get() ) {
 		C_bm = mmp::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
-			mmp::rcp_const_cast<MatrixNonsingular>(C_aggr.mns() ) );
+			mmp::rcp_const_cast<MatrixNonsing>(C_aggr.mns() ) );
 		if(C_bm.get() == NULL)
 			dyn_cast<const DirectSparseSolver::BasisMatrix>(*C_aggr.mns()); // Throws exception!
 	}
@@ -450,10 +450,10 @@ void BasisSystemPermDirectSparse::set_A_mctse(
 }
 
 void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
-	const MatrixWithOp& Gc
+	const MatrixOp& Gc
 	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
-	,MatrixWithOpNonsingularAggr *C_aggr
-	,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+	,MatrixOpNonsingAggr *C_aggr
+	,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
 	) const
 {
 	namespace mmp = MemMngPack;
@@ -486,11 +486,11 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 }
 
 void BasisSystemPermDirectSparse::do_some_basis_stuff(
-	const MatrixWithOp& Gc, const MatrixWithOp* Gh
+	const MatrixOp& Gc, const MatrixOp* Gh
 	,const Range1D& var_dep, const Range1D& equ_decomp
 	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
-	,MatrixWithOpNonsingularAggr *C_aggr
-	,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+	,MatrixOpNonsingAggr *C_aggr
+	,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
 	)
 {
 	const size_type

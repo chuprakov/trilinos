@@ -182,7 +182,7 @@ size_type MultiVectorMutableDense::cols() const
 	return BLAS_Cpp::cols( get_gms().rows(), get_gms().cols(), gms_trans() );
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 void MultiVectorMutableDense::zero_out()
 {
@@ -194,7 +194,7 @@ void MultiVectorMutableDense::Mt_S( value_type alpha )
 	DenseLinAlgPack::Mt_S(&gms_,alpha);
 }
 
-MatrixWithOp& MultiVectorMutableDense::operator=(const MatrixWithOp& mwo_rhs)
+MatrixOp& MultiVectorMutableDense::operator=(const MatrixOp& mwo_rhs)
 {
 	DenseLinAlgPack::assign( &set_gms(), MatrixDenseEncap(mwo_rhs)(), gms_trans() );
 	return *this;
@@ -209,7 +209,7 @@ std::ostream& MultiVectorMutableDense::output(std::ostream& out) const
 
 bool MultiVectorMutableDense::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
-	,value_type beta, MatrixSymWithOp* sym_lhs
+	,value_type beta, MatrixSymOp* sym_lhs
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -228,8 +228,8 @@ bool MultiVectorMutableDense::syrk(
 }
 
 bool MultiVectorMutableDense::Mp_StMtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
-	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	MatrixOp* mwo_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta ) const
 {
@@ -239,9 +239,9 @@ bool MultiVectorMutableDense::Mp_StMtM(
 }
 
 bool MultiVectorMutableDense::Mp_StMtM(
-	MatrixWithOp* mwo_lhs, value_type alpha
+	MatrixOp* mwo_lhs, value_type alpha
 	,BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	,value_type beta ) const
 {
 	if(MultiVector::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta))

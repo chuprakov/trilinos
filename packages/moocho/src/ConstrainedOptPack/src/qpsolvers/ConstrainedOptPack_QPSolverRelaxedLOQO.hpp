@@ -93,10 +93,10 @@ public:
 		 *                 because of bad software engineering.
 		 */
 		virtual void init_hess_jacob(
-			const MatrixWithOp& G, const value_type bigM
-			, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
+			const MatrixOp& G, const value_type bigM
+			, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const int loqo_b_stat[], const size_type num_inequal
-			, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
+			, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 			, void* loqo_lp
 			) const;
 
@@ -145,12 +145,12 @@ protected:
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const DVectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
+		, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
+		, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
 		, value_type* eta, DVectorSlice* d
 		, SpVector* nu

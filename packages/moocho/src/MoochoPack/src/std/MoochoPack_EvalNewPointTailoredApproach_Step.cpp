@@ -21,10 +21,10 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -80,7 +80,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
 		"Neither undecomposed equalities nor general inequalities are supported yet!" );
 
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq = s.x();
 
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
@@ -114,7 +114,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		}
 	}
 
-	VectorWithOp &x = x_iq.get_k(0);
+	Vector &x = x_iq.get_k(0);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
@@ -138,7 +138,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	}
 		
 	// Get references to Z, Y, Uz, Uy, Vz and Vy
-	MatrixWithOp
+	MatrixOp
 		&Z_k  = s.Z().set_k(0),
 		&Y_k  = s.Y().set_k(0),
 		*Uz_k = (m > r) ? &s.Uz().set_k(0) : NULL,
@@ -159,9 +159,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		D_ptr = cZ_k.D_ptr();
 
 	// Compute all the quantities.
-	rcp::ref_count_ptr<MatrixWithOp>
+	rcp::ref_count_ptr<MatrixOp>
 		GcU = (m > r) ? nlp.factory_GcU()->create() : rcp::null; // ToDo: Reuse GcU somehow? 
-	VectorWithOpMutable
+	VectorMutable
 		&py_k  = s.py().set_k(0);
 	nlp.calc_point(
 		x                                                     // x
@@ -174,7 +174,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		,&s.rGf().set_k(0)                                    // rGf
 		,GcU.get()                                            // GcU
 		,mI ? &s.Gh().set_k(0) : NULL                         // Gh
-		,const_cast<MatrixWithOp*>(D_ptr.get())               // -inv(C)*N
+		,const_cast<MatrixOp*>(D_ptr.get())               // -inv(C)*N
 		,Uz_k                                                 // Uz
 		,Vz_k                                                 // Vz
 		);
@@ -229,15 +229,15 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		const bool nlp_passed = deriv_tester().finite_diff_check(
 			&nlp
 			,x
-			,has_bounds ? &nlp.xl() : (const VectorWithOp*)NULL
-			,has_bounds ? &nlp.xu() : (const VectorWithOp*)NULL
+			,has_bounds ? &nlp.xl() : (const Vector*)NULL
+			,has_bounds ? &nlp.xu() : (const Vector*)NULL
 			,&s.c().get_k(0)
-			,mI ? &s.h().get_k(0) : (const VectorWithOp*)NULL
+			,mI ? &s.h().get_k(0) : (const Vector*)NULL
 			,&s.Gf().get_k(0)
 			,&s.py().get_k(0)
 			,&s.rGf().get_k(0)
 			,GcU.get()
-			,mI ? &s.Gh().get_k(0) : (const MatrixWithOp*)NULL
+			,mI ? &s.Gh().get_k(0) : (const MatrixOp*)NULL
 			,D_ptr.get()
 			,Uz_k
 			,Vz_k
@@ -270,7 +270,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	calc_py_Y_Uy_Vy( nlp, D_ptr, &py_k, &Y_k, Uy_k, Vy_k, olevel, out ); 
 
 	// Compute Ypy = Y*py
-	VectorWithOpMutable
+	VectorMutable
 		&Ypy_k  = s.Ypy().set_k(0);
 	V_MtV( &Ypy_k, Y_k, BLAS_Cpp::no_trans, py_k );
 

@@ -38,7 +38,7 @@ using AbstractLinAlgPack::Mp_MtM_assert_compatibility;
 
 // v_lhs = V_rhs.
 template <class V>
-void assign(VectorWithOpMutable* v_lhs, const V& V_rhs) {
+void assign(VectorMutable* v_lhs, const V& V_rhs) {
 	Vp_V_assert_compatibility(v_lhs,V_rhs);
 	(*v_lhs) = 0.0;
 	Vp_V(v_lhs,V_rhs);
@@ -46,7 +46,7 @@ void assign(VectorWithOpMutable* v_lhs, const V& V_rhs) {
 
 // v_lhs = alpha * V_rhs.
 template <class V>
-void V_StV(VectorWithOpMutable* v_lhs, value_type alpha, const V& V_rhs) {
+void V_StV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs) {
 	Vp_V_assert_compatibility(v_lhs,V_rhs);
 	(*v_lhs) = 0.0;
 	Vp_StV(v_lhs,alpha,V_rhs);
@@ -54,7 +54,7 @@ void V_StV(VectorWithOpMutable* v_lhs, value_type alpha, const V& V_rhs) {
 
 // v_lhs = V1_rhs1 + V2_rhs2.
 template <class V1, class V2>
-void V_VpV(VectorWithOpMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
+void V_VpV(VectorMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
 	VopV_assert_compatibility(V1_rhs1,V2_rhs2);
 	Vp_V_assert_compatibility(v_lhs,V1_rhs1);
 	(*v_lhs) = 0.0;
@@ -64,7 +64,7 @@ void V_VpV(VectorWithOpMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
 
 // v_lhs = V_rhs1 - V_rhs2.
 template <class V1, class V2>
-void V_VmV(VectorWithOpMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
+void V_VmV(VectorMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
 	VopV_assert_compatibility(V1_rhs1,V2_rhs2);
 	Vp_V_assert_compatibility(v_lhs,V1_rhs1);
 	(*v_lhs) = 0.0;
@@ -74,8 +74,8 @@ void V_VmV(VectorWithOpMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
 
 // v_lhs = alpha * V_rhs1 + v_rhs2.
 template <class V>
-void V_StVpV(VectorWithOpMutable* v_lhs, value_type alpha, const V& V_rhs1
-	, const VectorWithOp& v_rhs2)
+void V_StVpV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs1
+	, const Vector& v_rhs2)
 {
 	VopV_assert_compatibility(V_rhs1,v_rhs2);
 	(*v_lhs) = v_rhs2;
@@ -87,7 +87,7 @@ void V_StVpV(VectorWithOpMutable* v_lhs, value_type alpha, const V& V_rhs1
 
 // v_lhs = alpha * op(M_rhs1) * V_rhs2.
 template <class V>
-void V_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, const MatrixWithOp& M_rhs1
+void V_StMtV(VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const V& V_rhs2)
 {
 	Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);
@@ -96,7 +96,7 @@ void V_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, const MatrixWithOp& M
 
 // v_lhs = op(M_rhs1) * V_rhs2.
 template <class V>
-void V_MtV(VectorWithOpMutable* v_lhs, const MatrixWithOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
+void V_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const V& V_rhs2)
 {
 	Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);

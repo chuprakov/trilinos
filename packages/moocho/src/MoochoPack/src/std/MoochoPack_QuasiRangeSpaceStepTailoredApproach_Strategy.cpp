@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"
 #include "Midynamic_cast_verbose.h"
@@ -50,7 +50,7 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 #endif
 
 	// Get D for Z_k = [ D; I ]
-	const MatrixWithOp
+	const MatrixOp
 		&Z_k = s->Z().get_k(0);
 #ifdef _WINDOWS
 	const DenseIdentVertConcatMatrixSubclass

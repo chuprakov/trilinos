@@ -15,13 +15,13 @@
 
 #include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "AbstractLinAlgPack/src/TestMatrixSymSecantUpdate.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/TestMatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -44,13 +44,13 @@ BFGSUpdate_Strategy::BFGSUpdate_Strategy(
 {}
 
 void BFGSUpdate_Strategy::perform_update(
-	VectorWithOpMutable      *s_bfgs
-	,VectorWithOpMutable     *y_bfgs
+	VectorMutable      *s_bfgs
+	,VectorMutable     *y_bfgs
 	,bool                    first_update
 	,std::ostream            &out
 	,EJournalOutputLevel     olevel
 	,bool                    check_results
-	,MatrixSymWithOp         *B
+	,MatrixSymOp         *B
 	,QuasiNewtonStats        * quasi_newton_stats 
 	)
 {
@@ -74,8 +74,8 @@ void BFGSUpdate_Strategy::perform_update(
 		yTy = NOT_CALCULATED;
 	bool used_dampening = false;
 
-	MatrixSymSecantUpdateable
-	    &B_updatable = dyn_cast<MatrixSymSecantUpdateable>(*B);
+	MatrixSymSecant
+	    &B_updatable = dyn_cast<MatrixSymSecant>(*B);
 
 	// /////////////////////////////////////////////////////////////
 	// Consider rescaling the initial identity hessian before
@@ -192,7 +192,7 @@ void BFGSUpdate_Strategy::perform_update(
 			,Bs.get()
 			);
 	}
-	catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
+	catch( const MatrixSymSecant::UpdateSkippedException& excpt ) {
 		if( (int)olevel >= (int)PRINT_BASIC_ALGORITHM_INFO ) {
 			out << excpt.what() << std::endl
 				<< "\nSkipping BFGS update.  B = B ...\n";
@@ -210,7 +210,7 @@ void BFGSUpdate_Strategy::perform_update(
 		|| secant_testing() == SECANT_TEST_ALWAYS )
 	{
 		const bool result =
-			AbstractLinAlgPack::TestMatrixSymSecantUpdate(
+			AbstractLinAlgPack::TestMatrixSymSecant(
 				*B, *s_bfgs_save, *y_bfgs_save
 				, secant_warning_tol(), secant_error_tol()
 				, (int)olevel >= (int)PRINT_VECTORS

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MatrixWithOpNonsingularTester.hpp
+// MatrixOpNonsingTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -24,19 +24,19 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Testing class for \c MatrixWithOpNonsingular interface.
+/** Testing class for \c MatrixOpNonsing interface.
  *
- * This testing class is basically a unit tester for \c MatrixWithOpNonsingular.  The method \c test_matrix()
+ * This testing class is basically a unit tester for \c MatrixOpNonsing.  The method \c test_matrix()
  * runs several different tests to check that \f$ M M^{-1} \approx I \f$ and \f$ M^{-T} M^T \approx I \f$ using
- * randomly generated vectors \a v and the methods \c MatrixNonsingular::V_InvMtV() and \c MatrixWithOp::Vp_StMtV().
- * These test should only be performed, of course, on a fully initialized <tt>%MatrixWithOpNonsingular</tt> object.
+ * randomly generated vectors \a v and the methods \c MatrixNonsing::V_InvMtV() and \c MatrixOp::Vp_StMtV().
+ * These test should only be performed, of course, on a fully initialized <tt>%MatrixOpNonsing</tt> object.
  *
  * The tests performed by this testing class are designed to allow some validation for even the larges systems
  * and will produce various levels of output so as to be usefull in debugging.
  *
  * ToDo:  Finish documentation!
  */
-class MatrixWithOpNonsingularTester {
+class MatrixOpNonsingTester {
 public:
 
 	/** @name Public types */
@@ -81,7 +81,7 @@ public:
 	//@{
 
 	///	Constructor (default options)
-	MatrixWithOpNonsingularTester(
+	MatrixOpNonsingTester(
 		ETestLevel       test_level       = TEST_LEVEL_2_BLAS
 		,EPrintTestLevel print_tests      = PRINT_NONE
 		,bool            dump_all         = false
@@ -93,11 +93,11 @@ public:
 
 	//@}
 
-	/** @name Test MatrixWithOpNonsingular */
+	/** @name Test MatrixOpNonsing */
 	//@{
  
 	///
-	/** Test a \c MatrixWithOpNonsingular object.
+	/** Test a \c MatrixOpNonsing object.
 	 *
 	 * @param  M    [in] Matrix object being tested.
 	 * @param  M_name
@@ -126,14 +126,14 @@ public:
 	 * </ul>
 	 */
 	bool test_matrix(
-		const MatrixWithOpNonsingular   &M
+		const MatrixOpNonsing   &M
 		,const char                     M_name[]
 		,std::ostream                   *out
 		);
 
 	//@}
 
-}; // end class MatrixWithOpNonsingularTester
+}; // end class MatrixOpNonsingTester
 
 } // end namespace AbstractLinAlgPack
 

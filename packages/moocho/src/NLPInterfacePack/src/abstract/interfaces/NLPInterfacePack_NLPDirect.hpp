@@ -88,13 +88,13 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymWithOp> >            mat_sym_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymWithOpNonsingular> > mat_sym_nonsing_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 
 	///
 	/** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
@@ -358,19 +358,19 @@ public:
 	 * </ul>
 	 */
 	virtual void calc_point(
-		const VectorWithOp     &x
+		const Vector     &x
 		,value_type            *f
-		,VectorWithOpMutable   *c
+		,VectorMutable   *c
 		,bool                  recalc_c
-		,VectorWithOpMutable   *h
-		,VectorWithOpMutable   *Gf
-		,VectorWithOpMutable   *py
-		,VectorWithOpMutable   *rGf
-		,MatrixWithOp          *GcU
-		,MatrixWithOp          *Gh
-		,MatrixWithOp          *D
-		,MatrixWithOp          *Uz
-		,MatrixWithOp          *Vz
+		,VectorMutable   *h
+		,VectorMutable   *Gf
+		,VectorMutable   *py
+		,VectorMutable   *rGf
+		,MatrixOp          *GcU
+		,MatrixOp          *Gh
+		,MatrixOp          *D
+		,MatrixOp          *Uz
+		,MatrixOp          *Vz
 		) const = 0;
 
 	///
@@ -402,10 +402,10 @@ public:
 	 * </ul>
 	 */
 	virtual void calc_semi_newton_step(
-		const VectorWithOp    &x
-		,VectorWithOpMutable  *c
+		const Vector    &x
+		,VectorMutable  *c
 		,bool                 recalc_c
-		,VectorWithOpMutable  *py
+		,VectorMutable  *py
 		) const = 0;
 
 	//@}
@@ -428,9 +428,9 @@ public:
 	/// Returns <tt>return.get() == NULL</tt>.
 	vec_space_ptr_t space_h() const;
 	/// Throws exception.
-	const VectorWithOp& hl() const;
+	const Vector& hl() const;
 	/// Throws exception.
-	const VectorWithOp& hu() const;
+	const Vector& hu() const;
 
 	//@}
 
@@ -440,7 +440,7 @@ protected:
 	//@{
 	
 	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
+	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
 

@@ -17,7 +17,7 @@
 #define MATRIX_HESSIAN_RELAXED_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -32,7 +32,7 @@ namespace ConstrainedOptimizationPack {
   \end{verbatim}
   *
   */
-class MatrixHessianRelaxed : public MatrixSymWithOp {
+class MatrixHessianRelaxed : public MatrixSymOp {
 public:
 
 	/// Construct to uninitialized
@@ -45,7 +45,7 @@ public:
 	  *
 	  */
 	void initialize(
-		  const MatrixSymWithOp	&H
+		  const MatrixSymOp	&H
 		, value_type			bigM
 		);
 
@@ -56,7 +56,7 @@ public:
 	size_type rows() const;
 
 	// //////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
 	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
@@ -80,7 +80,7 @@ public:
 
 private:
 	size_type				n_;	// size of H
-	const MatrixSymWithOp	*H_;
+	const MatrixSymOp	*H_;
 	value_type				bigM_;
 
 };	// end class MatrixHessianRelaxed

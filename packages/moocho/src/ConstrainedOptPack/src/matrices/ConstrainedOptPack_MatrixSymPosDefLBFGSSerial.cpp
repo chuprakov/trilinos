@@ -168,14 +168,14 @@ size_type MatrixSymPosDefLBFGS::rows() const
 	return n_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
 {
 	assert_initialized();
 	out << "*** Limited Memory BFGS matrix.\n"
 		<< "Conversion to dense =\n";
-	MatrixWithOp::output(out);
+	MatrixOp::output(out);
 	out << "\n*** Stored quantities\n"
 		<< "\ngamma_k = " << gamma_k_ << std::endl;
 	if( m_bar_ ) {
@@ -190,7 +190,7 @@ std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
 	return out;
 }
 
-MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
+MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& m)
 {	
 	const MatrixSymPosDefLBFGS *p_m = dynamic_cast<const MatrixSymPosDefLBFGS*>(&m);
 	if(p_m) {
@@ -216,7 +216,7 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 		QJ_			         = p_m->QJ_;
 	}
 	else {
-		throw std::invalid_argument("MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)"
+		throw std::invalid_argument("MatrixSymPosDefLBFGS::operator=(const MatrixOp& m)"
 			" : The concrete type of m is not a subclass of MatrixSymPosDefLBFGS as expected" );
 	}
 	return *this;
@@ -441,7 +441,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV( DVectorSlice* y, BLAS_Cpp::Transp trans_rhs
 
 }
 
-// Overridden from MatrixSymSecantUpdateable
+// Overridden from MatrixSymSecant
 
 void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 {

@@ -22,9 +22,9 @@
 #include "ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -71,12 +71,12 @@ bool CheckConvergenceIP_Strategy::Converged(
 
 	// Get necessary iteration quantities
 	const value_type &mu_km1 = s.barrier_parameter().get_k(-1);
-	const VectorWithOp& x_k = s.x().get_k(0);
-	const VectorWithOpMutable& Gf_k = s.Gf().get_k(0);
-	const VectorWithOp& rGL_k = s.rGL().get_k(0);
-	const VectorWithOp& c_k = s.c().get_k(0);
-	const VectorWithOp& vl_k = s.Vl().get_k(0).diag();
-	const VectorWithOp& vu_k = s.Vu().get_k(0).diag();
+	const Vector& x_k = s.x().get_k(0);
+	const VectorMutable& Gf_k = s.Gf().get_k(0);
+	const Vector& rGL_k = s.rGL().get_k(0);
+	const Vector& c_k = s.c().get_k(0);
+	const Vector& vl_k = s.Vl().get_k(0).diag();
+	const Vector& vu_k = s.Vu().get_k(0).diag();
 	
 	// Calculate the errors with Andreas' scaling
 	value_type& opt_err = s.opt_kkt_err().set_k(0);
@@ -86,7 +86,7 @@ bool CheckConvergenceIP_Strategy::Converged(
 	// scaling
 	value_type scale_1 = 1 + x_k.norm_1()/x_k.dim();
 
-	MemMngPack::ref_count_ptr<VectorWithOpMutable> temp = Gf_k.clone();
+	MemMngPack::ref_count_ptr<VectorMutable> temp = Gf_k.clone();
 	temp->axpy(-1.0, vl_k);
 	temp->axpy(1.0, vu_k);
 	value_type scale_2 = temp->norm_1();

@@ -57,7 +57,7 @@ public:
 	//@{
 
 	///
-	const MatrixSymWithOpNonsingular& op_interface() const;
+	const MatrixSymOpNonsing& op_interface() const;
 	///
 	MatrixSymAddDelUpdateable& update_interface();
 	///

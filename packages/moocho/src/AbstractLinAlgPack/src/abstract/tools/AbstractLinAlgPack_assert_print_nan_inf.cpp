@@ -17,7 +17,7 @@
 #include <iomanip>
 
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_find_nan_inf.h"
 #include "RTOpPack/src/RTOpCppC.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
@@ -69,7 +69,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
 	return true;
 }
 
-bool AbstractLinAlgPack::assert_print_nan_inf( const VectorWithOp& v, char name[]
+bool AbstractLinAlgPack::assert_print_nan_inf( const Vector& v, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
 	find_nan_inf_targ.reinit();

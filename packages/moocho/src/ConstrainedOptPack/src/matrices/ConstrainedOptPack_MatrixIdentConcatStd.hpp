@@ -48,7 +48,7 @@ public:
 	///
 	enum ETopBottom { TOP, BOTTOM };
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
 	//@}
 
 	/** @name Constructors/initializers. */
@@ -138,12 +138,12 @@ public:
 	///
 	value_type alpha() const;
 	///
-	const MatrixWithOp& D() const;
+	const MatrixOp& D() const;
 	///
 	BLAS_Cpp::Transp D_trans() const;
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 	///
 	const VectorSpace& space_cols() const;
@@ -154,7 +154,7 @@ public:
 	 * the underlying smart reference counted pointer.  If other
 	 * behavior is desired then this method must be overridden.
 	 */
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 	//@}
 
 private:
@@ -162,7 +162,7 @@ private:
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::VectorSpace    *space_cols;
 	AbstractLinAlgPack::VectorSpace    *space_rows;
-	AbstractLinAlgPack::MatrixWithOp   *D;
+	AbstractLinAlgPack::MatrixOp   *D;
 	RangePack::Range1D                 D_rng;
 	RangePack::Range1D                 I_rng;
 #else

@@ -52,7 +52,7 @@ public:
 	/** Return the value of the merit function at x.
 	 * Here phi(x) is calculated directly using the nlp.
 	 */
-	value_type operator()(const VectorWithOp& x) const;
+	value_type operator()(const Vector& x) const;
 
 	/// Calls phi().deriv() on phi.
 	value_type deriv() const;

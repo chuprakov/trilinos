@@ -39,16 +39,16 @@ size_type COOMatrixPartitionViewSubclass::cols() const {
 	return trans_ == BLAS_Cpp::no_trans ? m().cols() : m().rows();
 }
 
-MatrixWithOp& COOMatrixPartitionViewSubclass::operator=(const MatrixWithOp& m) {
+MatrixOp& COOMatrixPartitionViewSubclass::operator=(const MatrixOp& m) {
 	if(&m == this) return *this;	// assignment to self
 	const COOMatrixPartitionViewSubclass *p_m = dynamic_cast<const COOMatrixPartitionViewSubclass*>(&m);
 	if(p_m) {
-		throw std::invalid_argument("COOMatrixPartitionViewSubclass::operator=(const MatrixWithOp& m)"
+		throw std::invalid_argument("COOMatrixPartitionViewSubclass::operator=(const MatrixOp& m)"
 			" :  There is not an assignment operator defined for COOMatrixWithPartitionedView::partition_type"
 			".   Only assignment to self can be handeled" );
 	}
 	else {
-		throw std::invalid_argument("COOMatrixPartitionViewSubclass::operator=(const MatrixWithOp& m)"
+		throw std::invalid_argument("COOMatrixPartitionViewSubclass::operator=(const MatrixOp& m)"
 			" : The concrete type of m is not a subclass of COOMatrixPartitionViewSubclass as expected" );
 	}
 	return *this;

@@ -51,25 +51,25 @@ protected:
 
 	///
 	void uninitialize_Y_Uv_Uy(
-		MatrixWithOp         *Y
-		,MatrixWithOp        *Uy
-		,MatrixWithOp        *Vy
+		MatrixOp         *Y
+		,MatrixOp        *Uy
+		,MatrixOp        *Vy
 		);
 	///
 	void calc_py_Y_Uy_Vy(
 		const NLPFirstOrderDirect   &nlp
 		,const D_ptr_t              &D
-		,VectorWithOpMutable        *py
-		,MatrixWithOp               *Y
-		,MatrixWithOp               *Uy
-		,MatrixWithOp               *Vy
+		,VectorMutable        *py
+		,MatrixOp               *Y
+		,MatrixOp               *Uy
+		,MatrixOp               *Vy
 		,EJournalOutputLevel        olevel
 		,std::ostream               &out
 		);
 	///
 	void recalc_py(
-		const MatrixWithOp       &D
-		,VectorWithOpMutable     *py
+		const MatrixOp       &D
+		,VectorMutable     *py
 		,EJournalOutputLevel     olevel
 		,std::ostream            &out
 		);
@@ -86,7 +86,7 @@ private:
 	// Private types
 
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>  S_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymOpNonsing>  S_ptr_t;
 
 	// ///////////////////////////////
 	// Private data members

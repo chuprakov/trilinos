@@ -23,7 +23,7 @@
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.hpp"
 #include "ConstrainedOptimizationPack/src/QPOPT_CppDecl.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/EtaVector.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -46,7 +46,7 @@ typedef FortranTypes::f_logical		f_logical;
 // HESS * x = [ G  0 ] * [ X(1,N-1) ] = [ G * X(1,N-1) ]
 //            [ 0  M ]   [   X(N)   ]   [ M * X(N)     ]
 //
-// The matrix vector product is implemented through the MatrixWithOp interface.
+// The matrix vector product is implemented through the MatrixOp interface.
 //
 inline
 void qphess_server_relax( const f_int& N, const f_int& LDH

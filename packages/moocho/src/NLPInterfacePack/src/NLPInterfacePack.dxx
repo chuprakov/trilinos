@@ -78,12 +78,12 @@ Gradient information for the constraints \a c(x) and \a h(x) can be harder to co
 <tt>\ref NLPInterfacePack::NLPFirstOrderInfo "NLPFirstOrderInfo"</tt> allows clients to create matrix objects that represent
 the gradients of the constriants \f$ \nabla c(x) \in \Re^{n \times m} \f$ and \f$ \nabla h(x) \in \Re^{n \times mI} \f$ denoted
 as \c Gc and \c Gh respectively.  These matrix objects are hidden behind the abstract interface
-<tt>\ref AbstractLinAlgPack::MatrixWithOp "MatrixWithOp"</tt> that allows for different data
+<tt>\ref AbstractLinAlgPack::MatrixOp "MatrixOp"</tt> that allows for different data
 structure implementations and even parallelism.  Of course for these matrix objects to be of use to an optimization algorithm, 
 more information is needed about them (i.e. see <tt>\ref AbstractLinAlgPack::BasisSystem "BasisSystem"</tt>) but this is
 beyond the scope of these NLP interfaces.  
 
-In some application areas, it is not even possible to form <tt>\ref AbstractLinAlgPack::MatrixWithOp "MatrixWithOp"</tt>
+In some application areas, it is not even possible to form <tt>\ref AbstractLinAlgPack::MatrixOp "MatrixOp"</tt>
 objects for \c Gc and \c Gh.  However, it may be possible to solve for some specific linear systems with sub-Jacobians
 formed from these matrices.  The solutions from these specific linear systems are all that is needed by some gradient
 based optimization algorithms (i.e. Reduced Space SQP).  For these specialized application areas, the NLP interface
@@ -96,7 +96,7 @@ and more robust.  For application areas that can support it, the NLP interface
 computing a linear combination of the Hessians of the objective and constaint functions known as the Hessian of
 the Lagrangian function (see <tt>\ref NLPInterfacePack::NLP "NLP"</tt> for a definition of the Lagrangian function
 for this NLP formulation).  Again, this Hessian matrix object is abstracted behind a matrix interface, in this case
-<tt>\ref AbstractLinAlgPack::MatrixSymWithOp "MatrixSymWithOp"</tt>, that allows for artibrary implementations
+<tt>\ref AbstractLinAlgPack::MatrixSymOp "MatrixSymOp"</tt>, that allows for artibrary implementations
 (even using parallelism).
 
 */

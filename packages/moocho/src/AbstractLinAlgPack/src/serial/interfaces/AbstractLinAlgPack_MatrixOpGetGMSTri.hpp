@@ -17,7 +17,7 @@
 #define MATRIX_WITH_OP_GET_GMS_TRI_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -27,7 +27,7 @@ namespace SparseLinAlgPack {
 /** Mix-in interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceTri</tt>
  * view of an non-singular abstract matrix.
  *
- * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
+ * This interface is ment to be used by <tt>MatrixOp</tt> objects
  * that store all of their matrix elements in the local address space or can easily
  * access all of the elements from this process.
  *
@@ -40,7 +40,7 @@ namespace SparseLinAlgPack {
  * class type <tt>MatrixDenseTriEncap</tt>.
  */
 class MatrixWithOpGetGMSTri
-	: virtual public AbstractLinAlgPack::MatrixWithOp // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixOp // doxygen needs full name
 {
 public:
 
@@ -108,12 +108,12 @@ public:
 	 */
 	MatrixDenseTriEncap( const MatrixWithOpGetGMSTri&  mat_get );
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixWithOpGetGMSTri*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
-	MatrixDenseTriEncap( const MatrixWithOp& mat );
+	MatrixDenseTriEncap( const MatrixOp& mat );
 	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view.
 	~MatrixDenseTriEncap();
 	/// Returns a constant view of the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view.
@@ -141,7 +141,7 @@ MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixWithOpGetGMSTri&  mat_get 
 {}
 
 inline
-MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixWithOp& mat )
+MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixOp& mat )
 	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixWithOpGetGMSTri>(mat))
 	,tri_gms_view_(mat_get_.get_tri_gms_view())
 {}

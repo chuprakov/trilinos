@@ -108,7 +108,7 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 				// this at some point in the future?
 }
 
-// Overridden from MatrixSymWithOp
+// Overridden from MatrixSymOp
 
 const VectorSpace& MatrixSymWithOpSerial::space_rows() const
 {
@@ -116,7 +116,7 @@ const VectorSpace& MatrixSymWithOpSerial::space_rows() const
 }
 
 void MatrixSymWithOpSerial::Mp_StPtMtP(
-	MatrixSymWithOp* symwo_lhs, value_type alpha
+	MatrixSymOp* symwo_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy
 	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	,value_type beta
@@ -129,9 +129,9 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 }
 
 void MatrixSymWithOpSerial::Mp_StMtMtM(
-	MatrixSymWithOp* symwo_lhs, value_type alpha
+	MatrixSymOp* symwo_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy
-	,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	,value_type beta
 	) const
 {

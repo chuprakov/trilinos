@@ -18,7 +18,7 @@
 
 #include "MatrixSymWithOpSerial.hpp"
 #include "MatrixSymNonsingularSerial.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -30,8 +30,8 @@ namespace SparseLinAlgPack {
 class MatrixSymWithOpNonsingularSerial 
 	: virtual public MatrixSymWithOpSerial
 	, virtual public MatrixSymNonsingularSerial
-	, virtual public AbstractLinAlgPack::MatrixWithOpNonsingular      // doxygen needs full name
-	, virtual public AbstractLinAlgPack::MatrixSymWithOpNonsingular   // ""
+	, virtual public AbstractLinAlgPack::MatrixOpNonsing      // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
 {};
 
 }	// end namespace SparseLinAlgPack

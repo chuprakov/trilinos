@@ -19,7 +19,7 @@
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
@@ -199,17 +199,17 @@ void QPSolverRelaxedQPKWIK::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPKWIK::imp_solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const Vector& g, const MatrixSymOp& G
 	,value_type etaL
-	,const VectorWithOp* dL, const VectorWithOp* dU
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
-	,const VectorWithOp* eL, const VectorWithOp* eU
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const Vector* dL, const Vector* dU
+	,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+	,const Vector* eL, const Vector* eU
+	,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d
-	,VectorWithOpMutable* nu
-	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
-	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
+	,value_type* eta, VectorMutable* d
+	,VectorMutable* nu
+	,VectorMutable* mu, VectorMutable* Ed
+	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;

@@ -16,7 +16,7 @@
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorSpaceSubSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorSpaceFactory.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/InnerProductDot.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"

@@ -33,7 +33,7 @@
 
 // Range/null decomposition
 
-#include "AbstractLinAlgPack/src/MatrixSymIdentity.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymIdent.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
@@ -44,7 +44,7 @@
 // Iteration quantities
 
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"               // Y, Z
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 
 // Eval new point
 
@@ -352,7 +352,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Gc_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Gc_name
 						,nlp_foi->factory_Gc()
@@ -363,7 +363,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				HL_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixSymWithOp>(
+					new IterQuantityAccessContiguous<MatrixSymOp>(
 						1
 						,HL_name
 						,nlp_soi->factory_HL()
@@ -384,10 +384,10 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Z_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Z_name
-						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -395,10 +395,10 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Y_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Y_name
-						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -410,7 +410,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Z_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Z_name
 						,decomp_sys->factory_Z()
@@ -421,7 +421,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Y_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Y_name
 						,decomp_sys->factory_Y()
@@ -432,7 +432,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				R_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
+					new IterQuantityAccessContiguous<MatrixOpNonsing>(
 						1
 						,R_name
 						,decomp_sys->factory_R()
@@ -443,7 +443,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Uz_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Uz_name
 						,decomp_sys->factory_Uz()
@@ -454,7 +454,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			state->set_iter_quant(
 				Uy_name
 				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
+					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Uy_name
 						,decomp_sys->factory_Uy()
@@ -468,10 +468,10 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		state->set_iter_quant(
 			Z_name
 			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
+				new IterQuantityAccessContiguous<MatrixOp>(
 					1
 					,Z_name
-					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixSymIdentity>())
+					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
 					)
 				)
 			);

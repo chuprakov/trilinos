@@ -25,7 +25,7 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/max_near_feas_step.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

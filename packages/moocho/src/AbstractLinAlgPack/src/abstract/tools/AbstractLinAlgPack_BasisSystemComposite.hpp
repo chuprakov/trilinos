@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// BasisSystemCompositeStd.hpp
+// BasisSystemComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -30,11 +30,11 @@ namespace AbstractLinAlgPack {
  * inequality constraints allowed.
  *
  * For this implementation, the basis matrix \c C must override the method
- * <tt>MatrixWithOp::operator=()</tt> for correct behavior.  A smart implementation of the
+ * <tt>MatrixOp::operator=()</tt> for correct behavior.  A smart implementation of the
  * basis matrix subclass will use lazy evaluation and not copy data inside of
- * <tt>MatrixWithOp::operator=()</tt> unless necessary later on.
+ * <tt>MatrixOp::operator=()</tt> unless necessary later on.
  */
-class BasisSystemCompositeStd
+class BasisSystemComposite
 	: public AbstractLinAlgPack::BasisSystem
 {
 public:
@@ -43,11 +43,11 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MemMngPack::AbstractFactory<MatrixWithOp> >  fcty_Gc_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MemMngPack::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>                           C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>                           C_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOp>                                      N_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixOp>                                      N_ptr_t;
 
 	//@}
 
@@ -138,7 +138,7 @@ public:
 		,const VectorSpace::space_ptr_t   &space_c
 		,const C_ptr_t                    &C
 		,const N_ptr_t                    &N
-		,MatrixWithOp                     *Gc
+		,MatrixOp                     *Gc
 		);
 
 	///
@@ -156,9 +156,9 @@ public:
 	 * </ul>
 	 */
 	static void get_C_N(
-	    MatrixWithOp               *Gc
-		,MatrixWithOpNonsingular   **C
-		,MatrixWithOp              **N
+	    MatrixOp               *Gc
+		,MatrixOpNonsing   **C
+		,MatrixOp              **N
 		);
 
 	///
@@ -183,9 +183,9 @@ public:
 	 * </ul>
 	 */
 	static void get_C_N(
-		const MatrixWithOp               &Gc
-		,const MatrixWithOpNonsingular   **C
-		,const MatrixWithOp              **N
+		const MatrixOp               &Gc
+		,const MatrixOpNonsing   **C
+		,const MatrixOp              **N
 		);
 
 	//@}
@@ -195,12 +195,12 @@ public:
 
 	/** Default constructor.
 	 */
-	BasisSystemCompositeStd();
+	BasisSystemComposite();
 
 	///
 	/**  Calls <tt>this->initialize()</tt> in a way that is consistant with above helper functions.
 	 */
-	BasisSystemCompositeStd(
+	BasisSystemComposite(
 		const VectorSpace::space_ptr_t       &space_x
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
@@ -209,7 +209,7 @@ public:
 		);
 
 	/// Calls <tt>this->initialize()</tt>
-	BasisSystemCompositeStd(
+	BasisSystemComposite(
 		const VectorSpace::space_ptr_t       &space_x
 		,const Range1D                       &var_dep
 		,const Range1D                       &var_indep
@@ -326,9 +326,9 @@ public:
 	 * interface and the <tt>M_StInvMtV()</tt> method.
 	 */
 	virtual void update_D(
-		const MatrixWithOpNonsingular&  C
-		,const MatrixWithOp&            N
-		,MatrixWithOp*                  D
+		const MatrixOpNonsing&  C
+		,const MatrixOp&            N
+		,MatrixOp*                  D
 		,EMatRelations                  mat_rel
 		) const;
 
@@ -339,10 +339,10 @@ public:
 	 * interface and the <tt>M_StInvMtV()</tt> method.
 	 */
 	virtual void update_GhUP(
-		const MatrixWithOpNonsingular&  C
-		,const MatrixWithOp&            N
-		,const MatrixWithOp*            D
-		,MatrixWithOp*                  GhUP
+		const MatrixOpNonsing&  C
+		,const MatrixOp&            N
+		,const MatrixOp*            D
+		,MatrixOp*                  GhUP
 		,EMatRelations                  mat_rel
 		) const;
 
@@ -365,12 +365,12 @@ public:
 	Range1D inequ_undecomp() const;
 	///
 	void update_basis(
-		const MatrixWithOp*         Gc
-		,const MatrixWithOp*        Gh
-		,MatrixWithOpNonsingular*   C
-		,MatrixWithOp*              D
-		,MatrixWithOp*              GcUP
-		,MatrixWithOp*              GhUP
+		const MatrixOp*         Gc
+		,const MatrixOp*        Gh
+		,MatrixOpNonsing*   C
+		,MatrixOp*              D
+		,MatrixOp*              GcUP
+		,MatrixOp*              GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
 		) const;
@@ -391,7 +391,7 @@ private:
 	mat_fcty_ptr_t             factory_GhUP_;
 #endif
 
-}; // end class BasisSystemCompositeStd
+}; // end class BasisSystemComposite
 
 } // end namespace AbstractPack
 

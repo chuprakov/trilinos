@@ -26,8 +26,8 @@
 
 #include "ConstrainedOptimizationPack/src/ConstraintsRelaxedStd.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
@@ -92,19 +92,19 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 void ConstraintsRelaxedStd::initialize(
 	const VectorSpace::space_ptr_t   &space_d_eta
 	,value_type                      etaL
-	,const VectorWithOp              *dL
-	,const VectorWithOp              *dU
-	,const MatrixWithOp              *E
+	,const Vector              *dL
+	,const Vector              *dU
+	,const MatrixOp              *E
 	,BLAS_Cpp::Transp                trans_E
-	,const VectorWithOp              *b
-	,const VectorWithOp              *eL
-	,const VectorWithOp              *eU
-	,const MatrixWithOp              *F
+	,const Vector              *b
+	,const Vector              *eL
+	,const Vector              *eU
+	,const MatrixOp              *F
 	,BLAS_Cpp::Transp                trans_F
-	,const VectorWithOp              *f
+	,const Vector              *f
 	,size_type                       m_undecomp
 	,const size_type                 j_f_undecomp[]
-	,VectorWithOpMutable             *Ed
+	,VectorMutable             *Ed
 	,bool                            check_F
 	,value_type                      bounds_tol
 	,value_type                      inequality_tol
@@ -228,7 +228,7 @@ size_type ConstraintsRelaxedStd::m_breve() const
 	return A_bar_.m_in() + A_bar_.m_eq();
 }
 
-const MatrixWithOp& ConstraintsRelaxedStd::A_bar() const
+const MatrixOp& ConstraintsRelaxedStd::A_bar() const
 {
 	return A_bar_;
 }
@@ -585,12 +585,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	const VectorSpace::space_ptr_t   &space_d_eta
 	,const size_type                 m_in
 	,const size_type                 m_eq
-	,const MatrixWithOp              *E
+	,const MatrixOp              *E
 	,BLAS_Cpp::Transp                trans_E
-	,const VectorWithOp              *b
-	,const MatrixWithOp              *F
+	,const Vector              *b
+	,const MatrixOp              *F
 	,BLAS_Cpp::Transp                trans_F
-	,const VectorWithOp              *f
+	,const Vector              *f
 	,size_type                       m_undecomp
 	,const size_type                 j_f_undecomp[]
 	)
@@ -660,7 +660,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& ConstraintsRelaxedStd::MatrixConstraints::space_cols() const
 {
@@ -672,8 +672,8 @@ const VectorSpace& ConstraintsRelaxedStd::MatrixConstraints::space_rows() const
 	return space_rows_;
 }
 
-MatrixWithOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
-	const MatrixWithOp& M
+MatrixOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
+	const MatrixOp& M
 	)
 {
 	// ToDo: Finish me
@@ -721,7 +721,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 	    || 	( P2.ordered_by() == GPMSIP::BY_COL && P2_trans == BLAS_Cpp::no_trans ) )
 	{
 		// Call the default implementation
-		MatrixWithOp::Vp_StPtMtV(C,a,P1,P1_trans,M_trans,P2,P2_trans);
+		MatrixOp::Vp_StPtMtV(C,a,P1,P1_trans,M_trans,P2,P2_trans);
 		return;
 	}
 
@@ -749,8 +749,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 */
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp trans_rhs1
-	,const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp trans_rhs1
+	,const Vector& x, value_type b
 	) const
 {
 	assert( !F_ || P_u_.cols() == f_->dim() ); // ToDo: Add P_u when needed!
@@ -794,15 +794,15 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// [ y1 ]  += [ a * x1 + a * op(E') * x3 + a * op(F') * x4 ]
 		// [ y2 ]     [ a * x2 - a * b' * x3     - a * f' * x4     ]
 		//
-		VectorWithOpMutable::vec_mut_ptr_t
+		VectorMutable::vec_mut_ptr_t
 			y1 = y->sub_view(d_rng);
 		value_type
 			y2 = y->get_ele(nd()+1);
-		VectorWithOp::vec_ptr_t
+		Vector::vec_ptr_t
 			x1 = x.sub_view(d_rng);
 		const value_type
 			x2 = x.get_ele(nd()+1);
-		VectorWithOp::vec_ptr_t
+		Vector::vec_ptr_t
 			x3 = m_in() ? x.sub_view(E_rng) : mmp::null,
 			x4 = m_eq() ? x.sub_view(F_rng) : mmp::null;
 		
@@ -834,14 +834,14 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// [ y3 ] += [ a * op(E) * x1 - a * b * x2   ]
 		// [ y4 ]    [ a * op(F) * x1 - a * f * x2   ]
 		//
-		VectorWithOpMutable::vec_mut_ptr_t
+		VectorMutable::vec_mut_ptr_t
 			y1 = y->sub_view(d_rng);
 		value_type
 			y2 = y->get_ele(nd()+1);
-		VectorWithOpMutable::vec_mut_ptr_t
+		VectorMutable::vec_mut_ptr_t
 			y3 = m_in() ? y->sub_view(E_rng) : mmp::null,
 			y4 = m_eq() ? y->sub_view(F_rng) : mmp::null;
-		VectorWithOp::vec_ptr_t
+		Vector::vec_ptr_t
 			x1 = x.sub_view(d_rng);
 		const value_type
 			x2 = x.get_ele(nd()+1);
@@ -867,13 +867,13 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 }
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+	VectorMutable* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type beta
 	) const
 {
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta); // ToDo: Update below code!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta); // ToDo: Update below code!
 /*
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 
@@ -913,7 +913,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
 	{
 		// Call the default implementation
-		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
+		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
 		return;
 	}
 

@@ -22,7 +22,7 @@ MeritFuncCalcNLP::MeritFuncCalcNLP( const MeritFuncNLP* phi, const NLP* nlp )
 	: phi_(phi), nlp_(nlp)
 {}
 
-value_type MeritFuncCalcNLP::operator()(const VectorWithOp& x) const
+value_type MeritFuncCalcNLP::operator()(const Vector& x) const
 {
 	const size_type
 		m  = nlp().m(),

@@ -50,7 +50,7 @@
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
 #include "SparseLinAlgPack/src/BFGS_helpers.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -167,7 +167,7 @@ void MatrixSymPosDefLBFGS::initial_setup(
 	num_secant_updates_= 0;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& MatrixSymPosDefLBFGS::space_cols() const
 {
@@ -179,7 +179,7 @@ std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
 	assert_initialized();
 	out << "\n*** Limited Memory BFGS matrix\n";
 	out << "\nConversion to dense =\n";
-	MatrixWithOp::output(out);
+	MatrixOp::output(out);
 	out << "\nStored quantities\n"
 		<< "\nn       = " << n_
 		<< "\nm       = " << m_
@@ -198,7 +198,7 @@ std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
 	return out;
 }
 
-MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo)
+MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo)
 {	
 	const MatrixSymPosDefLBFGS *p_m = dynamic_cast<const MatrixSymPosDefLBFGS*>(&mwo);
 	if(p_m) {
@@ -225,7 +225,7 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo)
 	else {
 		THROW_EXCEPTION(
 			true,std::invalid_argument
-			,"MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo) : Error, "
+			,"MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo) : Error, "
 			"The concrete type of mwo \'" << typeid(mwo).name() << "\' is not "
 			"as subclass of MatrixSymPosDefLBFGS as required" );
 	}
@@ -235,8 +235,8 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo)
 // Level-2 BLAS
 
 void MatrixSymPosDefLBFGS::Vp_StMtV(
-	  VectorWithOpMutable* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorWithOp& x, value_type beta
+	  VectorMutable* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const Vector& x, value_type beta
 	) const
 {
 	using AbstractLinAlgPack::Vt_S;
@@ -322,11 +322,11 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 
 }
 
-// Overridden from MatrixWithOpNonsingular
+// Overridden from MatrixOpNonsing
 
 void MatrixSymPosDefLBFGS::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp trans_rhs1
-	, const VectorWithOp& x
+	VectorMutable* y, BLAS_Cpp::Transp trans_rhs1
+	, const Vector& x
 	) const
 {
 	using AbstractLinAlgPack::Vp_StMtV;
@@ -446,7 +446,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 
 }
 
-// Overridden from MatrixSymSecantUpdateable
+// Overridden from MatrixSymSecant
 
 void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_type alpha )
 {
@@ -480,13 +480,13 @@ void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_t
 	num_secant_updates_  = 0;    // reset this to zero
 }
 
-void MatrixSymPosDefLBFGS::init_diagonal(const VectorWithOp& diag)
+void MatrixSymPosDefLBFGS::init_diagonal(const Vector& diag)
 {
 	init_identity( diag.space(), diag.norm_inf() );
 }
 
 void MatrixSymPosDefLBFGS::secant_update(
-	VectorWithOpMutable* s, VectorWithOpMutable* y, VectorWithOpMutable* Bs
+	VectorMutable* s, VectorMutable* y, VectorMutable* Bs
 	)
 {
 	using SparseLinAlgPack::BFGS_sTy_suff_p_d;

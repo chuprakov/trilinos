@@ -18,8 +18,8 @@
 
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 #include "IterationPack/src/IterQuantityAccess.hpp"
@@ -115,22 +115,22 @@ STATE_INDEX_IQ_DEF(  rSQPState,                  num_basis, num_basis_name      
 
 STATE_VECTOR_IQ_DEF( rSQPState,                  x,         x_name,  get_space_x(), VST_SPACE_X  )
 STATE_SCALAR_IQ_DEF( rSQPState,                  f,         f_name                               )
-STATE_IQ_DEF(        rSQPState, MatrixSymWithOp, HL,        HL_name                              )
+STATE_IQ_DEF(        rSQPState, MatrixSymOp, HL,        HL_name                              )
 STATE_VECTOR_IQ_DEF( rSQPState,                  Gf,        Gf_name, get_space_x(), VST_SPACE_X  )
 STATE_VECTOR_IQ_DEF( rSQPState,                  c,         c_name,  get_space_c(), VST_SPACE_C  )
 STATE_VECTOR_IQ_DEF( rSQPState,                  h,         h_name,  get_space_h(), VST_SPACE_H  )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,    Gc,        Gc_name                              )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,    Gh,        Gh_name                              )
+STATE_IQ_DEF(        rSQPState, MatrixOp,    Gc,        Gc_name                              )
+STATE_IQ_DEF(        rSQPState, MatrixOp,    Gh,        Gh_name                              )
 
 // Constraint Gradient Null Space / Range Space Decomposition Info
 
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Y,  Y_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Z,  Z_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixWithOpNonsingular, R,  R_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Uy, Uy_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Uz, Uz_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Vy, Vy_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Vz, Vz_name                 )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Y,  Y_name                  )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Z,  Z_name                  )
+STATE_IQ_DEF(        rSQPState, MatrixOpNonsing, R,  R_name                  )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Uy, Uy_name                 )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Uz, Uz_name                 )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Vy, Vy_name                 )
+STATE_IQ_DEF(        rSQPState, MatrixOp,            Vz, Vz_name                 )
 
 // Search Direction Info
 
@@ -143,7 +143,7 @@ STATE_VECTOR_IQ_DEF( rSQPState,                  d,   d_name,    get_space_x(), 
 // QP Subproblem Info
 
 STATE_VECTOR_IQ_DEF( rSQPState,                  rGf,     rGf_name,      get_space_null(), VST_SPACE_NULL )
-STATE_IQ_DEF(        rSQPState, MatrixSymWithOp, rHL,     rHL_name                                        )
+STATE_IQ_DEF(        rSQPState, MatrixSymOp, rHL,     rHL_name                                        )
 STATE_VECTOR_IQ_DEF( rSQPState,                  w,       w_name,        get_space_null(), VST_SPACE_NULL ) 
 STATE_SCALAR_IQ_DEF( rSQPState,                  zeta,    zeta_name                                       )
 STATE_VECTOR_IQ_DEF( rSQPState,                  qp_grad, qp_grad_name,  get_space_null(), VST_SPACE_NULL )
@@ -259,7 +259,7 @@ void rSQPState::update_vector_iq_id(
 			iq_id->iq_id = this->set_iter_quant(
 				iq_name
 				,rcp::rcp(
-					new IterQuantityAccessContiguous<VectorWithOpMutable>(
+					new IterQuantityAccessContiguous<VectorMutable>(
 						1
 						,iq_name
 						,vec_space
@@ -285,7 +285,7 @@ void rSQPState::update_vector_factories(
 	using DynamicCastHelperPack::dyn_cast;
 	iq_vector_list_t  &iq_vector_list = vector_iqs_lists_[vec_space_type];
 	for( iq_vector_list_t::const_iterator iq_itr = iq_vector_list.begin(); iq_itr != iq_vector_list.end(); ++iq_itr )
-		dyn_cast<IterQuantityAccessContiguous<VectorWithOpMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
+		dyn_cast<IterQuantityAccessContiguous<VectorMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
 }
 
 }	// end namespace ReducedSpaceSQPPack

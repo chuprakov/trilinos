@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymSecantUpdateable.hpp
+// MatrixSymSecant.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,27 +18,27 @@
 
 #include <stdexcept>
 
-#include "MatrixSymInitDiagonal.hpp"
+#include "MatrixSymInitDiag.hpp"
 
 namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in interface for all polymorphic symmetric matrices that support secant updating.
  *
- * This interface is ment to be incorrporated in with a concrete <tt>AbstractLinAlgPack::MatrixWithOp</tt>
+ * This interface is ment to be incorrporated in with a concrete <tt>AbstractLinAlgPack::MatrixOp</tt>
  * object that can implement some secant updating method.  Note that this is purely abstract interface\
  * and can be used in any application.
  *
- * Note that the methods <tt>AbstractLinAlgPack::MatrixSymInitDiagonal::init_identity()</tt> and
- * <tt>AbstractLinAlgPack::MatrixSymInitDiagonal::init_diagonal()</tt> do not state any postconditions
+ * Note that the methods <tt>AbstractLinAlgPack::MatrixSymInitDiag::init_identity()</tt> and
+ * <tt>AbstractLinAlgPack::MatrixSymInitDiag::init_diagonal()</tt> do not state any postconditions
  * on the state of \c this after they are performed.  Subclasses of this interface also do not have
  * adhere to the obvious strick postconditions that these methods suggest but they should do the
  * "right thing" for the application.  If the client needs the obvious strict postconditions
  * for correct behavior, then the client is wise to test to see if \c this really is the
  * identity matrix or is a diagonal matrix (these can be cheap tests).
  */
-class MatrixSymSecantUpdateable
-	: virtual public AbstractLinAlgPack::MatrixSymInitDiagonal // doxygen needs the full name
+class MatrixSymSecant
+	: virtual public AbstractLinAlgPack::MatrixSymInitDiag // doxygen needs the full name
 {
 public:
 
@@ -93,12 +93,12 @@ public:
 	 * </ul>
 	 */
 	virtual void secant_update(
-		VectorWithOpMutable     *s
-		,VectorWithOpMutable    *y
-		,VectorWithOpMutable    *Bs = NULL
+		VectorMutable     *s
+		,VectorMutable    *y
+		,VectorMutable    *Bs = NULL
 		) = 0;
 	
-};	// end class MatrixSymSecantUpdateable 
+};	// end class MatrixSymSecant 
 
 }	// end namespace AbstractLinAlgPack 
 

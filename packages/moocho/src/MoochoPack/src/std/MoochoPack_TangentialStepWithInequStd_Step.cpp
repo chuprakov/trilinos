@@ -23,8 +23,8 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -75,7 +75,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	using LinAlgOpPack::V_MtV;
 //	using ConstrainedOptimizationPack::min_abs;
 	using AbstractLinAlgPack::max_near_feas_step;
-	typedef VectorWithOpMutable::vec_mut_ptr_t   vec_mut_ptr_t;
+	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 
 	rSQPAlgo             &algo         = rsqp_algo(_algo);
 	rSQPState            &s            = algo.rsqp_state();
@@ -101,7 +101,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		&alpha_iq = s.alpha(),
 		&zeta_iq  = s.zeta(),
 		&eta_iq   = s.eta();
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq       = s.x(),
 		&dl_iq      = dl_iq_(s),
 		&du_iq      = du_iq_(s),
@@ -117,28 +117,28 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		&pz_iq      = s.pz(),
 		&Ypy_iq     = s.Ypy(),
 		&Zpz_iq     = s.Zpz();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		&Z_iq   = s.Z(),
 		*Y_iq   = m        ? &s.Y()  : NULL,
 		*Uz_iq  = (m > r)  ? &s.Uz() : NULL,
 		*Uy_iq  = (m > r)  ? &s.Uy() : NULL,
 		*Vz_iq  = (mI > 0) ? &s.Vz() : NULL,
 		*Vy_iq  = (mI > 0) ? &s.Vy() : NULL;
-	IterQuantityAccess<MatrixSymWithOp>
+	IterQuantityAccess<MatrixSymOp>
 		&rHL_iq = s.rHL();
 	IterQuantityAccess<ActSetStats>
 		&act_set_stats_iq = act_set_stats_(s);
 	
 	// Accessed/modified/updated (just some)
-	VectorWithOpMutable  *Ypy_k = (m ? &Ypy_iq.get_k(0) : NULL);
-	const MatrixWithOp   &Z_k   = Z_iq.get_k(0);
-	VectorWithOpMutable  &pz_k  = pz_iq.set_k(0);
-	VectorWithOpMutable  &Zpz_k = Zpz_iq.set_k(0);
+	VectorMutable  *Ypy_k = (m ? &Ypy_iq.get_k(0) : NULL);
+	const MatrixOp   &Z_k   = Z_iq.get_k(0);
+	VectorMutable  &pz_k  = pz_iq.set_k(0);
+	VectorMutable  &Zpz_k = Zpz_iq.set_k(0);
 
 	// Comupte qp_grad which is an approximation to rGf + Z'*HL*Y*py
 
 	// qp_grad = rGf
-	VectorWithOpMutable
+	VectorMutable
 		&qp_grad_k = ( qp_grad_iq.set_k(0) = rGf_iq.get_k(0) );
 
 	// qp_grad += zeta * w
@@ -224,7 +224,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	else {
 		nu_iq.set_k(0) = 0.0; // No guess of the active set
 	}
-	VectorWithOpMutable  &nu_k  = nu_iq.get_k(0);
+	VectorMutable  &nu_k  = nu_iq.get_k(0);
 
 	//
 	// Setup the reduced QP subproblem
@@ -242,23 +242,23 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 
 	const value_type  qp_bnd_inf = NLP::infinite_bound();
 
-	const VectorWithOp      &qp_g       = qp_grad_k;
-	const MatrixSymWithOp   &qp_G       = rHL_iq.get_k(0);
+	const Vector      &qp_g       = qp_grad_k;
+	const MatrixSymOp   &qp_G       = rHL_iq.get_k(0);
 	const value_type		qp_etaL     = 0.0;
 	vec_mut_ptr_t           qp_dL       = mmp::null;
 	vec_mut_ptr_t           qp_dU       = mmp::null;
-	mmp::ref_count_ptr<const MatrixWithOp>
+	mmp::ref_count_ptr<const MatrixOp>
                             qp_E        = mmp::null;
 	BLAS_Cpp::Transp        qp_trans_E  = BLAS_Cpp::no_trans;
 	vec_mut_ptr_t           qp_b        = mmp::null;
 	vec_mut_ptr_t           qp_eL       = mmp::null;
 	vec_mut_ptr_t           qp_eU       = mmp::null;
-	mmp::ref_count_ptr<const MatrixWithOp>
+	mmp::ref_count_ptr<const MatrixOp>
 	                        qp_F        = mmp::null;
 	BLAS_Cpp::Transp        qp_trans_F  = BLAS_Cpp::no_trans;
 	vec_mut_ptr_t           qp_f        = mmp::null;
 	value_type				qp_eta      = 0.0;
-	VectorWithOpMutable     &qp_d       = pz_k;  // pz_k will be updated directly!
+	VectorMutable     &qp_d       = pz_k;  // pz_k will be updated directly!
 	vec_mut_ptr_t           qp_nu       = mmp::null;
 	vec_mut_ptr_t           qp_mu       = mmp::null;
 	vec_mut_ptr_t           qp_Ed       = mmp::null;

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixCompositeStd.hpp
+// MatrixComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <deque>
 
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 #include "GenPermMatrixSlice.hpp"
 #include "VectorSpace.hpp"
 #include "ref_count_ptr.hpp"
@@ -38,10 +38,10 @@ namespace AbstractLinAlgPack {
  * where: <br>
  * <tt>a(j)</tt> : Scalar for sub-matrix <tt>A(j)</tt><br>
  * <tt>P(j), Q(j)</tt> : GenPermMatrixSlice objects for sub-matrix <tt>A(j)</tt><br>
- * <tt>A(j)</tt> : <tt>MatrixWithOp</tt> object<br>
+ * <tt>A(j)</tt> : <tt>MatrixOp</tt> object<br>
  * <tt>b(k)</tt> : Scalar for the sub-vector <tt>v(k)</tt> <br>
  * <tt>G(k)</tt> : GenPermMatrixSlice object for sub-vector <tt>v(k)</tt><br>
- * <tt>v(k)</tt> : <tt>VectorWithOp</tt> object <br>
+ * <tt>v(k)</tt> : <tt>Vector</tt> object <br>
  * <tt>E(r)</tt> : An appropriatly sized matrix object that moves the
  *     first row of aggregate sub-matrix or sub-vector to row \c r in \c M. <br>
  * <tt>F(c)</tt> : An appropriatly sized matrix object that moves the
@@ -90,7 +90,7 @@ namespace AbstractLinAlgPack {
  *
  * Note that implementing the <tt>VectorSpace</tt> objects that are returned by
  * \c space_rows() and \c space_cols() may be non-trivial.  These methods return
- * <tt>VectorSpaceCompositeStd</tt> objects.  Therefore, in order for clients to
+ * <tt>VectorSpaceBlock</tt> objects.  Therefore, in order for clients to
  * use vectors with this matrix object, it must create vectors compatible with these
  * vector space objects.  This can be a little tricky but should be doable.
  *
@@ -98,7 +98,7 @@ namespace AbstractLinAlgPack {
  * the input \c row_rng, \c col_rng.  For example if the input ranges correspond to whole, unique
  * matrix, then that matrix will be returned and not some encapulation of that matrix.
  */
-class MatrixCompositeStd : public MatrixWithOp {
+class MatrixComposite : public MatrixOp {
 public:
 
 	// ///////////////////////////////////
@@ -121,7 +121,7 @@ public:
 			size_type r_l, size_type c_l, value_type beta
 			,const Range1D& rng_G
 			,const GPMS_ptr_t& G, const release_resource_ptr_t& G_release, BLAS_Cpp::Transp G_trans
-			,const VectorWithOp* v
+			,const Vector* v
 			,const release_resource_ptr_t& v_release, BLAS_Cpp::Transp v_trans
 			)
 			:r_l_(r_l),c_l_(c_l),beta_(beta),rng_G_(rng_G),G_(G),G_release_(G_release),G_trans_(G_trans)
@@ -149,7 +149,7 @@ public:
 		///
 		BLAS_Cpp::Transp           G_trans_;///< Determines op(G) == G (no_trans) or op(G) == G' (trans)
 		///
-		const VectorWithOp         *v_;     ///< Pointer to the vector (non-NULL)
+		const Vector         *v_;     ///< Pointer to the vector (non-NULL)
 		///
 		release_resource_ptr_t     v_release_;
 		///
@@ -172,7 +172,7 @@ public:
 			size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha
 			,const Range1D& rng_P
 			,const GPMS_ptr_t& P, const release_resource_ptr_t& P_release, BLAS_Cpp::Transp P_trans
-			,const MatrixWithOp* A, const release_resource_ptr_t& A_release, BLAS_Cpp::Transp A_trans
+			,const MatrixOp* A, const release_resource_ptr_t& A_release, BLAS_Cpp::Transp A_trans
 			,const Range1D& rng_Q
 			,const GPMS_ptr_t& Q, const release_resource_ptr_t& Q_release, BLAS_Cpp::Transp Q_trans
 			)
@@ -201,7 +201,7 @@ public:
 		///
 		BLAS_Cpp::Transp           P_trans_;
 		///
-		const MatrixWithOp         *A_;
+		const MatrixOp         *A_;
 		///
 		release_resource_ptr_t     A_release_;
 		///
@@ -227,7 +227,7 @@ public:
 	 *
 	 * Calls <tt>this->reinitalize()</tt>.
 	 */
-	MatrixCompositeStd( size_type rows = 0, size_type cols = 0 );
+	MatrixComposite( size_type rows = 0, size_type cols = 0 );
 
 	///
 	/** Initialize a sized (on unsized) zero matrix to start with.
@@ -255,7 +255,7 @@ public:
 		,const GenPermMatrixSlice      *G
 		,const release_resource_ptr_t  &G_release
 		,BLAS_Cpp::Transp              G_trans
-		,const VectorWithOp            *v
+		,const Vector            *v
 		,const release_resource_ptr_t  &v_release
 		,BLAS_Cpp::Transp              v_trans
 		);
@@ -270,7 +270,7 @@ public:
 		,size_type                     col_offset
 		,value_type                    beta
 		,const Range1D                 &rng_G
-		,const VectorWithOp            *v
+		,const Vector            *v
 		,const release_resource_ptr_t  &v_release
 		,BLAS_Cpp::Transp              v_trans
 		);
@@ -284,7 +284,7 @@ public:
 		size_type                      row_offset
 		,size_type                     col_offset
 		,value_type                    beta
-		,const VectorWithOp            *v
+		,const Vector            *v
 		,const release_resource_ptr_t  &v_release
 		,BLAS_Cpp::Transp              v_trans
 		);
@@ -311,7 +311,7 @@ public:
 		,const GenPermMatrixSlice      *P
 		,const release_resource_ptr_t  &P_release
 		,BLAS_Cpp::Transp              P_trans
-		,const MatrixWithOp            *A
+		,const MatrixOp            *A
 		,const release_resource_ptr_t  &A_release
 		,BLAS_Cpp::Transp              A_trans
 		,const GenPermMatrixSlice      *Q
@@ -329,7 +329,7 @@ public:
 		,size_type                     col_offset
 		,value_type                    alpha
 		,const Range1D                 &rng_P
-		,const MatrixWithOp            *A
+		,const MatrixOp            *A
 		,const release_resource_ptr_t  &A_release
 		,BLAS_Cpp::Transp              A_trans
 		,const Range1D                 &rng_Q
@@ -345,7 +345,7 @@ public:
 		,size_type                     col_offset
 		,value_type                    alpha
 		,const Range1D                 &rng_P
-		,const MatrixWithOp            *A
+		,const MatrixOp            *A
 		,const release_resource_ptr_t  &A_release
 		,BLAS_Cpp::Transp              A_trans
 		,const GenPermMatrixSlice      *Q
@@ -365,7 +365,7 @@ public:
 		,const GenPermMatrixSlice      *P
 		,const release_resource_ptr_t  &P_release
 		,BLAS_Cpp::Transp              P_trans
-		,const MatrixWithOp            *A
+		,const MatrixOp            *A
 		,const release_resource_ptr_t  &A_release
 		,BLAS_Cpp::Transp              A_trans
 		,const Range1D                 &rng_Q
@@ -380,7 +380,7 @@ public:
 		size_type                      row_offset
 		,size_type                     col_offset
 		,value_type                    alpha
-		,const MatrixWithOp            *A
+		,const MatrixOp            *A
 		,const release_resource_ptr_t  &A_release
 		,BLAS_Cpp::Transp              A_trans
 		);
@@ -415,7 +415,7 @@ public:
 	 * This method must be called after all of the sub-vectors and sub-matrices have
 	 * been added and before <tt>this</tt> matrix object can be used.  This method will
 	 * validate that the constructed matrix is valid.  It is up to the client to pass
-	 * in vector space objects (presumably of type \c VectorSpaceCompositeStd) that
+	 * in vector space objects (presumably of type \c VectorSpaceBlock) that
 	 * represent the rows and columns of this matrix.  It would be very complicated
 	 * for this matrix class to figure out how to construct these vector space
 	 * objects in general.
@@ -485,7 +485,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -495,18 +495,18 @@ public:
 	///
 	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 	///
-	void Vp_StMtV(VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const;
+	void Vp_StMtV(VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorWithOpMutable* vs_lhs, value_type alpha
+	void Vp_StPtMtV(VectorMutable* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorWithOp& v_rhs3, value_type beta) const;
+		, const Vector& v_rhs3, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorWithOpMutable* vs_lhs, value_type alpha
+	void Vp_StPtMtV(VectorMutable* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
@@ -521,8 +521,8 @@ private:
 	bool                       fully_constructed_;
 	size_type                  rows_, cols_;
 #ifdef DOXYGEN_COMPILE
-	MatrixWithOp               *matrices;
-    VectorWithOp               *vectors;
+	MatrixOp               *matrices;
+    Vector               *vectors;
     VectorSpace                *space_cols;
     VectorSpace                *space_rows;
 #else
@@ -537,7 +537,7 @@ private:
 
 	void assert_fully_constructed() const;
 
-}; // end class MatrixCompositeStd
+}; // end class MatrixComposite
 
 } // end namespace AbstractLinAlgPack
 

@@ -197,14 +197,14 @@ value_type dense_insert_scaled_nonzeros(
 	, FortranTypes::f_dbl_prec*			D_val
 	, FortranTypes::f_int*				D_row_i			);
 
-/** @name Add a MatrixWithOp object.  If the matrix supports the conversion inteface
+/** @name Add a MatrixOp object.  If the matrix supports the conversion inteface
   * then all is dandy.  If not then a conversion to dense must be preformed.
   */
 //@{
 
 ///
 size_type num_in_column(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, size_type							col_offset
 	, const IVector::value_type*		col_perm
@@ -212,7 +212,7 @@ size_type num_in_column(
 
 ///
 void insert_nonzeros(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, value_type						alpha
 	, size_type							row_offset
@@ -225,7 +225,7 @@ void insert_nonzeros(
 
 ///
 value_type insert_scaled_nonzeros(
-	  const MatrixWithOp&				m
+	  const MatrixOp&				m
 	, BLAS_Cpp::Transp					trans
 	, value_type						scaled_max_ele
 	, size_type							row_offset

@@ -19,7 +19,7 @@
 #include "SparseLinAlgPack/src/VectorSpaceFactorySerial.hpp"
 #include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
 #include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "ThrowException.hpp"

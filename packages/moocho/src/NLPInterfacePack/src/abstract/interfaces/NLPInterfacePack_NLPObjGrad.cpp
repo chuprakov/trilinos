@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "NLPInterfacePack/src/NLPObjGradient.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 
 namespace {
 	const char name_Gf[] = "Gf";
@@ -35,29 +35,29 @@ void NLPObjGradient::initialize(bool test_setup) {
 
 // <<std aggr>> members for Gf
 
-void NLPObjGradient::set_Gf(VectorWithOpMutable* Gf)
+void NLPObjGradient::set_Gf(VectorMutable* Gf)
 {
 	Gf_ = Gf;
 }
 
-AbstractLinAlgPack::VectorWithOpMutable* NLPObjGradient::get_Gf()
+AbstractLinAlgPack::VectorMutable* NLPObjGradient::get_Gf()
 {
 	return StandardCompositionRelationshipsPack::get_role_name(Gf_, false, name_Gf);
 }
 
-AbstractLinAlgPack::VectorWithOpMutable& NLPObjGradient::Gf()
+AbstractLinAlgPack::VectorMutable& NLPObjGradient::Gf()
 {
 	return StandardCompositionRelationshipsPack::role_name(Gf_, false, name_Gf);
 }
 
-const AbstractLinAlgPack::VectorWithOp& NLPObjGradient::Gf() const
+const AbstractLinAlgPack::Vector& NLPObjGradient::Gf() const
 {
 	return StandardCompositionRelationshipsPack::role_name(Gf_, false, name_Gf);
 }
 
 // calculations
 
-void NLPObjGradient::calc_Gf(const VectorWithOp& x, bool newx) const
+void NLPObjGradient::calc_Gf(const Vector& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(Gf_, "NLP::calc_Gf()", name_Gf);
 	imp_calc_Gf(x,newx,obj_grad_info());

@@ -24,9 +24,9 @@
 #include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "SparseLinAlgPack/src/MatrixSymAddDelUpdateable.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
@@ -170,9 +170,9 @@ public:
 	///
 	virtual const DVectorSlice g() const = 0;
 	///
-	virtual const MatrixSymWithOp& G() const = 0;
+	virtual const MatrixSymOp& G() const = 0;
 	/// If m == 0 then don't call this, it may throw an exception or worse.
-	virtual const MatrixWithOp& A() const = 0;
+	virtual const MatrixOp& A() const = 0;
 
 	// /////////////////////////////////////
 	// Initial active set specific members
@@ -240,7 +240,7 @@ public:
 	virtual const GenPermMatrixSlice& Q_X() const = 0;
 
 	///
-	virtual const MatrixSymWithOpNonsingular& Ko() const = 0;
+	virtual const MatrixSymOpNonsing& Ko() const = 0;
 
 	///
 	virtual const DVectorSlice fo() const = 0;
@@ -320,7 +320,7 @@ public:
 	virtual size_type m_breve() const = 0;
 
 	///
-	virtual const MatrixWithOp& A_bar() const = 0;
+	virtual const MatrixOp& A_bar() const = 0;
 	
 	/// Set the policy used to pick a violated constraint.
 	virtual void pick_violated_policy( EPickPolicy pick_policy ) = 0;
@@ -629,21 +629,21 @@ public:
 		U_hat_t();
 		/// Initialize.
 		void initialize( 
-			 const MatrixSymWithOp		*G
-			,const MatrixWithOp			*A
-			,const MatrixWithOp			*A_bar
+			 const MatrixSymOp		*G
+			,const MatrixOp			*A
+			,const MatrixOp			*A_bar
 			,const GenPermMatrixSlice	*Q_R
 			,const GenPermMatrixSlice	*P_XF_hat
 			,const GenPermMatrixSlice	*P_plus_hat
 			);
 		///
-		const MatrixSymWithOp& G() const
+		const MatrixSymOp& G() const
 		{	return *G_;	}
 		///
-		const MatrixWithOp* A() const
+		const MatrixOp* A() const
 		{	return A_;	}
 		///
-		const MatrixWithOp& A_bar() const
+		const MatrixOp& A_bar() const
 		{	return *A_bar_;	}
 		///
 		const GenPermMatrixSlice& Q_R() const
@@ -682,9 +682,9 @@ public:
 		//@}
 		
 	private:
-		const MatrixSymWithOp	    *G_;
-		const MatrixWithOp	        *A_;
-		const MatrixWithOp	        *A_bar_;
+		const MatrixSymOp	    *G_;
+		const MatrixOp	        *A_;
+		const MatrixOp	        *A_bar_;
 		const GenPermMatrixSlice	*Q_R_;
 		const GenPermMatrixSlice	*P_XF_hat_;
 		const GenPermMatrixSlice	*P_plus_hat_;
@@ -712,9 +712,9 @@ public:
 	 * augmented KKT system:
 	 \verbatim
 
-	 MatrixWithOp                      : U_hat        <: R^((n_R+m) x q_hat)
-	 MatrixSymWithOp                   : V_hat        <: R^(q_hat x q_hat)
-	 MatrixSymWithOpNonsingular        : S_hat        <: R^(q_hat x q_hat)
+	 MatrixOp                      : U_hat        <: R^((n_R+m) x q_hat)
+	 MatrixSymOp                   : V_hat        <: R^(q_hat x q_hat)
+	 MatrixSymOpNonsing        : S_hat        <: R^(q_hat x q_hat)
 	 GenPermMatrixSlice                : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
 	 GenPermMatrixSlice                : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
 	 GenPermMatrixSlice                : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
@@ -928,7 +928,7 @@ public:
 		///
 		const U_hat_t& U_hat() const;
 		///
-		const MatrixSymWithOpNonsingular& S_hat() const;
+		const MatrixSymOpNonsing& S_hat() const;
 		///
 		const GenPermMatrixSlice& P_XF_hat() const;
 		///

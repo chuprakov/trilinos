@@ -22,7 +22,7 @@
 #include "IterationPack/src/CastIQMember.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
@@ -93,7 +93,7 @@ public:
 	 */
  	bool compute_feasibility_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
+		,const Vector& xo, const Vector& c_xo, VectorMutable* w
 	  	);
 
 	///
@@ -101,10 +101,10 @@ public:
 
 private:
 
-	IterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
-	IterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
+	IterationPack::CastIQMember<VectorMutable>  dl_iq_;
+	IterationPack::CastIQMember<VectorMutable>  du_iq_;
 	int                                                      current_k_;
-	MemMngPack::ref_count_ptr<const MatrixWithOp>            Hess_ptr_;
+	MemMngPack::ref_count_ptr<const MatrixOp>            Hess_ptr_;
 	VectorSpace::vec_mut_ptr_t                               grad_store_;
 	DMatrix                                                Hess_store_;
 

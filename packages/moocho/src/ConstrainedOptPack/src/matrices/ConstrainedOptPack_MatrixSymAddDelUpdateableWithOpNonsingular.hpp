@@ -32,7 +32,7 @@ public:
 	///
 	virtual ~MatrixSymAddDelUpdateableWithOpNonsingular() {}
 	///
-	virtual const MatrixSymWithOpNonsingular& op_interface() const = 0;
+	virtual const MatrixSymOpNonsing& op_interface() const = 0;
 	///
 	virtual MatrixSymAddDelUpdateable& update_interface() = 0;
 	///

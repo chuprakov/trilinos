@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// TestMatrixSymSecantUpdate.hpp
+// TestMatrixSymSecant.hpp
 
 #include <iosfwd>
 
@@ -36,10 +36,10 @@ namespace AbstractLinAlgPack {
  *            if \c trase==false then only error messages will be
  *            output.
  */
-bool TestMatrixSymSecantUpdate(
-	const MatrixWithOp        &B
-	,const VectorWithOp       &s
-	,const VectorWithOp       &y
+bool TestMatrixSymSecant(
+	const MatrixOp        &B
+	,const Vector       &s
+	,const Vector       &y
 	,value_type               warning_tol
 	,value_type               error_tol
 	,bool                     print_all_warnings

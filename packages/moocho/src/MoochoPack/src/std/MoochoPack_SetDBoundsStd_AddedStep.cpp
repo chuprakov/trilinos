@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -45,11 +45,11 @@ bool SetDBoundsStd_AddedStep::do_step(
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	const VectorWithOp
+	const Vector
 		&x_k = s.x().get_k(0),
 		&xl  = algo.nlp().xl(),
 		&xu  = algo.nlp().xu();
-	VectorWithOpMutable
+	VectorMutable
 		&dl  = dl_iq_(s).set_k(0),
 		&du  = du_iq_(s).set_k(0);
 	

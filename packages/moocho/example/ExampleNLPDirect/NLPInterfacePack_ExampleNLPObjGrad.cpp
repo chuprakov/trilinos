@@ -19,8 +19,8 @@
 
 #include "ExampleNLPObjGradient.hpp"
 #include "ExampleNLPFirstOrderDirectRTOps.h"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
@@ -76,7 +76,7 @@ ExampleNLPObjGradient::ExampleNLPObjGradient(
 		,"ExampleNLPObjGradient::ExampleNLPObjGradient(...) Error!" );
 
 	// Setup the aggregate vector space object
-	BasisSystemCompositeStd::initialize_space_x(
+	BasisSystemComposite::initialize_space_x(
 		vec_space, vec_space, &var_dep_, &var_indep_, &vec_space_comp_ );
 
 	// Set the initial starting point.
@@ -175,19 +175,19 @@ bool ExampleNLPObjGradient::force_xinit_in_bounds() const
 	return force_xinit_in_bounds_;
 }
 
-const VectorWithOp& ExampleNLPObjGradient::xinit() const
+const Vector& ExampleNLPObjGradient::xinit() const
 {
 	assert_is_initialized();
 	return *xinit_;
 }
 
-const VectorWithOp& ExampleNLPObjGradient::xl() const
+const Vector& ExampleNLPObjGradient::xl() const
 {
 	assert_is_initialized();
 	return *xl_;
 }
 
-const VectorWithOp& ExampleNLPObjGradient::xu() const
+const Vector& ExampleNLPObjGradient::xu() const
 {
 	assert_is_initialized();
 	return *xu_;
@@ -198,13 +198,13 @@ value_type ExampleNLPObjGradient::max_var_bounds_viol() const
 	return std::numeric_limits<value_type>::max(); // No limits on the bounds
 }
 
-const VectorWithOp& ExampleNLPObjGradient::hl() const
+const Vector& ExampleNLPObjGradient::hl() const
 {
 	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGradient::hl(), Error, default is for mI() == 0" );
 	return xl(); // will never execute.
 }
 
-const VectorWithOp& ExampleNLPObjGradient::hu() const
+const Vector& ExampleNLPObjGradient::hu() const
 {
 	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGradient::hl(), Error, default is for mI() == 0" );
 	return xu(); // will never execute.
@@ -223,10 +223,10 @@ value_type ExampleNLPObjGradient::scale_f() const
 }
 
 void ExampleNLPObjGradient::report_final_solution(
-	const VectorWithOp&    x
-	,const VectorWithOp*   lambda
-	,const VectorWithOp*   lambdaI
-	,const VectorWithOp*   nu
+	const Vector&    x
+	,const Vector*   lambda
+	,const Vector*   lambdaI
+	,const Vector*   nu
 	,bool                  optimal
 	) const
 {
@@ -248,7 +248,7 @@ Range1D ExampleNLPObjGradient::var_indep() const
 
 // Overridden protected members from NLP
 
-void ExampleNLPObjGradient::imp_calc_f(const VectorWithOp& x, bool newx
+void ExampleNLPObjGradient::imp_calc_f(const Vector& x, bool newx
 	, const ZeroOrderInfo& zero_order_info) const
 {
 	using AbstractLinAlgPack::dot;
@@ -259,7 +259,7 @@ void ExampleNLPObjGradient::imp_calc_f(const VectorWithOp& x, bool newx
 	*zero_order_info.f = obj_scale_ / 2.0 * dot(x,x);
 }
 
-void ExampleNLPObjGradient::imp_calc_c(const VectorWithOp& x, bool newx
+void ExampleNLPObjGradient::imp_calc_c(const Vector& x, bool newx
 	, const ZeroOrderInfo& zero_order_info) const
 {
 	assert_is_initialized();
@@ -268,12 +268,12 @@ void ExampleNLPObjGradient::imp_calc_c(const VectorWithOp& x, bool newx
 
 	// c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m
 
-	VectorWithOp::vec_ptr_t
+	Vector::vec_ptr_t
 		xD= x.sub_view(var_dep()),
 		xI = x.sub_view(var_indep());
 
 	const int num_vecs = 2;
-	const VectorWithOp*
+	const Vector*
 		vecs[num_vecs] = { xD.get(), xI.get() };
 	zero_order_info.c->apply_transformation(
 		explnlp2_c_eval_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
@@ -281,14 +281,14 @@ void ExampleNLPObjGradient::imp_calc_c(const VectorWithOp& x, bool newx
 }
 
 void ExampleNLPObjGradient::imp_calc_h(
-	const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const
+	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!
 }
 
 // Overridden protected members from NLPFirstOrderInfo
 
-void ExampleNLPObjGradient::imp_calc_Gf(const VectorWithOp& x, bool newx
+void ExampleNLPObjGradient::imp_calc_Gf(const Vector& x, bool newx
 	, const ObjGradInfo& obj_grad_info) const
 {
 	assert_is_initialized();

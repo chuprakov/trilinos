@@ -85,7 +85,7 @@ public:
 	
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >    factory_mat_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
 
 	//@}
 
@@ -149,9 +149,9 @@ public:
 	/// Calls <tt>basis_sys_fcty()->create()</tt>
 	const basis_sys_ptr_t basis_sys() const;
 	/// Validates the type of Gc is correct
-	void set_Gc(MatrixWithOp* Gc);
+	void set_Gc(MatrixOp* Gc);
 	/// Validates the type of Gh is correct
-	void set_Gh(MatrixWithOp* Gh);
+	void set_Gh(MatrixOp* Gh);
 
 	//@}
 
@@ -181,12 +181,12 @@ protected:
 
 	///
 	void imp_calc_Gc(
-		const VectorWithOp& x, bool newx
+		const Vector& x, bool newx
 		,const FirstOrderInfo& first_order_info
 		) const;
 	///
 	void imp_calc_Gh(
-		const VectorWithOp& x, bool newx
+		const Vector& x, bool newx
 		,const FirstOrderInfo& first_order_info
 		) const;
 	
@@ -430,7 +430,7 @@ private:
 	//
 	void imp_calc_Gc_or_Gh(
 		bool calc_Gc
-		,const VectorWithOp& x, bool newx
+		,const Vector& x, bool newx
 		,const FirstOrderInfo& first_order_info
 		) const;
 

@@ -23,10 +23,10 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.hpp"
+#include "AbstractLinAlgPack/src/VectorMutableSubView.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
@@ -131,7 +131,7 @@ bool LineSearchFilter_Step::do_step(
 		&f_iq = obj_f_(s),
 		&alpha_iq = s.alpha();
     
-    IterQuantityAccess<VectorWithOpMutable>
+    IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		*c_iq   = m > 0 ? &s.c() : NULL,
 		*h_iq   = mI > 0 ? &s.h() : NULL,
@@ -500,10 +500,10 @@ void LineSearchFilter_Step::print_step(
   
   
 bool LineSearchFilter_Step::ValidatePoint( 
-  IterQuantityAccess<VectorWithOpMutable>& x,
+  IterQuantityAccess<VectorMutable>& x,
   IterQuantityAccess<value_type>& f,
-  IterQuantityAccess<VectorWithOpMutable>* c,
-  IterQuantityAccess<VectorWithOpMutable>* h,
+  IterQuantityAccess<VectorMutable>* c,
+  IterQuantityAccess<VectorMutable>* h,
   bool throw_excpt ) const
 	{
 
@@ -521,17 +521,17 @@ bool LineSearchFilter_Step::ValidatePoint(
   
 
 void LineSearchFilter_Step::UpdatePoint( 
-  const VectorWithOpMutable& d,
+  const VectorMutable& d,
   const value_type alpha, 
-  IterQuantityAccess<VectorWithOpMutable> &x,
+  IterQuantityAccess<VectorMutable> &x,
   IterQuantityAccess<value_type>& f,
-  IterQuantityAccess<VectorWithOpMutable>* c,
-  IterQuantityAccess<VectorWithOpMutable>* h,
+  IterQuantityAccess<VectorMutable>* c,
+  IterQuantityAccess<VectorMutable>* h,
   NLP& nlp ) const
 	{  
 	using LinAlgOpPack::Vp_StV;
     using AbstractLinAlgPack::assert_print_nan_inf;
-	VectorWithOpMutable& x_kp1 = x.set_k(+1);
+	VectorMutable& x_kp1 = x.set_k(+1);
 	x_kp1 = x.get_k(0);
     Vp_StV( &x_kp1, alpha, d);
 
@@ -574,8 +574,8 @@ value_type LineSearchFilter_Step::CalculateAlphaMin(
 
 
 value_type LineSearchFilter_Step::CalculateTheta_k( 
-  IterQuantityAccess<VectorWithOpMutable>* c,
-  IterQuantityAccess<VectorWithOpMutable>* h,
+  IterQuantityAccess<VectorMutable>* c,
+  IterQuantityAccess<VectorMutable>* h,
   int k) const
 	{
     value_type theta = 0.0;

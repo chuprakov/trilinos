@@ -15,7 +15,7 @@
 
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -32,9 +32,9 @@ VariableBoundsTester::VariableBoundsTester(
 
 bool VariableBoundsTester::check_in_bounds(
 	std::ostream* out, bool print_all_warnings, bool print_vectors
-	,const VectorWithOp& xL, const char xL_name[]
-	,const VectorWithOp& xU, const char xU_name[]
-	,const VectorWithOp& x,  const char x_name[]
+	,const Vector& xL, const char xL_name[]
+	,const Vector& xU, const char xU_name[]
+	,const Vector& x,  const char x_name[]
 	)
 {
 	using AbstractLinAlgPack::max_near_feas_step;

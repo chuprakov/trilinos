@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 #define ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 
-#include "VectorWithOpMutable.hpp"
+#include "VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -30,22 +30,22 @@ namespace AbstractLinAlgPack {
 ///
 /** result = sum( v_rhs(i), i = 1,,,dim )
  */
-value_type sum( const VectorWithOp& v_rhs );
+value_type sum( const Vector& v_rhs );
 
 ///
 /** result = v_rhs1' * v_rhs2
  */
-value_type dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 );
+value_type dot( const Vector& v_rhs1, const Vector& v_rhs2 );
 
 ///
 /** result = v_rhs1' * sv_rhs2
  */
-value_type dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2 );
+value_type dot( const Vector& v_rhs1, const SpVectorSlice& sv_rhs2 );
 
 ///
 /** result = sv_rhs1' * v_rhs2
  */
-value_type dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 );
+value_type dot( const SpVectorSlice& sv_rhs1, const Vector& v_rhs2 );
 
 ///
 /** Compute the maximum element in a vector.
@@ -63,7 +63,7 @@ value_type dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 );
  * result is unique no matter what order the vector elements are
  * searched.
  */
-void max_abs_ele( const VectorWithOp& v, value_type* max_v_j, index_type* max_j ); 
+void max_abs_ele( const Vector& v, value_type* max_v_j, index_type* max_j ); 
 
 //@}
 
@@ -73,7 +73,7 @@ void max_abs_ele( const VectorWithOp& v, value_type* max_v_j, index_type* max_j 
 ///
 /** v_lhs += alpha
  */
-void Vp_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
+void Vp_S( VectorMutable* v_lhs, const value_type& alpha );
 
 ///
 /** v_lhs *= alpha
@@ -82,31 +82,31 @@ void Vp_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
  * (set <tt>v_lhs = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
  * do anything).
  */
-void Vt_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
+void Vt_S( VectorMutable* v_lhs, const value_type& alpha );
 
 ///
 /** v_lhs = alpha * v_rhs + v_lhs
  */
-void Vp_StV( VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWithOp& v_rhs );
+void Vp_StV( VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs );
 
 ///
 /** v_lhs = alpha * sv_rhs + v_lhs
  */
-void Vp_StV( VectorWithOpMutable* v_lhs, const value_type& alpha, const SpVectorSlice& sv_rhs );
+void Vp_StV( VectorMutable* v_lhs, const value_type& alpha, const SpVectorSlice& sv_rhs );
 
 ///
 /** v_lhs(i) += alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_prod(
-	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
-	,VectorWithOpMutable* v_lhs );
+	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+	,VectorMutable* v_lhs );
 
 ///
 /** v_lhs(i) = alpha * v_rhs1(i) / v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_divide(
-	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
-	,VectorWithOpMutable* v_lhs );
+	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+	,VectorMutable* v_lhs );
 
 ///
 /** Seed the random number generator
@@ -119,7 +119,7 @@ void seed_random_vector_generator( unsigned int );
   * 
   * The elements are randomly generated between <tt>[l,u]</tt>.
   */
-void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
+void random_vector( value_type l, value_type u, VectorMutable* v );
 
 ///
 /** Compute the sign of each element in an input vector.
@@ -134,8 +134,8 @@ void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
  \endverbatim
  */
 void sign(
-	const VectorWithOp      &v
-	,VectorWithOpMutable    *z
+	const Vector      &v
+	,VectorMutable    *z
 	);
 
 //@}
@@ -149,7 +149,7 @@ void sign(
 
 inline
 AbstractLinAlgPack::value_type
-AbstractLinAlgPack::dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 )
+AbstractLinAlgPack::dot( const SpVectorSlice& sv_rhs1, const Vector& v_rhs2 )
 {
 	return dot(v_rhs2,sv_rhs1);
 }

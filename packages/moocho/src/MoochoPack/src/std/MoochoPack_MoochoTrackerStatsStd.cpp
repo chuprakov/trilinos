@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/Vector.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace {

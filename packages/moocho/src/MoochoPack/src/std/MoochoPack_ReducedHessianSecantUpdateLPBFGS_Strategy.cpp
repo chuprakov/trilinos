@@ -22,10 +22,10 @@
 #include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "SparseLinAlgPack/src/MatrixOpOut.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
@@ -53,7 +53,7 @@ ReducedHessianSecantUpdateLPBFGS_Strategy::ReducedHessianSecantUpdateLPBFGS_Stra
 bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 	,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,MatrixWithOp *rHL_k
+	,MatrixOp *rHL_k
 	)
 {
 	using std::setw;
@@ -219,7 +219,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 									);
 						}
 						// Create new matrix to use for rHL_RR initialized to rHL_RR = rHL_scale*I
-						ref_count_ptr<MatrixSymSecantUpdateable>
+						ref_count_ptr<MatrixSymSecant>
 							rHL_RR = NULL;
 						if( low_num_super_basics ) {
 							rHL_RR = new MatrixSymPosDefCholFactor(
@@ -241,17 +241,17 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						rHL_RR->init_identity( n_pz_R, rHL_scale );
 						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 							out << "\nrHL_RR after intialized to rHL_RR = rHL_scale*I but before performing current BFGS update:\nrHL_RR =\n"
-								<< dynamic_cast<MatrixWithOp&>(*rHL_RR); // I know this is okay!
+								<< dynamic_cast<MatrixOp&>(*rHL_RR); // I know this is okay!
 						}
 						// Initialize rHL_XX = rHL_scale*I
 #ifdef _WINDOWS
-						MatrixSymInitDiagonal
-							&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
-								const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr()));
+						MatrixSymInitDiag
+							&rHL_XX = dynamic_cast<MatrixSymInitDiag&>(
+								const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr()));
 #else
-						MatrixSymInitDiagonal
-							&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
-								const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr()));
+						MatrixSymInitDiag
+							&rHL_XX = dyn_cast<MatrixSymInitDiag>(
+								const_cast<MatrixSymOp&>(*rHL_super.B_XX_ptr()));
 #endif
 						rHL_XX.init_identity( n_pz_X, rHL_scale );
 						// Reinitialize rHL
@@ -264,8 +264,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						//
 						// Perform the current BFGS update first
 						//
-						MatrixSymWithOp
-							&rHL_RR_op = dynamic_cast<MatrixSymWithOp&>(*rHL_RR);
+						MatrixSymOp
+							&rHL_RR_op = dynamic_cast<MatrixSymOp&>(*rHL_RR);
 						const GenPermMatrixSlice
 							&Q_R = rHL_super.Q_R(),
 							&Q_X = rHL_super.Q_X();
@@ -352,7 +352,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 											&s_bfgs_R(),&y_bfgs_R(),false,out,olevel,algo->algo_cntr().check_results()
 											,&rHL_RR_op, &quasi_newton_stats );
 									}
-									catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
+									catch( const MatrixSymSecant::UpdateSkippedException& excpt ) {
 										if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 											out	<< "\nOops!  The " << l << "th most recent BFGS update was rejected?:\n"
 												<< excpt.what() << std::endl;
@@ -365,7 +365,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 								}
 							if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 								out << "\nrHL_RR after adding previous BFGS updates:\nrHL_BRR =\n"
-									<< dynamic_cast<MatrixWithOp&>(*rHL_RR);
+									<< dynamic_cast<MatrixOp&>(*rHL_RR);
 							}
 						}
 						else {

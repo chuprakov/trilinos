@@ -75,7 +75,7 @@ public:
 	//@{
 
 	/// Overridden to check the concrete type of Gc
-	void set_Gc(MatrixWithOp* Gc);
+	void set_Gc(MatrixOp* Gc);
 	///
 	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gc() const;
 	/// Return NULL
@@ -91,9 +91,9 @@ protected:
 	//@{
 
 	///
-	void imp_calc_Gc(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const;
+	void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
 	///
-	void imp_calc_Gh(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const;
+	void imp_calc_Gh(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
 
 	//@}
 

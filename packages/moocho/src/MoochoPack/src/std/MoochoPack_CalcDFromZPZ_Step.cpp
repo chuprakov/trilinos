@@ -19,8 +19,8 @@
 #include "ReducedSpaceSQPPack/src/std/CalcDFromZPZ_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -42,7 +42,7 @@ bool CalcDFromZPZ_Step::do_step(
 	}
 
 	// d = Zpz
-	VectorWithOpMutable    &d_k    = s.d().set_k(0) = s.Zpz().get_k(0);
+	VectorMutable    &d_k    = s.d().set_k(0) = s.Zpz().get_k(0);
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;

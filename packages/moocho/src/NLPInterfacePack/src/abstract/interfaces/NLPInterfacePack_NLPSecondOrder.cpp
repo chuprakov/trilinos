@@ -34,22 +34,22 @@ void NLPInterfacePack::NLPSecondOrderInfo::initialize(bool test_setup) {
 
 // <<std aggr>> members for HL
 
-void NLPInterfacePack::NLPSecondOrderInfo::set_HL(MatrixSymWithOp* HL)
+void NLPInterfacePack::NLPSecondOrderInfo::set_HL(MatrixSymOp* HL)
 {
 	HL_ = HL;
 }
 
-NLPInterfacePack::MatrixSymWithOp* NLPInterfacePack::NLPSecondOrderInfo::get_HL()
+NLPInterfacePack::MatrixSymOp* NLPInterfacePack::NLPSecondOrderInfo::get_HL()
 {
 	return StandardCompositionRelationshipsPack::get_role_name(HL_, false, name_HL);
 }
 
-NLPInterfacePack::MatrixSymWithOp& NLPInterfacePack::NLPSecondOrderInfo::HL()
+NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrderInfo::HL()
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
-const NLPInterfacePack::MatrixSymWithOp& NLPInterfacePack::NLPSecondOrderInfo::HL() const
+const NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrderInfo::HL() const
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
@@ -57,7 +57,7 @@ const NLPInterfacePack::MatrixSymWithOp& NLPInterfacePack::NLPSecondOrderInfo::H
 // calculations
 
 void NLPInterfacePack::NLPSecondOrderInfo::calc_HL(
-	const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint
+	const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint
 	) const
 {
 #ifdef _DEBUG

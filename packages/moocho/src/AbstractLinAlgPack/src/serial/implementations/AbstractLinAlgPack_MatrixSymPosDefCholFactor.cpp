@@ -26,9 +26,9 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonal.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiag.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -209,7 +209,7 @@ size_type MatrixSymPosDefCholFactor::rows() const
 	return M_size_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 void MatrixSymPosDefCholFactor::zero_out()
 {
@@ -236,7 +236,7 @@ std::ostream& MatrixSymPosDefCholFactor::output(std::ostream& out) const
 }
 
 bool MatrixSymPosDefCholFactor::Mp_StM(
-	MatrixWithOp* m_lhs, value_type alpha
+	MatrixOp* m_lhs, value_type alpha
 	,BLAS_Cpp::Transp trans_rhs
 	) const
 {
@@ -256,7 +256,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 }
 
 bool MatrixSymPosDefCholFactor::Mp_StM(
-	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+	value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 	)
 {
 	THROW_EXCEPTION(
@@ -277,14 +277,14 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 		did_op  = true;
 		diag_op = false;
 	}
-	else if(const MatrixSymDiagonal *symwo_diag_rhs = dynamic_cast<const MatrixSymDiagonal*>(&M_rhs)) {
+	else if(const MatrixSymDiag *symwo_diag_rhs = dynamic_cast<const MatrixSymDiag*>(&M_rhs)) {
 		DMatrixSliceSym            M = this->M();
 		VectorDenseEncap   sym_rhs_diag(symwo_diag_rhs->diag());
 		LinAlgOpPack::Vp_StV( &M.gms().diag(), alpha, sym_rhs_diag() );
 		did_op  = true;
 		diag_op = true;
 	}
-	else if(const MatrixSymWithOp *symwo_rhs = dynamic_cast<const MatrixSymWithOp*>(&M_rhs)) {
+	else if(const MatrixSymOp *symwo_rhs = dynamic_cast<const MatrixSymOp*>(&M_rhs)) {
 		// ToDo: Implement this!
 	}
 	// Properly update the state of *this.
@@ -684,7 +684,7 @@ void MatrixSymPosDefCholFactor::init_identity( const VectorSpace& space_diag, va
 	is_diagonal_ = true;
 }
 
-void MatrixSymPosDefCholFactor::init_diagonal( const VectorWithOp& diag_in )
+void MatrixSymPosDefCholFactor::init_diagonal( const Vector& diag_in )
 {
 	VectorDenseEncap diag_encap(diag_in);
 	const DVectorSlice diag = diag_encap(); // When diag_encap is destroyed, bye-bye view!
@@ -718,7 +718,7 @@ void MatrixSymPosDefCholFactor::init_diagonal( const VectorWithOp& diag_in )
 }
 
 void MatrixSymPosDefCholFactor::secant_update(
-	VectorWithOpMutable* s_in, VectorWithOpMutable* y_in, VectorWithOpMutable* Bs_in
+	VectorMutable* s_in, VectorMutable* y_in, VectorMutable* Bs_in
 	)
 {
 	using BLAS_Cpp::no_trans;

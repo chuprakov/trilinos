@@ -24,12 +24,12 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Testing class for \c VectorSpace, \c VectorWithOp and \c VectorWithOpMutable.
+/** Testing class for \c VectorSpace, \c Vector and \c VectorMutable.
  *
  * The purpose of this class is to test a \c VectorSpace object and the
- * \c VectorWithOpMutable objects that it creates.  The testing function
+ * \c VectorMutable objects that it creates.  The testing function
  * \c check_vector_space() calls all of the methods defined in the interfaces
- * \c %VectorSpace, \c %VectorWithOp and \c %VectorWithOpMutable and checks
+ * \c %VectorSpace, \c %Vector and \c %VectorMutable and checks
  * many of the post conditions but not all.  It would be very difficult to 
  * completely verify every postcondition in every situation. 
  *

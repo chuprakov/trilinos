@@ -56,8 +56,8 @@ public:
 	///
 	/** Returns true if <tt>vec_space.dim() == this->dim()</tt>.
 	 *
-	 * The assumption here is that <tt>VectorWithOp::get_sub_vector()</tt>
-	 * and <tt>VectorWithOpMutable::get_sub_vector()</tt> can be used to implement
+	 * The assumption here is that <tt>Vector::get_sub_vector()</tt>
+	 * and <tt>VectorMutable::get_sub_vector()</tt> can be used to implement
 	 * all of the methods on an SMP machine in an efficient manner.
 	 */
  	bool is_compatible(const VectorSpace& vec_space) const;

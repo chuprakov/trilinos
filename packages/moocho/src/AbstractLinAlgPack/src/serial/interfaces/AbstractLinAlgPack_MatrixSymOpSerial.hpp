@@ -17,12 +17,12 @@
 #define SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 
 #include "MatrixWithOpSerial.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixSymWithOp</tt> objects
+/** Abstract base class for all <tt>AbstractLinAlgPack::MatrixSymOp</tt> objects
  * implemented in shared memory space.
  *
  * This base class does a mapping from fully abstract linear algebra to shared memory
@@ -33,12 +33,12 @@ namespace SparseLinAlgPack {
  */
 class MatrixSymWithOpSerial
 	: virtual public MatrixWithOpSerial
-	, virtual public AbstractLinAlgPack::MatrixSymWithOp // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
 {
 public:
 
 	///
-	using MatrixSymWithOp::Mp_StPtMtP;
+	using MatrixSymOp::Mp_StPtMtP;
 
 	///
 	/** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
@@ -68,7 +68,7 @@ public:
 		,value_type beta
 		) const;
 
-	/** @name Overridden from MatrixSymWithOp */
+	/** @name Overridden from MatrixSymOp */
 	//@{
 
 	/// Must be overridden to call <tt>MatrixWithOpSerial::space_rows()</tt>
@@ -76,7 +76,7 @@ public:
 
 	/// symwo_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
  	void Mp_StPtMtP(
-		MatrixSymWithOp* symwo_lhs, value_type alpha
+		MatrixSymOp* symwo_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		,value_type beta
@@ -84,9 +84,9 @@ public:
 
 	/// symwo_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
 	void Mp_StMtMtM(
-		MatrixSymWithOp* symwo_lhs, value_type alpha
+		MatrixSymOp* symwo_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
-		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		,value_type beta
 		) const;
 

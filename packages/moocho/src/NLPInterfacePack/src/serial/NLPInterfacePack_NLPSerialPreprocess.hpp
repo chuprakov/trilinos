@@ -263,20 +263,20 @@ public:
 	///
 	size_type num_bounded_x() const;
 	///
-	const VectorWithOp& xl() const;
+	const Vector& xl() const;
 	///
-	const VectorWithOp& xu() const;
+	const Vector& xu() const;
 	///
-	const VectorWithOp& hl() const;
+	const Vector& hl() const;
 	///
-	const VectorWithOp& hu() const;
+	const Vector& hu() const;
 	///
-	const VectorWithOp& xinit() const;
+	const Vector& xinit() const;
 	///
 	void get_init_lagrange_mult(
-		VectorWithOpMutable*   lambda
-		,VectorWithOpMutable*  lambdaI
-		,VectorWithOpMutable*  nu
+		VectorMutable*   lambda
+		,VectorMutable*  lambdaI
+		,VectorMutable*  nu
 		) const;
 	///
 	void scale_f( value_type scale_f );
@@ -292,10 +292,10 @@ public:
 	  * and \c nu_full.
 	  */
 	void report_final_solution(
-		const VectorWithOp&    x
-		,const VectorWithOp*   lambda
-		,const VectorWithOp*   lambdaI
-		,const VectorWithOp*   nu
+		const Vector&    x
+		,const Vector*   lambda
+		,const Vector*   lambdaI
+		,const Vector*   nu
 		,bool                  is_optimal
 		) const;
 
@@ -350,19 +350,19 @@ protected:
 
 	///
 	void imp_calc_f(
-		const VectorWithOp      &x
+		const Vector      &x
 		,bool                   newx
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
 	///
 	void imp_calc_c(
-		const VectorWithOp      &x
+		const Vector      &x
 		,bool                   newx
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
 	///
 	void imp_calc_h(
-		const VectorWithOp      &x
+		const Vector      &x
 		,bool                   newx
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
@@ -374,7 +374,7 @@ protected:
 
 	///
 	void imp_calc_Gf(
-		const VectorWithOp      &x
+		const Vector      &x
 		,bool                   newx
 		,const ObjGradInfo      &obj_grad_info
 		) const;

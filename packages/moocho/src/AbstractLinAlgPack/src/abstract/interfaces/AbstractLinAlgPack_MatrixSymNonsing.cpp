@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MatrixSymNonsingular.cpp
+// MatrixSymNonsing.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,40 +15,40 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MatrixSymNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymNonsing.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
 
 namespace AbstractLinAlgPack {
 
-MatrixSymNonsingular::mat_msns_mut_ptr_t
-MatrixSymNonsingular::clone_msns()
+MatrixSymNonsing::mat_msns_mut_ptr_t
+MatrixSymNonsing::clone_msns()
 {
 	return MemMngPack::null;
 }
 
-MatrixSymNonsingular::mat_msns_ptr_t
-MatrixSymNonsingular::clone_msns() const
+MatrixSymNonsing::mat_msns_ptr_t
+MatrixSymNonsing::clone_msns() const
 {
 	return MemMngPack::null;
 }
 
-void MatrixSymNonsingular::M_StMtInvMtM(
-	  MatrixSymWithOp* S, value_type a, const MatrixWithOp& B
+void MatrixSymNonsing::M_StMtInvMtM(
+	  MatrixSymOp* S, value_type a, const MatrixOp& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
 	assert(0); // ToDo: Implement!
 }
 
-// Overridden from MatrixNonsingular
+// Overridden from MatrixNonsing
 
-MatrixSymNonsingular::mat_mns_mut_ptr_t
-MatrixSymNonsingular::clone_mns()
+MatrixSymNonsing::mat_mns_mut_ptr_t
+MatrixSymNonsing::clone_mns()
 {
 	return clone_msns();
 }
 
-MatrixSymNonsingular::mat_mns_ptr_t
-MatrixSymNonsingular::clone_mns() const
+MatrixSymNonsing::mat_mns_ptr_t
+MatrixSymNonsing::clone_mns() const
 {
 	return clone_msns();
 }

@@ -105,19 +105,19 @@ public:
 	 *                 [in] Helps determine if the secant property is tested or not
 	 *                 after the update (see the printed documentation).
 	 * @param  B       [in/out] The matrix to be updated.  <tt>B</tt> must support the
-	 *                 <tt>MatrixSymSecantUpdateable</tt> interface or an exception will be thrown.
+	 *                 <tt>MatrixSymSecant</tt> interface or an exception will be thrown.
 	 * @param  quasi_newton_stats
 	 *                 [out] The quasi-newton statistics object that is updated to
 	 *                 inform what happened durring the update.
 	 */
 	void perform_update(
-		VectorWithOpMutable      *s_bfgs
-		,VectorWithOpMutable     *y_bfgs
+		VectorMutable      *s_bfgs
+		,VectorMutable     *y_bfgs
 		,bool                    first_update
 		,std::ostream            &out
 		,EJournalOutputLevel     olevel
 		,bool                    check_results
-		,MatrixSymWithOp         *B
+		,MatrixSymOp         *B
 		,QuasiNewtonStats        * quasi_newton_stats 
 		);
 	

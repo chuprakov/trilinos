@@ -17,7 +17,7 @@
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -27,7 +27,7 @@ namespace SparseLinAlgPack {
 /** Abstract interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
  * view of an abstract matrix.
  *
- * This interface is ment to be used by <tt>MatrixSymWithOp</tt> objects
+ * This interface is ment to be used by <tt>MatrixSymOp</tt> objects
  * that store all of their matrix elements in the local address space or can easily
  * access all of the elements from this process.
  *
@@ -40,7 +40,7 @@ namespace SparseLinAlgPack {
  * class type <tt>MatrixDenseSymEncap</tt>.
  */
 class MatrixSymWithOpGetGMSSym
-	: virtual public AbstractLinAlgPack::MatrixSymWithOp // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
 {
 public:
 
@@ -108,12 +108,12 @@ public:
 	 */
 	MatrixDenseSymEncap( const MatrixSymWithOpGetGMSSym&  mat_get );
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
-	MatrixDenseSymEncap( const MatrixSymWithOp& mat );
+	MatrixDenseSymEncap( const MatrixSymOp& mat );
 	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
 	~MatrixDenseSymEncap();
 	/// Returns a constant view of the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
@@ -141,7 +141,7 @@ MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymWithOpGetGMSSym&  mat_g
 {}
 
 inline
-MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymWithOp& mat )
+MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymOp& mat )
 	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixSymWithOpGetGMSSym>(mat))
 	,sym_gms_view_(mat_get_.get_sym_gms_view())
 {}

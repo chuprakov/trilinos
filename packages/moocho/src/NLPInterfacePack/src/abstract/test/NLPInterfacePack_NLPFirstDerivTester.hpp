@@ -155,12 +155,12 @@ public:
 	 */
 	bool finite_diff_check(
 		NLP                     *nlp
-		,const VectorWithOp     &xo
-		,const VectorWithOp     *xl
-		,const VectorWithOp     *xu
-		,const MatrixWithOp     *Gc
-		,const MatrixWithOp     *Gh
-		,const VectorWithOp     *Gf
+		,const Vector     &xo
+		,const Vector     *xl
+		,const Vector     *xu
+		,const MatrixOp     *Gc
+		,const MatrixOp     *Gh
+		,const Vector     *Gf
 		,bool                   print_all_warnings
 		,std::ostream           *out
 		) const;
@@ -170,12 +170,12 @@ private:
 	///
 	bool fd_check_all(
 		NLP                     *nlp
-		,const VectorWithOp     &xo
-		,const VectorWithOp     *xl
-		,const VectorWithOp     *xu
-		,const MatrixWithOp     *Gc
-		,const MatrixWithOp     *Gh
-		,const VectorWithOp     *Gf
+		,const Vector     &xo
+		,const Vector     *xl
+		,const Vector     *xu
+		,const MatrixOp     *Gc
+		,const MatrixOp     *Gh
+		,const Vector     *Gf
 		,bool                   print_all_warnings
 		,std::ostream           *out
 		) const;
@@ -183,12 +183,12 @@ private:
 	///
 	bool fd_directional_check(
 		NLP                     *nlp
-		,const VectorWithOp     &xo
-		,const VectorWithOp     *xl
-		,const VectorWithOp     *xu
-		,const MatrixWithOp     *Gc
-		,const MatrixWithOp     *Gh
-		,const VectorWithOp     *Gf
+		,const Vector     &xo
+		,const Vector     *xl
+		,const Vector     *xu
+		,const MatrixOp     *Gc
+		,const MatrixOp     *Gh
+		,const Vector     *Gf
 		,bool                   print_all_warnings
 		,std::ostream           *out
 		) const;

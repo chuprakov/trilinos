@@ -69,7 +69,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
  * entries is NaN or Inf then false will be returned unless an
  * excetion was thrown (throw_except==true).
  */
-bool assert_print_nan_inf( const VectorWithOp& v, char name[]
+bool assert_print_nan_inf( const Vector& v, char name[]
 	, bool throw_excpt, std::ostream* out );
 
 }	// end namespace AbstractLinAlgPack

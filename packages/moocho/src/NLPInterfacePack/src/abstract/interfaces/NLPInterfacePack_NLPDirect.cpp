@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "Range1D.hpp"
 #include "ThrowException.hpp"
@@ -115,20 +115,20 @@ NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
 	return MemMngPack::null;
 }
 
-const VectorWithOp& NLPFirstOrderDirect::hl() const
+const Vector& NLPFirstOrderDirect::hl() const
 {
 	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
 	return xl(); // will never execute.
 }
 
-const VectorWithOp& NLPFirstOrderDirect::hu() const
+const Vector& NLPFirstOrderDirect::hu() const
 {
 	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
 	return xu(); // will never execute.
 }
 
 void NLPFirstOrderDirect::imp_calc_h(
-	const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const
+	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!
 }

@@ -21,11 +21,11 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -73,18 +73,18 @@ bool NullSpaceStepWithoutBounds_Step::do_step(
 	// Comupte qp_grad which is an approximation to rGf + Z' * HL * Y * py
 
 	// qp_grad_k = rGf_k
-	VectorWithOpMutable &qp_grad_k = s.qp_grad().set_k(0) = s.rGf().get_k(0);
+	VectorMutable &qp_grad_k = s.qp_grad().set_k(0) = s.rGf().get_k(0);
 
 	IterQuantityAccess<value_type>               &zeta_iq       = s.zeta();
-	IterQuantityAccess<VectorWithOpMutable>      &w_iq          = s.w();
+	IterQuantityAccess<VectorMutable>      &w_iq          = s.w();
 	if( w_iq.updated_k(0) && zeta_iq.updated_k(0) ) {
 		// qp_grad += zeta * w
 		Vp_StV( &qp_grad_k, zeta_iq.get_k(0), w_iq.get_k(0) );
 	}
 
 	// Solve the system pz = - inv(rHL) * qp_grad
-	VectorWithOpMutable               &pz_k  = s.pz().set_k(0);
-	const MatrixSymWithOpNonsingular  &rHL_k = dyn_cast<MatrixSymWithOpNonsingular>(s.rHL().get_k(0));
+	VectorMutable               &pz_k  = s.pz().set_k(0);
+	const MatrixSymOpNonsing  &rHL_k = dyn_cast<MatrixSymOpNonsing>(s.rHL().get_k(0));
 	V_InvMtV( &pz_k, rHL_k, no_trans, qp_grad_k );
 	Vt_S( &pz_k, -1.0 );
 

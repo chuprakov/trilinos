@@ -20,7 +20,7 @@
 #include "NLPInterfacePack/src/BarrierNLP.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
@@ -68,18 +68,18 @@ value_type BarrierNLP::objective_term() const
 	return objective_term_;
 	}
 
-const MemMngPack::ref_count_ptr<VectorWithOp> BarrierNLP::grad_barrier_term() const
+const MemMngPack::ref_count_ptr<Vector> BarrierNLP::grad_barrier_term() const
 	{
 	return grad_barrier_term_;
 	}
 
-const MemMngPack::ref_count_ptr<VectorWithOp>  BarrierNLP::grad_objective_term() const
+const MemMngPack::ref_count_ptr<Vector>  BarrierNLP::grad_objective_term() const
 	{
 	return grad_objective_term_;
 	}
 
 
-void BarrierNLP::calc_f(const VectorWithOp& x, bool newx) const
+void BarrierNLP::calc_f(const Vector& x, bool newx) const
 	{
 	nlp_->calc_f(x, newx);
 	value_type* f_val = nlp_->get_f();
@@ -90,7 +90,7 @@ void BarrierNLP::calc_f(const VectorWithOp& x, bool newx) const
 	(*f_val) += barrier_term_;
 	}
 
-void BarrierNLP::calc_Gf(const VectorWithOp& x, bool newx) const
+void BarrierNLP::calc_Gf(const Vector& x, bool newx) const
 	{
 	using AbstractLinAlgPack::inv_of_difference;
 
@@ -126,7 +126,7 @@ void BarrierNLP::calc_Gf(const VectorWithOp& x, bool newx) const
 	}
 
 void BarrierNLP::imp_calc_f(
-  const VectorWithOp& x, 
+  const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
   ) const
@@ -135,7 +135,7 @@ void BarrierNLP::imp_calc_f(
 	}
 
 void BarrierNLP::imp_calc_c(
-  const VectorWithOp& x, 
+  const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
   ) const
@@ -144,7 +144,7 @@ void BarrierNLP::imp_calc_c(
 	}
 
 void BarrierNLP::imp_calc_h(
-  const VectorWithOp& x, 
+  const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
   ) const
@@ -153,7 +153,7 @@ void BarrierNLP::imp_calc_h(
 	}
 
 void BarrierNLP::imp_calc_Gf(
-  const VectorWithOp& x,
+  const Vector& x,
   bool newx, 
   const ObjGradInfo& obj_grad_info
   ) const
@@ -162,7 +162,7 @@ void BarrierNLP::imp_calc_Gf(
 	}
 
 
-value_type BarrierNLP::CalculateBarrierTerm(const VectorWithOp& x) const
+value_type BarrierNLP::CalculateBarrierTerm(const Vector& x) const
 	{
 	using AbstractLinAlgPack::log_bound_barrier;
 	barrier_term_ = log_bound_barrier(x, xl(), xu());

@@ -16,8 +16,8 @@
 #include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
 //#include "SparseLinAlgPack/src/dense_Vp_StPtMtV.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
@@ -34,10 +34,10 @@ namespace {
 //
 template<class V>
 void imp_Vp_StMtV_implicit(
-	AbstractLinAlgPack::VectorWithOpMutable               *y
+	AbstractLinAlgPack::VectorMutable               *y
 	,AbstractLinAlgPack::value_type                       a
-	,const AbstractLinAlgPack::MatrixWithOpNonsingular    &C
-	,const AbstractLinAlgPack::MatrixWithOp               &N
+	,const AbstractLinAlgPack::MatrixOpNonsing    &C
+	,const AbstractLinAlgPack::MatrixOp               &N
 	,BLAS_Cpp::Transp                                     D_trans
 	,const V                                              &x
 	,DenseLinAlgPack::value_type                               b
@@ -232,7 +232,7 @@ size_type MatrixVarReductImplicit::cols() const
 	return N_.get() ? N_->cols() : 0;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 const VectorSpace& MatrixVarReductImplicit::space_cols() const
 {
@@ -246,7 +246,7 @@ const VectorSpace& MatrixVarReductImplicit::space_rows() const
 	return N_->space_rows();
 }
 
-MatrixWithOp& MatrixVarReductImplicit::operator=(const MatrixWithOp& M)
+MatrixOp& MatrixVarReductImplicit::operator=(const MatrixOp& M)
 {
 	assert_initialized();
 	assert(0); // ToDo: Finish!
@@ -263,9 +263,9 @@ std::ostream& MatrixVarReductImplicit::output(std::ostream& o) const
 }
 
 void MatrixVarReductImplicit::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a
+	VectorMutable* y, value_type a
 	,BLAS_Cpp::Transp D_trans
-	,const VectorWithOp& x, value_type b
+	,const Vector& x, value_type b
 	) const
 {
 	assert_initialized();
@@ -274,7 +274,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 }
 
 void MatrixVarReductImplicit::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a
+	VectorMutable* y, value_type a
 	,BLAS_Cpp::Transp D_trans
 	,const SpVectorSlice& x, value_type b
 	) const
@@ -333,10 +333,10 @@ void MatrixVarReductImplicit::Vp_StMtV(
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+	VectorMutable* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp D_trans
-	,const VectorWithOp& x, value_type b
+	,const Vector& x, value_type b
 	) const
 {
 	using BLAS_Cpp::rows;
@@ -353,17 +353,17 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation
-		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b);
+		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b);
 	}
 	else {
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
 */
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
-	VectorWithOpMutable* y, value_type a
+	VectorMutable* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp D_trans
 	,const SpVectorSlice& x, value_type b
@@ -383,13 +383,13 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation
-		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b);
+		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b);
 	}
 	else {
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
 */
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
 }
 
 // Private member functions

@@ -133,15 +133,15 @@ public:
 	 */
 	bool test_decomp_system(
 		const DecompositionSystem       &decomp_sys
-		,const MatrixWithOp             &Gc
-		,const MatrixWithOp             *Gh
-		,const MatrixWithOp             *Z
-		,const MatrixWithOp             *Y
-		,const MatrixWithOpNonsingular  *R
-		,const MatrixWithOp             *Uz
-		,const MatrixWithOp             *Uy
-		,const MatrixWithOp             *Vz
-		,const MatrixWithOp             *Vy
+		,const MatrixOp             &Gc
+		,const MatrixOp             *Gh
+		,const MatrixOp             *Z
+		,const MatrixOp             *Y
+		,const MatrixOpNonsing  *R
+		,const MatrixOp             *Uz
+		,const MatrixOp             *Uy
+		,const MatrixOp             *Vz
+		,const MatrixOp             *Vy
 		,std::ostream                   *out
 		);
 

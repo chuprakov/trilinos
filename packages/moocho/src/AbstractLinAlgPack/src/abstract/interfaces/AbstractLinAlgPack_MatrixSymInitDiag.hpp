@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymInitDiagonal.hpp
+// MatrixSymInitDiag.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,19 +23,19 @@ namespace AbstractLinAlgPack {
 ///
 /** Mix-in Interface for setting a matrix to a diagonal {abstract}.
  */
-class MatrixSymInitDiagonal {
+class MatrixSymInitDiag {
 public:
 
 	///
-	~MatrixSymInitDiagonal() {}
+	~MatrixSymInitDiag() {}
 
 	/// Initialize a <tt>n x n</tt> identity matrix scaled by \c alpha (where <tt>n = diag.dim()</tt>).
 	virtual void init_identity( const VectorSpace& space_diag, value_type alpha = 1.0 ) = 0;
 
 	/// Initialize an <tt>n x n</tt> diagonal matrix (where <tt>n = diag.dim()</tt>).
-	virtual void init_diagonal( const VectorWithOp& diag ) = 0;
+	virtual void init_diagonal( const Vector& diag ) = 0;
 
-}; // end class MatrixSymInitDiagonal
+}; // end class MatrixSymInitDiag
 
 } // end namespace AbstractLinAlgPack
 

@@ -17,7 +17,7 @@
 #define MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -35,14 +35,14 @@ namespace ConstrainedOptimizationPack {
  * where <tt>M</tt> is a diagonal matrix made up of entries <tt>M_diag</tt>.
  */
 class MatrixSymHessianRelaxNonSing
-	: public AbstractLinAlgPack::MatrixSymWithOpNonsingular
+	: public AbstractLinAlgPack::MatrixSymOpNonsing
 {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>  G_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymOpNonsing>  G_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>               vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>               vec_mut_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpace>                 space_ptr_t;
 	
@@ -118,51 +118,51 @@ public:
 	const vec_mut_ptr_t& M_diag_ptr() const;
 
 	///
-	const MatrixSymWithOpNonsingular& G() const;
+	const MatrixSymOpNonsing& G() const;
 
 	///
-	const SparseLinAlgPack::MatrixSymDiagonalStd& M() const;
+	const SparseLinAlgPack::MatrixSymDiagStd& M() const;
 
 	//@}
 	
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
 	const VectorSpace& space_cols() const;
 	///
 	bool Mp_StM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		, BLAS_Cpp::Transp trans_rhs) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2, value_type beta) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2, value_type beta) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		,const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_rhs2_trans
-		,const VectorWithOp& v_rhs3, value_type beta) const;
+		,const Vector& v_rhs3, value_type beta) const;
 	///
 	void Vp_StPtMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha
+		VectorMutable* v_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		,BLAS_Cpp::Transp M_rhs2_trans
 		,const SpVectorSlice& sv_rhs3, value_type beta) const;
 
 	//@}
 
-	/** @name Overridden form MatrixSymWithOp */
+	/** @name Overridden form MatrixSymOp */
 	//@{
 
 	///
 	void Mp_StPtMtP(
-		MatrixSymWithOp* sym_lhs, value_type alpha
+		MatrixSymOp* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		,value_type beta
@@ -170,16 +170,16 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixNonsingular */
+	/** @name Overridden from MatrixNonsing */
 	//@{
 
 	///
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2) const;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		,const Vector& v_rhs2) const;
 	///
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		,const SpVectorSlice& sv_rhs2) const;
 
 	//@}
@@ -191,7 +191,7 @@ private:
 
 	space_ptr_t              vec_space_;
 	G_ptr_t                  G_ptr_;
-	MatrixSymDiagonalStd     M_;
+	MatrixSymDiagStd     M_;
 
 	// ///////////////////////////////
 	// Private member functions
@@ -218,7 +218,7 @@ MatrixSymHessianRelaxNonSing::M_diag_ptr() const
 }
 
 inline
-const MatrixSymWithOpNonsingular&
+const MatrixSymOpNonsing&
 MatrixSymHessianRelaxNonSing::G() const
 {
 	assert_initialized();
@@ -226,7 +226,7 @@ MatrixSymHessianRelaxNonSing::G() const
 }
 
 inline
-const MatrixSymDiagonalStd&
+const MatrixSymDiagStd&
 MatrixSymHessianRelaxNonSing::M() const
 {
 	assert_initialized();

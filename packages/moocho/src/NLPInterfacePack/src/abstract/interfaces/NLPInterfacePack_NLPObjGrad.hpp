@@ -99,7 +99,7 @@ public:
 	 * <li> <tt>this->get_Gf() == Gf</tt>
 	 * </ul>
 	 */
-	virtual void set_Gf(VectorWithOpMutable* Gf);
+	virtual void set_Gf(VectorMutable* Gf);
 	///
 	/** Return pointer passed to <tt>this->set_Gf()</tt>.
 	 *
@@ -107,7 +107,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual VectorWithOpMutable* get_Gf();
+	virtual VectorMutable* get_Gf();
 	///
 	/** Returns non-<tt>const</tt> <tt>*this->get_Gf()</tt>.
 	 *
@@ -116,7 +116,7 @@ public:
 	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual VectorWithOpMutable& Gf();
+	virtual VectorMutable& Gf();
 	///
 	/** Returns <tt>const</tt> <tt>*this->get_Gf()</tt>.
 	 *
@@ -125,7 +125,7 @@ public:
 	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const VectorWithOp& Gf() const;
+	virtual const Vector& Gf() const;
 
 	//@}
 
@@ -155,7 +155,7 @@ public:
 	 * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect (i.e. no higher order derivatives).
 	 */ 
-	virtual void calc_Gf(const VectorWithOp& x, bool newx = true) const;
+	virtual void calc_Gf(const Vector& x, bool newx = true) const;
 
 	//@}
 
@@ -184,17 +184,17 @@ public:
 			: Gf(NULL), f(NULL), c(NULL)
 		{}
 		///
-		ObjGradInfo( VectorWithOpMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
+		ObjGradInfo( VectorMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
 			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
 		{}
 		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		VectorWithOpMutable*       Gf;
+		VectorMutable*       Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*                f;
 		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
-		VectorWithOpMutable*       c;
+		VectorMutable*       c;
 		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		VectorWithOpMutable*       h;
+		VectorMutable*       h;
 	}; // end struct ObjGradInfo
 
 	//@}
@@ -228,13 +228,13 @@ protected:
 	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
 	 *                now guaranteed to be.
 	 */
-	virtual void imp_calc_Gf(const VectorWithOp& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
+	virtual void imp_calc_Gf(const Vector& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
 
 	//@}
 
 private:
 
-	mutable VectorWithOpMutable     *Gf_;
+	mutable VectorMutable     *Gf_;
 	mutable size_type				num_Gf_evals_;
 
 };	// end class NLPObjGradient

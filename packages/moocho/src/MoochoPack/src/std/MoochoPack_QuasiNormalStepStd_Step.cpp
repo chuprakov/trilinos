@@ -18,9 +18,9 @@
 #include "ReducedSpaceSQPPack/src/std/RangeSpaceStepStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -50,17 +50,17 @@ bool RangeSpaceStepStd_Step::do_step(
 	}
 
 	// Get iteration quantities
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&c_iq   = s.c(),
 		&py_iq  = s.py(),
 		&Ypy_iq = s.Ypy();
-	IterQuantityAccess<MatrixWithOpNonsingular>
+	IterQuantityAccess<MatrixOpNonsing>
 		&R_iq = s.R();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		&Y_iq = s.Y();
 
 	// Solve the system py = - inv(R) * c(equ_decomp)
-	VectorWithOpMutable &py_k = py_iq.set_k(0);
+	VectorMutable &py_k = py_iq.set_k(0);
 	V_InvMtV( &py_k, R_iq.get_k(0), no_trans, *c_iq.get_k(0).sub_view(equ_decomp) );
 	Vt_S( &py_k, -1.0 );
 

@@ -104,7 +104,7 @@ void MatrixGenBanded::initialize(
 	}
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 size_type MatrixGenBanded::rows() const
 {
@@ -123,7 +123,7 @@ size_type MatrixGenBanded::nz() const
 
 std::ostream& MatrixGenBanded::output(std::ostream& out) const
 {
-	return MatrixWithOp::output(out); // ToDo: Implement specialized version later!
+	return MatrixOp::output(out); // ToDo: Implement specialized version later!
 }
 
 void MatrixGenBanded::Vp_StMtV(
@@ -141,7 +141,7 @@ void MatrixGenBanded::Vp_StMtV(
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	MatrixWithOp::Vp_StMtV(y,a,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
+	MatrixOp::Vp_StMtV(y,a,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
 }
 
 void MatrixGenBanded::Vp_StPtMtV(
@@ -151,7 +151,7 @@ void MatrixGenBanded::Vp_StPtMtV(
 	, const DVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
 }
 
 void MatrixGenBanded::Vp_StPtMtV(
@@ -161,7 +161,7 @@ void MatrixGenBanded::Vp_StPtMtV(
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
+	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
 }
 
 // Private member functions

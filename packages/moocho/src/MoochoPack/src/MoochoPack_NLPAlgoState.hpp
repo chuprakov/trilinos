@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/Permutation.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 //#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
@@ -123,10 +123,10 @@ public:
     STATE_IQ_DECL(value_type,NAME)                                   \
 
 ///
-/** Add class declarations for a VectorWithOpMutable iteration quantity.
+/** Add class declarations for a VectorMutable iteration quantity.
  */
 #define STATE_VECTOR_IQ_DECL(NAME)                                   \
-    STATE_IQ_DECL(VectorWithOpMutable,NAME)                          \
+    STATE_IQ_DECL(VectorMutable,NAME)                          \
 
 ///
 /** Add class definitions for an arbitrary iteration quantity.
@@ -189,24 +189,24 @@ CLASS::NAME() const                                                       \
 }
 
 ///
-/** Add class definitions for a VectorWithOpMutable iteration quantity.
+/** Add class definitions for a VectorMutable iteration quantity.
  *
  * This implementation will instantiate the IterQuantity object on the fly
  * given the VectorSpace (VEC_SPC).  Note that this VEC_SPC can be any
- * code that will returns a smart pointer to a AbstractFactory<VectorWithOpMutable>
+ * code that will returns a smart pointer to a AbstractFactory<VectorMutable>
  * object from within the class body.  It is best if VEC_SPC is some function
  * that is called on *this for the maximum safety and to avoid strage
  * behavior.
  */
 #define STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC,VEC_RN)           \
-IterQuantityAccess<VectorWithOpMutable>&                                  \
+IterQuantityAccess<VectorMutable>&                                  \
 CLASS::NAME()                                                             \
 {                                                                         \
     update_vector_iq_id( NAME_STR, VEC_SPC, VEC_RN, &NAME ## _iq_id_ );   \
-	return IterationPack::cast_iq<VectorWithOpMutable>(            \
+	return IterationPack::cast_iq<VectorMutable>(            \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
-const IterQuantityAccess<VectorWithOpMutable>&                            \
+const IterQuantityAccess<VectorMutable>&                            \
 CLASS::NAME() const                                                       \
 {                                                                         \
 	return const_cast<CLASS*>(this)->NAME();                          \
@@ -227,11 +227,11 @@ CLASS::NAME() const                                                       \
  *
  * The implementation defined in this class uses <tt>IterQuantityAccessContiguous<></tt>
  * for iteration quantities of type <tt>index_type</tt>, <tt>value_type</tt> and
- * <tt>VectorWithOpMutable</tt> with a default of one storage location.  The default
- * implementation is able to create the <tt>VectorWithOpMutable</tt> iteration quantities
+ * <tt>VectorMutable</tt> with a default of one storage location.  The default
+ * implementation is able to create the <tt>VectorMutable</tt> iteration quantities
  * by using <tt>VectorSpace</tt> objects that the client sets \c this up with.
  *
- * For all other types of iteration quantities (i.e. <tt>MatrixWithOp</tt> etc.) the
+ * For all other types of iteration quantities (i.e. <tt>MatrixOp</tt> etc.) the
  * client is responsible for setting the iteration quantity object of type
  * <tt>IterQuantityAccess<></tt>.  The client can also change the type of class
  * used for any iteration quantity by simply calling
@@ -353,15 +353,15 @@ public:
 	/// Gf:  Gradient of the objective function sorted according to current basis selection ( n x 1 )
 	STATE_VECTOR_IQ_DECL(Gf)
 	/// HL:  Hessian of the Lagrangian ( n x n 
-	STATE_IQ_DECL(MatrixSymWithOp,HL)
+	STATE_IQ_DECL(MatrixSymOp,HL)
 	/// c:  DVector of general nonlinear equality constraints ( m x 1 )
 	STATE_VECTOR_IQ_DECL(c)
 	/// h:  DVector of general nonlinear inequality constraints ( mI x 1 )
 	STATE_VECTOR_IQ_DECL(h)
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
-	STATE_IQ_DECL(MatrixWithOp,Gc)
+	STATE_IQ_DECL(MatrixOp,Gc)
 	/// Gh:  Gradient of inequality constraints ('h') matrix ( n x mI )
-	STATE_IQ_DECL(MatrixWithOp,Gh)
+	STATE_IQ_DECL(MatrixOp,Gh)
 
 	//@}
 
@@ -369,19 +369,19 @@ public:
 	//@{
 
 	/// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
-	STATE_IQ_DECL(MatrixWithOp,Y)
+	STATE_IQ_DECL(MatrixOp,Y)
 	/// Z:  Null space matrix for Gc(equ_decomp)' (Gc(equ_decomp)' * Z) ( n x (n-r) )
-	STATE_IQ_DECL(MatrixWithOp,Z)
+	STATE_IQ_DECL(MatrixOp,Z)
 	/// R:  Represents the nonsingular matrix Gc(equ_decomp)' * Y ( r x r )
-	STATE_IQ_DECL(MatrixWithOpNonsingular,R)
+	STATE_IQ_DECL(MatrixOpNonsing,R)
 	/// Uy:  Represents Gc(equ_undecomp)' * Y ( (m-r) x r )
-	STATE_IQ_DECL(MatrixWithOp,Uy)
+	STATE_IQ_DECL(MatrixOp,Uy)
 	/// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
-	STATE_IQ_DECL(MatrixWithOp,Uz)
+	STATE_IQ_DECL(MatrixOp,Uz)
 	/// Vy:  Represents Gh' * Y ( mI x r )
-	STATE_IQ_DECL(MatrixWithOp,Vy)
+	STATE_IQ_DECL(MatrixOp,Vy)
 	/// Vz:  Represents Gh' * Z ( mI x (m-r) )
-	STATE_IQ_DECL(MatrixWithOp,Vz)
+	STATE_IQ_DECL(MatrixOp,Vz)
 
 	//@}
 
@@ -407,7 +407,7 @@ public:
 	/// rGf:  Reduced gradient of the objective function ( \c space_null, (n-r) x 1 )
 	STATE_VECTOR_IQ_DECL(rGf)
 	/// rHL:  Reduced Hessian of the Lagrangian function ( <tt>space_null|space_null</tt>, (n-r) x (n-r) )
-	STATE_IQ_DECL(MatrixSymWithOp,rHL)
+	STATE_IQ_DECL(MatrixSymOp,rHL)
 	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( \c space_null, (n-r) x 1 )
 	STATE_VECTOR_IQ_DECL(w)
 	/// zeta:  QP crossterm dampening parameter [0, 1]

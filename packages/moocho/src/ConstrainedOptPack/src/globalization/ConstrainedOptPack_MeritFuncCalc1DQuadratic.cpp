@@ -15,7 +15,7 @@
 
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 
@@ -25,7 +25,7 @@ MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(
 	const MeritFuncCalc&      phi
 	,size_type                p
 	,const_VectorWithOp_ptr   d[]
-	,VectorWithOpMutable*     x
+	,VectorMutable*     x
 	)
 	: phi_(phi), p_(p), x_(x)
 {

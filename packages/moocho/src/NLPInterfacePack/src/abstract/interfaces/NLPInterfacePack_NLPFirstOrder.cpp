@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "Range1D.hpp"
 #include "ThrowException.hpp"
 
@@ -47,7 +47,7 @@ NLPFirstOrderInfo::basis_sys() const
 
 // <<std aggr>> members for Gc
 
-void NLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)
+void NLPFirstOrderInfo::set_Gc(MatrixOp* Gc)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -55,7 +55,7 @@ void NLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)
 	Gc_ = Gc;
 }
 
-MatrixWithOp* NLPFirstOrderInfo::get_Gc()
+MatrixOp* NLPFirstOrderInfo::get_Gc()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -63,7 +63,7 @@ MatrixWithOp* NLPFirstOrderInfo::get_Gc()
 	return StandardCompositionRelationshipsPack::get_role_name(Gc_, false, name_Gc);
 }
 
-MatrixWithOp& NLPFirstOrderInfo::Gc()
+MatrixOp& NLPFirstOrderInfo::Gc()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -71,7 +71,7 @@ MatrixWithOp& NLPFirstOrderInfo::Gc()
 	return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
 }
 
-const MatrixWithOp& NLPFirstOrderInfo::Gc() const
+const MatrixOp& NLPFirstOrderInfo::Gc() const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -81,7 +81,7 @@ const MatrixWithOp& NLPFirstOrderInfo::Gc() const
 
 // <<std aggr>> members for Gh
 
-void NLPFirstOrderInfo::set_Gh(MatrixWithOp* Gh)
+void NLPFirstOrderInfo::set_Gh(MatrixOp* Gh)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -89,7 +89,7 @@ void NLPFirstOrderInfo::set_Gh(MatrixWithOp* Gh)
 	Gh_ = Gh;
 }
 
-MatrixWithOp* NLPFirstOrderInfo::get_Gh()
+MatrixOp* NLPFirstOrderInfo::get_Gh()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -97,7 +97,7 @@ MatrixWithOp* NLPFirstOrderInfo::get_Gh()
 	return StandardCompositionRelationshipsPack::get_role_name(Gh_, false, name_Gh);
 }
 
-MatrixWithOp& NLPFirstOrderInfo::Gh()
+MatrixOp& NLPFirstOrderInfo::Gh()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -105,7 +105,7 @@ MatrixWithOp& NLPFirstOrderInfo::Gh()
 	return StandardCompositionRelationshipsPack::role_name(Gh_, false, name_Gh);
 }
 
-const MatrixWithOp& NLPFirstOrderInfo::Gh() const
+const MatrixOp& NLPFirstOrderInfo::Gh() const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
@@ -115,7 +115,7 @@ const MatrixWithOp& NLPFirstOrderInfo::Gh() const
 
 // calculations
 
-void NLPFirstOrderInfo::calc_Gc(const VectorWithOp& x, bool newx) const
+void NLPFirstOrderInfo::calc_Gc(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
@@ -125,7 +125,7 @@ void NLPFirstOrderInfo::calc_Gc(const VectorWithOp& x, bool newx) const
 	num_Gc_evals_++;
 }
 
-void NLPFirstOrderInfo::calc_Gh(const VectorWithOp& x, bool newx) const
+void NLPFirstOrderInfo::calc_Gh(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );

@@ -16,7 +16,7 @@
 #ifndef ALAP_MULTI_VECTOR_H
 #define ALAP_MULTI_VECTOR_H
 
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 #include "RTOpPack/src/RTOpCpp.hpp"
 #include "ref_count_ptr.hpp"
 
@@ -29,7 +29,7 @@ namespace AbstractLinAlgPack {
  * matrix by accessing rows, columns and/or diagonals.
  * The vector objects returned from the provided access methods
  * \c row(), \c col() and \c diag() are abstract vectors so there is
- * still good implementation flexibility but many <tt>%MatrixWithOp</tt>
+ * still good implementation flexibility but many <tt>%MatrixOp</tt>
  * implementations will not be able to support this interface.
  *
  * The primary purpose for this interface is to allow for convienent aggregations
@@ -40,17 +40,17 @@ namespace AbstractLinAlgPack {
  * efficient implementation of a <tt>%MultiVector</tt> (or a <tt>%MultiVectorMutable</tt>)
  * subclass.
  *
- * The <tt>%MultiVector</tt> interface is derived from the \c MatrixWithOp 
+ * The <tt>%MultiVector</tt> interface is derived from the \c MatrixOp 
  * interface and therefore a <tt>%MultiVector</tt> can be considered as a matrix
  * which has some interesting implications.  As an extended matrix interface, this
  * is somewhat of a "last resort" interface that allows many matrix operations to
  * have default implementations based on vector operations. None of the linear
- * algebra methods in <tt>%MatrixWithOp</tt> or any of the other matrix interfaces
+ * algebra methods in <tt>%MatrixOp</tt> or any of the other matrix interfaces
  * have methods that directly accept <tt>%MultiVector</tt> objects.  However,
- * since <tt>%MultiVector</tt> is derived from <tt>%MatrixWithOp</tt>, a
- * <tt>%MultiVector</tt> object can be used anywere a <tt>%MatrixWithOp</tt>
+ * since <tt>%MultiVector</tt> is derived from <tt>%MatrixOp</tt>, a
+ * <tt>%MultiVector</tt> object can be used anywere a <tt>%MatrixOp</tt>
  * object is accepted.  In fact, many of the default implementations for the
- * linear algebra methods in <tt>%MatrixWithOp</tt> test to see if the matrix
+ * linear algebra methods in <tt>%MatrixOp</tt> test to see if the matrix
  * arguments support <tt>%MultiVector</tt> (or \c MultiVectorMutable</tt>)
  * and will fail if these interfaces are not supported.
  *
@@ -72,7 +72,7 @@ namespace AbstractLinAlgPack {
  * center diagonal my be easily accessable in which case \c diag(0) may return
  * <tt>!= NULL</tt> but \c diag(k) for all <tt>k != 0</tt> may return \c NULL.
  *
- * Note that since, this interface is derived from \c MatrixWithOp that it must
+ * Note that since, this interface is derived from \c MatrixOp that it must
  * support the methods \c space_rows() and \c space_cols().  This does not imply
  * however that either of the access methods \c row() or \c col() must return
  * non-<tt>NULL</tt>.
@@ -87,14 +87,14 @@ namespace AbstractLinAlgPack {
  * reduction/transformation operators over a sub-set of rows and columns in a set
  * of multi-vector objects.  The behavior is identical as if the client extracted
  * the rows or columns in a set of multi-vectors and called
- * \c VectorWithOp::apply_reduction() or \c VectorWithOpMutable::apply_transformation()
+ * \c Vector::apply_reduction() or \c VectorMutable::apply_transformation()
  * itself.  However, the advantage of using the multi-vector methods is that there
  * may be greater opertunity to exploit parallelism.  Also, the intermediate reduction
  * objects over a set of rows or columns can be reduced by a secondary reduction object.
  *
  * ToDo: Finish documentation!
  */
-class MultiVector : virtual public MatrixWithOp {
+class MultiVector : virtual public MatrixOp {
 public:
 
 	///
@@ -111,7 +111,7 @@ public:
 		,APPLY_BY_COL       ///<
 	};
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const MultiVector>    multi_vec_ptr_t;
 
@@ -230,52 +230,52 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
-	/** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixWithOp.
+	/** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
 	 */
 	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 
 	///
-	/** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiagonal</tt>.
+	/** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiag</tt>.
 	 *
 	 * @return Returns <tt>true</tt> and implements the operation if
-	 * <tt>dynamic_cast<MatrixSymDiagonal>(&mwo_rhs1) != NULL
+	 * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
 	 * && op(*this).access_by() =& MultiVector::COL_ACCESS
 	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
 	 * && mvm_lhs->access_by() & MultiVector::COL_ACCESS</tt>.
 	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
-	 * or <tt>dynamic_cast<const MatrixSymDiagonal>(&mwo_rhs1) != NULL</tt>.
+	 * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
 	 *
 	 * The default implementation relies on column access of <tt>op(*this)</tt>
 	 * and <tt>mwo_lhs</tt> to implement this method.
 	 */
 	bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
-		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		MatrixOp* mwo_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 
 	///
-	/** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiagonal</tt>.
+	/** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
 	 *
 	 * @return Returns <tt>true</tt> and implements the operation if
-	 * <tt>dynamic_cast<MatrixSymDiagonal>(&mwo_rhs1) != NULL
+	 * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
 	 * && op(*this).access_by() =& MultiVector::ROW_ACCESS
 	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
 	 * && mvm_lhs->access_by() & MultiVector::ROW_ACCESS</tt>.
 	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
-	 * or <tt>dynamic_cast<const MatrixSymDiagonal>(&mwo_rhs1) != NULL</tt>.
+	 * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
 	 *
 	 * The default implementation relies on row access of <tt>op(*this)</tt>
 	 * and <tt>mwo_lhs</tt> to implement this method.
 	 */
 	bool Mp_StMtM(
-		MatrixWithOp* mwo_lhs, value_type alpha
+		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 		,value_type beta ) const;
 
 	//@}
@@ -334,9 +334,9 @@ protected:
 private:
 	
 #ifdef DOXYGEN_COMPILE
-	VectorWithOp         *rows;
-	VectorWithOp         *columns;
-	VectorWithOp         *diagonals;
+	Vector         *rows;
+	Vector         *columns;
+	Vector         *diagonals;
 #endif	
 
 }; // end class MultiVector

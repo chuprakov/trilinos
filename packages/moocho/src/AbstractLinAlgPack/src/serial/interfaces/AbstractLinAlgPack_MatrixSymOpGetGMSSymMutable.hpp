@@ -24,7 +24,7 @@ namespace SparseLinAlgPack {
 /** Abstract interface that allows the extraction of a non-const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
  * view of a symmetry abstract matrix.
  *
- * This interface is ment to be used by <tt>MatrixSymWithOp</tt> objects
+ * This interface is ment to be used by <tt>MatrixSymOp</tt> objects
  * that store all of their matrix elements in the local address space or can easily
  * access all of the elements from this process and can modify the elements in their
  * data structures.
@@ -106,12 +106,12 @@ public:
 	 */
 	MatrixDenseSymMutableEncap( MatrixSymWithOpGetGMSSymMutable*  mat_get );
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
-	MatrixDenseSymMutableEncap( MatrixSymWithOp* mat );
+	MatrixDenseSymMutableEncap( MatrixSymOp* mat );
 	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view and commits the changes.
 	~MatrixDenseSymMutableEncap();
 	/// Returns a non-const view of the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
@@ -141,7 +141,7 @@ MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymWithOpGetGMSSym
 {}
 
 inline
-MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymWithOp* mat )
+MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymOp* mat )
 	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixSymWithOpGetGMSSymMutable>(*mat))
 	,sym_gms_view_(mat_get_->get_sym_gms_view())
 {}

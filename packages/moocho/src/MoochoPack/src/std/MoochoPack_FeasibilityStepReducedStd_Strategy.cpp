@@ -40,7 +40,7 @@ FeasibilityStepReducedStd_Strategy::FeasibilityStepReducedStd_Strategy(
 
 bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
+	,const Vector& xo, const Vector& c_xo, VectorMutable* w
   	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -132,7 +132,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	//    min qp_grad_k'*wz + 1/2 * wz'*rHL_k*wz
 	//    => grad = qp_grad, Hess = rHL_k
 	//
-	const MatrixWithOp
+	const MatrixOp
 		&Z_k = s->Z().get_k(0);
 	if( current_k_ != s->k() ) {
 		if( qp_objective() != OBJ_RSQP )
@@ -174,12 +174,12 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	    case OBJ_MIN_NULL_SPACE_STEP: // grad = 0, Hess = I
 		{
 			grad.bind( grad_store_() );
-			MatrixSymIdentity
+			MatrixSymIdent
 				*H_ptr = NULL;
-			if( Hess_ptr_.get() == NULL || dynamic_cast<const MatrixSymIdentity*>(Hess_ptr_.get()) == NULL )
-				Hess_ptr_ = new MatrixSymIdentity;
+			if( Hess_ptr_.get() == NULL || dynamic_cast<const MatrixSymIdent*>(Hess_ptr_.get()) == NULL )
+				Hess_ptr_ = new MatrixSymIdent;
 			if( current_k_ != s->k() ) {
-				H_ptr = const_cast<MatrixSymIdentity*>(dynamic_cast<const MatrixSymIdentity*>(Hess_ptr_.get()));
+				H_ptr = const_cast<MatrixSymIdent*>(dynamic_cast<const MatrixSymIdent*>(Hess_ptr_.get()));
 				assert(H_ptr); // Should not be null!
 				H_ptr->init_setup(n-r,1.0);
 				grad = 0.0;
@@ -229,16 +229,16 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		//
 
 		DVectorSlice 			qp_g		= grad;
-		const MatrixWithOp& 	qp_G 		= *Hess_ptr_;
+		const MatrixOp& 	qp_G 		= *Hess_ptr_;
 		const value_type		qp_etaL 	= 0.0;
 		SpVectorSlice			qp_dL(NULL,0,0,n-r);	// If nz() == 0 then no simple bounds
 		SpVectorSlice			qp_dU(NULL,0,0,n-r);
-		const MatrixWithOp		*qp_E		= NULL;
+		const MatrixOp		*qp_E		= NULL;
 		BLAS_Cpp::Transp		qp_trans_E	= BLAS_Cpp::no_trans;
 		DVectorSlice             qp_b;
 		SpVectorSlice			qp_eL(NULL,0,0,n);
 		SpVectorSlice			qp_eU(NULL,0,0,n);
-		const MatrixWithOp		*qp_F		= NULL;
+		const MatrixOp		*qp_F		= NULL;
 		BLAS_Cpp::Transp		qp_trans_F	= BLAS_Cpp::no_trans;
 		DVectorSlice				qp_f;
 		DVectorSlice				qp_d		= wz;

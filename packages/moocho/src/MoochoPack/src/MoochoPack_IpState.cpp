@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 //
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 
 // Iteration Quantity Strings
 extern const std::string ReducedSpaceSQPPack::barrier_parameter_name = "barrier_parameter";
@@ -63,19 +63,19 @@ STATE_VECTOR_IQ_DEF(ipState, grad_barrier_obj, grad_barrier_obj_name, get_space_
 
 STATE_SCALAR_IQ_DEF(ipState, e_tol, e_tol_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vu, Vu_name)
+STATE_IQ_DEF(ipState, MatrixSymDiagStd, Vu, Vu_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vl, Vl_name)
+STATE_IQ_DEF(ipState, MatrixSymDiagStd, Vl, Vl_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXu, invXu_name)
+STATE_IQ_DEF(ipState, MatrixSymDiagStd, invXu, invXu_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXl, invXl_name)
+STATE_IQ_DEF(ipState, MatrixSymDiagStd, invXl, invXl_name)
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, rHB, rHB_name)
+STATE_IQ_DEF(ipState, MatrixSymOp, rHB, rHB_name)
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, B, B_name)
+STATE_IQ_DEF(ipState, MatrixSymOp, B, B_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Sigma, Sigma_name)
+STATE_IQ_DEF(ipState, MatrixSymDiagStd, Sigma, Sigma_name)
 
 STATE_VECTOR_IQ_DEF(ipState, w_sigma, w_sigma_name, get_space_null(), VST_SPACE_NULL )  
 STATE_VECTOR_IQ_DEF(ipState, dvl, dvl_name, get_space_x(), VST_SPACE_X)

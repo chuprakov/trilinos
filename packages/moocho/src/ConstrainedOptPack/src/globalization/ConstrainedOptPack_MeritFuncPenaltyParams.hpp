@@ -44,10 +44,10 @@ public:
 	virtual void set_space_c( const VectorSpace::space_ptr_t& space_c ) = 0;
 
 	/// Get the vector of penalty parameters for setting them
-	virtual VectorWithOpMutable& set_mu() = 0;
+	virtual VectorMutable& set_mu() = 0;
 
 	/// Get the vector of penalty parameters for viewing them
-	virtual const VectorWithOp& get_mu() const = 0;
+	virtual const Vector& get_mu() const = 0;
 
 	//@}
 

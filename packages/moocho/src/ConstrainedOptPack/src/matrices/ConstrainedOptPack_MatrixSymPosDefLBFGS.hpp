@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
@@ -83,8 +83,8 @@ namespace ConstrainedOptimizationPack {
  * about <tt>O(n*m_bar^2)</tt>.
  */
 class MatrixSymPosDefLBFGS
-	: public AbstractLinAlgPack::MatrixSymWithOpNonsingular // doxygen needs full path
-	, public MatrixSymSecantUpdateable
+	: public AbstractLinAlgPack::MatrixSymOpNonsing // doxygen needs full path
+	, public MatrixSymSecant
 {
 public:
 
@@ -208,7 +208,7 @@ public:
 	 */
 	size_type num_secant_updates() const;
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -216,25 +216,25 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& mwo);
+	MatrixOp& operator=(const MatrixOp& mwo);
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta ) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta ) const;
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpNonsingular */
+	/** @name Overridden from MatrixOpNonsing */
 	//@{
 
 	///
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2 ) const;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2 ) const;
 
 	//@}
 
-	/** @name Overridden from MatrixSymSecantUpdateable */
+	/** @name Overridden from MatrixSymSecant */
 	//@{
 
 	///
@@ -246,12 +246,12 @@ public:
 	  * Besides, when we are using automatric rescaling (auto_rescaling == true)
 	  * then this will really not matter much anyway.
 	  */
-	void init_diagonal( const VectorWithOp& diag );
+	void init_diagonal( const Vector& diag );
 	///
 	void secant_update(
-		VectorWithOpMutable     *s
-		,VectorWithOpMutable    *y
-		,VectorWithOpMutable    *Bs
+		VectorMutable     *s
+		,VectorMutable    *y
+		,VectorMutable    *Bs
 		);
 
 	//@}

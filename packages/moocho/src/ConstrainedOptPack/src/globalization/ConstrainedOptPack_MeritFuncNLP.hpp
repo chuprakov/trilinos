@@ -57,10 +57,10 @@ public:
 	 */
 	virtual value_type value(
 		value_type             f
-		,const VectorWithOp    *c
-		,const VectorWithOp    *h
-		,const VectorWithOp    *hl
-		,const VectorWithOp    *hu
+		,const Vector    *c
+		,const Vector    *h
+		,const Vector    *hl
+		,const Vector    *hu
 		) const = 0;
 
 	///

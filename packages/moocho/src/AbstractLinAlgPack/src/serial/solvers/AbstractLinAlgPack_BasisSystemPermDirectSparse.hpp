@@ -79,12 +79,12 @@ public:
 	Range1D equ_undecomp() const;
 	///
 	void update_basis(
-		const MatrixWithOp*         Gc
-		,const MatrixWithOp*        Gh
-		,MatrixWithOpNonsingular*   C
-		,MatrixWithOp*              D
-		,MatrixWithOp*              GcUP
-		,MatrixWithOp*              GhUP
+		const MatrixOp*         Gc
+		,const MatrixOp*        Gh
+		,MatrixOpNonsing*   C
+		,MatrixOp*              D
+		,MatrixOp*              GcUP
+		,MatrixOp*              GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
 		) const;
@@ -108,31 +108,31 @@ public:
 		,const Range1D             *equ_decomp
 		,const Permutation         *P_inequ
 		,const Range1D             *inequ_decomp
-		,const MatrixWithOp        *Gc
-		,const MatrixWithOp        *Gh
-		,MatrixWithOpNonsingular   *C
-		,MatrixWithOp              *D
-		,MatrixWithOp              *GcUP
-		,MatrixWithOp              *GhUP
+		,const MatrixOp        *Gc
+		,const MatrixOp        *Gh
+		,MatrixOpNonsing   *C
+		,MatrixOp              *D
+		,MatrixOp              *GcUP
+		,MatrixOp              *GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
 		);
 	///
 	void select_basis(
-		const VectorWithOp          *nu
-		,const VectorWithOp         *lambdaI
-		,MatrixWithOp               *Gc
-		,MatrixWithOp               *Gh
+		const Vector          *nu
+		,const Vector         *lambdaI
+		,MatrixOp               *Gc
+		,MatrixOp               *Gh
 		,Permutation                *P_var
 		,Range1D                    *var_dep
 		,Permutation                *P_equ
 		,Range1D                    *equ_decomp
 		,Permutation                *P_inequ
 		,Range1D                    *inequ_decomp
-		,MatrixWithOpNonsingular    *C
-		,MatrixWithOp               *D
-		,MatrixWithOp               *GcUP
-		,MatrixWithOp               *GhUP
+		,MatrixOpNonsing    *C
+		,MatrixOp               *D
+		,MatrixOp               *GcUP
+		,MatrixOp               *GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
 		);
@@ -164,7 +164,7 @@ private:
 
 	///
 	MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
-	get_basis_matrix( MatrixWithOpNonsingularAggr &C_aggr ) const;
+	get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const;
 
 	///
 	void set_A_mctse(
@@ -176,19 +176,19 @@ private:
 
 	///
 	void update_basis_and_auxiliary_matrices(
-		const MatrixWithOp& Gc
+		const MatrixOp& Gc
 		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
-		,MatrixWithOpNonsingularAggr *C_aggr
-		,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUp
+		,MatrixOpNonsingAggr *C_aggr
+		,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUp
 		) const;
 
 	///
 	void do_some_basis_stuff(
-		const MatrixWithOp& Gc, const MatrixWithOp* Gh
+		const MatrixOp& Gc, const MatrixOp* Gh
 		,const Range1D& var_dep, const Range1D& equ_decomp
 		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
-		,MatrixWithOpNonsingularAggr *C_aggr
-		,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+		,MatrixOpNonsingAggr *C_aggr
+		,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
 		);
 
 

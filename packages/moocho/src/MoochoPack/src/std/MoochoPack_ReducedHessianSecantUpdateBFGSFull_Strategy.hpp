@@ -48,14 +48,14 @@ public:
 	//@{
 	///
 	bool perform_update(
-		VectorWithOpMutable     *s_bfgs
-		,VectorWithOpMutable    *y_bfgs
+		VectorMutable     *s_bfgs
+		,VectorMutable    *y_bfgs
 		,bool                   first_update
 		,std::ostream           & out
 		,EJournalOutputLevel    olevel
 		,rSQPAlgo               *algo
 		,rSQPState              *s
-		,MatrixSymWithOp        *rHL_k
+		,MatrixSymOp        *rHL_k
 		);
 	///
 	void print_step( std::ostream& out, const std::string& leading_str ) const;

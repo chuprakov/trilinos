@@ -39,11 +39,11 @@ void MatrixHessianSuperBasicInitDiagonal::initialize(
 
 	// Validate the B_RR supports this interface
 #ifdef _WINDOWS
-	B_RR_init_ = &dynamic_cast<MatrixSymInitDiagonal&>(
+	B_RR_init_ = &dynamic_cast<MatrixSymInitDiag&>(
 		const_cast<MatrixSymWithOpFactorized&>(*B_RR_ptr)
 		);
 #else
-	B_RR_init_ = &dyn_cast<MatrixSymInitDiagonal>(
+	B_RR_init_ = &dyn_cast<MatrixSymInitDiag>(
 		const_cast<MatrixSymWithOpFactorized&>(*B_RR_ptr)
 		);
 #endif
@@ -54,7 +54,7 @@ void MatrixHessianSuperBasicInitDiagonal::initialize(
 		);
 }
 
-// Overridden from MatrixSymInitDiagonal
+// Overridden from MatrixSymInitDiag
 
 void MatrixHessianSuperBasicInitDiagonal::init_identity(
 	size_type n, value_type alpha )

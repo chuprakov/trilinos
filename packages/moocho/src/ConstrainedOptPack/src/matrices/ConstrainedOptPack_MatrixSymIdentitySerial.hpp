@@ -62,7 +62,7 @@ public:
 
 	//@}
 
-	/** Overridden from MatrixWithOp */
+	/** Overridden from MatrixOp */
 	//@{
 
 	///

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// VectorWithOp.hpp
+// Vector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -46,8 +46,8 @@ namespace AbstractLinAlgPack {
  * of a vector can be created.
  *
  * This interface allows clients to create sub-views of a vector using \c sub_view()
- * that in turn are fully functional <tt>%VectorWithOp</tt> objects.  This functionality
- * is supported by default by using a default vector subclass \c VectorWithOpSubView which
+ * that in turn are fully functional <tt>%Vector</tt> objects.  This functionality
+ * is supported by default by using a default vector subclass \c VectorSubView which
  * in turn calls <tt>apply_reduction()</tt> but the client need not ever worry about
  * how this is done.
  *
@@ -81,20 +81,20 @@ namespace AbstractLinAlgPack {
  *
  * ToDo: Add example code!
  */
-class VectorWithOp {
+class Vector {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>  vec_mut_ptr_t;
 	///
 	enum ESparseOrDense { SPARSE, DENSE };
 
 	///
-	VectorWithOp();
+	Vector();
 	///
-	virtual ~VectorWithOp() {}
+	virtual ~Vector() {}
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
@@ -191,8 +191,8 @@ public:
 	 
 	 void MyVector::apply_reduction(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const
@@ -204,8 +204,8 @@ public:
 	 */
 	virtual void apply_reduction(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const VectorWithOp** vecs
-		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,const size_t num_vecs, const Vector** vecs
+		,const size_t num_targ_vecs, VectorMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele = 1, const index_type sub_dim = 0, const index_type global_offset = 0
 		) const = 0;
@@ -318,7 +318,7 @@ public:
 	 * of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed but they will be appropriate for the
 	 * application at hand.  However, a very good implementation should be able to
 	 * accommodate any valid <tt>rng</tt> that meets the basic preconditions.  The default
-	 * implementation uses the subclass \c VectorWithOpSubView to represent any arbitrary
+	 * implementation uses the subclass \c VectorSubView to represent any arbitrary
 	 * sub-view but this can be inefficient if the sub-view is very small compared this this
 	 * full vector space but not necessarily.
 	 */
@@ -357,7 +357,7 @@ public:
 	 *
 	 * @return Returns <tt>this->space().inner_prod()->inner_prod(*this,v)</tt>
 	 */
-	virtual value_type inner_product( const VectorWithOp& v ) const;
+	virtual value_type inner_product( const Vector& v ) const;
 
 	//@}
 
@@ -470,7 +470,7 @@ protected:
 	 * vector objects.
 	 */
 	virtual void finalize_apply_reduction(
-		const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		const size_t num_targ_vecs, VectorMutable** targ_vecs
 		) const;
 
 	//@}
@@ -480,14 +480,14 @@ private:
 	mutable index_type  num_nonzeros_;  ///< < 0 == not initialized, > 0 == already calculated
 	mutable value_type  norm_1_, norm_2_, norm_inf_;  ///< < 0 == not initialized, > 0 == already calculated
 
-}; // end class MatrixWithOp
+}; // end class MatrixOp
 
 // ////////////////////////////////////////////////
 // Inline members
 
 inline
-VectorWithOp::vec_ptr_t
-VectorWithOp::sub_view( const index_type& l, const index_type& u ) const
+Vector::vec_ptr_t
+Vector::sub_view( const index_type& l, const index_type& u ) const
 {
 	return this->sub_view(Range1D(l,u));
 }

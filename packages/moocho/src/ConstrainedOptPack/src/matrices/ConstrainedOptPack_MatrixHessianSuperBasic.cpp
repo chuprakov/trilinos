@@ -18,7 +18,7 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "SparseLinAlgPack/src/MatrixOpOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
@@ -138,7 +138,7 @@ size_type MatrixHessianSuperBasic::rows() const
 	return n_;
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 void MatrixHessianSuperBasic::Vp_StMtV(
 	DVectorSlice* y, value_type a, BLAS_Cpp::Transp B_trans

@@ -24,22 +24,22 @@ using RangePack::Range1D;
 using AbstractLinAlgPack::InnerProduct;
 using AbstractLinAlgPack::VectorSpaceFactory;
 using AbstractLinAlgPack::VectorSpace;
-using AbstractLinAlgPack::VectorWithOp;
-using AbstractLinAlgPack::VectorWithOpMutable;
+using AbstractLinAlgPack::Vector;
+using AbstractLinAlgPack::VectorMutable;
 
 using AbstractLinAlgPack::MatrixBase;
-using AbstractLinAlgPack::MatrixWithOp;
-using AbstractLinAlgPack::MatrixNonsingular;
-using AbstractLinAlgPack::MatrixWithOpNonsingular;
-using AbstractLinAlgPack::MatrixSymWithOp;
-using AbstractLinAlgPack::MatrixSymNonsingular;
-using AbstractLinAlgPack::MatrixSymWithOpNonsingular;
-using AbstractLinAlgPack::MatrixSymDiagonal;
+using AbstractLinAlgPack::MatrixOp;
+using AbstractLinAlgPack::MatrixNonsing;
+using AbstractLinAlgPack::MatrixOpNonsing;
+using AbstractLinAlgPack::MatrixSymOp;
+using AbstractLinAlgPack::MatrixSymNonsing;
+using AbstractLinAlgPack::MatrixSymOpNonsing;
+using AbstractLinAlgPack::MatrixSymDiag;
 
 using AbstractLinAlgPack::MultiVector;
 using AbstractLinAlgPack::MultiVectorMutable;
 
-using AbstractLinAlgPack::MatrixSymSecantUpdateable;
+using AbstractLinAlgPack::MatrixSymSecant;
 
 using AbstractLinAlgPack::BasisSystem;
 using AbstractLinAlgPack::BasisSystemPerm;
@@ -64,22 +64,22 @@ using AbstractLinAlgPack::SpVectorSlice;
 
 using AbstractLinAlgPack::PermVector;
 
-using AbstractLinAlgPack::MatrixSymInitDiagonal;
-using AbstractLinAlgPack::MatrixSymDiagonal;
+using AbstractLinAlgPack::MatrixSymInitDiag;
+using AbstractLinAlgPack::MatrixSymDiag;
 
-using AbstractLinAlgPack::BasisSystemCompositeStd;
-using AbstractLinAlgPack::VectorSpaceCompositeStd;
-using AbstractLinAlgPack::VectorWithOpMutableCompositeStd;
-using AbstractLinAlgPack::MatrixWithOpSubView;
-using AbstractLinAlgPack::MatrixCompositeStd;
-using AbstractLinAlgPack::MatrixSymIdentity;
-using AbstractLinAlgPack::MatrixSymDiagonalStd;
+using AbstractLinAlgPack::BasisSystemComposite;
+using AbstractLinAlgPack::VectorSpaceBlock;
+using AbstractLinAlgPack::VectorMutableBlock;
+using AbstractLinAlgPack::MatrixOpSubView;
+using AbstractLinAlgPack::MatrixComposite;
+using AbstractLinAlgPack::MatrixSymIdent;
+using AbstractLinAlgPack::MatrixSymDiagStd;
 using AbstractLinAlgPack::MatrixZero;
 using AbstractLinAlgPack::MatrixPermAggr;
-using AbstractLinAlgPack::MatrixWithOpNonsingularAggr;
+using AbstractLinAlgPack::MatrixOpNonsingAggr;
 
 using AbstractLinAlgPack::VectorSpaceTester;
 using AbstractLinAlgPack::VectorSpaceTesterSetOptions;
-using AbstractLinAlgPack::MatrixWithOpNonsingularTester;
+using AbstractLinAlgPack::MatrixOpNonsingTester;
 using AbstractLinAlgPack::BasisSystemTester;
 using AbstractLinAlgPack::BasisSystemTesterSetOptions;

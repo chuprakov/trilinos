@@ -49,8 +49,8 @@ int main(int argc, char* argv[] ) {
 	using rsqp::rSQPppSolver;
 
 	using AbstractLinAlgPack::VectorSpace;
-	using AbstractLinAlgPack::VectorWithOp;
-	using AbstractLinAlgPack::VectorWithOpMutable;
+	using AbstractLinAlgPack::Vector;
+	using AbstractLinAlgPack::VectorMutable;
 
 	using CommandLineProcessorPack::CommandLineProcessor;
 

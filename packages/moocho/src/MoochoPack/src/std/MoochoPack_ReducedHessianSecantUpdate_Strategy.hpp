@@ -60,21 +60,21 @@ public:
 	 * @param  s      [in/out] rSQPState object.  May be queried or modified if needed.
 	 * @param  rHL_k  [in/out] The matrix to be updated.  Note that <tt>rHL_k</tt> was already
 	 *                set to <tt>rHL_km1</tt> before this call was made.  Also, <tt>rHL_k</tt> will
-	 *                probably have to support the <tt>MatrixSymSecantUpdateable</tt> interface
+	 *                probably have to support the <tt>MatrixSymSecant</tt> interface
 	 *                or an exception will be thrown.
 	 * 
 	 * @return Returns false if the algorithms path has been redirected through <tt>algo</tt>.
 	 * Ohterwise, this function should return true.
 	 */
 	virtual bool perform_update(
-		VectorWithOpMutable     *s_bfgs
-		,VectorWithOpMutable   *y_bfgs
+		VectorMutable     *s_bfgs
+		,VectorMutable   *y_bfgs
 		,bool                   first_update
 		,std::ostream           & out
 		,EJournalOutputLevel    olevel
 		,rSQPAlgo               *algo
 		,rSQPState              *s
-		,MatrixSymWithOp        *rHL_k
+		,MatrixSymOp        *rHL_k
 		) = 0;
 	
 	///

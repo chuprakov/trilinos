@@ -17,7 +17,7 @@
 #define MATRIX_DECOMP_RANGE_ORTHOG_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -40,7 +40,7 @@ namespace ConstrainedOptimizationPack {
  * \c C and the direct sensitivity matrix \c D.
  */
 class MatrixDecompRangeOrthog
-	: public AbstractLinAlgPack::MatrixWithOpNonsingular // full path needed for doxygen
+	: public AbstractLinAlgPack::MatrixOpNonsing // full path needed for doxygen
 {
 public:
 
@@ -48,11 +48,11 @@ public:
 	//@{
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>     C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOpNonsing>     C_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>                D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixOp>                D_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>  S_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymOpNonsing>  S_ptr_t;
 #endif
 	//@}
 
@@ -133,7 +133,7 @@ public:
 
 	//@}
 	
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -148,27 +148,27 @@ public:
 	std::ostream& output(std::ostream& out) const;
 	///
 	void Vp_StMtV(
-		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta ) const;
+		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta ) const;
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpNonsingular */
+	/** @name Overridden from MatrixOpNonsing */
 	//@{
 
 	///
 	void V_InvMtV(
-		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2 ) const;
+		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2 ) const;
 
 	//@}
 
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::MatrixWithOpNonsingular      *C;
-	AbstractLinAlgPack::MatrixWithOp                 *D;
-	AbstractLinAlgPack::MatrixSymWithOpNonsingular   *S;
+	AbstractLinAlgPack::MatrixOpNonsing      *C;
+	AbstractLinAlgPack::MatrixOp                 *D;
+	AbstractLinAlgPack::MatrixSymOpNonsing   *S;
 #else
 	C_ptr_t    C_ptr_;
 	D_ptr_t    D_ptr_;

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MatrixWithOpOut.hpp
+// MatrixOpOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,10 +23,10 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Output operator for \Ref{MatrixWithOp} objects.
+/** Output operator for \Ref{MatrixOp} objects.
  */
 inline
-std::ostream& operator<<( std::ostream& o, const MatrixWithOp& M )
+std::ostream& operator<<( std::ostream& o, const MatrixOp& M )
 {
 	return M.output(o);
 }

@@ -17,10 +17,10 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
@@ -63,9 +63,9 @@ bool PostEvalNewPointBarrier_Step::do_step(
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
-	IterQuantityAccess<VectorWithOpMutable> &x_iq = s.x();
-	IterQuantityAccess<MatrixSymDiagonalStd> &Vl_iq = s.Vl();
-	IterQuantityAccess<MatrixSymDiagonalStd> &Vu_iq = s.Vu();
+	IterQuantityAccess<VectorMutable> &x_iq = s.x();
+	IterQuantityAccess<MatrixSymDiagStd> &Vl_iq = s.Vl();
+	IterQuantityAccess<MatrixSymDiagStd> &Vu_iq = s.Vu();
 
 	///***********************************************************
 	// Calculate invXl = diag(1/(x-xl)) 
@@ -73,9 +73,9 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	///***********************************************************
 
 	// get references to x, invXl, and invXu
-	VectorWithOpMutable& x = x_iq.get_k(0);
-	MatrixSymDiagonalStd& invXu = s.invXu().set_k(0);
-	MatrixSymDiagonalStd& invXl = s.invXl().set_k(0);
+	VectorMutable& x = x_iq.get_k(0);
+	MatrixSymDiagStd& invXu = s.invXu().set_k(0);
+	MatrixSymDiagStd& invXl = s.invXl().set_k(0);
 	
 	//std::cout << "xu=\n";
 	//nlp.xu().output(std::cout);
@@ -98,7 +98,7 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	// Initialize Vu and Vl if necessary
 	if ( /*!Vu_iq.updated_k(0) */ Vu_iq.last_updated() == IterQuantity::NONE_UPDATED )
 		{
-		VectorWithOpMutable& vu = Vu_iq.set_k(0).diag();		
+		VectorMutable& vu = Vu_iq.set_k(0).diag();		
 		vu = 0;
 		Vp_StV(&vu, s.barrier_parameter().get_k(-1), invXu.diag());
 
@@ -110,7 +110,7 @@ bool PostEvalNewPointBarrier_Step::do_step(
 
 if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED  )
 		{
-		VectorWithOpMutable& vl = Vl_iq.set_k(0).diag();
+		VectorMutable& vl = Vl_iq.set_k(0).diag();
 		vl = 0;
 		Vp_StV(&vl, s.barrier_parameter().get_k(-1), invXl.diag());
 
@@ -128,8 +128,8 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 		if (Vl_iq.updated_k(-1))
 			{ Vl_iq.set_k(0,-1); }
 			
-		VectorWithOpMutable& vu = Vu_iq.set_k(0).diag();
-		VectorWithOpMutable& vl = Vl_iq.set_k(0).diag();
+		VectorMutable& vu = Vu_iq.set_k(0).diag();
+		VectorMutable& vl = Vl_iq.set_k(0).diag();
 
 		s.P_var_last().permute( BLAS_Cpp::trans, &vu ); // Permute back to original order
 		s.P_var_last().permute( BLAS_Cpp::trans, &vl ); // Permute back to original order
@@ -161,7 +161,7 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 		}
 
 	// Update general algorithm bound multipliers
-	VectorWithOpMutable& v = s.nu().set_k(0);
+	VectorMutable& v = s.nu().set_k(0);
 	v = Vu_iq.get_k(0).diag();
 	Vp_StV(&v,-1.0,Vl_iq.get_k(0).diag());
 

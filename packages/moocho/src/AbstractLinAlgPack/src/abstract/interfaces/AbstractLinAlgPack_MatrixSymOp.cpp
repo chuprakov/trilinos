@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymWithOp.cpp
+// MatrixSymOp.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,25 +15,25 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
 
 namespace AbstractLinAlgPack {
 
-MatrixSymWithOp::mat_mswo_mut_ptr_t
-MatrixSymWithOp::clone_mswo()
+MatrixSymOp::mat_mswo_mut_ptr_t
+MatrixSymOp::clone_mswo()
 {
 	return MemMngPack::null;
 }
 
-MatrixSymWithOp::mat_mswo_ptr_t
-MatrixSymWithOp::clone_mswo() const
+MatrixSymOp::mat_mswo_ptr_t
+MatrixSymOp::clone_mswo() const
 {
 	return MemMngPack::null;
 }
 
-void MatrixSymWithOp::Mp_StPtMtP(
-	MatrixSymWithOp* sym_lhs, value_type alpha
+void MatrixSymOp::Mp_StPtMtP(
+	MatrixSymOp* sym_lhs, value_type alpha
 	, EMatRhsPlaceHolder dummy_place_holder
 	, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	, value_type beta ) const
@@ -41,36 +41,36 @@ void MatrixSymWithOp::Mp_StPtMtP(
 	assert(0); // ToDo: Implement!
 }
 
-void MatrixSymWithOp::Mp_StMtMtM(
-	MatrixSymWithOp* sym_lhs, value_type alpha
+void MatrixSymOp::Mp_StMtMtM(
+	MatrixSymOp* sym_lhs, value_type alpha
 	, EMatRhsPlaceHolder dummy_place_holder
-	, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	, const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	, value_type beta ) const
 {
 	assert(0); // ToDo: Implement!
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 
-size_type MatrixSymWithOp::cols() const
+size_type MatrixSymOp::cols() const
 {
 	return this->rows();
 }
 
-const VectorSpace& MatrixSymWithOp::space_rows() const
+const VectorSpace& MatrixSymOp::space_rows() const
 {
 	return this->space_cols();
 }
 
-MatrixSymWithOp::mat_mut_ptr_t
-MatrixSymWithOp::clone()
+MatrixSymOp::mat_mut_ptr_t
+MatrixSymOp::clone()
 {
 	return clone_mswo();
 }
 
-MatrixSymWithOp::mat_ptr_t
-MatrixSymWithOp::clone() const
+MatrixSymOp::mat_ptr_t
+MatrixSymOp::clone() const
 {
 	return clone_mswo();
 }

@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/BasisSystem.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 
 bool NLPInterfacePack::test_basis_system(
  	NLPFirstOrderInfo*                             nlp
@@ -40,7 +40,7 @@ bool NLPInterfacePack::test_basis_system(
 		Gh = ( mI ? nlp->factory_Gh()->create() : rcp::null );
 	
 	// Compute the matrices at xinit
-	const VectorWithOp
+	const Vector
 		&xo = nlp->xinit();
 	if(m)
 		nlp->set_Gc(Gc.get());

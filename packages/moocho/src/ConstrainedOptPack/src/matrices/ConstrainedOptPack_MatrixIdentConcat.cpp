@@ -15,9 +15,9 @@
 
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
@@ -28,9 +28,9 @@ namespace {
 // Get a view of a vector (two versions)
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::Vector>
 get_view(
-	const AbstractLinAlgPack::VectorWithOp  &v
+	const AbstractLinAlgPack::Vector  &v
 	,const RangePack::Range1D               &rng
 	)
 {
@@ -52,10 +52,10 @@ get_view(
 
 template<class V>
 void mat_vec(
-	AbstractLinAlgPack::VectorWithOpMutable        *y
+	AbstractLinAlgPack::VectorMutable        *y
 	,AbstractLinAlgPack::value_type                a
 	,AbstractLinAlgPack::value_type                alpha
-	,const AbstractLinAlgPack::MatrixWithOp        &D
+	,const AbstractLinAlgPack::MatrixOp        &D
 	,BLAS_Cpp::Transp                              D_trans
 	,const DenseLinAlgPack::Range1D                     &D_rng
 	,const DenseLinAlgPack::Range1D                     &I_rng
@@ -117,18 +117,18 @@ size_type MatrixIdentConcat::cols() const
 
 size_type MatrixIdentConcat::nz() const
 {
-	const MatrixWithOp& D = this->D();
+	const MatrixOp& D = this->D();
 	return D.nz() + BLAS_Cpp::cols(D.rows(),D.cols(),D_trans()); // D and I
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 {
 	const Range1D           D_rng   = this->D_rng();
 	const BLAS_Cpp::Transp  D_trans = this->D_trans();
 	out << "Converted to dense =\n";
-	MatrixWithOp::output(out);
+	MatrixOp::output(out);
 	out << "This is a " << this->rows() << " x " << this->cols()
 		<< " general matrix / identity matrix concatenated matrix object ";
 	if( D_rng.lbound() == 1 ) {
@@ -150,8 +150,8 @@ std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 }
 
 void MatrixIdentConcat::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorWithOp& x, value_type b
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const Vector& x, value_type b
 	) const
 {
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,M_trans,x);
@@ -159,7 +159,7 @@ void MatrixIdentConcat::Vp_StMtV(
 }
 
 void MatrixIdentConcat::Vp_StMtV(
-	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b
 	) const
 {

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MatrixWithOpNonsingularTester.cpp
+// MatrixOpNonsingTester.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,21 +17,21 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularTester.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsingTester.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace AbstractLinAlgPack {
 
-MatrixWithOpNonsingularTester::MatrixWithOpNonsingularTester(
+MatrixOpNonsingTester::MatrixOpNonsingTester(
 	ETestLevel       test_level
 	,EPrintTestLevel print_tests
 	,bool            dump_all
@@ -49,8 +49,8 @@ MatrixWithOpNonsingularTester::MatrixWithOpNonsingularTester(
 	,error_tol_(error_tol)
 {}
 
-bool MatrixWithOpNonsingularTester::test_matrix(
-	const MatrixWithOpNonsingular   &M
+bool MatrixOpNonsingTester::test_matrix(
+	const MatrixOpNonsing   &M
 	,const char                     M_name[]
 	,std::ostream                   *out
 	)
@@ -114,7 +114,7 @@ bool MatrixWithOpNonsingularTester::test_matrix(
 			if(out && print_tests() > PRINT_MORE)
 				*out << std::endl;
 			result = true;
-			VectorWithOpMutable
+			VectorMutable
 				*v  = NULL,
 				*t1 = NULL,
 				*t2 = NULL;

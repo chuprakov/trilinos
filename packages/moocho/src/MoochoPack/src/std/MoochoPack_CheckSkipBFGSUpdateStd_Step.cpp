@@ -20,8 +20,8 @@
 #include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -48,7 +48,7 @@ bool CheckSkipBFGSUpdateStd_Step::do_step(
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	IterQuantityAccess<MatrixSymWithOp>
+	IterQuantityAccess<MatrixSymOp>
 		&rHL = s.rHL();
 	if( rHL.updated_k(-1) )	{
 		bool skip_update = true;
@@ -99,7 +99,7 @@ bool CheckSkipBFGSUpdateStd_Step::do_step(
 				out
 					<< "\nrHL_k = rHL_km1\n";
 			}
-			const MatrixSymWithOp &rHL_km1 = rHL.get_k(-1);
+			const MatrixSymOp &rHL_km1 = rHL.get_k(-1);
 			rHL.set_k(0) = rHL_km1;
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::SKIPED );

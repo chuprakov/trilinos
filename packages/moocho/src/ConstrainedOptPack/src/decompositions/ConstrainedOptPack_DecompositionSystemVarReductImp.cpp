@@ -18,8 +18,8 @@
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpSubView.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
@@ -107,15 +107,15 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	std::ostream                                          *out
 	,EOutputLevel                                         olevel
 	,ERunTests                                            test_what
-	,MatrixWithOp                                         *Z
-	,MatrixWithOp                                         *Y
-	,MatrixWithOpNonsingular                              *R
-	,MatrixWithOp                                         *Uz
-	,MatrixWithOp                                         *Uy
-	,MatrixWithOp                                         *Vz
-	,MatrixWithOp                                         *Vy
-	,MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>   *C_ptr
-	,MemMngPack::ref_count_ptr<MatrixWithOp>              *D_ptr
+	,MatrixOp                                         *Z
+	,MatrixOp                                         *Y
+	,MatrixOpNonsing                              *R
+	,MatrixOp                                         *Uz
+	,MatrixOp                                         *Uy
+	,MatrixOp                                         *Vz
+	,MatrixOp                                         *Vy
+	,MemMngPack::ref_count_ptr<MatrixOpNonsing>   *C_ptr
+	,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
 	)
 {
 
@@ -170,7 +170,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 		else {
 			MatrixVarReductImplicit
 				*D_vr = dynamic_cast<MatrixVarReductImplicit*>(
-					const_cast<MatrixWithOp*>(Z_vr->D_ptr().get()) );
+					const_cast<MatrixOp*>(Z_vr->D_ptr().get()) );
 			// We may have to reallocate a new object if someone is sharing it or
 			// if we are switching from implicit to explicit or visa-versa.
 			if( Z_vr->D_ptr().count() > 1 ) {
@@ -209,14 +209,14 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// Get the matrix object of D and allocate a new matrix object if needed.
 	//
 
-	rcp::ref_count_ptr<MatrixWithOp> _D_ptr;
+	rcp::ref_count_ptr<MatrixOp> _D_ptr;
 	if( new_D_mat_object) {
 		// Create a new matrix object!
 		alloc_new_D_matrix( out, olevel, &_D_ptr );
 	}
 	else {
 		// Use current matrix object!
-		_D_ptr = rcp::rcp_const_cast<MatrixWithOp>(Z_vr->D_ptr());
+		_D_ptr = rcp::rcp_const_cast<MatrixOp>(Z_vr->D_ptr());
 	}
 
 	// Set cached implicit D matrix or external explicit D matrix
@@ -279,10 +279,10 @@ void DecompositionSystemVarReductImp::set_basis_matrices(
 	std::ostream                                               *out
 	,EOutputLevel                                              olevel
 	,ERunTests                                                 test_what
-	,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
-	,const MemMngPack::ref_count_ptr<MatrixWithOp>             &D_ptr
-	,MatrixWithOp                                              *Uz
-	,MatrixWithOp                                              *Vz
+	,const MemMngPack::ref_count_ptr<MatrixOpNonsing>  &C_ptr
+	,const MemMngPack::ref_count_ptr<MatrixOp>             &D_ptr
+	,MatrixOp                                              *Uz
+	,MatrixOp                                              *Vz
 	,const basis_sys_ptr_t                                     &basis_sys
 	)
 {
@@ -343,35 +343,35 @@ DecompositionSystemVarReductImp::factory_Z() const
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Uz() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Vz() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 void DecompositionSystemVarReductImp::update_decomp(
 	std::ostream              *out
 	,EOutputLevel             olevel
 	,ERunTests                test_what
-	,const MatrixWithOp       &Gc
-	,const MatrixWithOp       *Gh
-	,MatrixWithOp             *Z
-	,MatrixWithOp             *Y
-	,MatrixWithOpNonsingular  *R
-	,MatrixWithOp             *Uz
-	,MatrixWithOp             *Uy
-	,MatrixWithOp             *Vz
-	,MatrixWithOp             *Vy
+	,const MatrixOp       &Gc
+	,const MatrixOp       *Gh
+	,MatrixOp             *Z
+	,MatrixOp             *Y
+	,MatrixOpNonsing  *R
+	,MatrixOp             *Uz
+	,MatrixOp             *Uy
+	,MatrixOp             *Vz
+	,MatrixOp             *Vy
 	,EMatRelations            mat_rel
 	) const
 {
@@ -444,8 +444,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 	// Get smart pointers to unreferenced C and D matrix objects.
 	//
 
-	rcp::ref_count_ptr<MatrixWithOpNonsingular>    C_ptr;
-	rcp::ref_count_ptr<MatrixWithOp>               D_ptr;
+	rcp::ref_count_ptr<MatrixOpNonsing>    C_ptr;
+	rcp::ref_count_ptr<MatrixOp>               D_ptr;
 
 	if( C_ptr_.get() ) {
 		//
@@ -506,10 +506,10 @@ void DecompositionSystemVarReductImp::update_decomp(
 	//
 	// Create the matrix object: N = Gc(var_indep,cond_decomp)' 
 	//
-	rcp::ref_count_ptr<const MatrixWithOp>
+	rcp::ref_count_ptr<const MatrixOp>
 		N_ptr = rcp::null;
 	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
-		rcp::ref_count_ptr<const MatrixWithOp>
+		rcp::ref_count_ptr<const MatrixOp>
 			GcDd_ptr = Gc.sub_view(var_indep,equ_decomp);
 		THROW_EXCEPTION(
 			GcDd_ptr.get() == NULL, std::logic_error
@@ -527,8 +527,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 				"Gc.sub_view(var_indep,equ_decomp)->clone() since mat_rel == MATRICES_INDEP_IMPS!" );
 		}
 		N_ptr = rcp::rcp(
-			new MatrixWithOpSubView(
-				rcp::rcp_const_cast<MatrixWithOp>(GcDd_ptr)  // M_full
+			new MatrixOpSubView(
+				rcp::rcp_const_cast<MatrixOp>(GcDd_ptr)  // M_full
 				,Range1D()                                   // rng_rows
 				,Range1D()                                   // rng_cols
 				,BLAS_Cpp::trans                             // M_trans
@@ -694,7 +694,7 @@ void DecompositionSystemVarReductImp::update_D_imp_used(EExplicitImplicit *D_imp
 void DecompositionSystemVarReductImp::alloc_new_D_matrix( 
 	std::ostream                             *out
 	,EOutputLevel                            olevel
-	,MemMngPack::ref_count_ptr<MatrixWithOp> *D_ptr
+	,MemMngPack::ref_count_ptr<MatrixOp> *D_ptr
 	) const
 {
 	if(D_imp_used_ == MAT_IMP_IMPLICIT) {

@@ -35,14 +35,14 @@ QPInitFixedFreeStd::QPInitFixedFreeStd()
 
 void QPInitFixedFreeStd::initialize(
 	const DVectorSlice                   &g
-	,const MatrixSymWithOp              &G
-	,const MatrixWithOp                 *A
+	,const MatrixSymOp              &G
+	,const MatrixOp                 *A
 	,size_type                          n_R
 	,const size_type                    i_x_free[]
 	,const size_type                    i_x_fixed[]
 	,const EBounds                      bnd_fixed[]
 	,const DVectorSlice                  &b_X
-	,const MatrixSymWithOpNonsingular    &Ko
+	,const MatrixSymOpNonsing    &Ko
 	,const DVectorSlice                  &fo
 	,Constraints                        *constraints
 	,std::ostream                       *out
@@ -239,13 +239,13 @@ const DVectorSlice QPInitFixedFreeStd::g() const
 	return g_;
 }
 
-const MatrixSymWithOp& QPInitFixedFreeStd::G() const
+const MatrixSymOp& QPInitFixedFreeStd::G() const
 {
 	assert_initialized();
 	return *G_;
 }
 
-const MatrixWithOp& QPInitFixedFreeStd::A() const
+const MatrixOp& QPInitFixedFreeStd::A() const
 {
 	assert(A_);	// ToDo: make this throw an exception
 	return *A_;
@@ -293,7 +293,7 @@ const GenPermMatrixSlice& QPInitFixedFreeStd::Q_X() const
 	return Q_X_;
 }
 
-const MatrixSymWithOpNonsingular& QPInitFixedFreeStd::Ko() const
+const MatrixSymOpNonsing& QPInitFixedFreeStd::Ko() const
 {
 	assert_initialized();
 	return *Ko_;

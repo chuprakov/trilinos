@@ -118,8 +118,8 @@ protected:
 		MemMngPack::ref_count_ptr<BasisMatrixImp> create_matrix() const;
 		///
 		void V_InvMtV(
-			VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-			,const VectorWithOp& v_rhs2) const ;
+			VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+			,const Vector& v_rhs2) const ;
 		
 		//@}
 

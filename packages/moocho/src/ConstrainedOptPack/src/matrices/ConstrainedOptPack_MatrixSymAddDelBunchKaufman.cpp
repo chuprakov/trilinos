@@ -41,7 +41,7 @@ MatrixSymAddDelUpdateable::PivotTolerances MatrixSymAddDelBunchKaufman::pivot_to
 
 // Overridden from MatrixSymAddDelUpdateableWithOpNonsingular
 
-const MatrixSymWithOpNonsingular& MatrixSymAddDelBunchKaufman::op_interface() const
+const MatrixSymOpNonsing& MatrixSymAddDelBunchKaufman::op_interface() const
 {
 	return *this;
 }

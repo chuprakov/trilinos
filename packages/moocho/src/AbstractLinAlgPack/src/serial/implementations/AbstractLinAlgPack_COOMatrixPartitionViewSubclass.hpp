@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_PARTITION_VIEW_SUBCLASS_H
 #define COO_MATRIX_PARTITION_VIEW_SUBCLASS_H
 
-#include "MatrixWithOp.hpp"
+#include "MatrixOp.hpp"
 #include "COOMatrixWithPartitionedView.hpp"
 
 namespace SparseLinAlgPack {
@@ -25,10 +25,10 @@ namespace SparseLinAlgPack {
 // operator is not defined for the partition class.
 
 ///
-/** Implementation of MatrixWithOp abstract interface for
+/** Implementation of MatrixOp abstract interface for
   * COOMatrixWithPartitionedView::partition_type.
   */
-class COOMatrixPartitionViewSubclass : public MatrixWithOp
+class COOMatrixPartitionViewSubclass : public MatrixOp
 {
 public:
 
@@ -87,10 +87,10 @@ public:
 	size_type cols() const;
 
 	// /////////////////////////////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
+	MatrixOp& operator=(const MatrixOp& m);
 
 	// /////////////////////////////////////////////////////
 	/** @name Level-1 BLAS */

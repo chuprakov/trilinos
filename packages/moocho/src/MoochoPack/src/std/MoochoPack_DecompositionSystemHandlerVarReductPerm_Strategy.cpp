@@ -26,11 +26,11 @@
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 #include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
 #include "AbstractLinAlgPack/src/PermutationOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -93,10 +93,10 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>
 		&num_basis_iq = s.num_basis();
-	IterQuantityAccess<VectorWithOpMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		&nu_iq  = s.nu();
-	IterQuantityAccess<MatrixWithOp>
+	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0                                   ? &s.Gc() : NULL,
 		*Gh_iq  = mI > 0                                   ? &s.Gh() : NULL,
 		*Z_iq   = ( n > m && r > 0 )    || get_new_basis   ? &s.Z()  : NULL,
@@ -105,7 +105,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 		*Uy_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uy() : NULL,
 		*Vz_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vz() : NULL,
 		*Vy_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vy() : NULL;
-	IterQuantityAccess<MatrixWithOpNonsingular>
+	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = ( m > 0 )                                ? &s.R()  : NULL;
 	
 	//
@@ -327,7 +327,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 					
 		if( do_permute_x ) {
 			// Sort x according to this new basis.
-			VectorWithOpMutable &x = x_iq.get_k(0);
+			VectorMutable &x = x_iq.get_k(0);
 			s.P_var_last().permute( BLAS_Cpp::trans, &x ); // Permute back to original order
 			if( olevel >= PRINT_VECTORS ) {
 				out	<< "\nx resorted to the original order\n" << x;

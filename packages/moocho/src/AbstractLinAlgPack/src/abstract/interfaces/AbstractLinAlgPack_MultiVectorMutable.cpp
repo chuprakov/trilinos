@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorMutable.hpp"
 #include "WorkspacePack.hpp"
 
 namespace AbstractLinAlgPack {

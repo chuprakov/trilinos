@@ -17,8 +17,8 @@
 
 #include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/MatrixZero.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -49,7 +49,7 @@ DecompositionSystemCoordinate::factory_Y() const
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
 
@@ -64,13 +64,13 @@ DecompositionSystemCoordinate::factory_R() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Uy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Vy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -79,10 +79,10 @@ DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemCoordinate::uninitialize_matrices(
 	std::ostream                                           *out
 	,EOutputLevel                                          olevel
-	,MatrixWithOp                                          *Y
-	,MatrixWithOpNonsingular                               *R
-	,MatrixWithOp                                          *Uy
-	,MatrixWithOp                                          *Vy
+	,MatrixOp                                          *Y
+	,MatrixOpNonsing                               *R
+	,MatrixOp                                          *Uy
+	,MatrixOp                                          *Vy
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -94,10 +94,10 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	
 	MatrixIdentConcat
 		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
-	MatrixWithOpSubView
-		*Uy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
-	MatrixWithOpSubView
-		*Vy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
+	MatrixOpSubView
+		*Uy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
+	MatrixOpSubView
+		*Vy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
 
 	//
 	// Only uninitialize the sub_view matrices
@@ -125,10 +125,10 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	,EOutputLevel                                          olevel
 	,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 	,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-	,MatrixWithOp                                          *Y
-	,MatrixWithOpNonsingular                               *R
-	,MatrixWithOp                                          *Uy
-	,MatrixWithOp                                          *Vy
+	,MatrixOp                                          *Y
+	,MatrixOpNonsing                               *R
+	,MatrixOp                                          *Uy
+	,MatrixOp                                          *Vy
 	,EMatRelations                                         mat_rel
 	) const
 {
@@ -151,10 +151,10 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	
 	MatrixIdentConcatStd
 		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
-	MatrixWithOpSubView
-		*Uy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
-	MatrixWithOpSubView
-		*Vy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
+	MatrixOpSubView
+		*Uy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
+	MatrixOpSubView
+		*Vy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
 
 	//
 	// Initialize the matrices

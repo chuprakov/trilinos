@@ -61,7 +61,7 @@ void MatrixBasisNonbasisStd::initialize(
 	N_             = N;             // Same here
 } 
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
 size_type MatrixBasisNonbasisStd::rows() const
 {
@@ -75,7 +75,7 @@ size_type MatrixBasisNonbasisStd::cols() const
 	
 // Overridden from MatrixBasisNonbasis
 
-const MatrixWithOp& MatrixBasisNonbasisStd::C() const
+const MatrixOp& MatrixBasisNonbasisStd::C() const
 {
 	if(C_.get()==NULL)
 		throw std::logic_error(
@@ -93,7 +93,7 @@ const MatrixFactorized& MatrixBasisNonbasisStd::C_nonsingular() const
 	return *C_nonsingular_;
 }
 
-const MatrixWithOp& MatrixBasisNonbasisStd::N() const
+const MatrixOp& MatrixBasisNonbasisStd::N() const
 {
 	if(N_.get()==NULL)
 		throw std::logic_error(

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymDiagonalStd.hpp
+// MatrixSymDiagStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_SYM_DIAGONAL_STD_H
 #define MATRIX_SYM_DIAGONAL_STD_H
 
-#include "MatrixSymInitDiagonal.hpp"
-#include "MatrixSymDiagonal.hpp"
+#include "MatrixSymInitDiag.hpp"
+#include "MatrixSymDiag.hpp"
 #include "VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
@@ -29,9 +29,9 @@ namespace AbstractLinAlgPack {
  * by cloning vector if told to.  This allows lazy evaluation of the clone_mswons()
  * method.
  */
-class MatrixSymDiagonalStd
-	: public virtual MatrixSymInitDiagonal
-	, public virtual MatrixSymDiagonal
+class MatrixSymDiagStd
+	: public virtual MatrixSymInitDiag
+	, public virtual MatrixSymDiag
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 		PostMod(VectorSpace::space_ptr_t vectorSpace)
 			: vectorSpace_(vectorSpace) {}
 
-		void initialize(MatrixSymDiagonalStd* matrix) const
+		void initialize(MatrixSymDiagStd* matrix) const
 		    { matrix->initialize(vectorSpace_->create_member()); }
 				 
 	private:
@@ -56,7 +56,7 @@ public:
 	//@{
 
 	/// Calls <tt>this->initialize()</tt>.
-	MatrixSymDiagonalStd(
+	MatrixSymDiagStd(
 		const VectorSpace::vec_mut_ptr_t& diag   = MemMngPack::null
 		,bool                             unique = true
 		);
@@ -88,7 +88,7 @@ public:
 	 *
 	 * ToDo: Finish documentation!
 	 */
-	VectorWithOpMutable& diag();
+	VectorMutable& diag();
 	///
 	const VectorSpace::vec_mut_ptr_t& diag_ptr() const;
 	///
@@ -106,7 +106,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOp */
+	/** @name Overridden from MatrixOp */
 	//@{
 
 	///
@@ -114,7 +114,7 @@ public:
 	///
 	const VectorSpace& space_cols() const;
 	///
-	MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
+	MatrixOp& operator=(const MatrixOp& mwo_rhs);
 	///
 	/** Add to a mutable matrix lhs.
 	 *
@@ -122,55 +122,55 @@ public:
 	 * <li> #dynamic_cast<MultiVectorMutable*>(m_lhs) != NULL#.
 	 * </ul>
 	 */
-	bool Mp_StM(MatrixWithOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
+	bool Mp_StM(MatrixOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
 	///
-	void Vp_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2, value_type beta) const;
+	void Vp_StMtV(VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
 	/** Implements the symmetric rank-k update for all diagonal matrix lhs
 	 *
-	 * @return Returns <tt>true</tt> if <tt>dynamic_cast<MatrixSymDiagonalStd>(sym_lhs) != NULL</tt>.
+	 * @return Returns <tt>true</tt> if <tt>dynamic_cast<MatrixSymDiagStd>(sym_lhs) != NULL</tt>.
 	 * Otherwise, returns false.
 	 */
 	bool syrk(
 		BLAS_Cpp::Transp   M_trans
 		,value_type        alpha
 		,value_type        beta
-		,MatrixSymWithOp   *sym_lhs
+		,MatrixSymOp   *sym_lhs
 		) const;
 
 	//@}
 
-	/** Overridden from MatrixWithOpNonsingular */
+	/** Overridden from MatrixOpNonsing */
 	//@{
 
 	///
-	void V_InvMtV(VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorWithOp& v_rhs2) const;
+	void V_InvMtV(VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const Vector& v_rhs2) const;
 	///
-	void V_InvMtV(VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	void V_InvMtV(VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2) const;
 
 	//@}
 
-	/** @name Overridden from MatrixSymInitDiagonal */
+	/** @name Overridden from MatrixSymInitDiag */
 	//@{
 
 	///
 	void init_identity( const VectorSpace& space_diag, value_type alpha );
 	///
-	void init_diagonal( const VectorWithOp& diag );
+	void init_diagonal( const Vector& diag );
 
 	//@}
 
-	/** @name Overridden from MatrixSymDiagonal */
+	/** @name Overridden from MatrixSymDiag */
 	//@{
 
 	///
-	const VectorWithOp& diag() const;
+	const Vector& diag() const;
 
 	//@}
 
@@ -181,13 +181,13 @@ private:
 
 	void copy_unique();
 
-}; // end class MatrixSymDiagonalStd
+}; // end class MatrixSymDiagStd
 
 // ////////////////////////////////////////
 // Inline members
 
 inline
-bool MatrixSymDiagonalStd::unique() const
+bool MatrixSymDiagStd::unique() const
 {
 	return unique_;
 }

@@ -17,7 +17,7 @@
 #define MATRIX_GEN_BANDED_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
@@ -44,7 +44,7 @@ namespace ConstrainedOptimizationPack {
 
  \end{verbatim}
  */
-class MatrixGenBanded	: public MatrixWithOp
+class MatrixGenBanded	: public MatrixOp
 {
 public:
 	
@@ -112,7 +112,7 @@ public:
 	const DMatrixSlice& MB() const;
 
 	// /////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
 	size_type rows() const;

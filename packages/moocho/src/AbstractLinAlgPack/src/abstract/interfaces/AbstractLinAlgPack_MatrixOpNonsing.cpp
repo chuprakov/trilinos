@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatrixWithOpNonsingular.cpp
+// MatrixOpNonsing.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,27 +15,27 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
 
-MatrixWithOpNonsingular::mat_mwons_mut_ptr_t
-MatrixWithOpNonsingular::clone_mwons()
+MatrixOpNonsing::mat_mwons_mut_ptr_t
+MatrixOpNonsing::clone_mwons()
 {
 	return MemMngPack::null;
 }
 
-MatrixWithOpNonsingular::mat_mwons_ptr_t
-MatrixWithOpNonsingular::clone_mwons() const
+MatrixOpNonsing::mat_mwons_ptr_t
+MatrixOpNonsing::clone_mwons() const
 {
 	return MemMngPack::null;
 }
 
-const MatrixWithOpNonsingular::MatNorm
-MatrixWithOpNonsingular::calc_cond_num(
+const MatrixOpNonsing::MatNorm
+MatrixOpNonsing::calc_cond_num(
 	EMatNormType  requested_norm_type
 	,bool         allow_replacement
 	) const
@@ -50,14 +50,14 @@ MatrixWithOpNonsingular::calc_cond_num(
 		num_cols = space_rows.dim();
 	THROW_EXCEPTION(
 		!(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
-		,"MatrixWithOp::calc_norm(...): Error, This default implemenation can only "
+		,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
 		"compute the one norm or the infinity norm!"
 		);
 	//
 	// Here we implement Algorithm 2.5 in "Applied Numerical Linear Algebra", Demmel (1997)
 	// using the momenclature in the text.  This is applied to the inverse matrix.
 	//
-	const MatrixWithOpNonsingular
+	const MatrixOpNonsing
 		&B = *this;
 	bool
 		do_trans = requested_norm_type == MAT_NORM_INF;
@@ -89,30 +89,30 @@ MatrixWithOpNonsingular::calc_cond_num(
 	return MatNorm( w_nrm * M_nrm.value ,requested_norm_type );
 }
 
-// Overridden from MatrixWithOp
+// Overridden from MatrixOp
 
-MatrixWithOpNonsingular::mat_mut_ptr_t
-MatrixWithOpNonsingular::clone()
+MatrixOpNonsing::mat_mut_ptr_t
+MatrixOpNonsing::clone()
 {
 	return clone_mwons();
 }
 
-MatrixWithOpNonsingular::mat_ptr_t
-MatrixWithOpNonsingular::clone() const
+MatrixOpNonsing::mat_ptr_t
+MatrixOpNonsing::clone() const
 {
 	return clone_mwons();
 }
 
-// Overridden from MatrixNonsingular
+// Overridden from MatrixNonsing
 
-MatrixWithOpNonsingular::mat_mns_mut_ptr_t
-MatrixWithOpNonsingular::clone_mns()
+MatrixOpNonsing::mat_mns_mut_ptr_t
+MatrixOpNonsing::clone_mns()
 {
 	return clone_mwons();
 }
 
-MatrixWithOpNonsingular::mat_mns_ptr_t
-MatrixWithOpNonsingular::clone_mns() const
+MatrixOpNonsing::mat_mns_ptr_t
+MatrixOpNonsing::clone_mns() const
 {
 	return clone_mwons();
 }

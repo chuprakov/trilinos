@@ -25,7 +25,7 @@
 namespace SparseLinAlgPack {
 
 ///
-/** Implementation of MatrixWithOp abstract interface for COOMatrixWithPartitionedView.
+/** Implementation of MatrixOp abstract interface for COOMatrixWithPartitionedView.
   *
   * Warning:  The return values of rows() and cols() may change if when the partitioned
   * view is setup it does not include the entire sparse matrix but this is unlikely.
@@ -51,7 +51,7 @@ public:
 	size_type nz() const;
 
 	// /////////////////////////////////////////////////////
-	// Overridden from MatrixWithOp
+	// Overridden from MatrixOp
 
 	///
 	std::ostream& output(std::ostream& out) const;

@@ -69,10 +69,10 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	class SingularDecomposition : public std::logic_error
 	{public: SingularDecomposition(const std::string& what_arg) : std::logic_error(what_arg) {}};
@@ -370,15 +370,15 @@ public:
 		std::ostream              *out
 		,EOutputLevel             olevel
 		,ERunTests                test_what
-		,const MatrixWithOp       &Gc
-		,const MatrixWithOp       *Gh
-		,MatrixWithOp             *Z
-		,MatrixWithOp             *Y
-		,MatrixWithOpNonsingular  *R
-		,MatrixWithOp             *Uz
-		,MatrixWithOp             *Uy
-		,MatrixWithOp             *Vz
-		,MatrixWithOp             *Vy
+		,const MatrixOp       &Gc
+		,const MatrixOp       *Gh
+		,MatrixOp             *Z
+		,MatrixOp             *Y
+		,MatrixOpNonsing  *R
+		,MatrixOp             *Uz
+		,MatrixOp             *Uy
+		,MatrixOp             *Vz
+		,MatrixOp             *Vy
 		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
 		) const = 0;
 	

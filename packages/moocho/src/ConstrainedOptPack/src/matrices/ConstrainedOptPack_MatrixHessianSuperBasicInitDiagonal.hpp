@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -27,13 +27,13 @@ namespace ConstrainedOptimizationPack {
 /** Matrix class that adds the ability to initialize to a diagonal
  * to a MatrixHessainSuperBasic object.
  *
- * Essentially, the matrix #B_RR# must support the #MatrixSymInitDiagonal#
+ * Essentially, the matrix #B_RR# must support the #MatrixSymInitDiag#
  * interface.
  */
 
 class MatrixHessianSuperBasicInitDiagonal
 	: public virtual MatrixHessianSuperBasic
-	, public virtual MatrixSymInitDiagonal
+	, public virtual MatrixSymInitDiag
 	{
 public:
 
@@ -47,14 +47,14 @@ public:
 	//@{
 
 	///
-	/** Initialize the matrix and require B_RR to support #MatrixSymInitDiagonal#.
+	/** Initialize the matrix and require B_RR to support #MatrixSymInitDiag#.
 	 *
 	 * Preconditions:\begin{itemize}
-	 * \item #dynamic_cast<MatrixSymInitDiagonal*>(const_cast<MatrixSymWithOpFactorized*>(B_RR_ptr.get())) != NULL#
+	 * \item #dynamic_cast<MatrixSymInitDiag*>(const_cast<MatrixSymWithOpFactorized*>(B_RR_ptr.get())) != NULL#
 	 * \end{itemize}
 	 *
 	 * This overridden function is a little bit of a hack but it is better than the
-	 * alternatives that I could think of.  What is important is that the #MatrixSymInitDiagonal#
+	 * alternatives that I could think of.  What is important is that the #MatrixSymInitDiag#
 	 * interface for this class will be supported as long as this function executes
 	 * succesfully on initialization.  This is far better than waiting until later when
 	 * dynamic casting would be done and failed.  We need to catch any mistakes right away.
@@ -76,7 +76,7 @@ public:
 	
 	//@}
 
-	/** @name Overridden from MatrixSymInitDiagonal.
+	/** @name Overridden from MatrixSymInitDiag.
 	 *
 	 * These function call the corresponding functions on
 	 * #B_RR_ptr()# and then call the equivalent of:
@@ -104,7 +104,7 @@ private:
 	// ///////////////////////////////////
 	// Private data members
 
-	MatrixSymInitDiagonal   *B_RR_init_;  // will be non-null for any valid initalization
+	MatrixSymInitDiag   *B_RR_init_;  // will be non-null for any valid initalization
 
 	// //////////////////////////
 	// Private member functions

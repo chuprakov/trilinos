@@ -25,8 +25,8 @@ namespace SparseLinAlgPack {
 /** Subclass for permutations of serial vectors.
  *
  * This subclass is really not tied to any specific vector implementation and
- * instead uses the <tt>VectorWithOp::get_sub_vector()</tt> and 
- * <tt>VectorWithOpMutable::get_sub_vector()</tt> to get explicit views of the
+ * instead uses the <tt>Vector::get_sub_vector()</tt> and 
+ * <tt>VectorMutable::get_sub_vector()</tt> to get explicit views of the
  * elements that are permuted.
  *
  * ToDo: Finish documentation.
@@ -178,13 +178,13 @@ public:
 	///
 	void permute( 
 		BLAS_Cpp::Transp          P_trans
-		,const VectorWithOp       &x
-		,VectorWithOpMutable      *y
+		,const Vector       &x
+		,VectorMutable      *y
 		) const;
 	///
 	void permute( 
 		BLAS_Cpp::Transp          P_trans
-		,VectorWithOpMutable      *y
+		,VectorMutable      *y
 		) const;
 
 	//@}
