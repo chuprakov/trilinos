@@ -1,13 +1,16 @@
 #ifndef TSFEPETRAVECTORSPACE_HPP
 #define TSFEPETRAVECTORSPACE_HPP
 
+#include "Epetra_Map.h"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFDescribable.hpp"
 
+
 namespace TSFExtended
 {
   using namespace Teuchos;
+
   /**
    * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
    * This class derives
@@ -21,9 +24,10 @@ namespace TSFExtended
     public:
       /** */
       EpetraVectorSpace();
+
       /** */
       EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
-      
+
       /** virtual dtor */
       virtual ~EpetraVectorSpace() {;}
 

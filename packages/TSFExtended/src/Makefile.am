@@ -44,12 +44,10 @@
 #np# Make sure to list all source files in one of the following categories.
 
 VECTORS_H = \
-	$(srcdir)/Vectors/TSFVector.hpp\
-	$(srcdir)/Vectors/TSFVectorExtensions.hpp\
-	$(srcdir)/Vectors/TSFVectorSpace.hpp\
-	$(srcdir)/Vectors/TSFVectorSpaceExtensions.hpp\
-	$(srcdir)/Vectors/TSFVectorType.hpp\
-	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
+	$(srcdir)/Vectors/TSFLoadableVector.hpp\
+	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
+	$(srcdir)/Vectors/TSFVector.hpp
+	$(srcdir)/Vectors/TSFVectorSpace.hpp
 
 VECTORS = 
 
@@ -65,13 +63,38 @@ UTILS =
 
 CONCRETE_H = \
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp
 
 CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
+
+TSFEXTENDED_INCLUDES =  \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/src/Utils \
+-I$(top_srcdir)/src/Vectors \
+-I$(top_builddir)/src/Utils \
+-I$(top_builddir)/src/Vectors 
+
+TSFCORE_INCLUDES =  \
+-I$(top_builddir)/../TSFCore/src \
+-I$(top_builddir)/../TSFCore/src/interfaces/Core \
+-I$(top_builddir)/../TSFCore/src/utilities/Core \
+-I$(top_builddir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_builddir)/../TSFCore/src/adapters/epetra \
+-I$(top_builddir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCore/src \
+-I$(top_srcdir)/../TSFCore/src/interfaces/Core \
+-I$(top_srcdir)/../TSFCore/src/utilities/Core \
+-I$(top_srcdir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_srcdir)/../TSFCore/src/adapters/epetra \
+-I$(top_srcdir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCoreUtils/src \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
+-I$(top_builddir)/../TSFCoreUtils/src
+
 
 
 #np# List locations of include files within Trilinos but outside of this 
@@ -79,9 +102,9 @@ CONCRETE = \
 #np# - Add packages that this package is dependent on
 #np#   Remove epetra if this package does not need it
 #  
-AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src\
- -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src\
- -I$(top_srcdir)/../TSFCore/src -I$(top_builddir)/../TSFCore/src
+AM_CPPFLAGS = $(TSFEXTENDED_INCLUDES) $(TSFCORE_INCLUDES)\
+ -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src\
+ -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src
 
 #np# The following section can be duplicated for building multiple libraries -
 #np# make sure to list the correct categories with each library.

@@ -9,6 +9,8 @@
 
 namespace TSFExtended
 {
+  using TSFCore::Index;
+
   /**
    * TSFExtended::AccessibleVector defines an interface through which
    * elements for a vector can be accessed. Element loading is occasionally

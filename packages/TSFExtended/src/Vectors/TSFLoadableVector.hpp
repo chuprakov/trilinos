@@ -9,6 +9,7 @@
 
 namespace TSFExtended
 {
+  using TSFCore::Index;
   /**
    * LoadableVector defines an interface through which elements can 
    * be loaded into a vector. Element loading is used extensively
@@ -46,7 +47,7 @@ namespace TSFExtended
 
       /** add to the existing value of 
        * a single element at the given global index */
-      virtual void setElement(Index globalIndex, const Scalar& value) = 0 ;
+      virtual void addToElement(Index globalIndex, const Scalar& value) = 0 ;
 
       /** set a group of elements */
       virtual void setElements(size_t numElems, const Index* globalIndices, 
@@ -66,9 +67,9 @@ namespace TSFExtended
    * setElement(). If at all possible, this should be overridden
    * with a method specialized to the underlying type.  */
   template <class Scalar> 
-  inline void LoadableVector::setElements(size_t numElems, 
-                                          const Index* globalIndices, 
-                                          const Scalar* values)
+  inline void LoadableVector<Scalar>::setElements(size_t numElems, 
+                                                  const Index* globalIndices, 
+                                                  const Scalar* values)
   {
     for (int i=0; i<numElems; i++)
       {
@@ -80,9 +81,9 @@ namespace TSFExtended
    * addToElement(). If at all possible, this should be overridden
    * with a method specialized to the underlying type.  */
   template <class Scalar> 
-  inline void LoadableVector::addToElements(size_t numElems, 
-                                            const Index* globalIndices, 
-                                            const Scalar* values)
+  inline void LoadableVector<Scalar>::addToElements(size_t numElems, 
+                                                    const Index* globalIndices, 
+                                                    const Scalar* values)
   {
     for (int i=0; i<numElems; i++)
       {

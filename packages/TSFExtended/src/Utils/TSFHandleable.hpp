@@ -4,7 +4,7 @@
 #ifndef TSFHANDLEABLE_HPP
 #define TSFHANDLEABLE_HPP
 
-#include "TSFConfigDefs.h"
+#include "TSFConfigDefs.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace TSFExtended

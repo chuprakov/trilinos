@@ -5,6 +5,9 @@
 #define TSFHANDLE_HPP
 
 #include "TSFConfigDefs.hpp"
+#include "TSFPrintable.hpp"
+#include "TSFDescribable.hpp"
+#include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace TSFExtended
@@ -19,11 +22,11 @@ namespace TSFExtended
   class Handle
   {
   public:
-    /** */
+    /** Construct */
     Handle(const RefCountPtr<PointerType>& ptr) : ptr_(ptr) {;}
 
     /** */
-    Handle(Handleable<PointerType>* ptr) : ptr_(ptr.getRcp()) {;}
+    Handle(Handleable<PointerType>* rawPtr) : ptr_(rawPtr->getRcp()) {;}
 
     /** Read-only access to the underlying smart pointer. */
     const RefCountPtr<PointerType>& ptr() const {return ptr_;}
@@ -52,24 +55,24 @@ namespace TSFExtended
   };
 
   /* implementation of print() */
-  inline template <class PointerType> 
+  template <class PointerType> inline 
   void Handle<PointerType>::print(std::ostream& os) const 
   {
     const Printable* p = dynamic_cast<const Printable*>(ptr_.get());
       
-      TEST_FOR_EXCEPTION(p==0, ..., 
-                         "Attempted to cast non-printable "
-                         "pointer to a Printable");
+    TEST_FOR_EXCEPTION(p==0, std::runtime_error,
+                       "Attempted to cast non-printable "
+                       "pointer to a Printable");
       p->print(os);
   }
 
   /* implementation of describe() */
-  inline template <class PointerType> 
+  template <class PointerType> inline
   std::string Handle<PointerType>::describe() const 
   {
     const Describable* p = dynamic_cast<const Describable*>(ptr_.get());
     
-    TEST_FOR_EXCEPTION(p==0, ..., 
+    TEST_FOR_EXCEPTION(p==0, std::runtime_error,
                        "Attempted to cast non-describable "
                        "pointer to a Describable");
     return p->describe();
@@ -77,7 +80,7 @@ namespace TSFExtended
 }
 
 
-inline template <class PointerType>
+template <class PointerType> inline
 ostream& operator<<(ostream& os, const TSFExtended::Handle<PointerType>& h)
 {
   h.print(os);

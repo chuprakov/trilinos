@@ -1,13 +1,20 @@
 #ifndef TSFEPETRAVECTOR_HPP
 #define TSFEPETRAVECTOR_HPP
 
+#include "TSFConfigDefs.hpp"
 #include "TSFPrintable.hpp"
+#include "TSFDescribable.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFAccessibleVector.hpp"
+#include "TSFLoadableVector.hpp"
+#include "TSFVector.hpp"
+#include "Epetra_FEVector.h"
+#include "Epetra_Vector.h"
 
 
 namespace TSFExtended
 {
+  using TSFCore::Index;
   using namespace Teuchos;
   /**
    * TSF extension of TSFCore::EpetraVector, implementing the LoadableVector
@@ -16,11 +23,14 @@ namespace TSFExtended
    * TSFCore-based code.
    */
   class EpetraVector : public TSFCore::EpetraVector,
-                       public VectorExtensions
+                       public LoadableVector<double>,
+                       public AccessibleVector<double>,
+                       public Describable,
+                       public Printable
     {
     public:
       /** Construct with a smart pointer to an Epetra FE vector. */
-      EpetraVector(const RefCountPtr<Epetra_FEVector>& vec);
+      //EpetraVector(const Epetra_FEVector& vec);
 
       /** virtual dtor */
       virtual ~EpetraVector() {;}
@@ -28,22 +38,28 @@ namespace TSFExtended
       /** \name LoadableVector interface */
       //@{
       /** set a single element */
-      void setElement(int index, const double& value);
+      void setElement(Index globalIndex, const double& value);
 
-      /** get a single element */
-      double getElement(int index) const ;
+      /** add to a single element */
+      void addToElement(Index globalIndex, const double& value);
 
       /** set a group of elements */
-      void setElements(int numElems, const int* globalIndices, 
+      void setElements(size_t numElems, const Index* globalIndices, 
                        const double* values);
 
 
       /** add to a group of elements */
-      void addToElements(int numElems, const int* globalIndices, 
+      void addToElements(size_t numElems, const Index* globalIndices, 
                          const double* values);
 
       /** */
       void finalizeAssembly();
+      //@}
+
+      /** \name AccessibleVector interface */
+      //@{
+      /** */
+      const double& getElement(Index globalIndex) const ;
       //@}
       
 
@@ -55,6 +71,21 @@ namespace TSFExtended
         epetra_vec()->Print(os);
       }
       //@}
+
+      /** \name Describable interface */
+      //@{
+      /** Write a brief description */
+      string describe() const 
+      {
+        return "EpetraVector";
+      }
+      //@}
+
+
+      /** Get a read-only Epetra_Vector */
+      static const Epetra_Vector& getConcrete(const Vector<double>& tsfVec);
+      /** Get a read-write Epetra_Vector */
+      static Epetra_Vector& getConcrete(Vector<double>& tsfVec);
     };
   
 }

@@ -133,12 +133,9 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 VECTORS_H = \
-	$(srcdir)/Vectors/TSFVector.hpp\
-	$(srcdir)/Vectors/TSFVectorExtensions.hpp\
-	$(srcdir)/Vectors/TSFVectorSpace.hpp\
-	$(srcdir)/Vectors/TSFVectorSpaceExtensions.hpp\
-	$(srcdir)/Vectors/TSFVectorType.hpp\
-	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
+	$(srcdir)/Vectors/TSFLoadableVector.hpp\
+	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
+	$(srcdir)/Vectors/TSFVector.hpp
 
 
 VECTORS = 
@@ -156,14 +153,40 @@ UTILS =
 
 CONCRETE_H = \
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp
 
 
 CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
+
+
+TSFEXTENDED_INCLUDES = \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/src/Utils \
+-I$(top_srcdir)/src/Vectors \
+-I$(top_builddir)/src/Utils \
+-I$(top_builddir)/src/Vectors 
+
+
+TSFCORE_INCLUDES = \
+-I$(top_builddir)/../TSFCore/src \
+-I$(top_builddir)/../TSFCore/src/interfaces/Core \
+-I$(top_builddir)/../TSFCore/src/utilities/Core \
+-I$(top_builddir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_builddir)/../TSFCore/src/adapters/epetra \
+-I$(top_builddir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCore/src \
+-I$(top_srcdir)/../TSFCore/src/interfaces/Core \
+-I$(top_srcdir)/../TSFCore/src/utilities/Core \
+-I$(top_srcdir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_srcdir)/../TSFCore/src/adapters/epetra \
+-I$(top_srcdir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCoreUtils/src \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
+-I$(top_builddir)/../TSFCoreUtils/src
 
 
 #np# List locations of include files within Trilinos but outside of this 
@@ -171,9 +194,9 @@ CONCRETE = \
 #np# - Add packages that this package is dependent on
 #np#   Remove epetra if this package does not need it
 #  
-AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src\
- -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src\
- -I$(top_srcdir)/../TSFCore/src -I$(top_builddir)/../TSFCore/src
+AM_CPPFLAGS = $(TSFEXTENDED_INCLUDES) $(TSFCORE_INCLUDES)\
+ -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src\
+ -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src
 
 
 #np# The following section can be duplicated for building multiple libraries -
@@ -262,14 +285,13 @@ nodist_execinclude_HEADERS = TSFExtended_config.h
 MAINTAINERCLEANFILES = Makefile.in 
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = TSF_config.h
+CONFIG_HEADER = TSFExtended_config.h
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
 libTSFExtended_a_DEPENDENCIES =
 am__objects_1 =
-am__objects_2 = TSFEpetraVector.$(OBJEXT) TSFEpetraVectorSpace.$(OBJEXT) \
-	TSFEpetraVectorType.$(OBJEXT)
+am__objects_2 = TSFEpetraVector.$(OBJEXT) TSFEpetraVectorSpace.$(OBJEXT)
 am_libTSFExtended_a_OBJECTS = $(am__objects_1) $(am__objects_1) \
 	$(am__objects_2)
 libTSFExtended_a_OBJECTS = $(am_libTSFExtended_a_OBJECTS)
@@ -282,8 +304,7 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFEpetraVector.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVectorSpace.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVectorType.Po
+@AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVectorSpace.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -295,10 +316,10 @@ DIST_SOURCES = $(libTSFExtended_a_SOURCES) \
 HEADERS = $(include_HEADERS) $(nodist_execinclude_HEADERS)
 
 DIST_COMMON = $(include_HEADERS) Makefile.am Makefile.in \
-	TSF_config.h.in
+	TSFExtended_config.h.in
 SOURCES = $(libTSFExtended_a_SOURCES) $(EXTRA_libTSFExtended_a_SOURCES)
 
-all: TSF_config.h
+all: TSFExtended_config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -309,22 +330,22 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
-TSF_config.h: stamp-h1
+TSFExtended_config.h: stamp-h1
 	@if test ! -f $@; then \
 	  rm -f stamp-h1; \
 	  $(MAKE) stamp-h1; \
 	else :; fi
 
-stamp-h1: $(srcdir)/TSF_config.h.in $(top_builddir)/config.status
+stamp-h1: $(srcdir)/TSFExtended_config.h.in $(top_builddir)/config.status
 	@rm -f stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status src/TSF_config.h
+	cd $(top_builddir) && $(SHELL) ./config.status src/TSFExtended_config.h
 
-$(srcdir)/TSF_config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+$(srcdir)/TSFExtended_config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOHEADER)
-	touch $(srcdir)/TSF_config.h.in
+	touch $(srcdir)/TSFExtended_config.h.in
 
 distclean-hdr:
-	-rm -f TSF_config.h stamp-h1
+	-rm -f TSFExtended_config.h stamp-h1
 
 AR = ar
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
@@ -360,8 +381,6 @@ clean-libLIBRARIES:
 TSFEpetraVector.$(OBJEXT): $(srcdir)/Concrete/TSFEpetraVector.cpp
 TSFEpetraVectorSpace.$(OBJEXT): \
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
-TSFEpetraVectorType.$(OBJEXT): \
-	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
 libTSFExtended.a: $(libTSFExtended_a_OBJECTS) $(libTSFExtended_a_DEPENDENCIES) 
 	-rm -f libTSFExtended.a
 	$(libTSFExtended_a_AR) libTSFExtended.a $(libTSFExtended_a_OBJECTS) $(libTSFExtended_a_LIBADD)
@@ -375,7 +394,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVectorSpace.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVectorType.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -415,18 +433,6 @@ TSFEpetraVectorSpace.obj: $(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/TSFEpetraVectorSpace.Po' tmpdepfile='$(DEPDIR)/TSFEpetraVectorSpace.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFEpetraVectorSpace.obj `cygpath -w $(srcdir)/Concrete/TSFEpetraVectorSpace.cpp`
-
-TSFEpetraVectorType.o: $(srcdir)/Concrete/TSFEpetraVectorType.cpp
-@AMDEP_TRUE@	source='$(srcdir)/Concrete/TSFEpetraVectorType.cpp' object='TSFEpetraVectorType.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFEpetraVectorType.Po' tmpdepfile='$(DEPDIR)/TSFEpetraVectorType.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFEpetraVectorType.o `test -f '$(srcdir)/Concrete/TSFEpetraVectorType.cpp' || echo '$(srcdir)/'`$(srcdir)/Concrete/TSFEpetraVectorType.cpp
-
-TSFEpetraVectorType.obj: $(srcdir)/Concrete/TSFEpetraVectorType.cpp
-@AMDEP_TRUE@	source='$(srcdir)/Concrete/TSFEpetraVectorType.cpp' object='TSFEpetraVectorType.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFEpetraVectorType.Po' tmpdepfile='$(DEPDIR)/TSFEpetraVectorType.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFEpetraVectorType.obj `cygpath -w $(srcdir)/Concrete/TSFEpetraVectorType.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
@@ -480,11 +486,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES) TSF_config.h.in $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) TSFExtended_config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) TSF_config.h.in $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) TSFExtended_config.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -530,7 +536,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(HEADERS) TSF_config.h
+all-am: Makefile $(LIBRARIES) $(HEADERS) TSFExtended_config.h
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)$(execincludedir)
@@ -612,6 +618,7 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLIBRARIES uninstall-nodist_execincludeHEADERS
 
+	$(srcdir)/Vectors/TSFVectorSpace.hpp
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

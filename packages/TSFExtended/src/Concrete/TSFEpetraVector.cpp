@@ -1,32 +1,33 @@
 #include "TSFEpetraVector.hpp"
+#include "TSFVector.hpp"
 
 using namespace Teuchos;
-using namespace TSF;
-using namespace TSF::Internal;
+using namespace TSFExtended;
+using TSFCore::Index;
 
-EpetraVector::EpetraVector(const RefCountPtr<Epetra_FEVector>& vec)
-  : TSFCore::EpetraVector(vec), 
-    PrintableVector()
-{;}
 
-void EpetraVector::setElement(int index, const double& value)
+// EpetraVector::EpetraVector(const Epetra_FEVector& vec)
+//   : TSFCore::EpetraVector(vec) 
+// {;}
+
+void EpetraVector::setElement(Index index, const double& value)
 {
   (*epetra_vec())[index] = value;
 }
 
-double EpetraVector::getElement(int index) const 
+const double& EpetraVector::getElement(Index index) const 
 {
   return (*epetra_vec())[index];
 }
 
-void EpetraVector::setElements(int numElems, const int* globalIndices,
+void EpetraVector::setElements(size_t numElems, const Index* globalIndices,
                                const double* values)
 {
   Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
   int ierr = vec->ReplaceGlobalValues(numElems, globalIndices, values);
 }
 
-void EpetraVector::addToElements(int numElems, const int* globalIndices,
+void EpetraVector::addToElements(size_t numElems, const Index* globalIndices,
                                  const double* values)
 {
   Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
@@ -38,3 +39,24 @@ void EpetraVector::finalizeAssembly()
   Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
   vec->GlobalAssemble();
 }
+
+const Epetra_Vector& EpetraVector::getConcrete(const Vector<double>& tsfVec)
+{
+  const EpetraVector* epv 
+    = dynamic_cast<const EpetraVector*>(tsfVec.ptr().get());
+  TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
+                     "EpetraVector::getConcrete called on a vector that "
+                     "could not be cast to an EpetraVector");
+  return *(epv->epetra_vec());
+}
+
+Epetra_Vector& EpetraVector::getConcrete(Vector<double>& tsfVec)
+{
+  EpetraVector* epv 
+    = dynamic_cast<EpetraVector*>(tsfVec.ptr().get());
+  TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
+                     "EpetraVector::getConcrete called on a vector that "
+                     "could not be cast to an EpetraVector");
+  return *(epv->epetra_vec());
+}
+
