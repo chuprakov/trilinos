@@ -20,6 +20,8 @@
 
 namespace SparseSolverPack {
 
+class DirectSparseSolverImp;
+
 ///
 /** Implementation node class for \c DirectSparseSolver that takes
  * care of the memory management details.
@@ -27,7 +29,7 @@ namespace SparseSolverPack {
  * ToDo: Finish documentation!
  *
  * Subclasses must override the following methods which are pure
- * virtual and are not implemented here: \c basis_matrix_factor(),
+ * virtual and are not implemented here: \c basis_matrix_factory(),
  * \c estimated_fillin_ratio(), \c create_fact_struc(),
  * \c create_fact_nonzeros(), \c imp_analyze_and_factor() and
  * \c imp_factor().
@@ -43,7 +45,7 @@ public:
 	  * nonzeros of a particular matrix.
 	  *
 	  * This storage for the nonzeros can be reused over and over again
-	  * for factorizing matrices with the same structure.
+	  * for factored matrices with the same structure.
 	  */
 	class FactorizationNonzeros {
 	public:
@@ -53,18 +55,79 @@ public:
 
 	///
 	/** Implementation node subclass that combines factorization structure and
-	 * nonzeros into a single basis matrix object.
+	 * factorization nonzeros into a single basis matrix object.
 	 *
-	 * The only method that subclasses must override for a complete
-	 * basis matrix object is:
+	 * The only methods that subclasses must override for a complete
+	 * basis matrix object are:
 	 * 
-	 * <tt>AbstractLinAlgPack::MatrixNonsingular::V_InvMtV()</tt>
+	 * <tt>AbstractLinAlgPack::MatrixNonsingular::V_InvMtV()</tt>,
+	 * and  <tt>create_matrix()</tt>.
+	 *
+	 * Note that is if very important that subclasses do not maintain their
+	 * own copies of smart reference counting pointer objects to the
+	 * factorization structure or factorization nonzeros.  Instead, the 
+	 * methods \c get_fact_struc() and \c get_fact_nonzeros() should
+	 * be called inside of the implementation of the the \c V_InvMtV()
+	 * method and then \c dynamic_cast<> used to get at the concreate
+	 * objects.
 	 */
 	class BasisMatrixImp : public BasisMatrix {
 	public:
 
+		/** @name Public types */
+		//@{
+
 		///
 		typedef MemMngPack::ref_count_ptr<FactorizationNonzeros> fact_nonzeros_ptr_t;
+
+		//@}
+
+		/** @name Access */
+		//@{
+
+		///
+		/** Return a reference to a smart pointer to the object that represents
+		 * the factorization nonzeros.
+		 *
+		 * Returning a reference to a \c ref_count_ptr<> object verses returning
+		 * a \c ref_count_ptr<> object itself is critical so that we can rely on
+		 * \c ref_count_ptr<>::count() to tell us how many clients have a reference
+		 * to this object.
+		 */
+		virtual const fact_nonzeros_ptr_t&  get_fact_nonzeros() const;
+
+		//@}
+
+		/** @name Overridden from MatrixBase */
+		//@{
+
+		///
+		size_type rows() const;
+		///
+		size_type cols() const;
+
+		//@}
+
+		/** @name Overridden from MatrixNonsinguar */
+		//@{
+
+		///
+		mat_mns_mut_ptr_t clone_mns();
+
+		//@}
+
+		/** @name Overridden from BasisMatrix */
+		//@{
+
+		///
+		virtual const fact_struc_ptr_t&  get_fact_struc() const;
+
+		//@}
+
+	protected:
+
+		/** @name Constructors/initailizers */
+		//@{
 
 		///
 		/** Default initializers to uninitialized.
@@ -93,33 +156,29 @@ public:
 		/** Make uninitialized.
 		 *
 		 * Postconditions:<ul>
-		 * <li> ToDo: Fill-in
+		 * <li> <tt>this->dim() == 0</tt>
+		 * <li> <tt>this->get_fact_struc().get() == NULL</tt>
+		 * <li> <tt>this->get_fact_nonzeros().get() == NULL</tt>
 		 * </ul>
 		 */
 		void set_uninitialized();
 
-		/// Return a smart pointer to the object that represents the factorization structure.
-		virtual const fact_nonzeros_ptr_t&  get_fact_nonzeros() const;
-
-		/** @name Overridden from MatrixBase */
-		//@{
-
-		///
-		size_type rows() const;
-		///
-		size_type cols() const;
-
 		//@}
 
-		/** @name Overridden from BasisMatrix */
+		/** @name Factory methods to be overridden by subclasses */
 		//@{
 
-		///
-		virtual const fact_struc_ptr_t&  get_fact_struc() const;
+		/// Called by \c this->clone-mns(). 
+		virtual MemMngPack::ref_count_ptr<BasisMatrixImp> create_matrix() const = 0;
 
 		//@}
 
 	private:
+
+		/// Allow only DirectSparseSolverImp to initialize objects of this type
+		friend class DirectSparseSolverImp;
+		// Even though DirectSparseSolverImp has access to these private members it
+		// is strictly not to access them directly.
 
 #ifdef DOXYGEN_COMPILE
 		FactorizationStructure    *fact_struc;
@@ -188,7 +247,6 @@ protected:
 		,LinAlgPack::IVector                            *row_perm
 		,LinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
-		,BasisMatrixImp                                 *basis_matrix
 		,std::ostream                                   *out            = NULL
 		) = 0;
 
@@ -202,7 +260,6 @@ protected:
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
 		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
 		,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
-		,BasisMatrixImp                                 *basis_matrix
 		,std::ostream                                   *out            = NULL
 		) = 0;
 

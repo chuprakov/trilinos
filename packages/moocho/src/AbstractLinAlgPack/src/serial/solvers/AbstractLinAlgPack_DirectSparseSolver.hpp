@@ -85,7 +85,7 @@ namespace SparseSolverPack {
 	C_ptr_t  C1_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.analyze_and_factor( A1, &row_perm, &col_perm, &rank, C1_ptr.get() );
 	// After the above method finishes direct_solver.get_fact_struc().get() points
-	// to the same factorization structure as C1_ptr->get_fact_struc().
+	// to the same factorization structure as C1_ptr->get_fact_struc().get().
 
 	// Solve for x1 = inv(C1)*b1
 	VectorWithOpMutableDense x1(C1_ptr->cols());
@@ -113,7 +113,7 @@ namespace SparseSolverPack {
 	IVector row_perm2, col_perm2;
 	size_type rank2;
 
-	// Factorize A1
+	// Analyze and factor A1
 	typedef DirectSparseSolver::basis_matrix_ptr_t C_ptr_t;
 	C_ptr_t  C1_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.analize_and_factor( A1, &row_perm1, &col_perm1, &rank1, C1_ptr.get() );
@@ -122,7 +122,7 @@ namespace SparseSolverPack {
 	VectorWithOpMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
-	// Factor another matrix with a different structure.
+	// Factor another matrix A2 with a different structure from A1.
 	C_ptr_t  C2_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.analize_and_factor( A2, &row_perm2, &col_perm2, &rank2, C2_ptr.get() );
 	// In the above method, a new current factorization structure will be computed and
@@ -161,7 +161,7 @@ namespace SparseSolverPack {
 
 	typedef DirectSparseSolver::basis_matrix_ptr_t  C_ptr_t;
 
-	// Factorize A1
+	// Analyze and factor A1
 	C_ptr_t  C1_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.analize_and_factor( A1, &row_perm1, &col_perm1, &rank1, C1_ptr.get() );
 
@@ -169,7 +169,7 @@ namespace SparseSolverPack {
 	VectorWithOpMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
-	// Factor another matrix with a different structure.
+	// Factor another matrix A2 with a different structure from A1.
 	C_ptr_t  C2_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.analize_and_factor( A2, &row_perm2, &col_perm2, &rank2, C2_ptr.get() );
 
@@ -186,7 +186,7 @@ namespace SparseSolverPack {
 	VectorWithOpMutableDense x3(C1_ptr->cols());
 	V_InvMtV( &x3, *C3_ptr, BLAS_Cpp::no_trans, b3 );
 
-	// Factor another matrix A4 with the same structure of as A2 but preserve
+	// Factor another matrix A4 with the same structure as A2 but preserve
 	// its factorization in the basis matrix C2.
 	C_ptr_t  C4_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.factor( A4, C4_ptr.get(), C2_ptr->get_fact_struc() );
@@ -241,7 +241,15 @@ public:
 	public:
 		///
 		typedef MemMngPack::ref_count_ptr<FactorizationStructure>  fact_struc_ptr_t;
-		/// Return a smart pointer to the object that represents the factorization structure.
+		///
+		/** Return a reference to a smart pointer to the object that represents
+		 * the factorization structure.
+		 *
+		 * Returning a reference to a \c ref_count_ptr<> object verses returning
+		 * a \c ref_count_ptr<> object itself is critical so that we can rely on
+		 * \c ref_count_ptr<>::count() to tell us how many clients have a reference
+		 * to this object.
+		 */
 		virtual const fact_struc_ptr_t&  get_fact_struc() const = 0;
 	};
 
@@ -296,25 +304,25 @@ public:
 	/** Analyze and factor a matrix.
 	 *
 	 * @param  A         [in] Matrix who's elements are extracted in order
-	 *                   to form the factorization.  Here <tt>A.rows() <= A.cols=()</tt>
+	 *                   to form the factorization.  Here <tt>A.rows() <= A.cols()</tt>
 	 *                   must be \c true.
 	 * @param  row_perm  [out] On output holds an array (size \c A.rows()) of row
-	 *                   permutations (\c P) used to select the basis matrix \c C.
+	 *                   permutations \c P used to select the basis matrix \c C.
 	 *                   The ith row of \c P'*A*Q is row \c (*row_perm)(i) of \c A.
 	 * @param  col_perm  [out] On output holds an array (size \c A.cols()) of column
-	 *                   permutations (\c Q) used to select the basis matrix \c C.
-	 *                   The jth column of P'*A*Q is column \c (*col_perm)(j) of \c A.
+	 *                   permutations \c Q used to select the basis matrix \c C.
+	 *                   The jth column of \c P'*A*Q is column \c (*col_perm)(j) of \c A.
 	 *                   If the client is solving a symmetric system then
 	 *                   \c col_perm may be set to \c NULL on input which forces
 	 *                   the implementation to use symmetric permutations
 	 *                   (see above discussion).
-	 * @param  rank      [out] On output holds the rank (\c r) (<tt>r <= A.rows()</tt>)
+	 * @param  rank      [out] On output holds the rank \c r (<tt>r <= A.rows()</tt>)
 	 *                   of the basis matrix \c C.
 	 * @param  basis_matrix
 	 *                   [in/out] On input, this can be a previously initialized basis matrix
 	 *                   object in which case its storage for the structure of the factorization
 	 *                   and its nonzeros can be recycled if possible.
-	 * @param  out       [in/out] If <tt>out != NULL</tt>, then some information about the operations performed
+	 * @param  out       [in/out] If <tt>out!=NULL</tt>, then some information about the operations performed
 	 *                   internally may be printed to \c *out.  The amount of this output should be
 	 *                   very minimal and should not significantly increase with the size of the problem
 	 *                   being solved.
@@ -337,7 +345,7 @@ public:
 	 *
 	 * Given the <tt>m x n</tt> matrix \c A (<tt>m <= n</tt>), this method finds the
 	 * row and column permutations \c P and \c Q respectively and the rank \c r such that
-	 * the basis matrix <tt>C = <tt>(P'*A*Q)(1:r,1:r)</tt> is nonsingular.
+	 * the basis matrix <tt>C = (P'*A*Q)(1:r,1:r)</tt> is nonsingular.
 	 *
 	 * If a symmetric system is being solved and it is feared that \c A is not full rank
 	 * and the client wants to use symmetric pivoting (<tt>P = Q</tt>) to find the basis
@@ -345,7 +353,7 @@ public:
 	 * return a symmetric permutation.  Note that the row and column permutations of
 	 * \c row_perm(k) and \c col_perm(k) for <tt>k = 1...r</tt> does not neccesarly indicate
 	 * the exact permutations used within the sparse solver.  Instead, what is significant is
-	 * partitioning of rows and columns between <tt>k = 1..r</tt> and <tt>k = r+1..m</tt>
+	 * the partitioning of rows and columns between <tt>k = 1..r</tt> and <tt>k = r+1..m</tt>
 	 * for row permutations and <tt>k = r+1..n</tt> for column permutations.  Therefore,
 	 * if <tt>col_perm==NULL</tt> on input and an unsymmetric solver is used and the matrix
 	 * is not full rank, then since in reality unsymmetric pivoting is being used internally,
@@ -362,7 +370,7 @@ public:
 	 * This method allows for the careful sharing and recycling of the factorization structure
 	 * and nonzeros of a factorized matrix while also maintaining a "current" factorization
 	 * structure.  To explain how this works let \c C1_ptr be set to the smart pointer to a basis
-	 * matrix object created by \c this->basis_matrix_factory().
+	 * matrix object created by \c this->basis_matrix_factory()->create().
 	 * 
 	 * If the client whats to recycle the factorization structure and nonzeros that are
 	 * contained in \c *C1_ptr to analyze and factor \c A3, then the client would perform:
@@ -388,7 +396,7 @@ public:
 	 *                this factorization structure so new storage for the factorization
 	 *                structure must be allocated.</ul>
 	 *           </ul>
-	 *      <li> New storage for factorization nonzeros will have to be allocated.
+	 *      <li> New storage for factorization <em>nonzeros</em> will have to be allocated.
 	 *      </ul>
 	 * <li> \c basis_matrix->get_fact_struc().get()!=NULL
 	 *      <ul>
@@ -396,7 +404,7 @@ public:
 	 *           <ul>
 	 *           <li> \c basis_matrix->get_fact_struc().count()==1
 	 *                <ul><li> No other basis matrix ojbect is using this factorization structure
-	 *                 so the storage in this object can be recycled and used here.</ul>
+	 *                 so the storage in \c *basis_matrix->get_fact_struc() can be recycled and used here.</ul>
 	 *           <li> \c basis_matrix->get_fact_struc().count()>1
 	 *                <ul><li> Some other basis matrix object or some other client is using
 	 *                this factorization structure so new storage for the factorization
@@ -404,18 +412,18 @@ public:
 	 *           </ul>
 	 *      <li> \c this->get_fact_struc().get()!=NULL
 	 *           <ul>
-	 *           <li> <tt>basis_matrix->get_fact_struc().get() == this->get_fact_struc().get()</tt>
+	 *           <li> <tt>basis_matrix->%get_fact_struc().get() == this->%get_fact_struc().get()</tt>
 	 *                <ul>
-	 *                <li> \c basis_matrix->get_fact_struc().count()==1
+	 *                <li> \c basis_matrix->get_fact_struc().count()==2
 	 *                     <ul><li> These are the same factorization structure objects and
-	 *                     no other basis matrix ojbect is using this factorization structure
+	 *                     no other basis matrix object is using this factorization structure
 	 *                     so the storage in this object can be recycled and used here.</ul>
-	 *                <li> \c basis_matrix->get_fact_struc().count()>1
+	 *                <li> \c basis_matrix->get_fact_struc().count()>2
 	 *                     <ul><li> Some other basis matrix object or some other client is using
 	 *                     this factorization structure so new storage for the factorization
 	 *                     structure must be allocated.</ul>
 	 *                </ul>
-	 *           <li> <tt>basis_matrix->get_fact_struc().get() != this->get_fact_struc().get()</tt>
+	 *           <li> <tt>basis_matrix->%get_fact_struc().get() != this->%get_fact_struc().get()</tt>
 	 *                <ul>
 	 *                <li> \c this->get_fact_struc().count()==1
 	 *                     <ul>
@@ -477,10 +485,29 @@ public:
 	 *                      with the size of the problem being solved.
 	 *
 	 * Preconditions:<ul>
-	 * <li> <tt>A</tt> has the same structure as used to form \c fact_struc or 
+	 * <li> <tt>A</tt> has the same structure as used to form \c fact_struc (or \c this->get_fact_struc()
+	 *      if \c fact_struc.get()==NULL )
 	 * <li> <tt>this->get_fact_struc().get() != NULL || fact_struc.get() != NULL</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
+	 *      (throw <tt>NoCurrentBasisException</tt>)
 	 * <li> <tt>basis_matrix != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>fact_struc.get() != NULL</tt>] <tt>basis_matrix->get_fact_struc().get() == fact_struc.get()</tt>
+	 *      and <tt>fact_struc.count()</tt> is incremented by one on output.
+	 * <li> [<tt>fact_struc.get() == NULL</tt>] <tt>basis_matrix->get_fact_struc().get() == this->get_fact_struc().get()</tt>
+	 *      and <tt>this->get_fact_struc().count()</tt> is incremented by one on output.
+	 * <li> <tt>*this->get_fact_struc()</tt> is unchanged in any way (however,
+	 *      <tt>this->get_fact_struc().cout()</tt> will be incremented by one
+	 *      if <tt>fact_struct.get() == NULL</tt>).
+	 * <li> If <tt>basis_matrix->get_fact_struct().get() != fact_struc.get()</tt>
+	 *      (or \c this->get_fact_struc().get() if \c fact_struc.get()==NULL) on
+	 *      input then if <tt>basis_matrix->get_fact_struct().count() == 1</tt>
+	 *      on input then this factorization structure will be discarded on output.
+	 * <li> If <tt>basis_matrix->get_fact_struc().get() == NULL</tt> on input, then
+	 *      new factorization <em>nonzeros</em> are allocated on output to hold the
+	 *      matrix factors.  If <tt>basis_matrix->get_fact_struc().get() != NULL</tt>
+	 *      on input, then the storage for nonzeros in \c *basis_matrix is recycled.
 	 * </ul>
 	 *
 	 * This method allows clients to factor a matrix given it predetermined
@@ -520,9 +547,6 @@ public:
 	 * this structure or the current interally stored structure given by
 	 * \c this->get_fact_struc() would be used instead.
 	 *
-	 * Scenarios / behavior:<ul>
-	 * <li> ToDo: Fill these in and discuss them!
-	 * </ul>
 	 */
 	virtual void factor(
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
@@ -535,7 +559,9 @@ public:
 	/** Get a smart pointer object to the current factorization structure.
 	 *
 	 * This returns a smart reference counted pointer to the factorization structure
-	 * computed from the last call to \c this->analize_and_factor().
+	 * computed from the last call to \c this->analyze_and_factor().  If no successful
+	 * call to \c this->analyze_and_factor() has been made yet then this function
+	 * will return <tt>return.get() == NULL</tt>.
 	 */
 	virtual const BasisMatrix::fact_struc_ptr_t& get_fact_struc() const = 0;
 
@@ -544,7 +570,7 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> \c this->get_fact_struc().get()==NULL.
-	 * <ul>
+	 * </ul>
 	 */
 	virtual void set_uninitialized() = 0;
 

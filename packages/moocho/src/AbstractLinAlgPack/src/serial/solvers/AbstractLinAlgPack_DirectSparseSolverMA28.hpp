@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#ifdef SPARSE_SOLVER_PACK_USE_MA28
+
 #ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_MA28_H
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_MA28_H
 
@@ -27,6 +29,15 @@ namespace SparseSolverPack {
  */
 class DirectSparseSolverMA28 : public DirectSparseSolverImp {
 public:
+
+	/** @name Constructors/initializers */
+	//@{
+
+	///
+	/** Constructs with default \c estimated_fillin_ratio==10.0 */
+	DirectSparseSolverMA28();
+
+	//@}
 
 	/** @name Overridden from DirectSparseSolver */
 	//@{
@@ -64,7 +75,19 @@ protected:
 	 */
 	class BasisMatrixMA28 : public BasisMatrixImp {
 	public:
-		// ToDO: Implement this class!
+
+		/** @name Overridden from BasisMatrixImp */
+		//@{
+
+		///
+		MemMngPack::ref_count_ptr<BasisMatrixImp> create_matrix() const;
+		///
+		void V_InvMtV(
+			VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+			,const VectorWithOp& v_rhs2) const ;
+		
+		//@}
+
 	}; // end class BasisMatrixMA28
 
 	//@}
@@ -85,7 +108,6 @@ protected:
 		,LinAlgPack::IVector                            *row_perm
 		,LinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
-		,BasisMatrixImp                                 *basis_matrix
 		,std::ostream                                   *out
 		);
 	///
@@ -93,14 +115,19 @@ protected:
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
 		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
 		,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
-		,BasisMatrixImp                                 *basis_matrix
 		,std::ostream                                   *out
 		);
 
 	//@}
+
+private:
+
+	value_type estimated_fillin_ratio_;
 
 };	// end class DirectSparseSolverMA28 
 
 }	// end namespace SparseSolverPack 
 
 #endif	// DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_MA28_H
+
+#endif // SPARSE_SOLVER_PACK_USE_MA28

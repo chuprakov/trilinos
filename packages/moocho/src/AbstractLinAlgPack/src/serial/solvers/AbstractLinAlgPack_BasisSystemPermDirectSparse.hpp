@@ -80,7 +80,8 @@ public:
 		,MatrixWithOp*              D
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+		,EMatRelations              mat_rel
+		,std::ostream               *out
 		) const;
 
 	//@}
@@ -108,7 +109,8 @@ public:
 		,MatrixWithOp              *D
 		,MatrixWithOp              *GcUP
 		,MatrixWithOp              *GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+		,EMatRelations              mat_rel
+		,std::ostream               *out
 		) const;
 	///
 	void select_basis(
@@ -126,7 +128,8 @@ public:
 		,MatrixWithOp               *D
 		,MatrixWithOp               *GcUP
 		,MatrixWithOp               *GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+		,EMatRelations              mat_rel
+		,std::ostream               *out
 		) const;
 	
 	//@}

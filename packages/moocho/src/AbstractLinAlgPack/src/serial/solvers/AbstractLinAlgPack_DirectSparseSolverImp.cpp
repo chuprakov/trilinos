@@ -80,6 +80,18 @@ size_type DirectSparseSolverImp::BasisMatrixImp::cols() const
 	return dim_;
 }
 
+// Overridden from MatrixNonsinguar
+
+MatrixNonsingular::mat_mns_mut_ptr_t
+DirectSparseSolverImp::BasisMatrixImp::clone_mns()
+{
+	namespace rcp = MemMngPack;
+	rcp::ref_count_ptr<BasisMatrixImp> bm = this->create_matrix();
+	// A shallow copy is okay if the educated client DirectSparseSolverImp is careful!
+	bm->initialize(dim_,fact_struc_,fact_nonzeros_);
+	return bm;
+}
+
 // Overridden from BasisMatrix
 
 const DirectSparseSolver::BasisMatrix::fact_struc_ptr_t&
@@ -102,6 +114,7 @@ void DirectSparseSolverImp::analyze_and_factor(
 	,std::ostream                                   *out
 	)
 {
+	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
@@ -112,15 +125,33 @@ void DirectSparseSolverImp::analyze_and_factor(
 #endif
 	BasisMatrixImp
 		&basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
-	// Get references to factorization structure and factorizaton nonzeros
-	// objects that are not being shared by other client.
-	BasisMatrix::fact_struc_ptr_t         fact_struc;
-	BasisMatrixImp::fact_nonzeros_ptr_t   fact_nonzeros;
-	assert(0); // ToDo: Implement!
+	// Get reference to factorization structure object or determine that we have to
+	// allocate a new factorization structure object.
+	const BasisMatrix::fact_struc_ptr_t        &bm_fact_struc   = basis_matrix_imp.get_fact_struc();
+	const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
+	BasisMatrix::fact_struc_ptr_t              fact_struc;
+	bool alloc_new_fact_struc    = false;
+	if( bm_fact_struc.count() == 1 )
+		fact_struc = bm_fact_struc;
+	else if( this_fact_struc.count() == 1 )
+		fact_struc = this_fact_struc;
+	else if( bm_fact_struc.get() == this_fact_struc.get() && bm_fact_struc.count() == 2 )
+		fact_struc = bm_fact_struc;
+	else
+		alloc_new_fact_struc = true;
+	if( alloc_new_fact_struc )
+		fact_struc = this->create_fact_struc();
+	// Get references to factorization nonzeros object or allocate a new factorization nonzeros object.
+	const BasisMatrixImp::fact_nonzeros_ptr_t    &bm_fact_nonzeros  = basis_matrix_imp.get_fact_nonzeros();
+	BasisMatrixImp::fact_nonzeros_ptr_t          fact_nonzeros;
+	if( bm_fact_nonzeros.count() == 1 )
+		fact_nonzeros = bm_fact_nonzeros;
 	// Now ask the subclass to do the work
 	this->imp_analyze_and_factor(
-		A,fact_struc,fact_nonzeros,row_perm,col_perm,rank,&basis_matrix_imp,out
+		A,fact_struc,fact_nonzeros,row_perm,col_perm,rank,out
 		);
+	// Setup the basis matrix
+	basis_matrix_imp.initialize(*rank,fact_struc,fact_nonzeros);
 }
 
 void DirectSparseSolverImp::factor(
