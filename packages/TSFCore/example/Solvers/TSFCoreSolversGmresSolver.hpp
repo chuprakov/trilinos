@@ -181,7 +181,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     //
     z[curr_iter+1] = -sn[curr_iter]*z[curr_iter];
     z[curr_iter] *= cs[curr_iter];
-    curr_res = abs( z[curr_iter+1] ) / r0; 
+    curr_res = std::abs( z[curr_iter+1] ) / r0; 
     if (curr_res < tol) { isConverged = true; }
     //    
     // Increment the iteration counter.
