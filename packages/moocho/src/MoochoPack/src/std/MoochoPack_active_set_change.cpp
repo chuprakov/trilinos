@@ -11,7 +11,7 @@
 
 void ReducedSpaceSQPPack::active_set_change(
 	  const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1
-	, EIterationInfoOutput olevel, size_type* num_adds, size_type* num_drops
+	, EJournalOutputLevel olevel, size_type* num_adds, size_type* num_drops
 	, std::ostream* out )
 {
 	using std::setw;

@@ -24,11 +24,6 @@ public:
 
 	//@}
 
-	///
-	rSQPAlgoClientInterface()
-		: iteration_info_output_(PRINT_NOTHING)
-	{}
-
 	/** @name «std comp» members for config. */
 	//@{
 
@@ -45,14 +40,6 @@ public:
 
 	//@}
 
-	/// Set the interation information output level
-	void iteration_info_output(EIterationInfoOutput iteration_info_output)
-	{	iteration_info_output_ = iteration_info_output; }
-
-	/// Get the interation information output level
-	EIterationInfoOutput iteration_info_output() const
-	{	return iteration_info_output_; }
-
 	///
 	/** Call that causes the algorithm to be configured.
 	  *
@@ -66,12 +53,8 @@ public:
 	  */
 	virtual void configure_algorithm(std::ostream* trase_out = 0) = 0;
 
-
 	/// Print the configured algorithm
 	virtual void print_algorithm(std::ostream& out) const = 0;
-
-private:
-	EIterationInfoOutput iteration_info_output_;
 
 };	// end class rSQPAlgoClientInterface
 

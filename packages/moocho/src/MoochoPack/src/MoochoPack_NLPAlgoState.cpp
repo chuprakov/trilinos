@@ -137,8 +137,7 @@ const rSQPState::IQA_MatrixWithOp& rSQPState::iqa_MatrixWithOp(E_IterQuantities_
 
 rSQPState::rSQPState()
 	: AlgorithmState(num_quantites)
-		, num_basis_(0), iq_ids_initialized_(0), iteration_info_output_(PRINT_NOTHING)
-		, check_results_(false)
+		, num_basis_(0), iq_ids_initialized_(0), check_results_(false)
 {
 	// Initialize array to iq_id arrays.
 	typedef const AlgorithmState::iq_id_type ** iq_id_t;
@@ -158,9 +157,11 @@ void rSQPState::erase_iter_quant(const std::string& iq_name) {
 
 
 void rSQPState::dump_iter_quant(std::ostream& out) const {
-	out
-		<< "\n*** DecompositionSystem ***\n"
-		<< typeid(*get_decomp_sys().get()).name() << "\n";
+	if( get_decomp_sys().get() ) {	
+		out
+			<< "\n*** DecompositionSystem ***\n"
+			<< typeid(*get_decomp_sys().get()).name() << "\n";
+		}
 	AlgorithmState::dump_iter_quant(out);
 }
 

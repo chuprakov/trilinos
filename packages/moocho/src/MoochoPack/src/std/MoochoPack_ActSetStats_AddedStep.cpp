@@ -20,7 +20,7 @@ bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	rSQPState	&s		= algo.rsqp_state();
 	Range1D		indep	= s.con_indep();
 
-	EIterationInfoOutput olevel = s.iteration_info_output();
+	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.

@@ -25,7 +25,7 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 
-	EIterationInfoOutput olevel = s.iteration_info_output();
+	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.

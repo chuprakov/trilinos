@@ -18,7 +18,7 @@
 #include "../../include/rSQPStateContinuousStorage.h"
 #include "../../include/rSQPStateContinuousStorageMatrixWithOpCreatorAggr.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// Hf, Gc, Hcj
+#include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// HL, Gc, Hcj
 #include "ConstrainedOptimizationPack/include/IdentZeroVertConcatMatrixSubclass.h"	// Y
 #include "ConstrainedOptimizationPack/include/DenseIdentVertConcatMatrixSubclass.h"	// Z
 #include "ConstrainedOptimizationPack/include/ZAdjointFactMatrixSubclass.h"			// Z
@@ -535,7 +535,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					// Set the default print level for the newton iterations
 					ls_t::ENewtonOutputLevel
 						newton_olevel;
-					switch( algo_cntr.iteration_info_output() ) {
+					switch( algo_cntr.journal_output_level() ) {
 						case PRINT_NOTHING:
 							newton_olevel = ls_t::PRINT_NEWTON_NOTHING;
 							break;
@@ -688,7 +688,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 					// If we are going to dump all of the iteration quantites we might as
 					// well just print out the mappings to QPOPT and QPSOL.
-					if(algo_cntr.iteration_info_output() == PRINT_ITERATION_QUANTITIES)
+					if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
 						mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
 					_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
 					qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
@@ -698,7 +698,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				{
 					ReducedQPSolverQPKWIKNEW*
 						_qp_solver = new ReducedQPSolverQPKWIKNEW;
-					if(algo_cntr.iteration_info_output() == PRINT_ITERATION_QUANTITIES)
+					if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
 						_qp_solver->create_qpkwiknew_file(true);
 					ReducedQPSolverQPKWIKNEWStd*
 						__qp_solver = new ReducedQPSolverQPKWIKNEWStd(_qp_solver,algo.get());
@@ -764,14 +764,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			QPMixedFullReducedQPSCPDSolver
 				*qp_solver = new QPMixedFullReducedQPSCPDSolver(algo.get());
 			qp_solver->set_pick_violated_policy(
-					ReducedSpaceSQPPack::QPSCPDPack::ConstraintsVarBoundsRelaxed::MOST_VIOLATED );
+					ConstrainedOptimizationPack::QPSCPDPack::ConstraintsVarBoundsRelaxed::MOST_VIOLATED );
 			if( bigM_ > 0.0 )
 				qp_solver->set_M(bigM_);
 			if( warm_start_frac_ > 0.0 )
 				qp_solver->set_warm_start_frac(warm_start_frac_);
 			using ConstrainedOptimizationPack::QPSCPD;	
 			QPSCPD::EOutputLevel	qp_olevel;
-			switch( algo_cntr.iteration_info_output() ) {
+			switch( algo_cntr.journal_output_level() ) {
 				case PRINT_NOTHING:
 					qp_olevel = QPSCPD::NO_OUTPUT;
 					break;
@@ -829,7 +829,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// Set the options for VE09 QP solver
 			QPSolverWithBoundsVE09 *qp_solver = new QPSolverWithBoundsVE09;
 			qp_solver->create_ve09_err_mon_files(
-				algo_cntr.iteration_info_output() >= PRINT_ALGORITHM_STEPS );
+				algo_cntr.journal_output_level() >= PRINT_ALGORITHM_STEPS );
 
 			Algorithm::poss_type poss;
 			poss = algo->get_step_poss( IndepDirec_name );
@@ -1039,7 +1039,6 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	rSQPState	&state	= algo.rsqp_state();
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
-	algo.rsqp_state().iteration_info_output( algo.algo_cntr().iteration_info_output() );
 	algo.rsqp_state().check_results( check_results_ );
 
 	NLPReduced	&nlp	= algo.nlp();

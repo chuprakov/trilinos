@@ -16,7 +16,7 @@ namespace ReducedSpaceSQPPack {
 #include "GeneralIterationPack/include/GeneralIterationPackPublicTypes.ud"
 
 // enum for rSQP output.
-enum EIterationInfoOutput {
+enum EJournalOutputLevel {
 	PRINT_NOTHING = 0,
 	PRINT_BASIC_ALGORITHM_INFO = 1,
 	PRINT_ALGORITHM_STEPS = 2,

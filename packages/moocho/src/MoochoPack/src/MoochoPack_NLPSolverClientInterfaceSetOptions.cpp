@@ -12,7 +12,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 6;
+	const int local_num_options = 7;
 
 	enum local_EOptions {
         MAX_ITER,
@@ -20,16 +20,18 @@ namespace {
         OPT_TOL,
         FEAS_TOL,
         STEP_TOL,
-        MAX_VAR_BOUNDS_VIOL
+        MAX_VAR_BOUNDS_VIOL,
+		JOURNAL_OUTPUT_LEVEL
 	};
 
 	const char* local_SOptions[local_num_options]	= {
-        "max_iter",
-        "max_run_time",
-        "opt_tol",
-        "feas_tol",
-        "step_tol",
-        "max_var_bounds_viol"
+        ("max_iter"),
+        ("max_run_time"),
+        ("opt_tol"),
+        ("feas_tol"),
+        ("step_tol"),
+        ("max_var_bounds_viol"),
+		("journal_output_level")
 	};
 
 }
@@ -68,6 +70,25 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 		case MAX_VAR_BOUNDS_VIOL:
 			target().max_var_bounds_viol(::fabs(::atof(option_value.c_str())));
 			break;
+		case JOURNAL_OUTPUT_LEVEL:
+		{
+			if( option_value == "PRINT_NOTHING" )
+				target().journal_output_level(PRINT_NOTHING);
+			else if( option_value == "PRINT_BASIC_ALGORITHM_INFO" )
+				target().journal_output_level(PRINT_BASIC_ALGORITHM_INFO);
+			else if( option_value == "PRINT_ALGORITHM_STEPS" )
+				target().journal_output_level(PRINT_ALGORITHM_STEPS);
+			else if( option_value == "PRINT_ACTIVE_SET" )
+				target().journal_output_level(PRINT_ACTIVE_SET);
+			else if( option_value == "PRINT_VECTORS" )
+				target().journal_output_level(PRINT_VECTORS);
+			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
+				target().journal_output_level(PRINT_ITERATION_QUANTITIES);
+			else
+				throw std::invalid_argument( "rSQPSolverClientInterfaceSetOptions::set_option(...) : "
+					"Error, incorrect value for \"journal_output_level\"." );
+			break;
+		}
 		default:
 			assert(0);	// Local error only?
 	}

@@ -25,10 +25,11 @@ bool ReducedSpaceSQPPack::ReducedGradientStd_Step::do_step(Algorithm& _algo
 	using LinAlgOpPack::V_MtV;
 	using LinAlgPack::norm_inf;
 
-	rSQPState	&s		= rsqp_algo(_algo).rsqp_state();
+	rSQPAlgo	&algo	= rsqp_algo(_algo);
+	rSQPState	&s		= algo.rsqp_state();
 
-	EIterationInfoOutput olevel = s.iteration_info_output();
-	std::ostream& out = _algo.track().journal_out();
+	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {

@@ -102,14 +102,6 @@ public:
 	/// Virtual destructor
 	virtual ~rSQPState() {}
 
-	/// Set the interation information output level
-	void iteration_info_output(EIterationInfoOutput iteration_info_output)
-	{	iteration_info_output_ = iteration_info_output; }
-
-	/// Get the interation information output level
-	EIterationInfoOutput iteration_info_output() const
-	{	return iteration_info_output_; }
-
 	/// Set if the results are to be checked or not
 	void check_results( bool check_results )
 	{	check_results_ = check_results; }
@@ -490,9 +482,6 @@ private:
 	IVector var_perm_new_, var_perm_old_, con_perm_new_, con_perm_old_;
 	Range1D var_dep_, var_indep_, con_indep_, con_dep_;
 	decomp_sys_ptr_t decomp_sys_;
-
-	EIterationInfoOutput iteration_info_output_;
-	// Output level.
 
 	bool check_results_;
 	// Check result flag
