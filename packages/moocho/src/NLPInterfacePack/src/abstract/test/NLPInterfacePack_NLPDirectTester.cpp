@@ -62,23 +62,23 @@ NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
 {}
 
 bool NLPFirstOrderDirectTester::finite_diff_check(
-	NLPFirstOrderDirect            *nlp
-	,const VectorWithOp            &xo
-	,const VectorWithOp            *xl
-	,const VectorWithOp            *xu
-	,const value_type              &max_var_bounds_viol
-	,VectorWithOpMutable           *c
-	,VectorWithOpMutable           *h
-	,VectorWithOpMutable           *Gf
-	,VectorWithOpMutable           *py
-	,VectorWithOpMutable           *rGf
-	,MatrixWithOp                  *GcU
-	,MatrixWithOp                  *Gh
-	,MatrixWithOp                  *D
-	,MatrixWithOp                  *V
-	,MatrixWithOp                  *P
-	,bool                          print_all_warnings
-	,std::ostream                  *out
+	NLPFirstOrderDirect     *nlp
+	,const VectorWithOp     &xo
+	,const VectorWithOp     *xl
+	,const VectorWithOp     *xu
+	,const value_type       &max_var_bounds_viol
+	,const VectorWithOp     *c
+	,const VectorWithOp     *h
+	,const VectorWithOp     *Gf
+	,const VectorWithOp     *py
+	,const VectorWithOp     *rGf
+	,const MatrixWithOp     *GcU
+	,const MatrixWithOp     *Gh
+	,const MatrixWithOp     *D
+	,const MatrixWithOp     *V
+	,const MatrixWithOp     *P
+	,bool                   print_all_warnings
+	,std::ostream           *out
 	) const
 {
 
