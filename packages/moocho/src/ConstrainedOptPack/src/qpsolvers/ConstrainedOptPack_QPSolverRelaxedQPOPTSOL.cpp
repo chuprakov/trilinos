@@ -14,6 +14,7 @@
 #include "SparseLinAlgPack/include/EtaVector.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+#include "Misc/include/profile_hack.h"
 
 // /////////////////////////////////////////////////////////////////
 //
@@ -124,6 +125,10 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		, VectorSlice* lambda, VectorSlice* Fd
 	)
 {
+
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxedQPOPTSOL::imp_solve_qp(...)" );
+#endif
 
 	const size_type n = d->size();
 	const value_type inf_bnd = std::numeric_limits<value_type>::max();

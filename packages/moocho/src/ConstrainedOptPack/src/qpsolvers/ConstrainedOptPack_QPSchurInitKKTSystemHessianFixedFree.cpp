@@ -191,7 +191,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	LinAlgOpPack::V_StMtV( fo, -1.0, Q_R, BLAS_Cpp::trans, g );
 	if( num_init_fixed ) {
 		SpVector b_XX;
-		V_MtV( &b_XX, Q_X, BLAS_Cpp::no_trans, (*b_X)(1,num_init_fixed) );
+		SparseLinAlgPack::V_MtV( &b_XX, Q_X, BLAS_Cpp::no_trans, (*b_X)(1,num_init_fixed) );
 		SparseLinAlgPack::Vp_StPtMtV( &(*fo)(), -1.0, Q_R, BLAS_Cpp::trans, G, BLAS_Cpp::no_trans, b_XX() );
 	}
 

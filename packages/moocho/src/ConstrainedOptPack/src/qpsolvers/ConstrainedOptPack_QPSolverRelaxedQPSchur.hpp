@@ -91,7 +91,7 @@ public:
 		 *              identity and #Q_R# is defiend as:\\
 		 *              #Q_R(:,l) = e(l), l = 1...n_R#\\
 		 *              The ordering of these indices is significant.
-		 *@param  i_x_fixed
+		 * @param  i_x_fixed
 		 *              [out] array (size #n_X#):
 		 *              #i_x_fixed[l-1], l = 1...n_X# defines the matrix #Q_X# as:\\
 		 *              #Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X#\\
@@ -159,7 +159,6 @@ public:
 	public:
 		// ToDo: Create method reinitailze_kkt_system(...)
 	}; // end class ReinitKKTSystem
-
 
 	///
 	/** Strategy object that sets up the initial KKT system.
@@ -315,11 +314,10 @@ public:
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, add_equalities_initially )
 
-
 	///
 	QPSolverRelaxedQPSchur(
 		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
-		,const constraints_ptr_t&    constraints        = new QPSchurPack::ConstraintsRelaxedStd()
+		,const constraints_ptr_t&    constraints        = new QPSchurPack::ConstraintsRelaxedStd
 		,value_type                  max_qp_iter_frac   = 10.0
 		,value_type                  max_real_runtime   = 1e+20
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
@@ -394,12 +392,12 @@ private:
 	Vector					         b_X_;
 	InitKKTSystem::Ko_ptr_t          Ko_;
 	Vector					         fo_;
-	
+
 	// ////////////////////////////
 	// Private member functions
 
 };	// end class QPSolverRelaxedQPSchur
 
-}	// end namespace ConstrainedOptimizationPackTypes
+}	// end namespace ConstrainedOptimizationPack
 
 #endif	// QP_SOLVER_RELAXED_QP_SCHUR_H
