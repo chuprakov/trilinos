@@ -205,6 +205,8 @@ void SparseLinAlgPack::Vp_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+	using BLAS_Cpp::rows;
+	using BLAS_Cpp::cols;
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_MtV_assert_sizes;
@@ -217,10 +219,7 @@ void SparseLinAlgPack::Vp_StMtV(
 		Vt_S(y,b);
 	// y += a*op(P)*x
 	if( P.is_identity() ) {
-		if( b == 0.0 )
-			*y = 0.0;
-		else
-			LinAlgPack::Vt_S( y, b );
+		LinAlgPack::Vt_S( y, b ); // takes care of b == 0.0 and y == NaN
 		SparseLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
 	}		
 	else if( x.is_sorted() ) {
@@ -228,7 +227,9 @@ void SparseLinAlgPack::Vp_StMtV(
 		if( P_trans == no_trans && P.ordered_by() == GPMSIP::BY_COL ) {
 			assert(0);	// ToDo: implement this!
 		}
-		else if( P_trans == trans && P.ordered_by() == GPMSIP::BY_ROW ) {
+		else if( ( P_trans == trans && P.ordered_by() == GPMSIP::BY_ROW )
+			|| P.ordered_by() == GPMSIP::BY_ROW_AND_COL )
+		{
 			GenPermMatrixSlice::const_iterator
 				P_itr = P.begin(),
 				P_end = P.end();
@@ -237,8 +238,8 @@ void SparseLinAlgPack::Vp_StMtV(
 				x_end = x.end();
 			while( P_itr != P_end && x_itr != x_end ) {
 				const size_type
-					j = P_itr->row_i(),
-					i = P_itr->col_j();
+					i = rows(P_itr->row_i(),P_itr->col_j(),P_trans),
+					j = cols(P_itr->row_i(),P_itr->col_j(),P_trans);
 				if( j < x_itr->indice() + x_off ) {
 					++P_itr;
 					continue;
@@ -253,6 +254,9 @@ void SparseLinAlgPack::Vp_StMtV(
 					++x_itr;
 				}
 			}
+		}
+		else {
+			assert(0); // ToDo: Implement what ever this case is?	
 		}
 	}
 	else {
