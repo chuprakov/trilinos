@@ -14,170 +14,172 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/assert_print_nan_inf.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgLAPack/include/LinAlgLAPack.h"
+#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
+#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "dynamic_cast_verbose.h"
+#include "ThrowException.h"
 
 namespace ReducedSpaceSQPPack {
 
 EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogonal_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester
-		, const bounds_tester_ptr_t&	bounds_tester
-		, EFDDerivTesting				fd_deriv_testing
-		)
-	:
-		EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
+	const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy
+	,const deriv_tester_ptr_t               &deriv_tester
+	,const bounds_tester_ptr_t              &bounds_tester
+	,EFDDerivTesting                        fd_deriv_testing
+	)
+	:EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
+	,var_reduct_orthog_strategy_(var_reduct_orthog_strategy)
 {}
+
 // protected
 
-void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Ypy(
-	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-	, EJournalOutputLevel olevel, std::ostream& out
+void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
+	MatrixWithOp         *Y
+	,MatrixWithOp        *Uy
+	,MatrixWithOp        *Vy
 	)
 {
-	const size_type
-		n = D.rows()+D.cols(),
-		r = D.rows(),
-		dof = n-r;
+	using DynamicCastHelperPack::dyn_cast;
 
-	//
-	// First let's define:
-	//
-	// Gc(decomp) = [ C, N ]
-	// D = -inv(C)*N
-	// Y = [ I ; -D' ]
-	//
-	// R = Gc(decomp)'*Y = C*(I + D*D')
-	// 
-	// Now we want to compute:
-	// 
-	// py = - inv(R) * c
-	// 
-	// To do so let's see what inv(R) is:
-	// 
-	// inv(R) = inv(I + D*D') * inv(C)
-	// 
-	// From the Sherman-Morrison-Woodbury Formula (Nocedal & Wright 1999, p. 605)
-	// 
-	// inv(I+D*D') = inv(I) - inv(I) * D * inv( I + D' * inv(I) * D ) * D' * inv(I)
-	//             = I - D * inv(S) * D'
-	//     where: S = I + D'*D
-	//
-	// This gives us:
-	// 
-	// inv(R) = ( I - D * inv(S) * D' ) * inv(C)
-	// 
-	// Therefore we need to compute and factorize S in order to factorize
-	// R.
-	// 
-	// Therefore, we can compute py as:
-	// 
-	// py = -inv(R)*c
-	//    = (I - D * inv(S) * D' ) * inv(C) * (-c)
-	//                              \___________/
-	//                               py on input
-	//                               
-	//    = py - D * inv(S) * D' * py
-	//    
-	// And  we can compute this as:
-	// 
-	// t1 = D'*py
-	// 
-	// t2 = inv(S) * t1
-	// 
-	// py = py - D * t2
-	//
+	MatrixIdentConcatStd
+		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
+	MatrixCompositeStd
+		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy) : NULL;			
+	MatrixCompositeStd
+		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy) : NULL;
 
-	// Form the lower triangular part of S = I + D'*D
-	using BLAS_Cpp::lower;
-	using BLAS_Cpp::nonunit;
-	using LinAlgPack::nonconst_sym;
-	using LinAlgPack::nonconst_tri_ele;
-	SL_.resize(dof,dof);
-	SL_ = 0.0;
-	SL_.diag() = 1.0;
-	LinAlgPack::syrk( BLAS_Cpp::no_trans, 1.0, D, 1.0
-		, &nonconst_sym( SL_(), lower ) );
-	// Factor the lower triangular part of S = I + D*D'
-	LinAlgLAPack::potrf( &nonconst_tri_ele( SL_(), lower ) );
-
-	recalc_py_Ypy(D,py,Ypy,olevel,out);
-
+	if(Y_orth)
+		Y_orth->set_uninitialized();
+	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
+	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities
 }
 
-void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py_Ypy(
-	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-	, EJournalOutputLevel olevel, std::ostream& out
+void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
+	const NLPFirstOrderDirect   &nlp
+	,const D_ptr_t              &D
+	,VectorWithOpMutable        *py
+	,MatrixWithOp               *Y
+	,MatrixWithOp               *Uy
+	,MatrixWithOp               *Vy
+	,EJournalOutputLevel        olevel
+	,std::ostream               &out
 	)
 {
+	namespace rcp = ReferenceCountingPack;
+	using DynamicCastHelperPack::dyn_cast;
+
 	const size_type
-		n = D.rows()+D.cols(),
-		r = D.rows(),
-		dof = n-r;
+		n = nlp.n(),
+		m = nlp.m(),
+		r = nlp.r();
+	const Range1D
+		var_dep(1,r),
+		var_indep(r+1,n),
+		con_decomp   = nlp.con_decomp(),
+		con_undecomp = nlp.con_undecomp();
 
-	//    
-	// We can compute this as (see calc_py_Ypy(...)):
-	// 
-	// t1 = D'*py
-	// 
-	// t2 = inv(S) * t1
-	// 
-	// py = py - D * t2
 	//
-
-	using BLAS_Cpp::lower;
-	using BLAS_Cpp::nonunit;
-	using LinAlgPack::nonconst_sym;
-	using LinAlgPack::nonconst_tri_ele;
-
-	// Now we have the cholesky factors fo S = L * L'
-	tri_gms L( SL_(), lower, nonunit );
-
-	// Now solve for py = py - D * inv(S) * D' * py
-
-	// t = D'*py
-	Vector t;
-	LinAlgOpPack::V_MtV( &t, D, BLAS_Cpp::trans, *py );
-
-	// t = inv(S) * t
-	//    = inv(L*L') * t
-	//    = inv(L')*inv(L)*t
-	//    
-	// Note that another temporary is not needed since
-	// a direct call to the BLAS is used and aliaseing the
-	// rhs and lhs is fine.
-	// 
-	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::no_trans, t() );
-	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::trans, t() );
-
-	// py = py - D * t
-	LinAlgPack::Vp_StMtV( py, -1.0, D, BLAS_Cpp::no_trans, t() );
+	// Get pointers to concreate matrices
+	//
 	
-	// Now all we have to do is to compute Ypy
-	// 
-	// Ypy = Y * py = [  I  ] py = [  py    ]
-	//                [ -D' ]      [ -D'*py ]
-	//                
-	LinAlgPack::assert_vs_sizes( Ypy->size(), n);
-	(*Ypy)(1,r) = *py;
-	LinAlgOpPack::V_StMtV( &(*Ypy)(r+1,n), -1.0, D, BLAS_Cpp::trans, *py );
+	MatrixIdentConcatStd
+		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
+	MatrixCompositeStd
+		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy) : NULL;			
+	MatrixCompositeStd
+		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy) : NULL;
 
-	// That's it man!
+	//
+	// Initialize the matrices
+	//
+
+	// Y
+	if(Y_orth) {
+		D_ptr_t  D_ptr = D;
+//		if(mat_rel == MATRICES_INDEP_IMPS) {
+//			D_ptr = D->clone();
+//			THROW_EXCEPTION(
+//				D_ptr.get() == NULL, std::logic_error
+//				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
+//				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
+//				<< typeid(*D).name() << "\' must return return.get() != NULL from the clone() method "
+//				"since mat_rel == MATRICES_INDEP_IMPS!" );
+//		}
+		Y_orth->initialize(
+			nlp.space_x()                                     // space_cols
+			,nlp.space_x()->sub_space(var_dep)->clone()       // space_rows
+			,MatrixIdentConcatStd::BOTTOM                     // top_or_bottom
+			,-1.0                                             // alpha
+			,D_ptr                                            // D_ptr
+			,BLAS_Cpp::no_trans                               // D_trans
+			);
+	}
+
+	// S
+	if(S_ptr_.get() == NULL) {
+		S_ptr_ = var_reduct_orthog_strategy().factory_S()->create();
+	}
+	var_reduct_orthog_strategy().update_S(*D,S_ptr_.get());
+
+	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
+	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities
+
+	recalc_py(*D,py,olevel,out);
+
 }
 
-void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_Y_py_Ypy(
-	std::ostream& out, const std::string& L ) const
+void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
+	const MatrixWithOp       &D
+	,VectorWithOpMutable     *py
+	,EJournalOutputLevel     olevel
+	,std::ostream            &out
+	)
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::V_MtV;
+
+	const MatrixSymWithOpNonsingular   &S = *S_ptr_;
+
+	VectorSpace::vec_mut_ptr_t               // ToDo: make workspace!
+		tIa = D.space_rows().create_member(),
+		tIb = D.space_rows().create_member();
+	//
+	// y = (I - D*inv(S)*D')*inv(C)*x
+	//   = (I - D*inv(S)*D')*py
+	//   = py - D*inv(S)*D'*py
+	//
+	// =>
+	//
+	// tIa  = D'*py
+	// tIb  = inv(S)*tIa
+	// py   += -D*tIb
+	//
+	V_MtV( tIa.get(), D, trans, *py );        // tIa  = D'*py
+	V_InvMtV( tIb.get(), S, no_trans, *tIa ); // tIb  = inv(S)*tIa
+	Vp_StMtV( py, -1.0, D, no_trans, *tIb );  // y   += -D*tIb
+
+}
+
+void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy_Vy(
+	std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Orthogonal decomposition\n"
-		<< L << "py = inv(I + D*D') * py\n"
-		<< L << "Y = [ I ; -D' ] <: R^(n x m)   [Not computed explicitly]\n"
-		<< L << "Ypy = Y * py\n"
+		<< L << "py = inv(I + D*D') * py <: space_range\n"
+		<< L << "Y = [ I ; -D' ] <: space_x|space_range\n"
+		<< L << "Uy = ???\n"
+		<< L << "Vy = ???\n"
 		;
 }
 

@@ -16,50 +16,87 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_Step.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
+#include "EvalNewPointTailoredApproach_Step.h"
+#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
 /** Implements "orthogonal" decompostion for "Tailored Appraoch".
-  *
-  * Computes:\\
-  * py = inv(I + D*D') * py \\
-  * Ypy = [ py; -D'*py ] \\
-  */
+ *
+ * Computes:
+ \verbatim
+ py = inv(I + D*D') * py
+ Y  = [ I; -D' ]
+ Uy = ???
+ Vy = ???
+ \endverbatim
+ */
 class EvalNewPointTailoredApproachOrthogonal_Step
 	: public EvalNewPointTailoredApproach_Step
 {
 public:
 
 	///
+	STANDARD_CONST_COMPOSITION_MEMBERS( VarReductOrthog_Strategy, var_reduct_orthog_strategy )
+
+	///
 	EvalNewPointTailoredApproachOrthogonal_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester
-		, const bounds_tester_ptr_t&	bounds_tester
-		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
+		const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy
+		,const deriv_tester_ptr_t               &deriv_tester
+		,const bounds_tester_ptr_t              &bounds_tester
+		,EFDDerivTesting                        fd_deriv_testing = FD_DEFAULT
 		);
 
 protected:
 
-	// ///////////////////////////////
-	// Overridden
+	/** @name Overridden from EvalNewPointTailoredApproach_Step */
+	//@{
 
 	///
-	void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-		, EJournalOutputLevel olevel, std::ostream& out );
+	void uninitialize_Y_Uv_Uy(
+		MatrixWithOp         *Y
+		,MatrixWithOp        *Uy
+		,MatrixWithOp        *Vy
+		);
 	///
-	void recalc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-		, EJournalOutputLevel olevel, std::ostream& out );
+	void calc_py_Y_Uy_Vy(
+		const NLPFirstOrderDirect   &nlp
+		,const D_ptr_t              &D
+		,VectorWithOpMutable        *py
+		,MatrixWithOp               *Y
+		,MatrixWithOp               *Uy
+		,MatrixWithOp               *Vy
+		,EJournalOutputLevel        olevel
+		,std::ostream               &out
+		);
 	///
-	void print_calc_Y_py_Ypy( std::ostream& out, const std::string& leading_str ) const;
+	void recalc_py(
+		const MatrixWithOp       &D
+		,VectorWithOpMutable     *py
+		,EJournalOutputLevel     olevel
+		,std::ostream            &out
+		);
+	///
+	void print_calc_py_Y_Uy_Vy(
+		std::ostream& out, const std::string& leading_str
+		) const;
+
+	//@}
 
 private:
 
 	// ///////////////////////////////
+	// Private types
+
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<MatrixSymWithOpNonsingular>  S_ptr_t;
+
+	// ///////////////////////////////
 	// Private data members
 
-	GenMatrix   SL_;
+	S_ptr_t   S_ptr_;
 
 	// //////////////////////////////
 	// Private member functions
