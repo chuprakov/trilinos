@@ -253,6 +253,7 @@ bool NLPTester::test_interface(
 		// Calculate the quantities at xo
 		if(out)
 			*out << "\n*** Evaluate the point xo ...\n";
+		nlp->set_multi_calc(true);
 		nlp->calc_f(xo,true);
 		if(nlp->m())  nlp->calc_c(xo,false);
 		if(nlp->mI()) nlp->calc_h(xo,false);
