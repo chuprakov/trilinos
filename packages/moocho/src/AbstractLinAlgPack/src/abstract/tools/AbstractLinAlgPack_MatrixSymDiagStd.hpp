@@ -39,10 +39,23 @@ public:
 	//@{
 
 	/// Calls <tt>this->initialize()</tt>.
-	MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag = VectorSpace::vec_mut_ptr_t(NULL) );
+	MatrixSymDiagonalStd(
+		const VectorSpace::vec_mut_ptr_t& diag   = ReferenceCountingPack::null
+		,bool                             unique = true
+		);
 
-	/// Initialize given the diagonal vector (or no vector at all).
-	void initialize( const VectorSpace::vec_mut_ptr_t& diag );
+	///
+	/** Initialize given the diagonal vector (or no vector at all).
+	 *
+	 * @param  diag   [in] Vector to be used for the diagonal.  If <tt>diag.get() == NULL</tt>
+	 *                then \c this will be uninitialized.
+	 * @param  unique [in] Determines if the underlying \c diag vector is guaranteed to be
+	 *                unique and not shared.
+	 */
+	void initialize(
+		const VectorSpace::vec_mut_ptr_t& diag
+		,bool                             unique = true
+		);
 
 	//@}
 
@@ -63,6 +76,8 @@ public:
 	const VectorWithOp& diag() const;
 	///
 	const VectorSpace::vec_mut_ptr_t& diag_ptr() const;
+	///
+	bool unique() const;
 
 	//@}
 
@@ -83,6 +98,8 @@ public:
 	const VectorSpace& space_rows() const;
 	///
 	const VectorSpace& space_cols() const;
+	///
+	MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
 	///
 	/** Add to a mutable matrix lhs.
 	 *
@@ -125,8 +142,20 @@ public:
 private:
 
 	VectorSpace::vec_mut_ptr_t     diag_;
+	bool                           unique_;
 
-}; // end class MatrixSymInitDiagonal
+	void copy_unique();
+
+}; // end class MatrixSymDiagonalStd
+
+// ////////////////////////////////////////
+// Inline members
+
+inline
+bool MatrixSymDiagonalStd::unique() const
+{
+	return unique_;
+}
 
 } // end namespace AbstractLinAlgPack
 

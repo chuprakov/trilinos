@@ -23,18 +23,26 @@
 
 namespace AbstractLinAlgPack {
 
-MatrixSymDiagonalStd::MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag )
+MatrixSymDiagonalStd::MatrixSymDiagonalStd(
+	const VectorSpace::vec_mut_ptr_t& diag
+	,bool                             unique
+	)
 {
-	this->initialize(diag);
+	this->initialize(diag,unique);
 }
 
-void MatrixSymDiagonalStd::initialize( const VectorSpace::vec_mut_ptr_t& diag )
+void MatrixSymDiagonalStd::initialize(
+	const VectorSpace::vec_mut_ptr_t& diag
+	,bool                             unique
+	)
 {
-	diag_ = diag;
+	diag_   = diag;   // lazy copy!
+	unique_ = unique;
 }
 
 VectorWithOpMutable& MatrixSymDiagonalStd::diag()
 {
+	copy_unique();
 	VectorWithOpMutable *diag = diag_.get();
 	THROW_EXCEPTION(
 		!diag, std::logic_error
@@ -73,6 +81,25 @@ const VectorSpace& MatrixSymDiagonalStd::space_cols() const {
 
 const VectorSpace& MatrixSymDiagonalStd::space_rows() const {
 	return diag_->space();
+}
+
+MatrixWithOp&
+MatrixSymDiagonalStd::operator=(const MatrixWithOp& M)
+{
+	const MatrixSymDiagonalStd
+		*p_M = dynamic_cast<const MatrixSymDiagonalStd*>(&M);
+
+	THROW_EXCEPTION(
+		p_M == NULL, std::logic_error
+		,"MatrixSymDiagonalStd::operator=(M): Error, the matrix M with concrete type "
+		"\'" << typeid(M).name() << "\' does not support the MatrixSymDiagonalStd type! " );
+
+	if( p_M == this ) return *this; // Assignment to self
+
+	diag_    = p_M->diag_;  // lazy copy!
+	unique_  = p_M->unique_;
+
+	return *this;
 }
 
 bool MatrixSymDiagonalStd::Mp_StM(
@@ -129,8 +156,6 @@ void MatrixSymDiagonalStd::V_InvMtV(
 
 void MatrixSymDiagonalStd::init_identity( const VectorSpace& space_diag, value_type alpha )
 {
-	// ToDo: Initalize mat_space_ to a proper matrix space object (need a lot of 
-	// new code to create a compatible mutable matrix object).
 	diag_ = space_diag.create_member();
 	if( diag_->dim() )
 		*diag_ = alpha;
@@ -138,10 +163,16 @@ void MatrixSymDiagonalStd::init_identity( const VectorSpace& space_diag, value_t
 
 void MatrixSymDiagonalStd::init_diagonal( const VectorWithOp& diag )
 {
-	// ToDo: Initalize mat_space_ to a proper matrix space object (need a lot of 
-	// new code to create a compatible mutable matrix object).
-	diag_  = diag.space().create_member();
+	diag_ = diag.space().create_member();
 	*diag_ = diag;
+}
+
+// private
+
+void MatrixSymDiagonalStd::copy_unique()
+{
+	if( diag_.get() && diag_.count() > 1 && unique_ )
+		diag_ = diag_->clone();
 }
 
 } // end namespace AbstractLinAlgPack
