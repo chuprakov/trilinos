@@ -108,10 +108,10 @@ This library contains a number of classes and subclasses that are useful in deve
 It is very common to approximate derivatives using finite differences.  In general, finite differencing can lead to inaccurate
 derivatives when fine precision is needed and can be expensive to compute.  However, using finite differences to provide some
 validation for derivatives computed by an NLP interface is invaluable.  The class
-<tt>\ref NLPInterfacePack::CalcFiniteDiffFirstDerivativeProduct "CalcFiniteDiffFirstDerivativeProduct"</tt> can be used to
-approximate the products <tt>Gf'*y</tt>, <tt>Gc'*y</tt> and <tt>Gh'*y</tt> for arbitrary vectors.  Not that computing each of
-these products only requires two function evaluations (using central differences) per quantitiy.  Therefore, these products
-can be computed for even the largest problems.  The class
+<tt>\ref NLPInterfacePack::CalcFiniteDiffProd "CalcFiniteDiffProd"</tt> can be used to
+approximate the products <tt>Gf'*y</tt>, <tt>Gc'*y</tt> and <tt>Gh'*y</tt> for arbitrary vectors using one of several different
+order methods.  Note that computing each of these products only requires between one to four extra function evaluations
+per function.  Therefore, these products can be computed for even the largest problems.  The class
 <tt>\ref NLPInterfacePack::CalcFiniteDiffFirstDerivatives "CalcFiniteDiffFirstDerivatives"</tt> can be used to compute
 dense approximations for \c Gf, \c Gc and \c Gh.  In this case, computing these quantities will be prohibitively expensive
 for larger problems and is not generally practical to do so.  However, computing these compete gradients by finite differences

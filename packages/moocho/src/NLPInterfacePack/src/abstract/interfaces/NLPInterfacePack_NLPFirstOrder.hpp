@@ -380,6 +380,11 @@ protected:
 	//@}
 
 private:
+
+#ifdef DOXYGEN_COMPILE
+	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixWithOp>  *space_Gc;
+	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixWithOp>  *space_Gh;
+#endif
 	mutable MatrixWithOp      *Gc_;
 	mutable MatrixWithOp      *Gh_;
 	mutable size_type         num_Gc_evals_;

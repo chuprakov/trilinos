@@ -277,6 +277,10 @@ protected:
 	//@}
 
 private:
+
+#ifdef DOXYGEN_COMPILE
+	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixSymWithOp>  *space_HL;
+#endif
 	mutable MatrixSymWithOp   *HL_;
 	mutable bool              num_HL_evals_;
 
