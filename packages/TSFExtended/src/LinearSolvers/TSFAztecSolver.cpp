@@ -153,12 +153,19 @@ SolverState<double> AztecSolver::solve(const LinearOperator<double>& op,
 
 	Epetra_CrsMatrix& A = EpetraMatrix::getConcrete(op);
 
-  if (useML_) setupML(&A);
+  if (useML_) 
+    {
+      setupML(&A);
+    }
+
 
   AztecOO aztec(&A, &x, &b);
-  
+
+
   aztec.SetAllAztecOptions((int*) &(options_[0]));
   aztec.SetAllAztecParams((double*) &(parameters_[0]));
+
+  aztec.CheckInput();
   
   int maxIters = options_[AZ_max_iter];
   double tol = parameters_[AZ_tol];
