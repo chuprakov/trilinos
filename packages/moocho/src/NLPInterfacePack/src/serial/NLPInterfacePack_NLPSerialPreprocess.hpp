@@ -784,7 +784,7 @@ private:
 	bool get_next_basis_remove_fixed(
 		IVector* var_perm, IVector* equ_perm, size_type* rank );
 	
-	// Assert (throw std::length_error, NLPReduced::InvalidBasis) and set a basis selection
+	// Assert (throw std::length_error, NLPVarReductPerm::InvalidBasis) and set a basis selection
 	// If &var_perm == &var_perm_ and/or &equ_perm == &equ_perm_ then the unneeded copy
 	// is avoided.
 	void assert_and_set_basis(
