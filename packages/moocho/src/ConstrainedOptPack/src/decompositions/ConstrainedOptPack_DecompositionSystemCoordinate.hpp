@@ -31,11 +31,11 @@ namespace ConstrainedOptimizationPack {
   Y = [ I ]   (class MatrixIdentConcatStd with MatrixZero)
       [ 0 ]
 
-  R = Gc(:,con_decomp)'*Y = [ C   N ] [ I ] = C
-                                      [ 0 ]
-
-  Uy = Gc(:,con_undecomp)'*Y = [ E  F ] [ I ] = E
+  R = Gc(:,con_decomp)'*Y = [ C   N ] * [ I ] = C
                                         [ 0 ]
+
+  Uy = Gc(:,con_undecomp)'*Y = [ E  F ] * [ I ] = E
+                                          [ 0 ]
 
   Vy = Gh'*Y = [ Gh(var_dep,:)'   Gh(var_indep,:)' ] * [ I ] = Gh(var_dep,:)'
                                                        [ 0 ]
