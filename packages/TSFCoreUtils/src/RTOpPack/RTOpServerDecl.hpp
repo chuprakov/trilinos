@@ -4,8 +4,6 @@
 #ifndef RTOP_SERVER_DECL_HPP
 #define RTOP_SERVER_DECL_HPP
 
-#include <map>
-
 #include "RTOpCpp.hpp"
 #include "AbstractFactory.hpp"
 
@@ -19,7 +17,7 @@ template<class Scalar>
 class RTOpServer {
 public:
 
-	///
+        ///
 	/** Add a new abstract factory for an <tt>RTOpT</tt> opeator.
 	 *
 	 * @param  op_factory  [in] Smart pointer to factory object that will create
@@ -55,9 +53,8 @@ public:
 	void print_op_factories(std::ostream& o) const;
 
 private:
-
-	typedef std::map< std::string, MemMngPack::ref_count_ptr<MemMngPack::AbstractFactory<RTOpT<Scalar> > > >  op_factories_t;
-	op_factories_t  op_factories_;
+  typedef std::map< std::string, MemMngPack::ref_count_ptr<MemMngPack::AbstractFactory<RTOpT<Scalar> > > >  op_factories_t;
+  op_factories_t  op_factories_;
 
 }; // class RTOpServer
 

@@ -130,6 +130,18 @@
 #include <limits.h>
 #endif
 
+#ifdef HAVE_MAP
+#include <map>
+#elif defined(HAVE_MAP_H)
+#include <map.h>
+#endif
+
+#ifdef HAVE_VECTOR
+#include <vector>
+#elif defined(HAVE_VECTOR_H)
+#include <vector.h>
+#endif
+
 #ifdef HAVE_IOSFWD
 #include <iosfwd>
 #else

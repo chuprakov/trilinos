@@ -141,47 +141,55 @@ TAC_ARG_CHECK_MPI
 
 AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
 AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h ostream iostream iostream.h],,,)
-AC_CHECK_HEADERS([string string.h malloc.h sstream stdexcept],,,)
+AC_CHECK_HEADERS([string string.h malloc.h sstream stdexcept map map.h vector vector.h],,,)
 AC_CHECK_HEADERS([memory memory.h typeinfo limits.h new iosfwd],,,)
 
 if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  New_Package requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  TSFCoreUtils requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cstdio" != "Xyes" && test "X$ac_cv_header_stdio_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  New_Package requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  TSFCoreUtils requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cassert" != "Xyes" && test "X$ac_cv_header_assert_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cassert or assert.h.  New_Package requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cassert or assert.h.  TSFCoreUtils requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_string" != "Xyes" && test "X$ac_cv_header_string_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find string or string.h.  New_Package requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find string or string.h.  TSFCoreUtils requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_ostream" != "Xyes" && test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  New_Package requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  TSFCoreUtils requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find cmath or math.h.  New_Package requires at least one or the other.]])
+    AC_MSG_ERROR([[Cannot find cmath or math.h.  TSFCoreUtils requires at least one or the other.]])
 fi
   
 if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find iomanip or iomanip.h.  New_Package requires at least one or the other.]])
+    AC_MSG_ERROR([[Cannot find iomanip or iomanip.h.  TSFCoreUtils requires at least one or the other.]])
 fi  
 
 if test "X$ac_cv_header_malloc_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find malloc.h.  New_Package requires at least one or the other.]])
+    AC_MSG_ERROR([[Cannot find malloc.h.  TSFCoreUtils requires at least one or the other.]])
 fi  
 
 if test "X$ac_cv_header_stdexcept" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find stdexcept.  New_Package requires at least one or the other.]])
+    AC_MSG_ERROR([[Cannot find stdexcept.  TSFCoreUtils requires at least one or the other.]])
 fi  
 
 if test "X$ac_cv_header_memory" != "Xyes" && test "X$ac_cv_header_memory_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find memory or memory.h.  New_Package requires at least one or the other.]])
+    AC_MSG_ERROR([[Cannot find memory or memory.h.  TSFCoreUtils requires at least one or the other.]])
+fi  
+
+if test "X$ac_cv_header_map" != "Xyes" && test "X$ac_cv_header_map_h" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find map or map.h.  TSFCoreUtils requires at least one or the other.]])
+fi  
+
+if test "X$ac_cv_header_vector" != "Xyes" && test "X$ac_cv_header_vector_h" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find vector or vector.h.  TSFCoreUtils requires at least one or the other.]])
 fi  
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -212,7 +220,7 @@ AC_CXX_STD_SPRINTF
 # a cpp #define command and one or more source or header files  - ie 
 # conditional compilation which requires a change to the makefile.
 # If configure is called with "--enable-newp_swahili", it will place 
-# a #define HAVE_NEWP_SWAHILI in New_Package_config.h and add source 
+# a #define HAVE_NEWP_SWAHILI in TSFCoreUtils_config.h and add source 
 # and header files as specified in Makefile.am 
 #
 # To add an option to your package, you will need to modify this file
@@ -222,7 +230,7 @@ AC_CXX_STD_SPRINTF
 # TAC_ARG_ENABLE_OPTION performs several tasks, including:
 #   1)  Setting a help string
 #   2)  Printing a message to standard out
-#   3)  Defining HAVE_NEWP_SWAHILI (For use in New_Package_config.h)
+#   3)  Defining HAVE_NEWP_SWAHILI (For use in TSFCoreUtils_config.h)
 #
 # AM_CONDITIONAL makes HAVE_NEWP_SWAHILI available for use in Makefile.am
 # ------------------------------------------------------------------------
