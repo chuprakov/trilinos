@@ -84,11 +84,6 @@ NLPFirstOrderDirect::factory_GhD() const
 	return MemMngPack::null;
 }
 
-size_type NLPFirstOrderDirect::mI() const
-{
-	return 0;
-}
-
 NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
 {
 	return MemMngPack::null;

@@ -380,8 +380,6 @@ public:
 	/** @name Overridden from NLP */
 	//@{
 
-	/// Returns 0
-	size_type mI() const;
 	/// Returns <tt>return.get() == NULL</tt>.
 	vec_space_ptr_t space_h() const;
 	/// Throws exception.
