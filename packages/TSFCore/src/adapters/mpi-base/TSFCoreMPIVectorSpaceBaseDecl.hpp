@@ -40,10 +40,12 @@ namespace TSFCore {
 /** \brief Base <tt>%VectorSpace</tt> class for all MPI-based vector
  * spaces with contiguous local storage.
  *
- * This interface collaborates with the classes <tt>MPIVetorBase</tt>
- * and <tt>MPIMultiVetorBase</tt> to implement MPI-based parallel (or
- * serial of course) vectors and multi-vectors that allows different
- * concrete implementations to mix together.
+ * This interface defines a basic mechanism for the interoperability
+ * of MPI SPMD <tt>Vector</tt> and <tt>MultiVector</tt> objects.  See
+ * the base classes <tt>MPIVetorBase</tt> and
+ * <tt>MPIMultiVetorBase</tt> to demonstrate how this interface is
+ * used to achieve universal interoperability of vector and
+ * multi-vector objects.
  *
  * Specifically, these classes are designed to handle three different
  * use case:
@@ -110,23 +112,21 @@ namespace TSFCore {
  * If <tt>this</tt> this is in an uninitialized state then
  * <tt>localSubDim()</tt> should return <tt>0</tt>.
  *
- * If it is possible that the mapping of vector elements to processors
- * is not as described above, then the subclass should override the
- * <tt>mapCode()</tt> and <tt>isCompatible()</tt> methods as described
- * above and below but this should never be necessary or desirable to
- * do.
+ * It should never be neccassary to override the virtual functions
+ * <tt>mapCode()</tt> and <tt>isCompatible()</tt> as these functions
+ * have very good and very general implementations.  do.
  *
  * If optimized implementations of multi-vectors can be supported,
  * then the <tt>createMembers()</tt> method should also be overridden.
  *
  * This class defines a very general default implementation for
  * <tt>smallVecSpcFcty()</tt> that returns a
- * <tt>MPIVectorSpaceFactoryStd</tt> object creates
- * <tt>MPIVectorSpaceStd</tt> <tt>VectorSpace</tt> objects that create
- * <tt>MPIMultiVectorStd</tt> <tt>MultiVector</tt> objects (and
- * <tt>VectorMultiVector</tt>-wrapped <tt>MPIMultiVectorStd</tt>
- * <tt>Vector</tt> objects).  This implementation should be very
- * appropriate for many different concrete implementations.
+ * <tt>MPIVectorSpaceFactoryStd</tt> object.  This returned object
+ * creates <tt>MPIVectorSpaceStd</tt>
+ * objects. <tt>MPIVectorSpaceStd</tt> creates <tt>MPIVectorStd</tt>
+ * and <tt>MPIMultiVectorStd</tt>.  This implementation is very
+ * general should be very appropriate for many different concrete
+ * implementations.
  *
  * <b>Note:</b> It is very important that subclasses call the
  * <tt>updateState()</tt> function whenever the state of
@@ -134,10 +134,10 @@ namespace TSFCore {
  * any of the public member functions.  For example, if a different
  * value of <tt>localSubDim()</tt> will be returned the next time it
  * is called by a client, then <tt>%updateState()</tt> needs to be
- * called by the subclass.  Clients should never need to worry about
- * this function and that is why <tt>%updateState()</tt> is declared
- * protected.
- *
+ * called by the subclass.  External clients should never need to
+ * worry about this function and that is why <tt>%updateState()</tt>
+ * is declared protected.
+x *
  * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>

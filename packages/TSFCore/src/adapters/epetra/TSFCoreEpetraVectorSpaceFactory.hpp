@@ -42,7 +42,8 @@ namespace TSFCore {
  * <tt>Epetra_Comm</tt> that creates locally-replicated
  * <tt>EpetraVectorSpace</tt> objects given a dimension.
  *
- * ToDo: Finish documentation!
+ * There is really not much to say about this subclass as it is very
+ * straightforward.
  *
  * \ingroup TSFCore_adapters_Epetra_grp
  */
@@ -72,12 +73,14 @@ public:
 	///
 	/** Initialize given a communicator.
 	 *
+	 * @param  epetra_comm  [in]  Smart pointer to <tt>Epetra_Comm</tt> object.
+	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>epetra_comm.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->epetra_com.get()==epetra_comm.get()</tt>
+	 * <li> <tt>this->epetra_com().get()==epetra_comm.get()</tt>
 	 * </ul>
 	 */
 	void initialize(
@@ -85,10 +88,13 @@ public:
 		);
 
 	///
-	/** Set uninitialized and return the underlying <tt>Epetra_BlockMap</tt>
+	/** Set uninitialized and return the underlying <tt>Epetra_Comm</tt>
+	 *
+	 * @param  epetra_comm  [in/out]  If <tt>epetra_comm!=NULL</tt> on input then
+	 *                      <tt>*epetra_comm</tt> will be set to <tt>this->epetra_comm()</tt>.
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->epetra_map.get()==NULL</tt>
+	 * <li> <tt>this->epetra_com().get()==NULL</tt>
 	 * </ul>
 	 */
 	void setUninitialized(
@@ -96,12 +102,9 @@ public:
 		);
 
 	///
-	/** 
-   * Return the underlying Epetra communicator.
-   * (This had been declared but unimplemented. Fixed by KL)
+	/** \brief Return the underlying Epetra communicator.
 	 */
-	Teuchos::RefCountPtr<const Epetra_Comm> epetra_comm() const
-  {return epetra_comm_;}
+	Teuchos::RefCountPtr<const Epetra_Comm> epetra_comm() const;
 
 	//@}
 
@@ -115,13 +118,19 @@ public:
 
 private:
 
-#ifdef DOXYGEN_COMPILE
-	Epetra_Comm                                     *epetra_comm;
-#else	
 	Teuchos::RefCountPtr<const Epetra_Comm>         epetra_comm_;
-#endif
 
 }; // end class EpetraVectorSpaceFactory
+
+// //////////////////////////////
+// Inline members
+
+inline
+Teuchos::RefCountPtr<const Epetra_Comm>
+EpetraVectorSpaceFactory::epetra_comm() const
+{
+	return epetra_comm_;
+}
 
 } // end namespace TSFCore
 

@@ -42,13 +42,12 @@ namespace TSFCore {
  * multiplier.
  *
  * This simple concrete handle-like class should be used by clients
- * that do not want to worrry about whether what the mathematical
- * definition of the un-transposed scaled operator is.  Using this
- * handle class removes the need to create "decorator" subclasses to
- * represent different transpose arguments or to scale the operator
- * and therefore preserves the ability to dynamically cast the
- * underlying <tt>LinearOp</tt> object to query it for extended
- * interfaces.
+ * that do not want to worrry about the mathematical definition of the
+ * un-transposed scaled operator.  Using this handle class removes the
+ * need to create "decorator" subclasses to represent different
+ * transpose arguments or to scale the operator and therefore
+ * preserves the ability to dynamically cast the underlying
+ * <tt>LinearOp</tt> object to query it for extended interfaces.
  *
  * \ingroup TSFCore_ANA_Development_grp
  */

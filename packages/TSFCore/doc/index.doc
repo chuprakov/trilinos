@@ -2,9 +2,9 @@
 
 <b>Warning!</b> Clicking on the above links (i.e. "Class List", "File
 List" etc.)  can be a bit overwhelming and not recommended as a way to
-"browse" what is in the Trilinos "package" %TSFCore.  Instead, it is
+"browse" what is in the Trilinos package %TSFCore.  Instead, it is
 recommended that one use the below outline to browse the classes and
-various functions in this package.  The one exception is the <a
+various functions in this package.  The one exception is the above <a
 href="./modules.html">"Modules"</a> link which is essentially an
 outline of what is presented below.  The following presentation is
 designed to expose developers to the contents of the %TSFCore package
@@ -26,20 +26,34 @@ roadmap to the Doxygen-generated C++ code documentation and provide
 convient access to helpful examples.
 
 This main page provides the starting point for all of the
-documentation for the %TSFCore package.  The section \ref
-fundamental_TSFCore_interfaces_sec defines the most fundamental
-interfaces that the %TSFCore package is all about.  The section \ref
-TSFCore_use_cases_sec outlines three primary categories of use
-cases and provides the main categorization and presentation for all of
-the code in the %TSFCore package.  The section \ref
-TSFCore_examples_sec provides links to examples that are designed to
-be approachable by non-C++ experts.  The section \ref
-TSFCore_configuration_src mentions some of the more important
-configuation options that affect the %TSFCore package and what code is
-built.  The section \ref TSFCore_technicalities_sec mentions some of
-the technicalities related to all %TSFCore software.  The last section
-\ref TSFCore_related_software_sec provides some linkes to %TSFCore
-related software.
+documentation for the %TSFCore package.  The following is an outline
+of the sections on this main page:
+
+<ul>
+<li> \ref fundamental_TSFCore_interfaces_sec defines the
+most fundamental interfaces that the %TSFCore package is all about.
+<li> \ref TSFCore_use_cases_sec outlines three primary
+categories of use cases and provides the main categorization and
+presentation for all of the code in the %TSFCore package.
+<li> \ref TSFCore_examples_sec provides links to examples
+that are designed to be approachable by non-C++ experts.
+<li> \ref TSFCore_technicalities_sec mentions some of the
+technicalities related to all %TSFCore software.
+<li> \ref TSFCore_configuration_src mentions some of the
+more important configuation options that affect the %TSFCore package
+and what code is built.
+<li> \ref TSFCore_dependencies_src describes what other
+Trilinos packages that the %TSFCore package needs to build and link
+against.
+<li> \ref TSFCore_external_projects_src describes how to
+build and link against %TSFCore software by external projects.
+<li> \ref TSFCore_documents_src lists some useful documents related
+to %TSFCore.
+<li> \ref TSFCore_contributors_src list individuals who
+contributed to the development of %TSFCore.
+<li> \ref TSFCore_related_software_sec provides some links
+to %TSFCore-related software.
+</ul>
 
 \section fundamental_TSFCore_interfaces_sec Fundamental TSFCore Interfaces
 
@@ -73,24 +87,21 @@ the above fundamental %TSFCore interfaces.
 Here we outline three common use cases related to the \ref
 fundamental_TSFCore_interfaces_sec
 
-There are primarily three different use cases related the fundamental
-%TSFCore interfaces shown above.  The first, and by far the most
-important, is the use of %TSFCore as a basic and minimal \ref
-TSFCore_ANA_Iteroperability_grp "interoperability" layer for abstract
-numerical algorithms (ANAs).  This use case is really the main reason
-for the creation of %TSFCore in the first place.  The second most
-important use case associated with the fundamental %TSFCore interfaces
-is the development of concrete subclass \ref TSFCore_Adapters_grp
-"implementations" of vectors, multi-vectors and linear operators.
-These types of subclass implementations may also known as "adapter"
-subclasses if they "adapt" some pre-existing interface.  The third,
-and perhaps the least important, use case for the fundamental %TSFCore
-interfaces is as a direct \ref TSFCore_ANA_Development_grp "API" for
-the development of ANA implementations.  While the fundamental
-%TSFCore iterface classes were not primarily designed with this thrid
-use case in mind, with some minimal helper functions and classes,
-directly writing ANA implementations in terms of %TSFCore objects is
-quite straightforward.
+There are primarily three different use cases related to the
+fundamental %TSFCore interfaces shown above.  The first, and by far
+the most important, is \ref TSFCore_ANA_Iteroperability_grp.  This use
+case is really the main reason for the creation of %TSFCore in the
+first place.  The second most important use case associated with the
+fundamental %TSFCore interfaces is the \ref TSFCore_Adapters_grp of
+vectors, multi-vectors and linear operators.  These types of subclass
+implementations may also known as "adapter" subclasses if they "adapt"
+some pre-existing interface.  The third, and perhaps the least
+important, use case for the fundamental %TSFCore interfaces is the use
+of \ref TSFCore_ANA_Development_grp.  While the fundamental %TSFCore
+iterface classes were not primarily designed with this thrid use case
+in mind, with some minimal helper functions and classes, directly
+writing ANA implementations in terms of %TSFCore objects is quite
+straightforward.
 
 Click on the below links for a discussion of each of these three use
 cases and a description of additional supporting code.
@@ -122,42 +133,6 @@ for the code in the %TSFCore package:
 <li>\ref TSFCore_product_vec_spc_prg_grp
 
 </ol>
-
-\section TSFCore_configuration_src Configuration of the TSFCore Package
-
-The %TSFCore package's <tt>configure</tt> script responds to a number
-of options that affect that code is built.  Some of the more important
-options are:
-
-<ul>
-
-<li><b><tt>--(dis/en)able-tsfcore-epetra</tt></b>: Determines if the
-\ref TSFCore_adapters_Epetra_grp "Epetra adapter subclasses", example
-code and testing code are built or not.  Disabling support for Epetra
-means that the the %TSFCore package can be built without a dependency
-on the %Epetra pacakge.
-
-</ul>
-
-See the output form <tt>./configure --help</tt> (where <tt>./</tt> is
-the base soruce directory) for a listing of all of the configure
-options.
-
-The %TSFCore package is also affected by configure options passed to
-other packages and some of the these options are:
-
-<ul>
-
-<li><b><tt>--(dis/en)able-teuchos-complex</tt></b>: If enabled then
-the <tt>std::complex<></tt> scalar type are used in templated examples
-and tests.
-
-<li><b><tt>--(dis/en)able-teuchos-gmp</tt></b>: If enabled then the
-extended-precision <tt>mpf_class</tt> scalar type is used in templated
-examples and tests.
-
-</ul>
-
 \section TSFCore_technicalities_sec Some Technicalities about TSFCore Software
 
 A few things about the software in the %TSFCore package are worth
@@ -183,7 +158,10 @@ independent</em> code and all of the %TSFCore software uses this
 traits class.  Any scalar type that is to be used with as
 <tt>Scalar</tt> must provide a specialization of this traits class
 (see source code for <tt>Teuchos_ScalarTraits.hpp</tt> for examples of
-how to do this).
+how to do this).  In addition, if MPI is to be used then
+specialization for the traits classes
+<tt>Teuchos::PrimitiveTypeTraits</tt> and
+<tt>Teuchos::RawMPITraits</tt> must also be provided.
 
 The fundamental %TSFCore interfaces and related software are not
 templated on an index (ordinal) type.  Instead, the type
@@ -221,16 +199,144 @@ standard base class <tt>std::exception</tt>.  All exceptions in
 <tt>TEST_FOR_EXCEPTION()</tt> or <tt>TEST_FOR_EXCEPT()</tt>.  By
 consistently using these macros is is easy to set a breakpoint in a
 debugger just before an exception is thrown by setting a breakpoint on
-<tt>TestForException_break()</tt>.
+<tt>TestForException_break()</tt>.  If the code is configured with the
+macro <tt>_DEBUG</tt> defined (i.e. <tt>CPPFLAGS="-D_DEBUG ..."</tt>)
+then a lot of validation is performed.  Whenever development work is
+being performed this option macro should always be enabled since a lot
+of errors will be caught that would be hard to diagnose otherwise.
 
 </ul>
 
+\section TSFCore_configuration_src Configuration of the TSFCore Package
 
-\section TSFCore_related_software_sec Other Software related to TSFCore
+The %TSFCore package's <tt>configure</tt> script (which should be
+called from the base Trilinos-level configure script) responds to a
+number of options that affect that code is built.  Some of the more
+important options are:
+
+<ul>
+<li><b>--enable-tsfcore</b>: Causes the %TSFCore package and all of
+its dependent packages to be enabled and built.
+<li><b><tt>--(dis/en)able-tsfcore-epetra</tt></b>: Determines if the
+\ref TSFCore_adapters_Epetra_grp "Epetra adapter subclasses", example
+code and testing code are built or not.  Disabling support for Epetra
+means that the the %TSFCore package can be built without a dependency
+on the %Epetra pacakge.
+</ul>
+
+See the output form <tt>./configure --help</tt> (where <tt>./</tt> is
+the base soruce directory) for a listing of all of the configure
+options.
+
+The %TSFCore package is also affected by configure options passed to
+other packages and some of the these options are:
+
+<ul>
+<li><b><tt>--(dis/en)able-teuchos-complex</tt></b>: If enabled then
+the <tt>std::complex<></tt> scalar type are used in templated examples
+and tests.
+<li><b><tt>--(dis/en)able-teuchos-gmp</tt></b>: If enabled then the
+extended-precision <tt>mpf_class</tt> scalar type is used in templated
+examples and tests.
+</ul>
+
+\section TSFCore_dependencies_src Other Trilinos Packages that TSFCore is Dependent on
+
+The %TSFCore package is dependent on the following Trilinos packages:
+
+<ul>
+<li><b>%Teuchos</b>: This package supplies basic utility classes such
+as <tt>Teuchos::RefCountPtr</tt> and <tt>Teuchos::BLAS</tt> that
+%TSFCore software is dependant on.
+<li><b>TSFCoreUtils</b>: This package includes some other utility
+classes but mainly includes <tt>RTOpPack</tt> which includes the very
+important <tt>RTOpPack::RTOpT</tt> interface class as well as many
+different concrete implementations such as
+<tt>RTOpPack::ROpDotProd</tt> and <tt>RTOpPack::TOpAXPY</tt>.
+<li><b>Epetra</b>: If <tt>--enable-tsfcore-epetra</tt> is specified
+with <tt>configure</tt> then \ref TSFCore_adapters_Epetra_grp are
+compiled and included in the output library <tt>libTSFCore.a</tt>.
+</ul>
+
+\section TSFCore_external_projects_src Building and Linking Against TSFCore in External Projects
+
+The %TSFCore package, and the other packages that %TSFCore depends on,
+should be built and installed as described in <a
+href="http://software.sandia.gov/trilinos/installation_manual.html">The
+Trilinos Installation Manual</a>.  The installation directory
+<tt>$trilinos_install_dir/include/.</tt> (which you specified using
+the --prefix option) contains a file called
+<tt>trilinos_make_macros.mak</tt>.  The file contains make macros that
+where used to build Trilinos and these same options should be used to
+build your external code as well.  This file can be included as:
+
+\verbatim
+
+include $(trilinos_install_dir)/include/trilinos_make_macros.mak
+\endverbatim
+
+Link line for any executable should then include the macro:
+
+\verbatim
+
+TSFCORE_LIBS =\
+  $(trilinos_install_dir)/lib/libTSFCore.a \
+  $(trilinos_install_dir)/lib/libTSFCoreUtils.a \
+  $(trilinos_install_dir)/lib/libepetra.a \
+  $(trilinos_install_dir)/lib/libteuchos.a \
+  $(BLAS_LIBS) $(FLIBS)
+\endverbatim
+
+Above, the Epetra library should only be included if you are using
+Epetra or the Epetra adapters.
+
+\section TSFCore_documents_src Documents Describing or are Related to TSFCore
 
 <ul>
 
-<li> <a href="./../nonlin/html/index.html">TSFCore::Nonlin</a> :
+<li><b><a
+href="http://software.sandia.gov/trilinos/RefCountPtrBeginnersGuideSAND.pdf">
+Teuchos::RefCountPtr Beginner's Guide </a></b> - An Introduction to the
+Trilinos Smart Reference-Counted Pointer Class for (Almost) Automatic
+Dynamic Memory Management in C++.  This paper describes the basics of
+<tt>Teuchos::RefCountPtr</tt> and defines outlines a convension for
+passing objects to and from functions that all of the code in
+%TSFCcore adheres to.
+
+<li><b><a href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf"> Vector
+Reduction/Transformation Operators </a></b>.  This paper describes the
+need for and the basic design of <tt>RTOpPack::RTOpT</tt>.  The
+concrete implementation described in this paper used C while the
+current <tt>RTOpPack::RTOpT</tt> is a fully templated C++
+implementation.
+
+<li><b><a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">
+TSFCore </a></b> - A package of light-weight object-oriented abstractions
+for the development of abstract numerical algorithms and interfacing
+to linear algebra libraries and applications.  This paper describes
+the requirements and the use cases for the \ref
+fundamental_TSFCore_interfaces_sec.  This paper contains critical
+design information without which %TSFCore can not be fully
+appreciated.  However, most developer's that interact with TSFCore
+need not know all of this detailed design information.
+
+</ul>
+
+\section TSFCore_contributors_src Contributors to the TSFCore Package
+
+<ul>
+<li> Roscoe A. Bartlett (rabartl@sandia.gov): %TSFCore lead develoepr
+<li> Kevin L. Long (krlong@sandia.gov) : %TSFExtended lead developer
+<li> Michael A. Heroux (maherou@sandia.gov): Trilinos leadear
+<li> Heidi Thornquist (hkthorn@sandia.gov): Belos lead developer
+</ul>
+
+\section TSFCore_related_software_sec Other Software Related to TSFCore
+
+<ul>
+
+<li> <b><a href="./../nonlin/html/index.html">TSFCore::Nonlin</a></b> :
 Interfaces based on TSFCore for the development of steady-state
 nonlinear ANAs.
 

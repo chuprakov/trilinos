@@ -92,12 +92,14 @@ public:
 	///
 	/** Initialize given an <tt>Epetra_Map</tt>.
 	 *
+	 * @param  epetra_map  [in] Smart pointer to <tt>const Epetra_Map</tt> object.
+	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>epetra_map.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->epetra_map.get()==epetra_map.get()</tt>
+	 * <li> <tt>this->epetra_map().get()==epetra_map.get()</tt>
 	 * <li> <tt>this->dim()==epetra_map->NumGlobalElements()</tt>
 	 * <li> if (<tt>PETRA_COMM_MPI</tt> is defined and <tt>dynamic_cast<const Epetra_MpiComm*>(epetra_map.get()) != NULL</tt>)
 	 *      <ul><li><tt>this->mpiComm() == dynamic_cast<const Epetra_MpiComm&>(epetra_map)->Comm()</tt></ul>
@@ -114,8 +116,11 @@ public:
 	///
 	/** Set uninitialized and return the underlying <tt>Epetra_Map</tt>
 	 *
+	 * @param  epetra_map  [in/out]  If <tt>epetra_map!=NULL</tt> on input then
+	 *                      <tt>*epetra_map</tt> will be set to <tt>this->epetra_map()</tt>.
+	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->epetra_map.get()==NULL</tt>
+	 * <li> <tt>this->epetra_map().get()==NULL</tt>
 	 * <li> <tt>this->dim()==0</tt>
 	 * <li> <tt>this->mpiComm() == MPI_COMM_NULL</tt>
 	 * <li> <tt>this->localOffset() == -1</tt>
@@ -146,7 +151,7 @@ public:
 #endif
 	/// Returns an allocated <tt>EpetraMultiVector</tt> object. 
 	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
-	///
+	/// Creates a deep copy
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
 
 	//@}
