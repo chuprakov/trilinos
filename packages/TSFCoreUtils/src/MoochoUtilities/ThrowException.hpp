@@ -90,7 +90,7 @@ void ThrowException_break();
     const bool throw_exception = (throw_exception_test);            \
     if(throw_exception) {                                           \
         ThrowException_break();                                     \
-	    std::ostringstream omsg;                                    \
+	    TSFCoreUtilsOSS omsg;                                    \
 	    omsg << __FILE__ << ":" << __LINE__ << ": "                 \
              << #throw_exception_test << ": " << msg;               \
 	    throw Exception(omsg.str().c_str());                        \

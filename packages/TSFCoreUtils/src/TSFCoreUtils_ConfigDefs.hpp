@@ -142,6 +142,22 @@
 #include <vector.h>
 #endif
 
+#if HAVE_SSTREAM
+#include <sstream>
+typedef std::ostringstream TSFCoreUtilsOSS;
+#elif HAVE_SSTREAM_H
+#include <sstream.h>
+typedef ostringstream TSFCoreUtilsOSS;
+#elif HAVE_STRSTREAM
+#include <strstream>
+typedef std::ostrstream TSFCoreUtilsOSS;
+#elif HAVE_STRSTREAM_H
+#include <strstream.h>
+typedef ostrstream TSFCoreUtilsOSS;
+#else
+#error "Found neither sstream, sstream.h, strstream.h, nor strstream"
+#endif
+
 #ifdef HAVE_IOSFWD
 #include <iosfwd>
 #else

@@ -141,8 +141,9 @@ TAC_ARG_CHECK_MPI
 
 AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
 AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h ostream iostream iostream.h],,,)
-AC_CHECK_HEADERS([string string.h malloc.h sstream stdexcept map map.h vector vector.h],,,)
+AC_CHECK_HEADERS([string string.h malloc.h stdexcept map map.h vector vector.h],,,)
 AC_CHECK_HEADERS([memory memory.h typeinfo limits.h new iosfwd],,,)
+AC_CHECK_HEADERS([sstream sstream.h strstream strstream.h],,,)
 
 if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  TSFCoreUtils requires at least one or the other.]])
@@ -191,6 +192,10 @@ fi
 if test "X$ac_cv_header_vector" != "Xyes" && test "X$ac_cv_header_vector_h" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find vector or vector.h.  TSFCoreUtils requires at least one or the other.]])
 fi  
+
+if test "X$ac_cv_header_sstream" != "Xyes" && test "X$ac_cv_header_strstream" != "Xyes" && test "X$ac_cv_header_sstream" != "Xyes" && test "X$ac_cv_header_strstream" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find sstream, strstream, sstream.h, or strstream.h.  TSFCoreUtils requires at least one of these.]])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
