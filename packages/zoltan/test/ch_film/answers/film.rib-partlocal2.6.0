@@ -7,6 +7,7 @@ Parallel Disk Info	= number=0
 test multi callbacks    = 1
 test null import lists  = 1
 test local partitions	= 2
+Test Drops		= 1
 Global element ids assigned to processor 0
 GID	Part	Perm	IPerm
 58	0	-1	-1

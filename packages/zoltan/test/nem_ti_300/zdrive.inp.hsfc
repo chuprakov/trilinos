@@ -6,3 +6,4 @@ Parallel Disk Info	= number=2,offset=1,zeros
 Parallel file location  = root=pio_, subdir=.
 test multi callbacks    = 1
 test null import lists  = 1
+Test Drops		= 1
