@@ -111,7 +111,7 @@ public:
 	/// Construct to an initialized state (calls <tt>initialize</tt>)
 	ProductVectorSpace(
 		const int                                                   numBlocks
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >     vecSpaces[] = NULL
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >     vecSpaces[]
 		);
 	
 	///
@@ -146,7 +146,7 @@ public:
 	 */
 	virtual void initialize(
 		const int                                                   numBlocks
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >     vecSpaces[] = NULL
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >     vecSpaces[]
 		);
 
 	///
@@ -165,7 +165,7 @@ public:
 	 * </ul>
 	 */
 	virtual void uninitialize(
-		int                                                         *numBlocks   = NULL
+		int                                                         *numBlocks  = NULL
 		,Teuchos::RefCountPtr<const VectorSpace<Scalar> >           vecSpaces[] = NULL
 		);
 
