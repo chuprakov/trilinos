@@ -16,9 +16,9 @@
 #ifndef RSQP_TRACK_STATS_STD_H
 #define RSQP_TRACK_STATS_STD_H
 
-#include "ReducedSpaceSQPPack/include/rSQPTrack.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "Misc/include/stpwatch.h"
+#include "GeneralIterationPack/include/AlgorithmTrack.h"
+#include "stpwatch.h"
 
 namespace ReducedSpaceSQPPack {
 

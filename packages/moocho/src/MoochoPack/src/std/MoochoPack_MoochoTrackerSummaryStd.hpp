@@ -16,10 +16,10 @@
 #ifndef RSQP_TRACK_SUMMARY_STD_H
 #define RSQP_TRACK_SUMMARY_STD_H
 
-#include "ReducedSpaceSQPPack/include/rSQPTrack.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 #include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
 #include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
+#include "GeneralIterationPack/include/AlgorithmTrack.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -16,11 +16,11 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -33,7 +33,9 @@ namespace ReducedSpaceSQPPack {
  *
  * See the printed step documentation for a description.
  */
-class ReducedHessianSecantUpdateStd_Step : public ReducedHessian_Step {
+class ReducedHessianSecantUpdateStd_Step
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
 	///
@@ -59,9 +61,9 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	enum { NO_BASIS_UPDATED_YET = -1 };
-	int num_basis_;
-	int iter_k_rHL_init_ident_;
+	enum { NO_BASIS_UPDATED_YET = INT_MIN };
+	int                             num_basis_;
+	int                             iter_k_rHL_init_ident_;
 	quasi_newton_stats_iq_member	quasi_newton_stats_;
 	
 };	// end class ReducedHessianSecantUpdateStd_Step

@@ -16,15 +16,18 @@
 #ifndef CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
-#include "../rSQPAlgo_Step.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Calculates the reduced gradient of the Lagrangian.
-  * rGL = rGf + Z' * nu + V' * lambda(dep)
-  */
-class CalcReducedGradLagrangianStd_AddedStep : public rSQPAlgo_Step {
+/** Calculates the reduced gradient of the Lagrangian
+ * <tt>rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)</tt> 
+ */
+class CalcReducedGradLagrangianStd_AddedStep
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
 	// ////////////////////

@@ -16,16 +16,18 @@
 #ifndef CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
 /** Checks if a BFGS update should be preformed.
   */
-class CheckSkipBFGSUpdateStd_Step : public rSQPAlgo_Step {
+class CheckSkipBFGSUpdateStd_Step
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
 	///
@@ -39,16 +41,17 @@ public:
 		value_type	skip_bfgs_prop_const	= 10.0
 		);
 
-	// ////////////////////
-	// Overridden
+	/** @name Overridden from AlgorithmStep */
+	//@{
 
 	///
 	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
-
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+	
+	//@}
 
 private:
 	quasi_newton_stats_iq_member	quasi_newton_stats_;

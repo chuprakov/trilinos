@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -44,14 +44,22 @@ public:
 		const bfgs_update_ptr_t&      bfgs_update = NULL
 		);      
 
+	/** @name Overridden from ReducedHessianSecantUpdate_Strategy */
+	//@{
 	///
 	bool perform_update(
-		VectorSlice* s_bfgs, VectorSlice* y_bfgs, bool first_update
-		,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,MatrixWithOp *rHL_k
+		VectorWithOpMutable     *s_bfgs
+		,VectorWithOpMutable    *y_bfgs
+		,bool                   first_update
+		,std::ostream           & out
+		,EJournalOutputLevel    olevel
+		,rSQPAlgo               *algo
+		,rSQPState              *s
+		,MatrixSymWithOp        *rHL_k
 		);
 	///
 	void print_step( std::ostream& out, const std::string& leading_str ) const;
+	//@}
 
 private:
 	quasi_newton_stats_iq_member	quasi_newton_stats_;

@@ -16,21 +16,20 @@
 #ifndef LINE_SEARCH_FULL_STEP_STEP_H
 #define LINE_SEARCH_FULL_STEP_STEP_H
 
-#include "../rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
 #include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Takes the full step x_kp1 = x_k + d_k (d_k = Ypy_k + Zpz_k).
+/** Takes the full step <tt>x_kp1 = x_k + d_k (d_k = Ypy_k + Zpz_k)</tt>.
   */
-class LineSearchFullStep_Step : public LineSearch_Step {
+class LineSearchFullStep_Step
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
-
-	///
-	typedef ConstrainedOptimizationPack::VariableBoundsTester
-		VariableBoundsTester;
 
 	/// «std comp» Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
@@ -40,16 +39,15 @@ public:
 		const bounds_tester_ptr_t&	bounds_tester
 		);
 
-	// ////////////////////
-	// Overridden
-
+	/** @name Overridden from AlgorithmStep */
+	//@{
 	///
 	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
-
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+	//@}
 
 private:
 	/// Not defined and not to be called

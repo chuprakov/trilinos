@@ -16,15 +16,18 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
-#include "../rSQPAlgo_Step.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
 /** Check for convergence.
   */
-class CheckConvergenceStd_AddedStep : public rSQPAlgo_Step {
+class CheckConvergenceStd_AddedStep
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
 	///
@@ -58,16 +61,15 @@ public:
 		, bool scale_opt_error_by_Gf 			= true
 		);
 
-	// ////////////////////
-	// Overridden
-
+	/** @name Overridden from AlgorithmStep */
+	//@{
 	///
 	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
-
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+	//@}
 
 };	// end class CheckConvergenceStd_AddedStep
 
