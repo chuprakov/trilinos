@@ -31,11 +31,11 @@
   * gives the mapping from the new sequence to the old sequence.
   * The statement #i_old = perm(i_new)# gives the indice in the
   * old vector.  After the permutation is performed the postcondition:
-  \begin{verbatim}
+  \verbatim
 
     perm_vs(i) == vs(perm(i)), for i = 1,2,...,vs.size()
 
-  \end{verbatim}
+  \endverbatim
   * is true.
   *
   * For the GenMatrix permutation functions the #row_perm# argument
@@ -58,22 +58,22 @@ namespace LinAlgPack {
 ///
 /** Initialize a permutation to the identiy permutation.
   *
-  * Preconditions: \begin{itemize}
-  * \item #perm.size() > 0# (throw std::length_error)
-  * \end{itemize}
+  * Preconditions: <ul>
+  * <li> #perm.size() > 0# (throw std::length_error)
+  * </ul>
   *
-  * Postconditions: \begin{itemize}
-  * \item #perm(i) = i#, for i = 1, 2, ... m #perm.size()#
-  * \end{itemize}
+  * Postconditions: <ul>
+  * <li> #perm(i) = i#, for i = 1, 2, ... m #perm.size()#
+  * </ul>
   */
 void identity_perm(IVector* perm);
 
 ///
 /** Find the inverse permutation (inv_perm) given a permutation vector (perm).
   *
-  * Postconditions: \begin{itemize}
-  * \item #inv_perm.size() == perm.size()#
-  * \end{itemize}
+  * Postconditions: <ul>
+  * <li> #inv_perm.size() == perm.size()#
+  * </ul>
   */
 void inv_perm(const IVector& perm, IVector* inv_perm);
 

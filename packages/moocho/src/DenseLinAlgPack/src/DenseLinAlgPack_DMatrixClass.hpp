@@ -54,11 +54,11 @@ public:
 	  * These nested types give the types used in the interface to the class.
 	  *
 	  * \begin{description}
-	  *	\item[#value_type#]				- type being stored in the underlying valarray<>			
-	  *	\item[#size_type#]				- type for the number rows and coluns
-	  *	\item[#difference_type#]		- type for the stride between elements (in a row or column)
-	  *	\item[#reference#]				- value_type&
-	  *	\item[#const_reference#]		- const value_type&
+	  *	<li>[#value_type#]				- type being stored in the underlying valarray<>			
+	  *	<li>[#size_type#]				- type for the number rows and coluns
+	  *	<li>[#difference_type#]		- type for the stride between elements (in a row or column)
+	  *	<li>[#reference#]				- value_type&
+	  *	<li>[#const_reference#]		- const value_type&
 	  * \end{description}
 	  */
 	//@{
@@ -99,11 +99,11 @@ public:
 	  * or a constant view (#const GenMatrixSlice#).  Here is an example of how to
 	  * create a constant view:
 	  *
-	  \begin{verbatim}
+	  \verbatim
 		const GenMatrixSlice::size_type m = 4, n = 4;
 		const GenMatrixSlice::value_type ptr[m*n] = { ... };
 		const GenMatrixslice mat(cosnt_cast<GenMatrixSlice::value_type*>(ptr),m*n,m,m,n);
-	  \end{verbatim}
+	  \endverbatim
 	  *
 	  * The #const_cast<...># such as in the example above is perfectly safe to use
 	  * when constructing  #const# veiw of #const# data.  On the other hand casting
@@ -111,10 +111,10 @@ public:
 	  * #const# data may reside in ROM for example.  By using a non-#const# pointer in the
 	  * constructor you avoid accidentally making a non-#const# view of #const# data.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #rows <= max_rows# (throw out_of_range)
-	  *		\item #start + rows + max_rows * (cols - 1) <= v.size()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rows <= max_rows# (throw out_of_range)
+	  *		<li> #start + rows + max_rows * (cols - 1) <= v.size()# (throw out_of_range)
+	  *		</ul>
 	  *
 	  * @param	ptr			pointer to the storage of the elements of the matrix (column oriented).
 	  * @param	size		total size of the storage pointed to by #ptr# (for size checking)
@@ -135,12 +135,12 @@ public:
 	  *
 	  * I and J must be bounded ranges (full_range() == false).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #I.full_range() == false# (throw out_of_range)
-	  *		\item #J.full_range() == false# (throw out_of_range)
-	  *		\item #I.ubound() <= gms.rows()# (throw out_of_range)
-	  *		\item #J.ubound() <= gms.cols()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #I.full_range() == false# (throw out_of_range)
+	  *		<li> #J.full_range() == false# (throw out_of_range)
+	  *		<li> #I.ubound() <= gms.rows()# (throw out_of_range)
+	  *		<li> #J.ubound() <= gms.cols()# (throw out_of_range)
+	  *		</ul>
 	  */
 	GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
 		, const Range1D& J );
@@ -166,9 +166,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
-	  *		\item[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
-	  *		\item[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
+	  *		<li>[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const GenMatrixSlice& gms) const;
@@ -209,10 +209,10 @@ public:
 	  * (k = -1, -2, ..., -#this->rows()# + 1).  Values of k > 0 are the upper diagonals
 	  * (k = 1, 2, ..., #this->cols()# - 1).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #[k < 0] k <= this->rows() + 1# (throw out_of_range)
-	  *		\item #[k > 0] k <= this->cols() + 1# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #[k < 0] k <= this->rows() + 1# (throw out_of_range)
+	  *		<li> #[k > 0] k <= this->cols() + 1# (throw out_of_range)
+	  *		</ul>
 	  */
 	VectorSlice			diag(difference_type k = 0);
 	/// Same as above.
@@ -228,10 +228,10 @@ public:
 	  * selected.  For example. To select all the rows and the first 5 columns of
 	  * a matrix #A# you would use #A(Range1D(),Range1D(1,5))#.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #[I.full_range() == false] I.ubound() <= this->rows()# (throw out_of_range)
-	  *		\item #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #[I.full_range() == false] I.ubound() <= this->rows()# (throw out_of_range)
+	  *		<li> #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
+	  *		</ul>
 	  */
 	GenMatrixSlice operator()(const Range1D& I, const Range1D& J);
 	/// Same as above.
@@ -243,12 +243,12 @@ public:
 	  * rectangular region of this GenMatrixSlice.  This submatrix region
 	  * represents the rows i1 to 12 and colunms j1 to j2.
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #i1 <= i2# (throw out_of_range)
-	  *		\item #i2 <= this->rows()# (throw out_of_range)
-	  *		\item #j1 <= j2# (throw out_of_range)
-	  *		\item #j2 <= this->cols()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #i1 <= i2# (throw out_of_range)
+	  *		<li> #i2 <= this->rows()# (throw out_of_range)
+	  *		<li> #j1 <= j2# (throw out_of_range)
+	  *		<li> #j2 <= this->cols()# (throw out_of_range)
+	  *		</ul>
 	  */
 	GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2);
@@ -279,9 +279,9 @@ public:
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
 	  * and the single element is set to alpha.
 	  *
-	  * Postcondtions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
-	  *		\end{itemize}
+	  * Postcondtions: <ul>
+	  *		<li> #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
+	  *		</ul>
 	  */
 	GenMatrixSlice& operator=(value_type alpha);
 	///
@@ -290,14 +290,14 @@ public:
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to
 	  * the size of the rhs matrix.
 	  *
-	  * Precondtions: \begin{itemize}
-	  *		\item #this->rows() == gms_rhs.rows()# (throw length_error)
-	  *		\item #this->cols() == gms_rhs.cols()# (throw length_error)
-	  *		\end{itemize}
+	  * Precondtions: <ul>
+	  *		<li> #this->rows() == gms_rhs.rows()# (throw length_error)
+	  *		<li> #this->cols() == gms_rhs.cols()# (throw length_error)
+	  *		</ul>
 	  *
-	  * Postcondtions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
-	  *		\end{itemize}
+	  * Postcondtions: <ul>
+	  *		<li> #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
+	  *		</ul>
 	  */
 	GenMatrixSlice& operator=(const GenMatrixSlice& gms_rhs);
 
@@ -349,11 +349,11 @@ public:
 	  * These nested types give the types used in the interface to the class.
 	  *
 	  * \begin{description}
-	  *	\item[#value_type#]				type being stored in the underlying valarray<>			
-	  *	\item[#size_type#]				type for the number rows and coluns
-	  *	\item[#difference_type#]		type for the stride between elements (in a row or column)
-	  *	\item[#reference#]				value_type&
-	  *	\item[#const_reference#]		const value_type&
+	  *	<li>[#value_type#]				type being stored in the underlying valarray<>			
+	  *	<li>[#size_type#]				type for the number rows and coluns
+	  *	<li>[#difference_type#]		type for the stride between elements (in a row or column)
+	  *	<li>[#reference#]				value_type&
+	  *	<li>[#const_reference#]		const value_type&
 	  * \end{description}
 	  */
 	//@{
@@ -381,25 +381,25 @@ public:
 	///
 	/** Construct rectangular matrix (rows x cols) with elements initialized to val.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == val#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i,j) == val#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
+	  *		</ul>
 	  */
 	explicit GenMatrix(value_type val, size_type rows, size_type cols);
 	/// 
 	/** Construct rectangular matrix (rows x cols) initialized to elements of p (by column).
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == p[i-1 + rows * (j - 1)]#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i,j) == p[i-1 + rows * (j - 1)]#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
+	  *		</ul>
 	  */
 	explicit GenMatrix(const value_type* p, size_type rows, size_type cols);
 	///
 	/** Construct a matrix from the elements in another GenMatrixSlice, #gms#.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == gms(i,j)#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i,j) == gms(i,j)#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
+	  *		</ul>
 	  */
 	GenMatrix(const GenMatrixSlice& gms);
 
@@ -425,9 +425,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
-	  *		\item[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
-	  *		\item[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
+	  *		<li>[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const GenMatrixSlice& gms) const;
@@ -473,10 +473,10 @@ public:
 	  * (k = -1, -2, ..., #this->rows()# - 1).  Values of k > 0 are the upper diagonals
 	  * (k = 1, 2, ..., #this->cols()# - 1).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #[k < 0] k <= this->rows() + 1# (throw out_of_range)
-	  *		\item #[k > 0] k <= this->cols() + 1# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #[k < 0] k <= this->rows() + 1# (throw out_of_range)
+	  *		<li> #[k > 0] k <= this->cols() + 1# (throw out_of_range)
+	  *		</ul>
 	  */
 	VectorSlice			diag(difference_type k = 0);
 
@@ -494,10 +494,10 @@ public:
 	  * selected.  For example. To select all the rows and the first 5 columns of
 	  * a matrix #A# you would use #A(Range1D(),Range1D(1,5))#.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #[I.full_range() == false] I.ubound() <= this->rows()# (throw out_of_range)
-	  *		\item #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #[I.full_range() == false] I.ubound() <= this->rows()# (throw out_of_range)
+	  *		<li> #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
+	  *		</ul>
 	  */
 	GenMatrixSlice operator()(const Range1D& I, const Range1D& J);
 
@@ -511,12 +511,12 @@ public:
 	  * rectangular region of this GenMatrixSlice.  This submatrix region
 	  * represents the rows i1 to 12 and colunms j1 to j2.
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #i1 <= i2# (throw out_of_range)
-	  *		\item #i2 <= this->rows()# (throw out_of_range)
-	  *		\item #j1 <= j2# (throw out_of_range)
-	  *		\item #j2 <= this->cols()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #i1 <= i2# (throw out_of_range)
+	  *		<li> #i2 <= this->rows()# (throw out_of_range)
+	  *		<li> #j1 <= j2# (throw out_of_range)
+	  *		<li> #j2 <= this->cols()# (throw out_of_range)
+	  *		</ul>
 	  */
 	GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2);
@@ -557,8 +557,8 @@ public:
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
 	  * and the single element is set to alpha.
 	  *
-	  * Postcondtions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
+	  * Postcondtions: <ul>
+	  *		<li> #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  */
 	GenMatrix& operator=(value_type rhs);
 	///
@@ -566,8 +566,8 @@ public:
 	  *
 	  * If #this# is not the same size as gms_rhs the #this# is resized.
 	  *
-	  * Postcondtions: \begin{itemize}
-	  *		\item #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
+	  * Postcondtions: <ul>
+	  *		<li> #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  */
 	GenMatrix& operator=(const GenMatrixSlice& gms_rhs);
 	/// Same as above.  Needed to override the default assignment operator.

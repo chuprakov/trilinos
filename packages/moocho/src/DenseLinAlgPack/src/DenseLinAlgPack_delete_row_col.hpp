@@ -25,7 +25,7 @@ namespace LinAlgPack {
  *
  * If #M# is a lower triangular matrix then we partition it
  * as:
- \begin{verbatim}
+ \verbatim
 
    1 |\
      |  \
@@ -41,14 +41,14 @@ namespace LinAlgPack {
      ----------------------
      1         kd         n
 
- \end{verbatim}
+ \endverbatim
  * In order to delete row #kd# and column #kd# the rectangular
  * matrix #M31# is moved up one row and the triangular matrix
  * #M33# is moved up one row and to the left one column.
  *
  * If #M# is an upper triangular matrix then we partition it
  * as:
- \begin{verbatim}
+ \verbatim
 
   1         kd      n
   -------------------- 1
@@ -63,18 +63,18 @@ namespace LinAlgPack {
                  \   |
                    \ | n
  
- \end{verbatim}
+ \endverbatim
  *
  * In order to delete row #kd# and column #kd# the matrix
  * #M13# is moved one column to the left and the upper
  * triangular matrix #M33# is moved one row up and
  * on column to the left.
  *
- * Preconditions:\begin{itemize}
- * \item #M != NULL#
- * \item #M->rows() >= 1#
- * \item #1 <= kd <= M->rows()#
- * \end{itemize}
+ * Preconditions:<ul>
+ * <li> #M != NULL#
+ * <li> #M->rows() >= 1#
+ * <li> #1 <= kd <= M->rows()#
+ * </ul>
  */
 void delete_row_col( size_type kd, tri_ele_gms* M );
 

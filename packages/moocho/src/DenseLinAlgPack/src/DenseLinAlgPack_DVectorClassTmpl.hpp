@@ -68,16 +68,16 @@ public:
 	  * These nested types give the types used in the interface to the class.
 	  *
 	  * \begin{description}
-	  *	\item[#value_type#]				- type being stored in the underlying C++ array			
-	  *	\item[#size_type#]				- type used as an indice and for the number of elements
+	  *	<li>[#value_type#]				- type being stored in the underlying C++ array			
+	  *	<li>[#size_type#]				- type used as an indice and for the number of elements
 	  *										in the vector
-	  *	\item[#difference_type#]		- type for the distance between elements and the stride
-	  *	\item[#iterator#]				- type for the forward non-constant iterator
-	  *	\item[#const_iterator#]			- type for the forward constant iterator (can't change elements)
-	  *	\item[#reverse_iterator#]		- type for the reverse non-constant iterator
-	  *	\item[#const_reverse_iterator#]	- type for the reverse constant iterator (can't change elements)
-	  *	\item[#reference#]				- type returned from subscripting, iterator deferencing etc.
-	  *	\item[#const_reference#]		- "" "" for const vector slice objects
+	  *	<li>[#difference_type#]		- type for the distance between elements and the stride
+	  *	<li>[#iterator#]				- type for the forward non-constant iterator
+	  *	<li>[#const_iterator#]			- type for the forward constant iterator (can't change elements)
+	  *	<li>[#reverse_iterator#]		- type for the reverse non-constant iterator
+	  *	<li>[#const_reverse_iterator#]	- type for the reverse constant iterator (can't change elements)
+	  *	<li>[#reference#]				- type returned from subscripting, iterator deferencing etc.
+	  *	<li>[#const_reference#]		- "" "" for const vector slice objects
 	  * \end{description}
 	  */
 
@@ -123,11 +123,11 @@ public:
 	  * create a #const# view of a #const# C++ array by using a constant cast.
 	  * For example:
 	  *
-	  \begin{verbatim}
+	  \verbatim
 	  const VectorSliceTmpl<T>::size_type n = 5;
 	  const VectorSliceTmpl<T>::value_type ptr[n] = { 1.0, 2.0, 3.0, 4.0, 5,0 };
 	  const VectorSliceTmpl vec(const_cast<VectorSliceTmpl<T>::value_type*>(ptr),n);
-	  \end{verbatim}
+	  \endverbatim
 	  */
 
 	//@{
@@ -157,9 +157,9 @@ public:
 	  * 
 	  *      #ptr[rng.lbound()-1+i]#, for #i# = 0, 1, ..., #rng.ubound()-1#
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #rng.ubound() + 1 <= n# (throw std::out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rng.ubound() + 1 <= n# (throw std::out_of_range)
+	  *		</ul>
 	  *
 	  *	@param	ptr		Pointer to the first element in the raw C++ array
 	  * @param	size	number of elements in the vector slice
@@ -174,17 +174,17 @@ public:
 	  * For example rng = [1,3] would create a VectorSliceTmpl object
 	  * representing the elements 2, 4 and 6.  The following
 	  * shows the elements represented by each of the participating objects.
-	  \begin{verbatim}
+	  \verbatim
 
 	  vs =   [2, 4, 6, 8, 10]
 	  this = [2, 4, 6]
 
-	  \end{verbatim}
+	  \endverbatim
 
-	  * Preconditions: \begin{itemize}
-	  *		\item rng.full_range() == false (throw #std::out_of_range#)
-	  *		\item rng.size() <= vs.size() (throw #std::out_of_range#) 
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> rng.full_range() == false (throw #std::out_of_range#)
+	  *		<li> rng.size() <= vs.size() (throw #std::out_of_range#) 
+	  *		</ul>
 	  * 
 	  * @param	vs		VectorSliceTmpl object that this VectorSliceTmpl object is being created from
 	  * @param	rng		Range1D range of the vector slice being created.
@@ -295,9 +295,9 @@ public:
 	  *
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
+	  *		</ul>
 	  *
 	  * @param	rng		Indece range [lbound,ubound] of the region being returned.
 	  */
@@ -305,11 +305,11 @@ public:
 	/// 
 	/** Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #lbound > 1# (throw out_of_range)
-	  *		\item #lbound < ubound# (throw out_of_range)
-	  *		\item #ubound <= this->size()# (throw out_of_range)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #lbound > 1# (throw out_of_range)
+	  *		<li> #lbound < ubound# (throw out_of_range)
+	  *		<li> #ubound <= this->size()# (throw out_of_range)
+	  *		</ul>
 	  *
 	  * @param	rng		Range [lbound,ubound] of the region being returned.
 	  */
@@ -337,26 +337,26 @@ public:
 	///
 	/** vs = alpha (Sets all the elements to the constant alpha).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #this->size() > 0# (throw #std::length_error#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #this->size() > 0# (throw #std::length_error#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
+	  *		</ul>
 	  */
 	VectorSliceTmpl<value_type>& operator=(value_type alpha);
 	///
 	/** vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #this->size() == rhs.size()# (throw #out_of_range#)
-	  *		\item #rhs.size() > 0# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #this->size() == rhs.size()# (throw #out_of_range#)
+	  *		<li> #rhs.size() > 0# (throw #out_of_range#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
+	  *		</ul>
 	  */
 	VectorSliceTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
 
@@ -373,9 +373,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between this and vs
-	  *		\item[SOME_OVERLAP]	There is some memory locations that this and vs share
-	  *		\item[SAME_MEM]		The VectorSliceTmpl objects this and vs share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and vs
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and vs share
+	  *		<li>[SAME_MEM]		The VectorSliceTmpl objects this and vs share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const VectorSliceTmpl<value_type>& vs) const;
@@ -431,15 +431,15 @@ public:
 	  * These nested types give the types used in the interface to the class.
 	  *
 	  * \begin{description}
-	  *	\item[#value_type#]				- type being stored in the underlying vector<>			
-	  *	\item[#size_type#]				- type for the number of elements in the vector<>
-	  *	\item[#difference_type#]		- type for the distance between elements
-	  *	\item[#iterator#]				- type for the forward non-constant iterator
-	  *	\item[#const_iterator#]			- type for the forward constant iterator (can't change elements)
-	  *	\item[#reverse_iterator#]		- type for the reverse non-constant iterator
-	  *	\item[#const_reverse_iterator#]	- type for the reverse constant iterator (can't change elements)
-	  *	\item[#reference#]				- type returned from subscripting, iterator deferencing etc.
-	  *	\item[#const_reference#]		- "" "" for const vector slice objects
+	  *	<li>[#value_type#]				- type being stored in the underlying vector<>			
+	  *	<li>[#size_type#]				- type for the number of elements in the vector<>
+	  *	<li>[#difference_type#]		- type for the distance between elements
+	  *	<li>[#iterator#]				- type for the forward non-constant iterator
+	  *	<li>[#const_iterator#]			- type for the forward constant iterator (can't change elements)
+	  *	<li>[#reverse_iterator#]		- type for the reverse non-constant iterator
+	  *	<li>[#const_reverse_iterator#]	- type for the reverse constant iterator (can't change elements)
+	  *	<li>[#reference#]				- type returned from subscripting, iterator deferencing etc.
+	  *	<li>[#const_reference#]		- "" "" for const vector slice objects
 	  * \end{description}
 	  */
 
@@ -482,18 +482,18 @@ public:
 	///
 	/** Constructs a vector with n elements and intializes elements to those of an array.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator[](i) == p[i]#, i = 0, 1, ... n
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator[](i) == p[i]#, i = 0, 1, ... n
+	  *		</ul>
 	  */  
 	VectorTmpl(const value_type* p, size_type n);
 	///
 	/** Constructs a Vector object fron a VectorSliceTmpl object.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->size() == vs.size()#
-	  *		\item #this->operator[](i) == vs[i]#, i = 0, 1, ... n
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->size() == vs.size()#
+	  *		<li> #this->operator[](i) == vs[i]#, i = 0, 1, ... n
+	  *		</ul>
 	  */  
 	VectorTmpl(const VectorSliceTmpl<value_type>& vs);
 
@@ -508,17 +508,17 @@ public:
 	  *
 	  * Any new elements added are initialized to val.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->size() == n#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->size() == n#
+	  *		</ul>
 	  */  
 	void resize(size_type n, value_type val = value_type());
 	///
 	/** Free memory and resize Vector to this->size() == 0.
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->size() == 0#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->size() == 0#
+	  *		</ul>
 	  */  
 	void free();
 	/// Returns the number of elements of the Vector.
@@ -528,9 +528,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between this and vs
-	  *		\item[SOME_OVERLAP]	There is some memory locations that this and vs share
-	  *		\item[SAME_MEM]		The VectorSliceTmpl objects this and vs share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and vs
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and vs share
+	  *		<li>[SAME_MEM]		The VectorSliceTmpl objects this and vs share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const VectorSliceTmpl<value_type>& vs) const;
@@ -624,9 +624,9 @@ public:
 	  *
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
+	  *		</ul>
 	  *
 	  * @param	rng		Indece range [lbound,ubound] of the region being returned.
 	  */
@@ -636,11 +636,11 @@ public:
 	/// 
 	/** Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #lbound > 1# (throw #out_of_range#)
-	  *		\item #lbound < ubound# (throw #out_of_range#)
-	  *		\item #ubound <= this->size()# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #lbound > 1# (throw #out_of_range#)
+	  *		<li> #lbound < ubound# (throw #out_of_range#)
+	  *		<li> #ubound <= this->size()# (throw #out_of_range#)
+	  *		</ul>
 	  *
 	  * @param	rng		Range [lbound,ubound] of the region being taken.
 	  */
@@ -668,26 +668,26 @@ public:
 	///
 	/** vs = alpha (Sets all the elements to the constant alpha).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #this->size() > 0# (throw #std::length_error#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #this->size() > 0# (throw #std::length_error#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
+	  *		</ul>
 	  */
 	VectorTmpl<value_type>& operator=(value_type alpha);
 	///
 	/** vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #this->size() == rhs.size()# (throw #out_of_range#)
-	  *		\item #rhs.size() > 0# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #this->size() == rhs.size()# (throw #out_of_range#)
+	  *		<li> #rhs.size() > 0# (throw #out_of_range#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
+	  *		</ul>
 	  */
 	VectorTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
 	///

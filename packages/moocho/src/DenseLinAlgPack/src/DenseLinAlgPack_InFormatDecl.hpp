@@ -25,10 +25,10 @@ namespace LinAlgPack {
   *
   * This template function performs the following tasks.
   * \begin{enumeration}
-  * \item Saves the formating state of #is#
-  * \item Sets the formating state of #is# to that stored in #bf.f()#
-  * \item Calls #input(is, bf.obj(), bf.extra_flags().flags())#
-  * \item Resets the streams formating state to its original.
+  * <li> Saves the formating state of #is#
+  * <li> Sets the formating state of #is# to that stored in #bf.f()#
+  * <li> Calls #input(is, bf.obj(), bf.extra_flags().flags())#
+  * <li> Resets the streams formating state to its original.
   * \end{enumeration}
   *
   * The original formating state of #is# is preserved even if an exception

@@ -37,25 +37,25 @@
   * 
   * The implementations of these functions takes care of the following details:
   *
-  * \begin{itemize}
-  *	\item Resizing Vector LHS on assignment
-  *	\item Test for aliasing of assign(...) but not other functions
-  *	\item Check preconditions (sizes of arguments) if LINALGPACK_CHECK_RHS_SIZES is defined
-  * \end{itemize}
+  * <ul>
+  *	<li> Resizing Vector LHS on assignment
+  *	<li> Test for aliasing of assign(...) but not other functions
+  *	<li> Check preconditions (sizes of arguments) if LINALGPACK_CHECK_RHS_SIZES is defined
+  * </ul>
   *
   * These functions share common behavior and precondtions which are listed below.
   *
   * Preconditions for functions with a VectorSlice object (vs_lhs) as a lhs argument
   * (e.g. vs_lhs = abs(vs_rhs), vs_lhs = vs_rhs1 + vs_rhs2).
-  *	\begin{itemize}
-  * \item #vs_lhs.size() ==# size of rhs expression  (throw #std::length_error#)
-  * \end{itemize}
+  *	<ul>
+  * <li> #vs_lhs.size() ==# size of rhs expression  (throw #std::length_error#)
+  * </ul>
   *
   * Preconditions for functions with two VectorSlice objects (vs_rhs1, vs_rhs2) rhs arguments
   * (e.g. v_lhs = pow(vs_rhs1,vs_rhs2), result = trans(vs_rhs1,vs_rhs2)):
-  *	\begin{itemize}
-  * \item #vs_rhs1.size() == vs_rhs2.size()#  (throw #std::length_error#)
-  * \end{itemize}
+  *	<ul>
+  * <li> #vs_rhs1.size() == vs_rhs2.size()#  (throw #std::length_error#)
+  * </ul>
   *
   * Algebric functions are named according to the types of their arguments.  For example,
   * the function for the operation vs_lhs = vs_rhs1 - vs_rhs2 is named V_VmV(...).

@@ -40,9 +40,9 @@ namespace MatlabPack {
   *
   * The VectorSlice is output in the following format:
   *
-  \begin{verbatim}
+  \verbatim
 	name = [ vs(1); vs(2); ... vs(n); ];
-  \end{verbatim}
+  \endverbatim
   *
   * Above #n = vs.size()# and #'# is appended to the end if #trans != BLAS_Cpp::no_trans#.
   * Also, a newline character #\n# is appended to the end after #']'#.
@@ -55,14 +55,14 @@ std::ostream& out( std::ostream& o, const char* name, const VectorSlice& vs
   *
   * The GenMatrixSlice is output in the following format:
   *
-  \begin{verbatim}
+  \verbatim
 	name = [
 	gms(1,1), gms(1,2), ... gms(1,n);
 	gms(2,1), gms(2,2), ... gms(2,n);
 	...       ...       ... ...
 	gms(m,1), gms(m,2), ... gms(m,n);
 	 ];
-  \end{verbatim}
+  \endverbatim
   *
   * Above #m = gms.rows()#, #n = gms.cols()# and #'# is appended to the end
   * if #trans != BLAS_Cpp::no_trans#.

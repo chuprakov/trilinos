@@ -92,13 +92,13 @@ public:
 	///
 	/** Causes #updated_k(k)# to return false.
 	  *
- 	  * Preconditions:\begin{itemize}
-	  * \item #updated_k(offset) == true# [throw #QuanityNotSet#]
-	  * \end{itemize} 
+ 	  * Preconditions:<ul>
+	  * <li> #updated_k(offset) == true# [throw #QuanityNotSet#]
+	  * </ul> 
 	  *
- 	  * Postconditions:\begin{itemize}
-	  * \item #updated_k(offset) == false#
-	  * \end{itemize} 
+ 	  * Postconditions:<ul>
+	  * <li> #updated_k(offset) == false#
+	  * </ul> 
 	  */
 	virtual void set_not_updated(int offset) = 0;
 
@@ -155,20 +155,20 @@ public:
 	  * Even the above operation can be implemented without a temporary vector but you get the
 	  * idea, the (i-1) quanity is modifed and is not the original for i > 2.
 	  *
- 	  * Preconditions:\begin{itemize}
-	  * \item #updated_k(offset) == true# [throw #QuanityNotSet#]
-	  * \end{itemize} 
+ 	  * Preconditions:<ul>
+	  * <li> #updated_k(offset) == true# [throw #QuanityNotSet#]
+	  * </ul> 
 	  */
 	virtual bool will_loose_mem(int offset, int set_offset) const = 0;
 
 	///
 	/** Shift the reference point from the k to the k+1 iteration.
 	  *
- 	  * Postcondtions:\begin{itemize}
-	  * \item #updated_k(offset)# before the call equals #updated_k(offset-1)# after return
-	  * \item #&this->get_k(offset)# for #this->updated_k(offset) == true# before the call, equals
+ 	  * Postcondtions:<ul>
+	  * <li> #updated_k(offset)# before the call equals #updated_k(offset-1)# after return
+	  * <li> #&this->get_k(offset)# for #this->updated_k(offset) == true# before the call, equals
 	  *			#&this->get_k(offset-1)# for #this->updated_k(offset-1) == true# after return
-	  * \end{itemize} 
+	  * </ul> 
 	  */
 	virtual void next_iteration() = 0;
 

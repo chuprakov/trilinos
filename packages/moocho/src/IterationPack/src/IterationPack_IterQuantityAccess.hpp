@@ -32,10 +32,10 @@ namespace GeneralIterationPack {
   * get_k(-1) => get k-1\\
   *
   * Subclasses can implement this interface in a varity of ways.  But
-  * they must follow a few simple rules: \begin{itemize}\\
-  * \item	Only forward transitions are allowed.  This effects the behavior of
+  * they must follow a few simple rules: <ul>\\
+  * <li>	Only forward transitions are allowed.  This effects the behavior of
   *			has_storage_k() and set_k().
-  * \end{itemize}
+  * </ul>
   *
   * The client should not have to worry about how much memory is advalible.  Instead
   * it is for the object that configures the client to provide the approprite
@@ -57,9 +57,9 @@ public:
 	  * given iteration or modify the quantity if has already been
 	  * set for that iteration.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #this->updated_k(offset) == true# (throw QuanityNotSet)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #this->updated_k(offset) == true# (throw QuanityNotSet)
+	  * </ul>
 	  */
 	virtual T_info& get_k(int offset) = 0;
 
@@ -69,9 +69,9 @@ public:
 	  * Clients call this member function to access a const quantity for a
 	  * given iteration.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #this->updated_k(offset) == true# (throw QuanityNotSet)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #this->updated_k(offset) == true# (throw QuanityNotSet)
+	  * </ul>
 	  */
 	virtual const T_info& get_k(int offset) const = 0;
 
@@ -83,14 +83,14 @@ public:
 	  * If #will_loose_mem(back_offset,offset)# returns true then #updated_k(back_offset)#
 	  * will return false after this function returns without throwing an exception.
 	  *
-	  * Precondtions:\begin{itemize}
-	  * \item #this->has_storage_k(offset) == true# (throw #NoStorageAvailable#)
-	  * \end{itemize}
+	  * Precondtions:<ul>
+	  * <li> #this->has_storage_k(offset) == true# (throw #NoStorageAvailable#)
+	  * </ul>
 	  *
- 	  * Postcondtions:\begin{itemize}
-	  * \item #this->updated_k(offset) == true#
-	  * \item #this->updated_k(i) == false# for i in the set of { i : #this->will_loose_mem(i,offset) == true# }
-	  * \end{itemize} 
+ 	  * Postcondtions:<ul>
+	  * <li> #this->updated_k(offset) == true#
+	  * <li> #this->updated_k(i) == false# for i in the set of { i : #this->will_loose_mem(i,offset) == true# }
+	  * </ul> 
 	  */
 	virtual T_info& set_k(int offset) = 0;
 

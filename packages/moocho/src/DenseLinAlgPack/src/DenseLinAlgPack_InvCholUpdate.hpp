@@ -29,9 +29,9 @@ namespace LinAlgPack {
   * implements algorithm A3.4.1 in Dennis and Schabel.  The update is:
   * (J_new^T = L_old^T + u * v^T) where J_new is rotated back to triangular form.
   *
-  * Preconditions: \begin{itemize}
-  * \item UpTriM.rows() == UpTriM.cols() == u.size() == v.size() (throw std::length_error)
-  * \end{itemize}
+  * Preconditions: <ul>
+  * <li> UpTriM.rows() == UpTriM.cols() == u.size() == v.size() (throw std::length_error)
+  * </ul>
   */
 void update_chol_factor(GenMatrixSlice* UpTriM, VectorSlice* u
 	, const VectorSlice& v);
@@ -39,9 +39,9 @@ void update_chol_factor(GenMatrixSlice* UpTriM, VectorSlice* u
 ///
 /** Perform a jacobi rotation or a matrix about row i.
   *
-  * Preconditions: \begin{itemize}
-  * \item UpTriM.rows() == UpTriM.cols() (throw std::length_error)
-  * \end{itemize}
+  * Preconditions: <ul>
+  * <li> UpTriM.rows() == UpTriM.cols() (throw std::length_error)
+  * </ul>
   */
 void jacobi_rotate(GenMatrixSlice* UpTriM, size_type row_i, value_type alpha
 	, value_type beta); 

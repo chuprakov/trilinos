@@ -120,9 +120,9 @@ public:
 	  * a #AlreadyExists# exception will be thrown.  Otherwise the function
 	  * will return the iq_id assigned to the inserted interation quantity.
 	  *
-	  * Preconditions: \begin{itemize}
-	  * \item #get_iter_quant_id(iq_name) == DOES_NOT_EXIST# (throw #AlreadyExists#)
-	  * \end{itemize}
+	  * Preconditions: <ul>
+	  * <li> #get_iter_quant_id(iq_name) == DOES_NOT_EXIST# (throw #AlreadyExists#)
+	  * </ul>
 	  */
 	virtual iq_id_type set_iter_quant(const std::string& iq_name, const IQ_ptr& iq);
 
@@ -135,9 +135,9 @@ public:
 	  * pointed to will be deleted.  Subsequently, the iq_id returned from
 	  * #set_iter_quant(...)# when #iq_name# was set is no longer valid.
 	  *
-	  * Preconditions: \begin{itemize}
-	  * \item #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions: <ul>
+	  * <li> #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void erase_iter_quant(const std::string& iq_name);
 
@@ -174,9 +174,9 @@ public:
 	  *
 	  * Time = O(log(num_iter_quant())), Space = O(1).
 	  *
-	  * Preconditions: \begin{itemize}
-	  * \item #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions: <ul>
+	  * <li> #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual IterQuantity& iter_quant(const std::string& iq_name );
 	///

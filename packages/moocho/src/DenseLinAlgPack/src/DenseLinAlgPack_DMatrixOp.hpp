@@ -51,10 +51,10 @@
   *
   * The implementations of these functions takes care of the following details:
   *
-  * \begin{itemize}
-  *	\item Resizing GenMatrix LHS on assignment
-  *	\item Checking preconditions (sizes of arguments) if \Ref{LINALGPACK_CHECK_RHS_SIZES} is defined
-  * \end{itemize}
+  * <ul>
+  *	<li> Resizing GenMatrix LHS on assignment
+  *	<li> Checking preconditions (sizes of arguments) if \Ref{LINALGPACK_CHECK_RHS_SIZES} is defined
+  * </ul>
   *
   * The preconditions for all of the functions are that the sizes of the rhs arguments
   * and lhs arguments agree.  If they do not and \Ref{LINALGPACK_CHECK_RHS_SIZES}

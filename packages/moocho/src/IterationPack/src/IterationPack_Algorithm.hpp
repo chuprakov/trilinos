@@ -40,7 +40,7 @@ namespace GeneralIterationPack {
   * This class is the center for a framework for iterative algorithms.
   * These iterative algorithms are of the form:
   *
-	\begin{verbatim}
+	\verbatim
 
 	Step1------>Step2------>Step3------>Step4------>Step5
 	 /|\         /|\         /|\          |           |
@@ -50,7 +50,7 @@ namespace GeneralIterationPack {
 	  |                                               |
 	  |_______________Major Loop (k = k+1)____________|
 
-	\end{verbatim}
+	\endverbatim
   *
   * For the typical iteration the steps are executed sequantially from Step1 to Step2
   * and then control loops around the Major Loop to Step1 again.
@@ -210,18 +210,18 @@ public:
 	///
 	/** Return the name of a step given its possition.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual const std::string& get_step_name(poss_type step_poss) const;
 
 	///
 	/** Return the ref_count_ptr<...> object for the step object at step_poss.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual step_ptr_t& get_step(poss_type step_poss);
 
@@ -236,9 +236,9 @@ public:
 	///
 	/** Return the number of pre or post steps for the main step step_poss.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual int num_assoc_steps(poss_type step_poss, EAssocStepType type) const;
 
@@ -248,9 +248,9 @@ public:
 	  * If a pre or post step does not exist with the name #assoc_step_name#
 	  * then a value of DOES_NOT_EXIST will be retruned.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual poss_type get_assoc_step_poss(poss_type step_poss, EAssocStepType type
 		,const std::string& assoc_step_name) const;
@@ -258,11 +258,11 @@ public:
 	///
 	/** Return the name of the pre or post step at step_poss and at assoc_step_poss.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \item #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * <li> #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
 	  *		(throw #DoesNotExist#)
-	  * \end{itemize}
+	  * </ul>
 	  */
 	virtual const std::string& get_assoc_step_name(poss_type step_poss, EAssocStepType type
 		, poss_type assoc_step_poss) const;
@@ -271,11 +271,11 @@ public:
 	/** Return the ref_count_ptr<...> object for the associated step object at step_poss
 	  * and assoc_step_poss.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \item #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
+	  * Preconditions:<ul>
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * <li> #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
 	  *		(throw #DoesNotExist#)
-	  * \end{itemize}
+	  * </ul>
 	  */
 	virtual step_ptr_t& get_assoc_step(poss_type step_poss, EAssocStepType type
 		, poss_type assoc_step_poss);
@@ -296,10 +296,10 @@ public:
 	  * #step_poss == num_steps() + 1# in which case the new step is appended to the end.
 	  * Initiaily this step will have no pre or post steps associated with it.
 	  * 
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= ste_poss && step_poss <= num_steps() + 1# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= ste_poss && step_poss <= num_steps() + 1# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void insert_step(poss_type step_poss, const std::string& step_name, const step_ptr_t& step);
 
@@ -308,10 +308,10 @@ public:
 	  *
 	  * None of the pre or post steps for the existing step are changes.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void change_step_name(poss_type step_poss, const std::string& new_name);
 
@@ -320,10 +320,10 @@ public:
 	  *
 	  * None of the pre or post steps for the existing step are changes.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void replace_step(poss_type step_poss, const step_ptr_t& step);
 
@@ -333,10 +333,10 @@ public:
 	  * All of the steps after #step_poss# will have thier possitions
 	  * decreased by one.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= poss && poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void remove_step(poss_type step_poss);
 
@@ -352,12 +352,12 @@ public:
 	  * All of the pre or post steps at and after #assoc_step_poss# will be pushed back
 	  * one possition.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= step_poss && step_poss <= num_steps() + 1# (throw #DoesNotExist#)
-	  * \item #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type) + 1#
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= step_poss && step_poss <= num_steps() + 1# (throw #DoesNotExist#)
+	  * <li> #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type) + 1#
 	  *		(throw #DoesNotExist#)
-	  * \end{itemize}
+	  * </ul>
 	  */
 	virtual void insert_assoc_step(poss_type step_poss, EAssocStepType type, poss_type assoc_step_poss
 		, const std::string& assoc_step_name, const step_ptr_t& assoc_step);
@@ -369,12 +369,12 @@ public:
 	  * All of the pre or post steps after #assoc_step_poss# will be pushed forward
 	  * one possition to fill in the hole.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() != RUNNING]# (throw #InvalidRunningState#)
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \item #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
+	  * Preconditions:<ul>
+	  * <li> #running_state() != RUNNING]# (throw #InvalidRunningState#)
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * <li> #1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type)#
 	  *		(throw #DoesNotExist#)
-	  * \end{itemize}
+	  * </ul>
 	  */
 	virtual void remove_assoc_step(poss_type step_poss, EAssocStepType type, poss_type assoc_step_poss);
 
@@ -388,13 +388,13 @@ public:
 	  *
 	  * Must be called before the algorithm's configuration can be changed while it is running.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() == RUNNING]# (throw #InvalidRunningState#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() == RUNNING]# (throw #InvalidRunningState#)
+	  * </ul>
 	  *
-	  * Postconditions:\begin{itemize}
-	  * \item #running_state() == RUNNING_BEING_CONFIGURED]#
-	  * \end{itemize}
+	  * Postconditions:<ul>
+	  * <li> #running_state() == RUNNING_BEING_CONFIGURED]#
+	  * </ul>
 	  */
 	virtual void begin_config_update();
 
@@ -403,13 +403,13 @@ public:
 	  *
 	  * Must be called after the algorithm's configuration can be changed while it is running.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item #running_state() == RUNNING_BEING_CONFIGURED]# (throw #InvalidRunningState#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> #running_state() == RUNNING_BEING_CONFIGURED]# (throw #InvalidRunningState#)
+	  * </ul>
 	  *
-	  * Postconditions:\begin{itemize}
-	  * \item #running_state() == RUNNING]#
-	  * \end{itemize}
+	  * Postconditions:<ul>
+	  * <li> #running_state() == RUNNING]#
+	  * </ul>
 	  */
 	virtual void end_config_update();
 
@@ -422,10 +422,10 @@ public:
 	/** Called by step objects to set the step (given its name) that #this# will envoke the next time
 	  * #this# calls a step.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
-	  * \item #get_step_poss(step_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == RUNNING# (throw #InvalidRunningState#)
+	  * <li> #get_step_poss(step_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void do_step_next(const std::string& step_name);
 
@@ -433,28 +433,28 @@ public:
 	/** Called by step objects to set the step (given its possition) that #this# will envoke the next time
 	  * #this# calls a step.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == RUNNING# (throw #InvalidRunningState#)
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual void do_step_next(poss_type step_poss);
 
 	///
 	/** Returns the name of the next step #this# will call the next time it calls a step.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() != NOT_RUNNING# (throw #InvalidRunningState#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() != NOT_RUNNING# (throw #InvalidRunningState#)
+	  * </ul>
 	  */
 	virtual const std::string& what_is_next_step_name() const;
 
 	///
 	/** Returns the possition of the next step #this# will call the next time it calls a step.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() != NOT_RUNNING# (throw #InvalidRunningState#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() != NOT_RUNNING# (throw #InvalidRunningState#)
+	  * </ul>
 	  */
 	virtual poss_type what_is_next_step_poss() const;
 
@@ -470,10 +470,10 @@ public:
 	  * false from its #do_step(...)# that it has either also called #terminate(...)#
 	  * or #do_step_next(...)#.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
-	  * \item #get_step_poss(step_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == RUNNING# (throw #InvalidRunningState#)
+	  * <li> #get_step_poss(step_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual bool do_step(const std::string& step_name);
 
@@ -488,10 +488,10 @@ public:
 	  * operation immediatly returns false.  It is assumed that if any step object returns
 	  * false from do step that it has either also called #terminate(...)# or #do_step_next(...)#. 
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == RUNNING# (throw #InvalidRunningState#)
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual bool do_step(poss_type step_poss);
 
@@ -501,9 +501,9 @@ public:
 	  * Calling with #success == true# cause #do_algorithm(...)# to completely return #TERMINATE_TRUE#
 	  * and with #success == false# return  #TERMINATE_FALSE#.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == RUNNING# (throw #InvalidRunningState#)
+	  * </ul>
 	  */
 	virtual void terminate(bool success);
 
@@ -538,10 +538,10 @@ public:
 	  *
 	  * The algorithm starts on the step specified with #step_poss#.
 	  *
-	  * Preconditions:\begin{itemize}
-	  * \item running_state() == NOT_RUNNING# (throw #InvalidRunningState#)
-	  * \item #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  * <li> running_state() == NOT_RUNNING# (throw #InvalidRunningState#)
+	  * <li> #1 <= step_poss && step_poss <= num_steps()# (throw #DoesNotExist#)
+	  * </ul>
 	  */
 	virtual EAlgoReturn do_algorithm(poss_type step_poss = 1);
 
