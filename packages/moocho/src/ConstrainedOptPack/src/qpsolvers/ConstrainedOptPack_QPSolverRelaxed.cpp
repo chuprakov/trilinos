@@ -22,6 +22,7 @@
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "profile_hack.h"
 #include "ThrowException.h"
 
@@ -29,10 +30,9 @@ namespace ConstrainedOptimizationPack {
 
 // public
 
-value_type QPSolverRelaxed::infinite_bound()
-{
-	return std::numeric_limits<value_type>::max();
-}
+QPSolverRelaxed::QPSolverRelaxed()
+	:infinite_bound_(std::numeric_limits<value_type>::max())
+{}
 
 QPSolverStats::ESolutionType
 QPSolverRelaxed::solve_qp(
@@ -128,23 +128,26 @@ QPSolverRelaxed::solve_qp(
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxed::solve_qp(...)" );
 #endif
-	validate_input(g,G,etaL,dL,dU
+	validate_input(
+		infinite_bound(),g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 	print_qp_input(
-		out,olevel,g,G,etaL,dL,dU,E,trans_E,b,eL,eU
+		infinite_bound(),out,olevel,g,G,etaL,dL,dU,E,trans_E,b,eL,eU
 		,F,trans_F,f,eta,d,nu,mu,lambda	);
 	QPSolverStats::ESolutionType
 		solve_return = imp_solve_qp(
 			out,olevel,test_what,g,G,etaL,dL,dU
 			,E,trans_E,b,eL,eU,F,trans_F,f
 			,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
-	print_qp_output(out,olevel,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
+	print_qp_output(
+		infinite_bound(),out,olevel,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 	return solve_return;
 }
 
 void QPSolverRelaxed::validate_input(
-	const VectorWithOp& g, const MatrixSymWithOp& G
+	const value_type infinite_bound
+	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
 	,const VectorWithOp* dL, const VectorWithOp* dU
 	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
@@ -187,28 +190,28 @@ void QPSolverRelaxed::validate_input(
 
 	// Validate the sizes of the arguments
 	const size_type
-		n = d->dim();
+		nd = d->dim();
 	THROW_EXCEPTION(
-		g.dim() != n, std::invalid_argument
+		g.dim() != nd, std::invalid_argument
 		,"QPSolverRelaxed::validate_input(...) : Error, "
 		"g.dim() != d->dim()." );
 	THROW_EXCEPTION(
-		G.rows() != n || G.cols() != n, std::invalid_argument
+		G.rows() != nd || G.cols() != nd, std::invalid_argument
 		,"QPSolverRelaxed::validate_input(...) : Error, "
 		"G.rows() != d->dim() or G.cols() != d->dim()." );
 	THROW_EXCEPTION(
-		dL->dim() != n, std::invalid_argument
+		dL && dL->dim() != nd, std::invalid_argument
 		,"QPSolverRelaxed::validate_input(...) : Error, "
-		"dL->dim() != d->dim()." );
+		"dL->dim() = " << dL->dim() << " != d->dim() = " << nd << "." );
 	THROW_EXCEPTION(
-		dU->dim() != n, std::invalid_argument
+		dU && dU->dim() != nd, std::invalid_argument
 		,"QPSolverRelaxed::validate_input(...) : Error, "
-		"dU->dim() != d->dim()." );
+		"dU->dim() = " << dU->dim() << " != d->dim() = " << nd << "." );
 	if( E ) {
 		const size_type
 			m_in = BLAS_Cpp::rows( E->rows(), E->cols(), trans_E );
 		THROW_EXCEPTION(
-			BLAS_Cpp::cols( E->rows(), E->cols(), trans_E )	!= n, std::invalid_argument
+			BLAS_Cpp::cols( E->rows(), E->cols(), trans_E )	!= nd, std::invalid_argument
 			,"QPSolverRelaxed::validate_input(...) : Error, op(E).cols() != d->dim()." );
 		THROW_EXCEPTION(
 			b->dim() != m_in, std::invalid_argument
@@ -227,7 +230,7 @@ void QPSolverRelaxed::validate_input(
 		const size_type
 			m_eq = BLAS_Cpp::rows( F->rows(), F->cols(), trans_F );
 		THROW_EXCEPTION(
-			BLAS_Cpp::cols( F->rows(), F->cols(), trans_F )	!= n, std::invalid_argument
+			BLAS_Cpp::cols( F->rows(), F->cols(), trans_F )	!= nd, std::invalid_argument
 			,"QPSolverRelaxed::validate_input(...) : Error, op(F).cols() != d->dim()." );
 		THROW_EXCEPTION(
 			f->dim() != m_eq, std::invalid_argument
@@ -242,7 +245,8 @@ void QPSolverRelaxed::validate_input(
 }
 
 void QPSolverRelaxed::print_qp_input( 
-	std::ostream* out, EOutputLevel olevel
+	const value_type infinite_bound
+	,std::ostream* out, EOutputLevel olevel
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
 	,const VectorWithOp* dL, const VectorWithOp* dU
@@ -255,6 +259,7 @@ void QPSolverRelaxed::print_qp_input(
 	,VectorWithOpMutable* lambda
 	)
 {
+	using AbstractLinAlgPack::num_bounded;
 	if( out && (int)olevel >= (int)PRINT_ITER_STEPS ) {
 		*out<< "\n*** Printing input to QPSolverRelaxed::solve_qp(...) ...\n";
 		// g
@@ -268,19 +273,15 @@ void QPSolverRelaxed::print_qp_input(
 		*out << "\netaL = " << etaL << std::endl;
 		// eta
 		*out << "\neta  = " << *eta << std::endl;
-		// dL
 		if(dL) {
-			*out<< "\ndL->nz() = " << dL->nz() << std::endl
-				<< "||dL||inf  = " << dL->norm_inf() << std::endl;
+			// dL, dU
+			*out << "\ndL.dim()   = " << dL->dim();
+			*out << "\ndU.dim()   = " << dU->dim();
+			*out << "\nnum_bounded(dL,dU) = " << num_bounded(*dL,*dU,infinite_bound) << std::endl;
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
-				*out<< "dL =\n" << *dL;
-		}
-		// dU
-		if(dU) {
-			*out<< "\ndU->nz() = " << dU->nz() << std::endl
-				<< "||dU||inf  = " << dU->norm_inf() << std::endl;
+				*out << "dL =\n" << *dL;
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
-				*out<< "dU =\n" << *dU;
+				*out << "dU =\n" << *dU;
 		}
 		// d
 		*out << "\n||d||inf = " << d->norm_inf() << std::endl;
@@ -302,12 +303,12 @@ void QPSolverRelaxed::print_qp_input(
 			*out << "\n||b||inf = " << b->norm_inf() << std::endl;
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
 			*out<< "b =\n" << *b;
-			// eL
-			*out<< "\neL.nz()   = " << eL->nz() << std::endl;
+			// eL, eU
+			*out<< "\neL.dim()   = " << eL->dim();
+			*out<< "\neU.dim()   = " << eU->dim();
+			*out << "\nnum_bounded(eL,eU) = " << num_bounded(*eL,*eU,infinite_bound) << std::endl;
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
 				*out<< "eL =\n" << *eL;
-			// eU
-			*out<< "\neU.nz()   = " << eU->nz() << std::endl;
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
 				*out<< "eU =\n" << *eU;
 			// mu
@@ -330,11 +331,13 @@ void QPSolverRelaxed::print_qp_input(
 			if( (int)olevel >= (int)PRINT_ITER_ACT_SET )
 				*out<< "lambda =\n" << *lambda;
 		}
+		*out<< "\nEnd input to QPSolverRelaxed::solve_qp(...)\n";
 	}
 }
 
 void QPSolverRelaxed::print_qp_output(
-	std::ostream* out, EOutputLevel olevel
+	const value_type infinite_bound
+	,std::ostream* out, EOutputLevel olevel
 	,const value_type* obj_d
 	,const value_type* eta, const VectorWithOp* d
 	,const VectorWithOp* nu
@@ -385,6 +388,7 @@ void QPSolverRelaxed::print_qp_output(
 			if( (int)olevel >= (int)PRINT_ITER_VECTORS )
 				*out<< "Fd =\n" << *Fd;
 		}
+		*out<< "\nEnd output from QPSolverRelaxed::solve_qp(...)\n";
 	}
 }
 

@@ -31,6 +31,7 @@
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 //#include "AbstractLinAlgPack/include/sparse_bounds_diff.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ThrowException.h"
 
 namespace {
 
@@ -104,34 +105,34 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 {}
 
 void ConstraintsRelaxedStd::initialize(
-		size_type                       nd
-		,value_type                     etaL
-		,const VectorWithOp             *dL
-		,const VectorWithOp             *dU
-		,const MatrixWithOp             *E
-		,BLAS_Cpp::Transp               trans_E
-		,const VectorWithOp              *b
-		,const VectorWithOp             *eL
-		,const VectorWithOp             *eU
-		,const MatrixWithOp             *F
-		,BLAS_Cpp::Transp               trans_F
-		,const VectorWithOp             *f
-		,size_type                      m_undecomp
-		,const size_type                j_f_undecomp[]
-		,VectorSlice                    *Ed
-		,bool                           check_F
-		,value_type                     bounds_tol
-		,value_type                     inequality_tol
-		,value_type                     equality_tol
+	const VectorSpace::space_ptr_t   &space_d
+	,const VectorSpace::space_ptr_t  &space_eta
+	,value_type                      etaL
+	,const VectorWithOp              *dL
+	,const VectorWithOp              *dU
+	,const MatrixWithOp              *E
+	,BLAS_Cpp::Transp                trans_E
+	,const VectorWithOp              *b
+	,const VectorWithOp              *eL
+	,const VectorWithOp              *eU
+	,const MatrixWithOp              *F
+	,BLAS_Cpp::Transp                trans_F
+	,const VectorWithOp              *f
+	,size_type                       m_undecomp
+	,const size_type                 j_f_undecomp[]
+	,VectorWithOpMutable             *Ed
+	,bool                            check_F
+	,value_type                      bounds_tol
+	,value_type                      inequality_tol
+	,value_type                      equality_tol
 	)
 {
-	assert(0); // ToDo: Update below code!
-/*
 	size_type
+		nd   = space_d->dim(),
 		m_in = 0,
 		m_eq = 0;
 
-	assert( m_undecomp == (F ? f->size() : 0) ); // ToDo: support decomposed equalities in future.
+	assert( m_undecomp == (F ? f->dim() : 0) ); // ToDo: support decomposed equalities in future.
 
 	// Validate that the correct sets of constraints are selected
 	if( dL && !dU )
@@ -146,45 +147,52 @@ void ConstraintsRelaxedStd::initialize(
 
 	// Validate input argument sizes
 	if(dL) {
-		if( dL->size() != nd )
+		if( dL->dim() != nd )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"dL.size() != d->size()." );
-		if( dU->size() != nd )
+				"dL.dim() != d->dim()." );
+		if( dU->dim() != nd )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"dU.size() != d->size()." );
+				"dU.dim() != d->dim()." );
 	}
 	if(E) {
-		m_in = BLAS_Cpp::rows( E->rows(), E->cols(), trans_E );
-		if( BLAS_Cpp::cols( E->rows(), E->cols(), trans_E )	!= nd )
+		const size_type
+			E_rows = E->rows(),
+			E_cols = E->cols();
+		m_in = BLAS_Cpp::rows( E_rows, E_cols, trans_E );
+		if( BLAS_Cpp::cols( E_rows, E_cols, trans_E ) != nd )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
 				"op(E).cols() != nd." );
-		if( b->size() != m_in )
+		if( b->dim() != m_in )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"b->size() != op(E).rows()." );
-		if( eL->size() != m_in )
+				"b->dim() != op(E).rows()." );
+		if( eL->dim() != m_in )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"eL->size() != op(E).rows()." );
-		if( eU->size() != m_in )
+				"eL->dim() != op(E).rows()." );
+		if( eU->dim() != m_in )
 			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"eU->size() != op(E).rows()." );
+				"eU->dim() != op(E).rows()." );
 		if( Ed ) {
-			if( Ed->size() != m_in )
+			if( Ed->dim() != m_in )
 				throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-					"Ed->size() != op(E).rows()." );
+					"Ed->dim() != op(E).rows()." );
 		}
 	}
 	if(F) {
-		m_eq = BLAS_Cpp::rows( F->rows(), F->cols(), trans_F );
-		if( BLAS_Cpp::cols( F->rows(), F->cols(), trans_F )	!= nd )
+		const size_type
+			F_rows = F->rows(),
+			F_cols = F->cols();
+		m_eq = BLAS_Cpp::rows( F_rows, F_cols, trans_F );
+		if( BLAS_Cpp::cols( F_rows, F_cols, trans_F ) != nd )
 			throw std::invalid_argument( "QPSolverRelaxed::solve_qp(...) : Error, "
 				"op(F).cols() != nd." );
-		if( f->size() != m_eq )
+		if( f->dim() != m_eq )
 			throw std::invalid_argument( "QPSolverRelaxed::solve_qp(...) : Error, "
-				"f->size() != op(F).rows()." );
+				"f->dim() != op(F).rows()." );
 	}
 	
 	// Initialize other members
-	A_bar_.initialize(nd,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
+	A_bar_.initialize(
+		space_d,space_eta,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
 	etaL_				= etaL;
 	dL_					= dL;
 	dU_					= dU;
@@ -197,7 +205,7 @@ void ConstraintsRelaxedStd::initialize(
 	equality_tol_		= equality_tol;
 	last_added_j_		= 0;	// No cached value.
 	next_undecomp_f_k_	= m_undecomp ? 1 : 0; // Check the first undecomposed equality
-*/
+
 }
 
 const ConstraintsRelaxedStd::MatrixConstraints&
@@ -485,14 +493,12 @@ void ConstraintsRelaxedStd::ignore( size_type j )
 
 value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 {
-	assert(0); // ToDo: Update below code!
-/*
 	const value_type inf = std::numeric_limits<value_type>::max();
 
-	if( j > A_bar_.cols() ) {
-		throw std::range_error( "ConstraintsRelaxedStd::get_bnd(j,bnd) : Error, "
-			"j is not in range" );
-	}
+	THROW_EXCEPTION(
+		j > A_bar_.cols(), std::range_error
+		,"ConstraintsRelaxedStd::get_bnd(j,bnd) : Error, "
+		"j = " << j << " is not in range [1," << A_bar_.cols() << "]" );
 
 	// See if this is the last constraint we added to the active set.
 	if( j == last_added_j_ && bnd == last_added_bound_type_ ) {
@@ -506,11 +512,9 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 		switch( bnd ) {
 			case EQUALITY:
 			case LOWER:
-				return ( ele_ptr = dL_->lookup_element(j_local) )
-					? ele_ptr->value() : -inf;
+				return dL_->get_ele(j_local);
 			case UPPER:
-				return ( ele_ptr = dU_->lookup_element(j_local) )
-					? ele_ptr->value() : +inf;
+				return dU_->get_ele(j_local);
 			default:
 				assert(0);
 		}
@@ -530,11 +534,9 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 		switch( bnd ) {
 			case EQUALITY:
 			case LOWER:
-				return ( ele_ptr = eL_->lookup_element(j_local) )
-					? ele_ptr->value() : -inf;
+				return eL_->get_ele(j_local);
 			case UPPER:
-				return ( ele_ptr = eU_->lookup_element(j_local) )
-					? ele_ptr->value() : +inf;
+				return eU_->get_ele(j_local);
 			default:
 				assert(0);
 		}
@@ -544,12 +546,11 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 			case EQUALITY:
 			case LOWER:
 			case UPPER:
-				return -(*A_bar_.f())(j_local);
+				return -A_bar_.f()->get_ele(j_local);
 			default:
 				assert(0);
 		}
 	}
-*/
 	return 0.0;	// will never be executed!
 }
 
@@ -580,26 +581,28 @@ ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
 {}
 
 void ConstraintsRelaxedStd::MatrixConstraints::initialize(
-	size_type				nd
-	,size_type				m_in
-	,size_type				m_eq
-	,const MatrixWithOp		*E
-	,BLAS_Cpp::Transp		trans_E
-	,const VectorWithOp		*b
-	,const MatrixWithOp		*F
-	,BLAS_Cpp::Transp		trans_F
-	,const VectorWithOp		*f
-	,size_type				m_undecomp
-	,const size_type		j_f_undecomp[]
+	const VectorSpace::space_ptr_t   &space_d
+	,const VectorSpace::space_ptr_t  &space_eta  
+	,const size_type                 m_in
+	,const size_type                 m_eq
+	,const MatrixWithOp              *E
+	,BLAS_Cpp::Transp                trans_E
+	,const VectorWithOp              *b
+	,const MatrixWithOp              *F
+	,BLAS_Cpp::Transp                trans_F
+	,const VectorWithOp              *f
+	,size_type                       m_undecomp
+	,const size_type                 j_f_undecomp[]
 	)
 {
-	assert(0); // ToDo: Update below code!
-/*
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace mmp = MemMngPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
+
+	const size_type nd = space_d->dim();
 
 	// Setup P_u
 	const bool test_setup = true; // Todo: Make this an argument!
-	if( m_undecomp > 0 && f->size() > m_undecomp ) {
+	if( m_undecomp > 0 && f->dim() > m_undecomp ) {
 		P_u_row_i_.resize(m_undecomp);
 		P_u_col_j_.resize(m_undecomp);
 		const size_type
@@ -615,13 +618,39 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 		P_u_.initialize(nd,m_undecomp,m_undecomp,0,0,GPMSIP::BY_ROW_AND_COL
 			,&P_u_row_i_[0],&P_u_col_j_[0],test_setup);
 	}
-	else if( m_undecomp > 0) { // Must be == f->size()
+	else if( m_undecomp > 0) { // Must be == f->dim()
 		// Set to identity
 		P_u_.initialize(m_undecomp,m_undecomp,GenPermMatrixSlice::IDENTITY_MATRIX);
 	}
-	
+
+	// space_cols_
+	VectorSpace::space_ptr_t  col_spaces[2] = { space_d, space_eta };
+	space_cols_.initialize( col_spaces, 2 );
+
+	// space_rows_
+	VectorSpace::space_ptr_t  row_spaces[4];
+	int num_row_spaces = 2;
+	row_spaces[0] = space_d;
+	row_spaces[1] = space_eta;
+	if(m_in)
+		row_spaces[num_row_spaces++] = mmp::rcp(
+			trans_E == BLAS_Cpp::no_trans ? &E->space_cols() : &E->space_rows()
+			,false
+			);
+	if(m_eq) {
+		VectorSpace::space_ptr_t
+			vs = mmp::rcp(
+				trans_F == BLAS_Cpp::no_trans ? &F->space_cols() : &F->space_rows()
+				,false
+				);
+		if(m_undecomp)
+			vs = vs->space(P_u_,BLAS_Cpp::trans);
+		row_spaces[num_row_spaces++] = vs;
+	}
+	space_rows_.initialize( row_spaces, num_row_spaces );
+
 	// Set the rest of the members
-	nd_       = nd;
+	nd_       = space_d->dim();
 	m_in_     = m_in;
 	m_eq_     = m_eq;
 	E_        = E;
@@ -630,7 +659,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	F_        = F;
 	trans_F_  = trans_F;
 	f_        = f;
-*/
+
 }
 
 // Overridden from MatrixWithOp
@@ -725,17 +754,17 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 	,const VectorWithOp& x, value_type b
 	) const
 {
-	assert(0); // ToDo: Update below code!
-/*
-	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
+	assert( !F_ || P_u_.cols() == f_->dim() ); // ToDo: Add P_u when needed!
 
+	namespace mmp = MemMngPack;
 	using BLAS_Cpp::trans_not;
-	using LinAlgPack::dot;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::dot;
+	using LinAlgOpPack::Vt_S;
+	using LinAlgOpPack::Vp_StV;
+	using LinAlgOpPack::Vp_StMtV;
 
-	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),trans_rhs1,x.size());
+	// ToDo: Replace with proper check!
+//	LinAlgOpPack::Vp_MtV_assert_sizes(y->dim(),rows(),cols(),trans_rhs1,x.dim());
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
@@ -766,30 +795,31 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// [ y1 ]  += [ a * x1 + a * op(E') * x3 + a * op(F') * x4 ]
 		// [ y2 ]     [ a * x2 - a * b' * x3     - a * f' * x4     ]
 		//
-		VectorSlice
-			y1 = (*y)(d_rng);
+		VectorWithOpMutable::vec_mut_ptr_t
+			y1 = y->sub_view(d_rng);
 		value_type
-			&y2 = (*y)(nd()+1);
-		const VectorSlice
-			x1 = x(d_rng);
+			y2 = y->get_ele(nd()+1);
+		VectorWithOp::vec_ptr_t
+			x1 = x.sub_view(d_rng);
 		const value_type
-			x2 = x(nd()+1);
-		const VectorSlice
-			x3 = m_in() ? x(E_rng) : VectorSlice(),
-			x4 = m_eq() ? x(F_rng) : VectorSlice();
+			x2 = x.get_ele(nd()+1);
+		VectorWithOp::vec_ptr_t
+			x3 = m_in() ? x.sub_view(E_rng) : mmp::null,
+			x4 = m_eq() ? x.sub_view(F_rng) : mmp::null;
 		
 		// [ y1 ]  += [ a * x1 + a * op(E') * x3 + a * op(F') * x4 ]
-		Vp_StV( &y1, a, x1 );
+		Vp_StV( y1.get(), a, *x1 );
 		if( m_in() )
-			Vp_StMtV( &y1, a, *E(), trans_not( trans_E() ), x3 );
+			Vp_StMtV( y1.get(), a, *E(), trans_not( trans_E() ), *x3 );
 		if( m_eq() )
-			Vp_StMtV( &y1, a, *F(), trans_not( trans_F() ), x4 );
+			Vp_StMtV( y1.get(), a, *F(), trans_not( trans_F() ), *x4 );
 		// [ y2 ]  += [ a * x2 - a * b' * x3     - a * f' * x4     ]
 		y2 += a * x2;
 		if( m_in() )
-			y2 += - a * dot( *this->b(), x3 );
+			y2 += - a * dot( *this->b(), *x3 );
 		if( m_eq() )
-			y2 += - a * dot( *f(), x4 );
+			y2 += - a * dot( *f(), *x4 );
+		y->set_ele(nd()+1,y2);
 	}
 	else if ( trans_rhs1 == BLAS_Cpp::trans ) {
 		//
@@ -805,36 +835,36 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// [ y3 ] += [ a * op(E) * x1 - a * b * x2   ]
 		// [ y4 ]    [ a * op(F) * x1 - a * f * x2   ]
 		//
-		VectorSlice
-			y1 = (*y)(d_rng);
+		VectorWithOpMutable::vec_mut_ptr_t
+			y1 = y->sub_view(d_rng);
 		value_type
-			&y2 = (*y)(nd()+1);
-		VectorSlice
-			y3 = m_in() ? (*y)(E_rng) : VectorSlice(),
-			y4 = m_eq() ? (*y)(F_rng) : VectorSlice();
-		const VectorSlice
-			x1 = x(d_rng);
+			y2 = y->get_ele(nd()+1);
+		VectorWithOpMutable::vec_mut_ptr_t
+			y3 = m_in() ? y->sub_view(E_rng) : mmp::null,
+			y4 = m_eq() ? y->sub_view(F_rng) : mmp::null;
+		VectorWithOp::vec_ptr_t
+			x1 = x.sub_view(d_rng);
 		const value_type
-			x2 = x(nd()+1);
+			x2 = x.get_ele(nd()+1);
 		// y1 += a * x1
-		Vp_StV( &y1, a, x1 );
+		Vp_StV( y1.get(), a, *x1 );
 		// y2 += a * x2
 		y2 += a * x2;
+		y->set_ele(nd()+1,y2);
 		// y3 += a * op(E) * x1 - (a*x2) * b
 		if( m_in() ) {
-			Vp_StMtV( &y3, a, *E(), trans_E(), x1 );
-			Vp_StV( &y3, - a * x2, *this->b() );
+			Vp_StMtV( y3.get(), a, *E(), trans_E(), *x1 );
+			Vp_StV( y3.get(), - a * x2, *this->b() );
 		}
 		// y4 += a * op(F) * x1 - (a*x2) * f
 		if( m_eq() ) {
-			Vp_StMtV( &y4, a, *F(), trans_F(), x1 );
-			Vp_StV( &y4, - a * x2, *f() );
+			Vp_StMtV( y4.get(), a, *F(), trans_F(), *x1 );
+			Vp_StV( y4.get(), - a * x2, *f() );
 		}
 	}
 	else {
 		assert(0);	// Invalid trans value
 	}
-*/
 }
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
@@ -854,7 +884,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
  	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
 		, BLAS_Cpp::rows( rows(), cols(), M_trans) );

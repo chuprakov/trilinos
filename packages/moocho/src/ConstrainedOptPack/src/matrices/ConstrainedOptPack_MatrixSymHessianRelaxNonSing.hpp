@@ -18,7 +18,6 @@
 
 #include "ConstrainedOptimizationPackTypes.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
 #include "ref_count_ptr.h"
 
 namespace ConstrainedOptimizationPack {
@@ -44,6 +43,8 @@ public:
 	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>  G_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>               vec_mut_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<const VectorSpace>                 space_ptr_t;
 	
 	/** @name Constructors/initializers */
 	//@{
@@ -66,6 +67,7 @@ public:
 	MatrixSymHessianRelaxNonSing(
 		const G_ptr_t         &G_ptr
 		,const vec_mut_ptr_t  &M_diag_ptr
+		,const space_ptr_t    &space = MemMngPack::null
 		);
 
 	///
@@ -93,10 +95,14 @@ public:
 	 *                 [in] Smart pointer to the diagonal for <tt>M</tt>.  All of the elements in this vector must
 	 *                 be nonzero!  This vector is used to initalize the diagonal matrix <tt>M</tt> and this vector should
 	 *                 not be modified externally without calling \c this->initialize() again.
+	 * @param  space   [in] Smart pointer to the space used for <tt>this->space_cols()</tt> and <tt>this->space_rows()</tt>.
+	 *                 If <tt>space.get() == NULL</tt> then <tt>VectorSpaceCompoisteStd</tt> will be used which is
+	 *                 constructed from the spaces <tt>G_ptr->space_cols()</tt> and <tt>M_diag_ptr->space()</tt>.
 	 */
 	void initialize(
 		const G_ptr_t         &G_ptr
 		,const vec_mut_ptr_t  &M_diag_ptr
+		,const space_ptr_t    &space = MemMngPack::null
 		);
 
 	///
@@ -183,7 +189,7 @@ private:
 	// ///////////////////////////////
 	// Private data members
 
-	VectorSpaceCompositeStd  vec_space_;
+	space_ptr_t              vec_space_;
 	G_ptr_t                  G_ptr_;
 	MatrixSymDiagonalStd     M_;
 

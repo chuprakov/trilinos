@@ -99,17 +99,18 @@ public:
 		 * since copies of data are not made!
 		 */
 		void initialize(
-			size_type				nd
-			,size_type				m_in
-			,size_type				m_eq
-			,const MatrixWithOp		*E
-			,BLAS_Cpp::Transp		trans_E
-			,const VectorWithOp		*b
-			,const MatrixWithOp		*F
-			,BLAS_Cpp::Transp		trans_F
-			,const VectorWithOp		*f
-			,size_type				m_undecomp
-			,const size_type		j_f_undecomp[]
+			const VectorSpace::space_ptr_t   &space_d
+			,const VectorSpace::space_ptr_t  &space_eta
+			,const size_type                 m_in
+			,const size_type                 m_eq
+			,const MatrixWithOp              *E
+			,BLAS_Cpp::Transp                trans_E
+			,const VectorWithOp              *b
+			,const MatrixWithOp              *F
+			,BLAS_Cpp::Transp                trans_F
+			,const VectorWithOp              *f
+			,size_type                       m_undecomp
+			,const size_type                 j_f_undecomp[]
 			);
 
 		/** @name Access */
@@ -276,25 +277,26 @@ public:
 	 *                  and the matrix P_u will be the identity matrix.
 	 */
 	void initialize(
-		size_type                       nd
-		,value_type                     etaL
-		,const VectorWithOp             *dL
-		,const VectorWithOp             *dU
-		,const MatrixWithOp             *E
-		,BLAS_Cpp::Transp               trans_E
+		const VectorSpace::space_ptr_t   &space_d
+		,const VectorSpace::space_ptr_t  &space_eta
+		,value_type                      etaL
+		,const VectorWithOp              *dL
+		,const VectorWithOp              *dU
+		,const MatrixWithOp              *E
+		,BLAS_Cpp::Transp                trans_E
 		,const VectorWithOp              *b
-		,const VectorWithOp             *eL
-		,const VectorWithOp             *eU
-		,const MatrixWithOp             *F
-		,BLAS_Cpp::Transp               trans_F
-		,const VectorWithOp             *f
-		,size_type                      m_undecomp
-		,const size_type                j_f_undecomp[]
-		,VectorSlice                    *Ed
-		,bool                           check_F           = true
-		,value_type                     bounds_tol        = 1e-10
-		,value_type                     inequality_tol    = 1e-10
-		,value_type                     equality_tol      = 1e-10
+		,const VectorWithOp              *eL
+		,const VectorWithOp              *eU
+		,const MatrixWithOp              *F
+		,BLAS_Cpp::Transp                trans_F
+		,const VectorWithOp              *f
+		,size_type                       m_undecomp
+		,const size_type                 j_f_undecomp[]
+		,VectorWithOpMutable             *Ed
+		,bool                            check_F           = true
+		,value_type                      bounds_tol        = 1e-10
+		,value_type                      inequality_tol    = 1e-10
+		,value_type                      equality_tol      = 1e-10
 		);
 
 	///
@@ -390,7 +392,7 @@ private:
 	const VectorWithOp  *dU_;
 	const VectorWithOp  *eL_;
 	const VectorWithOp  *eU_;
-	VectorSlice         *Ed_;
+	VectorWithOpMutable *Ed_;
 	bool                check_F_;
 	mutable size_type   last_added_j_;          // Remember the last bound added so that
 	mutable value_type  last_added_bound_;      // we can save our selfs some work.

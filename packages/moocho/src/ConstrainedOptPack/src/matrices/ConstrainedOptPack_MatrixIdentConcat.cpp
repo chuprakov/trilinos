@@ -131,6 +131,8 @@ std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 {
 	const Range1D           D_rng   = this->D_rng();
 	const BLAS_Cpp::Transp  D_trans = this->D_trans();
+	out << "Converted to dense =\n";
+	MatrixWithOp::output(out);
 	out << "This is a " << this->rows() << " x " << this->cols()
 		<< " general matrix / identity matrix concatenated matrix object ";
 	if( D_rng.lbound() == 1 ) {

@@ -81,12 +81,12 @@ void MatrixDecompRangeOrthog::set_uninitialized()
 
 size_type MatrixDecompRangeOrthog::rows() const
 {
-	C_ptr_.get() ? C_ptr_->rows() : 0;
+	return C_ptr_.get() ? C_ptr_->rows() : 0;
 }
 
 size_type MatrixDecompRangeOrthog::cols() const
 {
-	C_ptr_.get() ? C_ptr_->cols() : 0;
+	return C_ptr_.get() ? C_ptr_->cols() : 0;
 }
 
 const VectorSpace& MatrixDecompRangeOrthog::space_cols() const

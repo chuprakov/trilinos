@@ -32,7 +32,7 @@ DecompositionSystemVarReductPermStd::DecompositionSystemVarReductPermStd(
 	,EExplicitImplicit                 Vz_imp
 	)
 {
-	this->initialize(decomp_sys_imp,basis_sys,basis_selected);
+	this->initialize(decomp_sys_imp,basis_sys,basis_selected,D_imp,Uz_imp,Vz_imp);
 }
 
 void DecompositionSystemVarReductPermStd::initialize(

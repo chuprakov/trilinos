@@ -14,23 +14,25 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "dynamic_cast_verbose.h"
 
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
-	const VectorSlice     &g
+	const VectorWithOp    &g
 	,const MatrixWithOp   &G
 	,value_type           etaL
-	,const SpVectorSlice  &dL
-	,const SpVectorSlice  &dU
+	,const VectorWithOp   *dL
+	,const VectorWithOp   *dU
 	,const MatrixWithOp   *F
 	,BLAS_Cpp::Transp     trans_F
-	,const VectorSlice    *f
-	,const VectorSlice    &d
-	,const SpVectorSlice  &nu
+	,const VectorWithOp   *f
+	,const VectorWithOp   *d
+	,const VectorWithOp   *nu
 	,size_type            *n_R
 	,i_x_free_t           *i_x_free
 	,i_x_fixed_t          *i_x_fixed
@@ -41,19 +43,15 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	,Vector               *fo
 	) const
 {
+	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
 
 	// Validate type of and convert G
-#ifdef _WINDOWS
-	const MatrixSymWithOpFactorized&
-		G_sym = dynamic_cast<const MatrixSymWithOpFactorized&>(G);
-#else
-	const MatrixSymWithOpFactorized&
-		G_sym = dyn_cast<const MatrixSymWithOpFactorized>(G);
-#endif
+	const MatrixSymWithOpNonsingular&
+		G_sym = dyn_cast<const MatrixSymWithOpNonsingular>(G);
 
-	const size_type nd = g.size();
+	const size_type nd = g.dim();
 	
 	// n_R
 	*n_R = nd;
@@ -71,10 +69,9 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	b_X->resize(1);
 	(*b_X)[0] = etaL;
 	// Ko = G
-	*Ko = &G_sym;
-	Ko->release(); // Not dynamically allocated so don't delete!
+	*Ko = mmp::rcp(&G_sym,false); // Not dynamically allocated so don't delete!
 	// fo = -g
-	V_mV(fo,g);
+	V_mV(fo,VectorDenseEncap(g)());
 }
 
 } // end namesapce ConstrainedOptimizationPack

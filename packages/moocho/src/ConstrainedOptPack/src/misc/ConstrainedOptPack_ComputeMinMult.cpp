@@ -13,14 +13,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/ComputeMinMult.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
+#include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/VectorClass.h"
 
 ConstrainedOptimizationPack::value_type
 ConstrainedOptimizationPack ::min_abs( const VectorSlice& mu )
 {
-	if( !mu.size() )
+	if( !mu.dim() )
 		return 0.0;
 	value_type min = ::fabs(mu(1));
 	for( VectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
@@ -31,7 +31,7 @@ ConstrainedOptimizationPack ::min_abs( const VectorSlice& mu )
 ConstrainedOptimizationPack::value_type
 ConstrainedOptimizationPack ::min_abs( const SpVectorSlice& mu )
 {
-	if( !mu.size() )
+	if( !mu.dim() )
 		return 0.0;
 	if( !mu.nz() )
 		return 0.0;

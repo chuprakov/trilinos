@@ -14,14 +14,9 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
-//#include "SparseLinAlgPack/include/SpVectorClass.h"
-//#include "SparseLinAlgPack/include/SpVectorOp.h"
-//#include "SparseLinAlgPack/test/CompareDenseVectors.h"
-//#include "SparseLinAlgPack/include/sparse_bounds_diff.h"
-//#include "LinAlgPack/include/VectorClass.h"
-//#include "LinAlgPack/include/VectorOp.h"
-//#include "LinAlgPack/include/VectorOut.h"
-//#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -42,75 +37,28 @@ bool VariableBoundsTester::check_in_bounds(
 	,const VectorWithOp& x,  const char x_name[]
 	)
 {
-/*
-	using std::endl;
-	using BLAS_Cpp::trans_not;
-	using BLAS_Cpp::no_trans;
-	using BLAS_Cpp::trans;
-	using BLAS_Cpp::upper;
-	using BLAS_Cpp::lower;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::Vt_S;
-	using SparseLinAlgPack::imp_sparse_bnd_diff;
-
-	value_type scale = 0.0;
-	Vector
-		u;	// hold the result to pass to comparison function
-	const value_type
-		x_norm_inf = norm_inf(x);
-
-	SparseLinAlgPack::TestingPack::CompareDenseVectors comp_v;
+	using AbstractLinAlgPack::max_near_feas_step;
 
 	if(out)
 		*out
 			<< "\n*** Checking that variables are in bounds\n";
 
-	///////////////////////////////////
-	// xL - x <= 0
-	if(out)
-		*out
-			<< "\nChecking "<<xL_name<<" - "<<x_name<<" <= 0 ...\n";
-	u.resize(x.size());
-	imp_sparse_bnd_diff( +1, xL, lower, x, &u() );
-	if(out && print_vectors)
-		*out
-			<<xL_name<<" - "<<x_name<<" =\n" << u();
-	Vt_S( &u(), 1.0/(1.0+x_norm_inf) );
-	if(out) {
-		*out
-			<< "Comparing: u - v <= 0\n"
-			<< "u = ("<<xL_name<<" - "<<x_name<<") | / (1 + ||"<<x_name<<"||inf ), v = 0 ...\n";
+	VectorSpace::vec_mut_ptr_t zero = x.space().create_member(0.0);
+	std::pair<value_type,value_type>
+		u = max_near_feas_step( x, *zero, xL, xU, warning_tol() );
+	if(u.first < 0.0) {
+		if(out)
+			*out << "\nWarning! the variables " << xL_name << " <= " << x_name << " <= " << xU_name
+				<< " are out of bounds by more than warning_tol = "	<< warning_tol() << "\n";
+		u = max_near_feas_step( x, *zero, xL, xU, error_tol() );
+		if(u.first < 0.0) {
+			if(out)
+				*out << "\nError! the variables " << xL_name << " <= " << x_name << " <= " << xU_name
+					<< " are out of bounds by more than error_tol = " << error_tol() << "\n";
+			return false;
+		}
 	}
-	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol(), print_all_warnings, out ))
-		return false;
-
-	///////////////////////////////////
-	// x - xU <= 0
-	if(out)
-		*out
-			<< "\nChecking "<<x_name<<" - "<<xU_name<<" <= 0 ...\n";
-	u.resize(x.size());
-	imp_sparse_bnd_diff( -1, xU, upper, x, &u() );
-	if(out && print_vectors)
-		*out
-			<<x_name<<" - "<<xU_name<<" =\n" << u();
-	Vt_S( &u(), 1.0/(1.0+x_norm_inf) );
-	if(out) {
-		*out
-			<< "Comparing: u - v <= 0\n"
-			<< "u = ("<<x_name<<" - "<<xU_name<<") | / (1 + ||"<<x_name<<"||inf ), v = 0 ...\n";
-	}
-	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol(), print_all_warnings, out ))
-		return false;
-
-	if(out)
-		*out
-			<< "\n*** Congradulations, the variables are within the bounds by the specified"
-			<< "\n*** error tolerances!\n";
-*/
-	assert(0); // Todo: use max_near_feas_step() to validate that vector is within bounds.
-
-	return true;	// If we get here then success
+	return true;
 }
 
 }	// end namespace ConstrainedOptimizationPack

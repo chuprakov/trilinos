@@ -15,9 +15,11 @@
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 
 namespace {
 
@@ -84,6 +86,29 @@ void set_complementarity(
 
 */
 
+// Handle the error reporting
+void handle_error(
+	std::ostream                            *out
+	,const AbstractLinAlgPack::value_type   err
+	,const char                             err_name[]
+	,const AbstractLinAlgPack::value_type   error_tol
+	,const char                             error_tol_name[]
+	,const AbstractLinAlgPack::value_type   warning_tol
+	,const char                             warning_tol_name[]
+	,bool                                   *test_failed
+	)
+{
+	if( err >= error_tol ) {
+		if(out)
+			*out << "\n" << err_name << " = " << err << " >= " << error_tol_name << " = " << error_tol << std::endl;
+		*test_failed = true;
+	}
+	else if( err >= warning_tol ) {
+		if(out)
+			*out << "\n" << err_name << " = " << err << " >= " << warning_tol_name << " = " << warning_tol << std::endl;
+	}
+}
+
 }	// end namespace
 
 namespace ConstrainedOptimizationPack {
@@ -108,6 +133,7 @@ QPSolverRelaxedTester::QPSolverRelaxedTester(
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
@@ -123,13 +149,14 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	)
 {
 	return check_optimality_conditions(
-		solution_type,out,print_all_warnings,print_vectors
+		solution_type,infinite_bound,out,print_all_warnings,print_vectors
 		,g,G,etaL,&dL,&dU,&E,trans_E,&b,&eL,&eU,&F,trans_F,&f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
@@ -143,13 +170,14 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	)
 {
 	return check_optimality_conditions(
-		solution_type,out,print_all_warnings,print_vectors
+		solution_type,infinite_bound,out,print_all_warnings,print_vectors
 		,g,G,etaL,&dL,&dU,&E,trans_E,&b,&eL,&eU,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,eta,d,nu,mu,Ed,NULL,NULL);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
@@ -162,13 +190,14 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	)
 {
 	return check_optimality_conditions(
-		solution_type,out,print_all_warnings,print_vectors
+		solution_type,infinite_bound,out,print_all_warnings,print_vectors
 		,g,G,etaL,&dL,&dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,&F,trans_F,&f
 		,obj_d,eta,d,nu,NULL,NULL,lambda,Fd );
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,const VectorWithOp& dL, const VectorWithOp& dU
@@ -178,13 +207,14 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	)
 {
 	return check_optimality_conditions(
-		solution_type,out,print_all_warnings,print_vectors
+		solution_type,infinite_bound,out,print_all_warnings,print_vectors
 		,g,G,0.0,&dL,&dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,NULL,d,nu,NULL,NULL,NULL,NULL);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
@@ -200,12 +230,12 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	)
 {
 	QPSolverRelaxed::validate_input(
-		g,G,etaL,dL,dU
+		infinite_bound,g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 
 	return imp_check_optimality_conditions(
-		solution_type
+		solution_type,infinite_bound
 		,out,print_all_warnings,print_vectors,g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
@@ -215,6 +245,7 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 
 bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	QPSolverStats::ESolutionType solution_type
+	,const value_type infinite_bound
 	,std::ostream* out, bool print_all_warnings, bool print_vectors
 	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
@@ -235,35 +266,35 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
-	using AbstractLinAlgPack::dot;
-	using AbstractLinAlgPack::Vt_S;
-	using AbstractLinAlgPack::Vp_StV;
+	using LinAlgOpPack::sum;
+	using LinAlgOpPack::dot;
+	using LinAlgOpPack::Vt_S;
+	using LinAlgOpPack::V_VmV;
+	using LinAlgOpPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_V;
+	using AbstractLinAlgPack::max;
 	typedef QPSolverStats qps_t;
 
 	bool test_failed = false;
 
-	assert(0);
-/* ToDo: Update the below code!
+	const size_type
+		nd = d->dim();
 
 	const value_type
 		really_big_error_tol = std::numeric_limits<value_type>::max();
 
 	value_type opt_scale = 0.0;
-	Vector
-		u,	// hold the result to pass to comparison function
-		c,	// hold complementarity conditions
-		t,	// hold temporary vectors
-		r,	// - op(F)*d + eta * f
-		e;	// op(E)*d + b*eta
+	VectorSpace::vec_mut_ptr_t
+		t_d = d->space().create_member(),
+		u_d = d->space().create_member();
+
 	value_type
+		err = 0,
 		d_norm_inf,	// holds ||d||inf
 		e_norm_inf;	// holds ||e||inf
-
-	SparseLinAlgPack::TestingPack::CompareDenseVectors comp_v;
 
 	if(out)
 		*out
@@ -294,56 +325,53 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	opt_scale = 0.0;
 
-	u = g;
-	opt_scale += norm_inf(g);
+	*u_d = g;
+	opt_scale += g.norm_inf();
 
 	if(out) {
-		*out << "||g||inf = " << norm_inf(u()) << endl;
+		*out << "||g||inf = " << g.norm_inf() << endl;
 	}
 	
-	V_MtV( &t, G, no_trans, *d );
-	Vp_V( &u(), t() );
-	opt_scale += norm_inf(t);
+	V_MtV( t_d.get(), G, no_trans, *d );
+	Vp_V( u_d.get(), *t_d );
+	opt_scale += t_d->norm_inf();
 
 	if(out) {
-		*out << "||G*d||inf = " << norm_inf(t()) << endl;
+		*out << "||G*d||inf = " << t_d->norm_inf() << endl;
 		if(print_vectors)
-			*out << "g + G*d =\n" << u();
+			*out << "g + G*d =\n" << *u_d;
 	}
 
 	if( nu ) {
-		Vp_V( &u(), (*nu)() );
-		opt_scale += norm_inf((*nu)());
+		Vp_V( u_d.get(), *nu );
+		opt_scale += nu->norm_inf();
 	}
 
 	if(E) {
-		V_MtV( &t, *E, trans_not(trans_E), (*mu)() );
-		Vp_V( &u(), t() );
-		opt_scale += norm_inf(t);
+		V_MtV( t_d.get(), *E, trans_not(trans_E), *mu );
+		Vp_V( u_d.get(), *t_d );
+		opt_scale += t_d->norm_inf();
 		if(out) {
-			*out << "||op(E)'*mu||inf = " << norm_inf(t()) << endl;
+			*out << "||op(E)'*mu||inf = " << t_d->norm_inf() << endl;
 			if(print_vectors)
-				*out << "op(E)'*mu =\n" << t();
+				*out << "op(E)'*mu =\n" << *t_d;
 		}
 	}			
 
 	if(F) {
-		V_MtV( &t, *F, trans_not(trans_F), *lambda );
-		Vp_V( &u(), t() );
-		opt_scale += norm_inf(t);
-		if(out && print_vectors)
-			*out
-				<< "\nop(F)'*lambda =\n" << t();
+		V_MtV( t_d.get(), *F, trans_not(trans_F), *lambda );
+		Vp_V( u_d.get(), *t_d );
+		opt_scale += t_d->norm_inf();
 		if(out) {
-			*out << "||op(F)'*lambda||inf = " << norm_inf(t()) << endl;
+			*out << "||op(F)'*lambda||inf = " << t_d->norm_inf() << endl;
 			if(print_vectors)
-				*out << "op(F)'*lambda =\n" << t();
+				*out << "op(F)'*lambda =\n" << *t_d;
 		}
-	}			
+	}
 
 	if( *eta > etaL ) { // opt_scale + |(eta - etaL) * (b'*mu + f'*lambda)|
 		const value_type
-			term = ::fabs( (*eta - etaL) * (E ? dot(*b,(*mu)()) : 0.0) + (F ? dot(*f,*lambda) : 0.0 ) );
+			term = ::fabs( (*eta - etaL) * (E ? dot(*b,*mu) : 0.0) + (F ? dot(*f,*lambda) : 0.0 ) );
 		if(out) {
 			*out << "|(eta - etaL) * (b'*mu + f'*lambda)| = " << term << endl;
 		}
@@ -352,21 +380,31 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	if(out && print_vectors)
 		*out
-			<< "g + G*d + nu + op(E)'*mu - op(F)'*lambda =\n" << u();
+			<< "g + G*d + nu + op(E)'*mu - op(F)'*lambda =\n" << *u_d;
 
-	Vt_S( &u(), 1.0/(1.0+opt_scale) );
+	Vt_S( u_d.get(), 1.0/(1.0+opt_scale) );
 
-	if(out) {
+	err = sum( *u_d );
+
+	if(out)
 		*out
-			<< "Comparing:\n"
-			<< "u = | g + G*d + nu + op(E)'*mu - op(F)'*lambda | / (1+opt_scale)\n"
-			<< "opt_scale = " << opt_scale << endl
-			<< "v = 0 ...\n";
-	}
+			<< "\nopt_scale = " << opt_scale << endl
+			<< "opt_err = sum( | g + G*d + nu + op(E)'*mu - op(F)'*lambda | / (1+opt_scale) ) / nd\n"
+			<< "        = " << err << " / " << nd << " = " << (err/nd) << endl;
 
-	if(!comp_v.comp( u(), 0.0, opt_warning_tol()
-		, force_opt_error_check ? opt_error_tol() : really_big_error_tol
-		, print_all_warnings, out )) test_failed = true;
+	err *= nd;
+
+	if( force_opt_error_check ) {
+		if( err >= opt_error_tol() ) {
+			if(out)
+				*out << "\nopt_err = " << err << " >= opt_error_tol = " << opt_error_tol() << endl;
+			test_failed = true;
+		}
+		else if( err >= opt_warning_tol() ) {
+			if(out)
+				*out << "\nopt_err = " << err << " >= opt_error_tol = " << opt_error_tol() << endl;
+		}
+	}
 
 	if(out) {
 		*out
@@ -408,29 +446,34 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		test_failed = true;
 	} 
 
-	d_norm_inf = norm_inf(*d);
+	d_norm_inf = d->norm_inf();
 
-	///////////////////////////////////
-	// dL - d <= 0
-	if(out)
-		*out
-			<< sep_line
-			<< "\nChecking dL - d <= 0 ...\n";
-	u.resize(d->size());
-	imp_sparse_bnd_diff( +1, dL, lower, *d, &u() );
-	if(out && print_vectors)
-		*out
-			<< "dL - d =\n" << u();
-	Vt_S( &u(), 1.0/(1.0+d_norm_inf) );
-	if(out) {
-		*out
-			<< "Comparing: u - v <= 0\n"
-			<< "u = (dL - d) | / (1 + ||d||inf ), v = 0 ...\n";
-	}
-	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
-		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-		, print_all_warnings, out )) test_failed = true;
-	if(nu) {
+	if(dL) {
+
+		///////////////////////////////////
+		// dL - d <= 0
+		if(out)
+			*out
+				<< sep_line
+				<< "\nChecking dL - d <= 0 ...\n";
+		V_VmV( u_d.get(), *dL, *d );
+		if(out && print_vectors)
+			*out
+				<< "dL - d =\n" << *u_d;
+		Vt_S( u_d.get(), 1.0/(1.0+d_norm_inf) );
+
+		err = max(*u_d);
+		if(out)
+			*out
+				<< "\nmax(dL-d) = " << err << endl;
+		if( force_inequality_error_check )
+			handle_error(
+				out,err,"max(dU-d)",feas_error_tol(),"feas_error_tol"
+				,feas_warning_tol(),"feas_error_tol",&test_failed
+				);
+
+		// ToDo: Update below code!
+/*
 		if(out)
 			*out
 				<< sep_line
@@ -447,29 +490,31 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 			, print_all_warnings, out )) test_failed = true;
-	}
+*/
 
-	///////////////////////////////////
-	// d - dU <= 0
-	if(out)
-		*out
-			<< sep_line
-			<< "\nChecking d - dU <= 0 ...\n";
-	u.resize(d->size());
-	imp_sparse_bnd_diff( -1, dU, upper, *d, &u() );
-	if(out && print_vectors)
-		*out
-			<< "d - dU =\n" << u();
-	Vt_S( &u(), 1.0/(1.0+d_norm_inf) );
-	if(out) {
-		*out
-			<< "Comparing: u - v <= 0:\n"
-			<< "u = (d - dU) | / (1 + ||d||inf ), v = 0 ...\n";
-	}
-	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
-		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-		, print_all_warnings, out )) test_failed = true;
-	if(nu) {
+		///////////////////////////////////
+		// d - dU <= 0
+		if(out)
+			*out
+				<< sep_line
+				<< "\nChecking d - dU <= 0 ...\n";
+		V_VmV( u_d.get(), *d, *dU );
+		if(out && print_vectors)
+			*out
+				<< "d - dU =\n" << *u_d;
+		Vt_S( u_d.get(), 1.0/(1.0+d_norm_inf) );
+
+		err = max(*u_d);
+		if(out)
+			*out
+				<< "\nmax(d-dU) = " << err << endl;
+		if( force_inequality_error_check )
+			handle_error(
+				out,err,"max(d-dU)",feas_error_tol(),"feas_error_tol"
+				,feas_warning_tol(),"feas_error_tol",&test_failed
+				);
+		// ToDo: Update below code!
+/*
 		if(out)
 			*out
 				<< sep_line
@@ -486,6 +531,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 						 , print_all_warnings, out )) test_failed = true;
+*/
 	}
 
 	if( E ) {
@@ -496,12 +542,15 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nComputing e = op(E)*d - b*eta ...\n";
-		V_MtV( &e, *E, trans_E, *d );
-		Vp_StV( &e(), -(*eta), *b );
-		e_norm_inf = norm_inf(e());	
+		VectorSpace::vec_mut_ptr_t
+			e   = ( trans_E == no_trans ? E->space_cols() : E->space_rows() ).create_member(),
+			t_e = e->space().create_member();
+		V_MtV( e.get(), *E, trans_E, *d );
+		Vp_StV( e.get(), -(*eta), *b );
+		e_norm_inf = e->norm_inf();
 		if(out && print_vectors)
 			*out
-				<< "e = op(E)*d - b*eta  =\n" << e();
+				<< "e = op(E)*d - b*eta  =\n" << *e;
 
 		///////////////////////////////////
 		// eL - e <= 0
@@ -509,20 +558,23 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking eL - e <= 0 ...\n";
-		u.resize(e.size());
-		imp_sparse_bnd_diff( +1, *eL, lower, e(), &u() );
+		V_VmV( t_e.get(), *eL, *e );
 		if(out && print_vectors)
 			*out
-				<< "eL - e =\n" << u();
-		Vt_S( &u(), 1.0/(1.0+e_norm_inf) );
-		if(out) {
+				<< "eL - e =\n" << *t_e;
+		Vt_S( t_e.get(), 1.0/(1.0+e_norm_inf) );
+
+		err = max(*t_e);
+		if(out)
 			*out
-				<< "Comparing: u - v <= 0\n"
-				<< "u = (eL - e) | / (1 + ||e||inf ), v = 0 ...\n";
-		}
-		if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
-			, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) test_failed = true;
+				<< "\nmax(eL-e) = " << err << endl;
+		if( force_inequality_error_check )
+			handle_error(
+				out,err,"max(eL-e)",feas_error_tol(),"feas_error_tol"
+				,feas_warning_tol(),"feas_error_tol",&test_failed
+				);
+		// ToDo: Update below code!
+/*
 		if(out)
 			*out
 				<< sep_line
@@ -539,6 +591,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 						 , print_all_warnings, out )) test_failed = true;
+*/
 		
 		///////////////////////////////////
 		// e - eU <= 0
@@ -546,21 +599,23 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking e - eU <= 0 ...\n";
-		u.resize(e.size());
-		imp_sparse_bnd_diff( -1, *eU, upper, e(), &u() );
+		V_VmV( t_e.get(), *e, *eU );
 		if(out && print_vectors)
 			*out
-				<< "\ne - eU =\n" << u();
-		Vt_S( &u(), 1.0/(1.0+e_norm_inf) );
-		if(out) {
+				<< "\ne - eU =\n" << *t_e;
+		Vt_S( t_e.get(), 1.0/(1.0+e_norm_inf) );
+
+		err = max(*t_e);
+		if(out)
 			*out
-				<< "\nComparing: u - v <= 0\n"
-				<< "u = (e - eU) | / (1 + ||e||inf )\n"
-				<< "v = 0 ...\n";
-		}
-		if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
-			, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) test_failed = true;
+				<< "\nmax(e-eU) = " << err << endl;
+		if( force_inequality_error_check )
+			handle_error(
+				out,err,"max(e-eU)",feas_error_tol(),"feas_error_tol"
+				,feas_warning_tol(),"feas_error_tol",&test_failed
+				);
+		// ToDo: Update below code!
+/*
 		if(out)
 			*out
 				<< sep_line
@@ -578,10 +633,13 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 						 , print_all_warnings, out )) test_failed = true;
+*/
 		
 	}
 
 	if( F ) {
+		assert(0); // ToDo: Update below code!
+/*
 
 		///////////////////////////////////
 		// r = - op(F)*d + eta * f 
@@ -605,6 +663,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			, force_equality_error_check ? feas_error_tol() : really_big_error_tol
 			, print_all_warnings, out )) test_failed = true;
 
+*/
 	}
 
 	if(out) {
@@ -625,8 +684,6 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		*out
 			<< "\n*** End checking QP optimality conditions ***\n";
 	}
-
-*/
 
 	return !test_failed;
 

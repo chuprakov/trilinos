@@ -18,6 +18,7 @@
 #include "ConstrainedOptimizationPack/include/MatrixSymHessianRelaxNonSing.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "profile_hack.h"
 #include "ThrowException.h"
@@ -118,23 +119,40 @@ MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing()
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
 	const G_ptr_t         &G_ptr
 	,const vec_mut_ptr_t  &M_diag_ptr
+	,const space_ptr_t    &space
 	)
 	: vec_space_(NULL,0)
 {
-	initialize(G_ptr,M_diag_ptr);
+	initialize(G_ptr,M_diag_ptr,space);
 }
 
 void MatrixSymHessianRelaxNonSing::initialize(
 	const G_ptr_t         &G_ptr
 	,const vec_mut_ptr_t  &M_diag_ptr
+	,const space_ptr_t    &space
 	)
 {
+	namespace mmp = MemMngPack;
+#ifdef _DEBUG
 	const char err_msg_head[] = "MatrixSymHessianRelaxNonSing::initialize(...) : Error!";
 	THROW_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
 	THROW_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
-	THROW_EXCEPTION(G_ptr->rows()==0, std::invalid_argument, err_msg_head);
-	THROW_EXCEPTION(M_diag_ptr->dim()==0, std::invalid_argument, err_msg_head);
-	assert(0); // ToDo: Initalize vec_space_
+	const size_type G_rows = G_ptr->rows(), M_diag_dim = M_diag_ptr->dim();
+	THROW_EXCEPTION(G_rows==0, std::invalid_argument, err_msg_head);
+	THROW_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
+#endif
+	if( space.get() ) {
+#ifdef _DEBUG
+		const size_type space_dim = space->dim();
+		THROW_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
+#endif
+		vec_space_ = space;
+	}
+	else {
+		VectorSpace::space_ptr_t spaces[]
+			= { mmp::rcp(&G_ptr->space_cols(),false), mmp::rcp(&M_diag_ptr->space(),false) };
+		vec_space_ = mmp::rcp(new VectorSpaceCompositeStd( spaces, 2 ) );
+	}
 	G_ptr_ = G_ptr;
 	M_.initialize(M_diag_ptr);
 }
@@ -144,7 +162,7 @@ void MatrixSymHessianRelaxNonSing::initialize(
 const VectorSpace& MatrixSymHessianRelaxNonSing::space_cols() const
 {
 	assert_initialized();
-	return vec_space_;
+	return *vec_space_;
 }
 
 bool MatrixSymHessianRelaxNonSing::Mp_StM(

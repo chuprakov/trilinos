@@ -201,6 +201,7 @@ public:
 	 */
 	virtual bool check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
@@ -220,6 +221,7 @@ public:
 	 */
 	virtual bool check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
@@ -237,6 +239,7 @@ public:
 	 */
 	virtual bool check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
@@ -255,6 +258,7 @@ public:
 	 */
 	virtual bool check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,const VectorWithOp& dL, const VectorWithOp& dU
@@ -270,6 +274,7 @@ public:
 	 */
 	virtual bool check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
@@ -294,6 +299,7 @@ protected:
 	 */
 	virtual bool imp_check_optimality_conditions(
 		QPSolverStats::ESolutionType solution_type
+		,const value_type infinite_bound
 		,std::ostream* out, bool print_all_warnings, bool print_vectors
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL

@@ -40,6 +40,20 @@ public:
 
 	//@}
 
+	/** @name Constructors / initializers */
+	//@{
+
+	///
+	DecompositionSystemVarReductPerm(
+		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
+		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
+		,EExplicitImplicit    Vz_imp   = MAT_IMP_AUTO
+		)
+		:DecompositionSystemVarReduct(D_imp,Uz_imp,Vz_imp)
+	{}
+
+	//@}
+
 	/** @name Permutation factories */
 	//@{
 

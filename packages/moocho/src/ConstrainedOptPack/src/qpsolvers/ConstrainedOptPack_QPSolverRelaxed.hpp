@@ -17,6 +17,7 @@
 #define QP_SOLVER_RELAXED_H
 
 #include "QPSolverStats.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -144,11 +145,22 @@ public:
 
 	//@}
 
+	/** @name Initializers */
+	//@{
+
+	/// Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
+
 	///
-	static value_type infinite_bound();
+	QPSolverRelaxed();
 
 	///
 	virtual ~QPSolverRelaxed() {}
+
+	//@}
+
+	/** @name Interface methods with default implementations */
+	//@{
 
 	///
 	/** Solve the QP.
@@ -392,6 +404,11 @@ public:
 	 */
 	virtual void release_memory() = 0;
 
+	//@}
+
+	/** @name Static utility functions */
+	//@{
+
 	///
 	/** This is a (static) function that is used as a utility to
 	 * validate the input arguments to \c solve_qp().
@@ -416,7 +433,8 @@ public:
 	 * will be thrown.
 	 */
 	static void validate_input(
-		const VectorWithOp& g, const MatrixSymWithOp& G
+		const value_type infinite_bound
+		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
 		,const VectorWithOp* dL, const VectorWithOp* dU
 		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
@@ -428,9 +446,6 @@ public:
 		,const VectorWithOp* mu, const VectorWithOp* Ed
 		,const VectorWithOp* lambda, const VectorWithOp* Fd
 		);
-
-	/** @name Utility functions for dumping input and output arguments */
-	//@{
 
 	///
 	/** Utility (static) function for printing the input input/output arguments before
@@ -449,7 +464,8 @@ public:
 	 *   \end{description}
 	  */
 	static void print_qp_input( 
-		std::ostream* out, EOutputLevel olevel
+		const value_type infinite_bound
+		,std::ostream* out, EOutputLevel olevel
 		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
 		,const VectorWithOp* dL, const VectorWithOp* dU
@@ -479,7 +495,8 @@ public:
 	 *   \end{description}
 	  */
 	static void print_qp_output(
-		std::ostream* out, EOutputLevel olevel
+		const value_type infinite_bound
+		,std::ostream* out, EOutputLevel olevel
 		,const value_type* obj_d
 		,const value_type* eta, const VectorWithOp* d
 		,const VectorWithOp* nu
@@ -490,6 +507,9 @@ public:
 	//@}
 
 protected:
+
+	/** @name Pure virtual methods that must be overridden by subclass */
+	//@{
 
 	///
 	/** Subclasses are to override this to implement the QP algorithm.
@@ -510,6 +530,8 @@ protected:
 		,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
 		,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
 		) = 0;
+
+	//@}
 
 };	// end class QPSovlerRelaxed
 

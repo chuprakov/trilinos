@@ -22,6 +22,7 @@
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
 //#include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
@@ -132,6 +133,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		m_in = E ? BLAS_Cpp::rows(E->rows(),E->cols(),trans_E) : 0,
 		m_eq = F ? BLAS_Cpp::rows(F->rows(),F->cols(),trans_F) : 0;
 
+	VectorDenseEncap  g(g_in);
+
 	// ///////////////////////////////
 	// Setup the initial KKT system
 
@@ -140,13 +143,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	InitKKTSystem::bnd_fixed_t    bnd_fixed;
 	InitKKTSystem::j_f_decomp_t   j_f_decomp;
 	size_type n_R_tmp;
-	assert(0); // ToDo: Update the below code!
-/*
 	init_kkt_sys().initialize_kkt_system(
-		g,G,etaL,dL,dU,F,trans_F,f,(*d)(),(*nu)()
+		g_in,G,etaL,dL_in,dU_in,F,trans_F,f_in,d_inout,nu_inout
 		,&n_R_tmp,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
 		,&b_X_,&Ko_,&fo_ );
-*/
 	const size_type
 		n_R = n_R_tmp,
 		n_X = nd + 1 - n_R; // fixed variables in d and eta
@@ -172,16 +172,14 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	}
 
 	// initialize constraints object
-	assert(0); // ToDo: Update the below code!
-/*
 	constraints_->initialize(
-		nd,etaL,&dL,&dU,E,trans_E,b,eL,eU,F,trans_F,f
-		, m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
-		, Ed
-		, !add_equalities_initially()  // If we add equalities the the schur complement intially
-		                               // then we don't need to check if they are violated.
+		mmp::rcp(&d_inout->space(),false),mmp::rcp(new VectorSpaceSerial(1),false)
+		,etaL,dL_in,dU_in,E,trans_E,b_in,eL_in,eU_in,F,trans_F,f_in
+		,m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
+		,Ed_inout
+		,!add_equalities_initially()  // If we add equalities the the schur complement intially
+		                              // then we don't need to check if they are violated.
 		);
-*/
 	// ToDo: Add j_f_decomp to the above constraints class!
 
 	// ///////////////////////////
@@ -189,7 +187,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	// g_relaxed_ = [ g; bigM ]
 	g_relaxed_.resize(nd+1);
-	g_relaxed_(1,nd) = VectorDenseEncap(g_in)();
+	g_relaxed_(1,nd) = g();
 	g_relaxed_(nd+1) = bigM();
 
 	// G_relaxed_ = [ G, zeros(...); zeros(...), bigM ]
@@ -198,6 +196,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	G_relaxed_.initialize(
 		mmp::rcp(&dyn_cast<const MatrixSymWithOpNonsingular>(G),false)
 		,mmp::rcp(&bigM_vec_,false)
+		,mmp::rcp(new VectorSpaceSerial(nd+1))
 		);
 	
 	qp_.initialize(
@@ -314,7 +313,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// We need to loop through x_init() and nu() in order and look for variables
 	// that are initially fixed in x_init() but are not present in nu().  For these
 	// variables we need to free them in ij_act_change[].
-	{
+	if( dL_in ) {
 		assert(0); // ToDo: Update the below code!
 /*
 		QPSchurPack::QP::x_init_t::const_iterator

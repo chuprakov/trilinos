@@ -19,20 +19,19 @@
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 #include "ConstrainedOptimizationPack/include/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/EtaVector.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "SparseLinAlgPack/include/LinAlgOpPackHack.h"
+#include "SparseLinAlgPack/include/LinAlgOpPack.h"
 #include "SparseLinAlgPack/include/sparse_bounds.h"
-#include "SparseLinAlgPack/include/EtaVector.h"
-#include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
+#include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
-
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
-}
+#include "dynamic_cast_verbose.h"
+#include "ThrowException.h"
 
 namespace QPKWIKNEW_CppDecl {
 
@@ -51,14 +50,14 @@ extern "C" {
 
 FORTRAN_FUNC_DECL_UL(void,QPKWIKNEW,qpkwiknew) (
 	const f_int& N, const f_int& M1, const f_int& M2, const f_int& M3
-	, const f_dbl_prec GRAD[], f_dbl_prec UINV[], const f_int& LDUINV
-	, const f_int IBND[], const f_dbl_prec BL[], const f_dbl_prec BU[]
-	, const f_dbl_prec A[], const f_int& LDA, const f_dbl_prec YPY[]
-	, const f_int& IYPY, const f_int& WARM, f_dbl_prec NUMPARAM[], const f_int& MAX_ITER
-	, f_dbl_prec X[], f_int* NACTSTORE, f_int IACTSTORE[], f_int* INF
-	, f_int* NACT, f_int IACT[], f_dbl_prec UR[], f_dbl_prec* EXTRA
-	, f_int* ITER, f_int* NUM_ADDS, f_int* NUM_DROPS
-	, f_int ISTATE[], const f_int& LRW, f_dbl_prec RW[]
+	,const f_dbl_prec GRAD[], f_dbl_prec UINV[], const f_int& LDUINV
+	,const f_int IBND[], const f_dbl_prec BL[], const f_dbl_prec BU[]
+	,const f_dbl_prec A[], const f_int& LDA, const f_dbl_prec YPY[]
+	,const f_int& IYPY, const f_int& WARM, f_dbl_prec NUMPARAM[], const f_int& MAX_ITER
+	,f_dbl_prec X[], f_int* NACTSTORE, f_int IACTSTORE[], f_int* INF
+	,f_int* NACT, f_int IACT[], f_dbl_prec UR[], f_dbl_prec* EXTRA
+	,f_int* ITER, f_int* NUM_ADDS, f_int* NUM_DROPS
+	,f_int ISTATE[], const f_int& LRW, f_dbl_prec RW[]
 	);
 
 FORTRAN_FUNC_DECL_UL(f_int,QPKWIKNEW_LISTATE,qpkwiknew_listate) (
@@ -78,14 +77,14 @@ FORTRAN_FUNC_DECL_UL(f_int,QPKWIKNEW_LRW,qpkwiknew_lrw) (
 inline
 void qpkwiknew ( 
 	const f_int& n, const f_int& m1, const f_int& m2, const f_int& m3
-	, const f_dbl_prec grad[], f_dbl_prec uinv[], const f_int& lduinv
-	, const f_int ibnd[], const f_dbl_prec bl[], const f_dbl_prec bu[]
-	, const f_dbl_prec a[], const f_int& lda, const f_dbl_prec ypy[]
-	, const f_int& iypy, const f_int& warm, f_dbl_prec numparam[], const f_int& max_iter
-	, f_dbl_prec x[], f_int* nactstore, f_int iactstore[], f_int* inf
-	, f_int* nact, f_int iact[], f_dbl_prec ur[], f_dbl_prec* extra
-	, f_int* iter, f_int* num_adds, f_int* num_drops
-	, f_int istate[], const f_int& lrw, f_dbl_prec rw[]
+	,const f_dbl_prec grad[], f_dbl_prec uinv[], const f_int& lduinv
+	,const f_int ibnd[], const f_dbl_prec bl[], const f_dbl_prec bu[]
+	,const f_dbl_prec a[], const f_int& lda, const f_dbl_prec ypy[]
+	,const f_int& iypy, const f_int& warm, f_dbl_prec numparam[], const f_int& max_iter
+	,f_dbl_prec x[], f_int* nactstore, f_int iactstore[], f_int* inf
+	,f_int* nact, f_int iact[], f_dbl_prec ur[], f_dbl_prec* extra
+	,f_int* iter, f_int* num_adds, f_int* num_drops
+	,f_int istate[], const f_int& lrw, f_dbl_prec rw[]
 	)
 {
 	FORTRAN_FUNC_CALL_UL(QPKWIKNEW,qpkwiknew) (
@@ -137,8 +136,8 @@ EConstraintType constraint_type( const f_int m1, const f_int m2, const f_int m3,
 	return NU_L;	// should never be exectuted
 }
 
-f_int constraint_indice( const f_int m1, const f_int m2, const f_int m3, const f_int ibnd[]
-	, const EConstraintType type, const f_int j )
+f_int constraint_index( const f_int m1, const f_int m2, const f_int m3, const f_int ibnd[]
+						, const EConstraintType type, const f_int j )
 {
 	switch(type) {
 		case NU_L		: return ibnd[j-1];
@@ -160,11 +159,10 @@ f_int constraint_indice( const f_int m1, const f_int m2, const f_int m3, const f
 namespace ConstrainedOptimizationPack {
 
 QPSolverRelaxedQPKWIK::QPSolverRelaxedQPKWIK(
-		  value_type        max_qp_iter_frac
-		  ,value_type       infinite_bound
-	      )
-	:
-	max_qp_iter_frac_(max_qp_iter_frac)
+	value_type        max_qp_iter_frac
+	,value_type       infinite_bound
+	)
+	:max_qp_iter_frac_(max_qp_iter_frac)
 	,infinite_bound_(infinite_bound)
 	,N_(0)
 	,M1_(0)
@@ -196,61 +194,60 @@ void QPSolverRelaxedQPKWIK::release_memory()
 
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPKWIK::imp_solve_qp(
-		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
-		, value_type etaL
-		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
-		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+	std::ostream* out, EOutputLevel olevel, ERunTests test_what
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp* dL, const VectorWithOp* dU
+	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
+	,const VectorWithOp* eL, const VectorWithOp* eU
+	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,value_type* obj_d
+	,value_type* eta, VectorWithOpMutable* d
+	,VectorWithOpMutable* nu
+	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
+	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
 	)
 {
-	using LinAlgPack::dot;
-	using LinAlgPack::V_StV;
+	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgPack::nonconst_tri_ele;
+	using LinAlgOpPack::dot;
+	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::assign;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::EtaVector;
-	using SparseLinAlgPack::transVtMtV;
+	using AbstractLinAlgPack::transVtMtV;
+	using AbstractLinAlgPack::num_bounded;
 	using ConstrainedOptimizationPack::MatrixExtractInvCholFactor;
 
 	// /////////////////////////
 	// Map to QPKWIK input
 
 	// Validate that rHL is of the proper type.
-	const MatrixExtractInvCholFactor *cG
-		= dynamic_cast<const MatrixExtractInvCholFactor*>(&G);
-	if(!cG)
-		throw InvalidInput("QPSolverRelaxedQPKWIKNEW::imp_solve_qp(...) :"
-			" The concrete type of G must support the interface MatrixExtractInvCholFactor." );
+	const MatrixExtractInvCholFactor &cG
+		= dyn_cast<const MatrixExtractInvCholFactor>(G);
 
 	// Determine the number of sparse bounds on variables and inequalities.
-	// By default set for the dence case
-	using SparseLinAlgPack::num_bounds;
+	// By default set for the dense case
+	const value_type inf = this->infinite_bound();
 	const size_type
-		nd              = d->size(),
-		m_in            = E ? b->size() : 0,
-		m_eq            = F ? f->size() : 0,
-		nvarbounds      = num_bounds(dL,dU),
-		ninequbounds    = E ? num_bounds(*eL,*eU): 0,
-		nequalities     = F ? f->size(): 0;
+		nd              = d->dim(),
+		m_in            = E  ? b->dim()                  : 0,
+		m_eq            = F  ? f->dim()                  : 0,
+		nvarbounds      = dL ? num_bounded(*dL,*dU,inf)  : 0,
+		ninequbounds    = E  ? num_bounded(*eL,*eU,inf)  : 0,
+		nequalities     = F  ? f->dim()                  : 0;
 
 	// Determine if this is a QP with a structure different from the
 	// one just solved.
 	
-	const bool same_qp_struct = (  N_ == d->size() && M1_ == nvarbounds && M2_ == ninequbounds && M3_ == nequalities );
+	const bool same_qp_struct = (  N_ == nd && M1_ == nvarbounds && M2_ == ninequbounds && M3_ == nequalities );
 
 	/////////////////////////////////////////////////////////////////
 	// Set the input parameters to be sent to QPKWIKNEW
 
 	// N
-	N_ = d->size();
+	N_ = nd;
 
 	// M1
 	M1_ = nvarbounds;
@@ -262,7 +259,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	M3_ = nequalities;
 
 	// GRAD
-	GRAD_ = g;
+	GRAD_ = VectorDenseEncap(g)();
 
 	// UINV_AUG
 	//
@@ -270,7 +267,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	//            [ 0           L' ]
 	//
 	UINV_AUG_.resize(N_+1,N_+1);
-	cG->extract_inv_chol( &nonconst_tri_ele( UINV_AUG_(2,N_+1,2,N_+1), BLAS_Cpp::upper ) );
+	cG.extract_inv_chol( &nonconst_tri_ele( UINV_AUG_(2,N_+1,2,N_+1), BLAS_Cpp::upper ) );
 	UINV_AUG_(1,1) = 1.0 / ::sqrt( NUMPARAM_[2] );
 	UINV_AUG_.col(1)(2,N_+1) = 0.0;
 	UINV_AUG_.row(1)(2,N_+1) = 0.0;
@@ -292,11 +289,14 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		YPY_(1,M1_) = 0.0; // Must be for this QP interface
 
 	// Initialize variable bound constraints
-	if( dL.nz() || dU.nz() ) {
+	if( dL ) {
+		VectorDenseEncap dL_de(*dL);
+		VectorDenseEncap dU_de(*dU);
 		// read iterators
 		SparseLinAlgPack::sparse_bounds_itr
-			dLU_itr( dL.begin(), dL.end(), dL.offset()
-					, dU.begin(), dU.end(), dU.offset(), infinite_bound() );
+			dLU_itr( dL_de().begin(), dL_de().end()
+					,dU_de().begin(), dU_de().end()
+					,inf );
 		// written iterators
 		IBND_t::iterator
 			IBND_itr = IBND_.begin(),
@@ -307,8 +307,8 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			YPY_itr = YPY_.begin();
 		// Loop
 		for( size_type ibnd_i = 1; IBND_itr != IBND_end; ++ibnd_i, ++dLU_itr ) {
-			IBND_INV_[dLU_itr.indice()-1] = ibnd_i;
-			*IBND_itr++ = dLU_itr.indice();
+			IBND_INV_[dLU_itr.index()-1] = ibnd_i;
+			*IBND_itr++ = dLU_itr.index();
 			*BL_itr++	= dLU_itr.lbound();
 			*BU_itr++	= dLU_itr.ubound();
 			*YPY_itr++	= 0.0; // Must be zero with this QP interface
@@ -318,12 +318,15 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	// Initialize inequality constraints
 	
 	if(M2_) {
+		VectorDenseEncap eL_de(*eL);
+		VectorDenseEncap eU_de(*eU);
+		VectorDenseEncap b_de(*b);
+		SparseLinAlgPack::sparse_bounds_itr
+			eLU_itr( eL_de().begin(), eL_de().end()
+					,eU_de().begin(), eU_de().end()
+					,inf );
 		if( M2_ < m_in ) {
 			// Initialize BL, BU, YPY and A for sparse bounds on general inequalities
-			// read iterators
-			SparseLinAlgPack::sparse_bounds_itr
-				eLU_itr( eL->begin(), eL->end(), eL->offset()
-						, eU->begin(), eU->end(), eU->offset(), infinite_bound() );
 			// written iterators
 			Vector::iterator
 				BL_itr		= BL_.begin() + M1_,
@@ -334,17 +337,17 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			// loop
 			for(size_type i = 1; i <= M2_; ++i, ++eLU_itr, ++ibnds_itr ) {
 				assert(!eLU_itr.at_end());
-				const size_type k      = eLU_itr.indice();
+				const size_type k      = eLU_itr.index();
 				*BL_itr++              = eLU_itr.lbound();
 				*BU_itr++              = eLU_itr.ubound();
-				*YPY_itr++             = (*b)(k);
+				*YPY_itr++             = b_de()(k);
 				*ibnds_itr             = k;  // Only for my record, not used by QPKWIK
 				IBND_INV_[nd+k-1]      = M1_ + i;
 				// Add the corresponding row of op(E) to A
 				// y == A.row(i)'
 				// y' = e_k' * op(E) => y = op(E')*e_k
 				VectorSlice y = A_.row(i);
-				EtaVector e_k(k,eL->size());
+				EtaVector e_k(k,eL_de().dim());
 				V_MtV( &y( 1, N_ ), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 			}
 		}
@@ -354,38 +357,35 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			//
 			// Initialize BL(M1+1:M1+M2), BU(M1+1:M1+M2)
 			// and IBND(M1+1:M1+M2) = identity (only for my record, not used by QPKWIK)
-			SparseLinAlgPack::sparse_bounds_itr
-				eLU_itr( eL->begin(), eL->end(), eL->offset()
-						 , eU->begin(), eU->end(), eU->offset(), infinite_bound() );
 			Vector::iterator
 				BL_itr		= BL_.begin() + M1_,
 				BU_itr		= BU_.begin() + M1_;
 			IBND_t::iterator
 				ibnds_itr	= IBND_.begin() + M1_;
-			{for(size_type i = 1; i <= m_in; ++i ) {
-				if( !eLU_itr.at_end() && eLU_itr.indice() == i ) {
+			for(size_type i = 1; i <= m_in; ++i ) {
+				if( !eLU_itr.at_end() && eLU_itr.index() == i ) {
 					*BL_itr++ = eLU_itr.lbound();
 					*BU_itr++ = eLU_itr.ubound();
 					++eLU_itr;
 				}
 				else {
-					*BL_itr++ = -infinite_bound();
-					*BU_itr++ = +infinite_bound();
+					*BL_itr++ = -inf;
+					*BU_itr++ = +inf;
 				}
 				*ibnds_itr++     = i;
 				IBND_INV_[nd+i-1]= M1_ + i;
-			}}
+			}
 			// A(1:M2,1:N) = op(E)
 			assign( &A_(1,M2_,1,N_), *E, trans_E );
 			// YPY
-			YPY_(M1_+1,M1_+M2_) = *b;
+			YPY_(M1_+1,M1_+M2_) = b_de();
 		}
 	}
 
 	// Initialize equalities
 
 	if(M3_) {
-		V_StV( &BU_( M1_ + M2_ + 1, M1_ + M2_ + M3_ ), -1.0, *f );
+		V_StV( &BU_( M1_ + M2_ + 1, M1_ + M2_ + M3_ ), -1.0, VectorDenseEncap(*f)() );
 		assign( &A_( M2_ + 1, M2_ + M3_, 1, N_ ), *F, trans_F );
 	}
 
@@ -433,7 +433,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			++NACTSTORE_;
 		}
 	}
-	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
+	if( ( nu && nu->nz() ) || ( mu && mu->nz() ) ) {
 		// Add inequality constraints
 		const size_type
 			nu_nz = nu ? nu->nz() : 0,
@@ -444,22 +444,36 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		// from the active set.
 		SpVector gamma( nd + 1 + m_in , nu_nz + mu_nz );
 		typedef SpVector::element_type ele_t;
-		if(nu && nu->nz()) {
-			const SpVector::difference_type o = nu->offset();
-			for( SpVector::const_iterator itr = nu->begin(); itr != nu->end(); ++itr )
-				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		if(nu && nu_nz) {
+			VectorDenseEncap nu_de(*nu);
+			VectorSlice::const_iterator
+				nu_itr = nu_de().begin(),
+				nu_end = nu_de().end();
+			index_type i = 1;
+			while( nu_itr != nu_end ) {
+				for( ; *nu_itr == 0.0; ++nu_itr, ++i );
+				gamma.add_element(ele_t(i,*nu_itr));
+				++nu_itr; ++i;
+			}
 		}
-		if(mu && mu->nz()) {
-			const SpVector::difference_type o = mu->offset() + nd;
-			for( SpVector::const_iterator itr = mu->begin(); itr != mu->end(); ++itr )
-				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		if(mu && mu_nz) {
+			VectorDenseEncap mu_de(*mu);
+			VectorSlice::const_iterator
+				mu_itr = mu_de().begin(),
+				mu_end = mu_de().end();
+			index_type i = 1;
+			while( mu_itr != mu_end ) {
+				for( ; *mu_itr == 0.0; ++mu_itr, ++i );
+				gamma.add_element(ele_t(i+nd,*mu_itr));
+				++mu_itr; ++i;
+			}
 		}
 		std::sort( gamma.begin(), gamma.end()
 			, SparseLinAlgPack::SortByDescendingAbsValue() );
 		// Now add the inequality constraints in decreasing order
 		const SpVector::difference_type o = gamma.offset();
 		for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
-			const size_type  j   = itr->indice() + o;
+			const size_type  j   = itr->index() + o;
 			const value_type val = itr->value();
 			if( j <= nd ) { // Variable bound
 				const size_type ibnd_i = IBND_INV_[j-1];
@@ -496,9 +510,9 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 
 	QPKWIKNEW_CppDecl::qpkwiknew(
 		N_, M1_, M2_, M3_, &GRAD_(1), &UINV_AUG_(1,1), LDUINV_AUG_, &IBND_[0]
-		, &BL_(1), &BU_(1), &A_(1,1), LDA_, &YPY_(1), IYPY_, WARM_, NUMPARAM_, MAX_ITER_, &X_(1)
-		, &NACTSTORE_, &IACTSTORE_[0], &INF_, &NACT_, &IACT_[0], &UR_[0], &EXTRA_
-		, &ITER_, &NUM_ADDS_, &NUM_DROPS_, &ISTATE_[0], LRW_, &RW_[0]
+		,&BL_(1), &BU_(1), &A_(1,1), LDA_, &YPY_(1), IYPY_, WARM_, NUMPARAM_, MAX_ITER_, &X_(1)
+		,&NACTSTORE_, &IACTSTORE_[0], &INF_, &NACT_, &IACT_[0], &UR_[0], &EXTRA_
+		,&ITER_, &NUM_ADDS_, &NUM_DROPS_, &ISTATE_[0], LRW_, &RW_[0]
 		);
 
 	// ////////////////////////
@@ -507,35 +521,33 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	// eta
 	*eta = EXTRA_;
 	// d
-	*d = X_;
+	(VectorDenseMutableEncap(*d))() = X_();
 	// nu (simple variable bounds) and mu (general inequalities)
-	if(nu) nu->resize( N_, N_ );         // Room for all active
-	if(mu) mu->resize( eL->size(), N_ ); // Room for all active
-	typedef SpVector::element_type ele_t;
+	if(nu) *nu = 0.0;
+	if(mu) *mu = 0.0;
+	// ToDo: Create VectorDenseMutableEncap views for faster access!
 	{for(size_type i = 1; i <= NACT_; ++i) {
 		size_type j = IACT_[i-1];
 		EConstraintType type = constraint_type(M1_,M2_,M3_,j);
-		FortranTypes::f_int idc = constraint_indice(M1_,M2_,M3_,&IBND_[0],type,j);
+		FortranTypes::f_int idc = constraint_index(M1_,M2_,M3_,&IBND_[0],type,j);
 		switch(type) {
 			case NU_L:
-				nu->add_element( ele_t( idc ,-UR_(i)) );
+				nu->set_ele( idc , -UR_(i) );
 				break;
 			case GAMA_L:
-				mu->add_element( ele_t( IBND_[ M1_ + idc - 1 ], -UR_(i) ) );
+				mu->set_ele( IBND_[ M1_ + idc - 1 ], -UR_(i) );
 				break;
 			case NU_U:
-				nu->add_element( ele_t( idc, UR_(i) ) );
+				nu->set_ele( idc, UR_(i)) ;
 				break;
 			case GAMA_U:
-				mu->add_element( ele_t( IBND_[ M1_ + idc - 1 ], UR_(i) ) );
+				mu->set_ele( IBND_[ M1_ + idc - 1 ], UR_(i) );
 				break;
 			case LAMBDA:
-				(*lambda)(idc) = UR_(i);
+				lambda->set_ele( idc, UR_(i) );
 				break;
 		}
 	}}
-	if(nu) nu->sort();
-	if(mu) mu->sort();	
 	// obj_d (This could be updated within QPKWIK in the future)
 	if(obj_d) {
 		// obj_d = g'*d + 1/2 * d' * G * g
@@ -555,8 +567,9 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		solution_type = QPSolverStats::OPTIMAL_SOLUTION;
 	}
 	else if( INF_ == -1 ) { // Infeasible constraints
-		throw QPSolverRelaxed::Infeasible( "QPSolverRelaxedQPKWIK::solve_qp(...) : Error, "
-										   "QP is infeasible" );
+		THROW_EXCEPTION(
+			true, QPSolverRelaxed::Infeasible
+			,"QPSolverRelaxedQPKWIK::solve_qp(...) : Error, QP is infeasible" );
 	}
 	else if( INF_ == -2 ) { // LRW too small
 		assert(INF_ != -2);  // Local programming error?
@@ -571,7 +584,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		solution_type, QPSolverStats::CONVEX
 		,ITER_, NUM_ADDS_, NUM_DROPS_
 		,WARM_==1, *eta > 0.0 );
- 
+
 	return qp_stats_.solution_type();
 }
 

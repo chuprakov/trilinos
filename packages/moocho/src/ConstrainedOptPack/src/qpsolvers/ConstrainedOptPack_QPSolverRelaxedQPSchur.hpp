@@ -134,16 +134,16 @@ public:
 		 * @param  fo  [out] vector (size <tt>n_R + m</tt>) of the rhs for the initial KKT system.
 		 */
 		virtual void initialize_kkt_system(
-			const VectorSlice     &g
+			const VectorWithOp    &g
 			,const MatrixWithOp   &G
 			,value_type           etaL
-			,const SpVectorSlice  &dL
-			,const SpVectorSlice  &dU
+			,const VectorWithOp   *dL
+			,const VectorWithOp   *dU
 			,const MatrixWithOp   *F
 			,BLAS_Cpp::Transp     trans_F
-			,const VectorSlice    *f
-			,const VectorSlice    &d
-			,const SpVectorSlice  &nu
+			,const VectorWithOp   *f
+			,const VectorWithOp   *d
+			,const VectorWithOp   *nu
 			,size_type            *n_R
 			,i_x_free_t           *i_x_free
 			,i_x_fixed_t          *i_x_fixed
