@@ -1,4 +1,4 @@
-********************************************************************
+*************************************************************************************
 *** All of these options can be used with the class rSQPppSolver.
 ***
 *** This file will be maintained and will include every option that
@@ -11,8 +11,106 @@
 
 begin_options
 
+**********************************************************
+*** Options specific for the rSQPppSolver class.
+***
+*** These options work on the highest level in determining
+*** what output files are allowed, workspace requirements,
+*** objective function scaling etc.
+***
+options_group rSQPppSolver {
+
+*    workspace_MB = -1.0; *** (default)
+     *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
+     *** temporary workspace for automatic arrays.  If < 0 then the
+     *** this will be determined internaly.  This value should be set by the
+     *** user for whatever is appropriate for the computing enviornment.  See
+     *** the summary output for statistics on memory allocation usage when the
+     *** algorithm finishes.  Example values:
+     *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
+     *** 100  : Allocate 100 MB of ram for this purpose
+
+*    obj_scale = 1.0; *** (default)
+     *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
+     *** on the behavior of the algorithm in some cases.  Changing this value
+     *** does a lot to change the wait between minimizing the objective and converging
+     *** the constraints.  Example values:
+     *** 1e-8  : Really scale the objective down a lot!
+     *** 1.0   : Leave the objective unscaled (default).
+     *** 1e+8  : Really scale the objective up a lot!
+
+*    test_nlp = true; *** (default)
+*    test_nlp = false;
+     *** If true then the NLP will be tested at the initial point.  The
+     *** vector spaces (see options_group VectorSpaceTester),
+     *** the NLP interface (see options_group NLPTester), and the gradients
+     *** (see options_group NLPFirstOrderDirectTester and options_group
+     *** NLPFirstOrderInfoTester).  With all of the default options in place
+     *** these tests are fairly cheap so it is recommended that you perform
+     *** these test when first getting started.
+
+*    console_outputting = true; *** (default)
+*    console_outputting = false;
+     *** If true, then output from rSQPTrackConsoleStd is sent to the
+     *** console_out stream (which is std::cout by default) 
+
+*    summary_outputting = true; *** (default)
+*    summary_outputting = false;
+     *** If true, then output from rSQPTrackSummaryStd is sent to the
+     *** summary_out stream (which is the file 'rSQPppSummary.out' by default) 
+
+*    journal_outputting = true; *** (default)
+*    journal_outputting = false;
+     *** If true, then output from the algorithm steps an other detailed testing
+     *** output is set to the journal_out stream (which is the file
+     *** 'rSQPppJournal.out' by default) 
+
+*    algo_outputting = true; *** (default)
+*    algo_outputting = false;
+     *** If true, then algo output is proceed to the algo_out stream
+     *** (which is the file 'rSQPppAlgo.out' by default) 
+
+*    print_algo = true; *** (default)
+*    print_algo = false;
+     *** [algo_outputting == true]
+     *** If true then the algorithm will be printed to the algo_out stream
+     *** (the file 'rSQPAlgo.out' by default).  In order to get more insight into
+     *** what all of the options do it is a good idea to print the algorithm
+     *** description out and search for the options you are curious about.
+
+*    algo_timing = true; *** (default)
+*    algo_timing = false;
+     *** [summary_outputting == true]
+     *** If true, then the steps in the algorithm will be timed and a table of the
+     *** algorithm and step times will be sent to the summary_out stream (the file
+     *** 'rSQPppSummary.out' by default).  This feature is very useful in examining
+     *** performance of the algorithm and can give more detailed information than you
+     *** get from a profiler in may ways.
+
+*    generate_stats_file = true;
+*    generate_stats_file = false; *** (default)
+     *** If true, then a rSQPTrackStatsStd object will be used to generate
+     *** statistics about the solution process to an NLP.  The track object
+     *** will overwritte the file 'rSQPppStats.out' in the current directory.
+
+*    print_opt_grp_not_accessed = true; *** (default)
+*    print_opt_grp_not_accessed = false;
+     *** [algo_outputting == true]
+     *** If true, then the options groups that are specified but are not read by
+     *** some software entity are printed to the algo_out stream (the file 'rSQPppAlgo.out'
+     *** by default).  This may help you catch problems associated with spelling the name of
+     *** an options group inproperly and then having its default options used instead of the
+     *** options that you set.  Note that some options groups are only looked for depending
+     *** on option values from other options groups.
+
+}
+
 ***********************************************************
-*** Options for all rSQP solvers.
+*** Options for rSQPSolverClientInterface
+***
+*** These are options that are used by every algorithm
+*** configuration and they are available to the 
+*** optimization steps.
 ***
 *** These include basic algorithmic control parameters.
 ***
@@ -75,6 +173,7 @@ options_group rSQPSolverClientInterface {
 *    journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    journal_output_level = PRINT_VECTORS;              * O(iter*n) output to journal   (lots!)
 *    journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*n*m) output to journal (big lots!)
+     *** [rSQPppSolver::journal_outputting == true]
      *** This option determines the type and amount of output to the journal_out stream
      *** (the file 'rSQPppJournal.out' by default) that is generated while the algorithm runs.
      ***  In general, each increasing value includes the same output from the lower options
@@ -88,6 +187,7 @@ options_group rSQPSolverClientInterface {
      *** For the fastest possible execution you should set this to PRINT_NOTHING.
 
 *    journal_print_digits = 6;  *** (default?)
+     *** [rSQPppSolver::journal_outputting == true]
      *** (+int) Number of decimal significant figures to print to journal_out stream.
      *** With a higher number more significant figures will be printed.  This may be useful
      *** for debugging or in seeing the effects of subtle rounding differences.  For IEEE double
@@ -103,74 +203,10 @@ options_group rSQPSolverClientInterface {
      *** for the fastest possible execution you should set this to false.
 }
 
-**********************************************************
-*** Options specific for the rSQPppSolver class
-***
-options_group rSQPppSolver {
-
-*    workspace_MB = -1.0; *** (default)
-     *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
-     *** temporary workspace for automatic arrays.  If < 0 then the
-     *** this will be determined internaly.  This value should be set by the
-     *** user for whatever is appropriate for the computing enviornment.  See
-     *** the summary output for statistics on memory allocation usage when the
-     *** algorithm finishes.  Example values:
-     *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
-     *** 100  : Allocate 100 MB of ram for this purpose
-
-*    obj_scale = 1.0; *** (default)
-     *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
-     *** on the behavior of the algorithm in some cases.  Changing this value
-     *** does a lot to change the wait between minimizing the objective and converging
-     *** the constraints.  Example values:
-     *** 1e-8  : Really scale the objective down a lot!
-     *** 1.0   : Leave the objective unscaled (default).
-     *** 1e+8  : Really scale the objective up a lot!
-
-*    test_nlp = true; *** (default)
-*    test_nlp = false;
-     *** If true then the NLP will be tested at the initial point.  The
-     *** vector spaces (see options_group VectorSpaceTester),
-     *** the NLP interface (see options_group NLPTester), and the gradients
-     *** (see options_group NLPFirstOrderDirectTester and options_group
-     *** NLPFirstOrderInfoTester).  With all of the default options in place
-     *** these tests are fairly cheap so it is recommended that you perform
-     *** these test when first getting started.
-
-*    print_algo = true; *** (default)
-*    print_algo = false;
-     *** If true then the algorithm will be printed to the algo_out stream
-     *** (the file 'rSQPAlgo.out' by default).  In order to get more insight into
-     *** what all of the options do it is a good idea to print the algorithm
-     *** description out and search for the options you are curious about.
-
-*    algo_timing = true; *** (default)
-*    algo_timing = false;
-     *** If true, then the steps in the algorithm will be timed and a table of the
-     *** algorithm and step times will be sent to the summary_out stream (the file
-     *** 'rSQPppSummary.out' by default).  This feature is very useful in examining
-     *** performance of the algorithm and can give more detailed information than you
-     *** get from a profiler in may ways.
-
-*    generate_stats_file = true;
-*    generate_stats_file = false; *** (default)
-     *** If true, then a rSQPTrackStatsStd object will be used to generate
-     *** statistics about the solution process to an NLP.  The track object
-     *** will overwritte the file 'rSQPppStats.out' in the current directory.
-
-*    print_opt_grp_not_accessed = true; *** (default)
-*    print_opt_grp_not_accessed = false;
-     *** If true, then the options groups that are specified but are not read by
-     *** some software entity are printed to the algo_out stream (the file 'rSQPppAlgo.out'
-     *** by default).  This may help you catch problems associated with spelling the name of
-     *** an options group inproperly and then having its default options used instead of the
-     *** options that you set.  Note that some options groups are only looked for depending
-     *** on option values from other options groups.
-
-}
-
 ************************************************************
 *** Options for testing the NLP interface
+***
+*** [rSQPppSolver::test_nlp == true]
 ***
 options_group NLPTester {
 
@@ -183,17 +219,45 @@ options_group NLPTester {
 
 }
 
+*************************************************************
+*** Options for testing the vector spaces from the NLP object
+***
+*** [rSQPppSolver::test_nlp == true]
+***
+options_group VectorSpaceTester {
+
+*    print_all_tests = true;
+*    print_all_tests = false;
+
+*    print_vectors = true;
+*    print_vectors = false;
+
+*    throw_exception = true;
+*    throw_exception = false;
+
+*    num_random_tests = 4; *** (default)
+
+*    warning_tol = 1e-14; *** (default)
+
+*    error_tol   = 1e-10; *** (default)
+
+}
+
 ***********************************************************
 *** Options for the finite derivative testing for a
 *** standard NLP.
 ***
 options_group NLPFirstDerivativesTester {
+
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
 *    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+
 *    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
+
 *    warning_tol   = 1e-10;
-*    warning_tol   = 0.0;  *** Show me all comparisons.
+
 *    error_tol     = 1e-5;
+
 }
 
 ****************************************************************
@@ -201,15 +265,23 @@ options_group NLPFirstDerivativesTester {
 *** direct sensistivity NLP.
 ***
 options_group NLPFirstOrderDirectTester {
+
 *    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
 *    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+
 *    Gf_warning_tol   = 1e-10;
+
 *    Gf_error_tol     = 1e-5;
+
 *    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
 *    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
+
 *    Gc_warning_tol   = 1e-10;
+
 *    Gc_error_tol     = 1e-5;
+
 *    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
+
 }
 
 ****************************************************************
