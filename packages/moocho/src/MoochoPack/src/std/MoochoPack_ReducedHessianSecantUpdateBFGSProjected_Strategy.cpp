@@ -350,17 +350,27 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				}
 			}
 		}
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
-			out << "\nThere will be " << num_fixed_to_free  << " independent variables added to the superbasis and rHL_RR and their indexes are:\n";
-			{for(size_type k = 0; k < num_fixed_to_free; ++k) {
-				out << " " << i_x_fixed_to_free[k];
-			}}
-			out << std::endl;
-			out << "\nThere will be " << num_free_to_fixed << " independent variables removed from the superbasis and rHL_RR and their indexes are:\n";
-			{for(size_type k = 0; k < num_free_to_fixed; ++k) {
-				out << " " << i_x_free_to_fixed[k];
-			}}
-			out << std::endl;
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out << "\nThere will be " << num_fixed_to_free  << " independent variables added to the superbasis and rHL_RR";
+			if( num_fixed_to_free && int(olevel) >= int(PRINT_ACTIVE_SET) ) {
+				out << " and their indexes are:\n";
+				for(size_type k = 0; k < num_fixed_to_free; ++k)
+					out << " " << i_x_fixed_to_free[k];
+				out << std::endl;
+			}
+			else {
+				out << "\n";
+			}
+			out << "\nThere will be " << num_free_to_fixed  << " independent variables removed from the superbasis and rHL_RR";
+			if( num_free_to_fixed && int(olevel) >= int(PRINT_ACTIVE_SET) ) {
+				out << " and their indexes are:\n";
+				for(size_type k = 0; k < num_free_to_fixed; ++k)
+					out << " " << i_x_free_to_fixed[k];
+				out << std::endl;
+			}
+			else {
+				out << "\n";
+			}
 		}
 		// Get reference to rHL_RR = B_RR
 #ifdef _WINDOWS

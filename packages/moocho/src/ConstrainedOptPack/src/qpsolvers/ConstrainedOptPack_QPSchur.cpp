@@ -1651,7 +1651,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Print QPSchur output header
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\n*** Entering QPSchur::solve_qp(...) ***\n";
+			<< "\n*** Entering QPSchur::solve_qp(...)\n";
 	}
 
 	// Print the definition of the QP to be solved.
@@ -1665,9 +1665,30 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\n*** Warm start info\n"
-			<< "\nnum_act_change = " << num_act_change << endl;
+			<< "\nNumber of changes to the initial KKT system (num_act_change) = " << num_act_change << endl;
+		const size_type
+			n = qp.n();
+		size_type
+			num_var_fix = 0, num_var_free = 0, num_gen_equ = 0, num_gen_inequ = 0;
+		for( size_type s = 1; s <= num_act_change; ++s ) {
+			const int ij = ij_act_change[s-1];
+			const EBounds bnd = bnds[s-1];
+			if( ij < 0 )
+				++num_var_free;
+			else if( ij < n )
+				++num_var_fix;
+			else if( bnd == EQUALITY )
+				++num_gen_equ;
+			else
+				++num_gen_inequ;
+		}
+		*out
+			<< "\nNumber of initially fixed variables freed from a bound = " << num_var_fix
+			<< "\nNumber of initially free variables fixed to a bound    = " << num_var_free
+			<< "\nNumber of general equality constraints added           = " << num_gen_equ
+			<< "\nNumber of general inequality constraints added         = " << num_gen_inequ << endl;
 	}
-
+	
 	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
 		*out << std::setprecision(dbl_prec);
 		*out
@@ -1734,7 +1755,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	*num_adds = 0;
 	*num_drops = 0;
 	// Print header for removing constraints
-	if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY && num_act_change > 0 ) {
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\n***"
 			<< "\n*** Removing constriants until we are dual feasible"
@@ -1857,7 +1878,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	if(out) *out << std::setprecision(prec_saved);
 
 	// Print how many constraints where removed from the schur complement
-	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\nThere where " << (*num_drops)
 			<< " constraints dropped from the schur complement from the initial guess of the active set.\n";
@@ -1897,7 +1918,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	//
 	if( act_set_.q_D_hat() ) {
 		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-			*out << "\n*** Second, free initially fixed variables not in Ko\n\n";
+			*out << "\n*** Second, free initially fixed variables not in Ko\n";
 		}
 		const QPSchurPack::QP::i_x_X_map_t&  i_x_X_map = act_set_.qp().i_x_X_map();
 		const QPSchurPack::QP::x_init_t&     x_init    = act_set_.qp().x_init();
@@ -2052,10 +2073,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Print how many initially fixed variables where freed
-	if( *num_adds > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\nThere where " << (*num_adds)
-			<< " initially fixed variables not in Ko that where freed and added to the schur complement.\n";
+			<< " initially fixed variables not in Ko that were freed and added to the schur complement.\n";
 	}
 
 	// Run the primal dual algorithm
@@ -2103,8 +2124,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			default:
 				assert(0);
 		}
-	}
-	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out	<< "\nNumber of QP iteratons  = "	<< *iter << endl;
 		*out	<< "\n||x||inf                = "	<< norm_inf(*x);
 		*out	<< "\nmax(|mu(i)|)            = " 	<< norm_inf((*mu)());
 		*out	<< "\nmin(|mu(i)|)            = " 	<< min_abs((*mu)());
@@ -2129,7 +2149,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Print 'goodby' header.
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\n\n*** Leaving QPSchur::solve_qp(...) ***\n";
+			<< "\n*** Leaving QPSchur::solve_qp(...)\n";
 	}
 
 	}	// end try
