@@ -88,7 +88,8 @@ CONCRETE_H = \
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.hpp \
-	$(srcdir)/Concrete/TSFIfpackOperator.hpp
+	$(srcdir)/Concrete/TSFIfpackOperator.hpp \
+	$(srcdir)/Concrete/TSFLAPACKGeneralMatrix.hpp
 
 CONCRETE = \
 	$(srcdir)/Concrete/TSFDenseSerialVector.cpp\
@@ -98,7 +99,8 @@ CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.cpp \
-	$(srcdir)/Concrete/TSFIfpackOperator.cpp
+	$(srcdir)/Concrete/TSFIfpackOperator.cpp \
+	$(srcdir)/Concrete/TSFLAPACKGeneralMatrix.cpp
 
 OPERATORS_H = \
 	$(srcdir)/Operators/TSFBlockOperator.hpp \

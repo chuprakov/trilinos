@@ -149,14 +149,15 @@ namespace TSFExtended
     /** write a brief description to string */
     string summary() const ;
 
+    /** a BLAS object */
+    inline static const Teuchos::BLAS<int, double>& blasObject()
+    {static Teuchos::BLAS<int, double> rtn; return rtn;}
+
   private:
     double* x() {return &(operator[](0));}
     const double* x() const {return &(operator[](0));}
     void checkLength(const DenseSerialVector& other, 
                      const string& funcName) const ;
-
-    inline static const Teuchos::BLAS<int, double>& blasObject()
-    {static Teuchos::BLAS<int, double> rtn; return rtn;}
 
   };
 

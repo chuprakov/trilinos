@@ -35,8 +35,9 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
-#include "TSFExplicitlyTransposeableOp.hpp"
+ //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFRowAccessibleOp.hpp"
+#include "TSFLinearOperator.hpp"
 #include "TSFHandleable.hpp"
 
 
