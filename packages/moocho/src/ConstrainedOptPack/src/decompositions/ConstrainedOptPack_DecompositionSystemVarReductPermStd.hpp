@@ -81,9 +81,9 @@ public:
 	///
 	size_type r() const;
 	///
-	Range1D con_decomp() const;
+	Range1D equ_decomp() const;
 	///
-	Range1D con_undecomp() const;
+	Range1D equ_undecomp() const;
 	///
 	const VectorSpace::space_ptr_t space_range() const;
 	///
@@ -121,6 +121,16 @@ public:
 	///
 	void print_update_decomp(
 		std::ostream& out, const std::string& leading_str ) const;
+
+	//@}
+
+	/** @name Overridden from DecompositionSystemVarReduct */
+	//@{
+
+	///
+	Range1D var_indep() const;
+	///
+	Range1D var_dep() const;
 
 	//@}
 
