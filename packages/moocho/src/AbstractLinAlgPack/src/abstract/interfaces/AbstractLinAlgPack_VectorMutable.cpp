@@ -144,8 +144,8 @@ void VectorMutable::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVect
 	// actual vector when the client calls commitSubVector(...).
 	// Note, this implementation is very dependent on the behavior of
 	// the default implementation of constant version of
-	// Vector<Scalar>::getSubVector(...) and the implementation of
-	// Vector<Scalar>::setSubVector(...)!
+	// Vector<Scalar>::get_sub_vector(...) and the implementation of
+	// Vector<Scalar>::set_sub_vector(...)!
 	//
 	RTOpPack::SubVector sub_vec;
 	Vector::get_sub_vector( rng, &sub_vec );
