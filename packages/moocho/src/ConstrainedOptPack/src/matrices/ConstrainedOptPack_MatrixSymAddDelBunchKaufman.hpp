@@ -180,13 +180,13 @@ private:
 	///
 	/** Copy the original matrix into the new storage location and factorize it.
 	 *
-	 * Will throw LinAlgLAPack::FactorizationException if singular.
+	 * Will throw DenseLinAlgLAPack::FactorizationException if singular.
 	 */
 	void copy_and_factor_matrix( size_type S_size, bool fact_in1 );
 	///
 	/** Factor the current set matrix in-place (do not copy the original). 
 	 *
-	 * Will throw LinAlgLAPack::FactorizationException if singular.
+	 * Will throw DenseLinAlgLAPack::FactorizationException if singular.
 	 */
 	void factor_matrix( size_type S_size, bool fact_in1 );
 	///

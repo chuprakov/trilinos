@@ -20,7 +20,7 @@
 
 #include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
+#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
@@ -134,7 +134,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	}
 
 	// Solve
-	LinAlgLAPack::getrs(
+	DenseLinAlgLAPack::getrs(
 		fn.LU_(1,fs.rank_,1,fs.rank_), &cva(fn.ipiv_)[0], BLAS_Cpp::trans_not(M_trans)
 		,&B
 		);
@@ -271,7 +271,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	// Have xGETRF factor this matrix.
 	//
 
-	LinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &fs.rank_ );
+	DenseLinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &fs.rank_ );
 
 	// Remember the dimensions
 	fs.m_  = m;
@@ -404,7 +404,7 @@ void DirectSparseSolverDense::imp_factor(
 	//
 
 	FortranTypes::f_int B_rank = 0;
-	LinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &B_rank );
+	DenseLinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &B_rank );
 
 	THROW_EXCEPTION(
 		B_rank != fs.rank_, FactorizationFailure

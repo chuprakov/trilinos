@@ -55,7 +55,7 @@
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
+#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
 
@@ -763,7 +763,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	// (through C) will contain the cholesky factor.
 
 	DMatrixSliceTriEle C_upper = tri_ele( C, BLAS_Cpp::upper );
-	LinAlgLAPack::potrf( &C_upper );
+	DenseLinAlgLAPack::potrf( &C_upper );
 
 	Q_updated_ = true;
 }

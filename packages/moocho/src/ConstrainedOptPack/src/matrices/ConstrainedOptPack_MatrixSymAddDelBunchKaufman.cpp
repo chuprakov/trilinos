@@ -17,7 +17,7 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/src/MatrixSymAddDelBunchKaufman.hpp"
-#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
+#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
@@ -145,7 +145,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			try {
 				factor_matrix( n, fact_in1 );
 			}
-			catch( const LinAlgLAPack::FactorizationException& excpt ) {
+			catch( const DenseLinAlgLAPack::FactorizationException& excpt ) {
 				omsg
 					<< "MatrixSymAddDelBunchKaufman::initialize(...): "
 					<< "Error, the matrix A is singular:\n"
@@ -391,7 +391,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		try {
 			copy_and_factor_matrix(n+1,fact_in1);
 		}
-		catch( const LinAlgLAPack::FactorizationException& excpt ) {
+		catch( const DenseLinAlgLAPack::FactorizationException& excpt ) {
 			std::ostringstream omsg;
 			omsg
 				<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
@@ -559,7 +559,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				try {
 					factor_matrix(S_size_-1,fact_in1);
 				}
-				catch( const LinAlgLAPack::FactorizationException& excpt ) {
+				catch( const DenseLinAlgLAPack::FactorizationException& excpt ) {
 					omsg
 						<< "MatrixSymAddDelBunchKaufman::delete_update(...): "
 						<< "Error, singular update but the original matrix was maintianed:\n"
@@ -671,7 +671,7 @@ void MatrixSymAddDelBunchKaufman::V_InvMtV(
 			nc_this->fact_in1_     = fact_in1;
 		}
 		*y = x;
-		LinAlgLAPack::sytrs(
+		DenseLinAlgLAPack::sytrs(
 			DU(S_size_,fact_in1_), &const_cast<IPIV_t&>(IPIV_)[0]
 			, &DMatrixSlice(y->raw_ptr(),n,n,n,1), &WORK_() );
 	}
@@ -714,7 +714,7 @@ void MatrixSymAddDelBunchKaufman::factor_matrix( size_type S_size, bool fact_in1
 	if( IPIV_.size() < S_store1_.rows() )
 		IPIV_.resize(S_store1_.rows());
 	// Factor the matrix (will throw FactorizationException if singular)
-	LinAlgLAPack::sytrf( &DU(S_size,fact_in1), &IPIV_[0], &WORK_() );
+	DenseLinAlgLAPack::sytrf( &DU(S_size,fact_in1), &IPIV_[0], &WORK_() );
 }
 
 bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(

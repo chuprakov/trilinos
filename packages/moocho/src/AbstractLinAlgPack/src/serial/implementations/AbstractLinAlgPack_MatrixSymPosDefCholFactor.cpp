@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymDiagonal.hpp"
-#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
+#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
@@ -941,10 +941,10 @@ void MatrixSymPosDefCholFactor::initialize(
 		if( sign_a_11 < 0 )
 			DenseLinAlgPack::Mt_S( &U_ele, -1.0 );
 		try {
-			LinAlgLAPack::potrf( &U_ele );
+			DenseLinAlgLAPack::potrf( &U_ele );
 			factor_is_updated_ = true;
 		}
-		catch( const LinAlgLAPack::FactorizationException& excpt ) {
+		catch( const DenseLinAlgLAPack::FactorizationException& excpt ) {
 			M_size_ = 0;  // set unsized
 			throw SingularUpdateException( excpt.what(), 0.0 );
 		}
@@ -1403,7 +1403,7 @@ void MatrixSymPosDefCholFactor::update_factorization() const
 #ifdef PROFILE_HACK_ENABLED
 		ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::update_factorization(...) ... potrf" );
 #endif
-		LinAlgLAPack::potrf( &U );
+		DenseLinAlgLAPack::potrf( &U );
 	}
 	nc_this->factor_is_updated_ = true;
 }
