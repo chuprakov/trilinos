@@ -23,7 +23,7 @@
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "SparseLinAlgPack/include/VectorSpaceSerial.h"
-//#include "SparseLinAlgPack/include/sparse_bounds.h"
+#include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 #include "profile_hack.h"
@@ -33,21 +33,21 @@ namespace ConstrainedOptimizationPack {
 QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	const init_kkt_sys_ptr_t&  init_kkt_sys
 	,const constraints_ptr_t&  constraints
-	, value_type		max_qp_iter_frac
+	,value_type			max_qp_iter_frac
 	,value_type         max_real_runtime
-	, QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
+	,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 	                    inequality_pick_policy
-	, ELocalOutputLevel	print_level
-	, value_type 		bounds_tol
-	, value_type 		inequality_tol
-	, value_type 		equality_tol
-	, value_type		loose_feas_tol
-	, value_type		dual_infeas_tol
-	, value_type		huge_primal_step
-	, value_type		huge_dual_step
-	, value_type		bigM
-	, value_type		warning_tol
-	, value_type		error_tol
+	,ELocalOutputLevel	print_level
+	,value_type 		bounds_tol
+	,value_type 		inequality_tol
+	,value_type 		equality_tol
+	,value_type			loose_feas_tol
+	,value_type			dual_infeas_tol
+	,value_type			huge_primal_step
+	,value_type			huge_dual_step
+	,value_type			bigM
+	,value_type			warning_tol
+	,value_type			error_tol
 	,size_type          iter_refine_min_iter
 	,size_type          iter_refine_max_iter
 	,value_type         iter_refine_opt_tol
@@ -106,17 +106,17 @@ void QPSolverRelaxedQPSchur::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPSchur::imp_solve_qp(
 	std::ostream* out, EOutputLevel olevel, ERunTests test_what
-	,const VectorWithOp& g_in, const MatrixSymWithOp& G
+	,const VectorWithOp& g, const MatrixSymWithOp& G
 	,value_type etaL
-	,const VectorWithOp* dL_in, const VectorWithOp* dU_in
-	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b_in
-	,const VectorWithOp* eL_in, const VectorWithOp* eU_in
-	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f_in
+	,const VectorWithOp* dL, const VectorWithOp* dU
+	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
+	,const VectorWithOp* eL, const VectorWithOp* eU
+	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
 	,value_type* obj_d
-	,value_type* eta, VectorWithOpMutable* d_inout
-	,VectorWithOpMutable* nu_inout
-	,VectorWithOpMutable* mu_inout, VectorWithOpMutable* Ed_inout
-	,VectorWithOpMutable* lambda_inout, VectorWithOpMutable* Fd_inout
+	,value_type* eta, VectorWithOpMutable* d
+	,VectorWithOpMutable* nu
+	,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
+	,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
 	)
 {
 	namespace mmp = MemMngPack;
@@ -129,14 +129,14 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 #endif
 
 	const size_type
-		nd = g_in.dim(),
+		nd   = g.dim(),
 		m_in = E ? BLAS_Cpp::rows(E->rows(),E->cols(),trans_E) : 0,
 		m_eq = F ? BLAS_Cpp::rows(F->rows(),F->cols(),trans_F) : 0;
 
-	VectorDenseEncap  g(g_in);
+	VectorDenseEncap  g_de(g);
 
 	VectorSpace::space_ptr_t
-		space_d_eta = mmp::rcp(new VectorSpaceSerial(nd+1));
+		space_d_eta = mmp::rcp(new VectorSpaceSerial(nd+1)); // ToDo: Generalize!
 
 	// ///////////////////////////////
 	// Setup the initial KKT system
@@ -147,7 +147,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	InitKKTSystem::j_f_decomp_t   j_f_decomp;
 	size_type n_R_tmp;
 	init_kkt_sys().initialize_kkt_system(
-		g_in,G,etaL,dL_in,dU_in,F,trans_F,f_in,d_inout,nu_inout
+		g,G,etaL,dL,dU,F,trans_F,f,d,nu
 		,&n_R_tmp,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
 		,&b_X_,&Ko_,&fo_ );
 	const size_type
@@ -163,7 +163,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Setup j_f_undecomp
 	const bool all_f_undecomp = F ? j_f_decomp.size() == 0 : true;
 	const size_type
-		m_undecomp = F ? f_in->dim() - j_f_decomp.size() : 0;
+		m_undecomp = F ? f->dim() - j_f_decomp.size() : 0;
 	typedef std::vector<size_type> j_f_undecomp_t;
 	j_f_undecomp_t j_f_undecomp;
 	if( m_undecomp && !all_f_undecomp ) {
@@ -177,9 +177,9 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// initialize constraints object
 	constraints_->initialize(
 		space_d_eta
-		,etaL,dL_in,dU_in,E,trans_E,b_in,eL_in,eU_in,F,trans_F,f_in
+		,etaL,dL,dU,E,trans_E,b,eL,eU,F,trans_F,f
 		,m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
-		,Ed_inout
+		,Ed
 		,!add_equalities_initially()  // If we add equalities the the schur complement intially
 		                              // then we don't need to check if they are violated.
 		);
@@ -190,7 +190,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	// g_relaxed_ = [ g; bigM ]
 	g_relaxed_.resize(nd+1);
-	g_relaxed_(1,nd) = g();
+	g_relaxed_(1,nd) = g_de();
 	g_relaxed_(nd+1) = bigM();
 
 	// G_relaxed_ = [ G, zeros(...); zeros(...), bigM ]
@@ -234,63 +234,60 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// (if it is not already an intially fixed variable).  If fixing a variable
 	// causes the KKT system to become singular then we are in real trouble!
 	// We should add these eairly on since they will not be freed.
-	if( dL_in ) {
+	if( dL ) {
 		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();
-		const value_type inf_bnd = std::numeric_limits<value_type>::max();
-		assert(0); // ToDo: Update the below code!
-/*
+		const value_type inf_bnd = this->infinite_bound();
+		VectorDenseEncap dL_de(*dL);
+		VectorDenseEncap dU_de(*dU);
+		// read iterators
 		SparseLinAlgPack::sparse_bounds_itr
-			dLU_itr(
-				dL.begin(), dL.end(), dL.offset(),
-				dU.begin(), dU.end(), dU.offset(), inf_bnd );
+			dLU_itr( dL_de().begin(), dL_de().end()
+					,dU_de().begin(), dU_de().end()
+					,inf_bnd );
 		for( ; !dLU_itr.at_end(); ++dLU_itr ) {
-			if( dLU_itr.lbound() == dLU_itr.ubound() && x_init(dLU_itr.indice()) == FREE ) {
-				ij_act_change[num_act_change] = dLU_itr.indice();
+			if( dLU_itr.lbound() == dLU_itr.ubound() && x_init(dLU_itr.index()) == FREE ) {
+				ij_act_change[num_act_change] = dLU_itr.index();
 				bnds[num_act_change]          = EQUALITY;
 				++num_act_change;
 			}
 		}
-*/
 	}
 	// Add inequality constriants to the list from nu and mu
-	if( ( nu_inout && nu_inout->nz() ) || ( m_in && mu_inout->nz() ) ) {
+	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
 		//
 		// Setup num_act_change, ij_act_change, and bnds for a warm start!
 		//
 		const size_type
-			nu_nz = nu_inout ? nu_inout->nz() : 0,
-			mu_nz = mu_inout ? mu_inout->nz() : 0;
-		assert(0); // ToDo: Update the below code!
-/*
+			nu_nz = nu ? nu->nz() : 0,
+			mu_nz = mu ? mu->nz() : 0;
 		// Combine all the multipliers for the bound and general inequality
 		// constraints and sort them from the largest to the smallest.  Hopefully
 		// the constraints with the larger multiplier values will not be dropped
 		// from the active set.
 		SpVector gamma( nd + 1 + m_in , nu_nz + mu_nz );
 		typedef SpVector::element_type ele_t;
-		if(nu && nu->nz()) {
-			const value_type inf_bnd = std::numeric_limits<value_type>::max();
-			SparseLinAlgPack::sparse_bounds_itr
-				dLU_itr(
-					dL.begin(), dL.end(), dL.offset(),
-					dU.begin(), dU.end(), dU.offset(), inf_bnd );
-			const SpVector::difference_type o = nu->offset();
-			for( SpVector::const_iterator itr = nu->begin(); itr != nu->end(); ++itr ) {
-				while( !dLU_itr.at_end() && dLU_itr.indice() < itr->indice() + o )
-					++dLU_itr;
-				if( !dLU_itr.at_end() && (dLU_itr.indice() == itr->indice() + o
-										  && dLU_itr.lbound() == dLU_itr.ubound()) )
-				{
-					continue; // The equality bound has already been added!
-				}
-				// This a variable bound (not an equality) that has not been added!
-				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		if(nu && nu_nz) {
+			VectorDenseEncap nu_de(*nu);
+			VectorSlice::const_iterator
+				nu_itr = nu_de().begin(),
+				nu_end = nu_de().end();
+			index_type i = 1;
+			while( nu_itr != nu_end ) {
+				for( ; *nu_itr == 0.0; ++nu_itr, ++i );
+				gamma.add_element(ele_t(i,*nu_itr));
+				++nu_itr; ++i;
 			}
 		}
-		if(mu && mu->nz()) {
-			const SpVector::difference_type o = mu->offset() + nd + 1;
-			for( SpVector::const_iterator itr = mu->begin(); itr != mu->end(); ++itr ) {
-				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		if(mu && mu_nz) {
+			VectorDenseEncap mu_de(*mu);
+			VectorSlice::const_iterator
+				mu_itr = mu_de().begin(),
+				mu_end = mu_de().end();
+			index_type i = 1;
+			while( mu_itr != mu_end ) {
+				for( ; *mu_itr == 0.0; ++mu_itr, ++i );
+				gamma.add_element(ele_t(i+nd,*mu_itr));
+				++mu_itr; ++i;
 			}
 		}
 		std::sort( gamma.begin(), gamma.end()
@@ -301,7 +298,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		if(gamma.nz()) {
 			const SpVector::difference_type o = gamma.offset();
 			for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
-				const size_type i =  itr->indice() + o;
+				const size_type i =  itr->index() + o;
 				if( i <= nd && x_init(i) != FREE )
 					continue; // This variable is already initially fixed
 				// This is not an initially fixed variable so add it
@@ -311,38 +308,31 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				++num_act_change;
 			}
 		}
-*/
 	}
 	// We need to loop through x_init() and nu() in order and look for variables
 	// that are initially fixed in x_init() but are not present in nu().  For these
 	// variables we need to free them in ij_act_change[].
-	if( dL_in ) {
-		assert(0); // ToDo: Update the below code!
-/*
+	if( dL && nu->nz() ) {
 		QPSchurPack::QP::x_init_t::const_iterator
 			x_init_itr = qp_.x_init().begin();
-		const SpVector::difference_type o = nu->offset();
-		SpVector::const_iterator
-			nu_itr = const_cast<const SpVector*>(nu)->begin(), // Okay even if nu.nz() == 0
-			nu_end = const_cast<const SpVector*>(nu)->end();
-		for( size_type i = 1; i <= nd; ++i, ++x_init_itr ) {
+		VectorDenseEncap nu_de(*nu);
+		VectorSlice::const_iterator
+			nu_itr = nu_de().begin();
+		for( size_type i = 1; i <= nd; ++i, ++x_init_itr, ++nu_itr ) {
 			if( *x_init_itr != FREE && *x_init_itr != EQUALITY ) {
 				// This is an initially fixed upper or lower bound.
 				// Look for lagrange multiplier stating that it is
 				// still fixed.
-				if( nu_itr != nu_end && (nu_itr->indice() + o) < i ) {
-					++nu_itr;
-				}
-				else if( nu_itr != nu_end && (nu_itr->indice() + o) == i ) {
+				if( *nu_itr != 0.0 ) {
 					// This active bound is present but lets make sure
 					// that it is still the same bound
-					if( ( *x_init_itr == LOWER && nu_itr->value() > 0 )
-						|| ( *x_init_itr == UPPER && nu_itr->value() < 0 ) )
+					if( ( *x_init_itr == LOWER && *nu_itr > 0 )
+						|| ( *x_init_itr == UPPER && *nu_itr < 0 ) )
 					{
 						// The bound has changed from upper to lower or visa-versa!
 						ij_act_change[num_act_change] = i;
 						bnds[num_act_change]
-							= nu_itr->value() > 0.0 ? UPPER : LOWER;
+							= *nu_itr > 0.0 ? UPPER : LOWER;
 						++num_act_change;
 					}
 				}
@@ -354,7 +344,6 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				}
 			}
 		}
-*/
 	}
 	// Consider the relaxation variable!
 	if(*eta > etaL) {
@@ -477,28 +466,23 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Set the solution
 
 	// d
-	(VectorDenseMutableEncap(*d_inout))() = _x(1,nd);
+	(VectorDenseMutableEncap(*d))() = _x(1,nd);
 	// nu
-	if( nu_inout ) {
-		assert(0); // ToDo: Update the below code!
-/*
-		nu->resize( nd, std::_MIN( nd, _mu.nz() ) );
+	if( nu ) {
+		*nu = 0.0;
 		const SpVector::difference_type o = _mu.offset();
 		if( _mu.nz() ) {
-			for(SpVector::const_iterator itr = _mu.begin(); itr != _mu.end(); ++itr)
-			{
+			for(SpVector::const_iterator _mu_itr = _mu.begin(); _mu_itr != _mu.end(); ++_mu_itr) {
 				typedef SpVector::element_type ele_t;
-				if( itr->indice() + o <= nd ) // don't add multiplier for eta <= etaL
-					nu->add_element( ele_t( itr->indice() + o, itr->value() ) );
+				if( _mu_itr->index() + o <= nd ) // don't add multiplier for eta <= etaL
+					nu->set_ele( _mu_itr->index() + o, _mu_itr->value() );
 			}
 		}
-		nu->assume_sorted(true);
-*/
 	}
 	// mu, lambda	
 	if( m_in || m_eq ) {
 		*eta = _x(nd+1);	// must be non-null
-		*mu_inout = 0.0;
+		*mu = 0.0;
 		const SpVector::difference_type o = _lambda_breve.offset();
 		if(_lambda_breve.nz()) {
 			for(SpVector::const_iterator itr = _lambda_breve.begin();
@@ -507,10 +491,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			{
 				typedef SpVector::element_type ele_t;
 				if( itr->index() + o <= m_in ) {
-					mu_inout->set_ele( itr->index() + o, itr->value() );
+					mu->set_ele( itr->index() + o, itr->value() );
 				}
 				else {
-					lambda_inout->set_ele( itr->index() + o - m_in, itr->value() );
+					lambda->set_ele( itr->index() + o - m_in, itr->value() );
 				}
 			}
 		}
@@ -518,11 +502,11 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// obj_d (This could be updated within QPSchur in the future)
 	if(obj_d) {
 		// obj_d = g'*d + 1/2 * d' * G * g
-		*obj_d = AbstractLinAlgPack::dot(g_in,*d_inout)
-			+ 0.5 * AbstractLinAlgPack::transVtMtV(*d_inout,G,BLAS_Cpp::no_trans,*d_inout);
+		*obj_d = AbstractLinAlgPack::dot(g,*d)
+			+ 0.5 * AbstractLinAlgPack::transVtMtV(*d,G,BLAS_Cpp::no_trans,*d);
 	}
 	// Ed
-	if(Ed_inout && E) {
+	if(Ed && E) {
 		switch(constraints_->inequality_pick_policy()) {
 			case constr_t::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY:
 				if(solve_returned == QPSchur::OPTIMAL_SOLUTION)
@@ -531,12 +515,12 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				break; // Ed already computed (see ConstraintsRelaxedStd::pick_violated())
 			default:
 				// We need to compute Ed
-				LinAlgOpPack::V_MtV( Ed_inout, *E, trans_E, *d_inout );
+				LinAlgOpPack::V_MtV( Ed, *E, trans_E, *d );
 		}
 	}
 	// Fd (This could be updated within ConstraintsRelaxedStd in the future)
-	if(Fd_inout) {
-		LinAlgOpPack::V_MtV( Fd_inout, *F, trans_F, *d_inout );
+	if(Fd) {
+		LinAlgOpPack::V_MtV( Fd, *F, trans_F, *d );
 	}
 	// Set the QP statistics
 	QPSolverStats::ESolutionType solution_type;
