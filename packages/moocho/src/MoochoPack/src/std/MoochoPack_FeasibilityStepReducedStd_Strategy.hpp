@@ -19,10 +19,12 @@
 #include "FeasibilityStep_Strategy.h"
 #include "QuasiRangeSpaceStep_Strategy.h"
 #include "d_bounds_iter_quant.h"
+#include "GeneralIterationPack/include/CastIQMember.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxed.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
@@ -31,7 +33,8 @@ namespace ReducedSpaceSQPPack {
 ///
 /** Implements the feasibility step computation for reduced space SQP.
  */
-class FeasibilityStepReducedStd_Strategy : public FeasibilityStep_Strategy {
+class FeasibilityStepReducedStd_Strategy : public FeasibilityStep_Strategy
+{
 public:
 
 	/// <<std comp>> members for the qp solver
@@ -40,33 +43,33 @@ public:
 	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester
 		QPSolverRelaxedTester;
 
-	/// <<std comp>> members for the qp solver
+	/// QP solver
 	STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver )
 
-	/// <<std comp>> members for comparision object compatible with Gc
+	/// Comparision object compatible with Gc
 	STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
 		
 	///
 	enum EQPObjective {
-		OBJ_MIN_FULL_STEP           // min 1/2 * (Y*wy + Z*wz)'*(Y*wy + Z*wz)
-		,OBJ_MIN_NULL_SPACE_STEP    // min 1/2 * wz'*wz
-		,OBJ_RSQP                   // min qp_grad_k'*wz + 1/2 * wz'*rHL_k*wz
+		OBJ_MIN_FULL_STEP           ///< min 1/2 * (Y*wy + Z*wz)'*(Y*wy + Z*wz)
+		,OBJ_MIN_NULL_SPACE_STEP    ///< min 1/2 * wz'*wz
+		,OBJ_RSQP                   ///< min qp_grad_k'*wz + 1/2 * wz'*rHL_k*wz
 	};
 
 	///
 	/** Set what is used for the QP objective.
-	  *
-	  * ToDo: Finish documentation.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPObjective, qp_objective )
 
 	///
-	enum EQPTesting { QP_TEST_DEFAULT, QP_TEST, QP_NO_TEST };
+	enum EQPTesting {
+		QP_TEST_DEFAULT     ///< Decide based on olevel input to <tt>compute_feasibility_step(...)</tt>
+		,QP_TEST            ///< Perform the tests
+		,QP_NO_TEST         ///< Don't perform the tests
+	};
 
 	///
 	/** Set how and if the QP solution is tested.
-	  *
-	  * ToDo: Finish documentation.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
 
@@ -83,28 +86,27 @@ public:
 	// Overridden from FeasibilityStep_Strategy
 
 	///
-	/** Computes a feasibility step by computing simple range and null space components.
+	/** Computes a feasibility step by computing simple quasi-range and null space components.
 	 *
 	 * ToDo: Finish documentation!
 	 *
 	 */
  	bool compute_feasibility_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* w
+		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
 	  	);
 
 	///
 	void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	//
-	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> Hess_ptr_t;
-	//
-	d_bounds_iq_member			d_bounds_;
-	int                         current_k_;
-	Hess_ptr_t                  Hess_ptr_;
-	Vector                      grad_store_;
-	GenMatrix                   Hess_store_;
+
+	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
+	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
+	int                                                      current_k_;
+	MemMngPack::ref_count_ptr<const MatrixWithOp>            Hess_ptr_;
+	VectorSpace::vec_mut_ptr_t                               grad_store_;
+	GenMatrix                                                Hess_store_;
 
 }; // end class FeasibilityStepReducedStd_Strategy
 

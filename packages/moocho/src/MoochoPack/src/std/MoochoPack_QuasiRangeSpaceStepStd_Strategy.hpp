@@ -21,30 +21,33 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Strategy class for computing a quasi range space step by solving
+/** Strategy class for computing a quasi-range-space step by solving
  * the approximate range space problem directly.
  */
 class QuasiRangeSpaceStepStd_Strategy : public QuasiRangeSpaceStep_Strategy {
 public:
 
-	// ////////////////////////////////////////////////////////////
-	// Overridden from QuasiRangeSpaceStep_Strategy
+	/** @name Overridden from QuasiRangeSpaceStep_Strategy */
+	//@{
 
 	///
 	/** Solves the range space problem with the old decomposition at x_k.
 	 *
 	 * Solves:
-	 *
-	 * #vy = -inv(Gc_k'*Y_k) * c_xo#
-	 * #v = Y_k*vy#
+	 \verbatim
+	 vy = -inv(Gc_k'*Y_k) * c_xo
+	 v = Y_k*vy
+	 \endverbatim
 	 */
  	 bool solve_quasi_range_space_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* v
+		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* v
 	  	);
 
 	///
 	void print_step( std::ostream& out, const std::string& leading_str ) const;
+
+	//@}
 
 }; // end class QuasiRangeSpaceStepStd_Strategy
 

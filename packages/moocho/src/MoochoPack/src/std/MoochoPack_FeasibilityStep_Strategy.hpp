@@ -33,30 +33,30 @@ public:
 	///
 	/** Compute a step that improves feasibility (at least locally).
 	 *
-	 * This function will compute a step #w# that satisfies:
+	 * This function will compute a step <tt>w</tt> that satisfies:
 	 *
-	 * #d_bounds_k.l <= xo + w - x_k <= d_bounds_k.u#
+	 * <tt>d_bounds_k.l <= xo + w - x_k <= d_bounds_k.u</tt>
 	 *
-	 * and gives descent for ||c(xo + beta*w)|| for at least small beta > 0.
-	 * This norm ||.|| could be any valid norm and the implementation is free to
+	 * and gives descent for <tt>||c(xo + beta*w)||</tt> for at least small <tt>beta > 0</tt>.
+	 * This norm <tt>||.||</tt> could be any valid norm and the implementation is free to
 	 * define what descent means any way it would like.  Any information being used
 	 * in the algorithm can be used to compute this step.
 	 *
-	 * @param out           [out] Output stream journal data is written to.
-	 * @param olevel        [in] Output level for printing to #out#
-	 * @param algo          [in/out] The rSQPAlgo object.  This object can be queryed for
-	 *                      information.
-	 * @param s             [in/out] rSQPState object.  May be queried or modified if needed.
-	 * @param xo            [in] Base point vector (size n) xo.
-	 * @param c_xo          [in] c(xo).
-	 * @param w             [out] Computed step vector (size n) w.  Must not be NULL.
+	 * @param out     [out] Output stream journal data is written to.
+	 * @param olevel  [in] Output level for printing to #out#
+	 * @param algo    [in/out] The rSQPAlgo object.  This object can be queryed for
+	 *                information.
+	 * @param s       [in/out] rSQPState object.  May be queried or modified if needed.
+	 * @param xo      [in] Base point vector (size n) xo.
+	 * @param c_xo    [in] c(xo).
+	 * @param w       [out] Computed step vector (size n) w.  Must not be NULL.
 	 *
 	 * @return Returns true if a step that reduces feasibility subject to the bounds could
 	 * be found and false otherwise.
 	 */
  	virtual bool compute_feasibility_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* w
+		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
 	  	) = 0;
 
 	///

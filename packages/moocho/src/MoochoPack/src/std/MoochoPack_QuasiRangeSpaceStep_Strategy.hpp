@@ -31,25 +31,25 @@ public:
 	virtual ~QuasiRangeSpaceStep_Strategy() {}
 
 	///
-	/** Compute a step that will approximatly solve a range space subproblem.
+	/** Compute a step that will approximatly solve a range-space subproblem.
 	 *
-	 * This function will compute a step #v# that will approximatly satisfy:
+	 * This function will compute a step <tt>v</tt> that will approximatly satisfy:
 	 *
-	 * #||Gc_k'*v + c(xo)|| < ||c(xo)||#\\
+	 * <tt>||Gc_k'*v + c(xo)|| < ||c(xo)||</tt>
 	 *
 	 * The above norm ||.|| could be any valid norm and the implementation is free to
 	 * define what descent means any way it would like.  It is assumed that this
-	 * step will be computed by using the #Gc_k# but other implementations are
+	 * step will be computed by using the <tt>Gc_k</tt> but other implementations are
 	 * possible.  Any information being used in the algorithm can be used
 	 * to compute this step in a reasonable way.  Note that the 
 	 * inequalities do not have to (and should not in most cases) be considered
-	 * in this computation.  Note that whatever means is used to compute #v#
-	 * that it better give a descent direction for #||c(x)||# but there is no guarantee
-	 * for this if #||xo - x_k||# is large since #Gc_k# may not accurately approximate
-	 * #Gc(xo)#.
+	 * in this computation.  Note that whatever means is used to compute <tt>v</tt>
+	 * that it better give a descent direction for <tt>||c(x)||</tt> but there is no guarantee
+	 * for this if <tt>||xo - x_k||</tt> is large since <tt>Gc_k</tt> may not accurately approximate
+	 * <tt>Gc(xo)</tt>.
 	 *
 	 * @param out      [out] Output stream journal data is written to.
-	 * @param olevel   [in] Output level for printing to #out#.
+	 * @param olevel   [in] Output level for printing to <tt>out</tt>.
 	 * @param algo     [in/out] The rSQPAlgo object.  This object can be queryed for information.
 	 * @param s        [in/out] rSQPState object.  May be queried or modified if needed.
 	 * @param xo       [in] Base point vector (size n) xo.
@@ -60,7 +60,7 @@ public:
 	 */
  	virtual bool solve_quasi_range_space_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* v
+		,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* v
 	  	) = 0;
 
 	///

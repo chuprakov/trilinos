@@ -69,9 +69,14 @@ LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 	,max_newton_iter_(max_newton_iter)
 {}
 
-bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+bool LineSearch2ndOrderCorrect_Step::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss
+	)
 {
+
+/* ToDo: Upate the below code!
+
 	using std::setw;
 
 	using LinAlgPack::dot;
@@ -652,6 +657,9 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 		out << "\nx_kp1 =\n"	<< x_kp1
 			<< "\nc_kp1 =\n"	<< c_kp1;
 	}
+
+*/
+	assert(0);
 
 	return true;
 }

@@ -17,22 +17,7 @@
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "ConstrainedOptimizationPack/include/ZVarReductMatrix.h"
-#include "ConstrainedOptimizationPack/include/QPSolverStats.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymIdentity.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/MatrixFactorized.h"
-#include "SparseLinAlgPack/include/sparse_bounds.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/WorkspacePack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
-
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
-}
+#include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -48,26 +33,25 @@ FeasibilityStepReducedStd_Strategy::FeasibilityStepReducedStd_Strategy(
 	,qp_tester_(qp_tester)
 	,qp_objective_(qp_objective)
 	,qp_testing_(qp_testing)
+	,dl_iq_(dl_name)
+	,du_iq_(du_name)
 	,current_k_(-1)
 {}
 
 bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* w
+	,const VectorWithOp& xo, const VectorWithOp& c_xo, VectorWithOpMutable* w
   	)
 {
-	typedef SparseLinAlgPack::sparse_bounds_itr             sparse_bounds_itr;
-	typedef ConstrainedOptimizationPack::MatrixSymIdentity  MatrixSymIdentity;
-	typedef ConstrainedOptimizationPack::QPSolverStats      QPSolverStats;
 	using DynamicCastHelperPack::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	// problem dimensions
 	const size_type
 		n = algo->nlp().n(),
 		m = algo->nlp().m(),
-		r = algo->nlp().r();
+		r  = s->equ_decomp().size();
+
+/* Todo: UPdate below code!
 
 	// Compute the quasi-range space step Ywy
 	wsp::Workspace<value_type> Ywy_ws(wss,xo.size());
@@ -487,6 +471,10 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 
 	if( throw_qp_failure )
 		return false;
+
+*/
+	assert(0);
+
 	return true;
 }
 
