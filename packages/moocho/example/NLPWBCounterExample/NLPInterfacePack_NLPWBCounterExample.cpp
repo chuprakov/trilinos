@@ -128,9 +128,8 @@ void NLPWBCounterExample::imp_calc_f_orig(
 void NLPWBCounterExample::imp_calc_c_orig(
 	const DVectorSlice &x_full, bool newx, const ZeroOrderInfoSerial &zero_order_info ) const
 {
-	DVectorSlice x = x_full(1,n_orig_); 
-	DVector      &c = *zero_order_info.c;
-	//
+	DVectorSlice x = x_full(1,n_orig_);
+	DVector &c = *zero_order_info.c;
 	c(1) = x(1)*x(1) - x(2) + a_;
 	c(2) = x(1)      - x(3) - b_;
 }
@@ -144,11 +143,9 @@ void NLPWBCounterExample::imp_calc_h_orig(
 void NLPWBCounterExample::imp_calc_Gf_orig(
 	const DVectorSlice &x_full, bool newx, const ObjGradInfoSerial &obj_grad_info ) const
 {
-	DVectorSlice  x     = x_full(1,n_orig_); 
-	DVector       &Gf   = *obj_grad_info.Gf;
-	Gf(1) = (linear_obj_ ? 1.0 : x(1) );
-	Gf(2) = 0.0;
-	Gf(3) = 0.0;
+	DVectorSlice x = x_full(1,n_orig_); 
+	DVector &Gf = *obj_grad_info.Gf;
+	Gf(1) = (linear_obj_ ? 1.0 : x(1) ); Gf(2) = 0.0; Gf(3) = 0.0;
 }
 
 bool NLPWBCounterExample::imp_get_next_basis(
@@ -210,24 +207,20 @@ void NLPWBCounterExample::imp_calc_Gc_orig(
 	// Get references/pointers to data for Gc to be computed/updated.
 	index_type  &Gc_nz = *first_order_expl_info.Gc_nz;
 	value_type	*Gc_v = &(*first_order_expl_info.Gc_val)[0];
-	index_type  *Gc_i = ( first_order_expl_info.Gc_ivect
-						  ? &(*first_order_expl_info.Gc_ivect)[0] : NULL ),
-		        *Gc_j = ( first_order_expl_info.Gc_jvect
-						  ? &(*first_order_expl_info.Gc_jvect)[0] : NULL );
+	index_type  *Gc_i = ( first_order_expl_info.Gc_ivect ? &(*first_order_expl_info.Gc_ivect)[0] : NULL );
+	index_type  *Gc_j = ( first_order_expl_info.Gc_jvect ? &(*first_order_expl_info.Gc_jvect)[0] : NULL );
 	// Set up the nonzero structure of Gc_orig (sorted by constraint and then by variable)
-	size_type nz = 0;
 	if( Gc_i ) {
-		Gc_j[nz] = 1; Gc_i[nz] = 1; ++nz; // d(c(1))/d(x(1))
-		Gc_j[nz] = 1; Gc_i[nz] = 2; ++nz; // d(c(1))/d(x(2))
-		Gc_j[nz] = 2; Gc_i[nz] = 1; ++nz; // d(c(2))/d(x(1))
-		Gc_j[nz] = 2; Gc_i[nz] = 3; ++nz; // d(c(2))/d(x(3))
+		Gc_j[0] = 1; Gc_i[0] = 1; // d(c(1))/d(x(1))
+		Gc_j[1] = 1; Gc_i[1] = 2; // d(c(1))/d(x(2))
+		Gc_j[2] = 2; Gc_i[2] = 1; // d(c(2))/d(x(1))
+		Gc_j[3] = 2; Gc_i[3] = 3; // d(c(2))/d(x(3))
 	}
 	// Fill in the nonzero values of Gc_orig (must have the same order as structure!)
-	nz = 0;
-	Gc_v[nz] = 2*x(1); ++nz; // d(c(1))/d(x(1))
-	Gc_v[nz] =   -1.0; ++nz; // d(c(1))/d(x(2))
-	Gc_v[nz] =   +1.0; ++nz; // d(c(2))/d(x(1))
-	Gc_v[nz] =   -1.0; ++nz; // d(c(2))/d(x(3))
+	Gc_v[0] = 2*x(1); // d(c(1))/d(x(1))
+	Gc_v[1] =   -1.0; // d(c(1))/d(x(2))
+	Gc_v[2] =   +1.0; // d(c(2))/d(x(1))
+	Gc_v[3] =   -1.0; // d(c(2))/d(x(3))
 	// Set the actual number of nonzeros
 	Gc_nz = Gc_orig_nz_;
 }
