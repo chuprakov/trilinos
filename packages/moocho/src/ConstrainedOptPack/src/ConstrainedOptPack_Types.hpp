@@ -32,17 +32,14 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 
 // concrete classes
 
-/*
-class VectorWithNorms;
-class DenseIdentVertConcatMatrix;
-class IdentZeroVertConcatMatrix;
-*/
+class VariableBoundsTester;
 
 // abstract classes
 
 class MatrixSymSecantUpdateable;
 class MatrixSymAddDelUpdateable;
 class MatrixSymAddDelUpdateableWithOpFactorized;
+class MatrixIdentConcat;
 class MeritFuncCalc1D;
 class MeritFuncCalc;
 class MeritFuncNLP;
@@ -52,25 +49,24 @@ class MeritFuncNLPDirecDeriv;
 class MeritFuncPenaltyParam;
 class MeritFuncPenaltyParams;
 class DirectLineSearch_Strategy;
-//class ZVarReductMatrix;
 
 // concrete subclasses
 
-/*
 class MeritFuncCalc1DQuadratic;
 class MeritFuncCalcNLP;
-class MeritFuncCalcNLE;
-class MeritFuncCalcNLF;
-class MatrixHessianSuperBasic;
-class MatrixHessianSuperBasicInitDiagonal;
-class MatrixSymPosDefInvCholFactor;
+class MeritFuncNLPL1;
+class MeritFuncNLPModL1;
+//class MeritFuncCalcNLE;
+//class MeritFuncCalcNLF;
+//class MatrixHessianSuperBasic;
+//class MatrixHessianSuperBasicInitDiagonal;
+//class MatrixSymPosDefInvCholFactor;
 class MatrixSymPosDefCholFactor;
-class MatrixSymPosDefLBFGS;
-class MatrixSymAddDelBunchKaufman;
-class DenseIdentVertConcatMatrixSubclass;
-class ZAdjointFactMatrixSubclass;
-class IdentZeroVertConcatMatrixSubclass;
-*/
+//class MatrixSymPosDefLBFGS;
+//class MatrixSymAddDelBunchKaufman;
+class MatrixIdentConcatStd;
+class DirectLineSearchArmQuad_Strategy;
+class DirectLineSearchArmQuad_StrategySetOptions;
 
 // decomposition classes
 

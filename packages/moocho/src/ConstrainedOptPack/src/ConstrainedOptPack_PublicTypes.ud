@@ -9,19 +9,16 @@
 //     #include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackPublicTypes.ud"
 // }
 
-// types from SparseSolverPack
-#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
-
-// types from NLPInterfacePack
+#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
+//#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
-using ConstrainedOptimizationPack::VectorWithNorms;
-using ConstrainedOptimizationPack::DenseIdentVertConcatMatrix;
-using ConstrainedOptimizationPack::IdentZeroVertConcatMatrix;
+using ConstrainedOptimizationPack::VariableBoundsTester;
 
 using ConstrainedOptimizationPack::MatrixSymSecantUpdateable;
 using ConstrainedOptimizationPack::MatrixSymAddDelUpdateable;
 using ConstrainedOptimizationPack::MatrixSymAddDelUpdateableWithOpFactorized;
+using ConstrainedOptimizationPack::MatrixIdentConcat;
 using ConstrainedOptimizationPack::MeritFuncCalc1D;
 using ConstrainedOptimizationPack::MeritFuncCalc;
 using ConstrainedOptimizationPack::MeritFuncNLP;
@@ -31,31 +28,32 @@ using ConstrainedOptimizationPack::MeritFuncNLPDirecDeriv;
 using ConstrainedOptimizationPack::MeritFuncPenaltyParam;
 using ConstrainedOptimizationPack::MeritFuncPenaltyParams;
 using ConstrainedOptimizationPack::DirectLineSearch_Strategy;
-using ConstrainedOptimizationPack::ZVarReductMatrix;
 
 using ConstrainedOptimizationPack::MeritFuncCalc1DQuadratic;
 using ConstrainedOptimizationPack::MeritFuncCalcNLP;
-using ConstrainedOptimizationPack::MeritFuncCalcNLE;
-using ConstrainedOptimizationPack::MeritFuncCalcNLF;
-using ConstrainedOptimizationPack::MatrixHessianSuperBasic;
-using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
-using ConstrainedOptimizationPack::MatrixSymPosDefInvCholFactor;
+using ConstrainedOptimizationPack::MeritFuncNLPL1;
+using ConstrainedOptimizationPack::MeritFuncNLPModL1;
+//using ConstrainedOptimizationPack::MeritFuncCalcNLE;
+//using ConstrainedOptimizationPack::MeritFuncCalcNLF;
+//using ConstrainedOptimizationPack::MatrixHessianSuperBasic;
+//using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
+//using ConstrainedOptimizationPack::MatrixSymPosDefInvCholFactor;
 using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
-using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
-using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
-using ConstrainedOptimizationPack::DenseIdentVertConcatMatrixSubclass;
-using ConstrainedOptimizationPack::ZAdjointFactMatrixSubclass;
-using ConstrainedOptimizationPack::IdentZeroVertConcatMatrixSubclass;
+//using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
+//using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
+using ConstrainedOptimizationPack::MatrixIdentConcatStd;
+using ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy;
+using ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions;
 
-using ConstrainedOptimizationPack::DecompositionSystem;
-using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
-using ConstrainedOptimizationPack::DecompositionSystemVarReductImpNode;
-using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
-using ConstrainedOptimizationPack::DecompositionSystemCoordinateDirect;
-using ConstrainedOptimizationPack::DecompositionSystemCoordinateAdjoint;
+//using ConstrainedOptimizationPack::DecompositionSystem;
+//using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
+//using ConstrainedOptimizationPack::DecompositionSystemVarReductImpNode;
+//using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
+//using ConstrainedOptimizationPack::DecompositionSystemCoordinateDirect;
+//using ConstrainedOptimizationPack::DecompositionSystemCoordinateAdjoint;
 
-using ConstrainedOptimizationPack::QPSolverWithBounds;
-using ConstrainedOptimizationPack::QPSolverRelaxed;
-using ConstrainedOptimizationPack::QPSCPD;
-using ConstrainedOptimizationPack::QPSchur;
-using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpace;
+//using ConstrainedOptimizationPack::QPSolverWithBounds;
+//using ConstrainedOptimizationPack::QPSolverRelaxed;
+//using ConstrainedOptimizationPack::QPSCPD;
+//using ConstrainedOptimizationPack::QPSchur;
+//using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpace;
