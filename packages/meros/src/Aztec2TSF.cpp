@@ -333,7 +333,9 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
    solver_data->azOptions.put(AZ_output, 1);
    TSFSmartPtr<Epetra_Operator> Smart_MLprec = TSFSmartPtr<Epetra_Operator>(MLop, true);
 
-   FSolver = new AZTECSolver(solver_data->azOptions, solver_data->azParams, Smart_MLprec);
+   printf("commenting out FSolver due to compilation problems\n");
+   exit(1);
+   //   FSolver = new AZTECSolver(solver_data->azOptions, solver_data->azParams, Smart_MLprec);
 
    return N_levels;
 }

@@ -124,7 +124,11 @@ int main(int argc, void** argv)
  azOptions.put(AZ_max_iter, 5);
  azOptions.put(AZ_precond, AZ_none);
 
- TSFLinearSolver FSolver = new AZTECSolver(azOptions, azParams, Smart_MLprec);
+ printf("the way ML is passed to an aztec solver has changed\n");
+ printf("so this code no longer works. Someone will have to fix\n");
+ printf("this\n");
+ exit(1);
+ TSFLinearSolver FSolver;//= new AZTECSolver(azOptions, azParams, Smart_MLprec);
  FSolver.setVerbosityLevel(4);
  
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);

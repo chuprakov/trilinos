@@ -58,7 +58,7 @@ saddle_kayloghin_CXXFLAGS =           -I$(top_srcdir)/src  \
 saddle_kayloghin_LDADD =  $(top_builddir)/src/libmeros.a \
  $(top_builddir)/../TSF/src/libTSF.a 	         \
  $(top_builddir)/../ifpack/src/libifpack.a       \
- $(top_builddir)/../epetra/src/libepetra.a       \
  $(top_builddir)/../triutils/src/libtriutils.a   \
  $(top_builddir)/../ml/src/libml.a               \
+ $(top_builddir)/../epetra/src/libepetra.a       \
  $(top_builddir)/../aztecoo/src/libaztecoo.a  $(LAPACK_LIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)
