@@ -394,7 +394,7 @@ public:
 	 *	@param	num_targ_vecs
 	 *             [in] Number of mutable sub-vectors in <tt>targ_sub_vec[]</tt>.
 	 *	@param	targ_sub_vecs
-	 *             [in] Array (length <tt>num_targ_vecs</tt>) of mutable vectors to apply the
+	 *             [in/out] Array (length <tt>num_targ_vecs</tt>) of mutable vectors to apply the
 	 *             operator over and be mutated.  The ordering of these sub-vectors
 	 *             <tt>targ_sub_vecs[k], for k = 0...num_targ_vecs-1</tt>, is significant to this
 	 *             operator object.  If <tt>num_targ_vecs == 0</tt> then <tt>targ_sub_vecs</tt> can be <tt>NULL</tt>.
@@ -412,26 +412,30 @@ public:
 	 *	<li> <tt>num_vecs > 0 || num_targ_vecs > 0</tt>
 	 *	<li> <tt>[num_vecs > 0] sub_vecs != NULL</tt>
 	 *	<li> <tt>[num_targ_vecs > 0] targ_sub_vecs != NULL</tt>
-	 *	<li> <tt>[num_vecs > 0] global_offset==sub_vecs[k].global_offset</tt>
+	 *	<li> <tt>[num_vecs > 0] globalOffset==sub_vecs[k].globalOffset</tt>
 	 *        , for <tt>k = 0,...,num_vecs-1</tt>
-	 *	<li> <tt>[num_targ_vecs > 0] global_offset==targ_sub_vecs[k].global_offset</tt>
+	 *	<li> <tt>[num_targ_vecs > 0] globalOffset==targ_sub_vecs[k].globalOffset</tt>
 	 *        , for <tt>k = 0,...,num_targ_vecs-1</tt>
-	 *	<li> <tt>[num_vecs > 0] sub_dim==sub_vecs[k].sub_dim</tt>
+	 *	<li> <tt>[num_vecs > 0] sub_dim==sub_vecs[k].subDim()</tt>
 	 *       , for <tt>k = 0,...,num_vecs-1</tt>
-	 *	<li> <tt>[num_targ_vecs > 0] sub_dim==targ_sub_vecs[k].sub_dim</tt>
+	 *	<li> <tt>[num_targ_vecs > 0] sub_dim==targ_sub_vecs[k].subDim()</tt>
 	 *       , for <tt>k = 0,...,num_targ_vecs-1</tt>
 	 *	</ul>
 	 *
-	 * If <tt>reduct_obj != NULL</tt> then the reduction operation will be accumlated as:
+	 * If <tt>reduct_obj != NULL</tt> then the reduction operation will
+	 * be accumlated as:
+	 *
 	 \verbatim
      op(op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> reduct_obj
 	 \endverbatim
-	 * By allowing an in/out <tt>reduct_obj</tt> and an accumulation
-	 * of the reduction, the maximum reuse of memory is achieved.
-	 * If <tt>this->reduct_obj_create()</tt>
-	 * or <tt>this->reduct_obj_reinit(reduct_obj)</tt> was called
-	 * immediately before this function, then <tt>reduct_obj</tt> will contain
-	 * only the reduction from this function call.
+	 *
+	 * By allowing an in/out <tt>reduct_obj</tt> and an accumulation of
+	 * the reduction, the maximum reuse of memory is achieved.  If
+	 * <tt>this->reduct_obj_create()</tt> or
+	 * <tt>this->reduct_obj_reinit()</tt> (passing in
+	 * <tt>reduct_obj</tt>) was called immediately before this function,
+	 * then on return, <tt>reduct_obj</tt> will contain only the
+	 * reduction from this function call.
 	 *
 	 * If <tt>num_vecs</tt> is incompatible with the underlying operator object then
 	 * <tt>InvalidNumVecs</tt> is thrown.  If the sub-vectors are not compatible
@@ -453,7 +457,5 @@ private:
 }; // end class RTOpT
 
 } // end namespace RTOpPack
-
-//@}
 
 #endif // RTOPPACK_RTOP_NEW_T_DECL_HPP
