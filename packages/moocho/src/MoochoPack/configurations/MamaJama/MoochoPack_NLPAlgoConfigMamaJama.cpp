@@ -243,9 +243,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	if(trase_out) {
 		*trase_out
 			<< std::endl
-			<< "*********************************************\n"
-			<< "*** rSQPAlgo_ConfigMamaJama configuration ***\n"
-			<< "*********************************************\n";
+			<< "*****************************************************************\n"
+			<< "*** rSQPAlgo_ConfigMamaJama configuration                     ***\n"
+			<< "***                                                           ***\n"
+			<< "*** Here, summary information about how the algorithm is      ***\n"
+			<< "*** configured is printed so that the user can see how the    ***\n"
+			<< "*** properties of the NLP and the set options influence       ***\n"
+			<< "*** how an algorithm is configured.                           ***\n"
+			<< "*****************************************************************\n";
 	}
 
 	// ////////////////////////////////////////////////////////////
@@ -255,7 +260,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// B. Create an algo object, give to algo_cntr, then give algo_cntr to algo
 
 	if(trase_out)
-		*trase_out << "\nCreating the algo object ...\n";
+		*trase_out << "\n*** Creating the rSQPAlgo algo object ...\n";
 
 	typedef rcp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
 	algo_ptr_t algo = rcp::rcp(new rSQPAlgo);
@@ -270,7 +275,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// C.0 Set the nlp and track objects
 
 	if(trase_out)
-		*trase_out << "\nSetting the NLP and track objects ...\n";
+		*trase_out << "\n*** Setting the NLP and track objects to the algo object ...\n";
 
 	algo->set_nlp( algo_cntr->get_nlp().get() );
 	algo->set_track( algo_cntr->get_track() );
@@ -289,6 +294,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					" of options will be used!\n";
 		}
 	}	
+
+	if(trase_out)
+		*trase_out << "\n*** Probing the NLP object for supported interfaces ...\n";
 
 	// Get the dimensions of the NLP
 	NLP &nlp = algo->nlp();
@@ -334,6 +342,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
 
+	if(trase_out)
+		*trase_out
+			<< "\n*** Sorting out some of the options given input options ...\n";
+
 	if( tailored_approach ) {
 		// Change the options for the tailored approach. 
 		if(trase_out) {
@@ -358,24 +370,65 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 		cov_.merit_function_type_		= MERIT_FUNC_L1;
 	}
-	
-	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL
-		&& var_reduct_orthog_strategy_.get() == NULL )
-	{
-		if(trase_out)
-			*trase_out <<
-				"\nrange_space_matrix == ORTHOGONAL and var_reduct_orthog_strategy_.get() == NULL:\n"
-				"Sorry, the orthogonal decomposition can not be used!\n"
-				"setting range_space_matrix = COORDINATE ...\n";
-		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
+
+	// Set default
+	if( uov_.max_dof_quasi_newton_dense_ < 0 )
+		cov_.max_dof_quasi_newton_dense_ = DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE;
+	else
+		cov_.max_dof_quasi_newton_dense_ = uov_.max_dof_quasi_newton_dense_;
+
+	// Decide what type of quasi newton update to use
+	switch( uov_.quasi_newton_ ) {
+		case QN_AUTO: {
+			if(trase_out)
+				*trase_out
+					<< "\nquasi_newton == AUTO:"
+					<< "\nnlp.num_bounded_x() == " << nlp.num_bounded_x() << ":\n";
+			if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
+				if(trase_out)
+					*trase_out
+						<< "n-r = " << n-r << " > max_dof_quasi_newton_dense = "
+						<< cov_.max_dof_quasi_newton_dense_ <<  ":\n"
+						<< "setting quasi_newton == LBFGS\n";
+				cov_.quasi_newton_ = QN_LBFGS;
+			}
+			else {
+				if(trase_out)
+					*trase_out
+						<< "n-r = " << n-r << " <= max_dof_quasi_newton_dense = "
+						<< cov_.max_dof_quasi_newton_dense_ << ":\n"
+						<< "setting quasi_newton == BFGS\n";
+				cov_.quasi_newton_ = QN_BFGS;
+			}
+			break;
+		}
+		case QN_BFGS:
+		case QN_PBFGS:
+		case QN_LBFGS:
+		case QN_LPBFGS:
+			cov_.quasi_newton_ = uov_.quasi_newton_;
+			break;
+	    default:
+			assert(0); // Invalid option!
 	}
 
+	// Decide what type of range space matrix to use
 	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
+		const bool use_orth = dof*dof*r	<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
 		if(trase_out)
-			*trase_out <<
-				"\nrange_space_matrix == AUTO:\n"
-				"setting range_space_matrix = COORDINATE ...\n";
-		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
+			*trase_out
+				<< "\nrange_space_matrix == AUTO:"
+				<< "\n(n-r)^2*r = (" << dof << ")^2 * " << r << " = " << (dof*dof*r)
+				<< ( use_orth ? " <= " : " > " ) << "max_dof_quasi_newton_dense^2 = ("
+				<< cov_.max_dof_quasi_newton_dense_ << ")^2 = "
+				<< cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_
+				<< ( use_orth
+					 ? "\nsetting range_space_matrix = ORTHOGONAL\n"
+					 : "\nsetting range_space_matrix = COORDINATE\n" );
+		cov_.range_space_matrix_type_ =
+			( use_orth
+			  ? RANGE_SPACE_MATRIX_ORTHOGONAL
+			  : RANGE_SPACE_MATRIX_COORDINATE );
 	}
 
 	// ToDo: Sort out the rest of the options!
@@ -458,7 +511,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// C.2. Create and set the state object
 
 	if(trase_out)
-		*trase_out << "\nCreating and setting the state object ...\n";
+		*trase_out
+			<< "\n*** Creating the state object an setting up iteration quantity objects ...\n";
 
 	{
 		//
@@ -751,7 +805,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// C.3  Create and set the step objects
 
 	if(trase_out)
-		*trase_out << "\nCreating and setting the step objects ...\n";
+		*trase_out << "\n*** Creating and setting the step objects ...\n";
 
 //	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
 //	qp_solver_ptr_t qp_solver;
@@ -1100,6 +1154,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				//
 				// Unconstrained NLP (m == 0, mI == 0, num_bounded_x == 0)
 				//
+				if(trase_out)
+					*trase_out 
+						<< "\nConfiguring an algorithm for an unconstrained "
+						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
 					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
@@ -1109,6 +1167,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				//
 				// Simple bound constrained NLP (m == 0, mI == 0, num_bounded_x > 0)
 				//
+				if(trase_out)
+					*trase_out 
+						<< "\nConfiguring an algorithm for a simple bound constrained "
+						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
 					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
@@ -1119,6 +1181,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			//
 			// System of Nonlinear equations (n == m)
 			//
+			if(trase_out)
+				*trase_out 
+					<< "\nConfiguring an algorithm for a system of nonlinear equations "
+					<< "NLP (n == m) ...\n";
 			THROW_EXCEPTION(
 				n == m, std::logic_error
 				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
@@ -1129,6 +1195,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			//
 			// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
 			//
+			if(trase_out)
+				*trase_out 
+					<< "\nConfiguring an algorithm for nonlinear equality constrained "
+					<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
 
 			int step_num = 0;
 	
@@ -1228,6 +1298,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			//
 			// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
 			//
+			if(trase_out)
+				*trase_out 
+					<< "\nConfiguring an algorithm for nonlinear generally constrained "
+					<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
+
 			THROW_EXCEPTION(
 				mI > 0 || nb > 0, std::logic_error
 				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
