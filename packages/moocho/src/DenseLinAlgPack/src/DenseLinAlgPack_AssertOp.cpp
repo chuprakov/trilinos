@@ -25,8 +25,8 @@ void LinAlgPack::Vp_V_assert_sizes(size_type v_lhs_size, size_type v_rhs_size)
 {
 	THROW_EXCEPTION(
 		v_lhs_size != v_rhs_size, std::length_error
-		,"Vp_V_assert_sizes(...) : The sizes of v_lhs and v_rhs "
-		"in the operation v_lhs += op v_rhs do not match");
+		,"Vp_V_assert_sizes(...) : The sizes of v_lhs = " << v_lhs_size << " and v_rhs = " << v_rhs_size
+		<< " in the operation v_lhs += op v_rhs do not match");
 }
 
 void LinAlgPack::VopV_assert_sizes(size_type v_rhs1_size, size_type v_rhs2_size)
