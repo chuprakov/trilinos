@@ -86,6 +86,8 @@ public:
 	///
 	vec_mut_ptr_t create_member() const;
 	///
+	space_ptr_t clone() const;
+	///
 	space_ptr_t sub_space(const Range1D& rng) const;
 
 	//@}

@@ -145,11 +145,10 @@ VectorWithOpMutable::sub_view( const Range1D& rng_in )
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return vec_mut_ptr_t( this, false );
-	return rcp::rcp_implicit_cast<vec_mut_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorWithOpMutableSubView>(
-			new VectorWithOpMutableSubView(
-				vec_mut_ptr_t( this, false )
-				,rng ) ) );
+	return rcp::rcp(
+		new VectorWithOpMutableSubView(
+			vec_mut_ptr_t( this, false )
+			,rng ) );
 }
 
 VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const

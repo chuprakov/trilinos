@@ -77,11 +77,15 @@ index_type VectorSpaceSubSpace::dim() const
 VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 {
 	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_mut_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorWithOpMutableSubView>(
-			new VectorWithOpMutableSubView(
-				full_space_->create_member(), rng_ 
-				) ) );
+	return rcp::rcp(
+		new VectorWithOpMutableSubView(
+			full_space_->create_member(), rng_ 
+			) );
+}
+
+VectorSpace::space_ptr_t VectorSpaceSubSpace::clone() const
+{
+	return new VectorSpaceSubSpace( full_space_->clone(), rng_ );
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) const
@@ -93,14 +97,13 @@ VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) c
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return space_ptr_t( this, false );
 	const index_type this_offset = rng_.lbound() - 1;
-	return rcp::rcp_implicit_cast<space_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorSpaceSubSpace>(
-			new VectorSpaceSubSpace(
-				full_space_
-				,Range1D( 
-					this_offset  + rng.lbound()
-					,this_offset + rng.ubound() )
-				) ) );
+	return rcp::rcp(
+		new VectorSpaceSubSpace(
+			full_space_
+			,Range1D( 
+				this_offset  + rng.lbound()
+				,this_offset + rng.ubound() )
+			) );
 }
 
 } // end namespace AbstractLinAlgPack

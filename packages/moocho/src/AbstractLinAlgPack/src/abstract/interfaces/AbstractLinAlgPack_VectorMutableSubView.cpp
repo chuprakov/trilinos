@@ -88,14 +88,13 @@ VectorWithOpMutableSubView::sub_view( const Range1D& rng )
 	namespace rcp = ReferenceCountingPack;
 	space_impl().validate_range(rng);
 	const index_type this_offset = space_impl().rng().lbound() - 1;
-	return rcp::rcp_implicit_cast<vec_mut_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorWithOpMutableSubView>(
-			new VectorWithOpMutableSubView(
-				full_vec_
-				,Range1D( 
-					this_offset  + rng.lbound()
-					,this_offset + rng.ubound() )
-				) ) );
+	return rcp::rcp(
+		new VectorWithOpMutableSubView(
+			full_vec_
+			,Range1D( 
+				this_offset  + rng.lbound()
+				,this_offset + rng.ubound() )
+			) );
 }
 
 void VectorWithOpMutableSubView::set_sub_vector( const RTOp_SubVector& sub_vec_in )

@@ -237,8 +237,13 @@ void AbstractLinAlgPack::Vt_S(
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
-	assert(0==RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
-	v_lhs->apply_transformation(scale_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	if( alpha == 0.0 ) {
+		*v_lhs = 0.0;
+	}
+	else if( alpha != 1.0 ) {
+		assert(0==RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
+		v_lhs->apply_transformation(scale_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	}
 }
 
 void AbstractLinAlgPack::Vp_StV(

@@ -109,6 +109,8 @@ class MatrixSymDiagonalStd;
 
 class VectorSpaceTester;
 class VectorSpaceTesterSetOptions;
+class BasisSystemTester;
+class BasisSystemTesterSetOptions;
 
 //@}
 

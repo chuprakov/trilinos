@@ -16,7 +16,7 @@
 #ifndef MATRIX_COMPOSITE_STD_H
 #define MATRIX_COMPOSITE_STD_H
 
-#include <list>
+#include <deque>
 
 #include "MatrixWithOp.h"
 #include "GenPermMatrixSlice.h"
@@ -115,10 +115,12 @@ public:
 	 */
 	struct SubVectorEntry {
 		///
+		typedef ReferenceCountingPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		///
 		SubVectorEntry(
 			size_type r_l, size_type c_l, value_type beta
 			,const Range1D& rng_G
-			,const GenPermMatrixSlice& G, const release_resource_ptr_t& G_release, BLAS_Cpp::Transp G_trans
+			,const GPMS_ptr_t& G, const release_resource_ptr_t& G_release, BLAS_Cpp::Transp G_trans
 			,const VectorWithOp* v
 			,const release_resource_ptr_t& v_release, BLAS_Cpp::Transp v_trans
 			)
@@ -126,14 +128,22 @@ public:
 			,v_(v),v_release_(v_release),v_trans_(v_trans)
 			{}
 		///
+		bool operator==(const SubVectorEntry v)
+			{
+				return 
+					r_l_==v.r_l_ && c_l_==v.c_l_ && beta_==v.beta_
+					&& rng_G_==v.rng_G_ && G_.get()==v.G_.get() && G_release_.get()==v.G_release_.get() && G_trans_==v.G_trans_
+					&& v_==v.v_ && v_release_.get()==v.v_release_.get() && v_trans_==v.v_trans_;
+			}
+		///
 		size_type                  r_l_,   ///< row of first element of vector in composite matrix.
 		                           c_l_;   ///< column of first element of vector in composite matrix.
 		///
 		value_type                 beta_;  ///< Scaling vector for vector elements
 		///
-		const Range1D              rng_G_; ///< rng_G_.size() > 0 => G_ is ignored, rng_G_.full_range() whole v!
+		Range1D                    rng_G_; ///< rng_G_.size() > 0 => G_ is ignored, rng_G_.full_range() whole v!
 		///
-		const GenPermMatrixSlice   G_;     ///< Will be non-identity if rng_G_.size() == 0.
+		GPMS_ptr_t                 G_;     ///< Will be non-identity if rng_G_.size() == 0.
 		///
 		release_resource_ptr_t     G_release_;
 		///
@@ -147,7 +157,7 @@ public:
 	}; // end struct SubVectorEntry
 
 	/// Warning!  This could be changed to some other STL container!
-	typedef std::list<SubVectorEntry> vector_list_t;
+	typedef std::deque<SubVectorEntry> vector_list_t;
 
 	///
 	/** Matrix list entry for a sub-matrix.
@@ -156,25 +166,36 @@ public:
 	 */
 	struct SubMatrixEntry {
 		///
+		typedef ReferenceCountingPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		///
 		SubMatrixEntry(
 			size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha
 			,const Range1D& rng_P
-			,const GenPermMatrixSlice& P, const release_resource_ptr_t& P_release, BLAS_Cpp::Transp P_trans
+			,const GPMS_ptr_t& P, const release_resource_ptr_t& P_release, BLAS_Cpp::Transp P_trans
 			,const MatrixWithOp* A, const release_resource_ptr_t& A_release, BLAS_Cpp::Transp A_trans
 			,const Range1D& rng_Q
-			,const GenPermMatrixSlice& Q, const release_resource_ptr_t& Q_release, BLAS_Cpp::Transp Q_trans
+			,const GPMS_ptr_t& Q, const release_resource_ptr_t& Q_release, BLAS_Cpp::Transp Q_trans
 			)
 			:r_l_(r_l),r_u_(r_u),c_l_(c_l),c_u_(c_u),alpha_(alpha),rng_P_(rng_P),P_(P),P_release_(P_release),P_trans_(P_trans)
 			,A_(A),A_release_(A_release),A_trans_(A_trans),rng_Q_(rng_Q),Q_(Q),Q_release_(Q_release),Q_trans_(Q_trans)
 			{}
 		///
+		bool operator==(const SubMatrixEntry m)
+			{
+				return
+					r_l_==m.r_l_ && r_u_==m.r_u_ && c_l_==m.c_l_ && c_u_==m.c_u_ && alpha_==m.alpha_
+					&& rng_P_==m.rng_P_ && P_.get()==m.P_.get() && P_release_.get()==m.P_release_.get() && P_trans_==m.P_trans_
+					&& A_==m.A_ && A_release_.get()==m.A_release_.get() && A_trans_==m.A_trans_
+					&& rng_Q_==m.rng_Q_ && Q_.get()==m.Q_.get() && Q_release_.get()==m.Q_release_.get() && Q_trans_==m.Q_trans_;
+			}
+		///
 		size_type                  r_l_, r_u_, c_l_, c_u_;
 		///
 		value_type                 alpha_;
 		///
-		const Range1D              rng_P_;  // rng_P_.size() > 0 => P_ is ignored, rng_P_.full_range() => all rows op(A)
+		Range1D                    rng_P_;  // rng_P_.size() > 0 => P_ is ignored, rng_P_.full_range() => all rows op(A)
 		///
-		const GenPermMatrixSlice   P_;
+		GPMS_ptr_t                 P_;
 		///
 		release_resource_ptr_t     P_release_;
 		///
@@ -186,9 +207,9 @@ public:
 		///
 		BLAS_Cpp::Transp           A_trans_;
 		///
-		const Range1D              rng_Q_; // rng_Q_.size() > 0 => Q_ is ignored, rng_Q_.full_range() => all columns op(A)
+		Range1D                    rng_Q_; // rng_Q_.size() > 0 => Q_ is ignored, rng_Q_.full_range() => all columns op(A)
 		///
-		const GenPermMatrixSlice   Q_;
+		GPMS_ptr_t                 Q_;
 		///
 		release_resource_ptr_t     Q_release_;
 		///
@@ -196,7 +217,7 @@ public:
 	}; // end struct SubMatrixEntry
 
 	/// Warning!  This could be changed to some other STL container!
-	typedef std::list<SubMatrixEntry> matrix_list_t;
+	typedef std::deque<SubMatrixEntry> matrix_list_t;
 
 	/** @name Constructors, initializers */
 	//@{
@@ -315,6 +336,42 @@ public:
 		);
 
 	///
+	/** Add a sub-matrix alpha*op(A)(rng_P,:)*op(Q).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const Range1D                 &rng_P
+		,const MatrixWithOp            *A
+		,const release_resource_ptr_t  &A_release
+		,BLAS_Cpp::Transp              A_trans
+		,const GenPermMatrixSlice      *Q
+		,const release_resource_ptr_t  &Q_release
+		,BLAS_Cpp::Transp              Q_trans
+		);
+
+	///
+	/** Add a sub-matrix alpha*op(P)*op(A)(:,rng_Q)
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const GenPermMatrixSlice      *P
+		,const release_resource_ptr_t  &P_release
+		,BLAS_Cpp::Transp              P_trans
+		,const MatrixWithOp            *A
+		,const release_resource_ptr_t  &A_release
+		,BLAS_Cpp::Transp              A_trans
+		,const Range1D                 &rng_Q
+		);
+
+	///
 	/** Add a sub-matrix alpha*op(A).
 	 *
 	 * ToDo : Finish Documentation!
@@ -357,10 +414,36 @@ public:
 	 *
 	 * This method must be called after all of the sub-vectors and sub-matrices have
 	 * been added and before <tt>this</tt> matrix object can be used.  This method will
-	 * validate that the constructed matrix is valid and sets up the composite <tt>VectorSpace</tt>
-	 * objects returned by <tt>this->space_rows()</tt> and <tt>this->space_cols()</tt>.
+	 * validate that the constructed matrix is valid.  It is up to the client to pass
+	 * in vector space objects (presumably of type \c VectorSpaceCompositeStd) that
+	 * represent the rows and columns of this matrix.  It would be very complicated
+	 * for this matrix class to figure out how to construct these vector space
+	 * objects in general.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>space_rows.get() != NULL</tt> (throw \c std::invalid_argument)
+	 * <li> <tt>space_rows->dim() == cols</tt> where \c cols was passed to \c reinitialize()
+	 *      (throw \c std::invalid_argument).
+	 * <li> <tt>space_cols.get() != NULL</tt> (throw \c std::invalid_argument)
+	 * <li> <tt>space_cols->dim() == rows</tt> where \c rows was passed to \c reinitialize()
+	 *      (throw \c std::invalid_argument).
+	 * </ul>
+	 *
+	 * @param  space_cols  [in] Will represent the vector space returned by <tt>this->space_cols()</tt>.
+	 *                     The vector space object will be owned by \c this and must be not be modified
+	 *                     while \c this is in use.  Of course, the sub-spaces from this vector space
+	 *                     object must be compatible with the vector spaces for the constitient matrices
+	 *                     and vectors that were added.
+	 * @param  space_rows  [in] Will represent the vector space returned by <tt>this->space_rows()</tt>.
+	 *                     The vector space object will be owned by \c this and must be not be modified
+	 *                     while \c this is in use.  Of course, the sub-spaces from this vector space
+	 *                     object must be compatible with the vector spaces for the constitient matrices
+	 *                     and vectors that were added.
 	 */
-	virtual void finish_construction();
+	virtual void finish_construction(
+		const VectorSpace::space_ptr_t&  space_cols
+		,const VectorSpace::space_ptr_t& space_rows
+		);
 
 	//@}
 
@@ -433,7 +516,6 @@ private:
 	size_type                  rows_, cols_;
 	matrix_list_t              matrix_list_;
 	vector_list_t              vector_list_;
-	bool                       has_overlap_; // true if there is some overlap in matrices and vectors.
 	VectorSpace::space_ptr_t   space_rows_;
 	VectorSpace::space_ptr_t   space_cols_;
 

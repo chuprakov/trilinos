@@ -216,11 +216,10 @@ VectorWithOp::sub_view( const Range1D& rng_in ) const
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return vec_ptr_t( this, false );
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorWithOpSubView>(
-			new VectorWithOpSubView(
-				vec_ptr_t( this, false )
-				,rng ) ) );
+	return rcp::rcp(
+		new VectorWithOpSubView(
+			vec_ptr_t( this, false )
+			,rng ) );
 }
 
 void VectorWithOp::get_sub_vector(

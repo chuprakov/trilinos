@@ -62,3 +62,5 @@ using AbstractLinAlgPack::MatrixSymDiagonalStd;
 
 using AbstractLinAlgPack::VectorSpaceTester;
 using AbstractLinAlgPack::VectorSpaceTesterSetOptions;
+using AbstractLinAlgPack::BasisSystemTester;
+using AbstractLinAlgPack::BasisSystemTesterSetOptions;

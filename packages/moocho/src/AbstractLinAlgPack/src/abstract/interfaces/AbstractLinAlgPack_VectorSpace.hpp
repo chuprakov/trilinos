@@ -60,6 +60,16 @@ public:
 	virtual vec_mut_ptr_t create_member() const = 0;
 
 	///
+	/** Create a clone of \c this vector space object.
+	 *
+	 * The returned vector space object is expected to be independent from \c this
+	 * and have a lifetime that extends beyond \c this.  This makes a vector space
+	 * class a little hander to implement by makes for much better flexibility
+	 * for the client.
+	 */
+	virtual space_ptr_t clone() const = 0;
+
+	///
 	/** Create a transient sub-space of the current vector space.
 	 *
 	 * Preconditions:<ul>

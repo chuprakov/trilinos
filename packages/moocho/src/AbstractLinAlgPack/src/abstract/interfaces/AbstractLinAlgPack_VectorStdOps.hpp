@@ -83,6 +83,10 @@ void Vp_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
 
 ///
 /** v_lhs *= alpha
+ *
+ * This takes care of the special cases of <tt>alpha == 0.0</tt>
+ * (set <tt>v_lhs = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
+ * do anything).
  */
 void Vt_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
 

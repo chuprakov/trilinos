@@ -97,14 +97,13 @@ VectorWithOpSubView::sub_view( const Range1D& rng ) const
 	namespace rcp = ReferenceCountingPack;
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorWithOpSubView>(
-			new VectorWithOpSubView(
-				full_vec_
-				,Range1D( 
-					this_offset  + rng.lbound()
-					,this_offset + rng.ubound() )
-				) ) );
+	return rcp::rcp(
+		new VectorWithOpSubView(
+			full_vec_
+			,Range1D( 
+				this_offset  + rng.lbound()
+				,this_offset + rng.ubound() )
+			) );
 }
 
 void VectorWithOpSubView::get_sub_vector(

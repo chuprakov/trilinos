@@ -34,11 +34,10 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return space_ptr_t( this, false );
-	return rcp::rcp_implicit_cast<space_ptr_t::element_type>(
-		rcp::ref_count_ptr<VectorSpaceSubSpace>(
-			new VectorSpaceSubSpace(
-				space_ptr_t( this, false )
-				,rng ) ) );
+	return rcp::rcp(
+		new VectorSpaceSubSpace(
+			rcp::rcp( this, false )
+			,rng ) );
 }
 
 // VectorSpace

@@ -88,6 +88,11 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const VectorWithOp& v_rhs2, value_type beta) const
 {
+	// ToDo: Validate input!
+	if(beta == 0.0)
+		*v_lhs = 0.0;
+	else if(beta != 1.0)
+		Vt_S( v_lhs, beta );
 	ele_wise_prod( alpha, v_rhs2, *diag_, v_lhs );
 }
 
