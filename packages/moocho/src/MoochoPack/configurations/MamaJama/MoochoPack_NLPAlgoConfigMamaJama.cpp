@@ -48,6 +48,8 @@
 #include "NLPInterfacePack/test/NLPFirstOrderDirectTester.h"
 #include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.h"
 
+#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProdSetOptions.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
 
@@ -70,7 +72,7 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
-//#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
 
 #include "AbstractLinAlgPack/include/BasisSystemTester.h"
 #include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
@@ -104,6 +106,7 @@
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/RangeSpaceStepStd_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CheckDescentRangeSpaceStep_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
@@ -171,7 +174,7 @@ namespace ReducedSpaceSQPPack {
 
 //
 // Here is where we define the default values for the algorithm.  These
-// should agree with what are in the rSQPpp.opt.rsqp_mama_jama_solve file.
+// should agree with what are in the rSQPpp.opt.rSQPAlgo_ConfigMamaJama file.
 //
 rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
 	:direct_linear_solver_type_(LA_AUTO)
@@ -193,12 +196,24 @@ rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
 {}
 
 rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
-	const basis_sys_ptr_t&  basis_sys
+	const basis_sys_ptr_t                     &basis_sys
+	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
 	)
-	:basis_sys_(basis_sys)
-{}
+{
+	this->initialize(basis_sys,var_reduct_orthog_strategy);
+}
 
-rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama() {
+void rSQPAlgo_ConfigMamaJama::initialize(
+	const basis_sys_ptr_t                     &basis_sys
+	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
+	)
+{
+	basis_sys_                  = basis_sys;
+	var_reduct_orthog_strategy_ = var_reduct_orthog_strategy;
+}
+
+rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama()
+{
 	// No need to really do anything!
 }
 
@@ -344,11 +359,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		cov_.merit_function_type_		= MERIT_FUNC_L1;
 	}
 	
-	if( uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE ) {
+	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL
+		&& var_reduct_orthog_strategy_.get() == NULL )
+	{
 		if(trase_out)
 			*trase_out <<
-				"\nrange_space_matrix != COORDINATE:\n"
-				"Sorry, the orthogonal decomposition is not updated yet!\n"
+				"\nrange_space_matrix == ORTHOGONAL and var_reduct_orthog_strategy_.get() == NULL:\n"
+				"Sorry, the orthogonal decomposition can not be used!\n"
 				"setting range_space_matrix = COORDINATE ...\n";
 		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
 	}
@@ -407,12 +424,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						,basis_sys_tester
 						) );
 				break;
-			case RANGE_SPACE_MATRIX_ORTHOGONAL:
-				THROW_EXCEPTION(
-					true, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-					"the othogonal decomposition is not updated for NLPFirstOrderInfo yet!" );
+			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
+				// Create a default VarReductOrthog_Strategy object for serial applications!
+				if( var_reduct_orthog_strategy_.get() == NULL )
+				{
+					assert(0); // ToDo: Implement
+				}
+				decomp_sys
+					= rcp::rcp(new DecompositionSystemOrthogonal(
+						nlp.space_x()
+						,nlp.space_c()
+						,nlp.space_h()
+						,basis_sys_
+						,basis_sys_tester
+						,var_reduct_orthog_strategy_
+						) );
 				break;
+			}
 			default:
 				assert(0);	// only a local error
 		}
@@ -736,8 +764,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// Create the variable bounds testing object.
 		typedef rcp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
-		bounds_tester_ptr_t
-			bounds_tester = NULL;
+		bounds_tester_ptr_t   bounds_tester = NULL;
 		if(nb) { // has variable bounds?
 			const value_type var_bounds_warning_tol = 1e-10;
 			bounds_tester = rcp::rcp(
@@ -752,6 +779,18 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				}
 		}
 
+		// Create the finite difference class
+		typedef rcp::ref_count_ptr<CalcFiniteDiffProd>     calc_fd_prod_ptr_t;
+		calc_fd_prod_ptr_t   calc_fd_prod = NULL;
+		{
+			calc_fd_prod = rcp::rcp(new CalcFiniteDiffProd());
+			if(options_.get()) {
+				ConstrainedOptimizationPack::CalcFiniteDiffProdSetOptions
+					options_setter( calc_fd_prod.get() );
+				options_setter.set_options(*options_);
+			}
+		}
+		
 		// EvalNewPoint_Step
 		algo_step_ptr_t    eval_new_point_step = NULL;
 		{
@@ -762,8 +801,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				deriv_tester_ptr_t
 					deriv_tester = rcp::rcp(
 						new NLPFirstOrderDirectTester(
-							NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
-							,NLPFirstOrderDirectTester::FD_DIRECTIONAL   // -Inv(C)*N testing
+							calc_fd_prod
+							,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
+							,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // -Inv(C)*N testing
 							) );
 				if(options_.get()) {
 					NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions
@@ -803,7 +843,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				deriv_tester_ptr_t
 					deriv_tester = rcp::rcp(
 						new NLPFirstDerivativesTester(
-							NLPFirstDerivativesTester::FD_DIRECTIONAL
+							calc_fd_prod
+							,NLPFirstDerivativesTester::FD_DIRECTIONAL
 							) );
 				if(options_.get()) {
 					NLPInterfacePack::NLPFirstDerivativesTesterSetOptions
@@ -840,6 +881,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		algo_step_ptr_t    range_space_step_step = NULL;
 		if( !tailored_approach ) {
 			range_space_step_step = rcp::rcp(new RangeSpaceStepStd_Step());
+		}
+
+		// CheckDescentRangeSpaceStep
+		algo_step_ptr_t    check_descent_range_space_step_step = NULL;
+		if( algo->algo_cntr().check_results() ) {
+			check_descent_range_space_step_step = rcp::rcp(new CheckDescentRangeSpaceStep_Step(NULL));
 		}
 
 		// ReducedGradient_Step
@@ -1081,10 +1128,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	
 			// (1) EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
-
+			if( tailored_approach && algo->algo_cntr().check_results() ) {
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::POST_STEP
+					,1
+					,"CheckDescentRangeSpaceStep"
+					,check_descent_range_space_step_step
+					);
+			}
+			
 			// (2) RangeSpaceStep
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
+				if(algo->algo_cntr().check_results() ) {
+					algo->insert_assoc_step(
+						step_num
+						,GeneralIterationPack::POST_STEP
+						,1
+						,"CheckDescentRangeSpaceStep"
+						,check_descent_range_space_step_step
+						);
+				}
 			}
 
 			// (3) ReducedGradient

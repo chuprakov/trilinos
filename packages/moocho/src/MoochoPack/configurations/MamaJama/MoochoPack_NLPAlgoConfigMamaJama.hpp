@@ -18,6 +18,7 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
 #include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
 
@@ -36,15 +37,26 @@ class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<BasisSystem>  basis_sys_ptr_t;
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<VarReductOrthog_Strategy>
+                                                               var_reduct_orthog_strategy_ptr_t;
 
 	/// Calls <tt>this->initalize()</tt>
-	rSQPAlgo_ConfigMamaJama( const basis_sys_ptr_t&  basis_sys = NULL );
+	rSQPAlgo_ConfigMamaJama( 
+		const basis_sys_ptr_t                     &basis_sys                  = NULL
+		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = NULL
+		);
 
 	///
-	/** Initialize with an optional \c BasisSystem object.
+	/** Initialize.
+	 *
+	 * ToDo: Finish documentation!
 	 */
-	void initialize( const basis_sys_ptr_t&  basis_sys = NULL );
+	void initialize(
+		const basis_sys_ptr_t                     &basis_sys                  = NULL
+		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = NULL
+		);
 
 	///
 	~rSQPAlgo_ConfigMamaJama();
@@ -149,7 +161,8 @@ public:
 private:
 
 	/// Possible user supplied stuff
-	basis_sys_ptr_t     basis_sys_; // Basis system object (if null will be set)
+	basis_sys_ptr_t                   basis_sys_;
+	var_reduct_orthog_strategy_ptr_t  var_reduct_orthog_strategy_;
 
 	/// Smart pointer to options
 	options_ptr_t      options_;
