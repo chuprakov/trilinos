@@ -32,6 +32,7 @@
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_Time.hpp"
+#include "Teuchos_oblackholestream.hpp"
 
 //
 // This example program is ment to show how easy it is to create MPI
@@ -59,8 +60,11 @@ bool runCgSolveExample(
 	typedef typename ST::magnitudeType    ScalarMag;
 	bool success = true;
 	bool result;
+	// Setup the output stream (do output only on root process!)
+	Teuchos::oblackholestream black_hole_out;
+	std::ostream &out = ( procRank == 0 ? std::cout : black_hole_out );
 	if(verbose)
-		std::cout << "\n***\n*** Running silly CG solver using scalar type = \'" << ST::name() << "\' ...\n***\n";
+		out << "\n***\n*** Running silly CG solver using scalar type = \'" << ST::name() << "\' ...\n***\n";
 	Teuchos::Time timer("");
 	timer.start(true);
 	//
@@ -73,7 +77,7 @@ bool runCgSolveExample(
 	//       [                 -1   a*2 ]
 	//
 	// (A.1) Create the tridagonal matrix operator
-	if(verbose) std::cout << "\nConstructing tridagonal matrix A of local dimmension = " << localDim
+	if(verbose) out << "\nConstructing tridagonal matrix A of local dimmension = " << localDim
 												<< " and diagonal multiplier = " << diagScale << " ...\n";
 	const TSFCore::Index
 		lowerDim = ( procRank == 0         ? localDim - 1 : localDim ),
@@ -88,6 +92,7 @@ bool runCgSolveExample(
 	lower[k-1] = -one; diag[k] = diagTerm; if(procRank < numProc-1) upper[k] = -one; // Last local row
 	RefCountPtr<const TSFCore::LinearOp<Scalar> >
 		A = rcp(new MPITridiagLinearOp<Scalar>(mpiComm,localDim,&lower[0],&diag[0],&upper[0]));
+	if(verbose) out << "\nGlobal dimension of A = " << A->domain()->dim() << std::endl;
 	// (A.2) Create RHS vector b and set to a random value
 	RefCountPtr<TSFCore::Vector<Scalar> > b = A->range()->createMember();
 	TSFCore::seed_randomize<Scalar>(0);
@@ -98,7 +103,7 @@ bool runCgSolveExample(
 	//
 	// (B) Solve the linear system with the silly CG solver
 	//
-	result = sillyCgSolve(TSFCore::LinearOpHandle<Scalar>(A),*b,maxNumIters,tolerance,&*x,verbose?&std::cout:0);
+	result = sillyCgSolve(TSFCore::LinearOpHandle<Scalar>(A),*b,maxNumIters,tolerance,&*x,verbose?&out:0);
 	if(!result) success = false;
 	//
 	// (C) Check that the linear system was solved to the specified tolerance
@@ -111,11 +116,11 @@ bool runCgSolveExample(
 	result = rel_err <= relaxTol;
 	if(!result) success = false;
 	if(verbose)
-		std::cout
+		out
 			<< "\n||b-A*x||/||b|| = "<<r_nrm<<"/"<<b_nrm<<" = "<<rel_err<<(result?" <= ":" > ")
 			<<"10.0*tolerance = "<<relaxTol<<": "<<(result?"passed":"failed")<<std::endl;
 	timer.stop();
-	if(verbose) std::cout << "\nTotal time = " << timer.totalElapsedTime() << " sec\n";
+	if(verbose) out << "\nTotal time = " << timer.totalElapsedTime() << " sec\n";
 
 	return success;
 } // end runCgSolveExample()
@@ -131,6 +136,8 @@ int main(int argc, char *argv[])
 	bool success = true;
 	bool verbose = true;
 	bool result;
+
+	MPI_Init(&argc,&argv);
 
 	MPI_Comm mpiComm = MPI_COMM_WORLD;
 	int procRank, numProc;
@@ -166,8 +173,8 @@ int main(int argc, char *argv[])
 		if(!result) success = false;
 
 		// Run using double
-		//result = runCgSolveExample<double>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
-		//if(!result) success = false;
+		result = runCgSolveExample<double>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		if(!result) success = false;
 
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
 
@@ -178,23 +185,6 @@ int main(int argc, char *argv[])
 		// Run using std::complex<double>
 		//result = runCgSolveExample<std::complex<double> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
 		//if(!result) success = false;
-
-#endif
-
-#ifdef HAVE_TEUCHOS_GNU_MP
-
-		// Run using mpf_class
-		//result = runCgSolveExample<mpf_class>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
-		//if(!result) success = false;
-
-#if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
-
-		// Run using std::complex<mpf_class>
-		//result = runCgSolveExample<std::complex<mpf_class> >(localDim,mpf_class(diagScale),verbose,mpf_class(tolerance),maxNumIters);
-		//if(!result) success = false;
-		//The above commented-out code throws a floating-point exception?
-
-#endif
 
 #endif		
 
@@ -208,10 +198,12 @@ int main(int argc, char *argv[])
 		success = false;
 	}
 
-	if (verbose) {
+	if ( verbose && procRank==0 ) {
 		if(success)   std::cout << "\nCongratulations! All of the tests checked out!\n";
 		else          std::cout << "\nOh no! At least one of the tests failed!\n";
 	}
+
+ 	MPI_Finalize();
 	
 	return success ? 0 : 1;
 
