@@ -235,6 +235,12 @@ T_info& IterQuantityAccessContiguous<T_info>::set_k(int offset) {
 	return *quantities_[max_offset_ - offset];
 }
 
+template<class T_info>
+T_info& IterQuantityAccessContiguous<T_info>::set_k(int set_offset, int get_offset) {
+	T_info& iq = this->get_k(get_offset);   // May throw exception
+	return this->set_k(set_offset) = iq;    // ""
+}
+
 // Private member functions
 
 template<class T_info>

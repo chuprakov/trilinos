@@ -164,6 +164,8 @@ public:
 	const T_info& get_k(int offset) const;
 	///
 	T_info& set_k(int offset);
+	///
+	T_info& set_k(int set_offset, int get_offset);
 
 	//@}
 

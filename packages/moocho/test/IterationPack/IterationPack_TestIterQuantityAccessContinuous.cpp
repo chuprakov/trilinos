@@ -193,10 +193,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 		if(out)
 			*out<< result << endl;
 
-		if(out) *out	<< "\nx.set_k(0) = x.get_k(-1);\n\n";
+		if(out) *out	<< "\nx.set_k(0,-1);\n\n";
 		{
-			int &x_km1 = x.get_k(-1);
-			x.set_k(0) = x_km1;
+			x.set_k(0,-1);
 		}
 		
 		if(out) *out	<< "x.get_k(0) == 5 : ";
@@ -397,10 +396,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.set_k(0) = x.get_k(-1);\n\n";
+			*out<< "x.set_k(0,-1);\n\n";
 		{
-			int &x_km1 = x.get_k(-1);
-			x.set_k(0) = x_km1;
+			x.set_k(0,-1);
 		}
 
 		if(out)
@@ -707,10 +705,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< result << endl;
 
 		if(out)
-			*out<< "\nx.set_k(0) = x.get_k(-1);\n\n";
+			*out<< "\nx.set_k(0,-1);\n\n";
 		{
-			int &x_km1 = x.get_k(-1);
-			x.set_k(0) = x_km1;
+			x.set_k(0,-1);
 		}
 
 		if(out)
