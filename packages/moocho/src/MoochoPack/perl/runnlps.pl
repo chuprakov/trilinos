@@ -81,7 +81,7 @@ use File::Copy;
 use File::Path;
 use Cwd;
 
-use RSQPppVaryOptions;
+use MoochoVaryOptions;
 
 use constant TRUE  => 1;
 use constant FALSE => 0;
