@@ -35,29 +35,39 @@ namespace NLPInterfacePack {
  * and storage costs.  The amount of storage space needed is <tt>O(n*m)</tt> and
  * \c f(x) and \c c(x) will be computed <tt>O(n)</tt> times.
  * 
- * The other option (<tt>fd_testing_method==FD_DIRECTIONAL</tt>) computes products
- * of the form <tt>g'*v</tt> and compares them to the finite difference computed
- * value <tt>g_fd'*v</tt>.  This method only costs <tt>O(n)</tt> storage and two function
- * evaluations per direction (assuming central differences are used.  The directions \c v
- * are computed randomly between [1,10] so that they are well scaled and should give good results.
- * The option <tt>num_fd_directions()</tt> determines how many random directions are used.
+ * The other option (<tt>fd_testing_method==FD_DIRECTIONAL</tt>)
+ * computes products of the form <tt>g'*v</tt> and compares them to
+ * the finite difference computed value <tt>g_fd'*v</tt>.  This method
+ * only costs <tt>O(n)</tt> storage and two function evaluations per
+ * direction (assuming central differences are used.  The directions
+ * <tt>v</tt> are computed randomly between <tt>[-1,+1]</tt> so that
+ * they are well scaled and should give good results.  The option
+ * <tt>num_fd_directions()</tt> determines how many random directions
+ * are used.
  *
- * This class computes the derivatives using two sided (central )finite differences
- * which is more accurate than one sided differences.
+ * This class computes the derivatives using a
+ * <tt>CalcFiniteDiffProd</tt> object can can use up to fourth-order
+ * (central) finite differences but can use as low as first-order
+ * one-sided differences.
  *
  * The client can set the tolerances used to measure if the anylitical
  * values of \c Gf and \c Gc are close enough to the finite difference
- * values.  Let the function \a h(x) be \c f(x) or any \c c<sub>j</sub>(x),
- * <tt>j = 1...m</tt>.  Let <tt>gh(i) = d(h(x))/d(x(i))</tt> and
- * <tt>fdh(i) = finite_diff(h(x))/d(x(i))</tt>.  Then let's define the
- * relative error between the anylitic value and the finite difference value to be:
+ * values.  Let the function \a h(x) be <tt>f(x)</tt> or any
+ * <tt>cj(x)</tt>, for <tt>j = 1...m</tt>.  Let <tt>gh(i) =
+ * d(h(x))/d(x(i))</tt> and <tt>fdh(i) =
+ * finite_diff(h(x))/d(x(i))</tt>.  Then let's define the relative
+ * error between the anylitic value and the finite difference value to
+ * be:
+
  \verbatim
 
      err(i) = |(gh(i) - fdh(i))| /  (||gh||inf + ||fdh||inf + (epsilon)^(1/4))
  \endverbatim
- * The above error takes into account the relative sizes of the elements and also
- * allows one or both of the elements to be zero without ending up with <tt>0/0</tt>
- * or something like <tt>1e-16</tt> not comparing with zero.
+
+ * The above error takes into account the relative sizes of the
+ * elements and also allows one or both of the elements to be zero
+ * without ending up with <tt>0/0</tt> or something like
+ * <tt>1e-16</tt> not comparing with zero.
  *
  * All errors <tt>err(i) >= warning_tol</tt> are reported to <tt>*out</tt> if
  * <tt>out != NULL</tt> and <tt>print_all_warnings==true</tt>.  Otherwise, if

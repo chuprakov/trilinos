@@ -10,13 +10,25 @@ separate collections (and compiled into two separate libraries).
 <li> Fundamental interfaces to Nonlinear Programs (NLPs)
 (<tt>\ref libNLPInterfacePack_grp "libNLPInterfacePack"</tt>):
 This is a library of interfaces to NLPs and minimal extra support code.  The
-base level NLP interface is <tt>\ref NLPInterfacePack::NLP "NLP"</tt>.
+base level NLP interface is <tt>NLPInterfacePack::NLP</tt>.
+
+<li> Adapters for <tt>TSFCore::Nonlin</tt> problems
+(<tt>\ref libNLPInterfacePackTSFCore_grp "libNLPInterfacePackTSFCore"</tt>):
+This library contains the class <tt>NLPInterfacePack::NLPTSFCoreNP</tt>.
 
 <li> Auxiliary tools for building NLP and testing NLP subclasses
 (<tt>\ref libNLPInterfacePackTools_grp "libNLPInterfacePackTools"</tt>):
 This library contains some helper node implementation classes for constructing
 concrete NLP subclasses.  Also, classes for testing NLP interfaces are included.
 For every NLP interface, there is corresponding testing code that can be used.
+
+<li> Testing utilities
+(<tt>\ref libNLPInterfacePackTest_grp "libNLPInterfacePackTest"</tt>):
+This library contains generic testing utilities for various NLP interfaces.
+
+<li> Utilites for serial NLPs
+(<tt>\ref libNLPInterfacePackSerial_grp "libNLPInterfacePackSerial"</tt>):
+This library contains node implementation classes for all serial NLP implementations.
 
 </ol>
 
@@ -27,8 +39,30 @@ ToDo: Finish documentation!
 
 /** \defgroup libNLPInterfacePack_grp libNLPInterfacePack: Fundamental interfaces to Nonlinear Programs (NLPs).
 
-This library contains the fundamental interfaces to NLPs needed to implement several different types of optimization
-algorithms.
+<ul>
+
+<li> Classes:
+
+  <ul>
+  <li> Main interface classes:
+    <ul>
+    <li><tt>NLPInterfacePack::NLP</tt>
+    <li><tt>NLPInterfacePack::NLPObjGrad</tt>
+    <li><tt>NLPInterfacePack::NLPFirstOrder</tt>
+    <li><tt>NLPInterfacePack::NLPSecondOrder</tt>
+    </ul>
+  <li> Auxilary interface classes:
+    <ul>
+    <li><tt>NLPInterfacePack::NLPDirect</tt>
+    <li><tt>NLPInterfacePack::NLPVarReductPerm</tt>
+    </ul>
+  </ul>
+.
+
+</ul>
+
+This library contains the fundamental interfaces to NLPs needed to
+implement several different types of optimization algorithms.
 
 The formulation of the NLP used by this set of interfaces is as follows:
 \verbatim
@@ -101,9 +135,49 @@ for this NLP formulation).  Again, this Hessian matrix object is abstracted behi
 
 */
 
+/** \defgroup libNLPInterfacePackTSFCore_grp libNLPInterfacePackTSFCore:  Adapters for <tt>TSFCore::Nonlin</tt> problems
+
+<ul>
+
+<li> Classes:
+
+  <ul>
+  <li> Concrete classes:
+    <ul>
+    <li><tt>NLPInterfacePack::NLPTSFCoreNP</tt>
+    </ul>
+  </ul>
+.
+
+</ul>
+
+ToDo: Finish documentation!
+
+*/
+
 /** \defgroup libNLPInterfacePackTools_grp libNLPInterfacePackTools: Auxiliary tools for building NLP and testing NLP subclasses
 
-This library contains a number of classes and subclasses that are useful in developing and testing concrete NLP implementations.
+<ul>
+
+<li> Classes:
+
+  <ul>
+  <li> Concrete utility classes:
+    <ul>
+    <li><tt>NLPInterfacePack::CalcFiniteDiffProd</tt>
+    <li><tt>NLPInterfacePack::NLPBarrier</tt>
+    </ul>
+  <li> Set options from <tt>OptionsFromStreamPack::OptionsFromStream</tt> object.:
+    <ul>
+    <li><tt>NLPInterfacePack::CalcFiniteDiffProdSetOptions</tt>
+    </ul>
+  </ul>
+.
+
+</ul>
+
+This library contains a number of classes and subclasses that are
+useful in developing and testing concrete NLP implementations.
 
 It is very common to approximate derivatives using finite differences.
 In general, finite differencing can lead to inaccurate derivatives
@@ -144,6 +218,64 @@ some testing components to perform some though tests of a <tt>\ref NLPInterfaceP
 object.
 
 ToDo: Document testing code for NLPFirstOrder when this code is ready.
+
+*/
+
+/** \defgroup libNLPInterfacePackTest_grp libNLPInterfacePackTest: Generic testing utilities
+
+<ul>
+
+<li> Classes:
+
+  <ul>
+  <li> Testing Classes:
+    <ul>
+    <li><tt>NLPInterfacePack::NLPTester</tt>
+    <li><tt>NLPInterfacePack::NLPFirstDerivTester</tt>
+    <li><tt>NLPInterfacePack::NLPDirectTester</tt>
+    </ul>
+  <li> Set options from <tt>OptionsFromStreamPack::OptionsFromStream</tt> object.:
+    <ul>
+    <li><tt>NLPInterfacePack::NLPTesterSetOptions</tt>
+    <li><tt>NLPInterfacePack::NLPFirstDerivTesterSetOptions</tt>
+    <li><tt>NLPInterfacePack::NLPDirectTesterSetOptions</tt>
+    </ul>
+  </ul>
+.
+
+<li> Functions:
+
+  <ul>
+  <li> Testing functions:
+    <ul>
+    <li><tt>NLPInterfacePack::test_basis_system()</tt>
+    <li><tt>NLPInterfacePack::test_nlp_first_order()</tt>
+    <li><tt>NLPInterfacePack::test_nlp_direct()</tt>
+    </ul>
+  </ul>
+.
+
+</ul>
+
+ToDo: Finish documentation!
+
+*/
+
+/** \defgroup libNLPInterfacePackSerial_grp libNLPInterfacePackSerial: Utility subclasses for serial NLPs
+
+<ul>
+
+<li> Classes:
+
+  <ul>
+  <li><tt>NLPInterfacePack::NLPSerialPreprocess</tt>
+  <li><tt>NLPInterfacePack::NLPSerialPreprocessExplJac</tt>
+  </ul>
+.
+
+</ul>
+
+ToDo: Finish documentation!
 
 */
 
