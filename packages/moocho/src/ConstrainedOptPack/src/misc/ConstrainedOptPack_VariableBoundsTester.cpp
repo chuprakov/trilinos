@@ -86,8 +86,8 @@ bool VariableBoundsTester::check_in_bounds(
 			<< "Comparing: u - v <= 0\n"
 			<< "u = ("<<xL_name<<" - "<<x_name<<") | / (1 + ||"<<x_name<<"||inf ), v = 0 ...\n";
 	}
-	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol()
-		, print_all_warnings, out )) return false;
+	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol(), print_all_warnings, out ))
+		return false;
 
 	///////////////////////////////////
 	// x - xU <= 0
@@ -105,8 +105,8 @@ bool VariableBoundsTester::check_in_bounds(
 			<< "Comparing: u - v <= 0\n"
 			<< "u = ("<<x_name<<" - "<<xU_name<<") | / (1 + ||"<<x_name<<"||inf ), v = 0 ...\n";
 	}
-	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol()
-		, print_all_warnings, out )) return false;
+	if(!comp_v.comp_less( u(), 0.0, warning_tol(), error_tol(), print_all_warnings, out ))
+		return false;
 
 	if(out)
 		*out
