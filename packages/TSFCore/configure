@@ -6086,6 +6086,17 @@ else
 fi
 
 
+
+if test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
+	test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"; then
+  HAVE_TSFCORE_MPI_TRUE=
+  HAVE_TSFCORE_MPI_FALSE='#'
+else
+  HAVE_TSFCORE_MPI_TRUE='#'
+  HAVE_TSFCORE_MPI_FALSE=
+fi
+
+
 # ------------------------------------------------------------------------
 # Checks if examples should be built
 # ------------------------------------------------------------------------
@@ -6296,7 +6307,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:6299: \"$ac_link\") >&5
+(eval echo $as_me:6310: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6374,7 +6385,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:6377: \"$ac_link\") >&5
+(eval echo $as_me:6388: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9243,7 +9254,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:9246: \"$ac_link\") >&5
+(eval echo $as_me:9257: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9321,7 +9332,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:9324: \"$ac_link\") >&5
+(eval echo $as_me:9335: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9701,6 +9712,13 @@ if test -z "${HAVE_TSFCORE_EPETRA_TRUE}" && test -z "${HAVE_TSFCORE_EPETRA_FALSE
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_TSFCORE_MPI_TRUE}" && test -z "${HAVE_TSFCORE_MPI_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_MPI\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_TSFCORE_MPI\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi

@@ -78,8 +78,11 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper_decl.hpp
 
 UTILITIES_CORE_H = \
+	$(srcdir)/utilities/Core/TSFCoreExplicitMultiVectorView.hpp\
 	$(srcdir)/utilities/Core/TSFCoreExplicitVectorView.hpp\
 	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
+	$(srcdir)/utilities/Core/TSFCoreLinearOpTesterDecl.hpp\
+	$(srcdir)/utilities/Core/TSFCoreLinearOpTester.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingToolsDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingTools.hpp
 
@@ -139,9 +142,12 @@ EXTRA_ADAPTERS_MPI_H = \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
-	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMultiVectorSerializationDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMultiVectorSerialization.hpp
 
 EXTRA_ADAPTERS_EPETRA_H = \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraTypes.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
@@ -246,8 +252,8 @@ AM_CPPFLAGS = \
 
 TSFCORE_LIB = libTSFCore.a
 
-
 TSFCORE_H = \
+	$(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(CORE_H) \
 	$(SOLVERS_H) \
 	$(NONLIN_H) \

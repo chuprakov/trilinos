@@ -208,6 +208,7 @@ AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/../teuchos/src
 
 SOURCES_H=\
+  TSFCoreUtils_ConfigDefs.hpp\
   $(MoochoUtilities_SOURCES_H)\
   $(RTOp_C_SOURCES_H)\
   $(RTOp_CXX_SOURCES_H)\

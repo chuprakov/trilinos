@@ -218,6 +218,8 @@ AM_CONDITIONAL(HAVE_TSFCORE_EPETRA, [test "X$ac_cv_use_tsfcore_epetra" != "Xno" 
 TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, mpi, [enable TSFCore's mpi adapters], TSFCORE_MPI, no)
 AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
 	test "X$ac_cv_use_tsfcore_epetra" != "Xno"])
+AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
+	test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"])
 
 # ------------------------------------------------------------------------
 # Checks if examples should be built
