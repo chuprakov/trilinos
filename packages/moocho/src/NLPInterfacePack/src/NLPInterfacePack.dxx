@@ -1,20 +1,28 @@
 /** @name namespace NLPInterfacePack.
+
+This package is a set of interfaces to Nonlinear Programs (NLPs).  Also 
+included are some node classes to aid in the implemenation of these interfaces.
+
 @memo
 Uses Package {\em SparseLinAlgPack}.\\
-Collection of interfaces and node classes for implementing an interface
-to a Non-Linear Program (NLP).
 */
 //@{
-	/** @name Abstract inteface classes */
-	//@{
-		//@Include: NLP.h
-		//@Include: NLPFirstOrderInfo.h
-		//@Include: NLPSecondOrderInfo.h
-		//@Include: NLPReduced.h
-	//@}
-	/** @name Implementation node classes */
-	//@{
-		//@Include: NLPFullToReduced.h
-		//@Include: NLPDualCalc.h
-	//@}
+  /** @name 1. Abstract inteface classes */
+  //@{
+    //@Include: NLP.h
+    //@Include: NLPFirstOrderInfo.h
+    //@Include: NLPSecondOrderInfo.h
+    //@Include: NLPReduced.h
+  //@}
+  /** @name 2. Implementation node classes */
+  //@{
+    //@Include: NLPFullToReduced.h
+    //@Include: NLPDualCalc.h
+  //@}
+  /** @name 3. Testing Functions and Classes */
+  //@{
+    //@Include: ../test/TestNLPFirstOrderInfoCOOR.h
+    //@Include: ../test/TestNLPDerivatives.h
+    //@Include: ../test/CompareDenseSparseMatricesStd.h
+  //@}
 //@}

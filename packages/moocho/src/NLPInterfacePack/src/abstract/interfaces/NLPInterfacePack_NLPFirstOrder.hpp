@@ -11,7 +11,7 @@ namespace NLPInterfacePack {
 /** NLP First Order Information Interface Class.
   *
   * This class adds first order inforamtion to the basic information
-  * given in the #NLP# interface class.
+  * given in the \Ref{NLP} interface class.
   *
   * Given first order information it is possible for the NLP
   * solver to compute Lagrange multipliers and then report
@@ -28,8 +28,8 @@ namespace NLPInterfacePack {
 	del(L,lambda) = c(x) = 0
 	  where:
 		nu = nuu - nul
-		nul * ( xl - x ) = 0
-		nuu * ( x - xu ) = 0
+		nul(i) * ( xl(i) - x(i) ) = 0,      for i = 1...n
+		nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
   \end{verbatim}
 
   */
@@ -146,13 +146,24 @@ public:
 	//@}
 
 	///
-	/** Report the optimal multipliers.
+	/** Report the final solution and multipliers.
 	  *
-	  * The default behavior is to just ignore this.
+	  * Call this function report the final solution of the
+	  * unknows x and the Lagrange multipliers for the
+	  * equality constriants #lambda# and the varaible bounds
+	  * #nu#.  If either of the multipliers
+	  * are not known then you can pass null in for them.
+	  * The default action is to call report_final_x(x,optimal)
+	  * on the NLP interface and then to ignore the multipliers.
 	  */
-	virtual void report_optimal_multipliers( const VectorSlice& lambda
-		, const SpVectorSlice& nu ) const
-	{}
+	virtual void report_final_solution(
+		  const VectorSlice&	x
+		, const VectorSlice*	lambda
+		, const SpVectorSlice*	nu
+		, bool					optimal		) const
+	{
+		NLP::report_final_x(x,optimal);
+	}
 
 	/** @name Objective and constraint function gradients.
 	  *

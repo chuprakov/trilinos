@@ -12,7 +12,7 @@ namespace NLPInterfacePack {
 /** NLP Second Order Information Interface Class.
   *
   * This class adds second order inforamtion to the first order information
-  * and basic information given in the #NLPFirstOrderInfo# interface class.
+  * and basic information given in the \Ref{NLPFirstOrderInfo} interface class.
   */
 class NLPSecondOrderInfo : public NLPFirstOrderInfo {
 public:

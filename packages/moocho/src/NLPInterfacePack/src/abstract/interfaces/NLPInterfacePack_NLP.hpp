@@ -24,7 +24,7 @@ namespace NLPInterfacePack {
 	        xl <= x <= xu
 	where:
 	        x    <: R^n
-			c(x) <: R^n -> R^m 
+	        c(x) <: R^n -> R^m 
   \end{verbatim}
   * In the above form, none of the variables are fixed between bounds (strictly
   * xl < xu).
@@ -215,7 +215,7 @@ public:
 	  */
 	virtual void scale_f( value_type scale_f ) = 0;
 	///
-	/** Get the scaling being usedfor the objective function.
+	/** Get the scaling being used for the objective function.
 	  */
 	virtual value_type scale_f() const = 0;
 	///
@@ -238,11 +238,17 @@ public:
 	//@}
 
 	///
-	/** Used by the solver to report the optimal solution x.
+	/** Used by the solver to report the final solution x.
+	  *
+	  * If this is the optimal solution then set
+	  * #optimal = true# otherwise set it to false
+	  * for a nonoptimal solution.
 	  *
 	  * The default behavior is to just ignore this.
 	  */
-	virtual void report_optimal_x( const VectorSlice& x ) const
+	virtual void report_final_x(
+		  const VectorSlice&	x
+		, bool					optimal		) const
 	{}
 
 	/** @name Objective and constraint function counts.
