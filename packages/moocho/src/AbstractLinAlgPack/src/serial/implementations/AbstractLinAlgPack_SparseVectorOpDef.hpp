@@ -19,6 +19,7 @@
 #define SPARSE_VECTOR_OP_DEF_H
 
 #include "SparseVectorClass.h"
+#include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"	// also included in SparseVectorOpDef.h
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
@@ -42,8 +43,8 @@ template<class T_SpVec>
 value_type dot_V_SV(const VectorSlice& vs_rhs1, const T_SpVec& sv_rhs2) {
 	VopV_assert_sizes(vs_rhs1.size(),sv_rhs2.size());
 	value_type result = 0.0;
-	T_SpVec::difference_type offset = sv_rhs2.offset();
-	for(T_SpVec::const_iterator iter = sv_rhs2.begin(); iter != sv_rhs2.end(); ++iter)
+	typename T_SpVec::difference_type offset = sv_rhs2.offset();
+	for(typename T_SpVec::const_iterator iter = sv_rhs2.begin(); iter != sv_rhs2.end(); ++iter)
 		result += vs_rhs1(iter->indice()+offset) * iter->value();
 	return result;
 }
@@ -57,8 +58,8 @@ value_type dot_SV_V(const T_SpVec& sv_rhs1, const VectorSlice& vs_rhs2) {
 // result = ||sv_rhs||1
 template<class T_SpVec>
 value_type norm_1_SV(const T_SpVec& sv_rhs) {
-	T_SpVec::element_type::value_type result = 0.0;
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::element_type::value_type result = 0.0;
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		result += ::fabs(iter->value());
 	return result;
 }
@@ -66,8 +67,8 @@ value_type norm_1_SV(const T_SpVec& sv_rhs) {
 // result = ||sv_rhs||2
 template<class T_SpVec>
 value_type norm_2_SV(const T_SpVec& sv_rhs) {
-	T_SpVec::element_type::value_type result = 0.0;
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::element_type::value_type result = 0.0;
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		result += (iter->value()) * (iter->value());
 	return result;
 }
@@ -75,8 +76,8 @@ value_type norm_2_SV(const T_SpVec& sv_rhs) {
 // result = ||sv_rhs||inf
 template<class T_SpVec>
 value_type norm_inf_SV(const T_SpVec& sv_rhs) {
-	T_SpVec::element_type::value_type result = 0.0;
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::element_type::value_type result = 0.0;
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		result = std::_MAX(result,::fabs(iter->value()));
 	return result;
 }
@@ -84,8 +85,8 @@ value_type norm_inf_SV(const T_SpVec& sv_rhs) {
 // result = max(sv_rhs)
 template<class T_SpVec>
 value_type max_SV(const T_SpVec& sv_rhs) {
-	T_SpVec::element_type::value_type result = 0.0;
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::element_type::value_type result = 0.0;
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		result = std::_MAX(iter->value(),result);
 	return result;
 }
@@ -93,8 +94,8 @@ value_type max_SV(const T_SpVec& sv_rhs) {
 // result = min(sv_rhs)
 template<class T_SpVec>
 value_type min_SV(const T_SpVec& sv_rhs) {
-	T_SpVec::element_type::value_type result = 0.0;
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::element_type::value_type result = 0.0;
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		result = std::_MIN(result,iter->value());
 	return result;
 }
@@ -104,8 +105,8 @@ template<class T_SpVec>
 void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
 {
 	Vp_V_assert_sizes(vs_lhs->size(),sv_rhs.size());
-	T_SpVec::difference_type offset = sv_rhs.offset();
-	for(T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
+	typename T_SpVec::difference_type offset = sv_rhs.offset();
+	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
 		(*vs_lhs)(iter->indice() + offset) += alpha * iter->value();
 }
 
@@ -114,8 +115,9 @@ template<class T_SpVec>
 void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2)
 {
-	using LinAlgPack::Vp_StV;
-
+#ifdef _WINDOWS
+	using LinAlgPack::Vp_StV;	// MS VC++ 6.0 needs help with the name lookups
+#endif
 	VectorSlice& vs_lhs = *pvs_lhs;
 
 	Vp_MtV_assert_sizes(vs_lhs.size(),gms_rhs1.rows(),gms_rhs1.cols(),trans_rhs1
@@ -128,9 +130,9 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms
 	//
 	// vs_lhs += alpha * e.value() * gms_rhs1.col(e.indice());
 
-	T_SpVec::difference_type offset = sv_rhs2.offset();
+	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 
-	for(T_SpVec::const_iterator sv_rhs2_itr = sv_rhs2.begin(); sv_rhs2_itr != sv_rhs2.end(); ++sv_rhs2_itr)
+	for(typename T_SpVec::const_iterator sv_rhs2_itr = sv_rhs2.begin(); sv_rhs2_itr != sv_rhs2.end(); ++sv_rhs2_itr)
 		Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value(), col( gms_rhs1, trans_rhs1, sv_rhs2_itr->indice() + offset ) );
 }
 
@@ -159,8 +161,8 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 
 	// Implement the operation by looping through the sparse vector only once
 	// and performing the row operations.  This gives a time = O(n * sv_rhs2.nz())
-	T_SpVec::difference_type offset = sv_rhs2.offset();
-	for(T_SpVec::const_iterator sv_itr = sv_rhs2.begin(); sv_itr != sv_rhs2.end(); ++sv_itr)
+	typename T_SpVec::difference_type offset = sv_rhs2.offset();
+	for(typename T_SpVec::const_iterator sv_itr = sv_rhs2.begin(); sv_itr != sv_rhs2.end(); ++sv_itr)
 	{
 		size_type j = sv_itr->indice() + offset;
 
@@ -287,9 +289,9 @@ value_type imp_dot2_V_V_SV(const VectorSlice& vs1, const VectorSlice& vs2, const
 {
 	size_type split = vs1.size();
 	value_type result = 0;
-	T_SpVec::difference_type offset = sv.offset();
-	for(T_SpVec::const_iterator sv_itr = sv.begin(); sv_itr != sv.end(); ++sv_itr) {
-		T_SpVec::element_type::indice_type curr_indice = sv_itr->indice()+offset;
+	typename T_SpVec::difference_type offset = sv.offset();
+	for(typename T_SpVec::const_iterator sv_itr = sv.begin(); sv_itr != sv.end(); ++sv_itr) {
+		typename T_SpVec::element_type::indice_type curr_indice = sv_itr->indice()+offset;
 		if(curr_indice <= split)
 			result += vs1(curr_indice) * sv_itr->value();
 		else

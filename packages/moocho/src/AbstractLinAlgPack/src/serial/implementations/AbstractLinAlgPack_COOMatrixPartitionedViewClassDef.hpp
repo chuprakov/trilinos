@@ -89,7 +89,7 @@ void COOMatrixPartitionedView<T_Indice,T_Value>::create_view(
 	partition_order_	= partition_order;
 	_ele.resize(nz,element_type());	// hack to get around compiler error.
 	_part_start.resize(num_row_part_ * num_col_part_+1);
-	_part_start.assign(0);	// set to 0
+	_part_start.assign(_part_start.size(),0);	// set to 0
 
 	// 3) Count the number of nonzero elements in each overall partition
 	{
@@ -100,7 +100,7 @@ void COOMatrixPartitionedView<T_Indice,T_Value>::create_view(
 		//
 		// _part_start = { 0, nz1, nz2,...,nzn } 
 		//
-		size_type *num_in_part = _part_start.begin() + 1; 
+		size_type *num_in_part = &_part_start[0] + 1; 
 
 		// Loop (time = O(nz), space = O(1))
 
@@ -168,7 +168,7 @@ void COOMatrixPartitionedView<T_Indice,T_Value>::create_view(
 	{
 		// next_ele_insert[overall_p - 1] is the possition in ele
 		// for the next element to ensert
-		size_type	*next_ele_insert = _part_start.begin() + 1;
+		size_type	*next_ele_insert = &_part_start[0] + 1;
 
 		// Loop (time = O(nz), space = O(1))
 
@@ -269,7 +269,7 @@ COOMatrixPartitionedView<T_Indice,T_Value>::create_partition(Range1D rng_overall
 		cols	= col_part[u_c_p] - col_part[l_c_p - 1],
 		nz		= part_start[u_p] - part_start[l_p - 1];
 	element_type
-		*ele		= _ele.begin() + part_start[l_p - 1];
+		*ele		= &_ele[0] + part_start[l_p - 1];
 	difference_type
 		row_offset	= - (row_part[l_r_p - 1] - 1),
 		col_offset	= - (col_part[l_c_p - 1] - 1);

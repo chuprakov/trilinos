@@ -365,16 +365,16 @@ public:
 	  */
 	//@{
 
-	///
-	/** Allow an implicit conversion from a COOMatrixPartitionedView
-	  * to a partition_type object.
-	  *
-	  * This conversion is equivalent to calling #partition(Range1D())#.
-	  */
-	operator partition_type();
-
-	///
-	operator const partition_type() const;
+//	///
+//	/** Allow an implicit conversion from a COOMatrixPartitionedView
+//	  * to a partition_type object.
+//	  *
+//	  * This conversion is equivalent to calling #partition(Range1D())#.
+//	  */
+//	operator partition_type();
+//
+//	///
+//	operator const partition_type() const;
 
 	///
 	/** Return a partition object for the entire view.
@@ -1153,19 +1153,19 @@ COOMatrixPartitionedView<T_Indice,T_Value>::col_part_num(size_type overall_p) co
 
 // Partition access
 
-template <class T_Indice, class T_Value>
-inline COOMatrixPartitionedView<T_Indice,T_Value>::operator
-COOMatrixPartitionedView<T_Indice,T_Value>::partition_type()
-{
-	return partition(Range1D());
-}
+//template <class T_Indice, class T_Value>
+//inline COOMatrixPartitionedView<T_Indice,T_Value>::operator
+//COOMatrixPartitionedView<T_Indice,T_Value>::partition_type()
+//{
+//	return partition(Range1D());
+//}
 
-template <class T_Indice, class T_Value>
-inline COOMatrixPartitionedView<T_Indice,T_Value>::operator
-const COOMatrixPartitionedView<T_Indice,T_Value>::partition_type() const
-{
-	return partition(Range1D());
-}
+//template <class T_Indice, class T_Value>
+//inline COOMatrixPartitionedView<T_Indice,T_Value>::operator
+//const COOMatrixPartitionedView<T_Indice,T_Value>::partition_type() const
+//{
+//	return partition(Range1D());
+//}
 
 template <class T_Indice, class T_Value>
 inline COOMatrixPartitionedView<T_Indice,T_Value>::partition_type

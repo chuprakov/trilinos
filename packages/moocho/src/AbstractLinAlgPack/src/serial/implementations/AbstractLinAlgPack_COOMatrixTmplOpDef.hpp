@@ -28,14 +28,14 @@ void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 {
 	Mp_M_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 						, coom_rhs.rows(), coom_rhs.cols(), trans_rhs			);
-	T_COOM::difference_type
+	typename T_COOM::difference_type
 		i_o	= coom_rhs.row_offset(),
 		j_o	= coom_rhs.col_offset();
 	if(trans_rhs == BLAS_Cpp::no_trans)
-		for(T_COOM::const_iterator itr = coom_rhs.begin(); itr != coom_rhs.end(); ++itr)
+		for(typename T_COOM::const_iterator itr = coom_rhs.begin(); itr != coom_rhs.end(); ++itr)
 			(*gms_lhs)(itr->row_i()+i_o,itr->col_j()+j_o) += alpha * itr->value();
 	else
-		for(T_COOM::const_iterator itr = coom_rhs.begin(); itr != coom_rhs.end(); ++itr)
+		for(typename T_COOM::const_iterator itr = coom_rhs.begin(); itr != coom_rhs.end(); ++itr)
 			(*gms_lhs)(itr->col_j()+j_o,itr->row_i()+i_o) += alpha * itr->value();
 }
 
@@ -48,14 +48,14 @@ void Vp_StCOOMtV(VectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2)
 {
 	Vp_MtV_assert_sizes( vs_lhs->size(), coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1, vs_rhs2.size() );
-	T_COOM::difference_type
+	typename T_COOM::difference_type
 		i_o	= coom_rhs1.row_offset(),
 		j_o	= coom_rhs1.col_offset();
 	if(trans_rhs1 == BLAS_Cpp::no_trans)
-		for(T_COOM::const_iterator itr = coom_rhs1.begin(); itr != coom_rhs1.end(); ++itr)
+		for(typename T_COOM::const_iterator itr = coom_rhs1.begin(); itr != coom_rhs1.end(); ++itr)
 			(*vs_lhs)(itr->row_i()+i_o) += alpha * itr->value() * vs_rhs2(itr->col_j()+j_o);
 	else
-		for(T_COOM::const_iterator itr = coom_rhs1.begin(); itr != coom_rhs1.end(); ++itr)
+		for(typename T_COOM::const_iterator itr = coom_rhs1.begin(); itr != coom_rhs1.end(); ++itr)
 			(*vs_lhs)(itr->col_j()+j_o) += alpha * itr->value() * vs_rhs2(itr->row_i()+i_o);
 }
 
@@ -169,10 +169,10 @@ void imp_Mp_StMtCOOM(GenMatrixSlice* gms_lhs, BLAS_Cpp::Transp trans_lhs, value_
 	using BLAS_Cpp::cols;
 	using LinAlgPack::col;
 
-	T_COOM::difference_type
+	typename T_COOM::difference_type
 		i_o	= coom_rhs2.row_offset(),
 		j_o	= coom_rhs2.col_offset();
-	for(T_COOM::const_iterator itr = coom_rhs2.begin(); itr != coom_rhs2.end(); ++itr) {
+	for(typename T_COOM::const_iterator itr = coom_rhs2.begin(); itr != coom_rhs2.end(); ++itr) {
 		size_type	i	= rows( itr->row_i() + i_o , itr->col_j() + j_o , trans_rhs2 ),
 					j	= cols( itr->row_i() + i_o , itr->col_j() + j_o , trans_rhs2 );
 		//	op(gms_lhs).col(j) += (alpha * val) * op(gms_rhs1).col(i)

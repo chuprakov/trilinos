@@ -34,10 +34,10 @@ std::ostream& output_COOM(std::ostream& os, const T_COOM& coom
 	
 	if(!coom.nz()) return os;	// no elements to output
 	
-	T_COOM::difference_type
+	typename T_COOM::difference_type
 		row_offset	= coom.row_offset(),
 		col_offset	= coom.col_offset();
-	for(T_COOM::const_iterator itr = coom.begin(); itr != coom.end();++itr) {
+	for(typename T_COOM::const_iterator itr = coom.begin(); itr != coom.end();++itr) {
 		os	<< " " << std::setw(w) << itr->value()
 			<< ':' << itr->row_i() + row_offset
 			<< ':' << itr->col_j() + col_offset;

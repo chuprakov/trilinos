@@ -55,26 +55,26 @@ public:
 	  * Here the type of element may be const or nonconst in accordance with the iterator's
 	  * type.  The element view (const or nonconst) is just a view to this type.
 	  */
-	template <class T_Iter, class T_IterCat, class T_Indice, class T_ValRef, class T_Diff>
+	template <class TT_Iter, class TT_IterCat, class TT_Indice, class TT_ValRef, class TT_Diff>
 	class ElementView {
 	public:
 
 		// friends
 
 		friend
-		class TransSparseCOOElementViewIter<T_Iter,T_IterCat,T_Indice,T_ValRef,T_Diff>;
+		class TransSparseCOOElementViewIter<TT_Iter,TT_IterCat,TT_Indice,TT_ValRef,TT_Diff>;
 
 		// typedefs
 
 		///
-		typedef T_Indice						indice_type;
+		typedef TT_Indice						indice_type;
 		///
-		typedef T_ValRef						value_ref_type;
+		typedef TT_ValRef						value_ref_type;
 
 		///
 		/** Construct with an iterator to the first element.
 		  */
-		ElementView(const T_Iter& iter) : encap_iter_(iter)
+		ElementView(const TT_Iter& iter) : encap_iter_(iter)
 		{}
 
 		// access functions
@@ -95,7 +95,7 @@ public:
 		}
 
 	private:
-		T_Iter	encap_iter_;// iterator that is manipulated by
+		TT_Iter	encap_iter_;// iterator that is manipulated by
 							// the host iterator
 
 		// not defined and not to be called

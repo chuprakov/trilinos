@@ -19,14 +19,14 @@ size_type COOM_num_in_column(
 	if(!m.nz()) return 0;
 	if( trans == BLAS_Cpp::no_trans ) {
 		// non transposed
-		T_COOM::difference_type loc_co = m.col_offset(); 
-		for( T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr )
+		typename T_COOM::difference_type loc_co = m.col_offset(); 
+		for( typename T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr )
 			num_in_col[ col_perm[ col_offset + loc_co + itr->col_j()  -1 ]  -1 ]++;
 	}
 	else {
 		// transposed
-		T_COOM::difference_type loc_ro = m.row_offset(); 
-		for( T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
+		typename T_COOM::difference_type loc_ro = m.row_offset(); 
+		for( typename T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
 			const size_type i = itr->row_i();
 			num_in_col[ col_perm[ col_offset + loc_ro + i - 1 ]  - 1 ]++;
 		}
@@ -48,12 +48,12 @@ void COOM_insert_nonzeros(
 	, FortranTypes::f_int*				D_row_i			)
 {
 	if(!m.nz()) return;
-	T_COOM::difference_type
+	typename T_COOM::difference_type
 		loc_ro = m.row_offset(),
 		loc_co = m.col_offset();
 	if( trans == BLAS_Cpp::no_trans ) {
 		// non transposed
-		for( T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
+		for( typename T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
 			const size_type
 				i = loc_ro + itr->row_i(),
 				j = loc_co + itr->col_j();
@@ -66,7 +66,7 @@ void COOM_insert_nonzeros(
 	}
 	else {
 		// transposed
-		for( T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
+		for( typename T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
 			const size_type
 				i = loc_co + itr->col_j(),
 				j = loc_ro + itr->row_i();
@@ -93,7 +93,7 @@ value_type COOM_insert_scaled_nonzeros(
 	, FortranTypes::f_int*				D_row_i			)
 {
 	value_type alpha = 0;
-	for( T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
+	for( typename T_COOM::const_iterator itr = m.begin(); itr != m.end(); ++itr ) {
 		register const value_type val = ::fabs( itr->value() );
 		if( val > alpha ) alpha = val;
 	}
