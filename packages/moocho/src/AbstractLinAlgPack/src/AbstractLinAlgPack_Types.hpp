@@ -100,6 +100,7 @@ template <class M_itfc, class M_impl, class T_PostMod>  class MatrixSpaceStd;
 
 // concrete subclasses
 
+class BasisSystemCompositeStd;
 class VectorSpaceCompositeStd;
 class VectorWithOpMutableCompositeStd;
 class MatrixWithOpSubView;
