@@ -89,9 +89,9 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 
 	if(prog_return == true) {
 		if(eout && eout != out)
-			*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
+			*eout   << "Congradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
 		if(out)
-			*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
+			*out    << "\nCongradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
 	}
 	else {
 		if(eout && eout != out)

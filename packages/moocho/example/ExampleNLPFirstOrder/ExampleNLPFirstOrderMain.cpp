@@ -164,15 +164,6 @@ int main(int argc, char* argv[] ) {
 		prog_return = PROG_EXCEPTION;
 	}
 
-	if(prog_return == PROG_SUCCESS) {
-		eout   << "Congradulations!  NLP class seems to check out!\n";
-		out    << "\nCongradulations!  NLP class seems to check out!\n";
-	}
-	else {
-		eout   << "Oh No!  Something did not checkout!\n";
-		out    << "\nOh No!  Something did not checkout!\n";
-	}
-
  	MPI_Finalize();
 
 	return prog_return;

@@ -147,8 +147,8 @@ void ExampleBasisSystem::update_basis(
 		 	&D_sym_diag = dyn_cast<MatrixSymDiagonalStd>(*D);
 		if( D_sym_diag.rows() != m )
 		 	D_sym_diag.initialize( space_x_DI_->create_member() );
-		AbstractLinAlgPack::ele_wise_divide(                          // D_diag = N_diag ./ C_diag
-			1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  // ...
+		AbstractLinAlgPack::ele_wise_divide(                          // D_diag = - N_diag ./ C_diag
+			-1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  // ...
 	}
 }
 
