@@ -224,9 +224,9 @@ public:
 	 *                 of the tests involving it will be performed.
 	 * @param  D       [in] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If NULL,
 	 *                 none of the tests involving it will be performed.
-	 * @param  V       [in] <tt>V = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
+	 * @param  Uz      [in] <tt>Uz = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
 	 *                 If NULL, then none of the tests involving it will be performed.
-	 * @param  P       [in]  <tt>P = GhI' + GhD'* D</tt>, which is the an auxiliary sensitivity matrix.
+	 * @param  Vz      [in]  <tt>Vz = GhI' + GhD'* D</tt>, which is the an auxiliary sensitivity matrix.
 	 *                 If NULL, then none of the tests involving it will be performed.
 	 * @param  print_all_warnings
 	 *                 [in] If true then all errors greater than warning_tol
@@ -254,8 +254,8 @@ public:
 		,const MatrixWithOp     *GcU
 		,const MatrixWithOp     *Gh
 		,const MatrixWithOp     *D
-		,const MatrixWithOp     *V
-		,const MatrixWithOp     *P
+		,const MatrixWithOp     *Uz
+		,const MatrixWithOp     *Vz
 		,bool                   print_all_warnings
 		,std::ostream           *out
 		) const;

@@ -75,8 +75,8 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	,const MatrixWithOp     *GcU
 	,const MatrixWithOp     *Gh
 	,const MatrixWithOp     *D
-	,const MatrixWithOp     *V
-	,const MatrixWithOp     *P
+	,const MatrixWithOp     *Uz
+	,const MatrixWithOp     *Vz
 	,bool                   print_all_warnings
 	,std::ostream           *out
 	) const
@@ -475,16 +475,16 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	}
 
 	// ///////////////////////////////////////////////////
-	// (5) Check GcU, and/or V (for undecomposed equalities)
+	// (5) Check GcU, and/or Uz (for undecomposed equalities)
 
-	if(GcU || V) {
+	if(GcU || Uz) {
 		assert(0); // ToDo: Implement!
 	}
 	
 	// ///////////////////////////////////////////////////
-	// (6) Check Gh, and/or P (for general inequalities)
+	// (6) Check Gh, and/or Vz (for general inequalities)
 
-	if(Gh || P) {
+	if(Gh || Vz) {
 		assert(0); // ToDo: Implement!
 	}
 

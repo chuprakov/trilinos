@@ -61,13 +61,13 @@ NLPFirstOrderDirect::space_Gh() const
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
-NLPFirstOrderDirect::space_V() const
+NLPFirstOrderDirect::space_Uz() const
 {
 	return NULL;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
-NLPFirstOrderDirect::space_P() const
+NLPFirstOrderDirect::space_Vz() const
 {
 	return NULL;
 }

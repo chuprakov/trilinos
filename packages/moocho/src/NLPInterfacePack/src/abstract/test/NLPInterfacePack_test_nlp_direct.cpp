@@ -177,11 +177,11 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		GcU = con_decomp.size() < m ? nlp->space_GcU()->create_member() : NULL,
 		Gh  = mI                    ? nlp->space_Gh()->create_member()  : NULL,
 		D   =                         nlp->space_D()->create_member(),
-		V   = con_decomp.size() < m ? nlp->space_V()->create_member()   : NULL,
-		P   = mI                    ? nlp->space_P()->create_member()   : NULL;
+		Uz   = con_decomp.size() < m ? nlp->space_Uz()->create_member()   : NULL,
+		Vz   = mI                    ? nlp->space_Vz()->create_member()   : NULL;
 	nlp->calc_point(
 		nlp->xinit(), NULL, c.get(), true, h.get(), Gf.get(), py.get(), rGf.get()
-		,GcU.get(), Gh.get(), D.get(), V.get(), P.get() );
+		,GcU.get(), Gh.get(), D.get(), Uz.get(), Vz.get() );
 	if(out) {
 		*out << "\n||Gf||inf  = " << Gf->norm_inf();
 		if(nlp_tester.print_all())
@@ -195,10 +195,10 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		if(nlp_tester.print_all())
 			*out << "\nD =\n" << *D;
 		if( con_decomp.size() < m ) {
-			assert(0); // ToDo: Print GcU and V
+			assert(0); // ToDo: Print GcU and Uz
 		}
 		if( mI ) {
-			assert(0); // ToDo: Print Gh and P
+			assert(0); // ToDo: Print Gh and Vz
 		}
 	}
 
@@ -211,7 +211,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 	result = nlp_first_order_direct_tester.finite_diff_check(
 		nlp, nlp->xinit(), nlp->num_bounded_x() ? &nlp->xl() : NULL
 		,nlp->num_bounded_x() ? &nlp->xu() : NULL, 0.0, c.get(), h.get()
-		,Gf.get(),py.get(),rGf.get(),GcU.get(),Gh.get(),D.get(),V.get(),P.get()
+		,Gf.get(),py.get(),rGf.get(),GcU.get(),Gh.get(),D.get(),Uz.get(),Vz.get()
 		,print_all_warnings, out );
 	update_success( result, &success );
 

@@ -55,7 +55,7 @@ namespace NLPInterfacePack {
  *
  * Free access to solves with the basis <tt>C</tt> is not given however and instead this interface
  * computes, for the current point \a x, the direct sensitivity matrices <tt>D = -inv(C)*N</tt>,
- * <tt>V = F - E * D</tt>, <tt>P = GhI' + GhD'* D</tt>, the auxiliary matrices
+ * <tt>Uz = F + E * D</tt>, <tt>Vz = GhI' + GhD'* D</tt>, the auxiliary matrices
  * <tt>GcU = [ GcUD; GcUI ] = [ E';  F' ]</tt> and <tt>Gh = [ GhD;  GhI ]</tt>, and the Newton
  * step <tt>py = -inv(C)*c(con_decomp)</tt>.
  * In general, linear solves with the transpose with <tt>C</tt> are not possible and
@@ -68,10 +68,10 @@ namespace NLPInterfacePack {
  * The dimension of the basis matrix \c C is returned by \c r().  The ranges for the dependent and
  * independent varaibles are returned by \c var_dep() and \c var_indep().  The ranges for the
  * decomposed and undecomposed equality constraints are \c con_decomp() and \c con_undecomp().
- * Note that \c con_undecomp() may return an invalid range if there are no undecomposed equalities.
+ * Note that \c con_undecomp() will return an invalid range if there are no undecomposed equalities.
  *
- * Note that the matrix objects returned from \c space_GcU(), \c space_D(), \c space_V(),
- * \c space_P(), \c space_GcUD() and \c space_GhD() can not be expected to be usable until they are
+ * Note that the matrix objects returned from \c space_GcU(), \c space_D(), \c space_Uz(),
+ * \c space_Vz(), \c space_GcUD() and \c space_GhD() can not be expected to be usable until they are
  * passed to the calculation routines or have been intialized in some other way.
  *
  * <b>Subclass Developer's Notes:</b>
@@ -196,7 +196,7 @@ public:
 	 */
 	virtual const mat_space_ptr_t& space_D() const = 0;
 	///
-	/** Return a matrix space object for <tt>V = F + E * D</tt>.
+	/** Return a matrix space object for <tt>Uz = F + E * D</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -207,9 +207,9 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_V() const;
+	virtual const mat_space_ptr_t& space_Uz() const;
 	///
-	/** Return a matrix space object for <tt>P = GhI' + GhD'* D</tt>.
+	/** Return a matrix space object for <tt>Vz = GhI' + GhD'* D</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -220,14 +220,14 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_P() const;
+	virtual const mat_space_ptr_t& space_Vz() const;
 	///
 	/** Return a matrix space object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
 	 *
 	 * This matrix space object is designed to create mutable matrix objects compatible
-	 * with <tt>GcU(var_dep)</tt>.  For example, a matrix object <tt>U</tt> created by this matrix space
-	 * can be used to compute <tt>U = GcU(var_dep)' - GcU(var_indep)'*D'</tt> (this is needed
-	 * by a orthogonal range/null decomposition.
+	 * with <tt>GcU(var_dep)</tt>.  For example, a matrix object <tt>Uy</tt> created by this matrix space
+	 * can be used to compute <tt>Uy = Gc(var_dep,con_undecomp)' - Gc(var_indep,con_undecomp)'*D'</tt>
+	 * (this is needed by a orthogonal range/null decomposition.
 	 *
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
@@ -236,15 +236,15 @@ public:
 	 */
 	virtual const mat_space_ptr_t& space_GcUD() const;
 	///
-	/** Return a matrix space object for a mutable matrix compatible with <tt>Gh(var_dep)</tt>.
+	/** Return a matrix space object for a mutable matrix compatible with <tt>Gh(var_dep,:)</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
 	 * This matrix space object is designed to create mutable matrix objects compatible
-	 * with <tt>Gh(var_dep)</tt>.  For example, a matrix object <tt>Q</tt> created by this matrix space
-	 * can be used to compute <tt>Q = Gh(var_dep)' - Gh(var_indep)'*D'</tt> (this is needed
+	 * with <tt>Gh(var_dep,:)</tt>.  For example, a matrix object <tt>Vy</tt> created by this matrix space
+	 * can be used to compute <tt>Vy = Gh(var_dep,:)' - Gh(var_indep,:)'*D'</tt> (this is needed
 	 * by a orthogonal range/null decomposition.
 	 *
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
@@ -308,16 +308,16 @@ public:
 	 *              sensitivity of the constraints to the independent variables.
 	 *				If D == NULL then this quantity is not computed.  If <tt>!=NULL</tt> this this matrix
 	 *              should have been created by <tt>this->space_D()->create_member()</tt>.
-	 *	@param	V   [out] (dim = r() x (n()-r())) <tt>V = F + E * D</tt>, which is the an
-	 *              auxiliary sensitivity matrix.  If m() == r() then <tt>V</tt> should be set to
-	 *              <tt>NULL</tt> on input.  If V == NULL then this quantity is not computed.
+	 *	@param	Uz   [out] (dim = (m()-r()) x (n()-r())) <tt>Uz = F + E * D</tt>, which is the an
+	 *              auxiliary sensitivity matrix.  If <tt>m() == r()</tt> then <tt>Uz</tt> should be set to
+	 *              <tt>NULL</tt> on input.  If <tt>Uz==NULL</tt> then this quantity is not computed.
 	 *              If <tt>!=NULL</tt> this this matrix should have been created by
-	 *              <tt>this->space_V()->create_member()</tt>.
-	 *	@param	P   [out] (dim = mI() x (n()-r())) <tt>P = GhI' + GhD' * D</tt>, which is the an
-	 *              auxiliary sensitivity matrix.  If mI() == 0 then <tt>P</tt> should be set to
-	 *              <tt>NULL</tt> on input.  If P == NULL then this quantity is not computed.
+	 *              <tt>this->space_Uz()->create_member()</tt>.
+	 *	@param	Vz   [out] (dim = mI() x (n()-r())) <tt>Vz = GhI' + GhD' * D</tt>, which is the an
+	 *              auxiliary sensitivity matrix.  If <tt>mI() == 0</tt> then <tt>Vz</tt> should be set to
+	 *              <tt>NULL</tt> on input.  If <tt>Vz==NULL</tt> then this quantity is not computed.
 	 *              If <tt>!=NULL</tt> this this matrix should have been created by
-	 *              <tt>this->space_P()->create_member()</tt>.
+	 *              <tt>this->space_Vz()->create_member()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -336,8 +336,8 @@ public:
 		,MatrixWithOp          *GcU
 		,MatrixWithOp          *Gh
 		,MatrixWithOp          *D
-		,MatrixWithOp          *V
-		,MatrixWithOp          *P
+		,MatrixWithOp          *Uz
+		,MatrixWithOp          *Vz
 		) const = 0;
 
 	///
@@ -396,7 +396,7 @@ protected:
 	/** @name Overridden from NLP */
 	//@{
 	
-	/// Does nothing (should never be called though).
+	/// This implementation does nothing (should never be called though).
 	void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
