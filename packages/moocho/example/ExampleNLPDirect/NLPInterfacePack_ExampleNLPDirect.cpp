@@ -214,6 +214,11 @@ const VectorWithOp& ExampleNLPFirstOrderDirect::xu() const
 	return *xu_;
 }
 
+value_type ExampleNLPFirstOrderDirect::max_var_bounds_viol() const
+{
+	return std::numeric_limits<value_type>::max(); // No limits on the bounds
+}
+
 void ExampleNLPFirstOrderDirect::scale_f( value_type scale_f )
 {
 	assert_is_initialized();

@@ -139,6 +139,8 @@ public:
 	///
 	const VectorWithOp& xu() const;
 	///
+	value_type max_var_bounds_viol() const;
+	///
 	void scale_f( value_type scale_f );
 	///
 	value_type scale_f() const;
