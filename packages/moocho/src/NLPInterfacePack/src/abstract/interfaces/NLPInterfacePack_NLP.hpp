@@ -443,6 +443,19 @@ public:
 	 */
 	virtual const VectorWithOp& xu() const = 0;
 
+	///
+	/** Set the maximum absolute value for which the variable bounds may be violated
+	 * by when computing function and gradient values.
+	 *
+	 * In other words the client should never never call on the NLP to compute
+	 * a function and gradient evaluation outside of:
+	 \verbatim
+
+	   xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+	 \endverbatim
+	 */
+	virtual value_type max_var_bounds_viol() const = 0;
+
 	//@}
 
 	/** @name Bounds on the general inequality constraints h(x). */
