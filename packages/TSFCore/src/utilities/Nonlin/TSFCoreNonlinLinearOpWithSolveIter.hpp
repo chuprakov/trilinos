@@ -180,7 +180,6 @@ void LinearOpWithSolveIter<Scalar>::solve(
 	,Solvers::ConvergenceTester<Scalar>  *convTester
 	) const
 {
-	namespace mmp = MemMngPack;
 	const MultiVectorCols<Scalar>  Y(Teuchos::rcp(const_cast<Vector<Scalar>*>(&y),false));
 	MultiVectorCols<Scalar>        X(Teuchos::rcp(x,false));
 	solve(M_trans,Y,&X,1.0,convTester);
@@ -218,7 +217,7 @@ void LinearOpWithSolveIter<Scalar>::solve(
 		case Solvers::MAX_ITER_EXCEEDED: {
 			TEST_FOR_EXCEPTION(
 				true, Solvers::Exceptions::FailureToConverge
-				,"LinearOpWithSolveIter<Scalar>::solve(...): Error, num_iter = "<<solve_return.num_iter<<" iterations where "
+				,"LinearOpWithSolveIter<Scalar>::solve(...): Error, num_iter = "<<solve_return.num_iter<<" iterations were "
 				"performed by the solver object and exceeded the maximum number!"
 				);
 			break;

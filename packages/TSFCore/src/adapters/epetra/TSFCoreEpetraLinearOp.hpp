@@ -82,6 +82,24 @@ public:
 		Teuchos::RefCountPtr<Epetra_Operator>    *op      = NULL
 		,ETransp                                 *opTrans = NULL
 		);
+
+  ///
+  /** Return a smart pointer to the EpetraVectorSpace object for range.
+   *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->range().get() != NULL</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->range().get() == NULL</tt>] <tt>return.get() == NULL</tt>
+	 */
+	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraRange() const;
+
+  ///
+  /** Return a smart pointer to the EpetraVectorSpace object for domain.
+   *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->domain().get() != NULL</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->domain().get() == NULL</tt>] <tt>return.get() == NULL</tt>
+	 */
+	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraDomain() const;
 	
 	//@}
 	

@@ -6,7 +6,7 @@
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
-
+#include "AbstractFactoryStd.hpp"
 
 #ifdef _DEBUG
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l) TEST_FOR_EXCEPTION( l > epetra_np_->Nu() || l < 0, std::invalid_argument, "Error!  l == " << l << " out of range")
@@ -68,6 +68,9 @@ void EpetraNPFO::initialize(
   // g
   gL_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->gL()),false),space_g_));
   gU_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->gU()),false),space_g_));
+
+  // Setup factories
+	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveAztecOO>());
 
   // ToDo: Initialize everything else!
 
@@ -208,6 +211,10 @@ void EpetraNPFO::unsetQuantities()
 {
   c_ = NULL;
   g_ = NULL;
+  DcDy_ = NULL;
+  std::fill( DcDu_.begin(), DcDu_.end(), (EpetraLinearOp*)NULL );
+  DgDy_ = NULL;
+  std::fill( DgDu_.begin(), DgDu_.end(), (EpetraMultiVector*)NULL );
   // ToDo: Unset the rest ...
 }
 
@@ -246,7 +253,6 @@ EpetraNPFO::factory_DcDu(int l) const
 
 ETransp EpetraNPFO::opDcDy() const
 {
-  assert(0);
   return NOTRANS;
 }
 
@@ -258,13 +264,19 @@ ETransp EpetraNPFO::opDcDu(int l) const
 
 void EpetraNPFO::set_DcDy(LinearOpWithSolve<Scalar>* DcDy)
 {
-  assert(0);
+  using DynamicCastHelperPack::dyn_cast;
+  if(DcDy) {
+    DcDy_ = &dyn_cast<TSFCore::Nonlin::LinearOpWithSolveAztecOO>(*DcDy);
+    DcDy_updated_ = false;
+  }
+  else {
+    DcDy_ = NULL;
+  }
 }
 
 LinearOpWithSolve<Scalar>* EpetraNPFO::get_DcDy()
 {
-  assert(0);
-  return NULL;
+  return DcDy_;
 }
 
 void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
@@ -359,8 +371,19 @@ void EpetraNPFO::calc_Dc(
   // Pick out the raw Epetra objects and in the process set their
   // adpater objects to uninitialized.
   //
+  // c
   Teuchos::RefCountPtr<Epetra_Vector>  epetra_c;
   if(c_ && !c_updated_) c_->setUninitialized( &epetra_c );
+  // DcDy
+  Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op;
+  Teuchos::RefCountPtr<AztecOO>          aztecoo_solver;
+  Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_prec;
+  if(DcDy_ && !DcDy_updated_) {
+    DcDy_->setUninitialized( &epetra_DcDy_op, NULL, &aztecoo_solver, &epetra_DcDy_prec, NULL );
+    if( !epetra_DcDy_op.get() ) {
+      epetra_DcDy_op = epetra_np_->create_DcDy();
+    }
+  }
 
   //
   // Compute the set Epetra objects
@@ -369,10 +392,10 @@ void EpetraNPFO::calc_Dc(
     y
     ,NULL            // ToDo: Put in array for u
     ,epetra_c.get()
-    ,NULL            // ToDo: Put in DcDy
+    ,epetra_DcDy_op.get()
     ,NULL            // ToDo: Put in array for DcDy
     );
-  // ToDo: Finish for DcDy, DcDu ...
+  // ToDo: Finish for DcDu ...
 
   //
   // Put the raw Epetra objects back into the adpater objects
@@ -381,7 +404,24 @@ void EpetraNPFO::calc_Dc(
     c_->initialize( epetra_c, space_c_ );
     c_updated_ = true;
   }
-  // ToDo: Finish for DcDy, DcDu ...
+  if( epetra_DcDy_op.get() ) {
+    // ToDo: Create Ifpack preconditioner!
+    if(!aztecoo_solver.get()) {
+      aztecoo_solver = Teuchos::rcp(new AztecOO);
+      aztecoo_solver->SetAztecOption(AZ_output,AZ_none);
+      // ToDo: Setup AztecOO options!
+    }
+    DcDy_->initialize(
+      epetra_DcDy_op                                               // Op
+      ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Op_trans
+      ,aztecoo_solver                                              // solver
+      ,epetra_DcDy_prec                                            // Prec
+      ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Prec_trans
+      ,epetra_np_->adjointSupported()                              // adjointSupported
+      );
+    DcDy_->set_trace_out( Teuchos::rcp(new std::ofstream("LinearOpWithSolveAztecOO.out") ) ); // ToDo: Make this more flexible!
+  }
+  // ToDo: Finish for DcDu ...
 
 }
 

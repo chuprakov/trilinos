@@ -26,7 +26,7 @@ namespace TSFCore {
  * implications.
  *
  * Note that since, this interface is derived from <tt>LinearOp</tt>
- * that it must support the methods <tt>domain()<tt> and
+ * that it must support the methods <tt>domain()</tt> and
  * <tt>range()</tt>.
  *
  * Another very powerful feature of this interface is the ability to

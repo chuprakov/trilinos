@@ -234,13 +234,15 @@ EXTRA_ADAPTERS_EPETRA = \
 EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
-	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.hpp
 
 
 EXTRA_ADAPTERS_AZTECOO = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
-	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
 
 
 @HAVE_TSFCORE_MPI_TRUE@ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
@@ -274,11 +276,16 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/../TSFCoreUtils/src\
 -I$(top_srcdir)/../epetra/src \
 -I$(top_builddir)/../epetra/src \
+-I$(top_srcdir)/../aztecoo/src \
+-I$(top_builddir)/../aztecoo/src \
 -I$(top_srcdir)/../teuchos \
 -I$(top_srcdir)/../teuchos/src \
 -I$(top_builddir)/../teuchos/src
 
 
+
+# Note, epetra and aztecoo includes only needed and used
+# if support for epetra or aztecoo is specifified
 
 # --------------------------------------------------------------------
 # TSFCore library specifications
@@ -373,7 +380,8 @@ am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
 @HAVE_TSFCORE_EPETRA_FALSE@am__objects_2 =
 am__objects_3 = Epetra_NonlinearProblem.$(OBJEXT) \
 	Epetra_NonlinearProblemFirstOrder.$(OBJEXT) \
-	TSFCoreNonlinEpetraNPFO.$(OBJEXT)
+	TSFCoreNonlinEpetraNPFO.$(OBJEXT) \
+	TSFCoreNonlinLinearOpWithSolveAztecOO.$(OBJEXT)
 @HAVE_TSFCORE_AZTECOO_TRUE@am__objects_4 = $(am__objects_3)
 @HAVE_TSFCORE_AZTECOO_FALSE@am__objects_4 =
 am_libTSFCore_a_OBJECTS = $(am__objects_2) $(am__objects_4)
@@ -394,6 +402,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -490,6 +499,8 @@ Epetra_NonlinearProblemFirstOrder.$(OBJEXT): \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
 TSFCoreNonlinEpetraNPFO.$(OBJEXT): \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+TSFCoreNonlinLinearOpWithSolveAztecOO.$(OBJEXT): \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
 libTSFCore.a: $(libTSFCore_a_OBJECTS) $(libTSFCore_a_DEPENDENCIES) 
 	-rm -f libTSFCore.a
 	$(libTSFCore_a_AR) libTSFCore.a $(libTSFCore_a_OBJECTS) $(libTSFCore_a_LIBADD)
@@ -509,6 +520,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po@am__quote@
 
 distclean-depend:
@@ -633,6 +645,18 @@ TSFCoreNonlinEpetraNPFO.obj: $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.
 @AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po' tmpdepfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreNonlinEpetraNPFO.obj `cygpath -w $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp`
+
+TSFCoreNonlinLinearOpWithSolveAztecOO.o: $(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp' object='TSFCoreNonlinLinearOpWithSolveAztecOO.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po' tmpdepfile='$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreNonlinLinearOpWithSolveAztecOO.o `test -f '$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
+
+TSFCoreNonlinLinearOpWithSolveAztecOO.obj: $(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp' object='TSFCoreNonlinLinearOpWithSolveAztecOO.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po' tmpdepfile='$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreNonlinLinearOpWithSolveAztecOO.obj `cygpath -w $(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 includeHEADERS_INSTALL = $(INSTALL_HEADER)

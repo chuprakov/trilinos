@@ -135,12 +135,14 @@ EXTRA_ADAPTERS_EPETRA = \
 EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
-	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.hpp
 
 EXTRA_ADAPTERS_AZTECOO = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
-	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
 
 if HAVE_TSFCORE_MPI
 
@@ -194,9 +196,14 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/../TSFCoreUtils/src\
 -I$(top_srcdir)/../epetra/src \
 -I$(top_builddir)/../epetra/src \
+-I$(top_srcdir)/../aztecoo/src \
+-I$(top_builddir)/../aztecoo/src \
 -I$(top_srcdir)/../teuchos \
 -I$(top_srcdir)/../teuchos/src \
 -I$(top_builddir)/../teuchos/src
+
+# Note, epetra and aztecoo includes only needed and used
+# if support for epetra or aztecoo is specifified
 
 # --------------------------------------------------------------------
 # TSFCore library specifications

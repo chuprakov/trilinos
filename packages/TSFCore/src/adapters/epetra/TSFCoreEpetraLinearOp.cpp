@@ -59,6 +59,18 @@ void EpetraLinearOp::setUninitialized(
 
 }
 
+Teuchos::RefCountPtr<const EpetraVectorSpace>
+EpetraLinearOp::epetraRange() const
+{
+  return range_;
+}
+
+Teuchos::RefCountPtr<const EpetraVectorSpace>
+EpetraLinearOp::epetraDomain() const
+{
+  return domain_;
+}
+
 // Overridden from OpBase
 
 Teuchos::RefCountPtr<const VectorSpace<EpetraLinearOp::Scalar> >

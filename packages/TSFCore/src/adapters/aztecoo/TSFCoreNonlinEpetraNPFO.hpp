@@ -5,6 +5,7 @@
 #define TSFCORE_NONLIN_EPETRA_NPFO_HPP
 
 #include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
+#include "TSFCoreNonlinLinearOpWithSolveAztecOO.hpp"
 #include "Epetra_NonlinearProblemFirstOrder.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
@@ -178,7 +179,7 @@ private:
 
   EpetraVector                                    *c_;
 	EpetraVector                                    *g_;
-//	LinearOpWithSolveIter<Scalar>                   *DcDy_;
+	LinearOpWithSolveAztecOO                        *DcDy_;
   std::vector<EpetraLinearOp*>                    DcDu_;
   EpetraMultiVector                               *DgDy_;
   std::vector<EpetraMultiVector*>                 DgDu_;
