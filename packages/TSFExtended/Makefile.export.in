@@ -106,7 +106,7 @@ endif
 #
 ##########################################################################
 
-TRILINOS_INCLUDES = -I$(TRILINOS_DIR)/include
+TRILINOS_INCLUDES = -I$(TRILINOS_DIR)/include $(TRILINOS_MPI_INC)
 
 TRILINOS_LIBS = -L$(TRILINOS_DIR)/lib -lnoxtsf -lnox $(TSF_EXPORT_LIBS) $(TRILINOS_MPI_LIBDIR) $(TRILINOS_MPI_LIBS) $(TRILINOS_LAPACK_LIBS) $(TRILINOS_BLAS_LIBS) $(TRILINOS_FLIBS)
 

@@ -49,7 +49,7 @@ namespace TSFExtended
    * TSFCore-based code.
    */
   class EpetraVector : public TSFCore::EpetraVector, 
-		       public Handleable<TSFCore::Vector<double> >,
+                       public Handleable<TSFCore::Vector<double> >,
                        public LoadableVector<double>,
                        public AccessibleVector<double>,
                        public VecDescribableByTypeID<double>,
@@ -111,14 +111,16 @@ namespace TSFExtended
 //       string describe() const 
 //       {
 //         return "EpetraVector";
-//       }
+//       }b
       //@}
 
 
       /** Get a read-only Epetra_Vector */
-      static const Epetra_Vector& getConcrete(const Vector<double>& tsfVec);
+      static const Epetra_Vector& getConcrete(const TSFExtended::Vector<double>& tsfVec);
       /** Get a read-write Epetra_Vector */
-      static Epetra_Vector& getConcrete(Vector<double>& tsfVec);
+      static Epetra_Vector& getConcrete(TSFExtended::Vector<double>& tsfVec);
+      /** Get a read-write Epetra_Vector pointer */
+      static Epetra_Vector* getConcretePtr(TSFExtended::Vector<double>& tsfVec);
     };
   
 }

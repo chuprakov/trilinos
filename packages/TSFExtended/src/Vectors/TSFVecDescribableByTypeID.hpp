@@ -71,7 +71,7 @@ namespace TSFExtended
 	dynamic_cast<const TSFCore::VectorSpace<Scalar>* >(this);
       if (cvs != 0)
 	{
-	  ret.append(" of dimension " + toString(cvs->dim()));
+	  ret.append(" of dimension " + Teuchos::toString(cvs->dim()));
 	  return ret;
 	}
 
@@ -79,7 +79,7 @@ namespace TSFExtended
 	dynamic_cast<const TSFCore::Vector<Scalar>* >(this);
       if (cv != 0)
 	{
-	  ret.append(" of dimension " + toString((cv->space())->dim()));
+	  ret.append(" of dimension " + Teuchos::toString((cv->space())->dim()));
 	}
       else
 	{

@@ -204,11 +204,11 @@ SolverState<double> AztecSolver::solve(const LinearOperator<double>& op,
                                        const Vector<double>& rhs, 
                                        Vector<double>& soln) const
 {
-	Vector<double> bCopy = rhs.copy();
-	Vector<double> xCopy = rhs.copy();
+	TSFExtended::Vector<double> bCopy = rhs.copy();
+	TSFExtended::Vector<double> xCopy = rhs.copy();
 
-  Epetra_Vector& b = EpetraVector::getConcrete(bCopy);
-  Epetra_Vector& x = EpetraVector::getConcrete(xCopy);
+  Epetra_Vector* b = EpetraVector::getConcretePtr(bCopy);
+  Epetra_Vector* x = EpetraVector::getConcretePtr(xCopy);
 
 	Epetra_CrsMatrix& A = EpetraMatrix::getConcrete(op);
 
@@ -218,7 +218,7 @@ SolverState<double> AztecSolver::solve(const LinearOperator<double>& op,
     }
 
 
-  AztecOO aztec(&A, &x, &b);
+  AztecOO aztec(&A, x, b);
 
 
   aztec.SetAllAztecOptions((int*) &(options_[0]));

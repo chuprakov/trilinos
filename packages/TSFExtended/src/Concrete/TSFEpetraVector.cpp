@@ -88,7 +88,7 @@ void EpetraVector::finalizeAssembly()
   vec->GlobalAssemble();
 }
 
-const Epetra_Vector& EpetraVector::getConcrete(const Vector<double>& tsfVec)
+const Epetra_Vector& EpetraVector::getConcrete(const TSFExtended::Vector<double>& tsfVec)
 {
   const EpetraVector* epv 
     = dynamic_cast<const EpetraVector*>(tsfVec.ptr().get());
@@ -98,7 +98,7 @@ const Epetra_Vector& EpetraVector::getConcrete(const Vector<double>& tsfVec)
   return *(epv->epetra_vec());
 }
 
-Epetra_Vector& EpetraVector::getConcrete(Vector<double>& tsfVec)
+Epetra_Vector& EpetraVector::getConcrete(TSFExtended::Vector<double>& tsfVec)
 {
   EpetraVector* epv 
     = dynamic_cast<EpetraVector*>(tsfVec.ptr().get());
@@ -106,5 +106,16 @@ Epetra_Vector& EpetraVector::getConcrete(Vector<double>& tsfVec)
                      "EpetraVector::getConcrete called on a vector that "
                      "could not be cast to an EpetraVector");
   return *(epv->epetra_vec());
+}
+
+
+Epetra_Vector* EpetraVector::getConcretePtr(TSFExtended::Vector<double>& tsfVec)
+{
+  EpetraVector* epv 
+    = dynamic_cast<EpetraVector*>(tsfVec.ptr().get());
+  TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
+                     "EpetraVector::getConcrete called on a vector that "
+                     "could not be cast to an EpetraVector");
+  return epv->epetra_vec().get();
 }
 
