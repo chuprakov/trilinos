@@ -40,12 +40,14 @@ EvalNewPointStd_Step::EvalNewPointStd_Step(
 	,const bounds_tester_ptr_t&       bounds_tester
 	,EFDDerivTesting                  fd_deriv_testing
 	,EDecompSysTesting                decomp_sys_testing
+	,EDecompSysPrintLevel             decomp_sys_testing_print_level
 	)
 	:deriv_tester_(deriv_tester)
 	,decomp_sys_tester_(decomp_sys_tester)
 	,bounds_tester_(bounds_tester)
 	,fd_deriv_testing_(fd_deriv_testing)
 	,decomp_sys_testing_(decomp_sys_testing)
+	,decomp_sys_testing_print_level_(decomp_sys_testing_print_level)
 {}
 
 bool EvalNewPointStd_Step::do_step(
@@ -134,10 +136,10 @@ bool EvalNewPointStd_Step::do_step(
 	VectorWithOp &x = x_iq.get_k(0);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out << "\n||x||inf = " << x.norm_inf() << std::endl;
+		out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nx = \n" << x;
+		out << "\nx_k = \n" << x;
 	}
 
 	// Set the references to the current point's quantities to be updated
@@ -196,12 +198,12 @@ bool EvalNewPointStd_Step::do_step(
 
 		// Determine if we will test the decomp_sys or not
 		const DecompositionSystem::ERunTests
-			 ds_test_what = ( ( decomp_sys_testing() == DST_TEST
-							|| ( decomp_sys_testing() == DST_DEFAULT
-								&& algo.algo_cntr().check_results() ) )
-							? DecompositionSystem::RUN_TESTS
-							: DecompositionSystem::NO_TESTS );
-
+			ds_test_what = ( ( decomp_sys_testing() == DST_TEST
+							   || ( decomp_sys_testing() == DST_DEFAULT
+									&& algo.algo_cntr().check_results() ) )
+							 ? DecompositionSystem::RUN_TESTS
+							 : DecompositionSystem::NO_TESTS );
+		
 		// Determine the output level for decomp_sys				
 		DecompositionSystem::EOutputLevel ds_olevel;
 		switch(olevel) {
@@ -224,6 +226,9 @@ bool EvalNewPointStd_Step::do_step(
 		};
 
 		// Form the decomposition of Gc and Gh and update the decomposition system matrices
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out << "\nUpdating the range/null decompostion matrices ...\n";
+		}
 		s.decomp_sys().update_decomp(
 			&out                               // out
 			,ds_olevel                         // olevel
@@ -240,28 +245,36 @@ bool EvalNewPointStd_Step::do_step(
 			,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
 			);
 
-		// Print the matrices before we test for debugging
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-			out << "\nGc_k =\n" << Gc_iq->get_k(0);
-			if(mI)
-				out << "\nGh_k =\n" << Gh_iq->get_k(0);
-			out << "\nZ_k =\n" << Z_iq->get_k(0);
-			out << "\nY_k =\n" << Y_iq->get_k(0);
-			if( m > r ) {
-				out << "\nUz_k =\n" << Uz_iq->get_k(0);
-				out << "\nUy_k =\n" << Uy_iq->get_k(0);
-			}
-			if( mI > r ) {
-				out << "\nVz_k =\n" << Vz_iq->get_k(0);
-				out << "\nVy_k =\n" << Vy_iq->get_k(0);
-			}
-		}
-
 		// Test the decomposition system
 		if( ds_test_what == DecompositionSystem::RUN_TESTS ) {
-
-			// ToDo: set the print levels if not already set!
-
+			// Set the output level
+			if(decomp_sys_testing_print_level() == DSPL_USE_GLOBAL) {
+				DecompositionSystemTester::EPrintTestLevel  ds_olevel;
+				switch(olevel) {
+					case PRINT_NOTHING:
+					case PRINT_BASIC_ALGORITHM_INFO:
+						ds_olevel = DecompositionSystemTester::PRINT_NONE;
+						break;
+					case PRINT_ALGORITHM_STEPS:
+					case PRINT_ACTIVE_SET:
+						ds_olevel = DecompositionSystemTester::PRINT_BASIC;
+						break;
+					case PRINT_VECTORS:
+						ds_olevel = DecompositionSystemTester::PRINT_MORE;
+						break;
+					case PRINT_ITERATION_QUANTITIES:
+						ds_olevel = DecompositionSystemTester::PRINT_ALL;
+						break;
+					default:
+						assert(0); // Should not get here!
+				}
+				decomp_sys_tester().print_tests(ds_olevel);
+				decomp_sys_tester().dump_all( olevel == PRINT_ITERATION_QUANTITIES );
+			}
+			// Run the tests
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				out << "\nTesting the range/null decompostion ...\n";
+			}
 			const bool
 				decomp_sys_passed = decomp_sys_tester().test_decomp_system(
 					s.decomp_sys()
@@ -306,6 +319,26 @@ bool EvalNewPointStd_Step::do_step(
 	}
 
 	// Print the iteration quantities before we test the derivatives for debugging
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		out << "\nPrinting the updated iteration quantities ...\n";
+	}
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+		out << "\nGc_k =\n" << Gc_iq->get_k(0);
+		if(mI)
+			out << "\nGh_k =\n" << Gh_iq->get_k(0);
+		out << "\nZ_k =\n" << Z_iq->get_k(0);
+		out << "\nY_k =\n" << Y_iq->get_k(0);
+		if( m > r ) {
+			out << "\nUz_k =\n" << Uz_iq->get_k(0);
+			out << "\nUy_k =\n" << Uy_iq->get_k(0);
+		}
+		if( mI > r ) {
+			out << "\nVz_k =\n" << Vz_iq->get_k(0);
+			out << "\nVy_k =\n" << Vy_iq->get_k(0);
+		}
+	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nf_k         = "     << f_iq.get_k(0);
