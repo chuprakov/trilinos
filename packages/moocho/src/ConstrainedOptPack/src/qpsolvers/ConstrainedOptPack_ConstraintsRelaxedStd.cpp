@@ -577,7 +577,7 @@ ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
 	,F_(NULL)
 	,trans_F_(BLAS_Cpp::no_trans)
 	,f_(NULL)
-	,space_cols_(NULL,0)
+	,space_cols_(MemMngPack::null)
 	,space_rows_(NULL,0)
 {}
 
@@ -585,12 +585,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	const VectorSpace::space_ptr_t   &space_d_eta
 	,const size_type                 m_in
 	,const size_type                 m_eq
-	,const MatrixOp              *E
+	,const MatrixOp                  *E
 	,BLAS_Cpp::Transp                trans_E
-	,const Vector              *b
-	,const MatrixOp              *F
+	,const Vector                    *b
+	,const MatrixOp                  *F
 	,BLAS_Cpp::Transp                trans_F
-	,const Vector              *f
+	,const Vector                    *f
 	,size_type                       m_undecomp
 	,const size_type                 j_f_undecomp[]
 	)

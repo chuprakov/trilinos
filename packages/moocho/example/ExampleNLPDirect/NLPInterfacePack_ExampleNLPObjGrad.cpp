@@ -58,7 +58,7 @@ ExampleNLPObjGrad::ExampleNLPObjGrad(
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:vec_space_(vec_space), vec_space_comp_(NULL,0)
+	:vec_space_(vec_space), vec_space_comp_(MemMngPack::null)
 	,initialized_(false), obj_scale_(1.0)
 	,has_bounds_(has_bounds), force_xinit_in_bounds_(true), n_(2*vec_space->dim())
 {

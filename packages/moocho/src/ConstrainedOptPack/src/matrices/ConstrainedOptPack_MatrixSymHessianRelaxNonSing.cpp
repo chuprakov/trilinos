@@ -113,7 +113,7 @@ void Vp_StPtMtV_imp(
 namespace ConstrainedOptPack {
 
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing()
-	: vec_space_(NULL,0)
+	: vec_space_(MemMngPack::null)
 {}
 
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
@@ -121,7 +121,7 @@ MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
 	,const vec_mut_ptr_t  &M_diag_ptr
 	,const space_ptr_t    &space
 	)
-	: vec_space_(NULL,0)
+	: vec_space_(MemMngPack::null)
 {
 	initialize(G_ptr,M_diag_ptr,space);
 }
