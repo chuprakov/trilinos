@@ -45,16 +45,16 @@ public:
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
 	 * The output from this function <tt>sym_gms_view = this->get_sym_gms_view()</tt> must be passed to
-	 * <tt>this->free_sym_gms_view(gms)</tt> to free any memory that may have been allocated and to ensure
+	 * <tt>this->commit_sym_gms_view(gms)</tt> to free any memory that may have been allocated and to ensure
 	 * the that underlying abstract matrix object has been updated.
-	 * After <tt>this->free_sym_gms_view(sym_gms_view)</tt> is called, \c sym_gms_view must not be used any longer!
+	 * After <tt>this->commit_sym_gms_view(sym_gms_view)</tt> is called, \c sym_gms_view must not be used any longer!
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return.rows() == this->rows()</tt>
 	 * <li> <tt>return.cols() == this->cols()</tt>
 	 * </ul>
 	 *
-	 * Warning!  If a subclass overrides this method, it must also override \c free_sym_gms_view().
+	 * Warning!  If a subclass overrides this method, it must also override \c commit_sym_gms_view().
 	 */
 	virtual LinAlgPack::sym_gms get_sym_gms_view() = 0;
 
@@ -74,7 +74,7 @@ public:
 	 * <li> \c sym_gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void free_sym_gms_view(LinAlgPack::sym_gms* sym_gms_view) = 0;
+	virtual void commit_sym_gms_view(LinAlgPack::sym_gms* sym_gms_view) = 0;
 
 }; // end class MatrixSymWithOpGetGMSSymMutable
 
@@ -149,7 +149,7 @@ MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymWithOp* mat )
 inline
 MatrixDenseSymMutableEncap::~MatrixDenseSymMutableEncap()
 {
-	mat_get_->free_sym_gms_view(&sym_gms_view_);
+	mat_get_->commit_sym_gms_view(&sym_gms_view_);
 }
 
 inline
