@@ -275,11 +275,13 @@ void MatrixWithOpSubView::Vp_StMtV(
 
 	// ToDo: Assert compatibility!
 
-	if( rng_rows_.full_range() && rng_cols_.full_range() )
-		return AbstractLinAlgPack::Vp_StMtV(  // The matrix is just transposed
+	if( rng_rows_.full_range() && rng_cols_.full_range() ) {
+		AbstractLinAlgPack::Vp_StMtV(  // The matrix is just transposed
 			y, a
 			,*M_full_, M_trans_trans
 			,x, b );
+		return;
+	}
 	// y = b*y
 	Vt_S( y, b );
 	//

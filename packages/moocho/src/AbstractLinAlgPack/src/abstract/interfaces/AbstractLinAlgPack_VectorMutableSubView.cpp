@@ -79,7 +79,7 @@ void VectorWithOpMutableSubView::apply_transformation(
 void VectorWithOpMutableSubView::set_ele( index_type i, value_type val )
 {
 	space_impl().validate_range(Range1D(i,i));
-	return full_vec_->set_ele( space_impl().rng().lbound() + i - 1, val );
+	full_vec_->set_ele( space_impl().rng().lbound() + i - 1, val );
 }
 
 VectorWithOpMutable::vec_mut_ptr_t
