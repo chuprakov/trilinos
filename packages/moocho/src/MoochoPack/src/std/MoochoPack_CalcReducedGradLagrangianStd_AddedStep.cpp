@@ -65,7 +65,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 
 	VectorMutable &rGL_k = rGL_iq.set_k(0);
 
-	if( nu_iq.updated_k(0) ) {
+	if( nu_iq.updated_k(0) && nu_iq.get_k(0).nz() > 0 ) {
 		// Compute rGL = Z'*(Gf + nu) to reduce the effect of roundoff in this
 		// catastropic cancelation
 		const Vector &nu_k = nu_iq.get_k(0);
@@ -107,7 +107,7 @@ void CalcReducedGradLagrangianStd_AddedStep::print_step(
 {
 	out
 		<< L << "*** Evaluate the reduced gradient of the Lagrangian\n"
-		<< L << "if nu_k is updated then\n"
+		<< L << "if nu_k is updated and nu_k.nz() > 0 then\n"
 		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + Uz_k' * lambda_k(equ_undecomp)\n"
 		<< L << "else\n"
 		<< L << "    rGL_k = rGf_k + Uz_k' * lambda_k(equ_undecomp)\n"
