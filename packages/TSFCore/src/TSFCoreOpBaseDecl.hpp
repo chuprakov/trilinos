@@ -67,6 +67,10 @@ public:
 	 * </ul>
 	 *
 	 * The default implementation returns <tt>true</tt>.
+	 *
+	 * Note that an operator must support at least one of the values
+	 * of <tt>ETrans</tt> (i.e. the transposed or the nontranspoed
+	 * operations must be supported, both can not be unsupported)
 	 */
 	virtual bool opSupported(ETransp M_trans) const;
 
