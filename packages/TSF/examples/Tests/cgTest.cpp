@@ -21,7 +21,6 @@ int main(int argc, void** argv)
       
       vector<int> ncols(n);
       vector<vector<int> > colIndices(n);
-      vector<const int*> colIndicesPtrs(n);
       vector<vector<double> > Avals(n);
 
       for (int row=0; row<n; row++)
@@ -58,12 +57,17 @@ int main(int argc, void** argv)
               Avals[row][1] = 2.0;
               Avals[row][2] = -1.0;
             }
-          colIndicesPtrs[row] = &(colIndices[row][0]);
         }
-
-      M.setGraph(n, &(ncols[0]), &(colIndicesPtrs[0]));
-
+      
+      M.setBandwidth(n, &(ncols[0]));
+      
       M.freezeStructure();
+
+      for (int row=0; row<n; row++)
+        {
+          M.setRowStructure(row, ncols[row], &(colIndices[row][0]));
+                            
+        }
 
       M.zero();
 
