@@ -35,9 +35,9 @@
 
 namespace {
 
-typedef FortranTypes::f_int			f_int;
-typedef FortranTypes::f_dbl_prec	f_dbl_prec;
-typedef FortranTypes::f_logical		f_logical;
+typedef FortranTypes::f_int       f_int;
+typedef FortranTypes::f_dbl_prec  f_dbl_prec;
+typedef FortranTypes::f_logical   f_logical;
 
 // Compute:
 //
