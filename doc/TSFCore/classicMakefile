@@ -1,4 +1,4 @@
-TARGET=TSFCore
+TARGET=TSFCoreSAND
 BIBFILES= references.bib
 FIGFILES = LBFGS.eps  TSFCore.eps  UML1.eps  analal.eps
 

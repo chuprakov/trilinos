@@ -1,3 +1,15 @@
+@TechReport{ref:TSFCore::Nonlin,
+  author=       {R. A. Bartlett},
+  title=        {{TSFCore::Nonlin} : An Extension of {TSFCore} for the Development
+                 of Nonlinear Abstract Numerical Algorithms and
+                 Interfacing to Nonlinear Applications},
+  institution=  {Sandia National Laboratories},
+  year=         {2003},
+  type=         {Technical report},
+  number=       {SAND03-xxxx},
+  address=      {Albuquerque, New Mexico 87185 and Livermore, California 94550}
+}
+
 @ARTICLE(Madych&NelsonII,
  author = "Madych, W. R. and Nelson, S.A.",
  title = "Multivariate Interpolation and Conditionally Positive Definite Functions II",
@@ -8,11 +20,37 @@
  pages = "211-230"
 )
 
+@ARTICLE(ref:sfe,
+ author = {M. F. Pellissetti and R. G. Ghanem},
+ title = {Iterative Solution of Systems of Linear Equations
+          Arising in the Context of Stocastic Finite Elements},
+ journal = {Advances in Engineering Software},
+ year =  {1990},
+ volume = {54},
+ number = {189},
+ pages = {211-230}
+)
+
+@BOOK(ref:advanced_c++_coplien,
+ author = {J. O. Coplien},
+ title = {Advanced C++},
+ publisher = {Addison-Wesley},
+ year = "1992"
+)
+
+
 @BOOK(book:SC,
  author = "Van Loan, Charles F.",
  title = "Introduction to Scientific Computing",
  publisher = "Prentice Hall, Inc.",
  year = "1997"
+)
+
+@BOOK(ref:numerical_analysis_burden,
+ author = "R. L. Burden and J. D. Faires",
+ title = "Numerical Analysis: fifth edition",
+ publisher = "PWS",
+ year = "1993"
 )
 
 @INPROCEEDINGS(Torczon:patsearch,
@@ -33,7 +71,8 @@
   month=        may,
   type=         {Technical report},
   number=       {SAND98-0730},
-  address=      {Albuquerque, New Mexico 87185 and Livermore, California 94550},}
+  address=      {Albuquerque, New Mexico 87185 and Livermore, California 94550}
+}
 
 @TechReport{Sand2001-3796,
   author=       {M.S. Eldred and A.A. Giunta and B.G. van Bloemen Waanders and S.F. Wojtkiewicz and W.E. Hart and M.P. Alleva},
@@ -78,6 +117,13 @@
   address=      {Albuquerque, New Mexico 87185 and Livermore, California 94550}
 }
 
+@MISC(ref:doe_asci,
+ author = {Department of Energy},
+ title = {{ASCI}: Advanced Simulation and Computing Initiative},
+ institution=  {Sandia National Laboratories},
+ howpublished = {\texttt{http://www.sandia.gov/ASCI}}
+)
+
 @MISC(Dolan:thesis,
  author = "Elizabeth D. Dolan",
  title = "Pattern Search Behavior in Nonlinear Optimization",
@@ -103,8 +149,8 @@
 )
 
 @MANUAL(Roscoe:rsqpman, 
- author = "Bartlett, Roscoe A.",
- title = "An Introduction to rSQP++: an Object-Oriented Framework for Reduced Space Successive Quadratic Programming",
+ author = {R. A. Bartlett},
+ title = {An Introduction to {rSQP}++: an Object-Oriented Framework for Reduced Space Successive Quadratic Programming},
  organization = "Department of Chemical Engineering, Carnegie--Mellon University",
  month = "May",
  year = "2002"
@@ -120,27 +166,34 @@
 }
 
 @MANUAL(ref:moochouserguide, 
- author = "Bartlett, Roscoe A.",
+ author = {R. A. Bartlett},
  title = "{MOOCHO} : {M}ultifunctional {O}bject-{O}riented ar{CH}itecture for {O}ptmization, User's Guide",
  organization = "Sandia National Labs",
  year = "2003"
 )
 
 @MANUAL(ref:moochodevguide, 
- author = "Bartlett, Roscoe A.",
+ author = "R. A. Bartlett",
  title = "An Introduction to Algorithm Development in {MOOCHO}",
  organization = "Sandia National Labs",
  year = "2003"
 )
 
-@UNPUBLISHED{ref:trilinos,
+@MISC{ref:trilinos,
   AUTHOR = "Mike A. Heroux and Teri Barth and David Day and Rob Hoekstra and Rich Lehoucq
             and Kevin Long and Roger Pawlowski and Ray Tuminaro and Alan Williams",
   TITLE = "Trilinos : object-oriented, high-performance parallel
            solver libraries for the solution of large-scale complex multi-physics
            engineering and scientific applications",
   INSTITUTION = "Sandia National Laboratory", 
-  URL = {\texttt{http://software.sandia.gov/trilinos/}}
+  HOWPUBLISHED = {\texttt{http://software.sandia.gov/Trilinos}}
+}
+
+@MISC{ref:nox,
+  AUTHOR = "T. Kolda and R. Pawlowski",
+  TITLE = {{NOX}: An object-oriented, nonlinear solver package},
+  INSTITUTION = "Sandia National Laboratory", 
+  HOWPUBLISHED = {\texttt{http://software.sandia.gov/Trilinos}}
 }
 
 @TECHREPORT{ref:fei,
@@ -593,7 +646,7 @@
 }
 
 @TECHREPORT(WKAnderson_DLBonhaus_1997,
-  author = {W.K. Anderson D.L. Bonhaus},
+  author = {W.K. Anderson and D.L. Bonhaus},
   title = "Aerodynamic Design on Unstructured Grids for Turbulent Flows",
   institution = "Langley Research Center, Hampton, Virginia",
   number = "TM 112867",
@@ -601,7 +654,7 @@
 )
 
 @INPROCEEDINGS{WKAnderson_VVenkatakrishnan_1997,
-   author  = "W.K. Anderson V. Venkatakrishnan",
+   author  = {W.K. Anderson and V. Venkatakrishnan},
    title  = "Aerodynamic De-sign Optimization on Unstructured Grids with a Continuous Adjoint 
             Formulation",
    BOOKtitle  = "97-0643",
@@ -730,12 +783,12 @@
 }
 @MISC{ref:Epetra,
   AUTHOR = {M. A. Heroux},
-  TITLE = {{Epetra} : Concrete C++ Linear Algebra Classes for Parallel Linear Algebra},
+  TITLE = {{Epetra} : Concrete {C}++ Linear Algebra Classes for Parallel Linear Algebra},
   HOWPUBLISHED = {http://software.sandia.gov/Trilinos}
 }
 @BOOK{ref:anderson_1995,
-  AUTHOR = "{Anderson, E., et. al.}",
-  TITLE = "{LAPACK User's Guide}",
+  AUTHOR = {E. Anderson and others},
+  TITLE = {{LAPACK} User's Guide},
   PUBLISHER ={SIAM},
   YEAR = {1995}
 }
@@ -793,10 +846,10 @@
   YEAR = {1999}
 }
 @BOOK{ref:blackford_et_al_1997,
-  AUTHOR = "{Blackford, L.S., J. Choi, A. Cleary, E.D. 'Azevedo, J. Demmel,
-    I. Dhilon, J. Dongarra, S. Hammarling, G. Henry, A. Petitet, K. Stanley,
-    D. Walder, and R.C. Whaley}",
-  TITLE = "{ScalLAPACK User's Guide}",
+  AUTHOR = {L. S. Blackford and J. Choi and A. Cleary and E.D. 'Azevedo and J. Demmel and
+    I. Dhilon and J. Dongarra and S. Hammarling and G. Henry and A. Petitet and K. Stanley and
+    D. Walder and R.C. Whaley},
+  TITLE = {{ScalLAPACK} User's Guide},
   PUBLISHER = {SIAM},
   ADDRESS = {Philadelphia, PA},
   YEAR = {1997}
@@ -838,10 +891,10 @@
   YEAR = {1999}
 }
 @BOOK{ref:uml_distilled_2nd_ed,
-  AUTHOR = "M. Fowler and ???",
+  AUTHOR = "M. Fowler and K. Scott",
   TITLE = "{UML} Distilled, second edition",
   PUBLISHER = {Addison-Wesley},
-  YEAR = {???}
+  YEAR = {2000}
 }
 @MANUAL{ref:brooke_gams_1997,
   AUTHOR = "{Brooke et. al.}",
@@ -899,8 +952,8 @@
 }
 @TECHREPORT{ref:isispp,
   AUTHOR = "{Clay, R.L., B.A. Allan, L.D. Mish, A.B. Williams}",
-  TITLE = "{ISIS++ Reference Guide (Iterative Scalable Implicit Solver in C++)
-    Version 1.1}",
+  TITLE = {{ISIS}++ Reference Guide (Iterative Scalable Implicit Solver in {C}++)
+    Version 1.1},
   INSTITUTION = {Sandia National Laboratories},
   NUMBER = {SAND99-8231},
   YEAR = {1999}
@@ -1072,10 +1125,34 @@
   NUMBER = {Report SOL 96-0},
   YEAR = {1996}
 }
-@MISC{ref:hcl,
-  AUTHOR = {M. S. Gockenbach and W. W. Symes},
-  TITLE = "The Hilbert Class Library",
-  HOWPUBLISHED = {http://www.trip.caam.rice.edu/txt/hcldoc/html/index.html}
+@ARTICLE{ref:hcl,
+  AUTHOR = {M. S. Gockenbach and M. J. Petro and W. W. Symes},
+  TITLE = "{C}++ Classes for for Linking Optimization with Complex Simulations ",
+  JOURNAL = {ACM Transactions on Mathematical Software},
+  YEAR = {1999}
+}
+@Article{Gockenbach:2002:EAI,
+  author =       "Mark S. Gockenbach and Daniel R. Reynolds and Peng Shen and William W. Symes",
+  title =        "Efficient and Automatic Implementation of the Adjoint State Method",
+  journal =      "{ACM} Transactions on Mathematical Software",
+  volume =       "28",
+  number =       "1",
+  month =        mar,
+  year =         "2002",
+  pages =        "22--44",
+  abstract =     "Combination of object-oriented programming with automatic
+                 differentiation techniques facilitates the solution of data fitting,
+                 control, and design problems driven by explicit time stepping
+                 schemes for initial-boundary value problems.  The C++ class fdtd
+                 takes a complete specification of a single step, along with some
+                 associated code, and assembles from it a complete simulator,
+                 along with the linearized and adjoint simulations.  The result is
+                 a (nonlinear) operator in the sense of the Hilbert Class Library
+                 (HCL), a C++ software package for optimization.  The HCL operator so
+                 produced links directly with any of the HCL optimization algorithms.
+                 Moreover, the performance of simulators constructed in this way is
+                 equivalent to that of optimized Fortran implementations.",
+  URL =          "http://doi.acm.org/10.1145/513001.513003", 
 }
 @ARTICLE{ref:goldfarb_idnani_1983,
   AUTHOR = "{Goldfarb, D and A. Idnani}",
@@ -1101,8 +1178,8 @@
   YEAR = {1996}
 }
 @TECHREPORT{ref:aztec,
-  AUTHOR = "{Hutchinson, S.A., L.V. Prevost, J.N. Shadid, C. Tong, R.S. Tuminaro}",
-  TITLE = "{Aztec User's Guide: Version 2.0}",
+  AUTHOR = {S. A. Hutchinson and L. V. Prevost and J.N. Shadid and C. Tong and R.S. Tuminaro},
+  TITLE = {Aztec User's Guide: Version 2.0},
   NUMBER = {ANL-95/11--Revision 2.0.22},
   INSTITUTION = {Sandia National Laboratories},
   YEAR = {1998}
@@ -1115,8 +1192,8 @@
   YEAR = {2001}
 }
 @MISC{ref:mpc++,
-  AUTHOR = "{Tshikawa et. Al.}",
-  TITLE = "{Massively Parallel C++}",
+  AUTHOR = {Tshikawa and others},
+  TITLE = {Massively Parallel {C}++},
   HOWPUBLISHED = {http://pdswww.rwcp.or.jp/mpc++},
   YEAR = {1996}
 }
@@ -1133,7 +1210,7 @@
 }
 @BOOK{ref:meyers_1996,
   AUTHOR = "S. Meyers",
-  TITLE = {More Effective C++},
+  TITLE = {More Effective {C}++},
   PUBLISHER = {Addison-Wesley},
   YEAR = {1996}
 }
@@ -1174,7 +1251,7 @@
   HOWPUBLIHSED = {http://www.smalltalk.org}
 }
 @ARTICLE{ref:nocedal_overton_1985,
-  AUTHOR = "{Nocedal, J. and M. Overton}",
+  AUTHOR = {J. Nocedal and M. Overton},
   TITLE = "{Projected Hessian Updating Algorithms for Nonlinear Constrained Optimization}",
   JOURNAL = {SIAM J. Numer. Anal.},
   ADDRESS = {Philadelphia},
@@ -1183,8 +1260,8 @@
   YEAR = {1985}
 }
 @BOOK{ref:nocedal_wright_1999,
-  AUTHOR = "{Nocedal, J. and Stephen Wright}",
-  TITLE = "{Numerical Optimization}",
+  AUTHOR = {J. Nocedal and S. Wright},
+  TITLE = {Numerical Optimization},
   PUBLISHER = {Springer},
   ADDRESS = {New York},
   YEAR = {1999}
@@ -1208,7 +1285,8 @@
   YEAR = {1983}
 }
 @BOOK{ref:tmpls_for_iter_systems, 
-     AUTHOR = {R. Barrett and M. Berry and T. F. Chan and J. Demmel and J. Donato and J. Dongarra and V. Eijkhout and R. Pozo and C. Romine and H. Van der Vorst }, 
+     AUTHOR = {R. Barrett and M. Berry and T. F. Chan and J. Demmel and J. Donato
+              and J. Dongarra and V. Eijkhout and R. Pozo and C. Romine and H. Van der Vorst }, 
      TITLE = {Templates for the Solution of Linear Systems: Building Blocks for Iterative Methods, 2nd Edition}, 
      PUBLISHER = {SIAM}, 
      YEAR = {1994}, 
@@ -1335,8 +1413,9 @@
 @BOOK{ref:design_evol_cpp,
   AUTHOR = "B. Stroustrup",
   TITLE = "The Design and Evolution of C++",
-  PUBLISHER = {???},
-  YEAR = {???}
+  PUBLISHER = {Addison-Wesley},
+  ADDRESS = {New York},
+  YEAR = {1994}
 }
 @Misc{ref:java_web,
   AUTHOR = "{Sun Microsystems}",
@@ -4661,35 +4740,21 @@
 }
 
 @Article{lehoucq98,
-
   author =   "Lehoucq, R. B. and Salinger, A. G.",
-
   title =    {Massively Parallel Linear Stability Analysis with {P\_ARPACK} for {3D} fluid flow modeled with {MPS}alsa},
-
   journal =      {Lecture Notes in Computer Science},
-
   year =     {1998},
-
   volume =   {1541},
-
   pages =    {286-295}
-
 }
 
 @TechReport{lehoucq99,
-
   author =   "Lehoucq, R. B. and Salinger, A. G.",
-
   title =    {Large-Scale Eigenvalue Calculations for Stability Analysis of Steady Flows on Massively Parallel Computers},
-
   institution =  {Sandia National Laboratories},
-
   year =     {1999},
-
   address =      {Albuquerque, NM 87185},
-
   note =     {{S}AND99-1593}
-
 }
 
 @Article{meerbergen94,
@@ -4809,39 +4874,23 @@
 }
 
 @InCollection{maschhoff96,
-
   author =   "Maschhoff, K. J. and Sorensen, D. C.",
-
   title =    {{P\_ARPACK}: {A}n efficient portable large scale eigenvalue package for distributed memory parallel architectures},
-
   booktitle =    {Applied Parallel Computing in Industrial Problems and Optimization},
-
   publisher = {Springer-Verlag},
-
   year =     {1996},
-
   editor =   "Wasniewski, J. and Dongarra, J. and Madsen, K. and Oleson, D.",
-
   volume =   {1184},
-
   series =   {Lecture Notes in Computer Science},
-
   address =      {Berlin}
-
 }
 
 @Book{lehoucq98b,
-
   author =   "Lehoucq, R. B. and Sorensen, D. C. and Yang, C.",
-
   title =    {{ARPACK USERS GUIDE}: {S}olutions of Large Scale Eigenvalue Problems},
-
   publisher =    {SIAM},
-
   year =     {1998},
-
   address =      {Philadelphia, PA}
-
 }
 
 @Article{ravikrishna00,
@@ -5393,13 +5442,15 @@ Finite Element Reacting Flow Solutions},
    journal = {IJCFD},
    volume = "12",
    pages = "199--211"
-} @article{salinger99a,
-  author =   "Salinger, A.G. and Lehoucq, R.B. and Romero, L.A",
-  title =    {Stability Analysis of Large-Scale Incompressible Flow Calculations on Massively Parallel Computers},
-  journal =    {CFD Journal},
+}
+
+@article{salinger99a,
+  author = {A. G. Salinger R. B. Lehoucq and L. A. Romero},
+  title = {Stability Analysis of Large-Scale Incompressible Flow Calculations on Massively Parallel Computers},
+  journal =  {CFD Journal},
   volume = {9},
   number = {1},
-  year =     {2001},
+  year = {2001},
   pages = {529--533}
 }
 @Article{lehoucq01,
@@ -5773,11 +5824,10 @@ note = {From the First ACM Workshop on Applied Computational Geometry}
    journal ="Annals of Operations Research", 
    volume = "62", 
    pages="419--437",
-   year="1996"}
+   year="1996"
 }
 
-
- @article{
+@article{
       DomBR93,
    author      = "Paul D. Domich and 
                   Paul T. Boggs and 
