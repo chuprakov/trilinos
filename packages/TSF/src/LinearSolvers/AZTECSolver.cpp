@@ -13,10 +13,12 @@
 #include "PetraMatrix.h"
 #include "PetraVector.h"
 
+#if HAVE_ML
 #include "ml_include.h"
 #include "ml_epetra_utils.h"
 #include "ml_epetra_operator.h"
 #include "ml_aztec_utils.h"
+#endif
 
 using namespace TSF;
 
@@ -59,6 +61,13 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
       userOptions.remove(AZ_ml);
       TSFOut::println("AZTECSolver is using ML");
     }
+
+#ifndef HAVE_ML
+  if (useML_==true)
+    {
+      TSFError::raise("ML is not supported in this build of TSF. To use ML, reconfigure Trilinos with --enable-ml");
+    }
+#endif
 
   /* AZ_ml_levels is not a standard AZ option so we need to remove it from the list
    * before sending options to AZ */
@@ -119,6 +128,7 @@ AZTECSolver::~AZTECSolver(){;}
 
 void AZTECSolver::setupML(Epetra_RowMatrix* F) const
 {
+#ifdef HAVE_ML
   ML* ml_handle;
   ML_Aggregate* agg_object;
 
@@ -175,6 +185,7 @@ void AZTECSolver::setupML(Epetra_RowMatrix* F) const
   ML_Aggregate_Destroy(&agg_object);
 
   prec_ = TSFSmartPtr<Epetra_Operator>(MLop, true);
+#endif
 }
 
 bool AZTECSolver::solve(const TSFLinearOperator& op, 

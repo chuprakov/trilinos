@@ -62,6 +62,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define if want to build ml */
+#undef HAVE_ML
+
 /* define if we want to use MPI */
 #undef HAVE_MPI
 

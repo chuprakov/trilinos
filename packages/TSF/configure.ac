@@ -229,6 +229,16 @@ AC_CXX_VSNPRINTF
 TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
 AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
 
+
+# ------------------------------------------------------------------------
+# Checks if ML is enabled
+# ------------------------------------------------------------------------
+
+TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
+AM_CONDITIONAL(HAVE_TSF_ML, test "X$ac_cv_use_ml" != "Xno")
+
+
+
 # ------------------------------------------------------------------------
 # Specify other directories 
 # ------------------------------------------------------------------------
