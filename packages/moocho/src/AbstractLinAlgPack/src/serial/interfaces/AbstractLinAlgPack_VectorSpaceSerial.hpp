@@ -21,7 +21,7 @@ public:
 	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
-	VectorSpaceSerial( size_type dim );
+	VectorSpaceSerial( size_type dim = 0 );
 
 	///
 	/** Initialize given the dimension of the vector space.
