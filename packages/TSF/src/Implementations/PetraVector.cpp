@@ -1,3 +1,8 @@
+#ifdef EPETRA_ANSI_CPP
+#include <typeinfo>
+#include <sstream>
+#endif
+
 #include "TSFConfig.h"
 #include "PetraVector.h"
 #include "PetraVectorSpace.h"
@@ -226,7 +231,18 @@ Epetra_Vector& PetraVector::getLocalValues(TSFVector& v)
 const PetraVector& PetraVector::getConcrete(const TSFVector& x)
 {
 	const PetraVector* v = dynamic_cast<const PetraVector*>(x.ptr());
-	if (v==0) TSFError::raise("PetraVector::getConcrete bad cast");
+	if (v==0) {
+#ifdef EPETRA_ANSI_CPP
+	std::ostringstream omsg;
+	omsg << "PetraVector::getConcrete(x): Error, bad cast!"
+		 << "  The concrete object of type \'" << typeid(*x.ptr()).name()
+		 << "\' does not support the type \'PetraVector\'."
+		;
+	TSFError::raise(omsg.str().c_str());
+#else
+	TSFError::raise("PetraVector::getConcrete bad cast");
+#endif
+	}
 	return *v;
 }
 
