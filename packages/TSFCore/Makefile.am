@@ -83,9 +83,13 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 #  #np# - Most packages should have an example and a full suite 
 #  of tests.
 
+if BUILD_TESTS
+TEST_SUBDIR=test
+endif
+
 if BUILD_EXAMPLES
 EXAMPLE_SUBDIR=example
 endif
 
-SUBDIRS = src $(EXAMPLE_SUBDIR)
+SUBDIRS = src $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 

@@ -224,6 +224,9 @@ AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
 # Checks if examples should be built
 # ------------------------------------------------------------------------
 
+TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
+AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tests" != "Xno")
+
 TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
 AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
 
@@ -328,6 +331,14 @@ AC_CONFIG_FILES([
 		example/Nonlin/NP2DSim/Makefile
 		example/Nonlin/NP4DOpt/Makefile
 		example/Solvers/Makefile
+		test/Makefile
+		test/scripts/Makefile
+		test/scripts/daily/Makefile
+		test/scripts/daily/mpi/Makefile
+		test/scripts/daily/serial/Makefile
+		test/scripts/weekly/Makefile
+		test/scripts/weekly/mpi/Makefile
+		test/scripts/weekly/serial/Makefile
 		])
 
 AC_OUTPUT()
