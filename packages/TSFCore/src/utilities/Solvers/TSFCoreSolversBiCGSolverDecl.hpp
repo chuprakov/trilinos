@@ -68,9 +68,9 @@ public:
 
 	///
 	BiCGSolver(
-		const out_ptr_t   &out               = Teuchos::null
-		,bool             dump_all           = false
-		,int              default_max_iter   = 10000
+		const Teuchos::RefCountPtr<std::ostream> &out               = Teuchos::null
+		,bool                                    dump_all           = false
+		,int                                     default_max_iter   = 10000
 		);
 
 	/** @name Overridden from SolverState (only to be called by ConvergenceTester objects) */

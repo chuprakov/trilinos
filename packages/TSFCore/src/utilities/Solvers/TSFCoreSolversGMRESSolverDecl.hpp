@@ -82,10 +82,10 @@ public:
 
 	///
 	GMRESSolver(
-		const out_ptr_t   &out               = Teuchos::null
-		,bool             dump_all           = false
-		,int              default_max_iter   = 10000
-		,ScalarMagnitude  breakdown_tol      = 0.0
+		const Teuchos::RefCountPtr<std::ostream>   &out               = Teuchos::null
+		,bool                                      dump_all           = false
+		,int                                       default_max_iter   = 10000
+		,ScalarMagnitude                           breakdown_tol      = 0.0
 		);
 
 	/** @name Overridden from SolverState (only to be called by ConvergenceTester objects) */

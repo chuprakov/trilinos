@@ -66,7 +66,9 @@ public:
    *                      can be different on every processor.
    * @param  globalDim    [in] Gives the number of global elements in the vector
    *                      if <tt>globalDim > 0</tt>.  If <tt>globalDim < 0</tt>
-   *                      then the global dimension is determined by <tt>localSubDim</tt>.
+   *                      then the global dimension is determined by the above argument
+	 *                      <tt>localSubDim</tt> but requires a global communication to
+	 *                      do so (i.e. <tt>MPI_Allreduce()</tt>).
    *
    * Preconditions:<ul>
    * <li><tt>localSubDim > 0</tt>
@@ -79,7 +81,7 @@ public:
    * <li><tt>this->localSubDim() == localSubDim</tt>
    * <li>[<tt>mpiComm == MPI_COMM_NULL</tt>] <tt>this->dim() == localSubDim</tt>
    * <li>[<tt>mpiComm != MPI_COMM_NULL && globalDim > 0</tt>] <tt>this->dim() == globalDim</tt>
-   * <li>[<tt>mpiComm != MPI_COMM_NULL && globalDim < 0</tt>] <tt>this->dim() == sum(localSubDim[i],i=0,,,numProc)</tt>
+   * <li>[<tt>mpiComm != MPI_COMM_NULL && globalDim < 0</tt>] <tt>this->dim() == sum(localSubDim[i],i=0...numProc-1)</tt>
    * </ul>
    *
    * This function supports three different types of use-cases:
@@ -88,10 +90,11 @@ public:
    *     where <tt>this->dim() == localSubDim</tt>.
    * <li><tt>mpiComm!=MPI_COMM_NULL && globalDim < 0</tt> : Distributed-memory vectors
    *     where <tt>this->dim()</tt> is equal to the sum of the <tt>localSubDim</tt>
-   *     arguments on each processor.  This will result in a call to <tt>MPI_Allreduce()</tt>.
+   *     arguments on each processor.  This will result in a call to <tt>MPI_Allreduce()</tt>
+	 *     inside of this function.
    * <li><tt>mpiComm!=MPI_COMM_NULL && globalDim > 0</tt> : Distributed-memory vectors
    *     where <tt>this->dim()</tt> returns <tt>globalDim</tt>.  This will not result
-   *     in a call to <tt>MPI_Allreduce()</tt> and therefore the client had better
+   *     in a call to <tt>MPI_Allreduce()</tt> inside this function and therefore the client had better
    *     be sure that <tt>globalDim</tt> is consistent with <tt>localSubDim</tt>
    *     on each processor.
    * <li><tt>mpiComm!=MPI_COMM_NULL && globalDim == localSubDim</tt> : Locally-replicated

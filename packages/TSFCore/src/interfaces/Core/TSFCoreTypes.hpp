@@ -49,10 +49,11 @@ namespace TSFCore {
 // Basic types
 //
 
-///
+/// Type for the dimension of a vector space
 typedef RTOp_index_type  Index;
-///
-using RangePack::Range1D;
+
+/// Type for a range of indices
+typedef RangePack::Range1D   Range1D;
 
 ///
 /** Enumeration for determining how an operator is applied.
@@ -88,9 +89,6 @@ namespace Exceptions {
 /** \defgroup TSFCoreExceptions_grp Basic TSFCore exception types.
  */
 //@{
-
-/// Special values for solving a linear system to any convienet tolerance.
-const RTOp_value_type DEFAULT_TOLERANCE = 1e-20; // Should not select this by accident
 
 /// Thrown if any member functions are called before initialize() has been called.
 class UnInitialized : public std::logic_error

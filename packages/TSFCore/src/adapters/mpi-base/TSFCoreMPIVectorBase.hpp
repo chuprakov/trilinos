@@ -54,7 +54,7 @@ MPIVectorBase<Scalar>::MPIVectorBase()
 template<class Scalar>
 void MPIVectorBase<Scalar>::getLocalData( const Scalar** values, ptrdiff_t* stride ) const
 {
-	const_cast<MPIVectorBase<Scalar>*>(this)->getLocalData((Scalar**)values,stride);
+	const_cast<MPIVectorBase<Scalar>*>(this)->getLocalData(const_cast<Scalar**>(values),stride);
 }
 
 // Overridden from Vector

@@ -46,7 +46,7 @@ template<class Scalar>
 Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 MPIVectorSpaceFactoryStd<Scalar>::createVecSpc(int dim) const
 {
-	return Teuchos::rcp(new MPIVectorSpaceStd<Scalar>(mpiComm_,dim,-1));
+	return Teuchos::rcp(new MPIVectorSpaceStd<Scalar>(mpiComm_,dim,dim));
 }
 
 } // end namespace TSFCore

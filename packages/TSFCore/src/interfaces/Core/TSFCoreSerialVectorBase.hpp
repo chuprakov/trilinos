@@ -44,12 +44,22 @@ SerialVectorBase<Scalar>::SerialVectorBase()
 	:in_applyOp_(false)
 {}
 
+// Virtual methods with default implementations
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::getData( const Scalar** values, Index* stride ) const
+{
+	const_cast<SerialVectorBase<Scalar>*>(this)->getData(const_cast<Scalar**>(values),stride);
+}
+
+// Overridden from Vector
+
 template<class Scalar>
 void SerialVectorBase<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &op
-	,const int                   num_vecs
+	,const int                      num_vecs
 	,const Vector<Scalar>*          vecs[]
-	,const int                   num_targ_vecs
+	,const int                      num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele
@@ -72,6 +82,68 @@ void SerialVectorBase<Scalar>::applyOp(
 		,first_ele,sub_dim,global_offset
 		);
 	in_applyOp_ = false;
+}
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<Scalar>* sub_vec ) const
+{
+	const Index   this_dim = space()->dim(); // ToDo: Cache this!
+	const Range1D rng      = RangePack::full_range(rng_in,1,this_dim);
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"SerialVectorBase<Scalar>::getSubVector(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
+#endif
+	const Scalar *values = NULL; Index stride = 0;
+	this->getData(&values,&stride);
+	sub_vec->initialize(
+		rng.lbound()-1                   // globalOffset
+		,rng.size()                      // subDim
+		,values+stride*(rng.lbound()-1)  // values
+		,stride                          // stride
+		);
+}
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const
+{
+	sub_vec->set_uninitialized();  // Nothing to deallocate!
+}
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
+{
+	const Index   this_dim = space()->dim(); // ToDo: Cache this!
+	const Range1D rng      = RangePack::full_range(rng_in,1,this_dim);
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"SerialVectorBase<Scalar>::getSubVector(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
+#endif
+	Scalar *values = NULL; Index stride = 0;
+	this->getData(&values,&stride);
+	sub_vec->initialize(
+		rng.lbound()-1                   // globalOffset
+		,rng.size()                      // subDim
+		,values+stride*(rng.lbound()-1)  // values
+		,stride                          // stride
+		);
+}
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
+{
+	sub_vec->set_uninitialized();  // Nothing to deallocate!
+}
+
+template<class Scalar>
+void SerialVectorBase<Scalar>::setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec )
+{
+	Vector<Scalar>::setSubVector(sub_vec);  // This implementation is okay
 }
 
 } // end namespace TSFCore

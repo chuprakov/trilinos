@@ -44,8 +44,10 @@ namespace TSFCore {
  * of a scalar product as an object that can be replaced.  The default
  * implementation of scalar product is the dot product.  The idea is
  * that in most cases, the definition of a scalar product may be more
- * general that for a specific concrete vector implementation (i.e.
- * all serial or all MPI-based vectors).  This subclass allows an
+ * general than a specific concrete vector implementation (i.e. a
+ * single scalar product may work with all serial and all MPI-based
+ * vectors if, for example, it is implemented through an
+ * <tt>RTOpPack::RTOpT</tt> object).  This subclass allows an
  * application code to set a specialized scalar product without having
  * marry a particular concrete vector (vector space) implementation.
  *
@@ -54,13 +56,11 @@ namespace TSFCore {
  * developers to to redefine the scalar product without having to
  * create a VectorSpace subclass which can have many repercussions.
  *
- * The reason that this machinery is separated out from the base
- * <tt>VectorSpace</tt> interface class is that first it would clutter
- * the base interface since this machinery an implementation artifact
- * and second since every <tt>VectorSpace</tt> subclass will not
- * utilize this machinery.
- *
- * 
+ * The reason that this machinery in this base subclass is separated
+ * out from the base <tt>VectorSpace</tt> interface class is that,
+ * first it would clutter the base interface since this machinery is
+ * an implementation artifact and, second every <tt>VectorSpace</tt>
+ * subclass will not utilize this machinery.
  */
 template<class Scalar>
 class VectorSpaceStdBase : virtual public VectorSpace<Scalar> {

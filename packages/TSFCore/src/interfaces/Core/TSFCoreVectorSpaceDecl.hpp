@@ -295,7 +295,7 @@ public:
 	virtual Teuchos::RefCountPtr<const Vector<Scalar> > createMemberView( const RTOpPack::SubVectorT<Scalar> &raw_v ) const;
 
   ///
-  /** Create a multi-vector member that is a view of raw data.
+  /** Create a multi-vector member that is a non-<tt>const</tt> view of raw data.
    *
    * @param  raw_mv  [in] On input contains pointer (i.e. <tt>raw_mv.values()</tt>)
    *                 to array that the returned <tt>MultiVector</tt> wil be a view of.

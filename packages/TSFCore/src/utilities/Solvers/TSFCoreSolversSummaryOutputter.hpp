@@ -46,8 +46,8 @@ SummaryOutputter<Scalar>::SummaryOutputter()
 
 template<class Scalar>
 SummaryOutputter<Scalar>::SummaryOutputter(
-	const out_ptr_t       &out
-	,const std::string    &leadingOutputStr
+	const Teuchos::RefCountPtr<std::ostream>       &out
+	,const std::string                             &leadingOutputStr
 	)
 	:out_(out)
 	,leadingOutputStr_(leadingOutputStr)

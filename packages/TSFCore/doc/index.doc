@@ -22,6 +22,8 @@ code in <tt>TSFCore</tt> is logically broken up into seperate pieces
 (by namespace) and compiled into a single library called
 <tt>libTSFCore</tt>.
 
+\image html TSFCoreSimple.gif "Fundamental vector and linear operator interfaces (Note: above graphic not hyperlinked!)"
+
 <ol>
 
 <li> Basic interfaces
@@ -42,19 +44,6 @@ described in detail in <a
 href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this</a>
 SAND report.
 
-<li> \ref TSFCore_Interfaces_Solvers_grp "Interfaces to (iterative) linear solvers" (in namespace <tt>TSFCore::Solvers</tt>)
-
-These are interfaces and classes assoicated with iterative linear
-solvers.
-
-<li> \ref TSFCore_Interfaces_Nonlin_grp "Interfaces to nonlinear problems" (in namespace <tt>TSFCore::Nonlin</tt>)
-
-The abstact class <tt>TSFCore::Nonlin::LinearOpWithSolve</tt>
-provides an interface to nonsingular linear operators.  The abstract
-classes <tt>TSFCore::Nonlin::NonlinearProblem</tt> and
-<tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt> define
-interfaces to nonlinear problems.
-
 </ol>
 
 <li> Adapters
@@ -65,7 +54,7 @@ the interfaces described above.
 
 <ol>
 
-<li> \ref TSFCore_Adapters_MPI_Base_grp "Base classes for MPI-based vectors, multi-vectors and vector spaces" (in namespace <tt>TSFCore</tt>)
+<li> \ref TSFCore_Adapters_MPI_Base_grp "Sublasses for MPI-based vectors, multi-vectors and vector spaces" (in namespace <tt>TSFCore</tt>)
 
 <li> \ref TSFCore_Adapters_Epetra_grp "Concrete subclasses that adapt Epetra objects" (in namespace <tt>TSFCore</tt>)
 
@@ -84,10 +73,6 @@ central to interoperability.
 
 <li> \ref TSFCore_Utilities_Core_grp "Utilities based on TSFCore interfaces" (in namespace <tt>TSFCore</tt>)
 
-<li> \ref TSFCore_Utilities_Solvers_grp "Utilities based on TSFCore::Solvers interfaces" (in namespace <tt>TSFCore::Solvers</tt>)
-
-<li> \ref TSFCore_Utilities_Nonlin_grp "Utilities based on TSFCore::Nonlin interfaces" (in namespace <tt>TSFCore::Nonlin</tt>)
-
 </ol>
 
 <li> Examples
@@ -102,9 +87,12 @@ categories described above.
 
 /** \defgroup TSFCore_Interfaces_Core_grp Fundamental Vector and Linear Operator Interfaces.
 
-These interfaces are described in detail in <a
-href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this</a>
-SAND report.
+\image html TSFCore.gif "Fundamental vector and linear operator interfaces (Note: above graphic not hyperlinked!)"
+
+The details behind the design of these interfaces are described in
+detail in <a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this SAND report</a>
+.
 
 <ul>
 
@@ -121,31 +109,65 @@ SAND report.
 
   <ul>
   <li> Core abstract interface classes
+
     <ul>
-    <li><tt>TSFCore::VectorSpaceFactory</tt>
-    <li><tt>TSFCore::VectorSpace</tt>
-    <li><tt>TSFCore::Vector</tt>
-    <li><tt>TSFCore::OpBase</tt>
-    <li><tt>TSFCore::LinearOp</tt>
-    <li><tt>TSFCore::MultiVector</tt>
+    <li><tt>TSFCore::VectorSpaceFactory</tt> is basic factory interface for creating
+        <tt>TSFCore::VectorSpace</tt> objects given a dimension.
+    <li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
+        the spaces scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
+    <li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
+    <li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for domain and range spaces for operators.
+    <li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for applying linear operators.
+    <li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
     </ul>
+
+  <li> Other interface classes
+
+    <ul>
+    <li><tt>TSFCore::ScalarProd</tt> is a simple interface for the definition of a scalar product independent from
+        a <tt>TSFCore::VectorSpace</tt> object (see <tt>TSFCore::VectorSpaceStdBase</tt>).
+    </ul>
+
   <li> Basic node support subclasses
+
     <ul>
-    <li><tt>TSFCore::SerialVectorSpaceBase</tt>
-    <li><tt>TSFCore::SerialVectorBase</tt>
+    <li><tt>TSFCore::VectorSpaceStdBase</tt> is a almost universal base class for concrete <tt>TSFCore::VectorSpace</tt> subclasses
+        that allows the defintion of the scalar product to be swapped in and out.
+    <li><tt>TSFCore::SerialVectorSpaceBase</tt> is a uesful node base calss for defining serial vector space subclasses.
+    <li><tt>TSFCore::SerialVectorBase</tt> is a useful node base class for defining serial vector space subclasses.
     </ul>
-  <li> Concrete serial subclasses
+
+  <li> Concrete subclasses
+
     <ul>
-    <li><tt>TSFCore::SerialVectorSpaceFactory</tt>
-    <li><tt>TSFCore::SerialVectorSpace</tt>
-    <li><tt>TSFCore::SerialVector</tt>
+    <li><tt>TSFCore::SerialVectorSpaceFactory</tt> is a general concrete implementation of a factory for serial vector spacees.
+    <li><tt>TSFCore::SerialVectorSpace</tt> is a general concrete implementation for serial vector spaces.
+    <li><tt>TSFCore::SerialVector</tt> is a general concrete implementaion for serial vectors.
+    <li><tt>TSFCore::DotProd</tt> is a simple <tt>TSFCore::ScalarProd</tt> subclass for a scaled dot product.
     </ul>
-  <li> Other basic concrete support subclasses
+
+  <li> Concrete adapter subclasses for <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> 
+
     <ul>
-    <li><tt>TSFCore::VectorMultiVector</tt>
-    <li><tt>TSFCore::MultiVectorCols</tt>
+    <li><tt>TSFCore::VectorMultiVector</tt> is a concrete subclass that takes any <tt>TSFCore::MultiVector</tt> with
+        one column and turns it into a <tt>TSFCore::Vector</tt>.
+    <li><tt>TSFCore::MultiVectorCols</tt> is a concrete subclass that takes an array of <tt>TSFCore::Vector</tt>
+        objects with the same space and simulates a multi-vector.
     </ul>
+
+  <li> Miscellaneous utilities
+
+    <ul>
+    <li><tt>TSFCore::LinOpPersisting</tt> is a simple concrete handle class that aggregates
+         a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
+         persisting relationships)
+    <li><tt>TSFCore::LinOpNonPersisting</tt> is a simple concrete handle class that aggregates
+         a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
+         persisting relationships)
+    </ul>
+
   </ul>
+
 .
 
 <li> Vector interfaces:
@@ -161,7 +183,7 @@ objects from the vector space.  In addition to acting as abstact
 factories, vector space objects are responsible for determining the
 compatibility of vector objects which is useful in debugging an
 application.  %Vector spaces also provide the definition of the scalar
-product for a vector space.
+product for a vector space (and therefore is natural norm).
 
 These finite dimensional vector and vector space objects admit a
 finite dimension (i.e. <tt>TSFCore::VectorSpace::dim()</tt>).
@@ -175,33 +197,18 @@ that puts the client (i.e. abstract numerical algorithm developer) in
 charge while still allowing efficient implementation in a variety of
 environments.
 
-The solution to this problem which has been embraced by the vector
-interface is to adopt a <A HREF="../../RTOpPack/html/index.html">
-specification for user defined vector reduction/transformation
-operators</A>.  This design is based on the "Visitor" design pattern.
-A detailed discussion of the underlying design concepts for this idea
-can be found at http://cs.sandia.gov/MOOCHO/RTOp .  These vector
-interfaces accept operator objects through to the templated C++
+The solution to this problem which has been embraced by %TSFCore is to
+adopt a <tt>RTOpPack</tt>.  This design is based on the "Visitor"
+design pattern.  A detailed discussion of the underlying design
+concepts for this idea can be found <A
+HREF="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">here</A>.  These
+vector interfaces accept operator objects through to the templated C++
 <tt>RTOpPack::RTOpT</tt> interface.  The vector interface
 <tt>TSFCore::Vector</tt> declares a method
 <tt>TSFCore::Vector::applyOp()</tt> that accepts <tt>RTOpT</tt>
 objects and uses them to perform the desired reduction/transformation
 operations.  These methods allow great flexibility in how vectors are
-used in an application.  The method <tt>applyOp(...)</tt> can
-be used to allow vector objects to participate as sub-vectors in a
-larger composite vector or allow only sub-sets of the elements to
-participate in vector operatations.  Therefore, to define a very
-powerful, fully functional vector subclass, only two methods must be
-overridden: <tt>TSFCore::Vector::space()</tt> (which requires
-defining a concreate <tt>TSFCore::VectorSpace</tt> class with
-three pure virtual methods <tt>TSFCore::VectorSpace::dim()</tt>,
-<tt>TSFCore::VectorSpace::isCompatible()</tt> and
-<tt>TSFCore::VectorSpace::createMember()</tt>) and
-<tt>TSFCore::Vector::applyOp()</tt>.  By far the hardest method
-to implement is <tt>applyOp(...)</tt>.  Compare this to most
-other abstract vector interfaces that require between 20-50 pure
-virtual methods that most be overridden (e.g. 56 methods in <A
-HREF="http://www.trip.caam.rice.edu/txt/hcldoc/html/HCL_Vector_d.html">HCL</A>).
+used in an application.
 
 <b>Heads Up !!!!!!</b>
 There already exists reduction/transformation operator-based
@@ -209,17 +216,36 @@ implementatations of several standard vector operations and
 some convenience functions that wrap these operators and call
 <tt>applyOp()</tt> can be found \ref TSFCore_VectorStdOps_grp "here".
 
-<li> Miscellaneous vector operations.
-
-A set of functions for miscellaneous vector operations based on the
-RTOp operator classes in <A
-HREF="../../RTOpStdOpsLib/html/index.html">libRTOpStdOpsLib</A> is
-declared in <tt>VectorStdOps.hpp</tt> and documented
-\ref TSFCore_VectorStdOps_grp "here".
-
 <li> Linear operator interfaces:
 
-Blah blah blah ...
+Linear operators are abstracted behind the <tt>TSFCore::LinearOp</tt>
+interface which really only defines one non-trivial method,
+<tt>TSFCore::LinearOp::apply()</tt>, for applying the operator.
+
+<li> Multi-vector interfaces:
+
+A multi-vector can be thought of as a tall thin matrix where each
+column is a vector.  In TSFCore, the <tt>TSFCore::MultiVector</tt>
+interface class inherits from the <tt>TSFCore::LinearOp</tt>.  This
+means that every multi-vector can act as a linear operator.  Another
+interesting feature of the TSFCore design is that
+<tt>TSFCore::Vector</tt> inherits from <tt>TSFCore::MultiVector</tt>.
+What this means is that every <tt>TSFCore::Vector</tt> is a
+<tt>TSFCore::MultiVector</tt> which has one column.  The motivation
+for this so that any piece of code that accepts
+<tt>TSFCore::MultiVector</tt> objects should also automatically accept
+<tt>TSFCore::Vector</tt> objects.
+
+Just as for <tt>TSFCore::Vector</tt>, <tt>TSFCore::MultiVector</tt>
+also accepts user-defined vector reduction/transformation operators
+through <tt>RTOpPack::RTOpT</tt>.
+
+<b>Heads Up !!!!!!</b> There already exists reduction/transformation
+operator-based implementatations of several standard vector
+(multi-vector) operations and some convenience functions that wrap
+these operators and call <tt>applyOp()</tt> can be found
+\ref TSFCore_MultiVectorStdOps_grp "here".
+
 
 </ul>
 
@@ -254,12 +280,14 @@ Blah blah blah ...
 
   <ul>
   <li> Abstract interface classes
+
     <ul>
     <li><tt>TSFCore::Nonlin::LinearSolveOp</tt>
     <li><tt>TSFCore::Nonlin::LinearOpWithSolve</tt>
     <li><tt>TSFCore::Nonlin::NonlinearProblem</tt>
     <li><tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt>
     </ul>
+
   </ul>
 .
 
@@ -273,87 +301,95 @@ linear operator with a solve operation (see
 
 */
 
-/** \defgroup TSFCore_Adapters_MPI_Base_grp Generic Node Subclasses for MPI-based Vectors and MultiVectors.
+/** \defgroup TSFCore_Adapters_MPI_Base_grp Generic Subclasses for MPI-based Vectors and MultiVectors.
 
 <ul>
 
 <li> Node Base Classes:
 
   <ul>
-  <li><tt>TSFCore::MPIVectorSpaceBase</tt>
-  <li><tt>TSFCore::MPIVectorBase</tt>
-  <li><tt>TSFCore::MPIMultiVectorBase</tt>
-  <li><tt>TSFCore::MultiVectorSerialization</tt>
+  <li><tt>TSFCore::MPIVectorSpaceBase</tt> is an general abstract node base subclass for all SPMD MPI-based vector spaces.
+  <li><tt>TSFCore::MPIVectorBase</tt> is a general abstract node base subcalss for all SPMD MPI-based vectors.
+  <li><tt>TSFCore::MPIMultiVectorBase</tt> is a general abstract node base subclass for all SPMD MPI-based multi-vectors.
   </ul>
+
 .
 
-<li> Standard implementations:
+<li> Standard Implementations:
 
   <ul>
-  <li><tt>TSFCore::MPIVectorSpaceFactoryStd</tt>
-  <li><tt>TSFCore::MPIVectorSpaceStd</tt>
-  <li><tt>TSFCore::MPIMultiVectorStd</tt>
+  <li><tt>TSFCore::MPIVectorSpaceFactoryStd</tt> is a concrete <tt>TSFCore::VectorSpaceFactory</tt> subclas that creates locally replicated
+      <tt>TSFCore::MPIVectorSpaceStd</tt> objects given their dimension.
+  <li><tt>TSFCore::MPIVectorSpaceStd</tt> is a general concrete <tt>TSFCore::VectorSpace</tt> subclass for SPMD MPI-based vector spaces which
+      creates <tt>MPIMultiVector</tt> objects.
+  <li><tt>TSFCore::MPIMultiVectorStd</tt> is a very general, highly optimized <tt>TSFCore::MultiVector</tt> subclass for SPMD MPI-based
+      multi-vectors. 
   </ul>
+
+.
+
+<li> Miscellaneous utilities:
+
+  <ul>
+  <li><tt>TSFCore::MultiVectorSerialization</tt> is a concrete utility class that performs ASCII and binary
+      <tt>std::stream</tt> based input and output of any <tt>TSFCore::MultiVector</tt> object who's range space
+      supports the <tt>TSFCore::MPIVectorSpaceBase</tt> interface.
+  </ul>
+
 .
 
 </ul>
 
-The first set of subclasses are designedto be standard base classes
-for adapters for <tt>TSFCore::Vector</tt>,
-<tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::MultiVector</tt>.
-These classes are all fully templated on the <tt>Scalar</tt> type and
-should work with arbitrary scalar types (such as <tt>std::complex</tt>
-and extended precision types) if a fully MPP environment.  These
-subclasses are also carfully designed to allow interoperability
-between various concrete implementations of MPI-based
-<tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
+The first set of subclasses (Node Base Classes) are designed to be
+standard base classes for adapters for <tt>TSFCore::Vector</tt>,
+<tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::MultiVector</tt> for
+all SPMD-based implementations.  These classes are all fully templated
+on the <tt>Scalar</tt> type and should work with arbitrary scalar
+types (such as <tt>std::complex</tt> and extended precision types) if
+a fully SPMD (single program multiple data) MPP (massively parallel
+platform) environment.  These subclasses are also carfully designed to
+allow interoperability between various concrete implementations of
+MPI-based <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt>
+objects.
 
-The second set of classes provide general and highly optimized
-implementations for <tt>TSFCore::MultiVector</tt>,
-<tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::VectorSpaceFactory</tt>.
+The second set of subclasses (Standard Implementations) provide
+general and highly optimized implementations for
+<tt>TSFCore::MultiVector</tt>, <tt>TSFCore::VectorSpace</tt> and
+<tt>TSFCore::VectorSpaceFactory</tt> for SPMD MPP implementations.  As
+far as abstract numerical algorithms (ANAs) go, these concrete
+subclasses are all that are really needed irregardless of how the
+<tt>TSFCore::LinearOp</tt> objects are implemented.
 
 */
-
 
 /** \defgroup TSFCore_Adapters_Epetra_grp Generic concrete adapter subclasses for Epetra objects
 
 <ul>
 
-<li> Node Base Classes:
+<li> Concrete Classes:
 
-  <table>
-  <tr>
-    <td><tt>TSFCore::EpetraVectorSpace</tt></td>
-    <td>Adapts an <tt>Epetra_Map</tt> object to form a <tt>TSFCore::VectorSpace</tt> object.</td>
-  </tr>
-  <tr>
-    <td><tt>TSFCore::EpetraVectorSpaceFactory</tt></td>
-    <td>Adapts an <tt>Epetra_Comm</tt> object to form a <tt>TSFCore::VectorSpaceFactory</tt> object.</td>
-  </tr>
-  <tr>
-    <td><tt>TSFCore::EpetraVector</tt></td>
-    <td>Adapts an <tt>Epetra_Vector</tt> object to form a <tt>TSFCore::Vector</tt> object.</td>
-  </tr>
-  <tr>
-    <td><tt>TSFCore::EpetraMultiVector</tt></td>
-    <td>Adapts an <tt>Epetra_MultiVector</tt> object to form a <tt>TSFCore::MultiVector</tt> object.</td>
-  </tr>
-  <tr>
-    <td><tt>TSFCore::EpetraLinearOp</tt></td>
-    <td>Adapts an <tt>Epetra_Object</tt> object to form a <tt>TSFCore::LinearOp</tt> object.</td>
-  </tr>
-  </table>
+  <ul>
+  <li><tt>TSFCore::EpetraVectorSpaceFactory</tt> adapts an <tt>Epetra_Comm</tt>
+      object to form a <tt>TSFCore::VectorSpaceFactory</tt> object and creates <tt>TSFCore::EpetraVectorSpace</tt> objects.
+  <li><tt>TSFCore::EpetraVectorSpace</tt> adapts an <tt>Epetra_Map</tt>
+      object to form a <tt>TSFCore::VectorSpace</tt> object and creates <tt>TSFCore::EpetraVector</tt> and
+      <tt>TSFCore::EpetraMultiVector</tt> objects.
+  <li><tt>TSFCore::EpetraVector</tt> adapts an <tt>Epetra_Vector</tt> object
+      to form a <tt>TSFCore::Vector</tt> object.
+  <li><tt>TSFCore::EpetraMultiVector</tt> adapts an <tt>Epetra_MultiVector</tt> object
+      to form a <tt>TSFCore::MultiVector</tt> object.
+  <li><tt>TSFCore::EpetraLinearOp</tt> adapts an <tt>Epetra_Operator</tt> object to form a <tt>TSFCore::LinearOp</tt> object.
+  </ul>
 
 .
 
 <li> Basic support software
 
-  <table>
-  <tr>
-    <td><tt>TSFCore::get_Epetra_MultiVector()</tt></td>
-    <td>Gets <tt>Epetra_MultiVector</tt> views of <tt>TSFCore::MultiVector</tt> objects if possible</td>
-  </tr>
-  </table>
+  <ul>
+  <li><tt>TSFCore::get_Epetra_MultiVector()</tt> gets an <tt>Epetra_MultiVector</tt> view of
+      any compatible <tt>TSFCore::MultiVector</tt> object even if it is not derived from
+      <tt>TSFCore::EpetraMultiVector</tt>.
+  </ul>
 
 </ul>
 
@@ -366,13 +402,17 @@ objects to form <tt>%TSFCore</tt> objects.
 
 <ul>
 
-<li> Explicit views of vector and multi-vector elements:
+<li> Concrete classes for explicit views of vector and multi-vector elements:
 
   <ul>
-  <li><tt>TSFCore::ExplicitVectorView</tt>
-  <li><tt>TSFCore::ExplicitMutableVectorView</tt>
-  <li><tt>TSFCore::ExplicitMultiVectorView</tt>
-  <li><tt>TSFCore::ExplicitMutableMultiVectorView</tt>
+  <li><tt>TSFCore::ExplicitVectorView</tt> creates a non-mutable (<tt>const</tt>) explicit view of a <tt>const TSFCore::Vector</tt> object,
+      allows direct access to vector elements and then frees the view in the destructor.
+  <li><tt>TSFCore::ExplicitMutableVectorView</tt> creates a mutable (non-<tt>const</tt>) explicit view of a <tt>TSFCore::Vector</tt> object,
+      allows direct access to vector elements and then frees the view in the destructor.
+  <li><tt>TSFCore::ExplicitMultiVectorView</tt> creates a non-mutable (<tt>const</tt>) explicit view of a <tt>const TSFCore::MultiVector</tt> object,
+      allows direct access to multi-vector elements and then frees the view in the destructor.
+  <li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> creates a mutable (non-<tt>const</tt>) explicit view of a <tt>TSFCore::MultiVector</tt> object,
+      allows direct access to multi-vector elements and then frees the view in the destructor.
   </ul>
 
 .
@@ -381,26 +421,40 @@ objects to form <tt>%TSFCore</tt> objects.
 
   <ul>
   <li> Node interface classes:
+
     <ul>
-    <li><tt>TSFCore::ProductVectorSpaceBase</tt>
-    <li><tt>TSFCore::ProductVectorBase</tt>
-    <li><tt>TSFCore::ProductMultiVectorBase</tt>
+    <li><tt>TSFCore::ProductVectorSpaceBase</tt> defines an interface for a composite product vector space composed out of one
+        or more constituent <tt>TSFCore::VectorSpace</tt> objects.
+    <li><tt>TSFCore::ProductVectorBase</tt> defines an interface for a composite product vector composed out of one
+        or more constituent <tt>TSFCore::Vector</tt> objects.
+    <li><tt>TSFCore::ProductMultiVectorBase</tt>  defines an interface for a composite product multi-vector composed out of one
+        or more constituent <tt>TSFCore::MultiVector</tt> objects.
     </ul>
+
   <li> Standard concrete implementations:
+
     <ul>
-    <li><tt>TSFCore::ProductVectorSpace</tt>
-    <li><tt>TSFCore::ProductVector</tt>
-    <li><tt>TSFCore::ProductMultiVector</tt> (ToDo: This needs to be implemented!)
+    <li><tt>TSFCore::ProductVectorSpace</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorSpaceBase</tt>
+        that should be sufficient for most use cases.
+    <li><tt>TSFCore::ProductVector</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorBase</tt>
+        that should be sufficient for most use cases.
+    <li><tt>TSFCore::ProductMultiVector</tt> is a general concrete implementation of <tt>TSFCore::ProductMultiVectorBase</tt>
+        that should be sufficient for most use cases. (ToDo: This needs to be implemented!)
     </ul>
+
   </ul>
 
 .
 
-<li> Miscellaneous omposite linear operators:
+<li> Miscellaneous composite linear operators:
 
   <ul>
-	<li><tt>TSFCore::DiagonalLinearOp</tt>
-	<li><tt>TSFCore::MultiplicativeLinearOp</tt>
+	<li><tt>TSFCore::DiagonalLinearOp</tt> is a simple concrete subclass that defines a diagonal <tt>TSFCore::LinearOp</tt>
+       \f$M = \gamma \; \mbox{diag}(d) \in \Re^{n \times n}\f$
+      out of any <tt>TSFCore::Vector</tt> object for the diagonal \f$d \in \Re^n\f$.
+	<li><tt>TSFCore::MultiplicativeLinearOp</tt> is a simple concrete subclass that defines a composite  multipliciative
+      <tt>TSFCore::LinearOp</tt> of the form \f$M = \gamma \; A^1 A^2 \ldots A^m}\f$ composed out of one or more
+      constituent <tt>TSFCore::LinearOp</tt> objects \f$A^1, A^2 \ldots A^m\f$.
   </ul>
 
 .
@@ -408,7 +462,8 @@ objects to form <tt>%TSFCore</tt> objects.
 <li> Testing:
 
   <ul>
-  <li><tt>TSFCore::LinearOpTester</tt>
+  <li><tt>TSFCore::LinearOpTester</tt> is a concrete class that tests any generic <tt>TSFCore::LinearOp</tt> object
+      to see if its <tt>TSFCore::LinearOp::apply()</tt> function works correctly.
   </ul>
 
 .
@@ -416,7 +471,8 @@ objects to form <tt>%TSFCore</tt> objects.
 <li> Miscellaneous:
 
   <ul>
-  <li><tt>TSFCore::MultiVectorAllocator</tt>
+  <li><tt>TSFCore::MultiVectorAllocator</tt> is an allocator class to be used with
+      <t>MemMngPack::AbstractFactoryStd</tt> to create <tt>TSFCore::MultiVector</tt> objects of a given size.
   </ul>
 .
 

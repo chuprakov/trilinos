@@ -191,7 +191,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		//
 		if( curr_iter > 0 ) {
 			Teuchos::RefCountPtr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
-			SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
+			SerialVector<Scalar> z_vec( Teuchos::rcp(&z[0],false), 1, curr_iter );
 			V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
 		}
 		//for( int i = 0; i < curr_iter; i++ )

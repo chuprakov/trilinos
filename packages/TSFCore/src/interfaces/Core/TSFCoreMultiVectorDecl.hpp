@@ -102,15 +102,17 @@ public:
 	/// Inject MultiVector version into this interface as well.
 	using LinearOp<Scalar>::apply;
 	
-	/** @name Provide access to the columns as <tt>Vector</tt> objects */
+	/** @name Provide access to the columns as Vector objects */
 	//@{
 
 	///
 	/** Get a non-mutable view of column vector.
 	 *
+	 * \param  j  [in] Index the view column to return.
+	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> <tt>1 <= j && j <= this->range().dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>1 <= j && j <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -127,6 +129,8 @@ public:
 	///
 	/** Get a mutable view of column vector.
 	 *
+	 * \param  j  [in] Index the view column to return.
+	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> <tt>1 <= j && j <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
@@ -138,7 +142,7 @@ public:
 	 * </ul>
 	 *
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
-	 * the smart pointer returned by this function goes out of scope.
+	 * the smart pointer returned by this function is destroyed.
 	 */
 	virtual Teuchos::RefCountPtr<Vector<Scalar> > col(Index j) = 0;
 

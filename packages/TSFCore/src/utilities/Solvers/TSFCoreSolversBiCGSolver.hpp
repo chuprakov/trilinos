@@ -63,9 +63,9 @@ namespace Solvers {
 
 template<class Scalar>
 BiCGSolver<Scalar>::BiCGSolver(
-	const out_ptr_t   &out
-	,bool             dump_all
-	,int              default_max_iter
+	const Teuchos::RefCountPtr<std::ostream>   &out
+	,bool                                      dump_all
+	,int                                       default_max_iter
 	)
 	:out_(out)
 	,dump_all_(dump_all)

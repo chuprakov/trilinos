@@ -42,9 +42,16 @@ namespace TSFCore {
  * This node subclass contains the an implementation of
  * <tt>applyOp()</tt> that relies on implementations of the methods
  * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt> and
- * <tt>commitSubVector()</tt>.  A concrete subclass must
- * implement these methods without relying on <tt>applyOp()</tt>
- * (see the concrete subclass <tt>SerialVector</tt>).
+ * <tt>commitSubVector()</tt>.  This class also contains default
+ * implementations of <tt>getSubVector()</tt>,
+ * <tt>freeSubVector()</tt> and <tt>commitSubVector()</tt>.
+ *
+ * <b>Notes to subclass develoeprs</b>
+ *
+ * All that is needed to develop a concrete subclass is to define the
+ * pure virtual functions <tt>space()</tt> (for which a subclass of
+ * <tt>SerialVectorSpaceBase</tt> should be usee) and
+ * <tt>getData()</tt>.
  */
 template<class Scalar>
 class SerialVectorBase : virtual public Vector<Scalar> {
@@ -55,6 +62,49 @@ public:
 
 	///
 	SerialVectorBase();
+
+	/** @name Pure virtual methods to be overridden by subclasses */
+	//@{
+
+	///
+	/** Returns a non-<tt>const</tt> pointer to the beginning of the
+	 * local vector data (and its stride).
+	 *
+	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the values.
+	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>values!=NULL</tt>
+	 * <li> <tt>stride!=NULL</tt>
+	 * </ul>
+	 */
+	virtual void getData( Scalar** values, Index* stride ) = 0;
+
+	//@}
+
+	/** @name Virtual methods with default implementations. */
+	//@{
+
+	///
+	/** Returns a <tt>const</tt> pointer to the beginning of the local
+	 * vector data.
+	 *
+	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the values.
+	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>values!=NULL</tt>
+	 * <li> <tt>stride!=NULL</tt>
+	 * </ul>
+	 *
+	 * The default implementation performs a <tt>const_cast</tt> of
+	 * <tt>this</tt> and then calls the non-<tt>const</tt> version of
+	 * this function.  An override of this function should only be
+	 * performed to save on an extra virtual function call.
+	 */
+	virtual void getData( const Scalar** values, Index* stride ) const;
+
+	//@}
 
 	/** @name Overridden from Vector */
 	//@{
@@ -80,6 +130,16 @@ public:
 		,const Index                    sub_dim
 		,const Index                    global_offset
 		) const;
+	/// 
+	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+	///
+	void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+	///
+	void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+	///
+	void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+	///
+	void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
 
 	//@}
 
@@ -88,7 +148,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	mutable bool in_applyOp_;
+	mutable bool   in_applyOp_;
 
 }; // end class SerialVectorBase
 

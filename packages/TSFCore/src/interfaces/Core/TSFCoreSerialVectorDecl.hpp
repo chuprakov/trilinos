@@ -38,10 +38,10 @@
 namespace TSFCore {
 
 ///
-/** Implementation of serial vectors.
+/** General extendable implementation of serial vectors.
  *
  * This class can be used either as a view of a vector data or as a
- * storage for vector data.
+ * storage for vector data (with any underlying storage type).
  *
  * To create with storage with the dimension of <tt>dim</tt> just call
  * the constructor <tt>SerialVector(dim)</tt> or after construction
@@ -49,8 +49,25 @@ namespace TSFCore {
  *
  * To simply create a view of a vector <tt>v</tt> with stride
  * <tt>vs</tt>, without ownership just call
- * <tt>SerialVector(v,vs)</tt> or after construction call
- * <tt>this->initialize(v,vs)</tt>.
+ * <tt>SerialVector(Teuchos::rcp(v,false),vs)</tt> or after
+ * construction call
+ * <tt>this->initialize(Teuchos::rcp(v,false),vs)</tt>.
+ *
+ * To use another storage type, such as an
+ * <tt>std::vector<Scalar></tt>, construct as:
+ *
+ \code
+
+ template<class Scalar>
+ Teuchos::RefCountPtr<Vector<Scalar> > STLVectorSpace<Scalar>::createMember() const
+ {
+   Teuchos::RefCountPtr<std::vector<Scalar> > stl_v = Teuchos::rcp( new std::vector<Scalar>(dim_) );
+   Teuchos::RefCountPtr<Scalar> v = Teuchos::rcp(&(*stl_v)[0],false);
+	 Teuchos::set_extra_data( stl_v, "stl::vector", &v );
+	 return Teuchos::rcp( new SerialVector<Scalar>( v, 1, dim_, Teuchos::rcp(this,false) ) );
+ }
+
+ \endcode
  */
 template<class Scalar>
 class SerialVector : public SerialVectorBase<Scalar> {
@@ -59,10 +76,6 @@ public:
 	/** @name Constructors/initializers */
 	//@{
 
-	///
-	/** Frees memory if <tt>this</tt> owns it.
-	 */
-	~SerialVector();
 	///
 	/** Calls <tt>this->initialize(vecSpc)</tt>.
 	 */
@@ -73,20 +86,19 @@ public:
 	/** Calls <tt>this->initialize(dim)</tt>.
 	 */
 	SerialVector(
-		int dim = 0
+		const Index dim = 0
 		);
 	///
-	/** Calls <tt>this->initialize(v,vs,dim,ownsMem)</tt>.
+	/** Calls <tt>this->initialize(v,vs,dim,vecSpc)</tt>.
 	 */
 	SerialVector(
-		Scalar  v[]
-		,int    vs
-		,int    dim
-		,bool   ownsMem = false
+		const Teuchos::RefCountPtr<Scalar>                      &v
+		,const Index                                            vs
+		,const Index                                            dim
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc = Teuchos::null
 		);
 	///
-	/** Call <tt>this->initialize(v,vs,true,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
+	/** Call <tt>this->initialize(v,vs,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
@@ -95,18 +107,14 @@ public:
 	/** Call <tt>this->initialize(v,vs,true)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
-		int dim
+		const Index dim
 		);
 	///
 	/** Initialize with storage.
 	 *
-	 * @param  v      [in] Pointer to array of storage that <tt>*this</tt> will represent.
+	 * @param  v      [in] Smart pointer to array of storage that <tt>*this</tt> will represent.
 	 * @param  vs     [in] Stride for the storage in <tt>v[]</tt> (see Postconditions).
 	 * @param  dim    [in] Number of elements in <tt>v[]</tt> this this will represent (see Postconditions).
-	 * @param  ownsMem
-	 *                [in] If <tt>true</tt> then <tt>delete [] v</tt> will be called after <tt>*this</tt>
-	 *                no longer needs access to this memory.  If <tt>false</tt> then the client is responsible
-	 *                for memory management.  The default is <tt>false</tt>.
 	 * @param  vecSpc
 	 *                [in] Smart pointer to a <tt>VectorSpace</tt> object that will be used to represent the
 	 *                vector space for <tt>*this</tt>.  If <tt>vecSpc.get()==NULL</tt> on input, then
@@ -124,9 +132,9 @@ public:
 	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>vecSpc.get() == this->space().get()</tt>
 	 * <li> [<tt>vecSpc.get()==NULL</tt>] <tt>dynamic_cast<const SerialVectorSpace<Scalar>*>(this->space().get()) != NULL</tt>
 	 * <li> <tt>this->space()->dim() == dim</tt>
-	 * <li> <tt>this->getPtr() == v</tt>
+	 * <li> <tt>this->getRCPtr().get() == v.get()</tt>
+	 * <li> <tt>this->getPtr() == v.get()</tt>
 	 * <li> <tt>this->getStride() == vs</tt>
-	 * <li> <tt>this->getOwnsMem() == ownsMem</tt>
 	 * </ul>
 	 *
 	 * Note that this function is declared virtual so that subclasses
@@ -135,10 +143,9 @@ public:
 	 * <tt>this->SerialVector<Scalar>::initialize(...)</tt>.
 	 */
 	virtual void initialize(
-		Scalar  v[]
-		,int    vs
-		,int    dim
-		,bool   ownsMem = false
+		const Teuchos::RefCountPtr<Scalar>                      &v
+		,const Index                                            vs
+		,const Index                                            dim
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc = Teuchos::null
 		);
 
@@ -148,34 +155,32 @@ public:
 	//@{
 
 	///
+	Teuchos::RefCountPtr<Scalar> getRCPtr();
+	///
+	Teuchos::RefCountPtr<const Scalar> getRCPtr() const;
+	///
 	Scalar* getPtr();
 	///
 	const Scalar* getPtr() const;
 	///
-	int getStride() const;
+	Index getStride() const;
 	///
-	int getDim() const;
-	///
-	bool getOwnsMem() const;
+	Index getDim() const;
 	
+	//@}
+
+	/** @name Overridden from SerialVectorBase */
+	//@{
+	///
+	void getData( Scalar** values, Index* stride );
+	///
+	void getData( const Scalar** values, Index* stride ) const;
 	//@}
 
 	/** @name Overridden from Vector */
 	//@{
-
 	///
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const;
-	///
-	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
-	void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
-	void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-	///
-	void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-	///
-	void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
-
 	//@}
 
 private:
@@ -183,11 +188,10 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	Scalar                                                  *v_;
-	int                                                     vs_;
-	int                                                     dim_;
-	bool                                                    ownsMem_;
-	Teuchos::RefCountPtr<const VectorSpace<Scalar> >   space_serial_;
+	Teuchos::RefCountPtr<Scalar>                            v_;
+	Index                                                   vs_;
+	Index                                                   dim_;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        space_serial_;
 
 	// ////////////////////////////////
 	// Private member functions
@@ -205,37 +209,44 @@ private:
 
 template<class Scalar>
 inline
-Scalar* SerialVector<Scalar>::getPtr()
+Teuchos::RefCountPtr<Scalar> SerialVector<Scalar>::getRCPtr()
 {
 	return v_;
+}
+
+template<class Scalar>
+inline
+Teuchos::RefCountPtr<const Scalar> SerialVector<Scalar>::getRCPtr() const
+{
+	return v_;
+}
+
+template<class Scalar>
+inline
+Scalar* SerialVector<Scalar>::getPtr()
+{
+	return v_.get();
 }
 
 template<class Scalar>
 inline
 const Scalar* SerialVector<Scalar>::getPtr() const
 {
-	return v_;
+	return v_.get();
 }
 
 template<class Scalar>
 inline
-int SerialVector<Scalar>::getStride() const
+Index SerialVector<Scalar>::getStride() const
 {
 	return vs_;
 }	
 
 template<class Scalar>
 inline
-int SerialVector<Scalar>::getDim() const
+Index SerialVector<Scalar>::getDim() const
 {
 	return dim_;
-}	
-
-template<class Scalar>
-inline
-bool SerialVector<Scalar>::getOwnsMem() const
-{
-	return ownsMem_;
 }	
 
 } // end namespace TSFCore

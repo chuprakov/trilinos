@@ -76,8 +76,8 @@ public:
 	 * </ul>
 	 */
 	SummaryOutputter(
-		const out_ptr_t       &out
-		,const std::string    &leadingOutputStr
+		const Teuchos::RefCountPtr<std::ostream>       &out
+		,const std::string                             &leadingOutputStr
 		);
 
 	//@}

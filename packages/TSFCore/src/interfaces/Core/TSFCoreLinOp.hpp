@@ -37,13 +37,15 @@
 namespace TSFCore {
 
 ///
-/** Base class for simple aggregation of a <tt>LinearOp</tt> and its
- * natural (logical) transpose argument (see <tt>LinOpPersisting</tt>,
+/** Base class for simple aggregation of a <tt>LinearOp</tt>, its
+ * natural (logical) transpose argument and its natural scalar
+ * multiplier (see <tt>LinOpPersisting</tt>,
  * <tt>LinOpNonPersisting</tt> for concrete types).
  *
  * This class is nothing more than a base clas for a silly aggregation
- * of a <tt>LinearOp</tt> object and its <tt>ETransp</tt> value that
- * defines the mathematical definition of the non-transposed operator.
+ * of a <tt>LinearOp</tt> object and its <tt>ETransp</tt> value and
+ * scalar multiplier that defines the mathematical definition of the
+ * non-transposed operator.
  *
  * This simple type has all of the operations of a type with value
  * semantics in that can be default constructed, copy constructed, and
@@ -64,7 +66,7 @@ public:
 	 * @param  defaultTrans  [in] Default definition of transpose (default: <tt>NOTRANS</tt>).
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->defaultTrans() == defaultTrans</tt>
+	 * <li><tt>this->defaultTrans() == defaultTrans</tt>
 	 * </ul>
 	 */
 	void defaultTrans( const ETransp defaultTrans );
@@ -73,6 +75,22 @@ public:
 	/** Return the default defintion of mathematical transpose.
 	 */
 	ETransp defaultTrans() const;
+
+	///
+	/** Set the default scalar multiplier.
+	 *
+	 * @param  defaultAlpha  [in] The default scalar multiplier <tt>alpha</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>this->defaultAlpha() == defaultAlpha</tt>
+	 * </ul>
+	 */
+	void defaultAlpha( const Scalar &defaultAlpha );
+
+	///
+	/** Return the default defintion of mathematical transpose.
+	 */
+	Scalar defaultAlpha() const;
 
 	//@}
 
@@ -113,17 +131,11 @@ public:
 	/** Apply the logical linear operator (or its transpose) to a vector:
 	 * <tt>y = alpha*op(M)*x + beta*y</tt>.
 	 *
-	 * @param  M_trans
-	 *                [in] Determines whether the logical transposed or non-trnasposed
-	 *                operator is applied as:
-	 *                <ul>
-	 *                <li> <tt>op(M) = M</tt>, for <tt>M_trans==NOTRANS</tt>
-	 *                <li> <tt>op(M) = M'</tt>, for <tt>M_trans==TRANS</tt>
-	 *                </ul>
-	 * @param  x      [in] See <tt>LinearOp::apply()</tt>.
-	 * @param  y      [in/out] See <tt>LinearOp::apply()</tt>.
-	 * @param  alpha  [in] See <tt>LinearOp::apply()</tt>.
-	 * @param  beta   [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  M_trans [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  x       [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  y       [in/out] See <tt>LinearOp::apply()</tt>.
+	 * @param  alpha   [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  beta    [in] See <tt>LinearOp::apply()</tt>.
 	 * 
 	 * Preconditions:<ul>
 	 * <li> See <tt>LinearOp::apply()</tt>.
@@ -134,33 +146,26 @@ public:
 	 * </ul>
 	 *
 	 * Simply calls: \code
-
-   this->op()->apply(trans_trans(M_trans,this->defaultTrans()),x,y,alpha,beta)
+   this->op()->apply(trans_trans(M_trans,this->defaultTrans()),x,y,(this->defaultAlpha()*alpha),beta)
    \endcode
 	 */
 	void apply(
 		const ETransp            M_trans
 		,const Vector<Scalar>    &x
 		,Vector<Scalar>          *y
-		,const Scalar            alpha = 1.0
-		,const Scalar            beta  = 0.0
+		,const Scalar            alpha = Teuchos::ScalarTraits<Scalar>::one()
+		,const Scalar            beta  = Teuchos::ScalarTraits<Scalar>::zero()
 		) const;
 
 	///
 	/** Apply the linear operator (or its transpose) to a multi-vector :
 	 * <tt>Y = alpha*op(M)*X + beta*Y</tt>.
 	 *
-	 * @param  M_trans
-	 *                [in] Determines whether the logical transposed or non-trnasposed
-	 *                operator is applied as:
-	 *                <ul>
-	 *                <li> <tt>op(M) = M</tt>, for <tt>M_trans==NOTRANS</tt>
-	 *                <li> <tt>op(M) = M'</tt>, for <tt>M_trans==TRANS</tt>
-	 *                </ul>
-	 * @param  X      [in] See <tt>LinearOp::apply()</tt>.
-	 * @param  Y      [in/out] See <tt>LinearOp::apply()</tt>.
-	 * @param  alpha  [in] See <tt>LinearOp::apply()</tt>.
-	 * @param  beta   [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  M_trans [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  X       [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  Y       [in/out] See <tt>LinearOp::apply()</tt>.
+	 * @param  alpha   [in] See <tt>LinearOp::apply()</tt>.
+	 * @param  beta    [in] See <tt>LinearOp::apply()</tt>.
 	 * 
 	 * Preconditions:<ul>
 	 * <li> See <tt>LinearOp::apply()</tt>.
@@ -171,16 +176,15 @@ public:
 	 * </ul>
 	 *
 	 * Simply calls: \code
-
-   this->op()->apply(trans_trans(M_trans,this->defaultTrans()),X,Y,alpha,beta)
+   this->op()->apply(trans_trans(M_trans,this->defaultTrans()),X,Y,(this->defaultAlpha()*alpha),beta)
 	 \endcode
 	 */
 	void apply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X
 		,MultiVector<Scalar>          *Y
-		,const Scalar                 alpha = 1.0
-		,const Scalar                 beta  = 0.0
+		,const Scalar                 alpha = Teuchos::ScalarTraits<Scalar>::one()
+		,const Scalar                 beta  = Teuchos::ScalarTraits<Scalar>::zero()
 		) const;
 
 	//@}
@@ -196,6 +200,7 @@ protected:
 	LinOpBase(
 		const Teuchos::RefCountPtr<const LinearOp<Scalar> >   &op
 		,const ETransp                                        defaultTrans
+		,const Scalar                                         &defaultAlpha
 		);
 
 	//@}
@@ -212,22 +217,22 @@ private:
 
 	Teuchos::RefCountPtr<const LinearOp<Scalar> >  op_;
 	ETransp                                        defaultTrans_;
+	Scalar                                         defaultAlpha_;
 
 };
 
 ///
-/** Simple aggregation class of a <tt>LinearOp</tt> and its natural
- * (logical) transpose argument using a persisting relationship.
+/** Simple aggregation class of a <tt>LinearOp</tt>, its natural
+ * (logical) transpose argument and its natural scalar multiplier for
+ * a persisting relationship.
  *
  * Objects of this type should be passed to functions where a
- * non-persisting relationship (as defined in the RefCountPtr
- * beginner's guide) is used with the underlying <tt>LinearOp</tt>
- * object.
- *
- * Objects of this type should never, never be used as data members in
- * a class since this is by definition a persisting relationship.  For
- * persisting relationships, use a <tt>LinOpPersisting</tt> object
- * instead.
+ * persisting relationship (as defined in the <A
+ * HREF="http://software.sandia.gov/Trilinos/RefCountPtrBeginnersGuideSAND.pdf">beginners
+ * guide</A>)) is used with the underlying <tt>LinearOp</tt> object.
+ * Objects of this type also should be used a private data member to
+ * aggregate a <tt>LinearOp</tt> object, its mathematical defintion
+ * of the non-transposed operator and its natural scalar multiplier.
  */
 template<class Scalar>
 class LinOpPersisting : public LinOpBase<Scalar> {
@@ -240,8 +245,9 @@ public:
 	/** Default construct.
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->op().get() == NULL</tt>
-	 * <li>this->defaultTrans() == NOTRANS</tt>
+	 * <li><tt>this->op().get() == NULL</tt>
+	 * <li><tt>this->defaultTrans() == NOTRANS</tt>
+	 * <li><tt>this->defaultAlpha() == Teuchos::ScalarTraits<Scalar>::one()</tt>
 	 * </ul>
 	 */
 	LinOpPersisting();
@@ -251,15 +257,18 @@ public:
 	 *
 	 * @param  op            [in] Smart pointer to linear operator (persisting relationship).
 	 * @param  defaultTrans  [in] Default definition of transpose (default: <tt>NOTRANS</tt>).
+	 * @param  defaultAlpha  [in] Default value for scalar <tt>alpha</tt>
+	 *                            (default: <tt>Teuchos::ScalarTraits<Scalar>::one()</tt>).
 	 *
 	 *
 	 * Preconditions:<ul>
-	 * <li>op.get() != NULL</tt>
+	 * <li><tt>op.get() != NULL</tt>
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->op().get() == op.get()</tt>
-	 * <li>this->defaultTrans() == defaultTrans</tt>
+	 * <li><tt>this->op().get() == op.get()</tt>
+	 * <li><tt>this->defaultTrans() == defaultTrans</tt>
+	 * <li><tt>this->defaultAlpha() == defaultAlpha</tt>
 	 * </ul>
 	 *
 	 * Note that this constructor (because of the default value for
@@ -270,7 +279,8 @@ public:
 	 */
 	LinOpPersisting(
 		const Teuchos::RefCountPtr<const LinearOp<Scalar> >   &op
-		,const ETransp                                        defaultTrans = NOTRANS
+		,const ETransp                                        defaultTrans  = NOTRANS
+		,const Scalar                                         &defaultAlpha = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
@@ -283,15 +293,15 @@ public:
 };
 
 ///
-/** Simple aggregation class of a <tt>LinearOp</tt> and its natural
- * (logical) transpose argument using a non-persisting relationship.
+/** Simple aggregation class of a <tt>LinearOp</tt>, its natural
+ * (logical) transpose argument and its natural scalar multiplier
+ * using a non-persisting relationship.
  *
  * Objects of this type should be passed to functions where a
- * persisting relationship (as defined in the RefCountPtr beginner's
- * guide) is being created with the underlying <tt>LinearOp</tt>
- * object.  Objects of this type also should be used a private data
- * members to aggregate a <tt>LinearOp</tt> object and its
- * mathematical defintion of the non-transposed operator.
+ * non-persisting relationship (as defined in the ) is being created
+ * with the underlying <tt>LinearOp</tt> object.  Objects of this type
+ * also should <b>not</b> be used a private data member.  Instead, use
+ * a <tt>LinOpPersisting</tt> object.
  *
  * This class has value semantics!
  */
@@ -306,8 +316,9 @@ public:
 	/** Default construct.
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->op() == &op</tt>
-	 * <li>this->defaultTrans() == NOTRANS</tt>
+	 * <li><tt>this->op() == &op</tt>
+	 * <li><tt>this->defaultTrans() == NOTRANS</tt>
+	 * <li><tt>this->defaultAlpha() == Teuchos::ScalarTraits<Scalar>::one()</tt>
 	 * </ul>
 	 */
 	LinOpNonPersisting();
@@ -317,10 +328,13 @@ public:
 	 *
 	 * @param  op            [in] Raw reference to linear operator (non-persisting relationship).
 	 * @param  defaultTrans  [in] Default definition of transpose (default: <tt>NOTRANS</tt>).
+	 * @param  defaultAlpha  [in] Default value for scalar <tt>alpha</tt>
+	 *                            (default: <tt>Teuchos::ScalarTraits<Scalar>::one()</tt>).
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->op() == &op</tt>
-	 * <li>this->defaultTrans() == defaultTrans</tt>
+	 * <li><tt>this->op() == &op</tt>
+	 * <li><tt>this->defaultTrans() == defaultTrans</tt>
+	 * <li><tt>this->defaultAlpha() == defaultAlpha</tt>
 	 * </ul>
 	 *
 	 * Note that this constructor is made <tt>explict</tt> so that an
@@ -329,7 +343,8 @@ public:
 	 */
 	explicit LinOpNonPersisting(
 		const LinearOp<Scalar>                                &op
-		,const ETransp                                        defaultTrans = NOTRANS
+		,const ETransp                                        defaultTrans  = NOTRANS
+		,const Scalar                                         &defaultAlpha = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
@@ -338,8 +353,9 @@ public:
 	 * @param  op  [in]
 	 *
 	 * Postconditions:<ul>
-	 * <li>this->op() == &op.op().get()</tt>
-	 * <li>this->defaultTrans() == op.defaultTrans()</tt>
+	 * <li><tt>this->op() == &op.op().get()</tt>
+	 * <li><tt>this->defaultTrans() == op.defaultTrans()</tt>
+	 * <li><tt>this->defaultAlpha() == op.defaultAlpha()</tt>
 	 * </ul>
 	 *
 	 * This constructor essentially allows an implicit conversion from a
@@ -371,7 +387,7 @@ public:
 template<class Scalar>
 inline
 LinOpBase<Scalar>::LinOpBase()
-	:defaultTrans_(NOTRANS)
+	:defaultTrans_(NOTRANS),defaultAlpha_(Teuchos::ScalarTraits<Scalar>::one())
 {}
 
 template<class Scalar>
@@ -379,9 +395,11 @@ inline
 LinOpBase<Scalar>::LinOpBase(
 	const Teuchos::RefCountPtr<const LinearOp<Scalar> >   &op
 	,const ETransp                                        defaultTrans
+	,const Scalar                                         &defaultAlpha
 	)
 	:op_(op)
 	,defaultTrans_(defaultTrans)
+	,defaultAlpha_(defaultAlpha)
 {}
 
 template<class Scalar>
@@ -393,16 +411,30 @@ void LinOpBase<Scalar>::LinOpBase<Scalar>::defaultTrans( const ETransp defaultTr
 
 template<class Scalar>
 inline
-Teuchos::RefCountPtr<const LinearOp<Scalar> > LinOpBase<Scalar>::op() const
+ETransp LinOpBase<Scalar>::defaultTrans() const
 {
-	return op_;
+	return defaultTrans_;
 }
 
 template<class Scalar>
 inline
-ETransp LinOpBase<Scalar>::defaultTrans() const
+void LinOpBase<Scalar>::defaultAlpha( const Scalar &defaultAlpha )
 {
-	return defaultTrans_;
+	defaultAlpha_ = defaultAlpha_;
+}
+
+template<class Scalar>
+inline
+Scalar LinOpBase<Scalar>::defaultAlpha() const
+{
+	return defaultAlpha_;
+}
+
+template<class Scalar>
+inline
+Teuchos::RefCountPtr<const LinearOp<Scalar> > LinOpBase<Scalar>::op() const
+{
+	return op_;
 }
 
 template<class Scalar>
@@ -438,7 +470,7 @@ void LinOpBase<Scalar>::apply(
 	,const Scalar            beta
 	) const
 {
-	op_->apply(trans_trans(M_trans,defaultTrans_),x,y,alpha,beta);
+	op_->apply(trans_trans(M_trans,defaultTrans_),x,y,(defaultAlpha_*alpha),beta);
 }
 
 template<class Scalar>
@@ -451,7 +483,7 @@ void LinOpBase<Scalar>::apply(
 	,const Scalar                 beta
 	) const
 {
-	op_->apply(trans_trans(M_trans,defaultTrans_),X,Y,alpha,beta);
+	op_->apply(trans_trans(M_trans,defaultTrans_),X,Y,(defaultAlpha_*alpha),beta);
 }
 
 //
@@ -469,8 +501,9 @@ inline
 LinOpPersisting<Scalar>::LinOpPersisting(
 	const Teuchos::RefCountPtr<const LinearOp<Scalar> >   &op
 	,const ETransp                                        defaultTrans
+	,const Scalar                                         &defaultAlpha
 	)
-	:LinOpBase<Scalar>(op,defaultTrans)
+	:LinOpBase<Scalar>(op,defaultTrans,defaultAlpha)
 {
 	TEST_FOR_EXCEPT( op.get() == NULL );
 }
@@ -498,14 +531,15 @@ inline
 LinOpNonPersisting<Scalar>::LinOpNonPersisting(
 	const LinearOp<Scalar>                                &op
 	,const ETransp                                        defaultTrans
+	,const Scalar                                         &defaultAlpha
 	)
-	:LinOpBase<Scalar>(Teuchos::rcp(&op,false),defaultTrans)
+	:LinOpBase<Scalar>(Teuchos::rcp(&op,false),defaultTrans,defaultAlpha)
 {}
 
 template<class Scalar>
 inline
 LinOpNonPersisting<Scalar>::LinOpNonPersisting( const LinOpPersisting<Scalar> &op )
-	:LinOpBase<Scalar>(op.op(),op.defaultTrans())
+	:LinOpBase<Scalar>(op.op(),op.defaultTrans(),op.defaultAlpha())
 {}
 
 template<class Scalar>

@@ -40,9 +40,19 @@ namespace TSFCore {
 template<class Scalar> class MPIVectorSpaceBase;
 
 ///
-/** Base class for MPI-based multi-vectors.
+/** Highly optimized concrete implementation subclass for SPMD-MPI-based multi-vectors.
  *
- * ToDo: Finish documentation!
+ * This subclass provides a very efficient and very general concrete
+ * implementation of a <tt>TSFCore::MultiVector</tt> object.
+ *
+ * Objects of this type generally should not be constructed directly
+ * by a client but instead by using the concrete vector space subclass
+ * <tt>TSFCore::MPIVectorSpaceStd</tt> and using the function
+ * <tt>TSFCore::MPIVectorSpaceStd::createMembers()</tt>.
+ *
+ * The storage type can be anything since a
+ * <tt>Teuchos::RefCountPtr</tt> is used to pass in the local values
+ * pointer into the constructor and <tt>initialize()</tt>.
  */
 template<class Scalar>
 class MPIMultiVectorStd : virtual public MPIMultiVectorBase<Scalar> {

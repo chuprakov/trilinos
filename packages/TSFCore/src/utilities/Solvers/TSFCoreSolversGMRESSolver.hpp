@@ -49,10 +49,10 @@ namespace Solvers {
 
 template<class Scalar>
 GMRESSolver<Scalar>::GMRESSolver(
-	const out_ptr_t   &out
-	,bool             dump_all
-	,int              default_max_iter
-	,ScalarMagnitude  breakdown_tol
+	const Teuchos::RefCountPtr<std::ostream>   &out
+	,bool                                      dump_all
+	,int                                       default_max_iter
+	,ScalarMagnitude                           breakdown_tol
 	)
 	:out_(out)
 	,dump_all_(dump_all)
@@ -350,7 +350,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 		//
 		if( curr_iter_ > 0 ) {
 			Teuchos::RefCountPtr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter_));
-			SerialVector<Scalar> z_vec( &z_[0], 1, curr_iter_, false );
+			SerialVector<Scalar> z_vec( Teuchos::rcp(&z_[0],false), 1, curr_iter_ );
 			V->apply( NOTRANS, z_vec, x, -one, one );
 		}
 	}

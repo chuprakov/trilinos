@@ -179,7 +179,7 @@ void linear_combination(
 	);
 
 ///
-/** Seed the random number generator used in <tt>random_vector</tt>
+/** Seed the random number generator used in <tt>randomize()</tt>
  */
 template<class Scalar>
 void seed_randomize( unsigned int );

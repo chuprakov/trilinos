@@ -63,10 +63,10 @@ namespace Solvers {
 
 template<class Scalar>
 CGSolver<Scalar>::CGSolver(
-	const out_ptr_t   &out
-	,bool             dump_all
-	,int              default_max_iter
-	,Scalar           default_tol
+	const Teuchos::RefCountPtr<std::ostream>   &out
+	,bool                                      dump_all
+	,int                                       default_max_iter
+	,Scalar                                    default_tol
 	)
 	:out_(out)
 	,dump_all_(dump_all)

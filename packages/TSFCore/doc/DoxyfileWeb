@@ -13,7 +13,7 @@ OUTPUT_LANGUAGE        = English
 # What and how documentation is extracted
 #
 EXTRACT_ALL            = YES
-EXTRACT_PRIVATE        = YES
+EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
 HIDE_UNDOC_MEMBERS     = YES
 HIDE_UNDOC_CLASSES     = YES
@@ -57,7 +57,7 @@ EXCLUDE                =
 EXCLUDE_PATTERNS       = *.x *.o *.out
 EXAMPLE_PATH           = ../example
 EXAMPLE_PATTERNS       = *.cpp *.hpp
-IMAGE_PATH             = 
+IMAGE_PATH             = ./images 
 INPUT_FILTER           = 
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 5
@@ -66,10 +66,14 @@ IGNORE_PREFIX          =
 # What diagrams are created
 #
 CLASS_GRAPH            = YES
-COLLABORATION_GRAPH    = YES
+COLLABORATION_GRAPH    = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 GRAPHICAL_HIERARCHY    = YES
+#UML_LOOK               = YES
+TEMPLATE_RELATIONS     = NO
+#MAX_DOT_GRAPH_WIDTH    = 500
+HIDE_UNDOC_RELATIONS   = YES
 #
 # Preprocessing
 #
@@ -77,10 +81,12 @@ ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
-INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
-EXPAND_AS_DEFINED      =
+INCLUDE_PATH           = ../../../../Trilinos/packages/teuchos/src \
+                         ../../../../Trilinos/packages/TSFCoreUtils/src/MoochoUtilities
+EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
+                         STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
 #
 # Links to other packages
 #
@@ -95,8 +101,8 @@ ALLEXTERNALS           = NO
 PERL_PATH              = /usr/bin/perl
 HAVE_DOT               = YES
 DOT_PATH               = 
-#MAX_DOT_GRAPH_WIDTH    = 1024
-#MAX_DOT_GRAPH_HEIGHT   = 1024
+MAX_DOT_GRAPH_WIDTH    = 800
+MAX_DOT_GRAPH_HEIGHT   = 800
 #
 # What kind of documentation is generated
 #

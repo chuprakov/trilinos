@@ -39,7 +39,7 @@
 
 namespace TSFCore {
 
-/** \defgroup TSFCORE_MultiVectorStdOps_grp Collection of standard multi-vector operations.
+/** \defgroup TSFCore_MultiVectorStdOps_grp Collection of standard multi-vector operations.
  */
 //@{
 
