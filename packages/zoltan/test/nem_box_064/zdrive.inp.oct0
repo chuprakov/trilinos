@@ -1,0 +1,7 @@
+Decomposition Method 	= octpart
+Zoltan Parameters	= oct_method=0
+Zoltan Parameters       = 
+File Type		= NemesisI
+File Name		= box_064-m5-r.par
+Parallel Disk Info	= number=1,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
