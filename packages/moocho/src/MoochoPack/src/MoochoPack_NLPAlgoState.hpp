@@ -428,6 +428,11 @@ public:
 	/** @name Basis Pivot Info */
 	//@{
 
+	/// Range of decomposed equality constraints [1,r]
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, con_decomp )
+	/// Range of undecomposed equality constraints [r+1,m]
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, con_undecomp )
+
 	//@}
 
 protected:
