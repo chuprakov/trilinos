@@ -32,7 +32,9 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVectorStdOps.hpp"
+#include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 
 namespace TSFExtended
@@ -47,7 +49,7 @@ namespace TSFExtended
     /** The domain and range spaces for an identity operator
      * are equivalent, so the ctor needs only a single space
      */
-    TSFIdentityOperator(const VectorSpace<Scalar>& space)
+    TSFIdentityOperator(const TSFCore::VectorSpace<Scalar>& space)
       : space_(space.ptr()) {;}
 
     /** Virtual dtor */
@@ -86,11 +88,11 @@ namespace TSFExtended
     }
 
     /** Return the domain of the operator */
-    virtual RefCountPtr< const VectorSpace<Scalar> > domain() const {return space_;}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return space_;}
     }
 
     /** Return the range of the operator */
-    virtual RefCountPtr< const VectorSpace<Scalar> > range() const {return space_;}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return space_;}
 
   private:
     /** The vector space on which this operator works. Note that the range and
