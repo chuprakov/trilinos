@@ -122,8 +122,14 @@
 /* Define if want to build tsfcore-epetra */
 #undef HAVE_TSFCORE_EPETRA
 
+/* Define if want to build tsfcore-examples */
+#undef HAVE_TSFCORE_EXAMPLES
+
 /* Define if want to build tsfcore-mpi */
 #undef HAVE_TSFCORE_MPI
+
+/* Define if want to build tsfcore-tests */
+#undef HAVE_TSFCORE_TESTS
 
 /* Define to 1 if you have the <typeinfo> header file. */
 #undef HAVE_TYPEINFO
