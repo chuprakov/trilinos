@@ -91,10 +91,10 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MultiVector>   multi_vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MultiVector>   multi_vec_ptr_t;
 
 	///
-	/** PostMod class to use with <tt>AbstractFactoryPack::AbstractFactorStd</tt>.
+	/** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
 	 */
 	class PostMod {
 	public:
@@ -111,10 +111,9 @@ public:
 			,auto_rescaling_(auto_rescaling)
 		{}
 		///
-		MatrixSymPosDefLBFGS* operator()(MatrixSymPosDefLBFGS* p) const
+		void initialize(MatrixSymPosDefLBFGS* p) const
 		{
 			p->initial_setup(m_,maintain_original_,maintain_inverse_,auto_rescaling_);
-			return p;
 		}
 	private:
 		size_type   m_;
