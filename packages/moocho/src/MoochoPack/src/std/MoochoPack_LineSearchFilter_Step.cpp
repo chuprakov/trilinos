@@ -540,22 +540,13 @@ void LineSearchFilter_Step::UpdatePoint(
 		// Calcuate f and c at the new point.
 		nlp.set_multi_calc(true);
 		nlp.set_f( &f.set_k(+1) );
-		if (c)
-			{
-			nlp.set_c( &c->set_k(+1) );
-			nlp.calc_c( x_kp1, true );
-			}
-
-		if (h)
-			{
-			nlp.set_h( &h->set_k(+1) );
-			nlp.calc_h( x_kp1, true ); 
-			}
-	
-		nlp.calc_f( x_kp1, false ); 
+		if (c) nlp.set_c( &c->set_k(+1) );
+		if (h) nlp.set_h( &h->set_k(+1) );
+		nlp.calc_f( x_kp1 ); 
+		if (c) nlp.calc_c( x_kp1, false );
+		if (h) nlp.calc_h( x_kp1, false ); 
 		}
 	}
-
 
 value_type LineSearchFilter_Step::CalculateAlphaMin( 
   value_type Gf_t_dk,
