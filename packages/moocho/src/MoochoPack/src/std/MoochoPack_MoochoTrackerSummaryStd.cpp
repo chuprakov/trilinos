@@ -216,12 +216,33 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 	}
 
 	o()	<< std::right
-		<< setw(5) << s.k()
-		<< setw(w) << s.f().get_k(0)
-		<< setw(w) << s.Gf().get_k(0).norm_inf()
-		<< setw(w) << s.c().get_k(0).norm_inf()
-		<< setw(w) << ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
-						? s.rGL() : s.GL() ).get_k(0).norm_inf();
+		<< setw(5) << s.k();
+
+	if( s.f().updated_k(0) )
+		o() << setw(w) << s.f().get_k(0);
+	else
+		o() << setw(w) << "-";
+
+	if( s.Gf().updated_k(0) )
+		o() << setw(w) << s.Gf().get_k(0).norm_inf();
+	else
+		o() << setw(w) << "-";
+
+	if( s.c().updated_k(0) )
+		o() << setw(w)
+			<< s.c().get_k(0).norm_inf();
+	else
+		o() << setw(w) << "-";
+
+	{
+		const rSQPState::IQA_Vector
+			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
+							? s.rGL() : s.GL()  );
+		if( rGL_GL.updated_k(0) )
+			o() << setw(w) << rGL_GL.get_k(0).norm_inf();
+		else
+			o() << setw(w) << "-";
+	}
 
 	if( quasi_newt_stats_iq.updated_k(0) ) {
 		const QuasiNewtonStats &stats = quasi_newt_stats_iq.get_k(0);

@@ -9,9 +9,27 @@
 
 #include <iostream>	// used for debugging the Release version.
 
-#include "../include/rSQPAlgoContainer.h"
-#include "../include/rSQPAlgoInterface.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgoInterface.h"
+#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "NLPInterfacePack/include/NLP.h"
+#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "Misc/include/debug.h"
+
+namespace {
+
+void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterfacePack::NLP* nlp )
+{
+	nlp->report_final_solution(
+		s.x().get_k(0)()
+		, s.lambda().updated_k(0)	? &s.lambda().get_k(0)()	: 0
+		, s.nu().updated_k(0)		? &s.nu().get_k(0)()		: 0
+		, false
+		);
+}
+
+} // end namespace
 
 void ReducedSpaceSQPPack::rSQPAlgoContainer::set_config(const config_ptr_t& config)
 {
@@ -22,7 +40,18 @@ void ReducedSpaceSQPPack::rSQPAlgoContainer::set_config(const config_ptr_t& conf
 ReducedSpaceSQPPack::rSQPSolverClientInterface::EFindMinReturn
 ReducedSpaceSQPPack::rSQPAlgoContainer::find_min() {
 	config().init_algo(algo());
-	return algo().dispatch();
+	EFindMinReturn solve_return;
+	try {
+		solve_return = algo().dispatch();
+	}
+	catch(...) {
+		report_final_failure(state(),&nlp());
+		throw;
+	}
+	if( solve_return != SOLUTION_FOUND ) {
+		report_final_failure(state(),&nlp());
+	}
+	return solve_return;
 }
 
 const ReducedSpaceSQPPack::rSQPState& ReducedSpaceSQPPack::rSQPAlgoContainer::state() const {

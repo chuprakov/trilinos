@@ -52,23 +52,9 @@ public:
 	const rSQPState& retrieve_state() const;
 
 	///
-	/** This is the main control function for the rSQP algorithm.  It is responsible
-	  * for executing the main loop of the algorithm and does so sequentially until
-	  * one of the Strategy objects that it calls to perform steps in the algorithm
-	  * returns false indicating a request for a discontinous jump to another step.
-	  * This is usually used to initiate a minor loop and #this->disbatch()# starts again
-	  * from the step set by #this->do_step_next(stepid)#.
+	/** This is the main control function for the rSQP algorithm.
 	  *
-	  * This function returns true if the solution has been found (#this->found_min()# was called)
-	  * or false if the maximum number of iterations has been reached
-	  * (#this->state().k() > #this->algo_cntr().max_iter()#).
-	  *
-	  * This function starts executing with the step set by the last call
-	  * to #this->do_step_next(stepid)#.  This allows the config object
-	  * to start from the middle of a rSQP algorithm if it would like.  To start
-	  * from the very beginning call #do_step_next(rSQPAlgo_Pack::FirstStep)#
-	  * before you call #disbatch()#
-	  *
+	  * This function basically just calls Algorithm::do_algorithm(...).
 	  */
 	rSQPSolverClientInterface::EFindMinReturn dispatch();
 

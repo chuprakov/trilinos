@@ -126,17 +126,31 @@ public:
 	//@{
 
 	///
-	/** Find the minimun of the set NLPReduced.
+	/** Find the minimun of the set NLP.
 	  *
-	  * If this function returns SOLUTION_FOUND then the solution vector to the NLPReduced can be obtained as
-	  * #this->state().x().get_k(1)# and the value of the objective function is given as
-	  * #this->state().f().get_k(1)#.
+	  * This function returns #SOLUTION_FOUND# if the NLP has been solved to the desired
+	  * tolerances.  In this case #this->track().output_final(...,TERMINATE_TRUE)#
+	  * and #this->nlp().report_final_solution(...,true)# is called.
 	  *
-	  * If the maximum number of iterations has been exceeded then MAX_ITER_EXCEEDED will
-	  * be returned.
+	  * If the solution is not found, then #this->nlp().report_final_solution(...,false)# is called.
+	  * and one of the following occurs:
 	  *
-	  * If the maximum runtime has been exceeded then MAX_RUN_TIME_EXCEEDED will be
-	  * returned.
+	  * If the maximum number of iterations has been exceeded then #MAX_ITER_EXCEEDED# will
+	  * be returned.  In this case #this->track().output_final(...,MAX_ITER_EXCEEDED)# is called.
+	  *
+	  * If the maximum runtime has been exceeded then #MAX_RUN_TIME_EXCEEDED# will be
+	  * returned.  In this case #this->track().output_final(...,MAX_RUN_TIME_EXCEEDED)# is called.
+	  *
+	  * The client should be prepaired to catch any exceptions thrown from this function.
+	  * All of the purposefully thrown exceptions are derived from std::exception so the
+	  * client can check the what() function to see and description of the error.  If an
+	  * exception is thrown then #this->track().output_final(...,TERMINATE_FALSE)# will
+	  * be called before this exception is rethrown out of this functiion.  If the constraints
+	  * are found to be infeasible, then the exception #InfeasibleConstraints# will be thrown.
+	  * If a line search failure occures then the exception #LineSearchFailure# will be thrown.
+	  * If some test failed then the exception #TestFailed# will be thrown.  Many other exceptions
+	  * may be thrown but these are the main ones that the SQP algorithms known about and will
+	  * purposefully generate.
 	  *
 	  * Preconditions:\begin{itemize}
 	  * \item #this->nlp() != 0# (throw InvalidSetup)
@@ -146,10 +160,6 @@ public:
 	  * \item	Minimum of NLPReduced is found to opt_tol, max_iter was reached
 	  *			or max_run_time reached (throw std::exection)
 	  * \end{itemize}
-	  *
-	  * The client should be prepaired to catch all sorts of exceptions from this function.
-	  * All of the purposefully thrown exceptions are derived from std::exception so the
-	  * client can check the what() function to see and description of the error.
 	  */
 	virtual EFindMinReturn find_min() = 0;
 
