@@ -102,7 +102,11 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 		
 		// Check that this is a number.
 		typedef std::numeric_limits<value_type>		num_lim_t;
+#ifdef _WINDOWS
 		if( ::_isnan( *phi_kp1 ) ) {	// ToDo: Make this portable?
+#else
+		if( *phi_kp1 != *phi_kp1 ) {	// Should work for IEEE
+#endif
 			// Cut back the step to min_frac * alpha_k
 			*alpha_k = min_frac()*(*alpha_k);
 			best_alpha = 0.0;
