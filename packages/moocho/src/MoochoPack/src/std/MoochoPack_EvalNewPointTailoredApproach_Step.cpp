@@ -67,7 +67,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	}
 
 	if(!nlp.is_initialized())
-		nlp.initialize();
+		nlp.initialize(algo.algo_cntr().check_results());
 
 	const size_type
 		n  = nlp.n(),
