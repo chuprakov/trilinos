@@ -30,7 +30,8 @@
 #ifndef SPARSE_VECTOR_OP_DEF_H
 #define SPARSE_VECTOR_OP_DEF_H
 
-#include "SparseVectorClass.h"
+#include "SparseLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/include/SparseVectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"	// also included in SparseVectorOpDef.h
 #include "LinAlgPack/include/GenMatrixClass.h"
@@ -53,11 +54,11 @@ value_type imp_dot2_V_V_SV(const VectorSlice& vs1, const VectorSlice& vs2, const
 // result = dot(vs_rhs1,sv_rhs2)
 template<class T_SpVec>
 value_type dot_V_SV(const VectorSlice& vs_rhs1, const T_SpVec& sv_rhs2) {
-	VopV_assert_sizes(vs_rhs1.size(),sv_rhs2.size());
+	VopV_assert_sizes(vs_rhs1.dim(),sv_rhs2.dim());
 	value_type result = 0.0;
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 	for(typename T_SpVec::const_iterator iter = sv_rhs2.begin(); iter != sv_rhs2.end(); ++iter)
-		result += vs_rhs1(iter->indice()+offset) * iter->value();
+		result += vs_rhs1(iter->index()+offset) * iter->value();
 	return result;
 }
 
@@ -125,13 +126,13 @@ void Vt_S( T_SpVec* sv_lhs, value_type alpha )
 template<class T_SpVec>
 void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
 {
-	Vp_V_assert_sizes(vs_lhs->size(),sv_rhs.size());
+	Vp_V_assert_sizes(vs_lhs->dim(),sv_rhs.dim());
 	typename T_SpVec::difference_type offset = sv_rhs.offset();
 	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
-		(*vs_lhs)(iter->indice() + offset) += alpha * iter->value();
+		(*vs_lhs)(iter->index() + offset) += alpha * iter->value();
 }
 
-// vs_lhs += alpha * op(gms_rhs1) * sv_rhs2 (BLAS xGEMV) (time = O(sv_rhs2.nz() * vs_lhs.size())
+// vs_lhs += alpha * op(gms_rhs1) * sv_rhs2 (BLAS xGEMV) (time = O(sv_rhs2.nz() * vs_lhs.dim())
 template<class T_SpVec>
 void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2)
@@ -141,21 +142,21 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms
 #endif
 	VectorSlice& vs_lhs = *pvs_lhs;
 
-	Vp_MtV_assert_sizes(vs_lhs.size(),gms_rhs1.rows(),gms_rhs1.cols(),trans_rhs1
-						, sv_rhs2.size());
+	Vp_MtV_assert_sizes(vs_lhs.dim(),gms_rhs1.rows(),gms_rhs1.cols(),trans_rhs1
+						, sv_rhs2.dim());
 	
 	// Perform the operation by iterating through the sparse vector and performing
 	// all of the operations on it.
 	//
 	// For sparse element e we do the following:
 	//
-	// vs_lhs += alpha * e.value() * gms_rhs1.col(e.indice());
+	// vs_lhs += alpha * e.value() * gms_rhs1.col(e.index());
 
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 
 	for(typename T_SpVec::const_iterator sv_rhs2_itr = sv_rhs2.begin(); sv_rhs2_itr != sv_rhs2.end(); ++sv_rhs2_itr)
 		LinAlgPack::Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value()
-            , col( gms_rhs1, trans_rhs1, sv_rhs2_itr->indice() + offset ) );
+            , col( gms_rhs1, trans_rhs1, sv_rhs2_itr->index() + offset ) );
 }
 
 // vs_lhs += alpha * op(tri_rhs1) * sv_rhs2 (BLAS xTRMV)
@@ -165,8 +166,8 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 {
 	VectorSlice &vs_lhs = *pvs_lhs;
 
-	Vp_MtV_assert_sizes(vs_lhs.size(),tri_rhs1.rows(),tri_rhs1.cols(),trans_rhs1
-						, sv_rhs2.size());
+	Vp_MtV_assert_sizes(vs_lhs.dim(),tri_rhs1.rows(),tri_rhs1.cols(),trans_rhs1
+						, sv_rhs2.dim());
 
 	// Get the effective matrix
 	BLAS_Cpp::Uplo effective_uplo;
@@ -186,9 +187,9 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 	for(typename T_SpVec::const_iterator sv_itr = sv_rhs2.begin(); sv_itr != sv_rhs2.end(); ++sv_itr)
 	{
-		size_type j = sv_itr->indice() + offset;
+		size_type j = sv_itr->index() + offset;
 
-		// For the nonzero element j = sv_itr->indice() we perfom the following
+		// For the nonzero element j = sv_itr->index() we perfom the following
 		// operations.
 		//
 		// Lower:
@@ -254,10 +255,10 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const sym_gms& sym_rhs1
 {
 	VectorSlice& vs_lhs = *pvs_lhs;
 
-	Vp_MtV_assert_sizes(vs_lhs.size(),sym_rhs1.rows(),sym_rhs1.cols(),trans_rhs1
-						, sv_rhs2.size());
+	Vp_MtV_assert_sizes(vs_lhs.dim(),sym_rhs1.rows(),sym_rhs1.cols(),trans_rhs1
+						, sv_rhs2.dim());
 
-	size_type size = sv_rhs2.size();
+	size_type size = sv_rhs2.dim();
 	switch(sym_rhs1.uplo()) {
 		case BLAS_Cpp::lower: {
 			VectorSlice::iterator vs_lhs_itr; size_type i;
@@ -302,18 +303,18 @@ namespace SparseVectorUtilityPack {
 // Implementation for the product of a concatonated dense vector with a
 // sparse vector.  Used for symetric matrix mulitplication.
 // In Matlab notation: result = [vs1' , vs2' ] * sv
-// where split = vs1.size(), vs2.size() == sv.size() - split
+// where split = vs1.dim(), vs2.dim() == sv.dim() - split
 //
 // time = O(sv.nz()), space = O(1)
 //
 template<class T_SpVec>
 value_type imp_dot2_V_V_SV(const VectorSlice& vs1, const VectorSlice& vs2, const T_SpVec& sv)
 {
-	size_type split = vs1.size();
+	size_type split = vs1.dim();
 	value_type result = 0;
 	typename T_SpVec::difference_type offset = sv.offset();
 	for(typename T_SpVec::const_iterator sv_itr = sv.begin(); sv_itr != sv.end(); ++sv_itr) {
-		typename T_SpVec::element_type::indice_type curr_indice = sv_itr->indice()+offset;
+		typename T_SpVec::element_type::indice_type curr_indice = sv_itr->index()+offset;
 		if(curr_indice <= split)
 			result += vs1(curr_indice) * sv_itr->value();
 		else
