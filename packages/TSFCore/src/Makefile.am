@@ -67,6 +67,8 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp\
