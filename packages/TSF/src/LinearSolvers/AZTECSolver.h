@@ -14,6 +14,7 @@
 #define AZ_ml           101
 #define AZ_ml_levels    102
 #define AZ_ml_sym       103
+#define AZ_ml_damping   104
 
 namespace TSF
 {
@@ -31,7 +32,8 @@ namespace TSF
 
       /** construct a AZTEC solver with the given options and parameters. */
       AZTECSolver(const TSFHashtable<int, int>& aztecOptions,
-                  const TSFHashtable<int, double>& aztecParameters)
+                  const TSFHashtable<int, double>& aztecParameters);
+
       /** TUVD */
       virtual ~AZTECSolver();
 
@@ -47,7 +49,7 @@ namespace TSF
 
 
     private:
-      void setupML(const Epetra_RowMatrix* A);
+      void setupML(Epetra_RowMatrix* A) const ;
 
       /** Aztec options */
       mutable TSFArray<int> options_;
@@ -59,19 +61,27 @@ namespace TSF
       bool useML_;
 
       /** Number of ML levels to use */
-      int mlLevels_;
+      mutable int mlLevels_;
 
       /** whether ML should assume symmetric system */
       bool mlSymmetric_;
 
+      /** whether ML should use damping */
+      bool mlUseDamping_;
+
+      /** damping factor for ML */
+      double mlDamping_;
+
       /** ML preconditioner object */
-      TSFSmartPtr<Epetra_Operator> prec_;
+      mutable TSFSmartPtr<Epetra_Operator> prec_;
 
       /** Aztec status */
-      TSFArray<double> aztec_status;
+      mutable TSFArray<double> aztec_status;
 
       /** Aztec proc_config */
-      TSFArray<int> aztec_proc_config;
+      mutable TSFArray<int> aztec_proc_config;
+
+
    };
 
 }
