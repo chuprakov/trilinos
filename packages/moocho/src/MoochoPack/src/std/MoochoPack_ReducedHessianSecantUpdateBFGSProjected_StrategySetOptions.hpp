@@ -19,12 +19,14 @@ namespace ReducedSpaceSQPPack {
   \begin{verbatim}
 	options_group ReducedHessianSecantUpdateBFGSProjected {
 		act_set_frac_proj_start   = 0.8;   *** (+dbl)
+		project_error_tol         = 1e-5;  *** (+dbl) [0.0, 1.0]
         super_basic_mult_drop_tol = 1e-5;  *** (+dbl)
 	}
   \end{verbatim}
   *
   * \begin{description}
-  *	\item[proj_start_act_set_frac] ToDo : Finish.
+  *	\item[act_set_frac_proj_start] ToDo : Finish.
+  *	\item[project_error_tol] ToDo : Finish.
   * \item[super_basic_mult_drop_tol] ToDo: Finish.
   *	\end{description}
   */

@@ -279,6 +279,19 @@ void V_InvMtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp tra
 	, const VectorSlice& vs_rhs2);
 
 ///
+/** gms_lhs = alpha * vs_rhs1 * vs_rhs2' + gms_lhs (BLAS xGER).
+  *
+  * This results in a direct call the the BLAS function ger(...).
+  * Since this function is performing a special linear algebra operation (a rank-1 update)
+  * it does not use the specal naming sceme as the rest of the more typical operations.
+  * The arguments are ordered similarly to the BLAS specification.
+  *
+  * There is no analog to this operation in the LinAlgPackOp template functions.
+  */
+void ger(value_type alpha, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2
+		 , GenMatrixSlice* gms_lhs);
+
+///
 /** sym_lhs = alpha * vs_rhs * vs_rhs' + sym_lhs (BLAS xSYR).
   *
   * This results in a direct call the the BLAS function syr(...).
@@ -514,8 +527,6 @@ void M_StMtInvM(GenMatrixSlice* gm_lhs, value_type alpha, const GenMatrixSlice& 
 
 // //////////////////////////////////////////////////////////////////////////////////////
 // Inline function definitions
-
-
 
 //		 end Basic GenMatrix Operation Functions
 //@}

@@ -398,6 +398,21 @@ void LinAlgPack::V_InvMtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), vs_lhs->raw_ptr(),vs_lhs->stride());
 }
 
+
+// gms_lhs = alpha * vs_rhs1 * vs_rhs2' + gms_lhs (BLAS xGER)
+void LinAlgPack::ger(
+	value_type alpha, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2
+	, GenMatrixSlice* gms_lhs )
+{
+	Vp_MtV_assert_sizes( vs_rhs2.size(),  gms_lhs->rows(), gms_lhs->cols()
+		, BLAS_Cpp::no_trans, vs_rhs1.size() );
+	BLAS_Cpp::ger(
+		gms_lhs->rows(), gms_lhs->cols(), alpha
+		,vs_rhs1.raw_ptr(), vs_rhs1.stride()
+		,vs_rhs2.raw_ptr(), vs_rhs2.stride()
+		,gms_lhs->col_ptr(1), gms_lhs->max_rows() );
+}
+
 // sym_lhs = alpha * vs_rhs * vs_rhs' + sym_lhs (BLAS xSYR).
 void LinAlgPack::syr(value_type alpha, const VectorSlice& vs_rhs, sym_gms* sym_lhs)
 {

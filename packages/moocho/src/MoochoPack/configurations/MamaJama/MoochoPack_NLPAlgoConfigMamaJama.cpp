@@ -448,15 +448,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			assert(0); // Invalid option!
 	}
 
-	// Set auto scale for LPBFGS
-	if( cov_.quasi_newton_ == QN_LPBFGS ) {
-		if(trase_out)
-			*trase_out
-				<< "\nquasi_newton == LPBFGS:\n"
-				<< "We can not use auto rescaling with this option, setting lbfgs_auto_scaling = false\n";
-		cov_.lbfgs_auto_scaling_ = false;
-	}
-
 	// /////////////////////////////////////////////////////
 	// C.1. Create and set the state object
 
@@ -599,7 +590,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				= dynamic_cast<MatrixSymPosDefLBFGS*>(&algo->rsqp_state().rHL().set_k(-1));
 			if(_rHL) {
 				_rHL->initial_setup(
-					cov_.num_lbfgs_updates_stored_
+					dof, cov_.num_lbfgs_updates_stored_
 					,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
 					                                              // QPOPT or QPSOL but not QPSchur
 					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
@@ -624,7 +615,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				ref_count_ptr<MatrixSymPosDefLBFGS>
 					LB_RR_ptr = new MatrixSymPosDefLBFGS;
 				LB_RR_ptr->initial_setup(
-					cov_.num_lbfgs_updates_stored_
+					dof, cov_.num_lbfgs_updates_stored_
 					,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
 					                                              // QPOPT or QPSOL but not QPSchur
 					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
@@ -639,7 +630,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				ref_count_ptr<MatrixSymPosDefCholFactor>
 					DB_RR_ptr = new MatrixSymPosDefCholFactor(
 						NULL    // Let it allocate its own memory
-						,NULL   // ...
+						,NULL,0 // ...
 						,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
 						                                              // QPOPT or QPSOL but not QPSchur
 						,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the cholesky factor for QPSchur
@@ -930,8 +921,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 								lpbfgs_strategy_ptr_t
 									lpbfgs_strategy
 									= new ReducedHessianSecantUpdateLPBFGS_Strategy(
-										rcp::rcp_static_cast<ReducedHessianSecantUpdate_Strategy>(pbfgs_strategy)
-										,bfgs_strategy
+										pbfgs_strategy 
 										);
 								ReducedHessianSecantUpdateLPBFGS_StrategySetOptions
 									opt_setter( lpbfgs_strategy.get() );

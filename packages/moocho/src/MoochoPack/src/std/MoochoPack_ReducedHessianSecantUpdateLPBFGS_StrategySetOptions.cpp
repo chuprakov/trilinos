@@ -13,25 +13,19 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 7;
+	const int local_num_options = 4;
 
 	enum local_EOptions {
-		ACT_SET_FRAC_PROJ_START
-        ,SUPER_BASIC_MULT_DROP_TOL
+		MIN_NUM_UPDATES_PROJ_START
+		,MAX_NUM_UPDATES_PROJ_START
 		,NUM_SUPERBASICS_SWITCH_DENSE
-		,ACT_SET_FRAC_SWITCH_DENSE
-		,MIN_NUM_UPDATES_SWITCH_DENSE
-		,MAX_NUM_UPDATES_SWITCH_DENSE
 		,NUM_ADD_RECENT_UPDATES
 	};
 
 	const char* local_SOptions[local_num_options]	= {
-		"act_set_frac_proj_start"
-        ,"super_basic_mult_drop_tol"
+		"min_num_updates_proj_start"
+		,"max_num_updates_proj_start"
 		,"num_superbasics_switch_dense"
-		,"act_set_frac_switch_dense"
-		,"min_num_updates_switch_dense"
-		,"max_num_updates_switch_dense"
 		,"num_add_recent_updates"
 	};
 
@@ -51,28 +45,16 @@ void ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {
-		case ACT_SET_FRAC_PROJ_START: {
-			target().act_set_frac_proj_start( ::fabs( ::atof( option_value.c_str() ) ) );
+		case MIN_NUM_UPDATES_PROJ_START: {
+			target().min_num_updates_proj_start( ::abs( ::atoi( option_value.c_str() ) ) );
 			break;
 		}
-		case SUPER_BASIC_MULT_DROP_TOL: {
-			target().super_basic_mult_drop_tol( ::fabs( ::atof( option_value.c_str() ) ) );
+		case MAX_NUM_UPDATES_PROJ_START: {
+			target().max_num_updates_proj_start( ::abs( ::atoi( option_value.c_str() ) ) );
 			break;
 		}
 		case NUM_SUPERBASICS_SWITCH_DENSE: {
 			target().num_superbasics_switch_dense( ::abs( ::atoi( option_value.c_str() ) ) );
-			break;
-		}
-		case ACT_SET_FRAC_SWITCH_DENSE: {
-			target().act_set_frac_switch_dense( ::fabs( ::atof( option_value.c_str() ) ) );
-			break;
-		}
-		case MIN_NUM_UPDATES_SWITCH_DENSE: {
-			target().min_num_updates_switch_dense( ::abs( ::atoi( option_value.c_str() ) ) );
-			break;
-		}
-		case MAX_NUM_UPDATES_SWITCH_DENSE: {
-			target().max_num_updates_switch_dense( ::abs( ::atoi( option_value.c_str() ) ) );
 			break;
 		}
 		case NUM_ADD_RECENT_UPDATES: {

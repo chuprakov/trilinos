@@ -38,9 +38,10 @@ class QPSchurInitKKTSystemHessianSuperBasic
 	 * #[nd,nd_X] = size(G.Q_X)#.  Then initial KKT system is defined as:
 	 *
 	 * #n_R = nd_R#\\
-	 * if #i_x_free.size() > 0# then #i_x_free[l-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R#\\
+	 * if #i_x_free.size() > 0#
+	 *    then #i_x_free[(G.Q_R.begin()+l-1)->col_j()-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R#\\
 	 * if #i_x_free.size() == 0# then #i_x_free is implicitly identity#\\
-	 * #i_x_fixed[l-1] = (G.Q_X.begin()+l-1)->row_i(), l = 1...nd_X#\\
+	 * #i_x_fixed[(G.Q_X.begin()+l-1)->col_j()-1] = (G.Q_X.begin()+l-1)->row_i(), l = 1...nd_X#\\
 	 * #i_x_fixed[nd_X] = nd+1#\\
 	 * #bnd_fixed[l-1] = G.bnd_fixed[l-1], l = 1...nd_X#\\
 	 * #bnd_fixed[nd_X] = LOWER#\\

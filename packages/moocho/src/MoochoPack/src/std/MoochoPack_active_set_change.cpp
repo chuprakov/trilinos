@@ -10,16 +10,19 @@
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 
 void ReducedSpaceSQPPack::active_set_change(
-	  const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1
-	, EJournalOutputLevel olevel, size_type* num_adds, size_type* num_drops
-	, std::ostream* out )
+	const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep
+	,EJournalOutputLevel olevel, std::ostream* out
+	,size_type* num_adds, size_type* num_drops
+	,size_type* num_active_indep, size_type* num_adds_indep, size_type* num_drops_indep
+	)
 {
 	using std::setw;
 	using std::endl;
 	
-	int w = 12;
+	const int w = 12;
 
-	*num_adds = *num_drops = 0;
+	*num_adds = *num_drops = *num_adds_indep = *num_drops_indep = 0;
+	*num_active_indep = nu_k(indep).nz();
 
 	if( !nu_k.nz() && !nu_km1.nz() )
 		return;
@@ -33,7 +36,9 @@ void ReducedSpaceSQPPack::active_set_change(
 			<< "\n*** Changes in active set\n\n"
 			<< setw(w) << "i"
 			<< setw(w) << "uplo"
+			<< setw(w) << "dep/indep"
 			<< setw(w) << "change\n"
+			<< setw(w) << "----------"
 			<< setw(w) << "----------"
 			<< setw(w) << "----------"
 			<< setw(w) << "----------\n";
@@ -50,11 +55,16 @@ void ReducedSpaceSQPPack::active_set_change(
 				&& nu_k_itr->indice()+nu_k.offset() < nu_km1_itr->indice()+nu_km1.offset() ) ) )
 		{
 			// *nu_k_itr was added to active set.
+			const size_type i = nu_k_itr->indice() + nu_k.offset();
+			const bool is_indep = indep.in_range(i);
+			if(is_indep)
+				(*num_adds_indep)++;
 			(*num_adds)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_k_itr->indice() + nu_k.offset()
+					<< setw(w) << i
 					<< setw(w) << ( nu_k_itr->value() >= 0.0 ? "upper" : "lower" )
+					<< setw(w) << ( is_indep ? "indep" : "dep" )
 					<< setw(w) << "added" << endl;
 			nu_k_itr++;
 		}
@@ -62,24 +72,36 @@ void ReducedSpaceSQPPack::active_set_change(
 				&& nu_k_itr->indice()+nu_k.offset() > nu_km1_itr->indice()+nu_km1.offset() ) ) )
 		{
 			// *nu_km1_itr was removed from the active set.
+			const size_type i = nu_km1_itr->indice() + nu_km1.offset();
+			const bool is_indep = indep.in_range(i);
+			if(is_indep)
+				(*num_drops_indep)++;
 			(*num_drops)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_km1_itr->indice()+nu_km1.offset()
+					<< setw(w) << i
 					<< setw(w) << ( nu_km1_itr->value() >= 0.0 ? "upper" : "lower" )
+					<< setw(w) << ( is_indep ? "indep" : "dep" )
 					<< setw(w) << "dropped" << endl;
 			nu_km1_itr++;
 		}
 		else {
 			// same variable (but the bound may have changed)
+			const size_type i = nu_k_itr->indice() + nu_k.offset();
+			const bool is_indep = indep.in_range(i);
 			if( nu_k_itr->value() * nu_km1_itr->value() < 0.0 ) {
-				// Switch bounds.
+				// Switched bounds.
+				if(is_indep) {
+					(*num_adds_indep)++;
+					(*num_drops_indep)++;
+				}
 				(*num_adds)++;
 				(*num_drops)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_k_itr->indice()+nu_k.offset()
+					<< setw(w) << i
 					<< setw(w) << ( nu_k_itr->value() >= 0.0 ? "upper" : "lower" )
+					<< setw(w) << ( is_indep ? "indep" : "dep" )
 					<< setw(w) << "switch bnd" << endl;
 			}
 			nu_k_itr++;
@@ -91,9 +113,13 @@ void ReducedSpaceSQPPack::active_set_change(
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		*out
 			<< "\n*** Active set change summary\n"
-			<< "nact_old  = "		<< nu_km1.nz()		<< endl
-			<< "nact_new  = "		<< nu_k.nz()		<< endl
-			<< "num_adds  = "		<< *num_adds		<< endl
-			<< "num_drops = "		<< *num_drops		<< endl;
+			<< "nact_old  = "			<< nu_km1.nz()			<< endl
+			<< "nact_new  = "			<< nu_k.nz()			<< endl
+			<< "num_adds  = "			<< *num_adds			<< endl
+			<< "num_drops = "			<< *num_drops			<< endl
+			<< "nact_indep_old  = "		<< nu_km1(indep).nz()	<< endl
+			<< "nact_indep_new  = "		<< *num_active_indep	<< endl
+			<< "num_indep_adds  = "		<< *num_adds_indep		<< endl
+			<< "num_indep_drops = "		<< *num_drops_indep		<< endl;
 	}
 }

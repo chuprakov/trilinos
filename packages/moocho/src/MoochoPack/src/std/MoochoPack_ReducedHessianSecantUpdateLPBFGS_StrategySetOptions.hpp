@@ -18,12 +18,9 @@ namespace ReducedSpaceSQPPack {
   *
   \begin{verbatim}
 	options_group ReducedHessianSecantUpdateLPBFGS {
-	    act_set_frac_proj_start      = 0.5;    *** (+dbl)
-        super_basic_mult_drop_tol    = 1e-5;   *** (+dbl)
+		min_num_updates_proj_start   = 0;      *** (+int)
+		max_num_updates_proj_start   = 999999; *** (+int)
 		num_superbasics_switch_dense = 500;    *** (+int)
-		act_set_frac_switch_dense    = 0.8;    *** (+dbl)
-		min_num_updates_switch_dense = 0;      *** (+int)
-		max_num_updates_switch_dense = 999999; *** (+int)
 		num_add_recent_updates       = 10;     *** (+int)
     }
   \end{verbatim}

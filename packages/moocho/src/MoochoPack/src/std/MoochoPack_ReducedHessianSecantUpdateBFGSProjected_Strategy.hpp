@@ -37,6 +37,12 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, act_set_frac_proj_start )
 
 	///
+	/** Set the tolerance for determining if a projected BFGS update is
+	 * valid ???
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, project_error_tol )
+
+	///
 	/** Set the tolerance for Langrange multipliers for fixed variables
 	 * below which rows/cols from rHL_RR will not be dropped.
 	 */
@@ -46,6 +52,7 @@ public:
     ReducedHessianSecantUpdateBFGSProjected_Strategy(
 		const bfgs_update_ptr_t&      bfgs_update                = NULL
 		,value_type                   act_set_frac_proj_start    = 0.8
+		,value_type                   project_error_tol          = 1e-5
 		,value_type                   super_basic_mult_drop_tol  = 1e-5
 		);      
 
@@ -60,18 +67,9 @@ public:
 
 private:
 	
-	// //////////////////////////////
-	// Private types
-
-	typedef std::vector<size_type>                              i_x_t;
-	typedef std::vector<ConstrainedOptimizationPack::EBounds>   bnd_fixed_t;
-
 	// /////////////////////////////
 	// Private data members
 
-	i_x_t                           i_x_free_;   // Keeps track of who is free
-	i_x_t                           i_x_fixed_;  // Keeps track of who is fixed
-	bnd_fixed_t                     bnd_fixed_;
 	quasi_newton_stats_iq_member    quasi_newton_stats_;
 	act_set_stats_iq_member         act_set_stats_;
 

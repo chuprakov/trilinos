@@ -56,7 +56,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			S_store1_.resize(max_size+1,max_size+1);
 		fact_in1_ = true;
 		// Start out with a p.d. or n.d. matrix and maintain the original
-		S_chol_.init_setup(&S_store1_(),NULL,true,true,true,false,0.0);
+		S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 		S_chol_.initialize(alpha,max_size);
 		// Set the state variables:
 		S_size_   = 1;
@@ -103,7 +103,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 		if( not_indefinite ) {
 			// The client says that the matrix is p.d. or n.d. so
 			// we will take their word for it.
-			S_chol_.init_setup(&S_store1_(),NULL,true,true,true,false,0.0);
+			S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 			S_chol_.initialize(A,max_size,force_factorization,expected_inertia);
 			// Set the state variables:
 			S_size_   = n;
@@ -222,7 +222,8 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 			bool update_successful = false;
 			try {
 				S_chol_.augment_update( t, alpha, force_refactorization, add_eigen_val );
-				++S_size_;			
+				++S_size_;
+				inertia_ = S_chol_.inertia();
 				update_successful = true;
 			}
 			catch(MSADU::WrongInertiaUpdateException) {
@@ -324,6 +325,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		//
 		S_chol_.delete_update( jd, force_refactorization, drop_eigen_val );
 		--S_size_;
+		inertia_ = S_chol_.inertia();
 	}
 	else {
 		//
@@ -353,7 +355,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				GenMatrixSlice S = this->S(S_size_).gms();
 				LinAlgPack::delete_row_col( jd, &LinAlgPack::nonconst_tri_ele(S,BLAS_Cpp::lower) ); 
 				// Setup S_chol and factor the thing
-				S_chol_.init_setup(&S_store1_(),NULL,true,true,true,false,0.0);
+				S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 				S_chol_.initialize( this->S(S_size_-1), S_store1_.rows()-1
 									, force_refactorization, Inertia() );
 			}

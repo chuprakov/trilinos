@@ -7,11 +7,12 @@
 #pragma warning(disable : 4503)	
 
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/get_init_fixed_free_indep.h"
+#include "ReducedSpaceSQPPack/include/std/PBFGS_helpers.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"
+#include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOpOut.h"
@@ -20,6 +21,7 @@
 #include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+#include "Misc/include/WorkspacePack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -28,24 +30,16 @@ namespace LinAlgOpPack {
 namespace ReducedSpaceSQPPack {
 
 ReducedHessianSecantUpdateLPBFGS_Strategy::ReducedHessianSecantUpdateLPBFGS_Strategy(
-	const dense_proj_update_ptr_t&  dense_proj_update
-	,const bfgs_update_ptr_t&       bfgs_update
-	,value_type                     act_set_frac_proj_start
-	,value_type                     super_basic_mult_drop_tol
+	const proj_bfgs_updater_ptr_t&  proj_bfgs_updater
+	,size_type                      min_num_updates_proj_start
+	,size_type                      max_num_updates_proj_start
 	,size_type                      num_superbasics_switch_dense
-	,value_type                     act_set_frac_switch_dense
-	,size_type                      min_num_updates_switch_dense
-	,size_type                      max_num_updates_switch_dense
 	,size_type                      num_add_recent_updates
 	)
-	: dense_proj_update_(dense_proj_update)
-	, bfgs_update_(bfgs_update)
-	, act_set_frac_proj_start_(act_set_frac_proj_start)
-	, super_basic_mult_drop_tol_(super_basic_mult_drop_tol)
+	: proj_bfgs_updater_(proj_bfgs_updater)
+	, min_num_updates_proj_start_(min_num_updates_proj_start)
+	, max_num_updates_proj_start_(max_num_updates_proj_start)
 	, num_superbasics_switch_dense_(num_superbasics_switch_dense)
-	, act_set_frac_switch_dense_(act_set_frac_switch_dense)
-	, min_num_updates_switch_dense_(min_num_updates_switch_dense)
-	, max_num_updates_switch_dense_(max_num_updates_switch_dense)
 	, num_add_recent_updates_(num_add_recent_updates)
 {}
 
@@ -64,12 +58,12 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::norm_inf;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
-	
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	const size_type
-		n    = algo->nlp().n(),
-		r    = algo->nlp().r(),
-		n_pz = n-r;
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		out << "\n*** (LPBFGS) Full limited memory BFGS to projected BFGS ...\n";
+	}
 
 #ifdef _WINDOWS
 	MHSB_t &rHL_super = dynamic_cast<MHSB_t&>(*rHL_k);
@@ -77,123 +71,175 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	MHSB_t &rHL_super = dyn_cast<MHSB_t>(*rHL_k);
 #endif
 
+	const size_type
+		n    = algo->nlp().n(),
+		r    = algo->nlp().r(),
+		n_pz = n-r;
+
+	bool do_projected_rHL_RR = false;
+
 	// See if we still have a limited memory BFGS update matrix
 	ref_count_ptr<MatrixSymPosDefLBFGS> // We don't want this to be deleted until we are done with it
 		lbfgs_rHL_RR = rcp::rcp_const_cast<MatrixSymPosDefLBFGS>(
 			rcp::rcp_dynamic_cast<const MatrixSymPosDefLBFGS>(rHL_super.B_RR_ptr()) );
 
-	if( lbfgs_rHL_RR.get() ) {
+	if( lbfgs_rHL_RR.get() && rHL_super.Q_R().is_identity()  ) {
 		//
-		// We have a limited memory BFGS matrix
+		// We have a limited memory BFGS matrix and have not started projected BFGS updating
+		// yet so lets determine if it is time to consider switching
 		//
-
-		// Determine when it is time to switch to dense BFGS
-		const bool consider_switch = lbfgs_rHL_RR->m_bar() >= min_num_updates_switch_dense();
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-			out << "\n*** (LPBFGS) Limited memory BFGS to dense projected BFGS\n" 
-				<< "\nnum_previous_updates = " << lbfgs_rHL_RR->m_bar()
-				<< ( consider_switch ? " >= " : " < " )
-				<< "min_num_updates_switch_dense = " << min_num_updates_switch_dense()
-				<< ( consider_switch
-					 ? "\nConsidering if we should switch to dense projected BFGS updating of superbasics ...\n"
-					 : "\nNot time to consider switching to dense projected BFGS updating of superbasics yet" );
+		// Check that the current update is sufficiently p.d. before we do anything
+		const value_type
+			sTy = dot(*s_bfgs,*y_bfgs),
+			yTy = dot(*y_bfgs,*y_bfgs);
+		if( !ConstrainedOptimizationPack::BFGS_sTy_suff_p_d(
+			*s_bfgs,*y_bfgs,&sTy
+			,  int(olevel) >= int(PRINT_ALGORITHM_STEPS) ? &out : NULL )
+			&& !proj_bfgs_updater().bfgs_update().use_dampening()
+			)
+		{
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				out	<< "\nWarning!  use_damening == false so there is no way we can perform any kind BFGS update (projected or not) so we will skip it!\n";
+			}
+			quasi_newton_stats_(*s).set_k(0).set_updated_stats(
+				QuasiNewtonStats::INDEF_SKIPED );
+			return true;
 		}
-		bool switched_to_dense = false;
+		// Consider if we can even look at the active set yet.
+		const bool consider_switch  = lbfgs_rHL_RR->m_bar() >= min_num_updates_proj_start();
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			if( min_num_updates_proj_start() > lbfgs_rHL_RR->m() ) {
+				out << "\nWarning! num_lbfgs_updates_stored = " << lbfgs_rHL_RR->m()
+					<< " < min_num_updates_proj_start = " << min_num_updates_proj_start()
+					<< "\nWe will never be able to switch to projected BFGS! (consider reducing min_num_updates_proj_start) ...\n";
+			}
+			else {
+				out << "\nnum_previous_updates_stored = " << lbfgs_rHL_RR->m_bar()
+					<< ( consider_switch ? " >= " : " < " )
+					<< "min_num_updates_proj_start = " << min_num_updates_proj_start()
+					<< ( consider_switch
+						 ? "\nConsidering if we should switch to projected BFGS updating of superbasics ...\n"
+						 : "\nNot time to consider switching to projected BFGS updating of superbasics yet!" );
+			}
+		}
 		if( consider_switch ) {
 			// 
-			// Our job here is to determine if it is time to switch to dense projected
+			// Our job here is to determine if it is time to switch to projected projected
 			// BFGS updating.
 			//
 			if( act_set_stats_(*s).updated_k(-1) ) {
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 					out	<< "\nDetermining if projected BFGS updating of superbasics should begin ...\n";
 				}
-				ActSetStats &stats = act_set_stats_(*s).get_k(-1);
+				// Determine if the active set has calmed down enough
 				const SpVector
 					&nu_km1 = s->nu().get_k(-1);
 				const SpVectorSlice
 					nu_indep = nu_km1(s->var_indep());
-				const size_type
-					num_active_indep = nu_indep.nz(),
-					num_adds         = stats.num_adds(),
-					num_drops        = stats.num_drops();
-				const value_type
-					frac_same
-					= ( num_adds == ActSetStats::NOT_KNOWN || num_active_indep == 0
-						? 0.0
-						: std::_MAX(((double)(num_active_indep)-num_adds-num_drops) / num_active_indep, 0.0 ) );
-				const bool low_num_super_basics = n_pz - num_active_indep <= num_superbasics_switch_dense();
-				const bool act_set_calmed_down = ( num_active_indep > 0 && frac_same >= act_set_frac_switch_dense() );
-				const bool max_num_updates_exceeded = lbfgs_rHL_RR->m_bar() >= max_num_updates_switch_dense();
-				bool switch_to_dense = low_num_super_basics && ( act_set_calmed_down || max_num_updates_exceeded );
+				const bool 
+					act_set_calmed_down
+					= PBFGSPack::act_set_calmed_down(
+						act_set_stats_(*s).get_k(-1)
+						,proj_bfgs_updater().act_set_frac_proj_start()
+						,olevel,out
+						),
+					max_num_updates_exceeded
+					= lbfgs_rHL_RR->m_bar() >= max_num_updates_proj_start();
+				do_projected_rHL_RR = act_set_calmed_down || max_num_updates_exceeded;
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-					out << "\n(n-r) - num_act_indep = " << n_pz << " - " << num_active_indep << " = " << n_pz - num_active_indep
-						<< ( low_num_super_basics ? " <= " : " > " )
-						<< " num_superbasics_switch_dense = " << num_superbasics_switch_dense();
-					if( num_active_indep ) {
-						out	<< "\nmax(num_active_indep-num_adds-num_drops,0)/(num_active_indep) = "
-							<< "max("<<num_active_indep<<"-"<<num_adds<<"-"<<num_drops<<",0)/("<<num_active_indep<<") = "
-							<< frac_same;
-						if( act_set_calmed_down )
-							out << " >= ";
-						else
-							out << " < ";
-						out << "act_set_frac_switch_dense = " << act_set_frac_switch_dense();
+					if( act_set_calmed_down ) {
+						out << "\nThe active set has calmed down enough so lets further consider switching to\n"
+							<< "projected BFGS updating of superbasic variables ...\n";
 					}
-					if( low_num_super_basics && act_set_calmed_down ) {
-						out << "\nThe active set has calmed down enough and their are not too many super basic variables so lets"
-							<< "\nfurther consider switching to dense projected BFGS updating of superbasic variables ...\n";
-					}
-					else if( low_num_super_basics && max_num_updates_exceeded ) {
-						out << "\nThe active set has not calmed down enough but their are not too many super basic variables"
-							<< "\nand num_previous_updates = " << lbfgs_rHL_RR->m_bar() << " >= max_num_updates_switch_dense = "
-							<< max_num_updates_switch_dense()
-							<< "\nso we will further consider switching to dense projected BFGS updating of superbasic variables ...\n";
+					else if( max_num_updates_exceeded ) {
+						out << "\nThe active set has not calmed down enough but num_previous_updates = "
+							<< lbfgs_rHL_RR->m_bar() << " >= max_num_updates_proj_start = "	<< max_num_updates_proj_start()
+							<< "\nso we will further consider switching to projected BFGS updating of superbasic variables ...\n";
 					}
 					else {
-						out << "\nIt is not time to switch so just keep performing limited memory BFGS for now ...\n";
+						out << "\nIt is not time to switch to projected BFGS so just keep performing full limited memory BFGS for now ...\n";
 					}
 				}
-				if( switch_to_dense ) {
-					// Determine the set of initially fixed and free independent variables
-					std::vector<size_type>                            // Todo: use temp workspace
-						i_x_free(n_pz), 
-						i_x_fixed(n_pz);
-					std::vector<ConstrainedOptimizationPack::EBounds> // Todo: use temp workspace
-						bnd_fixed(n_pz);
-					size_type
-						n_pz_X = 0,
-						n_pz_R = 0;
-					get_init_fixed_free_indep(
-						n,r,nu_indep,super_basic_mult_drop_tol(),olevel,out
-						,&n_pz_X,&n_pz_R,&i_x_free[0],&i_x_fixed[0],&bnd_fixed[0] );
-					if( n_pz_R > num_superbasics_switch_dense() ) {
-						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-							out << "\nOops! the actual number of super basic variables that we would keep n_pz_R = " << n_pz_R
-								<< " > num_superbasics_switch_dense = " << num_superbasics_switch_dense()
-								<< "\nWe will have to keep preforming limited memory BFGS for now!"
-								<< "(consider decreasing the value of super_basic_mult_drop_tol = " << super_basic_mult_drop_tol()
-								<< std::endl;
-						}
+				if( do_projected_rHL_RR ) {
+					//
+					// Determine the set of initially fixed and free independent variables.
+					//
+					typedef wsp::Workspace<size_type>                              i_x_t;
+					typedef wsp::Workspace<ConstrainedOptimizationPack::EBounds>   bnd_t;
+					i_x_t   i_x_free(wss,n_pz);
+					i_x_t   i_x_fixed(wss,n_pz);
+					bnd_t   bnd_fixed(wss,n_pz);
+					i_x_t   l_x_fixed_sorted(wss,n_pz);
+					size_type n_pz_X = 0, n_pz_R = 0;
+					// rHL = rHL_scale * I
+					value_type
+						rHL_scale = sTy > 0.0 ? yTy/sTy : 1.0;
+					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+						out	<< "\nScaling for diagonal intitial rHL = rHL_scale*I, rHL_scale = " << rHL_scale << std::endl;
 					}
-					else {
-						// Create new dense rHL_RR matrix and reinitialize rHL for set of superbasics
+					value_type sRTBRRsR = 0.0, sRTyR = 0.0, sXTBXXsX = 0.0, sXTyX = 0.0;
+					// Get the elements in i_x_free[] for variables that are definitely free
+					// and initialize s_R'*B_RR*s_R and s_R'*y_R
+					PBFGSPack::init_i_x_free_sRTsR_sRTyR(
+						nu_indep, *s_bfgs, *y_bfgs
+						, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );
+					sRTBRRsR *= rHL_scale;
+					wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+					VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+					rHL_XX_diag = rHL_scale;
+					// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
+					// and initialize s_X'*B_XX*s_X and s_X*y_X
+					PBFGSPack::sort_fixed_max_cond_viol(
+						nu_indep,*s_bfgs,*y_bfgs,rHL_XX_diag,sRTBRRsR,sRTyR
+						,&sXTBXXsX,&sXTyX,&l_x_fixed_sorted[0]);
+					// Pick initial set of i_x_free[] and i_x_fixed[] (sorted!)
+					PBFGSPack::choose_fixed_free(
+						proj_bfgs_updater().project_error_tol()
+						,proj_bfgs_updater().super_basic_mult_drop_tol(),nu_indep
+						,*s_bfgs,*y_bfgs,rHL_XX_diag,&l_x_fixed_sorted[0]
+						,olevel,out,&sRTBRRsR,&sRTyR,&sXTBXXsX,&sXTyX
+						,&n_pz_X,&n_pz_R,&i_x_free[0],&i_x_fixed[0],&bnd_fixed[0] );
+					if( n_pz_R < n_pz ) {
+						//
+						// We are ready to transition to projected BFGS updating!
+						//
+						// Determine if we are be using dense or limited memory BFGS?
+						const bool
+							low_num_super_basics = n_pz_R <= num_superbasics_switch_dense();
 						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-							out	<< "\nCreate new dense BFGS matrix rHL_RR for superbasics only and initialize to rHL_RR = (1/gamma_k)*I ("
-								<< "where gamma_k = " << lbfgs_rHL_RR->gamma_k() << ") ...\n";
+							out << "\nn_pz_R = " << n_pz_R << ( low_num_super_basics ? " <= " : " > " )
+								<< " num_superbasics_switch_dense = " << num_superbasics_switch_dense()
+								<< ( low_num_super_basics
+									 ? "\nThere are not too many superbasic variables so use dense projected BFGS ...\n"
+									 : "\nThere are too many superbasic variables so use limited memory projected BFGS ...\n"
+									);
 						}
-						ref_count_ptr<MatrixSymPosDefCholFactor>
+						// Create new matrix to use for rHL_RR initialized to rHL_RR = rHL_scale*I
+						ref_count_ptr<MatrixSymSecantUpdateable>
+							rHL_RR = NULL;
+						if( low_num_super_basics ) {
 							rHL_RR = new MatrixSymPosDefCholFactor(
 								NULL    // Let it allocate its own memory
 								,NULL   // ...
+								,n_pz   // maximum size
 								,lbfgs_rHL_RR->maintain_original()
 								,lbfgs_rHL_RR->maintain_inverse()
 								);
-						rHL_RR->init_identity( n_pz_R, 1.0/lbfgs_rHL_RR->gamma_k() ); // rHL_RR = (1/gamma_k)*I
-						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-							out << "\nDense rHL_RR after rHL_RR = (1/gamma_k)*I but before adding previous BFGS updates\nrHL_RR =\n" << *rHL_RR;
 						}
-						// Initialize rHL_XX = I for now
+						else {
+							rHL_RR = new MatrixSymPosDefLBFGS(
+								n_pz, lbfgs_rHL_RR->m()
+								,lbfgs_rHL_RR->maintain_original()
+								,lbfgs_rHL_RR->maintain_inverse()
+								,lbfgs_rHL_RR->auto_rescaling()
+								);
+						}
+						rHL_RR->init_identity( n_pz_R, rHL_scale );
+						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+							out << "\nrHL_RR after intialized to rHL_RR = rHL_scale*I but before performing current BFGS update:\nrHL_RR =\n"
+								<< dynamic_cast<MatrixWithOp&>(*rHL_RR); // I know this is okay!
+						}
+						// Initialize rHL_XX = rHL_scale*I
 #ifdef _WINDOWS
 						MatrixSymInitDiagonal
 							&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
@@ -203,54 +249,119 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 							&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
 								const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr()));
 #endif
-						rHL_XX.init_identity( n_pz_X ); // ToDo: We may want scaled element?
+						rHL_XX.init_identity( n_pz_X, rHL_scale );
+						// Reinitialize rHL
 						rHL_super.initialize(
 							n_pz, n_pz_R, &i_x_free[0], &i_x_fixed[0], &bnd_fixed[0]
-							,rcp::rcp_static_cast<const MatrixSymWithOpFactorized>(rHL_RR)
+							,rcp::rcp_const_cast<const MatrixSymWithOpFactorized>(
+								rcp::rcp_dynamic_cast<MatrixSymWithOpFactorized>(rHL_RR))
 							,NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
 							);
+						//
+						// Perform the current BFGS update first
+						//
+						MatrixSymWithOp
+							&rHL_RR_op = dynamic_cast<MatrixSymWithOp&>(*rHL_RR);
+						const GenPermMatrixSlice
+							&Q_R = rHL_super.Q_R(),
+							&Q_X = rHL_super.Q_X();
+						// Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
+						wsp::Workspace<value_type>
+							y_bfgs_R_ws(wss,Q_R.cols()),
+							s_bfgs_R_ws(wss,Q_R.cols()),
+							y_bfgs_X_ws(wss,Q_X.cols()),
+							s_bfgs_X_ws(wss,Q_X.cols());
+						VectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
+						VectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
+						VectorSlice y_bfgs_X(&y_bfgs_X_ws[0],y_bfgs_X_ws.size());
+						VectorSlice s_bfgs_X(&s_bfgs_X_ws[0],s_bfgs_X_ws.size());
+						V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_R = Q_R'*y_bfgs
+						V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );  // s_bfgs_R = Q_R'*s_bfgs
+						V_MtV( &y_bfgs_X, Q_X, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_X = Q_X'*y_bfgs
+						V_MtV( &s_bfgs_X, Q_X, BLAS_Cpp::trans, *s_bfgs );  // s_bfgs_X = Q_X'*s_bfgs
+						// Update rHL_RR
+						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+							out << "\nPerform current BFGS update on " << n_pz_R << " x " << n_pz_R << " projected "
+								<< "reduced Hessian for the superbasic variables where B = rHL_RR...\n";
+						}
+						QuasiNewtonStats quasi_newton_stats;
+						proj_bfgs_updater().bfgs_update().perform_update(
+							&s_bfgs_R(),&y_bfgs_R(),false,out,olevel,algo->algo_cntr().check_results()
+							,&rHL_RR_op, &quasi_newton_stats );
+						// Perform previous updates if possible
 						if( lbfgs_rHL_RR->m_bar() ) {
 							const size_type num_add_updates = std::_MIN(num_add_recent_updates(),lbfgs_rHL_RR->m_bar());
 							if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 								out	<< "\nAdd the min(num_previous_updates,num_add_recent_updates) = min(" << lbfgs_rHL_RR->m_bar()
-									<< "," << num_add_recent_updates() << ") = " << num_add_updates << " most recent BFGS updates ...\n";
+									<< "," << num_add_recent_updates() << ") = " << num_add_updates << " most recent BFGS updates if possible ...\n";
 							}
 							// Now add previous update vectors
-							const GenPermMatrixSlice
-								&Q_R = rHL_super.Q_R(),
-								&Q_X = rHL_super.Q_X();
-							const size_type
-								n_pz_R = Q_R.cols(),
-								n_pz_X = Q_X.cols();
-							assert( n_pz_R + n_pz_X == n_pz );
+							const value_type
+								project_error_tol = proj_bfgs_updater().project_error_tol();
 							const GenMatrixSlice
 								S = lbfgs_rHL_RR->S(),
 								Y = lbfgs_rHL_RR->Y();
-							Vector s_bfgs_R(n_pz_R);  // ToDo: use temp workspace for this
-							Vector y_bfgs_R(n_pz_R);  // ToDo: use temp workspace for this
-							size_type k = lbfgs_rHL_RR->k_bar();  // Location in S and Y of must recent update vectors
+							size_type k = lbfgs_rHL_RR->k_bar();  // Location in S and Y of most recent update vectors
 							for( size_type l = 1; l <= num_add_updates; ++l, --k ) {
 								if(k == 0) k = lbfgs_rHL_RR->m_bar();  // see MatrixSymPosDefLBFGS
-								// s_bfgs_R = Q_R'*s_bfgs
-								V_MtV( &s_bfgs_R(), Q_R, BLAS_Cpp::trans, S.col(k) );
-								// y_bfgs_R = Q_R'*y_bfgs
-								V_MtV( &y_bfgs_R(), Q_R, BLAS_Cpp::trans, Y.col(k) );
-								// ToDo: We could print these updates for debugging if needed!
-								// ( rHL_RR, s_bfgs_R, y_bfgs_R ) -> rHL_RR (this should not throw an exception!)
-								try {
-									rHL_RR->secant_update( &s_bfgs_R(), &y_bfgs_R(), NULL );
-								    // ToDo: We could test the secant condition if we have to.
-									// ToDo: We could print the updated BFGS matrix if we had to.
+								// Check to see if this update satisfies the required conditions.
+								// Start with the condition on s'*y since this are cheap to check.
+								V_MtV( &s_bfgs_X(), Q_X, BLAS_Cpp::trans, S.col(k) ); // s_bfgs_X = Q_X'*s_bfgs
+								V_MtV( &y_bfgs_X(), Q_X, BLAS_Cpp::trans, Y.col(k) ); // y_bfgs_X = Q_X'*y_bfgs
+								sRTyR    = dot( s_bfgs_R, y_bfgs_R );
+								sXTyX    = dot( s_bfgs_X, y_bfgs_X );
+								bool
+									sXTyX_cond    = ::fabs(sXTyX/sRTyR) <= project_error_tol,
+									do_update     = sXTyX_cond,
+									sXTBXXsX_cond = false;
+								if( sXTyX_cond ) {
+									// Check the second more expensive condition
+									V_MtV( &s_bfgs_R(), Q_R, BLAS_Cpp::trans, S.col(k) ); // s_bfgs_R = Q_R'*s_bfgs
+									V_MtV( &y_bfgs_R(), Q_R, BLAS_Cpp::trans, Y.col(k) ); // y_bfgs_R = Q_R'*y_bfgs
+									sRTBRRsR = transVtMtV( s_bfgs_R, rHL_RR_op, BLAS_Cpp::no_trans, s_bfgs_R );
+									sXTBXXsX = rHL_scale * dot( s_bfgs_X, s_bfgs_X );
+									sXTBXXsX_cond = sXTBXXsX/sRTBRRsR <= project_error_tol;
+									do_update     = sXTBXXsX_cond && sXTyX_cond;
 								}
-								catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
-									if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-										out	<< "\nOops!  The " << l << "th most recent BFGS update was rejected?:\n"
-											<< excpt.what() << std::endl;
+								if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+									out << "\n---------------------------------------------------------------------"
+										<< "\nprevious update " << l
+										<< "\n\nChecking projection error:\n"
+										<< "\n|s_X'*y_X|/|s_R'*y_R| = |" << sXTyX << "|/|" << sRTyR
+										<< "| = " << ::fabs(sXTyX/sRTyR)
+										<< ( sXTyX_cond ? " <= " : " > " ) << " project_error_tol = "
+										<< project_error_tol;
+									if( sXTyX_cond ) {
+										out	<< "\n(s_X'*rHL_XX*s_X/s_R'*rHL_RR*s_R) = (" << sXTBXXsX << "/" << sRTBRRsR
+											<< ") = " << (sXTBXXsX/sRTBRRsR)
+											<< ( sXTBXXsX_cond ? " <= " : " > " ) << " project_error_tol = "
+											<< project_error_tol;
+									}
+									out << ( do_update
+											 ? "\n\nAttemping to add this previous update where B = rHL_RR ...\n"
+											 : "\n\nCan not add this previous update ...\n" );
+								}
+								if( do_update ) {
+								    // ( rHL_RR, s_bfgs_R, y_bfgs_R ) -> rHL_RR (this should not throw an exception!)
+									try {
+										proj_bfgs_updater().bfgs_update().perform_update(
+											&s_bfgs_R(),&y_bfgs_R(),false,out,olevel,algo->algo_cntr().check_results()
+											,&rHL_RR_op, &quasi_newton_stats );
+									}
+									catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
+										if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+											out	<< "\nOops!  The " << l << "th most recent BFGS update was rejected?:\n"
+												<< excpt.what() << std::endl;
+										}
 									}
 								}
 							}
+							if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+								out << "\n---------------------------------------------------------------------\n";
+								}
 							if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-								out << "\nDense rHL_RR after adding previous BFGS updates\nrHL_BRR =\n" << *rHL_RR;
+								out << "\nrHL_RR after adding previous BFGS updates:\nrHL_BRR =\n"
+									<< dynamic_cast<MatrixWithOp&>(*rHL_RR);
 							}
 						}
 						else {
@@ -259,16 +370,29 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 							}
 						}
 						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-							out << "\nFull rHL after reinitialization but before adding previous BFGS updates\nrHL =\n" << *rHL_k;
+							out << "\nFull rHL after complete reinitialization:\nrHL =\n" << *rHL_k;
 						}
-						switched_to_dense = true; // Our work is done now.
+						quasi_newton_stats_(*s).set_k(0).set_updated_stats(
+							QuasiNewtonStats::REINITIALIZED );
+						return true;
+					}
+					else {
+						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+							out << "\nn_pz_R == n_pz = " << n_pz_R << ", No variables would be removed from "
+								<< "the superbasis so just keep on performing limited memory BFGS for now ...\n";
+						}
+						do_projected_rHL_RR = false;
 					}
 				}
 			}
 		}
-		// If we have not switched to dense then just update the limited memory BFGS matrix
-		if(!switched_to_dense) {
-			bfgs_update().perform_update(
+		// If we have not switched to PBFGS then just update the full limited memory BFGS matrix
+		if(!do_projected_rHL_RR) {
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				out << "\nPerform current BFGS update on " << n_pz << " x " << n_pz << " full "
+					<< "limited memory reduced Hessian B = rHL ...\n";
+			}
+			proj_bfgs_updater().bfgs_update().perform_update(
 				s_bfgs,y_bfgs,first_update,out,olevel,algo->algo_cntr().check_results()
 				,lbfgs_rHL_RR.get()
 				,&quasi_newton_stats_(*s).set_k(0)
@@ -278,14 +402,14 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	}
 	else {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-			out	<< "\nThe matrix rHL_RR is not limited memory so we must have already switched to dense ...\n";
+			out	<< "\nWe have already switched to projected BFGS updating ...\n";
 		}
 	}
 	//
-	// If we get here then we must have switched to dense
+	// If we get here then we must have switched to
 	// projected updating so lets just pass it on!
 	//
-	return dense_proj_update().perform_update(
+	return proj_bfgs_updater().perform_update(
 		s_bfgs,y_bfgs,first_update,out,olevel,algo,s,rHL_k);
 }
 

@@ -33,7 +33,8 @@
 
 #include <assert.h>
 
-#include "../include/MatrixSymPosDefLBFGS.h"
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"
+#include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "LinAlgLAPack/include/LinAlgLAPack.h"
@@ -74,9 +75,33 @@ const tri_gms MatrixSymPosDefLBFGS::Lb() const
 }
 
 inline
+GenMatrixSlice MatrixSymPosDefLBFGS::STY()
+{
+	return STY_(1,m_bar_+1,1,m_bar_);
+}
+
+inline
+const GenMatrixSlice MatrixSymPosDefLBFGS::STY() const
+{
+	return STY_(1,m_bar_+1,1,m_bar_);
+}
+
+inline
+sym_gms MatrixSymPosDefLBFGS::STS()
+{
+	return LinAlgPack::nonconst_sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+}
+
+inline
 const sym_gms MatrixSymPosDefLBFGS::STS() const
 {
 	return LinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+}
+
+inline
+sym_gms MatrixSymPosDefLBFGS::YTY()
+{
+	return LinAlgPack::nonconst_sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
 }
 
 inline
@@ -89,17 +114,19 @@ const sym_gms MatrixSymPosDefLBFGS::YTY() const
 // Nonlinined functions
 
 MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS(
-    size_type   m
+	size_type   max_size
+    ,size_type  m
 	,bool       maintain_original
 	,bool       maintain_inverse
 	,bool       auto_rescaling
 	)
 {
-	initial_setup(m,maintain_original,maintain_inverse,auto_rescaling);
+	initial_setup(max_size,m,maintain_original,maintain_inverse,auto_rescaling);
 }
 
 void MatrixSymPosDefLBFGS::initial_setup(
-    size_type   m
+	size_type   max_size
+    ,size_type  m
 	,bool       maintain_original
 	,bool       maintain_inverse
 	,bool       auto_rescaling
@@ -118,6 +145,7 @@ void MatrixSymPosDefLBFGS::initial_setup(
 	maintain_inverse_  = maintain_inverse;
 	m_                 = m;
 	n_                 = 0; // make uninitialized
+	n_max_             = max_size;
 }
 
 // Overridden from Matrix
@@ -160,6 +188,7 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 		original_is_updated_ = p_m->original_is_updated_;
 		maintain_inverse_    = p_m->maintain_inverse_;
 		inverse_is_updated_  = p_m->inverse_is_updated_;
+		n_max_ 		         = p_m->n_max_;
 		n_	 		         = p_m->n_;
 		m_			         = p_m->m_;
 		m_bar_		         = p_m->m_bar_;
@@ -402,9 +431,28 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 
 void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 {
+	// Validate input
+	if( alpha <= 0.0 ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
+			<< "alpha = " << alpha << " <= 0 is not allowed!";
+		throw std::invalid_argument( omsg.str() );
+	}
+	if( n_max_ == 0 ) {
+		n_max_ = n;
+	}
+	else if( n > n_max_ ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
+			<< "n = " << n << " > max_size = " << n_max_;
+		throw std::invalid_argument( omsg.str() );
+	}
+
 	// Resize storage
-	S_.resize( n, m_ );
-	Y_.resize( n, m_ );
+	S_.resize( n_max_, m_ );
+	Y_.resize( n_max_, m_ );
 	STY_.resize( m_, m_ );
 	STSYTY_.resize( m_+1, m_+1 );
 	STSYTY_.diag(0) = 0.0;
@@ -436,17 +484,11 @@ void MatrixSymPosDefLBFGS::secant_update(
 
 	assert_initialized();
 
-	// Check that s'*y is sufficently positive and if not then skip the update:
-	// s'*y > sqrt(macheps) * ||s||2 * ||y||2   (Dennis and Schnabel, A9.4.2)
+	// Check skipping the BFGS update
 	const value_type
-		sTy	= dot(*s,*y),
-		macheps = std::numeric_limits<value_type>::epsilon(),
-		min_sTy = ::sqrt(macheps) * norm_2(*s) * norm_2(*y);
-	if(sTy <= min_sTy) {
-		std::ostringstream omsg;
-		omsg	<< "MatrixSymPosDefLBFGS::secant_update(...) : Error, s'*y = " << sTy
-				<< " < sqrt(mach_eps) * ||s||2 * ||y||2 = " << min_sTy << std::endl
-				<< "Therefore the BFGS update is illdefined.";
+		sTy	      = dot(*s,*y);
+	std::ostringstream omsg;
+	if( !BFGS_sTy_suff_p_d(*s,*y,&sTy,&omsg,"MatrixSymPosDefLBFGS::secant_update(...)" ) ) {
 		throw UpdateSkippedException( omsg.str() );	
 	}
 
@@ -466,8 +508,8 @@ void MatrixSymPosDefLBFGS::secant_update(
 	}
 
 	// Set the update vectors
-	S_.col(k_bar_) = *s;
-	Y_.col(k_bar_) = *y;
+	S_.col(k_bar_)(1,n_) = *s;
+	Y_.col(k_bar_)(1,n_) = *y;
 
 	// /////////////////////////////////////////////////////////////////////////////////////
 	// Update S'Y
@@ -562,7 +604,7 @@ void MatrixSymPosDefLBFGS::secant_update(
 	gamma_k_ = auto_rescaling_ ? STY_(k_bar_,k_bar_) / STSYTY_(k_bar_,k_bar_+1) : 1.0;
 
 	// We do not initially update Q unless we have to form a matrix-vector
-	// product latter.
+	// product later.
 	
 	Q_updated_ = false;
 
@@ -573,6 +615,180 @@ void MatrixSymPosDefLBFGS::secant_update(
 		n_ = 0;
 		throw;
 	}
+}
+
+// Overridden from MatrixSymAddDelUpdateble
+
+void MatrixSymPosDefLBFGS::initialize(
+	value_type         alpha
+	,size_type         max_size
+	)
+{
+	// Validate input
+	if( alpha <= 0.0 ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::initialize(alpha,max_size) : Error, "
+			<< "alpha = " << alpha << " <= 0 is not allowed!";
+		throw std::invalid_argument( omsg.str() );
+	}
+	n_max_ = max_size;
+	this->init_identity(1,alpha);
+}
+
+void MatrixSymPosDefLBFGS::initialize(
+	const sym_gms      &A
+	,size_type         max_size
+	,bool              force_factorization
+	,Inertia           inertia
+	)
+{
+	throw std::runtime_error(
+		"MatrixSymPosDefLBFGS::initialize(A,max_size,force_refactorization,inertia) : Error, "
+		"This function is undefined for this subclass.  I am so sorry for this terrible hack!" );
+}
+
+size_type MatrixSymPosDefLBFGS::max_size() const
+{
+	return n_max_;
+}
+
+MatrixSymAddDelUpdateable::Inertia MatrixSymPosDefLBFGS::inertia() const
+{
+	return Inertia(0,0,n_);
+}
+
+void MatrixSymPosDefLBFGS::set_uninitialized()
+{
+	n_ = 0;
+}
+
+void MatrixSymPosDefLBFGS::augment_update(
+	const VectorSlice  *t
+	,value_type        alpha
+	,bool              force_refactorization
+	,EEigenValType     add_eigen_val
+	)
+{
+	assert_initialized();
+	if( n_ == n_max_ ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
+			<< "this->rows() = " << n_ << " == this->max_size() = " << n_max_
+			<< " so we can't allow the matrix to grow!";
+		throw std::invalid_argument( omsg.str() );
+	}
+	if( t ) {
+		throw std::invalid_argument(		
+			"MatrixSymPosDefLBFGS::augment_update(...) : Error, "
+			"t must be NULL in this implemention.  Sorry for this hack" );
+	}
+	if( alpha <= 0.0 ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
+			<< "alpha = " << alpha << " <= 0 is not allowed!";
+		throw std::invalid_argument( omsg.str() );
+	}
+	if( add_eigen_val == MatrixSymAddDelUpdateable::EIGEN_VAL_NEG ) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
+			<< "add_eigen_val == EIGEN_VAL_NEG is not allowed!";
+		throw std::invalid_argument( omsg.str() );
+	}
+	//
+	// Here we will do the simplest thing possible.  We will just  set:
+	//
+	// [ S ] -> S       [ Y ] -> Y
+	// [ 0 ]            [ 0 ]
+	//
+	// and let the new matrix be:
+	//
+	// [ B      0     ] -> B
+	// [ 0  1/gamma_k ]
+	//
+	// Nothing else, not even Q, needs to be updated!
+	//
+	S_.row(n_+1)(1,m_bar_) = 0.0;
+	Y_.row(n_+1)(1,m_bar_) = 0.0;
+	++n_;
+}
+
+void MatrixSymPosDefLBFGS::delete_update(
+	size_type          jd
+	,bool              force_refactorization
+	,EEigenValType     drop_eigen_val
+	)
+{
+	assert_initialized();
+	//
+	// Removing a symmetric row and column jd is the same a removing row
+	// S(jd,:) from S and row Y(jd,:) from Y.  At the same time we must
+	// update S'*Y, S'*S and Y'*Y.  To see how to update these matrices
+	// not that we can represent each column of S and Y as:
+	//
+	//           [ S(1:jd-1,k) ]                 [ Y(1:jd-1,k) ]
+	// S(:,k) =  [ S(jd,k)     ]     , Y(:,k) =  [ Y(jd,k)     ]  , k = 1...m_bar
+	//           [ S(jd+1:n,k) ]                 [ Y(jd+1:n,k) ]
+	//
+	// Using the above, we can write:
+	//
+	// (S'*Y)(p,q) = S(1:jd-1,p)'*Y(1:jd-1,q) + S(jd,p)*Y(jd,q) + S(jd+1:n,p)'*Y(jd+1:n,q)
+	//     , for p = 1...m_bar, q = 1...m_bar
+	//
+	// We see that the new S'*Y and the old differ by only the term S(jd,p)*Y(jd,q).  Therefore, we
+	// only need to subtract off this term in each of the elements in order to update S'*Y for the
+	// deletion of this element jd.  To see how to do this with BLAS, first consider subtracting
+	// of the terms by column as:
+	//
+	// (S'*Y)(:,q) <- (S'*Y)(:,q) - S(jd,:)'*Y(jd,q)
+	//     , for q = 1...m_bar
+	// 
+	// Then, if we put all of the columns together we get:
+	//
+	// (S'*Y)(:,:) <- (S'*Y)(:,:) - S(jd,:)'*Y(jd,:)
+	// =>
+	// (S'*Y) <- (S'*Y) - S.row(jd)*Y.row(jd)'
+	//
+	// In otherwords the above update operation is just an unsymmetric rank-1 update
+	//
+	// Similar updates for S'*S and Y'*Y are derived by just substituting matrices
+	// in to the above update for S'*Y:
+	//
+	// (S'*S) <- (S'*S) - S.row(jd)*S.row(jd)'
+	// 
+	// (Y'*Y) <- (Y'*Y) - Y.row(jd)*Y.row(jd)'
+	//
+	// These updates are symmetric rank-1 updates.
+	//
+	GenMatrixSlice S = this->S();
+	GenMatrixSlice Y = this->Y();
+	GenMatrixSlice STY = this->STY();
+	sym_gms        STS = this->STS();
+	sym_gms        YTY = this->YTY();
+	// (S'*Y) <- (S'*Y) - S.row(jd)*Y.row(jd)'
+	LinAlgPack::ger( -1.0, S.row(jd), Y.row(jd), &STY );
+	// (S'*S) <- (S'*S) - S.row(jd)*S.row(jd)'
+	LinAlgPack::syr( -1.0, S.row(jd), &STS );
+	// (Y'*Y) <- (Y'*Y) - Y.row(jd)*Y.row(jd)'
+	LinAlgPack::syr( -1.0, Y.row(jd), &YTY );
+	// Remove row jd from S and Y one column at a time
+	// (one element at a time!)
+	if( jd < n_ ) {
+		{for( size_type k = 1; k <= m_bar_; ++k ) {
+			value_type *ptr = S.col_ptr(k);
+			std::copy( ptr + jd, ptr + n_, ptr + jd - 1 );
+		}}
+		{for( size_type k = 1; k <= m_bar_; ++k ) {
+			value_type *ptr = Y.col_ptr(k);
+			std::copy( ptr + jd, ptr + n_, ptr + jd - 1 );
+		}}
+	}
+	// Update the size
+	--n_;
+	Q_updated_ = false;
 }
 
 // Private member functions

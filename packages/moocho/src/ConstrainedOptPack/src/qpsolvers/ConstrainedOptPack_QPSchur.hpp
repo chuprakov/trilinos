@@ -10,6 +10,7 @@
 
 #include "ConstrainedOptimizationPackTypes.h"
 #include "MatrixSymAddDelUpdateableWithOpFactorized.h"
+#include "MatrixSymAddDelUpdateable.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
@@ -946,6 +947,13 @@ public:
 
 		// Reinitialize P_XF_hat, P_plus_hat, Q_XD_hat, and U_hat
 		void reinitialize_matrices(bool test);
+		
+		// Remove an element from the augmented KKT system.
+		// This does not update P_plus_hat, P_XF_hat or any
+		// of the dimensions.
+		void remove_augmented_element(
+			size_type sd, bool force_refactorization
+			,MatrixSymAddDelUpdateable::EEigenValType eigen_val_drop );
 
 		// not defined and not to be called.
 		ActiveSet();

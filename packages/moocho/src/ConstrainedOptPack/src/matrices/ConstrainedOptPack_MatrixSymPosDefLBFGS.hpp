@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "MatrixSymSecantUpdateable.h"
+#include "MatrixSymAddDelUpdateable.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
@@ -16,11 +17,9 @@ namespace ConstrainedOptimizationPack {
 ///
 /** Implementation of limited Memory BFGS matrix.
  *
- * The function set_num_updates_stored(l) must be called first to set the number of
- * most current updates stored.  The storage requirements for this class are O( n*l + l*l )
- * which is O(n*l) when n >> l which is expected.
- *
- * Implementation for limited memory BFGS matrix where update vectors are thrown away.
+ * The function set_num_updates_stored(l) must be called first to set the maximum number of
+ * the most recent updates that can  be stored.  The storage requirements for this class are
+ * O( n_max*l + l*l ) which is O(n_max*l) when n_max >> l which is expected.
  *
  * This implementation is based on:
  *
@@ -75,10 +74,15 @@ namespace ConstrainedOptimizationPack {
  * This class allows matrix vector products x = B*y and the inverse
  * matrix vector products x = inv(B)*y to be performed at a cost of
  * about O(n*m^2).
+ *
+ * In addition, the class supports the MatixSymAddDelUpdateable interface
+ * with a few major restrictions.  This allows the client to add and
+ * remove rows and columns from the matrix.
  */
 class MatrixSymPosDefLBFGS
 	: public MatrixSymWithOpFactorized
-		, public MatrixSymSecantUpdateable
+	, public MatrixSymSecantUpdateable
+	, public MatrixSymAddDelUpdateable
 {
 public:
 
@@ -87,7 +91,8 @@ public:
 
 	/// Calls initial_setup(,,,)
 	MatrixSymPosDefLBFGS(
-	    size_type   m                  = 10
+		size_type   max_size           = 0
+	    ,size_type  m                  = 10
 		,bool       maintain_original  = true
 		,bool       maintain_inverse   = true
 		,bool       auto_rescaling     = false
@@ -108,6 +113,11 @@ public:
 	  * is called.  When this function is called all current
 	  * updates are lost and the matrix becomes uninitialized.
 	  *
+	  * @param  max_size
+	  *            [in] If max_size > 0 then this is the max size
+	  *            the matrix is allowed to become.  If max_size == 0
+	  *            then this size will be determined by one of the
+	  *            initialization methods.
 	  * @param  m  [in] Max number of recent update vectors stored
 	  * @param  maintain_original
 	  *            [in] If true then quantities needed to compute
@@ -134,11 +144,12 @@ public:
 	  *            [in] See intro.
 	  */
 	 void initial_setup(
-	    size_type   m                  = 10
-		,bool       maintain_original  = true
-		,bool       maintain_inverse   = true
-		,bool       auto_rescaling     = false
-		);
+		 size_type   max_size           = 0
+		 ,size_type  m                  = 10
+		 ,bool       maintain_original  = true
+		 ,bool       maintain_inverse   = true
+		 ,bool       auto_rescaling     = false
+		 );
 
 	// //////////////////////////////////
 	// Representation access
@@ -210,6 +221,52 @@ public:
 	//		end Overridden from MatrixSymSecantUpdateable
 	//@}
 
+	// ////////////////////////////////////////////////////////
+	/** @name Overridden from MatrixSymAddDelUpdateble */
+	//@{
+
+	/// This is fine as long as alpha > 0.0.
+	void initialize(
+		value_type         alpha
+		,size_type         max_size
+		);
+	/// Sorry, this will throw an exception!
+	void initialize(
+		const sym_gms      &A
+		,size_type         max_size
+		,bool              force_factorization
+		,Inertia           inertia
+		);
+	///
+	size_type max_size() const;
+	/// Returns (0,0,rows())
+	Inertia inertia() const;
+	/// Will set rows() == 0
+	void set_uninitialized();
+	///
+	/** Augment the matrix to add a row and column.
+	 *
+	 * This function is very limited in what it will do.
+	 * It will throw exceptions if alpha <= 0.0 or t != NULL
+	 * or add_eigen_val == EIGEN_VAL_NEG or this->rows() == this->max_size().
+	 * The obvious postconditions for this function will only technically
+	 * be satisfied if alpha == this->gamma_k().
+	 */
+	void augment_update(
+		const VectorSlice  *t
+		,value_type        alpha
+		,bool              force_refactorization
+		,EEigenValType     add_eigen_val
+		);
+	/// Should always succeed unless user gives a wrong value for drop_eigen_val.
+	void delete_update(
+		size_type          jd
+		,bool              force_refactorization
+		,EEigenValType     drop_eigen_val
+		);
+	
+	//@}
+	
 private:
 
 	// //////////////////////////////////
@@ -223,7 +280,8 @@ private:
 	bool        maintain_inverse_;   // If true, quantities needed for Hk will be maintained
 	bool        inverse_is_updated_; // If true, quantities needed for Hk are already updated
 
-	size_type	n_,		// Size of the matrix.  If 0 then is uninitialized
+	size_type	n_max_,	// The maximum size the matrix is allowed to become.
+				n_,		// Size of the matrix.  If 0 then is uninitialized
 				m_,		// Maximum number of update vectors that can be stored.
 				m_bar_,	// Current number of update vectors being stored.
 						// 0 <= m_bar <= m
@@ -232,15 +290,15 @@ private:
 
 	value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
 
-	GenMatrix	S_,		// (n x m) Matrix of stored update vectors = [ s1, ..., sm ]
+	GenMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
 						// S(:,k_bar) is the most recently stored s update vector
-				Y_,		// (n x m) Matrix of stored update vectors = [ y1, ..., ym ]
+				Y_,		// (n_max x m) Matrix of stored update vectors = [ y1, ..., ym ]
 						// Y(:,k_bar) is the most recently stored y update vector
 				STY_,	// (m x m) The matrix S'Y
 				STSYTY_;// ((m+1) x (m+1)) The strictly upper triangular part stores the
 						// upper triangular part Y'Y and the strictly lower triangular
 						// part stores the lower triangular part of S'S.  The diagonal
-						// can be used for work space.
+						// can be used for workspace.
 
 	mutable bool		Q_updated_;	// True if Q has been updated for the most current update.
 	mutable GenMatrix	QJ_;		// Used to store factorization of the schur complement of Q.
@@ -257,7 +315,15 @@ private:
 	/// Strictly lower triangular part of L
 	const tri_gms Lb() const;
 	///
+	GenMatrixSlice STY();
+	///
+	const GenMatrixSlice STY() const;
+	///
+	sym_gms STS();
+	///
 	const sym_gms STS() const;
+	///
+	sym_gms YTY();
 	///
 	const sym_gms YTY() const;
 	/// y = inv(Q) * x
@@ -277,7 +343,6 @@ private:
 
 // //////////////////////////////////////////////
 // Inline member functions
-
 
 inline
 size_type MatrixSymPosDefLBFGS::m() const

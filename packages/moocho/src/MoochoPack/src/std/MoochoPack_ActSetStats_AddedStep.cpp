@@ -28,17 +28,23 @@ bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	}
 
 	if( s.nu().updated_k(0) ) {
-		size_type num_active = 0, num_adds = 0, num_drops = 0;
-		const SpVector &nu_k	= s.nu().get_k(0);
+		size_type
+			num_active = 0, num_adds = 0, num_drops = 0,
+			num_active_indep = 0, num_adds_indep = 0, num_drops_indep = 0;
+		const SpVector &nu_k = s.nu().get_k(0);
 		num_active = nu_k.nz();
 		if( s.nu().updated_k(-1) ) {
 			const SpVector &nu_km1	= s.nu().get_k(-1);
-			active_set_change( nu_k(), nu_km1(), olevel, &num_adds, &num_drops, &out );
-			act_set_stats_(s).set_k(0).set_stats(num_active,num_adds,num_drops);
+			active_set_change(
+				nu_k(), nu_km1(), s.var_indep(), olevel, &out
+				,&num_adds, &num_drops, &num_active_indep, &num_adds_indep, &num_drops_indep );
+			act_set_stats_(s).set_k(0).set_stats(num_active,num_adds,num_drops
+												 ,num_active_indep,num_adds_indep,num_drops_indep);
 		}
 		else {
-			act_set_stats_(s).set_k(0).set_stats( num_active, ActSetStats::NOT_KNOWN
-				,ActSetStats::NOT_KNOWN );
+			act_set_stats_(s).set_k(0).set_stats(
+				num_active, ActSetStats::NOT_KNOWN, ActSetStats::NOT_KNOWN
+				, nu_k(s.var_indep()).nz(), ActSetStats::NOT_KNOWN, ActSetStats::NOT_KNOWN );
 		}
 	}
 	else {
@@ -56,5 +62,6 @@ void ReducedSpaceSQPPack::ActSetStats_AddedStep::print_step( const Algorithm& al
 {
 	out
 		<< L << "*** Updates active set statistics for changes from the last iteration\n"
-		<< L << "Given nu_km1 and nu_k update act_set_stats_k (num_active, num_adds, num_drops)\n";
+		<< L << "Given nu_km1 and nu_k update:\n"
+		<< L << "    act_set_stats_k(num_active,num_adds,num_drops,num_active_indep,num_adds_indep,num_drops_indep)\n";
 }

@@ -62,31 +62,31 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 
 	// n_R = nd_R
 	*n_R = nd_R;
-	// i_x_free[l-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R
+	// i_x_free[(G.Q_R.begin()+l-1)->col_j()-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R
 	i_x_free->resize( Q_R.is_identity() ? 0: nd_R );
 	if( nd_R && !Q_R.is_identity() ) {
 		GenPermMatrixSlice::const_iterator
 			Q_itr = Q_R.begin();
-		i_x_free_t::iterator
-			i_itr = i_x_free->begin(); 
-		for( ; Q_itr != Q_R.end(); ++Q_itr, ++i_itr ) {
+		for( ; Q_itr != Q_R.end(); ++Q_itr ) {
 			const size_type i = Q_itr->row_i();
+			const size_type k = Q_itr->col_j();
 			assert( 0 < i && i <= nd );
-			*i_itr = i;
+			assert( 0 < k && k <= nd_R );
+			(*i_x_free)[k-1] = i;
 		}
 	}
 	// i_x_fixed[]
 	i_x_fixed->resize(nd_X+1);
 	if(nd_X) {
-		// i_x_fixed[l-1] = (G.Q_X.begin()+l-1)->row_i(), l = 1...nd_X
+		// i_x_fixed[(G.Q_X.begin()+l-1)->col_j()-1] = (G.Q_X.begin()+l-1)->row_i(), l = 1...nd_X
 		GenPermMatrixSlice::const_iterator
 			Q_itr = Q_X.begin();
-		i_x_fixed_t::iterator
-			i_itr = i_x_fixed->begin(); 
-		for( ; Q_itr != Q_X.end(); ++Q_itr, ++i_itr ) {
+		for( ; Q_itr != Q_X.end(); ++Q_itr ) {
 			const size_type i = Q_itr->row_i();
+			const size_type k = Q_itr->col_j();
 			assert( 0 < i && i <= nd );
-			*i_itr = i;
+			assert( 0 < k && k <= nd_X );
+			(*i_x_fixed)[k-1] = i;
 		}
 	}
 	(*i_x_fixed)[nd_X] = nd+1; // relaxation is always initially active

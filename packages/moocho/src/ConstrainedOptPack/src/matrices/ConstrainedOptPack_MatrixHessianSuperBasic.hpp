@@ -212,10 +212,10 @@ private:
 
 	size_type               n_;
 	size_type               n_R_;
-	GenPermMatrixSlice		Q_R_;
+	GenPermMatrixSlice		Q_R_;        // Sorted by row
 	row_i_t					Q_R_row_i_;
 	col_j_t					Q_R_col_j_;
-	GenPermMatrixSlice		Q_X_;
+	GenPermMatrixSlice		Q_X_;        // Sorted by row
 	row_i_t					Q_X_row_i_;
 	col_j_t					Q_X_col_j_;
 	bnd_fixed_t             bnd_fixed_;

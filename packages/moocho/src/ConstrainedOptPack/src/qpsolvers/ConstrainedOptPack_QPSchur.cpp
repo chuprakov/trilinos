@@ -12,7 +12,6 @@
 #include <iomanip>
 
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
 #include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
 #include "SparseLinAlgPack/include/MatrixWithOpFactorized.h"
 #include "SparseLinAlgPack/include/MatrixWithOpOut.h"
@@ -27,6 +26,7 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
+#include "Misc/include/WorkspacePack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;
@@ -112,6 +112,9 @@ void calc_z( const SparseLinAlgPack::MatrixFactorized& S_hat
 	, const LinAlgPack::VectorSlice& d_hat, const SparseLinAlgPack::MatrixWithOp& U_hat
 	, const LinAlgPack::VectorSlice& vo, LinAlgPack::VectorSlice* z_hat )
 {
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::V_InvMtV;
 	LinAlgPack::Vector tmp = d_hat;
@@ -124,6 +127,9 @@ void calc_v( const SparseLinAlgPack::MatrixFactorized& Ko
 	, const LinAlgPack::VectorSlice& fo, const SparseLinAlgPack::MatrixWithOp& U_hat
 	, const LinAlgPack::VectorSlice& z_hat, LinAlgPack::VectorSlice* v )
 {
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::V_InvMtV;
 	LinAlgPack::Vector tmp = fo; // must use temporary storage.
@@ -149,6 +155,8 @@ void calc_mu_D(
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const ConstrainedOptimizationPack::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -193,6 +201,8 @@ void calc_p_mu_D(
 	using BLAS_Cpp::trans;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const ConstrainedOptimizationPack::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -328,6 +338,8 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
 
@@ -431,6 +443,8 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
 
@@ -551,6 +565,8 @@ void QPSchur::ActiveSet::initialize(
 	using SparseLinAlgPack::M_StMtInvMtM;
 	using LinAlgPack::sym;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
 	const size_type
 		n		= qp.n(),
@@ -871,7 +887,7 @@ void QPSchur::ActiveSet::initialize(
 		}
 		if( q_F_hat && q_C_hat ) {
 			// S += P_F_tilde' * P_C_hat + P_C_hat' * P_F_tilde
-			assert(0);	// ToDo: Implement this!
+			assert(0);	// ToDo: We should implement this but it is unlikely to be needed
 		}
 
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
@@ -926,6 +942,8 @@ void QPSchur::ActiveSet::add_constraint(
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using SparseLinAlgPack::V_InvMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
 	typedef SparseLinAlgPack::EtaVector eta_t;
 
@@ -939,7 +957,47 @@ void QPSchur::ActiveSet::add_constraint(
 		// This is a variable that was initially fixed, then freed and now
 		// is being fixed back to its original bound.
 		//
-		assert(0);	// ToDo: implement
+		// Here we will shrink the augmented KKT system.
+		//
+		const size_type q_hat = this->q_hat();
+		const size_type sd = s_map(-int(ja));
+		const size_type la = qp_->l_x_X_map()(ja);
+		assert(sd);
+		assert(la);
+		remove_augmented_element(
+			sd,force_refactorization
+			,MatrixSymAddDelUpdateable::EIGEN_VAL_POS );
+		// We must remove (ja,sd) from P_XF_hat
+		P_row_t::iterator
+			itr = std::lower_bound( P_XF_hat_row_.begin(), P_XF_hat_row_.begin()+q_F_hat_, ja );
+		assert( itr != P_XF_hat_row_.end() );
+		const size_type p = itr - P_XF_hat_row_.begin();
+		std::copy( P_XF_hat_row_.begin() + p + 1, P_XF_hat_row_.begin()+q_F_hat_,
+			P_XF_hat_row_.begin() + p );
+		std::copy( P_XF_hat_col_.begin() + p + 1, P_XF_hat_col_.begin()+q_F_hat_,
+			P_XF_hat_col_.begin() + p );
+		// Deincrement all counters in permutation matrices for removed element
+		if( q_F_hat_ > 1 )
+			deincrement_indices( sd, &P_XF_hat_col_, q_F_hat_-1 );
+		if( q_plus_hat_ > 1 )
+			deincrement_indices( sd, &P_plus_hat_col_, q_plus_hat_-1 );
+		//
+		// Add the multiplier for mu_D_hat(...)
+		//
+		const size_type q_D_hat = this->q_D_hat();
+		// add l_fxfx(q_D_hat+1) = la
+		l_fxfx_[q_D_hat] = la;
+		// add mu_D_hat(q_D_hat+1) = 0.0
+		mu_D_hat_[q_D_hat] = 0.0;
+		// add p_mu_D_hat(q_D_hat+1) = 1.0
+		if(update_steps)
+			p_mu_D_hat_[q_D_hat] = 1.0;
+		// Insert the pair (ja,q_D_hat+1) into Q_XD_hat(...) (sorted by row)
+		insert_pair_sorted(ja,q_D_hat+1,q_D_hat+1,&Q_XD_hat_row_,&Q_XD_hat_col_);
+		//
+		// Update the counts
+		//
+		--q_F_hat_;
 	}
 	else {
 		//
@@ -950,7 +1008,9 @@ void QPSchur::ActiveSet::add_constraint(
 		
 		value_type			d_p = 0.0;
 		const size_type		q_hat = this->q_hat();
-		Vector				t_hat(q_hat);
+		wsp::Workspace<value_type>
+			                t_hat_ws(wss,q_hat);
+		VectorSlice         t_hat(&t_hat_ws[0],q_hat);
 		value_type			alpha_hat = 0.0;
 		bool				changed_bounds = false;
 				
@@ -979,8 +1039,13 @@ void QPSchur::ActiveSet::add_constraint(
 			changed_bounds = false;
 		}
 		else if ( is_init_fixed(ja) ) {
+			//
 			// An intially fixed variable was freed and
 			// is now being fixed to the other bound.
+			//
+			// Here we must expand the augmented KKT system for this
+			// simple change.
+			//
 
 			assert(0);	// ToDo: Finish this!
 
@@ -1088,6 +1153,8 @@ void QPSchur::ActiveSet::drop_constraint(
 	using SparseLinAlgPack::transVtMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using SparseLinAlgPack::V_InvMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
 	typedef SparseLinAlgPack::EtaVector eta_t;
 
@@ -1108,7 +1175,7 @@ void QPSchur::ActiveSet::drop_constraint(
 		assert( 1 <= id && id <= n_ );
 		const size_type ld = qp_->l_x_X_map()(-jd);
 		assert( 1 <= ld && ld <= n_ - n_R_ );
-		size_type kd; // Find kd
+		size_type kd; // Find kd (this is unsorted)
 		{for( kd = 1; kd <= q_D_hat; ++kd ) {
 			if( l_fxfx_[kd-1] == ld ) break;
 		}}
@@ -1157,7 +1224,10 @@ void QPSchur::ActiveSet::drop_constraint(
 			V_InvMtV( &r, Ko, no_trans, u_p() );
 		// t_hat = v_p - U_hat'*r
 		// where: v_p = P_XF_hat'*G*e_id + P_plus_hat'*A_bar'*e_id <: R^(q_hat)
-		Vector t_hat(q_hat);
+		wsp::Workspace<value_type>
+			t_hat_ws(wss,q_hat);
+		VectorSlice
+			t_hat(&t_hat_ws[0],q_hat);
 		if(q_hat) {
 			t_hat = 0.0;
 			// t_hat += v_p
@@ -1210,7 +1280,8 @@ void QPSchur::ActiveSet::drop_constraint(
 			, Q_XD_hat_row_.begin() + (kd-1) );
 		std::copy( Q_XD_hat_col_.begin() + kd, Q_XD_hat_col_.begin() + q_D_hat
 			, Q_XD_hat_col_.begin() + (kd-1) );
-		deincrement_indices( kd, &Q_XD_hat_col_, q_D_hat-1 );
+		if( q_D_hat > 1 )
+			deincrement_indices( kd, &Q_XD_hat_col_, q_D_hat-1 );
 		//
 		// Update the counts
 		//
@@ -1239,29 +1310,14 @@ void QPSchur::ActiveSet::drop_constraint(
 		const size_type q_hat = this->q_hat();
 		const size_type sd = s_map(jd);
 		assert(sd);
-		// Delete the sd row and column for S_hat
-		schur_comp().update_interface().delete_update(
+		const bool is_init_fixed = this->is_init_fixed( jd );
+		remove_augmented_element(
 			sd,force_refactorization
-			,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG );
-		// Remove the ij_map(s) = jd element from ij_map(...)
-		std::copy( ij_map_.begin() + sd, ij_map_.begin() + q_hat
-			, ij_map_.begin() + (sd-1) );
-		// Remove the constr_norm(s) elment from constr_norm(...)
-		std::copy( constr_norm_.begin() + sd, constr_norm_.begin() + q_hat
-			, constr_norm_.begin() + (sd-1) );
-		// Remove the bnds(s) element from bnds(...)
-		std::copy( bnds_.begin() + sd, bnds_.begin() + q_hat
-			, bnds_.begin() + (sd-1) );
-		// Remove the d_hat(s) element from d_hat(...)
-		std::copy( d_hat_.begin() + sd, d_hat_.begin() + q_hat
-			, d_hat_.begin() + (sd-1) );
-		// Remove the z_hat(s) element from z_hat(...)
-		std::copy( z_hat_.begin() + sd, z_hat_.begin() + q_hat
-			, z_hat_.begin() + (sd-1) );
-		// Remove the p_z_hat(s) element from p_z_hat(...)
-		std::copy( p_z_hat_.begin() + sd, p_z_hat_.begin() + q_hat
-			, p_z_hat_.begin() + (sd-1) );
-		if( is_init_fixed( jd ) ) {
+			, ( is_init_fixed
+				? MatrixSymAddDelUpdateable::EIGEN_VAL_POS
+				: MatrixSymAddDelUpdateable::EIGEN_VAL_NEG )
+			);
+		if( is_init_fixed ) {
 			// This must be an intially fixed variable, currently fixed at a different
 			// bound.  In this case nothing else has to be modifed.
 			--q_C_hat_;
@@ -1279,8 +1335,10 @@ void QPSchur::ActiveSet::drop_constraint(
 			--q_plus_hat_;
 		}
 		// Deincrement all counters in permutation matrices for removed element
-		deincrement_indices( sd, &P_XF_hat_col_, q_F_hat_ );
-		deincrement_indices( sd, &P_plus_hat_col_, q_plus_hat_ );
+		if( q_F_hat_ > 0 )
+			deincrement_indices( sd, &P_XF_hat_col_, q_F_hat_ );
+		if( q_plus_hat_ > 0 )
+			deincrement_indices( sd, &P_plus_hat_col_, q_plus_hat_ );
 	}
 	// Update the permutation matrices and U_hat
 	reinitialize_matrices(test_);
@@ -1498,7 +1556,6 @@ void QPSchur::ActiveSet::reinitialize_matrices(bool test)
 		, q_plus_hat_ ? &P_plus_hat_col_[0] : NULL
 		,test
 		);
-	
 	Q_XD_hat_.initialize(
 		  n_,q_D_hat,q_D_hat,0,0,GPMSTP::BY_ROW
 		, q_D_hat ? &Q_XD_hat_row_[0] : NULL
@@ -1507,6 +1564,35 @@ void QPSchur::ActiveSet::reinitialize_matrices(bool test)
 		);
 	U_hat_.initialize( &qp_->G(), m_ ? &qp_->A() : NULL, &qp_->constraints().A_bar()
 		, &qp_->Q_R(), &P_XF_hat_, &P_plus_hat_);
+}
+
+void QPSchur::ActiveSet::remove_augmented_element(
+	size_type sd, bool force_refactorization
+	,MatrixSymAddDelUpdateable::EEigenValType eigen_val_drop
+	)
+{
+	const size_type q_hat = this->q_hat();
+	// Delete the sd row and column for S_hat
+	schur_comp().update_interface().delete_update(
+		sd,force_refactorization,eigen_val_drop );
+	// Remove the ij_map(s) = jd element from ij_map(...)
+	std::copy( ij_map_.begin() + sd, ij_map_.begin() + q_hat
+			   , ij_map_.begin() + (sd-1) );
+	// Remove the constr_norm(s) elment from constr_norm(...)
+	std::copy( constr_norm_.begin() + sd, constr_norm_.begin() + q_hat
+			   , constr_norm_.begin() + (sd-1) );
+	// Remove the bnds(s) element from bnds(...)
+	std::copy( bnds_.begin() + sd, bnds_.begin() + q_hat
+			   , bnds_.begin() + (sd-1) );
+	// Remove the d_hat(s) element from d_hat(...)
+	std::copy( d_hat_.begin() + sd, d_hat_.begin() + q_hat
+			   , d_hat_.begin() + (sd-1) );
+	// Remove the z_hat(s) element from z_hat(...)
+	std::copy( z_hat_.begin() + sd, z_hat_.begin() + q_hat
+			   , z_hat_.begin() + (sd-1) );
+	// Remove the p_z_hat(s) element from p_z_hat(...)
+	std::copy( p_z_hat_.begin() + sd, p_z_hat_.begin() + q_hat
+			   , p_z_hat_.begin() + (sd-1) );
 }
 
 // public member functions for QPSchur
@@ -1548,6 +1634,8 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using LinAlgPack::norm_inf;
 	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::V_InvMtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	if( !out )
 		output_level = NO_OUTPUT;
@@ -2067,9 +2155,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
 	)
 {
-	// ToDo:
-	//	* Generalize for initially fixed variables left out of Ko that are later freed.
-
 	using std::setw;
 	using std::endl;
 	using BLAS_Cpp::no_trans;
@@ -2090,6 +2175,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_MtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	// Print header for "Starting Primal-Dual Iterations"
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -2132,9 +2219,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 										// constraint.
 	const int				summary_lines_counter_max = 15;
 	int						summary_lines_counter = 0;
-	int						jd = 0;	// + indice of constraint to delete from active set.
+	long int				jd = 0;	// + indice of constraint to delete from active set.
 									// - indice of intially fixed variable to be freed
-	int						last_jd = 0; // Last jd change to the active set
+	long int				last_jd = 0; // Last jd change to the active set
 	value_type				t_P;	// Primal step length (constraint ja made active)
 	value_type				t_D;	// Dual step length ( longest step without violating dual
 									// feasibility of currently active constraints ).
@@ -2319,13 +2406,16 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						if(act_set->all_dof_used_up()) {
 							*out
 								<< "\nAll of the degrees of freedom are used up so "
-									"the constraint ja must be linearly dependent\n";
+									"the constraint ja must be linearly dependent.\n";
 						}
 						else {
 							*out
 								<< "\nThis is an initially fixed variable that was freed and "
-									"now is being fixed again\n";
+									"now is being fixed again.\n";
 						}
+							*out
+								<< "\nThe schur complement for the new KKT system will not be "
+								   "updated yet in case it is singular.\n";
 					}
 				}
 				else {
@@ -2412,10 +2502,58 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					// at the next iteration and be used to compute v so all is good.
 					//
 					if( act_set->is_init_fixed(ja) ) {
-						// Fix a varaible that was fixed and then freed
-						assert(0);	// ToDo: Finish this!
+						//
+						// Fix a varaible that was fixed and then freed.
+						//
+						// v_a = e(s_map(-ja)) <: R^q_hat
+						//
+						//        / 0                        : if x_init(ja) == bnd_ja
+						// d_a =  |
+						//        \ b_a - b_X(l_x_X_map(ja)) : otherwise
+						//
+						// p_z_hat = -inv(S_hat) * v_a
+						//
+						// p_v = inv(Ko)*(-U_hat*p_v_hat)
+						//
+						// gamma_plus = (d_a - v_a' * z_hat ) / ( v_a' * p_v_hat )
+						//
+						const size_type
+							sa = act_set->s_map(-int(ja)),
+							la = act_set->qp().l_x_X_map()(ja);
+						assert(sa);
+						assert(la);
+						// v_a = e(s_map(-ja)) <: R^q_hat
+						const EtaVector v_a = EtaVector(sa,act_set->q_hat());
+						// d_a
+						const value_type
+							d_a = ( bnd_ja == qp.x_init()(ja) 
+									? 0.0
+									: b_a - qp.b_X()(la) );
+						// p_z_hat = -inv(S_hat) * v_a
+						V_InvMtV( &act_set->p_z_hat(), act_set->S_hat(), no_trans, v_a() );
+						Vt_S( &act_set->p_z_hat(), -1.0 );
+						// p_v = inv(Ko)*(-U_hat*p_v_hat)
+						if(!all_dof_used_up) {
+							wsp::Workspace<value_type> t1_ws(wss,n_R+m);
+							VectorSlice t1(&t1_ws[0],t1_ws.size());
+							V_StMtV( &t1, -1.0, act_set->U_hat(), no_trans, act_set->p_z_hat() );
+							if( norm_inf(t1) > 0.0 )
+								V_InvMtV( &p_v, qp.Ko(), no_trans, t1 );
+							else
+								p_v = 0.0;
+						}
+						else {
+							p_v = 0.0;
+						}
+						// gamma_plus = ( d_a - v_a'*z_hat ) / ( v_a'*p_z_hat )
+						if(!all_dof_used_up)
+							gamma_plus = ( ( d_a - dot(v_a(),act_set->z_hat()) )
+										   / ( dot(v_a(),act_set->p_z_hat()) ) );
+						else
+							gamma_plus = beta * inf;
 					}
 					else {
+						//
 						// Add a constraint that is not an initially fixed
 						// variable bound.
 						// 
@@ -3016,11 +3154,16 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					{
 						*out
 							<< "\nUpdated primal and dual variables:\n"
-							<< "\n||v||inf           = " << norm_inf(*v)
-							<< "\n||z_hat||inf       = " << norm_inf(act_set->z_hat())
-							<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat())
-							<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat())
-							<< endl;
+							<< "\n||v||inf           = " << norm_inf(*v) << endl;
+						if(act_set->q_hat()) {
+							*out
+								<< "||z_hat||inf       = " << norm_inf(act_set->z_hat()) << endl;
+						}
+						if(act_set->q_D_hat()) {
+							*out
+								<< "max(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat()) << endl
+								<< "min(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat()) << endl;
+						}
 					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
 					{
@@ -3053,14 +3196,21 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if(act_set->q_D_hat())
 						Vp_StV( &act_set->mu_D_hat(), beta * t_P, act_set->p_mu_D_hat() );
 
+
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS )
 					{
 						*out
-							<< "\n||v||inf           = " << norm_inf(*v)
-							<< "\n||z_hat||inf       = " << norm_inf(act_set->z_hat())
-							<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat())
-							<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat())
-							<< endl;
+							<< "\nUpdated primal and dual variables:\n"
+							<< "\n||v||inf           = " << norm_inf(*v) << endl;
+						if(act_set->q_hat()) {
+							*out
+								<< "||z_hat||inf       = " << norm_inf(act_set->z_hat()) << endl;
+						}
+						if(act_set->q_D_hat()) {
+							*out
+								<< "max(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat()) << endl
+								<< "min(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat()) << endl;
+						}
 					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
 					{
@@ -3132,6 +3282,8 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const size_type
 		n = act_set.qp().n(),
@@ -3154,7 +3306,7 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 		Vp_MtV( mu, act_set.Q_XD_hat(), no_trans, act_set.mu_D_hat() );
 	// Add multipliers for initially fixed variables fixed to the other bounds.
 	if( act_set.q_C_hat() ) {
-		assert(0);	// ToDo: Finish This!
+		assert(0);	// ToDo: Implement this!
 	}
 
 	mu->sort();
@@ -3295,6 +3447,8 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	using std::setw;
 	using std::left;
 	using std::right;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const Constraints
 		&constraints = this->constraints();
@@ -3315,7 +3469,7 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	if(m) {
 		out	<< "\nA =\n" << A();
 		// Le'ts recover c from fo(n_R+1:n_R+m) = c - A' * Q_X * b_x
-		assert(0);	// Finish this!
+		assert(0);	// ToDo: Implement this!
 	}
 	out	<< "\nA_bar =\n" << constraints.A_bar();
 	// Get c_L_bar and c_U_bar

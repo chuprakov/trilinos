@@ -7,18 +7,21 @@
 #pragma warning(disable : 4503)	
 
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/get_init_fixed_free_indep.h"
+#include "ReducedSpaceSQPPack/include/std/PBFGS_helpers.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
+#include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOpOut.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
+#include "SparseLinAlgPack/include/GenPermMatrixSliceOut.h"
 #include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+#include "Misc/include/WorkspacePack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -29,10 +32,12 @@ namespace ReducedSpaceSQPPack {
 ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGSProjected_Strategy(
 	const bfgs_update_ptr_t&      bfgs_update
 	,value_type                   act_set_frac_proj_start
+	,value_type                   project_error_tol
 	,value_type                   super_basic_mult_drop_tol
 	)
 	: bfgs_update_(bfgs_update)
 	, act_set_frac_proj_start_(act_set_frac_proj_start)
+	, project_error_tol_(project_error_tol)
 	, super_basic_mult_drop_tol_(super_basic_mult_drop_tol)
 {}
 
@@ -46,9 +51,16 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using std::endl;
 	using std::right;
 	using DynamicCastHelperPack::dyn_cast;
+	using LinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::norm_inf;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		out << "\n*** (PBFGS) Projected BFGS ...\n";
+	}
 
 #ifdef _WINDOWS
 	MHSB_t &rHL_super = dynamic_cast<MHSB_t&>(*rHL_k);
@@ -66,59 +78,97 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 
 	bool do_projected_rHL_RR = false;
 
-	if( Q_R.is_identity() ) {
+	// Check that the current update is sufficiently p.d. before we do anything
+	const value_type
+		sTy = dot(*s_bfgs,*y_bfgs),
+		yTy = dot(*y_bfgs,*y_bfgs);
+	if( !ConstrainedOptimizationPack::BFGS_sTy_suff_p_d(
+		*s_bfgs,*y_bfgs,&sTy
+		,  int(olevel) >= int(PRINT_ALGORITHM_STEPS) ? &out : NULL )
+		&& !bfgs_update().use_dampening()
+		)
+	{
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out	<< "\nWarning!  use_damening == false so there is no way we can perform any kind BFGS update (projected or not) so we will skip it!\n";
+		}
+		quasi_newton_stats_(*s).set_k(0).set_updated_stats(
+			QuasiNewtonStats::INDEF_SKIPED );
+		return true;
+	}
+
+	// 
+	// Initialize or adjust the active set before the BFGS update
+	//
+	if( !s->nu().updated_k(-1) ) {
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out	<< "\nWarning!  nu_k(-1) has not been updated.  No adjustment to the set of superbasic variables is possible!\n";
+		}
+	}
+	else if( Q_R.is_identity() ) {
 		// Determine when to start adding and removing rows/cols form rHL_RR
 		if( act_set_stats_(*s).updated_k(-1) ) {
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 				out	<< "\nDetermining if projected BFGS updating of superbasics should begin ...\n";
 			}
-			ActSetStats &stats = act_set_stats_(*s).get_k(-1);
+			// Determine if the active set has calmed down enough
 			const SpVector
 				&nu_km1 = s->nu().get_k(-1);
 			const SpVectorSlice
 				nu_indep = nu_km1(s->var_indep());
-			const size_type
-				num_active_indep = nu_indep.nz(),
-				num_adds         = stats.num_adds(),
-				num_drops        = stats.num_drops();
-			const value_type
-				frac_same
-				= ( num_adds == ActSetStats::NOT_KNOWN || num_active_indep == 0
-					? 0.0
-					: std::_MAX(((double)(num_active_indep)-num_adds-num_drops) / num_active_indep, 0.0 ) );
-			do_projected_rHL_RR = ( num_active_indep > 0 && frac_same >= act_set_frac_proj_start() );
-			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-				out << "\nnum_active_indep = " << num_active_indep;
-				if( num_active_indep ) {
-					out	<< "\nmax(num_active_indep-num_adds-num_drops,0)/(num_active_indep) = "
-						<< "max("<<num_active_indep<<"-"<<num_adds<<"-"<<num_drops<<",0)/("<<num_active_indep<<") = "
-						<< frac_same;
-					if( do_projected_rHL_RR )
-						out << " >= ";
-					else
-						out << " < ";
-					out << "act_set_frac_proj_start = " << act_set_frac_proj_start();
-				}
-				if( do_projected_rHL_RR )
-					out << "\nStart performing projected BFGS updating of superbasic variables only!\n";
-				else
-					out << "\nJust keep BFGS updating the full reduced Hessian rHL for now!\n";
-			}
+			do_projected_rHL_RR = PBFGSPack::act_set_calmed_down(
+				act_set_stats_(*s).get_k(-1)
+				,act_set_frac_proj_start()
+				,olevel,out
+				);
 			if( do_projected_rHL_RR ) {
 				//
-				// Eliminate those rows/cols from rHL_RR for fixed variables and reinitialize rHL
+				// Determine the set of initially fixed and free independent variables.
 				//
-				// Determine the set of initially fixed and free independent variables
-				if( i_x_free_.size() < n_pz ) { // Only need to resize these once
-					i_x_free_.resize(n_pz); 
-					i_x_fixed_.resize(n_pz);
-					bnd_fixed_.resize(n_pz);
-				}
+				typedef wsp::Workspace<size_type>                              i_x_t;
+				typedef wsp::Workspace<ConstrainedOptimizationPack::EBounds>   bnd_t;
+				i_x_t   i_x_free(wss,n_pz);
+				i_x_t   i_x_fixed(wss,n_pz);
+				bnd_t   bnd_fixed(wss,n_pz);
+				i_x_t   l_x_fixed_sorted(wss,n_pz);
 				size_type n_pz_X = 0, n_pz_R = 0;
-				get_init_fixed_free_indep(
-					n,r,nu_indep,super_basic_mult_drop_tol(),olevel,out
-					,&n_pz_X,&n_pz_R,&i_x_free_[0],&i_x_fixed_[0],&bnd_fixed_[0] );
+				value_type sRTBRRsR = 0.0, sRTyR = 0.0, sXTBXXsX = 0.0, sXTyX = 0.0;
+				// Get the elements in i_x_free[] for variables that are definitely free
+				// and initialize s_R'*y_R
+				PBFGSPack::init_i_x_free_sRTsR_sRTyR(
+					nu_indep, *s_bfgs, *y_bfgs
+					, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );  // We don't really want sRTRBBsR here
+				// rHL_XX = some_scaling * I
+				value_type
+					rHL_XX_scale = sTy > 0.0 ? yTy/sTy : 1.0;
+				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+					out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
+				}
+				wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+				VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+				rHL_XX_diag = rHL_XX_scale;
+				// s_R'*B_RR_*s_R
+				wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
+				VectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
+				Q_R_Q_RT_s = 0.0;
+				{for( size_type k = 0; k < n_pz_R; ++k ) {
+					const size_type i = i_x_free[k];
+					Q_R_Q_RT_s(i) = (*s_bfgs)(i);
+				}}
+				sRTBRRsR = SparseLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
+				// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
+				// and initialize s_X'*B_XX*s_X and s_X*y_X
+				PBFGSPack::sort_fixed_max_cond_viol(
+					nu_indep,*s_bfgs,*y_bfgs,rHL_XX_diag,sRTBRRsR,sRTyR
+					,&sXTBXXsX,&sXTyX,&l_x_fixed_sorted[0]);
+				// Pick initial set of i_x_free[] and i_x_fixed[] (sorted!)
+				PBFGSPack::choose_fixed_free(
+					project_error_tol(),super_basic_mult_drop_tol(),nu_indep
+					,*s_bfgs,*y_bfgs,rHL_XX_diag,&l_x_fixed_sorted[0]
+					,olevel,out,&sRTBRRsR,&sRTyR,&sXTBXXsX,&sXTyX
+					,&n_pz_X,&n_pz_R,&i_x_free[0],&i_x_fixed[0],&bnd_fixed[0] );
+				//
 				// Delete rows/cols from rHL_RR for fixed variables
+				//
 #ifdef _WINDOWS
 				MatrixSymAddDelUpdateable
 					&rHL_RR = dynamic_cast<MatrixSymAddDelUpdateable&>(
@@ -134,52 +184,257 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 						out << "\nDeleting n_pz_X = " << n_pz_X << " rows/columns from rHL_RR for fixed independent variables...\n";
 					}
-					{for( size_type k = 0; k < n_pz_X; ++k ) {
-						rHL_RR.delete_update( i_x_fixed_[k]-k, false );
+					{for( size_type k = n_pz_X; k > 0; --k ) { // Delete from the largest to the smallest index (cheaper!)
+						rHL_RR.delete_update( i_x_fixed[k-1], false );
 					}}
 					assert( rHL_RR.rows() == n_pz_R );
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-						out << "\nrHL_RR after variables where removed =\n" << *rHL_super.B_RR_ptr();
+						out << "\nrHL_RR after rows/columns where removed =\n" << *rHL_super.B_RR_ptr();
 					}
-					// Initialize B_XX = I for now
+					// Initialize rHL_XX = rHL_XX_scale*I
 #ifdef _WINDOWS
 					MatrixSymInitDiagonal
-						&B_XX = dynamic_cast<MatrixSymInitDiagonal&>(
+						&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
 							const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
 							);
 #else
 					MatrixSymInitDiagonal
-						&B_XX = dyn_cast<MatrixSymInitDiagonal>(
+						&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
 							const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
 							);
 #endif
-					B_XX.init_identity( n_pz_X ); // ToDo: We may want scaled element?
+					rHL_XX.init_identity(n_pz_X,rHL_XX_scale);
 					// Reinitialize rHL for new active set
 					rHL_super.initialize(
-						n_pz, n_pz_R, &i_x_free_[0], &i_x_fixed_[0], &bnd_fixed_[0]
+						n_pz, n_pz_R, &i_x_free[0], &i_x_fixed[0], &bnd_fixed[0]
 						,rHL_super.B_RR_ptr(),NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
 						);
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-						out << "\nFull rHL after reinitialization but before BFGS update\nrHL =\n" << *rHL_k;
+						out << "\nFull rHL after reinitialization but before BFGS update:\n"
+							<< "\nrHL =\n" << *rHL_k
+							<< "\nQ_R =\n" << rHL_super.Q_R()
+							<< "\nQ_X =\n" << rHL_super.Q_X();
 					}
 				}
 				else {
 					do_projected_rHL_RR = false;
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-						out << "\nThere where no variable bounds with |nu(i)| large enough to consider dropping\n";
+						out << "\nWith n_pz_X = " << n_pz_X << ", there where no variables to drop from superbasis!\n";
 					}
 				}
 			}
 		}
 	}
 	else {
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out	<< "\nAdjust the set of superbasic variables and the projected reduced Hessian rHL_RR ...\n";
+		}
+		//
 		// Modify rHL_RR by adding and dropping rows/cols for freeded and fixed variables
+		//
+		const SpVectorSlice
+			nu_indep = s->nu().get_k(-1)(s->var_indep());
+		//
+		// Determine new Q_R and Q_X
+		//
+		typedef wsp::Workspace<size_type>                              i_x_t;
+		typedef wsp::Workspace<ConstrainedOptimizationPack::EBounds>   bnd_t;
+		i_x_t   i_x_free(wss,n_pz);
+		i_x_t   i_x_fixed(wss,n_pz);
+		bnd_t   bnd_fixed(wss,n_pz);
+		i_x_t   l_x_fixed_sorted(wss,n_pz);
+		size_type n_pz_X = 0, n_pz_R = 0;
+		value_type sRTBRRsR = 0.0, sRTyR = 0.0, sXTBXXsX = 0.0, sXTyX = 0.0;
+		// Get the elements in i_x_free[] for variables that are definitely free
+		// and initialize s_R'*y_R.  This will be the starting point for the new Q_R.
+		PBFGSPack::init_i_x_free_sRTsR_sRTyR(
+			nu_indep, *s_bfgs, *y_bfgs
+			, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );  // We don't really want sRTBRRsR here
+		// Initialize rHL_XX_diag = some_scaling * I as though all of the currently fixed variables
+		// will be left out of Q_R.  Some of these variables might already be in Q_R and B_RR
+		// and may still be in Q_R and B_RR after we are finished adjusting the sets Q_R and Q_X
+		// and we don't want to delete these rows/cols in B_RR just yet!
+		value_type
+			rHL_XX_scale = sTy > 0.0 ? yTy/sTy : 1.0;
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
+		}
+		wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+		VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+		rHL_XX_diag = rHL_XX_scale;
+		// Initialize rHL_XX = rHL_XX_scale * I so that those variables in the current Q_R
+		// not in the estimate i_x_free[] will have their proper value when s_R'*B_RR*s_R computed
+		// for the estimate i_x_free[].  This is needed to change the behavior of *rHL_k which
+		// is used below to compute s_R'*B_RR*s_R
+#ifdef _WINDOWS
+		MatrixSymInitDiagonal
+			&rHL_XX = dynamic_cast<MatrixSymInitDiagonal&>(
+				const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+				);
+#else
+		MatrixSymInitDiagonal
+			&rHL_XX = dyn_cast<MatrixSymInitDiagonal>(
+				const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
+				);
+#endif
+		rHL_XX.init_identity(rHL_XX.rows(),rHL_XX_scale); // Don't change its size yet!
+		// s_R'*B_RR_*s_R
+		// This will only include those terms for the variable actually free.
+		wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
+		VectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
+		Q_R_Q_RT_s = 0.0;
+		{for( size_type k = 0; k < n_pz_R; ++k ) {
+			const size_type i = i_x_free[k];
+			Q_R_Q_RT_s(i) = (*s_bfgs)(i);
+		}}
+		sRTBRRsR = SparseLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
+		// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
+		PBFGSPack::sort_fixed_max_cond_viol(
+			nu_indep,*s_bfgs,*y_bfgs,rHL_XX_diag,sRTBRRsR,sRTyR
+			,&sXTBXXsX,&sXTyX,&l_x_fixed_sorted[0]);
+		// Pick initial set of i_x_free[] and i_x_fixed[] (sorted!)
+		PBFGSPack::choose_fixed_free(
+			project_error_tol(),super_basic_mult_drop_tol(),nu_indep
+			,*s_bfgs,*y_bfgs,rHL_XX_diag,&l_x_fixed_sorted[0]
+			,olevel,out,&sRTBRRsR,&sRTyR,&sXTBXXsX,&sXTyX
+			,&n_pz_X,&n_pz_R,&i_x_free[0],&i_x_fixed[0],&bnd_fixed[0] );
+		// Get the changes to the set of superbasic variables
+		size_type num_free_to_fixed = 0, num_fixed_to_free = 0;
+		i_x_t  i_x_free_to_fixed(wss,Q_R.cols());
+		i_x_t  i_x_fixed_to_free(wss,Q_X.cols());
+		i_x_t  i_x_free_still(wss,Q_R.cols());             // Will be set to those indices still in Q_R
+		std::fill_n( &i_x_free_still[0], Q_R.cols(), 0 );  // in the same order as in Q_R and B_RR
+		{
+			GenPermMatrixSlice::const_iterator
+				Q_R_begin     = Q_R.begin(),
+				Q_R_itr       = Q_R_begin,
+				Q_R_end       = Q_R.end();
+			const size_type
+				*i_x_free_itr = &i_x_free[0],
+				*i_x_free_end = i_x_free_itr + n_pz_R;
+			for( size_type i = 1; i <= n_pz; ++i ) {
+				if( Q_R_itr == Q_R_end && i_x_free_itr == i_x_free_end ) {
+					break; // The rest of these variables were and still are not superbasic
+				}
+				else if( i_x_free_itr == i_x_free_end ) {
+					// A variable that was in the superbasis now is not
+					i_x_free_to_fixed[num_free_to_fixed] = Q_R_itr->row_i();
+					num_free_to_fixed++;
+					++Q_R_itr;
+				}
+				else if( Q_R_itr == Q_R_end ) {
+					// A variable that was not in the superbasis now is
+					i_x_fixed_to_free[num_fixed_to_free] = *i_x_free_itr;
+					num_fixed_to_free++;
+					++i_x_free_itr;
+				}
+				else {
+					if( Q_R_itr->row_i() == *i_x_free_itr ) {
+						// Both still superbasic
+						i_x_free_still[Q_R_itr-Q_R_begin] = Q_R_itr->row_i();
+						++Q_R_itr;
+						++i_x_free_itr;
+					}
+					else if( Q_R_itr->row_i() < *i_x_free_itr ) {
+						// A variable that was in the superbasis now is not
+						i_x_free_to_fixed[num_free_to_fixed] = Q_R_itr->row_i();
+						num_free_to_fixed++;
+						++Q_R_itr;
+					}
+					else {
+						// A variable that was not in the superbasis now is
+						i_x_fixed_to_free[num_fixed_to_free] = *i_x_free_itr;
+						num_fixed_to_free++;
+						++i_x_free_itr;
+					}
+				}
+			}
+		}
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
+			out << "\nThere will be " << num_fixed_to_free  << " independent variables added to the superbasis and rHL_RR and their indexes are:\n";
+			{for(size_type k = 0; k < num_fixed_to_free; ++k) {
+				out << " " << i_x_fixed_to_free[k];
+			}}
+			out << std::endl;
+			out << "\nThere will be " << num_free_to_fixed << " independent variables removed from the superbasis and rHL_RR and their indexes are:\n";
+			{for(size_type k = 0; k < num_free_to_fixed; ++k) {
+				out << " " << i_x_free_to_fixed[k];
+			}}
+			out << std::endl;
+		}
+		// Get reference to rHL_RR = B_RR
+#ifdef _WINDOWS
+		MatrixSymAddDelUpdateable
+			&rHL_RR = dynamic_cast<MatrixSymAddDelUpdateable&>(
+				const_cast<MatrixSymWithOpFactorized&>(*rHL_super.B_RR_ptr())
+				);
+#else
+		MatrixSymAddDelUpdateable
+			&rHL_RR = dyn_cast<MatrixSymAddDelUpdateable>(
+				const_cast<MatrixSymWithOpFactorized&>(*rHL_super.B_RR_ptr())
+				);
+#endif
+		// Remove rows/cols from rHL_RR.
+		if( num_free_to_fixed ) {
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				out << "\nDeleting " << num_free_to_fixed << " rows/columns from rHL_RR ...\n";
+			}
+			{for( size_type k = i_x_free_still.size(); k > 0; --k ) { // Delete from the largest to the smallest index (cheaper!)
+				if( !i_x_free_still[k-1] )
+					rHL_RR.delete_update( k, false );
+			}}
+			assert( rHL_RR.rows() == n_pz_R - num_fixed_to_free );
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+				out << "\nrHL_RR after rows/columns where removed =\n" << *rHL_super.B_RR_ptr();
+			}
+		}
+		// Add new rows/cols to rHL_RR.
+		if( num_fixed_to_free ) {
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				out << "\nAppending " << num_fixed_to_free << " rows/columns to rHL_RR ...\n";
+			}
+			{for( size_type k = 0; k < num_fixed_to_free; ++k ) {
+				rHL_RR.augment_update( NULL, rHL_XX_scale, false );
+			}}
+			assert( rHL_RR.rows() == n_pz_R );
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+				out << "\nrHL_RR after rows/columns where appended =\n" << *rHL_super.B_RR_ptr();
+			}
+		}
+		// Resort i_x_free[] to reflect the actual order of the indices in rHL_RR
+		{
+			size_type tmp_n_pz_R = 0;
+			{for(size_type k = 0; k < i_x_free_still.size(); ++k) {
+				if( i_x_free_still[k] ) {
+					i_x_free[tmp_n_pz_R] = i_x_free_still[k];
+					++tmp_n_pz_R;
+				}
+			}}
+			{for(size_type k = 0; k < num_fixed_to_free; ++k) {
+				i_x_free[tmp_n_pz_R] = i_x_fixed_to_free[k];
+				++tmp_n_pz_R;
+			}}
+			assert( tmp_n_pz_R == n_pz_R );
+		}
+		// Initialize rHL_XX = rHL_XX_scale * I resized to the proper dimensions
+		rHL_XX.init_identity(n_pz_X,rHL_XX_scale);
+		// Reinitalize rHL for new active set
+		rHL_super.initialize(
+			n_pz, n_pz_R, &i_x_free[0], &i_x_fixed[0], &bnd_fixed[0]
+			,rHL_super.B_RR_ptr(),NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
+			);
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
+			out << "\nFull rHL after reinitialization but before BFGS update:\n"
+				<< "\nrHL =\n" << *rHL_k
+				<< "\nQ_R =\n" << rHL_super.Q_R()
+				<< "\nQ_X =\n" << rHL_super.Q_X();
+		}
+		// Now we will do the PBFGS updating from now on!
 		do_projected_rHL_RR = true;
-
-		// ToDo: Implement this!
 	}
-
+	//
 	// Perform the BFGS update
+	//
 	if( do_projected_rHL_RR ) {
 		// Perform BFGS update on smaller rHL_RR.
 		// By the time we get here rHL_RR should be resize and ready to update
@@ -191,10 +446,13 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 			n_pz_X = Q_X.cols();
 		assert( n_pz_R + n_pz_X == n_pz );
 		// Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
-		Vector y_bfgs_R; // y_bfgs_R = Q_R'*y_bfgs
-		V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );
-		Vector s_bfgs_R; // s_bfgs_R = Q_R'*s_bfgs
-		V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );
+		wsp::Workspace<value_type>
+			y_bfgs_R_ws(wss,Q_R.cols()),
+			s_bfgs_R_ws(wss,Q_R.cols());
+		VectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
+		VectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
+		V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_R = Q_R'*y_bfgs
+		V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );  // s_bfgs_R = Q_R'*s_bfgs
 		// Update rHL_RR
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out << "\nPerform BFGS update on " << n_pz_R << " x " << n_pz_R << " projected reduced Hessian for the superbasic variables where B = rHL_RR...\n";
