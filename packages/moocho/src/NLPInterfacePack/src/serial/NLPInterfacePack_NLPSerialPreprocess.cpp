@@ -35,7 +35,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {
@@ -118,8 +118,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	space_c_.initialize(m_full_);
 	space_c_breve_.initialize(m_orig_);
 	space_h_breve_.initialize(mI_orig_);
-	factory_P_var_   = Teuchos::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
-	factory_P_equ_   = Teuchos::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
+	factory_P_var_   = Teuchos::rcp( new Teuchos::AbstractFactoryStd<Permutation,PermutationSerial>() );
+	factory_P_equ_   = Teuchos::rcp( new Teuchos::AbstractFactoryStd<Permutation,PermutationSerial>() );
 
 	// Intialize xinit_full_, xl_full_ and xu_full_ for the initial point which will set the
 	// fixed elements which will not change during the optimization.

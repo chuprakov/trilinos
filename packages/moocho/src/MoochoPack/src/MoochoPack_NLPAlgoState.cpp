@@ -189,8 +189,8 @@ void NLPAlgoState::update_index_type_iq_id(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<index_type,index_type> >(
-							new MemMngPack::AbstractFactoryStd<index_type,index_type>())
+						,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<index_type,index_type> >(
+							new Teuchos::AbstractFactoryStd<index_type,index_type>())
 #endif
 						)
 					)
@@ -219,8 +219,8 @@ void NLPAlgoState::update_value_type_iq_id(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<value_type,value_type> >(
-							new MemMngPack::AbstractFactoryStd<value_type,value_type>())
+						,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<value_type,value_type> >(
+							new Teuchos::AbstractFactoryStd<value_type,value_type>())
 #endif
 						)
 					)

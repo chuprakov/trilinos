@@ -21,7 +21,7 @@
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

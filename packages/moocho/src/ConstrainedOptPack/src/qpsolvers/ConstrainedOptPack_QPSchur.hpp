@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "MoochoMoreUtilities/src/stpwatch.hpp"
 

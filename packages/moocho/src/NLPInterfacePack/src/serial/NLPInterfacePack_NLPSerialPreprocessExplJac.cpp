@@ -30,7 +30,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 
 namespace NLPInterfacePack {
@@ -53,14 +53,12 @@ void NLPSerialPreprocessExplJac::set_factory_Gc_full(
 	const factory_mat_ptr_t     &factory_Gc_full
 	)
 {
-	namespace mmp = MemMngPack;
-	namespace afp = MemMngPack;
 	if(factory_Gc_full.get())
 		factory_Gc_full_ = factory_Gc_full;
 	else 
 		factory_Gc_full_ = Teuchos::rcp(
-			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
-	factory_Gc_ = Teuchos::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
+			new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
+	factory_Gc_ = Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
 }
 
 // Overridden public members from NLP

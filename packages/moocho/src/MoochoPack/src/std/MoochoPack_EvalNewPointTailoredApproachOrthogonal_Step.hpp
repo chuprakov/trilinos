@@ -17,7 +17,7 @@
 #define EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 
 #include "EvalNewPointTailoredApproach_Step.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {
 

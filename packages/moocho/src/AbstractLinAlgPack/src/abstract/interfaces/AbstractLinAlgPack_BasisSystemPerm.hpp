@@ -34,7 +34,7 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<Permutation> >   perm_fcty_ptr_t;
+		const Teuchos::AbstractFactory<Permutation> >   perm_fcty_ptr_t;
 
 	//@}
 

@@ -17,7 +17,7 @@
 #define ALAP_VECTOR_SPACE_HPP
 
 #include "InnerProduct.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
@@ -107,7 +107,7 @@ namespace AbstractLinAlgPack {
  * properly.
  */
 class VectorSpace
-	: public MemMngPack::AbstractFactory<VectorMutable>
+	: public Teuchos::AbstractFactory<VectorMutable>
 {
 public:
 

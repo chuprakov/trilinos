@@ -69,10 +69,10 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	class SingularDecomposition : public std::logic_error
 	{public: SingularDecomposition(const std::string& what_arg) : std::logic_error(what_arg) {}};

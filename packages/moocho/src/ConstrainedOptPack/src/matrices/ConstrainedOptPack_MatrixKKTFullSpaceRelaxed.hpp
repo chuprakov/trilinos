@@ -19,7 +19,7 @@
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

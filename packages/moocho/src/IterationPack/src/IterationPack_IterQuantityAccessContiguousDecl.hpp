@@ -29,7 +29,7 @@
 #include <limits>
 
 #include "IterQuantityAccess.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 
 namespace IterationPack {
 
@@ -63,9 +63,9 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<T_info> >          abstract_factory_ptr_t;
+		const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;
 	///
-	typedef MemMngPack::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
+	typedef Teuchos::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
 
 	/** @name Constructors/initalizers */
 	//@{

@@ -18,7 +18,7 @@
 
 #include "MeritFunc_PenaltyParamUpdate_AddedStep.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {
 

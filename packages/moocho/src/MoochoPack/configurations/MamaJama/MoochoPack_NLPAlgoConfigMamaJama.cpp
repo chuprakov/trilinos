@@ -133,7 +133,7 @@
 //#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 
 // Misc utilities
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -197,8 +197,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	,std::ostream       *trase_out
 	)
 {
-	namespace afp = MemMngPack;
-	namespace mmp = MemMngPack;
 	using Teuchos::RefCountPtr;
 	using Teuchos::dyn_cast;
 
@@ -493,7 +491,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// Add reduced Hessian
 
 		if( !cov_.exact_reduced_hessian_ ) {
-			RefCountPtr<afp::AbstractFactory<MatrixSymOp> >
+			RefCountPtr<Teuchos::AbstractFactory<MatrixSymOp> >
 				abstract_factory_rHL = Teuchos::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
@@ -508,7 +506,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			switch( cov_.quasi_newton_ ) {
 				case QN_BFGS:
 					abstract_factory_rHL = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+						new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 							MatrixSymPosDefCholFactor::PostMod(
 								maintain_original      // maintain_original
 								,maintain_inverse      // maintain_factor
@@ -519,7 +517,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					break;
 				case QN_LBFGS:
 					abstract_factory_rHL = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
+						new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
 							MatrixSymPosDefLBFGS::PostMod(
 								cov_.num_lbfgs_updates_stored_  //
 								,maintain_original              // maintain_original
@@ -554,17 +552,17 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE 
 			 && cov_.line_search_method_ != LINE_SEARCH_FILTER) {
-			RefCountPtr<afp::AbstractFactory<MeritFuncNLP> >
+			RefCountPtr<Teuchos::AbstractFactory<MeritFuncNLP> >
 				merit_func_factory = Teuchos::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1:
 					merit_func_factory = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
+						new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
 					break;
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
 					merit_func_factory = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
+						new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
 					break;
 				default:
 					assert(0);	// local programming error
@@ -812,8 +810,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-					,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
-						new MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
+					,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+						new Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
 				));
@@ -1496,7 +1494,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 void NLPAlgoConfigMamaJama::init_algo(NLPAlgoInterface* _algo)
 {
 	using Teuchos::dyn_cast;
-	namespace mmp = MemMngPack;
 
 	TEST_FOR_EXCEPTION(
 		_algo == NULL, std::invalid_argument

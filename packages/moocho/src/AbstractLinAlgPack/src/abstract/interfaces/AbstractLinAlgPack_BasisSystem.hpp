@@ -17,7 +17,7 @@
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_H
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
@@ -208,16 +208,16 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 	///
 	class SingularBasis : public std::runtime_error
 	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};

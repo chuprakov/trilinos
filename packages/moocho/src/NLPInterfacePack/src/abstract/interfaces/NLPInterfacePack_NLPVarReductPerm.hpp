@@ -86,7 +86,7 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+		const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
 	/// Thrown if an invalid basis selection is made
 	class InvalidBasis : public std::logic_error
@@ -179,8 +179,8 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
+	Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
+	Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
 #endif	
 	
 }; // end class NLPVarReductPerm

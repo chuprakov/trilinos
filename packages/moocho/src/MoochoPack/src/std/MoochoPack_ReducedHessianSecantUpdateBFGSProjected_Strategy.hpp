@@ -21,7 +21,7 @@
 #include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "MoochoPack/src/std/act_set_stats.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

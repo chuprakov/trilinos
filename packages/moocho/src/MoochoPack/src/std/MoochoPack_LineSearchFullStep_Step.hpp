@@ -19,7 +19,7 @@
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {
 

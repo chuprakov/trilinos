@@ -54,7 +54,7 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -283,7 +283,7 @@ protected:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixSymOp>  *factory_HL;
+	Teuchos::AbstractFactory<AbstractLinAlgPack::MatrixSymOp>  *factory_HL;
 #endif
 	mutable MatrixSymOp   *HL_;
 	mutable bool          num_HL_evals_;

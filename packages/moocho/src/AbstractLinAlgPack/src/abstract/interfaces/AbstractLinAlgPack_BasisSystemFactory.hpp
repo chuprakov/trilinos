@@ -17,7 +17,7 @@
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace OptionsFromStreamPack {
@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
  *
  * 
  */
-class BasisSystemFactory : public MemMngPack::AbstractFactory<BasisSystem>
+class BasisSystemFactory : public Teuchos::AbstractFactory<BasisSystem>
 {
 public:
 

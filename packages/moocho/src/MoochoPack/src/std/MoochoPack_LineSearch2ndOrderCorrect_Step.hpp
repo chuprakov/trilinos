@@ -20,7 +20,7 @@
 #include "FeasibilityStep_Strategy.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

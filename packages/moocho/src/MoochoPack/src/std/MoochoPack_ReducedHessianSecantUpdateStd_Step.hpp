@@ -19,7 +19,7 @@
 #include "MoochoPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
 #include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

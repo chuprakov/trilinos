@@ -28,7 +28,7 @@
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 //#include "DenseLinAlgPack/src/IVector.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Range1D.hpp"
 

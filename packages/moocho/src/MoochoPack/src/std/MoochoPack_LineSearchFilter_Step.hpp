@@ -21,7 +21,7 @@
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "IterationPack/src/AlgorithmState.hpp"

@@ -21,7 +21,7 @@
 #include "MoochoPackTypes.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

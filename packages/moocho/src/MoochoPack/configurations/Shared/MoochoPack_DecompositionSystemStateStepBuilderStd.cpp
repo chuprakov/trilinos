@@ -385,7 +385,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Z_name
-						,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
+						,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -396,7 +396,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Y_name
-						,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
+						,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -469,7 +469,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Y_name
-							,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
+							,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
 							)
 						)
 					);
@@ -495,7 +495,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				new IterQuantityAccessContiguous<MatrixOp>(
 					1
 					,Z_name
-					,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
+					,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
 					)
 				)
 			);

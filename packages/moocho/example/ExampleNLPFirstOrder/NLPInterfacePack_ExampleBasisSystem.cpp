@@ -17,7 +17,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -34,13 +34,13 @@ ExampleBasisSystem::ExampleBasisSystem(
 		,var_indep
 		,space_x->sub_space(var_dep)
 		,Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
+			new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
 		,Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
+			new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
 		,Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
+			new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
 		,Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
+			new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
 		)
 {}
 	
@@ -60,10 +60,10 @@ void ExampleBasisSystem::initialize(
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
-		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
-		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
-		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
-		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
+		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
+		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
+		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
+		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
 		);
 }
 

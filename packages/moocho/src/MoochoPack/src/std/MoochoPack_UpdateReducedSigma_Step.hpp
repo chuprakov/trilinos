@@ -17,7 +17,7 @@
 #define UPDATE_REDUCED_SIGMA_STEP_H
 
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"

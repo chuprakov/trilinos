@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -51,7 +51,7 @@ DecompositionSystemOrthogonal::factory_Y() const
 {
 	namespace rcp = MemMngPack;
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
+		new Teuchos::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
 
@@ -60,14 +60,14 @@ DecompositionSystemOrthogonal::factory_R() const
 {
 	namespace rcp = MemMngPack;
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixDecompRangeOrthog>()
+		new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixDecompRangeOrthog>()
 		);
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
-	return Teuchos::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
+	return Teuchos::rcp(	new Teuchos::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp

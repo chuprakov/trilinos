@@ -20,7 +20,7 @@
 
 #include "../rSQPAlgo_StepBaseClasses.h"
 #include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 
 namespace MoochoPack {

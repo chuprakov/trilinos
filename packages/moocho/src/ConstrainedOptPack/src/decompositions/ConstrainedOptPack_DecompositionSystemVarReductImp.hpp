@@ -19,7 +19,7 @@
 #include "DecompositionSystemVarReduct.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

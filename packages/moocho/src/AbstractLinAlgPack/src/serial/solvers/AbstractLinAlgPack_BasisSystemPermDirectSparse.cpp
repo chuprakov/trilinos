@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -33,9 +33,9 @@ BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	)
 	:BasisSystemPerm(
 		Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())         // D'*D
+			new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())         // D'*D
 		,Teuchos::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())  // S
+			new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())  // S
 		)
 {
 	this->initialize(direct_solver);
@@ -63,7 +63,7 @@ const BasisSystem::mat_nonsing_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_C() const
 {
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixOpNonsingAggr>()
+		new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixOpNonsingAggr>()
 		);
 }
 
@@ -71,7 +71,7 @@ const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_D() const
 {
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
+		new Teuchos::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
 
@@ -79,7 +79,7 @@ const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_GcUP() const
 {
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
+		new Teuchos::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
 

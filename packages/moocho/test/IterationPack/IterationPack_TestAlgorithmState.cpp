@@ -20,7 +20,7 @@
 #include "IterationPack/test/TestIterationPack.hpp"
 #include "IterationPack/src/AlgorithmState.hpp"
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "MoochoMoreUtilities/src/update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -100,8 +100,8 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 		new alpha_t(
 			2,"alpha"
 #ifdef _MIPS_CXX
-			,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
-				new MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
+			,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
+				new Teuchos::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
 #endif			
 			)) );
 
@@ -110,8 +110,8 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 		new x_t(
 			2,"x"
 #ifdef _MIPS_CXX
-			,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
-				new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
+			,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
+				new Teuchos::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 			)) );
 
@@ -122,7 +122,7 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 			new V_t(
 				1
 				,"V"
-				,Teuchos::rcp( new MemMngPack::AbstractFactoryStd<V_k_t,D> )
+				,Teuchos::rcp( new Teuchos::AbstractFactoryStd<V_k_t,D> )
 				)
 		    )
 		);
@@ -135,8 +135,8 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 			new x_t(
 				2,"x"
 #ifdef _MIPS_CXX
-				,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
-					new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
+				,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<x_k_t,x_k_t> >(
+					new Teuchos::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 				)) );
 		success = false;

@@ -20,7 +20,7 @@
 #include "ConstrainedOptPack/src/matrices/MatrixVarReductImplicit.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -322,14 +322,14 @@ DecompositionSystemVarReductImp::factory_Z() const
 {
 	namespace rcp = MemMngPack;
 	return Teuchos::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
+		new Teuchos::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Uz() const
 {
-	return Teuchos::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
+	return Teuchos::rcp(	new Teuchos::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 void DecompositionSystemVarReductImp::update_decomp(

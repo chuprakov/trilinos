@@ -18,7 +18,7 @@
 
 #include "NewDecompositionSelection_Strategy.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

@@ -22,8 +22,8 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "AbstractFactory.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_AbstractFactory.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -76,7 +76,7 @@ public:
 	
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
 
 	//@}
 

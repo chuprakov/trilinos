@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 #include "Teuchos_RefCountPtr.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -255,7 +255,7 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
+		const Teuchos::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
 
 	///
 	class UnsymmetricRankDeficientException : public std::logic_error

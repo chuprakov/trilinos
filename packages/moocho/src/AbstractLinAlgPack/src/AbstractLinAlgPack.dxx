@@ -92,7 +92,7 @@ vector space is represented through the base interface
 <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt>.
 In software terms, a vector space object primarily acts as an
 "Abstract Factory" [Design Patterns, Gamma, et. al., 1995] and derives also from the base interface
-<tt>\ref MemMngPack::AbstractFactory "AbstractFactory<VectorMutable>"</tt>.
+<tt>\ref Teuchos::AbstractFactory "AbstractFactory<VectorMutable>"</tt>.
 In addition to acting as abstact
 factories, vector space objects are responsible for determining the compatibility
 of vector objects which is useful in debugging an application.  Vector spaces

@@ -19,7 +19,7 @@
 #include "NLPAlgoClientInterface.hpp"
 #include "NLPAlgoInterface.hpp"
 #include "NLPAlgoConfig.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {
 

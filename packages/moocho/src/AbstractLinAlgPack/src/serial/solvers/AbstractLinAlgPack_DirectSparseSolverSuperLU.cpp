@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
@@ -159,7 +159,7 @@ const DirectSparseSolver::basis_matrix_factory_ptr_t
 DirectSparseSolverSuperLU::basis_matrix_factory() const
 {
 	namespace mmp = MemMngPack;
-	return Teuchos::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixSuperLU>());
+	return Teuchos::rcp(new Teuchos::AbstractFactoryStd<BasisMatrix,BasisMatrixSuperLU>());
 }
 
 void DirectSparseSolverSuperLU::estimated_fillin_ratio(

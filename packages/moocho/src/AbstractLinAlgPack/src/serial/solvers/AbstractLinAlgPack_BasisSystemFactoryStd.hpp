@@ -18,7 +18,7 @@
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace AbstractLinAlgPack {
 

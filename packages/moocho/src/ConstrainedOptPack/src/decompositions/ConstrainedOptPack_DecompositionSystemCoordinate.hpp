@@ -17,7 +17,7 @@
 #define DECOMPOSITION_SYSTEM_COORDINATE_H
 
 #include "DecompositionSystemVarReductImp.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

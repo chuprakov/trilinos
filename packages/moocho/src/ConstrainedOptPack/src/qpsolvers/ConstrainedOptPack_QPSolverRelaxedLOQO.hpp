@@ -24,7 +24,7 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

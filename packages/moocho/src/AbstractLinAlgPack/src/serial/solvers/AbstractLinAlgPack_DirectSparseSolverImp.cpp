@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverImp.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

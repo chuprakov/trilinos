@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/serial/solvers/MatrixScaling_Strategy.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
@@ -202,7 +202,7 @@ const DirectSparseSolver::basis_matrix_factory_ptr_t
 DirectSparseSolverMA28::basis_matrix_factory() const
 {
 	namespace mmp = MemMngPack;
-	return Teuchos::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixMA28>());
+	return Teuchos::rcp(new Teuchos::AbstractFactoryStd<BasisMatrix,BasisMatrixMA28>());
 }
 
 void DirectSparseSolverMA28::estimated_fillin_ratio(

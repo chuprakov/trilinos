@@ -17,7 +17,7 @@
 #define NLP_FIRST_ORDER_INFO_H
 
 #include "NLPObjGrad.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace NLPInterfacePack {
 ///
@@ -66,7 +66,7 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<BasisSystem>           basis_sys_ptr_t;
 
@@ -301,7 +301,7 @@ private:
 
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::BasisSystem                            *basis_sys;
-	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixOp>  *factory_Gc;
+	Teuchos::AbstractFactory<AbstractLinAlgPack::MatrixOp>  *factory_Gc;
 #endif
 	mutable MatrixOp      *Gc_;
 	mutable size_type     num_Gc_evals_;

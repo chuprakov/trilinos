@@ -42,7 +42,7 @@ public:
 	//@{
 
 	///
-	typedef Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
+	typedef Teuchos::RefCountPtr<const Teuchos::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<MatrixOpNonsing>                               C_ptr_t;
 	///

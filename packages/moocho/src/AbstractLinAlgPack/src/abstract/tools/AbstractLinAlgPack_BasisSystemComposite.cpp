@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -97,7 +97,7 @@ const BasisSystemComposite::fcty_Gc_ptr_t
 BasisSystemComposite::factory_Gc()
 {
 	namespace mmp = MemMngPack;
-	return Teuchos::rcp( new mmp::AbstractFactoryStd<MatrixOp,MatrixComposite>() );
+	return Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixOp,MatrixComposite>() );
 }
 
 void BasisSystemComposite::initialize_Gc(
@@ -346,7 +346,7 @@ void BasisSystemComposite::initialize(
 	factory_C_       = factory_C;
 	factory_D_       = factory_D;
 	if( factory_D_.get() == NULL ) {
-		factory_D_ = mmp::abstract_factory_std_alloc<MatrixOp,MultiVectorMutable>(
+		factory_D_ = Teuchos::abstract_factory_std_alloc<MatrixOp,MultiVectorMutable>(
 			AllocatorMultiVectorMutable(space_x_->sub_space(var_dep),var_indep.size() ) );
 	}
 	BasisSystem::initialize(factory_transDtD,factory_S);

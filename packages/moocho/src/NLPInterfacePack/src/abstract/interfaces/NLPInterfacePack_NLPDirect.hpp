@@ -17,7 +17,7 @@
 #define NLP_FIRST_ORDER_DIRECT_H
 
 #include "NLPObjGrad.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace NLPInterfacePack {
 
@@ -85,13 +85,13 @@ public:
 
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
 	///
 	typedef Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
+		const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 
 	///
 	/** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.

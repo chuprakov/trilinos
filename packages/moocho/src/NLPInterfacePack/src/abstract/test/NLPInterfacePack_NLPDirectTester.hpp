@@ -20,7 +20,7 @@
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {

@@ -23,7 +23,7 @@
 #include "ConstraintsRelaxedStd.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

@@ -109,7 +109,7 @@
 #include "MoochoPack/src/std/quasi_newton_stats.hpp"
 
 // Misc utilities
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -173,8 +173,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 	,std::ostream       *trase_out
 	)
 {
-	namespace afp = MemMngPack;
-	namespace mmp = MemMngPack;
+
 	using Teuchos::RefCountPtr;
 	using Teuchos::dyn_cast;
 	using Teuchos::dyn_cast;
@@ -427,7 +426,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Vu_name,
-			  Teuchos::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+			  Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
 						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
@@ -440,7 +439,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Vl_name,
-			  Teuchos::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+			  Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
 						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
@@ -453,7 +452,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  invXu_name,
-			  Teuchos::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+			  Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
 						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
@@ -466,7 +465,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  invXl_name,
-			  Teuchos::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+			  Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
 						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
@@ -480,7 +479,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			  1,
 			  rHB_name,
 			  Teuchos::rcp(
-				new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
 					,false    // maintain_factor
@@ -499,7 +498,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			  1,
 			  B_name,
 			  Teuchos::rcp(
-				new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
 					,false    // maintain_factor
@@ -517,7 +516,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			new IterQuantityAccessContiguous<MatrixSymDiagStd>(
 			  1,
 			  Sigma_name,
-			  Teuchos::rcp( new afp::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
+			  Teuchos::rcp( new Teuchos::AbstractFactoryStd<MatrixSymDiagStd,MatrixSymDiagStd,
 						MatrixSymDiagStd::PostMod>( nlp.space_x() ) 
 				)
 			  )
@@ -532,9 +531,9 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		// Add reduced Hessian of the Lagrangian
 
 		if( !cov_.exact_reduced_hessian_ ) {
-			RefCountPtr<afp::AbstractFactory<MatrixSymOp> >
+			RefCountPtr<Teuchos::AbstractFactory<MatrixSymOp> >
 				abstract_factory_rHL = Teuchos::rcp(
-					new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+					new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 						MatrixSymPosDefCholFactor::PostMod(
 							true    // maintain_original
 							,false  // maintain_factor
@@ -563,17 +562,17 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE 
 			 && cov_.line_search_method_ != LINE_SEARCH_FILTER) {
-			RefCountPtr<afp::AbstractFactory<MeritFuncNLP> >
+			RefCountPtr<Teuchos::AbstractFactory<MeritFuncNLP> >
 				merit_func_factory = Teuchos::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1:
 					merit_func_factory = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
+						new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
 					break;
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
 					merit_func_factory = Teuchos::rcp(
-						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
+						new Teuchos::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
 					break;
 				default:
 					assert(0);	// local programming error
@@ -813,8 +812,8 @@ void NLPAlgoConfigIP::config_algo_cntr(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-					,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
-						new MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
+					,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+						new Teuchos::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
 				));
@@ -1244,7 +1243,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 void NLPAlgoConfigIP::init_algo(NLPAlgoInterface* _algo)
 {
 	using Teuchos::dyn_cast;
-	namespace mmp = MemMngPack;
 
 	TEST_FOR_EXCEPTION(
 		_algo == NULL, std::invalid_argument
