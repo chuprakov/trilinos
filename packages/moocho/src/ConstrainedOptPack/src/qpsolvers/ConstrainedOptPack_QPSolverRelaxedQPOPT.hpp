@@ -23,12 +23,10 @@
 
 namespace ConstrainedOptPack {
 
-///
-/** Node base clase for the primal QP solvers QPOPT and QPSOL.
-  *
-  * In this implementation it is required that G only support the \Ref{MatrixOp}
-  * interface and is therefore quite flexible in the QPs it can solve.
-  */
+/** \brief QPSolver subclass that uses QPOPT.
+ *
+ * ToDo: Finish documentation.
+ */  
 class QPSolverRelaxedQPOPT : public QPSolverRelaxedQPOPTSOL
 {
 public:
