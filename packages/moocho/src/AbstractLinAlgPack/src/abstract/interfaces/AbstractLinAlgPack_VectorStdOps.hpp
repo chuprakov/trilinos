@@ -43,17 +43,17 @@ value_type dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 );
 /** Computes the maximum positive and negative step that can be taken
   * that are within the relaxed bounds.
   *
-  *	This function returns and computes the maximum (in magnitude) postive
-  *	(return.first) and negative (return.second) steps u that can be taken
-  *	such that the relaxed bounds:
+  *	This function computes and returns the maximum (in magnitude) postive
+  *	(\c return.first) and negative (\c return.second) steps \c u that can be
+  * taken such that the relaxed bounds:
   \verbatim
   xl - max_bnd_viol <= x + u * d <= xu - max_bnd_viol
   \endverbatim
   * are strictly satisfied.
   *
-  * If return.first < 0.0 then this is a flag that x is not
-  * in the relaxed bounds to begin with.  In this case
-  * return.second has no meaning.
+  * If <tt>return.first < 0.0</tt> then this is a flag that x is not
+  * in the relaxed bounds to begin with.  In this case \c return.second
+  * has no meaning.
   */
 std::pair<value_type,value_type>
 max_near_feas_step(

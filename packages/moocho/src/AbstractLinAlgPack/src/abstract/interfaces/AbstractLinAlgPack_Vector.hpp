@@ -129,9 +129,9 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>IncompatibleVectors</tt>)
+	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>IncompatibleVectors</tt>)
+	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>1 <= first_ele <= this_dim 1</tt> (throw <tt>std::out_of_range</tt>)
 	 * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
