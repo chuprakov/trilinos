@@ -16,7 +16,7 @@
 #ifndef LINE_SEARCH_FILTER_STEP_H
 #define LINE_SEARCH_FILTER_STEP_H
 
-#include <list.h>
+#include <list>
 
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
 #include "GeneralIterationPack/include/AlgorithmStep.h"

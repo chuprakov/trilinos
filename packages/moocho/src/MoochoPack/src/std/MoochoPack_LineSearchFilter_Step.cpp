@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <math.h>
+
 #include <ostream>
-#include <iostream.h>
 #include <fstream>
 #include <typeinfo>
-#include <math.h>
 
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"

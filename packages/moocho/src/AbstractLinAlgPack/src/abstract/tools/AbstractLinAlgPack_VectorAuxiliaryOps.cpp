@@ -20,6 +20,7 @@
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_rel_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_num_bounded.h"
+#include "RTOpStdOpsLib/include/RTOp_ROp_log_bound_barrier.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_force_in_bounds.h"
 #include "RTOpPack/include/RTOpCppC.h"
 #include "ThrowException.h"
@@ -136,6 +137,27 @@ AbstractLinAlgPack:: num_bounded(
 		num_bounded_op, num_vecs, vecs, 0, NULL
 		,num_bounded_targ.obj() );
 	return RTOp_ROp_num_bounded_val(num_bounded_targ.obj());
+}
+
+AbstractLinAlgPack::value_type
+AbstractLinAlgPack::log_bound_barrier(
+	const VectorWithOp    &x
+	,const VectorWithOp   &xl
+	,const VectorWithOp   &xu
+	)
+{
+	RTOpPack::RTOpC          op;
+	RTOpPack::ReductTarget   reduct_obj;
+	assert(0==RTOp_ROp_log_bound_barrier_construct(&op.op()));
+	op.reduct_obj_create(&reduct_obj);
+	const int num_vecs = 2;
+	const VectorWithOp*
+		vecs[num_vecs] = { &xl, &xu };
+	x.apply_reduction(
+		op, num_vecs, vecs, 0, NULL
+		,reduct_obj.obj()
+		);
+	return RTOp_ROp_log_bound_barrier_val(reduct_obj.obj());
 }
 
 void AbstractLinAlgPack::force_in_bounds(

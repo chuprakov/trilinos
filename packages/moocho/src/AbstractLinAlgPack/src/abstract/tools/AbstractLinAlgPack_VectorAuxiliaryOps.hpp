@@ -62,7 +62,7 @@ max_near_feas_step(
   */
 value_type max_rel_step(
 	const VectorWithOp& x, const VectorWithOp& d
-	); 
+	);
 
 ///
 /** Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
@@ -72,6 +72,17 @@ value_type max_rel_step(
 size_type num_bounded(
 	const VectorWithOp& xl, const VectorWithOp& xu
 	,value_type inf_bound );
+
+///
+/** Computes the log barrier term:
+ *
+ * ToDo: Add documentation!
+ */
+value_type log_bound_barrier(
+	const VectorWithOp    &x
+	,const VectorWithOp   &xl
+	,const VectorWithOp   &xu
+	); 
 
 //@}
 

@@ -135,8 +135,10 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		xu_full_(n_orig_+1,n_full_)     = imp_hu_orig();
 	}
 
+	const bool has_var_bounds = imp_has_var_bounds() || n_full_ > n_orig_;
+
 	// Force the initial point in bounds if it is not.
-	if( force_xinit_in_bounds() && imp_has_var_bounds() ) {
+	if( force_xinit_in_bounds() && has_var_bounds ) {
 		AbstractLinAlgPack::force_in_bounds(
 			VectorWithOpMutableDense( xl_full_(), mmp::null )
 			,VectorWithOpMutableDense( xu_full_(), mmp::null )
@@ -149,7 +151,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		xl_nz     = 0,
 		xu_nz     = 0,
 		num_bnd_x = 0;
-	if( imp_has_var_bounds() ) {
+	if( has_var_bounds ) {
 		// Determine which variables are fixed by bounds
 		Vector::const_iterator
 			xl_full		= xl_full_.begin(),
@@ -204,7 +206,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	
 	// Resize xinit, xl, xu, hl and hu
 	xinit_.initialize(n_);
-	if(imp_has_var_bounds()) {
+	if(has_var_bounds) {
 		xl_.initialize(n_);
 		xu_.initialize(n_);	
 	}
@@ -223,7 +225,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 			LinAlgPack::identity_perm(&inv_equ_perm_);
 			r_ = m_full_;
 			var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
-			if(imp_has_var_bounds()) {
+			if(has_var_bounds) {
 				var_from_full( xl_full_().begin(), xl_.set_vec().begin() );
 				var_from_full( xu_full_().begin(), xu_.set_vec().begin() );
 				do_force_xinit_in_bounds();
@@ -802,7 +804,7 @@ void NLPSerialPreprocess::assert_and_set_basis(
 	LinAlgPack::inv_perm( equ_perm_, &inv_equ_perm_ );
 
 	var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
-	if(imp_has_var_bounds()) {
+	if(num_bounded_x_) {
 		var_from_full( xl_full_().begin(), xl_.set_vec().begin() );
 		var_from_full( xu_full_().begin(), xu_.set_vec().begin() );
 		do_force_xinit_in_bounds();
@@ -812,7 +814,7 @@ void NLPSerialPreprocess::assert_and_set_basis(
 void NLPSerialPreprocess::assert_bounds_on_variables() const
 {
 	THROW_EXCEPTION(
-		!imp_has_var_bounds(), NLP::NoBounds
+		!(imp_has_var_bounds() || n_full_ > n_orig_), NLP::NoBounds
 		,"There are no bounds on the variables for this NLP" );
 }
 
