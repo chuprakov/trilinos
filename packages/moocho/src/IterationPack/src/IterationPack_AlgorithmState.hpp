@@ -41,7 +41,7 @@ namespace GeneralIterationPack {
   * IQ objects are given to the state object by clients through the \c set_iter_quant()
   * method at which point the IQ object will be given a unique id that will never change
   * change until the IQ object is removed using \c erase_iter_quant().  Memory management
-  * is performed using the <tt>ReferenceCountingPack::ref_count_ptr</tt> smart reference
+  * is performed using the <tt>MemMngPack::ref_count_ptr</tt> smart reference
   * counting poiner class.
   * The id of any IQ object (\c iq_id) can be obtained from its name by calling
   * <tt>iq_id = get_iter_quant_id(iq_name)</tt>.  If an IQ object with the name \c iq_name
@@ -74,7 +74,7 @@ public:
 	///
 	typedef size_t													iq_id_type;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<IterQuantity>		IQ_ptr;
+	typedef MemMngPack::ref_count_ptr<IterQuantity>		IQ_ptr;
 	///
 	enum { DOES_NOT_EXIST = INT_MAX }; // should not ever be this many insertions.
 

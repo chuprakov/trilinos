@@ -259,7 +259,7 @@ public:
 	class BasisMatrix : public MatrixNonsingularSerial {
 	public:
 		///
-		typedef ReferenceCountingPack::ref_count_ptr<FactorizationStructure>    fact_struc_ptr_t;
+		typedef MemMngPack::ref_count_ptr<FactorizationStructure>    fact_struc_ptr_t;
 		/// Return a smart pointer to the object that represents the factorization structure.
 		virtual const fact_struc_ptr_t&		get_fact_struc() const = 0;
 	};
@@ -278,10 +278,10 @@ public:
 	};
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<BasisMatrix>       basis_matrix_ptr_t;
+	typedef MemMngPack::ref_count_ptr<BasisMatrix>       basis_matrix_ptr_t;
 
 	///
 	class UnsymmetricRankDeficientException : public std::logic_error
@@ -517,7 +517,7 @@ public:
 	 */
 	virtual void factor(
 		const MatrixConvertToSparse              &A
-		,const BasisMatrix::fact_struc_ptr_t     &fact_struc    = ReferenceCountingPack::null
+		,const BasisMatrix::fact_struc_ptr_t     &fact_struc    = MemMngPack::null
 		,BasisMatrix                             *basis_matrix  = NULL
 		,std::ostream                            *out           = NULL
 		) = 0;

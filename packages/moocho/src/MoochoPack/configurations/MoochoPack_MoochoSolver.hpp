@@ -136,18 +136,18 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		GeneralIterationPack::AlgorithmTrack>                        track_ptr_t; // full path needed by doxygen
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<rSQPAlgo_Config>    config_ptr_t;
+	typedef MemMngPack::ref_count_ptr<rSQPAlgo_Config>    config_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		OptionsFromStreamPack::OptionsFromStream>                    options_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<std::ostream>       ostream_ptr_t;
+	typedef MemMngPack::ref_count_ptr<std::ostream>       ostream_ptr_t;
 	///
 	enum ESolutionStatus {
 		SOLVE_RETURN_SOLVED            =  0
@@ -613,7 +613,7 @@ private:
 	// Private types
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<rSQPSolverClientInterface>    solver_ptr_t;
+	typedef MemMngPack::ref_count_ptr<rSQPSolverClientInterface>    solver_ptr_t;
 		
 	// ////////////////////////////////////
 	// Private data members

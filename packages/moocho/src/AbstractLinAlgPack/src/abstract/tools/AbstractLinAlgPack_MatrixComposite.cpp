@@ -47,7 +47,7 @@ get_element( const AbstractLinAlgPack::SpVectorSlice& v, AbstractLinAlgPack::ind
 // Get a view of a vector (two versions)
 
 inline
-ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
 get_view(
 	const AbstractLinAlgPack::VectorWithOp& v
 	,AbstractLinAlgPack::index_type l
@@ -58,14 +58,14 @@ get_view(
 }
 
 inline
-ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
 	const AbstractLinAlgPack::SpVectorSlice& v
 	,AbstractLinAlgPack::index_type l
 	,AbstractLinAlgPack::index_type u
 	)
 {
-	return ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
+	return MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
 		new AbstractLinAlgPack::SpVectorSlice( v(l,u) ) );
 }
 
@@ -236,7 +236,7 @@ MatrixCompositeStd::MatrixCompositeStd( size_type rows, size_type cols )
 
 void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	
 	fully_constructed_ = true;
 	rows_ = rows;
@@ -290,7 +290,7 @@ void MatrixCompositeStd::add_vector(
 	,BLAS_Cpp::Transp              v_trans
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	assert( beta != 0.0 );
 	assert( v != NULL );
@@ -381,7 +381,7 @@ void MatrixCompositeStd::add_matrix(
 	,const Range1D                 &rng_Q_in
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	using RangePack::full_range;
@@ -442,7 +442,7 @@ void MatrixCompositeStd::add_matrix(
 	,BLAS_Cpp::Transp              A_trans
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 
@@ -491,7 +491,7 @@ void MatrixCompositeStd::add_matrix(
 	,BLAS_Cpp::Transp              P_trans
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 

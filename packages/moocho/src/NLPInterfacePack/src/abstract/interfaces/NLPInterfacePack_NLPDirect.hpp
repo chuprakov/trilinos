@@ -87,7 +87,7 @@ class NLPFirstOrderDirect : virtual public NLPObjGradient
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >          mat_space_ptr_t;
 
 	/** @name Dimensionality */

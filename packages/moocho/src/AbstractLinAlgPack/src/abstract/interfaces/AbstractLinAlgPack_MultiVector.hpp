@@ -111,9 +111,9 @@ public:
 		,APPLY_BY_COL       ///<
 	};
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MultiVector>    multi_vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MultiVector>    multi_vec_ptr_t;
 
 	/** @name Provide row, column and diagonal access as non-mutable vectors */
 	//@{

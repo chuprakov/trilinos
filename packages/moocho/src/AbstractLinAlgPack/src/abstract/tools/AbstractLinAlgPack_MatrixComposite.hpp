@@ -72,7 +72,7 @@ namespace AbstractLinAlgPack {
  * object will become fully initialized and ready for use.
  *
  * The cleanup for all of the matrix and vector objects is given to
- * <tt>\ref ResourceManagementPack::ReleaseResource "ReleaseResouce"</tt> objects
+ * <tt>\ref MemMngPack::ReleaseResource "ReleaseResouce"</tt> objects
  * so this is a very flexible aggregate matrix class from many perspactives.
  *
  * Access to the constituent sub-vectors and sub-matrices is given through STL iterators
@@ -105,8 +105,8 @@ public:
 	// Public types
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		ResourceManagementPack::ReleaseResource>  release_resource_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	///
 	/** Vector list entry for a sub-vector.
@@ -115,7 +115,7 @@ public:
 	 */
 	struct SubVectorEntry {
 		///
-		typedef ReferenceCountingPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		typedef MemMngPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
 		///
 		SubVectorEntry(
 			size_type r_l, size_type c_l, value_type beta
@@ -166,7 +166,7 @@ public:
 	 */
 	struct SubMatrixEntry {
 		///
-		typedef ReferenceCountingPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		typedef MemMngPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
 		///
 		SubMatrixEntry(
 			size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha

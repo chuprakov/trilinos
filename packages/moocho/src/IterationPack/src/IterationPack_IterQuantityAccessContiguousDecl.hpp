@@ -62,10 +62,10 @@ class IterQuantityAccessContiguous : public IterQuantityAccess<T_info> {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<T_info> >          abstract_factory_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<T_info> >          abstract_factory_ptr_t;
 	///
-	typedef AbstractFactoryPack::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
+	typedef MemMngPack::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
 
 	/** @name Constructors/initalizers */
 	//@{
@@ -86,7 +86,7 @@ public:
 #ifdef _MIPS_CXX // MipsPro 7.3.1.1 tries to instantiate the default type even when one is specified?
 		,const abstract_factory_ptr_t&   abstract_factory
 #else
-		,const abstract_factory_ptr_t&   abstract_factory  = ReferenceCountingPack::rcp(new abstract_factory_std_t())
+		,const abstract_factory_ptr_t&   abstract_factory  = MemMngPack::rcp(new abstract_factory_std_t())
 #endif
 		);
 

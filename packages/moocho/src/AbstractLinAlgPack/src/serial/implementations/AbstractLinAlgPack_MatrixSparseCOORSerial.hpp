@@ -40,15 +40,15 @@ public:
 	//@{
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		ResourceManagementPack::ReleaseResource>     release_resource_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		MemMngPack::ReleaseResource>     release_resource_ptr_t;
 	///
 	/** Subclass to delete dynamically allocated memory with \c delete[].
 	 *
 	 * This subclass can be used by the client to cause
 	 */
 	class ReleaseValRowColArrays
-		: public ResourceManagementPack::ReleaseResource
+		: public MemMngPack::ReleaseResource
 	{
 	public:
 		/// Gives pointers to buffers to delete[]
@@ -105,12 +105,12 @@ public:
 	 * @param  col_j   [in] Buffer to store the nonzero entry row indexes.  On input <tt>col_j[k], for k = 0...nz-1</tt>
 	 *                 must be set to valid nonzero entry row indexes if <tt>rows > 0 && nz > 0</tt>.
 	 * @param  release_resource
-	 *                 [in] Smart pointer to a <tt>ResourceManagementPack::ReleaseResouce</tt> object that will
+	 *                 [in] Smart pointer to a <tt>MemMngPack::ReleaseResouce</tt> object that will
 	 *                 deallocate the memory for the buffers \c val[], \c row_i[] and \c col_j[] when \c this
 	 *                 is finished with them.  It is allowed for <tt>release_resource.get() == NULL</tt> in which
 	 *                 case the client will be responsible to free this memory.  The client can use the
 	 *                 subclass \c ReleaseValRowColArrays to allow \c this to delete memory created with
-	 *                 \c new[] by setting <tt>release_resource = ReferenceCountingPack::rcp(
+	 *                 \c new[] by setting <tt>release_resource = MemMngPack::rcp(
 	 *                 new ReleaseValRowColArrays(val,row_i,col_j) )</tt> where \c val, \c row_i and \c col_j
 	 *                 where allocated with \c new[].  The \c release_resource object represents the sharing
 	 *                 of the data \c val[], \c row_i[] and \c col_j[].

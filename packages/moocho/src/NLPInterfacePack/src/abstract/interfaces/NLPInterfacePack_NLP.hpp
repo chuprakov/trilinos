@@ -251,7 +251,7 @@ public:
 	typedef AbstractLinAlgPack::VectorWithOpMutable  VectorWithOpMutable;  // doxygen likes typedef?
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const VectorSpace>  vec_space_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorSpace>  vec_space_ptr_t;
 
 	/** @name exceptions */
 	//@{

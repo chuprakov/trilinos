@@ -235,8 +235,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	,std::ostream       *trase_out
 	)
 {
-	namespace afp = AbstractFactoryPack;
-	namespace rcp = ReferenceCountingPack;
+	namespace afp = MemMngPack;
+	namespace rcp = MemMngPack;
 	using rcp::ref_count_ptr;
 	using DynamicCastHelperPack::dyn_cast;
 
@@ -1023,8 +1023,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-					,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
-						new AbstractFactoryPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
+					,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+						new MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
 				));
@@ -1318,7 +1318,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	THROW_EXCEPTION(
 		_algo == NULL, std::invalid_argument

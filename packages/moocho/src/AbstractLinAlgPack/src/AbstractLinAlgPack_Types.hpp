@@ -98,7 +98,7 @@ class MatrixSymDiagonal;
 
 // template classes
 
-template <class M_itfc, class M_impl, class T_PostMod>  class MatrixSpaceStd;
+template <class M_itfc, class M_impl, class T_PostMod, class T_Allocator>  class MatrixSpaceStd;
 
 // concrete subclasses
 

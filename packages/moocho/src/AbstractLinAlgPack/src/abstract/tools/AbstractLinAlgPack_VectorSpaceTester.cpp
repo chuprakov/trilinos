@@ -48,7 +48,7 @@ bool VectorSpaceTester::check_vector_space(
 	,std::ostream     *out
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	bool success = true, result = false;
 

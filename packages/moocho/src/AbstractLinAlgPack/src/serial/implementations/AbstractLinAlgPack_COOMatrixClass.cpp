@@ -23,8 +23,8 @@
 #include "LinAlgPack/include/Range1D.h"
 
 // Junk, test compilation
-//#include "ReferenceCountingPackDef.h"
-//ReferenceCountingPack::RefCount<double> ref1;
+//#include "MemMngPackDef.h"
+//MemMngPack::RefCount<double> ref1;
 
 //#include "SequentialAllocatorPack.h"
 //template SequentialAllocatorPack::SequentialAllocator<double>;

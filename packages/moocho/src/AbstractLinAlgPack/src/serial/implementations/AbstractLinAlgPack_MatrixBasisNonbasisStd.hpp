@@ -34,13 +34,13 @@ class MatrixBasisNonbasisStd
 public:
 	
     ///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
 		C_ptr_t;
     ///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixFactorized>
+	typedef MemMngPack::ref_count_ptr<const MatrixFactorized>
 		C_nonsingular_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
 		N_ptr_t;
 
 	///

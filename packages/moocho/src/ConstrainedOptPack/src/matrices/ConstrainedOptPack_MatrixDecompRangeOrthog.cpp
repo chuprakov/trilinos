@@ -71,7 +71,7 @@ void MatrixDecompRangeOrthog::initialize(
 
 void MatrixDecompRangeOrthog::set_uninitialized()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	C_ptr_ = rcp::null;
 	D_ptr_ = rcp::null;
 	S_ptr_ = rcp::null;

@@ -51,37 +51,37 @@ Range1D NLPFirstOrderDirect::con_undecomp() const
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_GcU() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_Gh() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_Uz() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_Vz() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_GcUD() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_GhD() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 size_type NLPFirstOrderDirect::mI() const
@@ -91,7 +91,7 @@ size_type NLPFirstOrderDirect::mI() const
 
 NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const VectorWithOp& NLPFirstOrderDirect::hl() const

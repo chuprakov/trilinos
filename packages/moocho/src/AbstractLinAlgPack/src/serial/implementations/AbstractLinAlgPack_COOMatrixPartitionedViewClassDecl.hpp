@@ -476,11 +476,11 @@ private:
 	typedef std::vector<indice_type>				vector_indice_type;
 	typedef std::vector<size_type>					vector_size_type;
 	typedef std::vector<element_type>				ele_type;
-	typedef ReferenceCountingPack::RefCount<
+	typedef MemMngPack::RefCount<
 				vector_indice_type>					ref_vector_indice_type;
-	typedef ReferenceCountingPack::RefCount<
+	typedef MemMngPack::RefCount<
 				vector_size_type>					ref_vector_size_type;
-	typedef ReferenceCountingPack::RefCount<
+	typedef MemMngPack::RefCount<
 				ele_type>							ref_ele_type;
 
 	// ///////////////////////////////////////////////////////////////

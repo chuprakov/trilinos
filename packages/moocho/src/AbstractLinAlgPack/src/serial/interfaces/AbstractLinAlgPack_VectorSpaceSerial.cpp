@@ -48,21 +48,21 @@ index_type VectorSpaceSerial::dim() const
 VectorSpace::space_ptr_t
 VectorSpaceSerial::clone() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp( new VectorSpaceSerial( dim_	) );
 }
 
 VectorSpace::vec_mut_ptr_t
 VectorSpaceSerial::create_member() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(new VectorWithOpMutableDense(dim_));
 }
 
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceSerial::create_members(size_type num_vecs) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(new MultiVectorMutableDense(dim_,num_vecs));
 }
 

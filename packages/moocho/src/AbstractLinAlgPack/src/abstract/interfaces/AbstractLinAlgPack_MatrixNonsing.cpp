@@ -28,13 +28,13 @@ namespace AbstractLinAlgPack {
 MatrixNonsingular::mat_mns_mut_ptr_t
 MatrixNonsingular::clone_mns()
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 MatrixNonsingular::mat_mns_ptr_t
 MatrixNonsingular::clone_mns() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 // Level-2 BLAS

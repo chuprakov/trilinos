@@ -20,7 +20,7 @@
 
 int main( int argc, char argv[] )
 {
-	namespace rcp   = ReferenceCountingPack;
+	namespace rcp   = MemMngPack;
 	namespace rsqp  = ReducedSpaceSQPPack;
 	namespace nlpip = NLPInterfacePack;
 	using rsqp::rSQPppSolver;

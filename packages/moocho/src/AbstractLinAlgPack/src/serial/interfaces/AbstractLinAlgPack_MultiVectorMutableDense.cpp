@@ -50,8 +50,8 @@ void MultiVectorMutableDense::initialize(
 	,const size_type                   cols
 	)
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace rmp = ResourceManagementPack;
+	namespace rcp = MemMngPack;
+	namespace rmp = MemMngPack;
 	typedef rcp::ref_count_ptr<GenMatrix> vec_ptr_t;
 	vec_ptr_t gms_ptr = rcp::rcp(new GenMatrix(rows,cols));
 	this->initialize(
@@ -129,7 +129,7 @@ MultiVectorMutableDense::access_by() const
 MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::col(index_type j)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			LinAlgPack::col( set_gms(), gms_trans(), j )
@@ -139,7 +139,7 @@ MultiVectorMutableDense::col(index_type j)
 MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::row(index_type i)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			LinAlgPack::row( set_gms(), gms_trans(), i )
@@ -149,7 +149,7 @@ MultiVectorMutableDense::row(index_type i)
 MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::diag(int k)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			gms_.diag( gms_trans() == BLAS_Cpp::no_trans ? k : -k )
@@ -159,7 +159,7 @@ MultiVectorMutableDense::diag(int k)
 MultiVectorMutableDense::multi_vec_mut_ptr_t
 MultiVectorMutableDense::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new MultiVectorMutableDense(
 			gms_(

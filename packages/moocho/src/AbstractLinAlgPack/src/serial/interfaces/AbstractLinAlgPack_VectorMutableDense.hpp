@@ -48,7 +48,7 @@ namespace SparseLinAlgPack {
  * itself, then it can be obtained as:
  \code
  void f( VectorWithOpMutableDense* v )
-     namespace rmp = ResourceManagementPack;
+     namespace rmp = MemMngPack;
      Vector &_v = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<Vector>&>(*v.vec_release()).ptr;
 
  \endcode
@@ -61,8 +61,8 @@ class VectorWithOpMutableDense
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		ResourceManagementPack::ReleaseResource>  release_resource_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	/** @name Constructors/initializers */
 	//@{

@@ -46,11 +46,11 @@ public:
 	//@{
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOpNonsingular>     C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>     C_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>                D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>                D_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOpNonsingular>  S_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>  S_ptr_t;
 #endif
 	//@}
 

@@ -37,9 +37,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOpNonsingular>    mat_mwons_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>    mat_mwons_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOpNonsingular>          mat_mwons_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>          mat_mwons_mut_ptr_t;
 #endif
 
 	//@}

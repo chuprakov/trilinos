@@ -48,7 +48,7 @@ public:
 	///
 	enum ETopBottom { TOP, BOTTOM };
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
 	//@}
 
 	/** @name Constructors/initializers. */

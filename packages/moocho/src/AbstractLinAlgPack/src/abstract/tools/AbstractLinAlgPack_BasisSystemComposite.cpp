@@ -40,7 +40,7 @@ public:
 		:vec_space_(vec_space)
 		 ,num_vecs_(num_vecs)
 	{}
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		AbstractLinAlgPack::MultiVectorMutable>               ptr_t;
 	ptr_t allocate() const
 	{
@@ -65,7 +65,7 @@ void BasisSystemCompositeStd::initialize_space_x(
 	,VectorSpace::space_ptr_t         *space_x
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		space_xD.get() == NULL, std::invalid_argument
@@ -96,7 +96,7 @@ BasisSystemCompositeStd::space_Gc(
 	,const VectorSpace::space_ptr_t   &space_c
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd>(space_x, space_c ) );
 }
@@ -111,8 +111,8 @@ void BasisSystemCompositeStd::initialize_Gc(
 	,MatrixWithOp                     *Gc
 	)
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace rmp = ResourceManagementPack;
+	namespace rcp = MemMngPack;
+	namespace rmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
@@ -275,8 +275,8 @@ void BasisSystemCompositeStd::initialize(
 	,const mat_fcty_ptr_t                &factory_GhUP
 	)
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace afp = AbstractFactoryPack;
+	namespace rcp = MemMngPack;
+	namespace afp = MemMngPack;
 
 	THROW_EXCEPTION(
 		space_x.get() == NULL, std::invalid_argument
@@ -320,7 +320,7 @@ void BasisSystemCompositeStd::initialize(
 
 void BasisSystemCompositeStd::set_uninitialized()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	space_x_         = rcp::null;
 	var_dep_         = Range1D::Invalid;

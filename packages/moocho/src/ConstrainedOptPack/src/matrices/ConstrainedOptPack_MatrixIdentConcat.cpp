@@ -32,7 +32,7 @@ namespace {
 // Get a view of a vector (two versions)
 
 inline
-ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::VectorWithOp>
 get_view(
 	const AbstractLinAlgPack::VectorWithOp  &v
 	,const RangePack::Range1D               &rng
@@ -42,13 +42,13 @@ get_view(
 }
 
 inline
-ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
+MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
 	const AbstractLinAlgPack::SpVectorSlice &v
 	,const RangePack::Range1D               &rng
 	)
 {
-	return ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
+	return MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
 		new AbstractLinAlgPack::SpVectorSlice( v(rng) ) );
 }
 

@@ -35,7 +35,7 @@ public:
 	STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
 	///
 	LineSearchDirect_Step(
-		const direct_line_search_ptr_t& direct_line_search = ReferenceCountingPack::null
+		const direct_line_search_ptr_t& direct_line_search = MemMngPack::null
 		);
 
 	/** Overridden from AlgorithmStep */

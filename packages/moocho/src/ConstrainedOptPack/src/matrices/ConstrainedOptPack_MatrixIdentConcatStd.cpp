@@ -67,7 +67,7 @@ void MatrixIdentConcatStd::initialize(
 
 void MatrixIdentConcatStd::set_uninitialized()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	space_cols_ = rcp::null;
 	space_rows_ = rcp::null;
 	alpha_      = 0.0;

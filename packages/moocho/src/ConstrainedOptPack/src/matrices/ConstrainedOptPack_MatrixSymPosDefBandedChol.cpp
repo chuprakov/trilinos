@@ -268,9 +268,9 @@ void MatrixSymPosDefBandedChol::assert_initialized() const
 
 void MatrixSymPosDefBandedChol::update_factorization() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using rcp::ref_count_ptr;
-	namespace rmp = ResourceManagementPack;
+	namespace rmp = MemMngPack;
 
 	if( !factor_updated_ ) {
 		if(UB_.rows() == 0) {

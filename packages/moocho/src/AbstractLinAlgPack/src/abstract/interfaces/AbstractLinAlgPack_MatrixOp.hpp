@@ -114,9 +114,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>    mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>    mat_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOp>          mat_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOp>          mat_mut_ptr_t;
 #endif
 
 	/// Thrown if a method is not implemented

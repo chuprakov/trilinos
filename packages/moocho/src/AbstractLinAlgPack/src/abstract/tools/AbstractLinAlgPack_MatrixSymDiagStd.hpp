@@ -40,7 +40,7 @@ public:
 
 	/// Calls <tt>this->initialize()</tt>.
 	MatrixSymDiagonalStd(
-		const VectorSpace::vec_mut_ptr_t& diag   = ReferenceCountingPack::null
+		const VectorSpace::vec_mut_ptr_t& diag   = MemMngPack::null
 		,bool                             unique = true
 		);
 

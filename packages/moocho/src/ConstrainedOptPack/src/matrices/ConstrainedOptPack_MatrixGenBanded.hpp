@@ -49,8 +49,8 @@ class MatrixGenBanded	: public MatrixWithOp
 public:
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		ResourceManagementPack::ReleaseResource>  release_resource_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	// //////////////
     // Constructors

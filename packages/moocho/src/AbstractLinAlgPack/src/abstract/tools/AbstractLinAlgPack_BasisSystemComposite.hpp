@@ -43,12 +43,12 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >
+	typedef MemMngPack::ref_count_ptr<const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >
 		                                                                           space_Gc_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOpNonsingular>          C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>          C_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOp>                     N_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOp>                     N_ptr_t;
 
 	//@}
 
@@ -223,9 +223,9 @@ public:
 		,const Range1D                       &var_indep
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
-		,const mat_fcty_ptr_t                &factory_D    = ReferenceCountingPack::null
-		,const VectorSpace::space_ptr_t      &space_h      = ReferenceCountingPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP = ReferenceCountingPack::null
+		,const mat_fcty_ptr_t                &factory_D    = MemMngPack::null
+		,const VectorSpace::space_ptr_t      &space_h      = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_GhUP = MemMngPack::null
 		);
 	
 	///
@@ -280,9 +280,9 @@ public:
 		,const Range1D                       &var_indep
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
-		,const mat_fcty_ptr_t                &factory_D    = ReferenceCountingPack::null
-		,const VectorSpace::space_ptr_t      &space_h      = ReferenceCountingPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP = ReferenceCountingPack::null
+		,const mat_fcty_ptr_t                &factory_D    = MemMngPack::null
+		,const VectorSpace::space_ptr_t      &space_h      = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_GhUP = MemMngPack::null
 		);
 
 	///

@@ -77,7 +77,7 @@ public:
 	///
 	typedef BasisSystem::SingularBasis                                    SingularBasis;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const BasisSystem>       basis_sys_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const BasisSystem>       basis_sys_ptr_t;
 	///
 	enum EExplicitImplicit {
 		MAT_IMP_EXPLICIT

@@ -23,13 +23,13 @@ namespace AbstractLinAlgPack {
 MatrixSymWithOp::mat_mswo_mut_ptr_t
 MatrixSymWithOp::clone_mswo()
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 MatrixSymWithOp::mat_mswo_ptr_t
 MatrixSymWithOp::clone_mswo() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 void MatrixSymWithOp::Mp_StPtMtP(

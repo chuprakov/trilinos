@@ -147,7 +147,7 @@ private:
 	// ///////////////////////////////////////////////////////////////////////////
 	// Private types
 
-	typedef ReferenceCountingPack::RefCount<
+	typedef MemMngPack::RefCount<
 		std::valarray<indice_type> >					va_indice_ref_type;
 
 	typedef std::valarray<value_type>					va_value_type;

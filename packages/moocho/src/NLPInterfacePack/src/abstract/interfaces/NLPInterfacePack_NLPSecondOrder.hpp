@@ -56,7 +56,7 @@ class NLPSecondOrderInfo : virtual public NLPFirstOrderInfo {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		const AbstractLinAlgPack::MatrixSpace<MatrixSymWithOp> >    mat_sym_space_ptr_t;
 
 	/** @name Constructors */

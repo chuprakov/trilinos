@@ -47,7 +47,7 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 {
 	using std::endl;
 	using std::setw;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using rcp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;

@@ -54,7 +54,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_MtV;
 	using GeneralIterationPack::print_algorithm_step;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	rSQPAlgo             &algo   = rsqp_algo(_algo);
 	rSQPState            &s      = algo.rsqp_state();

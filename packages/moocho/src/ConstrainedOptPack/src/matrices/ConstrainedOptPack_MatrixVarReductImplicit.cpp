@@ -176,7 +176,7 @@ void MatrixVarReductImplicit::initialize(
 	,const mat_ptr_t                 &D_direct
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	// Validate the inputs
 	THROW_EXCEPTION(
 		C.get() == NULL, std::invalid_argument
@@ -214,7 +214,7 @@ void MatrixVarReductImplicit::initialize(
 
 void MatrixVarReductImplicit::set_uninitialized()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	C_        = rcp::null;
 	N_        = rcp::null;
 	D_direct_ = rcp::null;

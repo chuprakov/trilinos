@@ -157,7 +157,7 @@ void rSQPState::update_iq_id(
 	,iq_id_encap*                     iq_id
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	if(iq_id->iq_id == DOES_NOT_EXIST)
 		iq_id->iq_id = this->get_iter_quant_id(iq_name);
 	THROW_EXCEPTION(
@@ -172,7 +172,7 @@ void rSQPState::update_index_type_iq_id(
 	,iq_id_encap*                     iq_id
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	if(iq_id->iq_id == DOES_NOT_EXIST) {
 		iq_id_type
 			_iq_id = this->get_iter_quant_id(iq_name);
@@ -184,8 +184,8 @@ void rSQPState::update_index_type_iq_id(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<index_type,index_type> >(
-							new AbstractFactoryPack::AbstractFactoryStd<index_type,index_type>())
+						,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<index_type,index_type> >(
+							new MemMngPack::AbstractFactoryStd<index_type,index_type>())
 #endif
 						)
 					)
@@ -202,7 +202,7 @@ void rSQPState::update_value_type_iq_id(
 	,iq_id_encap*                     iq_id
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	if(iq_id->iq_id == DOES_NOT_EXIST) {
 		iq_id_type
 			_iq_id = this->get_iter_quant_id(iq_name);
@@ -214,8 +214,8 @@ void rSQPState::update_value_type_iq_id(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<value_type,value_type> >(
-							new AbstractFactoryPack::AbstractFactoryStd<value_type,value_type>())
+						,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<value_type,value_type> >(
+							new MemMngPack::AbstractFactoryStd<value_type,value_type>())
 #endif
 						)
 					)
@@ -233,7 +233,7 @@ void rSQPState::update_vector_iq_id(
 	,iq_id_encap*                     iq_id
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	if(iq_id->iq_id == DOES_NOT_EXIST) {
 		iq_id_type
 			_iq_id = this->get_iter_quant_id(iq_name);

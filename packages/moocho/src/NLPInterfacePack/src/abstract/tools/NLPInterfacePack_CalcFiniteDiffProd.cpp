@@ -75,7 +75,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	typedef VectorSpace::vec_mut_ptr_t  vec_mut_ptr_t;
 	using AbstractLinAlgPack::Vt_S;
 	using AbstractLinAlgPack::Vp_StV;

@@ -52,9 +52,9 @@ DecompositionSystemCoordinate::DecompositionSystemCoordinate(
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Y() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
 		);
 }
 
@@ -67,18 +67,18 @@ DecompositionSystemCoordinate::factory_R() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Uy() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
+		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
 		);
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Vy() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
+		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
 		);
 }
 
@@ -94,7 +94,7 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	,MatrixWithOp                                          *Vy
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
 	//
@@ -141,7 +141,7 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	,EMatRelations                                         mat_rel
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
 	const size_type

@@ -30,7 +30,7 @@
 #include "ThrowException.h"
 
 // explicit instantiation for testing compilation only
-//template ReferenceCountingPack::ref_count_ptr<double>;
+//template MemMngPack::ref_count_ptr<double>;
 //class B {};
 //class D : public B {};
 //template GeneralIterationPack::IterQuantityAccessDerivedToBase<B,D>;
@@ -72,7 +72,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	using std::endl;
 	using std::setw;
 	using TestingHelperPack::update_success;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	try {
 
@@ -106,8 +106,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 		new alpha_t(
 			2,"alpha"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
-				new AbstractFactoryPack::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
+				new MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
 #endif			
 			)) );
 
@@ -116,8 +116,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 		new x_t(
 			2,"x"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t> >(
-				new AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+				new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 			)) );
 
@@ -128,7 +128,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 			new V_t(
 				1
 				,"V"
-				,rcp::rcp( new AbstractFactoryPack::AbstractFactoryStd<V_k_t,D> )
+				,rcp::rcp( new MemMngPack::AbstractFactoryStd<V_k_t,D> )
 				)
 		    )
 		);
@@ -141,8 +141,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 			new x_t(
 				2,"x"
 #ifdef _MIPS_CXX
-				,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t> >(
-					new AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t>())
+				,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+					new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 				)) );
 		success = false;

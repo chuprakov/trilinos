@@ -65,7 +65,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using std::endl;
 	using std::right;
 	using DynamicCastHelperPack::dyn_cast;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using rcp::ref_count_ptr;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgPack::dot;

@@ -39,7 +39,7 @@ class MatrixWithOpSubView : public virtual MatrixWithOp {
 public:
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOp>   mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOp>   mat_ptr_t;
 
 	/** @name Constructors/initalizers */
 	//@{

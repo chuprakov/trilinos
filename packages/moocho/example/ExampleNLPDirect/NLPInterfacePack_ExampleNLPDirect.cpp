@@ -78,7 +78,7 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 	,initialized_(false), obj_scale_(1.0)
 	,has_bounds_(has_bounds), force_xinit_in_bounds_(true), n_(2*vec_space->dim())
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	// Assert the size of the NLP
 	THROW_EXCEPTION(

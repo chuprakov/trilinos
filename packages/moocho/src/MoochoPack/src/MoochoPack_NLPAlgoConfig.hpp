@@ -44,7 +44,7 @@ public:
 	class InvalidNLPType : public std::logic_error
 	{public: InvalidNLPType(const std::string& what_arg) : std::logic_error(what_arg) {}};
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
+	typedef MemMngPack::ref_count_ptr<
 		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
 	//@}

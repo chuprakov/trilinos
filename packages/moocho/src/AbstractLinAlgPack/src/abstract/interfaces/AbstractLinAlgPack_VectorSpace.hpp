@@ -46,16 +46,16 @@ namespace AbstractLinAlgPack {
  */
 class VectorSpace
 	: public virtual VectorSpaceBase
-	, public AbstractFactoryPack::AbstractFactory<VectorWithOpMutable>
+	, public MemMngPack::AbstractFactory<VectorWithOpMutable>
 {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
 
 	///
 	/** Compare the compatibility of two vector spaces.

@@ -91,7 +91,7 @@ for finite dimensional coordinate vectors.  These interfaces parallel <tt>Vector
 <tt>VectorBaseMutable</tt> and <tt>VectorSpaceBase</tt> respectively and are derived from them
 (since they represent a specializations).  For practical reasons, the <tt>VectorSpace</tt>
 interface derives also from the base interface
-<tt>\ref AbstractFactoryPack::AbstractFactory "AbstractFactory<VectorWithOpMutable>"</tt>.
+<tt>\ref MemMngPack::AbstractFactory "AbstractFactory<VectorWithOpMutable>"</tt>.
 
 These finite dimensional coordinate vectors and vector spaces admit a finite dimension
 (i.e. <tt>\ref AbstractLinAlgPack::VectorSpace::dim "VectorSpace::dim()"</tt>) and allow access to

@@ -65,7 +65,7 @@ ExampleNLPFirstOrderInfo::space_Gh() const
 
 void ExampleNLPFirstOrderInfo::initialize()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	ExampleNLPFirstOrderDirect::initialize();
 	NLPFirstOrderInfo::initialize();
@@ -86,7 +86,7 @@ bool ExampleNLPFirstOrderInfo::is_initialized() const
 void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::Vp_S; // Should not have to do this!
 

@@ -98,7 +98,7 @@ public:
 
 private:
 	//
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp> Hess_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> Hess_ptr_t;
 	//
 	d_bounds_iq_member			d_bounds_;
 	int                         current_k_;

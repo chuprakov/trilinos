@@ -24,14 +24,14 @@ namespace AbstractLinAlgPack {
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpace::create_members(size_type num_vecs) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp<multi_vec_mut_ptr_t::element_type>(NULL);
 }
 
 VectorSpace::space_ptr_t
 VectorSpace::sub_space(const Range1D& rng_in) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG

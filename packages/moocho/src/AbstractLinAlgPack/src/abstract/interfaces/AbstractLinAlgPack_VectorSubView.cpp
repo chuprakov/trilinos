@@ -23,7 +23,7 @@
 namespace AbstractLinAlgPack {
 
 VectorWithOpSubView::VectorWithOpSubView( const vec_ptr_t& vec, const Range1D& rng )
-	: space_(ReferenceCountingPack::null,rng)
+	: space_(MemMngPack::null,rng)
 {
 	initialize(vec,rng);
 }
@@ -94,7 +94,7 @@ value_type VectorWithOpSubView::get_ele(index_type i) const
 VectorWithOp::vec_ptr_t
 VectorWithOpSubView::sub_view( const Range1D& rng ) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
 	return rcp::rcp(

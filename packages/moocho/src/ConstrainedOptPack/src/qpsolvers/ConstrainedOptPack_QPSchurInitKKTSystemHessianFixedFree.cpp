@@ -53,7 +53,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 {
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 

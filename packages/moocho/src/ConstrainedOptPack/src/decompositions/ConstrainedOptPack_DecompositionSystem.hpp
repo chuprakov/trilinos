@@ -68,11 +68,11 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
 	///
 	class InvalidMatrixType : public std::logic_error
 	{public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};

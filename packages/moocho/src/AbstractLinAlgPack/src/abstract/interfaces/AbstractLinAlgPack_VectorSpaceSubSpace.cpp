@@ -76,7 +76,7 @@ index_type VectorSpaceSubSpace::dim() const
 
 VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableSubView(
 			full_space_->create_member(), rng_ 
@@ -85,13 +85,13 @@ VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::clone() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	validate_range(rng_in);
 	const index_type dim         = this->dim();
 	const Range1D    rng         = rng_in.full_range() ? Range1D(1,dim) : rng_in;

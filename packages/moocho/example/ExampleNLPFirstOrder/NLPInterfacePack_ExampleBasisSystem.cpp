@@ -34,10 +34,10 @@ ExampleBasisSystem::ExampleBasisSystem(
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
-		,ReferenceCountingPack::rcp(
-			new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
-		,ReferenceCountingPack::rcp(
-			new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
 		)
 {}
 	
@@ -47,7 +47,7 @@ void ExampleBasisSystem::initialize(
 	,const Range1D                       &var_indep
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	if( space_x.get() != NULL ) {
 		BasisSystemCompositeStd::initialize(
@@ -55,8 +55,8 @@ void ExampleBasisSystem::initialize(
 			,var_dep
 			,var_indep
 			,space_x->sub_space(var_dep)
-			,rcp::rcp(new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
-			,rcp::rcp(new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
+			,rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
+			,rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
 			);
 	}
 	else {

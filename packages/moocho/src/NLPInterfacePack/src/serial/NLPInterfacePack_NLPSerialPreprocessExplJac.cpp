@@ -55,8 +55,8 @@ void NLPSerialPreprocessExplJac::set_mat_spaces(
 	,const factory_mat_ptr_t    &factory_Gh_orig
 	)
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace afp = AbstractFactoryPack;
+	namespace rcp = MemMngPack;
+	namespace afp = MemMngPack;
 	if(factory_Gc_orig.get())
 		factory_Gc_orig_ = factory_Gc_orig;
 	else 
@@ -73,7 +73,7 @@ void NLPSerialPreprocessExplJac::set_mat_spaces(
 
 void NLPSerialPreprocessExplJac::initialize()
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
@@ -234,7 +234,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	,const FirstOrderInfo& first_order_info
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
 	assert_initialized();

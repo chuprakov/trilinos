@@ -25,7 +25,7 @@
 
 bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	{
 		// explicit instantiation test
@@ -33,8 +33,8 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 		IterQuantityAccessContiguous<T> iq_v(
 			1,"v"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<T,T> >(
-				new AbstractFactoryPack::AbstractFactoryStd<T,T>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<T,T> >(
+				new MemMngPack::AbstractFactoryStd<T,T>())
 #endif			
 			);
 	}
@@ -70,8 +70,8 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 		IterQuantityAccessContiguous<int> x_cont(
 			1, "x"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
-				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<int,int> >(
+				new MemMngPack::AbstractFactoryStd<int,int>())
 #endif			
 			);
 		IterQuantityAccess<int>& x = x_cont;
@@ -246,8 +246,8 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 		IterQuantityAccessContiguous<int> x_cont(
 			2, "x"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
-				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<int,int> >(
+				new MemMngPack::AbstractFactoryStd<int,int>())
 #endif			
 			);
 		IterQuantityAccess<int>& x = x_cont;
@@ -477,8 +477,8 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 		IterQuantityAccessContiguous<int> x_cont(
 			4, "x"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
-				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<int,int> >(
+				new MemMngPack::AbstractFactoryStd<int,int>())
 #endif			
 			);
 		IterQuantityAccess<int>& x = x_cont;

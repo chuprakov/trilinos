@@ -28,7 +28,7 @@ bool NLPInterfacePack::test_basis_system(
 	,std::ostream*                                 out
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	const index_type
 		n = nlp->n(),

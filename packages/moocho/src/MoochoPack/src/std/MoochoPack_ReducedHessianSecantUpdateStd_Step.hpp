@@ -46,7 +46,7 @@ public:
 
 	///
 	ReducedHessianSecantUpdateStd_Step(
-		const secant_update_ptr_t& secant_update = ReferenceCountingPack::null
+		const secant_update_ptr_t& secant_update = MemMngPack::null
 		);
 
 	/** @name Overridden from AlgorithmStep */

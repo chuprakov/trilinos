@@ -61,7 +61,7 @@ MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 	assert(0); // ToDo: return a MultiVectorSubView object.
 	// Note that the MultiVectorSubView class should derive from MatrixWithOpSubView
 	// so that a client can rely on the MatrixWithOpSubView interface.
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 void MultiVector::apply_reduction(

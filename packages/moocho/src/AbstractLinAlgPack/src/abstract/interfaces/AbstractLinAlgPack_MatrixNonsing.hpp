@@ -77,9 +77,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixNonsingular>    mat_mns_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixNonsingular>    mat_mns_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixNonsingular>          mat_mns_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixNonsingular>          mat_mns_mut_ptr_t;
 #endif
 
 	//@}

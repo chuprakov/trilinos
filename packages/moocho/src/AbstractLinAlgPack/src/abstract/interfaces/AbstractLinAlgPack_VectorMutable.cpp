@@ -134,7 +134,7 @@ void VectorWithOpMutable::set_ele( index_type i, value_type alpha )
 VectorWithOpMutable::vec_mut_ptr_t
 VectorWithOpMutable::sub_view( const Range1D& rng_in )
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG
@@ -213,7 +213,7 @@ void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 VectorWithOp::vec_ptr_t
 VectorWithOpMutable::sub_view( const Range1D& rng ) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return const_cast<VectorWithOpMutable*>(this)->sub_view(rng);
 }
 

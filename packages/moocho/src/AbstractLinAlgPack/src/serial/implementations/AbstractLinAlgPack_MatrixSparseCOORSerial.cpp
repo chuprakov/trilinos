@@ -38,7 +38,7 @@ bool MatrixSparseCOORSerial::ReleaseValRowColArrays::resource_is_bound() const
 // static members
 
 MatrixSparseCOORSerial::release_resource_ptr_t
-MatrixSparseCOORSerial::release_resource_null_ = ReferenceCountingPack::null;
+MatrixSparseCOORSerial::release_resource_null_ = MemMngPack::null;
 
 // Constructors / initializers
 
@@ -103,7 +103,7 @@ void MatrixSparseCOORSerial::set_uninitialized()
 	val_              = NULL;
 	row_i_            = NULL;
 	col_j_            = NULL;
-	release_resource_ = ReferenceCountingPack::null;
+	release_resource_ = MemMngPack::null;
 	self_allocate_    = true;
 	rows_             = 0;
 	cols_             = 0;
@@ -183,7 +183,7 @@ void MatrixSparseCOORSerial::reinitialize(
 	,size_type max_nz
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 #ifdef _DEBUG
 	const char msg_err_head[] = "MatrixSparseCOORSerial::reinitialize(...) : Error";
 	THROW_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err_head<<"!" );

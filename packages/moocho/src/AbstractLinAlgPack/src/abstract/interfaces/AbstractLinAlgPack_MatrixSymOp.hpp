@@ -49,9 +49,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOp>    mat_mswo_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOp>    mat_mswo_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixSymWithOp>          mat_mswo_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymWithOp>          mat_mswo_mut_ptr_t;
 #endif
 	///
 	enum EMatRhsPlaceHolder { DUMMY_ARG };

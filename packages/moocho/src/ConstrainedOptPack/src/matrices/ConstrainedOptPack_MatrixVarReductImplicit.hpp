@@ -73,9 +73,9 @@ public:
 	//@{
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOpNonsingular>   mat_nonsing_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOpNonsingular>   mat_nonsing_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>              mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>              mat_ptr_t;
 
 	//@}
 

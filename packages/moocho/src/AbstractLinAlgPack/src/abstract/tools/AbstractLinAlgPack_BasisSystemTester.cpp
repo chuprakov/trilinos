@@ -59,7 +59,7 @@ bool BasisSystemTester::test_basis_system(
 	,std::ostream                   *out
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using AbstractLinAlgPack::sum;

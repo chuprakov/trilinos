@@ -120,7 +120,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 
 	using std::endl;
 	using std::setw;
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	
 	std::ostream& _out = *out;
 	// ToDo: RAB: 7/1/99: Modify for optional output when out == 0;

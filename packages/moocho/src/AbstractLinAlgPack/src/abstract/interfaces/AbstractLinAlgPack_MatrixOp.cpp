@@ -78,13 +78,13 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 MatrixWithOp::mat_mut_ptr_t
 MatrixWithOp::clone()
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::clone() const
 {
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 // Subview
@@ -92,7 +92,7 @@ MatrixWithOp::clone() const
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	if( 
 		( ( row_rng.lbound() == 1 && row_rng.ubound() == this->rows() )
@@ -122,7 +122,7 @@ MatrixWithOp::perm_view(
 	,int                       num_col_part
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new MatrixPermAggr(
 			rcp::rcp(this,false)

@@ -19,14 +19,14 @@
 namespace AbstractLinAlgPack {
 
 VectorWithOpMutableSubView::VectorWithOpMutableSubView( const vec_mut_ptr_t& vec, const Range1D& rng )
-	: VectorWithOpSubView(ReferenceCountingPack::null,rng)
+	: VectorWithOpSubView(MemMngPack::null,rng)
 {
 	this->initialize(vec,rng);
 }
 
 void VectorWithOpMutableSubView::initialize( const vec_mut_ptr_t& vec, const Range1D& rng )
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	VectorWithOpSubView::initialize(vec,rng);
 	full_vec_ = vec;
 	this->has_changed();
@@ -83,7 +83,7 @@ void VectorWithOpMutableSubView::set_ele( index_type i, value_type val )
 VectorWithOpMutable::vec_mut_ptr_t
 VectorWithOpMutableSubView::sub_view( const Range1D& rng )
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	space_impl().validate_range(rng);
 	const index_type this_offset = space_impl().rng().lbound() - 1;
 	return rcp::rcp(

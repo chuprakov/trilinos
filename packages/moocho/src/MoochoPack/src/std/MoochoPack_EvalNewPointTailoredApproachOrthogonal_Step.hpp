@@ -91,7 +91,7 @@ private:
 	// Private types
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<MatrixSymWithOpNonsingular>  S_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>  S_ptr_t;
 
 	// ///////////////////////////////
 	// Private data members

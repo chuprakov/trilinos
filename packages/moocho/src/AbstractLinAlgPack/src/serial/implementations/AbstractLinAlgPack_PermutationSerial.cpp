@@ -39,7 +39,7 @@ PermutationSerial::PermutationSerial(
 	
 void PermutationSerial::initialize_identity( size_type dim )
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	space_.initialize(dim);
 	perm_     = rcp::null;
 	inv_perm_ = rcp::null;

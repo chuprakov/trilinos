@@ -40,7 +40,7 @@ class MatrixSymHessianRelaxNonSing
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOpFactorized>  G_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>  G_ptr_t;
 	
 	///
 	/** Construct

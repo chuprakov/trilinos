@@ -65,13 +65,13 @@ class MatrixHessianSuperBasic
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOpFactorized>
+	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>
 		B_RR_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp>
 		B_RX_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOp>
+	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOp>
 		B_XX_ptr_t;
 	///
 	typedef std::vector<EBounds>

@@ -73,8 +73,8 @@ bool NLPSerialPreprocess::force_xinit_in_bounds() const
 
 void NLPSerialPreprocess::initialize()
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace afp = AbstractFactoryPack;
+	namespace rcp = MemMngPack;
+	namespace afp = MemMngPack;
 
 	const value_type inf_bnd = NLP::infinite_bound();
 
@@ -264,19 +264,19 @@ size_type NLPSerialPreprocess::mI() const
 
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_x() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(&space_x_,false);
 }
 
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_c() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(&space_c_,false);
 }
 
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_h() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(&space_h_,false);
 }
 
@@ -471,7 +471,7 @@ void NLPSerialPreprocess::set_basis(
 	,const Permutation  *P_inequ, const Range1D  *inequ_decomp
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	THROW_EXCEPTION(
 		(m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
@@ -518,7 +518,7 @@ void NLPSerialPreprocess::get_basis(
 	,Permutation* P_inequ, Range1D* inequ_decomp
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	assert_initialized();
 	THROW_EXCEPTION(

@@ -84,7 +84,7 @@ class VectorWithOp : virtual public VectorBase {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
 	///
 	enum ESparseOrDense { SPARSE, DENSE };
 

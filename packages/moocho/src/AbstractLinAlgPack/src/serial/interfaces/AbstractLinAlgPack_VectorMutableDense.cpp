@@ -45,8 +45,8 @@ void VectorWithOpMutableDense::initialize(
 	const size_type                   dim
 	)
 {
-	namespace rcp = ReferenceCountingPack;
-	namespace rmp = ResourceManagementPack;
+	namespace rcp = MemMngPack;
+	namespace rmp = MemMngPack;
 	typedef rcp::ref_count_ptr<Vector> vec_ptr_t;
 	vec_ptr_t vec_ptr = rcp::rcp(new Vector(dim));
 	this->initialize(

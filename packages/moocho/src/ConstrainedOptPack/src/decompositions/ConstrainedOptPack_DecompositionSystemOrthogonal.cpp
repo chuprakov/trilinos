@@ -52,18 +52,18 @@ DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Y() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
 		);
 }
 
 const DecompositionSystem::mat_nonsing_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_R() const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixDecompRangeOrthog>()
+		new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixDecompRangeOrthog>()
 		);
 }
 
@@ -71,14 +71,14 @@ const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
 	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Vy() const
 {
 	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 // Overridden from DecompositionSystemVarReduct
@@ -93,7 +93,7 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	,MatrixWithOp                                          *Vy
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	typedef DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 		C_ptr_t;
@@ -155,7 +155,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 	,EMatRelations                                         mat_rel
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	typedef DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 		C_ptr_t;

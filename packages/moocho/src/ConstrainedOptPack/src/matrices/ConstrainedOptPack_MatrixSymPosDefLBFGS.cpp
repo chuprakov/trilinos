@@ -159,7 +159,7 @@ void MatrixSymPosDefLBFGS::initial_setup(
 		m < 1, std::invalid_argument
 		,"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
 		"Error, the number of storage locations must be > 0" );
-	vec_spc_           = ReferenceCountingPack::null;
+	vec_spc_           = MemMngPack::null;
 	maintain_original_ = maintain_original;
 	maintain_inverse_  = maintain_inverse;
 	m_                 = m;
@@ -209,7 +209,7 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo)
 		original_is_updated_ = p_m->original_is_updated_;
 		maintain_inverse_    = p_m->maintain_inverse_;
 		inverse_is_updated_  = p_m->inverse_is_updated_;
-		vec_spc_             = p_m->vec_spc_.get() ? p_m->vec_spc_->clone() : ReferenceCountingPack::null;
+		vec_spc_             = p_m->vec_spc_.get() ? p_m->vec_spc_->clone() : MemMngPack::null;
 		n_	 		         = p_m->n_;
 		m_			         = p_m->m_;
 		m_bar_		         = p_m->m_bar_;

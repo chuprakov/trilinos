@@ -88,8 +88,8 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
 	/// Thrown if an invalid basis selection is made
 	class InvalidBasis : public std::logic_error
@@ -197,9 +197,9 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AbstractFactoryPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
-	AbstractFactoryPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
-	AbstractFactoryPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_inequ;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_inequ;
 #endif	
 	
 };	// end class NLPVarReductPerm

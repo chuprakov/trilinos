@@ -40,7 +40,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 	,std::ostream*                                out
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using TestingHelperPack::update_success;
 
 	bool result;

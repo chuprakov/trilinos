@@ -89,11 +89,11 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<AlgorithmState>		state_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmState>		state_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<AlgorithmTrack>		track_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmTrack>		track_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<AlgorithmStep>			step_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmStep>			step_ptr_t;
 	///
 	typedef size_t														poss_type;
 	///

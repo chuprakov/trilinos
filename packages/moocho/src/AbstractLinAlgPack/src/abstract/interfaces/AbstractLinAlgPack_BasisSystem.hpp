@@ -162,14 +162,14 @@ namespace AbstractLinAlgPack {
  * <tt>bs.update_basis(Gc,Gh,...)</tt> and \c bs):
  \code
 
- ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>
+ MemMngPack::ref_count_ptr<const MatrixWithOp>
  create_N(
      const AbstractLinAlgPack::MatrixWithOp*   Gc
      ,const AbstractLinAlgPack::MatrixWithOp*  Gh
      ,const AbstractLinAlgPack::BasisSystem&   bs
      )
  {
-     namespace rcp = ReferenceCountingPack;
+     namespace rcp = MemMngPack;
      rcp::ref_count_ptr<AbstractLinAlgPack::MatrixCompositeStd>
          N = new AbstractLinAlgPack::MatrixCompositeStd(bs.var_dep().size(),bs.var_indep().size());
 	 if( Gc && bs.equ_decomp().size() )
@@ -210,11 +210,11 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
 	///
 	class SingularBasis : public std::runtime_error
 	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};

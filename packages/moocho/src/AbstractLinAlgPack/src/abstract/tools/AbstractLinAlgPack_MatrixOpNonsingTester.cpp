@@ -55,7 +55,7 @@ bool MatrixWithOpNonsingularTester::test_matrix(
 	,std::ostream                   *out
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::left;

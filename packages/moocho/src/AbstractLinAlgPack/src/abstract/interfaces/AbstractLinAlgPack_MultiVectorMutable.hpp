@@ -68,9 +68,9 @@ public:
 	using MultiVector::diag;
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MultiVectorMutable>    multi_vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MultiVectorMutable>    multi_vec_mut_ptr_t;
 
 	/** @name Provide mutable row, column and/or diagonal access */
 	//@{

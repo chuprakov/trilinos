@@ -61,7 +61,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	,std::ostream           *out
 	) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 
 	const size_type
@@ -220,7 +220,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	using std::endl;
 	using std::right;
 
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using AbstractLinAlgPack::sum;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StV;

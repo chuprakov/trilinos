@@ -294,12 +294,12 @@ public:
 	 * Initializes num_basis() == 0
 	 */
 	rSQPState(
-		const decomp_sys_ptr_t& decomp_sys   = ReferenceCountingPack::null
-		,const space_x_ptr_t&   space_x      = ReferenceCountingPack::null
-		,const space_x_ptr_t&   space_c      = ReferenceCountingPack::null
-		,const space_x_ptr_t&   space_h      = ReferenceCountingPack::null
-		,const space_x_ptr_t&   space_range  = ReferenceCountingPack::null
-		,const space_x_ptr_t&   space_null   = ReferenceCountingPack::null
+		const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
+		,const space_x_ptr_t&   space_x      = MemMngPack::null
+		,const space_x_ptr_t&   space_c      = MemMngPack::null
+		,const space_x_ptr_t&   space_h      = MemMngPack::null
+		,const space_x_ptr_t&   space_range  = MemMngPack::null
+		,const space_x_ptr_t&   space_null   = MemMngPack::null
 		);
 
 	///

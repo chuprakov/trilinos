@@ -72,7 +72,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 	,std::ostream               &out
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
 	const size_type

@@ -48,7 +48,7 @@ void MatrixWithOpSubView::initialize(
 	,BLAS_Cpp::Transp M_trans
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 
 	if( M_full.get() ) {
 		const index_type
@@ -132,7 +132,7 @@ MatrixWithOpSubView::sub_view(const Range1D& row_rng, const Range1D& col_rng) co
 {
 	assert_initialized();
 	assert(0); // ToDo: Implement!
-	return ReferenceCountingPack::null;
+	return MemMngPack::null;
 }
 
 void MatrixWithOpSubView::zero_out()

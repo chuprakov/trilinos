@@ -40,8 +40,8 @@ public:
 	//@{
 	
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractFactoryPack::AbstractFactory<MatrixWithOp> >    factory_mat_ptr_t;
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixWithOp> >    factory_mat_ptr_t;
 
 	//@}
 
@@ -52,8 +52,8 @@ public:
 	/** Calls <tt>this->set_mat_spaces()</tt>.
 	 */
 	NLPSerialPreprocessExplJac(
-		const factory_mat_ptr_t     &factory_Gc_orig = ReferenceCountingPack::null
-		,const factory_mat_ptr_t    &factory_Gh_orig = ReferenceCountingPack::null
+		const factory_mat_ptr_t     &factory_Gc_orig = MemMngPack::null
+		,const factory_mat_ptr_t    &factory_Gh_orig = MemMngPack::null
 		);
 
 	///

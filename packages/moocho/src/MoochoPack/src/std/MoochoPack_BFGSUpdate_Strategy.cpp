@@ -63,7 +63,7 @@ void BFGSUpdate_Strategy::perform_update(
 	,QuasiNewtonStats        * quasi_newton_stats 
 	)
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vt_S;

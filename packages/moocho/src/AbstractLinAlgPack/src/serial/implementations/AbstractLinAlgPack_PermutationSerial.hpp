@@ -40,7 +40,7 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const IVector>  i_vector_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const IVector>  i_vector_ptr_t;
 
 	//@}
 

@@ -35,7 +35,7 @@ class AlgorithmTrackComposite : public AlgorithmTrack {
 public:
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<AlgorithmTrack>      track_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmTrack>      track_ptr_t;
 	///
 	typedef std::list<track_ptr_t>                                    track_list_t;
 	///

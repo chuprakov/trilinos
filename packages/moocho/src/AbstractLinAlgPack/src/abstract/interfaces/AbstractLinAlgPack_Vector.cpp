@@ -205,7 +205,7 @@ value_type VectorWithOp::norm_inf() const {
 VectorWithOp::vec_ptr_t
 VectorWithOp::sub_view( const Range1D& rng_in ) const
 {
-	namespace rcp = ReferenceCountingPack;
+	namespace rcp = MemMngPack;
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG

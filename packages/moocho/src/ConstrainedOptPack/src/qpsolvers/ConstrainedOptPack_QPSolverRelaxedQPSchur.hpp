@@ -57,7 +57,7 @@ public:
 		///
 		typedef std::vector<size_type> j_f_decomp_t;
 		///
-		typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOpFactorized>
+		typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>
 			Ko_ptr_t;
 		///
 		virtual ~InitKKTSystem() {}

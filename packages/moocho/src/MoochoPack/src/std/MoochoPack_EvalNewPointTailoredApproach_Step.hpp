@@ -47,7 +47,7 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
 	/// <<std comp>> members for testing object for NLPFirstOrderDirect
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstOrderDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object
