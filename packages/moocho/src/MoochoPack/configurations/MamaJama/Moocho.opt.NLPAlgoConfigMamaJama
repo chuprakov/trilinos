@@ -204,6 +204,107 @@ options_group CheckConvergenceStd {
 
 }
 
+****************************************************************
+*** Options for the primal-dual, active-set, schur-complement
+*** QP solver QPSchur.
+***
+*** [rSQPAlgo_ConfigMamaJama::qp_solver == QPSCHUR]
+***
+options_group QPSolverRelaxedQPSchur {
+*    max_qp_iter_frac  = 10.0;   *** (+dbl) max_qp_itr = max_qp_itr_frac * (# variables)
+*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY;
+*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
+*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;
+*    bounds_tol        = 1e-10;  *** (+dbl) feasibility tolerance for bound constriants
+*    inequality_tol    = 1e-10;  *** (+dbl) feasibility tolerance for general inequality constriants
+*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constriants
+*    loose_feas_tol    = 1e-9;   *** (+dbl) (Expert use only)
+*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasiblity before error
+*    huge_primal_step  = 1e+20;  *** (+dbl) value of a near infinite primal step
+*    huge_dual_step    = 1e+20;  *** (+dbl) value of a near infinite dual step
+*    bigM              = 1e+10;  *** (+dbl) value or relaxation penalty in objective
+*    warning_tol   = 1e-10;  *** Testing warning tolerance
+*    error_tol     = 1e-5;   *** Testing error tolerance
+
+*    iter_refine_min_iter = 1; *** (default)
+     *** Minimum number of iterative refinement iterations to perform when
+     *** using iterative refinement.  Example values:
+     *** 0 : Don't perform any iterations of iterative refinement if you don't have to
+     *** 1 : Perform at least one step if iterative refinement no matter what the
+     ***     residual is.
+
+*    iter_refine_max_iter = 3; *** (default)
+     *** Maximum number of steps of iterative refinement to perform.
+     *** This helps to keep down the cost of iterative refinement but
+     *** can cause the QP method to fail due to illconditioning and roundoff.
+     *** This number should be kept small since the target residuals may not
+     *** be obtainable.
+     *** Example values:
+     ***   0 : Never perform any steps of iterative refinement
+     ***   1 : Never perform more than one step of iterative refinement
+     ***  10 : Never perform more than 10 steps of iterative refinement.
+
+*    iter_refine_opt_tol  = 1e-12; *** (default)
+     *** Iterative refinement convergence tolerance for the optimality
+     *** conditions of the QP.  Specifically this is compared to the
+     *** scaled linear dependence of gradients condition.
+     *** Example values:
+     ***   1e-50 : (very small number) Do iterative refinement until
+     ***           iter_refine_max_iter is exceeded.
+     ***   1e-12 : (default)
+     ***   1e+50 : (very big number) Allow convergence of iterative refinement at
+     ***           any time.
+
+*    iter_refine_feas_tol = 1e-12; *** (default)
+     *** Iterative refinement convergence tolerance for the feasibility
+     *** conditions of the QP.  Specifically this is compared to the
+     *** scaled residual of the active constraints (equalities and inequalities)
+     *** Example values:
+     ***   1e-50 : (very small number) Do iterative refinement until
+     ***           iter_refine_max_iter is exceeded.
+     ***   1e-12 : (default)
+     ***   1e+50 : (very big number) Allow convergence of iterative refinement at
+     ***           any time.
+
+*    iter_refine_at_solution = true;  *** (default)
+*    iter_refine_at_solution = false;
+     *** If true then iterative refinement will be performed at the solution of
+     *** the QP in every case.
+
+*    pivot_warning_tol = 1e-8;  *** (default)
+     *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
+     *** under which a warning message for near singularity will be printed
+     *** (see MatrixSymAddDelUpdateable).  Example values:
+     ***    0.0: Don't print any warning messages about near singularity.
+     ***   1e-6: default
+     ***    2.0: ( > 1 ) Show the pivot tolerance of every update!
+
+*    pivot_singular_tol = 1e-11;  *** (default)
+     *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
+     *** under which the matrix is considered singular and an error message will be printed
+     *** (see MatrixSymAddDelUpdateable).  Example values:
+     ***    0.0: Allow any numerically nonsingular matrix.
+     ***   1e-8: default
+     ***    2.0: ( > 1 ) Every matrix is singular (makes no sence!)
+
+*    pivot_wrong_inertia_tol = 1e-11;  *** (default)
+     *** (+dbl) Minimum relative tolerance for a pivot element in the schur complement
+     *** over which the matrix is considered to have the wrong inertia rather than
+     *** being singular and an error message will be printed
+     *** (see MatrixSymAddDelUpdateable).  Example values:
+     ***    0.0: Any pivot with the wrong sign will be considered to have the wrong inertia
+     ***   1e-8: default
+     ***    2.0: ( > 1 ) Every matrix has the wrong inertia (makes no sence!)
+
+*    print_level = USE_INPUT_ARG;  *** Use the input argument to solve_qp(...)
+*    print_level = NO_OUTPUT;
+*    print_level = OUTPUT_BASIC_INFO;
+*    print_level = OUTPUT_ITER_SUMMARY;
+*    print_level = OUTPUT_ITER_STEPS;
+*    print_level = OUTPUT_ACT_SET;
+*    print_level = OUTPUT_ITER_QUANTITIES;
+}
+
 ********************************************************************
 *** Options for the direct line search object that is used in all the
 *** line search methods for the SQP step.

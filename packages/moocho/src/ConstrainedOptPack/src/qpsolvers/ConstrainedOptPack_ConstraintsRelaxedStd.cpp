@@ -504,15 +504,20 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	// Lookup the bound! (sparse lookup)
 	size_type j_local = j;
 	const SpVectorSlice::element_type *ele_ptr = NULL;
-	if( j_local <= A_bar_.nd() && dL_ ) {
-		switch( bnd ) {
-			case EQUALITY:
-			case LOWER:
-				return dL_->get_ele(j_local);
-			case UPPER:
-				return dU_->get_ele(j_local);
-			default:
-				assert(0);
+	if( j_local <= A_bar_.nd() ) {
+		if(dL_) {
+			switch( bnd ) {
+				case EQUALITY:
+				case LOWER:
+					return dL_->get_ele(j_local);
+				case UPPER:
+					return dU_->get_ele(j_local);
+				default:
+					assert(0);
+			}
+		}
+		else {
+			return ( bnd == LOWER ? -1.0 : +1.0 ) * inf;
 		}
 	}
 	else if( (j_local -= A_bar_.nd()) <= 1 ) {
