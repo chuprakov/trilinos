@@ -16,14 +16,11 @@
 #ifndef CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
-#include "ConstrainedOptimizationPackDebugAcronyms.hpp"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "NLPInterfacePack/src/NLP.hpp"
 
 namespace ConstrainedOptimizationPack {
 
-#include "AbstractLinAlgPack/src/SparseSolverPackPublicTypes.ud"
 #include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
 
 /// Bounds type

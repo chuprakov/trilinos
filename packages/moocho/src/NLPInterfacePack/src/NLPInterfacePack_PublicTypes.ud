@@ -10,7 +10,7 @@
 // }
 
 // Include the types from AbstractLinAlgPack
-#include "AbstractLinAlgPack/src/SparseSolverPackPublicTypes.ud"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackPublicTypes.ud"
 
 using NLPInterfacePack::NLP;
 using NLPInterfacePack::NLPObjGradient;

@@ -21,7 +21,7 @@
 
 namespace NLPInterfacePack {
 
-#include "AbstractLinAlgPack/src/SparseSolverPackPublicTypes.ud"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackPublicTypes.ud"
 
 // NLP interface classes
 
