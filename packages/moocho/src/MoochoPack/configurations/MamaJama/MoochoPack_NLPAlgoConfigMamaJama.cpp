@@ -68,7 +68,7 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
 
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
-//#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
 //#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
 
@@ -92,7 +92,7 @@
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
+#include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
@@ -103,7 +103,7 @@
 //#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
-//#include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
+#include "ReducedSpaceSQPPack/include/std/RangeSpaceStepStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
@@ -814,15 +814,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				typedef rcp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
 				decomp_sys_tester_ptr_t
 					decomp_sys_tester = rcp::rcp( new DecompositionSystemTester() );
-/*
 				if(options_.get()) {
-					NLPInterfacePack::DecompositionSystemTesterSetOptions
+					DecompositionSystemTesterSetOptions
 						options_setter(decomp_sys_tester.get());
 					options_setter.set_options(*options_);
 				}
-*/
-				// ToDo: Create the above SetOptions object
-				// create the step
 				typedef rcp::ref_count_ptr<EvalNewPointStd_Step>  _eval_new_point_step_ptr_t;
 				_eval_new_point_step_ptr_t
 					_eval_new_point_step = rcp::rcp(
@@ -843,13 +839,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		// RangeSpace_Step
 		algo_step_ptr_t    range_space_step_step = NULL;
 		if( !tailored_approach ) {
-//			assert(0); // ToDo: Implment!
+			range_space_step_step = rcp::rcp(new RangeSpaceStepStd_Step());
 		}
 
 		// ReducedGradient_Step
 		algo_step_ptr_t    reduced_gradient_step = NULL;
 		if( !tailored_approach ) {
-//			assert(0); // ToDo: Implment!
+			reduced_gradient_step = rcp::rcp(new ReducedGradientStd_Step());
 		}
 
 		// CheckSkipBFGSUpdate
@@ -1082,12 +1078,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 			// (2) RangeSpaceStep
 			if( !tailored_approach ) {
-//				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
+				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
 			}
 
 			// (3) ReducedGradient
 			if( !tailored_approach ) {
-//				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
+				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
 			}
 
 			// (4) CalcReducedGradLagrangian
