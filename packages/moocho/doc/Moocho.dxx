@@ -34,8 +34,8 @@ extensive.
 
 <li> General Abstractions Linear Algebra
 	<ul>
-	<li> <A HREF="../TSFL/html/index.html">TSFCore</A> Basic interfaces.
-	<li> <A HREF="../TSFL/html/index.html">TSFTools</A> Some tools based on <tt>TSFCore</tt>.
+	<li> <A HREF="../TSFCore/html/index.html">TSFCore</A> Basic interfaces.
+	<li> <A HREF="../TSFTools/html/index.html">TSFTools</A> Some tools based on <tt>TSFCore</tt>.
 	</ul>
 
 <li> Numerical Packages:
