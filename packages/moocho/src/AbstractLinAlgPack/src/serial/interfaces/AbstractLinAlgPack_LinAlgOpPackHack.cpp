@@ -55,7 +55,8 @@ void LinAlgOpPack::Mp_StM(
 
 void LinAlgOpPack::Vp_StMtV(
 	VectorSlice* y, value_type a, const MatrixWithOp& M
-	,BLAS_Cpp::Transp M_trans, const VectorSlice& x, value_type b )
+	,BLAS_Cpp::Transp M_trans, const VectorSlice& x, value_type b
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using SparseLinAlgPack::VectorDenseMutableEncap;
@@ -64,26 +65,28 @@ void LinAlgOpPack::Vp_StMtV(
 		ax = ( M_trans == no_trans ? M.space_rows() : M.space_cols() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;
 	(VectorDenseMutableEncap(*ax))() = x;
-	Vp_StMtV( ay.get(), a, M, M_trans, *ax, b );
+	AbstractLinAlgPack::Vp_StMtV( ay.get(), a, M, M_trans, *ax, b );
 	*y = VectorDenseMutableEncap(*ay)();
 }
 
 void LinAlgOpPack::Vp_StMtV(
 	VectorSlice* y, value_type a, const MatrixWithOp& M
-	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x, value_type b )
+	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x, value_type b
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using SparseLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == no_trans ? M.space_cols() : M.space_rows() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;
-	Vp_StMtV( ay.get(), a, M, M_trans, x, b );
+	AbstractLinAlgPack::Vp_StMtV( ay.get(), a, M, M_trans, x, b );
 	*y = VectorDenseMutableEncap(*ay)();
 }
 
 void LinAlgOpPack::V_InvMtV(
 	VectorSlice* y, const MatrixWithOpNonsingular& M
-	,BLAS_Cpp::Transp M_trans, const VectorSlice& x )
+	,BLAS_Cpp::Transp M_trans, const VectorSlice& x
+	)
 {
 	using BLAS_Cpp::trans;
 	using SparseLinAlgPack::VectorDenseMutableEncap;
@@ -92,37 +95,45 @@ void LinAlgOpPack::V_InvMtV(
 		ax = ( M_trans == trans ? M.space_rows() : M.space_cols() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;
 	(VectorDenseMutableEncap(*ax))() = x;
-	V_InvMtV( ay.get(), M, M_trans, *ax );
+	AbstractLinAlgPack::V_InvMtV( ay.get(), M, M_trans, *ax );
 	*y = VectorDenseMutableEncap(*ay)();
 }
 
 void LinAlgOpPack::V_InvMtV(
 	Vector* y, const MatrixWithOpNonsingular& M
-	,BLAS_Cpp::Transp M_trans, const VectorSlice& x )
+	,BLAS_Cpp::Transp M_trans, const VectorSlice& x
+	)
 {
-	y->resize( BLAS_Cpp::rows( M.rows(), M.cols(), M_trans ) );
-	V_InvMtV( &(*y)(), M, M_trans, x );
+	using BLAS_Cpp::trans;
+	using SparseLinAlgPack::VectorDenseMutableEncap;
+	VectorSpace::vec_mut_ptr_t
+		ay = ( M_trans == trans ? M.space_cols() : M.space_rows() ).create_member(),
+		ax = ( M_trans == trans ? M.space_rows() : M.space_cols() ).create_member();
+	(VectorDenseMutableEncap(*ax))() = x;
+	AbstractLinAlgPack::V_InvMtV( ay.get(), M, M_trans, *ax );
+	*y = VectorDenseMutableEncap(*ay)();
 }
 
 void LinAlgOpPack::V_InvMtV(
 	VectorSlice* y, const MatrixWithOpNonsingular& M
-	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x )
+	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x
+	)
 {
 	using BLAS_Cpp::trans;
 	using SparseLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == trans ? M.space_cols() : M.space_rows() ).create_member();
-	(VectorDenseMutableEncap(*ay))() = *y;
-	V_InvMtV( ay.get(), M, M_trans, x );
+	AbstractLinAlgPack::V_InvMtV( ay.get(), M, M_trans, x );
 	*y = VectorDenseMutableEncap(*ay)();
 }
 
 void LinAlgOpPack::V_InvMtV(
 	Vector* y, const MatrixWithOpNonsingular& M
-	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x )
+	,BLAS_Cpp::Transp M_trans, const SpVectorSlice& x
+	)
 {
-	y->resize( BLAS_Cpp::rows( M.rows(), M.cols(), M_trans ) );
-	V_InvMtV( &(*y)(), M, M_trans, x );
+	y->resize(M.rows());
+	LinAlgOpPack::V_InvMtV( &(*y)(), M, M_trans, x );
 }
 
 // These methods below are a real problem to implement in general.
@@ -135,7 +146,8 @@ void LinAlgOpPack::Vp_StPtMtV(
 	VectorSlice* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,const MatrixWithOp& M, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x, value_type b )
+	,const VectorSlice& x, value_type b
+	)
 {
 	namespace mmp = MemMngPack;
 	using BLAS_Cpp::no_trans;
@@ -161,7 +173,8 @@ void LinAlgOpPack::Vp_StPtMtV(
 	VectorSlice* y, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,const MatrixWithOp& M, BLAS_Cpp::Transp M_trans
-	,const SpVectorSlice& x, value_type b )
+	,const SpVectorSlice& x, value_type b
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using SparseLinAlgPack::VectorWithOpMutableDense;
