@@ -15,19 +15,20 @@
 #include "TSFAdjointOperator.h"
 #include "TSFLinearSolver.h"
 #include "TSFMatrixOperator.h"
-
-
+#include "TSFAdjointMatrixOperator.h"
 
 using namespace TSF;
 
 TSFTimer TSFLinearOperator::opTimer_("Linear operators");
 
 TSFLinearOperator::TSFLinearOperator()
-	: ptr_(0)
+	:ptr_(0)
+	 ,mat_op_ptr_(0)
 {;}
 
 TSFLinearOperator::TSFLinearOperator(TSFLinearOperatorBase* ptr)
 	: ptr_(ptr)
+	 ,mat_op_ptr_(0)
 {;}
 
 const TSFVectorSpace& TSFLinearOperator::range() const 
@@ -203,9 +204,6 @@ TSFLinearOperator TSFLinearOperator::operator+(const TSFLinearOperator& op) cons
 	/* in general case, create a sum operator */
 	return new TSFSumOperator(*this, op);
 }
-	
-
-
 
 TSFLinearOperator TSFLinearOperator::operator-(const TSFLinearOperator& op) const 
 {
@@ -233,8 +231,6 @@ TSFLinearOperator TSFLinearOperator::operator-(const TSFLinearOperator& op) cons
 	return new TSFSumOperator(*this, op, true);
 }
 
-
-
 TSFLinearOperator TSFLinearOperator::operator*(const TSFLinearOperator& op) const 
 {
 	/* check for consistency between the range of the righthand operator
@@ -259,8 +255,6 @@ TSFLinearOperator TSFLinearOperator::operator*(const TSFLinearOperator& op) cons
 	return new TSFComposedOperator(*this, op);
 }
 
-
-
 TSFLinearOperator TSFLinearOperator::operator*(const TSFReal& scale) const 
 {
 	/* check for special cases op=0, scale=0, and scale=1 */
@@ -280,7 +274,6 @@ TSFLinearOperator TSFLinearOperator::operator*(const TSFReal& scale) const
 	return new TSFScaledOperator(*this, scale);
 }
 
-
 TSFLinearOperator TSFLinearOperator::operator-() const 
 {
 	return new TSFScaledOperator(*this, -1.0);
@@ -297,7 +290,20 @@ const TSFMatrixOperator* TSFLinearOperator::getMatrix() const
 		{
 			TSFError::raise("TSFLinearOperator::getMatrix() called for matrix-free operator");
 		}
-	return dynamic_cast<const TSFMatrixOperator*>(ptr_.operator->());
+	const TSFMatrixOperator
+		*mat_op = NULL;
+	mat_op = dynamic_cast<const TSFMatrixOperator*>(ptr_.operator->());
+	if(mat_op) return mat_op;
+	// Must be an adjoint operator
+	if( mat_op_ptr_.isNull() ) {
+		const TSFAdjointOperator
+			*adj_op = dynamic_cast<const TSFAdjointOperator*>(ptr_.operator->());
+		assert(adj_op);
+		mat_op = dynamic_cast<const TSFMatrixOperator*>(adj_op->op().ptr_.operator->());
+		assert(mat_op);
+		mat_op_ptr_ = new TSFAdjointMatrixOperator(const_cast<TSFMatrixOperator*>(mat_op));
+	}
+	return mat_op_ptr_.operator->();
 }
 
 string TSFLinearOperator::toString() const 

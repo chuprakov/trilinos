@@ -82,6 +82,7 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 				{
 					TSFVector xTry = x0 - stepFrac * deltaX;
 
+
 					F.apply(xTry, f0);
 					double newFNorm = f0.norm2();
 					TSFOut::printf("backtrack %d fNew=%g f=%g\n", b, newFNorm,

@@ -68,7 +68,13 @@ namespace TSF
 			/** */
 			virtual void getInverseAdjoint(const TSFLinearSolver& solver,
 																		 const TSFLinearOperator& /* self */,
-																		 TSFLinearOperator& invAdj) const ;
+																		 TSFLinearOperator& invAdj) const;
+			/** */
+			virtual bool isMatrixOperator() const;
+
+			/** */
+			TSFLinearOperator op() const { return op_; }
+
 		protected:
 			/** the operator */
 			TSFLinearOperator op_;

@@ -26,7 +26,7 @@ namespace TSF
 
 	class TSFPreconditionerFactory
 		{
-		public: 
+		public:
 			/** empty ctor. Constructs a null vector */
 			TSFPreconditionerFactory();
 			/** assume control of a pointer */

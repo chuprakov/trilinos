@@ -127,8 +127,7 @@ void TSFAdjointOperator::getInverseAdjoint(const TSFLinearSolver& solver,
 	invAdj = new TSFInverseOperator(op_, solver);
 }
 
-
-
-
-
-
+bool TSFAdjointOperator::isMatrixOperator() const
+{
+	return op_.isMatrixOperator();	
+}
