@@ -32,16 +32,6 @@
 
 namespace {
 
-#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX) && !defined(_INTEL_CXX)
-
-// 2/10/00: See TestVectorClass.cpp
-inline
-bool update_success( bool result, bool *success ) {
-	return TestingHelperPack::update_success( result, success );
-}
-
-#endif
-
 using LinAlgPack::size_type;
 using LinAlgPack::value_type;
 using LinAlgPack::Vector;
@@ -60,6 +50,7 @@ void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_r
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::Vp_StMtV;
 	using LinAlgPack::comp;
+	using TestingHelperPack::update_success;
 	
 	// Check alpha = 1.0, 0.5.  Check beta = 0.0, 0.5, 1.0
 	bool result = true;
@@ -116,6 +107,7 @@ void test_MtM( M_t& B, BLAS_Cpp::Transp trans_B, const GenMatrixSlice& I
 	using LinAlgPack::Mp_StM;
 	using LinAlgPack::Mp_StMtM;
 	using LinAlgPack::comp;
+	using TestingHelperPack::update_success;
 	
 	value_type alpha = 1.0, beta = 0.0;
 	bool result = true;

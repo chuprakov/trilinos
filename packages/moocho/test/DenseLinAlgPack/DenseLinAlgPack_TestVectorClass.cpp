@@ -26,29 +26,12 @@
 
 namespace {
 
-#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX) && !defined(_INTEL_CXX)
-
-// 2/10/00:  It seems that with g++ 2.95.2 that within a template function in an annonymus namespace
-// that you can't write:
-// 
-// 		use TestingHelperPack::update_success;
-// 		...
-// 		update_success(...);
-// 		
-// But I can write an inline function such as the one shown below to perform the name lookup
-// for me.
-inline
-bool update_success( bool result, bool *success ) {
-	return TestingHelperPack::update_success( result, success );
-}
-
-#endif
-
 // This template function checks that iterator and subscriping access all
 // give the same results.
 template<class V, class I>
 void test_access( V* _v, I begin, I end, std::ostream*out, bool* success ) {
 	using std::setw;
+	using TestingHelperPack::update_success;
 
 	V &v = *_v;
 	bool result;
@@ -80,6 +63,7 @@ void test_subregion_access( V* _v, VS* _vs, const LinAlgPack::Range1D& rng
 	, std::ostream* out, bool* success )
 {
 	using std::setw;
+	using TestingHelperPack::update_success;
 
 	bool result;
 	V &v = *_v;
@@ -129,9 +113,9 @@ const char* overlap_str( LinAlgPack::EOverLap overlap ) {
 
 bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 {
-
 	using LinAlgPack::comp;
 	using LinAlgPack::sqrt_eps;
+	using TestingHelperPack::update_success;
 
 	bool success = true;
 	bool result, result1, result2;
