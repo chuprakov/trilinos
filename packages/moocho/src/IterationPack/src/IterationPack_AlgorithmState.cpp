@@ -25,7 +25,7 @@ AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
 	if( !r.second ) {	// an insert did not take place, key = iq_name already existed.
 		std::ostringstream omsg;
 		omsg	<< "AlgorithmState::set_iter_quant(...) : An iteration quantity with the name \""
-				<< iq_name << "\" already exists with the iq_id = " << r.first->second;
+				<< iq_name << "\" already exists with the iq_id = " << (*r.first).second;
 		throw AlreadyExists(omsg.str());
 	}
 	iq_.push_back(iq);
@@ -34,7 +34,7 @@ AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
 
 void AlgorithmState::erase_iter_quant(const std::string& iq_name) {
 	iq_name_to_id_t::iterator itr = find_and_assert(iq_name);
-	const iq_id_type iq_id = itr->second;
+	const iq_id_type iq_id = (*itr).second;
 	iq_[iq_id] = IQ_ptr(0);	// set the pointer to null
 	iq_name_to_id_.erase( itr );
 }
@@ -100,12 +100,12 @@ void AlgorithmState::dump_iter_quant(std::ostream& out) const {
 	for(	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.begin();
 			itr !=  iq_name_to_id_.end(); ++itr )
 	{
-		out		<< std::left					<< itr->first;
+		out		<< std::left					<< (*itr).first;
 
-		output_spaces( out, name_w - itr->first.size() );
+		output_spaces( out, name_w - (*itr).first.size() );
 
-		out		<< std::right	<< setw(id_w)	<< itr->second
-				<< gap			<< std::left	<< typeid(*iq_[itr->second]).name() << endl;
+		out		<< std::right	<< setw(id_w)	<< (*itr).second
+				<< gap			<< std::left	<< typeid(*iq_[(*itr).second]).name() << endl;
 	}	
 }
 

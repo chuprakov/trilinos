@@ -115,7 +115,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	try {
 
 	bool success = true;
-	const int w = 15;
+//	const int w = 15;
 	_out << std::boolalpha;
 		
 	_out	<< "\n\n*************************\n"
@@ -239,7 +239,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	_out << "\n*** Congradulations, If you read this the tests for Algorithm"
 			" seem to have been successful\n";
 
-	return true;
+	return success;
 
 	} // end try
 	catch(const std::exception& excpt) {

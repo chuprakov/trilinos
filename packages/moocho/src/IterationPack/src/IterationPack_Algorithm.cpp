@@ -87,7 +87,7 @@ const std::string& Algorithm::get_assoc_step_name(poss_type step_poss, EAssocSte
 	validate(assoc_list,assoc_step_poss);
 	assoc_steps_ele_list_t::const_iterator itr = assoc_list.begin();
 	std::advance( itr, assoc_step_poss - 1 );
-	return itr->name;
+	return (*itr).name;
 }
 
 Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAssocStepType type
@@ -97,7 +97,7 @@ Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAssocStep
 	validate(assoc_list,assoc_step_poss);
 	assoc_steps_ele_list_t::iterator itr = assoc_list.begin();
 	std::advance( itr, assoc_step_poss - 1 );
-	return itr->step_ptr;
+	return (*itr).step_ptr;
 }
 
 const Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAssocStepType type
@@ -107,7 +107,7 @@ const Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAss
 	validate(assoc_list,assoc_step_poss);
 	assoc_steps_ele_list_t::const_iterator itr = assoc_list.begin();
 	std::advance( itr, assoc_step_poss - 1 );
-	return itr->step_ptr;
+	return (*itr).step_ptr;
 }
 
 // step manipulation
@@ -226,7 +226,7 @@ void Algorithm::end_config_update()
 	steps_t::iterator itr = step_itr(saved_next_step_name_);
 	assert( itr != steps_.end() );	// the step with this name should not have been deleted or changed.
 	next_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
-	next_step_name_ = &itr->name;
+	next_step_name_ = &(*itr).name;
 
 	// update curr_step_poss_
 	itr = step_itr(saved_curr_step_name_);
@@ -237,12 +237,12 @@ void Algorithm::end_config_update()
 	steps_t::iterator			s_itr = steps_.begin();
 	assoc_steps_t::iterator		a_itr = assoc_steps_.begin();
 	for(; s_itr != steps_.end(); ++s_itr, ++a_itr) {
-		s_itr->step_ptr->inform_updated(*this);
+		(*(*s_itr).step_ptr).inform_updated(*this);
 		for(int assoc_type_i = 0; assoc_type_i < 2; ++assoc_type_i) {	// PRE_STEP, POST_STEP
 			assoc_steps_ele_list_t::iterator	as_itr = (*a_itr)[assoc_type_i].begin(),
 												as_itr_end = (*a_itr)[assoc_type_i].end();
 			for(; as_itr != as_itr_end; ++as_itr)
-				as_itr->step_ptr->inform_updated(*this);
+				(*(*as_itr).step_ptr).inform_updated(*this);
 		}
 	}
 
@@ -257,7 +257,7 @@ void Algorithm::do_step_next(const std::string& step_name)
 	validate_in_state(RUNNING);
 	steps_t::iterator itr = step_itr_and_assert(step_name);
 	next_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
-	next_step_name_ = &itr->name;
+	next_step_name_ = &(*itr).name;
 	do_step_next_called_ = true;
 }
 
@@ -689,7 +689,7 @@ bool Algorithm::imp_do_assoc_steps(EAssocStepType type) {
 			reconfigured_ = false;	// This works as long as no one else needs to know
 									// if *this has been reconfigured.
 		}
-		if( !itr->step_ptr->do_step(*this, curr_step_poss_, do_step_type(type), i) ) return false;
+		if( !(*(*itr).step_ptr).do_step(*this, curr_step_poss_, do_step_type(type), i) ) return false;
 	}
 	return true;	// All the associated steps returned true.
 }
@@ -707,20 +707,20 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		assoc_steps_ele_list_t::const_iterator pre_step_itr = pre_steps.begin();
 		for(int pre_step_i = - pre_steps.size(); pre_step_i < 0; ++pre_step_i, ++pre_step_itr) {
 			out		<< step_i << "." << pre_step_i << ". \""
-					<< pre_step_itr->name << "\"\n"
-					<< leading_str << "(" << typeid(*pre_step_itr->step_ptr).name() << ")\n";
+					<< (*pre_step_itr).name << "\"\n"
+					<< leading_str << "(" << typeid(*(*pre_step_itr).step_ptr).name() << ")\n";
 			if(print_steps) {
-				pre_step_itr->step_ptr->print_step( *this, step_i, DO_PRE_STEP
+				(*(*pre_step_itr).step_ptr).print_step( *this, step_i, DO_PRE_STEP
 					, pre_steps.size()+pre_step_i+1, out, leading_str );
 				out << std::endl;
 			}
 		}
 		// The main step.
-		out		<< step_i << ". \"" << s_itr->name
+		out		<< step_i << ". \"" << (*s_itr).name
 				<< "\"\n"
-				<< leading_str << "(" << typeid(*s_itr->step_ptr).name() << ")\n";
+				<< leading_str << "(" << typeid(*(*s_itr).step_ptr).name() << ")\n";
 		if(print_steps) {
-			s_itr->step_ptr->print_step( *this, step_i, DO_MAIN_STEP, 0, out, leading_str );
+			(*(*s_itr).step_ptr).print_step( *this, step_i, DO_MAIN_STEP, 0, out, leading_str );
 			out << std::endl;
 		}
 		// list post_steps (e.q. 2.1, 2.2, 2.3)
@@ -728,10 +728,10 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		assoc_steps_ele_list_t::const_iterator post_step_itr = post_steps.begin();
 		for(int post_step_i = 1; post_step_i <= post_steps.size(); ++post_step_i, ++post_step_itr) {
 			out		<< step_i << "." << post_step_i << ". \""
-					<< post_step_itr->name << "\"\n"
-					<< leading_str << "(" << typeid(*post_step_itr->step_ptr).name() << ")\n";
+					<< (*post_step_itr).name << "\"\n"
+					<< leading_str << "(" << typeid(*(*post_step_itr).step_ptr).name() << ")\n";
 			if(print_steps) {
-				post_step_itr->step_ptr->print_step( *this, step_i, DO_POST_STEP, post_step_i
+				(*(*post_step_itr).step_ptr).print_step( *this, step_i, DO_POST_STEP, post_step_i
 					, out, leading_str );
 				out << std::endl;
 			}

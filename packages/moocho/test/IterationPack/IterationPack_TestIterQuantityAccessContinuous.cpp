@@ -26,7 +26,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 	try {
 	
-	int w = 15;
+//	int w = 15;
 	int prec = 8;
 	if(out) out->precision(prec);
 	if(out) *out << std::boolalpha;

@@ -267,7 +267,7 @@ AlgorithmState::iq_id_type AlgorithmState::get_iter_quant_id(
 	const std::string& iq_name) const
 {
 	const iq_name_to_id_t::const_iterator itr = iq_name_to_id_.find(iq_name);
-	return itr == iq_name_to_id_.end() ? DOES_NOT_EXIST : itr->second;
+	return itr == iq_name_to_id_.end() ? DOES_NOT_EXIST : (*itr).second;
 }
 
 inline
@@ -284,12 +284,12 @@ const AlgorithmState::IQ_ptr& AlgorithmState::get_iter_quant(
 
 inline
 IterQuantity& AlgorithmState::iter_quant(const std::string& iq_name ) {
-	return *iq_[find_and_assert(iq_name)->second];
+	return *iq_[(*find_and_assert(iq_name)).second];
 }
 
 inline
 const IterQuantity& AlgorithmState::iter_quant(const std::string& iq_name ) const {
-	return *iq_[find_and_assert(iq_name)->second];
+	return *iq_[(*find_and_assert(iq_name)).second];
 }
 
 }	// end namespace GeneralIterationPack 

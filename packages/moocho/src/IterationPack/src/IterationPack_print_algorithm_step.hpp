@@ -22,4 +22,4 @@ void print_algorithm_step( const Algorithm& algo, Algorithm::poss_type step_poss
 
 }	// end namespace GeneralIterationPack
 
-#endif
+#endif // PRINT_ALGORITHM_STEP_H

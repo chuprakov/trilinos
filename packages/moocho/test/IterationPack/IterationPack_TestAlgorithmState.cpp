@@ -64,7 +64,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	try {
 
 	bool success = true, result;
-	const int w = 15;
+//	const int w = 15;
 	if(out) *out << std::boolalpha;
 		
 	if(out)
