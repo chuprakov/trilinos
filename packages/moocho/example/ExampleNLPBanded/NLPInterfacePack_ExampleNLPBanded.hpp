@@ -323,8 +323,6 @@ private:
 	value_type   diag_vary_;
 	value_type   fu_;
 
-	mutable DVector c_tmp_; // just a temporary vector
-
 	// /////////////////////////////////////////
 	// Private member functions
 

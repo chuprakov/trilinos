@@ -153,6 +153,25 @@ namespace NLPInterfacePack {
  *
  * <b>Subclass developers notes</b>
  *
+ * Handling of multiple updates by subclasses: Here we discuss the protocal for the 
+ * handling of multiple updates to quantities durring the calculation of other quantities.
+ * In order to simplify the implementation of subclasses as much as possible, storage
+ * for all iteration quantities will be passed to the subclass in the methods
+ * <tt>imp_calc_f_orig()</tt>, <tt>imp_calc_c_orig()</tt>, <tt>imp_calc_h_orig()</tt>
+ * and <tt>imp_calc_Gf_orig()</tt> requardless of what quantities where set by the user
+ * in the <tt>NLP</tt> interface.  The subclass can always find out what was set
+ * by the client by calling <tt>get_f()</tt>, <tt>get_c()</tt>, <tt>get_Gf()</tt>
+ * etc.  Therefore, in general, clients should just only compute what is required
+ * in each call to <tt>imp_calc_xxx_orig()</tt> and only update other quantities
+ * if it is absolutly free to do so (e.g. computing a function value when a gradient
+ * is computed using AD) or is required to do so (e.g.an external interface that 
+ * forces both <tt>f_orig(x_orig)</tt>, <tt>c_orig(x_orig)</tt> and <tt>h_orig(x_orig)</tt>
+ * be computed at the same time).  It is up to the subclass to remember when a quantity
+ * has already been computed so that it will not be computed again unecessarily.  It is
+ * always safe for the subclass to ignore these issues and just do what is easiest.
+ * More careful implementations can be handled by the subclass by keeping track of
+ * <tt>get_xxx()</tt> and <tt>newx</tt> and remembering when quantities are computed.
+ *
  * <A NAME="must_override"></A>
  *
  * The following methods from the \c NLP interface must be overridden by the %NLP subclass:
@@ -830,11 +849,7 @@ const NLPSerialPreprocess::ZeroOrderInfoSerial
 NLPSerialPreprocess::zero_order_orig_info() const
 {
 	const ZeroOrderInfo zoi = this->zero_order_info();
-	return ZeroOrderInfoSerial(    // Only pass on storage for quantities
-		zoi.f ?  &f_orig_ : NULL   // that have been set by the user.
-		,zoi.c ? &c_orig_ : NULL
-		,zoi.c ? &h_orig_ : NULL
-		);
+	return ZeroOrderInfoSerial( &f_orig_, &c_orig_, &h_orig_ );
 }
 
 inline
@@ -842,7 +857,7 @@ const NLPSerialPreprocess::ObjGradInfoSerial
 NLPSerialPreprocess::obj_grad_orig_info() const
 {
 	const ObjGradInfo &ogi = this->obj_grad_info();
-	return ObjGradInfoSerial( ogi.Gf ? &Gf_full_ : NULL, zero_order_orig_info() );
+	return ObjGradInfoSerial( &Gf_full_, zero_order_orig_info() );
 }
 
 inline
