@@ -1,6 +1,11 @@
 // //////////////////////////////////////////////////////////////
 // QPSchur.cpp
 
+// disable VC 5.0 warnings about debugger limitations
+#pragma warning(disable : 4786)	
+// disable VC 5.0 warnings about truncated identifier names (templates).
+#pragma warning(disable : 4503)	
+
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
@@ -102,6 +107,7 @@ void calc_mu_D(
 	using BLAS_Cpp::trans;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
+	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 
@@ -377,6 +383,7 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 	using BLAS_Cpp::trans;
 	using LinAlgPack::Vt_S;
 	using LinAlgOpPack::V_MtV;
+	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 
@@ -1584,6 +1591,23 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		v_ = vo_;
 	}
 
+	// ToDo: We also have to check to see if an initially fixed variable that
+	// has not already been freed needs to be freed if its multiplier is
+	// not dual feasible.  This requires solves with Ko and is therefore
+	// more expensive than the above algorithm.  The computation of x
+	// and mu_D needs to be enclosed in this loop.
+
+	// x
+	set_x( act_set_, v_(), x );
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out
+			<< "\nInitial x for Primal Dual algorithm\n||x||inf = " << norm_inf(*x);
+	}
+	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+		*out
+			<< "x =\n" << *x;
+	}
+
 	// mu_D_hat = ???
 	if( act_set_.q_D_hat() ) {
 		calc_mu_D( act_set_, *x, v_(), &act_set_.mu_D_hat() );
@@ -1596,21 +1620,6 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			*out
 				<< "\nmu_D_hat =\n" << act_set_.mu_D_hat();
 		}
-	}
-
-	// ToDo: We also have to check to see if an initially fixed variable that
-	// has not already been freed needs to be freed if its multiplier is
-	// not dual feasible.  This requires solves with Ko and is therefore
-	// more expensive than the above algorithm.
-
-	set_x( act_set_, v_(), x );
-	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-		*out
-			<< "\nInitial x for Primal Dual algorithm\n||x||inf = " << norm_inf(*x);
-	}
-	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-		*out
-			<< "x =\n" << *x;
 	}
 
 	solve_return = qp_algo(
@@ -2676,6 +2685,8 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StMtV;
+	using SparseLinAlgPack::V_MtV;
+	using SparseLinAlgPack::Vp_MtV;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const size_type

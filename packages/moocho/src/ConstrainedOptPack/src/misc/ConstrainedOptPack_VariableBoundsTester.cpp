@@ -43,6 +43,7 @@ bool VariableBoundsTester::check_in_bounds(
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
 	using LinAlgPack::norm_inf;
+	using LinAlgPack::Vt_S;
 	using SparseLinAlgPack::imp_sparse_bnd_diff;
 
 	value_type scale = 0.0;

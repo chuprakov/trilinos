@@ -372,7 +372,7 @@ void M_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const M1& M1_rhs1
 {
 	MtM_assert_sizes(	  M1_rhs1.rows(), M1_rhs1.cols(), trans_rhs1
 						, M2_rhs2.rows(), M2_rhs2.cols(), trans_rhs2 );
-	assert_gms_lhs(	  gms_lhs
+	assert_gms_lhs(	  *gms_lhs
 					, rows(M1_rhs1.rows(), M1_rhs1.cols(), trans_rhs1)
 					, cols(M2_rhs2.rows(), M2_rhs2.cols(), trans_rhs2) );
 	Mp_StMtM(gms_lhs,alpha,M1_rhs1,trans_rhs1,M2_rhs2,trans_rhs2,0.0);

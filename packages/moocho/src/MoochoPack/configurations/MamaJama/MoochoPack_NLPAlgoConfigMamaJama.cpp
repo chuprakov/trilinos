@@ -1648,7 +1648,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "
-							"Only qp solvers QPOPT, QPSOL, QPKWIK and QPSCPD are avalible."	);
+							"Only qp solvers QPOPT, QPSOL, QPKWIK and QPSCHUR are avalible."	);
 					break;
 				}
 				case WARM_START_FRAC:

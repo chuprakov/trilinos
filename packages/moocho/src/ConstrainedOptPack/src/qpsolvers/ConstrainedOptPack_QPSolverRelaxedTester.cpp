@@ -115,8 +115,8 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	, const VectorSlice* lambda, const VectorSlice* Fd
 	)
 {
-	check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors,g,G
-		,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,&F,trans_F,&f
+	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,&F,trans_F,&f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 }
 
@@ -134,8 +134,8 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	, const SpVector* mu, const VectorSlice* Ed
 	)
 {
-	check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors,g,G
-		,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,NULL,BLAS_Cpp::no_trans,NULL
+	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,eta,d,nu,mu,Ed,NULL,NULL);
 }
 
@@ -152,8 +152,8 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	, const VectorSlice* lambda, const VectorSlice* Fd
 	)
 {
-	check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors,g,G
-		,etaL,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,&F,trans_F,&f
+	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,&F,trans_F,&f
 		,obj_d,eta,d,nu,NULL,NULL,lambda,Fd );
 }
 
@@ -167,8 +167,8 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 	, const SpVector* nu
 	)
 {
-	check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors,g,G
-		,0.0,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,NULL,BLAS_Cpp::no_trans,NULL
+	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
+		,g,G,0.0,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,NULL,d,nu,NULL,NULL,NULL,NULL);
 }
 

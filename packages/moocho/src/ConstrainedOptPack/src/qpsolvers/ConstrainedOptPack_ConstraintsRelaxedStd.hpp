@@ -275,7 +275,7 @@ protected:
 		{	return F_;	}
 		///
 		BLAS_Cpp::Transp	trans_F() const
-		{	trans_F_;	}
+		{	return trans_F_;	}
 		///
 		const VectorSlice*	f() const
 		{	return f_;	}
