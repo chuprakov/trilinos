@@ -174,6 +174,8 @@ public:
 	///
 	bool is_identity() const;
 	///
+	std::ostream& output(std::ostream& out) const;
+	///
 	void permute( 
 		BLAS_Cpp::Transp          P_trans
 		,const VectorWithOp       &x

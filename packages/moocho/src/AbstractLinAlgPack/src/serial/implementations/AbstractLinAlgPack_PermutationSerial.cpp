@@ -19,6 +19,7 @@
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "LinAlgPack/include/IVector.h"
 #include "LinAlgPack/include/PermVecMat.h"
+#include "LinAlgPack/include/PermOut.h"
 #include "ThrowException.h"
 
 namespace SparseLinAlgPack {
@@ -97,6 +98,22 @@ size_type PermutationSerial::dim() const
 bool PermutationSerial::is_identity() const
 {
 	return perm_.get() == NULL && inv_perm_.get() == NULL;
+}
+
+std::ostream& PermutationSerial::output(std::ostream& out) const
+{
+	const size_type dim = this->dim();
+	out << "Serial " << dim << " x " << dim << " permtutation matrix:\n";
+	out << "perm =";
+	if( perm_.get() )
+		out << "\n" << *perm_;
+	else
+		out << " NULL\n";
+	out << "inv_perm =";
+	if( inv_perm_.get() )
+		out << "\n" << *inv_perm_;
+	else
+		out << " NULL\n";
 }
 
 void PermutationSerial::permute( 
