@@ -27,22 +27,22 @@ namespace ConstrainedOptimizationPack {
 /** This class abstracts a decomposition choice for the range space \a Y,
  * and null space \a Z, matrices for a linearly independent set of columns of \a Gc.
  *
- * <tt>Gc = [ Gc(:,con_decomp),  Gc(:,con_undecomp) ]</tt>
+ * <tt>Gc = [ Gc(:,equ_decomp),  Gc(:,equ_undecomp) ]</tt>
  *
- * where \c Gc is <tt>n x m</tt>, \c Gc(:,con_decomp) is <tt>n x r</tt> and
- * \c Gc(:,con_undecomp) is <tt>n x (m - r)</tt>.
+ * where \c Gc is <tt>n x m</tt>, \c Gc(:,equ_decomp) is <tt>n x r</tt> and
+ * \c Gc(:,equ_undecomp) is <tt>n x (m - r)</tt>.
  *
- * Note that the columns in <tt>Gc(:,con_undecomp)</tt> may be linearly dependent with
- * the columns in <tt>Gc(:,con_undecomp)</tt> but they may just be undecomposed
+ * Note that the columns in <tt>Gc(:,equ_undecomp)</tt> may be linearly dependent with
+ * the columns in <tt>Gc(:,equ_undecomp)</tt> but they may just be undecomposed
  * linearly independent equality constraints.
  *
  * The decomposition formed by subclasses must have the properties:
  \verbatim
-	 Z s.t. Gc(:,con_deomp)' * Z = 0
+	 Z s.t. Gc(:,equ_deomp)' * Z = 0
 	 Y s.t. [Z  Y] is nonsingular
-	 R = Gc(:,con_decomp)' * Y is nonsingular
-	 Uz = Gc(:,con_undecomp)' * Z
-	 Uy = Gc(:,con_undecomp)' * Y
+	 R = Gc(:,equ_decomp)' * Y is nonsingular
+	 Uz = Gc(:,equ_undecomp)' * Z
+	 Uy = Gc(:,equ_undecomp)' * Y
 	 Vz = Gh' * Z
 	 Vy = Gh' * Y
  \endverbatim
@@ -122,7 +122,7 @@ public:
 	virtual size_type m() const = 0;
 
 	///
-	/** Returns the rank of \c Gc(:,con_decomp()).
+	/** Returns the rank of \c Gc(:,equ_decomp()).
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>r =< m</tt>
@@ -138,7 +138,7 @@ public:
 	 *
 	 * The default implementation returns <tt>Range1D(1,this->r())</tt>.
 	 */
-	virtual Range1D con_decomp() const;
+	virtual Range1D equ_decomp() const;
 
 	///
 	/** Returns the range of the undecomposed equalities.
@@ -146,7 +146,7 @@ public:
 	 * The default implementation returns <tt>Range1D(this->r()+1,this->m())</tt>
 	 * or <tt>Range1D::Invalid</tt> if <tt>this->r() == this->m()<tt>
 	 */
-	virtual Range1D con_undecomp() const;
+	virtual Range1D equ_undecomp() const;
 
 	//@}
 
@@ -219,20 +219,20 @@ public:
 	//@{
 
 	///
-	/** Creates the range/null decomposition for <tt>Gc(:,con_decomp)'</tt>.
+	/** Creates the range/null decomposition for <tt>Gc(:,equ_decomp)'</tt>.
 	 *
-	 * The decomposition is based on the linearly independent columns \c Gc(:,con_decomp)
+	 * The decomposition is based on the linearly independent columns \c Gc(:,equ_decomp)
 	 * of \c Gc
 	 *
-	 * <tt>Gc = [ Gc(:,con_decomp),  Gc(:,con_undecomp) ]</tt>
+	 * <tt>Gc = [ Gc(:,equ_decomp),  Gc(:,equ_undecomp) ]</tt>
 	 *
 	 * Specifically this operation finds the matrices:
 	 \verbatim
-	 Z s.t. Gc(:,con_deomp)' * Z = 0
+	 Z s.t. Gc(:,equ_deomp)' * Z = 0
 	 Y s.t. [Z  Y] is nonsingular
-	 R = Gc(:,con_decomp)' * Y is nonsingular
-	 Uz = Gc(:,con_undecomp)' * Z
-	 Uy = Gc(:,con_undecomp)' * Y
+	 R = Gc(:,equ_decomp)' * Y is nonsingular
+	 Uz = Gc(:,equ_undecomp)' * Z
+	 Uy = Gc(:,equ_undecomp)' * Y
 	 Vz = Gh' * Z
 	 Vy = Gh' * Y
 	 \endverbatim
@@ -286,20 +286,20 @@ public:
 	 * @param  Gh  [in] An auxlillary matrix that will have the range/null decompositon applied to.
 	 *             It is allowed for <tt>Gh == NULL</tt>.
 	 * @param  Z   [out] On output represents the <tt>n x (n-r)</tt> null space	matrix such that
-	 *             <tt>Gc(:,con_decomp) * Z == 0</tt>.  This matrix object must have been created
+	 *             <tt>Gc(:,equ_decomp) * Z == 0</tt>.  This matrix object must have been created
 	 *             by <tt>this->factory_Z()->create()</tt>.
 	 * @param  Y   [out] On output represents the <tt>n x r</tt> range space matrix	such that
 	 *             <tt>[ Y  Z ]</tt> is nonsingular.  This matrix object must have been created
 	 *             by <tt>this->factory_Y()->create()</tt>.
-	 * @param  R   [out] On output represents the nonsingular <tt>r x r</tt> matrix <tt>Gc(:,con_decomp) * Y</tt>.
+	 * @param  R   [out] On output represents the nonsingular <tt>r x r</tt> matrix <tt>Gc(:,equ_decomp) * Y</tt>.
 	 *             This matrix object must have been created by <tt>this->factory_R()->create()</tt>.
 	 * @param  Uz  [in/out] If <tt>Uz != NULL</tt> (<tt>this->m() > this->r()</tt> only) then on output
-	 *             <tt>*Uz</tt> represents the <tt>(m-r) x (n-r)</tt> matrix <tt>Gc(:,con_undecomp) * Z</tt>.
+	 *             <tt>*Uz</tt> represents the <tt>(m-r) x (n-r)</tt> matrix <tt>Gc(:,equ_undecomp) * Z</tt>.
 	 *             If <tt>this->m() == this->r()</tt> then <tt>Uz == NULL</tt> must be true.
 	 *             If <tt>Uz!=NULL</tt>, then this matrix object must have been created by
 	 *             <tt>this->factory_Uz()->create()</tt>.
 	 * @param  Uy  [in/out] If <tt>Uy != NULL</tt> (<tt>this->m() > this->r()</tt> only) then on output
-	 *             <tt>*Uy</tt> represents the <tt>(m-r) x r</tt> matrix <tt>Gc(:,con_undecomp) * Y</tt>.
+	 *             <tt>*Uy</tt> represents the <tt>(m-r) x r</tt> matrix <tt>Gc(:,equ_undecomp) * Y</tt>.
 	 *             If <tt>this->m() == this->r()</tt> then <tt>Uy == NULL</tt> must be true.
 	 *             If <tt>Uy!=NULL</tt>, then this matrix object must have been created by
 	 *             <tt>this->factory_Uy()->create()</tt>.
@@ -335,19 +335,19 @@ public:
 	 * Postconditions:<ul>
 	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
 	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_rows().is_compatible(*space_null()) == true</tt>
-	 * <li> [<tt>Z != NULL</tt>] <tt>Gc(:,con_decomp())' * Z == 0</tt>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Gc(:,equ_decomp())' * Z == 0</tt>
 	 * <li> [<tt>Y != NULL</tt>] <tt>Y.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
 	 * <li> [<tt>Y != NULL</tt>] <tt>Y.cols() == this->r()</tt>
 	 * <li> [<tt>Y != NULL</tt>] <tt>[ Y  Z ]</tt> is nonsingular
-	 * <li> [<tt>R != NULL</tt>] <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(con_decomp())) == true</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(equ_decomp())) == true</tt>
 	 * <li> [<tt>R != NULL</tt>] <tt>R->space_rows().is_compatible(*space_range()) == true</tt>
-	 * <li> [<tt>R != NULL</tt>] <tt>R == Gc(:,con_decomp())'*Y</tt>
-	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R == Gc(:,equ_decomp())'*Y</tt>
+	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_cols().is_compatible(*Gc.space_rows()->sub_space(equ_undecomp())) == true</tt>
 	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_rows().is_compatible(*space_null()) == true</tt>
-	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz == Gc(:,con_undecomp())'*Z</tt>
-	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
+	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz == Gc(:,equ_undecomp())'*Z</tt>
+	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(equ_undecomp())) == true</tt>
 	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_rows().is_compatible(*space_range()) == true</tt>
-	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy == Gc(:,con_undecomp())'*Y</tt>
+	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy == Gc(:,equ_undecomp())'*Y</tt>
 	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_cols().is_compatible(Gh->space_rows()) == true</tt>
 	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_rows().is_compatible(*space_null())</tt>
 	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz == Gh'*Z</tt>
