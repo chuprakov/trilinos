@@ -70,7 +70,11 @@ namespace NLPInterfacePack {
  * decomposed and undecomposed equality constraints are \c con_decomp() and \c con_undecomp().
  * Note that \c con_undecomp() may return an invalid range if there are no undecomposed equalities.
  *
- * <b>Subclass developer's notes:</b>
+ * Note that the matrix objects returned from \c space_GcU(), \c space_D(), \c space_V(),
+ * \c space_P(), \c space_GcUD() and \c space GhD() can not be expected to be usable until they are
+ * passed to the calculation routines or have been intialized in some other way.
+ *
+ * <b>Subclass Developer's Notes:</b>
  *
  * The default implementation of this interface assumes that there are no undecomposed
  * equality constraints (i.e. <tt>this->con_decomp().size() == this->m()) and no general
@@ -85,10 +89,6 @@ public:
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
 		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >          mat_space_ptr_t;
-
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOpMutable> >   mat_mut_space_ptr_t;
 
 	/** @name Dimensionality */
 	//@{
@@ -154,8 +154,7 @@ public:
 
 	//@}
 
-	/** @name MatrixSpace objects
-	 */
+	/** @name MatrixSpace objects */
 	//@{
 	
 	///
@@ -235,7 +234,7 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_mut_space_ptr_t& space_GcUD() const;
+	virtual const mat_space_ptr_t& space_GcUD() const;
 	///
 	/** Return a matrix space object for a mutable matrix compatible with <tt>Gh(var_dep)</tt>.
 	 *
@@ -253,7 +252,7 @@ public:
 	 * when <tt>mI() > 0</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_mut_space_ptr_t& space_GhD() const;
+	virtual const mat_space_ptr_t& space_GhD() const;
 
 	//@}
 

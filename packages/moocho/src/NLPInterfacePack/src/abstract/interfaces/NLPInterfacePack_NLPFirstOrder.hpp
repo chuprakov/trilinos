@@ -37,7 +37,9 @@ namespace NLPInterfacePack {
  * the %NLP object can be used.
  *
  * The matrix space objects returned from \c space_Gc() and \c space_Gh() must be used to create
- * the matrix objects for \c Gc and \c Gh used with this interface.  
+ * the matrix objects for \c Gc and \c Gh used with this interface.  Note that the matrix objects
+ * returned from these matrix space objects can not be expected to be usable until they are
+ * passed to the calculation routines.
  *
  * The methods \c set_Gc() and \c set_Gh are used to set a pointers to matrix objects to be updated
  * when \c Gc and \c Gh are computed using \c calc_Gc() and \c calc_Gh().
@@ -64,7 +66,7 @@ public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		AbstractLinAlgPack::MatrixSpace<const MatrixWithOp> >    mat_space_ptr_t;
+		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >        mat_space_ptr_t;
 
 	/** @name Constructors */
 	//@{
