@@ -60,14 +60,14 @@ size_type DecompositionSystemVarReductPermStd::r() const
 	return decomp_sys_imp()->r();
 }
 
-Range1D DecompositionSystemVarReductPermStd::con_decomp() const
+Range1D DecompositionSystemVarReductPermStd::equ_decomp() const
 {
-	return decomp_sys_imp()->con_decomp();
+	return decomp_sys_imp()->equ_decomp();
 }
 
-Range1D DecompositionSystemVarReductPermStd::con_undecomp() const
+Range1D DecompositionSystemVarReductPermStd::equ_undecomp() const
 {
-	return decomp_sys_imp()->con_undecomp();
+	return decomp_sys_imp()->equ_undecomp();
 }
 
 const VectorSpace::space_ptr_t
@@ -97,7 +97,11 @@ DecompositionSystemVarReductPermStd::factory_Y() const
 const DecompositionSystem::mat_nonsing_fcty_ptr_t
 DecompositionSystemVarReductPermStd::factory_R() const
 {
-	return decomp_sys_imp()->factory_R();
+	mat_nonsing_fcty_ptr_t factory_R = decomp_sys_imp()->factory_R();
+	if( factory_R.get() != NULL )
+		return factory_R;
+	// Else assume that R will just be the basis matrix (coordinate decomposition!)
+	return basis_sys_->factory_C();
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
@@ -154,6 +158,18 @@ void DecompositionSystemVarReductPermStd::print_update_decomp(
 	decomp_sys_imp()->print_update_decomp(out,L);
 }
 
+// Overridden from DecompositionSystemVarReduct
+
+Range1D DecompositionSystemVarReductPermStd::var_indep() const
+{
+	return basis_sys_.get() ? basis_sys_->var_indep() : Range1D::Invalid;
+}
+
+Range1D DecompositionSystemVarReductPermStd::var_dep() const
+{
+	return basis_sys_.get() ? basis_sys_->var_dep() : Range1D::Invalid;
+}
+
 // @name Overridden from DecompositionSystemVarReductPerm
 
 const DecompositionSystemVarReductPerm::perm_fcty_ptr_t
@@ -202,23 +218,13 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	// matrices by uninitializing them.
 	MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr;
 	MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr;
-	if( decomp_sys_imp_->basis_sys().get() ) {
-		// It is assumed that the decomposition may have already
-		// been updated so try to recycle storage.
-		decomp_sys_imp_->get_basis_matrices(
-			out, olevel, test_what
-			,Z, Y, R, Uz, Uy, Vz, Vy
-			,&C_ptr
-			,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
-			);
-	}
-	else {
-		// It is assumed that the decomposition has not been
-		// previously updated so we must allocate new storage.
-		C_ptr = basis_sys_->factory_C()->create();
-		if( decomp_sys_imp_->D_imp_used() == MAT_IMP_EXPLICIT ) // will not return MAT_IMP_AUTO
-			D_ptr = basis_sys_->factory_D()->create();
-	}
+	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
+	decomp_sys_imp_->get_basis_matrices(
+		out, olevel, test_what
+		,Z, Y, R, Uz, Uy, Vz, Vy
+		,&C_ptr
+		,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
+		);
 	// Tell the basis system object to set this basis
 	try {
 		basis_sys_->set_basis(
@@ -245,8 +251,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			"gave a singular basis matrix! : " << except.what() );
 	}
 	// If we get here the passed in basis selection is nonsingular and the basis matrices
-	// are updated.  If the basis_sys object has not been set to the implementation then
-	// do it.  Now give them back to the decomp_sys_imp object and update the rest
+	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
 	const size_type
 		n  = Gc.rows(),
@@ -259,7 +264,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		,D_ptr // D_ptr.get() may be NULL
 		,r > m ? Uz : NULL
 		,mI    ? Vz : NULL
-		,decomp_sys_imp_->basis_sys().get() == NULL ? basis_sys_ : MemMngPack::null
+		,basis_sys_ // Always reset
 		);
 	C_ptr = MemMngPack::null;
 	D_ptr = MemMngPack::null;
@@ -271,6 +276,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		,mI    ? Vy : NULL
 		,mat_rel
 		);
+	// We have a basis!
+	basis_selected_ = true;
 }
 
 void DecompositionSystemVarReductPermStd::select_decomp(
@@ -294,22 +301,66 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	,EMatRelations            mat_rel
 	)
 {
-/*
+	// Forward these setting on to the implementation.
+	decomp_sys_imp_->D_imp(  this->D_imp()  );
+	decomp_sys_imp_->Uz_imp( this->Uz_imp() );
+	decomp_sys_imp_->Vz_imp( this->Vz_imp() );
+	// Get smart pointers to the basis matrix and the direct sensistivity matrices
+	// and remove references to these matrix objects from the other decomposition
+	// matrices by uninitializing them.
+	MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr;
+	MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr;
+	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
+	decomp_sys_imp_->get_basis_matrices(
+		out, olevel, test_what
+		,Z, Y, R, Uz, Uy, Vz, Vy
+		,&C_ptr
+		,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
+		);
+	// Ask the basis system object to select a basis
 	basis_sys_->select_basis(
-		nu, NULL, Gc, Gh
+		nu
+		,NULL // lambdaI
+		,Gc, Gh
 		,P_var, var_dep
 		,P_equ, equ_decomp
-		,NULL, NULL
-		,???
+		,NULL, NULL // P_inequ, inequ_decomp
+		,C_ptr.get()
+		,D_ptr.get() // May be NULL
+		,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL
+		,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
+		,(mat_rel == MATRICES_INDEP_IMPS
+		  ? BasisSystem::MATRICES_INDEP_IMPS : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
+		,out
 		);
-*/
-	assert(0); // Todo: Implement!
-	decomp_sys_imp_->initialize(
-		decomp_sys_imp_->space_x()
-		,decomp_sys_imp_->space_c()
-		,decomp_sys_imp_->space_h()
-		,basis_sys_
+	// If we get here a nonsinguar basis selection has been made and the basis matrices
+	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
+	// of the decomposition matrices.
+	const size_type
+		n  = Gc->rows(),
+		m  = Gc->cols(),
+		mI = Gh ? Gh->cols() : 0,
+		r  = C_ptr->rows();
+	decomp_sys_imp_->set_basis_matrices(
+		out, olevel, test_what
+		,C_ptr
+		,D_ptr // D_ptr.get() may be NULL
+		,r > m ? Uz : NULL
+		,mI    ? Vz : NULL
+		,basis_sys_ // Always reset
 		);
+	C_ptr = MemMngPack::null;
+	D_ptr = MemMngPack::null;
+	decomp_sys_imp()->update_decomp(
+		out,olevel,test_what,*Gc,Gh,Z,Y,R
+		,r > m ? Uz : NULL
+		,r > m ? Uy : NULL
+		,mI    ? Vz : NULL
+		,mI    ? Vy : NULL
+		,mat_rel
+		);
+	// We have a basis!
+	basis_selected_ = true;
 }
 
 // private

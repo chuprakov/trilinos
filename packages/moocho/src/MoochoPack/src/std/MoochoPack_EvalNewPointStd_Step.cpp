@@ -28,6 +28,7 @@
 #endif
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "NLPInterfacePack/include/NLPVarReductPerm.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
@@ -86,11 +87,13 @@ bool EvalNewPointStd_Step::do_step(
 		n  = nlp.n(),
 		nb = nlp.num_bounded_x(),
 		m  = nlp.m(),
-		mI = nlp.mI(),
-		r  = s.decomp_sys().con_decomp().size();
+		mI = nlp.mI();
+	size_type
+		r  = s.decomp_sys().equ_decomp().size();
 
-	bool decomp_updated = false;
-	bool get_new_basis  = false;
+	bool decomp_updated     = false;
+	bool get_new_basis      = false;
+	bool new_basis_selected = false;
 
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 	// See if the permutable decomp_sys and nlp interfaces are supported.
@@ -98,6 +101,7 @@ bool EvalNewPointStd_Step::do_step(
 		*decomp_sys_perm = NULL;
 	NLPVarReductPerm
 		*nlp_vrp = NULL;
+	// Determine if we need a new decomposition selection or not.
 	if(m) {
 		decomp_sys_perm = dynamic_cast<DecompositionSystemVarReductPerm*>(&s.decomp_sys());
 		if(decomp_sys_perm) {
@@ -126,6 +130,7 @@ bool EvalNewPointStd_Step::do_step(
 	}
 #endif
 
+	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>
 		&num_basis_iq = s.num_basis();
 	IterQuantityAccess<value_type>
@@ -224,7 +229,7 @@ bool EvalNewPointStd_Step::do_step(
 			nlp.set_Gh( &Gh_iq->set_k(0) );
 	}
 
-	// allow multiple updates as defined in NLP and NLPFirstOrderInfo
+	// Allow multiple updates as defined in NLP and NLPFirstOrderInfo interfaces
 	nlp.set_multi_calc(true);
 
 	// Calculate Gc and Gh at x_k
@@ -238,6 +243,9 @@ bool EvalNewPointStd_Step::do_step(
 		new_point = false;
 	}
 
+	//
+	// Update (or select a new) range/null decomposition
+	//
 	if( m > 0 ) {
 		
 		// Determine if we will test the decomp_sys or not
@@ -299,8 +307,8 @@ bool EvalNewPointStd_Step::do_step(
 					,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
 					,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
 					);
-				s.con_decomp(   s.decomp_sys().con_decomp()   );
-				s.con_undecomp( s.decomp_sys().con_undecomp() );
+				s.equ_decomp(   s.decomp_sys().equ_decomp()   );
+				s.equ_undecomp( s.decomp_sys().equ_undecomp() );
 				decomp_updated = true;
 			}
 			catch( const DecompositionSystem::SingularDecomposition& except) {
@@ -423,10 +431,41 @@ bool EvalNewPointStd_Step::do_step(
 							);
 						nlp_vrp->set_basis(	*P_var, var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
 					}
+
 					// If you get here (no unexpected exceptions where thrown) then a new
 					// basis has been selected.
 					
-					assert(0); // ToDo: Implement the rest of this!
+					new_basis_selected = true;
+					r                  = s.decomp_sys().equ_decomp().size();
+
+					// Record this basis change
+
+					const int
+						last_updated_k = num_basis_iq.last_updated();
+					const index_type
+						num_basis = ( last_updated_k != IterQuantity::NONE_UPDATED ? num_basis_iq.get_k(last_updated_k) : 0 ) + 1;
+					num_basis_iq.set_k(0) = num_basis;
+
+					s.var_dep(      decomp_sys_perm->var_dep()      );
+					s.var_indep(    decomp_sys_perm->var_indep()    );
+					s.equ_decomp(   decomp_sys_perm->equ_decomp()   );
+					s.equ_undecomp( decomp_sys_perm->equ_undecomp() );
+					
+					s.set_P_var_last( s.get_P_var_current() );
+					s.set_P_equ_last( s.get_P_equ_current() );
+
+					s.set_P_var_current( P_var );
+					s.set_P_equ_current( P_equ );
+					
+					// Sort x according to this new basis.
+					VectorWithOpMutable &x = x_iq.get_k(0);
+					if( s.get_P_var_last().get() )
+						s.P_var_last().permute(  BLAS_Cpp::trans,    &x ); // Permute back to original order
+					s.P_var_current().permute(   BLAS_Cpp::no_trans, &x ); // Permute to new (current) order
+					if( olevel >= PRINT_VECTORS ) {
+						out	<< "\nx resorted to new basis "
+							<< "(k = " << s.k() << ")\n" << x;
+					}
 					
 					// Set the new range and null spaces (these will update all of the set vectors!)
 					s.set_space_range( decomp_sys_perm->space_range() );
@@ -453,7 +492,7 @@ bool EvalNewPointStd_Step::do_step(
 		// Test the decomposition system
 		if( ds_test_what == DecompositionSystem::RUN_TESTS ) {
 			// Set the output level
-			if(decomp_sys_testing_print_level() == DSPL_USE_GLOBAL) {
+			if( decomp_sys_tester().print_tests() == DecompositionSystemTester::PRINT_NOT_SELECTED ) {
 				DecompositionSystemTester::EPrintTestLevel  ds_olevel;
 				switch(olevel) {
 					case PRINT_NOTHING:
@@ -506,11 +545,11 @@ bool EvalNewPointStd_Step::do_step(
 	// basis selection and will permute these quantities to that basis.
 	// Note that x will already be permuted to the current basis.
 	nlp.calc_Gf( x, new_point ); new_point = false;
-	if( m && !c_k_updated )
+	if( m && (!c_k_updated || new_basis_selected ) )
 		nlp.calc_c( x, false);
-	if( mI && !h_k_updated )
+	if( mI && (!h_k_updated || new_basis_selected ) )
 		nlp.calc_h( x, false);
-	if( !f_k_updated )
+	if( !f_k_updated  || new_basis_selected )
 		nlp.calc_f( x, false);
 
 	// Check for NaN and Inf
@@ -535,6 +574,7 @@ bool EvalNewPointStd_Step::do_step(
 			out << "\nGh_k =\n" << Gh_iq->get_k(0);
 		out << "\nZ_k =\n" << Z_iq->get_k(0);
 		out << "\nY_k =\n" << Y_iq->get_k(0);
+		out << "\nR_k =\n" << R_iq->get_k(0);
 		if( m > r ) {
 			out << "\nUz_k =\n" << Uz_iq->get_k(0);
 			out << "\nUy_k =\n" << Uy_iq->get_k(0);
@@ -609,17 +649,17 @@ void EvalNewPointStd_Step::print_step(
 		<< L << "if mI > 0 Gh_k is not updated Gh_k = Gh(x_k) <: space_x|space_h\n"
 		<< L << "if m > 0 then\n"
 		<< L << "  *** ToDo: Work on variable and constraint permutations!\n"
-		<< L << "  For Gc_k = [ Gc_k(:,con_decomp), Gc_k(:,con_undecomp) ] where:\n"
-		<< L << "    Gc_k(:,con_decomp) <: space_x|space_c(con_decomp) has full column rank r\n"
+		<< L << "  For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
+		<< L << "    Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
 		<< L << "  Find:\n"
-		<< L << "    Z_k  <: space_x|space_null    s.t. Gc_k(:,con_decomp)' * Z_k = 0\n"
+		<< L << "    Z_k  <: space_x|space_null    s.t. Gc_k(:,equ_decomp)' * Z_k = 0\n"
 		<< L << "    Y_k  <: space_x|space_range   s.t. [Z_k Y_k] is nonsigular \n"
-		<< L << "    R_k  <: space_c(con_decomp)|space_range\n"
-		<< L << "                                  s.t. R_k = Gc_k(:,con_decomp)' * Y_k\n"
-		<< L << "    if m > r : Uz_k <: space_c(con_undecomp)|space_null\n"
-		<< L << "                                  s.t. Uz_k = Gc_k(:,con_undecomp)' * Z_k\n"
-		<< L << "    if m > r : Uy_k <: space_c(con_undecomp)|space_range\n"
-		<< L << "                                  s.t. Uy_k = Gc_k(:,con_undecomp)' * Y_k\n"
+		<< L << "    R_k  <: space_c(equ_decomp)|space_range\n"
+		<< L << "                                  s.t. R_k = Gc_k(:,equ_decomp)' * Y_k\n"
+		<< L << "    if m > r : Uz_k <: space_c(equ_undecomp)|space_null\n"
+		<< L << "                                  s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
+		<< L << "    if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
+		<< L << "                                  s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
 		<< L << "    if mI > 0 : Vz_k <: space_h|space_null\n"
 		<< L << "                                  s.t. Vz_k = Gh_k' * Z_k\n"
 		<< L << "    if mI > 0 : Vy_k <: space_h|space_range\n"
