@@ -57,12 +57,14 @@ bool CheckConvergenceStd_AddedStep::do_step(
 
 	if( found_solution )
 	{
-		out	<< "\nJackpot!  Found the solution!!!!!! (k = " << algo.state().k() << ")\n";
+		if( static_cast<int>(olevel) > static_cast<int>(PRINT_NOTHING) )
+			out	<< "\nJackpot!  Found the solution!!!!!! (k = " << algo.state().k() << ")\n";
 		algo.terminate(true);	// found min
 		return false; // skip the other steps and terminate
 	}
 	
-	out	<< "\nHave not found the solution yet, have to keep going :-(\n";
+	if( static_cast<int>(olevel) > static_cast<int>(PRINT_NOTHING) )
+		out	<< "\nHave not found the solution yet, have to keep going :-(\n";
 	
 	// We are not at the solution so keep going
 	return true;

@@ -149,8 +149,8 @@ public:
 		,value_type            feas_tol             = 1e-6
 		,value_type            comp_tol             = 1e-6
 		,value_type            step_tol             = 1e-2
-		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
-		,EJournalOutputLevel   null_space_journal_output_level = PRINT_NOTHING
+		,EJournalOutputLevel   journal_output_level = PRINT_ALGORITHM_STEPS
+		,EJournalOutputLevel   null_space_journal_output_level = PRINT_ALGORITHM_STEPS
 		,int                   journal_print_digits = 6
 		,bool                  check_results        = false
 		,bool                  calc_conditioning    = false

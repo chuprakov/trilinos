@@ -204,7 +204,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		*trase_out
 			<< std::endl
 			<< "*****************************************************************\n"
-			<< "*** NLPAlgoConfigMamaJama configuration                     ***\n"
+			<< "*** NLPAlgoConfigMamaJama Configuration                       ***\n"
 			<< "***                                                           ***\n"
 			<< "*** Here, summary information about how the algorithm is      ***\n"
 			<< "*** configured is printed so that the user can see how the    ***\n"

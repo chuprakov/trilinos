@@ -143,7 +143,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 			,NULL                                  // D
 			,NULL                                  // GcUP
 			,BasisSystem::MATRICES_ALLOW_DEP_IMPS  // Meaningless
-			,olevel >= PRINT_BASIC_ALGORITHM_INFO ? &out : NULL
+			,static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ? &out : NULL
 			);
 		dyn_cast<MatrixSymIdent>(Y_iq->set_k(0)).initialize( nlp.space_x() );
 		s.equ_decomp(   basis_sys.equ_decomp()   );

@@ -144,7 +144,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 		}
 		try {
 			s.decomp_sys().update_decomp(
-				&out                               // out
+				static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ? &out : NULL // out
 				,ds_olevel                         // olevel
 				,ds_test_what                      // test_what
 				,Gc_iq->get_k(0)                   // Gc
@@ -215,7 +215,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 				try {
 					very_first_basis = false;
 					decomp_sys_perm.set_decomp(
-						&out                               // out
+						static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ? &out : NULL // out
 						,ds_olevel                         // olevel
 						,ds_test_what                      // test_what
 						,*P_var                            // P_var
@@ -262,7 +262,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 					<< "(k = " << s.k() << ")...\n";
 			}
 			decomp_sys_perm.select_decomp(
-				&out                                        // out
+				static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ? &out : NULL // out
 				,ds_olevel                                  // olevel
 				,ds_test_what                               // test_what
 				,nu_iq.updated_k(0)?&nu_iq.get_k(0):NULL    // nu

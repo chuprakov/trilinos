@@ -112,7 +112,6 @@ void BasisSystemPermDirectSparse::update_basis(
 	,std::ostream           *out
 	) const
 {
-	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to update basis ...\n";
@@ -198,7 +197,6 @@ void BasisSystemPermDirectSparse::set_basis(
 	,std::ostream              *out
 	)
 {
-	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to set a new basis ...\n";
@@ -265,7 +263,6 @@ void BasisSystemPermDirectSparse::select_basis(
 	,std::ostream              *out
 	)
 {
-	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to select a new basis ...\n";
@@ -355,7 +352,6 @@ void BasisSystemPermDirectSparse::select_basis(
 Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 BasisSystemPermDirectSparse::get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const
 {
-	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix> C_bm;
 	if( C_aggr.mns().get() ) {
@@ -377,7 +373,6 @@ void BasisSystemPermDirectSparse::set_A_mctse(
 	,MatrixConvertToSparseEncap  *A_mctse
 	) const
 {
-	namespace mmp = MemMngPack;
 	A_mctse->initialize(
 		Teuchos::rcp_dynamic_cast<const MatrixExtractSparseElements>(Gc_pa.mat_orig())
 		,Teuchos::rcp( init_var_rng_.size()    < n ? &init_var_inv_perm_ : NULL, false )
@@ -395,7 +390,6 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 	,MatrixOp* D, MatrixOp* GcUP
 	) const
 {
-	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	// Initialize the aggregate basis matrix object.
 	C_aggr->initialize(
