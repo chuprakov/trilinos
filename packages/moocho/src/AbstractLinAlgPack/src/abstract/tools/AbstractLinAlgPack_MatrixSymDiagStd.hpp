@@ -31,16 +31,26 @@ class MatrixSymDiagonalStd
 {
 public:
 
+	/** @name Constructors/initalizers */
+	//@{
+
 	/// Calls <tt>this->initialize()</tt>.
 	MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag = NULL );
 
 	/// Initialize given the diagonal vector (or no vector at all).
 	void initialize( const VectorSpace::vec_mut_ptr_t& diag );
 
+	//@}
+
+	/** @name Access */
+	//@{
+
 	/// Give access to the diagonal vector (or NULL if not initialized)
 	VectorWithOpMutable& diag();
 	///
 	const VectorWithOp& diag() const;
+
+	//@}
 
 	/** @name Overridden from MatrixBase */
 	//@{
