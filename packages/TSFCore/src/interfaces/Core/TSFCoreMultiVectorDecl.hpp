@@ -63,9 +63,8 @@ namespace TSFCore {
  * implementation will not achieve near-optimal performance.
  *
  * Methods that subclasses should almost never need (or want) to
- * override are the const version of <tt>col()</tt>, the const version
- * of <tt>clone_mv()</tt> or the the const versions of
- * <tt>subView()</tt>.
+ * override are the const version of <tt>col()</tt> or the the const
+ * versions of <tt>subView()</tt>.
  */
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
@@ -122,21 +121,13 @@ public:
 	///
 	/** Clone the multi-vector object (if supported).
 	 *
-	 * The default implementation returns the object from
-	 * the non-const version of <tt>clone_mv()</tt>.
-	 */
-	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > clone_mv() const;
-
-	///
-	/** Clone the multi-vector object (if supported).
-	 *
 	 * The default implementation uses the vector space to create a
 	 * new multi-vector object and then uses a transformation operator
 	 * to assign the vector elements.  A subclass should only override
 	 * this method if it can do something more sophisticated
 	 * (i.e. lazy evaluation) but in general, this is not needed.
 	 */
-	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > clone_mv();
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > clone_mv() const;
 
 	//@}
 

@@ -34,8 +34,8 @@ public:
 	/** Construct to initialized.
 	 *
 	 * Postconditions:<ul>
-	 * <tt> <tt>this->range().get() == NULL</tt>
-	 * <tt> <tt>this->domain().get() == NULL</tt>
+	 * <li> <tt>this->range().get() == NULL</tt>
+	 * <li> <tt>this->domain().get() == NULL</tt>
 	 * </ul>
 	 */
 	EpetraMultiVector();
@@ -62,6 +62,22 @@ public:
 		,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_range     = NULL
 		,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_domain    = NULL
 		);
+
+	///
+	/** Get a smart pointer to non-<tt>const</tt> <tt>Epetra_MultiVector</tt> object.
+	 *
+	 * Note: Only the numerical values of the Epetra vector should be changed by the
+	 * client.  Any other type of change will invalidate <tt>this</tt>.
+	 */
+ 	Teuchos::RefCountPtr<Epetra_MultiVector> epetra_multi_vec();
+
+	///
+	/** Get a smart pointer to <tt>const</tt> <tt>Epetra_MultiVector</tt> object.
+	 *
+	 * This gives access to read the <tt>Epetra_MultiVector</tt> object only
+	 * so this should be very safe.
+	 */
+	Teuchos::RefCountPtr<const Epetra_MultiVector> epetra_multi_vec() const;
 
 	//@}
 
@@ -98,7 +114,13 @@ public:
 	///
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
+	void getLocalData( const Scalar **values, Index *leadingDim ) const;
+	///
+	void freeLocalData( const Scalar *values ) const;
+	///
 	void getLocalData( Scalar **values, Index *leadingDim );
+	///
+	void commitLocalData( Scalar *values );
 	//@}
 
 private:
@@ -114,6 +136,23 @@ private:
 #endif
 	
 }; // end class EpetraMultiVector
+
+// ///////////////////////////////////
+// Inline members
+
+inline
+Teuchos::RefCountPtr<Epetra_MultiVector>
+EpetraMultiVector::epetra_multi_vec()
+{
+	return epetra_multi_vec_;
+}
+
+inline
+Teuchos::RefCountPtr<const Epetra_MultiVector>
+EpetraMultiVector::epetra_multi_vec() const
+{
+	return epetra_multi_vec_;
+}
 
 } // end namespace TSFCore
 

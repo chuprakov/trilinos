@@ -149,6 +149,13 @@ public:
 
 	//@}
 
+protected:
+
+	///
+	/** Subclasses should call whenever the structure of the VectorSpace changes.
+	 */
+	virtual void updateMpiSpace();
+
 private:
 
 	// ///////////////////////////////////////
@@ -164,25 +171,9 @@ private:
 	// /////////////////////////////////////
 	// Private member functions
 
-	void update_cache() const;
 	Range1D validateRange( const Range1D& rng_in ) const;
 
 }; // end class MPIVectorBase
-
-// ///////////////////////////////
-// Inline definitions
-
-template<class Scalar>
-inline
-void MPIVectorBase<Scalar>::update_cache() const
-{
-	if(globalDim_ < 0) {
-		const MPIVectorSpaceBase<Scalar> &mpiSpace = *this->mpiSpace();
-		globalDim_    = mpiSpace.dim();
-		localOffset_  = mpiSpace.localOffset();
-		localSubDim_  = mpiSpace.localSubDim();
-	}
-}
 
 } // end namespace TSFCore
 

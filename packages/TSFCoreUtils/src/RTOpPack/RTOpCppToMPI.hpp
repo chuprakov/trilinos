@@ -25,63 +25,56 @@ namespace RTOpPack {
 //@{
 
 ///
-/** Apply a reduction operation over a set of local sub-vectors using MPI.
- *
+/** Apply a reduction/transformation operation over a set of local
+ *	sub-vectors using MPI.
  *
  *	@param	comm
- *				[in] MPI communicator
- *	@param	op	[in] reduction/transformation operator object
+ *				[in] MPI communicator.
+ *	@param	op	[in] Reduction/transformation operator object.
  *	@param	root_rank
- *				[in] See below
- *	@param	num_cols
- *				[in] The number of columns for each vector
+ *				[in] See below.
  *	@param	num_vecs
  *				[in] See <tt>RTOpPack::RTOp::apply_op()</tt>
  *	@param	sub_vecs
- *				[in] Array (size <tt>num_vecs*num_cols</tt>)
- *				of nonmutable subvectors.  The vectors for each column <tt>kc</tt>
- *              begin at <tt>sub_vecs+kc*num_cols</tt> where <tt>kc=0...num_cols-1</tt>.
+ *				[in] Array (size <tt>num_vecs</tt>) of nonmutable subvectors.
  *              Can be <tt>NULL</tt> if <tt>num_vecs==0</tt> or if there are no local
  *              vector elements that participate in the RTOp operation.
  *	@param	num_targ_vecs
  *				[in] See <tt>%RTOpPack::RTOp::apply_op()</tt>
  *	@param	sub_targ_vecs
- *				[in] Array (size <tt>num_targ_vecs*num_cols</tt>)
- *				of mutable subvectors.  The vectors for each column <tt>kc</tt>
- *              begin at <tt>sub_targ_vecs+kc*num_cols</tt> where <tt>kc=0...num_cols-1</tt>
+ *				[in] Array (size <tt>num_targ_vecs*num_cols</tt>) of mutable subvectors.
  *              Can be <tt>NULL</tt> if <tt>num_targ_vecs==0</tt> or if there are no local
  *              vector elements that participate in the RTOp operation.
- *	@param	reduct_objs
- *				[in/out] Array (size <tt>num_cols</tt>) See below.
- *				If <tt>reduct_objs != NULL</tt>
- *				then on output, <tt>reduct_objs[i]</tt> will contain the reduction target
- *				over all the processes along with the reduction on input if
- *              <tt>reduct_objs[i]</tt> has already been through one or more reductions
- *              already and not reinitialized.
+ *	@param	reduct_obj
+ *				[in/out] Reduction object.  If there is no reduction then 
+ *              <tt>reduct_obj</tt> must be <tt>RTOp_REDUCT_OBJ_NULL</tt>.
  *
- * This function encapsulates a lot of the details of using MPI to perform
- * reduction operations.  For this function to work properly, each
- * processor must contain a single sub-vector for each vector
- * argument and every process (in the communicator) must call this function.
- * Each process's sub-vector for each vector argument
- * may be a different size and even dense on some processes
- * and sparse in others.  It is also allowed for a process to have
- * empty sub-vectors, but still needs to participate in the collective
- * operation and may want the value of the reduction object returned.
- * The main responsibly of the client is to setup the <tt>sub_vecs[]</tt>
- * and <tt>sub_targ_vecs[]</tt> arguments and to deside what type of
- * reduction operation to perform (\c MPI_Allreduce() or MPI_Reduce()).
+ * This function encapsulates a lot of the details of using MPI to
+ * perform reduction operations.  For this function to work properly,
+ * each processor must contain a single sub-vector for each vector
+ * argument and every process (in the communicator) must call this
+ * function.  Each process's sub-vector for each vector argument may
+ * be a different size.  It is also allowed for a process to have
+ * empty sub-vectors, but each process still needs to participate in
+ * the collective operation (and may want the value of the reduction
+ * object returned anyway).  The main responsibly of the client is to
+ * setup the <tt>sub_vecs[]</tt> and <tt>sub_targ_vecs[]</tt>
+ * arguments and to decide what type of reduction operation to perform
+ * (<tt>MPI_Allreduce()</tt> or <tt>MPI_Reduce()</tt>).
  *
- * Let <tt>rank</tt> be the value returned from <tt>MPI_Comm_rank(comm,&rank)</tt> in
- * this process.  The expected arguments to this function depend
- * on the argument <tt>root_rank</tt> and <tt>rank</tt> as follows:
+ * Let <tt>rank</tt> be the value returned from
+ * <tt>MPI_Comm_rank(comm,&rank)</tt> in this process.  The expected
+ * arguments to this function depend on the argument
+ * <tt>root_rank</tt> and <tt>rank</tt> as follows:
  *
  * <ul>
  *	<li> <tt>root_rank < 0</tt> :  In this case we are performing a
  *		<tt>MPI_Allreduce(...)</tt> reduction operation over all of
  *		the processes with the results collected in all of
  *		the processes.  In this case <tt>reduct_obj!=RTOp_REDUCT_OBJ_NULL</tt>
- *		must be true in all of the processes.
+ *		must be true in all of the processes (if a reduction operation
+ *      is being performed, otherwise <tt>reduct_obj</tt> must be <tt>RTOp_REDUCT_OBJ_NULL</tt>
+ *      of course).
  *		<ul>
  *		<li> <tt>root_rank < 0</tt> in all processes
  *		<li> <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt> in all processes
@@ -106,9 +99,22 @@ namespace RTOpPack {
  */
 void  MPI_apply_op(
 	MPI_Comm comm, const RTOp& op, int root_rank
-	,const int num_cols
 	,const int num_vecs, const RTOpPack::SubVector sub_vecs[]
 	,const int num_targ_vecs, const RTOpPack::MutableSubVector targ_sub_vecs[]
+	,RTOp_ReductTarget reduct_obj
+	);
+
+///
+/** Apply a reduction/transformation operation over a set of local
+ *	sub-multi-vectors using MPI.
+ *
+ * ToDo: Finish documentation!
+ */
+void MPI_apply_op(
+	MPI_Comm comm, const RTOp& op, int root_rank
+	,const int num_cols
+	,const int num_multi_vecs, const RTOpPack::SubMultiVector sub_multi_vecs[]
+	,const int num_targ_multi_vecs, const RTOpPack::MutableSubMultiVector targ_sub_multi_vecs[]
 	,RTOp_ReductTarget reduct_objs[]
 	);
 

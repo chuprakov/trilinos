@@ -18,9 +18,9 @@ namespace TSFCore {
 template<class Scalar>
 MPIVectorBase<Scalar>::MPIVectorBase()
 	:in_applyOp_(false)
-	,globalDim_(-1)
+	,globalDim_(0)
 	,localOffset_(-1)
-	,localSubDim_(-1)
+	,localSubDim_(0)
 {}
 
 // Virtual methods with default implementations
@@ -56,8 +56,7 @@ void MPIVectorBase<Scalar>::applyOp(
 	using DynamicCastHelperPack::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
-	const MPIVectorSpaceBase<Scalar>  &mpiSpc = *mpiSpace();
-	const Index globalDim = mpiSpc.dim(), localOffset = mpiSpc.localOffset(), localSubDim = mpiSpc.localSubDim();
+	const MPIVectorSpaceBase<Scalar> &mpiSpc = *mpiSpace();
 #ifdef _DEBUG
 	// ToDo: Validate input!
 	TEST_FOR_EXCEPTION(
@@ -69,27 +68,18 @@ void MPIVectorBase<Scalar>::applyOp(
 #endif
 	// Flag that we are in applyOp()
 	in_applyOp_ = true;
-	// Convert Vector<> arguments into MPIVectorBase<> objects
-	wsp::Workspace<const MPIVectorBase<Scalar>*> mpi_vecs(wss,num_vecs);
-	if(1){for(int k = 0; k < num_vecs; ++k )
-		mpi_vecs[k] = &dyn_cast<const MPIVectorBase<Scalar> >(*vecs[k]);
-	}
-	wsp::Workspace<MPIVectorBase<Scalar>*> mpi_targ_vecs(wss,num_targ_vecs);
-	if(1){for(int k = 0; k < num_targ_vecs; ++k )
-		mpi_targ_vecs[k] = &dyn_cast<MPIVectorBase<Scalar> >(*targ_vecs[k]);
-	}
 	// Get the overlap in the current process with the input logical sub-vector
 	// from (first_ele_in,sub_dim_in,global_offset_in)
 	RTOp_index_type  overlap_first_local_ele  = 0;
 	RTOp_index_type  overalap_local_sub_dim   = 0;
 	RTOp_index_type  overlap_global_offset    = 0;
 	RTOp_parallel_calc_overlap(
-		globalDim, localSubDim, localOffset, first_ele_in, sub_dim_in, global_offset_in
+		globalDim_, localSubDim_, localOffset_, first_ele_in, sub_dim_in, global_offset_in
 		,&overlap_first_local_ele, &overalap_local_sub_dim, &overlap_global_offset
 		);
 	const Range1D local_rng = (
 		overlap_first_local_ele!=0
-		? Range1D( localOffset + overlap_first_local_ele, localOffset + overlap_first_local_ele + overalap_local_sub_dim - 1 )
+		? Range1D( localOffset_ + overlap_first_local_ele, localOffset_ + overlap_first_local_ele + overalap_local_sub_dim - 1 )
 		: Range1D::Invalid
 		);
 	// Create sub-vector views of all of the *participating* local data
@@ -97,35 +87,33 @@ void MPIVectorBase<Scalar>::applyOp(
 	wsp::Workspace<RTOpPack::MutableSubVectorT<Scalar> > sub_targ_vecs(wss,num_targ_vecs);
 	if( overlap_first_local_ele != 0 ) {
 		if(1){for(int k = 0; k < num_vecs; ++k ) {
-			mpi_vecs[k]->getSubVector( local_rng, &sub_vecs[k] );
+			vecs[k]->getSubVector( local_rng, &sub_vecs[k] );
 			sub_vecs[k].setGlobalOffset( overlap_global_offset );
 		}}
 		if(1){for(int k = 0; k < num_targ_vecs; ++k ) {
-			mpi_targ_vecs[k]->getSubVector( local_rng, &sub_targ_vecs[k] );
+			targ_vecs[k]->getSubVector( local_rng, &sub_targ_vecs[k] );
 			sub_targ_vecs[k].setGlobalOffset( overlap_global_offset );
 		}}
 	}
-	// Apply the RTOp operator object
-	RTOp_ReductTarget reduct_objs[] = { reduct_obj };
+	// Apply the RTOp operator object (all processors must participate)
 	RTOpPack::MPI_apply_op(
 		mpiSpc.mpiComm()                                                       // comm
 		,op                                                                    // op
 		,-1                                                                    // root_rank (perform an all-reduce)
-		,1                                                                     // num_cols
 		,num_vecs                                                              // num_vecs
 		,num_vecs && overlap_first_local_ele ? &sub_vecs[0] : NULL             // sub_vecs
 		,num_targ_vecs                                                         // num_targ_vecs
 		,num_targ_vecs && overlap_first_local_ele ? &sub_targ_vecs[0] : NULL   // targ_sub_vecs
-		,reduct_objs                                                           // reduct_objs
+		,reduct_obj                                                            // reduct_obj
 		);
 	// Free and commit the local data
 	if(1){for(int k = 0; k < num_vecs; ++k ) {
 		sub_vecs[k].setGlobalOffset(local_rng.lbound()-1);
-		mpi_vecs[k]->freeSubVector( &sub_vecs[k] );
+		vecs[k]->freeSubVector( &sub_vecs[k] );
 	}}
 	if(1){for(int k = 0; k < num_targ_vecs; ++k ) {
 		sub_targ_vecs[k].setGlobalOffset(local_rng.lbound()-1);
-		mpi_targ_vecs[k]->commitSubVector( &sub_targ_vecs[k] );
+		targ_vecs[k]->commitSubVector( &sub_targ_vecs[k] );
 	}}
 	// Flag that we are leaving applyOp()
 	in_applyOp_ = false;
@@ -160,7 +148,8 @@ void MPIVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec
 		Vector<Scalar>::freeSubVector(sub_vec);
 		return;
 	}
-	sub_vec->set_uninitialized();  // Nothing to deallocate!
+	// Nothing to deallocate!
+	sub_vec->set_uninitialized();
 }
 
 template<class Scalar>
@@ -195,17 +184,37 @@ void MPIVectorBase<Scalar>::commitSubVector( RTOpPack::MutableSubVectorT<Scalar>
 	sub_vec->set_uninitialized();  // Nothing to deallocate!
 }
 
+// protected
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::updateMpiSpace()
+{
+	if(globalDim_ == 0) {
+		const MPIVectorSpaceBase<Scalar> *mpiSpace = this->mpiSpace().get();
+		if(mpiSpace) {
+			globalDim_    = mpiSpace->dim();
+			localOffset_  = mpiSpace->localOffset();
+			localSubDim_  = mpiSpace->localSubDim();
+		}
+		else {
+			globalDim_    = 0;
+			localOffset_  = -1;
+			localSubDim_  = 0;
+		}
+	}
+}
+
 // private
 
 template<class Scalar>
 Range1D MPIVectorBase<Scalar>::validateRange( const Range1D &rng_in ) const
 {
-	update_cache();
 	const Range1D rng = RangePack::full_range(rng_in,1,globalDim_);
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
 		rng.lbound() < 1 || globalDim_ < rng.ubound(), std::invalid_argument
-		,"EpetraVector::getLocalData(...): Error, the range ["<<rng.lbound()<<","<<rng.ubound()<<"] is not "
+		,"MPIVectorBase<Scalar>::validateRange(...): Error, the range ["
+		<<rng.lbound()<<","<<rng.ubound()<<"] is not "
 		"in the range [1,"<<globalDim_<<"]!"
 		);
 #endif

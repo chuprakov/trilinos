@@ -129,7 +129,7 @@ public:
 	///
 	Scalar* values() const { return const_cast<Scalar*>(SubVectorT<Scalar>::values());  }
 	/// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>)
-	Scalar& operator[](RTOp_index_type i) const { return const_cast<Scalar*>(SubVectorT<Scalar>::operator[](i)); }
+	Scalar& operator[](RTOp_index_type i) const { return const_cast<Scalar&>(SubVectorT<Scalar>::operator[](i)); }
 	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
 	Scalar& operator()(RTOp_index_type i) const { return const_cast<Scalar&>(SubVectorT<Scalar>::operator()(i)); }
 };
@@ -382,7 +382,7 @@ public:
 	const Scalar*     values()         const { return values_; }
 	///
 	RTOp_index_type   leadingDim()     const { return leadingDim_;  }
-	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim()) && (1<= j <= numSubCols()</tt>)
+	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
 	const Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
 		{ return values_[ (i-1) + leadingDim_*(j-1) ]; }
 private:
@@ -455,15 +455,19 @@ template<class Scalar>  class RTOpT;
 //
 
 ///
-typedef MutableSubVectorT<RTOp_value_type>  MutableSubVector;
+typedef SubVectorT<RTOp_value_type>              SubVector;
 ///
-typedef SubVectorT<RTOp_value_type>         SubVector;
+typedef MutableSubVectorT<RTOp_value_type>       MutableSubVector;
 ///
-typedef SparseSubVectorT<RTOp_value_type>   SparseSubVector;
+typedef SparseSubVectorT<RTOp_value_type>        SparseSubVector;
 ///
-typedef ReductTargetT<RTOp_value_type>      ReductTarget;
+typedef SubMultiVectorT<RTOp_value_type>         SubMultiVector;
 ///
-typedef RTOpT<RTOp_value_type>              RTOp;
+typedef MutableSubMultiVectorT<RTOp_value_type>  MutableSubMultiVector;
+///
+typedef ReductTargetT<RTOp_value_type>           ReductTarget;
+///
+typedef RTOpT<RTOp_value_type>                   RTOp;
 
 } // namespace RTOpPack
 

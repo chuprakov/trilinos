@@ -335,6 +335,7 @@ AC_CONFIG_FILES([
 		example/Nonlin/NP4DOpt/Makefile
 		example/Solvers/Makefile
 		test/Makefile
+		test/epetra-adapters/Makefile
 		test/scripts/Makefile
 		test/scripts/daily/Makefile
 		test/scripts/daily/mpi/Makefile

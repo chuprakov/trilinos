@@ -4,8 +4,8 @@
 #ifndef TSFCORE_EPETRA_VECTOR_SPACE_HPP
 #define TSFCORE_EPETRA_VECTOR_SPACE_HPP
 
+#include "TSFCoreEpetraTypes.hpp"
 #include "TSFCoreMPIVectorSpaceBase.hpp"
-#include "Epetra_BlockMap.h"
 
 namespace TSFCore {
 
@@ -52,7 +52,7 @@ public:
 		);
 
 	///
-	/** Initialize given the dimension of the vector space.
+	/** Initialize given an <tt>Epetra_BlockMap</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>epetra_map.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
@@ -102,6 +102,8 @@ public:
 	Index dim() const;
 	/// Returns an allocated <tt>EpetraVector</tt> object. 
 	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
+	/// Returns a <tt>EpetraVectorSpaceFactory</tt> object.
+	Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
 	/// Returns an allocated <tt>EpetraMultiVector</tt> object. 
 	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 	///
@@ -124,12 +126,14 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	Epetra_BlockMap                                     *epetra_map;
+	Epetra_BlockMap                                        *epetra_map;
+	EpetraVectorSpaceFactory                               *smallVecSpcFcty;
 #else	
-	Teuchos::RefCountPtr<const Epetra_BlockMap>         epetra_map_;
-	MPI_Comm                                            mpiComm_;
-	Index                                               localOffset_;
-	Index                                               localSubDim_;
+	Teuchos::RefCountPtr<const Epetra_BlockMap>            epetra_map_;
+	MPI_Comm                                               mpiComm_;
+	Index                                                  localOffset_;
+	Index                                                  localSubDim_;
+	Teuchos::RefCountPtr<const EpetraVectorSpaceFactory>   smallVecSpcFcty_;
 #endif
 
 }; // end class EpetraVectorSpace

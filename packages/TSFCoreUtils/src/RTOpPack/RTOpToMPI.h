@@ -115,14 +115,14 @@ int RTOp_load_reduct_obj_ext_state(
  *	@param	sub_vecs
  *				[in] Array (size <tt>num_targ_vecs * num_cols</tt>)
  *				of nonmutable subvectors.  The vectors for each column kc
- *              begin at sub_vecs+kc*num_cols where kc=0...num_cols-1
+ *              begin at sub_vecs+kc*num_vecs where kc=0...num_cols-1
  *              Can be \c NULL if there are no local vector elements.
  *	@param	num_targ_vecs
  *				[in] See <tt>%RTOpPack::RTOp::apply_op()</tt>
  *	@param	sub_targ_vecs
  *				[in] Array (size <tt>num_targ_vecs * num_cols</tt>)
  *				of mutable subvectors.  The vectors for each column kc
- *              begin at sub_vecs+kc*num_cols where kc=0...num_cols-1
+ *              begin at sub_vecs+kc*num_targ_vecs where kc=0...num_cols-1
  *              Can be \c NULL if there are no local vector elements.
  *	@param	reduct_objs
  *				[in/out] Array (size <tt>num_cols</tt>) See below.

@@ -217,14 +217,18 @@ EXTRA_ADAPTERS_EPETRA_H = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
-	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.hpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp
 
 
 EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
-	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 
 
 @HAVE_TSFCORE_MPI_TRUE@ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
@@ -237,19 +241,21 @@ EXTRA_ADAPTERS_EPETRA = \
 
 
 #Specify locations of include files within Trilinos, but outside TSFCore
-AM_CPPFLAGS = -I$(top_srcdir)/src \
--I$(srcdir)/interfaces/Core\
+AM_CPPFLAGS = \
+-I$(srcdir) \
+-I$(srcdir)/interfaces/Core \
+-I$(srcdir)/utilities/Core \
+-I$(srcdir)/adapters/mpi-base \
 -I$(top_srcdir)/../TSFCoreUtils/src \
--I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
--I$(srcdir)/adapters/mpi-base\
--I$(top_srcdir)/../epetra/src\
--I$(top_builddir)/../epetra/src \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 -I$(top_builddir)/../TSFCoreUtils/src\
--I$(top_builddir)/../teuchos/src \
+-I$(top_srcdir)/../epetra/src \
+-I$(top_builddir)/../epetra/src \
 -I$(top_srcdir)/../teuchos \
--I$(top_srcdir)/../teuchos/src
+-I$(top_srcdir)/../teuchos/src \
+-I$(top_builddir)/../teuchos/src
 
 
 
@@ -333,7 +339,9 @@ libTSFCore_a_DEPENDENCIES =
 am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
 	TSFCoreEpetraMultiVector.$(OBJEXT) \
 	TSFCoreEpetraVector.$(OBJEXT) \
-	TSFCoreEpetraVectorSpace.$(OBJEXT)
+	TSFCoreEpetraVectorSpace.$(OBJEXT) \
+	TSFCoreEpetraVectorSpaceFactory.$(OBJEXT) \
+	TSFCore_get_Epetra_MultiVector.$(OBJEXT)
 @HAVE_TSFCORE_EPETRA_TRUE@am__objects_2 = $(am__objects_1)
 @HAVE_TSFCORE_EPETRA_FALSE@am__objects_2 =
 am_libTSFCore_a_OBJECTS = $(am__objects_2)
@@ -349,7 +357,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFCoreEpetraLinearOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraMultiVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVector.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -435,6 +445,10 @@ TSFCoreEpetraVector.$(OBJEXT): \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp
 TSFCoreEpetraVectorSpace.$(OBJEXT): \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+TSFCoreEpetraVectorSpaceFactory.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp
+TSFCore_get_Epetra_MultiVector.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 libTSFCore.a: $(libTSFCore_a_OBJECTS) $(libTSFCore_a_DEPENDENCIES) 
 	-rm -f libTSFCore.a
 	$(libTSFCore_a_AR) libTSFCore.a $(libTSFCore_a_OBJECTS) $(libTSFCore_a_LIBADD)
@@ -450,6 +464,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraMultiVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -513,6 +529,30 @@ TSFCoreEpetraVectorSpace.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace
 @AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVectorSpace.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp`
+
+TSFCoreEpetraVectorSpaceFactory.o: $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp' object='TSFCoreEpetraVectorSpaceFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVectorSpaceFactory.o `test -f '$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp
+
+TSFCoreEpetraVectorSpaceFactory.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp' object='TSFCoreEpetraVectorSpaceFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVectorSpaceFactory.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp`
+
+TSFCore_get_Epetra_MultiVector.o: $(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp' object='TSFCore_get_Epetra_MultiVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_MultiVector.o `test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+
+TSFCore_get_Epetra_MultiVector.obj: $(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp' object='TSFCore_get_Epetra_MultiVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_MultiVector.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 includeHEADERS_INSTALL = $(INSTALL_HEADER)

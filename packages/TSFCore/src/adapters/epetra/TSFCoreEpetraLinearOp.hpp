@@ -108,6 +108,14 @@ public:
 		,const Scalar            alpha
 		,const Scalar            beta
 		) const;
+	///
+	void apply(
+		const ETransp                 M_trans
+		,const MultiVector<Scalar>    &X
+		,MultiVector<Scalar>          *Y
+		,const Scalar                 alpha
+		,const Scalar                 beta
+		) const;
 
 	//@}
 

@@ -5,6 +5,7 @@
 #define TSFCORE_MULTI_VECTOR_HPP
 
 #include "TSFCoreMultiVectorDecl.hpp"
+#include "TSFCoreMultiVectorStdOps.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
@@ -29,26 +30,15 @@ MultiVector<Scalar>::col(Index j) const
 // Cloning
 
 template<class Scalar>
-Teuchos::RefCountPtr<const MultiVector<Scalar> >
+Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::clone_mv() const
-{
-	return const_cast<MultiVector<Scalar>*>(this)->clone_mv();
-}
-
-template<class Scalar>
-Teuchos::RefCountPtr<MultiVector<Scalar> > 
-MultiVector<Scalar>::clone_mv()
 {
 	const VectorSpace<Scalar>
 		&domain = *this->domain(),
 		&range  = *this->range();
 	Teuchos::RefCountPtr<MultiVector<Scalar> >
 		copy = range.createMembers(domain.dim());
-	RTOpPack::RTOpC assign_vectors_op;
-	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
-	const MultiVector<Scalar>* multi_vecs[1]      = { this };
-	MultiVector<Scalar>*       targ_multi_vecs[1] = { copy.get() };
-	TSFCore::applyOp<Scalar>(assign_vectors_op,1,multi_vecs,1,targ_multi_vecs,RTOp_REDUCT_OBJ_NULL);
+	assign( &*copy, *this );
 	return copy;
 }
 
@@ -167,7 +157,7 @@ void MultiVector<Scalar>::applyOp(
 	wsp::Workspace<Vector<Scalar>*>                               targ_vecs(wss,num_targ_multi_vecs);
 
 	for(Index j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
-		// Fill the arrays of vector arguments 
+		// Fill the arrays of vector arguments
 		{for(Index k = 0; k < num_multi_vecs; ++k) {
 			vecs_s[k] = multi_vecs[k]->col(j);
 			vecs[k] = vecs_s[k].get();
@@ -260,12 +250,51 @@ void MultiVector<Scalar>::applyOp(
 
 template<class Scalar>
 void MultiVector<Scalar>::getSubMultiVector(
-	const Range1D                       &rowRng
-	,const Range1D                      &colRng
+	const Range1D                       &rowRng_in
+	,const Range1D                      &colRng_in
 	,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
 	) const
 {
-	assert(0); // ToDo: Implement!
+	const Index
+		rangeDim  = this->range()->dim(),
+		domainDim = this->domain()->dim();
+	const Range1D
+		rowRng = rowRng_in.full_range() ? Range1D(1,rangeDim)  : rowRng_in,
+		colRng = colRng_in.full_range() ? Range1D(1,domainDim) : colRng_in;
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(
+		rowRng.ubound() > rangeDim, std::out_of_range
+		,"MultiVector<Scalar>::getSubMultiVector(...): Error, rowRng = ["
+		<<rowRng.lbound()<<","<<rowRng.ubound()<<"] is not in the range = [1,"
+		<<rangeDim<<"]!"
+		);
+	TEST_FOR_EXCEPTION(
+		colRng.ubound() > domainDim, std::out_of_range
+		,"MultiVector<Scalar>::getSubMultiVector(...): Error, colRng = ["
+		<<colRng.lbound()<<","<<colRng.ubound()<<"] is not in the range = [1,"
+		<<domainDim<<"]!"
+		);
+#endif
+	// Allocate storage for the multi-vector (stored column-major)
+	Scalar *values = new Scalar[ rowRng.size() * colRng.size() ];
+	// Extract multi-vector values colum by column
+	RTOpPack::SubVectorT<Scalar> sv; // uninitiaized by default
+	for( int k = colRng.lbound(); k <= colRng.ubound(); ++k ) {
+		Teuchos::RefCountPtr<const Vector<Scalar> > col_k = this->col(k);
+		col_k->getSubVector( rowRng, &sv );
+		for( int i = 0; i < rowRng.size(); ++i )
+			values[ i + (k-1)*rowRng.size() ] = sv[i];
+		col_k->freeSubVector( &sv );
+	}
+	// Initialize the multi-vector view object
+	sub_mv->initialize(
+		rowRng.lbound()-1            // globalOffset
+		,rowRng.size()               // subDim
+		,colRng.lbound()-1           // colOffset
+		,colRng.size()               // numSubCols
+		,values                      // values
+		,rowRng.size()               // leadingDim
+		);
 }
 
 template<class Scalar>
@@ -273,7 +302,9 @@ void MultiVector<Scalar>::freeSubMultiVector(
 	RTOpPack::SubMultiVectorT<Scalar>* sub_mv
 	) const
 {
-	assert(0); // ToDo: Implement!
+	// Here we just need to free the view and that is it!
+	delete [] const_cast<Scalar*>(sub_mv->values());
+	sub_mv->set_uninitialized();
 }
 
 template<class Scalar>
@@ -283,7 +314,16 @@ void MultiVector<Scalar>::getSubMultiVector(
 	,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
 	)
 {
-	assert(0); // ToDo: Implement!
+	// Use the non-const implementation since it does exactly the
+	// correct thing in this case also!
+	MultiVector<Scalar>::getSubMultiVector(
+		rowRng, colRng
+		,static_cast<RTOpPack::SubMultiVectorT<Scalar>*>(sub_mv)
+		// This cast will work as long as MutableSubMultiVectorT
+		// maintains no extra state over SubMultiVectorT (which it
+		// currently does not) but this is something that I should
+		// technically check for some how.
+		);
 }
 
 template<class Scalar>
@@ -291,7 +331,25 @@ void MultiVector<Scalar>::commitSubMultiVector(
 	RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv
 	)
 {
-	assert(0); // ToDo: Implement!
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(
+		sub_mv==NULL, std::logic_error, "MultiVector<Scalar>::commitSubMultiVector(...): Error!"
+		);
+#endif
+	// Set back the multi-vector values colum by column
+	const Range1D rowRng(sub_mv->globalOffset()+1,sub_mv->globalOffset()+sub_mv->subDim());
+	RTOpPack::MutableSubVectorT<Scalar> msv; // uninitiaized by default
+	for( int k = sub_mv->colOffset()+1; k <= sub_mv->numSubCols(); ++k ) {
+		Teuchos::RefCountPtr<Vector<Scalar> > col_k = this->col(k);
+		col_k->getSubVector( rowRng, &msv );
+		for( int i = 0; i < rowRng.size(); ++i )
+			msv[i] = sub_mv->values()[ i + (k-1)*rowRng.size() ];
+		col_k->commitSubVector( &msv );
+	}
+	// Free the memory
+	delete [] const_cast<Scalar*>(sub_mv->values());
+	// Zero out the view
+	sub_mv->set_uninitialized();
 }
 
 // Overridden methods from LinearOp

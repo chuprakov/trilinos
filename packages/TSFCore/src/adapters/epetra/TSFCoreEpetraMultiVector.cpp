@@ -3,8 +3,14 @@
 
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFCoreEpetraVector.hpp"
+#include "TSFCore_get_Epetra_MultiVector.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Epetra_MultiVector.h"
+#include "Epetra_Vector.h"
+#include "Epetra_SerialComm.h"
+#include "Epetra_LocalMap.h"
+#include "WorkspacePack.hpp"
 
 namespace TSFCore {
 
@@ -40,14 +46,21 @@ void EpetraMultiVector::initialize(
 		epetra_range_  = epetra_range;
 	}
 	else {
-		assert(0); // ToDo: Implement this case!
+		epetra_range_ = Teuchos::rcp(
+			new EpetraVectorSpace(
+				Teuchos::rcp(&epetra_multi_vec->Map(),false)
+				)
+			);
 	}
 	if(epetra_domain.get()) {
 		epetra_domain_  = epetra_domain;
 	}
 	else {
-		assert(0); // ToDo: Implement this case!
+		epetra_domain_ = Teuchos::rcp_dynamic_cast<const EpetraVectorSpace>(
+			epetra_range_->smallVecSpcFcty()->createVecSpc(epetra_multi_vec->NumVectors())
+			);
 	}
+	updateMpiSpace();
 }
 
 void EpetraMultiVector::setUninitialized(
@@ -62,6 +75,7 @@ void EpetraMultiVector::setUninitialized(
 	epetra_multi_vec_ = Teuchos::null;
 	epetra_range_ = Teuchos::null;
 	epetra_domain_ = Teuchos::null;
+	updateMpiSpace();
 }
 
 // Overridden from OpBase
@@ -82,7 +96,35 @@ void EpetraMultiVector::apply(
 	,const Scalar                 beta
 	) const
 {
-	assert(0); // ToDo: Implement this!
+#ifdef _DEBUG
+	// ToDo: Check for compatibility of vector spaces
+#endif
+	//
+	// Get Epetra_MultiVector objects for the arguments
+	//
+	Teuchos::RefCountPtr<const Epetra_MultiVector>
+		epetra_X = get_Epetra_MultiVector(
+			M_trans==NOTRANS ? *epetra_domain_ : *epetra_range_
+			,Teuchos::rcp(&X,false)
+			);
+	Teuchos::RefCountPtr<Epetra_MultiVector>
+		epetra_Y = get_Epetra_MultiVector(
+			M_trans==NOTRANS ? *epetra_range_ : *epetra_domain_
+			,Teuchos::rcp(Y,false)
+			);
+	//
+	// Do the multiplication
+	//
+	//   Y = scalarAB * transA(A) * transB(B) + scalarThis*Y
+	//
+	epetra_Y->Multiply(
+		M_trans==NOTRANS ? 'N' : 'T'    // TransA
+		,'N'                            // TransB
+		,alpha                          // ScalarAB
+		,*epetra_multi_vec_             // A
+		,*epetra_X                      // B
+		,beta                           // ScalarThis
+		);
 }
 
 // Overridden from MultiVector
@@ -91,36 +133,69 @@ Teuchos::RefCountPtr<Vector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::col(Index j)
 {
 	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= epetra_domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
-	assert(0); // ToDo: Implement!
-	return Teuchos::null;
+	return Teuchos::rcp(
+		new EpetraVector(
+			Teuchos::rcp(
+				new Epetra_Vector( ::View, epetra_multi_vec_->Map(), (*epetra_multi_vec_)[j-1] )
+				)
+			,epetra_range_
+			)
+		);
 }
 
 Teuchos::RefCountPtr<MultiVector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::subView( const Range1D& col_rng_in )
 {
-	return MultiVector<Scalar>::subView(col_rng_in); // ToDo: specialize!
-/*
-	const Index   cols    = domain_->dim();
-	const Range1D col_rng = RangePack::full_range(col_rng_in,1,cols);
-#ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		!( col_rng.ubound() <= cols )
-		,std::logic_error
-		,"EpetraMultiVector::subView(col_rng): Error, the input range col_rng = ["<<col_rng.lbound()<<","<<col_rng.ubound()<<"] "
-		"is not in the range [1,"<<cols<<"]!"
-		);
-#endif
+//	return MultiVector<Scalar>::subView(col_rng_in); // Uncomment to use the default implementation!
+	const Range1D colRng = validateColRange(col_rng_in);
 	return Teuchos::rcp(
-		new EpetraMultiVector<Scalar>(
-			range_,domain_->smallVecSpcFcty()->createVecSpc(col_rng.size()),&col_vecs_[col_rng.lbound()-1]
-			) );
-*/
+		new EpetraMultiVector(
+			Teuchos::rcp(
+				new Epetra_MultiVector(
+					::View                         // CV
+					,*epetra_multi_vec_            // Source
+					,colRng.lbound()-1             // StartIndex (zero-based)
+					,colRng.size()                 // NumVectors
+					)
+				)
+			)
+		);
 }
 
 Teuchos::RefCountPtr<MultiVector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::subView( const int numCols, const int cols[] )
 {
-	return MultiVector<Scalar>::subView(numCols,cols); // ToDo: specialize!
+//	return MultiVector<Scalar>::subView(numCols,cols); // Uncomment to use the default implementation!
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	// Translate from 1-based indexes to zero-based column indexes
+#ifdef _DEBUG
+	const int numTotalCols = this->domain()->dim();
+#endif
+	wsp::Workspace<int> zb_cols(wss,numCols);
+	for( int k = 0; k < numCols; ++k ) {
+#ifdef _DEBUG
+		TEST_FOR_EXCEPTION(
+			cols[k] < 1 || numTotalCols < cols[k], std::invalid_argument
+			,"Error, cols["<<k<<"] = " << cols[k] << " does not fall in the range "
+			"[1,"<<numTotalCols<<"]!"
+			);
+#endif
+		zb_cols[k] = cols[k] - 1;
+	}
+	// Create the view
+	return Teuchos::rcp(
+		new EpetraMultiVector(
+			Teuchos::rcp(
+				new Epetra_MultiVector(
+					::View                         // CV
+					,*epetra_multi_vec_            // Source
+					,&zb_cols[0]                   // Indices
+					,numCols                       // NumVectors
+					)
+				)
+			)
+		);
 }
 
 // Overridden from MPIMultiVectorBase
@@ -131,9 +206,47 @@ EpetraMultiVector::mpiSpace() const
 	return epetra_range_;
 }
 
+void EpetraMultiVector::getLocalData( const Scalar **values, Index *leadingDim ) const
+{
+	if( epetra_multi_vec_->ConstantStride() ) {
+		Scalar *non_const_values;
+		epetra_multi_vec_->ExtractView( &non_const_values, leadingDim );
+		*values = non_const_values; 
+	}
+	else {
+		assert(0); // ToDo: Implement!
+	}
+}
+
+void EpetraMultiVector::freeLocalData( const Scalar *values ) const
+{
+	if( epetra_multi_vec_->ConstantStride() ) {
+		// There is no memory to free!
+	}
+	else {
+		assert(0); // ToDo: Implement!
+	}
+}
+
 void EpetraMultiVector::getLocalData( Scalar **values, Index *leadingDim )
 {
-	assert(0); // ToDo: Implement!
+	if( epetra_multi_vec_->ConstantStride() ) {
+		epetra_multi_vec_->ExtractView( values, leadingDim );
+	}
+	else {
+		assert(0); // ToDo: Implement!
+	}
+}
+
+void EpetraMultiVector::commitLocalData( Scalar *values )
+{
+	if( epetra_multi_vec_->ConstantStride() ) {
+		// The data was a direct view so there is
+		// no need to commit anything or free anything.
+	}
+	else {
+		assert(0); // ToDo: Implement!
+	}
 }
 	
 } // end namespace TSFCore

@@ -1,11 +1,13 @@
 // ////////////////////////////////////////////////////////////////////////////
 // TSFCoreEpetraVectorSpace.cpp
 
-//#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
+// Define this to use the optimized EpetraMultiVector implementation!
+#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
 
 #include <assert.h>
 
 #include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFCoreEpetraVectorSpaceFactory.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
 #  include "TSFCoreEpetraMultiVector.hpp"
@@ -20,17 +22,16 @@
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
 
-
 namespace TSFCore {
 
 EpetraVectorSpace::EpetraVectorSpace()
-	:mpiComm_(MPI_COMM_NULL),localOffset_(-1),localSubDim_(-1)
-{}
+{
+	updateState();
+}
 
 EpetraVectorSpace::EpetraVectorSpace(
 	const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
 	)
-	:mpiComm_(MPI_COMM_NULL),localOffset_(-1),localSubDim_(-1)
 {
 	initialize(epetra_map);
 }
@@ -56,7 +57,12 @@ void EpetraVectorSpace::initialize(
 #endif
 	localOffset_ = epetra_map->MinMyGID() - epetra_map->IndexBase();
 	localSubDim_ = epetra_map->NumMyElements();
-	MPIVectorSpaceBase<Scalar>::invalidateState();
+	smallVecSpcFcty_ = Teuchos::rcp(
+		new EpetraVectorSpaceFactory(
+			Teuchos::rcp(&epetra_map->Comm(),false)
+			)
+		);
+	updateState();
 }
 
 void EpetraVectorSpace::setUninitialized(
@@ -65,6 +71,11 @@ void EpetraVectorSpace::setUninitialized(
 {
 	if(epetra_map) *epetra_map = epetra_map_;
 	epetra_map_ = Teuchos::null;
+	mpiComm_ = MPI_COMM_NULL;
+	localOffset_ = -1;
+	localSubDim_ = 0; // Flag that this is uninitialized
+	smallVecSpcFcty_ = Teuchos::null;
+	updateState();
 }
 
 // Overridden from VectorSpace
@@ -77,7 +88,13 @@ Index EpetraVectorSpace::dim() const
 Teuchos::RefCountPtr<Vector<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::createMember() const
 {
-	return Teuchos::rcp(new EpetraVector(Teuchos::rcp(new Epetra_Vector(*epetra_map_))));
+	return Teuchos::rcp(new EpetraVector(Teuchos::rcp(new Epetra_Vector(*epetra_map_,false))));
+}
+
+Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >
+EpetraVectorSpace::smallVecSpcFcty() const
+{
+	return smallVecSpcFcty_;
 }
 
 Teuchos::RefCountPtr<MultiVector<EpetraVectorSpace::Scalar> > 
@@ -87,7 +104,7 @@ EpetraVectorSpace::createMembers(int numMembers) const
 	// Use specialized Epetra_MultiVector implementation
 	return Teuchos::rcp(
 		new EpetraMultiVector(
-			Teuchos::rcp(new Epetra_MultiVector(*epetra_map_,numMembers))
+			Teuchos::rcp(new Epetra_MultiVector(*epetra_map_,numMembers,false))
 			,Teuchos::rcp(this,false)
 			)
 		);

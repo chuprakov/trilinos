@@ -23,6 +23,9 @@ class MPIMultiVectorBase : virtual public MultiVector<Scalar> {
 public:
 
 	///
+	using MultiVector<Scalar>::apply; // Inject *all* the apply methods!
+
+	///
 	MPIMultiVectorBase();
 
 	/** @name Pure virtual methods to be overridden by subclasses */
@@ -34,15 +37,52 @@ public:
 	virtual Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
 
 	///
-	/** Returns a pointer to the local multi-vector data.
+	/** Returns a <tt>const</tt>  pointer to a fortran-style view of the local multi-vector data.
 	 *
 	 * @param  values      [out] On output <tt>*values</tt> will point to 
 	 *                     the first element in the first colum of the local multi-vector
 	 *                     stored as a column-major dense Fortran-style matrix.
 	 * @param  leadingDim  [out] On output <tt>*leadingDim</tt> gives the leading dimension
 	 *                     of the Fortran-style local multi-vector.
+	 *
+	 */
+	virtual void getLocalData( const Scalar **values, Index *leadingDim ) const = 0;
+
+	///
+	/** Free view of local data that was gotten from <tt>getLocalData()</tt>.
+	 *
+	 * @param  values      [in/out] On input <tt>values</tt> must be the pointer set
+	 *                     by <tt>getLocalData()</tt>.
+	 */
+	virtual void freeLocalData( const Scalar *values ) const = 0;
+
+	///
+	/** Returns a non-<tt>const</tt> pointer to a fortran-style view of the local multi-vector data.
+	 *
+	 * @param  values      [out] On output <tt>*values</tt> will point to 
+	 *                     the first element in the first colum of the local multi-vector
+	 *                     stored as a column-major dense Fortran-style matrix.
+	 * @param  leadingDim  [out] On output <tt>*leadingDim</tt> gives the leading dimension
+	 *                     of the Fortran-style local multi-vector.
+	 *
+	 * The function <tT>commitLocalData()</tt> must be called to
+	 * commit changes to the data.
 	 */
 	virtual void getLocalData( Scalar **values, Index *leadingDim ) = 0;
+
+	///
+	/** Commit view of local data that was gotten from <tt>getLocalData()</tt>.
+	 *
+	 * @param  values      [in/out] On input <tt>*values</tt> must be the pointer set
+	 *                     by <tt>getLocalData()</tt>.
+	 */
+	virtual void commitLocalData( Scalar *values ) = 0;
+
+	//@}
+
+	/** @name Virtual methods with default implementaions */
+	//@{
+
 
 	//@}
 
@@ -104,6 +144,32 @@ public:
 	///
 	void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
 	//@}
+
+protected:
+
+	///
+	/** Subclasses should call whenever the structure of the VectorSpace changes.
+	 *
+	 * This function can be overridden by subclasses but this
+	 * particualar function implementation must be called from within
+	 * any override.
+	 */
+	virtual void updateMpiSpace();
+
+	///
+	/** Validate and resize the row range.
+	 *
+	 * This function throws an exception if the input range is invalid
+	 */
+	Range1D validateRowRange( const Range1D& rowRng ) const;
+
+
+	///
+	/** Validate and resize the column range.
+	 *
+	 * This function throws an exception if the input range is invalid
+	 */
+	Range1D validateColRange( const Range1D& rowCol ) const;
 	
 private:
 	
@@ -111,6 +177,13 @@ private:
 	// Private data members
 	
 	mutable bool in_applyOp_;
+
+	// cached
+	mutable Index  globalDim_;
+	mutable Index  localOffset_;
+	mutable Index  localSubDim_;
+	mutable Index  numCols_;
+
 	
 }; // end class MPIMultiVectorBase
 

@@ -49,7 +49,8 @@ public:
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	EpetraVector(
-		const Teuchos::RefCountPtr<Epetra_Vector>  &epetra_vec
+		const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc  = Teuchos::null
 		);
 
 	///
@@ -68,7 +69,8 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Epetra_Vector>  &epetra_vec
+		const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc  = Teuchos::null
 		);
 
 	///
@@ -80,7 +82,10 @@ public:
 	 * <li> <tt>this->mpiSpace().get() == NULL</tt>
 	 * </ul>
 	 */
-	Teuchos::RefCountPtr<Epetra_Vector> setUninitialized();
+	void setUninitialized(
+		Teuchos::RefCountPtr<Epetra_Vector>              *epetra_vec     = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetra_vec_spc = NULL
+		);
 
 	///
 	/** Return a smart pointer object to a <tt>const</tt> <tt>Epetra_Vector</tt> object.

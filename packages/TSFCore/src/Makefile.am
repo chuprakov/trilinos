@@ -120,13 +120,17 @@ EXTRA_ADAPTERS_EPETRA_H = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
-	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.hpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp
 
 EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
-	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 
 if HAVE_TSFCORE_MPI
 
@@ -152,19 +156,21 @@ endif
 
 #Specify locations of include files within Trilinos, but outside TSFCore
 
-AM_CPPFLAGS = -I$(top_srcdir)/src \
--I$(srcdir)/interfaces/Core\
+AM_CPPFLAGS = \
+-I$(srcdir) \
+-I$(srcdir)/interfaces/Core \
+-I$(srcdir)/utilities/Core \
+-I$(srcdir)/adapters/mpi-base \
 -I$(top_srcdir)/../TSFCoreUtils/src \
--I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
--I$(srcdir)/adapters/mpi-base\
--I$(top_srcdir)/../epetra/src\
--I$(top_builddir)/../epetra/src \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 -I$(top_builddir)/../TSFCoreUtils/src\
--I$(top_builddir)/../teuchos/src \
+-I$(top_srcdir)/../epetra/src \
+-I$(top_builddir)/../epetra/src \
 -I$(top_srcdir)/../teuchos \
--I$(top_srcdir)/../teuchos/src
+-I$(top_srcdir)/../teuchos/src \
+-I$(top_builddir)/../teuchos/src
 
 # --------------------------------------------------------------------
 # TSFCore library specifications

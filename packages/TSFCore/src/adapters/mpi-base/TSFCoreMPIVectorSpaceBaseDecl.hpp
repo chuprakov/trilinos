@@ -49,6 +49,9 @@ namespace TSFCore {
  * pure virtual methods <tt>dim()</tt> and <tt>createMember()</tt> are
  * the only methods that must be overridden.
  *
+ * If <tt>this</tt> this is uninitialized then <tt>localSubDim()</tt>
+ * should return <tt>0</tt>.
+ *
  * If it is possible that the mapping of vector elements to processors
  * is not as described above, then the subclass should override the
  * <tt>mapCode()</tt> and <tt>isCompatible()</tt> methods as described
@@ -78,6 +81,9 @@ public:
 	virtual Index localOffset() const = 0;
 	///
 	/** Returns the number of local elements stored on this processor.
+	 *
+	 * If <tt>this</tt> this is uninitialized then <tt>localSubDim()</tt>
+	 * returns <tt>0</tt>.
 	 */
  	virtual Index localSubDim() const = 0;
 
@@ -87,25 +93,12 @@ public:
 	//@{
 
 	///
-	/** Invalidate the internal state in case things have changed.
-	 *
-	 * This method must be called whenever the values
-	 * <tt>mpiComm()</tt>, <tt>numProc</tt> (where <tt>numProc</tt> is
-	 * returned from <tt>MPI_Comm_size(this->mpiComm(),&numProc)</tt>,
-	 * <tt>localOffset()</tt> or <tt>localSubDim()</tt> change.
-	 * 
-	 * This is method is required since <tt>*this</tt> object
-	 * maintains some cached data that is determined by the above
-	 * data.  After ths method is called the cached data will
-	 * automatically be recomputed when it is needed (i.e. by a call
-	 * to <tt>mapCode()</tt> or <tt>isInCore()</tt>).
-	 *
-	 * Subclass developers: play nice and call this method when any of
-	 * the above data changes please!
-	 */
-	virtual void invalidateState();
-	///
 	/** Returns the code for the mapping of elements to processors.
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->localSubDim() > 0</tt>] <tt>this->mapCode() > 0</tt>.
+	 * <li> [<tt>this->localSubDim() <= 0</tt>] <tt>this->mapCode() <= 0</tt>.
+	 * </ul>
 	 *
 	 * This method takes the data <tt>mpiComm()</tt>, <tt>numProc</tt>
 	 * (where <tt>numProc</tt> is returned from
@@ -124,11 +117,12 @@ public:
 	 * override this method!
 	 *
 	 * The default implementation will always return <tt>return >
-	 * 0</tt> so that if this method is overriden to return <tt>return
-	 * <= </tt> then this is a flag that the underlying vector map
-	 * does not satisfy the assumptions of this vector space interface
-	 * and vectors that are in <tt>*this</tt> vector space can not
-	 * collaborate with other MPI-based vector implementations.
+	 * 0</tt> (unless <tt>this</tt> is uninitialized) so that if this
+	 * method is overriden to return <tt>return <= </tt> then this is
+	 * a flag that the underlying vector map does not satisfy the
+	 * assumptions of this vector space interface and vectors that are
+	 * in <tt>*this</tt> vector space can not collaborate with other
+	 * MPI-based vector implementations.
 	 */
 	virtual Index mapCode() const;
 
@@ -175,18 +169,21 @@ public:
 	
 	//@}
 
+protected:
+
+	///
+	/** This function must be called whenever the state of
+	 * <tt>this</tt> changes and some internal state must be updated.
+	 */
+	virtual void updateState();
+
 private:
 
 	// //////////////////////////////////////
 	// Private data members
 
-	mutable Index     mapCode_;    // < 0 is a flag that everything needs initialized
-	mutable bool      isInCore_;
-
-	// //////////////////////////////////////
-	// Private member functions
-
-	void updateState() const;
+	Index     mapCode_;    // < 0 is a flag that everything needs initialized
+	bool      isInCore_;
 	
 }; // end class MPIVectorSpaceBase
 

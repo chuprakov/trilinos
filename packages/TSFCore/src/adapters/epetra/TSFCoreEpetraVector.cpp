@@ -15,34 +15,44 @@ EpetraVector::EpetraVector()
 {}
 
 EpetraVector::EpetraVector(
-	const Teuchos::RefCountPtr<Epetra_Vector>             &epetra_vec
+	const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 	)
 {
-	initialize(epetra_vec);
+	initialize(epetra_vec,epetra_vec_spc);
 }
 
 void EpetraVector::initialize(
-	const Teuchos::RefCountPtr<Epetra_Vector>             &epetra_vec
+	const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 	)
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !epetra_vec.get(), std::invalid_argument, "EpetraVector::initialize(...): Error!");
 #endif
 	//
-	epetra_vec_     = epetra_vec;
-	epetra_vec_spc_ = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp( &epetra_vec->Map(), false ) ) );
+	epetra_vec_ = epetra_vec;
+	if(epetra_vec_spc.get()) {
+		epetra_vec_spc_ = epetra_vec_spc;
+	}
+	else {
+		epetra_vec_spc_ = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp( &epetra_vec->Map(), false ) ) );
+	}
+	updateMpiSpace();
 }
 
-Teuchos::RefCountPtr<Epetra_Vector>
-EpetraVector::setUninitialized()
+void EpetraVector::setUninitialized(
+	Teuchos::RefCountPtr<Epetra_Vector>              *epetra_vec
+	,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetra_vec_spc
+	)
 {
+	if(epetra_vec) *epetra_vec = epetra_vec_;
+	if(epetra_vec_spc) *epetra_vec_spc = epetra_vec_spc_;
 
-	Teuchos::RefCountPtr<Epetra_Vector> tmp = epetra_vec_;
-	
 	epetra_vec_ = Teuchos::null;
 	epetra_vec_spc_ = Teuchos::null;
 
-	return tmp;
+	updateMpiSpace();
 }
 
 // Overridden from MPIVectorBase

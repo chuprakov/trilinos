@@ -4,6 +4,8 @@
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
+#include "TSFCoreEpetraMultiVector.hpp"
+#include "TSFCore_get_Epetra_MultiVector.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -83,40 +85,78 @@ EpetraLinearOp::clone() const
 
 void EpetraLinearOp::apply(
 	const ETransp            M_trans
-	,const Vector<Scalar>    &x_in
-	,Vector<Scalar>          *y_inout
+	,const Vector<Scalar>    &x
+	,Vector<Scalar>          *y
 	,const Scalar            alpha
 	,const Scalar            beta
 	) const
 {
-	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	MultiVectorCols<Scalar>
+		X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)),
+		Y(Teuchos::rcp(y,false));
+	apply(M_trans,X,&Y,alpha,beta);
+}
 
-	Vp_MtV_assert_compatibility(y_inout,*this,M_trans,x_in);
-
-	const EpetraVector   &x = dyn_cast<const EpetraVector>(x_in);
-	EpetraVector         &y = dyn_cast<EpetraVector>(*y_inout);
-	
-	op_->SetUseTranspose( trans_trans(opTrans_,M_trans) == NOTRANS ? false : true );
-
-	if( alpha == 1.0 && beta == 0 ) {
-		Teuchos::RefCountPtr<Epetra_Vector> epetra_y = y.setUninitialized();
-		op_->Apply(
-			*x.epetra_vec()
-			,*epetra_y
+void EpetraLinearOp::apply(
+	const ETransp                 M_trans
+	,const MultiVector<Scalar>    &X_in
+	,MultiVector<Scalar>          *Y_inout
+	,const Scalar                 alpha
+	,const Scalar                 beta
+	) const
+{
+#ifdef _DEBUG
+	// ToDo: Assert vector spaces!
+#endif
+	//
+	// Get Epetra_MultiVector objects for the arguments
+	//
+	Teuchos::RefCountPtr<const Epetra_MultiVector>
+		X = get_Epetra_MultiVector(
+			M_trans==NOTRANS ? *domain_ : *range_
+			,Teuchos::rcp(&X_in,false)
 			);
-		y.initialize(epetra_y);
+	Teuchos::RefCountPtr<Epetra_MultiVector>
+		Y;
+	if( beta == 0 ) {
+		Y = get_Epetra_MultiVector(
+			M_trans==NOTRANS ? *range_ : *domain_
+			,Teuchos::rcp(Y_inout,false)
+			);
+	}
+	//
+	// Set the operator mode
+	//
+	op_->SetUseTranspose( trans_trans(opTrans_,M_trans) == NOTRANS ? false : true );
+	//
+	// Perform the operation
+	//
+	if( beta == 0 ) {
+		// Y = M * X
+		op_->Apply(
+			*X
+			,*Y
+			);
+		// Y = alpha * Y
+		if( alpha != 1.0 ) Y->Scale(alpha);
 	}
 	else {
-		Vt_S( y_inout, beta );
-		Epetra_Vector t( M_trans == NOTRANS ? op_->OperatorRangeMap() : op_->OperatorDomainMap() );
-		op_->Apply(
-			*x.epetra_vec()
-			,t
+		// Y_inout = beta * Y_inout
+		if(beta != 0.0) scale( beta, Y_inout );
+		else assign( Y_inout, 0.0 );
+		// T = M * X
+		Epetra_MultiVector T(
+			M_trans == NOTRANS ? op_->OperatorRangeMap() : op_->OperatorDomainMap()
+			,X_in.domain()->dim()
+			,false
 			);
-		Vp_StV( y_inout, alpha, EpetraVector( Teuchos::rcp( &t, false) ) );
+		op_->Apply(
+			*X
+			,T
+			);
+		// Y_inout += alpha * T
+		update( alpha, EpetraMultiVector( Teuchos::rcp( &T, false) ), Y_inout );
 	}
-
 }
 
 }	// end namespace TSFCore

@@ -17,27 +17,8 @@ MPIVectorSpaceBase<Scalar>::MPIVectorSpaceBase()
 // Virtual methods with default implementations
 
 template<class Scalar>
-void MPIVectorSpaceBase<Scalar>::invalidateState()
-{
-	mapCode_  = -1;
-	isInCore_ = false;
-}
-
-template<class Scalar>
 Index MPIVectorSpaceBase<Scalar>::mapCode() const
 {
-	if(mapCode_ < 0) {
-		const MPI_Comm mpiComm = this->mpiComm();
-		int numProc = -1;
-		MPI_Comm_size( mpiComm, &numProc );
-		TEST_FOR_EXCEPTION(
-			numProc!=1, std::logic_error
-			,"MPIVectorSpaceBase<Scalar>::mapCode(): Error, have not implemented "
-			"this method for more than one processor yet!"
-			);
-		mapCode_ = dim();
-		isInCore_ = ( numProc == 1 );
-	}
 	return mapCode_;
 }
 
@@ -63,18 +44,31 @@ bool MPIVectorSpaceBase<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc 
 	return false;
 }
 
-// private
+// protected
 
 template<class Scalar>
-void MPIVectorSpaceBase<Scalar>::updateState() const
+void MPIVectorSpaceBase<Scalar>::updateState()
 {
-	if(mapCode_ < 0) {
-		assert(numProc()==1); // ToDo: Figure out how to write a code for multi-processors
-		mapCode_ = globalDim();
-		isInCore_ = ( numProc() == 1 );
+	if( this->localSubDim() > 0 ) {
+		const MPI_Comm mpiComm = this->mpiComm();
+		int numProc = 1;
+#ifdef RTOp_USE_MPI
+		MPI_Comm_size( mpiComm, &numProc );
+#endif	
+		TEST_FOR_EXCEPTION(
+			numProc!=1, std::logic_error
+			,"MPIVectorSpaceBase<Scalar>::updateState(): Error, have not implemented "
+			"this method for more than one processor yet!"
+			);
+		mapCode_ = this->dim();
+		isInCore_ = ( numProc == 1 );
+	}
+    else {
+		mapCode_  = -1;     // Uninitialized!
+		isInCore_ = false;
 	}
 }
-
+	
 } // end namespace TSFCore
 
 #endif // TSFCORE_MPI_VECTOR_SPACE_BASE_HPP

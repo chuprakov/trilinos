@@ -33,6 +33,12 @@ template<class Scalar>
 Scalar norm_1( const MultiVector<Scalar>& V );
 
 ///
+/** V = alpha*V
+ */
+template<class Scalar>
+void scale( Scalar alpha, MultiVector<Scalar>* V );
+
+///
 /** V = alpha
  */
 template<class Scalar>

@@ -14,6 +14,7 @@
 #include "RTOp_TOp_assign_scalar.h"
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_axpy.h"
+#include "RTOp_TOp_scale_vector.h"
 #include "RTOpCppC.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -43,7 +44,7 @@ Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
 	RTOp_ROp_sum_construct(&sum_abs_op.op());
 	// Secondaary reduction (max over all columns = norm_1)
 	RTOpPack::RTOpC max_op;
-	RTOp_ROp_sum_construct(&max_op.op());
+	RTOp_ROp_max_construct(&max_op.op());
 	// Reduction object (must be same for both sum_abs and max_targ objects)
 	RTOpPack::ReductTarget max_targ;
 	max_op.reduct_obj_create(&max_targ);
@@ -52,6 +53,18 @@ Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
     applyOp<Scalar>(sum_abs_op,max_op,1,multi_vecs,0,NULL,max_targ.obj());
 	// Return the final value
 	return RTOp_ROp_max_val(max_targ.obj());
+}
+
+template<class Scalar>
+void TSFCore::scale( Scalar alpha, MultiVector<Scalar>* V )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
+#endif
+	RTOpPack::RTOpC  scale_vector_op;
+	if(0>RTOp_TOp_scale_vector_construct(alpha,&scale_vector_op.op())) assert(0);
+	MultiVector<Scalar>* targ_multi_vecs[] = { V };
+	applyOp<Scalar>(scale_vector_op,0,NULL,1,targ_multi_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 template<class Scalar>
