@@ -7,4 +7,4 @@
 #include "GenMatrixClass.h"
 #include "BLAS_Cpp.h"
 
-#endif
+#endif // GENMATRIX_OP_BLAS_H

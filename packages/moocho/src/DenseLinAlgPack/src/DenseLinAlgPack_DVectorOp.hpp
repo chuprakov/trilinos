@@ -246,4 +246,4 @@ void swap(VectorSlice* vs1, VectorSlice* vs2);
 //		end Basic Vector Operation Functions
 //@}
 
-#endif
+#endif // VECTOROP_H

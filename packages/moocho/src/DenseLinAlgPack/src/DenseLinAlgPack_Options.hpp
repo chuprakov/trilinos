@@ -1,11 +1,11 @@
 // ////////////////////////////////////////////////////////////////////////////////////////////////
-// linalg_options.h
+// LinAlgPackOptions.h
 //
 // Options for LinAlgPack compilation
 //
 
-#ifndef LINALG_OPTIONS_H
-#define LINALG_OPTIONS_H
+#ifndef LINALGPACK_OPTIONS_H
+#define LINALGPACK_OPTIONS_H
 
 #include "LinAlgPackDebugAcronyms.h"
 #include "extended_value_type.h"
@@ -67,4 +67,4 @@ typedef	size_t							size_type;
 
 //@}
 
-#endif
+#endif // LINALGPACK_OPTIONS_H

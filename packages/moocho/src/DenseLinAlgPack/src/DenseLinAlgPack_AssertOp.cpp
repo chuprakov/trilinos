@@ -95,4 +95,4 @@ void LinAlgPack::Mp_MtM_assert_sizes(
 			" op(m_lhs) += op(m_rhs1) * op(m_rhs2) do not match");
 }
 
-#endif
+#endif // LINALGPACK_CHECK_RHS_SIZES

@@ -20,7 +20,7 @@
 
 namespace {
 
-#ifndef _MIPS_CXX
+#if !defined(_MIPS_CXX) && !defined(_PG_CXX)
 
 // 2/10/00: See TestVectorClass.cpp
 inline

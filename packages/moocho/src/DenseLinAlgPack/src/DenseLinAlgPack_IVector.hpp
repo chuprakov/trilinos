@@ -87,4 +87,4 @@ inline IVector::const_iterator IVector::end() const
 
 }	// end namespace LinAlgPack
 
-#endif
+#endif // IVECTOR_H

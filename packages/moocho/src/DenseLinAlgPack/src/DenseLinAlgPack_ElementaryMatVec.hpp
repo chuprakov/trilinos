@@ -1,6 +1,9 @@
 // //////////////////////////////////////////////////////////////////////
 // ElementaryMatVec.h
 
+#ifndef ELEMENTARY_MAT_VEC_H
+#define ELEMENTARY_MAT_VEC_H
+
 #include "GenMatrixClass.h"
 
 namespace LinAlgPack {
@@ -19,4 +22,6 @@ inline GenMatrix eye(size_type n) {
 	return mat;
 }
 
-}	// namespace LinAlgPack 
+}	// namespace LinAlgPack
+
+#endif // ELEMENTARY_MAT_VEC_H

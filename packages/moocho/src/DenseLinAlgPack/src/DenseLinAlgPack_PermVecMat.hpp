@@ -87,4 +87,4 @@ void perm_rows_cols(const IVector& row_perm, const IVector& col_perm, GenMatrixS
 
 //@}
 
-#endif
+#endif // PIVOTVECMAT_H

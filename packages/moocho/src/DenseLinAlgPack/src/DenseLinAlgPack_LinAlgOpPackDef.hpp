@@ -394,4 +394,4 @@ void M_MtM(GenMatrixSlice* gms_lhs, const M1& M1_rhs1
 } // end namespace LinAlgOpPack
 
 
-#endif
+#endif // LIN_ALG_OP_PACK_DEF_H
