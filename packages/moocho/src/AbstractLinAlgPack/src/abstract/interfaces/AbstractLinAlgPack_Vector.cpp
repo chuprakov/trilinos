@@ -122,8 +122,8 @@ std::ostream& Vector::output(
 {
 	RTOpPack::SubVector sub_vec;
 	this->get_sub_vector( Range1D(), &sub_vec );
-	sub_vec.initialize( sub_vec.globalOffset() + global_offset, sub_vec.subDim(), sub_vec.values(), sub_vec.stride() );
-	RTOpPack::output(out,sub_vec,print_dim,newline);
+  RTOpPack::SubVector sub_vec_print( sub_vec.globalOffset() + global_offset, sub_vec.subDim(), sub_vec.values(), sub_vec.stride() );
+	RTOpPack::output(out,sub_vec_print,print_dim,newline);
 	this->free_sub_vector( &sub_vec );
 	return out;
 }
@@ -157,7 +157,7 @@ value_type Vector::norm_1() const {
 }
 
 value_type Vector::norm_2() const {
-	if( 1 /*norm_2_ < 0.0*/ ) {
+	if( norm_2_ < 0.0 ) {
 		norm_2_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj());
@@ -167,13 +167,13 @@ value_type Vector::norm_2() const {
 }
 
 value_type Vector::norm_inf() const {
-	if( 1 /*norm_inf_ < 0.0*/ ) {
+	if( norm_inf_ < 0.0 ) {
 		norm_inf_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj());
 		norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_targ.obj());
 	}
-	return norm_inf_;
+  return norm_inf_;
 }
 
 value_type Vector::inner_product(  const Vector& v ) const
