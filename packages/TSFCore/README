@@ -1,4 +1,4 @@
-Last updated: 06/11/2003
+Last updated: 07/01/2003
 
 Directory structure:
 --------------------
@@ -10,11 +10,11 @@ directories as follows:
     |- Core
     |- Solvers
     |- Nonlin
-./src/extended
+./src/utilities
     |- Core
     |- Solvers
     |- Nonlin
-./src/adapers
+./src/adapters
     |- mpi-base
     |- epetra
 ./example
@@ -37,7 +37,7 @@ of abstract interfaces to nonlinear problems in the C++ namespace
 TSFCore::Nonlin.  All of this code is templated and is contained
 strictly in header files (i.e. no object code to compile).
 
-./src/extended
+./src/utilities
 
 Here some basic utility and other subclasses based on the interfaces
 in the directory 'src/interfaces' are included.  These subclasses are

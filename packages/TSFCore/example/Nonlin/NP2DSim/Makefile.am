@@ -17,9 +17,9 @@ TSFCoreNonlinNP2DSimTest_CXXFLAGS = -I$(top_srcdir)/src/interfaces/Core \
 	-I$(top_srcdir)/src/interfaces/Solvers \
 	-I$(top_srcdir)/src/interfaces/Nonlin \
 	-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
-	-I$(top_srcdir)/src/extended/Nonlin \
-	-I$(top_srcdir)/src/extended/Core \
-	-I$(top_srcdir)/src/extended/Solvers \
+	-I$(top_srcdir)/src/utilities/Nonlin \
+	-I$(top_srcdir)/src/utilities/Core \
+	-I$(top_srcdir)/src/utilities/Solvers \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 	-I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities

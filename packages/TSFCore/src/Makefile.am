@@ -52,13 +52,13 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper.hpp\
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper_decl.hpp
 
-EXTENDED_CORE_H = \
-	$(srcdir)/extended/Core/TSFCoreExplicitVectorView.hpp\
-	$(srcdir)/extended/Core/TSFCoreMultiVectorAllocator.hpp\
-	$(srcdir)/extended/Core/TSFCoreTestingToolsDecl.hpp\
-	$(srcdir)/extended/Core/TSFCoreTestingTools.hpp
+UTILITIES_CORE_H = \
+	$(srcdir)/utilities/Core/TSFCoreExplicitVectorView.hpp\
+	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
+	$(srcdir)/utilities/Core/TSFCoreTestingToolsDecl.hpp\
+	$(srcdir)/utilities/Core/TSFCoreTestingTools.hpp
 
-CORE_H = $(INTERFACES_CORE_H) $(EXTENDED_CORE_H)
+CORE_H = $(INTERFACES_CORE_H) $(UTILITIES_CORE_H)
 
 CORE =
 
@@ -73,13 +73,13 @@ INTERFACES_SOLVERS_H = \
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversSolverState.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversTypes.hpp
 
-EXTENDED_SOLVERS_H = \
-	$(srcdir)/extended/Solvers/TSFCoreSolversBiCGSolverDecl.hpp\
-	$(srcdir)/extended/Solvers/TSFCoreSolversBiCGSolver.hpp\
-	$(srcdir)/extended/Solvers/TSFCoreSolversNormedConvergenceTesterDecl.hpp\
-	$(srcdir)/extended/Solvers/TSFCoreSolversNormedConvergenceTester.hpp
+UTILITIES_SOLVERS_H = \
+	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolverDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolver.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTesterDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTester.hpp
 
-SOLVERS_H = $(INTERFACES_SOLVERS_H) $(EXTENDED_SOLVERS_H)
+SOLVERS_H = $(INTERFACES_SOLVERS_H) $(UTILITIES_SOLVERS_H)
 
 SOLVERS =
 
@@ -94,17 +94,17 @@ INTERFACES_NONLIN_H = \
 	$(srcdir)/interfaces/Nonlin/TSFCoreNonlinNonlinearProblem.hpp\
 	$(srcdir)/interfaces/Nonlin/TSFCoreNonlinTypes.hpp
 
-EXTENDED_NONLIN_H = \
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinLinearOpWithSolveIterDecl.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinLinearOpWithSolveIter.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinNonlinearProblemFirstOrderTesterDecl.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinNonlinearProblemFirstOrderTester.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinNonlinearProblemTesterDecl.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinNonlinearProblemTester.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinSimpleNewtonSolverDecl.hpp\
-	$(srcdir)/extended/Nonlin/TSFCoreNonlinSimpleNewtonSolver.hpp
+UTILITIES_NONLIN_H = \
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinLinearOpWithSolveIterDecl.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinLinearOpWithSolveIter.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinNonlinearProblemFirstOrderTesterDecl.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinNonlinearProblemFirstOrderTester.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinNonlinearProblemTesterDecl.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinNonlinearProblemTester.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinSimpleNewtonSolverDecl.hpp\
+	$(srcdir)/utilities/Nonlin/TSFCoreNonlinSimpleNewtonSolver.hpp
 
-NONLIN_H = $(INTERFACES_NONLIN_H) $(EXTENDED_NONLIN_H)
+NONLIN_H = $(INTERFACES_NONLIN_H) $(UTILITIES_NONLIN_H)
 
 NONLIN =
 
@@ -156,7 +156,10 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
--I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities
+-I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities\
+-I$(srcdir)/adapters/mpi-base\
+-I$(top_srcdir)/../epetra/src\
+-I$(top_builddir)/../epetra/src
 
 # --------------------------------------------------------------------
 # TSFCore library specifications

@@ -198,8 +198,10 @@ AC_CXX_STD_SPRINTF
 TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, epetra, [enable TSFCore's Epetra adapters], TSFCORE_EPETRA, no)
 AM_CONDITIONAL(HAVE_TSFCORE_EPETRA, [test "X$ac_cv_use_tsfcore_epetra" != "Xno"])
 
+#The Epetra Adapters require some of the mpi adapters' header files
 TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, mpi, [enable TSFCore's mpi adapters], TSFCORE_MPI, no)
-AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno"])
+AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
+	test "X$ac_cv_use_tsfcore_epetra" != "Xno"])
 
 # ------------------------------------------------------------------------
 # Specify other directories 
