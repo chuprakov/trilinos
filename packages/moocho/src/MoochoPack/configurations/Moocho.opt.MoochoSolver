@@ -247,71 +247,25 @@ options_group VectorSpaceTester {
 *** Options for the finite derivative testing for a
 *** standard NLP.
 ***
-options_group NLPFirstDerivativesTester {
-
-*    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
-*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
-
-*    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
-
-*    warning_tol   = 1e-10;
-
-*    error_tol     = 1e-5;
-
-}
+*** See options_group NLPFirstDerivativesTester in
+*** rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+***
 
 ****************************************************************
 *** Options for the finite difference derivative tester for a 
 *** direct sensistivity NLP.
 ***
-options_group NLPFirstOrderDirectTester {
-
-*    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
-*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
-
-*    Gf_warning_tol   = 1e-10;
-
-*    Gf_error_tol     = 1e-5;
-
-*    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
-*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
-
-*    Gc_warning_tol   = 1e-10;
-
-*    Gc_error_tol     = 1e-5;
-
-*    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
-
-}
+*** See options_group NLPFirstOrderDirectTester in
+*** rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+***
 
 ****************************************************************
 *** Options for the BasisSystem tester used to validate the
 *** basis of the constraints Jacobian.
 ***
-options_group BasisSystemTester {
-
-*    print_tests = PRINT_NONE; *** (default)
-*    print_tests = PRINT_BASIC;
-*    print_tests = PRINT_MORE;
-*    print_tests = PRINT_ALL;
-
-*    dump_all = true;
-*    dump_all = false; *** (default)
-
-*    throw_exception = true; *** (default)
-*    throw_exception = false;
-
-*    num_random_tests = 1;
-
-*    mult_warning_tol = 1e-14;
-
-*    mult_error_tol   = 1e-10;
-
-*    solve_warning_tol = 1e-14;
-
-*    solve_error_tol   = 1e-10;
-
-}
+*** See options_group BasisSystemTester in
+*** rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+***
 
 end_options
 
