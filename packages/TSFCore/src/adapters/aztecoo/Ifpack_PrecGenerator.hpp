@@ -43,6 +43,8 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, absThreshold );
   ///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relThreshold );
+  ///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calcCondEst );
 
   ///
   /** Sets all of the adjustable options to default values.
@@ -56,6 +58,7 @@ public:
     ,const int       levelOverlap  = 0
     ,const double    absThreshold  = 0.0
     ,const double    relThreshold  = 1.0
+		,const bool      calcCondEst   = false
     );
 
   ///
@@ -66,6 +69,7 @@ public:
   void setupPrec(
     const Teuchos::RefCountPtr<Epetra_Operator>   &Op
     ,Teuchos::RefCountPtr<Epetra_Operator>        *Prec
+		,std::ostream                                 *out
     ) const;
 
 }; // class PrecGenerator

@@ -10,6 +10,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_VbrMatrix.h"
 #include "Ifpack_CrsRiluk.h"
+#include "Teuchos_Time.hpp"
 
 #ifdef _DEBUG
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l) TEST_FOR_EXCEPTION( l > epetra_np_->Nu() || l < 0, std::invalid_argument, "Error!  l == " << l << " out of range")
@@ -29,9 +30,13 @@ namespace Nonlin {
 EpetraNPFO::EpetraNPFO(
 	const int      maxLinSolveIter
 	,const double  relLinSolveTol
+	,const bool    usePrec
+	,const bool    testOperators
 	)
 	:maxLinSolveIter_(maxLinSolveIter)
 	,relLinSolveTol_(relLinSolveTol)
+	,usePrec_(usePrec)
+	,testOperators_(testOperators)
 	,isInitialized_(false)
 {
 	// Turn off output from Aztec by default!
@@ -457,6 +462,7 @@ void EpetraNPFO::calc_Dc(
   ) const
 {
   const int Nu = epetra_np_->Nu();
+	Teuchos::Time timer("");
   //
   // Get Epetra objects for y and u
   //
@@ -470,6 +476,9 @@ void EpetraNPFO::calc_Dc(
   // c
   Teuchos::RefCountPtr<Epetra_Vector>  epetra_c;
   if(c_ && !c_updated_) {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dc(...): Computing a Epetra_Vector object for c ... \n";
 		c_->setUninitialized( &epetra_c );
 		computeSomething = true;
 	}
@@ -479,12 +488,13 @@ void EpetraNPFO::calc_Dc(
   const bool allow_specialized_DcDy_prec = true; // ToDo: Make this an external parameter!
   const bool specialized_DcDy_prec = ( epetra_np_->specialized_DcDy_prec() && allow_specialized_DcDy_prec );
   if(computeGradients && DcDy_ && !DcDy_updated_) {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dc(...): Computing a new Epetra_Operator object for DcDy ... \n";
     DcDy_->setUninitialized( &epetra_DcDy_op, NULL, NULL, &epetra_DcDy_prec, NULL );
     if( !epetra_DcDy_op.get() ) {
       epetra_DcDy_op = epetra_np_->create_DcDy_op();
-			DcDy_->set_trace_out(
-				Teuchos::rcp(new std::ofstream("LinearOpWithSolveAztecOO.out") )
-				); // ToDo: Make this more flexible!
+			DcDy_->set_trace_out(get_trace_out());
     }
     if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
       epetra_DcDy_op = epetra_np_->create_DcDy_prec();
@@ -494,6 +504,9 @@ void EpetraNPFO::calc_Dc(
   // DcDu
   for(int l=1;l<=Nu;++l) {
     if(computeGradients && DcDu_op_[l-1] && !DcDu_updated_[l-1]) {
+			if(get_trace_out().get())
+				trace_out()
+					<< "\nEpetraNPFO::calc_Dc(...): Computing a Epetra_Operator object for DcDu("<<l<<") ... \n";
       DcDu_op_[l-1]->setUninitialized( &epetra_DcDu_op_[l-1] ); // Grab the RCP<Epetra_Operator>
       if(!epetra_DcDu_op_[l-1].get())
         epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu_op(l);
@@ -501,6 +514,9 @@ void EpetraNPFO::calc_Dc(
 			computeSomething = true;
     }
     else if(computeGradients && DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
+			if(get_trace_out().get())
+				trace_out()
+					<< "\nEpetraNPFO::calc_Dc(...): Computing a DcDu("<<l<<") Epetra_MultiVector object ... \n";
       DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
       if(!epetra_DcDu_mv_[l-1].get())
         epetra_DcDu_mv_[l-1] = epetra_np_->create_DcDu_mv(l);
@@ -513,10 +529,14 @@ void EpetraNPFO::calc_Dc(
   }
 
 	if(computeSomething) {
-		
 		//
 		// Compute the set Epetra objects
 		//
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dc(...): Calling " << typeid(*epetra_np_).name()
+				<< ".calc_Dc(...) ...\n";
+		timer.start(true);
 		epetra_np_->calc_Dc(
 			y
 			,u
@@ -525,7 +545,10 @@ void EpetraNPFO::calc_Dc(
 			,specialized_DcDy_prec ? &*epetra_DcDy_prec : NULL
 			,&epetra_DcDu_args_[0]
 			);
-		
+		timer.stop();
+		if(get_trace_out().get())
+			trace_out()
+				<< "\n  => time = " << timer.totalElapsedTime() << " sec\n";
 		//
 		// Put the raw Epetra objects back into the adpater objects
 		//
@@ -536,14 +559,43 @@ void EpetraNPFO::calc_Dc(
 		}
 		// DcDy
 		if( epetra_DcDy_op.get() ) {
-			// Setup the externally defined preconditioner
-			const bool usePrec = true; // ToDo: Make an external option
-			if( usePrec && !specialized_DcDy_prec ) {
-				precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec);
+			// Test DcDy
+			if(testOperators()) {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDy_op).name()
+						<< "\' object for DcDy ...\n";
+				bool result = linearOpTester_.check(EpetraLinearOp(epetra_DcDy_op),get_trace_out().get());
+				TEST_FOR_EXCEPTION(
+					!result, std::runtime_error
+					,"EpetraNPFO::calc_Dc(...): Error, test of DcDy operator object failed!"
+					);
+			}
+			// Setup the matrix-based preconditioner
+			if( usePrec() && !specialized_DcDy_prec ) {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): Generating a preconditioner matrix for DcDy ... \n";
+				precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec,get_trace_out().get());
+				// Test preconditioner for DcDy
+				if(testOperators()) {
+					if(get_trace_out().get())
+						trace_out()
+							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDy_prec).name()
+							<< "\' object for the preconditioner for DcDy ...\n";
+					bool result = linearOpTester_.check(EpetraLinearOp(epetra_DcDy_prec),get_trace_out().get());
+					TEST_FOR_EXCEPTION(
+						!result, std::runtime_error
+						,"EpetraNPFO::calc_Dc(...): Error, test of DcDy preconditioner object failed!"
+						);
+				}
 			}
 			// Set the options for AztecOO::Iterate(...)
 			DcDy_->maxIter(maxLinSolveIter());
 			DcDy_->relTol(relLinSolveTol());
+			DcDy_->minRelTol(1.0); // ToDo: Make this an external parameter
+			// Set the linear system scaling options
+			DcDy_->linearSystemScaler() = linearSystemScaler();
 			// Finally initialize the aggregate LinearOpWithSolve object
 			DcDy_->initialize(
 				epetra_DcDy_op                                               // Op
@@ -551,6 +603,7 @@ void EpetraNPFO::calc_Dc(
 				,Teuchos::rcp(&aztecOO_,false)                               // solver
 				,epetra_DcDy_prec                                            // Prec
 				,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Prec_trans
+				,Epetra::ProductOperator::APPLY_MODE_APPLY_INVERSE           // Prec_inverse (This is only for Ifpack!)
 				,epetra_np_->adjointSupported()                              // adjointSupported
 				);
 			DcDy_updated_ = true;
@@ -559,11 +612,33 @@ void EpetraNPFO::calc_Dc(
 		for(int l=1;l<=Nu;++l) {
 			if(epetra_DcDu_op_[l-1].get()) {
 				DcDu_op_[l-1]->initialize(epetra_DcDu_op_[l-1]);
+				if(testOperators()) {
+					if(get_trace_out().get())
+						trace_out()
+							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_op_[l-1]).name()
+							<< "\' object for DcDu("<<l<<") ...\n";
+					bool result = linearOpTester_.check(*DcDu_op_[l-1],get_trace_out().get());
+					TEST_FOR_EXCEPTION(
+						!result, std::runtime_error
+						,"EpetraNPFO::calc_Dc(...): Error, test of DcDu("<<l<<") operator object failed!"
+						);
+				}
 				epetra_DcDu_op_[l-1] = Teuchos::null;
 				DcDu_updated_[l-1] = true;
 			}
 			else if(epetra_DcDu_mv_[l-1].get()) {
 				DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_[l-1],space_c_);
+				if(testOperators()) {
+					if(get_trace_out().get())
+						trace_out()
+							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_mv_[l-1]).name()
+							<< "\' object for DcDu("<<l<<") ...\n";
+					bool result = linearOpTester_.check(*DcDu_mv_[l-1],get_trace_out().get());
+					TEST_FOR_EXCEPTION(
+						!result, std::runtime_error
+						,"EpetraNPFO::calc_Dc(...): Error, test of DcDu("<<l<<") operator object failed!"
+						);
+				}
 				epetra_DcDu_mv_[l-1] = Teuchos::null;
 				DcDu_updated_[l-1] = true;
 			}

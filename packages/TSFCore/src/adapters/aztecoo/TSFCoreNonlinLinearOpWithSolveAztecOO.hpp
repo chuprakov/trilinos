@@ -5,6 +5,7 @@
 #define TSFCORE_NONLIN_LINEAR_OP_WITH_SOLVE_AZTECOO_HPP
 
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
+#include "Epetra_LinearSystemScaler.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
@@ -21,8 +22,13 @@ namespace Nonlin {
 class LinearOpWithSolveAztecOO : virtual public LinearOpWithSolve<double> {
 public:
 
+	/** @name Public types */
+	//@{
+
   ///
   typedef double Scalar;
+
+	//@}
 	
 	/** @name Constructors / initializers / accessors */
 	//@{
@@ -37,46 +43,57 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, minRelTol );
 
 	///
+	/** Give non-const access to the linear system scaler object so that
+	 * clients can set options.
+	 */
+	Epetra::LinearSystemScaler& linearSystemScaler();
+
+	///
+	const Epetra::LinearSystemScaler& linearSystemScaler() const;
+
+	///
 	/** Construct uninitialized but with default option values.
 	 *
 	 * Note, these defaults where taken from
 	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
 	 */
  	LinearOpWithSolveAztecOO(
-	 	const int      maxIter    = 400
-		,const double  relTol     = 1e-6
-		,const double  minRelTol  = 1e-2
+	 	const int                    maxIter            = 400
+		,const double                relTol             = 1e-6
+		,const double                minRelTol          = 1e-2
 		);
 
 	///
-	LinearOpWithSolveAztecOO(
-		const Teuchos::RefCountPtr<Epetra_Operator>                          &Op
-		,ETransp                                                             Op_trans
-		,const Teuchos::RefCountPtr<AztecOO>                                 &solver
-		,const Teuchos::RefCountPtr<Epetra_Operator>                         &Prec               = Teuchos::null
-		,ETransp                                                             Prec_trans          = NOTRANS
-    ,bool                                                                adjointSupported    = false
-		);
+	~LinearOpWithSolveAztecOO();
 
 	///
+	/** Sets up this object with an operator and an optional preconditioner.
+	 *
+	 * Note: All options must be set before calling this function.
+	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Epetra_Operator>                          &Op
-		,ETransp                                                             Op_trans
-		,const Teuchos::RefCountPtr<AztecOO>                                 &solver
-		,const Teuchos::RefCountPtr<Epetra_Operator>                         &Prec               = Teuchos::null
-		,ETransp                                                             Prec_trans          = NOTRANS
-    ,bool                                                                adjointSupported    = false
+		const Teuchos::RefCountPtr<Epetra_Operator>      &Op
+		,const ETransp                                   Op_trans
+		,const Teuchos::RefCountPtr<AztecOO>             &solver
+		,const Teuchos::RefCountPtr<Epetra_Operator>     &Prec               = Teuchos::null
+		,const ETransp                                   Prec_trans          = NOTRANS
+		,const Epetra::ProductOperator::EApplyMode       Prec_inverse        = Epetra::ProductOperator::APPLY_MODE_APPLY_INVERSE
+    ,const bool                                      adjointSupported    = false
 		);
 	
 	///
 	void setUninitialized(
-		Teuchos::RefCountPtr<Epetra_Operator>                                *Op                  = NULL
-		,ETransp                                                             *Op_trans            = NULL
-		,Teuchos::RefCountPtr<AztecOO>                                       *solver              = NULL
-		,Teuchos::RefCountPtr<Epetra_Operator>                               *Prec                = NULL
-		,ETransp                                                             *Prec_trans          = NULL
-    ,bool                                                                *adjointSupported    = NULL
+		Teuchos::RefCountPtr<Epetra_Operator>            *Op                  = NULL
+		,ETransp                                         *Op_trans            = NULL
+		,Teuchos::RefCountPtr<AztecOO>                   *solver              = NULL
+		,Teuchos::RefCountPtr<Epetra_Operator>           *Prec                = NULL
+		,ETransp                                         *Prec_trans          = NULL
+		,Epetra::ProductOperator::EApplyMode             *Prec_inverse        = NULL
+    ,bool                                            *adjointSupported    = NULL
     );
+
+	///
+	void resetCounters();
 
 	//@}
 
@@ -136,21 +153,58 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
+
   Epetra_Operator          *Op;
   AztecOO                  *solver;
   Epetra_Operator          *Prec;
+
 #else
+
+	Epetra::LinearSystemScaler                    linearSystemScaler_;
+
   Teuchos::RefCountPtr<Epetra_Operator>         Op_;
 	ETransp                                       Op_trans_;
   EpetraLinearOp                                tsfcore_Op_;
   Teuchos::RefCountPtr<AztecOO>                 solver_;
   Teuchos::RefCountPtr<Epetra_Operator>         Prec_;
   ETransp                                       Prec_trans_;
+	Epetra::ProductOperator::EApplyMode           Prec_inverse_;
   EpetraLinearOp                                tsfcore_Prec_;
+	
   bool                                          adjointSupported_;
+
+  Teuchos::RefCountPtr<Epetra_Operator>         fwd_Op_;
+  Teuchos::RefCountPtr<Epetra_Operator>         fwd_Prec_;
+  Teuchos::RefCountPtr<Epetra_Operator>         adj_Op_;
+  Teuchos::RefCountPtr<Epetra_Operator>         adj_Prec_;
+
+	mutable int                                   numFwdSolves_;
+	mutable int                                   numFwdLinearIters_;
+	mutable double                                fwdLinearCPU_; // seconds
+	mutable int                                   numAdjSolves_;
+	mutable int                                   numAdjLinearIters_;
+	mutable double                                adjLinearCPU_; // seconds
+
 #endif
 
 }; // class LinearOpWithSolveAztecOO
+
+// ////////////////////////////
+// Inline members
+
+inline
+Epetra::LinearSystemScaler&
+LinearOpWithSolveAztecOO::linearSystemScaler()
+{
+	return linearSystemScaler_;
+}
+
+inline
+const Epetra::LinearSystemScaler&
+LinearOpWithSolveAztecOO::linearSystemScaler() const
+{
+	return linearSystemScaler_;
+}
 
 } // namespace Nonlin
 } // namespace TSFCore

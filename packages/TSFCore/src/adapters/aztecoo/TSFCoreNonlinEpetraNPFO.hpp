@@ -7,31 +7,47 @@
 #include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
 #include "TSFCoreNonlinLinearOpWithSolveAztecOO.hpp"
 #include "Epetra_NonlinearProblemFirstOrder.hpp"
+#include "Epetra_LinearSystemScaler.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "Ifpack_PrecGenerator.hpp"
+#include "TSFCoreLinearOpTester.hpp"
 #include "AztecOO.h"
+#include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
 
 ///
-/** Adds first-derivatives to <tt>NonlinearProblem</tt> as Epetra objects.
+/** Implements the <tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt>
+ * interface given a <tt>Epetra::NonlinearProblemFirstOrder</tt> object.
  *
- * Note: this class is setup for the default case where only a square
- * set if equations are defined and if optimization is performed then
- * DcDu are all <tt>Epetra_MultiVector</tt> objects.
+ * Basically, this class wraps Epetra objects in TSFCore/Epetra
+ * adapter objects and helps take care of defining algebraic
+ * preconditioners with <tt>Ifpack</tt> and solving linear systems
+ * with <tt>AztecOO</tt>.
  *
  * ToDo: Finish documentation!
  */
 class EpetraNPFO : public NonlinearProblemFirstOrder<double> {
 public:
 
+	typedef double Scalar;
+
+	/// Stream that trace to which information will be sent
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
+
   /// Set the maximum number of linear solver iterations
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLinSolveIter );
 
   /// Set the relative residual tolerance for the linear solver
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relLinSolveTol );
+
+  /// Determine if preconditioning is used or not
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, usePrec );
+
+  /// Determines if operators are tested after they are formed
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, testOperators );
 
   ///
   /** Give mutable access to the object used to generate
@@ -43,11 +59,36 @@ public:
   Ifpack::PrecGenerator& precGenerator();
 
   ///
-  /** Same as above except is constant.
-   */
   const Ifpack::PrecGenerator& precGenerator() const;
+
+	///
+	/** Give non-const access to the linear system scaler object so that
+	 * clients can set options.
+	 */
+	Epetra::LinearSystemScaler& linearSystemScaler();
+
+	///
+	const Epetra::LinearSystemScaler& linearSystemScaler() const;
+
+  ///
+  /** Give mutable access to the object used to test the
+   * operators for DcDy, DcDu(l).
+   *
+   * The purpose of this function is to allow clients to change the
+   * options that affect how these tests are performed.
+   */
+  LinearOpTester<Scalar>& linearOpTester();
+
+  ///
+  const LinearOpTester<Scalar>& linearOpTester() const;
 	
 	///
+	/** Give mutable access to the AztecOO object that contains the
+	 * Aztec options what will be used to solve linear systems.
+	 *
+	 * Note: Only the Aztec options in the object will be copied off and
+	 * nothing else!
+	 */
 	AztecOO& aztecOO();
 
 	/** @name Constructors / Initializers / accessors */
@@ -61,8 +102,10 @@ public:
 	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
 	 */
   EpetraNPFO(
-	 	const int      maxLinSolveIter = 400
-		,const double  relLinSolveTol  = 1e-6
+	 	const int      maxLinSolveIter  = 400
+		,const double  relLinSolveTol   = 1e-6
+		,const bool    usePrec          = true
+		,const bool    testOperators    = false
 		);
 
   /// Calls <tt>initialize()</tt>
@@ -235,7 +278,9 @@ private:
 	
 	mutable AztecOO  aztecOO_;
 
-  Ifpack::PrecGenerator   precGenerator_;
+  Ifpack::PrecGenerator        precGenerator_;
+	Epetra::LinearSystemScaler   linearSystemScaler_;
+	LinearOpTester<Scalar>       linearOpTester_;
 
   Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>        epetra_np_;
 
@@ -327,6 +372,38 @@ const Ifpack::PrecGenerator& EpetraNPFO::precGenerator() const
   return precGenerator_;
 }
 
+inline
+Epetra::LinearSystemScaler&
+EpetraNPFO::linearSystemScaler()
+{
+	return linearSystemScaler_;
+}
+
+inline
+const Epetra::LinearSystemScaler&
+EpetraNPFO::linearSystemScaler() const
+{
+	return linearSystemScaler_;
+}
+
+inline
+LinearOpTester<Scalar>& EpetraNPFO::linearOpTester()
+{
+	return linearOpTester_;
+}
+
+inline
+const LinearOpTester<Scalar>& EpetraNPFO::linearOpTester() const
+{
+	return linearOpTester_;
+}
+
+inline
+AztecOO& EpetraNPFO::aztecOO()
+{
+	return aztecOO_;
+}
+
 // private
 
 inline
@@ -334,12 +411,6 @@ const Epetra_Vector& EpetraNPFO::get_epetra_vec( const Vector<Scalar> &v )
 {
   using DynamicCastHelperPack::dyn_cast;
   return *dyn_cast<const TSFCore::EpetraVector>(v).epetra_vec();
-}
-
-inline
-AztecOO& EpetraNPFO::aztecOO()
-{
-	return aztecOO_;
 }
 
 } // namespace Nonlin
