@@ -23,7 +23,8 @@ extensive.
 <li> Utility Packages: 
 	Packages that are used in the implementation of the other packages.
 	<ul>
-	<li> <A HREF="../Misc/html/index.html">Misc</A>
+	<li> <A HREF="../MoochoUtilities/html/index.html">MoochoUtilities</A>
+	<li> <A HREF="../MoochoMoreUtilities/html/index.html">MoochoMoreUtilities</A>
 	</ul>
 
 <li> Abstractions for General Iterative Algorithms:
@@ -32,7 +33,7 @@ extensive.
 	<li> <A HREF="../IterationPack/html/index.html">IterationPack</A>.
 	</ul>
 
-<li> General Abstractions Linear Algebra
+<li> General Abstractions for Linear Algebra
 	<ul>
 	<li> <A HREF="../TSFCore/html/index.html">TSFCore</A> Basic interfaces.
 	<li> <A HREF="../TSFTools/html/index.html">TSFTools</A> Some tools based on <tt>TSFCore</tt>.
