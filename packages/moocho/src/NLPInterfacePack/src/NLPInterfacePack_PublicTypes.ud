@@ -19,5 +19,12 @@ using NLPInterfacePack::NLPFirstOrderInfo;
 using NLPInterfacePack::NLPSecondOrderInfo;
 using NLPInterfacePack::NLPReduced;
 
+using NLPInterfacePack::NLPFirstDerivativesTester;
+using NLPInterfacePack::NLPFirstDerivativesTesterSetOptions;
+using NLPInterfacePack::NLPFirstOrderDirectTester;
+using NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions;
+using NLPInterfacePack::NLPTester;
+using NLPInterfacePack::NLPTesterSetOptions;
+
 using NLPInterfacePack::NLPFullToReduced;
 using NLPInterfacePack::NLPDualCalc;

@@ -32,6 +32,15 @@ class NLPFirstOrderInfo;
 class NLPSecondOrderInfo;
 class NLPReduced;
 
+// NLP testing classes
+
+class NLPFirstDerivativesTester;
+class NLPFirstDerivativesTesterSetOptions;
+class NLPFirstOrderDirectTester;
+class NLPFirstOrderDirectTesterSetOptions;
+class NLPTester;
+class NLPTesterSetOptions;
+
 // Node implementation classes
 
 class NLPFullToReduced;
