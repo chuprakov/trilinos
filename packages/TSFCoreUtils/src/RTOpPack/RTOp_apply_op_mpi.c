@@ -28,9 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
-
 #include "RTOp_apply_op_mpi.h"
 #include "RTOp_parallel_helpers.h"
 #include "RTOpToMPI.h"

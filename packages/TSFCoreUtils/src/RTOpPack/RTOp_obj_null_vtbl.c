@@ -28,8 +28,7 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
+#include <assert.h> 
 
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_free_free.h"

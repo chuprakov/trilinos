@@ -28,8 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-
 #include "RTOp_reduct_sum_values.h"
 
 int RTOp_reduct_sum_values(

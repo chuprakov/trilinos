@@ -30,9 +30,6 @@
 /* ////////////////////////////////////////////////////////////// */
 /* RTOp_apply_op_serial.c */
 
-#include <assert.h>
-#include <malloc.h>
-
 #include "RTOp_apply_op_serial.h"
 
 int RTOp_apply_op_serial(

@@ -28,8 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-
 #include "RTOp_parallel_helpers.h"
 
 #define MY_MIN(a,b) ( (a) < (b) ? (a) : (b) )

@@ -29,7 +29,6 @@
 */
 
 #include <assert.h>
-#include <malloc.h>
 
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_obj_free_free.h"
