@@ -110,12 +110,8 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 	if(has_bounds) {
 		const Range1D
-			bounded_rng   = ( dep_bounded 
-							  ? Range1D(var_dep_.lbound()  ,var_dep_.lbound()-1+m)
-							  : Range1D(var_indep_.lbound(),var_dep_.lbound()-1+m) ),
-			unbounded_rng = ( dep_bounded
-							  ? Range1D(var_indep_.lbound(),var_dep_.lbound()-1+m)
-							  : Range1D(var_dep_.lbound()  ,var_dep_.lbound()-1+m) );
+			bounded_rng   = ( dep_bounded ? var_dep_   : var_indep_ ),
+			unbounded_rng = ( dep_bounded ? var_indep_ : var_dep_   );
 		*xl_->sub_view(bounded_rng)   = 0.01;
 		*xl_->sub_view(unbounded_rng) = -NLP::infinite_bound();
 		*xu_->sub_view(bounded_rng)   = 20.0;
