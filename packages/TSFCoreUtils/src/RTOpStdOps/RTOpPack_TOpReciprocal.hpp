@@ -27,10 +27,10 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_TOpAssignVectors.hpp
+// RTOpPack_TOpReciprocal.hpp
 
-#ifndef RTOPPACK_TOP_ASSIGN_VECTORS_HPP
-#define RTOPPACK_TOP_ASSIGN_VECTORS_HPP
+#ifndef RTOPPACK_TOP_RECIPROCAL_HPP
+#define RTOPPACK_TOP_RECIPROCAL_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
@@ -40,10 +40,10 @@ namespace RTOpPack {
 /** Vector assignment transforamtion operator: <tt>z0[i] = v0[i], i=1...n</tt>.
  */
 template<class Scalar>
-class TOpAssignVectors : public RTOpT<Scalar> {
+class TOpReciprocal : public RTOpT<Scalar> {
 public:
   ///
-  TOpAssignVectors() : RTOpT<Scalar>("TOpAssignVector") {}
+  TOpReciprocal() : RTOpT<Scalar>("TOpReciprocal") {}
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -54,13 +54,14 @@ public:
 		) const
     {
       RTOP_APPLY_OP_1_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
+			const Scalar one = Teuchos::ScalarTraits<Scalar>::one();
       for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, z0_val += z0_s ) {
-        *z0_val = *v0_val;
+        *z0_val = one / *v0_val;
       }
     }
   //@}
-}; // class TOpAssignVectors
+}; // class TOpReciprocal
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_TOP_ASSIGN_VECTORS_HPP
+#endif // RTOPPACK_TOP_RECIPROCAL_HPP

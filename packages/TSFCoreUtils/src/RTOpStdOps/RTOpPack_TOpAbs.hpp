@@ -27,23 +27,23 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_TOpAssignVectors.hpp
+// RTOpPack_TOpAbs.hpp
 
-#ifndef RTOPPACK_TOP_ASSIGN_VECTORS_HPP
-#define RTOPPACK_TOP_ASSIGN_VECTORS_HPP
+#ifndef RTOPPACK_TOP_ABS_HPP
+#define RTOPPACK_TOP_ABS_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
 ///
-/** Vector assignment transforamtion operator: <tt>z0[i] = v0[i], i=1...n</tt>.
+/** Transforamtion operator that takes absolute values of elements: <tt>z0[i] = abs(v0[i]), i=1...n</tt>.
  */
 template<class Scalar>
-class TOpAssignVectors : public RTOpT<Scalar> {
+class TOpAbs : public RTOpT<Scalar> {
 public:
   ///
-  TOpAssignVectors() : RTOpT<Scalar>("TOpAssignVector") {}
+  TOpAbs() : RTOpT<Scalar>("TOpAbs") {}
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -55,12 +55,12 @@ public:
     {
       RTOP_APPLY_OP_1_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, z0_val += z0_s ) {
-        *z0_val = *v0_val;
+        *z0_val = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
       }
     }
   //@}
-}; // class TOpAssignVectors
+}; // class TOpAbs
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_TOP_ASSIGN_VECTORS_HPP
+#endif // RTOPPACK_TOP_ABS_HPP
