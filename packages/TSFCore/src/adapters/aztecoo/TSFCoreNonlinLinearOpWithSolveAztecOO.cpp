@@ -128,6 +128,7 @@ void LinearOpWithSolveAztecOO::initialize(
   adjointSupported_ = adjointSupported;
 	// Scale the operator and/or the preconditioner
 	Teuchos::RefCountPtr<const Epetra::LinearSystemScaler::Scaling> scaling;
+/*
 	if( Epetra_RowMatrix *Op_rm = dynamic_cast<Epetra_RowMatrix*>(&*Op_) ) {
 		if(get_trace_out().get())
 			trace_out()
@@ -148,8 +149,11 @@ void LinearOpWithSolveAztecOO::initialize(
 		}
 	}
 	else {
+*/
 		scaling = Teuchos::rcp(new Epetra::LinearSystemScaler::Scaling()); // No scaling!
+/*
 	}
+*/
 	// Create scaled objects for the operator and the preconditioner.
 	// Note, AztecOO calls ApplyInverse(...)  to apply the
 	// preconditioner when using an external preconditioner.
