@@ -226,6 +226,17 @@ void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 		);
 }
 
+void VectorWithOpMutable::Vp_StMtV(
+	value_type                       alpha
+	,const GenPermMatrixSlice        &P
+	,BLAS_Cpp::Transp                P_trans
+	,const VectorWithOp              &x
+	,value_type                      beta
+	)
+{
+	assert(0); // ToDo: Implement using reduction or transformation operators
+}
+
 // Overridden from VectorWithOp
 
 VectorWithOp::vec_ptr_t

@@ -347,6 +347,25 @@ public:
 	 */
 	virtual void set_sub_vector( const RTOp_SubVector& sub_vec );
 
+	///
+	/** Perform a gather or scatter operation with a vector.
+	 *
+     \verbatim
+
+     this = alpha * op(P) * x + beta * this
+	 \endverbatim
+	 *
+	 * The default implementation is based on a transformation or reduction operator
+	 * (depending if a gather or scatter is being performed).
+	 */
+	virtual void Vp_StMtV(
+		value_type                       alpha
+		,const GenPermMatrixSlice        &P
+		,BLAS_Cpp::Transp                P_trans
+		,const VectorWithOp              &x
+		,value_type                      beta
+		);
+
 	//@}
 
 	/** @name Overridden from VectorWithOp */
@@ -382,6 +401,20 @@ protected:
 	//@}
 
 }; // end class VectorWithOpMutable
+
+inline
+/// <tt>y = alpha * op(P) * x + beta *y</tt>
+void Vp_StMtV(
+	VectorWithOpMutable              *y	
+	,value_type                      alpha
+	,const GenPermMatrixSlice        &P
+	,BLAS_Cpp::Transp                P_trans
+	,const VectorWithOp              &x
+	,value_type                      beta = 1.0
+	)
+{
+	y->Vp_StMtV(alpha,P,P_trans,x,beta);
+}
 
 // ////////////////////////////////////////////////
 // Inline members
