@@ -16,8 +16,8 @@
 #include <assert.h>
 
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
@@ -28,10 +28,10 @@ void SparseLinAlgPack::V_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::MtV_assert_sizes;
 
-	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.size() );
+	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.dim() );
 
 	y->resize( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ), P.nz() );
 
@@ -78,9 +78,9 @@ void SparseLinAlgPack::V_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::MtV_assert_sizes;
-	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.size() );
+	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.dim() );
 
 	y->resize( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ), P.nz() );
 
@@ -128,10 +128,10 @@ void SparseLinAlgPack::Vp_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::Vp_MtV_assert_sizes;
 
-	Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, x.size() );
+	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 
 	typedef SpVector::element_type ele_t;
 
@@ -179,7 +179,7 @@ void SparseLinAlgPack::Vp_StMtV(
 {
 	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_MtV_assert_sizes;
-	Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, x.size() );
+	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 	// y = b*y
 	if( b == 0.0 )
 		*y = 0.0;
@@ -219,11 +219,11 @@ void SparseLinAlgPack::Vp_StMtV(
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_MtV_assert_sizes;
 	
-	Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, x.size() );
+	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 	// y = b*y
 	if( b == 0.0 )
 		*y = 0.0;
@@ -252,11 +252,11 @@ void SparseLinAlgPack::Vp_StMtV(
 				const size_type
 					i = rows(P_itr->row_i(),P_itr->col_j(),P_trans),
 					j = cols(P_itr->row_i(),P_itr->col_j(),P_trans);
-				if( j < x_itr->indice() + x_off ) {
+				if( j < x_itr->index() + x_off ) {
 					++P_itr;
 					continue;
 				}
-				else if( j > x_itr->indice() + x_off ) {
+				else if( j > x_itr->index() + x_off ) {
 					++x_itr;
 					continue;
 				}
@@ -280,14 +280,14 @@ void SparseLinAlgPack::Vp_StMtV(
 
 namespace {
 
-SparseLinAlgPack::GenPermMatrixSliceIteratorPack::EOrderedBy
+AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::EOrderedBy
 ordered_by(
-	SparseLinAlgPack::GenPermMatrixSliceIteratorPack::EOrderedBy P_ordered_by
+	AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::EOrderedBy P_ordered_by
 	, BLAS_Cpp::Transp P_trans
 	)
 {
 	using BLAS_Cpp::no_trans;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	GPMSIP::EOrderedBy
 		opP_ordered_by;
 	switch( P_ordered_by ) {
@@ -328,7 +328,7 @@ void SparseLinAlgPack::intersection(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	//
 	// Q = op(P1)*op(P2)
 	//
