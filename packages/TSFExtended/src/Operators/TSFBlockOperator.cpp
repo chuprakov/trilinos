@@ -133,8 +133,8 @@ void BlockOperator<Scalar>::apply(
 				  const TSFCore::ETransp            M_trans
 				  ,const TSFCore::Vector<Scalar>    &x
 				  ,TSFCore::Vector<Scalar>          *y
-				  ,const Scalar            alpha = 1.0
-				  ,const Scalar            beta  = 0.0
+				  ,const Scalar                     alpha
+				  ,const Scalar                     beta
 				  ) const 
 {
   /* make TSFExtended vectors  */
