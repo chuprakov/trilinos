@@ -174,7 +174,7 @@ public:
 	 * location of another iteration (<tt>k + set_offset</tt>) not
 	 * matter how storage is handled by the implementing subclass.
 	 */
-	virtual T_info& set_k(int set_offset, int set_offset) = 0;
+	virtual T_info& set_k(int set_offset, int get_offset) = 0;
 
 };	// end class IterQuantityAccess 
 
