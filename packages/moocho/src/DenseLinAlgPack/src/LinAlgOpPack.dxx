@@ -1,0 +1,17 @@
+/** @name namespace LinAlgOpPack.
+@memo
+Uses Package {\em LinAlgPack}.\\
+Package of template functions for specializing compatable linear algebra
+operations build using {\em LinAlgPack}.
+*/
+//@{
+  //@Include: LinAlgOpPackDecl.h
+//@}
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+/** @name namespace NLPInterfacePack.
+@memo
+Uses Package {\em SparseLinAlgPack}.\\
+Collection of interfaces and node classes for implementing an interface
+to a Non-Linear Program (NLP).
+*/
+//@{
+	/** @name Abstract inteface classes */
+	//@{
+		//@Include: NLP.h
+		//@Include: NLPFirstOrderInfo.h
+		//@Include: NLPSecondOrderInfo.h
+		//@Include: NLPReduced.h
+	//@}
+	/** @name Implementation node classes */
+	//@{
+		//@Include: NLPFullToReduced.h
+		//@Include: NLPDualCalc.h
+	//@}
+//@}

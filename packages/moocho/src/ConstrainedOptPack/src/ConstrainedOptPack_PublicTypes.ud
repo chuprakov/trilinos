@@ -1,0 +1,58 @@
+// //////////////////////////////////////////////////////////////
+// ConstrainedOptimizationPackPublicTypes.ud
+//
+// This is a set of using declarations for the types that ConstrainedOptimizationPack
+// exposes publicly.  A namespace that wants to included these
+// names should use:
+//
+// namespace MyNamespace {
+//     #include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackPublicTypes.ud"
+// }
+
+// types from SparseSolverPack
+#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
+
+// types from NLPInterfacePack
+#include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
+
+using ConstrainedOptimizationPack::SymMatrixSubclass;
+using ConstrainedOptimizationPack::SymInvCholMatrix;
+using ConstrainedOptimizationPack::SymLBFGSMatrixSubclass;
+using ConstrainedOptimizationPack::DenseIdentVertConcatMatrix;
+using ConstrainedOptimizationPack::IdentZeroVertConcatMatrix;
+
+using ConstrainedOptimizationPack::MatrixSymSecantUpdateable;
+using ConstrainedOptimizationPack::MatrixSymAddDelUpdateable;
+using ConstrainedOptimizationPack::MatrixSymAddDelUpdateableWithOpFactorized;
+using ConstrainedOptimizationPack::MeritFuncCalc1D;
+using ConstrainedOptimizationPack::MeritFuncCalc;
+using ConstrainedOptimizationPack::MeritFuncNLP;
+using ConstrainedOptimizationPack::MeritFuncNLE;
+using ConstrainedOptimizationPack::MeritFuncNLF;
+using ConstrainedOptimizationPack::MeritFuncNLPDirecDeriv;
+using ConstrainedOptimizationPack::MeritFuncPenaltyParam;
+using ConstrainedOptimizationPack::MeritFuncPenaltyParams;
+using ConstrainedOptimizationPack::DirectLineSearch_Strategy;
+using ConstrainedOptimizationPack::ZVarReductMatrix;
+
+using ConstrainedOptimizationPack::MeritFuncCalc1DQuadratic;
+using ConstrainedOptimizationPack::MeritFuncCalcNLP;
+using ConstrainedOptimizationPack::MeritFuncCalcNLE;
+using ConstrainedOptimizationPack::MeritFuncCalcNLF;
+using ConstrainedOptimizationPack::MatrixSymPosDefAddDel;
+using ConstrainedOptimizationPack::SymInvCholMatrixSubclass;
+using ConstrainedOptimizationPack::DenseIdentVertConcatMatrixSubclass;
+using ConstrainedOptimizationPack::ZAdjointFactMatrixSubclass;
+using ConstrainedOptimizationPack::IdentZeroVertConcatMatrixSubclass;
+
+using ConstrainedOptimizationPack::DecompositionSystem;
+using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
+using ConstrainedOptimizationPack::DecompositionSystemVarReductImpNode;
+using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
+using ConstrainedOptimizationPack::DecompositionSystemCoordinateDirect;
+using ConstrainedOptimizationPack::DecompositionSystemCoordinateAdjoint;
+
+using ConstrainedOptimizationPack::QPSolverWithBounds;
+using ConstrainedOptimizationPack::QPSolverWithBoundsValidateInput;
+using ConstrainedOptimizationPack::QPSolverWithBoundsVE09;
+using ConstrainedOptimizationPack::QPSCPD;

@@ -1,0 +1,24 @@
+// //////////////////////////////////////////////////////////////
+// GeneralIterationPackPublicTypes.ud
+//
+// This is a set of using declarations for the types that GeneralIterationPack
+// exposes publicly.  A namespace that wants to included these
+// names should use:
+//
+// namespace MyNamespace {
+//     #include "GeneralIterationPackPublicTypes.ud"
+// }
+
+using GeneralIterationPack::EAssocStepType;
+using GeneralIterationPack::EDoStepType;
+using GeneralIterationPack::EAlgoReturn;
+using GeneralIterationPack::InvalidTypeCastException;
+using GeneralIterationPack::IterQuantity;
+using GeneralIterationPack::IterQuantityAccess;
+using GeneralIterationPack::IterQuantityAccessContinuous;
+using GeneralIterationPack::IterQuantityAccessDerivedToBase;
+using GeneralIterationPack::Algorithm;
+using GeneralIterationPack::AlgorithmStep;
+using GeneralIterationPack::AlgorithmAssocStep;
+using GeneralIterationPack::AlgorithmState;
+using GeneralIterationPack::AlgorithmTrack;
