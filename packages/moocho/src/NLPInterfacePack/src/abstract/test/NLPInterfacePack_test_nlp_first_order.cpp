@@ -46,9 +46,9 @@ bool NLPInterfacePack::test_nlp_first_order(
 	bool success = true;
 
 	if(out)
-		*out << "\n**************************************"
-			 << "\n*** test_nlp_first_order(...) ***"
-			 << "\n**************************************\n";
+		*out << "\n*********************************"
+         << "\n*** test_nlp_first_order(...) ***"
+         << "\n*********************************\n";
 	
 	nlp->initialize(true);
 
