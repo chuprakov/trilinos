@@ -493,7 +493,7 @@ protected:
 	/** Calculate the objective function for the original %NLP.
 	 */
 	virtual void imp_calc_f_orig(
-		const DVectorSlice            &x_full
+		const DVectorSlice           &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -501,7 +501,7 @@ protected:
 	/** Calculate the vector for all of the general equality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_c_orig(
-		const DVectorSlice            &x_full
+		const DVectorSlice           &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -509,7 +509,7 @@ protected:
 	/** Calculate the vector for all of the general inequality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_h_orig(
-		const DVectorSlice            &x_full
+		const DVectorSlice           &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -567,28 +567,31 @@ protected:
 	 * remove the variables fixed by bounds from \c var_perm_full as
 	 * they will be removed by this class as they are translated.  In
 	 * addition, the subclass can also include slack variables in the
-	 * basis (if mI_orig > 0>/tt>).  Therefore, a nonsingular basis before fixed variables
-	 * are removed may not be nonsingular once the fixed variables are
-	 * removed.  During the translation of <tt>var_perm_perm</tt>, the
-	 * variables fixed by bounds are removed by compacting
-	 * <tt>var_perm_full</tt> and adjusting the remaining indexes.
+	 * basis (if mI_orig > 0>/tt>).  Therefore, a nonsingular basis before
+	 * fixed variables are removed may not be nonsingular once the fixed
+	 * variables are removed.  During the translation of <tt>var_perm_perm</tt>,
+	 * the variables fixed by bounds are removed by compacting
+	 * <tt>var_perm_full</tt> and adjusting the remaining indices.
 	 * For this to be correct with variables fixed by bounds, it is
 	 * assumed that the subclass knows which variables are fixed by
 	 * bounds and can construct <tt>var_perm_full</tt> so that after
 	 * the translated the basis will be nonsingular.  The first
 	 * <tt>rank</tt> entries in <tt>var_perm_full[1:rank_full]</tt>
 	 * left after the fixed variables have been removed give the
-	 * indexes of the dependent (basic) variables and the remaining
+	 * indices of the dependent (basic) variables and the remaining
 	 * variables in <tt>var_perm_full[rank_full+1,n_full]</tt> are the
-	 * indexes for the independent (nonbasic) variables.  To simplify
+	 * indices for the independent (nonbasic) variables.  To simplify
 	 * things, it would be wise for the %NLP subclass not to put fixed
 	 * variables in the basis since this will greatly simplify
 	 * selecting a nonsingular basis.
 	 *
-	 * The first time this method is called, the subclass should return the first suggested
-	 * basis selection (even if it happens to be identical to the original ordering).
+	 * The first time this method is called, the subclass should
+	 * return the first suggested basis selection (even if it happens
+	 * to be identical to the original ordering).
 	 *
-	 * The default implementation returns false.
+	 * The default implementation returns <tt>false</tt> which implies
+	 * that the %NLP subclass has no idea what a good basis selection
+	 * should be..
 	 */
 	virtual bool imp_get_next_basis(
 		IVector      *var_perm_full

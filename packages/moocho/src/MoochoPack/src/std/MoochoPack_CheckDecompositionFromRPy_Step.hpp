@@ -42,7 +42,7 @@ namespace MoochoPack {
  \endverbatim
  *
  * If this ratio goes up dramatically, then this is a tail tell
- * sign that \c R is becomming illconditioned.  See the algorithm
+ * sign that <tt>R</tt> is becomming illconditioned.  See the algorithm
  * printout for a more detailed description what what is going on.
  */
 class CheckDecompositionFromRPy_Step

@@ -22,9 +22,9 @@
 int main( int argc, char* argv[] )
 {
 	namespace mmp   = MemMngPack;
-	namespace rsqp  = MoochoPack;
+	namespace mp  = MoochoPack;
 	namespace nlpip = NLPInterfacePack;
-	using rsqp::MoochoSolver;
+	using mp::MoochoSolver;
 	using nlpip::NLP;
 	using nlpip::ExampleNLPBanded;
 	typedef nlpip::size_type  size_type;

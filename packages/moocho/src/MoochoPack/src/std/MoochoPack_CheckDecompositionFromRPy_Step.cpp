@@ -69,6 +69,7 @@ bool CheckDecompositionFromRPy_Step::do_step( Algorithm& _algo, poss_type step_p
 
 	const value_type
 		small_num    = std::numeric_limits<value_type>::min(),
+		epsilon      = std::numeric_limits<value_type>::epsilon(),
 		nrm_resid    = resid->norm_inf(),
 		nrm_c_decomp = c_decomp_k->norm_inf(),
 		beta         = nrm_resid / (nrm_c_decomp+small_num);
@@ -85,8 +86,8 @@ bool CheckDecompositionFromRPy_Step::do_step( Algorithm& _algo, poss_type step_p
 	if( num_basis_iq.updated_k(0) ) {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 			out	<< "\nnum_basis_k was updated so the basis changed so we will skip this check\n"
-				<< "    reset min ||R*py+c||/||c|| to current value\n";
-		beta_min_ = beta;
+				<< "    reset min ||R*py+c||/||c|| to current value + epsilon(" << epsilon << ")\n";
+		beta_min_ = beta + epsilon;
 		return true;
 	}
 	

@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <limits>
+
 #include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
 #include "MoochoPack/src/MoochoPackExceptions.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/TestMatrixSymSecant.hpp"
@@ -44,14 +46,14 @@ BFGSUpdate_Strategy::BFGSUpdate_Strategy(
 {}
 
 void BFGSUpdate_Strategy::perform_update(
-	VectorMutable      *s_bfgs
-	,VectorMutable     *y_bfgs
+	VectorMutable            *s_bfgs
+	,VectorMutable           *y_bfgs
 	,bool                    first_update
 	,std::ostream            &out
 	,EJournalOutputLevel     olevel
 	,bool                    check_results
-	,MatrixSymOp         *B
-	,QuasiNewtonStats        * quasi_newton_stats 
+	,MatrixSymOp             *B
+	,QuasiNewtonStats        *quasi_newton_stats 
 	)
 {
 	namespace rcp = MemMngPack;
@@ -68,11 +70,22 @@ void BFGSUpdate_Strategy::perform_update(
 	const size_type
 		nind = B->rows();
 	const value_type
-		NOT_CALCULATED = -1.0/3.0;
+		NOT_CALCULATED = std::numeric_limits<value_type>::max();
 	value_type
 		sTy = NOT_CALCULATED,
 		yTy = NOT_CALCULATED;
 	bool used_dampening = false;
+
+	// Make sure the update is defined!
+	if( sTy == NOT_CALCULATED )
+		sTy = dot( *s_bfgs, *y_bfgs );
+	if( sTy == 0 ) {
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+			out << "\n(y'*s) == 0, skipping the update ...\n";
+		}
+		quasi_newton_stats->set_updated_stats( QuasiNewtonStats::INDEF_SKIPED );
+		return;
+	}
 
 	MatrixSymSecant
 	    &B_updatable = dyn_cast<MatrixSymSecant>(*B);
@@ -91,7 +104,7 @@ void BFGSUpdate_Strategy::perform_update(
 		if( yTy == NOT_CALCULATED )
 			yTy = dot( *y_bfgs, *y_bfgs );
 		const value_type
-			Iscale = yTy/sTy; 
+			Iscale = yTy/sTy;
 		const value_type
 			Iscale_too_small = 1e-5;  // ToDo: Make this adjustable
 		if( Iscale >= Iscale_too_small ) {	

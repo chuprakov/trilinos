@@ -275,17 +275,22 @@ protected:
 	virtual size_type imp_Gh_nz_orig() const = 0;
 
 	///
-	/** Calculate the COOR matrix for the gradient for all of the \a c(x) constaints in the orig %NLP.
+	/** Calculate the COOR matrix for the gradient for all of the
+	 * <tt>c(x)</tt> constaints in the original %NLP.
 	 *
-	 * @param x       [in]  Unknown vector (size n_full).
-	 * @param newx    [in]  True if is a new point.
+	 * @param x_full  [in] Unknown vector (size n_full).
+	 * @param newx    [in] True if is a new point.
 	 * @param first_order_expl_info
 	 *                [out] Pointers to zero and first order quantities .
 	 *                On output, <tt>*first_order_expl_info.Gc_nz</tt> must be set to the actual
-	 *                number of nonzero elements in \c Gc and the array of nonzero entry
-	 *                values <tt>*first_order_expl_info.Gc_val</tt> must also be set.  In addition,
-	 *                if <tt>this->multi_calc() == true</tt> then
-	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
+	 *                number of nonzero elements in <tt>Gc</tt> and the array of nonzero entry
+	 *                values <tt>*first_order_expl_info.Gc_val</tt> must also be set.
+	 *                The nonzero structure must also be set in the arrays
+	 *                <tt>*first_order_expl_info.Gc_ivect</tt> and
+	 *                <tt>*first_order_expl_info.Gc_jvect</tt> if
+	 *                <tt>first_order_expl_info.Gc_ivect != NULL</tt>.
+	 *                In addition, any of the other quantities pointed to in
+	 *                <tt>first_order_expl_info</tt> may be set on
 	 *                output, but are not guaranteed to be.
 	 *
 	 * Preconditions:<ul>
@@ -294,7 +299,7 @@ protected:
 	 * <li> <tt>(first_order_expl_info.Gc_ivect != NULL) == (first_order_expl_info.Gc_jvect != NULL)</tt> 
 	 * </ul>
 	 *
-	 * Preconditions:<ul>
+	 * Postconditions:<ul>
 	 * <li> <tt>*first_order_expl_info.Gc_nz</tt> is updated to number of nonzero elements set in
 	 *      <tt>*first_order_expl_info.Gc_val</tt>.
 	 * <li> <tt>(*first_order_expl_info.Gc_val)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gc_nz</tt>
@@ -316,17 +321,22 @@ protected:
 		) const = 0;
 
 	///
-	/** Calculate the COOR matrix for the gradient for all of the \c h(x) constaints in the orig %NLP.
+	/** Calculate the COOR matrix for the gradient for all of the
+	 * <tt>h(x)</tt> constaints in the original %NLP.
 	 *
-	 * @param x       [in]  Unknown vector (size n_full).
-	 * @param newx    [in]  True if is a new point.
+	 * @param x_full  [in] Unknown vector (size n_full).
+	 * @param newx    [in] True if is a new point.
 	 * @param first_order_expl_info
 	 *                [out] Pointers to zero and first order quantities .
 	 *                On output, <tt>*first_order_expl_info.Gh_nz</tt> must be set to the actual
-	 *                number of nonzero elements in \c Gh and the array of nonzero entry
-	 *                values <tt>*first_order_expl_info.Gh_val</tt> must also be set.  In addition,
-	 *                if <tt>this->multi_calc() == true</tt> then
-	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
+	 *                number of nonzero elements in <tt>Gh</tt> and the array of nonzero entry
+	 *                values <tt>*first_order_expl_info.Gh_val</tt> must also be set.
+	 *                The nonzero structure must also be set in the arrays
+	 *                <tt>*first_order_expl_info.Gh_ivect</tt> and
+	 *                <tt>*first_order_expl_info.Gh_jvect</tt> if
+	 *                <tt>first_order_expl_info.Gh_ivect != NULL</tt>.
+	 *                In addition, any of the other quantities pointed to in
+	 *                <tt>first_order_expl_info</tt> may be set on
 	 *                output, but are not guaranteed to be.
 	 *
 	 * Preconditions:<ul>
@@ -335,7 +345,7 @@ protected:
 	 * <li> <tt>(first_order_expl_info.Gh_ivect != NULL) == (first_order_expl_info.Gh_jvect != NULL)</tt> 
 	 * </ul>
 	 *
-	 * Preconditions:<ul>
+	 * Postconditions:<ul>
 	 * <li> <tt>*first_order_expl_info.Gh_nz</tt> is updated to number of nonzero elements set in
 	 *      <tt>*first_order_expl_info.Gh_val</tt>.
 	 * <li> <tt>(*first_order_expl_info.Gh_val)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gh_nz</tt>
