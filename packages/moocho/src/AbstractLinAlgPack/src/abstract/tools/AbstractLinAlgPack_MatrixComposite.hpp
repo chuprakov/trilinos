@@ -1,0 +1,449 @@
+// /////////////////////////////////////////////////////////////////////
+// MatrixCompositeStd.h
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
+
+#ifndef MATRIX_COMPOSITE_STD_H
+#define MATRIX_COMPOSITE_STD_H
+
+#include <list>
+
+#include "MatrixWithOp.h"
+#include "GenPermMatrixSlice.h"
+#include "VectorSpace.h"
+#include "ref_count_ptr.h"
+#include "ReleaseResource.h"
+
+namespace AbstractLinAlgPack {
+
+///
+/** Matrix class for matrices composed out of a set of other matrices and vectors.
+ *
+ * This matrix object represents:
+ \verbatim
+
+ M =   sum( a(j) * E(rM(j)) * op(P(j))*op(A(j))*op(Q(j))*F(cM(j)), j=1..num_mats )
+     + sum( b(k) * E(rV(k)) * op(op(G(k))*v(k)) * F(cV(k)), k=1..num_vecs )
+ \endverbatim
+ * where: <br>
+ * <tt>a(j)</tt> : Scalar for sub-matrix <tt>A(j)</tt><br>
+ * <tt>P(j), Q(j)</tt> : GenPermMatrixSlice objects for sub-matrix <tt>A(j)</tt><br>
+ * <tt>A(j)</tt> : <tt>MatrixWithOp</tt> object<br>
+ * <tt>b(k)</tt> : Scalar for the sub-vector <tt>v(k)</tt> <br>
+ * <tt>G(k)</tt> : GenPermMatrixSlice object for sub-vector <tt>v(k)</tt><br>
+ * <tt>v(k)</tt> : <tt>VectorWithOp</tt> object <br>
+ * <tt>E(r)</tt> : An appropriatly sized matrix object that moves the
+ *     first row of aggregate sub-matrix or sub-vector to row \c r in \c M. <br>
+ * <tt>F(c)</tt> : An appropriatly sized matrix object that moves the
+ *     first column of aggregate sub-matrix or sub-vector to column \c c in \c M. <br>
+ *
+ * This formulation allows sub-matrices and sub-vectors to overlap.  However, bacause of the need
+ * for the compatibility of the vector sub-spaces, the overlapped sub-matrices and sub-vectors
+ * may not be compatible and therefore the matrix will be invalid and not work.  This can be
+ * checked for by this matrix subclass.  As long as the sub-matrics and sub-vectors do not
+ * overlap, the resulting matrix object will be perfectly compatible.
+ *
+ * In the above formulation is it possible for parts to be missing or replaced by simpler
+ * means.  For example, a sub-matrix may forgo <tt>P(j)</tt> and <tt>Q(j)</tt> in which case
+ * they are replaced (implicitly) by the identity matrix.  Or they can be replaced by <tt>Range1D</tt>
+ * objects so that <tt>op(P(j))*op(A(j))*op(Q(j))*F(cM(j))</tt> becomes <tt>op(A(j))(rng_P(j),rng_Q(j))</tt>.
+ * Also, a sub-matrix may only be composed of only a general permulation matrix <tt>P(j)</tt> and forgo
+ * <tt>Q(j)</tt>.  Likewise a sub-vector entry can replace <tt>op(G(k)*v(k))</tt> using a range
+ * as <tt>op(v(k)(rng_G(k)))</tt> or be a naked sub-vector <tt>op(v)</tt>.
+ *
+ * Before adding any sub-vectors or sub-matrices the method \c reinitialize() must be called
+ * to set the shape of the matrix.  This will have the effect of wiping the matrix clean.
+ * Then the methods \c add_vector() and \c add_matrix() can be called to add the constituent
+ * sub-vectors and sub-matrices.  There are different forms of these methods for the special
+ * cases described above.
+ *
+ * After all of the sub-vectors and sub-matrices have been added using the methods \c add_vector
+ * and \c add_matrix() , the method \c finish_construction() must be called before \c this matrix
+ * object will become fully initialized and ready for use.
+ *
+ * The cleanup for all of the matrix and vector objects is given to
+ * <tt>\ref ResourceManagementPack::ReleaseResource "ReleaseResouce"</tt> objects
+ * so this is a very flexible aggregate matrix class from many perspactives.
+ *
+ * Access to the constituent sub-vectors and sub-matrices is given through STL iterators
+ * with the element types <tt>SubVectorEntry</tt> and <tt>SubMatrixEntry</tt>.  The methods
+ * \c vectors_begin() and \c vectors_end() return the iterators for the list of sub-vectors
+ * while \c matrices_begin() and \c matrices_end() return the list of sub-matrices.  Note that
+ * non-const iterators are returned (from non-const functions) as well as const iterators
+ * (from const functions).  The client should not attempt to modify the elememnts returned
+ * from these non-const iterators.  The reason that non-const iterators are returned is so
+ * that specific sub-vectors and sub-matrices can be removed by calling \c remove_vector()
+ * and \c remove_matrix().  If the client does modify any of the elements in any way or
+ * calls \c add_vector(), \c add_matrix(), \c remove_vector() or \c remove_matrix() at
+ * anytime, the current matrix is invalidated and \c finish_construction() must be called
+ * to update the composite matrix object.
+ *
+ * Note that implementing the <tt>VectorSpace</tt> objects that are returned by
+ * \c space_rows() and \c space_cols() may be non-trivial.  These methods return
+ * <tt>VectorSpaceCompositeStd</tt> objects.  Therefore, in order for clients to
+ * use vectors with this matrix object, it must create vectors compatible with these
+ * vector space objects.  This can be a little tricky but should be doable.
+ *
+ * The method <tt>::sub_view(row_rng,col_rng)</tt> will return the simplest object it can given
+ * the input \c row_rng, \c col_rng.  For example if the input ranges correspond to whole, unique
+ * matrix, then that matrix will be returned and not some encapulation of that matrix.
+ */
+class MatrixCompositeStd : public MatrixWithOp {
+public:
+
+	// ///////////////////////////////////
+	// Public types
+
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<
+		ResourceManagementPack::ReleaseResource>  release_resource_ptr_t;
+
+	///
+	/** Vector list entry for a sub-vector.
+	 *
+	 * ToDo: Finish Documentation!
+	 */
+	struct SubVectorEntry {
+		///
+		SubVectorEntry(
+			size_type r_l, size_type c_l, value_type beta
+			,const Range1D& rng_G
+			,const GenPermMatrixSlice& G, const release_resource_ptr_t& G_release, BLAS_Cpp::Transp G_trans
+			,const VectorWithOp* v
+			,const release_resource_ptr_t& v_release, BLAS_Cpp::Transp v_trans
+			)
+			:r_l_(r_l),c_l_(c_l),beta_(beta),rng_G_(rng_G),G_(G),G_release_(G_release),G_trans_(G_trans)
+			,v_(v),v_release_(v_release),v_trans_(v_trans)
+			{}
+		///
+		size_type                  r_l_,   ///< row of first element of vector in composite matrix.
+		                           c_l_;   ///< column of first element of vector in composite matrix.
+		///
+		value_type                 beta_;  ///< Scaling vector for vector elements
+		///
+		const Range1D              rng_G_; ///< rng_G_.size() > 0 => G_ is ignored, rng_G_.full_range() whole v!
+		///
+		const GenPermMatrixSlice   G_;     ///< Will be non-identity if rng_G_.size() == 0.
+		///
+		release_resource_ptr_t     G_release_;
+		///
+		BLAS_Cpp::Transp           G_trans_;///< Determines op(G) == G (no_trans) or op(G) == G' (trans)
+		///
+		const VectorWithOp         *v_;     ///< Pointer to the vector (non-NULL)
+		///
+		release_resource_ptr_t     v_release_;
+		///
+		BLAS_Cpp::Transp           v_trans_;///< Determines op(v) = v (no_trans) or op(v) == v' (trans)
+	}; // end struct SubVectorEntry
+
+	/// Warning!  This could be changed to some other STL container!
+	typedef std::list<SubVectorEntry> vector_list_t;
+
+	///
+	/** Matrix list entry for a sub-matrix.
+	 *
+	 * ToDo: Finish Documentation!
+	 */
+	struct SubMatrixEntry {
+		///
+		SubMatrixEntry(
+			size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha
+			,const Range1D& rng_P
+			,const GenPermMatrixSlice& P, const release_resource_ptr_t& P_release, BLAS_Cpp::Transp P_trans
+			,const MatrixWithOp* A, const release_resource_ptr_t& A_release, BLAS_Cpp::Transp A_trans
+			,const Range1D& rng_Q
+			,const GenPermMatrixSlice& Q, const release_resource_ptr_t& Q_release, BLAS_Cpp::Transp Q_trans
+			)
+			:r_l_(r_l),r_u_(r_u),c_l_(c_l),c_u_(c_u),alpha_(alpha),rng_P_(rng_P),P_(P),P_release_(P_release),P_trans_(P_trans)
+			,A_(A),A_release_(A_release),A_trans_(A_trans),rng_Q_(rng_Q),Q_(Q),Q_release_(Q_release),Q_trans_(Q_trans)
+			{}
+		///
+		size_type                  r_l_, r_u_, c_l_, c_u_;
+		///
+		value_type                 alpha_;
+		///
+		const Range1D              rng_P_;  // rng_P_.size() > 0 => P_ is ignored, rng_P_.full_range() => all rows op(A)
+		///
+		const GenPermMatrixSlice   P_;
+		///
+		release_resource_ptr_t     P_release_;
+		///
+		BLAS_Cpp::Transp           P_trans_;
+		///
+		const MatrixWithOp         *A_;
+		///
+		release_resource_ptr_t     A_release_;
+		///
+		BLAS_Cpp::Transp           A_trans_;
+		///
+		const Range1D              rng_Q_; // rng_Q_.size() > 0 => Q_ is ignored, rng_Q_.full_range() => all columns op(A)
+		///
+		const GenPermMatrixSlice   Q_;
+		///
+		release_resource_ptr_t     Q_release_;
+		///
+		BLAS_Cpp::Transp           Q_trans_;
+	}; // end struct SubMatrixEntry
+
+	/// Warning!  This could be changed to some other STL container!
+	typedef std::list<SubMatrixEntry> matrix_list_t;
+
+	/** @name Constructors, initializers */
+	//@{
+
+	///
+	/** Construct.
+	 *
+	 * Calls <tt>this->reinitalize()</tt>.
+	 */
+	MatrixCompositeStd( size_type rows = 0, size_type cols = 0 );
+
+	///
+	/** Initialize a sized (on unsized) zero matrix to start with.
+	 *
+	 * After calling this function the user can add the constituent matrices and
+	 * vectors using the \c add_matrix() and \c add_vector() methods.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->vectors_begin()  == this->vectors_end()</tt>
+	 * <li> <tt>this->matrices_begin() == this->matrices_end()</tt>
+	 * </ul>
+	 *
+	 */
+	void reinitalize( size_type rows = 0, size_type cols = 0 );
+
+	///
+	/** Add a sub-vector beta*op(op(G)*v).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_vector(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    beta
+		,const GenPermMatrixSlice      *G
+		,const release_resource_ptr_t  &G_release
+		,BLAS_Cpp::Transp              G_trans
+		,const VectorWithOp            *v
+		,const release_resource_ptr_t  &v_release
+		,BLAS_Cpp::Transp              v_trans
+		);
+
+	///
+	/** Add a sub-vector beta*op(v(rng_G)).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_vector(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    beta
+		,const Range1D                 &rng_G
+		,const VectorWithOp            *v
+		,const release_resource_ptr_t  &v_release
+		,BLAS_Cpp::Transp              v_trans
+		);
+
+	///
+	/** Add a sub-vector beta*op(v)
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_vector(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    beta
+		,const VectorWithOp            *v
+		,const release_resource_ptr_t  &v_release
+		,BLAS_Cpp::Transp              v_trans
+		);
+
+	///
+	/** Remove a sub-vector.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->vectors_begin() != this->vectors_end()</tt>
+	 * <li> <tt>this->vectors_begin() <= itr && itr < this->vectors_end()</tt>
+	 * </ul>
+	 */
+	void remove_vector( vector_list_t::iterator itr );
+
+	///
+	/** Add a sub-matrix alpha*op(P)*op(A)*op(Q).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const GenPermMatrixSlice      *P
+		,const release_resource_ptr_t  &P_release
+		,BLAS_Cpp::Transp              P_trans
+		,const MatrixWithOp            *A
+		,const release_resource_ptr_t  &A_release
+		,BLAS_Cpp::Transp              A_trans
+		,const GenPermMatrixSlice      *Q
+		,const release_resource_ptr_t  &Q_release
+		,BLAS_Cpp::Transp              Q_trans
+		);
+
+	///
+	/** Add a sub-matrix alpha*op(A)(rng_P,rng_Q).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const Range1D                 &rng_P
+		,const MatrixWithOp            *A
+		,const release_resource_ptr_t  &A_release
+		,BLAS_Cpp::Transp              A_trans
+		,const Range1D                 &rng_Q
+		);
+
+	///
+	/** Add a sub-matrix alpha*op(A).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const MatrixWithOp            *A
+		,const release_resource_ptr_t  &A_release
+		,BLAS_Cpp::Transp              A_trans
+		);
+
+	///
+	/** Add a general permutation sub-matrix alpha*op(P).
+	 *
+	 * ToDo : Finish Documentation!
+	 */
+	void add_matrix(
+		size_type                      row_offset
+		,size_type                     col_offset
+		,value_type                    alpha
+		,const GenPermMatrixSlice      *P
+		,const release_resource_ptr_t  &P_release
+		,BLAS_Cpp::Transp              P_trans
+		);
+
+	///
+	/** Remove a sub-matrix.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->matrices_begin() != this->matrices_end()</tt>
+	 * <li> <tt>this->matrices_begin() <= itr && itr < this->matrices_end()</tt>
+	 * </ul>
+	 */
+	void remove_matrix( matrix_list_t::iterator itr );
+
+	///
+	/** Call to finish the construction process.
+	 *
+	 * This method must be called after all of the sub-vectors and sub-matrices have
+	 * been added and before <tt>this</tt> matrix object can be used.  This method will
+	 * validate that the constructed matrix is valid and sets up the composite <tt>VectorSpace</tt>
+	 * objects returned by <tt>this->space_rows()</tt> and <tt>this->space_cols()</tt>.
+	 */
+	virtual void finish_construction();
+
+	//@}
+
+	/** @name Sub-vector, sub-matrix access (using iterators) */
+	//@{
+
+	///
+	vector_list_t::iterator         vectors_begin();
+	///
+	vector_list_t::iterator         vectors_end();
+	///
+	vector_list_t::const_iterator   vectors_begin() const;
+	///
+	vector_list_t::const_iterator   vectors_end() const;
+	///
+	matrix_list_t::iterator         matrices_begin();
+	///
+	matrix_list_t::iterator         matrices_end();
+	///
+	matrix_list_t::const_iterator   matrices_begin() const;
+	///
+	matrix_list_t::const_iterator   matrices_end() const;
+
+	//@}
+
+	/** @name Overridden from Matrix */
+	//@{
+
+	///
+	size_type rows() const;
+	///
+	size_type cols() const;
+
+	//@}
+
+	/** @name Overridden from MatrixWithOp */
+	//@{
+
+	///
+	const VectorSpace& space_rows() const;
+	///
+	const VectorSpace& space_cols() const;
+	///
+	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
+	///
+	void Vp_StMtV(VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const VectorWithOp& v_rhs2, value_type beta) const;
+	///
+	void Vp_StMtV(VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const SpVectorSlice& sv_rhs2, value_type beta) const;
+	///
+	void Vp_StPtMtV(VectorWithOpMutable* vs_lhs, value_type alpha
+		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		, BLAS_Cpp::Transp M_rhs2_trans
+		, const VectorWithOp& v_rhs3, value_type beta) const;
+	///
+	void Vp_StPtMtV(VectorWithOpMutable* vs_lhs, value_type alpha
+		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		, BLAS_Cpp::Transp M_rhs2_trans
+		, const SpVectorSlice& sv_rhs3, value_type beta) const;
+
+	//@}
+
+private:
+
+	// ///////////////////////////////
+	// private data members
+
+	bool                       fully_constructed_;
+	size_type                  rows_, cols_;
+	matrix_list_t              matrix_list_;
+	vector_list_t              vector_list_;
+	bool                       has_overlap_; // true if there is some overlap in matrices and vectors.
+	VectorSpace::space_ptr_t   space_rows_;
+	VectorSpace::space_ptr_t   space_cols_;
+
+	// ///////////////////////////////
+	// private member functions
+
+	void assert_fully_constructed() const;
+
+}; // end class MatrixCompositeStd
+
+} // end namespace AbstractLinAlgPack
+
+#endif // MATRIX_COMPOSITE_STD_H

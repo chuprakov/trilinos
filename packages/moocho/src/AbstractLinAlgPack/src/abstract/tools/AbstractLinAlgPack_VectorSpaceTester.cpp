@@ -152,6 +152,8 @@ bool VectorSpaceTester::check_vector_space(
 		if(out && print_all_tests())
 			*out << "\n0.0 -> " << z_name << std::endl;
 		*z[k] = 0.0;
+		if(out && print_vectors())
+			*out << std::endl << z_name << " =\n" << *z[k];
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			const RTOp_index_type
 				i = std::_MIN( n, std::_MAX( (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1.0), 1 ) );
@@ -223,6 +225,8 @@ bool VectorSpaceTester::check_vector_space(
 		if(out && print_all_tests())
 			*out << "\n0.0 -> " << z_name << std::endl;
 		*z[k] = 0.0;
+		if(out && print_vectors())
+			*out << std::endl << z_name << " =\n" << *z[k];
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			RTOp_index_type
 				i1 = std::_MIN( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
@@ -315,6 +319,8 @@ bool VectorSpaceTester::check_vector_space(
 		if(out && print_all_tests())
 			*out << "\n0.0 -> " << z_name << std::endl;
 		*z[k] = 0.0;
+		if(out && print_vectors())
+			*out << std::endl << z_name << " =\n" << *z[k];
 
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			const RTOp_index_type // Get random small sub-vectors so parallel efficiency will be good

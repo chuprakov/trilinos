@@ -8,10 +8,7 @@
 
 #include "RTOpPack/include/RTOp.h"
 #include "BLAS_CppTypes.h"
-
-namespace RangePack {
-	class Range1D;
-}
+#include "Range1D.h"
 
 namespace AbstractLinAlgPack {
 
@@ -19,7 +16,7 @@ typedef RTOp_index_type  size_type;
 typedef RTOp_value_type  value_type;
 typedef RTOp_index_type  index_type;
 
-using RangePack::Range1D;
+typedef RangePack::Range1D Range1D; // For some reason doxygen likes typedef more than using?
 
 /** @name Main interface library */
 //@{
@@ -50,6 +47,8 @@ class MatrixSymWithOp;
 class MatrixSymWithOpMutable;
 class MatrixSymFactorized;
 class MatrixSymWithOpFactorized;
+
+class BasisSystem;
 
 // template classes
 

@@ -12,10 +12,10 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Abstract interface for immutable coordinate vectors {abstract}.
+/** Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
   *
   * This interface contains a mimimal set of operations.  The main feature
-  * of this interface is the operation \Ref{apply_reduction}#(...)#.
+  * of this interface is the operation apply_reduction().
   * Almost every standard (i.e. BLAS) and non-standard operation that
   * can be performed on a set of coordinate vectors without changing (mutating)
   * the vectors can be performed through reduction operators.  More standard
@@ -26,50 +26,50 @@ namespace AbstractLinAlgPack {
   * reduction/transformation operators.  There are some operations however
   * that can not always be efficiently with reduction/transforamtion operators
   * and a few of these important methods are included in this interface.  The
-  * \Ref{apply_reduction}#(...)# method allows to client to specify a sub-set
+  * <tt>apply_reduction(...)</tt> method allows to client to specify a sub-set
   * of the vector elements to include in reduction/transformation operation.
   * This greatly increases the generality of this vector interface as vector
   * objects can be used as sub objects in larger composite vectors and sub
   * views of a vector can be created.
   *
-  * This interface allows clients to create sub-views of a vector that in turn
-  * are fully functional #VectorWithOp# objects.  This functionality is supported
-  * by default by using a default vector subclass \Ref{VectorWithOpSubView} which
-  * in turn calls #apply_reduciton(...)# but the client need not ever worry about
+  * This interface allows clients to create sub-views of a vector using sub_view()
+  * that in turn are fully functional <tt>VectorWithOp</tt> objects.  This functionality
+  * is supported by default by using a default vector subclass VectorWithOpSubView which
+  * in turn calls <tt>apply_reduction(...)</tt> but the client need not ever worry about
   * how this is done.
   *
   * This interface also allows a client to extract a sub-set of elements in an
-  * explicit form as an RTO_SubVector object using the method \Ref{get_sub_vector}#(...)#.
+  * explicit form as an RTOp_SubVector object using the method get_sub_vector().
   * In general, this is very bad thing to do and should be avoided at all costs.
   * However, there are some applications where this is needed and therefore it is
   * supported.  The default implementation of this method uses a reduction/transformation
-  * operator with \Ref{apply_reduction}#(...)# in order to extract the needed elements.
+  * operator with <tt>apply_reduction(...)</tt> in order to extract the needed elements.
   *
-  * In order to create a concreate subclass of this interface, only three
-  * methods must be overridden.  The method \Ref{dim}#()#
-  * gives the dimension of the vector at hand.  The #space()# method must
-  * also be overridden which in turn requires defining a concreate #VectorSpace#
-  * class (which has three pure virtual methods).  As mentioned above,
-  * the \Ref{apply_reduction}#(...)# method must be overridden as well.
+  * In order to create a concreate subclass of this interface, only two
+  * methods must be overridden.  The space() method must
+  * also be overridden which in turn requires defining a concreate VectorSpace
+  * class (which has only two pure virtual methods).  And, as mentioned above,
+  * the apply_reduction() method must be overridden as well.
   *
-  * The fact that this interface returns a #VectorSpace# object (which in turn
-  * can create mutable vectors) implies that for every possible vector, it is
-  * possible to associate with it a mutable vector object that can be the target
+  * The fact that this interface defines space() which returns a VectorSpace object
+  * (which in turn can create mutable vectors) implies that for every possible vector,
+  * it is possible to associate with it a mutable vector object that can be the target
   * of transformation operations.  This is not a serious limitation.  For any
   * application area, mutable vectors should be able to defined and should be
   * usable with the non-mutable vectors.
   *
   * The default implementation of this class caches away the values of the
   * norms that are computed.  The operations in any subclass that modifies
-  * the underlying vector must call the method #this->has_changed()# in order
+  * the underlying vector must call the method <tt>this-></tt>has_changed() in order
   * to alert this implementation that the norms are no longer valid.
+  *
+  * ToDo: Add example code!
   */
 class VectorWithOp : virtual public VectorBase {
 public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
-
 	///
 	enum ESparseOrDense { SPARSE, DENSE };
 
@@ -81,115 +81,125 @@ public:
 	//@{
 
 	///
-	/** Return the vector space that this vector belongs to {abstract}.
+	/** Return the vector space that this vector belongs to.
 	 *
 	 * Note that the vectors space object returned is specifically bound to this
 	 * vector object.  The vector space object returned should only be considered
-	 * to be transient and may become invalid if #this# is modified in some way
+	 * to be transient and may become invalid if <tt>this</tt> is modified in some way
 	 * (though some other interface).
 	 */
 	virtual const VectorSpace& space() const = 0;
 
-	/// Return the dimension of this vector
-	virtual index_type dim() const = 0;
-
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
-	 * #op(op((*this),v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)#.
+	 * <tt>op(op((*this),v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
 	 *
-	 * The first nonmutable vector in the argument list to #op# will be
-	 * #this# vector then followed by those in #vecs[k]#, k = 0...#num_vecs-1
-	 * Therefore, the number of nonmutable vectors passed to
-	 * \Ref{RTOp_apply_op}#(...)# will be #num_vecs+1#.
+	 * The first nonmutable vector in the argument list to <tt>op</tt> will be <tt>this</tt>
+	 * vector then followed by those in <tt>vecs[k], k = 0...num_vecs-1</tt>.  Therefore, the number
+	 * of nonmutable vectors passed to <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt> will be
+	 * <tt>num_vecs+1</tt>.
 	 *
-	 * If #global_offset >= 0# then, #this->get_ele(i)# is really the
-	 * element #i + global_offset# in the aggregate vector that these vectors
-	 * belong to.  If #global_offset < 0# then the first element in the
-	 * vector represented is #this->get_ele(-global_offset+1)# and the
-	 * last is #this->get_ele(-global_offset + sub_dim)#.
+	 * The vector to be represented <tt>v</tt> by <tt>this</tt> and passed to the
+	 * <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt> method is:
+	 \verbatim
+
+	 v(k + global_offset) = this->get_ele(first_ele + k - 1)
+         , for k = 1 ... sub_dim
+     \endverbatim
+     * The other vector arguments are represented similarly.  The situation where
+	 * <tt>first_ele == 1</tt> and <tt>global_offset > 1</tt> corresponds to the
+	 * case where the vectors are representing consitituent vectors in a larger
+	 * aggregrate vector.  The situation where <tt>first_ele > 1</tt> and
+	 * <tt>global_offset == 0</tt> is for when a sub-view of the vectors are being
+	 * treated as full vectors.  Other combinations of <tt>first_ele</tt> and
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item [#num_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_vecs-1
-	 * \item [#num_targ_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_targ_vecs-1
-	 * \item [#global_offset <= 0#] #-global_offset + sub_dim <= this->dim()#
-	 * \item [#global_offset >= 0#] #sub_dim <= this->dim()#
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().is_compatible(this->space()) == true</tt>
+	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>IncompatibleVectors</tt>)
+	 * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().is_compatible(this->space()) == true</tt>
+	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>IncompatibleVectors</tt>)
+	 * <li> <tt>1 <= first_ele <= this_dim 1</tt> (throw <tt>std::out_of_range</tt>)
+	 * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
+	 * </ul>
 	 *
-	 * @param  op	[in] Reduction operator to apply over each sub-vector
-	 *				and assemble the intermediate targets into #reduct_obj#.
+	 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
+	 *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
+	 *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
 	 * @param  num_vecs
-	 *				[in] Number of nonmutable vectors in #vecs[]#.  If #vecs==NULL#
-	 *				then this argument is ignored but should be set to zero.
+	 *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.
+	 *              If <tt>vecs==NULL</tt> then this argument is ignored but should be set to zero.
 	 * @param  vecs
-	 *				[in] Array (length #num_vecs#) of a set of pointers to
+	 *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
 	 *				nonmutable vectors to include in the operation.
-	 *				The order of these vectors is significant to #op#.
-	 *				If #vecs==NULL# then #op# is called with the
-	 *				single vector represented by #this# object.
+	 *				The order of these vectors is significant to <tt>op</tt>.
+	 *				If <tt>vecs==NULL</tt> then <tt>op</tt> is called with the
+	 *				single vector represented by <tt>this</tt> object.
 	 * @param  num_targ_vecs
-	 *				[in] Number of mutable vectors in #targ_vecs[]#.  If #targ_vecs==NULL#
-	 *				then this argument is ignored but should be set to zero.
+	 *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.
+	 *              If <tt>targ_vecs==NULL</tt>	then this argument is ignored but should be set to zero.
 	 * @param  targ_vecs
-	 *				[in] Array (length #num_targ_vecs#) of a set of pointers to
+	 *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
 	 *				mutable vectors to include in the operation.
-	 *				The order of these vectors is significant to #op#.
-	 *				If #targ_vecs==NULL# then #op# is called with no mutable vectors.
+	 *				The order of these vectors is significant to <tt>op</tt>.
+	 *				If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with no mutable vectors.
 	 * @param  reduct_obj
 	 *				[in/out] Target object of the reduction operation.
-	 *				This object must have been created by the
-	 *				#op#.\Ref{reduct_obj_create_raw}#(&reduct_obj)# function
-	 *				first.  The reduction operation will be added
-	 *				to #(*reduct_obj)# if #(*reduct_obj)# has already been through a
-	 *				reduction.  By allowing the info in #(*reduct_obj)#
-	 *				to be added to the reduction over all of these
-	 *				vectors, the reduction operation can
-	 *				be accumulated over a set of abstract vectors
-	 *				which can be useful for implementing concatenated
-	 *				vectors for instance.
-	 *              If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
-	 *              #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
-	 *              then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
-	 *              and no reduction will be performed.
-	 * @param  global_offset
-	 *				[in] (default = 0) The offset of the vectors into a larger
-	 *				composite vector.  If global_offset > 0 then the vector
-	 *              arguments are only sub-vectors in a larger aggregate
-	 *              vector.  If global_offset < 0 then a sub-vector
-	 *              within these vector arguments is selected.
+	 *				This object must have been created by the <tt>op.reduct_obj_create_raw(&reduct_obj)</tt>
+	 *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
+	 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
+	 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
+	 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
+	 *              composite vectors instance.  If <tt>op.get_reduct_type_num_entries<tt>(...)</tt> returns
+	 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
+	 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
+	 * @param  first_ele
+	 *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
 	 * @param  sub_dim
-	 *              [in] (default = 0) The number of elements in these
-	 *              vectors to include in the reduction/transformation
-	 *              operation.  The value of sub_dim == 0 means to
-	 *              include all available elements.
+	 *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
+	 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
+	 * @param  global_offset
+	 *				[in] (default = 0) The offset applied to the included vector elements.
 	 */
 	virtual void apply_reduction(
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const VectorWithOp** vecs
 		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
-		,const index_type global_offset = 0, const index_type sub_dim = 0
+		,const index_type first_ele = 1, const index_type sub_dim = 0, const index_type global_offset = 0
 		) const = 0;
 
 	//@}
 
-	/** @name Virtual methods with default implementations based on
-	 * reduction/transforamtion operators and \Ref{apply_reduction}#(...)# or
+	/** @name Miscellaneous virtual methods with default implementations based on
+	 * reduction/transforamtion operators and apply_reduction<tt>(...)</tt> or
 	 * have other default implementations.
 	 */
 	//@{
 
 	///
+	/** Return the dimension of this vector.
+	 *
+	 * It is allowed for a vector to return a dimension of <tt>0</tt> in which case
+	 * the vector should be considered uninitialized in which the client should
+	 * not call any of the member functions (except space()).  The default implementation
+	 * returns <tt>this->space().dim()</tt>.
+	 */
+	virtual index_type dim() const;
+
+	///
 	/** Return the number of nonzero elements in the vector.
 	 *
 	 * The default implementation just uses a reduction operator
-	 * with the \Ref{apply_reduction}#(...)# method.
+	 * with the apply_reduction<tt>(...)</tt> method (See
+	 * RTOp_ROp_num_nonzeros.h).
 	 */
-	virtual size_type nz() const;
+	virtual index_type nz() const;
 
 	///
 	/** Virtual output function.
 	  *
-	  * The default implementation just uses \Ref{get_sub_vector}#(...)# to convert to
+	  * The default implementation just uses get_sub_vector<tt>(...)</tt> to convert to
 	  * a dense vector and then prints this.
 	  *
 	  * ToDo: Finish documentation!
@@ -208,91 +218,93 @@ public:
 		,index_type global_offset = 0 ) const;
 
 	///
-	/** Fetch an element in the vector {abstract}.
+	/** Fetch an element in the vector .
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> <tt>1 <= i <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
+	 * </ul>
 	 *
 	 * The default implementation uses a C reduction operator class
-	 * (See the RTOp_ROp_get_ele C operator class).
+	 * (See RTOp_ROp_get_ele.h C).
 	 *
 	 * @param  i  [in]  Index of the element value to get.
 	 */
 	virtual value_type get_ele(index_type i) const;
 
-	/** @name Vector norms
-	 *
-	 * These member functions have default implementations based on
-	 * reduction operator classes.  The default implementation of this
-	 * class caches the value of the norms since it is common that the
-	 * norms will be accessed many times before a vector is changed.
-	 */
-
 	///
-	/** One norm.
-	 * @memo #||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )#
-	 */
-	virtual value_type norm_1() const;
-	///
-	/** Two norm.
-	 * @memo #||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )#
-	 */
-	virtual value_type norm_2() const;
-	///
-	/** Infinity norm.
-	 * @memo #||v||_inf = max( |v(i)|, i = 1,,,this->dim() )#
-	 */
-	virtual value_type norm_inf() const;
-	
-	//@}
-
-	///
-	/** Create an abstract view of a vector object {abstract}.
+	/** Create an abstract view of a vector object .
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
-	 * and then released by #ref_count_ptr<>#.
+	 * and then released by <tt>ref_count_ptr<></tt>.
 	 *
 	 * It is important to understand what the minimum postconditions are for the sub vector objects
-	 * returned from this method.  If two vector objects #x# and #y# are compatible (possibly of
-	 * different types) it is assumed that #*x.sub_view(rng)# and #*y.sub_view(rng)#
-	 * will also be compatible vector objects no mater what range #rng# represents.  However,
-	 * if #i1 < i2 < i3 < i4# with #i2-i1 == i4-i3#, then in general, one can not expect
-	 * that the vector objects #*x.sub_view(Range1D(i2,i1))# and
-	 * #*x.sub_view(Range1D(i4,i5))# will be compatible objects.  For some vector
+	 * returned from this method.  If two vector objects <tt>x</tt> and <tt>y</tt> are compatible (possibly of
+	 * different types) it is assumed that <tt>*x.sub_view(rng)</tt> and <tt>*y.sub_view(rng)</tt>
+	 * will also be compatible vector objects no mater what range <tt>rng</tt> represents.  However,
+	 * if <tt>i1 < i2 < i3 < i4</tt> with <tt>i2-i1 == i4-i3</tt>, then in general, one can not expect
+	 * that the vector objects <tt>*x.sub_view(Range1D(i2,i1))</tt> and
+	 * <tt>*x.sub_view(Range1D(i4,i5))</tt> will be compatible objects.  For some vector
 	 * implementaions they may be (i.e. serial vectors) but for others they most
 	 * certainly will not be (i.e. parallel vectors).  This limitation must be kept in
 	 * mind by all vector subclass implementors and vector interface clients.
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #rng.ubound() <= this->dim() == true# (#throw std::out_of_range#)
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> [<tt>!rng.full_range()</tt>] <tt>(rng.ubound() <= this->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * </ul>
 	 *
-	 * Postconditions:\begin{itemize}
-	 * \item #[return.get() != NULL] return->get_ele(i) == this->get_ele(i+rng.lbound()-1)#
-	 *       , for #i = 1...rng.size()#.
-	 * \end{itemize}
+	 * Postconditions:<ul>
+	 * <li> <tt>[return.get() != NULL] return->get_ele(i) == this->get_ele(i+rng.lbound()-1)</tt>
+	 *       , for <tt>i = 1...rng.size()</tt>.
+	 * </ul>
 	 *
 	 * @param  rng  [in] The range of the elements to extract the sub-vector view.  It
-	 *              is allowed for #rng.full_range() == true# in which case it implicitly
-	 *              treated as #rng = [1,this->dim()]#.
+	 *              is allowed for <tt>rng.full_range() == true</tt> in which case it implicitly
+	 *              treated as <tt>rng = [1,this->dim()]</tt>.
 	 * 
 	 * @return  Returns a smart reference counted pointer to a view of the requested
-	 * vector elements.  It is allowed for subclasses to return  #return->get() == NULL#
+	 * vector elements.  It is allowed for subclasses to return  <tt>return->get() == NULL</tt>
 	 * for some selections
-	 * of #rng#.  Only some #rng# ranges may be allowed but they will be appropriate for the
+	 * of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed but they will be appropriate for the
 	 * application at hand.  However, a very good implementation should be able to
-	 * accommodate any valid #rng# that meets the basic preconditions.  The default
-	 * implementation uses the subclass \Ref{VectorWithOpSubView} to represent any arbitrary
+	 * accommodate any valid <tt>rng</tt> that meets the basic preconditions.  The default
+	 * implementation uses the subclass VectorWithOpSubView to represent any arbitrary
 	 * sub-view but this can be inefficient if the sub-view is very small compared this this
 	 * full vector space but not necessarily.
 	 */
 	virtual vec_ptr_t sub_view( const Range1D& rng ) const;
 
+	//@}
+
 	///
-	/** Inline member function that simply calls #this->sub_view(Range1D(l,u)).
+	/** Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
 	 */
 	vec_ptr_t sub_view( const index_type& l, const index_type& u ) const;
+
+	/** @name Vector norms.
+	 *
+	 * These member functions have default implementations based on
+	 * reduction operator classes (See RTOp_ROp_norms.h).  The default
+	 * implementation of this class caches the value of the norms since
+	 * it is common that the norms will be accessed many times before a
+	 * vector is changed.
+	 */
+	//@{
+
+	///
+	/** One norm. <tt>||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )</tt>
+	 */
+	virtual value_type norm_1() const;
+	///
+	/** Two norm. <tt>||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )</tt>
+	 */
+	virtual value_type norm_2() const;
+	///
+	/** Infinity norm.  <tt>||v||_inf = max( |v(i)|, i = 1,,,this->dim() )</tt>
+	 */
+	virtual value_type norm_inf() const;
+	
+	//@}
 
 	/** @name Explicit sub-vector access.
 	 *
@@ -301,89 +313,94 @@ public:
 	 * a very bad thing to do with many vector subclasses (i.e. parallel
 	 * and out-of-core vectors).  Allowing a user to create an explict view
 	 * of the elements allows great flexibility but must be used with care
-	 * and only when absolutely needed.  If possible, use \Ref{sub_view}#(...)#
-	 * and an RTOp operator class instead.
+	 * and only when absolutely needed.  If possible, use sub_view<tt>(...)</tt>
+	 * and an RTOpPack::RTOp operator class instead.
 	 */
 	//@{
 
 	///
-	/** Get an explicit view of a sub-vector {abstract}.
+	/** Get an explicit view of a sub-vector .
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
-	 * and then released with a call to \Ref{release_sub_vector}#(...)#.
+	 * and then released with a call to release_sub_vector().
 	 *
 	 * Note that calling this operation might require some internal
 	 * allocations and temporary memory.  Therefore, it is critical
-	 * that this->\Ref{release_sub_vector}#(sub_vec)# is called to
+	 * that <tt>this->release_sub_vector(sub_vec)</tt> is called to
 	 * clean up memory and avoid memory leaks after the sub-vector
 	 * is used.
 	 *
-	 * If #this->get_sub_vector(...,sub_vec)# was previously
-	 * called on #sub_vec# then it may be possible to reuse this
+	 * If <tt>this->get_sub_vector(...,sub_vec)</tt> was previously
+	 * called on <tt>sub_vec</tt> then it may be possible to reuse this
 	 * memory if it is sufficiently sized.  The user is
-	 * encouraged to make multiple calls to #this->get_sub_vector(...,sub_vec)#
-	 * before #this->release_sub_vector(sub_vec)# to finally
-	 * clean up all of the memory.  Of course the same #sub_vec# object must be
+	 * encouraged to make multiple calls to <tt>this->get_sub_vector(...,sub_vec)</tt>
+	 * before <tt>this->release_sub_vector(sub_vec)</tt> to finally
+	 * clean up all of the memory.  Of course the same <tt>sub_vec</tt> object must be
 	 * passed to the same vector object for this to work correctly.
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> [<tt>!rng.full_range()</tt>] <tt>(rng.ubound() <= this->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * </ul>
 	 *
 	 * This method has a default implementation based on a vector reduction operator
-	 * class (see RTOp_ROp_get_sub_vector) and calls \Ref{apply_reduction}#(...)#.
+	 * class (see RTOp_ROp_get_sub_vector.h) and calls ::apply_reduction<tt>(...)</tt>.
 	 * Note that the footprint of the reduction object (both internal and external state)
-	 * will be O(#rng.size()#).  For serial applications this is faily adequate and will
+	 * will be O(<tt>rng.size()</tt>).  For serial applications this is faily adequate and will
 	 * not be a major performance penalty.  For parallel applications, this will be
-	 * a terrible implementation and must be overridden if #rng.size()# is large at all.
-	 * If a subclass does override this method, it must also override \Ref{release_sub_vector}#(...)#
+	 * a terrible implementation and must be overridden if <tt>rng.size()</tt> is large at all.
+	 * If a subclass does override this method, it must also override <tt>release_sub_vector(...)</tt>
 	 * which has a default implementation which is a companion to this method's default
 	 * implementation.
 	 *
 	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
 	 * @param  sparse_or_dense
-	 *                  [in] If #SPARSE# then #*sub_vec# will be a sparse vector 
-	 *                  (i.e. #sub_vec->indices != NULL#) if there are any zero elements.
-	 *                  If #DENSE# then the retured #*sub_vec# will be dense (i.e.
-	 *                  #sub_vec->indices == NULL#) and will contain all of the zero
+	 *                  [in] If <tt>SPARSE</tt> then <tt>*sub_vec</tt> will be a sparse vector 
+	 *                  (i.e. <tt>sub_vec->indices != NULL</tt>) if there are any zero elements.
+	 *                  If <tt>DENSE</tt> then the retured <tt>*sub_vec</tt> will be dense (i.e.
+	 *                  <tt>sub_vec->indices == NULL</tt>) and will contain all of the zero
 	 *                  as well as the nonzero elements.
 	 * @param  sub_vec  [in/out] View of the sub-vector.  Prior to the
-	 *                  first call \Ref{RTOp_sub_vector_null}#(sub_vec)# must
+	 *                  first call <tt>RTOp_sub_vector_null(sub_vec)</tt> must
 	 *                  have been called for the correct behavior.  Technically
-	 *                  #*sub_vec# owns the memory but this memory can be freed
-	 *                  only by calling #this->free_sub_vector(sub_vec)#.
+	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
+	 *                  only by calling <tt>this->free_sub_vector(sub_vec)</tt>.
 	 */
 	virtual void get_sub_vector(
 		const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const;
 
 	///
-	/** Free an explicit view of a sub-vector {abstract}.
+	/** Free an explicit view of a sub-vector.
 	 *
-	 * The sub-vector view must have been allocated by
-	 * this->\Ref{get_sub_vector}#(...,sub_vec)# first.
+	 * The sub-vector view must have been allocated by this->get_sub_vector() first.
 	 *
 	 * This method has a default implementation which is a companion to the default implementation
-	 * for \Ref{get_sub_vector}#(...)#.  If #get_sub_vector(...)# is overridden by a subclass then
+	 * for <tt>get_sub_vector(...)</tt>.  If <tt>get_sub_vector(...)</tt> is overridden by a subclass then
 	 * this method must be overridden also!
 	 *
 	 *	@param	sub_vec
-	 *				[in/out] The memory refered to by #sub_vec->values#
-	 *				and #sub_vec->indices# will be released if it was allocated
-	 *				and #*sub_vec# will be zeroed out using
-	 *				\Ref{RTOp_sub_vector_null}#(sub_vec)#.
+	 *				[in/out] The memory refered to by <tt>sub_vec->values</tt>
+	 *				and <tt>sub_vec->indices</tt> will be released if it was allocated
+	 *				and <tt>*sub_vec</tt> will be zeroed out using
+	 *				<tt>RTOp_sub_vector_null(sub_vec)</tt>.
 	 */
 	virtual void free_sub_vector( RTOp_SubVector* sub_vec ) const;
 
 	//@}
 
-	/** @name Overridden from \Ref{VectorBase} */
+	/** @name Overridden from VectorBase */
 	//@{
 	
 	///
-	/** Calls #apply_reduction(...)# with an operator class object
-	 * of type #RTOp_ROp_dot_prod#.
+	/** Calls #this-space()#.
 	 */
-	value_type inner_product(  const VectorBase& ) const;
+	const VectorSpaceBase& get_space() const;
+
+	///
+	/** Calls <tt>apply_reduction(...)</tt> with an operator class object
+	 * of type <tt>RTOp_ROp_dot_prod</tt>.
+	 */
+	value_type inner_product( const VectorBase& ) const;
 
 	//@}
 
@@ -398,25 +415,25 @@ protected:
 	 * method should be called in every non-const member function in every
 	 * subclass.  This is a little bit of a pain but overall this is a good
 	 * design in that it allows for efficient cacheing of information for
-	 * multiple retreval.  For example, if the subclass #SomeVector# has cashed
-	 * data and has a method #SomeVector::foo()# may modify the
-	 * vector then #SomeVector# should override the method #has_changed()# and its
+	 * multiple retreval.  For example, if the subclass <tt>SomeVector</tt> has cashed
+	 * data and has a method <tt>SomeVector::foo()</tt> may modify the
+	 * vector then <tt>SomeVector</tt> should override the method <tt>has_changed()</tt> and its
 	 * implementation should look someting likde like this!
-	 \begin{verbatim}
+	 \verbatim
 	 void SomeVector::has_changed()
 	 {
 	     BaseClass::has_changed(); // Called on most direct subclass that
 		                           // has overridden this method as well.
 	    ...  // Reinitialize your own cached data to uninitialized!
 	 }
-	 \end{verbatim}
+	 \endverbatim
 	 */
 	virtual void has_changed() const;
 
 private:
 
-	mutable size_type   num_nonzeros_;  // > this->dim() == not initialized
-	mutable value_type  norm_1_, norm_2_, norm_inf_;   // < 0 == not initialized, > 0 == already calculated
+	mutable index_type  num_nonzeros_;  ///< < 0 == not initialized, > 0 == already calculated
+	mutable value_type  norm_1_, norm_2_, norm_inf_;  ///< < 0 == not initialized, > 0 == already calculated
 
 }; // end class MatrixWithOp
 

@@ -59,9 +59,9 @@ public:
 	///
 	/** Add to a mutable matrix lhs.
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #dynamic_cast<MatrixWithOpMutable*>(m_lhs) != NULL# (throw ???).
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> #dynamic_cast<MatrixWithOpMutable*>(m_lhs) != NULL# (throw ???).
+	 * </ul>
 	 */
 	void Mp_StM(MatrixWithOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
 	///

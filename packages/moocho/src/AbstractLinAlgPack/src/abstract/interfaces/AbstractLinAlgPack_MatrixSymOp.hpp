@@ -21,8 +21,14 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Interface adding operations specific for a symmetric matrix.
-  */
+/** Interface adding operations specific for a symmetric matrix {abstract}.
+ *
+ *
+ * Clients should use the \ref MatrixSymWithOp_funcs_grp "provided non-member functions"
+ * to call the methods and not the methods themselves.
+ *
+ * ToDo: Finish documentation!
+ */
 class MatrixSymWithOp : public virtual MatrixWithOp {
 public:
 
@@ -40,7 +46,7 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StPtMtP(
-		MatrixSymWithOpMutable* sym_lhs, value_type alpha
+		MatrixSymWithOp* sym_lhs, value_type alpha
 		, EMatRhsPlaceHolder dummy_place_holder
 		, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		, value_type beta = 1.0 ) const;
@@ -53,21 +59,21 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StMtMtM(
-		MatrixSymWithOpMutable* sym_lhs, value_type alpha
+		MatrixSymWithOp* sym_lhs, value_type alpha
 		, EMatRhsPlaceHolder dummy_place_holder
 		, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		, value_type beta = 1.0 ) const;
 
 };	// end class MatrixSymWithOp
 
-/** @name Inline nonmeber functions for MatrixSymWithOp to call members.
+/** \defgroup MatrixSymWithOp_funcs_grp Inline nonmeber functions for MatrixSymWithOp to call methods.
   */
 //@{
 
 inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
-	MatrixSymWithOpMutable* sym_lhs, value_type alpha
+	MatrixSymWithOp* sym_lhs, value_type alpha
 	, MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder, const MatrixSymWithOp& M
 	, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	, value_type beta = 1.0 )
@@ -78,7 +84,7 @@ void Mp_StPtMtP(
 inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
-	MatrixSymWithOpMutable* sym_lhs, value_type alpha
+	MatrixSymWithOp* sym_lhs, value_type alpha
 	, MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder, const MatrixSymWithOp& M
 	, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	, value_type beta = 1.0 )

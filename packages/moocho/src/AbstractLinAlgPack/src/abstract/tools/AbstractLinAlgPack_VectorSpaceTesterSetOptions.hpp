@@ -30,7 +30,8 @@ namespace AbstractLinAlgPack {
   *
   * The options group is:
   *
-  \begin{verbatim}
+  \verbatim
+
     options_group VectorSpaceTester {
     *    print_all_tests = true;
         print_all_tests = false;
@@ -42,7 +43,7 @@ namespace AbstractLinAlgPack {
         warning_tol = 1e-14;
         error_tol   = 1e-10;
     }
-  \end{verbatim}
+  \endverbatim
   */
 class VectorSpaceTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 

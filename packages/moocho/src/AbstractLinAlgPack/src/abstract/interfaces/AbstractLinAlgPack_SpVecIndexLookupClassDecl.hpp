@@ -139,14 +139,14 @@ public:
 	  * To be able to utilize a previously cached search this function must know
 	  * if an upper element or lower element is to be found.\\
 	  *
-	  * Preconditions:\begin{itemize}
-	  *	\item #ele() > 0# (throw #NoSpVecSetException#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  *	<li> #ele() > 0# (throw #NoSpVecSetException#)
+	  * </ul>
 	  *
-	  * Postconditions:\begin{itemize}
-	  *	\item [uplow == lower_ele] #index <= ele()[return.poss].index() + offset()# 
-	  *	\item [uplow == upper_ele] #ele()[return.poss].index() + offset() <= index# 
-	  * \end{itemize}
+	  * Postconditions:<ul>
+	  *	<li> [uplow == lower_ele] #index <= ele()[return.poss].index() + offset()# 
+	  *	<li> [uplow == upper_ele] #ele()[return.poss].index() + offset() <= index# 
+	  * </ul>
 	  *
 	  * @return		#poss_type# object where #return.poss# gives a position in tye
 	  *				underlying array and #return.rel# gives where the element with
@@ -166,14 +166,14 @@ public:
 	  * If is_sorted == true then a binary search will be used (O(log(nz)).  If is_sorted==false
 	  * a sequential search will be used (O(nz)).  No result is cached here.
 	  * 
-	  * Preconditions:\begin{itemize}
-	  *	\item #ele() > 0# (throw #NoSpVecSetException#)
-	  * \end{itemize}
+	  * Preconditions:<ul>
+	  *	<li> #ele() > 0# (throw #NoSpVecSetException#)
+	  * </ul>
 	  *
-	  * Postconditions:\begin{itemize}
-	  *	\item [return == nz()] No element exits with this index 
-	  *	\item [return < nz()] #index == ele()[return].index() + offset()# 
-	  * \end{itemize}
+	  * Postconditions:<ul>
+	  *	<li> [return == nz()] No element exits with this index 
+	  *	<li> [return < nz()] #index == ele()[return].index() + offset()# 
+	  * </ul>
 	  */
 	size_type find_element( index_type index, bool is_sorted ) const;
 	

@@ -36,7 +36,7 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
 {
 	// Check preconditions
 	if(rng.full_range()) {
-		rng.set_bounds(1,size);
+		rng = Range1D(1,size);
 	}
 	else {
 		if(rng.ubound() > size)

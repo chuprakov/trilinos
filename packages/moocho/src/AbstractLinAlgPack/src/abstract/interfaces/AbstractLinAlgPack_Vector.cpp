@@ -120,13 +120,17 @@ init_rtop_server_t  init_rtop_server;
 namespace AbstractLinAlgPack {
 
 VectorWithOp::VectorWithOp()
-	:num_nonzeros_(std::numeric_limits<size_type>::max())   // uninitalized
-	,norm_1_(-1.0), norm_2_(-1.0), norm_inf_(-1.0)
+	:num_nonzeros_(-1), norm_1_(-1.0), norm_2_(-1.0), norm_inf_(-1.0) // uninitalized
 {}
 
-size_type VectorWithOp::nz() const
+index_type VectorWithOp::dim() const
 {
-	if( num_nonzeros_ > this->dim() ) {
+	return this->space().dim();
+}
+
+index_type VectorWithOp::nz() const
+{
+	if( num_nonzeros_ < 0 ) {
 		num_nonzeros_targ.reinit();
 		this->apply_reduction(num_nonzeros_op,0,NULL,0,NULL,num_nonzeros_targ.obj());
 		num_nonzeros_ = RTOp_ROp_num_nonzeros_val(num_nonzeros_targ.obj());
@@ -152,7 +156,10 @@ std::ostream& VectorWithOp::output(
 value_type VectorWithOp::get_ele(index_type i) const {
 	assert(0==RTOp_ROp_get_ele_set_i( i, &get_ele_op.op() ));
 	get_ele_targ.reinit();
-	this->apply_reduction(get_ele_op,0,NULL,0,NULL,get_ele_targ.obj());
+	this->apply_reduction(
+		get_ele_op,0,NULL,0,NULL,get_ele_targ.obj()
+		,i,1,i-1 // first_ele, sub_dim, global_offset
+		);
 	return RTOp_ROp_get_ele_val(get_ele_targ.obj());
 }
 
@@ -230,7 +237,10 @@ void VectorWithOp::get_sub_vector(
 		reduct_obj = RTOp_REDUCT_OBJ_NULL;
 	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOp_SubVector!
 	// Perform the reduction (get the sub-vector requested)
-	this->apply_reduction(get_sub_vector_op,0,NULL,0,NULL,reduct_obj);
+	this->apply_reduction(
+		get_sub_vector_op,0,NULL,0,NULL,reduct_obj
+		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
+		);
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will
 	// own the memory allocated within get_sub_vector_op.create_reduct_obj_raw(...).  This is okay
 	//  since the client is required to call release_sub_vector(...) so release memory!
@@ -258,11 +268,16 @@ void VectorWithOp::free_sub_vector( RTOp_SubVector* sub_vec ) const
 
 void VectorWithOp::has_changed() const
 {
-	num_nonzeros_= std::numeric_limits<size_type>::max();  // uninitalized;
+	num_nonzeros_= -1;  // uninitalized;
 	norm_1_ = norm_2_ = norm_inf_ = -1.0;
 }
 
 // Overridden from VectorBase
+
+const VectorSpaceBase& VectorWithOp::get_space() const
+{
+	return space();
+}
 
 value_type VectorWithOp::inner_product(  const VectorBase& vec ) const
 {

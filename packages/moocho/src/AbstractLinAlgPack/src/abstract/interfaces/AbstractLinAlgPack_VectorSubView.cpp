@@ -44,32 +44,33 @@ void VectorWithOpSubView::apply_reduction(
 	,const size_t num_vecs, const VectorWithOp** vecs
 	,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
 	,RTOp_ReductTarget reduct_obj
-	,const index_type global_offset_in, const index_type sub_dim_in
+	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
 #ifdef _DEBUG
 	const index_type this_dim = this->dim();
 	THROW_EXCEPTION(
 		sub_dim_in < 0
-		|| ( global_offset_in < 0 && -global_offset_in > this_dim )
-		|| ( ( global_offset_in < 0 && sub_dim_in > 0 ) && -global_offset_in + sub_dim_in > this_dim )
-		|| ( ( global_offset_in >= 0 && sub_dim_in > 0  ) && sub_dim_in > this_dim )
+		|| !(1 <= first_ele_in && first_ele_in <= this_dim)
+		|| ( sub_dim_in > 0 && (sub_dim_in - (first_ele_in - 1) > this_dim) )
 		, std::logic_error
-		,"VectorWithOpMutableSubView::apply_transformation(...): Error, global_offset_in = "
-		<< global_offset_in << ", sub_dim_in = " << sub_dim_in << " and this->dim() = this_dim  = "
+		,"VectorWithOpSubView::apply_reduction(...): Error, first_ele_in = "
+		<< first_ele_in << ", global_offset_in = " << global_offset_in
+		<< ", sub_dim_in = " << sub_dim_in << " and this->dim() = this_dim  = "
 		<< this_dim << " are not compatible." );
 #endif
 	const index_type this_offset = space_impl().rng().lbound() - 1;
 	const index_type
 		this_sub_dim = ( sub_dim_in 
 						 ? sub_dim_in
-						 : ( space_impl().rng().size()
-							 + ( global_offset_in >= 0
-								 ? 0 : global_offset_in )
-							 ) );
+						 : space_impl().rng().size() - (first_ele_in - 1)
+			           );
 	full_vec_->apply_reduction(
 		op, num_vecs, vecs, num_targ_vecs, targ_vecs, reduct_obj
-		, global_offset_in - this_offset, this_sub_dim );
+		,this_offset + first_ele_in     // first_ele
+		,this_sub_dim                   // sub_dim
+		,global_offset_in               // global_dim
+		);
 }
 
 value_type VectorWithOpSubView::get_ele(index_type i) const

@@ -10,10 +10,11 @@
 
 namespace AbstractLinAlgPack {
 
-/** @name Collection of useful vector operations */
+/** \defgroup VectorStdOps_grp Collection of useful vector operations.
+ */
 //@{
 
-/** @name Reduction operations */
+/** \defgroup VectorStdOps_ROp_grp Reduction operations */
 //@{
 
 ///
@@ -33,9 +34,9 @@ value_type dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 );
   *	This function returns and computes the maximum (in magnitude) postive
   *	(return.first) and negative (return.second) steps u that can be taken
   *	such that the relaxed bounds:
-  *
-  *	xl - max_bnd_viol <= x + u * d <= xu - max_bnd_viol
-  *
+  \verbatim
+  xl - max_bnd_viol <= x + u * d <= xu - max_bnd_viol
+  \endverbatim
   * are strictly satisfied.
   *
   * If return.first < 0.0 then this is a flag that x is not
@@ -50,7 +51,7 @@ max_near_feas_step(
 	); 
 
 ///
-/** Count the number of finitly bounded elements in #xl <= x <= xu#.
+/** Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
  *
  * ToDo: Finish documentation!
  */
@@ -60,7 +61,7 @@ size_type num_bounded(
 
 //@}
 
-/** @name Transformation operations */
+/** \defgroup VectorStdOps_TOp_grp Transformation operations */
 //@{
 
 ///
@@ -89,8 +90,7 @@ void seed_random_vector_generator( unsigned int );
 /** Generate a random vector with elements uniformly
   * distrubuted elements.
   * 
-  * The elements are randomly generated between
-  * [l, u].
+  * The elements are randomly generated between <tt>[l,u]</tt>.
   */
 void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
 

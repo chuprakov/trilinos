@@ -58,14 +58,14 @@ class NoNonZeroElementsException : public std::logic_error
 ///
 /** Return a sparse vector slice.
   *
-  * Preconditions:\begin{itemize}
-  * \item index_lookup.validate_state() is called
-  * \item [rng.full_range() != true] rng.ubound() <= size (throw #std::out_of_range#)
-  * \end{itemize}
+  * Preconditions:<ul>
+  * <li> index_lookup.validate_state() is called
+  * <li> [rng.full_range() != true] rng.ubound() <= size (throw #std::out_of_range#)
+  * </ul>
   *
-  * Postconditions:\begin{itemize}
-  * \item Fill them in latter
-  * \end{itemize}
+  * Postconditions:<ul>
+  * <li> Fill them in latter
+  * </ul>
   */
 template<class T_Element>
 SparseVectorSlice<T_Element> create_slice(
@@ -90,14 +90,14 @@ class SparseVectorSlice;
   * The templated type T_Element must support the following interface
   * (SparseElementTemplateInterface):
   * \begin{description}
-  * \item[value_type]			public typedef for the stored value of the element
-  * \item[index_type]			public typedef for the stored index of the element
-  * \item[value_type& value()]	function returning a lvalue for the value of the element
-  * \item[value_type value() const] const function returning a rvalue for the value of the element
-  * \item[index_type index() const] const function returning a rvalue for the index
+  * <li>[value_type]			public typedef for the stored value of the element
+  * <li>[index_type]			public typedef for the stored index of the element
+  * <li>[value_type& value()]	function returning a lvalue for the value of the element
+  * <li>[value_type value() const] const function returning a rvalue for the value of the element
+  * <li>[index_type index() const] const function returning a rvalue for the index
   *										of the element.
-  * \item[T_Element& operator=(const T_Element&)] assignment operator
-  * \item[T_Element(const T_Element&)] copy constructor
+  * <li>[T_Element& operator=(const T_Element&)] assignment operator
+  * <li>[T_Element(const T_Element&)] copy constructor
   * \end{description}
   */
 template <class T_Element, class T_Alloc = std::allocator<T_Element> >
@@ -206,9 +206,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between this and sv
-	  *		\item[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		\item[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
+	  *		<li>[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
@@ -349,9 +349,9 @@ public:
 	  *
 	  * This function will throw an exception if any of the following are not true:
 	  * \begin{enumerate}
-	  * \item The sequence is not sorted by index (#NotSortedException#)
-	  * \item There are duplicate indexes (#DuplicateIndexesException#)
-	  * \item The indexes are out of range (#std::out_of_range#)
+	  * <li> The sequence is not sorted by index (#NotSortedException#)
+	  * <li> There are duplicate indexes (#DuplicateIndexesException#)
+	  * <li> The indexes are out of range (#std::out_of_range#)
 	  * \end{enumerate}
 	  *
 	  * This function will throw an exception for the first error it finds.
@@ -418,15 +418,15 @@ public:
 	  *
 	  * The returned SparseVectorSlice object represents the range of the rng argument.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
-	  *		\item #dim() > 0#	(throw #UnsizedException#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
+	  *		<li> #dim() > 0#	(throw #UnsizedException#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item returned#.dim() == rng.ubound() - rng.lbound() + 1#
-	  *     \item contains all of the elements in the range.
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
+	  *     <li> contains all of the elements in the range.
+	  *		</ul>
 	  *
 	  * @param	rng		Index range [lbound,ubound] of the region being returned.
 	  */
@@ -438,16 +438,16 @@ public:
 	/// 
 	/** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #lbound > 1# (throw #out_of_range#)
-	  *		\item #lbound < ubound# (throw #out_of_range#)
-	  *		\item #ubound <= this->dim()# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #lbound > 1# (throw #out_of_range#)
+	  *		<li> #lbound < ubound# (throw #out_of_range#)
+	  *		<li> #ubound <= this->dim()# (throw #out_of_range#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item returned#.dim() == ubound() - lbound() + 1#
-	  *     \item contains all of the elements in the range.
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> returned#.dim() == ubound() - lbound() + 1#
+	  *     <li> contains all of the elements in the range.
+	  *		</ul>
 	  *
 	  * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
 	  * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.
@@ -589,7 +589,7 @@ public:
 
 	/** @name Constuctors
 	  *
-	  * The default copy constructor is allowed since it has the proper sematics.
+	  * The default copy constructor is allowed since it has the proper semantics.
 	  */
 	//@{
 
@@ -604,10 +604,10 @@ public:
 	  * A sparse vector slice with no nonzero elements can be constructed by
 	  * setting nz == 0;
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #ele != 0#
-	  *		\item #size >= nz#
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #ele != 0#
+	  *		<li> #size >= nz#
+	  *		</ul>
 	  *
 	  * @param	ele		pointer to array of elements (length #nz#)
 	  * @param	offset	offset for the indexes of the elements. index = ele[i].index() + offset
@@ -629,9 +629,9 @@ public:
 	  *
 	  * @return 
 	  *		\begin{description}
-	  *		\item[NO_OVERLAP]	There is no memory overlap between this and sv
-	  *		\item[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		\item[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
+	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
+	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
+	  *		<li>[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
@@ -729,15 +729,15 @@ public:
 	  *
 	  * The returned SparseVectorSlice object represents the range of the rng argument.
 	  *
-	  * Preconditions: \begin{itemize}
-	  *		\item #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
-	  *		\item #dim() > 0#	(throw #UnsizedException#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
+	  *		<li> #dim() > 0#	(throw #UnsizedException#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item returned#.dim() == rng.ubound() - rng.lbound() + 1#
-	  *     \item contains all of the elements in the range.
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
+	  *     <li> contains all of the elements in the range.
+	  *		</ul>
 	  *
 	  * @param	rng		Index range [lbound,ubound] of the region being returned.
 	  */
@@ -749,16 +749,16 @@ public:
 	/// 
 	/** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
 	  * 
-	  * Preconditions: \begin{itemize}
-	  *		\item #lbound > 1# (throw #out_of_range#)
-	  *		\item #lbound < ubound# (throw #out_of_range#)
-	  *		\item #ubound <= this->dim()# (throw #out_of_range#)
-	  *		\end{itemize}
+	  * Preconditions: <ul>
+	  *		<li> #lbound > 1# (throw #out_of_range#)
+	  *		<li> #lbound < ubound# (throw #out_of_range#)
+	  *		<li> #ubound <= this->dim()# (throw #out_of_range#)
+	  *		</ul>
 	  *
-	  * Postconditions: \begin{itemize}
-	  *		\item returned#.dim() == ubound() - lbound() + 1#
-	  *     \item contains all of the elements in the range.
-	  *		\end{itemize}
+	  * Postconditions: <ul>
+	  *		<li> returned#.dim() == ubound() - lbound() + 1#
+	  *     <li> contains all of the elements in the range.
+	  *		</ul>
 	  *
 	  * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
 	  * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.

@@ -113,7 +113,10 @@ void VectorWithOpMutable::set_ele( index_type i, value_type alpha )
 {
 	if(0!=RTOp_TOp_set_ele_set_i_alpha( i, alpha, &set_ele_op.op() ))
 		assert(0);
-	this->apply_transformation(set_ele_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	this->apply_transformation(
+		set_ele_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL
+		,i,1,i-1 // first_ele, sub_dim, global_offset
+		);
 }
 
 VectorWithOpMutable::vec_mut_ptr_t
@@ -149,7 +152,10 @@ void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
 	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
 		assert(0);
-	this->apply_transformation(set_sub_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	this->apply_transformation(
+		set_sub_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL
+		,sub_vec.global_offset+1,sub_vec.sub_dim,sub_vec.global_offset // first_ele, sub_dim, global_offset
+		);
 }
 
 // Overridden from VectorWithOp
@@ -164,11 +170,6 @@ VectorWithOpMutable::sub_view( const Range1D& rng ) const
 }
 
 // Overridden from VectorBaseMutable
-
-const VectorSpaceBase& VectorWithOpMutable::get_space() const
-{
-	return space();
-}
 
 void VectorWithOpMutable::zero()
 {

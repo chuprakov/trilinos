@@ -26,7 +26,7 @@ size_type MatrixSymWithOp::cols() const
 }
 
 void MatrixSymWithOp::Mp_StPtMtP(
-	MatrixSymWithOpMutable* sym_lhs, value_type alpha
+	MatrixSymWithOp* sym_lhs, value_type alpha
 	, EMatRhsPlaceHolder dummy_place_holder
 	, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	, value_type beta ) const
@@ -35,7 +35,7 @@ void MatrixSymWithOp::Mp_StPtMtP(
 }
 
 void MatrixSymWithOp::Mp_StMtMtM(
-	MatrixSymWithOpMutable* sym_lhs, value_type alpha
+	MatrixSymWithOp* sym_lhs, value_type alpha
 	, EMatRhsPlaceHolder dummy_place_holder
 	, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	, value_type beta ) const
