@@ -72,13 +72,11 @@ void DecompositionSystemCoordinate::update_decomp(MatrixWithOp* A, MatrixWithOp*
 	}
 
 	// Test the basis system
-	if( check_results() ) {
-		using SparseSolverPack::TestingPack::TestBasisSystem;
-		if( !TestBasisSystem(
-				basis_sys(),
-				const_cast<const MatrixWithOp**>(&access_matrices(BasisSystem::C)),
-				*A ,out(), trase() )
-		  )
+	if( check_results() && get_basis_sys_tester().get() ) {
+		if(!basis_sys_tester().check_basis_system(
+			basis_sys()
+			, const_cast<const MatrixWithOp**>(&access_matrices(BasisSystem::C))
+			, *A, trase(), out() ))
 		{
 			throw std::runtime_error( "DecompositionSystemCoordinate::update_decomp(...) : "
 				"Error, BasisSystem object does not check out." );

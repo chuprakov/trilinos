@@ -6,6 +6,8 @@
 
 #include "DecompositionSystemVarReductImpNode.h"
 #include "IdentZeroVertConcatMatrixClass.h"
+#include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
+#include "Misc/include/StandardCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -36,7 +38,14 @@ namespace ConstrainedOptimizationPack {
 class DecompositionSystemCoordinate : public DecompositionSystemVarReductImpNode {
 public:
 
-	/** @name types */
+#	///
+	typedef SparseSolverPack::TestingPack::BasisSystemTester
+		BasisSystemTester;
+
+	/// «std comp» Members for the BasisSystem tester object
+	STANDARD_COMPOSITION_MEMBERS( BasisSystemTester, basis_sys_tester )
+
+	/** @name Public Types */
 	//@{
 
 	///
