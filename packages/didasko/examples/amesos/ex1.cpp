@@ -55,14 +55,17 @@ int main(int argc, char *argv[]) {
   CrsMatrixGallery Gallery("laplace_2d", Comm);
   Gallery.Set("problem_size", 100); //must be a square number
  
-  // get pointers to matrix, StartingSolution, RHS, and linear problem
+  // get pointers to the linear problem, containing matrix, LHS and RHS.
+  // if you need to access them, you can for example uncomment the following
+  // code:
+  // Epetra_CrsMatrix* Matrix = Gallery.GetMatrix();
+  // Epetra_MultiVector* LHS = Gallery.GetStartingSolution();
+  // Epetra_MultiVector* RHS = Gallery.GetRHS();
+  //
   // NOTE: StartingSolution and RHS are pointers to Gallery's internally stored
   // vectors. Using StartingSolution and RHS, we can verify the residual
   // after the solution of the linear system. However, users may define as well
   // their own vectors for solution and RHS. 
-  Epetra_CrsMatrix* Matrix = Gallery.GetMatrix();
-  Epetra_MultiVector* LHS = Gallery.GetStartingSolution();
-  Epetra_MultiVector* RHS = Gallery.GetRHS();
   
   Epetra_LinearProblem* Problem = Gallery.GetLinearProblem();
 

@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   // - MapA has 2 nodes on proc 0, 2 nodes on proc 1
   // - MapB has 4 nodes on proc 0, 0 nodes on proc 1
   
-  int NumElementsA, NumElementsB;
+  int NumElementsA = 0, NumElementsB = 0;
   
   switch( MyPID ) {
   case 0:

@@ -213,8 +213,6 @@ int main(int argc, char *argv[]) {
   Epetra_SerialComm Comm;
 #endif
 
-  int ierr;
-  
   // set global dimension to 5, could be any number
   int NumGlobalElements = 5;
 

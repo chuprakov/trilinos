@@ -61,9 +61,7 @@ int main(int argc, char *argv[])
   CrsMatrixGallery Gallery("laplace_2d", Comm);
   Gallery.Set("problem_size",900);
 
-  // Get pointers to matrix and linear problem. LHS and RHS are
-  // created an initialized by Gallery 
-  Epetra_CrsMatrix * Matrix = Gallery.GetMatrix();
+  // Get pointers to the linear problem (containing matrix, LHS and RHS).
   Epetra_LinearProblem * Problem= Gallery.GetLinearProblem();
 
   // initialize the AztecOO solve object, based on current linear problem

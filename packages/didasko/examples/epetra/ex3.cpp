@@ -61,10 +61,10 @@ int main(int argc, char *argv[]) {
     return(0);
   }
     
-  int NumGlobalElements=5;  // global dimension of the problem
-  int MyElements;           // local dimension of the problem
-  int *MyGlobalElements;    // local-to-global map
-  int MyPID = Comm.MyPID(); // ID of this process
+  int NumGlobalElements=5;   // global dimension of the problem
+  int MyElements = 0;        // local dimension of the problem
+  int *MyGlobalElements = 0; // local-to-global map
+  int MyPID = Comm.MyPID();  // ID of this process
 
   if( Comm.NumProc() != 2 ) {
     cerr << "This code must be run with 2 processes\n";

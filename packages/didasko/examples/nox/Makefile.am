@@ -29,14 +29,7 @@
 EXAMPLE = ex1 ex2
 EXEEXT = .exe
 
-DIDASKO_INCLUDES = -I$(src_topdir)/src
-
-if HAVE_DIDASKO_EPETRA
-include $(top_builddir)/../epetra/Makefile.export
-else
-EPETRA_INCLUDE = 
-EPETRA_LIBS =
-endif
+DIDASKO_INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
 if HAVE_DIDASKO_NOX
 NOX_INCLUDES = -I$(top_builddir)/../nox/src \
@@ -49,44 +42,122 @@ NOX_INCLUDES =
 NOX_LIBS = 
 endif
 
-if HAVE_DIDASKO_TEUCHOS
-TEUCHOS_INCLUDES = -I$(top_builddir)/../teuchos/src \
-	       -I$(top_srcdir)/../teuchos/src
-TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
+if HAVE_DIDASKO_EPETRA
+include $(top_builddir)/../epetra/Makefile.export
 else
-TEUCHOS_INCLUDES = 
-TEUCHOS_LIBS = 
+EPETRA_INCLUDE = 
+EPETRA_LIBS =
+endif
+
+if HAVE_DIDASKO_EPETRAEXT
+EPETRAEXT_INCLUDE = -I$(top_builddir)/../epetraext/src \
+                    -I$(top_srcdir)/../epetraext/src
+EPETRAEXT_LIBS = $(top_builddir)/../epetraext/src/libepetraext.a
+
+else
+EPETRAEXT_INCLUDE = 
+EPETRAEXT_LIBS =
+endif
+
+if HAVE_DIDASKO_IFPACK
+IFPACK_INCLUDES = -I$(top_builddir)/../ifpack/src \
+              -I$(top_srcdir)/../ifpack/src
+IFPACK_LIBS = $(top_builddir)/../ifpack/src/libifpack.a
+else
+IFPACK_INCLUDES = 
+IFPACK_LIBS = 
+endif
+
+if HAVE_DIDASKO_ML
+include $(top_builddir)/../ml/Makefile.export
+else
+ML_EXPORT_INCLUDES = 
+ML_EXPORT_LIBS = 
+endif
+
+if HAVE_DIDASKO_TRIUTILS
+TRIUTILS_INCLUDES = -I$(top_builddir)/../triutils/src \
+		   -I$(top_srcdir)/../triutils/src
+TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
+else
+TRIUTILS_INCLUDES = 
+TRIUTILS_LIBS = 
 endif
 
 if HAVE_DIDASKO_AZTECOO
 AZTECOO_INCLUDES = -I$(top_builddir)/../aztecoo/src \
-	       -I$(top_srcdir)/../aztecoo/src
+		   -I$(top_srcdir)/../aztecoo/src
 AZTECOO_LIBS = $(top_builddir)/../aztecoo/src/libaztecoo.a
 else
 AZTECOO_INCLUDES = 
 AZTECOO_LIBS = 
 endif
 
+if HAVE_DIDASKO_AMESOS
+AMESOS_INCLUDES = -I$(top_builddir)/../amesos/src \
+		   -I$(top_srcdir)/../amesos/src
+AMESOS_LIBS = $(top_builddir)/../amesos/src/libamesos.a
+else
+AMESOS_INCLUDES = 
+AMESOS_LIBS = 
+endif
+
+if HAVE_DIDASKO_TEUCHOS
+TEUCHOS_INCLUDES = -I$(top_builddir)/../teuchos/src \
+		   -I$(top_srcdir)/../teuchos/src
+TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
+else
+TEUCHOS_INCLUDES = 
+TEUCHOS_LIBS = 
+endif
+
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS) $(NOX_LIBS) \
-		   $(TEUCHOS_LIBS) $(AZTECOO_LIBS)
+ex1_DEPENDENCIES = $(NOX_LIBS) $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
+		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
+		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
+		   $(TEUCHOS_LIBS)
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
+               $(NOX_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
 	       $(EPETRA_INCLUDE) \
-	       $(NOX_INCLUDES) \
+	       $(TRIUTILS_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
+	       $(AZTECOO_INCLUDES) \
+	       $(AMESOS_INCLUDES) \
 	       $(TEUCHOS_INCLUDES)
-ex1_LDADD = $(NOX_LIBS) $(AZTECOO_LIBS) \
-	    $(EPETRA_LIBS) $(TEUCHOS_LIBS) \
+ex1_LDADD = $(NOX_LIBS) \
+            $(ML_EXPORT_LIBS) \
+	    $(IFPACK_LIBS) \
+	    $(AMESOS_LIBS) \
+	    $(TRIUTILS_LIBS) \
+	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
+	    $(EPETRA_LIBS)  \
+	    $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(DIDASKO_INCLUDES) \
-		   $(EPETRA_LIBS) \
-		   $(NOX_LIBS) \
-		   $(TEUCHOS_LIBS) \
-		   $(AZTECOO_LIBS)
-ex2_CXXFLAGS = $(EPETRA_INCLUDE) $(NOX_INCLUDES) $(TEUCHOS_INCLUDES)
-ex2_LDADD = $(NOX_LIBS) $(AZTECOO_LIBS) \
+ex2_DEPENDENCIES = $(NOX_LIBS) $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
+		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
+		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
+		   $(TEUCHOS_LIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
+               $(NOX_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
+	       $(EPETRA_INCLUDE) \
+	       $(TRIUTILS_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
+	       $(AZTECOO_INCLUDES) \
+	       $(AMESOS_INCLUDES) \
+	       $(TEUCHOS_INCLUDES)
+ex2_LDADD = $(NOX_LIBS) \
+            $(ML_EXPORT_LIBS) \
+            $(IFPACK_LIBS) \
+	    $(AMESOS_LIBS) \
+	    $(TRIUTILS_LIBS) \
+	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
 	    $(EPETRA_LIBS) $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)

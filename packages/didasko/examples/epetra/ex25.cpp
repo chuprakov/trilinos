@@ -53,7 +53,9 @@ public:
   
   // constructor
   MSRMatrix(Epetra_Map Map, int * bindx, double * val) :
-    Map_(Map), bindx_(bindx), val_(val) 
+    bindx_(bindx), 
+    val_(val),
+    Map_(Map)
   {
     // check number of processes
     if( Map_.Comm().NumProc() != 1 ) {
@@ -93,12 +95,14 @@ public:
   // other function, required by Epetra_RowMatrix. Here are almost all
   // void, you may decide to complete the example...
   int SetUseTranspose( bool UseTranspose)
-  {}
+  {
+    return(-1); // not implemented
+  }
 
   int ApplyInverse( const Epetra_MultiVector & X,
                     Epetra_MultiVector & Y ) const
   {
-    return 0;
+    return(-1); // not implemented
   }
 
   double NormInf() const
@@ -106,7 +110,7 @@ public:
     return -1;
   }
 
-  char * Label () const
+  const char* Label () const
   {
     return "TriDiagonalOperator";
   }

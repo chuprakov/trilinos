@@ -86,11 +86,11 @@ int main(int argc, char *argv[])
     return(0);
   }
 
-  int NumMyElements; // NODES assigned to this processor
-  int NumMyExternalElements; // nodes used by this proc, but not hosted
-  int NumMyTotalElements;
-  int FE_NumMyElements; // TRIANGLES assigned to this processor
-  int * MyGlobalElements; // nodes assigned to this processor
+  int NumMyElements = 0;         // NODES assigned to this processor
+  int NumMyExternalElements = 0; // nodes used by this proc, but not hosted
+  int NumMyTotalElements = 0;
+  int FE_NumMyElements = 0;      // TRIANGLES assigned to this processor
+  int * MyGlobalElements = 0;    // nodes assigned to this processor
   Epetra_IntSerialDenseMatrix T; // store the grid connectivity
 
   int MyPID=Comm.MyPID();
@@ -203,7 +203,6 @@ int main(int argc, char *argv[])
   Epetra_CrsMatrix A(Copy,Map,MaxNnzRow);
 
   int Element, MyRow, GlobalRow, GlobalCol, i, j, k;
-  double zero=0.0;
   Epetra_IntSerialDenseMatrix Struct; // temp to create the matrix connectivity
   Struct.Shape(NumMyElements,MaxNnzRow);
   for( i=0 ; i<NumMyElements ; ++i ) 

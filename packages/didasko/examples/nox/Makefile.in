@@ -103,9 +103,13 @@ ex1_OBJECTS = $(am_ex1_OBJECTS)
 @HAVE_DIDASKO_NOX_TRUE@am__DEPENDENCIES_1 =  \
 @HAVE_DIDASKO_NOX_TRUE@	$(top_builddir)/../nox/src/libnox.a \
 @HAVE_DIDASKO_NOX_TRUE@	$(top_builddir)/../nox/src-epetra/libnoxepetra.a
-@HAVE_DIDASKO_AZTECOO_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/../aztecoo/src/libaztecoo.a
-am__DEPENDENCIES_3 =
-@HAVE_DIDASKO_TEUCHOS_TRUE@am__DEPENDENCIES_4 = $(top_builddir)/../teuchos/src/libteuchos.a
+am__DEPENDENCIES_2 =
+@HAVE_DIDASKO_IFPACK_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/../ifpack/src/libifpack.a
+@HAVE_DIDASKO_AMESOS_TRUE@am__DEPENDENCIES_4 = $(top_builddir)/../amesos/src/libamesos.a
+@HAVE_DIDASKO_TRIUTILS_TRUE@am__DEPENDENCIES_5 = $(top_builddir)/../triutils/src/libtriutils.a
+@HAVE_DIDASKO_AZTECOO_TRUE@am__DEPENDENCIES_6 = $(top_builddir)/../aztecoo/src/libaztecoo.a
+@HAVE_DIDASKO_EPETRAEXT_TRUE@am__DEPENDENCIES_7 = $(top_builddir)/../epetraext/src/libepetraext.a
+@HAVE_DIDASKO_TEUCHOS_TRUE@am__DEPENDENCIES_8 = $(top_builddir)/../teuchos/src/libteuchos.a
 am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
 ex2_OBJECTS = $(am_ex2_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
@@ -259,9 +263,7 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 EXAMPLE = ex1 ex2
-DIDASKO_INCLUDES = -I$(src_topdir)/src
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_INCLUDE = 
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_LIBS = 
+DIDASKO_INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 @HAVE_DIDASKO_NOX_FALSE@NOX_INCLUDES = 
 @HAVE_DIDASKO_NOX_TRUE@NOX_INCLUDES = -I$(top_builddir)/../nox/src \
 @HAVE_DIDASKO_NOX_TRUE@	       -I$(top_srcdir)/../nox/src-epetra \
@@ -271,40 +273,96 @@ DIDASKO_INCLUDES = -I$(src_topdir)/src
 @HAVE_DIDASKO_NOX_TRUE@NOX_LIBS = $(top_builddir)/../nox/src/libnox.a \
 @HAVE_DIDASKO_NOX_TRUE@	   $(top_builddir)/../nox/src-epetra/libnoxepetra.a
 
-@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_INCLUDES = 
-@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_INCLUDES = -I$(top_builddir)/../teuchos/src \
-@HAVE_DIDASKO_TEUCHOS_TRUE@	       -I$(top_srcdir)/../teuchos/src
+@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_INCLUDE = 
+@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_LIBS = 
+@HAVE_DIDASKO_EPETRAEXT_FALSE@EPETRAEXT_INCLUDE = 
+@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_INCLUDE = -I$(top_builddir)/../epetraext/src \
+@HAVE_DIDASKO_EPETRAEXT_TRUE@                    -I$(top_srcdir)/../epetraext/src
 
-@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_LIBS = 
-@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
+@HAVE_DIDASKO_EPETRAEXT_FALSE@EPETRAEXT_LIBS = 
+@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_LIBS = $(top_builddir)/../epetraext/src/libepetraext.a
+@HAVE_DIDASKO_IFPACK_FALSE@IFPACK_INCLUDES = 
+@HAVE_DIDASKO_IFPACK_TRUE@IFPACK_INCLUDES = -I$(top_builddir)/../ifpack/src \
+@HAVE_DIDASKO_IFPACK_TRUE@              -I$(top_srcdir)/../ifpack/src
+
+@HAVE_DIDASKO_IFPACK_FALSE@IFPACK_LIBS = 
+@HAVE_DIDASKO_IFPACK_TRUE@IFPACK_LIBS = $(top_builddir)/../ifpack/src/libifpack.a
+@HAVE_DIDASKO_ML_FALSE@ML_EXPORT_INCLUDES = 
+@HAVE_DIDASKO_ML_FALSE@ML_EXPORT_LIBS = 
+@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_INCLUDES = 
+@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_INCLUDES = -I$(top_builddir)/../triutils/src \
+@HAVE_DIDASKO_TRIUTILS_TRUE@		   -I$(top_srcdir)/../triutils/src
+
+@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_LIBS = 
+@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
 @HAVE_DIDASKO_AZTECOO_FALSE@AZTECOO_INCLUDES = 
 @HAVE_DIDASKO_AZTECOO_TRUE@AZTECOO_INCLUDES = -I$(top_builddir)/../aztecoo/src \
-@HAVE_DIDASKO_AZTECOO_TRUE@	       -I$(top_srcdir)/../aztecoo/src
+@HAVE_DIDASKO_AZTECOO_TRUE@		   -I$(top_srcdir)/../aztecoo/src
 
 @HAVE_DIDASKO_AZTECOO_FALSE@AZTECOO_LIBS = 
 @HAVE_DIDASKO_AZTECOO_TRUE@AZTECOO_LIBS = $(top_builddir)/../aztecoo/src/libaztecoo.a
+@HAVE_DIDASKO_AMESOS_FALSE@AMESOS_INCLUDES = 
+@HAVE_DIDASKO_AMESOS_TRUE@AMESOS_INCLUDES = -I$(top_builddir)/../amesos/src \
+@HAVE_DIDASKO_AMESOS_TRUE@		   -I$(top_srcdir)/../amesos/src
+
+@HAVE_DIDASKO_AMESOS_FALSE@AMESOS_LIBS = 
+@HAVE_DIDASKO_AMESOS_TRUE@AMESOS_LIBS = $(top_builddir)/../amesos/src/libamesos.a
+@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_INCLUDES = 
+@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_INCLUDES = -I$(top_builddir)/../teuchos/src \
+@HAVE_DIDASKO_TEUCHOS_TRUE@		   -I$(top_srcdir)/../teuchos/src
+
+@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_LIBS = 
+@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS) $(NOX_LIBS) \
-		   $(TEUCHOS_LIBS) $(AZTECOO_LIBS)
+ex1_DEPENDENCIES = $(NOX_LIBS) $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
+		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
+		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
+		   $(TEUCHOS_LIBS)
 
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
+               $(NOX_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
 	       $(EPETRA_INCLUDE) \
-	       $(NOX_INCLUDES) \
+	       $(TRIUTILS_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
+	       $(AZTECOO_INCLUDES) \
+	       $(AMESOS_INCLUDES) \
 	       $(TEUCHOS_INCLUDES)
 
-ex1_LDADD = $(NOX_LIBS) $(AZTECOO_LIBS) \
-	    $(EPETRA_LIBS) $(TEUCHOS_LIBS) \
+ex1_LDADD = $(NOX_LIBS) \
+            $(ML_EXPORT_LIBS) \
+	    $(IFPACK_LIBS) \
+	    $(AMESOS_LIBS) \
+	    $(TRIUTILS_LIBS) \
+	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
+	    $(EPETRA_LIBS)  \
+	    $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(DIDASKO_INCLUDES) \
-		   $(EPETRA_LIBS) \
-		   $(NOX_LIBS) \
-		   $(TEUCHOS_LIBS) \
-		   $(AZTECOO_LIBS)
+ex2_DEPENDENCIES = $(NOX_LIBS) $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
+		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
+		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
+		   $(TEUCHOS_LIBS)
 
-ex2_CXXFLAGS = $(EPETRA_INCLUDE) $(NOX_INCLUDES) $(TEUCHOS_INCLUDES)
-ex2_LDADD = $(NOX_LIBS) $(AZTECOO_LIBS) \
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
+               $(NOX_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
+	       $(EPETRA_INCLUDE) \
+	       $(TRIUTILS_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
+	       $(AZTECOO_INCLUDES) \
+	       $(AMESOS_INCLUDES) \
+	       $(TEUCHOS_INCLUDES)
+
+ex2_LDADD = $(NOX_LIBS) \
+            $(ML_EXPORT_LIBS) \
+            $(IFPACK_LIBS) \
+	    $(AMESOS_LIBS) \
+	    $(TRIUTILS_LIBS) \
+	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
 	    $(EPETRA_LIBS) $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
 
@@ -572,6 +630,8 @@ uninstall-am: uninstall-info-am
 
 
 @HAVE_DIDASKO_EPETRA_TRUE@include $(top_builddir)/../epetra/Makefile.export
+
+@HAVE_DIDASKO_ML_TRUE@include $(top_builddir)/../ml/Makefile.export
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

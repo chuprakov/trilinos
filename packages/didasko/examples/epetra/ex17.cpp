@@ -61,8 +61,6 @@ int main(int argc, char *argv[]) {
   Epetra_SerialComm Comm;
 #endif
 
-  int ierr;
-
   // set global dimension to 5, could be any number
   int NumGlobalElements = 5;
   
@@ -105,7 +103,7 @@ int main(int argc, char *argv[]) {
   int MaxBlockSize = max_blk * max_blk*100;
   
   int Indices[2];
-  double Values[MaxBlockSize];
+  double* Values; Values = new double[MaxBlockSize];
 
   // cycle over all the local rows. 
   
@@ -147,6 +145,8 @@ int main(int argc, char *argv[]) {
   A.TransformToLocal();
 
   cout << A;
+
+  delete[] Values;
 
 #ifdef HAVE_MPI
   MPI_Finalize();

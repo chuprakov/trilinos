@@ -38,6 +38,16 @@ EPETRA_INCLUDE =
 EPETRA_LIBS =
 endif
 
+if HAVE_DIDASKO_EPETRAEXT
+EPETRAEXT_INCLUDE = -I$(top_builddir)/../epetraext/src \
+                    -I$(top_srcdir)/../epetraext/src
+EPETRAEXT_LIBS = $(top_builddir)/../epetraext/src/libepetraext.a
+
+else
+EPETRAEXT_INCLUDE = 
+EPETRAEXT_LIBS =
+endif
+
 if HAVE_DIDASKO_IFPACK
 IFPACK_INCLUDES = -I$(top_builddir)/../ifpack/src \
               -I$(top_srcdir)/../ifpack/src
@@ -48,20 +58,10 @@ IFPACK_LIBS =
 endif
 
 if HAVE_DIDASKO_ML
-ML_INCLUDES = -I$(top_builddir)/../ml/src \
-              -I$(top_srcdir)/../ml/src/Include \
-              -I$(top_srcdir)/../ml/src/Main \
-              -I$(top_srcdir)/../ml/src/Coarsen \
-              -I$(top_srcdir)/../ml/src/Comm \
-              -I$(top_srcdir)/../ml/src/Operator \
-              -I$(top_srcdir)/../ml/src/FEGrid \
-              -I$(top_srcdir)/../ml/src/Krylov \
-              -I$(top_srcdir)/../ml/src/Smoother \
-              -I$(top_srcdir)/../ml/src/Utils
-ML_LIBS = $(top_builddir)/../ml/src/libml.a
+include $(top_builddir)/../ml/Makefile.export
 else
-ML_INCLUDES = 
-ML_LIBS = 
+ML_EXPORT_INCLUDES = 
+ML_EXPORT_LIBS = 
 endif
 
 if HAVE_DIDASKO_TRIUTILS
@@ -103,41 +103,45 @@ endif
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS) $(ML_LIBS) \
+ex1_DEPENDENCIES = $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
 		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
 		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
 		   $(TEUCHOS_LIBS)
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
 	       $(EPETRA_INCLUDE) \
 	       $(TRIUTILS_INCLUDES) \
-	       $(ML_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
 	       $(AZTECOO_INCLUDES) \
 	       $(AMESOS_INCLUDES) \
 	       $(TEUCHOS_INCLUDES)
-ex1_LDADD = $(ML_LIBS) \
+ex1_LDADD = $(ML_EXPORT_LIBS) \
 	    $(IFPACK_LIBS) \
 	    $(AMESOS_LIBS) \
 	    $(TRIUTILS_LIBS) \
 	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
 	    $(EPETRA_LIBS)  \
 	    $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(EPETRA_LIBS) $(ML_LIBS) \
+ex2_DEPENDENCIES = $(EPETRA_LIBS) $(EPETRAEXT_LIBS) $(ML_EXPORT_LIBS) \
 		   $(TRIUTILS_LIBS) $(AZTECOO_LIBS) \
 		   $(IFPACK_LIBS) $(AMESOS_LIBS) \
 		   $(TEUCHOS_LIBS)
 ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
+	       $(EPETRAEXT_INCLUDE) \
 	       $(EPETRA_INCLUDE) \
 	       $(TRIUTILS_INCLUDES) \
-	       $(ML_INCLUDES) \
+	       $(ML_EXPORT_INCLUDES) \
 	       $(AZTECOO_INCLUDES) \
 	       $(AMESOS_INCLUDES) \
 	       $(TEUCHOS_INCLUDES)
-ex2_LDADD = $(ML_LIBS) $(IFPACK_LIBS) \
+ex2_LDADD = $(ML_EXPORT_LIBS) $(IFPACK_LIBS) \
 	    $(AMESOS_LIBS) \
 	    $(TRIUTILS_LIBS) \
 	    $(AZTECOO_LIBS) \
+	    $(EPETRAEXT_LIBS) \
 	    $(EPETRA_LIBS) $(TEUCHOS_LIBS) \
 	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)

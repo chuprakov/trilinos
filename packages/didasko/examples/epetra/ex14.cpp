@@ -125,7 +125,6 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
 {
 
   int MyPID = A.Comm().MyPID(); 
-  int NumProc = A.Comm().NumProc();
 
   // take care that matrix is already trasformed
   bool IndicesAreGlobal = A.IndicesAreGlobal();
@@ -159,10 +158,6 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
   double MyMaxElement( DBL_MIN ), MaxElement( DBL_MIN );
   double MyMinAbsElement( DBL_MAX ), MinAbsElement( DBL_MAX );
   double MyMaxAbsElement( 0.0 ), MaxAbsElement( 0.0 );
-  double MinDiagonalElement( DBL_MAX );
-  double MaxDiSagonalElement( DBL_MIN );
-  int NumDiagonalDominantRows( 0 );
-  int MaxBandwidth;
 
   int NumMyRows = A.NumMyRows();
   int * NzPerRow = new int[NumMyRows];

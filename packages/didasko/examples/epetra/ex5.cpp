@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
   for( int i=0 ; i<MyLength ; ++i ) 
     cout << "extracted value[" << i << "] = " << x_values[i] << endl;
 
-  int Indices[MyLength];
+  int* Indices; Indices = new int[MyLength];
   
  // now, modify these values
   for( int i=0 ; i<MyLength ; ++i ) {
@@ -93,12 +93,13 @@ int main(int argc, char *argv[])
   // of x. 
   cout << x;
 
-  x.ReplaceMyValues( MyLength, 0, x_values, Indices );
+  x.ReplaceMyValues(MyLength, 0, x_values, Indices);
 
   cout << x;
 
   // free memory and return
-  delete x_values;
+  delete[] x_values;
+  delete[] Indices;
 
 #ifdef HAVE_MPI
   MPI_Finalize();

@@ -66,15 +66,17 @@ int main(int argc, char *argv[])
   // now some basic MPI calls //
   // ------------------------ //
   
-  int    ivalue, ivalue2, ivalues[NumProc], ivalues2[NumProc];
-  double dvalue, dvalue2, dvalues[NumProc], dvalues2[NumProc];
+  int    ivalue;
+  double dvalue, dvalue2;
+  double* dvalues;  dvalues  = new double[NumProc];
+  double* dvalues2; dvalues2 = new double[NumProc];
   int root = 0;
   
   // equivalent to MPI_Barrier
   
   Comm.Barrier();
    
-  if( MyPID == root ) dvalue = 12.0;
+  if (MyPID == root) dvalue = 12.0;
 
   // On input, the root processor contains the list of values
   // (in this case, a single value). On exit, all processes will
@@ -83,35 +85,38 @@ int main(int argc, char *argv[])
   
   // equivalent to  MPI_Broadcast
     
-  Comm.Broadcast( &dvalue, 1, root );
+  Comm.Broadcast(&dvalue, 1, root);
 
   // as before, but with integer values. As C++ can bind to the appropriate
   // interface based on argument typing, the type of data is not required.
   
-  Comm.Broadcast( &ivalue, 1, root );
+  Comm.Broadcast(&ivalue, 1, root);
 
   // equivalent MPI_Allgather
 
-  Comm.GatherAll( dvalues, dvalues2, 1);
+  Comm.GatherAll(dvalues, dvalues2, 1);
 
   // equivalent to MPI_Allreduce with MPI_SUM
 
   dvalue = 1.0*MyPID;
 
-  Comm.SumAll( &dvalue, dvalues, 1 );
+  Comm.SumAll( &dvalue, dvalues, 1);
 
   // equivalent to MPI_Allreduce with MPI_SUM
 
-  Comm.MaxAll( &dvalue, dvalues, 1 );
+  Comm.MaxAll( &dvalue, dvalues, 1);
 
   // equiavant to MPI_Scan with MPI_SUM
 
-  dvalue = 1.0*MyPID;
+  dvalue = 1.0 * MyPID;
   
-  Comm.ScanSum( &dvalue, &dvalue2, 1 );
+  Comm.ScanSum(&dvalue, &dvalue2, 1);
 
   cout << "On proc " << MyPID << " dvalue2  = " << dvalue2 << endl;
   
+  delete[] dvalues;
+  delete[] dvalues2;
+
   // ======================= //
   // Finalize MPI and return //
   // ----------------------- //

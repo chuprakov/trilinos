@@ -58,10 +58,10 @@ public:
 		       double diag,
 		       double diag_plus_one,
 		       Epetra_Map & Map) :
+    Map_(Map),
     diag_minus_one_(diag_minus_one),
     diag_(diag),
-    diag_plus_one_(diag_plus_one),
-    Map_( Map )
+    diag_plus_one_(diag_plus_one)
   {}
 
   // application of the tridiagonal operator
@@ -101,48 +101,50 @@ public:
 
   // other function
   int SetUseTranspose( bool UseTranspose) 
-  {}
+  {
+    return(-1); // not implemented
+  }
 
   int ApplyInverse( const Epetra_MultiVector & X,
 		    Epetra_MultiVector & Y ) const
   {
-    return 0;
+    return(-1); // not implemented
   }
 
   double NormInf() const
   {
-    return( abs(diag_) + abs(diag_minus_one_) + abs(diag_plus_one_) );
+    return(abs(diag_) + abs(diag_minus_one_) + abs(diag_plus_one_));
   }
 
-  char * Label () const
+  const char * Label () const
   {
-    return "TriDiagonalOperator";
+    return("TriDiagonalOperator");
   }
 
   bool UseTranspose() const
   {
-    return false;
+    return(false);
   }
 
   bool HasNormInf () const
   {
-    return true;
+    return(true);
   }
   
   
   const Epetra_Comm & Comm() const
   {
-    return( Map_.Comm() );
+    return(Map_.Comm());
   }
 
   const Epetra_Map & OperatorDomainMap() const
   {
-    return( Map_ );
+    return(Map_);
   }
   
   const Epetra_Map & OperatorRangeMap() const
   {
-    return( Map_ );
+    return(Map_);
   }
 
   
@@ -176,8 +178,6 @@ int main(int argc, char *argv[]) {
     exit( EXIT_FAILURE );
   }
   
-  int ierr;
-
   // global dimension of the problem, could be any positive number
   int NumGlobalElements( 5 );
 

@@ -126,7 +126,6 @@ Epetra_CrsMatrix * CreateLaplacian( const int nx, const int ny,
     
   double *Values = new double[4];
   int *Indices = new int[4];
-  int NumEntries;
     
   for( int i=0 ; i<NumMyElements; ++i ) {
     int NumEntries=0;
@@ -212,8 +211,6 @@ public:
     // get update list
     int * MyGlobalElements = Matrix_->Map().MyGlobalElements( );
     
-    int NumEntries;
-    
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
       assert(Matrix_->ReplaceGlobalValues(MyGlobalElements[i], 1, 
@@ -240,8 +237,6 @@ public:
     // get update list
     int * MyGlobalElements = Matrix_->Map().MyGlobalElements( );
   
-    int NumEntries;
-    
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
       double newdiag = diag + lambda_*x[i];
@@ -454,3 +449,5 @@ int main(int argc, char *argv[])
 
   return(EXIT_SUCCESS);
 }
+
+#endif

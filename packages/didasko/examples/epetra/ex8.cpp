@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
   // (that is, a size compatible with Map), and it is filled with
   // some values
 
-  double values[NumLocalElements];
+  double* values; values = new double[NumLocalElements];
   for( int i=0 ;i<NumLocalElements ; i++ )
     values[i] = 1.0*i;
   
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   // now we can reset the view, and let it point to an other douoble
   // vector (having the same size)
 
-  double values2[NumLocalElements];
+  double* values2; values2 = new double[NumLocalElements];
   for( int i=0 ;i<NumLocalElements ; i++ )
     values2[i] = -1.0*i;
 
@@ -88,6 +88,9 @@ int main(int argc, char *argv[])
 
   cout << x;
   
+  delete[] values;
+  delete[] values2;
+
 #ifdef HAVE_MPI
   MPI_Finalize();
 #endif

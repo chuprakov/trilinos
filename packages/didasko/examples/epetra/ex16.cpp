@@ -75,7 +75,6 @@ bool Vector2MATLAB( const Epetra_Vector & v,
 
   if( MyPID == 0 ) cout << "v = zeros(" << GlobalLength << ")\n";
 
-  int NumMyElements = Map.NumMyElements();
   // get update list
   int * MyGlobalElements = Map.MyGlobalElements( );
   
