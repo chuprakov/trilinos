@@ -20,15 +20,13 @@
 #include "LinAlgPack/include/assert_print_nan_inf.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
-#include "check_nan_inf.h"
+#include "RTOpPack/include/check_nan_inf.h"
 
 bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
-	using NumericHelperPack::is_nan;
-	using NumericHelperPack::is_inf;
 	
-	if( is_nan(val) || is_inf(val) ) {
+	if( RTOp_is_nan_inf(val) ) {
 		std::ostringstream omsg;
 		omsg
 			<< "The scalar \"" << name
@@ -49,14 +47,12 @@ bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
-	using NumericHelperPack::is_nan;
-	using NumericHelperPack::is_inf;
 	
 	bool has_nan_or_inf = false;
 	bool printed_header = false;
 
 	for( VectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
-		if( is_nan(*v_itr) || is_inf(*v_itr) ) {
+		if( RTOp_is_nan_inf(*v_itr) ) {
 			if(out) {
 				if(!printed_header) {
 					*out
@@ -87,8 +83,6 @@ bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
 bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
-	using NumericHelperPack::is_nan;
-	using NumericHelperPack::is_inf;
 	
 	bool has_nan_or_inf = false;
 	bool printed_header = false;
@@ -96,7 +90,7 @@ bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]
 	for( size_type j = 1; j <= m.cols(); ++j ) {
 		const VectorSlice& v = m.col(j);
 		for( VectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
-			if( is_nan(*v_itr) || is_inf(*v_itr) ) {
+			if( RTOp_is_nan_inf(*v_itr) ) {
 				if(out) {
 					if(!printed_header) {
 						*out
