@@ -62,6 +62,11 @@ class VectorWithOpMutable
 public:
 
 	///
+	using VectorWithOp::get_sub_vector;
+	///
+	using VectorWithOp::free_sub_vector;
+
+	///
 	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>    vec_mut_ptr_t;
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
