@@ -44,8 +44,11 @@ namespace ReducedSpaceSQPPack {
 
 CheckConvergenceStd_AddedStep::CheckConvergenceStd_AddedStep(
 		  EOptErrorCheck opt_error_check
-		, EScaleKKTErrorBy scale_kkt_error_by	)
+		, EScaleKKTErrorBy scale_kkt_error_by
+		, bool scale_opt_error_by_Gf
+		)
 	 : opt_error_check_(opt_error_check), scale_kkt_error_by_(scale_kkt_error_by)
+	 	, scale_opt_error_by_Gf_(scale_opt_error_by_Gf)
 {}
 
 bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
@@ -86,12 +89,16 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 
 
 	// opt_err = (||rGL||inf or ||GL||) / (||Gf|| + scale_kkt_factor)
+
 	const value_type
+		opt_scale_factor = ( scale_opt_error_by_Gf()
+			? (value_type)(1.0 + assert_is_number( s.Gf().get_k(0).norm_inf(), "||Gf_k||inf" ))
+			: (value_type)1.0	),
 		opt_err =
 			( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ?
 				assert_is_number( s.rGL().get_k(0).norm_inf() , "||rGL_k||inf" )
 				: assert_is_number( s.GL().get_k(0).norm_inf() , "||GL_k||inf" )
-			) / (1.0 + assert_is_number( s.Gf().get_k(0).norm_inf(), "||Gf_k||inf" ));
+			) / opt_scale_factor;
 
 	// feas_err
 	const value_type
@@ -118,6 +125,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
+			<< "\nopt_scale_factor = " << opt_scale_factor
 			<< "\nopt_err          = " << opt_err
 			<< "\nfeas_err         = " << feas_err
 			<< "\nkkt_err          = " << s.kkt_err().get_k(0)
@@ -136,9 +144,9 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
 			out	<< "\nFound the solution!!!!!! (k = " << algo.state().k() << ")"
-				<< "\nopt_err   = " << opt_err	<< " < opt_tol = "	<< opt_tol
-				<< "\nfeas_err  = " << feas_err	<< " < feas_tol = "	<< feas_tol
-				<< "\nstep_err  = " << step_err	<< " < step_tol = "	<< step_tol
+				<< "\nopt_err/scale_kkt_factor   = " << opt_err/scale_kkt_factor	<< " < opt_tol = "	<< opt_tol
+				<< "\nfeas_err/scale_kkt_factor  = " << feas_err/scale_kkt_factor	<< " < feas_tol = "	<< feas_tol
+				<< "\nstep_err                   = " << step_err					<< " < step_tol = "	<< step_tol
 					<< std::endl;
 		}
 		nlp.report_final_solution(
@@ -169,8 +177,13 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		<< L << "    scale_kkt_factor = 1.0 + norm_inf(x_k)\n"
 		<< L << "else\n"
 		<< L << "norm_inf_c_k = norm(c_k,inf)\n"
+		<< L << "if scale_opt_error_by_Gf == true then\n"
+		<< L << "    opt_scale_factor = 1.0 + norm_inf(Gf_k)\n"
+		<< L << "else\n"
+		<< L << "    opt_scale_factor = 1.0\n"
+		<< L << "end\n"
 		<< L << "opt_err = (norm_inf(rGL_k) or norm_inf(GL_k))\n"
-		<< L << "    / (1.0 + norm_inf(Gf_k))\n"
+		<< L << "    / opt_scale_factor\n"
 		<< L << "feas_err = norm_inf_c_k\n"
 		<< L << "kkt_err_k = opt_err + feas_err\n"
 		<< L << "if d_k is updated then\n"

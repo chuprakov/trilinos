@@ -22,10 +22,10 @@ public:
 	/// Enumeration for the type of point returned from solve_qp(...).
 	enum ESolutionType {
 		SOLUTION_TYPE_NOT_KNOWN = static_cast<int>(NOT_KNOWN),
-		OPTIMAL_SOLUTION,
-		PRIMAL_FEASIBLE_POINT,
-		DUAL_FEASIBLE_POINT,
-		SUBOPTIMAL_POINT
+		OPTIMAL_SOLUTION		= 0,
+		PRIMAL_FEASIBLE_POINT	= 1,
+		DUAL_FEASIBLE_POINT		= 2,
+		SUBOPTIMAL_POINT		= 3
 		};
 
 	// Public interface

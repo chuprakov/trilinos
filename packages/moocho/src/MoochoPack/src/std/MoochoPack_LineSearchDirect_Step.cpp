@@ -67,6 +67,10 @@ bool ReducedSpaceSQPPack::LineSearchDirect_Step::do_step(Algorithm& _algo
 	// Dphi_k
 	const value_type
 		Dphi_k = merit_func().deriv();
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+		out	<< "\nDphi_k = "	<< Dphi_k << std::endl;
+	}
+
 	if( Dphi_k >= 0 ) {
 		throw LineSearchFailure( "LineSearch2ndOrderCorrect_Step::do_step(...) : " 
 			"Error, d_k is not a descent direction for the merit function " );

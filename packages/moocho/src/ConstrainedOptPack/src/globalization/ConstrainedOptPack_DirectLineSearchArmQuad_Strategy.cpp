@@ -8,6 +8,7 @@
 #include "../include/DirectLineSearchArmQuad_Strategy.h"
 #include "../include/MeritFuncCalc1D.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
+#include "Misc/include/check_nan_inf.h"
 
 namespace ConstrainedOptimizationPack {
 inline value_type min(value_type v1, value_type v2) {
@@ -45,6 +46,8 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 {
 	using std::setw;
 	using std::endl;
+
+	using NumericHelperPack::is_nan;
 	
 	using LinAlgPack::Vp_StV;
 	using LinAlgOpPack::assign;
@@ -101,12 +104,7 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 					<< setw(w)			<< ((*phi_kp1)-frac_phi)	<< endl;
 		
 		// Check that this is a number.
-		typedef std::numeric_limits<value_type>		num_lim_t;
-#ifdef _WINDOWS
-		if( ::_isnan( *phi_kp1 ) ) {	// ToDo: Make this portable?
-#else
-		if( *phi_kp1 != *phi_kp1 ) {	// Should work for IEEE
-#endif
+		if( is_nan( *phi_kp1 ) ) {
 			// Cut back the step to min_frac * alpha_k
 			*alpha_k = min_frac()*(*alpha_k);
 			best_alpha = 0.0;

@@ -41,7 +41,7 @@ bool ReducedSpaceSQPPack::CrossTermExactStd_Step::do_step(Algorithm& _algo
 	Vector tmp;
 	V_MtV( &tmp, s.HL().get_k(0), BLAS_Cpp::no_trans, s.Ypy().get_k(0)() );
 	// w = Z' * tmp
-	V_MtV( &s.w().set_k(0).v(), s.HL().get_k(0), BLAS_Cpp::no_trans, tmp() );
+	V_MtV( &s.w().set_k(0).v(), s.Z().get_k(0), BLAS_Cpp::trans, tmp() );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||w||inf = "	<< s.w().get_k(0).norm_inf() << std::endl;

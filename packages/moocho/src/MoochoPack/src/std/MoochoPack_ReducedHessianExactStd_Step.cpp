@@ -6,6 +6,7 @@
 
 #include <sstream>
 #include <typeinfo>
+#include <iomanip>
 
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
@@ -15,6 +16,7 @@
 #include "SparseLinAlgPack/include/MatrixSymWithOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "LinAlgPack/include/GenMatrixOut.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -50,8 +52,21 @@ bool ReducedHessianExactStd_Step::do_step(
 
 	// Compute HL first (You may want to move this into its own step later?)
 
+	if( !s.lambda().updated_k(-1) ) {
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out << "Initializing lambda_km1 = nlp.get_lambda_init ... \n";
+		}
+		nlp.get_lambda_init( &s.lambda().set_k(-1).v() );
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+			out << "||lambda_km1||inf = " << s.lambda().get_k(-1).norm_inf() << std::endl;
+		}
+		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+			out << "lambda_km1 = \n" << s.lambda().get_k(-1)();
+		}
+	}
+
 	nlp.set_HL(	&s.HL().set_k(0) );
-	nlp.calc_HL( s.x().get_k(0)(), s.lambda().get_k(0)(), false );
+	nlp.calc_HL( s.x().get_k(0)(), s.lambda().get_k(-1)(), false );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 		s.HL().get_k(0).output( out << "\nHL_k = \n" );
@@ -90,6 +105,10 @@ bool ReducedHessianExactStd_Step::do_step(
 		M_MtMtM( &rHL_sym, 1.0, *HL_sym_op, MatrixSymWithOp::DUMMY_ARG
 			, s.Z().get_k(0), BLAS_Cpp::no_trans );
 
+		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+			out << "\nrHL_dense = \n" << rHL_sym_store(); 
+		}
+	
 		// Set the reduced Hessain
 		rHL_sym_init->initialize( rHL_sym );
 
@@ -107,7 +126,10 @@ void ReducedHessianExactStd_Step::print_step(
 {
 	out
 		<< L << "*** Calculate the exact reduced Hessian of the Lagrangian\n"
-		<< L << "HL_k = HL(x_k,lambda_k) <: R^(n+m) -> R^(n x n)\n"
+		<< L << "if lambda_km1 is not updated then\n"
+		<< L << "    lambda_km1 = nlp.get_lambda_init\n"
+		<< L << "end\n"
+		<< L << "HL_k = HL(x_k,lambda_km1) <: R^(n+m) -> R^(n x n)\n"
 		<< L << "if rHL_k is not updated then\n"
 		<< L << "    rHL_dense = Z_k' * HL_k * Z_k  (MatrixSymWithOp interface for HL_k)\n"
 		<< L << "    rHL_k = rHL_dense (MatrixSymDenseInitialize interface for rHL_k)\n"

@@ -45,6 +45,12 @@ public:
 	virtual std::ostream& journal_out() const
 	{	return *const_cast<AlgorithmTrack*>(this)->journal_out_; }
 
+	///
+	/** Set the journal file.
+	  */
+	virtual void set_journal_out(std::ostream& journal_out)
+	{	journal_out_ = &journal_out; }
+
 protected:
 	std::ostream *journal_out_;
 

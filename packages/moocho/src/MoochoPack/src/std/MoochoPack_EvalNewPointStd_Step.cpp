@@ -16,6 +16,7 @@
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
+#include "LinAlgPack/include/assert_print_nan_inf.h"
 
 ReducedSpaceSQPPack::EvalNewPointStd_Step::EvalNewPointStd_Step(
 		const deriv_tester_ptr_t& deriv_tester )
@@ -28,6 +29,7 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using LinAlgPack::norm_inf;
+	using LinAlgPack::assert_print_nan_inf;
 	using GeneralIterationPack::print_algorithm_step;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -42,6 +44,9 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 		using GeneralIterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
+
+	// ToDo: Put this under check results?
+	assert_print_nan_inf(s.x().get_k(0)(), "x_k",true,&out); 
 
 	// Set the references to the current point's quantities to be updated
 	bool f_k_updated = s.f().updated_k(0);
@@ -82,6 +87,11 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 		nlp.calc_c(x.v(), false);
 	if( !f_k_updated )
 		nlp.calc_f(x.v(), false);
+
+	// ToDo: Put this under check results?
+	assert_print_nan_inf(s.f().get_k(0), "f_k",true,&out); 
+	assert_print_nan_inf(s.c().get_k(0)(), "c_k",true,&out); 
+	assert_print_nan_inf(s.Gf().get_k(0)(), "Gf_k",true,&out); 
 
 	// Check the derivatives if we are checking the results
 	if( s.check_results() ) {

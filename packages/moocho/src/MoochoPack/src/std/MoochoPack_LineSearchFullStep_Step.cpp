@@ -39,11 +39,13 @@ bool ReducedSpaceSQPPack::LineSearchFullStep_Step::do_step(Algorithm& _algo
 	}
 
 	// alpha_k = 1.0
-	s.alpha().set_k(0) = 1.0;
+	if( !s.alpha().updated_k(0) )
+		s.alpha().set_k(0) = 1.0;
 	
 	// x_kp1 = x_k + d_k
 	Vector &x_kp1 = s.x().set_k(+1).v();
-	LinAlgPack::V_VpV( &x_kp1, s.x().get_k(0)(), s.d().get_k(0)() );
+	x_kp1 = s.x().get_k(0)();
+	LinAlgPack::Vp_StV( &x_kp1(), s.alpha().get_k(0), s.d().get_k(0)() );
 
 	// Calcuate f and c at the new point.
 	nlp.set_c( &s.c().set_k(+1).v() );
@@ -71,8 +73,10 @@ void ReducedSpaceSQPPack::LineSearchFullStep_Step::print_step( const Algorithm& 
 	, std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "alpha_k = 1.0\n"
-		<< L << "x_kp1 = x_k + d_k\n"
+		<< L << "if alpha_k is not updated then\n"
+		<< L << "    alpha_k = 1.0\n"
+		<< L << "end\n"
+		<< L << "x_kp1 = x_k + alpha_k * d_k\n"
 		<< L << "f_kp1 = f(x_kp1)\n"
 		<< L << "c_kp1 = c(x_kp1)\n";
 }

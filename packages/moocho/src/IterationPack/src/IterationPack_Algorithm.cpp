@@ -346,7 +346,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		keep_on = imp_do_step(curr_step_poss_);
 
 		if( algo_timing_ ) {
-			const double time = step_timer.stop();
+			const double time = std::_MAX(step_timer.stop(),0.0);	// negative somehow (g++ -O2 ?)
 			// time for step k for the iteration
 			step_times_[state().k()-first_k_+(curr_step_poss_-1)*(max_iter()+5)] = time;
 			// Add to time for the full iteration

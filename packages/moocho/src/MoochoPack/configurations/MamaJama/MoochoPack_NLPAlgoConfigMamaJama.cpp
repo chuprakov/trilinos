@@ -102,6 +102,7 @@
 // Stuff for exact reduced hessian
 #include "../../include/std/ReducedHessianExactStd_Step.h"
 #include "../../include/std/CrossTermExactStd_Step.h"
+#include "../../include/std/DampenCrossTermStd_Step.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefChol.h"	// rHL_k
 
 namespace ReducedSpaceSQPPack {
@@ -999,12 +1000,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			, new CrossTermExactStd_Step
 		  );
 
+		// Add the calculation of the dampening parameter for the cross term.
+		DampenCrossTermStd_Step
+			*zeta_step = new DampenCrossTermStd_Step;
+		// ToDo: set options from stream
+		algo->insert_assoc_step( poss+1, GeneralIterationPack::POST_STEP, 1
+			, "DampenReducedQPCrossTerm"
+			, zeta_step  );
+
 		// Change the type of the iteration quantity for rHL
 		typedef GeneralIterationPack::IterQuantityAccessContinuous<
-			ConstrainedOptimizationPack::MatrixSymPosDefChol>
+					ConstrainedOptimizationPack::MatrixSymPosDefChol >
+				iq_rHL_concrete_t;
+		typedef GeneralIterationPack::IterQuantityAccessDerivedToBase< MatrixWithOp
+					, ConstrainedOptimizationPack::MatrixSymPosDefChol >
 				iq_rHL_t;
 		algo->state().get_iter_quant(algo->state().get_iter_quant_id(rHL_name))
-			= AlgorithmState::IQ_ptr(new iq_rHL_t(1,rHL_name));
+			= AlgorithmState::IQ_ptr( new iq_rHL_t( new iq_rHL_concrete_t(1,rHL_name) ) );
 
 		// That's it man!
 	}
@@ -1052,6 +1064,9 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	state.con_dep()		= (r < m) ? Range1D(r + 1, m) : Range1D(m + 1, m + 1);
 
 	state.initialize_fast_access();
+
+	// Reset the iteration count to zero
+	state.k(0);
 
 	// set the first step
 	algo.do_step_first(1);

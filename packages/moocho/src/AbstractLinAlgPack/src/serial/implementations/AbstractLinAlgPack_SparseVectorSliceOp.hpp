@@ -147,7 +147,10 @@ void Vp_StMtSVS(VectorSlice* vs_lhs, value_type alpha, const M& M_rhs1
 	using LinAlgPack::Vp_MtV_assert_sizes;
 	using LinAlgPack::Vt_S;
 	Vp_MtV_assert_sizes(vs_lhs->size(), M_rhs1.rows(), M_rhs1.cols(), trans_rhs1, sv_rhs2.size());
-	if(beta != 1.0) Vt_S(vs_lhs,beta);
+	if(beta == 0.0)
+		*vs_lhs = 0.0;
+	else if(beta != 1.0)
+		Vt_S(vs_lhs,beta);
 	Vp_StMtV(vs_lhs,alpha,M_rhs1,trans_rhs1,sv_rhs2);
 }
 

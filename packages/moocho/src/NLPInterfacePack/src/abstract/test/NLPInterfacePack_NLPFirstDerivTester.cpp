@@ -10,6 +10,7 @@
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/MatVecCompare.h"
+#include "LinAlgPack/include/assert_print_nan_inf.h"
 
 namespace NLPInterfacePack {
 namespace TestingPack {
@@ -37,7 +38,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::sqrt_eps;
-
+	using LinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_StV;
 
 	using TestingHelperPack::update_success;
@@ -72,6 +73,10 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	value_type f;
 	Vector x = xo, c(m), FDGf(0.0,n);
 
+	// Check the input vectors
+	assert_print_nan_inf(xo, "xo",true,out); 
+	assert_print_nan_inf(xo, "Gf",true,out); 
+
 	// Remember what was set
 
 	value_type		*f_saved;
@@ -105,6 +110,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 		x(i) = x(i) + h;
 
 		nlp->calc_c( x );
+		assert_print_nan_inf(c(), "c(xo+h*e(i))",true,out); 
 		V_StV( &FDGc.row(i), 1/(2*h), c() );
 
 		nlp->calc_f( x, false );
@@ -113,6 +119,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 		x(i) = x(i) - 2 * h;
 
 		nlp->calc_c( x );
+		assert_print_nan_inf(c(), "c(xo-h*e(i))",true,out); 
 		Vp_StV( &FDGc.row(i), -1/(2*h), c() );
 
 		nlp->calc_f( x, false );
@@ -155,18 +162,14 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 			}
 		}
 	}
-
-
-
 	if(out) {
 		if(printed_header) *out << std::endl;
-		*out << "Checking derivatives of constraints c(x)...\n";
+		*out
+			<< "Checking derivatives of constraints c(x)\n"
+			<< "where D(i,j) = finite_d(c(j))/d(x(i)), M(i,j) = d(c(j))/d(x(i)) ...\n";
 	}
 	result = comp_Gc().comp( FDGc, Gc, CompareDenseSparseMatrices::FULL_MATRIX
 		, warning_tol(), error_tol(), out );
-	if( !result && out )
-		*out << "where:\n"
-				"    M(i,j) = d(c(j))/d(x(i)), D(i,j) = finite_d(c(j))/d(x(i)) ...\n";
 	update_success( result, &success );
 
 	return success;

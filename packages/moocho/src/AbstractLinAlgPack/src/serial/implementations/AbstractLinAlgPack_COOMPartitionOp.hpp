@@ -57,7 +57,13 @@ inline void Vp_StMtV( VectorSlice* vs_lhs, value_type alpha
 	, const COOMatrixPartitionedViewUtilityPack::Partition<T_Indice,T_Value>& coom_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta )
 {
-	LinAlgPack::Vt_S(vs_lhs,beta);
+	if( beta == 0.0 ) {
+		*vs_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Vt_S(vs_lhs,beta);
+	}
 	Vp_StCOOMtV(vs_lhs, alpha, coom_rhs1, trans_rhs1, vs_rhs2);
 }
 
@@ -102,7 +108,13 @@ void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
 	Mp_MtM_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 							, coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1
 							, M2_rhs2.rows(), M2_rhs2.cols(), trans_rhs2 );
-	LinAlgPack::Mt_S(gms_lhs,beta);
+	if( beta == 0.0 ) {
+		*gms_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Mt_S(gms_lhs,beta);
+	}
 	Mp_StMtM(gms_lhs,alpha,coom_rhs1,trans_rhs1,M2_rhs2,trans_rhs2);
 }
 
@@ -121,7 +133,13 @@ void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const M1& M1_rhs1
 	Mp_MtM_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 							, M1_rhs1.rows(), M1_rhs1.cols(), trans_rhs1
 							, coom_rhs2.rows(), coom_rhs2.cols(), trans_rhs2 );
-	LinAlgPack::Mt_S(gms_lhs,beta);
+	if( beta == 0.0 ) {
+		*gms_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Mt_S(gms_lhs,beta);
+	}
 	Mp_StMtM(gms_lhs,alpha,M1_rhs1,trans_rhs1,coom_rhs2,trans_rhs2);
 }
 
@@ -178,7 +196,13 @@ inline void Vp_StMtV( VectorSlice* vs_lhs, value_type alpha
 	, const COOMatrixPartitionedViewUtilityPack::TransposedPartition<T_Indice,T_Value>& coom_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta )
 {
-	LinAlgPack::Vt_S(vs_lhs,beta);
+	if( beta == 0.0 ) {
+		*vs_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Vt_S(vs_lhs,beta);
+	}
 	Vp_StCOOMtV(vs_lhs, alpha, coom_rhs1, trans_rhs1, vs_rhs2);
 }
 
@@ -223,7 +247,13 @@ void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
 	Mp_MtM_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 							, coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1
 							, M2_rhs2.rows(), M2_rhs2.cols(), trans_rhs2 );
-	LinAlgPack::Mt_S(gms_lhs,beta);
+	if( beta == 0.0 ) {
+		*gms_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Mt_S(gms_lhs,beta);
+	}
 	Mp_StMtM(gms_lhs,alpha,coom_rhs1,trans_rhs1,M2_rhs2,trans_rhs2);
 }
 
@@ -242,7 +272,13 @@ void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const M1& M1_rhs1
 	Mp_MtM_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 							, M1_rhs1.rows(), M1_rhs1.cols(), trans_rhs1
 							, coom_rhs2.rows(), coom_rhs2.cols(), trans_rhs2 );
-	LinAlgPack::Mt_S(gms_lhs,beta);
+	if( beta == 0.0 ) {
+		*gms_lhs = 0.0;	// We must specifically assign this in case uninitialized memory
+						// was used and you might get NaN by accident (this happened to me!).
+	}
+	else {
+		LinAlgPack::Mt_S(gms_lhs,beta);
+	}
 	Mp_StMtM(gms_lhs,alpha,M1_rhs1,trans_rhs1,coom_rhs2,trans_rhs2);
 }
 

@@ -20,12 +20,16 @@ template<class Type>
 IterQuantityAccess<Type>& cast_to_type(AlgorithmState& state, AlgorithmState::iq_id_type iq_id
 	, const std::string& iq_name, bool use_iq_id)
 {
-	IterQuantityAccess<Type> *iqa = dynamic_cast<IterQuantityAccess<Type>*>(
-		use_iq_id ? &state.iter_quant(iq_id) : &state.iter_quant(iq_name) );
+	GeneralIterationPack::IterQuantity
+		&iter_quant = use_iq_id ? state.iter_quant(iq_id) : state.iter_quant(iq_name);
+
+	IterQuantityAccess<Type> *iqa = dynamic_cast<IterQuantityAccess<Type>*>( &iter_quant );
 	if(!iqa) {
 		std::ostringstream omsg;
 		omsg	<< "cast_to_type(...) : The concrete type for the rSQPState iteration quantity "
-				<<	"iq_name = \"" << iq_name << "\" must be a subclass of type "
+				<<	"iq_name = \"" << iq_name << "\" is "
+				<< typeid(iter_quant).name()
+				<< "and is not a subclass of type "
 				<< typeid(IterQuantityAccess<Type>).name();
 		throw rSQPState::InvalidType(omsg.str());
 	}
