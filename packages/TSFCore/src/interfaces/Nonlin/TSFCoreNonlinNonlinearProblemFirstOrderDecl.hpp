@@ -30,6 +30,12 @@ namespace Nonlin {
  * dimmension <tt>dim(f) x dim(x)</tt> where <tt>(D(f)/D(x))(i,j)</tt>
  * is the derivative of the <tt>ith</tt> function <tt>f(i)</tt> with
  * respect to the <tt>jth</tt> variable <tt>x(j)</tt>.
+ *
+ * <b>Warning!</b> Note that the <tt>MultiVector</tt> objects that are
+ * computed for <tt>DcDy</tt> and <tt>DgDu</tt> are actually
+ * transposes of the Jacobians <tt>D(g)/D(y)</tt> and
+ * <tt>D(g)/D(u)</tt>.  This is a little confusing but make since in
+ * the context of things.
  * 
  * The reason fo the methods <tt>opDcDy()</tt> and <tt>opDcDu()</tt>
  * is to allow the subclass to represent <tt>DcDy</tt> and/or
@@ -465,12 +471,16 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>*this->get_DgDy()</tt> is updated to <tt>D(g)/D(y)</tt>.
+	 * <li> <tt>*this->get_DgDy()</tt> is updated to <tt>D(g)/D(y)'</tt>.
 	 * </ul>
 	 *
 	 * The set storage references for the other Jacobian matrices and
 	 * the vector functions <tt>c</tt> and/or <tt>g</tt> may also be
 	 * updated at this point but is not guaranteed to be.
+	 *
+	 * <b>Warning!</b> Note that <tt>*this->get_DgDy()</tt> is
+	 * actually the transpose of <tt>D(g)/D(y)</tt> as stated in the
+	 * class overview and the above postconditions.
  	 *
 	 * The default implementation throws an exception since by default
 	 * <tt>this->numResponseFunctions()==0</tt>.
@@ -508,12 +518,16 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>*this->get_DgDu(l)</tt> is updated to <tt>D(g)/D(u(l))</tt>.
+	 * <li> <tt>*this->get_DgDu(l)</tt> is updated to <tt>D(g)/D(u(l))'</tt>.
 	 * </ul>
 	 *
 	 * The set storage references for the other Jacobian matrices and
 	 * the vector functions <tt>c</tt> and/or <tt>g</tt> may also be
 	 * updated at this point but is not guaranteed to be.
+	 *
+	 * <b>Warning!</b> Note that <tt>*this->get_DgDu(l)</tt> is
+	 * actually the transpose of <tt>D(g)/D(u(l))</tt> as stated in
+	 * the class overview and the above postconditions.
  	 *
 	 * The default implementation throws an exception since by default
 	 * <tt>this->Nu() == 0</tt> and <tt>this->numResponseFunctions()==0</tt>.
