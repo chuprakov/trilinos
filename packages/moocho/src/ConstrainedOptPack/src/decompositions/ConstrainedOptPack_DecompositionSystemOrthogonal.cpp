@@ -82,6 +82,11 @@ DecompositionSystemOrthogonal::factory_Vy() const
 
 // Overridden from DecompositionSystemVarReductImp
 
+void DecompositionSystemOrthogonal::update_D_imp_used(EExplicitImplicit *D_imp_used) const
+{
+	*D_imp_used = MAT_IMP_EXPLICIT;
+}
+
 DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemOrthogonal::uninitialize_matrices(
 	std::ostream                                           *out
@@ -168,8 +173,8 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 	const Range1D
 		var_dep(1,r),
 		var_indep(r+1,n),
-		con_decomp   = this->con_decomp(),
-		con_undecomp = this->con_undecomp();
+		equ_decomp   = this->equ_decomp(),
+		equ_undecomp = this->equ_undecomp();
 
 	//
 	// Get pointers to concreate matrices
@@ -205,7 +210,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 			,MatrixIdentConcatStd::BOTTOM                     // top_or_bottom
 			,-1.0                                             // alpha
 			,D_ptr                                            // D_ptr
-			,BLAS_Cpp::no_trans                               // D_trans
+			,BLAS_Cpp::trans                                  // D_trans
 			);
 	}
 	if(R_orth) {
