@@ -150,7 +150,6 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
   bool LowerTriangular = A.LowerTriangular();
   bool UpperTriangular = A.UpperTriangular();
   bool NoDiagonal = A.NoDiagonal();
-  bool Sorted = A.Sorted();
 
   // these variables identifies quantities I have to compute,
   // since not provided by Epetra_CrsMatrix
@@ -286,8 +285,6 @@ bool CrsMatrixInfo( const Epetra_CrsMatrix & A,
      << ((UpperTriangular==true)?"yes":"no") << endl;
   os << "are there diagonal entries = " 
      <<  ((NoDiagonal==false)?"yes":"no") << endl;
-  os << "is matrix sorted           = " 
-     <<  ((Sorted==true)?"yes":"no") << endl;
 
   return true;
 

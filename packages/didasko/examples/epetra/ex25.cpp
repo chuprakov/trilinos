@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
   int * bindx = NULL;
   double * x = NULL, * b = NULL, * xexact = NULL;
   
-  Trilinos_Util_read_hb("../HBMatrices/bcsstk14.rsa", 0,
+  Trilinos_Util_read_hb("../HBMatrices/fidap005.rua", 0,
 			&N_global, &N_nonzeros, 
 			&val, &bindx,
 			&x, &b, &xexact);

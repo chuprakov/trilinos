@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
   // B E G I N   O F   M A T R I X   C O N S T R U C T I O N
   
   // matrix downloaded from MatrixMarket
-  char FileName[] = "../HBMatrices/bcsstk14.rsa";
+  char FileName[] = "../HBMatrices/fidap005.rua";
 
   Epetra_Map * readMap; // Pointers because of Trilinos_Util_ReadHb2Epetra
   Epetra_CrsMatrix * readA; 
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 
   int Niters = 1200;
   solver.SetAztecOption(AZ_kspace, Niters); 
-  solver.Iterate(Niters, 5.0e-10);
+  solver.Iterate(Niters, 5.0e-6);
 
   if (RILU!=0) delete RILU;
   if (Graph!=0) delete Graph;

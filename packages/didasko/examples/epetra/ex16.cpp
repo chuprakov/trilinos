@@ -31,7 +31,7 @@
 #include "Didasko_ConfigDefs.h"
 #if defined(HAVE_DIDASKO_EPETRA)
 
-#include "Epetra_config.h"
+#include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
 #include "mpi.h"
 #include "Epetra_MpiComm.h"
