@@ -43,23 +43,23 @@ assert_compile_time<
     validate_index_stride;
 } // end namespace
 
-void SparseLinAlgPack::add_elements( SpVector* sv_lhs, const VectorSlice& vs_rhs, size_type offset )
+void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs, size_type offset )
 {
 	typedef SpVector::element_type ele_t;
 	const bool assume_sorted = !sv_lhs->nz() || ( sv_lhs->nz() && sv_lhs->is_sorted() );
 	VectorSlice::const_iterator
 		itr = vs_rhs.begin();
 	for( size_type i = 1; i <= vs_rhs.size(); ++i )
-		sv_lhs->add_element( ele_t( i + offset, *itr++ ) );
+		sv_lhs->add_element( ele_t( i + offset, alpha * (*itr++) ) );
 	sv_lhs->assume_sorted(assume_sorted);
 }
 
-void SparseLinAlgPack::add_elements( SpVector* sv_lhs, const SpVectorSlice& sv_rhs, size_type offset )
+void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs, size_type offset )
 {
 	typedef SpVector::element_type ele_t;
 	const bool assume_sorted = ( !sv_lhs->nz() || ( sv_lhs->nz() && sv_lhs->is_sorted() ) )
 		&& ( !sv_rhs.nz() || ( sv_rhs.nz() || sv_rhs.is_sorted() ) );
 	for( SpVectorSlice::const_iterator itr = sv_rhs.begin(); itr != sv_rhs.end(); ++itr )
-		sv_lhs->add_element( ele_t( itr->indice() + sv_rhs.offset() + offset, itr->value() ) );
+		sv_lhs->add_element( ele_t( itr->indice() + sv_rhs.offset() + offset, alpha * (itr->value()) ) );
 	sv_lhs->assume_sorted(assume_sorted);
 }

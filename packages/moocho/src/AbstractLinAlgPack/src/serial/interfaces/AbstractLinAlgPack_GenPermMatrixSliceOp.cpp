@@ -76,7 +76,7 @@ void SparseLinAlgPack::V_StMtV(
 	const SpVectorSlice::element_type *ele_ptr;
 
 	if( P.is_identity() ) {
-		SparseLinAlgPack::add_elements( y, x(1,P.nz()) );
+		SparseLinAlgPack::add_elements( y, 1.0, x(1,P.nz()) );
 		SparseLinAlgPack::Vt_S( &(*y)(), a );
 	}		
 	else if( x.is_sorted() ) {
