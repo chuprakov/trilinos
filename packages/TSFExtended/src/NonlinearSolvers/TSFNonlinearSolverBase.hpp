@@ -36,7 +36,7 @@ namespace TSFExtended
 {
   using namespace Teuchos;
 
-  /**
+  /*! \brief Here I am
    *
    */
   template <class Scalar>

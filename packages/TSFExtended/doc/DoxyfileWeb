@@ -77,6 +77,8 @@ CLASS_DIAGRAMS         = YES
 SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
 CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
 VERBATIM_HEADERS       = YES
@@ -94,12 +96,13 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_FORMAT            = "$file:$line: $text"
 INPUT                  = ../../../../Trilinos/packages/TSFExtended/doc/index.doc \
-                         ../../../../Trilinos/packages/TSFExtended/src/Utils/ \
-                         ../../../../Trilinos/packages/TSFExtended/src/Vectors/ \  
-                         ../../../../Trilinos/packages/TSFExtended/src/Concrete/ \  
-                         ../../../../Trilinos/packages/TSFExtended/src/Operators/ \  
-                         ../../../../Trilinos/packages/TSFExtended/src/LinearSolvers/ \  
-                         ../../../../Trilinos/packages/TSFExtended/src/Preconditioners/  
+                         ../../../../Trilinos/packages/TSFExtended/src/Utils \
+                         ../../../../Trilinos/packages/TSFExtended/src/Vectors \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Concrete \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Operators \  
+                         ../../../../Trilinos/packages/TSFExtended/src/LinearSolvers \  
+                         ../../../../Trilinos/packages/TSFExtended/src/NonlinearSolvers \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Preconditioners  
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
@@ -135,7 +138,8 @@ PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
 INCLUDE_PATH           = ../../../../Trilinos/packages/teuchos/src \
                          ../../../../Trilinos/packages/TSFCoreUtils/src/MoochoUtilities
 EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
-                         STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
+                         STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS \
+                         HANDLE_CTORS
 #
 # Links to other packages
 #
@@ -144,6 +148,7 @@ TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=.
                         ../../../../Trilinos/packages/TSFCore/doc/TSFCore.tag=../../../../../Trilinos/packages/TSFCore/doc/html
 GENERATE_TAGFILE       = TSFExtended.tag
 ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO
 #
 # Environment
 #

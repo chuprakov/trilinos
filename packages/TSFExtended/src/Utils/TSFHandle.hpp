@@ -38,8 +38,10 @@
 #include "Teuchos_MPIComm.hpp"
 
 
-/* This helper macro defines boilerplate constructors for classes deriving
- * from Handle. If class MyHandle is a handle to a type MyType, simply 
+/** \def This helper macro defines boilerplate constructors for classes deriving
+ * from Handle.
+ *
+ * If class MyHandle is a handle to a type MyType, simply 
  * put
  * \code
  * HANDLE_CTORS(MyHandle, MyType);
@@ -47,7 +49,6 @@
  * in the class declaration of MyHandle and the macro will create 
  * an empty ctor, a ctor from a smart ptr, and a ctor from a raw pointer. 
  * The macro will also create appropriate doxygen for the handle ctors */
-
 #define HANDLE_CTORS(handle, contents) \
 /** Empty ctor */ \
 handle() : TSFExtended::Handle<contents >() {;} \
