@@ -167,8 +167,7 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 
 			// Update from last
 			MatrixSymWithOp
-				&rHL_km1 = rHL_iq.get_k(-1),
-				&rHL_k   = rHL_iq.set_k(0) = rHL_km1;
+				&rHL_k   = rHL_iq.set_k(0,-1);
 
 			// Perform the secant update
 			if(!secant_update().perform_update(
