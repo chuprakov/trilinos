@@ -1,5 +1,5 @@
 
-SOURCES = TSFMatrixReader.cpp MatrixMarketReader.cpp
+SOURCES = TSFMatrixReader.cpp MatrixMarketReader.cpp MatlabReader.cpp
 
 CSOURCES = mmio.c
 
