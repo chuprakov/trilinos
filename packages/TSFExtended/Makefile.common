@@ -151,8 +151,10 @@ $(TSFCORE_INCLUDES)\
 $(AZTECOO_INCLUDES)\
 $(IFPACK_INCLUDES)\
 $(EPETRA_INCLUDES)\
+$(ML_INCLUDES)\
 $(TEUCHOS_INCLUDES)\
-$(TEUCHOS_XML_INC)
+$(TEUCHOS_XML_INC)\
+ -I$(TEUCHOS_MPI_INC)
 
 
 #########################################################################

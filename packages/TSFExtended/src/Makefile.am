@@ -150,14 +150,7 @@ include $(top_srcdir)/Makefile.common
 #np# - Add packages that this package is dependent on
 #np#   Remove epetra if this package does not need it
 #  
-AM_CPPFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(IFPACK_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(TEUCHOS_INCLUDES)\
-	$(ML_INCLUDES)
+AM_CPPFLAGS = $(COMMON_CXXFLAGS)
 
 
 #np# The following section can be duplicated for building multiple libraries -
