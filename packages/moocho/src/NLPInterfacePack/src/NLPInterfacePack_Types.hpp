@@ -32,7 +32,7 @@ class NLPObjGradient;
 class NLPFirstOrderDirect;
 class NLPFirstOrderInfo;
 class NLPSecondOrderInfo;
-class NLPReduced;
+class NLPVarReductPerm;
 
 // NLP utility classes
 class CalcFiniteDiffProd;

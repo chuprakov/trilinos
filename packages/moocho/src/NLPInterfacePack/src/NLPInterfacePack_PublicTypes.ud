@@ -17,7 +17,7 @@ using NLPInterfacePack::NLPObjGradient;
 using NLPInterfacePack::NLPFirstOrderDirect;
 using NLPInterfacePack::NLPFirstOrderInfo;
 using NLPInterfacePack::NLPSecondOrderInfo;
-using NLPInterfacePack::NLPReduced;
+using NLPInterfacePack::NLPVarReductPerm;
 
 using NLPInterfacePack::CalcFiniteDiffProd;
 using NLPInterfacePack::CalcFiniteDiffProdSetOptions;
