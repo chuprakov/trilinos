@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <ostream>
+#include <typeinfo>
 
 #include "../../include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h"
 #include "../../include/rsqp_algo_conversion.h"

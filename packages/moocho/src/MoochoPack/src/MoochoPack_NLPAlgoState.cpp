@@ -4,6 +4,7 @@
 #pragma warning(disable : 4786)	// too long class name for debugger warning
 
 #include <sstream>
+#include <typeinfo>
 
 #include "../include/rSQPState.h"
 

@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <ostream>
+#include <typeinfo>
 
 #include "../../include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
 #include "../../include/rsqp_algo_conversion.h"
@@ -237,7 +238,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 
 		// Compute a from (4)
 		value_type
-			a = ( f_kp1 - f_k - eta * dot(Gf_k,d_k) - num_term)
+			a = ( f_kp1 - f_k - eta() * dot(Gf_k,d_k) - num_term)
 				/ ( pos_denom_term + neg_denom_term );
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {

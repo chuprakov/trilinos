@@ -67,8 +67,8 @@ public:
 private:
 	// not defined and not to be called.
 	MeritFunc_ModifiedL1LargerSteps_AddedStep();
-	MeritFunc_ModifiedL1LargerSteps_AddedStep(const &MeritFunc_ModifiedL1LargerSteps_AddedStep);
-	MeritFunc_ModifiedL1LargerSteps_AddedStep& operator=(const &MeritFunc_ModifiedL1LargerSteps_AddedStep);
+	MeritFunc_ModifiedL1LargerSteps_AddedStep(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
+	MeritFunc_ModifiedL1LargerSteps_AddedStep& operator=(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
 	
 };	// end class MeritFunc_ModifiedL1LargerSteps_AddedStep
 

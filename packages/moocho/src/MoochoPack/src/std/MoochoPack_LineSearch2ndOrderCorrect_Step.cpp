@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <ostream>
+#include <typeinfo>
 
 #include "../../include/std/LineSearch2ndOrderCorrect_Step.h"
 #include "../../include/rsqp_algo_conversion.h"

@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <ostream>
+#include <typeinfo>
 
 #include "../../include/std/LineSearchWatchDog_Step.h"
 #include "../../include/std/rSQPAlgorithmStepNames.h"
