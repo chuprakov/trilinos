@@ -33,9 +33,13 @@ void TSFCommandLine::init(int argc, void** argv)
 	int count=0;
 	for (int i=0; i<(argc-1); i++)
 		{
-			if (argv[i+1]==0) continue; 
+			int len;
+			if (argv[i+1]==0) 
+				{
+					len = -1;
+				}
 
-			if (rank==0)
+			if (rank==0 && len > 0)
 				{
 					tokens_.append(string((char*)argv[i+1]));
 				}
@@ -44,12 +48,16 @@ void TSFCommandLine::init(int argc, void** argv)
 					tokens_.append(" ");
 				}
 
-			int len;
-			MPI_Bcast(&len, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(&(tokens_[count][0]), len+1, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-			tokenMap_.put(tokens_[count], count);
-			count++;
+			MPI_Bcast(&len, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			if (len > 0)
+				{
+					MPI_Bcast(&(tokens_[count][0]), len+1, MPI_CHAR, 0, MPI_COMM_WORLD);
+
+					tokenMap_.put(tokens_[count], count);
+					count++;
+				}
+
 		}
 #endif
 	frozen_ = true;
