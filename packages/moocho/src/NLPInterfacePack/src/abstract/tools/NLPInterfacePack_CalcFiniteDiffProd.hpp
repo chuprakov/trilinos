@@ -131,11 +131,11 @@ public:
 	 * minimum step size will be determined internally.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_min )
-	///
+	/// Set the step size for \a f(x)
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f )
-	///
+	/// Set the step size for \a c(x)
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
-	///
+	/// Set the step size for \a h(x)
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_h )
 
 	///
