@@ -100,7 +100,7 @@ MPIVectorStd<Scalar>::mpiSpace() const
 }
 
 template<class Scalar>
-void MPIVectorStd<Scalar>::getLocalData( Scalar** localValues, ptrdiff_t* stride )
+void MPIVectorStd<Scalar>::getLocalData( Scalar** localValues, Index* stride )
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT( localValues==NULL );
@@ -120,7 +120,7 @@ void MPIVectorStd<Scalar>::commitLocalData( Scalar* localValues )
 }
 
 template<class Scalar>
-void MPIVectorStd<Scalar>::getLocalData( const Scalar** localValues, ptrdiff_t* stride ) const
+void MPIVectorStd<Scalar>::getLocalData( const Scalar** localValues, Index* stride ) const
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT( localValues==NULL );
