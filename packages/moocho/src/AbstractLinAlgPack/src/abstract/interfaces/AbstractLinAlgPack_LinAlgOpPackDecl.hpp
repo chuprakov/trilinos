@@ -24,14 +24,22 @@
 
 namespace LinAlgOpPack {
 
+///
 typedef AbstractLinAlgPack::size_type  size_type;
+///
 typedef AbstractLinAlgPack::value_type value_type;
 
+///
 using AbstractLinAlgPack::VectorSpace;
+///
 using AbstractLinAlgPack::VectorWithOp;
+///
 using AbstractLinAlgPack::VectorWithOpMutable;
+///
 using AbstractLinAlgPack::MatrixWithOp;
+///
 using AbstractLinAlgPack::MatrixNonsingular;
+///
 using AbstractLinAlgPack::MatrixWithOpNonsingular;
 
 // Inject names of base linear algebra functions for LinAlgPack.
@@ -39,16 +47,26 @@ using AbstractLinAlgPack::MatrixWithOpNonsingular;
 // it does not perform name lookups properly but it
 // is not adverse to the standard so it is a portable
 // fix.
+///
 using AbstractLinAlgPack::sum;
+///
 using AbstractLinAlgPack::dot;
+///
 using AbstractLinAlgPack::Vp_S;
+///
 using AbstractLinAlgPack::Vt_S;
+///
 using AbstractLinAlgPack::Vp_StV;
+///
 using AbstractLinAlgPack::Vp_StMtV;
 //using AbstractLinAlgPack::Mt_S;
+///
 using AbstractLinAlgPack::Mp_StM;
+///
 using AbstractLinAlgPack::Mp_StMtM;
+///
 using AbstractLinAlgPack::V_InvMtV;
+///
 using AbstractLinAlgPack::M_StInvMtM;
 
 /** \defgroup LinAlgOpPack_grp Default linear algebra implementation operations.
