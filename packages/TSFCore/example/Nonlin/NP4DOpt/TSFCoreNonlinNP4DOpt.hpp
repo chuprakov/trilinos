@@ -203,13 +203,13 @@ NP4DOpt<Scalar>::u0(int l) const
 template<class Scalar>
 void NP4DOpt<Scalar>::set_c(Vector<Scalar>* c)
 {
-	np2dsim_.set_c(c);
+	static_cast<NonlinearProblem<Scalar>&>(np2dsim_).set_c(c);
 }
 
 template<class Scalar>
 Vector<Scalar>* NP4DOpt<Scalar>::get_c()
 {
-	return np2dsim_.get_c();
+	return static_cast<NonlinearProblem<Scalar>&>(np2dsim_).get_c();
 }
 
 template<class Scalar>
@@ -311,7 +311,7 @@ void NP4DOpt<Scalar>::set_DcDy(LinearOpWithSolve<Scalar>* DcDy)
 template<class Scalar>
 LinearOpWithSolve<Scalar>* NP4DOpt<Scalar>::get_DcDy()
 {
-	return np2dsim_.get_DcDy();
+	return static_cast<NonlinearProblemFirstOrder<Scalar>&>(np2dsim_).get_DcDy();
 }
 
 template<class Scalar>
@@ -388,7 +388,7 @@ void NP4DOpt<Scalar>::calc_DcDy(
 	) const
 {
 	set_u(u,newPoint);
-	np2dsim_.calc_DcDy(y,NULL,newPoint);
+	static_cast<const NonlinearProblemFirstOrder<Scalar>&>(np2dsim_).calc_DcDy(y,NULL,newPoint);
 }
 
 template<class Scalar>

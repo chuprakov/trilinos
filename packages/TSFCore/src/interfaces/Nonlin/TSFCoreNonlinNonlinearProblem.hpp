@@ -143,7 +143,7 @@ const Vector<Scalar>& NonlinearProblem<Scalar>::u0(int l) const
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::uU(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
-	u0(l);
+	return u0(l);
 }
 
 // Set and access calculation storage

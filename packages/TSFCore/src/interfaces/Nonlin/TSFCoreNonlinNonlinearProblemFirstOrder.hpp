@@ -66,6 +66,7 @@ ETransp NonlinearProblemFirstOrder<Scalar>::opDcDu(int l) const
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::opDcDu(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
+	return NOTRANS;
 }
 
 // Set and access calculation storage

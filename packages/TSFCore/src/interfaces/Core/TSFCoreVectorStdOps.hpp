@@ -122,7 +122,7 @@ Scalar TSFCore::get_ele( const Vector<Scalar>& v, Index i )
   RTOpPack::ROpSum<Scalar> sum_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> sum_targ = sum_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v };
-	applyOp<Scalar>(sum_op,1,vecs,0,(Vector<Scalar>**)NULL,&*sum_targ,i,1);
+	applyOp<Scalar>(sum_op,1,vecs,0,(Vector<Scalar>**)NULL,&*sum_targ,i,1,0);
 	return sum_op(*sum_targ);
 }
 
@@ -136,7 +136,7 @@ void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 #endif
   RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(alpha);
 	Vector<Scalar>* targ_vecs[] = { v };
-	applyOp<Scalar>(assign_scalar_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL,i,1);
+	applyOp<Scalar>(assign_scalar_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL,i,1,0);
 }
 
 template<class Scalar>

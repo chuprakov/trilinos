@@ -56,6 +56,9 @@ template<class Scalar>
 class AttachConvergenceTesterBase : public ConvergenceTester<Scalar> {
 public:
 
+	///
+	using ConvergenceTester<Scalar>::getAttachedConvTester;
+
 	/** @name Public types */
 	//@{
 

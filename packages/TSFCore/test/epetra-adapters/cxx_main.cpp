@@ -101,6 +101,7 @@ namespace TSFCore {
 int main_body( int argc, char* argv[] ) {
 
 	typedef double Scalar;
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 
 	using Teuchos::dyn_cast;
 	using Teuchos::CommandLineProcessor;
@@ -641,34 +642,42 @@ int main_body( int argc, char* argv[] ) {
       const Scalar s = fabs(scalar)*num_mv_cols;
 
       std::vector<Scalar>  t_raw_values( num_mv_cols );
-      RTOpPack::MutableSubVector<Scalar> t_raw( 0, num_mv_cols, &t_raw_values[0], 1 );
+      RTOpPack::MutableSubVectorT<Scalar> t_raw( 0, num_mv_cols, &t_raw_values[0], 1 );
 
-      assign( &*T->range()->createMemberView(t_raw), scalar );
-      Teuchos::RefCountPtr<const Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVector<Scalar>&>(t_raw));
+      std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
+			assign( &*T->range()->createMemberView(t_raw), scalar );
+      Teuchos::RefCountPtr<const Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
       Scalar t_nrm = norm_1(*t_view);
       if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
 
+#ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
+      std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
       assign( &*T->range()->VectorSpace<Scalar>::createMemberView(t_raw), scalar );
-      t_view = T->range()->VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVector<Scalar>&>(t_raw));
+      t_view = T->range()->VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
       t_nrm = norm_1(*t_view);
       if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
+#endif
 
       std::vector<Scalar>  T_raw_values( num_mv_cols * num_mv_cols );
-      RTOpPack::MutableSubMultiVector<Scalar> T_raw( 0, num_mv_cols, 0, num_mv_cols, &T_raw_values[0], num_mv_cols );
+      RTOpPack::MutableSubMultiVectorT<Scalar> T_raw( 0, num_mv_cols, 0, num_mv_cols, &T_raw_values[0], num_mv_cols );
 
+      std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
       assign( &*T->range()->createMembersView(T_raw), scalar );
-      Teuchos::RefCountPtr<const MultiVector<Scalar> > T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVector<Scalar>&>(T_raw));
+      Teuchos::RefCountPtr<const MultiVector<Scalar> > T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
       Scalar T_nrm = norm_1(*T_view);
       if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
 
+#ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
+      std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
       assign( &*T->range()->VectorSpace<Scalar>::createMembersView(T_raw), scalar );
-      T_view = T->range()->VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVector<Scalar>&>(T_raw));
+      T_view = T->range()->VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
       T_nrm = norm_1(*T_view);
       if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
+#endif
 
     }
 

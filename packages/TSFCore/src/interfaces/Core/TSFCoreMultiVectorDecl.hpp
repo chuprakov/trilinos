@@ -606,11 +606,19 @@ void applyOp(
 	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
+#ifdef __sun
+	,const Index                    primary_first_ele
+	,const Index                    primary_sub_dim
+	,const Index                    primary_global_offset
+	,const Index                    secondary_first_ele
+	,const Index                    secondary_sub_dim
+#else
 	,const Index                    primary_first_ele      = 1
 	,const Index                    primary_sub_dim        = 0
 	,const Index                    primary_global_offset  = 0
 	,const Index                    secondary_first_ele    = 1
 	,const Index                    secondary_sub_dim      = 0
+#endif
 	)
 {
 	if(num_multi_vecs)
@@ -629,6 +637,26 @@ void applyOp(
 			);
 }
 
+#ifdef __sun
+template<class Scalar>
+inline
+void applyOp(
+	const RTOpPack::RTOpT<Scalar>   &primary_op
+	,const int                      num_multi_vecs
+	,const MultiVector<Scalar>*     multi_vecs[]
+	,const int                      num_targ_multi_vecs
+	,MultiVector<Scalar>*           targ_multi_vecs[]
+	,RTOpPack::ReductTarget*        reduct_objs[]
+	)
+{
+	applyOp(
+					primary_op
+					,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+					,reduct_objs,1,0,0,1,0
+					);
+}
+#endif
+
 ///
 /** Apply a reduction/transformation operator column by column and reduce the intermediate
  * reduction objects into one reduction object.
@@ -645,11 +673,19 @@ void applyOp(
 	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
+#ifdef __sun
+	,const Index                    primary_first_ele
+	,const Index                    primary_sub_dim
+	,const Index                    primary_global_offset
+	,const Index                    secondary_first_ele
+	,const Index                    secondary_sub_dim
+#else
 	,const Index                    primary_first_ele      = 1
 	,const Index                    primary_sub_dim        = 0
 	,const Index                    primary_global_offset  = 0
 	,const Index                    secondary_first_ele    = 1
 	,const Index                    secondary_sub_dim      = 0
+#endif
 	)
 {
 	if(num_multi_vecs)
@@ -667,6 +703,30 @@ void applyOp(
 			,secondary_first_ele,secondary_sub_dim
 			);
 }
+
+#ifdef __sun
+
+template<class Scalar>
+inline
+void applyOp(
+	const RTOpPack::RTOpT<Scalar>   &primary_op
+	,const RTOpPack::RTOpT<Scalar>  &secondary_op
+	,const int                      num_multi_vecs
+	,const MultiVector<Scalar>*     multi_vecs[]
+	,const int                      num_targ_multi_vecs
+	,MultiVector<Scalar>*           targ_multi_vecs[]
+	,RTOpPack::ReductTarget         *reduct_obj
+	)
+{
+	applyOp(
+			primary_op,secondary_op
+			,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+			,reduct_obj,1,0,0,1,0
+			);
+}
+
+#endif
+
 
 } // namespace TSFCore
 

@@ -293,6 +293,7 @@ void VectorMultiVector<Scalar>::applyOp(
     ,num_targ_vecs,num_targ_vecs?&targ_multi_vecs[0]:NULL
     ,reduct_objs
     ,first_ele,sub_dim,global_offset
+    ,1,0
     );
 }
 

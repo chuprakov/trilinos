@@ -78,6 +78,19 @@ template<class Scalar>
 class NP4DOpt : public NonlinearProblemFirstOrder<Scalar> {
 public:
 
+  ///
+  using NonlinearProblem<Scalar>::get_c;
+	///
+  using NonlinearProblem<Scalar>::get_g;
+  ///
+  using NonlinearProblemFirstOrder<Scalar>::get_DcDy;
+	///
+  using NonlinearProblemFirstOrder<Scalar>::get_DcDu;
+	///
+  using NonlinearProblemFirstOrder<Scalar>::get_DgDy;
+	///
+  using NonlinearProblemFirstOrder<Scalar>::get_DgDu;
+
 	/** @name Constructors / Initializers / accessors */
 	//@{
 

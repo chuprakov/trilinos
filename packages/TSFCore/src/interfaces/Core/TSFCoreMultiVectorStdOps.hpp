@@ -65,7 +65,7 @@ void TSFCore::reductions( const MultiVector<Scalar>& V, const NormOp &op, Scalar
     op_targs[kc] = &*rcp_op_targs[kc];
   }
   const MultiVector<Scalar>* multi_vecs[] = { &V,};
-  applyOp<Scalar>(op,1,multi_vecs,0,NULL,&op_targs[0]);
+  applyOp<Scalar>(op,1,multi_vecs,0,(MultiVector<Scalar>**)NULL,&op_targs[0]);
   for( kc = 0; kc < m; ++kc ) {
     norms[kc] = op(*op_targs[kc]);
   }
@@ -84,7 +84,7 @@ void TSFCore::dots( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2
     dot_targs[kc] = &*rcp_dot_targs[kc];
   }
   const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };
-  applyOp<Scalar>(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);
+  applyOp<Scalar>(dot_op,2,multi_vecs,0,(MultiVector<Scalar>**)NULL,&dot_targs[0]); // Cast required by sun compiler
   for( kc = 0; kc < m; ++kc ) {
     dots[kc] = dot_op(*dot_targs[kc]);
   }
@@ -102,7 +102,7 @@ Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
     max_targ = max_op.reduct_obj_create();
 	// Perform the reductions
   const MultiVector<Scalar>* multi_vecs[] = { &V };
-  applyOp<Scalar>(sum_abs_op,max_op,1,multi_vecs,0,NULL,&*max_targ);
+  applyOp<Scalar>(sum_abs_op,max_op,1,multi_vecs,0,(MultiVector<Scalar>**)NULL,&*max_targ); // Sun complier requires this cast
 	// Return the final value
 	return max_op(*max_targ);
 }
@@ -190,7 +190,7 @@ void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Sc
   RTOpPack::TOpAXPY<Scalar> axpy_op(alpha);
   const MultiVector<Scalar>* multi_vecs[]       = { &U };
   MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };
-  applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);
+  applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,(RTOpPack::ReductTarget**)NULL); // Sun compiler requires this cast
 }
 
 template<class Scalar>
@@ -256,7 +256,7 @@ void TSFCore::linear_combination(
 	}
   RTOpPack::TOpLinearCombination<Scalar> lin_comb_op(m,alpha,beta);
 	MultiVector<Scalar>* targ_multi_vecs[] = { Y };
-	TSFCore::applyOp<Scalar>(lin_comb_op,m,X,1,targ_multi_vecs,(RTOpPack::ReductTarget**)NULL);
+	TSFCore::applyOp<Scalar>(lin_comb_op,m,X,1,targ_multi_vecs,(RTOpPack::ReductTarget**)NULL);  // Cast retured by sun compiler
 }
 
 template<class Scalar>
