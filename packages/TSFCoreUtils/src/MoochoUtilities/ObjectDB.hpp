@@ -35,8 +35,8 @@
 #include <stack>
 #include <deque>
 #include <list>
-#include <typeinfo>
 
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace MemMngPack {

@@ -28,8 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-
 #include "RTOp_SparseSubVector.h"
 
 void RTOp_sparse_sub_vector(

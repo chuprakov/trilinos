@@ -32,7 +32,6 @@
 #define RTOP_SPARSE_SUB_VECTOR_H
 
 #include <stddef.h>
-#include <stdio.h>
 
 #include "RTOp.h"
 

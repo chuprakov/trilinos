@@ -26,9 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#include <stdexcept>
-#include <sstream>
-
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"
 
