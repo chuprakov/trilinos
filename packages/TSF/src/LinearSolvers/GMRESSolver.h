@@ -18,12 +18,12 @@ namespace TSF
     public:
       /** construct a GMRES solver to work with a given operator, with
        * parameters for max iterations, convergence tolerance, and restart value m */
-      GMRESSolver(const TSFReal& tol = 1.0e-08, int maxIters = 300, int m = 50);
+      GMRESSolver(const TSFReal& tol = 1.0e-08, int maxIters = 300, int kspace = 50);
 
       /** construct a GMRES solver to work with a given operator, with
        * parameters for max iterations, convergence tolerance, and restart value m */
       GMRESSolver(const TSFPreconditionerFactory& pf,
-                  const TSFReal& tol = 1.0e-08, int maxIters = 300, int m = 50);
+                  const TSFReal& tol = 1.0e-08, int maxIters = 300, int kspace = 50);
 
       /** TUVD */
       virtual ~GMRESSolver(){;}
@@ -50,7 +50,7 @@ namespace TSF
       /* maximum total number of iterations */
       int maxIters_;
       /* restart value */
-      int m_;
+      int kspace_;
       /* factory to build a preconditioner */
       TSFPreconditionerFactory preconditionerFactory_;
     };
