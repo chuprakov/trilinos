@@ -303,7 +303,7 @@ namespace TSFExtended
       return rtn;
     }
 
-    virtual Vector<Scalar> eval() const {return *this;}
+    Vector<Scalar> eval() const {return *this;}
 
 
 

@@ -177,11 +177,11 @@ namespace TSFExtended
     // Outer loop i = 1 : maxIters unless convergence (or failure)
     //  for (int i=0; i<maxIters_; i++)
     int iter = 0;
-    int i = 0;
+    //    int i = 0;
     int j = 0;
     while (iter < maxiters)
       {
-        for (int z=0; z<h.size(); z++) 
+        for (unsigned int z=0; z<h.size(); z++) 
           {
             h[z]=0.0;
             f[z]=0.0;
@@ -190,7 +190,7 @@ namespace TSFExtended
           {
             V[z].zero();
             W[z].zero();
-            for (int zz=0; zz<QT[z].size(); zz++) 
+            for (unsigned int zz=0; zz<QT[z].size(); zz++) 
               {QT[z][zz]=0.0; R[z][zz]=0.0;}
           }
 
@@ -271,7 +271,7 @@ namespace TSFExtended
               }
             else
               {
-                for (int zz=0; zz<mtmp.size(); zz++) mtmp[zz]=0.0;
+                for (unsigned int zz=0; zz<mtmp.size(); zz++) mtmp[zz]=0.0;
                 // back solve to get tmp vector to form vrf
                 mtmp[j] = f[j] / R[j][j];
                 for(int k=j-1; k>=0; k--)
@@ -310,7 +310,7 @@ namespace TSFExtended
                 if (j < kSpace-1)
                   {
                     // compute more accurate soln to test convergence
-                    for (int zz=0; zz<y.size(); zz++) y[zz]=0.0;
+                    for (unsigned int zz=0; zz<y.size(); zz++) y[zz]=0.0;
 
                     // back solve to get y(0:j) = R(0:j,0:j) \ f(0:j);
                     y[j] = f[j] / R[j][j];

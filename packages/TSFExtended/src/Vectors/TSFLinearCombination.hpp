@@ -47,6 +47,7 @@ namespace TSFExtendedOps
   class ConvertibleToVector
   {
   public:
+    virtual ~ConvertibleToVector(){;}
     /** */
     virtual TSFExtended::Vector<Scalar> eval() const = 0 ;
 

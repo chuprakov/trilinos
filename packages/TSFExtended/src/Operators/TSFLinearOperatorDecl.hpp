@@ -77,10 +77,10 @@ namespace TSFExtended
     //@}
 
     /** Return the domain */
-    virtual const VectorSpace<Scalar> domain() const ;
+    const VectorSpace<Scalar> domain() const ;
 
     /** Return the range */
-    virtual const VectorSpace<Scalar> range() const ;
+    const VectorSpace<Scalar> range() const ;
 
 
     /** 
