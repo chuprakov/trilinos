@@ -38,6 +38,9 @@ public:
 	/** @name Constructors / initializers */
 	//@{
 
+  ///
+  virtual ~VectorSpaceFactory();
+
 	/// Calls \c inner_prod()
 	VectorSpaceFactory( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 

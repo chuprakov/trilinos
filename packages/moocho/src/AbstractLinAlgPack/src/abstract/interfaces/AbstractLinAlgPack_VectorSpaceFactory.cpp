@@ -20,6 +20,9 @@ namespace AbstractLinAlgPack {
 
 // Constructors / initializers
 
+VectorSpaceFactory::~VectorSpaceFactory()
+{}
+
 VectorSpaceFactory::VectorSpaceFactory( const inner_prod_ptr_t& inner_prod )
 {
 	this->inner_prod(inner_prod);
