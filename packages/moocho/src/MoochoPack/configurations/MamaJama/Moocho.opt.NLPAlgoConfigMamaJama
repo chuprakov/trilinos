@@ -97,13 +97,41 @@ options_group rSQPAlgo_ConfigMamaJama {
 }
 
 ***************************************************************
-*** Options for EvalNewPoint for a standard NLP.
+*** Options for EvalNewPoint for NLPFirstOrderInfo.
 *** See options_group NLPFirstDerivativesTester
 ***
 options_group EvalNewPointStd {
-*    fd_deriv_testing   = FD_DEFAULT; *** Test if check_results==true (see above)
-*    fd_deriv_testing   = FD_TEST;    *** Always test
-*    fd_deriv_testing   = FD_NO_TEST; *** never test
+
+*    fd_deriv_testing = FD_DEFAULT; *** (default) Test if check_results==true (see above)
+*    fd_deriv_testing = FD_TEST;    *** Always test
+*    fd_deriv_testing = FD_NO_TEST; *** never test
+     *** Determines if the derivatives of the NLP returned from the NLPFirstOrderInfo interface
+     *** are correct using finite differences (see the options_group NLPFirstDerivativesTester).
+     *** Valid options include:
+     ***    FD_DEFAULT : Perform the finite difference tests if check_results==true.
+     ***    FD_TEST    : Always test, regardless of the value of check_results.
+     ***    FD_NO_TEST : Never test, regardless of the value of check_results.
+
+*    decomp_sys_testing = DST_DEFAULT; *** (default) Test if check_results==true (see above)
+*    decomp_sys_testing = DST_TEST;    *** Always test
+*    decomp_sys_testing = DST_NO_TEST; *** never test
+     *** Determines if the range/null decomposition matrices from DecompositionSystem are
+     *** tested or not (see the options_group DecompositionSystemTester).
+     *** Valid options include:
+     ***    FD_DEFAULT : Perform the tests if check_results==true.
+     ***    FD_TEST    : Always test, regardless of the value of check_results.
+     ***    FD_NO_TEST : Never test, regardless of the value of check_results.
+
+*    decomp_sys_testing_print_level = DSPL_USE_GLOBAL;    *** (default) Use the value in journal_print_level (see above).
+*    decomp_sys_testing_print_level = DSPL_LEAVE_DEFAULT; *** Leave whatever setting in already in use.
+     *** This option allows the user to determine how the testing print level is determined.
+     *** Valid options include:
+     ***    DSLP_USE_GLOBAL    : The value of journal_print_level will be used to determine reasonable values for
+     ***                         print_tests and dump_all.
+     ***    DSLP_LEAVE_DEFAULT : Whatever values are currently set for DecompositionSystemTester::print_tests and
+     ***                         DecompositionSystemTester::dump_all will be used (see the options_group
+     ***                         DecompositionSystemTester).
+
 }
 
 ***************************************************************
@@ -160,6 +188,24 @@ options_group NLPFirstOrderDirectTester {
 *** basis of the constraints Jacobian.
 ***
 options_group BasisSystemTester {
+*    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
+*    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
+*    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
+*    solve_warning_tol  = 1e-12;  *** (+dbl) Warning tolerance for checking linear solves
+*    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
+}
+
+****************************************************************
+*** Options for the DecompositionSystem tester used to validate
+*** range/null decomposition matrices (NLPFirstOrderInfo only).
+***
+options_group DecompositionSystemTester {
+*    print_tests = PRINT_NONE;    *** (default)
+*    print_tests = PRINT_BASIC;
+*    print_tests = PRINT_MORE;
+*    print_tests = PRINT_ALL;
+*    dump_all = true;
+*    dump_all = false;            *** (default)
 *    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
 *    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
 *    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
