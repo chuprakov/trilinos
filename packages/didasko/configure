@@ -10459,7 +10459,7 @@ fi
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile test/Makefile test/scripts/Makefile test/scripts/daily/Makefile test/scripts/daily/mpi/Makefile test/scripts/daily/serial/Makefile"
+                                                                                                                                                                                              ac_config_files="$ac_config_files Makefile doc/Makefile examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile test/Makefile test/scripts/Makefile test/scripts/daily/Makefile test/scripts/daily/mpi/Makefile test/scripts/daily/serial/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -11145,6 +11145,7 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
   "examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
   "examples/amesos/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/amesos/Makefile" ;;
   "examples/anasazi/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/anasazi/Makefile" ;;

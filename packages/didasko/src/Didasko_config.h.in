@@ -35,40 +35,37 @@
 /* Define to 1 if you have the <cstdlib> header file. */
 #undef HAVE_CSTDLIB
 
-/* Define if want to build default-packages */
-#undef HAVE_DEFAULT_PACKAGES
-
 /* Define if want to build with amesos enabled */
 #undef HAVE_DIDASKO_AMESOS
 
 /* Define if want to build with anasazi enabled */
 #undef HAVE_DIDASKO_ANASAZI
 
-/* Define if want to build aztecoo */
+/* Define if want to build with aztecoo enabled */
 #undef HAVE_DIDASKO_AZTECOO
 
-/* Define if want to build epetra */
+/* Define if want to build with epetra enabled */
 #undef HAVE_DIDASKO_EPETRA
 
-/* Define if want to build epetraext */
+/* Define if want to build with epetraext enabled */
 #undef HAVE_DIDASKO_EPETRAEXT
 
-/* Define if want to build ifpack */
+/* Define if want to build with ifpack enabled */
 #undef HAVE_DIDASKO_IFPACK
 
 /* Define if want to build with latex enabled */
 #undef HAVE_DIDASKO_LATEX
 
-/* Define if want to build ml */
+/* Define if want to build with ml enabled */
 #undef HAVE_DIDASKO_ML
 
-/* Define if want to build nox */
+/* Define if want to build with nox enabled */
 #undef HAVE_DIDASKO_NOX
 
 /* Define if want to build with teuchos enabled */
 #undef HAVE_DIDASKO_TEUCHOS
 
-/* Define if want to build with epetraext enabled */
+/* Define if want to build with triutils enabled */
 #undef HAVE_DIDASKO_TRIUTILS
 
 /* Define if want to build examples */

@@ -432,6 +432,7 @@ AC_SUBST(ac_aux_dir)
 #  to add a new directory.
 AC_CONFIG_FILES([
 		Makefile 
+                doc/Makefile
 		examples/Makefile
 		examples/amesos/Makefile
 		examples/anasazi/Makefile
