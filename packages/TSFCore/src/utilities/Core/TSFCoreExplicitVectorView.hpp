@@ -26,7 +26,9 @@ public:
 	const Scalar*     values()       const { return sv_.values();  }
 	///
 	ptrdiff_t         stride()       const { return sv_.stride();  }
-	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
+	/// Zero-based indexing: Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>
+	const Scalar& operator[](RTOp_index_type i) const { return sv_[i]; }
+	/// One-based indexing: Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
 	const Scalar& operator()(RTOp_index_type i) const { return sv_(i); }
 private:
 	const Vector<Scalar>          &v_;
@@ -55,7 +57,9 @@ public:
 	Scalar*           values()       const { return sv_.values();  }
 	///
 	ptrdiff_t         stride()       const { return sv_.stride();  }
-	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
+	/// Zero-based indexing: Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>
+	Scalar& operator[](RTOp_index_type i) const { return sv_[i]; }
+	/// One-based indexing: Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
 	Scalar& operator()(RTOp_index_type i) const { return sv_(i); }
 private:
 	Vector<Scalar>                       &v_;

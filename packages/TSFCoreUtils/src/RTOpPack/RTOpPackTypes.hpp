@@ -83,7 +83,9 @@ public:
 	const Scalar*     values()       const { return values_;  }
 	///
 	ptrdiff_t         stride()       const { return stride_;  }
-	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
+	/// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>)
+	const Scalar& operator[](RTOp_index_type i) const { return values_[ stride_*i ]; }
+	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
 	const Scalar& operator()(RTOp_index_type i) const { return values_[ stride_*(i-1) ]; }
 protected:
 	RTOp_index_type     globalOffset_;
@@ -128,19 +130,15 @@ public:
 		: SubVectorT<Scalar>(s) {}
 	///
 	void initialize(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
-		{ 
-			SubVectorT<Scalar>::initialize(globalOffset, subDim, values, stride);  
-		}
+		{ SubVectorT<Scalar>::initialize(globalOffset, subDim, values, stride); }
 	///
 	void set_uninitialized()
-		{ 
-			SubVectorT<Scalar>::set_uninitialized(); 
-		}
-
+		{ SubVectorT<Scalar>::set_uninitialized(); }
 	///
 	Scalar*           values()       const { return const_cast<Scalar*>(values_);  }
-
-	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
+	/// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>)
+	virtual Scalar& operator[](RTOp_index_type i) const { return const_cast<Scalar*>(values_)[ stride_*i ]; }
+	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
 	virtual Scalar& operator()(RTOp_index_type i) const { return const_cast<Scalar*>(values_)[ stride_*(i-1) ]; }
 
 };
