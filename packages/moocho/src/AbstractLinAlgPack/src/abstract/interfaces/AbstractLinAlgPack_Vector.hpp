@@ -1,4 +1,4 @@
-// //////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////
 // Vector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_WITH_OP_H
-#define VECTOR_WITH_OP_H
+#ifndef ALAP_VECTOR_HPP
+#define ALAP_VECTOR_HPP
 
 #include <iosfwd>
 
@@ -25,10 +25,90 @@
 namespace AbstractLinAlgPack {
 
 ///
+/** Apply a reduction/transformation,operation over a set of vectors:
+ * <tt>op(op(v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
+ *
+ * The logical vector passed to the
+ * <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt>
+ * method is: \verbatim
+
+ v(k + global_offset) = this->get_ele(first_ele + k - 1)
+ , for k = 1 ... sub_dim
+ \endverbatim
+ *
+ * where <tt>v</tt> represents any one of the input or input/output
+ * vectors.  The situation where <tt>first_ele == 1</tt> and
+ * <tt>global_offset > 1</tt> corresponds to the case where the
+ * vectors represent consitituent vectors in a larger aggregrate
+ * vector.  The situation where <tt>first_ele > 1</tt> and
+ * <tt>global_offset == 0</tt> is for when a sub-view of the vectors
+ * are being treated as full vectors.  Other combinations of these
+ * arguments are also possible.
+ *
+ * Preconditions:<ul>
+ * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().isCompatible(this->space()) == true</tt>
+ *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+ * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().isCompatible(this->space()) == true</tt>
+ *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+ * <li> <tt>1 <= first_ele <= this->dim()</tt> (throw <tt>std::out_of_range</tt>)
+ * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
+ * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
+ * </ul>
+ *
+ * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
+ *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
+ *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
+ * @param  num_vecs
+ *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.
+ *              If <tt>vecs==NULL</tt> then this argument is ignored but should be set to zero.
+ * @param  vecs
+ *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
+ *				nonmutable vectors to include in the operation.
+ *				The order of these vectors is significant to <tt>op</tt>.
+ * @param  num_targ_vecs
+ *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.
+ *              If <tt>targ_vecs==NULL</tt>	then this argument is ignored but should be set to zero.
+ * @param  targ_vecs
+ *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
+ *				mutable vectors to include in the operation.
+ *				The order of these vectors is significant to <tt>op</tt>.
+ *				If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with no mutable vectors.
+ * @param  reduct_obj
+ *				[in/out] Target object of the reduction operation.
+ *				This object must have been created by the <tt>op.reduct_obj_create_raw(&reduct_obj)</tt>
+ *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
+ *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
+ *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
+ *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
+ *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
+ *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
+ *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
+ * @param  first_ele
+ *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
+ * @param  sub_dim
+ *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
+ *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
+ * @param  global_offset
+ *				[in] (default = 0) The offset applied to the included vector elements.
+ *
+ */
+void apply_op(
+	const RTOpPack::RTOp       &op
+	,const size_t              num_vecs
+	,const Vector*             vecs[]
+	,const size_t              num_targ_vecs
+	,VectorMutable*            targ_vecs[]
+	,RTOp_ReductTarget         reduct_obj
+	,const index_type          first_ele      = 1
+	,const index_type          sub_dim        = 0
+	,const index_type          global_offset  = 0
+	);
+
+///
 /** Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
  *
  * This interface contains a mimimal set of operations.  The main feature
- * of this interface is the operation \c apply_reduction().
+ * of this interface is the operation <tt>apply_op()</tt>.
  * Almost every standard (i.e. BLAS) and non-standard element-wise operation that
  * can be performed on a set of coordinate vectors without changing (mutating)
  * the vectors can be performed through reduction operators.  More standard
@@ -39,16 +119,16 @@ namespace AbstractLinAlgPack {
  * reduction/transformation operators.  There are some operations however
  * that can not always be efficiently with reduction/transforamtion operators
  * and a few of these important methods are included in this interface.  The
- * <tt>apply_reduction()</tt> method allows to client to specify a sub-set
+ * <tt>apply_op()</tt> method allows to client to specify a sub-set
  * of the vector elements to include in reduction/transformation operation.
  * This greatly increases the generality of this vector interface as vector
  * objects can be used as sub objects in larger composite vectors and sub-views
  * of a vector can be created.
  *
- * This interface allows clients to create sub-views of a vector using \c sub_view()
+ * This interface allows clients to create sub-views of a vector using <tt>sub_view()</tt>
  * that in turn are fully functional <tt>%Vector</tt> objects.  This functionality
- * is supported by default by using a default vector subclass \c VectorSubView which
- * in turn calls <tt>apply_reduction()</tt> but the client need not ever worry about
+ * is supported by default by using a default vector subclass <tt>VectorSubView</tt> which
+ * in turn calls <tt>apply_op()</tt> but the client need not ever worry about
  * how this is done.
  *
  * This interface also allows a client to extract a sub-set of elements in an
@@ -56,15 +136,15 @@ namespace AbstractLinAlgPack {
  * In general, this is very bad thing to do and should be avoided at all costs.
  * However, there are some applications where this is needed and therefore it is
  * supported.  The default implementation of this method uses a reduction/transformation
- * operator with <tt>apply_reduction()</tt> in order to extract the needed elements.
+ * operator with <tt>apply_op()</tt> in order to extract the needed elements.
  *
  * In order to create a concreate subclass of this interface, only two
- * methods must be overridden.  The \c space() method must be overridden which in turn
- * requires defining a concreate \c VectorSpace class (which has only two pure virtual
- * methods).  And, as mentioned above, the \c apply_reduction() method must be overridden
+ * methods must be overridden.  The <tt>space()</tt> method must be overridden which in turn
+ * requires defining a concreate <tt>VectorSpace</tt> class (which has only two pure virtual
+ * methods).  And, as mentioned above, the <tt>apply_op()</tt> method must be overridden
  * as well.
  *
- * The fact that this interface defines \c space() which returns a \c VectorSpace object
+ * The fact that this interface defines <tt>space()</tt> which returns a <tt>VectorSpace</tt> object
  * (which in turn can create mutable vectors) implies that for every possible vector object,
  * it is possible to associate with it a mutable vector object that can be the target
  * of transformation operations.  This is not a serious limitation.  For any
@@ -88,8 +168,20 @@ public:
 	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<VectorMutable>  vec_mut_ptr_t;
+
 	///
-	enum ESparseOrDense { SPARSE, DENSE };
+	friend
+	void AbstractLinAlgPack::apply_op(
+		const RTOpPack::RTOp       &op
+		,const size_t              num_vecs
+		,const Vector*             vecs[]
+		,const size_t              num_targ_vecs
+		,VectorMutable*            targ_vecs[]
+		,RTOp_ReductTarget         reduct_obj
+		,const index_type          first_ele
+		,const index_type          sub_dim
+		,const index_type          global_offset
+		);
 
 	///
 	Vector();
@@ -109,108 +201,36 @@ public:
 	 */
 	virtual const VectorSpace& space() const = 0;
 
+protected:
+
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
-	 * <tt>op(op((*this),v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
+	 * <tt>op(op(v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
 	 *
-	 * The first nonmutable vector in the argument list to <tt>op</tt> will be <tt>this</tt>
-	 * vector then followed by those in <tt>vecs[k], k = 0...num_vecs-1</tt>.  Therefore, the number
-	 * of nonmutable vectors passed to <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt> will be
-	 * <tt>num_vecs+1</tt>.
+	 * The vector <tt>this</tt> that this method is called on is
+	 * assumed to be one of the vectors in
+	 * <tt>v[0]...v[nv-1],z[0]...z[nz-1]</tt>.  This method is not
+	 * called directly by the client but is instead
+	 * <tt>TSFL::applyOp()</tt>.
 	 *
-	 * The vector to be represented <tt>v</tt> by <tt>this</tt> and passed to the
-	 * <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt> method is:
-	 \verbatim
-
-	 v(k + global_offset) = this->get_ele(first_ele + k - 1)
-         , for k = 1 ... sub_dim
-     \endverbatim
-     * The other vector arguments are represented similarly.  The situation where
-	 * <tt>first_ele == 1</tt> and <tt>global_offset > 1</tt> corresponds to the
-	 * case where the vectors are representing consitituent vectors in a larger
-	 * aggregrate vector.  The situation where <tt>first_ele > 1</tt> and
-	 * <tt>global_offset == 0</tt> is for when a sub-view of the vectors are being
-	 * treated as full vectors.  Other combinations of these arguments is
-	 * possible.
-	 *
-	 * Preconditions:<ul>
-	 * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>1 <= first_ele <= this->dim()</tt> (throw <tt>std::out_of_range</tt>)
-	 * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
-	 * </ul>
-	 *
-	 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
-	 *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
-	 *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
-	 * @param  num_vecs
-	 *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.
-	 *              If <tt>vecs==NULL</tt> then this argument is ignored but should be set to zero.
-	 * @param  vecs
-	 *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
-	 *				nonmutable vectors to include in the operation.
-	 *				The order of these vectors is significant to <tt>op</tt>.
-	 *				If <tt>vecs==NULL</tt> then <tt>op</tt> is called with the
-	 *				single vector represented by <tt>this</tt> object.
-	 * @param  num_targ_vecs
-	 *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.
-	 *              If <tt>targ_vecs==NULL</tt>	then this argument is ignored but should be set to zero.
-	 * @param  targ_vecs
-	 *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
-	 *				mutable vectors to include in the operation.
-	 *				The order of these vectors is significant to <tt>op</tt>.
-	 *				If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with no mutable vectors.
-	 * @param  reduct_obj
-	 *				[in/out] Target object of the reduction operation.
-	 *				This object must have been created by the <tt>op.reduct_obj_create_raw(&reduct_obj)</tt>
-	 *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
-	 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
-	 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
-	 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
-	 *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
-	 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
-	 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
-	 * @param  first_ele
-	 *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
-	 * @param  sub_dim
-	 *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
-	 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
-	 * @param  global_offset
-	 *				[in] (default = 0) The offset applied to the included vector elements.
-	 *
-	 * <b> Note the subclass implementors </b>
-	 *
-	 * It is imporatant that all transformed vectors have the method \c has_changed() called on them
-	 * durring the implementation of this function.  This can be done by calling
-	 * \c finalize_apply_reduction(...) just before the \c apply_reduction() method returns.
-	 * For example, the implementation for a vector subclass <tt>MyVector</tt> would look like:
-	 \code
-	 
-	 void MyVector::apply_reduction(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const
-	 {
-	     ...
-		 finalize_apply_reduction(num_targ_vecs,targ_vecs);
-	 }
-	 \endcode
+	 * See the documentation for the method <tt>AbstractLinAlgPack::apply_op()</tt>
+	 * for a description of what this method does.
 	 */
-	virtual void apply_reduction(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele = 1, const index_type sub_dim = 0, const index_type global_offset = 0
+	virtual void apply_op(
+		const RTOpPack::RTOp       &op
+		,const size_t              num_vecs
+		,const Vector*             vecs[]
+		,const size_t              num_targ_vecs
+		,VectorMutable*            targ_vecs[]
+		,RTOp_ReductTarget         reduct_obj
+		,const index_type               first_ele
+		,const index_type               sub_dim
+		,const index_type               global_offset
 		) const = 0;
 
 	//@}
+
+public:
 
 	/** @name Miscellaneous virtual methods with default implementations */
 	//@{
@@ -229,7 +249,7 @@ public:
 	/** Return the number of nonzero elements in the vector.
 	 *
 	 * The default implementation just uses a reduction operator
-	 * with the apply_reduction<tt>(...)</tt> method (See
+	 * with the <tt>apply_op()</tt> method (See
 	 * RTOp_ROp_num_nonzeros.h).
 	 */
 	virtual index_type nz() const;
@@ -253,7 +273,8 @@ public:
 	  */
 	virtual std::ostream& output(
 		std::ostream& out, bool print_dim = true, bool newline = true
-		,index_type global_offset = 0 ) const;
+		,index_type global_offset = 0
+		) const;
 
 	///
 	/** Create a clone of this vector objet.
@@ -390,7 +411,7 @@ public:
 	 * </ul>
 	 *
 	 * This method has a default implementation based on a vector reduction operator
-	 * class (see RTOp_ROp_get_sub_vector.h) and calls ::apply_reduction<tt>(...)</tt>.
+	 * class (see RTOp_ROp_get_sub_vector.h) and calls <tt>apply_op()</tt>.
 	 * Note that the footprint of the reduction object (both internal and external state)
 	 * will be O(<tt>rng.size()</tt>).  For serial applications this is faily adequate and will
 	 * not be a major performance penalty.  For parallel applications, this will be
@@ -400,20 +421,13 @@ public:
 	 * implementation.
 	 *
 	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
-	 * @param  sparse_or_dense
-	 *                  [in] If <tt>SPARSE</tt> then <tt>*sub_vec</tt> will be a sparse vector 
-	 *                  (i.e. <tt>sub_vec->indices != NULL</tt>) if there are any zero elements.
-	 *                  If <tt>DENSE</tt> then the retured <tt>*sub_vec</tt> will be dense (i.e.
-	 *                  <tt>sub_vec->indices == NULL</tt>) and will contain all of the zero
-	 *                  as well as the nonzero elements.
 	 * @param  sub_vec  [in/out] View of the sub-vector.  Prior to the
 	 *                  first call <tt>RTOp_sub_vector_null(sub_vec)</tt> must
 	 *                  have been called for the correct behavior.  Technically
 	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
 	 *                  only by calling <tt>this->free_sub_vector(sub_vec)</tt>.
 	 */
-	virtual void get_sub_vector(
-		const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const;
+	virtual void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
 
 	///
 	/** Free an explicit view of a sub-vector.
@@ -465,11 +479,11 @@ protected:
 
 	///
 	/** This method usually needs to be called by subclasses at the
-	 * end of the \c apply_reduction() method implementation to
-	 * insure that \c has_changed() is called on the transformed
+	 * end of the <tt>apply_op()</tt> method implementation to
+	 * insure that <tt>has_changed()</tt> is called on the transformed
 	 * vector objects.
 	 */
-	virtual void finalize_apply_reduction(
+	virtual void finalize_apply_op(
 		const size_t num_targ_vecs, VectorMutable** targ_vecs
 		) const;
 
@@ -483,7 +497,7 @@ private:
 }; // end class MatrixOp
 
 // ////////////////////////////////////////////////
-// Inline members
+// Inline functions
 
 inline
 Vector::vec_ptr_t
@@ -494,4 +508,4 @@ Vector::sub_view( const index_type& l, const index_type& u ) const
 
 } // end namespace AbstractLinAlgPack
 
-#endif  // VECTOR_WITH_OP_H
+#endif  // ALAP_VECTOR_HPP

@@ -69,11 +69,14 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
 	return true;
 }
 
-bool AbstractLinAlgPack::assert_print_nan_inf( const Vector& v, char name[]
-	, bool throw_excpt, std::ostream* out )
+bool AbstractLinAlgPack::assert_print_nan_inf(
+	const Vector& v, char name[]
+	,bool throw_excpt, std::ostream* out
+	)
 {
 	find_nan_inf_targ.reinit();
-	v.apply_reduction(find_nan_inf_op,0,NULL,0,NULL,find_nan_inf_targ.obj() );
+	const Vector* vecs[1] = { &v };
+	apply_op(find_nan_inf_op,1,vecs,0,NULL,find_nan_inf_targ.obj() );
 	RTOp_ROp_find_nan_inf_reduct_obj_t
 		ele =RTOp_ROp_find_nan_inf_val(find_nan_inf_targ.obj());
 	if(out && ele.i) {

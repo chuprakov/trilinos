@@ -94,28 +94,24 @@ const VectorSpace& VectorMutableDense::space() const
 	return space_;
 }
 
-void VectorMutableDense::apply_reduction(
+void VectorMutableDense::apply_op(
 	const RTOpPack::RTOp& op
-	,const size_t num_vecs_in, const Vector** vecs_in
-	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
+	,const size_t num_vecs,      const Vector*  vecs[]
+	,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
 	,RTOp_ReductTarget reduct_obj
-	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
 	CLASS_MEMBER_PTRS
- 	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
-	
-	wsp::Workspace<const Vector*>  vecs(wss,num_vecs_in+1);
-	vecs[0] = this; // I am the first argument!
-	std::copy( vecs_in, vecs_in + num_vecs_in, &vecs[1] );
-
-	apply_op(
-		op
-		,num_vecs_in+1,     &vecs[0]
-		,num_targ_vecs_in,  targ_vecs_in
-		,reduct_obj, first_ele, sub_dim, global_offset
+#ifdef _DEBUG
+	AbstractLinAlgPack::apply_op_validate_input(
+		"VectorMutableDense::apply_op(...)"
+		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
 		);
+#endif
+	AbstractLinAlgPack::apply_op_serial(
+		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+		,first_ele_in,sub_dim_in,global_offset_in );
 }
 
 index_type VectorMutableDense::dim() const
@@ -129,7 +125,8 @@ value_type VectorMutableDense::get_ele(index_type i) const
 }
 
 void VectorMutableDense::get_sub_vector(
-	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
+	const Range1D& rng_in, RTOp_SubVector* sub_vec
+	) const
 {
 	CLASS_MEMBER_PTRS
 	const size_type  this_dim = v_.dim();
@@ -156,31 +153,7 @@ void VectorMutableDense::free_sub_vector( RTOp_SubVector* sub_vec ) const
 	RTOp_sub_vector_null( sub_vec ); // No memory to deallocate!
 }
 
-// Overriddenn from VectorMutable
-
-void VectorMutableDense::apply_transformation(
-	const RTOpPack::RTOp& op
-	,const size_t num_vecs_in, const Vector** vecs_in
-	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
-	,RTOp_ReductTarget reduct_obj
-	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-	)
-{
-	CLASS_MEMBER_PTRS
- 	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
-	
-	wsp::Workspace<VectorMutable*>  targ_vecs(wss,num_targ_vecs_in+1);
-	targ_vecs[0] = this; // I am the first argument!
-	std::copy( targ_vecs_in, targ_vecs_in + num_targ_vecs_in, &targ_vecs[1] );
-
-	apply_op(
-		op
-		,num_vecs_in,         vecs_in
-		,num_targ_vecs_in+1,  &targ_vecs[0]
-		,reduct_obj, first_ele, sub_dim, global_offset
-		);
-}
+// Overridden from VectorMutable
 
 VectorMutable&
 VectorMutableDense::operator=(value_type alpha)
@@ -290,28 +263,6 @@ void VectorMutableDense::Vp_StMtV(
 	CLASS_MEMBER_PTRS
 	VectorDenseEncap  x_de(x);
 	AbstractLinAlgPack::Vp_StMtV( &v_, alpha, P, P_trans, x_de(), beta );
-}
-
-// private
-
-void VectorMutableDense::apply_op(
-	const RTOpPack::RTOp& op
-	,const size_t num_vecs,      const Vector**  vecs
-	,const size_t num_targ_vecs, VectorMutable** targ_vecs
-	,RTOp_ReductTarget reduct_obj
-	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
-	) const
-{
-	CLASS_MEMBER_PTRS
-#ifdef _DEBUG
-	AbstractLinAlgPack::apply_op_validate_input(
-		NULL, "VectorMutableDense::apply_op(...)"
-		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
-		);
-#endif
-	AbstractLinAlgPack::apply_op_serial(
-		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
-		,first_ele_in,sub_dim_in,global_offset_in );
 }
 
 } // end namespace AbstractLinAlgPack

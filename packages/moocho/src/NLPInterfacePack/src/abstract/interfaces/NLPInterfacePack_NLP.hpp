@@ -358,7 +358,7 @@ public:
 	 */
 	virtual const options_ptr_t& get_options() const;
 	///
-	/** Initialize the NLP for it is used.
+	/** Initialize the NLP before it is used.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt>

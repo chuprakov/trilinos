@@ -15,8 +15,7 @@
 
 #include "InnerProductDot.hpp"
 #include "Vector.hpp"
-#include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
-#include "RTOpPack/src/RTOpCppC.hpp"
+#include "VectorStdOps.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -24,14 +23,7 @@ value_type InnerProductDot::inner_prod(
 	const Vector& v1, const Vector& v2
 	) const
 {
-	RTOpPack::RTOpC         op;
-	RTOpPack::ReductTarget  reduct_obj;
-	RTOp_ROp_dot_prod_construct( &op.op() );
-	op.reduct_obj_create(&reduct_obj);
-	const Vector* vecs[1] = { &v2 };
-	v1.apply_reduction(op,1,vecs,0,NULL,reduct_obj.obj());
-	RTOp_value_type val = RTOp_ROp_dot_prod_val(reduct_obj.obj());
-	return val;
+	return dot(v1,v2);
 }
 
 } // end namespace AbstractLinAlgPack

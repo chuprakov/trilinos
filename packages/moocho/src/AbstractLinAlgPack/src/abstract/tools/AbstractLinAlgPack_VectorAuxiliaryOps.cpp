@@ -92,98 +92,63 @@ public:
 		if(0>RTOp_ROp_log_bound_barrier_construct(&log_bound_barrier_op.op() ))
 			assert(0);
 		log_bound_barrier_op.reduct_obj_create(&log_bound_barrier_targ);
-
 		// Operator and target obj for combined_nu_comp_err
 		if(0>RTOp_ROp_combined_nu_comp_err_construct(&combined_nu_comp_err_op.op() ))
 			assert(0);
 		combined_nu_comp_err_op.reduct_obj_create(&combined_nu_comp_err_targ);
-
 		// Operator and target obj for combined_nu_comp_err_lower
 		if(0>RTOp_ROp_combined_nu_comp_err_one_only_construct(&combined_nu_comp_err_lower_op.op() ))
 			assert(0);
 		combined_nu_comp_err_lower_op.reduct_obj_create(&combined_nu_comp_err_lower_targ);
-
 		// Operator and target obj for combined_nu_comp_err_upper
 		if(0>RTOp_ROp_combined_nu_comp_err_one_only_construct(&combined_nu_comp_err_upper_op.op() ))
 			assert(0);
 		combined_nu_comp_err_upper_op.reduct_obj_create(&combined_nu_comp_err_upper_targ);
-
 		// Operator and target obj for comp_err_with_mu
 		if(0>RTOp_ROp_comp_err_with_mu_construct(0.0, 0.0, &comp_err_with_mu_op.op()))
 			assert(0);
 		comp_err_with_mu_op.reduct_obj_create(&comp_err_with_mu_targ);
-
 		// Operator and target obj for max_near_feas_step
 		if(0>RTOp_ROp_max_near_feas_step_construct(0.0,&max_near_feas_step_op.op() ))
 			assert(0);
 		max_near_feas_step_op.reduct_obj_create(&max_near_feas_step_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_max_near_feas_step_name
-			   ,&RTOp_ROp_max_near_feas_step_vtbl
-			   ))
-			assert(0);
 		// Operator and target obj for max_rel_step
 		if(0>RTOp_ROp_max_rel_step_construct(&max_rel_step_op.op() ))
 			assert(0);
 		max_rel_step_op.reduct_obj_create(&max_rel_step_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_max_rel_step_name
-			   ,&RTOp_ROp_max_rel_step_vtbl
-			   ))
-			assert(0);
-
 		// Operator and target obj for fraction to boundary
 		if(0>RTOp_ROp_fraction_to_boundary_construct(0.99,&fraction_to_boundary_op.op() ))
 			assert(0);
 		fraction_to_boundary_op.reduct_obj_create(&fraction_to_boundary_targ);
-
 		// Operator and target obj for fraction to zero boundary
 		if(0>RTOp_ROp_fraction_to_zero_boundary_construct(0.99, &fraction_to_zero_boundary_op.op()))
 			assert(0);
 		fraction_to_zero_boundary_op.reduct_obj_create(&fraction_to_zero_boundary_targ);
-
 		// Operator and target obj for num_bounded
 		if(0>RTOp_ROp_num_bounded_construct(0.0,&num_bounded_op.op() ))
 			assert(0);
 		num_bounded_op.reduct_obj_create(&num_bounded_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_num_bounded_name
-			   ,&RTOp_ROp_num_bounded_vtbl
-			   ))
-			assert(0);
 		// Operator force_in_bounds
 		if(0>RTOp_TOp_force_in_bounds_construct( &force_in_bounds_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_force_in_bounds_name
-			   ,&RTOp_TOp_force_in_bounds_vtbl
-			   ))
-			assert(0);
-
 		// Operator force_in_bounds_buffer
 		if(0>RTOp_TOp_force_in_bounds_buffer_construct( 0.01, 0.001, &force_in_bounds_buffer_op.op() ))
 			assert(0);
-
 		// Operator inv_of_difference
 		if(0>RTOp_TOp_inv_of_difference_construct( 1.0,  &inv_of_difference_op.op()))
 			assert(0);
-
 		// correct_lower_bounds_multipliers
 		if(0>RTOp_TOp_Correct_Multipliers_construct( -1e50, 0,  &correct_lower_bound_multipliers_op.op()))
 			assert(0);
-
 		// correct_upper_bounds_multipliers
 		if(0>RTOp_TOp_Correct_Multipliers_construct( 1e50, 1,  &correct_upper_bound_multipliers_op.op()))
 			assert(0);
-
 		// lower_bounds_multipliers step
 		if(0>RTOp_TOp_multiplier_step_construct( 1.0, -1.0,  &lowerbound_multipliers_step_op.op()))
 			assert(0);
-
 		// upper_bounds_multipliers step
 		if(0>RTOp_TOp_multiplier_step_construct( 1.0, 1.0,  &upperbound_multipliers_step_op.op()))
 			assert(0);
-
 		// ele_wise_sqrt
 		if(0>RTOp_TOp_ele_wise_sqrt_construct( &ele_wise_sqrt_op.op()))
 			assert(0);
@@ -203,7 +168,8 @@ AbstractLinAlgPack::max( const Vector& v )
 	RTOpPack::ReductTarget   reduct_obj;
 	assert(0==RTOp_ROp_max_construct(&op.op()));
 	op.reduct_obj_create(&reduct_obj);
-	v.apply_reduction( op, 0, NULL, 0, NULL,reduct_obj.obj() );
+	const Vector* vecs[1] = { &v };
+	apply_op(op,1,vecs,0,NULL,reduct_obj.obj());
 	return RTOp_ROp_max_val(reduct_obj.obj());
 }
 
@@ -214,12 +180,12 @@ AbstractLinAlgPack::max_near_feas_step(
 	,value_type max_bnd_viol
 	)
 {
-	const int num_vecs = 3;
+	const int num_vecs = 4;
 	const Vector*
-		vecs[num_vecs] = { &x, &d, &xu };
-	assert(0==RTOp_ROp_max_near_feas_step_set_beta( max_bnd_viol, &max_near_feas_step_op.op() ));
+		vecs[num_vecs] = { &xl, &x, &d, &xu };
+	if(0!=RTOp_ROp_max_near_feas_step_set_beta( max_bnd_viol, &max_near_feas_step_op.op() )) assert(0);
 	max_near_feas_step_targ.reinit();
-	xl.apply_reduction(
+	apply_op(
 		max_near_feas_step_op, num_vecs, vecs, 0, NULL
 		,max_near_feas_step_targ.obj() );
 	RTOp_ROp_max_near_feas_step_reduct_obj_t
@@ -232,11 +198,11 @@ AbstractLinAlgPack::max_rel_step(
 	const Vector& x, const Vector& d
 	)
 {
-	const int num_vecs = 1;
+	const int num_vecs = 2;
 	const Vector*
-		vecs[num_vecs] = { &d };
+		vecs[num_vecs] = { &x, &d };
 	max_rel_step_targ.reinit();
-	x.apply_reduction(
+	apply_op(
 		max_rel_step_op, num_vecs, vecs, 0, NULL
 		,max_rel_step_targ.obj() );
 	return RTOp_ROp_max_rel_step_val(max_rel_step_targ.obj());
@@ -245,26 +211,26 @@ AbstractLinAlgPack::max_rel_step(
 
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::fraction_to_boundary(
-  const value_type tau,
-  const Vector& x,
-  const Vector& d,
-  const Vector& xl,
-  const Vector& xu
-  )
-	{
-	assert(0==RTOp_ROp_fraction_to_boundary_init( tau, &fraction_to_boundary_op.op() ));
+	const value_type tau,
+	const Vector& x,
+	const Vector& d,
+	const Vector& xl,
+	const Vector& xu
+	)
+{
+	if(0!=RTOp_ROp_fraction_to_boundary_init( tau, &fraction_to_boundary_op.op() )) assert(0);
 	fraction_to_boundary_targ.reinit();
 
-	const int num_vecs = 3;
+	const int num_vecs = 4;
 	const Vector*
-		vecs[num_vecs] = { &d, &xl, &xu };
+		vecs[num_vecs] = { &x, &d, &xl, &xu };
 
-	x.apply_reduction(
+	apply_op(
 		fraction_to_boundary_op, num_vecs, vecs, 0, NULL
 		,fraction_to_boundary_targ.obj() );
-
+	
 	return RTOp_ROp_fraction_to_boundary_val(fraction_to_boundary_targ.obj());
-	}
+}
 
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::fraction_to_zero_boundary(
@@ -272,20 +238,20 @@ AbstractLinAlgPack::fraction_to_zero_boundary(
   const Vector& x,
   const Vector& d
   )
-	{
-	assert(0==RTOp_ROp_fraction_to_zero_boundary_init( tau, &fraction_to_zero_boundary_op.op() ));
+{
+	if(0!=RTOp_ROp_fraction_to_zero_boundary_init( tau, &fraction_to_zero_boundary_op.op() )) assert(0);
 	fraction_to_zero_boundary_targ.reinit();
 
-	const int num_vecs = 1;
+	const int num_vecs = 2;
 	const Vector*
-		vecs[num_vecs] = { &d };
+		vecs[num_vecs] = { &x, &d };
 
-	x.apply_reduction(
+	apply_op(
 		fraction_to_zero_boundary_op, num_vecs, vecs, 0, NULL
 		,fraction_to_zero_boundary_targ.obj() );
 
 	return RTOp_ROp_fraction_to_zero_boundary_val(fraction_to_zero_boundary_targ.obj());
-	}
+}
 
 AbstractLinAlgPack::size_type
 AbstractLinAlgPack:: num_bounded(
@@ -293,12 +259,12 @@ AbstractLinAlgPack:: num_bounded(
 	,value_type inf_bound
 	)
 {
-	const int num_vecs = 1;
+	const int num_vecs = 2;
 	const Vector*
-		vecs[num_vecs] = { &xu };
-	assert(0==RTOp_ROp_num_bounded_set_inf_bnd( inf_bound, &num_bounded_op.op() ));
+		vecs[num_vecs] = { &xl, &xu };
+	if(0!=RTOp_ROp_num_bounded_set_inf_bnd( inf_bound, &num_bounded_op.op() )) assert(0);
 	num_bounded_targ.reinit();
-	xl.apply_reduction(
+	apply_op(
 		num_bounded_op, num_vecs, vecs, 0, NULL
 		,num_bounded_targ.obj() );
 	return RTOp_ROp_num_bounded_val(num_bounded_targ.obj());
@@ -312,10 +278,10 @@ AbstractLinAlgPack::log_bound_barrier(
 	)
 {
 	log_bound_barrier_targ.reinit();
-	const int num_vecs = 2;
+	const int num_vecs = 3;
 	const Vector*
-		vecs[num_vecs] = { &xl, &xu };
-	x.apply_reduction(
+		vecs[num_vecs] = { &x, &xl, &xu };
+	apply_op(
 		log_bound_barrier_op, num_vecs, vecs, 0, NULL
 		,log_bound_barrier_targ.obj()
 		);
@@ -325,17 +291,17 @@ AbstractLinAlgPack::log_bound_barrier(
 
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::combined_nu_comp_err(
-	const Vector    &v
+	const Vector     &v
 	,const Vector    &x
 	,const Vector   &xl
 	,const Vector   &xu
 	)
 {
 	combined_nu_comp_err_targ.reinit();;
-	const int num_vecs = 3;
+	const int num_vecs = 4;
 	const Vector*
-		vecs[num_vecs] = {&x, &xl, &xu };
-	v.apply_reduction(
+		vecs[num_vecs] = {&v, &x, &xl, &xu };
+	apply_op(
 		combined_nu_comp_err_op, num_vecs, vecs, 0, NULL
 		,combined_nu_comp_err_targ.obj()
 		);
@@ -345,15 +311,15 @@ AbstractLinAlgPack::combined_nu_comp_err(
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::combined_nu_comp_err_lower(
 	const Vector    &v
-	,const Vector    &x
+	,const Vector   &x
 	,const Vector   &xl
 	)
 {
 	combined_nu_comp_err_lower_targ.reinit();
 	const int num_vecs = 3;
 	const Vector*
-		vecs[num_vecs] = {&xl, &x};
-	v.apply_reduction(
+		vecs[num_vecs] = {&v, &xl, &x};
+	apply_op(
 		combined_nu_comp_err_lower_op, num_vecs, vecs, 0, NULL
 		,combined_nu_comp_err_lower_targ.obj()
 		);
@@ -364,15 +330,15 @@ AbstractLinAlgPack::combined_nu_comp_err_lower(
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::combined_nu_comp_err_upper(
 	const Vector    &v
-	,const Vector    &x
+	,const Vector   &x
 	,const Vector   &xu
 	)
 {
 	combined_nu_comp_err_upper_targ.reinit();
-	const int num_vecs = 2;
+	const int num_vecs = 3;
 	const Vector*
-		vecs[num_vecs] = {&xu, &x};
-	v.apply_reduction(
+		vecs[num_vecs] = {&v, &xu, &x};
+	apply_op(
 		combined_nu_comp_err_upper_op, num_vecs, vecs, 0, NULL
 		,combined_nu_comp_err_upper_targ.obj()
 		);
@@ -390,12 +356,12 @@ AbstractLinAlgPack::IP_comp_err_with_mu(
   ,const Vector &vu
   )
 {
-	assert(0==RTOp_ROp_comp_err_with_mu_init(mu, inf_bound, &comp_err_with_mu_op.op()));
+	if(0!=RTOp_ROp_comp_err_with_mu_init(mu, inf_bound, &comp_err_with_mu_op.op())) assert(0);
 	comp_err_with_mu_targ.reinit();
-	const int num_vecs = 4;
+	const int num_vecs = 5;
 	const Vector*
-		vecs[num_vecs] = {&xl, &xu, &vl, &vu};
-	x.apply_reduction(
+		vecs[num_vecs] = {&x, &xl, &xu, &vl, &vu};
+	apply_op(
 		comp_err_with_mu_op, num_vecs, vecs, 0, NULL
 		,comp_err_with_mu_targ.obj()
 		);
@@ -417,10 +383,10 @@ bool AbstractLinAlgPack::max_inequ_viol(
 	RTOpPack::ReductTarget   reduct_obj;
 	RTOp_ROp_max_inequ_viol_construct(&op.op());
 	op.reduct_obj_create(&reduct_obj);
-	const int num_vecs = 2;
+	const int num_vecs = 3;
 	const Vector*
-		vecs[num_vecs] = { &vL, &vU };
-	v.apply_reduction(
+		vecs[num_vecs] = { &v, &vL, &vU };
+	apply_op(
 		op, num_vecs, vecs, 0, NULL
 		,reduct_obj.obj()
 		);
@@ -436,16 +402,15 @@ bool AbstractLinAlgPack::max_inequ_viol(
 
 void AbstractLinAlgPack::force_in_bounds(
 	const Vector& xl, const Vector& xu
-	, VectorMutable* x )
+	,VectorMutable* x
+	)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(x==NULL,std::logic_error,"force_in_bounds(...), Error");
 #endif
-	const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { &xl, &xu };
-	x->apply_transformation(
-		force_in_bounds_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	const Vector*  vecs[2]      = { &xl, &xu };
+	VectorMutable* targ_vecs[1] = { x };
+	apply_op(force_in_bounds_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 
@@ -456,15 +421,12 @@ void AbstractLinAlgPack::force_in_bounds_buffer(
   const Vector& xu,
   VectorMutable* x
   )
-	{
-	assert(0==RTOp_TOp_force_in_bounds_buffer_init( rel_push, abs_push, &force_in_bounds_buffer_op.op()));
-
-    const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { &xl, &xu };
-	x->apply_transformation(
-		force_in_bounds_buffer_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
-	}
+{
+	if(0!=RTOp_TOp_force_in_bounds_buffer_init( rel_push, abs_push, &force_in_bounds_buffer_op.op())) assert(0);
+	const Vector*  vecs[2]      = { &xl, &xu };
+	VectorMutable* targ_vecs[1] = { x };
+	apply_op(force_in_bounds_buffer_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 
 void AbstractLinAlgPack::inv_of_difference(
@@ -473,51 +435,36 @@ void AbstractLinAlgPack::inv_of_difference(
   ,const Vector   &v1
   ,VectorMutable  *z
   )
-	{
-	assert(0==RTOp_TOp_inv_of_difference_init( alpha, &inv_of_difference_op.op()));
-
-	const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { &v0, &v1 };
-	
-	z->apply_transformation(
-	  inv_of_difference_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL 
-	  );
-	}
+{
+	if(0!=RTOp_TOp_inv_of_difference_init( alpha, &inv_of_difference_op.op())) assert(0);
+	const Vector*  vecs[2]      = { &v0, &v1 };
+	VectorMutable* targ_vecs[1] = { z };
+	apply_op(inv_of_difference_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 void AbstractLinAlgPack::correct_lower_bound_multipliers(
-  const Vector    &xl
-  ,const value_type     inf_bound_limit
-  ,VectorMutable  *vl
+  const Vector       &xl
+  ,const value_type  inf_bound_limit
+  ,VectorMutable     *vl
   )
-	{
-	assert(0==RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 0, &correct_lower_bound_multipliers_op.op()));
-
-	const int num_vecs = 1;
-	const Vector*
-		vecs[num_vecs] = { &xl };
-	
-	vl->apply_transformation(
-	  correct_lower_bound_multipliers_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL 
-	  );
-	}
+{
+	if(0!=RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 0, &correct_lower_bound_multipliers_op.op())) assert(0);
+	const Vector*  vecs[1]      = { &xl };
+	VectorMutable* targ_vecs[1] = { vl };
+	apply_op(correct_lower_bound_multipliers_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 void AbstractLinAlgPack::correct_upper_bound_multipliers(
-  const Vector    &xu
-  ,const value_type     inf_bound_limit
-  ,VectorMutable  *vu
+  const Vector       &xu
+  ,const value_type  inf_bound_limit
+  ,VectorMutable     *vu
   )
-	{
-	assert(0==RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 1, &correct_upper_bound_multipliers_op.op()));
-
-	const int num_vecs = 1;
-	const Vector*
-		vecs[num_vecs] = { &xu };
-	
-	vu->apply_transformation(
-	  correct_upper_bound_multipliers_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL
-	  );
-	}
+{
+	if(0!=RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 1, &correct_upper_bound_multipliers_op.op())) assert(0);
+	const Vector*  vecs[1]      = { &xu };
+	VectorMutable* targ_vecs[1] = { vu };
+	apply_op(correct_upper_bound_multipliers_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 void AbstractLinAlgPack::lowerbound_multipliers_step(
   const value_type mu,
@@ -526,17 +473,12 @@ void AbstractLinAlgPack::lowerbound_multipliers_step(
   const Vector& d_k,
   VectorMutable* dvl_k
   )
-	{
- 	assert(0==RTOp_TOp_multiplier_step_init(mu, -1.0, &lowerbound_multipliers_step_op.op()));
-
-	const int num_vecs = 3;
-	const Vector*
-		vecs[num_vecs] = { &invXl, &vl, &d_k };
-	
-	dvl_k->apply_transformation(
-	  lowerbound_multipliers_step_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL
-	  );
-	}
+{
+	if(0!=RTOp_TOp_multiplier_step_init(mu, -1.0, &lowerbound_multipliers_step_op.op())) assert(0);
+	const Vector*  vecs[]      = { &invXl, &vl, &d_k };
+	VectorMutable* targ_vecs[] = { dvl_k };
+	apply_op(lowerbound_multipliers_step_op,3,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 void AbstractLinAlgPack::upperbound_multipliers_step(
   const value_type mu,
@@ -545,43 +487,39 @@ void AbstractLinAlgPack::upperbound_multipliers_step(
   const Vector& d_k,
   VectorMutable* dvu_k
   )
-	{
- 	assert(0==RTOp_TOp_multiplier_step_init(mu, 1.0, &upperbound_multipliers_step_op.op()));
-
-	const int num_vecs = 3;
-	const Vector*
-		vecs[num_vecs] = { &invXu, &vu, &d_k };
-	
-    dvu_k->apply_transformation(
-	  upperbound_multipliers_step_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL
-	  );
-	}
+{
+ 	if(0!=RTOp_TOp_multiplier_step_init(mu, 1.0, &upperbound_multipliers_step_op.op())) assert(0);
+	const Vector*  vecs[] = { &invXu, &vu, &d_k };
+	VectorMutable* targ_vecs[] = { dvu_k };
+	apply_op(upperbound_multipliers_step_op,3,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+}
 
 void AbstractLinAlgPack::ele_wise_sqrt(
   VectorMutable* z
   )
-  {
-	z->apply_transformation(
-	  ele_wise_sqrt_op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL
-	  );  
-  }
+{
+	VectorMutable* targ_vecs[] = { z };
+	apply_op(ele_wise_sqrt_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);  
+}
 
 void AbstractLinAlgPack::max_vec_scalar(
-	value_type              min_ele
+	value_type        min_ele
 	,VectorMutable    *y
 	)
 {
 	RTOpPack::RTOpC op;
-	assert(0==RTOp_TOp_max_vec_scalar_construct(min_ele,&op.op()));
-	y->apply_transformation( op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	if(0!=RTOp_TOp_max_vec_scalar_construct(min_ele,&op.op())) assert(0);
+	VectorMutable* targ_vecs[] = { y };
+	apply_op(op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::max_abs_vec_scalar(
-	value_type              min_ele
+	value_type        min_ele
 	,VectorMutable    *y
 	)
 {
 	RTOpPack::RTOpC op;
-	assert(0==RTOp_TOp_max_abs_vec_scalar_construct(min_ele,&op.op()));
-	y->apply_transformation( op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	if(0!=RTOp_TOp_max_abs_vec_scalar_construct(min_ele,&op.op())) assert(0);
+	VectorMutable* targ_vecs[] = { y };
+	apply_op(op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }

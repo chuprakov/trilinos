@@ -53,9 +53,6 @@ namespace AbstractLinAlgPack {
  * Many of the default implementations of the linear algebra operations in
  * \c MatrixOp and the other matrix interfaces rely on the left hand side
  * matrix objects supporting the \c MultiVectorMutable interface.
- *
- * Collective \c apply_transformation() methods are declared in this
- * interface and have default implementations.
  */
 class MultiVectorMutable : virtual public MultiVector {
 public:
@@ -129,57 +126,6 @@ public:
 	multi_vec_mut_ptr_t mv_sub_view(
 		const index_type& rl, const index_type& ru
 		,const index_type& cl, const index_type& cu
-		);
-
-	//@}
-
-	/** @name Collective apply_transformation() methods */
-	//@{
-
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and return an array
-	 * of the reduction objects.
-	 *
-	 * Preconditions:<ul>
-	 * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation calls \c this->apply_op().
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void apply_transformation(
-		EApplyBy apply_by, const RTOpPack::RTOp& prim_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_objs[]
-		,const index_type prim_first_ele = 1, const index_type prim_sub_dim = 0, const index_type prim_global_offset = 0
-		,const index_type sec_first_ele  = 1, const index_type sec_sub_dim  = 0
-		);
-
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
-	 * reduction objects into one reduction object.
-	 *
-	 * Preconditions:<ul>
-	 * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation calls \c this->apply_op().
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void apply_transformation(
-		EApplyBy apply_by, const RTOpPack::RTOp& prim_op, const RTOpPack::RTOp& sec_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type prim_first_ele = 1, const index_type prim_sub_dim = 0, const index_type prim_global_offset = 0
-		,const index_type sec_first_ele  = 1, const index_type sec_sub_dim  = 0
 		);
 
 	//@}

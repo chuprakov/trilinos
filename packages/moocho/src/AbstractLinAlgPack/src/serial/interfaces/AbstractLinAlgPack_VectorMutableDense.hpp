@@ -130,10 +130,10 @@ public:
 	///
 	const VectorSpace& space() const;
 	///
-	void apply_reduction(
+	void apply_op(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
+		,const size_t num_vecs, const Vector* vecs[]
+		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;
@@ -142,8 +142,7 @@ public:
 	///
 	value_type get_ele(index_type i) const;
 	///
-	void get_sub_vector(
-		const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const;
+	void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
 	///
 	void free_sub_vector( RTOp_SubVector* sub_vec ) const;
 
@@ -152,14 +151,6 @@ public:
 	/** @name Overriddenn from VectorMutable */
 	//@{
 
-	///
-	void apply_transformation(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		);
 	///
 	VectorMutable& operator=(value_type alpha);
 	///
@@ -201,20 +192,6 @@ private:
 	DVectorSlice               v_;
 	release_resource_ptr_t    v_release_;
 	VectorSpaceSerial         space_;
-
-	// ///////////////////////////////////////
-	// Private member functions
-
-	///
-	/** Performs a reduction/transformation operation
-	 */
-	void apply_op(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs,      const Vector**       vecs
-		,const size_t num_targ_vecs, VectorMutable**      targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const;
 
 	// Not defined and not to be called
 	VectorMutableDense(const VectorMutableDense&);

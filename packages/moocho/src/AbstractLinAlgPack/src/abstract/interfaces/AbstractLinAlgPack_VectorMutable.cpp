@@ -76,7 +76,8 @@ VectorMutable& VectorMutable::operator=(value_type alpha)
 {
 	if(0!=RTOp_TOp_assign_scalar_set_alpha( alpha, &assign_scalar_op.op() ))
 		assert(0);
-	this->apply_transformation(assign_scalar_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	VectorMutable* targ_vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 	return *this;
 }
 
@@ -84,10 +85,9 @@ VectorMutable& VectorMutable::operator=(const Vector& vec)
 {
 	if( dynamic_cast<const void*>(&vec) == dynamic_cast<const void*>(this) )
 		return *this; // Assignment to self!
-	const int num_vecs = 1;
-	const Vector*
-		vec_args[1] = { &vec };
-	this->apply_transformation(assign_vec_op,num_vecs,vec_args,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	const Vector*   vecs[1]      = { &vec };
+	VectorMutable*  targ_vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(assign_vec_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 	return *this;
 }
 
@@ -100,8 +100,9 @@ void VectorMutable::set_ele( index_type i, value_type alpha )
 {
 	if(0!=RTOp_TOp_set_ele_set_i_alpha( i, alpha, &set_ele_op.op() ))
 		assert(0);
-	this->apply_transformation(
-		set_ele_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL
+	VectorMutable* targ_vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(
+		set_ele_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
 		,i,1,i-1 // first_ele, sub_dim, global_offset
 		);
 }
@@ -133,15 +134,10 @@ void VectorMutable::zero()
 
 void VectorMutable::axpy( value_type alpha, const Vector& x )
 {
-	if( 0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ) )
-		assert(0);
-	const int num_vecs = 1;
-	const Vector*
-		vec_args[1] = { dynamic_cast<const Vector*>(&x) };
-	if( vec_args[0] == NULL )
-		throw VectorSpace::IncompatibleVectorSpaces(
-			"Vector::axpy(alpha,x): Error, x is not of type Vector!" );
-	this->apply_transformation(axpy_op,num_vecs,vec_args,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	if(0!=RTOp_TOp_axpy_set_alpha(alpha,&axpy_op.op())) assert(0);
+	const Vector*  vecs[1]      = { &x   };
+	VectorMutable* targ_vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(axpy_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void VectorMutable::get_sub_vector(
@@ -157,7 +153,6 @@ void VectorMutable::get_sub_vector(
 	RTOp_sub_vector_null( &_sub_vec );
 	Vector::get_sub_vector(
 		rng
-		,DENSE
 		,&_sub_vec
 		);
 	RTOp_mutable_sub_vector(
@@ -189,8 +184,9 @@ void VectorMutable::set_sub_vector( const RTOp_SparseSubVector& sub_vec )
 {
 	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
 		assert(0);
-	this->apply_transformation(
-		set_sub_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL
+	VectorMutable* targ_vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(
+		set_sub_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
 		,sub_vec.global_offset+1,sub_vec.sub_dim,sub_vec.global_offset // first_ele, sub_dim, global_offset
 		);
 }
@@ -199,7 +195,7 @@ void VectorMutable::Vp_StMtV(
 	value_type                       alpha
 	,const GenPermMatrixSlice        &P
 	,BLAS_Cpp::Transp                P_trans
-	,const Vector              &x
+	,const Vector                    &x
 	,value_type                      beta
 	)
 {
@@ -213,17 +209,6 @@ VectorMutable::sub_view( const Range1D& rng ) const
 {
 	namespace rcp = MemMngPack;
 	return const_cast<VectorMutable*>(this)->sub_view(rng);
-}
-
-// protected
-
-void VectorMutable::finalize_apply_transformation(
-	const size_t num_targ_vecs, VectorMutable** targ_vecs
-	)
-{
-	this->has_changed();
-	for( int k = 0; k < num_targ_vecs; ++k )
-		targ_vecs[k]->has_changed();
 }
 
 } // end namespace AbstractLinAlgPack

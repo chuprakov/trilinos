@@ -16,9 +16,9 @@ namespace {
 // Map from EApplyBy to Transp
 inline
 BLAS_Cpp::Transp
-to_trans(AbstractLinAlgPack::MultiVector::EApplyBy apply_by)
+to_trans(AbstractLinAlgPack::EApplyBy apply_by)
 {
-	return ( apply_by == AbstractLinAlgPack::MultiVector::APPLY_BY_ROW
+	return ( apply_by == AbstractLinAlgPack::APPLY_BY_ROW
 			? BLAS_Cpp::no_trans
 			: BLAS_Cpp::trans
 			);
@@ -31,10 +31,10 @@ AbstractLinAlgPack::MultiVector::vec_ptr_t
 vec(
 	const AbstractLinAlgPack::MultiVector&      multi_vec
 	,const AbstractLinAlgPack::size_type        k
-	,AbstractLinAlgPack::MultiVector::EApplyBy  apply_by
+	,AbstractLinAlgPack::EApplyBy               apply_by
 	)
 {
-	return ( apply_by == AbstractLinAlgPack::MultiVector::APPLY_BY_ROW
+	return ( apply_by == AbstractLinAlgPack::APPLY_BY_ROW
 			? multi_vec.row(k)
 			: multi_vec.col(k)
 			);
@@ -45,10 +45,10 @@ AbstractLinAlgPack::MultiVectorMutable::vec_mut_ptr_t
 vec(
 	AbstractLinAlgPack::MultiVectorMutable*         multi_vec
 	,const AbstractLinAlgPack::size_type            k
-	,AbstractLinAlgPack::MultiVector::EApplyBy      apply_by
+	,AbstractLinAlgPack::EApplyBy                   apply_by
 	)
 {
-	return ( apply_by == AbstractLinAlgPack::MultiVector::APPLY_BY_ROW
+	return ( apply_by == AbstractLinAlgPack::APPLY_BY_ROW
 			? multi_vec->row(k)
 			: multi_vec->col(k)
 			);
@@ -60,13 +60,13 @@ vec(
 //
 bool mat_vec(
 	const AbstractLinAlgPack::value_type        &a
-	,const AbstractLinAlgPack::MatrixOp     &D_mwo  // Diagonal matrix?
+	,const AbstractLinAlgPack::MatrixOp         &D_mwo  // Diagonal matrix?
 	,BLAS_Cpp::Transp                           D_trans
 	,const AbstractLinAlgPack::MultiVector      &B
 	,BLAS_Cpp::Transp                           B_trans
 	,const AbstractLinAlgPack::value_type       &b
 	,BLAS_Cpp::Transp                           C_trans
-	,AbstractLinAlgPack::MatrixOp           *C
+	,AbstractLinAlgPack::MatrixOp               *C
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -124,108 +124,12 @@ MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 	return MemMngPack::null;
 }
 
-void MultiVector::apply_reduction(
-	EApplyBy apply_by, const RTOpPack::RTOp& prim_op
-	,const size_t num_multi_vecs_in,   const MultiVector**   multi_vecs_in
-	,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-	,RTOp_ReductTarget reduct_objs[]
-	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
-	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
-	) const
-{
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	// ToDo: Validate the input!
-
-	wsp::Workspace<const MultiVector*> multi_vecs(wss,num_multi_vecs_in+1);
-	multi_vecs[0] = this; // I am the first!
-	for(size_type k = 1; k <= num_multi_vecs_in; ++k)
-		multi_vecs[k] = multi_vecs_in[k-1];
-
-	this->apply_op(
-		apply_by, prim_op
-		,num_multi_vecs_in+1,  &multi_vecs[0]
-		,num_targ_multi_vecs,  targ_multi_vecs
-		,reduct_objs
-		,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
-		,sec_first_ele_in, sec_sub_dim_in
-		);
-}
-
-void MultiVector::apply_reduction(
-	EApplyBy apply_by, const RTOpPack::RTOp& prim_op, const RTOpPack::RTOp& sec_op
-	,const size_t num_multi_vecs_in,   const MultiVector**   multi_vecs_in
-	,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-	,RTOp_ReductTarget reduct_obj
-	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
-	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
-	) const
-{
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
-
-	// ToDo: Validate the input!
-
-	wsp::Workspace<const MultiVector*> multi_vecs(wss,num_multi_vecs_in+1);
-	multi_vecs[0] = this; // I am the first!
-	for(size_type k = 1; k <= num_multi_vecs_in; ++k)
-		multi_vecs[k] = multi_vecs_in[k-1];
-
-	this->apply_op(
-		apply_by, prim_op, sec_op
-		,num_multi_vecs_in+1,  &multi_vecs[0]
-		,num_targ_multi_vecs,  targ_multi_vecs
-		,reduct_obj
-		,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
-		,sec_first_ele_in, sec_sub_dim_in
-		);
-}
-
-// Overridden form MatrixOp
-
-MatrixOp::mat_ptr_t
-MultiVector::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
-{
-	return mv_sub_view(row_rng,col_rng);
-}
-
-bool MultiVector::Mp_StMtM(
-	MatrixOp* mwo_lhs, value_type alpha
-	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,BLAS_Cpp::Transp trans_rhs2
-	,value_type beta
-	) const
-{
-	return mat_vec(
-		alpha
-		,mwo_rhs1,trans_rhs1
-		,*this,trans_rhs2
-		,beta,BLAS_Cpp::no_trans,mwo_lhs
-		);
-}
-
-bool MultiVector::Mp_StMtM(
-	MatrixOp* mwo_lhs, value_type alpha
-	,BLAS_Cpp::Transp trans_rhs1
-	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-	,value_type beta
-	) const
-{
-	return mat_vec(
-		alpha
-		,mwo_rhs2,BLAS_Cpp::trans_not(trans_rhs2)
-		,*this,BLAS_Cpp::trans_not(trans_rhs1)
-		,beta,BLAS_Cpp::trans,mwo_lhs
-		);
-}
-
-// Combined implementations for apply_reduction() and apply_transformation() methods
 
 void MultiVector::apply_op(
 	EApplyBy apply_by, const RTOpPack::RTOp& prim_op
-	,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-	,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
+	,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+	,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
 	,RTOp_ReductTarget reduct_objs[]
 	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
@@ -267,18 +171,18 @@ void MultiVector::apply_op(
 		}}
 		// Apply the reduction/transformation operator
 		if( num_multi_vecs > 0 )
-			vecs[0]->apply_reduction(
+			AbstractLinAlgPack::apply_op(
 				prim_op
-				,num_multi_vecs-1,    (num_multi_vecs-1    ? &vecs[1]      : NULL)
-				,num_targ_multi_vecs, (num_targ_multi_vecs ? &targ_vecs[0] : NULL)
+				,num_multi_vecs, &vecs[0]
+				,num_targ_multi_vecs, &targ_vecs[0]
 				,reduct_objs[j - sec_first_ele_in]
 				,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 			);
 		else
-			targ_vecs[0]->apply_transformation(
+			AbstractLinAlgPack::apply_op(
 				prim_op
-				,num_multi_vecs,        (num_multi_vecs        ? &vecs[0]      : NULL)
-				,num_targ_multi_vecs-1, (num_targ_multi_vecs-1 ? &targ_vecs[1] : NULL)
+				,num_multi_vecs, &vecs[0]
+				,num_targ_multi_vecs-1, &targ_vecs[0]
 				,reduct_objs[j - sec_first_ele_in]
 				,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 			);
@@ -292,8 +196,8 @@ void MultiVector::apply_op(
 
 void MultiVector::apply_op(
 	EApplyBy apply_by, const RTOpPack::RTOp& prim_op, const RTOpPack::RTOp& sec_op
-	,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-	,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
+	,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+	,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
 	,RTOp_ReductTarget reduct_obj
 	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
@@ -336,4 +240,107 @@ void MultiVector::apply_op(
 	}}
 }
 
+// Overridden form MatrixOp
+
+MatrixOp::mat_ptr_t
+MultiVector::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
+{
+	return mv_sub_view(row_rng,col_rng);
+}
+
+bool MultiVector::Mp_StMtM(
+	MatrixOp* mwo_lhs, value_type alpha
+	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,BLAS_Cpp::Transp trans_rhs2
+	,value_type beta
+	) const
+{
+	return mat_vec(
+		alpha
+		,mwo_rhs1,trans_rhs1
+		,*this,trans_rhs2
+		,beta,BLAS_Cpp::no_trans,mwo_lhs
+		);
+}
+
+bool MultiVector::Mp_StMtM(
+	MatrixOp* mwo_lhs, value_type alpha
+	,BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,value_type beta
+	) const
+{
+	return mat_vec(
+		alpha
+		,mwo_rhs2,BLAS_Cpp::trans_not(trans_rhs2)
+		,*this,BLAS_Cpp::trans_not(trans_rhs1)
+		,beta,BLAS_Cpp::trans,mwo_lhs
+		);
+}
+
 } // end namespace
+
+// nonmembers
+
+void AbstractLinAlgPack::apply_op(
+	EApplyBy                        apply_by
+	,const RTOpPack::RTOp           &primary_op
+	,const size_t                   num_multi_vecs
+	,const MultiVector*             multi_vecs[]
+	,const size_t                   num_targ_multi_vecs
+	,MultiVectorMutable*            targ_multi_vecs[]
+	,RTOp_ReductTarget              reduct_objs[]
+	,const index_type               primary_first_ele
+	,const index_type               primary_sub_dim
+	,const index_type               primary_global_offset
+	,const index_type               secondary_first_ele
+	,const index_type               secondary_sub_dim
+	)
+{
+	if(num_multi_vecs)
+		multi_vecs[0]->apply_op(
+			apply_by,primary_op
+			,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+			,reduct_objs,primary_first_ele,primary_sub_dim,primary_global_offset
+			,secondary_first_ele,secondary_sub_dim
+			);
+	else if(num_targ_multi_vecs)
+		targ_multi_vecs[0]->apply_op(
+			apply_by,primary_op
+			,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+			,reduct_objs,primary_first_ele,primary_sub_dim,primary_global_offset
+			,secondary_first_ele,secondary_sub_dim
+			);
+}
+
+void AbstractLinAlgPack::apply_op(
+	EApplyBy                        apply_by
+	,const RTOpPack::RTOp           &primary_op
+	,const RTOpPack::RTOp           &secondary_op
+	,const size_t                   num_multi_vecs
+	,const MultiVector*             multi_vecs[]
+	,const size_t                   num_targ_multi_vecs
+	,MultiVectorMutable*            targ_multi_vecs[]
+	,RTOp_ReductTarget              reduct_obj
+	,const index_type               primary_first_ele
+	,const index_type               primary_sub_dim
+	,const index_type               primary_global_offset
+	,const index_type               secondary_first_ele
+	,const index_type               secondary_sub_dim
+	)
+{
+	if(num_multi_vecs)
+		multi_vecs[0]->apply_op(
+			apply_by,primary_op,secondary_op
+			,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+			,reduct_obj,primary_first_ele,primary_sub_dim,primary_global_offset
+			,secondary_first_ele,secondary_sub_dim
+			);
+	else if(num_targ_multi_vecs)
+		targ_multi_vecs[0]->apply_op(
+			apply_by,primary_op,secondary_op
+			,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+			,reduct_obj,primary_first_ele,primary_sub_dim,primary_global_offset
+			,secondary_first_ele,secondary_sub_dim
+			);
+}

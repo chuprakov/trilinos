@@ -255,24 +255,23 @@ void ExampleNLPDirect::calc_point(
 	
 	assert(0==RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
 
-	const int                    num_vecs = task < 2 ? 2 : 3;
+	const int              num_vecs = task < 2 ? 2 : 3;
 	const Vector*          vecs[3] = { NULL, NULL, NULL };
-	const int                    num_targ_vecs = task < 2 ? 0 : 1;
-	VectorMutable*         targ_vec0 = NULL;
-	VectorMutable*         targ_vec1 = NULL;
+	const int              num_targ_vecs = task < 2 ? 0 : 1;
+	VectorMutable*         targ_vecs[2] = { NULL, NULL };
 
-	// targ_vec0 will have apply_transformation(...) called on it.
+	// targ_vecs[0] will have apply_op(...) called on it.
 	if(D) {
 		D_diag->init_identity( *this->space_c(), 0.0 );
-		targ_vec0= &D_diag->diag();
+		targ_vecs[0]= &D_diag->diag();
 	}
 	else if(py)
-		targ_vec0 = py;
+		targ_vecs[0] = py;
 	else
 		assert(0); // Only local error?
-	// targ_vec1 will be passed to apply_transformation(...)
+	// targ_vecs[1] will be passed to apply_op(...)
 	if(py && D)
-		targ_vec1 = py;
+		targ_vecs[1] = py;
 	
 	// vecs[...]
 	int k = 0;
@@ -280,9 +279,10 @@ void ExampleNLPDirect::calc_point(
 	if(D)  { vecs[k] = xI.get(); ++k; }
 	if(py) { vecs[k] = c;        ++k; }
 
-	targ_vec0->apply_transformation(
-		explnlp2_calc_py_D_op, num_vecs, vecs, num_targ_vecs, &targ_vec1
-		,RTOp_REDUCT_OBJ_NULL );
+	AbstractLinAlgPack::apply_op(
+		explnlp2_calc_py_D_op, num_vecs, vecs, num_targ_vecs, num_targ_vecs?targ_vecs:NULL
+		,RTOp_REDUCT_OBJ_NULL
+		);
 
 	// rGf = Gf(var_indep) + D' * Gf(var_dep)
 	if(rGf) {

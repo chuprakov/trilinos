@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
  * operator is not allowed since it does not have the correct sematics.
  *
  * There is really not much to this vector subclass.  The subclass is only possible
- * because of the \c first_ele, \c sub_dim, and \c global_offset options with apply_transforamtion().  The
+ * because of the \c first_ele, \c sub_dim, and \c global_offset options with apply_op().  The
  * vector space object returned by <tt>this->space()</tt> is of type \c VectorSpaceSubSpace
  * which in turn relys on \c VectorSpace::sub_space().
  */
@@ -88,29 +88,6 @@ public:
 	/** @name Overridden from VectorMutable */
 	//@{
 	
-	///
-	/** Calls \c apply_transformation() on the underlying full vectors.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<VectorMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k])->full_vec()->space().is_compatible(
-	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>dynamic_cast<VectorMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
-	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 */
-	void apply_transformation(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		);
 	///
 	void set_ele( index_type i, value_type val );
 	///

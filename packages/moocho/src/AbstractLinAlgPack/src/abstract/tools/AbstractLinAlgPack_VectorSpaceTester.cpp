@@ -355,7 +355,7 @@ bool VectorSpaceTester::check_vector_space(
 				*out << std::endl << v_name << ".get_sub_vector(Rang1D("<<i1<<","<<i2<<"),SPARSE,&sub_vec)\n";
 			RTOp_SubVector sub_vec;
 			RTOp_sub_vector_null(&sub_vec);
-			v_from.get_sub_vector(Range1D(i1,i2),Vector::SPARSE,&sub_vec);	
+			v_from.get_sub_vector(Range1D(i1,i2),&sub_vec);	
 
 			err = sub_vec_dim - sub_vec.sub_dim;
 			if(out && (print_all_tests() || ::fabs(err) >= warning_tol()))

@@ -23,6 +23,55 @@
 namespace AbstractLinAlgPack {
 
 ///
+enum EApplyBy {
+	APPLY_BY_ROW        ///<
+	,APPLY_BY_COL       ///<
+};
+
+///
+/** Apply a reduction/transformation operator column by column and
+ * return an array of the reduction objects.
+ *
+ * ToDo: Finish documentation!
+ */
+void apply_op(
+	EApplyBy                        apply_by
+	,const RTOpPack::RTOp           &primary_op
+	,const size_t                   num_multi_vecs
+	,const MultiVector*             multi_vecs[]
+	,const size_t                   num_targ_multi_vecs
+	,MultiVectorMutable*            targ_multi_vecs[]
+	,RTOp_ReductTarget              reduct_objs[]
+	,const index_type               primary_first_ele     = 1
+	,const index_type               primary_sub_dim       = 0
+	,const index_type               primary_global_offset = 0
+	,const index_type               secondary_first_ele   = 1
+	,const index_type               secondary_sub_dim     = 0
+	);
+
+///
+/** Apply a reduction/transformation operator column by column and reduce the intermediate
+ * reduction objects into one reduction object.
+ *
+ * ToDo: Finish documentation!
+ */
+void apply_op(
+	EApplyBy                        apply_by
+	,const RTOpPack::RTOp           &primary_op
+	,const RTOpPack::RTOp           &secondary_op
+	,const size_t                   num_multi_vecs
+	,const MultiVector*             multi_vecs[]
+	,const size_t                   num_targ_multi_vecs
+	,MultiVectorMutable*            targ_multi_vecs[]
+	,RTOp_ReductTarget              reduct_obj
+	,const index_type               primary_first_ele     = 1
+	,const index_type               primary_sub_dim       = 0
+	,const index_type               primary_global_offset = 0
+	,const index_type               secondary_first_ele   = 1
+	,const index_type               secondary_sub_dim     = 0
+	);
+
+///
 /** Interface for a collection of non-mutable vectors (multi-vector, matrix).
  *
  * This interface is quite restrictive in that it allows a client to access a
@@ -83,14 +132,15 @@ namespace AbstractLinAlgPack {
  * (\c ROW_ACCESS only), a unordered sparse matrix with the diagonal explicity stored
  * (<tt>diag(0) != NULL</tt>) etc.
  *
- * Another very powerfull feature of this interface is the ability to apply
- * reduction/transformation operators over a sub-set of rows and columns in a set
- * of multi-vector objects.  The behavior is identical as if the client extracted
- * the rows or columns in a set of multi-vectors and called
- * \c Vector::apply_reduction() or \c VectorMutable::apply_transformation()
- * itself.  However, the advantage of using the multi-vector methods is that there
- * may be greater opertunity to exploit parallelism.  Also, the intermediate reduction
- * objects over a set of rows or columns can be reduced by a secondary reduction object.
+ * Another very powerfull feature of this interface is the ability to
+ * apply reduction/transformation operators over a sub-set of rows and
+ * columns in a set of multi-vector objects.  The behavior is
+ * identical as if the client extracted the rows or columns in a set
+ * of multi-vectors and called <tt>Vector::apply_op()</tt> itself.
+ * However, the advantage of using the multi-vector methods is that
+ * there may be greater opertunity to exploit parallelism.  Also, the
+ * intermediate reduction objects over a set of rows or columns can be
+ * reduced by a secondary reduction object.
  *
  * ToDo: Finish documentation!
  */
@@ -106,14 +156,48 @@ public:
 		,DIAG_ACCESS  = 0x4 ///<
 	};
 	///
-	enum EApplyBy {
-		APPLY_BY_ROW        ///<
-		,APPLY_BY_COL       ///<
-	};
-	///
 	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const MultiVector>    multi_vec_ptr_t;
+
+	/** @name Friends */
+	//@{
+
+	///
+	friend
+	void AbstractLinAlgPack::apply_op(
+		EApplyBy                        apply_by
+		,const RTOpPack::RTOp           &primary_op
+		,const size_t                   num_multi_vecs
+		,const MultiVector*             multi_vecs[]
+		,const size_t                   num_targ_multi_vecs
+		,MultiVectorMutable*            targ_multi_vecs[]
+		,RTOp_ReductTarget              reduct_objs[]
+		,const index_type               primary_first_ele
+		,const index_type               primary_sub_dim
+		,const index_type               primary_global_offset
+		,const index_type               secondary_first_ele
+		,const index_type               secondary_sub_dim
+		);
+	///
+	friend
+	void AbstractLinAlgPack::apply_op(
+		EApplyBy                        apply_by
+		,const RTOpPack::RTOp           &primary_op
+		,const RTOpPack::RTOp           &secondary_op
+		,const size_t                   num_multi_vecs
+		,const MultiVector*             multi_vecs[]
+		,const size_t                   num_targ_multi_vecs
+		,MultiVectorMutable*            targ_multi_vecs[]
+		,RTOp_ReductTarget              reduct_obj
+		,const index_type               primary_first_ele
+		,const index_type               primary_sub_dim
+		,const index_type               primary_global_offset
+		,const index_type               secondary_first_ele
+		,const index_type               secondary_sub_dim
+		);
+
+	//@}
 
 	/** @name Provide row, column and diagonal access as non-mutable vectors */
 	//@{
@@ -179,7 +263,9 @@ public:
 
 	//@}
 
-	/** @name Collective apply_reduction() methods */
+protected:
+
+	/** @name Collective apply_op() methods */
 	//@{
 
 	///
@@ -196,13 +282,13 @@ public:
 	 *
 	 * ToDo: Finish documentation!
 	 */
-	virtual void apply_reduction(
+	virtual void apply_op(
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
+		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
 		,RTOp_ReductTarget reduct_objs[]
-		,const index_type primary_first_ele   = 1, const index_type primary_sub_dim   = 0, const index_type primary_global_offset = 0
-		,const index_type secondary_first_ele = 1, const index_type secondary_sub_dim = 0
+		,const index_type primary_first_ele,   const index_type primary_sub_dim, const index_type primary_global_offset
+		,const index_type secondary_first_ele, const index_type secondary_sub_dim
 		) const;
 
 	///
@@ -219,16 +305,18 @@ public:
 	 *
 	 * ToDo: Finish documentation!
 	 */
-	virtual void apply_reduction(
+	virtual void apply_op(
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
+		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
 		,RTOp_ReductTarget reduct_obj
-		,const index_type primary_first_ele   = 1, const index_type primary_sub_dim   = 0, const index_type primary_global_offset = 0
-		,const index_type secondary_first_ele = 1, const index_type secondary_sub_dim = 0
+		,const index_type primary_first_ele, const index_type primary_sub_dim, const index_type primary_global_offset
+		,const index_type secondary_first_ele, const index_type secondary_sub_dim
 		) const;
 
 	//@}
+
+public:
 
 	/** @name Overridden from MatrixOp */
 	//@{
@@ -280,57 +368,6 @@ public:
 
 	//@}
 
-protected:
-
-	/** @name Combined implementations for apply_reduction() and apply_transformation() methods */
-	//@{
-
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and return an array
-	 * of the reduction objects.
-	 *
-	 * Note that \c this is already one of the vecs[] or targ_vecs[] arguments.
-	 *
-	 * Preconditions:<ul>
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation relys on \c row() or \c col() access methods to apply the operators.
-	 */
-	virtual void apply_op(
-		EApplyBy apply_by, const RTOpPack::RTOp& primary_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_objs[]
-		,const index_type primary_first_ele   = 1, const index_type primary_sub_dim   = 0, const index_type primary_global_offset = 0
-		,const index_type secondary_first_ele = 1, const index_type secondary_sub_dim = 0
-		) const;
-
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
-	 * reduction objects into one reduction object.
-	 *
-	 * Note that \c this is already one of the vecs[] or targ_vecs[] arguments.
-	 *
-	 * Preconditions:<ul>
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation relys on \c row() or \c col() access methods to apply the operators.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void apply_op(
-		EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
-		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
-		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type primary_first_ele   = 1, const index_type primary_sub_dim   = 0, const index_type primary_global_offset = 0
-		,const index_type secondary_first_ele = 1, const index_type secondary_sub_dim = 0
-		) const;
-
-	//@}
-
 private:
 	
 #ifdef DOXYGEN_COMPILE
@@ -342,7 +379,7 @@ private:
 }; // end class MultiVector
 
 // //////////////////////////////////////////////////
-// Inlined methods for MultiVector
+// Inlined functions
 
 inline
 MultiVector::multi_vec_ptr_t

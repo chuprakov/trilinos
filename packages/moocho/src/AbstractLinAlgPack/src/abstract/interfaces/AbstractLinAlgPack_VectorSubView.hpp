@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_WITH_OP_SUB_VIEW_H
-#define VECTOR_WITH_OP_SUB_VIEW_H
+#ifndef ALAP_VECTOR_SUB_VIEW_H
+#define ALAP_VECTOR_SUB_VIEW_H
 
 #include "Vector.hpp"
 #include "VectorSpaceSubSpace.hpp"
@@ -28,10 +28,11 @@ namespace AbstractLinAlgPack {
  * Not all of the methods from Vector are overridden, only those that
  * need to be or may result in better performance.
  *
- * There is really not much to this vector subclass.  The subclass is only possible
- * because of the \c first_ele, \c sub_dim, and \c global_offset options with \c apply_reduction().  The
- * vector space object returned by <tt>this->space()</tt> is of type \c VectorSpaceSubSpace
- * which in turn relys on \c VectorSpace::sub_space().
+ * There is really not much to this vector subclass.  The subclass is
+ * only possible because of the <tt>first_ele</tt>, <tt>sub_dim</tt>,
+ * and <tt>global_offset</tt> options with <tt>apply_op()</tt>.  The
+ * vector space object returned by <tt>this->space()</tt> is of type
+ * <tt>VectorSpaceSubSpace</tt> which in turn relys on <tt>VectorSpace::sub_space()</tt>.
  *
  * The default constructor and copy constructors are allowed but the default
  * assignment operator is not allowed.
@@ -90,7 +91,7 @@ public:
 	///
 	index_type dim() const;
 	///
-	/** Calls \c apply_reduction() on the underlying full vectors.
+	/** Calls \c apply_op() on the underlying full vectors.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
@@ -105,10 +106,10 @@ public:
 	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 */
-	void apply_reduction(
+	void apply_op(
 		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
+		,const size_t num_vecs, const Vector* vecs[]
+		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
 		,RTOp_ReductTarget reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;
@@ -117,8 +118,7 @@ public:
 	///
 	vec_ptr_t sub_view( const Range1D& rng ) const;
 	///
-	void get_sub_vector(
-		const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const;
+	void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
 	///
 	void free_sub_vector( RTOp_SubVector* sub_vec ) const;
 
@@ -156,4 +156,4 @@ const VectorSpaceSubSpace& VectorSubView::space_impl() const
 
 } // end namespace AbstractLinAlgPack
 
-#endif // VECTOR_WITH_OP_SUB_VIEW_H
+#endif // ALAP_VECTOR_SUB_VIEW_H

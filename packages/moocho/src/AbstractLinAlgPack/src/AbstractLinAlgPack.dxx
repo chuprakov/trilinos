@@ -110,28 +110,24 @@ The solution to this problem which has been embraced by these vector interfaces 
 specification for user defined vector reduction/transformation operators </A>.  This design is based on
 the "Visitor" design pattern.  A detailed (but slightly out of date) discussion of the underlying design concepts for
 this idea can be found at http://dynopt.cheme.cmu.edu/roscoe/RTOp/doc/RTOp.ps .  These vector interfaces accept 
-operator objects through to the C++ <tt>RTOpPack::RTOp</tt> interface.  The vector interfaces <tt>Vector</tt> and
-<tt>VectorMutable</tt> declare the methods
-<tt>\ref AbstractLinAlgPack::Vector::apply_reduction "Vector::apply_reduction(...)"</tt>
-and <tt>\ref AbstractLinAlgPack::VectorMutable::apply_transformation "VectorMutable::apply_transformation(...)"</tt>
-that accept <tt>RTOp</tt> objects and use them to perform
-the desired reduction/transformation operations.  These methods allow great flexibility in how vectors are
-used in an application.  The methods <tt>apply_reduction(...)</tt> and <tt>apply_transformation(...)</tt> can be
+operator objects through to the C++ <tt>RTOpPack::RTOp</tt> interface.  The vector interfaces <tt>Vector</tt>
+declares the method <tt>\ref AbstractLinAlgPack::Vector::apply_op "Vector::apply_op(...)"</tt>
+that accepts <tt>RTOp</tt> objects and use them to perform
+the desired reduction/transformation operations.  This method allows great flexibility in how vectors are
+used in an application.  The method <tt>apply_op(...)</tt> can be
 used to allow vector objects to participate as sub-vectors in a larger composite vector (see
 <tt>\ref AbstractLinAlgPack::VectorMutableBlock "VectorMutableBlock"</tt>)
 or allow only sub-sets of the elements to participate in vector operatations (see
 <tt>\ref AbstractLinAlgPack::VectorMutableSubView "VectorMutableSubView"</tt>).  All of the other methods that are
-associated with these vector interfaces have default implementations based on <tt>apply_reduction(...)</tt> and
-<tt>apply_transformation(...)</tt> using default C <tt>RTOp_RTOp</tt> operator classes.  Therefore, to define a very powerful,
-fully functional vector subclass, only three methods must be overridden; 
+associated with these vector interfaces have default implementations based on <tt>apply_op(...)</tt>
+using default C <tt>RTOp_RTOp</tt> operator classes.  Therefore, to define a very powerful,
+fully functional vector subclass, only two methods must be overridden: 
 <tt>\ref AbstractLinAlgPack::Vector::space "Vector::space()"</tt>
 (which requires defining a concreate <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> class with two pure virtual methods
 <tt>\ref AbstractLinAlgPack::VectorSpace::dim "VectorSpace::dim()"</tt> and
-<tt>\ref AbstractLinAlgPack::VectorSpace::create_member "VectorSpace::create_member()"</tt>),
-<tt>\ref AbstractLinAlgPack::Vector::apply_reduction "Vector::apply_reduction(...)"</tt> and
-<tt>\ref AbstractLinAlgPack::VectorMutable::apply_transformation "VectorMutable::apply_transformation(...)"</tt>.
-By far the hardest methods to implement are <tt>apply_reduction(...)</tt> and <tt>apply_transformation(...)</tt>
-(which can be combined into a single method in the subclass since they share most of the same features).  Compare this
+<tt>\ref AbstractLinAlgPack::VectorSpace::create_member "VectorSpace::create_member()"</tt>) and
+<tt>\ref AbstractLinAlgPack::Vector::apply_op "Vector::apply_op(...)"</tt>.
+By far the hardest method to implement is <tt>apply_op(...)</tt>.  Compare this
 to most other abstract vector interfaces that require between 20-50 pure virtual methods that most be overridden
 (e.g. 26 methods in <A HREF="http://www.cs.sandia.gov/~mheroux/Trilinos/doc/tsf/doc/html/class_tsf__multivector.html">TSF</A>
 and 56 methods in <A HREF="http://www.trip.caam.rice.edu/txt/hcldoc/html/HCL_Vector_d.html">HCL</A>).

@@ -66,67 +66,27 @@ public:
 		if(0>RTOp_ROp_sum_construct(&sum_op.op() ))
 			assert(0);
 		sum_op.reduct_obj_create(&sum_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_sum_name
-			   ,&RTOp_ROp_sum_vtbl
-			   ))
-			assert(0);
 		// Operator and target obj for dot_prod
 		if(0>RTOp_ROp_dot_prod_construct(&dot_prod_op.op() ))
 			assert(0);
 		dot_prod_op.reduct_obj_create(&dot_prod_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_dot_prod_name
-			   ,&RTOp_ROp_dot_prod_vtbl
-			   ))
-			assert(0);
 		// Operator add_scalar
 		if(0>RTOp_TOp_add_scalar_construct( 0.0, &add_scalar_op.op() ))
-			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_add_scalar_name
-			   ,&RTOp_TOp_add_scalar_vtbl
-			   ))
 			assert(0);
 		// Operator scale_vector
 		if(0>RTOp_TOp_scale_vector_construct( 0.0, &scale_vector_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_scale_vector_name
-			   ,&RTOp_TOp_scale_vector_vtbl
-			   ))
-			assert(0);
 		// Operator axpy
 		if(0>RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
-			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_axpy_name
-			   ,&RTOp_TOp_axpy_vtbl
-			   ))
 			assert(0);
 		// Operator random_vector
 		if(0>RTOp_TOp_random_vector_construct( 0.0, 0.0, &random_vector_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_random_vector_name
-			   ,&RTOp_TOp_random_vector_vtbl
-			   ))
-			assert(0);
 		// Operator ele_wise_divide
 		if(0>RTOp_TOp_ele_wise_divide_construct( 0.0, &ele_wise_divide_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_ele_wise_divide_name
-			   ,&RTOp_TOp_ele_wise_divide_vtbl
-			   ))
-			assert(0);
 		// Operator ele_wise_prod
 		if(0>RTOp_TOp_ele_wise_prod_construct( 0.0, &ele_wise_prod_op.op() ))
-			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_ele_wise_prod_name
-			   ,&RTOp_TOp_ele_wise_prod_vtbl
-			   ))
 			assert(0);
 	}
 }; 
@@ -141,7 +101,8 @@ AbstractLinAlgPack::value_type
 AbstractLinAlgPack::sum( const Vector& v_rhs )
 {
 	sum_targ.reinit();
-	v_rhs.apply_reduction(sum_op,0,NULL,0,NULL,sum_targ.obj() );
+	const Vector* vecs[1] = { &v_rhs };
+	apply_op(sum_op,1,vecs,0,NULL,sum_targ.obj() );
 	return RTOp_ROp_sum_val(sum_targ.obj());
 }
 
@@ -149,10 +110,8 @@ AbstractLinAlgPack::value_type
 AbstractLinAlgPack::dot( const Vector& v_rhs1, const Vector& v_rhs2 )
 {
 	dot_prod_targ.reinit();
-	const int num_vecs = 1;
-	const Vector*
-		vecs[num_vecs] = { &v_rhs2 };
-	v_rhs1.apply_reduction(dot_prod_op,num_vecs,vecs,0,NULL,dot_prod_targ.obj() );
+	const Vector* vecs[2] = { &v_rhs1, &v_rhs2 };
+	apply_op(dot_prod_op,2,vecs,0,NULL,dot_prod_targ.obj() );
 	return RTOp_ROp_dot_prod_val(dot_prod_targ.obj());
 }
 
@@ -178,24 +137,24 @@ void AbstractLinAlgPack::max_abs_ele(
 	RTOpPack::ReductTarget   reduct_obj;
 	assert(0==RTOp_ROp_max_abs_ele_construct(&op.op()));
 	op.reduct_obj_create(&reduct_obj);
-	v.apply_reduction( op, 0, NULL, 0, NULL,reduct_obj.obj() );
+	const Vector* vecs[1] = { &v };
+	apply_op(op,1,vecs,0,NULL,reduct_obj.obj());
 	RTOp_value_index_type val = RTOp_ROp_max_abs_ele_val(reduct_obj.obj());
 	*max_v_j = val.value;
 	*max_j   = val.index;
 }
 
-void AbstractLinAlgPack::Vp_S(
-	VectorMutable* v_lhs, const value_type& alpha )
+void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
-	assert(0==RTOp_TOp_add_scalar_set_alpha( alpha, &add_scalar_op.op() ));
-	v_lhs->apply_transformation(add_scalar_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	if(0!=RTOp_TOp_add_scalar_set_alpha( alpha, &add_scalar_op.op() )) assert(0);
+	VectorMutable* targ_vecs[1] = { v_lhs };
+	apply_op(add_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
-void AbstractLinAlgPack::Vt_S(
-	VectorMutable* v_lhs, const value_type& alpha )
+void AbstractLinAlgPack::Vt_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
@@ -204,8 +163,9 @@ void AbstractLinAlgPack::Vt_S(
 		*v_lhs = 0.0;
 	}
 	else if( alpha != 1.0 ) {
-		assert(0==RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
-		v_lhs->apply_transformation(scale_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+		if(0!=RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() )) assert(0);
+		VectorMutable* targ_vecs[1] = { v_lhs };
+		apply_op(scale_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 	}
 }
 
@@ -215,11 +175,10 @@ void AbstractLinAlgPack::Vp_StV(
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
-	assert(0==RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
-	const int num_vecs = 1;
-	const Vector*
-		vecs[num_vecs] = { &v_rhs };
-	v_lhs->apply_transformation(axpy_op,num_vecs,vecs,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	if(0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() )) assert(0);
+	const Vector*  vecs[1]      = { &v_rhs };
+	VectorMutable* targ_vecs[1] = { v_lhs  };
+	apply_op(axpy_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::Vp_StV(
@@ -241,12 +200,10 @@ void AbstractLinAlgPack::ele_wise_prod(
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
-	assert(0==RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op()));
-	const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
-	v_lhs->apply_transformation(
-		ele_wise_prod_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	if(0!=RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op())) assert(0);
+	const Vector*   vecs[2]      = { &v_rhs1, &v_rhs2 };
+	VectorMutable*  targ_vecs[1] = { v_lhs };
+	apply_op(ele_wise_prod_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::ele_wise_divide(
@@ -256,12 +213,11 @@ void AbstractLinAlgPack::ele_wise_divide(
 #ifdef _DEBUG
 	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
-	assert(0==RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
+	if(0!=RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op())) assert(0);
 	const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
-	v_lhs->apply_transformation(
-		ele_wise_divide_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	const Vector*   vecs[2]      = { &v_rhs1, &v_rhs2 };
+	VectorMutable*  targ_vecs[1] = { v_lhs };
+	apply_op(ele_wise_divide_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
@@ -269,14 +225,14 @@ void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 	srand(s);
 }
 
-void AbstractLinAlgPack::random_vector(
-	value_type l, value_type u, VectorMutable* v )
+void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutable* v )
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
-	assert(0==RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
-	v->apply_transformation(random_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+	if(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() )) assert(0);
+	VectorMutable* targ_vecs[1] = { v };
+	apply_op(random_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::sign(
@@ -286,8 +242,7 @@ void AbstractLinAlgPack::sign(
 {
 	RTOpPack::RTOpC op;
 	assert(0==RTOp_TOp_sign_construct(&op.op()));
-	const int num_vecs = 1;
-	const Vector*
-		vecs[num_vecs] = { &v };
-	z->apply_transformation( op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	const Vector*   vecs[1]      = { &v };
+	VectorMutable*  targ_vecs[1] = { z  };
+	apply_op(op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }

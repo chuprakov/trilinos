@@ -272,11 +272,9 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 		xD= x.sub_view(var_dep()),
 		xI = x.sub_view(var_indep());
 
-	const int num_vecs = 2;
-	const Vector*
-		vecs[num_vecs] = { xD.get(), xI.get() };
-	zero_order_info.c->apply_transformation(
-		explnlp2_c_eval_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+	const Vector*  vecs[]      = { xD.get(), xI.get() };
+	VectorMutable* targ_vecs[] = { zero_order_info.c };
+	AbstractLinAlgPack::apply_op(explnlp2_c_eval_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 
 }
 

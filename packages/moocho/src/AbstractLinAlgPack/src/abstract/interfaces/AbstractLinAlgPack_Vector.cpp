@@ -62,69 +62,33 @@ public:
 		if(0>RTOp_ROp_get_ele_construct( 0, &get_ele_op.op() ))
 			assert(0);
 		get_ele_op.reduct_obj_create(&get_ele_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_get_ele_name
-			   ,&RTOp_ROp_get_ele_vtbl
-			   ))
-			assert(0);
 		// Operator and target for norm 1
 		if(0>RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op() ))
 			assert(0);
 		num_nonzeros_op.reduct_obj_create(&num_nonzeros_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_num_nonzeros_name
-			   ,&RTOp_ROp_num_nonzeros_vtbl
-			   ))
-			assert(0);
 		// Operator and target for norm 1
 		if(0>RTOp_ROp_norm_1_construct(&norm_1_op.op() ))
 			assert(0);
 		norm_1_op.reduct_obj_create(&norm_1_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_norm_1_name
-			   ,&RTOp_ROp_norm_1_vtbl
-			   ))
-			assert(0);
 		// Operator and target for norm 1
 		if(0>RTOp_ROp_norm_2_construct(&norm_2_op.op() ))
 			assert(0);
 		norm_2_op.reduct_obj_create(&norm_2_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_norm_2_name
-			   ,&RTOp_ROp_norm_2_vtbl
-			   ))
-			assert(0);
 		// Operator and target for norm 1
 		if(0>RTOp_ROp_norm_inf_construct(&norm_inf_op.op() ))
 			assert(0);
 		norm_inf_op.reduct_obj_create(&norm_inf_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_norm_inf_name
-			   ,&RTOp_ROp_norm_inf_vtbl
-			   ))
-			assert(0);
 		// Dot product operator and target
 		if(0>RTOp_ROp_dot_prod_construct(&dot_op.op()))
 			assert(0);
 		dot_op.reduct_obj_create(&dot_targ);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_dot_prod_name
-			   ,&RTOp_ROp_dot_prod_vtbl
-			   ))
-			assert(0);
 		// Get sub-vector operator
 		if(0>RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()))
-			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_get_sub_vector_name
-			   ,&RTOp_ROp_get_sub_vector_vtbl
-			   ))
 			assert(0);
 	}
 }; 
 
-// When the program starts, this object will be created and the RTOp_Server object will
-// be initialized before main() gets underway!
+// When the program starts, this object will be created
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
@@ -144,7 +108,8 @@ index_type Vector::nz() const
 {
 	if( num_nonzeros_ < 0 ) {
 		num_nonzeros_targ.reinit();
-		this->apply_reduction(num_nonzeros_op,0,NULL,0,NULL,num_nonzeros_targ.obj());
+		const Vector *vecs[1] = { this };
+		AbstractLinAlgPack::apply_op(num_nonzeros_op,1,vecs,0,NULL,num_nonzeros_targ.obj());
 		num_nonzeros_ = RTOp_ROp_num_nonzeros_val(num_nonzeros_targ.obj());
 	}
 	return num_nonzeros_;
@@ -157,7 +122,7 @@ std::ostream& Vector::output(
 {
 	RTOp_SubVector sub_vec;
 	RTOp_sub_vector_null(&sub_vec);
-	this->get_sub_vector( Range1D(), SPARSE, &sub_vec );
+	this->get_sub_vector( Range1D(), &sub_vec );
 	RTOp_SubVector  sub_vec_print = sub_vec;
 	sub_vec_print.global_offset += global_offset;
 	RTOpPack::output(out,sub_vec_print,print_dim,newline);
@@ -176,8 +141,9 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
 value_type Vector::get_ele(index_type i) const {
 	assert(0==RTOp_ROp_get_ele_set_i( i, &get_ele_op.op() ));
 	get_ele_targ.reinit();
-	this->apply_reduction(
-		get_ele_op,0,NULL,0,NULL,get_ele_targ.obj()
+	const Vector *vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(
+		get_ele_op,1,vecs,0,NULL,get_ele_targ.obj()
 		,i,1,i-1 // first_ele, sub_dim, global_offset
 		);
 	return RTOp_ROp_get_ele_val(get_ele_targ.obj());
@@ -186,7 +152,8 @@ value_type Vector::get_ele(index_type i) const {
 value_type Vector::norm_1() const {
 	if( norm_1_ < 0.0 ) {
 		norm_1_targ.reinit();
-		this->apply_reduction(norm_1_op,0,NULL,0,NULL,norm_1_targ.obj());
+		const Vector *vecs[1] = { this };
+		AbstractLinAlgPack::apply_op(norm_1_op,1,vecs,0,NULL,norm_1_targ.obj());
 		norm_1_ = RTOp_ROp_norm_1_val(norm_1_targ.obj());
 	}
 	return norm_1_;
@@ -195,7 +162,8 @@ value_type Vector::norm_1() const {
 value_type Vector::norm_2() const {
 	if( 1 /*norm_2_ < 0.0*/ ) {
 		norm_2_targ.reinit();
-		this->apply_reduction(norm_2_op,0,NULL,0,NULL,norm_2_targ.obj());
+		const Vector *vecs[1] = { this };
+		AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj());
 		norm_2_ = RTOp_ROp_norm_2_val(norm_2_targ.obj());
 	}
 	return norm_2_;
@@ -204,7 +172,8 @@ value_type Vector::norm_2() const {
 value_type Vector::norm_inf() const {
 	if( 1 /*norm_inf_ < 0.0*/ ) {
 		norm_inf_targ.reinit();
-		this->apply_reduction(norm_inf_op,0,NULL,0,NULL,norm_inf_targ.obj());
+		const Vector *vecs[1] = { this };
+		AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj());
 		norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_targ.obj());
 	}
 	return norm_inf_;
@@ -235,10 +204,7 @@ Vector::sub_view( const Range1D& rng_in ) const
 			,rng ) );
 }
 
-void Vector::get_sub_vector(
-	const Range1D& rng_in, ESparseOrDense sparse_or_dense
-	, RTOp_SubVector* sub_vec
-	) const
+void Vector::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_vec	) const
 {
 	const Range1D rng = rng_in.full_range() ? Range1D(1,this->dim()) : rng_in;
 #ifdef _DEBUG
@@ -260,7 +226,8 @@ void Vector::get_sub_vector(
 		reduct_obj = RTOp_REDUCT_OBJ_NULL;
 	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOp_SubVector!
 	// Perform the reduction (get the sub-vector requested)
-	this->apply_reduction(
+	const Vector *vecs[1] = { this };
+	AbstractLinAlgPack::apply_op(
 		get_sub_vector_op,0,NULL,0,NULL,reduct_obj
 		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
 		);
@@ -288,7 +255,7 @@ void Vector::has_changed() const
 
 // protected
 
-void Vector::finalize_apply_reduction(
+void Vector::finalize_apply_op(
 	const size_t num_targ_vecs, VectorMutable** targ_vecs
 	) const
 {
@@ -297,3 +264,23 @@ void Vector::finalize_apply_reduction(
 }
 
 } // end namespace AbstractLinAlgPack
+
+// nonmember functions
+
+void AbstractLinAlgPack::apply_op(
+	const RTOpPack::RTOp       &op
+	,const size_t              num_vecs
+	,const Vector*             vecs[]
+	,const size_t              num_targ_vecs
+	,VectorMutable*            targ_vecs[]
+	,RTOp_ReductTarget         reduct_obj
+	,const index_type          first_ele
+	,const index_type          sub_dim
+	,const index_type          global_offset
+	)
+{
+	if(num_vecs)
+		vecs[0]->apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+	else if (num_targ_vecs)
+		targ_vecs[0]->apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+}

@@ -94,7 +94,7 @@ VectorDenseEncap::VectorDenseEncap( const Vector&  vec )
 	:vec_(vec)
 {
 	RTOp_sub_vector_null(&sub_vec_);
-	vec_.get_sub_vector(Range1D(),Vector::DENSE,&sub_vec_);
+	vec_.get_sub_vector(Range1D(),&sub_vec_);
 	vs_.bind( DVectorSlice(
 				  const_cast<value_type*>(sub_vec_.values)
 				  ,sub_vec_.sub_dim

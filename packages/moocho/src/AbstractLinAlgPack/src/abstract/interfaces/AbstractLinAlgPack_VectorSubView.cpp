@@ -62,10 +62,10 @@ index_type VectorSubView::dim() const
 	return space_.dim();
 }
 
-void VectorSubView::apply_reduction(
+void VectorSubView::apply_op(
 	const RTOpPack::RTOp& op
-	,const size_t num_vecs, const Vector** vecs
-	,const size_t num_targ_vecs, VectorMutable** targ_vecs
+	,const size_t num_vecs, const Vector* vecs[]
+	,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
 	,RTOp_ReductTarget reduct_obj
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
@@ -81,7 +81,7 @@ void VectorSubView::apply_reduction(
 		|| !(1 <= first_ele_in && first_ele_in <= this_dim)
 		|| ( sub_dim_in > 0 && (sub_dim_in - (first_ele_in - 1) > this_dim) )
 		, std::logic_error
-		,"VectorSubView::apply_reduction(...): Error, first_ele_in = "
+		,"VectorSubView::apply_op(...): Error, first_ele_in = "
 		<< first_ele_in << ", global_offset_in = " << global_offset_in
 		<< ", sub_dim_in = " << sub_dim_in << " and this->dim() = this_dim  = "
 		<< this_dim << " are not compatible." );
@@ -98,7 +98,7 @@ void VectorSubView::apply_reduction(
 	wsp::Workspace<VectorMutable*>   targ_vecs_full(wss,num_targ_vecs);
 	for( k = 0; k < num_targ_vecs; ++k )
 		targ_vecs_full[k] = dyn_cast<VectorMutableSubView>(*targ_vecs[k]).full_vec().get();
-	full_vec_->apply_reduction(
+	AbstractLinAlgPack::apply_op(
 		op
 		,num_vecs,      num_vecs      ? &vecs_full[0]      : NULL
 		,num_targ_vecs, num_targ_vecs ? &targ_vecs_full[0] : NULL
@@ -132,8 +132,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 			) );
 }
 
-void VectorSubView::get_sub_vector(
-	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
+void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(
@@ -144,7 +143,7 @@ void VectorSubView::get_sub_vector(
 	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
-	full_vec_->get_sub_vector( rng + this_offset, sparse_or_dense, sub_vec );
+	full_vec_->get_sub_vector( rng + this_offset, sub_vec );
 	sub_vec->global_offset -= this_offset;
 }
 

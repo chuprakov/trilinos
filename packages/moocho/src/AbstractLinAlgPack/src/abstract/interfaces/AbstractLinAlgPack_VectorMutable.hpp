@@ -1,4 +1,4 @@
-// //////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////
 // VectorMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_WITH_OP_MUTABLE_H
-#define VECTOR_WITH_OP_MUTABLE_H
+#ifndef ALAP_VECTOR_MUTABLE_HPP
+#define ALAP_VECTOR_MUTABLE_HPP
 
 #include "Vector.hpp"
 #include "RTOpPack/src/RTOp_SparseSubVector.h"
@@ -26,17 +26,9 @@ namespace AbstractLinAlgPack {
 /** \brief Abstract interface for mutable coordinate vectors {abstract}.
  *
  * Objects of this type can act as a target vector of a transformation operation.
- * Similarly to \c Vector this interface contains very few (only one extra) pure
+ * Similarly to <tt>Vector</tt> this interface contains very few (only one extra) pure
  * virtual methods that must be overridden.  However, more efficient and more general
  * implementations will choose to override more methods.
- * 
- * The most important method is \c apply_transformation() that allows clients to apply
- * user defined reduction/transformation operators.  Every standard (i.e. BLAS) and
- * non-standard element-wise vector operation can be performed using a reduction/transformation
- * operator.  As long as the individual sub-vectors are large enough, reduction/transformation
- * operators will be nearly as efficient as specialized operations for most vector subclasses.
- * Similarly to \c Vector::apply_reduction(), the \c apply_transformation() method allows
- * clients to include only subsets of elements in a reduction/transformation operation.
  *
  * In addition to being able to create non-mutable (\c const) abstract sub-views of a vector
  * object thorugh the \c Vector interface, this interface allows the creation of
@@ -47,10 +39,9 @@ namespace AbstractLinAlgPack {
  * as possible, abstract views should be preferred (i.e. \c sub_view()) over explict views (i.e.
  * get_sub_vector() and set_sub_vector()).
  *
- * There are only three pure virtual methods that a concreate \c VectorMutable
- * subclass must override.  The \c space() and \c apply_reduction() methods from the \c Vector
- * base class inteface must be defined.  Also, as mentioned above, the \c apply_transforamtion()
- * method must be overridden and defined.
+ * There are only two pure virtual methods that a concreate <tt>VectorMutable</tt>
+ * subclass must override.  The <tt>space()</tt> and <tt>apply_op()</tt> methods from the <tt>Vector</tt>
+ * base class inteface must be defined.
  *
  * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>Vector</tt>
  * interface has a default implementation defined here that will be adequate for most subclasses.
@@ -64,93 +55,6 @@ public:
 	///
 	using Vector::free_sub_vector;
 
-	/** @name Pure virtual methods (must be overridden by subclass) */
-	//@{
-
-	///
-	/** Apply a reduction/transformation,operation over a set of vectors:
-	 * <tt>op(op(v[0]...v[nv-1],(*this),z[0]...z[nz-1]),(*reduct_obj)) -> (*this),z[0]...z[nz-1],(*reduct_obj)</tt>.
-	 *
-	 * The first mutable vector in the argument list to <tt>op</tt> will be
-	 * <tt>this</tt> vector then followed by those in <tt>targ_vecs[k]</tt>, <tt>k = 0...num_targ_vecs-1</tt>
-	 * Therefore, the number of mutable vectors passed to <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt>
-	 * will be <tt>num_targ_vecs+1</tt>.
-	 *
-	 * See <tt>\ref Vector::apply_reduction "apply_reduction(...)" for a discussion of the significance of the
-	 * arguments <tt>first_ele</tt>, <tt>sub_dim</tt> and <tt>global_offset</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> See <tt>\ref Vector::apply_reduction "apply_reduction(...)".
-	 * </ul>
-	 *
-	 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
-	 *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
-	 *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
-	 * @param  num_vecs
-	 *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.  If <tt>vecs==NULL</tt>
-	 *				then this argument is ignored but should be set to zero.
-	 * @param  vecs
-	 *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
-	 *				nonmutable vectors to include in the operation.
-	 *				The order of these vectors is significant to <tt>op</tt>.  if <tt>vecs==NULL</tt>,
-	 *              then <tt>op.apply_op(...)</tt> is called with no non-mutable sub-vector arguments.
-	 * @param  num_targ_vecs
-	 *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.  If <tt>targ_vecs==NULL</tt>
-	 *				then this argument is ignored but should be set to zero.
-	 * @param  targ_vecs
-	 *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
-	 *				mutable vectors to include in the operation. The order of these vectors
-	 * 		        is significant to <tt>op</tt>.  If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with
-	 *				only one mutable vector (<tt>*this</tt>).
-	 * @param  reduct_obj
-	 *				[in/out] Target object of the reduction operation.
-	 *				This object must have been created by the <tt>op.reduct_obj_create_raw(&reduct_obj)</tt>
-	 *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
-	 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
-	 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
-	 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
-	 *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
-	 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
-	 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
-	 * @param  first_ele
-	 *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
-	 * @param  sub_dim
-	 *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
-	 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
-	 * @param  global_offset
-	 *				[in] (default = 0) The offset applied to the included vector elements.
-	 *
-	 * <b> Note the subclass implementors </b>
-	 *
-	 * It is imporatant that all transformed vectors have the method \c has_changed() called on them
-	 * durring the implementation of this function.  This can be done by calling
-	 * \c finalize_apply_transformation(...) just before the \c apply_transformation() method returns.
-	 * For example, the implementation for a vector subclass <tt>MyVector</tt> would look like:
-	 \code
-	 
-	 void MyVector::apply_transformation(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		)
-	 {
-	     ...
-		 finalize_apply_transformation(num_targ_vecs,targ_vecs);
-	 }
-	 \endcode
-	 */
-	virtual void apply_transformation(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector** vecs
-		,const size_t num_targ_vecs, VectorMutable** targ_vecs
-		,RTOp_ReductTarget reduct_obj
-		,const index_type first_ele = 1, const index_type sub_dim = 0, const index_type global_offset = 0
-		) = 0;
-	
-	//@}
-
 	/** @name Virtual methods with default implementations */
 	//@{
 
@@ -158,7 +62,7 @@ public:
 	/** Assign the elements of <tt>this</tt> vector to a scalar.
 	 *
 	 * The default implementation of this function uses a transforamtion operator class
-	 * (see RTOp_TOp_assign_scalar.h) and calls this->apply_transformation() .
+	 * (see RTOp_TOp_assign_scalar.h) and calls <tt>this->apply_op()</tt>.
 	 */
 	virtual VectorMutable& operator=(value_type alpha);
 
@@ -166,7 +70,7 @@ public:
 	/** Assign the elements of a vector to <tt>this</tt>.
 	 *
 	 * The default implementation of this function uses a transforamtion operator class
-	 * (see RTOp_TOp_assign_vectors.h) and calls <tt>this</tt>->apply_transformation() .
+	 * (see RTOp_TOp_assign_vectors.h) and calls <tt>this->apply_op()</tt>.
 	 */
 	virtual VectorMutable& operator=(const Vector& v);
 
@@ -187,7 +91,7 @@ public:
 	 * </ul>
 	 *
 	 * The default implementation uses a transforamtion operator
-	 * class (see RTOp_TOp_set_ele.h) and calls <tt>this</tt>->apply_transforamtion().
+	 * class (see RTOp_TOp_set_ele.h) and calls <tt>this->apply_op()</tt>.
 	 *
 	 * @param  i    [in] Index of the element value to set.
 	 * @param  val  [in] Value of the element to set.
@@ -243,7 +147,7 @@ public:
 	///
 	/** Adds a linear combination of another vector to this vector object.
 	 *
-	 * Calls <tt>this->apply_transformation()</tt> with an operator class
+	 * Calls <tt>this->apply_op()</tt> with an operator class
 	 * (see RTOp_TOp_axpy.h).
 	 */
 	virtual void axpy( value_type alpha, const Vector& x );
@@ -278,7 +182,7 @@ public:
 	 * </ul>
 	 *
 	 * This method has a default implementation based on a vector reduction operator
-	 * class (see RTOp_ROp_get_sub_vector.h) and calls ::apply_reduction<tt>(...)</tt>.
+	 * class (see RTOp_ROp_get_sub_vector.h) and calls <tt>apply_op()</tt>.
 	 * Note that the footprint of the reduction object (both internal and external state)
 	 * will be O(<tt>rng.size()</tt>).  For serial applications this is faily adequate and will
 	 * not be a major performance penalty.  For parallel applications, this will be
@@ -324,7 +228,7 @@ public:
 	 * </ul>
 	 *
 	 * The default implementation of this operation uses a transformation operator class
-	 * (see RTOp_TOp_set_sub_vector.h) and calls <tt>apply_transforamtion()</tt>.  Be forewarned
+	 * (see RTOp_TOp_set_sub_vector.h) and calls <tt>apply_op()</tt>.  Be forewarned
 	 * however, that the operator objects state data (both internal and external) will be 
 	 * O(<tt>sub_vec.sub_nz</tt>).  For serial applications, this is entirely adequate.  For parallel
 	 * applications this will be very bad!
@@ -348,7 +252,7 @@ public:
 		value_type                       alpha
 		,const GenPermMatrixSlice        &P
 		,BLAS_Cpp::Transp                P_trans
-		,const Vector              &x
+		,const Vector                    &x
 		,value_type                      beta
 		);
 
@@ -369,33 +273,16 @@ public:
 
 	//@}
 
-protected:
-
-	/** @name Protected helper functions */
-	//@{
-
-	///
-	/** This method usually needs to be called by subclasses at the
-	 * end of the \c apply_reduction() method implementation to
-	 * insure that \c has_changed() is called on the transformed
-	 * vector objects.
-	 */
-	virtual void finalize_apply_transformation(
-		const size_t num_targ_vecs, VectorMutable** targ_vecs
-		);
-
-	//@}
-
 }; // end class VectorMutable
 
 inline
 /// <tt>y = alpha * op(P) * x + beta *y</tt>
 void Vp_StMtV(
-	VectorMutable              *y	
+	VectorMutable                    *y	
 	,value_type                      alpha
 	,const GenPermMatrixSlice        &P
 	,BLAS_Cpp::Transp                P_trans
-	,const Vector              &x
+	,const Vector                    &x
 	,value_type                      beta = 1.0
 	)
 {
@@ -414,4 +301,4 @@ VectorMutable::sub_view( const index_type& l, const index_type& u )
 
 } // end namespace AbstractLinAlgPack
 
-#endif  // VECTOR_WITH_OP_MUTABLE_H
+#endif  // ALAP_VECTOR_MUTABLE_HPP
