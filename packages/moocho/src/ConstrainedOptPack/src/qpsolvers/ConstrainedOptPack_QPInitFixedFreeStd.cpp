@@ -42,7 +42,7 @@ void QPInitFixedFreeStd::initialize(
 	,const size_type                    i_x_fixed[]
 	,const EBounds                      bnd_fixed[]
 	,const VectorSlice                  &b_X
-	,const MatrixSymWithOpFactorized    &Ko
+	,const MatrixSymWithOpNonsingular    &Ko
 	,const VectorSlice                  &fo
 	,Constraints                        *constraints
 	,std::ostream                       *out
@@ -52,7 +52,7 @@ void QPInitFixedFreeStd::initialize(
 	,bool                               print_all_warnings
 	)
 {
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	if(!constraints)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
@@ -65,9 +65,9 @@ void QPInitFixedFreeStd::initialize(
 	if( n_R > n )
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
 			"n_R > constraints->n() is not allowed." );
-	if(g.size() !=n)
+	if(g.dim() !=n)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
-			"g.size() != constraints->n()." );
+			"g.dim() != constraints->n()." );
 	if(G.rows() != n || G.cols() !=  n)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
 			"G.rows() != constraints->n() or G.cols() !=  constraints->n()." );
@@ -79,15 +79,15 @@ void QPInitFixedFreeStd::initialize(
 			throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
 				"A->rows() != constraints->n()." );
 	}
-	if(b_X.size() != n_X)
+	if(b_X.dim() != n_X)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
-			"b_X.size() != constraints->n() - n_R." );
+			"b_X.dim() != constraints->n() - n_R." );
 	if(Ko.rows() != n_R+m || Ko.cols() !=  n_R+m)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
 			"Ko.rows() != n_R+A->cols() or Ko.cols() !=  n_R+A->cols()." );
-	if(fo.size() != n_R+m)
+	if(fo.dim() != n_R+m)
 		throw std::invalid_argument( "QPInitFixedFreeStd::initialize(...) : Error, "
-			"fo.size() != n_R+A->cols()." );
+			"fo.dim() != n_R+A->cols()." );
 
 	// Setup x_init, l_x_X_map, i_x_X_map
 
@@ -293,7 +293,7 @@ const GenPermMatrixSlice& QPInitFixedFreeStd::Q_X() const
 	return Q_X_;
 }
 
-const MatrixSymWithOpFactorized& QPInitFixedFreeStd::Ko() const
+const MatrixSymWithOpNonsingular& QPInitFixedFreeStd::Ko() const
 {
 	assert_initialized();
 	return *Ko_;

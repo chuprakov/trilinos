@@ -21,12 +21,13 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "MatrixSymAddDelUpdateableWithOpFactorized.h"
+#include "MatrixSymAddDelUpdateableWithOpNonsingular.h"
 #include "MatrixSymAddDelUpdateable.h"
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpSerial.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOpSerial.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "StandardCompositionMacros.h"
@@ -75,7 +76,6 @@ class QP;
  * implementation classes can be defined.
  *
  * Here the QP is of the form:
- *
  \verbatim
 
 	(1.a)	min		g'*x + 1/2*x'*G*x
@@ -91,7 +91,6 @@ class QP;
 		A_bar <: R^(n x m_bar)
 		cl_bar, cu_bar <: R^m_bar
  \endverbatim
- *
  * Above, <tt>cl_bar <= A_bar'*x <= cu_bar</tt> may represent variable bounds, general
  * inequalities and equality constraints and these constraints are represented
  * by the class \c Constraints.
@@ -171,9 +170,9 @@ public:
 	///
 	virtual const VectorSlice g() const = 0;
 	///
-	virtual const MatrixSymWithOpSerial& G() const = 0;
+	virtual const MatrixSymWithOp& G() const = 0;
 	/// If m == 0 then don't call this, it may throw an exception or worse.
-	virtual const MatrixWithOpSerial& A() const = 0;
+	virtual const MatrixWithOp& A() const = 0;
 
 	// /////////////////////////////////////
 	// Initial active set specific members
@@ -183,57 +182,55 @@ public:
 
 	///
 	/** Return the status of a variable initially.
-	  *
-	  * For 1 <= i <= n:
-	  *
-	\verbatim
+	 *
+	 * For 1 <= i <= n:
+	 \verbatim
 	             / FREE      : x(i) is initially free
 	             | LOWER     : x(i) is initially fixed at xl(i)
 	 x_init(i) = | UPPER     : x(i) is initially fixed at xu(i)
 	             \ EQUALITY  : x(i) fixed at xl(i) = xu(i) always
-	\endverbatim
-	*
-	*/
+	 \endverbatim
+	 */
 	virtual const x_init_t& x_init() const = 0;
 
 	///
 	/** Map from full x(i) to initially fixed x_X(l).
-	  *
-	  * For 1 <= i <= n:
-	  * 
-	\verbatim
+	 *
+	 * For 1 <= i <= n:
+	 * 
+	 \verbatim
 	                 / l : x(i) = x_X(l) = b_X(l) initially (1 <= l <= n_X)
 	 l_x_X_map(i) =  |
 	                 \ 0 : otherwise
-	\endverbatim
-	*
-	*/
+	 \endverbatim
+	 *
+	 */
 	virtual const l_x_X_map_t& l_x_X_map() const = 0;
 
 	///
 	/** Map from initially fixed x_X(l) to full x(i).
-	  *
-	  * For 1 <= l <= n_X:
-	  * 
-	\verbatim
+	 *
+	 * For 1 <= l <= n_X:
+	 * 
+	 \verbatim
 	 i_x_X_map(l) = i : x(i) = x_X(l) = b_X(l) initially (1 <= i <= n)
-	\endverbatim
-	*
-	*/
+	 \endverbatim
+	 *
+	 */
 	virtual const i_x_X_map_t& i_x_X_map() const = 0;
 
 	///
-	/** The bounds of the initially fixed variables.
-	  *
-	  * For 1 <= l <= n_X:
-	  *
-	\verbatim
+	/* The bounds of the initially fixed variables.
+	 *
+	 * For 1 <= l <= n_X:
+	 *
+	 \verbatim
 	           / xl(i_x_X_map(l))                     : if x_init(i_x_X_map(l)) == LOWER
 	 b_X(l) =  | xu(i_x_X_map(l))                     : if x_init(i_x_X_map(l)) == UPPER
 	           \ xl(i_x_X_map(l)) = xu(i_x_X_map(l))  : if x_init(i_x_X_map(l)) == EQUALITY
-	\endverbatim
-	*
-	*/
+	 \endverbatim
+	 *
+	 */
 	virtual const VectorSlice b_X() const = 0;
 
 	/// (Q_R().ordered_by() == BY_ROW)
@@ -243,7 +240,7 @@ public:
 	virtual const GenPermMatrixSlice& Q_X() const = 0;
 
 	///
-	virtual const MatrixSymWithOpNonsingularSerial& Ko() const = 0;
+	virtual const MatrixSymWithOpNonsingular& Ko() const = 0;
 
 	///
 	virtual const VectorSlice fo() const = 0;
@@ -259,9 +256,9 @@ public:
 
 	///
 	/** Dump the definition of the QP to a stream.
-	  *
-	  * This function is only to be used for debugging small problems.
-	  */
+	 *
+	 * This function is only to be used for debugging small problems.
+	 */
 	virtual void dump_qp( std::ostream& out );
 
 };	// end class QP
@@ -323,7 +320,7 @@ public:
 	virtual size_type m_breve() const = 0;
 
 	///
-	virtual const MatrixWithOpSerial& A_bar() const = 0;
+	virtual const MatrixWithOp& A_bar() const = 0;
 	
 	/// Set the policy used to pick a violated constraint.
 	virtual void pick_violated_policy( EPickPolicy pick_policy ) = 0;
@@ -433,7 +430,7 @@ public:
 	//@{
 
 	/// Schur complement matrix object S_hat
-	STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpFactorized, schur_comp )
+	STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
 
 	///
 	/** Set the maximum number of primal-dual QP iterations to take.
@@ -530,7 +527,7 @@ public:
 
 	///
 	QPSchur(
-		const schur_comp_ptr_t&   schur_comp           = NULL
+		const schur_comp_ptr_t&   schur_comp           = MemMngPack::null
 		,size_type                max_iter             = 100
 		,value_type               max_real_runtime     = 1e+20
 		,value_type               feas_tol             = 1e-8
@@ -621,8 +618,8 @@ public:
 	///
 	/** Represents the matrix U_hat. 
 	 *
-	 * This matrix is only ment to be an aggregate of and ActiveSet
-	 * object and is only managed by the ActiveSet object.  It is made
+	 * This matrix is only ment to be an aggregate of an <tt>ActiveSet</tt>
+	 * object and is only managed by the <tt>ActiveSet</tt> object.  It is made
 	 * public so that clients can developed specialized implementations
 	 * if needed.
 	 */
@@ -632,21 +629,21 @@ public:
 		U_hat_t();
 		/// Initialize.
 		void initialize( 
-			 const MatrixSymWithOpSerial		*G
-			,const MatrixWithOpSerial			*A
-			,const MatrixWithOpSerial			*A_bar
+			 const MatrixSymWithOp		*G
+			,const MatrixWithOp			*A
+			,const MatrixWithOp			*A_bar
 			,const GenPermMatrixSlice	*Q_R
 			,const GenPermMatrixSlice	*P_XF_hat
 			,const GenPermMatrixSlice	*P_plus_hat
 			);
 		///
-		const MatrixSymWithOpSerial& G() const
+		const MatrixSymWithOp& G() const
 		{	return *G_;	}
 		///
-		const MatrixWithOpSerial* A() const
+		const MatrixWithOp* A() const
 		{	return A_;	}
 		///
-		const MatrixWithOpSerial& A_bar() const
+		const MatrixWithOp& A_bar() const
 		{	return *A_bar_;	}
 		///
 		const GenPermMatrixSlice& Q_R() const
@@ -657,7 +654,6 @@ public:
 		///
 		const GenPermMatrixSlice& P_plus_hat() const
 		{	return *P_plus_hat_;	}
-
 		
 		/** @name Overridden from MatrixBase */
 		//@{{
@@ -672,22 +668,23 @@ public:
 		/** @name Overridden from MatrixWithOpSerial */
 		//@{
 
-//		///
-//		void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha
-//			, BLAS_Cpp::Transp trans_rhs) const ;
 		///
-		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-			, const VectorSlice& vs_rhs2, value_type beta) const;
+		void Vp_StMtV(
+			VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			,const VectorSlice& vs_rhs2, value_type beta
+			) const;
 		///
-		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-			, const SpVectorSlice& sv_rhs2, value_type beta) const;
+		void Vp_StMtV(
+			VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			,const SpVectorSlice& sv_rhs2, value_type beta
+			) const;
 
 		//@}
 		
 	private:
-		const MatrixSymWithOpSerial	*G_;
-		const MatrixWithOpSerial	*A_;
-		const MatrixWithOpSerial	*A_bar_;
+		const MatrixSymWithOp	    *G_;
+		const MatrixWithOp	        *A_;
+		const MatrixWithOp	        *A_bar_;
 		const GenPermMatrixSlice	*Q_R_;
 		const GenPermMatrixSlice	*P_XF_hat_;
 		const GenPermMatrixSlice	*P_plus_hat_;
@@ -697,33 +694,34 @@ public:
 	///
 	/** Represents and manages the active set for the QPSchur algorithm.
 	 *
-	 * Concrete type that encapsulates the maintaince of the active set and
+	 * This is a concrete type that encapsulates the maintaince of the active set and
 	 * abstracts quantities associated with it.
 	 *
-	 * At each iteration the algorithm must solve the system:
+	 * At each iteration the dual active-set QP algorithm must solve the system:
 	 \verbatim
 
 		[ Ko       U_hat ]   [    v  ]   [  fo   ]
 		[ U_hat'   V_hat ] * [ z_hat ] = [ d_hat ]
-
 	 \endverbatim
 	 *
 	 * Above, \c U_hat contains the updates to the KKT system for adding constraints
 	 * to the active set and freeing variables that where initially fixed
-	 * and therefore left out of Ko.
+	 * and therefore left out of <tt>Ko</tt>.
 	 * 
 	 * This object maintains references to objects that represent the current
 	 * augmented KKT system:
-	 *
-	 * MatrixWithOpSerial                : U_hat        <: R^((n_R+m) x q_hat)
-	 * MatrixSymWithOpSerial             : V_hat        <: R^(q_hat x q_hat)
-	 * MatrixSymWithOpNonsingularSerial  : S_hat        <: R^(q_hat x q_hat)
-	 * GenPermMatrixSlice                : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
-	 * GenPermMatrixSlice                : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
-	 * GenPermMatrixSlice                : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
-	 * GenPermMatrixSlice                : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
-	 * Vector                            : d_hat        <: R^(q_hat)
-	 * Vector                            : z_hat        <: R^(q_hat)
+	 \verbatim
+
+	 MatrixWithOp                      : U_hat        <: R^((n_R+m) x q_hat)
+	 MatrixSymWithOp                   : V_hat        <: R^(q_hat x q_hat)
+	 MatrixSymWithOpNonsingular        : S_hat        <: R^(q_hat x q_hat)
+	 GenPermMatrixSlice                : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
+	 GenPermMatrixSlice                : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
+	 GenPermMatrixSlice                : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
+	 GenPermMatrixSlice                : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
+	 Vector                            : d_hat        <: R^(q_hat)
+	 Vector                            : z_hat        <: R^(q_hat)
+	 \endverbatim
 	 */
 	class ActiveSet {
 	public:
@@ -745,7 +743,7 @@ public:
 		 * Warning: Resetting schur_comp will cause a reinitialization to
 		 * an empty active set.
 		 */
-		STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpFactorized, schur_comp )
+		STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpNonsingular, schur_comp )
 
 		///
 		/** Set the tolerances to use when updating the schur complement.
@@ -930,7 +928,7 @@ public:
 		///
 		const U_hat_t& U_hat() const;
 		///
-		const MatrixSymWithOpNonsingularSerial& S_hat() const;
+		const MatrixSymWithOpNonsingular& S_hat() const;
 		///
 		const GenPermMatrixSlice& P_XF_hat() const;
 		///
@@ -1115,11 +1113,11 @@ protected:
 	virtual
 	ESolveReturn qp_algo(
 		EPDSteps first_step
-		, std::ostream *out, EOutputLevel output_level, ERunTests test_what
-		, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
-		, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
-		, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
-		, StopWatchPack::stopwatch* timer
+		,std::ostream *out, EOutputLevel output_level, ERunTests test_what
+		,const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
+		,VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
+		,size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
+		,StopWatchPack::stopwatch* timer
 		);
 
 	///
@@ -1130,7 +1128,7 @@ protected:
 	/// Map from the active set to the sparse multipliers for the inequality constraints
 	virtual void set_multipliers(
 		const ActiveSet& act_set, const VectorSlice& v
-		, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve );
+		,SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve );
 
 	/// Determine if time has run out and if we should return.
 	bool timeout_return( StopWatchPack::stopwatch*timer, std::ostream *out, EOutputLevel output_level ) const;
@@ -1146,11 +1144,12 @@ protected:
 	};
 	///
 	/** Perform iterative refinement on the augmented KKT system for the current active set.
-	 *
-	 * [   Ko     U_hat ] [ v ] + [ ao * bo ]
-	 * [ U_hat'   V_hat ] [ z ]   [ aa * ba ]
-	 * 
-	 * Returns true if iterative refinement satisfied the convergence criteria.
+	 \verbatim
+
+	 [   Ko     U_hat ] [ v ] + [ ao * bo ]
+	 [ U_hat'   V_hat ] [ z ]   [ aa * ba ]
+	 \endverbatim
+	 * Returns \c true if iterative refinement satisfied the convergence criteria.
 	 */
     EIterRefineReturn iter_refine(
 		const ActiveSet      &act_set
@@ -1171,7 +1170,7 @@ private:
 	// /////////////////////////
 	// Private data members
 
-	ActiveSet		act_set_;	// The active set.
+	ActiveSet  act_set_;  // The active set.
 
 };	// end class QPSchur
 

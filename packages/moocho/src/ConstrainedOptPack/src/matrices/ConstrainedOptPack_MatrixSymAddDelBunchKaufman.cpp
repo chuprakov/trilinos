@@ -39,9 +39,9 @@ MatrixSymAddDelUpdateable::PivotTolerances MatrixSymAddDelBunchKaufman::pivot_to
 	return S_chol_.pivot_tols();
 }
 
-// Overridden from MatrixSymAddDelUpdateableWithOpFactorized
+// Overridden from MatrixSymAddDelUpdateableWithOpNonsingular
 
-const MatrixSymWithOpFactorized& MatrixSymAddDelBunchKaufman::op_interface() const
+const MatrixSymWithOpNonsingular& MatrixSymAddDelBunchKaufman::op_interface() const
 {
 	return *this;
 }
@@ -69,7 +69,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			S_store1_.resize(max_size+1,max_size+1);
 		fact_in1_ = true;
 		// Start out with a p.d. or n.d. matrix and maintain the original
-		S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
+		S_chol_.init_setup(&S_store1_(),MemMngPack::null,0,true,true,true,false,0.0);
 		S_chol_.initialize(alpha,max_size);
 		// Set the state variables:
 		S_size_  = 1;
@@ -120,7 +120,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 		if( not_indefinite ) {
 			// The client says that the matrix is p.d. or n.d. so
 			// we will take their word for it.
-			S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
+			S_chol_.init_setup(&S_store1_(),MemMngPack::null,0,true,true,true,false,0.0);
 			try {
 				S_chol_.initialize(A,max_size,force_factorization,expected_inertia,pivot_tols);
 			}
@@ -221,10 +221,10 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		throw MaxSizeExceededException(
 			"MatrixSymAddDelBunchKaufman::augment_update(...) : "
 			"Error, the maximum size would be exceeded." );
-	if( t && t->size() != S_size_ )
+	if( t && t->dim() != S_size_ )
 		throw std::length_error(
 			"MatrixSymAddDelBunchKaufman::augment_update(...): "
-			"Error, t.size() must be equal to this->rows()." );
+			"Error, t.dim() must be equal to this->rows()." );
 	if( !(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN || add_eigen_val != MSADU::EIGEN_VAL_ZERO) )
 		throw SingularUpdateException(
 			"MatrixSymAddDelBunchKaufman::augment_update(...): "
@@ -376,7 +376,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		bool fact_in1 = false;
 		if( S_indef_ ) {
 			// S is already indefinite so let's copy the original into the storage
-			// location other than the current one in case the newly factorized matrix
+			// location other than the current one in case the newly nonsingular matrix
 			// is singular or has the wrong inertia.
 			fact_in1 = !fact_in1_;
 		}
@@ -509,7 +509,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				GenMatrixSlice S = this->S(S_size_).gms();
 				LinAlgPack::delete_row_col( jd, &LinAlgPack::nonconst_tri_ele(S,BLAS_Cpp::lower) ); 
 				// Setup S_chol and factor the thing
-				S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
+				S_chol_.init_setup(&S_store1_(),MemMngPack::null,0,true,true,true,false,0.0);
 				S_chol_.initialize( this->S(S_size_-1), S_store1_.rows()-1
 									, force_refactorization, Inertia(), PivotTolerances() );
 			}
@@ -613,7 +613,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		throw WarnNearSingularUpdateException(omsg.str(),gamma);
 }
 
-// Overridden from MatrixSymWithOpFactorized
+// Overridden from MatrixSymWithOpNonsingularSerial
 
 size_type MatrixSymAddDelBunchKaufman::rows() const
 {
@@ -648,7 +648,7 @@ void MatrixSymAddDelBunchKaufman::Vp_StMtV(
 	,const VectorSlice& x, value_type b
 	) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), S_size_, S_size_, M_trans, x.size() );
+	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), S_size_, S_size_, M_trans, x.dim() );
 	// Use the unfactored matrix since this is more accurate!
 	LinAlgPack::Vp_StMtV( y, a, S(S_size_), BLAS_Cpp::no_trans, x, b );
 }
@@ -659,7 +659,7 @@ void MatrixSymAddDelBunchKaufman::V_InvMtV(
 	) const
 {
 	const size_type n = S_size_;
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n, n, M_trans, x.size() );
+	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), n, n, M_trans, x.dim() );
 	if( S_indef_ ) {
 		// Update the factorzation if needed
 		if(!fact_updated_) {
@@ -709,7 +709,7 @@ void MatrixSymAddDelBunchKaufman::factor_matrix( size_type S_size, bool fact_in1
 {
 	// Resize the workspace first
 	const size_type opt_block_size = 64; // This is an estimate (see sytrf(...))
-	if( WORK_.size() < S_store1_.rows() * opt_block_size )
+	if( WORK_.dim() < S_store1_.rows() * opt_block_size )
 		WORK_.resize(S_store1_.rows()*opt_block_size);
 	if( IPIV_.size() < S_store1_.rows() )
 		IPIV_.resize(S_store1_.rows());

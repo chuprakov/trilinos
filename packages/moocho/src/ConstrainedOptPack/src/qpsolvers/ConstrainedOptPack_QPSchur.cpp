@@ -13,21 +13,35 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+//
+// 7/4/2002: RAB: I was able to update this class using the
+// functions in LinAlgOpPackHack.h.  This is wastefull in that
+// I am creating temporaries every time any operation is performed
+// but this was the easiest way to get things going.
+//
+// 7/4/2002: RAB : ToDo:  In the future it would be good to create
+// some type of temporary vector server so that I could avoid
+// creating all of these temporaries.  This will take some thought
+// and may not be worth it for now.
+//
+
 #include <assert.h>
 
 #include <ostream>
 #include <iomanip>
 
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"
 #include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
-#include "SparseLinAlgPack/include/MatrixWithOpFactorized.h"
-#include "SparseLinAlgPack/include/MatrixWithOpOut.h"
-#include "SparseLinAlgPack/include/SpVectorOut.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
+#include "SparseLinAlgPack/include/SpVectorOut.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOut.h"
-#include "SparseLinAlgPack/include/EtaVector.h"
-#include "SparseLinAlgPack/test/CompareDenseVectors.h"
+#include "SparseLinAlgPack/include/LinAlgOpPackHack.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/EtaVector.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorClassExt.h"
@@ -38,6 +52,8 @@
 #include "WorkspacePack.h"
 
 namespace LinAlgOpPack {
+using SparseLinAlgPack::Vp_StV;
+using SparseLinAlgPack::Vp_StMtV;
 using AbstractLinAlgPack::Vp_StV;
 using AbstractLinAlgPack::Vp_StMtV;
 }
@@ -89,14 +105,13 @@ std::string error_msg(
 	return omsg.str();
 }
 
-
 //
 // Deincrement all indices less that k_remove
 //
 void deincrement_indices(
-	LinAlgPack::size_type k_remove
-	,std::vector<LinAlgPack::size_type> *indice_vector
-	,size_t len_vector
+	LinAlgPack::size_type                k_remove
+	,std::vector<LinAlgPack::size_type>  *indice_vector
+	,size_t                              len_vector
 	)
 {
 	typedef LinAlgPack::size_type				size_type;
@@ -112,11 +127,11 @@ void deincrement_indices(
 // Insert the element (r_v,c_v) into r[] and c[] sorted by r[]
 //
 void insert_pair_sorted(
-	LinAlgPack::size_type  r_v
-	,LinAlgPack::size_type c_v
-	,size_t len_vector                       // length of the new vector
-	,std::vector<LinAlgPack::size_type> *r
-	,std::vector<LinAlgPack::size_type> *c
+	LinAlgPack::size_type                r_v
+	,LinAlgPack::size_type               c_v
+	,size_t                              len_vector  // length of the new vector
+	,std::vector<LinAlgPack::size_type>  *r
+	,std::vector<LinAlgPack::size_type>  *c
 	)
 {
 	typedef std::vector<LinAlgPack::size_type> rc_t;
@@ -140,24 +155,24 @@ void insert_pair_sorted(
 	(*r)[p] = r_v;
 	(*c)[p] = c_v;
 }
-	
+
 //
 // z_hat = inv(S_hat) * ( d_hat - U_hat'*vo )
 //
 void calc_z(
-	const SparseLinAlgPack::MatrixFactorized& S_hat
-	,const LinAlgPack::VectorSlice         &d_hat
-	,const SparseLinAlgPack::MatrixWithOp  &U_hat
-	,const LinAlgPack::VectorSlice         *vo       // If NULL then assumed zero
-	,LinAlgPack::VectorSlice               *z_hat
+	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &S_hat
+	,const LinAlgPack::VectorSlice                         &d_hat
+	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
+	,const LinAlgPack::VectorSlice                         *vo       // If NULL then assumed zero
+	,LinAlgPack::VectorSlice                               *z_hat
 	)
 {
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,d_hat.size());
+	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,d_hat.dim());
 	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
 	t = d_hat;
 	if(vo)
@@ -169,20 +184,20 @@ void calc_z(
 // v = inv(Ko) * ( fo - U_hat * z_hat )
 //
 void calc_v(
-	const SparseLinAlgPack::MatrixFactorized &Ko
-	,const LinAlgPack::VectorSlice           *fo    // If NULL then assumed to be zero
-	,const SparseLinAlgPack::MatrixWithOp    &U_hat
-	,const LinAlgPack::VectorSlice           &z_hat // Only accessed if U_hat.cols() > 0
-	,LinAlgPack::VectorSlice                 *v
+	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &Ko
+	,const LinAlgPack::VectorSlice                         *fo    // If NULL then assumed to be zero
+	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
+	,const LinAlgPack::VectorSlice                         &z_hat // Only accessed if U_hat.cols() > 0
+	,LinAlgPack::VectorSlice                               *v
 	)
 {
 	using LinAlgPack::norm_inf;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,v->size());
+	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,v->dim());
 	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
 	if(fo) {	
 		t = *fo;
@@ -207,7 +222,7 @@ void calc_v(
 //
 void calc_mu_D(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
-	,const LinAlgPack::VectorSlice                         & x
+	,const LinAlgPack::VectorSlice                         &x
 	,const LinAlgPack::VectorSlice                         &v
 	,LinAlgPack::VectorSlice                               *mu_D
 	)
@@ -216,9 +231,9 @@ void calc_mu_D(
 	using BLAS_Cpp::trans;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -229,9 +244,9 @@ void calc_mu_D(
 		n_R = qp.n_R(),
 		m = qp.m();
 
-	const SparseLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
+	const AbstractLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
 	const LinAlgPack::VectorSlice			 g = qp.g();
-	const SparseLinAlgPack::MatrixSymWithOp &G = qp.G();
+	const AbstractLinAlgPack::MatrixSymWithOp &G = qp.G();
 	// mu_D_hat = - Q_XD_hat' * g
 	V_StMtV( mu_D, -1.0, Q_XD_hat, trans, g ); 
 	// mu_D_hat += - Q_XD_hat' * G * x
@@ -243,7 +258,7 @@ void calc_mu_D(
 	// p_mu_D_hat += - Q_XD_hat' * A_bar * P_plus_hat * z_hat
 	if( act_set.q_plus_hat() && act_set.q_hat() ) {
 		const LinAlgPack::VectorSlice z_hat = act_set.z_hat();
-		SparseLinAlgPack::SpVector P_plus_hat_z_hat;
+		AbstractLinAlgPack::SpVector P_plus_hat_z_hat;
 		V_MtV( &P_plus_hat_z_hat, act_set.P_plus_hat(), no_trans, z_hat ); 
 		Vp_StPtMtV( mu_D, -1.0, Q_XD_hat, trans
 			, qp.constraints().A_bar(), no_trans, P_plus_hat_z_hat() );
@@ -269,7 +284,7 @@ void calc_p_mu_D(
 	using BLAS_Cpp::trans;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -282,17 +297,17 @@ void calc_p_mu_D(
 		n_R = qp.n_R(),
 		m = qp.m();
 
-	const SparseLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
-	const SparseLinAlgPack::MatrixSymWithOp &G = qp.G();
+	const AbstractLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
+	const AbstractLinAlgPack::MatrixSymWithOp &G = qp.G();
 	// p_mu_D_hat = - Q_XD_hat' * G * Q_R * p_v(1:n_R)
 	{
-		SparseLinAlgPack::SpVector Q_R_p_v1;
+		AbstractLinAlgPack::SpVector Q_R_p_v1;
 		V_MtV( &Q_R_p_v1, qp.Q_R(), no_trans, p_v(1,n_R) ); 
 		Vp_StPtMtV( p_mu_D, -1.0, Q_XD_hat, trans, G, no_trans, Q_R_p_v1(), 0.0 );
 	}
 	// p_mu_D_hat += - Q_XD_hat' * G * P_XF_hat * p_z_hat
 	if( act_set.q_F_hat() ) {
-		SparseLinAlgPack::SpVector P_XF_hat_p_z_hat;
+		AbstractLinAlgPack::SpVector P_XF_hat_p_z_hat;
 		V_MtV( &P_XF_hat_p_z_hat, act_set.P_XF_hat(), no_trans, p_z_hat ); 
 		Vp_StPtMtV( p_mu_D, -1.0, Q_XD_hat, trans, G, no_trans, P_XF_hat_p_z_hat() );
 	}
@@ -302,186 +317,14 @@ void calc_p_mu_D(
 	}
 	// p_mu_D_hat += - Q_XD_hat' * A_bar * ( P_plus_hat * p_z_hat + e(ja) )
 	if( act_set.q_plus_hat() || ja ) {
-		SparseLinAlgPack::SpVector p_lambda_bar(
+		AbstractLinAlgPack::SpVector p_lambda_bar(
 			n+constraints.m_breve(), act_set.q_plus_hat() + (ja ? 1 : 0) );
 		if( act_set.q_plus_hat() ) // p_lambda_bar =  P_plus_hat * p_z_hat
 			Vp_MtV( &p_lambda_bar, act_set.P_plus_hat(), no_trans, p_z_hat );
 		if( ja ) // p_lambda_bar += e(ja) (non-duplicate indices?)
-			p_lambda_bar.insert_element(SparseLinAlgPack::SpVector::element_type(*ja,1.0));
+			p_lambda_bar.insert_element(AbstractLinAlgPack::SpVector::element_type(*ja,1.0));
 		Vp_StPtMtV( p_mu_D, -1.0, Q_XD_hat, trans
 			, constraints.A_bar(), no_trans, p_lambda_bar() );
-	}
-}
-
-//
-// Calculate the residual of the augmented KKT system:
-//
-// [ ro ] = [   Ko     U_hat ] [   v   ] + [  ao*bo ]
-// [ ra ]   [ U_hat'   V_hat ] [ z_hat ]   [  aa*ba ]
-//
-// Expanding this out we have:
-//
-// ro = Ko * v + U_hat * z_hat + ao*bo
-//
-// ra = U_hat' * v + V_hat * z_hat + ao*ba
-//
-// On output we will have set:
-//
-//   roR_scaling = ???
-//
-//   rom_scaling = ???
-//
-//   ra_scaling  = ???
-//
-template<class val_type>
-void calc_resid_ext(
-	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
-	,const LinAlgPack::VectorSlice                            &v
-	,const LinAlgPack::VectorSlice                            &z_hat        // Only accessed if q_hat > 0
-	,const LinAlgPack::value_type                             ao            // Only accessed if bo != NULL
-	,const LinAlgPack::VectorSlice                            *bo           // If NULL then considered 0
-	,LinAlgPack::VectorSliceTmpl<val_type>                    *ro
-	,LinAlgPack::value_type                                   *roR_scaling
-	,LinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
-	,const LinAlgPack::value_type                             aa            // Only accessed if q_hat > 0
-	,const LinAlgPack::VectorSlice                            *ba           // If NULL then considered 0, Only accessed if q_hat > 0
-	,LinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
-	,LinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
-	)
-{
-	using BLAS_Cpp::no_trans;
-	using BLAS_Cpp::trans;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::VectorSlice;
-	using LinAlgPack::Vp_StV;
-	using SparseLinAlgPack::SpVector;
-	using SparseLinAlgPack::GenPermMatrixSlice;
-	using LinAlgOpPack::Vp_V;
-	using LinAlgOpPack::V_StV;
-	using LinAlgOpPack::V_MtV;
-	using LinAlgOpPack::Vp_MtV;
-	namespace COP = ConstrainedOptimizationPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
-	
-	const COP::QPSchurPack::QP
-		&qp = act_set.qp();
-	const LinAlgPack::size_type
-		n          = qp.n(),
-		n_R        = qp.n_R(),
-		m          = qp.m(),
-		q_hat      = act_set.q_hat();
-	
-	wsp::Workspace<val_type>
-		to_ws(wss,n_R+m),
-		ta_ws(wss,q_hat);
-	LinAlgPack::VectorSliceTmpl<val_type>
-		to(&to_ws[0],to_ws.size()),
-		ta(&ta_ws[0],ta_ws.size());
-
-	*roR_scaling = 0.0;
-	if( m )
-		*rom_scaling = 0.0;
-	if( q_hat )
-		*ra_scaling  = 0.0;
-
-	// Convert to dense for now
-	LinAlgPack::GenMatrix dense_Ko(n_R+m,n_R+m), dense_U_hat(n_R+m,q_hat), dense_V_hat(q_hat,q_hat);
-	// dense_Ko = Ko
-	LinAlgOpPack::assign( &dense_Ko, qp.Ko(), no_trans );
-	// dense_U_hat = U_hat
-	LinAlgOpPack::assign( &dense_U_hat, act_set.U_hat(), no_trans );
-	// sym_V_hat =  P_XF_hat'*G*P_XF_hat + P_XF_hat'*A_bar*P_plus_hat + P_plus_hat'*A_bar'*P_XF_hat + ...
-	dense_V_hat = 0.0;
-	LinAlgPack::sym_gms sym_V_hat(dense_V_hat(),BLAS_Cpp::upper);
-	if( act_set.q_F_hat() ) {
-		// sym_V_hat += P_XF_hat' * G * P_XF_hat
-		SparseLinAlgPack::Mp_StPtMtP(
-			&sym_V_hat, 1.0, SparseLinAlgPack::MatrixSymWithOp::DUMMY_ARG
-			, qp.G(), act_set.P_XF_hat(), no_trans );
-	}
-	if( act_set.q_F_hat() && act_set.q_plus_hat() ) {
-		// sym_V_hat += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar' * P_XF_hat
-		qp.constraints().A_bar().syr2k(
-			no_trans, 1.0
-			,act_set.P_XF_hat(), no_trans
-			,act_set.P_plus_hat(), no_trans
-			,1.0, &sym_V_hat );
-	}
-	//
-	// ro = Ko * v + U_hat * z_hat + ao*bo
-	//
-	*ro = 0.0;
-	// ro += Ko*v
-	LinAlgPack::value_type nrm = 0.0;
-	{for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
-		for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
-			(*ro)(k1) += dense_Ko(k1,k2) * v(k2); // extended precision
-		nrm = std::_MAX(nrm,::fabs(double((*ro)(k1))));
-	}}
-	*roR_scaling += nrm;
-
-	// ro += U_hat*z_hat
-	nrm = 0.0;
-	if( q_hat ) {
-		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
-			val_type tmp = 0.0;
-			for( LinAlgPack::size_type k2 = 1; k2 <= q_hat; ++k2 )
-				tmp += dense_U_hat(k1,k2) * z_hat(k2); // extended precision
-			(*ro)(k1) += tmp;
-			nrm = std::_MAX(nrm,::fabs((double)tmp));
-		}
-	}
-	*roR_scaling += nrm;
-	// ro += ao*bo
-	nrm = 0.0;
-	if( bo ) {
-		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
-			val_type tmp = 0.0;
-			tmp += ao*(*bo)(k1); // extended precision
-			(*ro)(k1) += tmp;
-			nrm = std::_MAX(nrm,::fabs((double)tmp));
-		}
-	}
-	*roR_scaling += nrm;
-	//
-	// ra = U_hat' * v + V_hat * z_hat + aa*ba
-	//
-	if( q_hat ) {
-		*ra = 0.0;
-		// ra += U_hat'*v
-		nrm = 0.0;
-		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
-			val_type tmp = 0.0;
-			for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
-				tmp += dense_U_hat(k2,k1) * v(k2); // extended precision
-			(*ra)(k1) += tmp;
-			nrm = std::_MAX(nrm,::fabs((double)tmp));
-		}}
-		*ra_scaling += nrm;
-		// ra += V_hat * z_hat
-		nrm = 0.0;
-		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) { // upper triangule only
-			val_type tmp = 0.0;
-			for(  LinAlgPack::size_type k2a = 1; k2a < k1; ++k2a )
-				tmp += dense_V_hat(k2a,k1) * z_hat(k2a); // extended precision
-			for( LinAlgPack::size_type k2b = k1; k2b <= q_hat; ++k2b )
-				tmp += dense_V_hat(k1,k2b) * z_hat(k2b); // extended precision
-			(*ra)(k1) += tmp;
-			nrm = std::_MAX(nrm,::fabs((double)tmp));
-		}}
-		*ra_scaling += nrm;
-		// ra += aa*ba
-		nrm = 0.0;
-		if(ba) {
-			{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
-				val_type tmp = 0.0;
-				tmp += aa*(*ba)(k1); // extended precision
-				(*ra)(k1) += tmp;
-				nrm = std::_MAX(nrm,::fabs((double)tmp));
-			}}
-		}
-		*ra_scaling += nrm;
 	}
 }
 
@@ -569,12 +412,15 @@ void calc_resid(
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::VectorSlice;
 	using LinAlgPack::Vp_StV;
-	using SparseLinAlgPack::SpVector;
-	using SparseLinAlgPack::GenPermMatrixSlice;
+	using SparseLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::SpVector;
+	using AbstractLinAlgPack::GenPermMatrixSlice;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	namespace COP = ConstrainedOptimizationPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -639,15 +485,15 @@ void calc_resid(
 	// lambda_bar = P_plus_hat*z_hat
 	SpVector lambda_bar;
 	if( q_plus_hat )
-		SparseLinAlgPack::V_MtV( &lambda_bar, P_plus_hat, no_trans, z_hat );
+		V_MtV( &lambda_bar, P_plus_hat, no_trans, z_hat );
 	// t1 = G*x_free
-	SparseLinAlgPack::Vp_StMtV( &t1, 1.0, qp.G(), no_trans, x_free, 0.0 );
+	Vp_StMtV( &t1, 1.0, qp.G(), no_trans, x_free, 0.0 );
 	// t2 = A*lambda
 	if( m )
-		SparseLinAlgPack::Vp_StMtV( &t2, 1.0, qp.A(), no_trans, lambda, 0.0 );
+		Vp_StMtV( &t2, 1.0, qp.A(), no_trans, lambda, 0.0 );
 	// t3 = A_bar*lambda_bar
 	if( q_plus_hat )
-		SparseLinAlgPack::Vp_StMtV( &t3, 1.0, constraints.A_bar(), no_trans, lambda_bar, 0.0 );
+		Vp_StMtV( &t3, 1.0, constraints.A_bar(), no_trans, lambda_bar, 0.0 );
 	// roR = Q_R'*t1 + Q_R'*t2 + Q_R'*t3 + ao*boR
 	LinAlgOpPack::V_MtV( &tR, Q_R, trans, t1 );  // roR = Q_R'*t1
 	*roR_scaling += norm_inf(tR);
@@ -668,7 +514,7 @@ void calc_resid(
 	}
 	// rom = A'*t1 + ao*bom
 	if( m ) {
-		SparseLinAlgPack::Vp_StMtV( &tm, 1.0, qp.A(), trans, t1, 0.0 );   // A'*t1
+		Vp_StMtV( &tm, 1.0, qp.A(), trans, t1, 0.0 );   // A'*t1
 		*rom_scaling += norm_inf(tm);
 		LinAlgOpPack::Vp_V(&rom,tm);
 		if(bo) {
@@ -692,7 +538,7 @@ void calc_resid(
 			LinAlgOpPack::Vp_V(ra,ta);
 		}
 		if( q_plus_hat ) {    // ra += P_plus_hat'*A_bar'*x_free
-			SparseLinAlgPack::Vp_StPtMtV( &ta, 1.0, P_plus_hat, trans, constraints.A_bar(), trans, x_free, 0.0 );
+			Vp_StPtMtV( &ta, 1.0, P_plus_hat, trans, constraints.A_bar(), trans, x_free, 0.0 );
 			*ra_scaling += norm_inf(ta);
 			LinAlgOpPack::Vp_V(ra,ta);
 		}
@@ -934,11 +780,13 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using LinAlgPack::Vt_S;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
+	LinAlgOpPack::Vp_MtV_assert_sizes(y->dim(),rows(),cols(),M_trans,x.dim());
 
 	//
 	// U_hat = [  Q_R' * G * P_XF_hat + Q_R' * A_bar * P_plus_hat ]
@@ -1041,11 +889,13 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
+	LinAlgOpPack::Vp_MtV_assert_sizes(y->dim(),rows(),cols(),M_trans,x.dim());
 
 	//
 	// U_hat = [  Q_R' * G * P_XF_hat + Q_R' * A_bar * P_plus_hat ]
@@ -1160,14 +1010,15 @@ void QPSchur::ActiveSet::initialize(
 	,std::ostream *out, EOutputLevel output_level )
 {
 	using LinAlgOpPack::V_mV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::V_InvMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::V_InvMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
-	using SparseLinAlgPack::Mp_StPtMtP;
-	using SparseLinAlgPack::M_StMtInvMtM;
+	using AbstractLinAlgPack::Mp_StPtMtP;
+	using AbstractLinAlgPack::M_StMtInvMtM;
 	using LinAlgPack::sym;
 	typedef MatrixSymAddDelUpdateable MSADU;
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -1487,11 +1338,12 @@ void QPSchur::ActiveSet::initialize(
 	// Initialize and factorize the schur complement
 	if( q_hat ) {
 		// Temporary storage for S (dense)
-		GenMatrix S_store(q_hat,q_hat);
-		sym_gms S( S_store, BLAS_Cpp::lower );
+		GenMatrix S_store(q_hat+1,q_hat+1);
+		sym_gms S_sym( S_store(2,q_hat+1,1,q_hat), BLAS_Cpp::lower );
+		MatrixSymPosDefCholFactor S(&S_store());
 		// S = -1.0 * U_hat' * inv(Ko) * U_hat
 		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::trans, qp.Ko()
-			, MatrixSymFactorized::DUMMY_ARG );
+			, MatrixSymNonsingular::DUMMY_ARG );
 		// Now add parts of V_hat
 		if( q_F_hat ) {
 			// S += P_XF_hat' * G * P_XF_hat
@@ -1515,14 +1367,14 @@ void QPSchur::ActiveSet::initialize(
 
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< "\nIninitial Schur Complement before it is factorized:\n"
+				<< "\nIninitial Schur Complement before it is nonsingular:\n"
 				<< "\nS_hat =\nLower triangular part (ignore nonzeros above diagonal)\n"
 				<< S_store;
 		}
 		// Initialize and factorize the schur complement!
 		try {
 			schur_comp().update_interface().initialize(
-				S,q_hat_max,true,MSADU::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat )
+				S_sym,q_hat_max,true,MSADU::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat )
 				,pivot_tols() );
 		}
 		catch(const MSADU::WarnNearSingularUpdateException& excpt) {
@@ -1599,14 +1451,14 @@ bool QPSchur::ActiveSet::add_constraint(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using LinAlgPack::dot;
-	using LinAlgOpPack::V_StMtV;
 	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::Vp_StPtMtV;
-	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
+	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
-	typedef SparseLinAlgPack::EtaVector eta_t;
+	typedef AbstractLinAlgPack::EtaVector eta_t;
 
 	assert_initialized();
 
@@ -1837,17 +1689,17 @@ bool QPSchur::ActiveSet::drop_constraint(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using LinAlgPack::dot;
+	using SparseLinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::transVtMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
-	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
+	using LinAlgOpPack::V_InvMtV;
+	using AbstractLinAlgPack::transVtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
-	typedef SparseLinAlgPack::EtaVector eta_t;
+	typedef AbstractLinAlgPack::EtaVector eta_t;
 
 	assert_initialized();
 
@@ -1880,7 +1732,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 			g            = qp_->g();
 		const MatrixWithOp
 			&A_bar       = qp_->constraints().A_bar();
-		const MatrixSymWithOpFactorized
+		const MatrixSymWithOpNonsingular
 			&Ko          = qp_->Ko();
 		const MatrixWithOp
 			&U_hat       = this->U_hat();
@@ -2149,7 +2001,7 @@ const QPSchur::U_hat_t& QPSchur::ActiveSet::U_hat() const
 	return U_hat_;
 }
 
-const MatrixSymWithOpFactorized& QPSchur::ActiveSet::S_hat() const
+const MatrixSymWithOpNonsingular& QPSchur::ActiveSet::S_hat() const
 {
 	assert_initialized();
 	return schur_comp().op_interface();
@@ -2261,7 +2113,7 @@ void QPSchur::ActiveSet::assert_s( size_type s) const
 
 void QPSchur::ActiveSet::reinitialize_matrices(bool test)
 {
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const size_type q_hat = this->q_hat();
 	const size_type q_D_hat = this->q_D_hat();
@@ -2407,7 +2259,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using std::right;
 	using LinAlgPack::norm_inf;
 	using SparseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	using StopWatchPack::stopwatch;
@@ -2987,11 +2839,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgOpPack::V_StMtV;
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::EtaVector;
-	using SparseLinAlgPack::V_InvMtV;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
+	using SparseLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::EtaVector;
 	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::V_InvMtV;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -3015,9 +2868,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		m_breve	= qp.constraints().m_breve();
 
 	wsp::Workspace<value_type>
-		v_plus_ws(wss,v->size()),
+		v_plus_ws(wss,v->dim()),
 		z_hat_plus_ws(wss,(n-m)+(n-n_R)),
-		p_v_ws(wss,v->size());
+		p_v_ws(wss,v->dim());
 	VectorSlice
 		v_plus(&v_plus_ws[0],v_plus_ws.size()),
 		z_hat_plus,
@@ -3097,7 +2950,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					}
 					const char
 						sep_line[] = "\n--------------------------------------------------------------------------------\n";
-					SparseLinAlgPack::TestingPack::CompareDenseVectors comp_v;
+//					AbstractLinAlgPack::TestingPack::CompareDenseVectors comp_v;
 
 					//
 					// Check the optimality conditions of the augmented KKT system!
@@ -3131,6 +2984,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								<< "\nChecking mu_D_hat_calc == mu_D_hat:\n"
 								<< "u = mu_D_hat_calc, v = mu_D_hat ...\n";
 						}
+						assert(0); // Todo: Update below
+/*
 						if(!comp_v.comp(
 							mu_D_hat_calc, act_set->mu_D_hat()
 							, warning_tol(), error_tol()
@@ -3140,6 +2995,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						{
 							throw TestFailed("QPSchur::qp_algo(...) : Error, check of mu_D_hat failed!" );
 						}
+*/
 					}
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 						*out
@@ -3704,10 +3560,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								summary_lines_counter = 0;
 								// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
 								// [ U_hat'   V_hat ] [ p_z_hat ]   [   0  ]
-								wsp::Workspace<value_type> dense_u_a_ws(wss,u_a().size());
+								wsp::Workspace<value_type> dense_u_a_ws(wss,u_a().dim());
 								VectorSlice dense_u_a(&dense_u_a_ws[0],dense_u_a_ws.size());
 								dense_u_a = 0.0; // Make a dense copy of u_a!
-								dense_u_a(u_a().begin()->indice()+u_a().offset()) = 1.0;
+								dense_u_a(u_a().begin()->index()+u_a().offset()) = 1.0;
 								EIterRefineReturn status = iter_refine(
 									*act_set, out, output_level, +1.0, &dense_u_a, 0.0, NULL
 									,&p_v, &act_set->p_z_hat()
@@ -4613,7 +4469,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		}
 		throw;
 	}
-
 	// If you get here then the maximum number of QP iterations has been exceeded
 	return MAX_ITER_EXCEEDED;
 }
@@ -4632,23 +4487,27 @@ void QPSchur::set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice
 		Vp_MtV( x, act_set.P_XF_hat(), no_trans, act_set.z_hat() );
 }
 
-void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
-	, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve )
+void QPSchur::set_multipliers(
+	const ActiveSet& act_set, const VectorSlice& v
+	,SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_MtV;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const size_type
-		n = act_set.qp().n(),
-		n_R = act_set.qp().n_R(),
-		m = act_set.qp().m(),
+		n       = act_set.qp().n(),
+		n_R     = act_set.qp().n_R(),
+		m       = act_set.qp().m(),
 		m_breve = act_set.qp().constraints().m_breve(),
 		q_hat   = act_set.q_hat();
 	const QPSchurPack::QP::x_init_t
@@ -4726,16 +4585,13 @@ QPSchur::iter_refine(
 	using BLAS_Cpp::trans;
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	typedef LinAlgPack::value_type           extra_value_type;
-//	typedef LinAlgPack::extended_value_type  extra_value_type;
-//	typedef doubledouble                     extra_value_type;
-
 
 	const value_type small_num = std::numeric_limits<value_type>::min();
 
@@ -4747,7 +4603,7 @@ QPSchur::iter_refine(
 
 	const QPSchurPack::QP
 		&qp    = act_set.qp();
-	const MatrixSymWithOpFactorized
+	const MatrixSymWithOpNonsingular
 		&Ko    = qp.Ko(),
 		&S_hat = act_set.S_hat();
 	const MatrixWithOp
@@ -4864,19 +4720,18 @@ QPSchur::iter_refine(
 			rom_scaling = 0.0,
 			ra_scaling  = 0.0;
 		++(*iter_refine_num_resid);
-//		calc_resid_ext( // 2001/03/12: There is something wrong with this function?
 		calc_resid(
 			act_set
-			, v_itr, z_itr
-			, ao
-			, bo
-			, &ext_ro
-			, &roR_scaling
-			, m ? &rom_scaling : NULL
-			, aa
-			, ba
-			, q_hat ? &ext_ra : NULL
-			, q_hat ? &ra_scaling : NULL
+			,v_itr, z_itr
+			,ao
+			,bo
+			,&ext_ro
+			,&roR_scaling
+			,m ? &rom_scaling : NULL
+			,aa
+			,ba
+			,q_hat ? &ext_ra : NULL
+			,q_hat ? &ra_scaling : NULL
 			);
 		std::copy(ext_ro.begin(),ext_ro.end(),ro.begin());  // Convert back to standard precision
 		std::copy(ext_ra.begin(),ext_ra.end(),ra.begin());
@@ -5023,8 +4878,9 @@ QPSchur::iter_refine(
 // private static member functions for QPSchur
 
 void QPSchur::dump_act_set_quantities(
-	   const ActiveSet& act_set, std::ostream& out
-	 , bool print_S_hat )
+	const ActiveSet& act_set, std::ostream& out
+	,bool print_S_hat
+	)
 {
 	using std::endl;
 	using std::setw;
@@ -5120,7 +4976,6 @@ void QPSchur::dump_act_set_quantities(
 	out	<< "\nQ_XD_hat =\n" << act_set.Q_XD_hat();
 
 	out << "\n*** End dump of current active set ***\n";
-
 }
 
 // QPSchurPack::QP
@@ -5176,7 +5031,6 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	out	<< "\nQ_X =\n" << Q_X();
 	out	<< "\nKo =\n" << Ko();
 	out	<< "\nfo =\n" << fo();
-
 }
 
 }	// end namespace ConstrainedOptimizationPack

@@ -19,7 +19,7 @@
 #include "QPSolverRelaxed.h"
 #include "QPSchur.h"
 #include "QPInitFixedFreeStd.h"
-#include "MatrixHessianRelaxed.h"
+#include "MatrixSymHessianRelaxNonsing.h"
 #include "ConstraintsRelaxedStd.h"
 #include "MatrixSymAddDelBunchKaufman.h"
 #include "StandardCompositionMacros.h"
@@ -34,9 +34,7 @@ namespace ConstrainedOptimizationPack {
  * initial KKT system is formed is delegated to a strategy object of type
  * \c InitKKTSystem (see below).
  */
-class QPSolverRelaxedQPSchur
-	: public QPSolverRelaxed
-{
+class QPSolverRelaxedQPSchur : public QPSolverRelaxed {
 public:
 
 	///
@@ -56,7 +54,7 @@ public:
 		///
 		typedef std::vector<size_type> j_f_decomp_t;
 		///
-		typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>
+		typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpNonsingular>
 			Ko_ptr_t;
 		///
 		virtual ~InitKKTSystem() {}
@@ -335,7 +333,7 @@ public:
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 		                             inequality_pick_policy
 		                                 = QPSchurPack::ConstraintsRelaxedStd::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
-		,ELocalOutputLevel           print_level             = USE_INPUT_ARG // Deduce from input arguments
+		,ELocalOutputLevel           print_level             = USE_INPUT_ARG  // Deduce from input arguments
 		,value_type                  bounds_tol              = -1.0           // use default
 		,value_type                  inequality_tol          = -1.0	          // use default
 		,value_type                  equality_tol            = -1.0	          // use default
@@ -378,17 +376,17 @@ protected:
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
 		std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		,const VectorSlice& g, const MatrixWithOp& G
+		,const VectorWithOp& g, const MatrixSymWithOp& G
 		,value_type etaL
-		,const SpVectorSlice* dL, const SpVectorSlice* dU
-		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-		,const SpVectorSlice* eL, const SpVectorSlice* eU
-		,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		,const VectorWithOp* dL, const VectorWithOp* dU
+		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
+		,const VectorWithOp* eL, const VectorWithOp* eU
+		,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
 		,value_type* obj_d
-		,value_type* eta, VectorSlice* d
-		,SpVector* nu
-		,SpVector* mu, VectorSlice* Ed
-		,VectorSlice* lambda, VectorSlice* Fd
+		,value_type* eta, VectorWithOpMutable* d
+		,VectorWithOpMutable* nu
+		,VectorWithOpMutable* mu, VectorWithOpMutable* Ed
+		,VectorWithOpMutable* lambda, VectorWithOpMutable* Fd
 		);
 
 	//@}
@@ -401,12 +399,12 @@ private:
 	QPSolverStats                    qp_stats_;
 	QPSchur                          qp_solver_;
 	QPSchurPack::QPInitFixedFreeStd  qp_;
-	MatrixHessianRelaxed	         G_relaxed_;
+	MatrixSymHessianRelaxNonsing     G_relaxed_;
 	MatrixSymAddDelBunchKaufman      schur_comp_;
-	Vector					         g_relaxed_;
-	Vector					         b_X_;
+	Vector                           g_relaxed_;
+	Vector                           b_X_;
 	InitKKTSystem::Ko_ptr_t          Ko_;
-	Vector					         fo_;
+	Vector                           fo_;
 
 }; // end class QPSolverRelaxedQPSchur
 

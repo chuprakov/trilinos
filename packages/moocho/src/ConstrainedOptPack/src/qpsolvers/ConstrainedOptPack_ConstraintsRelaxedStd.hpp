@@ -19,7 +19,8 @@
 #include <list>
 
 #include "QPSchur.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {
@@ -37,7 +38,6 @@ namespace QPSchurPack {
   (1.4)               eL   <=  op(E)*d - b*eta                   <= eU
   (1.5)                        P_u'*op(F)*d + (1 - eta) * P_u'*f  = 0
  \endverbatim
- *
  * These constraints are converted into the form:
  \verbatim
 
@@ -57,7 +57,6 @@ namespace QPSchurPack {
 
   (4)	cl_bar <= A_bar'*x <= cu_bar
  \endverbatim
- * 
  * The main responsibilities of this class are to expose a
  * \c MatrixWithOp object for \c A_bar shown in (2) and to pick
  * violated constraints.
@@ -105,10 +104,10 @@ public:
 			,size_type				m_eq
 			,const MatrixWithOp		*E
 			,BLAS_Cpp::Transp		trans_E
-			,const VectorSlice		*b
+			,const VectorWithOp		*b
 			,const MatrixWithOp		*F
 			,BLAS_Cpp::Transp		trans_F
-			,const VectorSlice		*f
+			,const VectorWithOp		*f
 			,size_type				m_undecomp
 			,const size_type		j_f_undecomp[]
 			);
@@ -132,7 +131,7 @@ public:
 		BLAS_Cpp::Transp	trans_E() const
 		{	return trans_E_;	}
 		///
-		const VectorSlice*	b() const
+		const VectorWithOp*	b() const
 		{	return b_;	}
 		///
 		const MatrixWithOp*	F() const
@@ -141,7 +140,7 @@ public:
 		BLAS_Cpp::Transp	trans_F() const
 		{	return trans_F_;	}
 		///
-		const VectorSlice*	f() const
+		const VectorWithOp*	f() const
 		{	return f_;	}
 		///
 		const GenPermMatrixSlice& P_u() const
@@ -149,35 +148,34 @@ public:
 
 		//@}
 
-		/** @name Overridden from MatrixBase */
-		//@{
-
-		///
-		size_type rows() const;
-		///
-		size_type cols() const;
-
-		//@}
-
 		/** @name Overridden from MatrixWithOp */
 		//@{
 
 		///
+		const VectorSpace& space_cols() const;
+		///
+		const VectorSpace& space_rows() const;
+		///
 		MatrixWithOp& operator=(const MatrixWithOp& m);
 //		///
-//		void Mp_StPtMtP(GenMatrixSlice* gms_lhs, value_type alpha
-//			, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-//			, BLAS_Cpp::Transp M_trans
-//			, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
+//		void Mp_StPtMtP(
+//			GenMatrixSlice* gms_lhs, value_type alpha
+//			,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+//			,BLAS_Cpp::Transp M_trans
+//			,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 //			) const ;
 		///
-		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-			, const VectorSlice& vs_rhs2, value_type beta) const;
+		void Vp_StMtV(
+			VectorWithOpMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			,const VectorWithOp& vs_rhs2, value_type beta
+			) const;
 		///
-		void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
-			, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-			, BLAS_Cpp::Transp M_rhs2_trans
-			, const SpVectorSlice& sv_rhs3, value_type beta) const;
+		void Vp_StPtMtV(
+			VectorWithOpMutable* vs_lhs, value_type alpha
+			,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+			,BLAS_Cpp::Transp M_rhs2_trans
+			,const SpVectorSlice& sv_rhs3, value_type beta
+			) const;
 
 		//@}
 		
@@ -189,13 +187,15 @@ public:
 		size_type			m_eq_;	// # op(F)*d equality constraints
 		const MatrixWithOp	*E_;	// If NULL then no general inequalities
 		BLAS_Cpp::Transp	trans_E_;
-		const VectorSlice	*b_;
+		const VectorWithOp	*b_;
 		const MatrixWithOp	*F_;	// If NULL then no general equalities
 		BLAS_Cpp::Transp	trans_F_;
-		const VectorSlice	*f_;
+		const VectorWithOp	*f_;
 		GenPermMatrixSlice  P_u_;
 		row_i_t             P_u_row_i_;
 		col_j_t             P_u_col_j_;
+		VectorSpaceCompositeStd   space_cols_;
+		VectorSpaceCompositeStd   space_rows_;
 	};	// end class MatrixConstraints
 
 	///
@@ -278,16 +278,16 @@ public:
 	void initialize(
 		size_type                       nd
 		,value_type                     etaL
-		,const SpVectorSlice            *dL
-		,const SpVectorSlice            *dU
+		,const VectorWithOp             *dL
+		,const VectorWithOp             *dU
 		,const MatrixWithOp             *E
 		,BLAS_Cpp::Transp               trans_E
-		,const VectorSlice              *b
-		,const SpVectorSlice            *eL
-		,const SpVectorSlice            *eU
+		,const VectorWithOp              *b
+		,const VectorWithOp             *eL
+		,const VectorWithOp             *eU
 		,const MatrixWithOp             *F
 		,BLAS_Cpp::Transp               trans_F
-		,const VectorSlice              *f
+		,const VectorWithOp             *f
 		,size_type                      m_undecomp
 		,const size_type                j_f_undecomp[]
 		,VectorSlice                    *Ed
@@ -316,9 +316,7 @@ public:
 
 		A_bar = [  I   0  op(E')   op(F')*P_u  ]
 		        [  0   1   -b'       -f'*P_u   ]
-
 	 \endverbatim
-	 *
 	 */
 	const MatrixWithOp& A_bar() const;
 	///
@@ -365,8 +363,9 @@ public:
 	 * If none of the above criteria applies then the client can not assume that
 	 * <tt>Ed</tt> was updated and therefore the client must compute this value on its own.
 	 */
-	void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
-		, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
+	void pick_violated(
+		const VectorSlice& x, size_type* j_viol, value_type* constr_val
+		,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 		) const;
 	///
 	void ignore( size_type j );
@@ -385,19 +384,19 @@ private:
 	// //////////////////////////////
 	// Private data members
 
-	MatrixConstraints	A_bar_;
-	value_type			etaL_;
-	const SpVectorSlice	*dL_;	// If NULL then no simple bounds
-	const SpVectorSlice *dU_;
-	const SpVectorSlice	*eL_;
-	const SpVectorSlice	*eU_;
-	VectorSlice			*Ed_;
-	bool				check_F_;
-	mutable size_type	last_added_j_;			// Remember the last bound added so that
-	mutable value_type	last_added_bound_;		// we can save our selfs some work.
-	mutable EBounds		last_added_bound_type_;	// ...
+	MatrixConstraints   A_bar_;
+	value_type          etaL_;
+	const VectorWithOp  *dL_;	// If NULL then no simple bounds
+	const VectorWithOp  *dU_;
+	const VectorWithOp  *eL_;
+	const VectorWithOp  *eU_;
+	VectorSlice         *Ed_;
+	bool                check_F_;
+	mutable size_type   last_added_j_;          // Remember the last bound added so that
+	mutable value_type  last_added_bound_;      // we can save our selfs some work.
+	mutable EBounds     last_added_bound_type_; // ...
 	mutable size_type   next_undecomp_f_k_;
-	    // Determines the next constraint [P_u'*op(F)*d + (1 - eta) * P_u'*f](next_undecomp_f_k)
+	   	// Determines the next constraint [P_u'*op(F)*d + (1 - eta) * P_u'*f](next_undecomp_f_k)
 	    // to be checked to see if it is violated.  If next_undecomp_f_k > P_u.nz() then all
 	    // of the constriants have been checked.
 	mutable passed_over_equalities_t passed_over_equalities_;
@@ -412,7 +411,8 @@ private:
 	///
 	void cache_last_added(
 		size_type last_added_j, value_type last_added_bound
-		, EBounds last_added_bound_type ) const;
+		,EBounds last_added_bound_type
+		) const;
 
 }; // end class ConstraintsRelaxedStd
 

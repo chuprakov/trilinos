@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "MatrixSymAddDelUpdateableWithOpFactorized.h"
+#include "MatrixSymAddDelUpdateableWithOpNonsingular.h"
 #include "MatrixSymAddDelUpdateable.h"
 #include "MatrixSymPosDefCholFactor.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
 
 namespace ConstrainedOptimizationPack {
@@ -39,9 +39,9 @@ namespace ConstrainedOptimizationPack {
  * or positive eigen value in an efficient manner as well.
  */
 class MatrixSymAddDelBunchKaufman
-	:public virtual MatrixSymWithOpFactorized
+	:public virtual MatrixSymWithOpNonsingularSerial
 	,public virtual MatrixSymAddDelUpdateable
-	,public virtual MatrixSymAddDelUpdateableWithOpFactorized
+	,public virtual MatrixSymAddDelUpdateableWithOpNonsingular
 {
 public:
 
@@ -53,18 +53,20 @@ public:
 	///
 	PivotTolerances	pivot_tols() const;
 
-	// /////////////////////////////////////////////////////////////
-	// Overridden from MatrixSymAddDelUpdateableWithOpFactorized
+	/** @name Overridden from MatrixSymAddDelUpdateableWithOpNonsingular */
+	//@{
 
 	///
-	const MatrixSymWithOpFactorized& op_interface() const;
+	const MatrixSymWithOpNonsingular& op_interface() const;
 	///
 	MatrixSymAddDelUpdateable& update_interface();
 	///
 	const MatrixSymAddDelUpdateable& update_interface() const;
 
-	// /////////////////////////////////////////////////////////////
-	// Overridden from MatrixSymAddDelUpdateable
+	//@}
+
+	/** @name Overridden from MatrixSymAddDelUpdateable */
+	//@{
 
 	///
 	void initialize(
@@ -101,19 +103,25 @@ public:
 		,PivotTolerances   pivot_tols
 		);
 
-	// ///////////////////////////////////////////////////////
-	// Overridden from MatrixSymWithOpFactorized
+	//@}
+
+	/** @name Overridden from MatrixSymWithOpNonsingularSerial */
+	//@{
 
 	///
 	size_type rows() const;
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(
+		VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		,const VectorSlice& vs_rhs2, value_type beta
+		) const;
 	///
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV(
+		VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+		,const VectorSlice& vs_rhs2
+		)const;
 
 private:
 

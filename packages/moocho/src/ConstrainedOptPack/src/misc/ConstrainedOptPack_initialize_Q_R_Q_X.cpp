@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/include/initialize_Q_R_Q_X.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 
 void ConstrainedOptimizationPack::initialize_Q_R_Q_X(
 	size_type            n_R
@@ -32,7 +32,7 @@ void ConstrainedOptimizationPack::initialize_Q_R_Q_X(
 	,GenPermMatrixSlice  *Q_X
 	)
 {
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	const size_type
 		n = n_R + n_X;
 	//

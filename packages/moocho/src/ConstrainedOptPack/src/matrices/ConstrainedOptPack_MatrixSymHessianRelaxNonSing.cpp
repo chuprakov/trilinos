@@ -16,17 +16,15 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/include/MatrixSymHessianRelaxNonSing.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
-#include "Misc/include/profile_hack.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "profile_hack.h"
+#include "ThrowException.h"
 
 namespace {
+
+/* ToDo: Finish updating below code!
 
 //
 template<class V>
@@ -48,8 +46,8 @@ void Vp_StPtMtV_imp(
 
 	const LinAlgPack::size_type
 		no = H.G().rows(),  // number of original variables
-		nr = H.M().rows(),      // number of relaxation variables
-		nd = no + nr;        // total number of variables
+		nr = H.M().rows(),  // number of relaxation variables
+		nd = no + nr;       // total number of variables
 
 	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
 		, BLAS_Cpp::rows( nd, nd, H_trans) );
@@ -98,8 +96,7 @@ void Vp_StPtMtV_imp(
 		x1 = x(o_rng),
 		x2 = x(r_rng);
 	// y = b*y
-	LinAlgPack::Vt_S(y,b); // Handles b == 0.0 properly!
-
+	LinAlgPack::Vt_S(y,b);
 	// y += a*op(P1)*G*x1
 	if( P1.nz() )
 		SparseLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
@@ -108,107 +105,86 @@ void Vp_StPtMtV_imp(
 		SparseLinAlgPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
 }
 
+*/
+
 } // end namespace
 
 namespace ConstrainedOptimizationPack {
 
+MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing()
+	: vec_space_(NULL,0)
+{}
+
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
-	const G_ptr_t       &G_ptr
-	,const VectorSlice  &M_diag
+	const G_ptr_t         &G_ptr
+	,const vec_mut_ptr_t  &M_diag_ptr
 	)
+	: vec_space_(NULL,0)
 {
-	initialize(G_ptr,M_diag);
+	initialize(G_ptr,M_diag_ptr);
 }
 
 void MatrixSymHessianRelaxNonSing::initialize(
-	const G_ptr_t       &G_ptr
-	,const VectorSlice  &M_diag
+	const G_ptr_t         &G_ptr
+	,const vec_mut_ptr_t  &M_diag_ptr
 	)
 {
-	if( G_ptr.get() != NULL ) {
-		if( G_ptr->rows() == 0 )
-			throw std::invalid_argument(
-				"MatrixSymHessianRelaxNonSing::initialize(...): Error, if G_ptr.get() != NULL "
-				"then G_ptr->rows() > 0 must be true" );
-		if( M_diag.size() == 0 )
-			throw std::invalid_argument(
-				"MatrixSymHessianRelaxNonSing::initialize(...): Error, if G_ptr.get() != NULL "
-				"then M_diag.size() > 0 must be true" );
-		G_ptr_ = G_ptr;
-		M_.init_diagonal(M_diag);
-	}
-	else {
-		if( M_diag.size() > 0 )
-			throw std::invalid_argument(
-				"MatrixSymHessianRelaxNonSing::initialize(...): Error, if G_ptr.get() == NULL "
-				"then M_diag.size() == 0 must be true" );
-		G_ptr_ = NULL;
-		M_.init_identity(0,0.0);
-	}
+	const char err_msg_head[] = "MatrixSymHessianRelaxNonSing::initialize(...) : Error!";
+	THROW_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+	THROW_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+	THROW_EXCEPTION(G_ptr->rows()==0, std::invalid_argument, err_msg_head);
+	THROW_EXCEPTION(M_diag_ptr->dim()==0, std::invalid_argument, err_msg_head);
+	assert(0); // ToDo: Initalize vec_space_
+	G_ptr_ = G_ptr;
+	M_.initialize(M_diag_ptr);
 }
 	
-const MatrixSymHessianRelaxNonSing::G_ptr_t& MatrixSymHessianRelaxNonSing::G_ptr() const
-{
-	assert_initialized();
-	return G_ptr_;
-}
-
-const MatrixSymWithOpFactorized& MatrixSymHessianRelaxNonSing::G() const
-{
-	assert_initialized();
-	return *G_ptr_;
-}
-
-const SparseLinAlgPack::MatrixSymDiagonalStd& MatrixSymHessianRelaxNonSing::M() const
-{
-	assert_initialized();
-	return M_;
-}
-	
-// Overridden from Matrix
-
-size_type MatrixSymHessianRelaxNonSing::rows() const
-{
-	return G_ptr_.get() ? G_ptr_->rows() + M_.rows() : 0;
-}
-
 // Overridden from MatrixWithOp
 
-void MatrixSymHessianRelaxNonSing::Mp_StM(
-	GenMatrixSlice* C, value_type a, BLAS_Cpp::Transp H_trans
+const VectorSpace& MatrixSymHessianRelaxNonSing::space_cols() const
+{
+	assert_initialized();
+	return vec_space_;
+}
+
+bool MatrixSymHessianRelaxNonSing::Mp_StM(
+	MatrixWithOp* C, value_type a, BLAS_Cpp::Transp H_trans
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Mp_StM(...)" );
 #endif
 	assert_initialized();
+	return MatrixWithOp::Mp_StM(C,a,H_trans); // ToDo: Update below code!
+/*
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
 	SparseLinAlgPack::Mp_StM( &(*C)(1,nG,1,nG), a, *G_ptr_, H_trans);
 	SparseLinAlgPack::Mp_StM( &(*C)(nG+1,nG+nM,nG+1,nG+nM), a, M_, H_trans);
+*/
 }
 
 void MatrixSymHessianRelaxNonSing::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp H_trans
-	, const VectorSlice& x, value_type b
+	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp H_trans
+	,const VectorWithOp& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StMtV(...VectorWithOp...)" );
 #endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
-	LinAlgPack::Vt_S(y,b); // Takes care of b == 0.0 and y uninitialized
-	SparseLinAlgPack::Vp_StMtV( &(*y)(1,nG), a, *G_ptr_, H_trans, x(1,nG) );
-	SparseLinAlgPack::Vp_StMtV( &(*y)(nG+1,nG+nM), a, M_, H_trans, x(nG+1,nG+nM) );
+	AbstractLinAlgPack::Vt_S(y,b);
+	AbstractLinAlgPack::Vp_StMtV( y->sub_view(1,nG).get(), a, *G_ptr_, H_trans, *x.sub_view(1,nG) );
+	AbstractLinAlgPack::Vp_StMtV( y->sub_view(nG+1,nG+nM).get(), a, M_, H_trans, *x.sub_view(nG+1,nG+nM) );
 }
 
 void MatrixSymHessianRelaxNonSing::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp H_trans
-	, const SpVectorSlice& x, value_type b
+	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp H_trans
+	,const SpVectorSlice& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
@@ -218,49 +194,54 @@ void MatrixSymHessianRelaxNonSing::Vp_StMtV(
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
-	LinAlgPack::Vt_S(y,b); // Takes care of b == 0.0 and y uninitialized
-	SparseLinAlgPack::Vp_StMtV( &(*y)(1,nG), a, *G_ptr_, H_trans, x(1,nG) );
-	SparseLinAlgPack::Vp_StMtV( &(*y)(nG+1,nG+nM), a, M_, H_trans, x(nG+1,nG+nM) );
+	AbstractLinAlgPack::Vt_S(y,b); // Takes care of b == 0.0 and y uninitialized
+	AbstractLinAlgPack::Vp_StMtV( y->sub_view(1,nG).get(), a, *G_ptr_, H_trans, x(1,nG) );
+	AbstractLinAlgPack::Vp_StMtV( y->sub_view(nG+1,nG+nM).get(), a, M_, H_trans, x(nG+1,nG+nM) );
 }
 
 void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
-	VectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp H_trans, const VectorSlice& x, value_type b
+	VectorWithOpMutable* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp H_trans, const VectorWithOp& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...VectorWithOp...)" );
 #endif
 	assert_initialized();
-//	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+/* ToDo: Update below code!
 	Vp_StPtMtV_imp(y,a,P,P_trans,*this,H_trans,x,b);
+*/
 }
 
 void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
-	VectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x, value_type b
+	VectorWithOpMutable* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp H_trans, const SpVectorSlice& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...SpVectorSlice...)" );
 #endif
 	assert_initialized();
-//	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+/* ToDo: Update below code!
 	Vp_StPtMtV_imp(y,a,P,P_trans,*this,H_trans,x,b);
+*/
 }
 
 // Overridden form MatrixSymWithOp
 
 void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
-	sym_gms* S, value_type a
-	, EMatRhsPlaceHolder dummy_place_holder
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, value_type b ) const
+	MatrixSymWithOp* S, value_type a
+	,EMatRhsPlaceHolder dummy_place_holder
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,value_type b
+	) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Mp_StPtMtP(...)" );
 #endif
@@ -268,7 +249,7 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 
 	MatrixSymWithOp::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b); // ToDo: Override when needed!
 	return;
-
+/* ToDo: Update below code!
 	const LinAlgPack::size_type
 		no = G().rows(),     // number of original variables
 		nr = M().rows(),     // number of relaxation variables
@@ -332,28 +313,28 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 		SparseLinAlgPack::Mp_StPtMtP(
 			&sym_gms( S->gms()(no+1,nd,no+1,nd), S->uplo() )
 			, a, dummy_place_holder, M(), P2, P_trans );
+*/
 }
 
-
-// Overridden from MatrixWithOpFactorized
+// Overridden from MatrixWithOpNonsingular
 
 void MatrixSymHessianRelaxNonSing::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp H_trans, const VectorSlice& x
+	VectorWithOpMutable* y, BLAS_Cpp::Transp H_trans, const VectorWithOp& x
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::V_InvMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::V_InvMtV(...VectorWithOp...)" );
 #endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
-	SparseLinAlgPack::V_InvMtV( &(*y)(1,nG), *G_ptr_, H_trans, x(1,nG) );
-	SparseLinAlgPack::V_InvMtV( &(*y)(nG+1,nG+nM), M_, H_trans, x(nG+1,nG+nM) );
+	AbstractLinAlgPack::V_InvMtV( y->sub_view(1,nG).get(), *G_ptr_, H_trans, *x.sub_view(1,nG) );
+	AbstractLinAlgPack::V_InvMtV( y->sub_view(nG+1,nG+nM).get(), M_, H_trans, *x.sub_view(nG+1,nG+nM) );
 }
 
 void MatrixSymHessianRelaxNonSing::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x
+	VectorWithOpMutable* y, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
@@ -363,17 +344,17 @@ void MatrixSymHessianRelaxNonSing::V_InvMtV(
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
-	SparseLinAlgPack::V_InvMtV( &(*y)(1,nG), *G_ptr_, H_trans, x(1,nG) );
-	SparseLinAlgPack::V_InvMtV( &(*y)(nG+1,nG+nM), M_, H_trans, x(nG+1,nG+nM) );
+	AbstractLinAlgPack::V_InvMtV( y->sub_view(1,nG).get(), *G_ptr_, H_trans, x(1,nG) );
+	AbstractLinAlgPack::V_InvMtV( y->sub_view(nG+1,nG+nM).get(), M_, H_trans, x(nG+1,nG+nM) );
 }
 
 // private
 
 void MatrixSymHessianRelaxNonSing::assert_initialized() const
 {
-	if( G_ptr_.get() == NULL )
-		throw std::logic_error(
-			"MatrixSymHessianRelaxNonSing::assert_initialized(): Error, Not initalized yet!" );
+	THROW_EXCEPTION(
+		G_ptr_.get() == NULL, std::logic_error
+		,"MatrixSymHessianRelaxNonSing::assert_initialized(): Error, Not initalized yet!" );
 }
 
 } // end namespace ConstrainedOptimizationPack

@@ -21,7 +21,7 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Initialize #GenPermMatrixSlice# mapping matrices for #Q_R# and #Q_X#.
+/** Initialize <tt>GenPermMatrixSlice</tt> mapping matrices for <tt>Q_R</tt> and <tt>Q_X</tt>.
  *
  *
  * @param  n_R        [in] Number of free variables
