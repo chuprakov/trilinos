@@ -96,6 +96,40 @@ void DecompositionSystemVarReductImp::initialize(
 	}
 }
 
+// Basis manipulation
+
+void DecompositionSystemVarReductImp::get_basis_matrices(
+	std::ostream                                          *out
+	,EOutputLevel                                         olevel
+	,ERunTests                                            test_what
+	,MatrixWithOp                                         *Z
+	,MatrixWithOp                                         *Y
+	,MatrixWithOpNonsingular                              *R
+	,MatrixWithOp                                         *Uz
+	,MatrixWithOp                                         *Uy
+	,MatrixWithOp                                         *Vz
+	,MatrixWithOp                                         *Vy
+	,MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>   *C_ptr
+	,MemMngPack::ref_count_ptr<MatrixWithOp>              *D_ptr
+	)
+{
+	assert(0); // ToDo: Implement!
+}
+
+void DecompositionSystemVarReductImp::set_basis_matrices(
+	std::ostream                                               *out
+	,EOutputLevel                                              olevel
+	,ERunTests                                                 test_what
+	,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
+	,const MemMngPack::ref_count_ptr<MatrixWithOp>             *D_ptr
+	,MatrixWithOp                                              *Uz
+	,MatrixWithOp                                              *Vz
+	,const basis_sys_ptr_t                                     &basis_sys
+	)
+{
+	assert(0); // ToDo: Implement!
+}
+
 // Overridden from DecompositionSystem
 
 size_type DecompositionSystemVarReductImp::n() const
@@ -150,15 +184,13 @@ DecompositionSystemVarReductImp::factory_Z() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Uz() const
 {
-	assert(0); // ToDo: Implement!
-	return 	MemMngPack::null;
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Vz() const
 {
-	assert(0); // ToDo: Implement!
-	return MemMngPack::null;
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 void DecompositionSystemVarReductImp::update_decomp(
@@ -542,8 +574,7 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 	) const
 {
 	out
-		<< L << "*** Variable reduction decomposition\n"
-		<< L << "*** (class DecompositionSytemVarReduct)\n"
+		<< L << "*** Variable reduction decomposition (class DecompositionSytemVarReductImp)\n"
 		<< L << "C = Gc(var_dep,con_decomp)' (using basis_sys)\n"
 		<< L << "if D_imp == MAT_IMP_IMPICIT then\n"
 		<< L << "  D = -inv(C)*N represented implicitly (class MatrixVarReductImplicit)\n"

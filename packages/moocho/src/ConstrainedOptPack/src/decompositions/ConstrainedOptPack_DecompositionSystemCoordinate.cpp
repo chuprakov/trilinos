@@ -67,19 +67,13 @@ DecompositionSystemCoordinate::factory_R() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Uy() const
 {
-	namespace rcp = MemMngPack;
-	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
-		);
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Vy() const
 {
-	namespace rcp = MemMngPack;
-	return rcp::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
-		);
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -194,7 +188,7 @@ void DecompositionSystemCoordinate::print_update_matrices(
 	std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Coordinate decompositon Y, R, Uy and Vy matrices\n"
+		<< L << "*** Coordinate decompositon Y, R, Uy and Vy matrices (class DecompositionSystemCoordinate)\n"
 		<< L << "Y = [ I; 0 ] (using class MatrixIdentConcatStd with MatrixZero)\n"
 		<< L << "R = Gc(var_dep,con_decomp)' = C\n"
 		<< L << "Uy = Gc(var_dep,con_undecomp)'\n"

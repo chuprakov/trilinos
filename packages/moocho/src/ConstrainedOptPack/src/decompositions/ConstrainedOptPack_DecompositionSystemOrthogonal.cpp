@@ -23,6 +23,7 @@
 #include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"
@@ -70,15 +71,13 @@ DecompositionSystemOrthogonal::factory_R() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
-	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return MemMngPack::null;
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Vy() const
 {
-	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return MemMngPack::null;
+	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -245,7 +244,7 @@ void DecompositionSystemOrthogonal::print_update_matrices(
 	std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Orthogonal decompositon Y, R, Uy and Vy matrices\n"
+		<< L << "*** Orthogonal decompositon Y, R, Uy and Vy matrices (class DecompositionSystemOrthogonal)\n"
 		<< L << "Y  = [ I; -D' ] (using class MatrixIdentConcatStd)\n"
 		<< L << "R  = C*(I + D*D')\n"
 		<< L << "Uy = E - F*D'\n"

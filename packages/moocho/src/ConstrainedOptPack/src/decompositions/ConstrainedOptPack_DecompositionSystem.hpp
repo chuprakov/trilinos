@@ -74,6 +74,9 @@ public:
 	typedef MemMngPack::ref_count_ptr<
 		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
 	///
+	class SingularDecomposition : public std::logic_error
+	{public: SingularDecomposition(const std::string& what_arg) : std::logic_error(what_arg) {}};
+	///
 	class InvalidMatrixType : public std::logic_error
 	{public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};
 	///

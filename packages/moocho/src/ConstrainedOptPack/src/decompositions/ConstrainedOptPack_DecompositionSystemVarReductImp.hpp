@@ -158,6 +158,113 @@ public:
 
 	//@}
 
+	/** @name Basis manipulation */
+	//@{
+
+	///
+	/** Called by client to uninitialize decomposition matrices in prepairation
+	 * for selecting a different basis.
+	 *
+	 * @param  Z     [in/out] On output, \c Z will have all references to \c C and \c D removed.
+	 * @param  Y     [in/out] On output, \c Y will have all references to \c C and \c D removed.
+	 * @param  R     [in/out] On output, \c R will have all references to \c C and \c D removed.
+	 * @param  Uz    [in/out] If <tt>this->Uz_imp() == MAT_IMP_IMPLICIT</tt> then on output,
+	 *               \c Uz will have all references to \c C and \c D removed.  If
+	 *               <tt>this->Uz_imp() == MAT_IMP_EXPLICIT</tt> then \c Uz will be unaltered
+	 *               and it is expected that the client will initialize it properly before
+	 *               the next call to \c this->set_basis_matrices().
+	 * @param  Uy    [in/out] On output, \c Uy will have all references to \c C and \c D removed.
+	 * @param  Yz    [in/out] If <tt>this->Vz_imp() == MAT_IMP_IMPLICIT</tt> then on output,
+	 *               \c Vz will have all references to \c C and \c D removed.  If
+	 *               <tt>this->Vz_imp() == MAT_IMP_EXPLICIT</tt> then \c Vz will be unaltered
+	 *               and it is expected that the client will initialize it properly before
+	 *               the next call to \c this->set_basis_matrices().
+	 * @param  Vy    [in/out] On output, \c Vy will have all references to \c C and \c D removed.
+	 * @param  C_ptr [out] On output, <tt>C_ptr->get() != NULL</tt> will point to the basis matrix to
+	 *               be updated by the client before the next call to \c this->set_basis_matrices().
+	 *               It is guarrenteed that \c *C_ptr->get() will not be referenced by any other entity
+	 *               so that changing the basis matrix object will not impact other objects in
+	 *               unexpected ways.
+	 * @param  D_ptr [out] If <tt>this->D_imp() == MAT_IMP_IMPLICIT</tt> then on output,
+	 *               <tt>D_ptr == NULL</tt> must be true.  If <tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>
+	 *               then <tt>D_ptr->get() != NULL</tt> will point to the direct sensitivity matrix
+	 *               and it is expected that the client will initialize it properly before
+	 *               the next call to \c this->set_basis_matrices().
+	 *               It is guarrenteed that \c *D_ptr->get() will not be referenced by any other entity
+	 *               so that changing the basis matrix object will not impact other objects in
+	 *               unexpected ways.
+	 *
+	 * Preconditions:<ul>
+	 * <li> [<tt>this->D_imp() == MAT_IMP_IMPLICIT</tt>] <tt>D_ptr == NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>] <tt>D_ptr != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>C_ptr->get() != NULL</tt>
+	 * <li> [<tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>] <tt>D_ptr->get() != NULL</tt>
+	 * </ul>
+	 */
+	void get_basis_matrices(
+		std::ostream                                          *out
+		,EOutputLevel                                         olevel
+		,ERunTests                                            test_what
+		,MatrixWithOp                                         *Z
+		,MatrixWithOp                                         *Y
+		,MatrixWithOpNonsingular                              *R
+		,MatrixWithOp                                         *Uz
+		,MatrixWithOp                                         *Uy
+		,MatrixWithOp                                         *Vz
+		,MatrixWithOp                                         *Vy
+		,MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>   *C_ptr
+		,MemMngPack::ref_count_ptr<MatrixWithOp>              *D_ptr
+		);
+
+	///
+	/** Set updated basis matrices along with a possibly updated basis system object.
+	 *
+	 * @param  C_ptr  [in] <tt>C_ptr.get()</tt> points to basis matrix object returned from
+	 *                \c this->uninitialize_matrices() which must be updated to current basis
+	 *                for current Jacobian matrices.
+	 * @param  D_ptr  [in] If <tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>, then \c D_ptr->get()
+	 *                points to direct sensitivity matrix object returned from
+	 *                \c this->uninitialize_matrices() which must be updated to current basis
+	 *                for current Jacobian matrices.  If <tt>this->D_imp() == MAT_IMP_IMPLICIT</tt>
+	 *                then \c D_ptr must be \c NULL.
+	 * @param  Uz     [in] If <tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>, then \c Uz points to the
+	 *                projected sensitivity matrix \c Uz which must be updated for the current
+	 *                basis for the current Jacobian matrices.  If <tt>this->Uz_imp() == MAT_IMP_IMPLICIT</tt>
+	 *                then \c Uz must be \c NULL.
+	 * @param  Vz     [in] If <tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>, then \c Vz points to the
+	 *                projected sensitivity matrix \c Vz which must be updated for the current
+	 *                basis for the current Jacobian matrices.  If <tt>this->Vz_imp() == MAT_IMP_IMPLICIT</tt>
+	 *                then \c Vz must be \c NULL.
+	 * @param  basis_sys
+	 *                [in] If the basis system has changed then set <tt>basis_sys.get() != NULL</tt> to
+	 *                pass in this new basis system object.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>C_ptr.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>this->D_imp() == MAT_IMP_IMPLICIT</tt>] <tt>D_ptr == NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>] <tt>D_ptr != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>] <tt>D_ptr->get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * It is expected that immediatly after this method is called that \c this->updated_decomp()
+	 * will be called to update the rest of the decomposition matrices for these basis matrices.
+	 */
+	void set_basis_matrices(
+		std::ostream                                               *out
+		,EOutputLevel                                              olevel
+		,ERunTests                                                 test_what
+		,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
+		,const MemMngPack::ref_count_ptr<MatrixWithOp>             *D_ptr
+		,MatrixWithOp                                              *Uz
+		,MatrixWithOp                                              *Vz
+		,const basis_sys_ptr_t                                     &basis_sys   = MemMngPack::null
+		);
+
+	//@}
+
 	/** @name Overridden from DecompositionSystem */
 	//@{
 

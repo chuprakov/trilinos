@@ -57,8 +57,6 @@ public:
 	//@{
 
 	///
-	typedef BasisSystem::SingularBasis    SingularBasis;
-	///
 	enum EExplicitImplicit {
 		MAT_IMP_EXPLICIT
 		,MAT_IMP_IMPLICIT
@@ -86,9 +84,9 @@ public:
 
 	///
 	DecompositionSystemVarReduct(
-		EExplicitImplicit     D_imp
-		,EExplicitImplicit    Uz_imp
-		,EExplicitImplicit    Vz_imp
+		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
+		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
+		,EExplicitImplicit    Vz_imp   = MAT_IMP_AUTO
 		)
 		:D_imp_(D_imp), Uz_imp_(Uz_imp), Vz_imp_(Vz_imp)
 	{}

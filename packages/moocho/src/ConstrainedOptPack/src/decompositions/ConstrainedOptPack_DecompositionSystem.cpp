@@ -29,7 +29,9 @@ size_type DecompositionSystem::r() const
 
 Range1D DecompositionSystem::con_decomp() const
 {
-	return Range1D(1,this->r());
+	const size_type
+		r = this->r();
+	return r ? Range1D(1,this->r()) : Range1D::Invalid;
 }
 	
 Range1D DecompositionSystem::con_undecomp() const
