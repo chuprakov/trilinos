@@ -22,16 +22,20 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Interface rSQPAlgoContainer uses to access rSQPAlgo.
-  */
+/** Interface \c rSQPAlgoContainer uses to access \c rSQPAlgo.
+ *
+ * This interface helps avoid dangerous usage stategies for an \c rSQPAlgo object.
+ */
 class rSQPAlgoInterface {
 public:
 
-	// Virtual destructor
+	///
 	virtual ~rSQPAlgoInterface() {}
 
-	/// Return the state object
-	virtual const rSQPState& retrieve_state() const = 0;
+	///
+	/** Print the algorithm description.
+	 */
+	virtual void interface_print_algorithm(std::ostream& out) const = 0;
 
 	///
 	/** Start the iterations.
@@ -42,11 +46,14 @@ public:
 	  */
 	virtual rSQPSolverClientInterface::EFindMinReturn dispatch() = 0;
 
-	/** @name Set options on Algorithm */
+	///
+	/** Return the state object.
+	 */
+	virtual const rSQPState& retrieve_state() const = 0;
+
+	/** @name Algorithm timing */
 	//@{
 
-	///
-	virtual void interface_print_algorithm(std::ostream& out) const = 0;
 	///
 	virtual void interface_set_algo_timing( bool algo_timing ) = 0;
 	///
