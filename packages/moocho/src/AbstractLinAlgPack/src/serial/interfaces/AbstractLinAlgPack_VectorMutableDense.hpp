@@ -178,6 +178,11 @@ public:
 
 	//@}
 
+	/// Hack
+	VectorWithOpMutableDense* operator&()
+	{
+		return this;
+	}
 private:
 
 	// ///////////////////////////////////////
