@@ -31,6 +31,8 @@ namespace TSF
 
       static TSFArray<string> stringTokenizer(const string& str);
 
+      static TSFArray<string> getTokensPlusWhitespace(const string& str);
+
       static string reassembleFromTokens(const TSFArray<string>& tokens, int iStart=0);
 
       static void splitList(const string& bigstring, TSFArray<string>& elements);

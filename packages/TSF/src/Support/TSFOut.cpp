@@ -24,6 +24,18 @@ void TSFOut::println(const std::string& msg)
 	writer_->println(msg);
 }
 
+void TSFOut::rootPrintln(const std::string& msg)
+{
+	int rank=0;
+#if HAVE_MPI
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+	if (rank==0)
+		{
+			writer_->println(msg);
+		}
+}
+
 void TSFOut::rootPrintf(const char* format, ...)
 {
 	int rank=0;

@@ -25,6 +25,9 @@ namespace TSF
 			static void println(const string& msg);
 
 			/** */
+			static void rootPrintln(const string& msg);
+
+			/** */
 			static void printf(const char* format, ...);
 
 			/** */

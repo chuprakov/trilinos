@@ -70,6 +70,29 @@ bool StrUtils::readLine(istream& is, string& line)
 
 	
 
+TSFArray<string> StrUtils::getTokensPlusWhitespace(const string& str){
+  TSFArray<string> rtn(0);
+  unsigned int start = 0;
+	
+  while(start < str.length())
+    {
+      int wordStart =  findNextNonWhitespace(str, start);
+			/* add any preceding whitespace */
+			if (wordStart > start)
+				{
+					rtn.append(subString(str, start, wordStart));
+				}
+			start = wordStart;
+			/* add the next word */
+      int stop = findNextWhitespace(str, start);
+      if (start-stop == 0) return rtn;
+      string sub = subString(str, start, stop);
+      rtn.append(sub);
+			start = stop;// findNextNonWhitespace(str, stop);
+    }
+  return rtn;
+}
+
 TSFArray<string> StrUtils::stringTokenizer(const string& str){
   TSFArray<string> rtn(0);
   unsigned int start = 0;

@@ -59,6 +59,7 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 			/* solve for the full newton step */
 			J = F.derivative(x0);
 			J.applyInverse(linearSolver_, f0, deltaX);
+
 			double dx = deltaX.norm2();
 			TSFOut::printf("iter=%d newton step norm=%g\n",
 										 i, dx);
@@ -80,6 +81,7 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 			for (int b=0; b<maxBacktracks; b++)
 				{
 					TSFVector xTry = x0 - stepFrac * deltaX;
+
 					F.apply(xTry, f0);
 					double newFNorm = f0.norm2();
 					TSFOut::printf("backtrack %d fNew=%g f=%g\n", b, newFNorm,

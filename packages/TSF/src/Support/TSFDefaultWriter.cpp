@@ -1,12 +1,13 @@
 #include "TSFDefaultWriter.h"
 #include "TSFUtils.h"
 #include "TSFMPI.h"
+#include "StrUtils.h"
 
 using namespace TSF;
 
 string& TSFDefaultWriter::header()
 {
-	static string rtn = "<TSF p=";
+	static string rtn = "<p=";
 	return rtn;
 }
 
@@ -20,8 +21,27 @@ TSFDefaultWriter::TSFDefaultWriter(std::ostream& os)
 
 void TSFDefaultWriter::print(const std::string& msg)
 {
-	string out = header() + TSFUtils::toString(TSFMPI::getRank()) + "> " + msg;
-	os_ << out;
+	string head = header() + TSFUtils::toString(TSFMPI::getRank()) + "> ";
+	unsigned int maxLineSize = 78 - head.length();
+
+	TSFArray<string> tokens = StrUtils::getTokensPlusWhitespace(msg);
+	
+	unsigned int lineSize = 0;
+	os_ << head;
+	for (int i=0; i<tokens.length(); i++)
+		{
+			if (lineSize+tokens[i].length() > maxLineSize)
+				{
+					if (StrUtils::isWhite(tokens[i])) continue;
+					os_ << std::endl << head << tokens[i];
+					lineSize = 0;
+				}
+			else
+				{
+					os_ << tokens[i];
+				}
+			lineSize += tokens[i].length();
+		}
 }
 
 void TSFDefaultWriter::println(const std::string& msg)
