@@ -31,6 +31,9 @@ namespace ConstrainedOptimizationPack {
 class MeritFuncCalcNLP : public MeritFuncCalc {
 public:
 
+	/** @name Constructors/initializers */
+	//@{
+
 	/// <<std aggr>> stereotype members for phi.
 	STANDARD_CONST_AGGREGATION_MEMBERS( MeritFuncNLP, phi )
 
@@ -39,6 +42,8 @@ public:
 
 	///
 	MeritFuncCalcNLP( const MeritFuncNLP* phi = 0, const NLP* nlp = 0 );
+
+	//@}
 
 	/** @name Overridden from MeritFuncCalc */
 	//@{

@@ -27,7 +27,7 @@ namespace ConstrainedOptimizationPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymIdentitySerial
-	: virtual public MatrixSymWithOpNonsingularSerial
+	: virtual public SparseLinAlgPack::MatrixSymWithOpNonsingularSerial // doxygen needs full name
 	, virtual public MatrixExtractInvCholFactor
 {
 public:
