@@ -1,0 +1,54 @@
+Decomposition Info	= method=parmetis
+Zoltan Parameters	= parmetis_method=repartldiffusion
+File Type		= Chaco
+File Name		= film
+Parallel Disk Info	= number=0
+Global element ids assigned to processor 0
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+17
+18
+19
+20
+23
+24
+25
+26
+27
+28
+29
+32
+33
+34
+35
+36
+37
+38
+39
+68
+72
+73
+74
+75
+82
+85
+86
+88
+89
+90
+95
+96
+97
+98
+99
+100
