@@ -228,6 +228,11 @@ TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, epetra, [enable TSFCore's Epetra adapters],
 AM_CONDITIONAL(HAVE_TSFCORE_EPETRA, [test "X$ac_cv_use_tsfcore_epetra" != "Xno" ||
 	test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"])
 
+# Check if any enabled adapters require TRILINOS_TEMPLATE_OBJS
+AM_CONDITIONAL(HAVE_TSFCORE_TTO_ADAPTER, [test "X$ac_cv_use_tsfcore_epetra" != "Xno" ||
+        test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"])
+
+
 TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, mpi, [enable TSFCore's mpi adapters], TSFCORE_MPI, no)
 AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
 	test "X$ac_cv_use_tsfcore_epetra" != "Xno"])
@@ -308,9 +313,7 @@ if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
   case $target in
     alpha*)
       if test $CXX = cxx; then
-        if test "X$ac_cv_use_tsfcore_epetra" != "Xno" || test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"; then
-          TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
-        fi
+        TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
       fi
     ;;
   esac

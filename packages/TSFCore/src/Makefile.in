@@ -115,7 +115,8 @@ am__installdirs = $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)$(execin
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
 am__DEPENDENCIES_1 =
-libTSFCore_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@HAVE_TSFCORE_TTO_ADAPTER_TRUE@libTSFCore_a_DEPENDENCIES =  \
+@HAVE_TSFCORE_TTO_ADAPTER_TRUE@	$(am__DEPENDENCIES_1)
 am__libTSFCore_a_SOURCES_DIST =  \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp \
@@ -326,6 +327,8 @@ HAVE_TSFCORE_EPETRA_FALSE = @HAVE_TSFCORE_EPETRA_FALSE@
 HAVE_TSFCORE_EPETRA_TRUE = @HAVE_TSFCORE_EPETRA_TRUE@
 HAVE_TSFCORE_MPI_FALSE = @HAVE_TSFCORE_MPI_FALSE@
 HAVE_TSFCORE_MPI_TRUE = @HAVE_TSFCORE_MPI_TRUE@
+HAVE_TSFCORE_TTO_ADAPTER_FALSE = @HAVE_TSFCORE_TTO_ADAPTER_FALSE@
+HAVE_TSFCORE_TTO_ADAPTER_TRUE = @HAVE_TSFCORE_TTO_ADAPTER_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -620,12 +623,16 @@ EXTRA_libTSFCore_a_SOURCES = \
 # fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
 # define it manually.
 @USE_ALTERNATE_AR_TRUE@libTSFCore_a_AR = $(ALTERNATE_AR)
+@HAVE_TSFCORE_TTO_ADAPTER_FALSE@libTSFCore_a_LIBADD = $(XTRALDADD)
 
 # --------------------------------------------------------------------
 # Some C++ compilers create extra .o-files for templates. We need to
 # be sure to include these, and this is the hack to do it.
 # --------------------------------------------------------------------
-libTSFCore_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
+
+# I have not been able to find any kind of "or" for Automake
+# conditionals. JW
+@HAVE_TSFCORE_TTO_ADAPTER_TRUE@libTSFCore_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
 
 # --------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)

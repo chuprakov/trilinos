@@ -301,8 +301,18 @@ endif
 # be sure to include these, and this is the hack to do it.
 # --------------------------------------------------------------------
 
-libTSFCore_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
+# I have not been able to find any kind of "or" for Automake
+# conditionals. JW
 
+if HAVE_TSFCORE_TTO_ADAPTER
+
+ libTSFCore_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
+
+else 
+
+ libTSFCore_a_LIBADD = $(XTRALDADD)
+
+endif
 # --------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)
 # --------------------------------------------------------------------

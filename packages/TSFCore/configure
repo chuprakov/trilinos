@@ -311,7 +311,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP HAVE_TSFCORE_AZTECOO_TRUE HAVE_TSFCORE_AZTECOO_FALSE HAVE_TSFCORE_EPETRA_TRUE HAVE_TSFCORE_EPETRA_FALSE HAVE_TSFCORE_MPI_TRUE HAVE_TSFCORE_MPI_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE BUILD_TEUCHOS_TRUE BUILD_TEUCHOS_FALSE FLIBS BLAS_LIBS LAPACK_LIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP HAVE_TSFCORE_AZTECOO_TRUE HAVE_TSFCORE_AZTECOO_FALSE HAVE_TSFCORE_EPETRA_TRUE HAVE_TSFCORE_EPETRA_FALSE HAVE_TSFCORE_TTO_ADAPTER_TRUE HAVE_TSFCORE_TTO_ADAPTER_FALSE HAVE_TSFCORE_MPI_TRUE HAVE_TSFCORE_MPI_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE BUILD_TEUCHOS_TRUE BUILD_TEUCHOS_FALSE FLIBS BLAS_LIBS LAPACK_LIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -6068,6 +6068,20 @@ else
 fi
 
 
+# Check if any enabled adapters require TRILINOS_TEMPLATE_OBJS
+
+
+if test "X$ac_cv_use_tsfcore_epetra" != "Xno" ||
+        test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"; then
+  HAVE_TSFCORE_TTO_ADAPTER_TRUE=
+  HAVE_TSFCORE_TTO_ADAPTER_FALSE='#'
+else
+  HAVE_TSFCORE_TTO_ADAPTER_TRUE='#'
+  HAVE_TSFCORE_TTO_ADAPTER_FALSE=
+fi
+
+
+
 
 # Check whether --enable-tsfcore-mpi or --disable-tsfcore-mpi was given.
 if test "${enable_tsfcore_mpi+set}" = set; then
@@ -6326,7 +6340,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:6329: \"$ac_link\") >&5
+(eval echo $as_me:6343: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6404,7 +6418,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:6407: \"$ac_link\") >&5
+(eval echo $as_me:6421: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9273,7 +9287,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:9276: \"$ac_link\") >&5
+(eval echo $as_me:9290: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9351,7 +9365,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:9354: \"$ac_link\") >&5
+(eval echo $as_me:9368: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9538,9 +9552,7 @@ if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
   case $target in
     alpha*)
       if test $CXX = cxx; then
-        if test "X$ac_cv_use_tsfcore_epetra" != "Xno" || test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"; then
-          TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
-        fi
+        TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
       fi
     ;;
   esac
@@ -9731,6 +9743,13 @@ if test -z "${HAVE_TSFCORE_EPETRA_TRUE}" && test -z "${HAVE_TSFCORE_EPETRA_FALSE
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_TSFCORE_TTO_ADAPTER_TRUE}" && test -z "${HAVE_TSFCORE_TTO_ADAPTER_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_TTO_ADAPTER\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_TSFCORE_TTO_ADAPTER\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -10393,6 +10412,8 @@ s,@HAVE_TSFCORE_AZTECOO_TRUE@,$HAVE_TSFCORE_AZTECOO_TRUE,;t t
 s,@HAVE_TSFCORE_AZTECOO_FALSE@,$HAVE_TSFCORE_AZTECOO_FALSE,;t t
 s,@HAVE_TSFCORE_EPETRA_TRUE@,$HAVE_TSFCORE_EPETRA_TRUE,;t t
 s,@HAVE_TSFCORE_EPETRA_FALSE@,$HAVE_TSFCORE_EPETRA_FALSE,;t t
+s,@HAVE_TSFCORE_TTO_ADAPTER_TRUE@,$HAVE_TSFCORE_TTO_ADAPTER_TRUE,;t t
+s,@HAVE_TSFCORE_TTO_ADAPTER_FALSE@,$HAVE_TSFCORE_TTO_ADAPTER_FALSE,;t t
 s,@HAVE_TSFCORE_MPI_TRUE@,$HAVE_TSFCORE_MPI_TRUE,;t t
 s,@HAVE_TSFCORE_MPI_FALSE@,$HAVE_TSFCORE_MPI_FALSE,;t t
 s,@BUILD_TESTS_TRUE@,$BUILD_TESTS_TRUE,;t t
