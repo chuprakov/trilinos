@@ -101,10 +101,10 @@ const VectorSpace& MatrixDecompRangeOrthog::space_rows() const
 std::ostream& MatrixDecompRangeOrthog::output(std::ostream& out) const
 {
 	out << "This is a " << this->rows() << " x " << this->cols()
-		<< " nonsingular matrix (I + D'*D)*C with inverse inv(C')*(I + D*inv(S)*D') where C, D and S are:";
-	out << "\nC =\n" << *C_ptr();
-	out << "\nD =\n" << *D_ptr();
-	out << "\nS =\n" << *S_ptr();
+		<< " nonsingular matrix (I + D'*D)*C with inverse inv(C')*(I + D*inv(S)*D') where C, D and S are:\n";
+	out << "C =\n" << *C_ptr();
+	out << "D =\n" << *D_ptr();
+	out << "S =\n" << *S_ptr();
 	return out;
 }
 
@@ -158,12 +158,12 @@ void MatrixDecompRangeOrthog::Vp_StMtV(
 		//
 		// tD  = a*C'*x
 		// tI  = D'*tD
-		// y   = D*tI + by
+		// y   = b*y + D*tI
 		// y  += tD
 		//
 		V_StMtV( tD.get(), a, C, trans, x );      // tD  = a*C'*x
 		V_MtV( tI.get(), D, trans, *tD );         // tI  = D'*tD
-		Vp_MtV( y, D, no_trans, *tI );            // y   = D*tI + b*y
+		Vp_MtV( y, D, no_trans, *tI, b );         // y   = b*y + D*tI
 		Vp_V( y, *tD );                           // y  += tD
 	}
 }
@@ -182,7 +182,6 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 	using AbstractLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
-	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::V_StMtV;
 
 	assert_initialized("MatrixDecompRangeOrthog::V_InvMtV(...)");
@@ -200,8 +199,8 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 		tD  = D.space_cols().create_member();
 	if(R_trans == no_trans) {
 		//
-		// y = (I + D*inv(S)*D')*inv(C)*x
-		//   = inv(C)*x + D*inv(S)*D'*inv(C)*x
+		// y = (I - D*inv(S)*D')*inv(C)*x
+		//   = inv(C)*x - D*inv(S)*D'*inv(C)*x
 		//
 		// =>
 		//
@@ -209,31 +208,31 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 		// y    = tD
 		// tIa  = D'*tD
 		// tIb  = inv(S)*tIa
-		// y   += D*tIb
+		// y   += -D*tIb
 		//
 		V_InvMtV( tD.get(), C, no_trans, x );     // tD   = inv(C)*x
 		*y = *tD;                                 // y    = tD
 		V_MtV( tIa.get(), D, trans, *tD );        // tIa  = D'*tD
 		V_InvMtV( tIb.get(), S, no_trans, *tIa ); // tIb  = inv(S)*tIa
-		Vp_MtV( y, D, no_trans, *tIb );           // y   += D*tIb
+		Vp_StMtV( y, -1.0, D, no_trans, *tIb );   // y   += -D*tIb
 	}
 	else {
 		//
-		// y = inv(C')*(I + D*inv(S)*D')*x
+		// y = inv(C')*(I - D*inv(S)*D')*x
 		//
 		// =>
 		//
 		// tIa  = D'*x
 		// tIb  = inv(S)*tIa
 		// tD   = x
-		// tD  += D*tIb
+		// tD  += -D*tIb
 		// y    = Inv(C')*tD
 		//
-		V_MtV( tIa.get(), D, trans, x );          // tIa  = D'*x
-		V_InvMtV( tIb.get(), S, no_trans, *tIa ); // tIb  = inv(S)*tIa
-		*tD = x;                                  // tD   = x
-		Vp_MtV( tD.get(), D, no_trans, *tIb );    // tD  += D*tIb
-		V_InvMtV( y, C, trans, *tD );             // y    = Inv(C')*tD
+		V_MtV( tIa.get(), D, trans, x );                // tIa  = D'*x
+		V_InvMtV( tIb.get(), S, no_trans, *tIa );       // tIb  = inv(S)*tIa
+		*tD = x;                                        // tD   = x
+		Vp_StMtV( tD.get(), -1.0, D, no_trans, *tIb );  // tD  += -D*tIb
+		V_InvMtV( y, C, trans, *tD );                   // y    = Inv(C')*tD
 	}
 }
 
