@@ -59,7 +59,6 @@ bool LineSearchDirect_Step::do_step(
 	}
 
 	const size_type
-		n  = nlp.n(),
 		m  = nlp.m();
 
 	// /////////////////////////////////////////

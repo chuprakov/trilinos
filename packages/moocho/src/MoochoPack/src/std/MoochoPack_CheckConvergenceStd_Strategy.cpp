@@ -85,7 +85,6 @@ bool CheckConvergenceStd_Strategy::Converged(
 		*c_iq       = m     ? &s.c()      : NULL,
 		*rGL_iq     = n > m ? &s.rGL()    : NULL,
 		*GL_iq      = n > m ? &s.GL()     : NULL,
-		*lambda_iq  = m     ? &s.lambda() : NULL,
 		*nu_iq      = n > m ? &s.nu()     : NULL;
 
 	// opt_err = (||rGL||inf or ||GL||) / (||Gf|| + scale_kkt_factor)

@@ -40,11 +40,11 @@ MoochoTrackerXMLSummary::MoochoTrackerXMLSummary(
   ,const std::string algorithm_description
   )
 	:AlgorithmTracker(journal_out)
-	 ,xml_filename_(xml_filename)
-	 ,problem_name_(problem_name)
-	 ,algorithm_description_(algorithm_description)
-	 ,obj_value_(0.0)
-	 ,c_norm_value_(0.0)
+  ,obj_value_(0.0)
+  ,c_norm_value_(0.0)
+  ,xml_filename_(xml_filename)
+  ,problem_name_(problem_name)
+  ,algorithm_description_(algorithm_description)
 {
 }	
 
@@ -54,10 +54,9 @@ void MoochoTrackerXMLSummary::output_iteration(const Algorithm& algo) const
 
 	using DynamicCastHelperPack::dyn_cast;
 
-	const NLPAlgo            &_algo  = rsqp_algo(algo);
-	const NLPAlgoState           &s      =_algo.rsqp_state();
-	const NLPObjGrad      &nlp    = dyn_cast<const NLPObjGrad>(_algo.nlp()); 
-	const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
+	const NLPAlgo         &_algo   = rsqp_algo(algo);
+	const NLPAlgoState    &s       = _algo.rsqp_state();
+	const NLPObjGrad      &nlp     = dyn_cast<const NLPObjGrad>(_algo.nlp()); 
 
 	if (s.k() == 0) {
 		// first iteration...
@@ -271,9 +270,8 @@ void MoochoTrackerXMLSummary::output_pre_file() const
 void MoochoTrackerXMLSummary::open_problem_element( std::ostream& out, const Algorithm& algo) const
 {
 	if (out) {
-		const NLPAlgo            &_algo  = rsqp_algo(algo);
-		const NLPAlgoState           &s      =_algo.rsqp_state();
-		const NLP                 &nlp    = _algo.nlp(); 
+		const NLPAlgo  &_algo  = rsqp_algo(algo);
+		const NLP      &nlp    = _algo.nlp(); 
 
 		char ind[] = "   ";
 

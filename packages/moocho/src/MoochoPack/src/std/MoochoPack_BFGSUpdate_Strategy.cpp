@@ -67,8 +67,6 @@ void BFGSUpdate_Strategy::perform_update(
 	using LinAlgOpPack::V_VmV;
 	using LinAlgOpPack::V_MtV;
 
-	const size_type
-		nind = B->rows();
 	const value_type
 		NOT_CALCULATED = std::numeric_limits<value_type>::max();
 	value_type

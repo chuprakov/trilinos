@@ -83,8 +83,6 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	// Get pointers to concreate matrices
 	//
 	
-	MatrixIdentConcat
-		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
 	MatrixOpSubView
 		*Uy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
 
@@ -123,13 +121,10 @@ void DecompositionSystemCoordinate::initialize_matrices(
 
 	const size_type
 		n = this->n(),
-		m = this->m(),
 		r = this->r();
 	const Range1D
 		var_dep(1,r),
-		var_indep(r+1,n),
-		equ_decomp   = this->equ_decomp(),
-		equ_undecomp = this->equ_undecomp();
+		var_indep(r+1,n);
 
 	//
 	// Get pointers to concreate matrices

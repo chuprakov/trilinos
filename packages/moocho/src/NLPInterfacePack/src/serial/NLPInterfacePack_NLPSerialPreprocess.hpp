@@ -853,7 +853,6 @@ inline
 const NLPSerialPreprocess::ZeroOrderInfoSerial
 NLPSerialPreprocess::zero_order_orig_info() const
 {
-	const ZeroOrderInfo zoi = this->zero_order_info();
 	return ZeroOrderInfoSerial( &f_orig_, &c_orig_, &h_orig_ );
 }
 
@@ -861,7 +860,6 @@ inline
 const NLPSerialPreprocess::ObjGradInfoSerial
 NLPSerialPreprocess::obj_grad_orig_info() const
 {
-	const ObjGradInfo &ogi = this->obj_grad_info();
 	return ObjGradInfoSerial( &Gf_full_, zero_order_orig_info() );
 }
 

@@ -29,8 +29,8 @@ CheckDecompositionFromPy_Step::CheckDecompositionFromPy_Step(
 	,value_type                       max_decomposition_cond_change_frac
 	)
 	:new_decomp_strategy_(new_decomp_strategy)
-	,max_cond_( 0.01 / std::numeric_limits<value_type>::epsilon() )
 	,max_decomposition_cond_change_frac_( max_decomposition_cond_change_frac )
+	,max_cond_( 0.01 / std::numeric_limits<value_type>::epsilon() )
 {
 	reset();
 }

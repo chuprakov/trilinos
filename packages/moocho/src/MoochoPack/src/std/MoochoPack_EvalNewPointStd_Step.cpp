@@ -43,16 +43,16 @@ namespace MoochoPack {
 EvalNewPointStd_Step::EvalNewPointStd_Step(
 	const decomp_sys_handler_ptr_t                              &decomp_sys_handler
 	,const deriv_tester_ptr_t                                   &deriv_tester
-	,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
 	,const bounds_tester_ptr_t                                  &bounds_tester
+	,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
 	,EFDDerivTesting                                            fd_deriv_testing
 	,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing
 	,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level
 	)
 	:decomp_sys_handler_(decomp_sys_handler)
 	,deriv_tester_(deriv_tester)
-	,decomp_sys_tester_(decomp_sys_tester)
 	,bounds_tester_(bounds_tester)
+	,decomp_sys_tester_(decomp_sys_tester)
 	,fd_deriv_testing_(fd_deriv_testing)
 	,decomp_sys_testing_(decomp_sys_testing)
 	,decomp_sys_testing_print_level_(decomp_sys_testing_print_level)
@@ -93,13 +93,10 @@ bool EvalNewPointStd_Step::do_step(
 		r  = 0;
 
 	// Get the iteration quantity container objects
-	IterQuantityAccess<index_type>
-		&num_basis_iq = s.num_basis();
 	IterQuantityAccess<value_type>
 		&f_iq   = s.f();
 	IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
-		&nu_iq  = s.nu(),
 		*c_iq   = m > 0  ? &s.c() : NULL,
 		&Gf_iq  = s.Gf();
 	IterQuantityAccess<MatrixOp>
@@ -429,11 +426,10 @@ void EvalNewPointStd_Step::print_step(
 	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
 	) const
 {
-	const NLPAlgo   &algo = rsqp_algo(_algo);
+	const NLPAlgo       &algo = rsqp_algo(_algo);
 	const NLPAlgoState  &s    = algo.rsqp_state();
-	const NLP        &nlp  = algo.nlp();
+	const NLP           &nlp  = algo.nlp();
 	const size_type
-		n = nlp.n(),
 		m = nlp.m();
 	out
 		<< L << "*** Evaluate the new point and update the range/null decomposition\n"

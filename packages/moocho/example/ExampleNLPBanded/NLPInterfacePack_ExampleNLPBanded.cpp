@@ -260,13 +260,11 @@ void ExampleNLPBanded::imp_calc_h_orig(
 		const size_type   num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
 		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
 			++jI;
-			if( jI > mI_ ) goto EXIT_LOOP;
+			if( jI > mI_ ) return;
 			h(jI) = x_full(jI) - x_q;
 		}
 	}
-EXIT_LOOP:
-	jI; // Must have a statement here
-}
+ }
 
 void ExampleNLPBanded::imp_calc_Gf_orig(
 	const DVectorSlice            &x_full
@@ -470,11 +468,10 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 	size_type jI = 0;
 	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
 		const size_type   nD_q_i = nD_ + q_i;
-		const value_type  x_q = x_full(nD_q_i);
 		const size_type   num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
 		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
 			++jI;
-			if( jI > mI_ ) goto EXIT_LOOP;
+			if( jI > mI_ ) return;
 			// w.r.t. x(jI)
 			++Gh_nz;
 			*Gh_val++ = 1.0;
@@ -491,8 +488,6 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 			}
 		}
 	}
-EXIT_LOOP:
-	jI; // Must have a statement here
 }
 
 // private

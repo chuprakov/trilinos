@@ -60,7 +60,7 @@ bool LineSearchNLE_Step::do_step(
 	}
 
 	const size_type
-		n  = nlp.n(),
+		//n  = nlp.n(),
 		m  = nlp.m();
 
 	TEST_FOR_EXCEPTION( m == 0, std::logic_error, "LineSearchNLE_Step::do_step(...) : Error!" );

@@ -97,10 +97,13 @@ public:
 
 	//@}
 
+  ///
+  virtual ~DecompositionSystem() {}
+
 	/** @name Dimensionality of the decomposition */
 	//@{
 
-	///
+  ///
 	/** Return the number of rows in \c Gc.
 	 *
 	 * Postconditions:<ul>

@@ -59,16 +59,10 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 
 	const size_type
 		n  = nlp.n(),
-		nb = nlp.num_bounded_x(),
 		m  = nlp.m(),
 		r  = s.decomp_sys().equ_decomp().size();
 
 	// Get the iteration quantity container objects
-	IterQuantityAccess<index_type>
-		&num_basis_iq = s.num_basis();
-	IterQuantityAccess<VectorMutable>
-		&x_iq   = s.x(),
-		&nu_iq  = s.nu();
 	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = ( m  > 0 )              ? &s.Gc() : NULL,
 		*Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL,

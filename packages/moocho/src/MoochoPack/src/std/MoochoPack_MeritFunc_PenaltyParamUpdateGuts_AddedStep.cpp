@@ -63,7 +63,7 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 	}
 
 	const size_type
-		n  = nlp.n(),
+		//n  = nlp.n(),
 		m  = nlp.m();
 	IterQuantityAccess<MeritFuncNLP>
 		&merit_func_nlp_iq = s.merit_func_nlp();

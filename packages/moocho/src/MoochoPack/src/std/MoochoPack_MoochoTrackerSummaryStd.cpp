@@ -402,9 +402,6 @@ void MoochoTrackerSummaryStd::print_header(const NLPAlgoState &s) const
 
 	std::ostream& o = this->o();
 
-	int w = 15;
-	int prec = 6;
-
 	NLPAlgoState::space_c_ptr_t
 		space_c = s.get_space_c();
 

@@ -371,10 +371,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 		m = this->m(),
 		r = this->r();
 	const Range1D
-		var_dep(1,r),
 		var_indep(r+1,n),
-		equ_decomp   = this->equ_decomp(),
-		equ_undecomp = this->equ_undecomp();
+		equ_decomp   = this->equ_decomp();
 
 #ifdef _DEBUG
 	// Validate input

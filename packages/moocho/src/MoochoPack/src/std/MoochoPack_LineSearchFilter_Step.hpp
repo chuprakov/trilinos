@@ -123,7 +123,7 @@ public:
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact )
 
-		///
+    ///
 	/** Maximum allowable theta value
 	 *
 	 * ToDo: Finish documentation.

@@ -71,7 +71,6 @@ protected:
 	void close_problem_element( std::ostream& out) const;
 
 private:
-	// ostream_ptr_t o_;
 
 	mutable value_type obj_value_;
 	mutable value_type c_norm_value_;

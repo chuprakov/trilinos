@@ -59,9 +59,6 @@ LineSearchFilter_Step::LineSearchFilter_Step(
   ,const value_type &back_track_frac
   )
 	:
-	nlp_(nlp),
-	obj_f_(obj_iq_name),
-	grad_obj_f_(grad_obj_iq_name),
 	gamma_theta_(gamma_theta),
 	gamma_f_(gamma_f),
 	f_min_(f_min),
@@ -73,7 +70,10 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	theta_max_(theta_max),
 	eta_f_(eta_f),
 	back_track_frac_(back_track_frac),
-	filter_(FILTER_IQ_STRING)
+	filter_(FILTER_IQ_STRING),
+	obj_f_(obj_iq_name),
+	grad_obj_f_(grad_obj_iq_name),
+	nlp_(nlp)
 {
 	TEST_FOR_EXCEPTION(
 	  !nlp_.get(),
@@ -160,7 +160,6 @@ bool LineSearchFilter_Step::do_step(
 	const value_type gamma_f_used = CalculateGammaFUsed(f_iq,theta_k,olevel,out);
 	const value_type theta_small = theta_small_fact_ * MAX(1.0,theta_k);
 	const value_type alpha_min = CalculateAlphaMin( gamma_f_used, Gf_t_dk, theta_k, theta_small );
-	const value_type f_k = f_iq.get_k(0);
 
 	value_type &alpha_k = alpha_iq.get_k(0);
 	value_type theta_kp1 = 0.0;;
@@ -439,8 +438,6 @@ void LineSearchFilter_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 {
-	const NLPAlgo   &algo = rsqp_algo(_algo);
-	const NLPAlgoState  &s    = algo.rsqp_state();
 	out
 	<< L << "*** Filter line search method\n"
 	<< L << "# Assumes initial d_k & alpha_k (0-1) is known and\n"

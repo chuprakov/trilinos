@@ -31,6 +31,9 @@ namespace AbstractLinAlgPack {
 class Permutation {
 public:
 
+  ///
+  virtual ~Permutation() {}
+
 	/** @name Vector space */
 	//@{
 	

@@ -40,7 +40,7 @@ public:
 	//@}
 
 	///
-	~DecompositionSystemHandler_Strategy() {}
+	virtual ~DecompositionSystemHandler_Strategy() {}
 
 	///
 	/** Update the decomposition.

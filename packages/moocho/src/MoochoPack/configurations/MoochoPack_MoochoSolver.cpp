@@ -64,8 +64,8 @@ MoochoSolver::MoochoSolver()
 	,do_summary_outputting_(true)
 	,do_journal_outputting_(true)
 	,do_algo_outputting_(true)
-	,error_out_used_(Teuchos::rcp(&std::cerr,false))
 	,configuration_(MAMA_JAMA)
+	,error_out_used_(Teuchos::rcp(&std::cerr,false))
 	,send_all_output_to_black_hole_(false)
 {}
 
@@ -653,7 +653,6 @@ void MoochoSolver::update_solver() const
 		// Print the headers for the output files
 		//
 			
-		int w = 15;
 		int prec = 8;
 		if(do_summary_outputting())
 			summary_out_used_->precision(prec);
@@ -733,7 +732,7 @@ void MoochoSolver::update_solver() const
 				<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
 				"workspace for autmatic arrays only ...\n";
 		WorkspacePack::default_workspace_store
-			= Teuchos::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
+			= Teuchos::rcp(new WorkspacePack::WorkspaceStoreInitializeable(static_cast<size_t>(1e+6*workspace_MB_)));
 		
 		//
 		// Reconfigure the algorithm

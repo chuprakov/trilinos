@@ -41,8 +41,8 @@ PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
 	const value_type tau_boundary_frac
 	)
 	:
-	barrier_nlp_(barrier_nlp),
 	tau_boundary_frac_(tau_boundary_frac),
+	barrier_nlp_(barrier_nlp),
 	filter_(FILTER_IQ_STRING)
 {
 	TEST_FOR_EXCEPTION(

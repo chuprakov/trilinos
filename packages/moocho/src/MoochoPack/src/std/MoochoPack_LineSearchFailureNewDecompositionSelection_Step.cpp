@@ -41,9 +41,8 @@ bool LineSearchFailureNewDecompositionSelection_Step::do_step(
 		return line_search_step().do_step(_algo,step_poss,type,assoc_step_poss);
 	}
 	catch(const LineSearchFailure& lsf_excpt) {
-		NLPAlgo	&algo	= rsqp_algo(_algo);
-		NLPAlgoState	&s		= algo.rsqp_state();
-		NLP			&nlp	= algo.nlp();
+		NLPAlgo        &algo = rsqp_algo(_algo);
+		NLPAlgoState   &s    = algo.rsqp_state();
 
 		EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 		std::ostream& out = algo.track().journal_out();

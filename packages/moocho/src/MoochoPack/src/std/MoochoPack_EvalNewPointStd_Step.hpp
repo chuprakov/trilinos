@@ -84,8 +84,8 @@ public:
 	EvalNewPointStd_Step(
 		const decomp_sys_handler_ptr_t                              &decomp_sys_handler
 		,const deriv_tester_ptr_t                                   &deriv_tester
-		,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
 		,const bounds_tester_ptr_t                                  &bounds_tester
+		,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
 		,EFDDerivTesting                                            fd_deriv_testing               = FD_DEFAULT
 		,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing             = DecompositionSystemHandler_Strategy::DST_DEFAULT
 		,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level = DecompositionSystemHandler_Strategy::DSPL_USE_GLOBAL

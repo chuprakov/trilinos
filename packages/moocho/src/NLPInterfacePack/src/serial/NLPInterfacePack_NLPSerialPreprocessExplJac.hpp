@@ -439,7 +439,6 @@ inline
 const NLPSerialPreprocessExplJac::FirstOrderExplInfo
 NLPSerialPreprocessExplJac::first_order_expl_info() const
 {
-	const FirstOrderInfo &foi = this->first_order_info();
 	return FirstOrderExplInfo(
 		&Gc_nz_orig_
 		,&Gc_val_orig_

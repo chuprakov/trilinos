@@ -152,14 +152,10 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		D_ptr_t;
 
 	const size_type
-		n = this->n(),
-		m = this->m(),
+		//n = this->n(),
 		r = this->r();
 	const Range1D
-		var_dep(1,r),
-		var_indep(r+1,n),
-		equ_decomp   = this->equ_decomp(),
-		equ_undecomp = this->equ_undecomp();
+		var_dep(1,r);
 
 	//
 	// Get pointers to concreate matrices
@@ -169,8 +165,6 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)    : NULL;
 	MatrixDecompRangeOrthog
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
-	MatrixOpSubView
-		*Uy_cpst = Uy ? &dyn_cast<MatrixOpSubView>(*Uy)      : NULL;			
 
 	//
 	// Initialize the matrices

@@ -43,8 +43,6 @@ bool CheckConvergenceStd_AddedStep::do_step(
 	  );
 
 	NLPAlgo	&algo	  = rsqp_algo(_algo);
-	NLPAlgoState	&s		  = algo.rsqp_state();
-	NLP			&nlp	  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

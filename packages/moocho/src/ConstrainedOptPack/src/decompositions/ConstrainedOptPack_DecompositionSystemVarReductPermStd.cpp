@@ -206,8 +206,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
 	Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
-	Teuchos::RefCountPtr<MatrixOp>             D_ptr;
-	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
+	Teuchos::RefCountPtr<MatrixOp>         D_ptr;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
 		,Z, Y, R, Uz, Uy
@@ -241,7 +240,6 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
 	const size_type
-		n  = Gc.rows(),
 		m  = Gc.cols(),
 		r  = C_ptr->rows();
 	decomp_sys_imp_->set_basis_matrices(
@@ -289,7 +287,7 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	// matrices by uninitializing them.
 	Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
 	Teuchos::RefCountPtr<MatrixOp>             D_ptr;
-	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
+	//const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
 		,Z, Y, R, Uz, Uy
@@ -335,7 +333,7 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
 	const size_type
-		n  = Gc->rows(),
+		//n  = Gc->rows(),
 		m  = Gc->cols(),
 		r  = C_ptr->rows();
 	decomp_sys_imp_->set_basis_matrices(

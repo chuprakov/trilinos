@@ -45,13 +45,13 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 {
 	using DynamicCastHelperPack::dyn_cast;
 
+/* Todo: UPdate below code!
+
 	// problem dimensions
 	const size_type
 		n = algo->nlp().n(),
 		m = algo->nlp().m(),
 		r  = s->equ_decomp().size();
-
-/* Todo: UPdate below code!
 
 	// Compute the quasi-range space step Ywy
 	wsp::Workspace<value_type> Ywy_ws(wss,xo.size());

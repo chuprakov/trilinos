@@ -33,8 +33,8 @@ MoochoPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_St
 	const secant_update_ptr_t&   secant_update
 	)
 	:secant_update_(secant_update)
-	 ,iter_k_rHL_init_ident_(-1.0) // not a valid iteration?
-	 ,num_basis_(NO_BASIS_UPDATED_YET)
+  ,num_basis_(NO_BASIS_UPDATED_YET)
+  ,iter_k_rHL_init_ident_(-1) // not a valid iteration?
 {}
 
 bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
@@ -71,7 +71,6 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	IterQuantityAccess<index_type>
 		&num_basis_iq = s.num_basis();
 	IterQuantityAccess<VectorMutable>
-		&py_iq  = s.py(),
 		&pz_iq  = s.pz(),
 		&rGf_iq = s.rGf(),
 		&w_iq   = s.w();
@@ -83,10 +82,10 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	// problem size
 	const NLP &nlp = algo.nlp();
 	const size_type
-		n    = nlp.n(),
+		//n    = nlp.n(),
 		m    = nlp.m(),
-		nind = m ? Z_iq.get_k(Z_iq.last_updated()).cols() : 0,
-		r    = m - nind;
+		nind = m ? Z_iq.get_k(Z_iq.last_updated()).cols() : 0;
+		//r    = m - nind;
 
 	// See if a new basis has been selected
 	bool new_basis = false;

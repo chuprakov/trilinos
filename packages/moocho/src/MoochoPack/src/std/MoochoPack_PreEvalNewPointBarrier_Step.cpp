@@ -70,10 +70,8 @@ bool PreEvalNewPointBarrier_Step::do_step(
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
-	IterQuantityAccess<value_type>           &barrier_parameter_iq = s.barrier_parameter();
+	IterQuantityAccess<value_type>     &barrier_parameter_iq = s.barrier_parameter();
 	IterQuantityAccess<VectorMutable>  &x_iq  = s.x();
-	IterQuantityAccess<MatrixSymDiagStd> &Vl_iq = s.Vl();
-	IterQuantityAccess<MatrixSymDiagStd> &Vu_iq = s.Vu();
 
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) 
 		{

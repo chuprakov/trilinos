@@ -110,7 +110,7 @@ void UpdateReducedSigma_Step::print_step(
 		<< L << "  Sigma_D_sqrt = (Sigma_k.sub_view(Z.D_rng))^1/2\n"
 		<< L << "  J = Sigma_D_sqrt*Z\n"
 		<< L << "  rHB_k = J'*J + Sigma_I\n"
-		<< L << "elsif (update_method == BFGS_???) then\n"
+		<< L << "elsif ( update_method == BFGS_??? ) then\n"
 		<< L << "  NOT IMPLEMENTED YET!\n"
 		<< L << "end\n";
 	}

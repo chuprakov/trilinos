@@ -241,7 +241,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		n   = nlp.n(),
 		m   = nlp.m(),
 		r   = m, // ToDo: Compute this for real!
-		dof = n - r,
+		//dof = n - r,
 		nb  = nlp.num_bounded_x();
 
 	// Process the NLP
@@ -766,10 +766,10 @@ void NLPAlgoConfigIP::config_algo_cntr(
 				secant_update_strategy = Teuchos::null;
 			switch( cov_.quasi_newton_ )
 			{
-			    case QN_BFGS:
-			    case QN_PBFGS:
-			    case QN_LBFGS:
-			    case QN_LPBFGS:
+        case QN_BFGS:
+        case QN_PBFGS:
+        case QN_LBFGS:
+        case QN_LPBFGS:
 				{
 					// create and setup the actual BFGS strategy object
 					typedef RefCountPtr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
@@ -781,14 +781,14 @@ void NLPAlgoConfigIP::config_algo_cntr(
 						opt_setter.set_options( *options_ );
 					}
 					switch( cov_.quasi_newton_ ) {
-					    case QN_BFGS:
-					    case QN_LBFGS:
+            case QN_BFGS:
+            case QN_LBFGS:
 						{
 							secant_update_strategy = Teuchos::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
 							break;
 						}
-					    case QN_PBFGS:
-					    case QN_LPBFGS:
+            case QN_PBFGS:
+            case QN_LPBFGS:
 						{
 							TEST_FOR_EXCEPTION(
 								true, std::logic_error
@@ -799,8 +799,8 @@ void NLPAlgoConfigIP::config_algo_cntr(
 					}
 					break;
 				}
-			    default:
-					assert(0);
+        default:
+					TEST_FOR_EXCEPT(true);
 			}
 			
 			// Finally build the step object
@@ -1251,11 +1251,9 @@ void NLPAlgoConfigIP::init_algo(NLPAlgoInterface* _algo)
 		,"NLPAlgoConfigIP::init_algo(_algo) : Error, "
 		"_algo can not be NULL" );
 
-	NLPAlgo             &algo    = dyn_cast<NLPAlgo>(*_algo);
-	NLPAlgoState	    &state   = algo.rsqp_state();
-	NLP			        &nlp     = algo.nlp();
-	NLPVarReductPerm    *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-	NLPDirect           *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
+	NLPAlgo           &algo    = dyn_cast<NLPAlgo>(*_algo);
+	NLPAlgoState      &state   = algo.rsqp_state();
+	NLP               &nlp     = algo.nlp();
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );

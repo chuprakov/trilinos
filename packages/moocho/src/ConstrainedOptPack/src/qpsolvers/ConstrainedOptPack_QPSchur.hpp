@@ -526,6 +526,9 @@ public:
 	///
 	MSADU::PivotTolerances pivot_tols() const;
 
+  ///
+  virtual ~QPSchur() {}
+
 	///
 	QPSchur(
 		const schur_comp_ptr_t&   schur_comp           = Teuchos::null

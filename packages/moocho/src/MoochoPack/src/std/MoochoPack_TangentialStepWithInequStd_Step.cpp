@@ -82,7 +82,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream &out = algo.track().journal_out();
-	const bool check_results = algo.algo_cntr().check_results();
+	//const bool check_results = algo.algo_cntr().check_results();
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -92,7 +92,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 
 	// problem dimensions
 	const size_type
-		n  = algo.nlp().n(),
+		//n  = algo.nlp().n(),
 		m  = algo.nlp().m(),
 		r  = s.equ_decomp().size();
 
@@ -102,7 +102,6 @@ bool TangentialStepWithInequStd_Step::do_step(
 		&zeta_iq  = s.zeta(),
 		&eta_iq   = s.eta();
 	IterQuantityAccess<VectorMutable>
-		&x_iq       = s.x(),
 		&dl_iq      = dl_iq_(s),
 		&du_iq      = du_iq_(s),
 		&nu_iq      = s.nu(),
@@ -117,8 +116,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 		&Zpz_iq     = s.Zpz();
 	IterQuantityAccess<MatrixOp>
 		&Z_iq   = s.Z(),
-		*Y_iq   = m        ? &s.Y()  : NULL,
-		*Uz_iq  = (m > r)  ? &s.Uz() : NULL,
+		//*Uz_iq  = (m > r)  ? &s.Uz() : NULL,
 		*Uy_iq  = (m > r)  ? &s.Uy() : NULL;
 	IterQuantityAccess<MatrixSymOp>
 		&rHL_iq = s.rHL();

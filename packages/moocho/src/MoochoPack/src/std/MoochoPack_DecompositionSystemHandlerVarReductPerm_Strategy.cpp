@@ -69,7 +69,6 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 
 	const size_type
 		n  = nlp.n(),
-		nb = nlp.num_bounded_x(),
 		m  = nlp.m();
 	size_type
 		r  = s.decomp_sys().equ_decomp().size();

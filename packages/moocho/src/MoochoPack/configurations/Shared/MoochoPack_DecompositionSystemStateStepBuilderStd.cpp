@@ -118,8 +118,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 		n   = nlp.n(),
 		m   = nlp.m(),
 		r   = m, // ToDo: Compute this for real!
-		dof = n - r,
-		nb  = nlp.num_bounded_x();
+		dof = n - r;
 
 	if(trase_out)
 		*trase_out << "\n*** Probing the NLP object for supported interfaces ...\n";
@@ -657,8 +656,8 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 				new EvalNewPointStd_Step(
 					decomp_sys_handler
 					,deriv_tester
-					,decomp_sys_tester
 					,*bounds_tester
+					,decomp_sys_tester
 					) );
 		if(options_.get()) {
 			EvalNewPointStd_StepSetOptions

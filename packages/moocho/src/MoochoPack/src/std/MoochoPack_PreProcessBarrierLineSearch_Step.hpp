@@ -74,9 +74,11 @@ class PreProcessBarrierLineSearch_Step
 		//@}
 
 	private:
-		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
-		// Private Data
+    // //////////////////////////
+    // Private data members
+
+		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 		CastIQMember< Filter_T > filter_;
 
 	}; // end class PreProcessBarrierLineSearch_Step

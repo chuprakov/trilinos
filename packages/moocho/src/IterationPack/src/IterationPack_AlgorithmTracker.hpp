@@ -34,6 +34,9 @@ namespace IterationPack {
 class AlgorithmTracker {
 public:
 
+  ///
+  virtual ~AlgorithmTracker() {}
+
 	/** @name Public types */
 	//@{
 

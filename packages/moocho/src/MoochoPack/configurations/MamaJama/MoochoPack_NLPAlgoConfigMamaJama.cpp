@@ -267,7 +267,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		n   = nlp.n(),
 		m   = nlp.m(),
 		r   = m, // ToDo: Compute this for real!
-		dof = n - r,
+		//dof = n - r,
 		nb  = nlp.num_bounded_x();
 
 	// Process the NLP
@@ -796,7 +796,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					}
 					break;
 				}
-			    default:
+        default:
 					assert(0);
 			}
 			
@@ -1088,7 +1088,11 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 						line_search_step = line_search_filter_step;					
 						break;
 					}
-				}
+					case LINE_SEARCH_AUTO:
+					case LINE_SEARCH_NONE:
+          default:
+            TEST_FOR_EXCEPT(true); // Should not get here!
+        }
 			}
 			else {
 				line_search_step = Teuchos::rcp( new LineSearchNLE_Step(direct_line_search) );
@@ -1131,7 +1135,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 
 			int step_num       = 0;
-			int assoc_step_num = 0;
 	
 			// EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
@@ -1490,11 +1493,9 @@ void NLPAlgoConfigMamaJama::init_algo(NLPAlgoInterface* _algo)
 		,"NLPAlgoConfigMamaJama::init_algo(_algo) : Error, "
 		"_algo can not be NULL" );
 
-	NLPAlgo             &algo    = dyn_cast<NLPAlgo>(*_algo);
-	NLPAlgoState	         &state   = algo.rsqp_state();
-	NLP			         &nlp     = algo.nlp();
-	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-	NLPDirect  *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
+	NLPAlgo              &algo    = dyn_cast<NLPAlgo>(*_algo);
+	NLPAlgoState	       &state   = algo.rsqp_state();
+	NLP			             &nlp     = algo.nlp();
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );
