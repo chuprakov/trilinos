@@ -166,10 +166,10 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 						<< "where u(i) = finite_d(f(x))/d(x(i)), v(i) = d(f(x))/d(x(i)) ...\n";
 				result = comp_v.comp( FDGf, *Gf, Gf_warning_tol(), Gf_error_tol()
 					, print_all_warnings, out );
-*/
-				assert(0); // ToDo: update above!
 				update_success( result, &success );
 				if(!result) return false;
+*/
+				assert(0); // ToDo: update above!
 				break;
 			}
 			case FD_DIRECTIONAL: {
