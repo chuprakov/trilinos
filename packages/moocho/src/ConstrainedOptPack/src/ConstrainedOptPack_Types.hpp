@@ -72,9 +72,10 @@ class DirectLineSearchArmQuad_StrategySetOptions;
 
 class DecompositionSystem;
 class DecompositionSystemVarReduct;
-//class DecompositionSystemCoordinate;
-//class DecompositionSystemCoordinateDirect;
-//class DecompositionSystemCoordinateAdjoint;
+class DecompositionSystemCoordinate;
+class DecompositionSystemOrthogonal;
+class DecompositionSystemTester;
+class DecompositionSystemTesterSetOptions;
 
 // Abstract QP solvers
 

@@ -45,15 +45,13 @@ using ConstrainedOptimizationPack::MatrixIdentConcatStd;
 using ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy;
 using ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions;
 
-//using ConstrainedOptimizationPack::DecompositionSystem;
-//using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
-//using ConstrainedOptimizationPack::DecompositionSystemVarReductImpNode;
-//using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
-//using ConstrainedOptimizationPack::DecompositionSystemCoordinateDirect;
-//using ConstrainedOptimizationPack::DecompositionSystemCoordinateAdjoint;
+using ConstrainedOptimizationPack::DecompositionSystem;
+using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
+using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
+using ConstrainedOptimizationPack::DecompositionSystemOrthogonal;
+using ConstrainedOptimizationPack::DecompositionSystemTester;
+class DecompositionSystemTesterSetOptions;
 
-//using ConstrainedOptimizationPack::QPSolverWithBounds;
 //using ConstrainedOptimizationPack::QPSolverRelaxed;
-//using ConstrainedOptimizationPack::QPSCPD;
 //using ConstrainedOptimizationPack::QPSchur;
 //using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpace;
