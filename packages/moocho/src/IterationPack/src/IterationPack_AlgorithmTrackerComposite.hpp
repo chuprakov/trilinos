@@ -59,12 +59,14 @@ private:
 // ///////////////////////////////////
 // Inline members
 
+inline
 AlgorithmTrackComposite::track_list_t&
 AlgorithmTrackComposite::tracks()
 { 
 	return tracks_;
 }
 
+inline
 const AlgorithmTrackComposite::track_list_t&
 AlgorithmTrackComposite::tracks() const
 { 
