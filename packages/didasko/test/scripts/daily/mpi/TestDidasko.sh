@@ -34,6 +34,17 @@
 # $2 - Indicates if the test is an automated nightly test.  No action required
 #      by script owner.
 
+## Some machines use a command different than mpirun to run mpi jobs.  The
+## test-harness.plx script sets the environment variable
+## "TRILINOS_TEST_HARNESS_MPIGO_COMMAND".  We test for
+## this value below.  If not set, we set it to a default value.
+
+set mpigo = `printenv TRILINOS_TEST_HARNESS_MPIGO_COMMAND`
+
+if ("$mpigo" == "") then
+  set mpigo = "mpirun -np "
+endif
+
 set error = None
 set AnError = False
 set printexitvalue
@@ -98,7 +109,7 @@ foreach f ( amesos aztecoo epetra epetraext ifpack ml nox teuchos triutils)
 		  echo "[DIDASKO Test " $f ":" $g "]" >>& ../$file
 		  if( "$2" == "True" ) then
 		      # run with 1 process		    
-		      mpirun -np 1 ./$g >>& ../$file
+		      $mpigo 1 ./$g >>& ../$file
 		      if( $status != 0 ) then
 		        # A test failed.
 			    set AnError = True
@@ -109,7 +120,7 @@ foreach f ( amesos aztecoo epetra epetraext ifpack ml nox teuchos triutils)
 			    echo "[Test w/ 1 proc passed]" >>& ../$file
 		      endif
 		      # run with 1 process		    
-		      mpirun -np 4 ./$g >>& ../$file
+		      $mpigo 4 ./$g >>& ../$file
 		      if( $status != 0 ) then
 		        # A test failed.
 			    set AnError = True
