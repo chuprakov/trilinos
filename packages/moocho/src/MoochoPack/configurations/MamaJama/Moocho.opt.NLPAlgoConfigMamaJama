@@ -217,12 +217,26 @@ options_group BFGSUpdate {
 *********************************************************************
 *** Options for the convergence test.
 ***
+*** See the printed step description (i.e. 'rSQPppAlgo.out') for a
+*** description of what these options do.
+***
 options_group CheckConvergenceStd {
-*    scale_kkt_error_by   = SCALE_BY_NORM_INF_X;  *** Scale the optimality conditions by 1/(1+||x_k||inf)
-*    scale_kkt_error_by   = SCALE_BY_ONE;         *** Scale the optimality conditions by 1
-*    scale_kkt_error_by   = SCALE_BY_NORM_2_X;    *** Scale the optimiality conditions by 1/(1+||x_k||2)
-*    scale_opt_error_by_Gf = true;                *** Scale the LD of gradients condition by an additional 1/(1+||Gf||inf)
-*    scale_opt_error_by_Gf = false;               *** Scale the LD of gradients condition by an adiational 1
+
+*    scale_kkt_error_by   = SCALE_BY_NORM_2_X;
+*    scale_kkt_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_kkt_error_by   = SCALE_BY_ONE;        *** (default)
+     *** Determines if all of the error mesures are scaled by the size of the unknowns x_k
+     *** SCALE_BY_NORM_2_X   : Scale the optimiality conditions by 1/(1+||x_k||2)
+     *** SCALE_BY_NORM_INF_X : Scale the optimality conditions by 1/(1+||x_k||inf)
+     *** SCALE_BY_ONE        : Scale the optimality conditions by 1
+
+*    scale_opt_error_by_Gf = true; *** (default)
+*    scale_opt_error_by_Gf = false;
+     *** Determines if the linear dependence of gradients (i.e. ||rGL_k||inf or ||GL_k||inf)
+     *** is scaled by the gradient of the objective function or not.
+     *** true  : Scale ||rGL_k||inf ir ||GL_k|| by an additional 1/(1+||Gf||inf)
+     *** false : Scale ||rGL_k||inf ir ||GL_k|| by an addiational 1 (i.e. no extra scaling)
+
 }
 
 ********************************************************************
