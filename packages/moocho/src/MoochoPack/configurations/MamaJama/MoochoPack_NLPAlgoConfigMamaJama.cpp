@@ -93,7 +93,7 @@
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
@@ -829,12 +829,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 							= rcp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester));
 						break;
 					case RANGE_SPACE_MATRIX_ORTHOGONAL:
-//						eval_new_point_step
-//							= new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,bounds_tester);
-						THROW_EXCEPTION(
-							true, std::logic_error
-							,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-							"the othogonal decomposition is not updated for NLPFirstOrderDirect yet!" );
+						_eval_new_point_step
+							= rcp::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(
+								var_reduct_orthog_strategy_,deriv_tester,bounds_tester) );
 						break;
 					default:
 						assert(0);	// only a local error
