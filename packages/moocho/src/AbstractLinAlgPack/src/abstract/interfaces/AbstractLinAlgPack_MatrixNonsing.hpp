@@ -138,10 +138,11 @@ public:
 	///
 	/** m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
 	 *
-	 * The default implemention performs a <tt>dynamic_cast<MultiVectorSymMutable>(m_lhs)</tt>.
-	 * If this \c dynamic_cast<> returns true, then this operation is implemented in terms of
+	 * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
+	 * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
 	 * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
-	 * false, then this default implementation has no choice but to throw an exception.
+	 * false, then this default implementation has no choice but to throw an exception
+	 * (<tt>std::invalid_argument</tt>).
 	 */
 	virtual void M_StInvMtM(
 		MatrixWithOp* m_lhs, value_type alpha
@@ -151,10 +152,11 @@ public:
 	///
 	/** m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
 	 *
-	 * The default implemention performs a <tt>dynamic_cast<MultiVectorSymMutable>(m_lhs)</tt>.
-	 * If this \c dynamic_cast<> returns true, then this operation is implemented in terms of
+	 * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
+	 * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
 	 * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
-	 * false, then this default implementation has no choice but to throw an exception.
+	 * false, then this default implementation has no choice but to throw an exception
+	 * (<tt>std::invalid_argument</tt>).
 	 */
 	virtual void M_StMtInvM(
 		MatrixWithOp* m_lhs, value_type alpha
