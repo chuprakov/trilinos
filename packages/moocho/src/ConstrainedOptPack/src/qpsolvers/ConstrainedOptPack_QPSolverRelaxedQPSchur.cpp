@@ -20,6 +20,7 @@
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchur.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
@@ -136,7 +137,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	VectorDenseEncap  g_de(g);
 
 	VectorSpace::space_ptr_t
-		space_d_eta = mmp::rcp(new VectorSpaceSerial(nd+1)); // ToDo: Generalize!
+		space_d_eta = d->space().small_vec_spc_fcty()->create_vec_spc(nd+1); // ToDo: Generalize!
 
 	// ///////////////////////////////
 	// Setup the initial KKT system
