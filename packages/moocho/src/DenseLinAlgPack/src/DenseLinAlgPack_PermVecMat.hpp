@@ -29,7 +29,7 @@
   *
   * For Vector and VectorSlice pivot funcitions the #perm# argument
   * gives the mapping from the new sequence to the old sequence.
-  * The statement #i_old = perm(i_new)# gives the indice in the
+  * The statement #i_old = perm(i_new)# gives the index in the
   * old vector.  After the permutation is performed the postcondition:
   \verbatim
 

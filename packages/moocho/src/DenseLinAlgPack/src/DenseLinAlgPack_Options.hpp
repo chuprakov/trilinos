@@ -70,10 +70,10 @@
 namespace LinAlgPack{
 /// Typedef for the value type of elements that is used for the library.
 typedef FortranTypes::f_dbl_prec		value_type;
-/// Typedef for the indice type of elements that are used by the library
-typedef FortranTypes::f_int				indice_type;
+/// Typedef for the index type of elements that are used by the library
+typedef FortranTypes::f_int				index_type;
 /// Typedef for the size type of elements that are used by the library
-typedef	size_t							size_type;
+typedef	int								size_type;
 
 }
 

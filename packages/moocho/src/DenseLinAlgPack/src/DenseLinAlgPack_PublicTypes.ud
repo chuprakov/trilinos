@@ -10,7 +10,7 @@
 // }
 
 typedef LinAlgPack::value_type		value_type;
-typedef LinAlgPack::indice_type		indice_type;
+typedef LinAlgPack::index_type		index_type;
 typedef LinAlgPack::size_type		size_type;
 
 using LinAlgPack::EOverLap;

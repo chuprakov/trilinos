@@ -69,7 +69,7 @@ public:
 	  *
 	  * \begin{description}
 	  *	<li>[#value_type#]				- type being stored in the underlying C++ array			
-	  *	<li>[#size_type#]				- type used as an indice and for the number of elements
+	  *	<li>[#size_type#]				- type used as an index and for the number of elements
 	  *										in the vector
 	  *	<li>[#difference_type#]		- type for the distance between elements and the stride
 	  *	<li>[#iterator#]				- type for the forward non-constant iterator
