@@ -193,15 +193,18 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	,EMatRelations            mat_rel
 	)
 {
+	// Forward these setting on to the implementation.
 	decomp_sys_imp_->D_imp(  this->D_imp()  );
 	decomp_sys_imp_->Uz_imp( this->Uz_imp() );
 	decomp_sys_imp_->Vz_imp( this->Vz_imp() );
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
-	// and removed references to these matrix objects from the other decomposition
-	// matrices by uninitializing them
+	// and remove references to these matrix objects from the other decomposition
+	// matrices by uninitializing them.
 	MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr;
 	MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr;
 	if( decomp_sys_imp_->basis_sys().get() ) {
+		// It is assumed that the decomposition may have already
+		// been updated so try to recycle storage.
 		decomp_sys_imp_->get_basis_matrices(
 			out, olevel, test_what
 			,Z, Y, R, Uz, Uy, Vz, Vy
@@ -210,6 +213,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			);
 	}
 	else {
+		// It is assumed that the decomposition has not been
+		// previously updated so we must allocate new storage.
 		C_ptr = basis_sys_->factory_C()->create();
 		if(this->D_imp() == MAT_IMP_EXPLICIT)
 			D_ptr = basis_sys_->factory_D()->create();
@@ -227,6 +232,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
 			,(mat_rel == MATRICES_INDEP_IMPS
 			  ? BasisSystem::MATRICES_INDEP_IMPS : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
+			,out
 			);
 	}
 	catch( const BasisSystem::SingularBasis& except ) {
@@ -236,11 +242,11 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		THROW_EXCEPTION(
 			true, SingularDecomposition
 			,"DecompositionSystemVarReductPermStd::set_decomp(...): Passed in basis selection "
-			"gave a singular basis matrix!" );
+			"gave a singular basis matrix! : " << except.what() );
 	}
-	// If we get here the passed in baasis selection is nonsingular and the basis matrices
-	// are updated.  Now give then back to the decomp_sys_imp object and update the rest
-	// of the decomposition.
+	// If we get here the passed in basis selection is nonsingular and the basis matrices
+	// are updated.  If the basis_sys object has not been set to the implementation then
+	// do it.
 	if( decomp_sys_imp_->basis_sys().get() == NULL ) {
 		decomp_sys_imp_->initialize(
 			decomp_sys_imp_->space_x()
@@ -249,6 +255,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			,basis_sys_
 			);
 	}
+	// Now give them back to the decomp_sys_imp object and update the rest
+	// of the decomposition matrices.
 	decomp_sys_imp_->set_basis_matrices(
 		out, olevel, test_what
 		,C_ptr
