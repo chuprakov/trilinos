@@ -27,8 +27,8 @@ namespace AbstractLinAlgPack {
 /** Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
   *
   * This interface contains a mimimal set of operations.  The main feature
-  * of this interface is the operation apply_reduction().
-  * Almost every standard (i.e. BLAS) and non-standard operation that
+  * of this interface is the operation \c apply_reduction().
+  * Almost every standard (i.e. BLAS) and non-standard element-wise operation that
   * can be performed on a set of coordinate vectors without changing (mutating)
   * the vectors can be performed through reduction operators.  More standard
   * vector operations could be included in this interface and allow
@@ -38,40 +38,43 @@ namespace AbstractLinAlgPack {
   * reduction/transformation operators.  There are some operations however
   * that can not always be efficiently with reduction/transforamtion operators
   * and a few of these important methods are included in this interface.  The
-  * <tt>apply_reduction(...)</tt> method allows to client to specify a sub-set
+  * <tt>apply_reduction()</tt> method allows to client to specify a sub-set
   * of the vector elements to include in reduction/transformation operation.
   * This greatly increases the generality of this vector interface as vector
-  * objects can be used as sub objects in larger composite vectors and sub
-  * views of a vector can be created.
+  * objects can be used as sub objects in larger composite vectors and sub-views
+  * of a vector can be created.
   *
-  * This interface allows clients to create sub-views of a vector using sub_view()
-  * that in turn are fully functional <tt>VectorWithOp</tt> objects.  This functionality
-  * is supported by default by using a default vector subclass VectorWithOpSubView which
-  * in turn calls <tt>apply_reduction(...)</tt> but the client need not ever worry about
+  * This interface allows clients to create sub-views of a vector using \c sub_view()
+  * that in turn are fully functional <tt>%VectorWithOp</tt> objects.  This functionality
+  * is supported by default by using a default vector subclass \c VectorWithOpSubView which
+  * in turn calls <tt>apply_reduction()</tt> but the client need not ever worry about
   * how this is done.
   *
   * This interface also allows a client to extract a sub-set of elements in an
-  * explicit form as an RTOp_SubVector object using the method get_sub_vector().
+  * explicit form as an \c RTOp_SubVector object using the method \c get_sub_vector().
   * In general, this is very bad thing to do and should be avoided at all costs.
   * However, there are some applications where this is needed and therefore it is
   * supported.  The default implementation of this method uses a reduction/transformation
-  * operator with <tt>apply_reduction(...)</tt> in order to extract the needed elements.
+  * operator with <tt>apply_reduction()</tt> in order to extract the needed elements.
   *
   * In order to create a concreate subclass of this interface, only two
-  * methods must be overridden.  The space() method must
-  * also be overridden which in turn requires defining a concreate VectorSpace
-  * class (which has only two pure virtual methods).  And, as mentioned above,
-  * the apply_reduction() method must be overridden as well.
+  * methods must be overridden.  The \c space() method must be overridden which in turn
+  * requires defining a concreate \c VectorSpace class (which has only two pure virtual
+  * methods).  And, as mentioned above, the \c apply_reduction() method must be overridden
+  * as well.
   *
-  * The fact that this interface defines space() which returns a VectorSpace object
-  * (which in turn can create mutable vectors) implies that for every possible vector,
+  * The fact that this interface defines \c space() which returns a \c VectorSpace object
+  * (which in turn can create mutable vectors) implies that for every possible vector object,
   * it is possible to associate with it a mutable vector object that can be the target
   * of transformation operations.  This is not a serious limitation.  For any
   * application area, mutable vectors should be able to defined and should be
   * usable with the non-mutable vectors.
   *
-  * The default implementation of this class caches away the values of the
-  * norms that are computed.  The operations in any subclass that modifies
+  * This interface includes methods for the common vector norms: \c norm_1(),
+  * \c norm_2(), \c norm_inf().  The default implementation of this class uses reduction
+  * operator classes (See RTOp_ROp_norms.h) and caches away the values of the
+  * norms that are computed since it is common that the norms will be accessed many
+  * times before a vector is changed.  The operations in any subclass that modifies
   * the underlying vector must call the method <tt>this-></tt>has_changed() in order
   * to alert this implementation that the norms are no longer valid.
   *
@@ -88,8 +91,7 @@ public:
 	///
 	VectorWithOp();
 
-	/** @name Pure virtual methods (must be overridden by subclass).
-	 */
+	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
 
 	///
@@ -183,10 +185,7 @@ public:
 
 	//@}
 
-	/** @name Miscellaneous virtual methods with default implementations based on
-	 * reduction/transforamtion operators and apply_reduction<tt>(...)</tt> or
-	 * have other default implementations.
-	 */
+	/** @name Miscellaneous virtual methods with default implementations */
 	//@{
 
 	///
@@ -280,7 +279,7 @@ public:
 	 * of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed but they will be appropriate for the
 	 * application at hand.  However, a very good implementation should be able to
 	 * accommodate any valid <tt>rng</tt> that meets the basic preconditions.  The default
-	 * implementation uses the subclass VectorWithOpSubView to represent any arbitrary
+	 * implementation uses the subclass \c VectorWithOpSubView to represent any arbitrary
 	 * sub-view but this can be inefficient if the sub-view is very small compared this this
 	 * full vector space but not necessarily.
 	 */
@@ -293,14 +292,7 @@ public:
 	 */
 	vec_ptr_t sub_view( const index_type& l, const index_type& u ) const;
 
-	/** @name Vector norms.
-	 *
-	 * These member functions have default implementations based on
-	 * reduction operator classes (See RTOp_ROp_norms.h).  The default
-	 * implementation of this class caches the value of the norms since
-	 * it is common that the norms will be accessed many times before a
-	 * vector is changed.
-	 */
+	/** @name Vector norms */
 	//@{
 
 	///
@@ -318,23 +310,14 @@ public:
 	
 	//@}
 
-	/** @name Explicit sub-vector access.
-	 *
-	 * These member functions can be used to extract a explicit view
-	 * of any sub-vector in the overall vector.  Note that this may be
-	 * a very bad thing to do with many vector subclasses (i.e. parallel
-	 * and out-of-core vectors).  Allowing a user to create an explict view
-	 * of the elements allows great flexibility but must be used with care
-	 * and only when absolutely needed.  If possible, use sub_view<tt>(...)</tt>
-	 * and an RTOpPack::RTOp operator class instead.
-	 */
+	/** @name Explicit sub-vector access */
 	//@{
 
 	///
-	/** Get an explicit view of a sub-vector .
+	/** Get a non-mutable explicit view of a sub-vector.
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
-	 * and then released with a call to release_sub_vector().
+	 * and then released with a call to \c release_sub_vector().
 	 *
 	 * Note that calling this operation might require some internal
 	 * allocations and temporary memory.  Therefore, it is critical

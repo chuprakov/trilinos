@@ -26,30 +26,30 @@ namespace AbstractLinAlgPack {
 /** \brief Abstract interface for mutable coordinate vectors {abstract}.
   *
   * Objects of this type can act as a target vector of a transformation operation.
-  * Similarly to AbstractLinAlgPack::VectorWithOp this interface contains very few
-  * (only one extra) pure virtual methods that must be overridden.  However, more
-  * efficient and more general implementations will choose to override more methods.
+  * Similarly to \c VectorWithOp this interface contains very few (only one extra) pure
+  * virtual methods that must be overridden.  However, more efficient and more general
+  * implementations will choose to override more methods.
   * 
-  * The most important method is apply_transformation() that allows clients to apply
+  * The most important method is \c apply_transformation() that allows clients to apply
   * user defined reduction/transformation operators.  Every standard (i.e. BLAS) and
   * non-standard element-wise vector operation can be performed using a reduction/transformation
   * operator.  As long as the individual sub-vectors are large enough, reduction/transformation
   * operators will be nearly as efficient as specialized operations for most vector subclasses.
-  * Similarly to AbstractLinAlgPack::VectorWithOp::apply_reduction(), the
-  * <tt>apply_transformation(...)</tt> method allows clients to include only subsets of elements
-  * in a reduction/transformation operation.
+  * Similarly to \c VectorWithOp::apply_reduction(), the \c apply_transformation() method allows
+  * clients to include only subsets of elements in a reduction/transformation operation.
   *
-  * In addition to being able to create nonmutable (<tt>const</tt>) abstract sub-views of a vector
-  * object thorugh the <tt>VectorWithOp</tt> interface, this interface allows the creation of
-  * mutable (non-<tt>const</tt>) sub-views using sub_view().  Also, in addition to being
-  * able to extract an explicit nonmutable view of some (small?) sub-vector of elements, this
-  * interface allows a client to explicitly set the elements in a specified sub-vector.  As much
-  * as possible, abstract views should be preferred (i.e. sub_view()) over explict views (i.e.
+  * In addition to being able to create non-mutable (\c const) abstract sub-views of a vector
+  * object thorugh the \c VectorWithOp interface, this interface allows the creation of
+  * mutable (non-<tt>const</tt>) sub-views using \c sub_view().  Also, in addition to being
+  * able to extract an explicit non-mutable view of some (small?) sub-set of elements, this
+  * interface allows a client to either extract a explicit mutable sub-views using
+  * \c get_sub_vector() or to set sub-vectors using \c set_sub_vector(). As much
+  * as possible, abstract views should be preferred (i.e. \c sub_view()) over explict views (i.e.
   * get_sub_vector() and set_sub_vector()).
   *
-  * There are only three pure virtual methods that a concreate <tt>VectorWithOpMutable</tt>
-  * subclass must override.  The space() and apply_reduction() methods from the VectorWithOp
-  * base class inteface must be defined.  Also, as mentioned above, the apply_transforamtion()
+  * There are only three pure virtual methods that a concreate \c VectorWithOpMutable
+  * subclass must override.  The \c space() and \c apply_reduction() methods from the \c VectorWithOp
+  * base class inteface must be defined.  Also, as mentioned above, the \c apply_transforamtion()
   * method must be overridden and defined.
   *
   * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>VectorWithOp</tt>
@@ -64,8 +64,7 @@ public:
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>    vec_mut_ptr_t;
 
-	/** @name Pure virtual methods (must be overridden by subclass).
-	 */
+	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
 
 	///
@@ -131,9 +130,7 @@ public:
 	
 	//@}
 
-	/** @name Virtual methods with default implementations based on reduction/transforamtion
-	 * operators and <tt>this</tt>->apply_transforamtion() or with other default implementations.
-	 */
+	/** @name Virtual methods with default implementations */
 	//@{
 
 	///
@@ -226,6 +223,72 @@ public:
 	 * then copies over the elements from <tt>this</tt> using <tt>operator=()</tt>.
 	 */
 	virtual vec_mut_ptr_t clone() const;
+
+	///
+	/** Get a mutable explicit view of a sub-vector.
+	 *
+	 * This is only a transient view of a sub-vector that is to be immediately used
+	 * and then released with a call to \c release_sub_vector().
+	 *
+	 * Note that calling this operation might require some internal
+	 * allocations and temporary memory.  Therefore, it is critical
+	 * that <tt>this->release_sub_vector(sub_vec)</tt> is called to
+	 * clean up memory and avoid memory leaks after the sub-vector
+	 * is used.
+	 *
+	 * If <tt>this->get_sub_vector(...,sub_vec)</tt> was previously
+	 * called on <tt>sub_vec</tt> then it may be possible to reuse this
+	 * memory if it is sufficiently sized.  The user is
+	 * encouraged to make multiple calls to <tt>this->get_sub_vector(...,sub_vec)</tt>
+	 * before <tt>this->release_sub_vector(sub_vec)</tt> to finally
+	 * clean up all of the memory.  Of course the same <tt>sub_vec</tt> object must be
+	 * passed to the same vector object for this to work correctly.
+	 *
+	 * Changes to the underlying sub-vector are not guarrenteed to become permanent
+	 * until <tt>this->get_sub_vector(...,sub_vec)</tt> or <tt>this->free_sub_vector(sub_vec)</tt>
+	 * is called.
+	 *
+	 * Preconditions:<ul>
+	 * <li> [<tt>!rng.full_range()</tt>] <tt>(rng.ubound() <= this->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * </ul>
+	 *
+	 * This method has a default implementation based on a vector reduction operator
+	 * class (see RTOp_ROp_get_sub_vector.h) and calls ::apply_reduction<tt>(...)</tt>.
+	 * Note that the footprint of the reduction object (both internal and external state)
+	 * will be O(<tt>rng.size()</tt>).  For serial applications this is faily adequate and will
+	 * not be a major performance penalty.  For parallel applications, this will be
+	 * a terrible implementation and must be overridden if <tt>rng.size()</tt> is large at all.
+	 * If a subclass does override this method, it must also override <tt>release_sub_vector()</tt>
+	 * which has a default implementation which is a companion to this method's default
+	 * implementation.
+	 *
+	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
+	 * @param  sub_vec  [in/out] Mutable view of the sub-vector.  Prior to the
+	 *                  first call <tt>RTOp_mutable_sub_vector_null(sub_vec)</tt> must
+	 *                  have been called for the correct behavior.  Technically
+	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
+	 *                  only by calling <tt>this->free_sub_vector(sub_vec)</tt>.
+	 */
+	virtual void get_sub_vector(
+		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
+
+	///
+	/** Free a mutable explicit view of a sub-vector.
+	 *
+	 * The sub-vector view must have been allocated by \c this->get_sub_vector() first.
+	 *
+	 * This method has a default implementation which is a companion to the default implementation
+	 * for <tt>get_sub_vector(...)</tt>.  If <tt>get_sub_vector(...)</tt> is overridden by a subclass then
+	 * this method must be overridden also!
+	 *
+	 *	@param	sub_vec
+	 *				[in/out] The memory refered to by <tt>sub_vec->values</tt>
+	 *				and <tt>sub_vec->indices</tt> will be released if it was allocated
+	 *				and <tt>*sub_vec</tt> will be zeroed out using
+	 *				<tt>RTOp_mutable_sub_vector_null(sub_vec)</tt>.
+	 */
+	virtual void free_sub_vector( RTOp_MutableSubVector* sub_vec );
 
 	///
 	/** Set a specific sub-vector.

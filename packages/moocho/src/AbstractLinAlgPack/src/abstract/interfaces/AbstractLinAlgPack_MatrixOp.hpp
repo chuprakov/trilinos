@@ -61,10 +61,15 @@ namespace AbstractLinAlgPack {
  *
  * <tt>vs_lhs = alpha * op(M_rhs1) * v_rhs2 + beta * vs_lhs</tt> (BLAS xGEMV)<br>
  *
- * The only methods that have to be overridden are <tt>space_rows()</tt>, <tt>space_cols()</tt>
- * and the single <tt>Vp_StMtV()</tt> method shown above.  This is to allow fast prototyping of
+ * The only methods that have to be overridden are \c space_cols(), \c space_rows()
+ * and the single \c Vp_StMtV() method shown above.  This is to allow fast prototyping of
  * matrix subclasses and for postponement of writting specialized methods of other time
  * critical operations until later if they are needed.
+ *
+ * The vector space objects returned by the methods \c space_cols() and \c space_rows() 
+ * are specifically bound to this matrix object.  The vector space objects returned should
+ * only be considered to be transient and may become invalid if \c this is modified in some
+ * significant way (but not through this <tt>%MatrixWithOp</tt> interface obviously).
  *
  * Most of the Level-1 through Level-3 BLAS methods should not be called directly by clients,
  * but instead be called through the \ref MatrixWithOp_func_grp "provided non-member functions".
@@ -115,47 +120,19 @@ public:
 	class IncompatibleMatrices : public std::logic_error
 	{public: IncompatibleMatrices(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/** @name Vector spaces for the rows and columns of the matrix.
-	 *
-	 * Note that the vectors space objects returned are specifically bound to this
-	 * matrix object.  The vector space objects returned should only be considered
-	 * to be transient and may become invalid if <tt>this</tt> is modified in some way
-	 * (but not through the MatrixWithOp interface obviously).
-	 */
+	/** @name Vector spaces for the rows and columns of the matrix */
 	//@{
-
-	/// Vector space for vectors that are compatible with the rows of the matrix.
-	virtual const VectorSpace& space_rows() const = 0;
 
 	/// Vector space for vectors that are compatible with the columns of the matrix.
 	virtual const VectorSpace& space_cols() const = 0;
 
+	/// Vector space for vectors that are compatible with the rows of the matrix.
+	virtual const VectorSpace& space_rows() const = 0;
+
 	//@}
 
-	///
-	/** Create a transient constant sub-matrix view of this matrix (if supported).
-	 *
-	 * This view is to be used immediatly and then discarded.
-	 *
-	 * This method can only be expected to return <tt>return.get() != NULL</tt> if
-	 * <tt>this->space_cols().sub_space(row_rng) != NULL</tt> and
-	 * <tt>this->space_rows().sub_space(col_rng) != NULL</tt>.  The default
-	 * implementation returns <tt>return.get() == NULL</tt> unless <tt>row_rng</tt> and
-	 * <tt>col_rng</tt> select the whole matrix. (i.e. <tt>row_rng = [1,this->rows()]</tt>
-	 * or <tt>row_rng.full_range() == true</tt>.
-	 *
-	 * ToDo: Create a default matrix subclass similar to VectorWithOpSubView that can
-	 * handle arbitrary sub-views!
-	 */
-	virtual mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
-	
-	///
-	/** Inlined implementation calls <tt>this->sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
-	 */
-	mat_ptr_t sub_view(
-		const index_type& rl, const index_type& ru
-		,const index_type& cl, const index_type& cu
-		) const;
+	/** @name Minimal modifying methods */
+	//@{
 
 	///
 	/** Zero out the matrix.
@@ -178,6 +155,11 @@ public:
 	  */
 	virtual MatrixWithOp& operator=(const MatrixWithOp& M);
 
+	//@}
+
+	/** @name Output */
+	//@{
+
 	///
 	/** Virtual output function.
 	  *
@@ -187,7 +169,39 @@ public:
 	  */
 	virtual std::ostream& output(std::ostream& out) const;
 
-	// /////////////////////////////////////////////////////
+	//@}
+
+	/** @name Sub-matrix views */
+	//@{
+
+	///
+	/** Create a transient constant sub-matrix view of this matrix (if supported).
+	 *
+	 * This view is to be used immediatly and then discarded.
+	 *
+	 * This method can only be expected to return <tt>return.get() != NULL</tt> if
+	 * <tt>this->space_cols().sub_space(row_rng) != NULL</tt> and
+	 * <tt>this->space_rows().sub_space(col_rng) != NULL</tt>.
+	 *
+	 * It is allows for a matrix implementation to return <tt>return.get() == NULL</tt>
+	 * for any arbitrary subview.
+	 *
+	 * The default implementation uses the matrix subclass \c MatrixWithOpSubView
+	 * and therefore, can return any arbitrary subview.  More specialized implementations
+	 * may want to restrict the subview that can be created somewhat.
+	 */
+	virtual mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
+	
+	///
+	/** Inlined implementation calls <tt>this->sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
+	 */
+	mat_ptr_t sub_view(
+		const index_type& rl, const index_type& ru
+		,const index_type& cl, const index_type& cu
+		) const;
+
+	//@}
+
 	/** @name Level-1 BLAS */
 	//@{
 
@@ -247,7 +261,6 @@ public:
 	//		end Level-1 BLAS
 	//@}
 
-	// ////////////////////////////////////////////////////
 	/** @name Level-2 BLAS */
 	//@{
 
@@ -305,7 +318,6 @@ public:
 
 	//@}
 
-	// ////////////////////////////////////////////////////
 	/** @name Level-3 BLAS */
 	//@{
 
@@ -382,8 +394,7 @@ public:
 
 };	// end class MatrixWithOp
 
-// ///////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////
 /** \defgroup MatrixWithOp_func_grp MatrixWithOp non-member functions that call virtual functions.
   *
   * These allow nonmember functions to act like virtual functions.  If any of these methods
@@ -394,7 +405,6 @@ public:
   */
 //@{
 
-// /////////////////////////////////////////////////////
 /** @name Level-1 BLAS */
 //@{
 
@@ -428,7 +438,6 @@ void Mp_StPtMtP(
 //		end Level-1 BLAS
 //@}
 
-// ////////////////////////////////////////////////////
 /** @name Level-2 BLAS */
 //@{
 
@@ -487,7 +496,6 @@ inline value_type transVtMtV(
 //		end Level-2 BLAS
 //@}
 
-// ////////////////////////////////////////////////////
 /** @name Level-3 BLAS */
 //@{
 
