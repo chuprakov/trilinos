@@ -269,6 +269,7 @@ bool EvalNewPointStd_Step::do_step(
 	}
 	else {
 		// Unconstrained problem
+		Z_iq = &s.Z();
 		dyn_cast<MatrixSymIdent>(Z_iq->set_k(0)).initialize( nlp.space_x() );
 		s.equ_decomp(Range1D::Invalid);
 		s.equ_undecomp(Range1D::Invalid);
