@@ -30,14 +30,12 @@ namespace NLPInterfacePack {
  * useful in reduced space SQP-type and other related optimization algorithms.
  *
  * Specifically, the variables are partitioned into dependent and independent
- * sets <tt>x = [ x_dep'  x_indep' ]'</tt> and Jacobians of the constraints <tt>c(x)</tt>
- * and <tt>h(x)</tt> at the point <tt>x</tt> are:
+ * sets <tt>x = [ x_dep'  x_indep' ]'</tt> and Jacobians of the constraints
+ * <tt>c(x)</tt> at the point <tt>x</tt> are:
  \verbatim
 
 	del(c,x) = Gc' = [ del(c(con_decomp))   ] = [ GcD' ] = [ GcDD'  GcDI' ] = [ C  N ]
                      [ del(c(con_undecomp)) ]   [ GcU' ]   [ GcUD'  GcUI' ]   [ E  F ]
-
-	del(h,x) = Gh' = [ GhD'  GhI' ]
 
     where:
       C <: R^(r x r) is nonsingular
@@ -54,10 +52,9 @@ namespace NLPInterfacePack {
  * sub-spaces).
  *
  * Free access to solves with the basis <tt>C</tt> is not given however and instead this interface
- * computes, for the current point \a x, the direct sensitivity matrices <tt>D = -inv(C)*N</tt>,
- * <tt>Uz = F + E * D</tt>, <tt>Vz = GhI' + GhD'* D</tt>, the auxiliary matrices
- * <tt>GcU = [ GcUD; GcUI ] = [ E';  F' ]</tt> and <tt>Gh = [ GhD;  GhI ]</tt>, and the Newton
- * step <tt>py = -inv(C)*c(con_decomp)</tt>.
+ * computes, for the current point \a x, the direct sensitivity matrice <tt>D = -inv(C)*N</tt>,
+ * the auxiliary matrices <tt>Uz = F + E * D</tt> and <tt>GcU = [ GcUD; GcUI ] = [ E';  F' ]</tt>,
+ * and the Newton step <tt>py = -inv(C)*c(con_decomp)</tt>.
  * In general, linear solves with the transpose with <tt>C</tt> are not possible and
  * therefore are not avalible.  A number of very specialized applications can only
  * provide this information but this is all that is needed by many numerical
@@ -70,15 +67,14 @@ namespace NLPInterfacePack {
  * decomposed and undecomposed equality constraints are \c con_decomp() and \c con_undecomp().
  * Note that \c con_undecomp() will return an invalid range if there are no undecomposed equalities.
  *
- * Note that the matrix objects returned from \c factory_GcU(), \c factory_D(), \c factory_Uz(),
- * \c factory_Vz(), \c factory_GcUD() and \c factory_GhD() can not be expected to be usable until they are
+ * Note that the matrix objects returned from \c factory_GcU(), \c factory_D()
+ * and \c factory_Uz() can not be expected to be usable until they are
  * passed to the calculation routines or have been intialized in some other way.
  *
  * <b>Subclass Developer's Notes:</b>
  *
  * The default implementation of this interface assumes that there are no undecomposed
- * equality constraints (i.e. <tt>this->con_decomp().size() == this->m()) and no general
- * inequality constraints (i.e. <tt>this->mI() == 0).
+ * equality constraints (i.e. <tt>this->con_decomp().size() == this->m()).
  *
  * ToDo: Finish Documentation!
  */
@@ -113,7 +109,7 @@ public:
 	//@{
 
 	///
-	/** Returns the number of decomposed equality constraints (r <= m).
+	/** Returns the number of decomposed equality constraints (<tt>r <= m</tt>).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -193,20 +189,6 @@ public:
 	 */
 	virtual const mat_fcty_ptr_t factory_GcU() const;
 	///
-	/** Return a matrix factory object for creating <tt>Gh</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * The default implementation is to return <tt>return.get() == NULL</tt>.
-	 * This is the proper implementation when <tt>m() == r()</tt>.  Moreover, the returned
-	 * matrix object from <tt>this->factory_Gh()->create()->get_sub_view(rng,Range1D())</tt>
-	 * must be non-null for <tt>rng == this->var_dep()</tt> or <tt>rng == this->var_indep()</tt>.
-	 * This gives access to the matrices <tt>GhD</tt> and <tt>GhI</tt> as shown above.
-	 */
-	virtual const mat_fcty_ptr_t factory_Gh() const;
-	///
 	/** Return a matrix factory object for <tt>D = -inv(C)*N</tt> {abstract}.
 	 *
 	 * Preconditions:<ul>
@@ -228,19 +210,6 @@ public:
 	 */
 	virtual const mat_fcty_ptr_t factory_Uz() const;
 	///
-	/** Return a matrix factory object for <tt>Vz = GhI' + GhD'* D</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * The default implementation is to return <tt>return.get() == NULL</tt>.
-	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
-	 * when <tt>m() > r()</tt> this method must be overridden to return a
-	 * non-null matrix factory object.
-	 */
-	virtual const mat_fcty_ptr_t factory_Vz() const;
-	///
 	/** Return a matrix factory object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
 	 *
 	 * This matrix factory object is designed to create mutable matrix objects compatible
@@ -254,24 +223,6 @@ public:
 	 * non-null matrix factory object.
 	 */
 	virtual const mat_fcty_ptr_t factory_GcUD() const;
-	///
-	/** Return a matrix factory object for a mutable matrix compatible with <tt>Gh(var_dep,:)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * This matrix factory object is designed to create mutable matrix objects compatible
-	 * with <tt>Gh(var_dep,:)</tt>.  For example, a matrix object <tt>Vy</tt> created by this matrix factory
-	 * can be used to compute <tt>Vy = Gh(var_dep,:)' - Gh(var_indep,:)'*D'</tt> (this is needed
-	 * by a orthogonal range/null decomposition.
-	 *
-	 * The default implementation is to return <tt>return.get() == NULL</tt>.
-	 * This is the correct implementation when <tt>mI() == 0</tt>.  However,
-	 * when <tt>mI() > 0</tt> this method must be overridden to return a
-	 * non-null matrix factory object.
-	 */
-	virtual const mat_fcty_ptr_t factory_GhD() const;
 
 	///
 	/** Returns a matrix factory for the result of <tt>J = D'*D</tt>
@@ -309,10 +260,6 @@ public:
 	 *	@param  recalc_c
 	 *				[in] If \c true then \c c will be recomputed at \c x.
 	 *              If \c false then <tt>c</tt> will not be recomputed but will be used as stated above.
-	 *  @param  h   [out] (dim == mI()) Value of the general inequality constraints \a h(x).
-	 *              If <tt>mI() == 0</tt> then \c h should be set to \c NULL on input.
-	 *              If <tt>h == NULL</tt> then this value will not be computed.  If <tt>h!=NULL</tt> this
-	 *              this vector should have been created by <tt>this->space_h()->create_member()</tt>.
 	 *
 	 *	@param	Gf	[out] (dim == n()) Gradient of <tt>f(x)</tt>.
 	 *				If <tt>Gf == NULL</tt> then this quantity is not computed.  If <tt>Gf!=NULL</tt> this
@@ -333,10 +280,6 @@ public:
 	 *              If m() == r() then <tt>GcU</tt> should be set to <tt>NULL</tt> on input.
 	 *              If GcU == NULL then this quantitiy is not computed.  If <tt>!=NULL</tt> this this matrix
 	 *              should have been created by <tt>this->factory_GcU()->create()</tt>.
-	 *  @param  Gh  [out] (dim = n x (m()-r())) Auxiliary jacobian matrix <tt>del(h,x)</tt>.
-	 *              If mI() == 0 then <tt>Gh</tt> should be set to <tt>NULL</tt> on input.
-	 *              If Gh == NULL then this quantitiy is not computed.  If <tt>!=NULL</tt> this this matrix
-	 *              should have been created by <tt>this->factory_Gh()->create()</tt>.
 	 *	@param	D   [out] (dim = r() x (n()-r())) <tt>D = -inv(C)*N</tt>, which is the direct
 	 *              sensitivity of the constraints to the independent variables.
 	 *				If D == NULL then this quantity is not computed.  If <tt>!=NULL</tt> this this matrix
@@ -346,11 +289,6 @@ public:
 	 *              <tt>NULL</tt> on input.  If <tt>Uz==NULL</tt> then this quantity is not computed.
 	 *              If <tt>!=NULL</tt> this this matrix should have been created by
 	 *              <tt>this->factory_Uz()->create()</tt>.
-	 *	@param	Vz   [out] (dim = mI() x (n()-r())) <tt>Vz = GhI' + GhD' * D</tt>, which is the an
-	 *              auxiliary sensitivity matrix.  If <tt>mI() == 0</tt> then <tt>Vz</tt> should be set to
-	 *              <tt>NULL</tt> on input.  If <tt>Vz==NULL</tt> then this quantity is not computed.
-	 *              If <tt>!=NULL</tt> this this matrix should have been created by
-	 *              <tt>this->factory_Vz()->create()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -359,27 +297,24 @@ public:
 	 */
 	virtual void calc_point(
 		const Vector     &x
-		,value_type            *f
+		,value_type      *f
 		,VectorMutable   *c
-		,bool                  recalc_c
-		,VectorMutable   *h
+		,bool            recalc_c
 		,VectorMutable   *Gf
 		,VectorMutable   *py
 		,VectorMutable   *rGf
-		,MatrixOp          *GcU
-		,MatrixOp          *Gh
-		,MatrixOp          *D
-		,MatrixOp          *Uz
-		,MatrixOp          *Vz
+		,MatrixOp        *GcU
+		,MatrixOp        *D
+		,MatrixOp        *Uz
 		) const = 0;
 
 	///
 	/** Calculate an approximate newton step given the Jacobian computed
-	 * for the last call to calc_point(,,,).
+	 * for the last call to <tt>calc_point()</tt>.
 	 *
 	 * The idea behind this method is that with some applications it may be
 	 * much cheaper to compute an approximate Newton step for the constraints
-	 * given information computed during the last call to \Ref{calc_point}<tt>(...)</tt>.
+	 * given information computed during the last call to <tt>calc_point()</tt>.
 	 * It is assumed that this approximate solution <tt>py</tt> will still be a
 	 * descent direction for <tt>c(x)</tt>.  Some subclasses may have to perform an equal
 	 * amount of work as <tt>calc_point(...)</tt> to perform this calculation but those
@@ -404,7 +339,7 @@ public:
 	virtual void calc_semi_newton_step(
 		const Vector    &x
 		,VectorMutable  *c
-		,bool                 recalc_c
+		,bool           recalc_c
 		,VectorMutable  *py
 		) const = 0;
 
@@ -425,22 +360,6 @@ public:
 	  * </ul>
 	  */
 	void initialize(bool test_setup);
-	/// Returns <tt>return.get() == NULL</tt>.
-	vec_space_ptr_t space_h() const;
-	/// Throws exception.
-	const Vector& hl() const;
-	/// Throws exception.
-	const Vector& hu() const;
-
-	//@}
-
-protected:
-
-	/** @name Overridden from NLP */
-	//@{
-	
-	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
 

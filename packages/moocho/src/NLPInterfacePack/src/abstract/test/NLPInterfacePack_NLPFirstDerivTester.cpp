@@ -56,15 +56,14 @@ NLPFirstDerivTester::NLPFirstDerivTester(
 {}
 
 bool NLPFirstDerivTester::finite_diff_check(
-	NLP                     *nlp
+	NLP               *nlp
 	,const Vector     &xo
 	,const Vector     *xl
 	,const Vector     *xu
-	,const MatrixOp     *Gc
-	,const MatrixOp     *Gh
+	,const MatrixOp   *Gc
 	,const Vector     *Gf
-	,bool                   print_all_warnings
-	,std::ostream           *out
+	,bool             print_all_warnings
+	,std::ostream     *out
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -72,8 +71,7 @@ bool NLPFirstDerivTester::finite_diff_check(
 
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 
 	// ///////////////////////////////////
 	// Validate the input
@@ -82,10 +80,6 @@ bool NLPFirstDerivTester::finite_diff_check(
 		!m && Gc, std::invalid_argument
 		,"NLPFirstDerivTester::finite_diff_check(...) : "
 		"Error, Gc must be NULL if m == 0" );
-	THROW_EXCEPTION(
-		!mI && Gh, std::invalid_argument
-		,"NLPFirstDerivTester::finite_diff_check(...) : "
-		"Error, Gh must be NULL if mI == 0" );
 
 	assert_print_nan_inf(xo, "xo",true,out);
 	if(Gf)
@@ -97,11 +91,9 @@ bool NLPFirstDerivTester::finite_diff_check(
 
 	switch(fd_testing_method_) {
 		case FD_COMPUTE_ALL:
-			return fd_check_all(nlp,xo,xl,xu,Gc,Gh,Gf
-				,print_all_warnings,out);
+			return fd_check_all(nlp,xo,xl,xu,Gc,Gf,print_all_warnings,out);
 		case FD_DIRECTIONAL:
-			return fd_directional_check(nlp,xo,xl,xu,Gc,Gh,Gf
-				,print_all_warnings,out);
+			return fd_directional_check(nlp,xo,xl,xu,Gc,Gf,print_all_warnings,out);
 		default:
 			assert(0);
 	}
@@ -120,15 +112,14 @@ bool NLPFirstDerivTester::finite_diff_check(
 // private
 
 bool NLPFirstDerivTester::fd_check_all(
-	NLP                     *nlp
+	NLP               *nlp
 	,const Vector     &xo
 	,const Vector     *xl
 	,const Vector     *xu
-	,const MatrixOp     *Gc
-	,const MatrixOp     *Gh
+	,const MatrixOp   *Gc
 	,const Vector     *Gf
-	,bool                   print_all_warnings
-	,std::ostream           *out
+	,bool             print_all_warnings
+	,std::ostream     *out
 	) const
 {
 	using std::setw;
@@ -150,16 +141,14 @@ bool NLPFirstDerivTester::fd_check_all(
 
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 
 	// //////////////////////////////////////////////
 	// Validate the input
 
 	NLP::vec_space_ptr_t
 		space_x = nlp->space_x(),
-		space_c = nlp->space_c(),
-		space_h = nlp->space_h();
+		space_c = nlp->space_c();
 
 	const CalcFiniteDiffProd
 		&fd_deriv_prod = this->calc_fd_prod();
@@ -170,8 +159,8 @@ bool NLPFirstDerivTester::fd_check_all(
 
 	if(out)
 		*out
-			<< "\nComparing Gf, Gc and/or Gh with finite-difference values "
-				"FDGf, FDGc and/or FDGh one variable i at a time ...\n";
+			<< "\nComparing Gf and/or Gc with finite-difference values "
+				"FDGf and/or FDGc one variable i at a time ...\n";
 
 	value_type  max_Gf_warning_viol = 0.0;
 	int         num_Gf_warning_viol = 0;
@@ -181,10 +170,7 @@ bool NLPFirstDerivTester::fd_check_all(
 	VectorSpace::vec_mut_ptr_t
 		e_i       = space_x->create_member(),
 		Gc_i      = ( Gc ? space_c->create_member()  : rcp::null ),
-		FDGc_i    = ( Gc ? space_c->create_member()  : rcp::null ),
-		Gh_i      = ( Gh ? space_c->create_member()  : rcp::null ),
-		FDGh_i    = ( Gh ? space_c->create_member()  : rcp::null );
-
+		FDGc_i    = ( Gc ? space_c->create_member()  : rcp::null );
 	*e_i = 0.0;
 
 	for( size_type i = 1; i <= n; ++ i ) {
@@ -195,8 +181,6 @@ bool NLPFirstDerivTester::fd_check_all(
 			Gf_i = Gf ? Gf->get_ele(i) : 0.0;
 		if(Gc)
 			V_MtV( Gc_i.get(), *Gc, BLAS_Cpp::trans, eta_i() );
-		if(Gh)
-			V_MtV( Gh_i.get(), *Gh, BLAS_Cpp::trans, eta_i() );
 		// Compute finite difference values
 		value_type
 			FDGf_i;
@@ -205,12 +189,10 @@ bool NLPFirstDerivTester::fd_check_all(
 			,*e_i
 			,NULL // fo
 			,NULL // co
-			,NULL // ho
 			,true // check_nan_inf
 			,nlp
 			,Gf ? &FDGf_i : NULL
 			,Gc ? FDGc_i.get() : NULL
-			,Gh ? FDGc_i.get() : NULL
 			,out
 			);
 		if( !preformed_fd ) {
@@ -284,10 +266,6 @@ bool NLPFirstDerivTester::fd_check_all(
 						<< "exceeded warning_tol = " << warning_tol() << endl;
 			}
 		}
-		// Gh
-		if(Gh) {
-			assert(0); // ToDo: Implement for general inequalities!
-		}
 		e_i->set_ele(i,0.0);
 	}
 	if(out && num_Gf_warning_viol)
@@ -313,15 +291,14 @@ bool NLPFirstDerivTester::fd_check_all(
 }
 
 bool NLPFirstDerivTester::fd_directional_check(
-	NLP                     *nlp
+	NLP               *nlp
 	,const Vector     &xo
 	,const Vector     *xl
 	,const Vector     *xu
-	,const MatrixOp     *Gc
-	,const MatrixOp     *Gh
+	,const MatrixOp   *Gc
 	,const Vector     *Gf
-	,bool                   print_all_warnings
-	,std::ostream           *out
+	,bool             print_all_warnings
+	,std::ostream     *out
 	) const
 {
 	using std::setw;
@@ -343,16 +320,14 @@ bool NLPFirstDerivTester::fd_directional_check(
 
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 
 	// //////////////////////////////////////////////
 	// Validate the input
 
 	NLP::vec_space_ptr_t
 		space_x = nlp->space_x(),
-		space_c = nlp->space_c(),
-		space_h = nlp->space_h();
+		space_c = nlp->space_c();
 
 	const CalcFiniteDiffProd
 		&fd_deriv_prod = this->calc_fd_prod();
@@ -363,8 +338,8 @@ bool NLPFirstDerivTester::fd_directional_check(
 
 	if(out)
 		*out
-			<< "\nComparing products Gf'*y Gc'*y and/or Gh'*y with finite difference values "
-				" FDGf'*y, FDGc'*y and/or FDGh'*y for random y's ...\n";
+			<< "\nComparing products Gf'*y and/or Gc'*y with finite difference values "
+				" FDGf'*y and/or FDGc'*y for random y's ...\n";
 
 	value_type  max_Gf_warning_viol = 0.0;
 	int         num_Gf_warning_viol = 0;
@@ -372,9 +347,7 @@ bool NLPFirstDerivTester::fd_directional_check(
 	VectorSpace::vec_mut_ptr_t
 		y         = space_x->create_member(),
 		Gc_prod   = ( Gc ? space_c->create_member()  : rcp::null ),
-		FDGc_prod = ( Gc ? space_c->create_member()  : rcp::null ),
-		Gh_prod   = ( Gh ? space_c->create_member()  : rcp::null ),
-		FDGh_prod = ( Gh ? space_c->create_member()  : rcp::null );
+		FDGc_prod = ( Gc ? space_c->create_member()  : rcp::null );
 
 	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
 		random_vector( rand_y_l, rand_y_u, y.get() );
@@ -389,8 +362,6 @@ bool NLPFirstDerivTester::fd_directional_check(
 			Gf_y = Gf ? dot( *Gf, *y ) : 0.0;
 		if(Gc)
 			V_MtV( Gc_prod.get(), *Gc, BLAS_Cpp::trans, *y );
-		if(Gh)
-			V_MtV( Gh_prod.get(), *Gh, BLAS_Cpp::trans, *y );
 		// Compute finite difference values
 		value_type
 			FDGf_y;
@@ -399,12 +370,10 @@ bool NLPFirstDerivTester::fd_directional_check(
 			,*y
 			,NULL // fo
 			,NULL // co
-			,NULL // ho
 			,true // check_nan_inf
 			,nlp
 			,Gf ? &FDGf_y : NULL
 			,Gc ? FDGc_prod.get() : NULL
-			,Gh ? FDGc_prod.get() : NULL
 			,out
 			);
 		if( !preformed_fd ) {
@@ -473,10 +442,6 @@ bool NLPFirstDerivTester::fd_directional_check(
 						<< calc_err << endl
 						<< "exceeded warning_tol = " << warning_tol() << endl;
 			}
-		}
-		// Gh
-		if(Gh) {
-			assert(0); // ToDo: Implement for general inequalities!
 		}
 	}
 	if(out && num_Gf_warning_viol)

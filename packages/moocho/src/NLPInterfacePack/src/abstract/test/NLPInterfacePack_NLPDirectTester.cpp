@@ -48,8 +48,6 @@ NLPDirectTester::NLPDirectTester(
 	,value_type               Gf_error_tol
 	,value_type               Gc_warning_tol
 	,value_type               Gc_error_tol
-	,value_type               Gh_warning_tol
-	,value_type               Gh_error_tol
 	,size_type                num_fd_directions
 	)
 	:calc_fd_prod_(calc_fd_prod)
@@ -59,28 +57,23 @@ NLPDirectTester::NLPDirectTester(
 	,Gf_error_tol_(Gf_error_tol)
 	,Gc_warning_tol_(Gc_warning_tol)
 	,Gc_error_tol_(Gc_error_tol)
-	,Gh_warning_tol_(Gh_warning_tol)
-	,Gh_error_tol_(Gh_error_tol)
 	,num_fd_directions_(num_fd_directions)
 {}
 
 bool NLPDirectTester::finite_diff_check(
-	NLPDirect     *nlp
+	NLPDirect         *nlp
 	,const Vector     &xo
 	,const Vector     *xl
 	,const Vector     *xu
 	,const Vector     *c
-	,const Vector     *h
 	,const Vector     *Gf
 	,const Vector     *py
 	,const Vector     *rGf
-	,const MatrixOp     *GcU
-	,const MatrixOp     *Gh
-	,const MatrixOp     *D
-	,const MatrixOp     *Uz
-	,const MatrixOp     *Vz
-	,bool                   print_all_warnings
-	,std::ostream           *out
+	,const MatrixOp   *GcU
+	,const MatrixOp   *D
+	,const MatrixOp   *Uz
+	,bool             print_all_warnings
+	,std::ostream     *out
 	) const
 {
 
@@ -117,8 +110,7 @@ bool NLPDirectTester::finite_diff_check(
 
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 	const Range1D
 		var_dep      = nlp->var_dep(),
 		var_indep    = nlp->var_indep(),
@@ -126,8 +118,7 @@ bool NLPDirectTester::finite_diff_check(
 		con_undecomp = nlp->con_undecomp();
 	NLP::vec_space_ptr_t
 		space_x = nlp->space_x(),
-		space_c = nlp->space_c(),
-		space_h = nlp->space_h();
+		space_c = nlp->space_c();
 
 	// //////////////////////////////////////////////
 	// Validate the input
@@ -172,8 +163,7 @@ bool NLPDirectTester::finite_diff_check(
 						FDGf_y;
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu
-						,*y,NULL,NULL,NULL,true,nlp
-						,&FDGf_y,NULL,NULL,out
+						,*y,NULL,NULL,true,nlp,&FDGf_y,NULL,out
 						);
 					if( !preformed_fd )
 						goto FD_NOT_PREFORMED;
@@ -244,7 +234,7 @@ bool NLPDirectTester::finite_diff_check(
 			t2 = nlp->space_c()->create_member();
 		preformed_fd = fd_deriv_prod.calc_deriv_product(
 			xo,xl,xu
-			,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
+			,*t1,NULL,NULL,true,nlp,NULL,t2.get(),out
 			);
 		if( !preformed_fd )
 			goto FD_NOT_PREFORMED;
@@ -316,7 +306,7 @@ bool NLPDirectTester::finite_diff_check(
 					V_StV( &t(1,m), -1.0, D->col(s) );
 					// T(:,s) =  FDA' * t
 					fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,t(),nlp,NULL,&T.col(s),out);
+						xo,xl,xu,t(),NULL,NULL,nlp,NULL,&T.col(s),out);
 				}				
 
 				// Compare T \approx FDN
@@ -372,7 +362,7 @@ bool NLPDirectTester::finite_diff_check(
 					// t2 = FDA' * t1  (  FDN * y ) <: R^(m)
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu
-						,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
+						,*t1,NULL,NULL,true,nlp,NULL,t2.get(),out
 						);
 					if( !preformed_fd )
 						goto FD_NOT_PREFORMED;
@@ -382,7 +372,7 @@ bool NLPDirectTester::finite_diff_check(
 					// t3 = FDA' * t1  ( -FDC * D * y ) <: R^(m)
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu
-						,*t1,NULL,NULL,NULL,true,nlp,NULL,t3.get(),NULL,out
+						,*t1,NULL,NULL,true,nlp,NULL,t3.get(),out
 						);
 					// Compare t2 \approx t3
 					const value_type
@@ -477,13 +467,6 @@ bool NLPDirectTester::finite_diff_check(
 		assert(0); // ToDo: Implement!
 	}
 	
-	// ///////////////////////////////////////////////////
-	// (6) Check Gh, and/or Vz (for general inequalities)
-
-	if(Gh || Vz) {
-		assert(0); // ToDo: Implement!
-	}
-
 FD_NOT_PREFORMED:
 
 	if(!preformed_fd) {

@@ -86,10 +86,10 @@ public:
 	 * </ul>
 	 */
 	bool test_interface(
-		NLP                           *nlp
+		NLP                     *nlp
 		,const Vector           &xo
-		,bool                         print_all_warnings
-		,std::ostream                 *out
+		,bool                   print_all_warnings
+		,std::ostream           *out
 		);
 
 }; // end class NLPTester

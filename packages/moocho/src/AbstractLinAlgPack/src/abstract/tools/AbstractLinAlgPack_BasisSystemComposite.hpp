@@ -26,8 +26,7 @@ namespace AbstractLinAlgPack {
 /** Simple <tt>%BasisSystem</tt> subclass the case where the client sets up seperate \c C and \c N matrices.
  *
  * This interface is based an implementation where \c C and \c N are manipulated by the application and
- * are concatenated into <tt>Gc = [ C'; N' ]</tt>.  Here, there are no undecomposed equality, or decomposed
- * inequality constraints allowed.
+ * are concatenated into <tt>Gc = [ C'; N' ]</tt>.  Here, there are no undecomposed equality constraints allowed.
  *
  * For this implementation, the basis matrix \c C must override the method
  * <tt>MatrixOp::operator=()</tt> for correct behavior.  A smart implementation of the
@@ -45,7 +44,7 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const MemMngPack::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>                           C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>                               C_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<MatrixOp>                                      N_ptr_t;
 
@@ -138,7 +137,7 @@ public:
 		,const VectorSpace::space_ptr_t   &space_c
 		,const C_ptr_t                    &C
 		,const N_ptr_t                    &N
-		,MatrixOp                     *Gc
+		,MatrixOp                         *Gc
 		);
 
 	///
@@ -157,7 +156,7 @@ public:
 	 */
 	static void get_C_N(
 	    MatrixOp               *Gc
-		,MatrixOpNonsing   **C
+		,MatrixOpNonsing       **C
 		,MatrixOp              **N
 		);
 
@@ -184,7 +183,7 @@ public:
 	 */
 	static void get_C_N(
 		const MatrixOp               &Gc
-		,const MatrixOpNonsing   **C
+		,const MatrixOpNonsing       **C
 		,const MatrixOp              **N
 		);
 
@@ -218,8 +217,6 @@ public:
 		,const mat_sym_fcty_ptr_t            &factory_transDtD
 		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
-		,const VectorSpace::space_ptr_t      &space_h          = MemMngPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP     = MemMngPack::null
 		);
 	
 	///
@@ -236,24 +233,11 @@ public:
 	 *                    \c D.  If <tt>factory_D == NULL</tt> then an <tt>AbstractFactoryStd<></tt>
 	 *                    object will be used which calls <tt>space_xD->create_members(space_xI->dim())</tt>.
 	 *                    which in turn of course creates \c MultiVectorMutable objects.
-	 * @param  space_h    [in] Smart pointer to vector space for general inequality constraints.
-	 *                    It is allowed for <tt>space_h.get() == NULL</tt> in which case there
-	 *                    are no general inequality constriants allowed.
-	 * @param  factory_GhUP
-	 *                    [in] Smart pointer to factory object for projected matrix \c GhUP.
-	 *                    If <tt>space_h.get() == NULL</tt> then <tt>factory_GhUP.get()</tt>
-	 *                    must also be \c NULL.  Otherwise, if
-	 *                    <tt>space_h.get()!=NULL && factory_GhUP.get()==NULL</tt> then 
-	 *                    an <tt>AbstractFactoryStd<></tt> object will be used which calls
-	 *                    <tt>space_h->create_members(space_xI->dim())</tt>.
-	 *                    which in turn of course creates \c MultiVectorMutable objects.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>space_xD.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>space_xI.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>factory_C.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> [<tt>space_h.get() == NULL</tt>] <tt>factory_GhUp.get() == NULL</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -261,14 +245,8 @@ public:
 	 * <li> <tt>this->var_indep() == [space_xD->dim()+1,space_xD->dim()+space_xI->dim()</tt>
 	 * <li> <tt>this->equ_decomp() == [1,space_xD->dim()]</tt>
 	 * <li> <tt>this->equ_undecomp().size() == 0</tt>
-	 * <tt> <tt>this->inequ_decomp().size() == 0</tt>
-	 * <tt> [<tt>space_h.get() == NULL</tt>] <tt>this->equ_undecomp().size() == 0</tt>
-	 * <tt> [<tt>space_h.get() != NULL</tt>] <tt>this->equ_undecomp() == [1,space_h->dim()]</tt>
 	 * <li> <tt>this->factory_C().get() != NULL</tt>
 	 * <li> <tt>this->factory_D().get() != NULL</tt>
-	 * <tt> <tt>this->factory_GcUP().get() == NULL</tt>
-	 * <tt> [<tt>space_h.get() == NULL</tt>] <tt>this->factory_GhUP().get() == NULL</tt>
-	 * <tt> [<tt>space_h.get() != NULL</tt>] <tt>this->factory_GhUP().get() != NULL</tt>
 	 * </ul>
 	 */
 	void initialize(
@@ -280,8 +258,6 @@ public:
 		,const mat_sym_fcty_ptr_t            &factory_transDtD
 		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
-		,const VectorSpace::space_ptr_t      &space_h          = MemMngPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP     = MemMngPack::null
 		);
 
 	///
@@ -311,8 +287,6 @@ public:
 	const VectorSpace::space_ptr_t& space_x() const;
 	///
 	const VectorSpace::space_ptr_t& space_c() const;
-	///
-	const VectorSpace::space_ptr_t& space_h() const;
 
 	//@}
 
@@ -326,24 +300,10 @@ public:
 	 * interface and the <tt>M_StInvMtV()</tt> method.
 	 */
 	virtual void update_D(
-		const MatrixOpNonsing&  C
-		,const MatrixOp&            N
-		,MatrixOp*                  D
-		,EMatRelations                  mat_rel
-		) const;
-
-	///
-	/** Overridden by subclasses to update \c GhUP if a specialized implementation is needed.
-	 *
-	 * The default implementation just relies on the <tt>MultiVectorMutable</tt>
-	 * interface and the <tt>M_StInvMtV()</tt> method.
-	 */
-	virtual void update_GhUP(
-		const MatrixOpNonsing&  C
-		,const MatrixOp&            N
-		,const MatrixOp*            D
-		,MatrixOp*                  GhUP
-		,EMatRelations                  mat_rel
+		const MatrixOpNonsing       &C
+		,const MatrixOp             &N
+		,MatrixOp                   *D
+		,EMatRelations              mat_rel
 		) const;
 
 	//@}
@@ -356,23 +316,17 @@ public:
 	///
 	const mat_fcty_ptr_t factory_D() const;
 	///
-	const mat_fcty_ptr_t factory_GhUP() const;
-	///
 	Range1D var_dep() const;
 	///
 	Range1D var_indep() const;
 	///
-	Range1D inequ_undecomp() const;
-	///
 	void update_basis(
-		const MatrixOp*         Gc
-		,const MatrixOp*        Gh
-		,MatrixOpNonsing*   C
-		,MatrixOp*              D
-		,MatrixOp*              GcUP
-		,MatrixOp*              GhUP
-		,EMatRelations              mat_rel
-		,std::ostream               *out
+		const MatrixOp          *Gc
+		,MatrixOpNonsing        *C
+		,MatrixOp               *D
+		,MatrixOp               *GcUP
+		,EMatRelations          mat_rel
+		,std::ostream           *out
 		) const;
 
 	//@}
@@ -386,9 +340,6 @@ private:
 	VectorSpace::space_ptr_t   space_c_;
 	mat_nonsing_fcty_ptr_t     factory_C_;
 	mat_fcty_ptr_t             factory_D_;
-	VectorSpace::space_ptr_t   space_h_;
-	Range1D                    inequ_undecomp_;
-	mat_fcty_ptr_t             factory_GhUP_;
 #endif
 
 }; // end class BasisSystemComposite

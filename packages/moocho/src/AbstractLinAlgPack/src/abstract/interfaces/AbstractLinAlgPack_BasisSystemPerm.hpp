@@ -34,7 +34,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<Permutation> >   perm_fcty_ptr_t;
 
 	//@}
 
@@ -56,8 +56,6 @@ public:
 	virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
 	///
 	virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
-	///
-	virtual const perm_fcty_ptr_t   factory_P_inequ() const = 0;
 
 	//@}
 
@@ -74,16 +72,12 @@ public:
 		,const Range1D             &var_dep
 		,const Permutation         *P_equ
 		,const Range1D             *equ_decomp
-		,const Permutation         *P_inequ
-		,const Range1D             *inequ_decomp
-		,const MatrixOp        *Gc
-		,const MatrixOp        *Gh
-		,MatrixOpNonsing   *C
-		,MatrixOp              *D
-		,MatrixOp              *GcUP
-		,MatrixOp              *GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
-		,std::ostream               *out    = NULL
+		,const MatrixOp            *Gc
+		,MatrixOpNonsing           *C
+		,MatrixOp                  *D
+		,MatrixOp                  *GcUP
+		,EMatRelations             mat_rel = MATRICES_INDEP_IMPS
+		,std::ostream              *out    = NULL
 		) = 0;
 
 	///
@@ -92,22 +86,17 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void select_basis(
-		const Vector          *nu
-		,const Vector         *lambdaI
-		,MatrixOp               *Gc
-		,MatrixOp               *Gh
-		,Permutation                *P_var
-		,Range1D                    *var_dep
-		,Permutation                *P_equ
-		,Range1D                    *equ_decomp
-		,Permutation                *P_inequ
-		,Range1D                    *inequ_decomp
-		,MatrixOpNonsing    *C
-		,MatrixOp               *D
-		,MatrixOp               *GcUP
-		,MatrixOp               *GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
-		,std::ostream               *out    = NULL
+		const Vector               *nu
+		,MatrixOp                  *Gc
+		,Permutation               *P_var
+		,Range1D                   *var_dep
+		,Permutation               *P_equ
+		,Range1D                   *equ_decomp
+		,MatrixOpNonsing           *C
+		,MatrixOp                  *D
+		,MatrixOp                  *GcUP
+		,EMatRelations             mat_rel = MATRICES_INDEP_IMPS
+		,std::ostream              *out    = NULL
 		) = 0;
 	
 	//@}

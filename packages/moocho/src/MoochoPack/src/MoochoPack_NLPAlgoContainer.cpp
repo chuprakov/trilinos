@@ -31,7 +31,6 @@ void report_final_failure( const MoochoPack::NLPAlgoState& s, NLPInterfacePack::
 {
 	const AbstractLinAlgPack::size_type
 		m  = nlp->m(),
-		mI = nlp->mI(),
 		nb = nlp->num_bounded_x();
 	const IterationPack::IterQuantityAccess<AbstractLinAlgPack::VectorMutable>
 		&x_iq = s.x();
@@ -39,7 +38,6 @@ void report_final_failure( const MoochoPack::NLPAlgoState& s, NLPInterfacePack::
 		nlp->report_final_solution(
 			x_iq.get_k(0)                                                      // x
 			,( m  && s.lambda().updated_k(0) ) ? &s.lambda().get_k(0)  : NULL  // lambda
-			,( mI && s.lambda().updated_k(0) ) ? &s.lambdaI().get_k(0) : NULL  // lambdaI
 			,( nb && s.nu().updated_k(0)     ) ? &s.nu().get_k(0)      : NULL  // nu
 			, false                                                            // optimal = false
 			);

@@ -36,20 +36,11 @@ namespace NLPInterfacePack {
  * to equalities (<tt>convert_inequ_to_equ</tt>) and the permutation
  * of the entries according to the current basis selection.
  *
- *  When <tt>convert_inequ_to_equ == false</tt> then:
- \verbatim
-    
-    Gc = P_var * Gc_orig * P_equ'   (only if m_orig  > 0)
-
-    Gh = P_var * Gh_orig            (only if mI_orig > 0)
- \endverbatim
- * However, then <tt>convert_inequ_to_equ == true</tt> then:
  \verbatim
 
     Gc = P_var * [  Gc_orig    Gh_orig   ] * P_equ'
                  [     0          -I     ]
 
-    Gf_full = Empty
  \endverbatim
  * This class also comes with a default implementation for the
  * <tt>BasisSystemPerm</tt> object which is created by a
@@ -101,27 +92,20 @@ public:
 	NLPSerialPreprocessExplJac(
 		const basis_sys_fcty_ptr_t  &basis_sys_fcty  = MemMngPack::rcp(new BasisSystemFactoryStd())
 		,const factory_mat_ptr_t    &factory_Gc_full = MemMngPack::null
-		,const factory_mat_ptr_t    &factory_Gh_full = MemMngPack::null
 		);
 
 	///
-	/** Initialize with matrix factories for original matrices \c Gc and \c Gh.
+	/** Initialize with matrix factory for original matrices \c Gc.
 	 *
-	 * These matrix types will be used for \c AbstractLinAlgPack::MatrixPermAggr::mat_orig()
-	 * returned by the initialized \c Gc and \c Gh objects respectively.
+	 * This matrix type will be used for \c AbstractLinAlgPack::MatrixPermAggr::mat_orig()
+	 * returned by the initialized \c Gc.
 	 *
 	 * @param  factory_Gc_full
 	 *                [in] Smart pointer to matrix factory for \c Gc_full.  If
 	 *                <tt>factory_Gc_full.get() == NULL</tt> then the concrete matrix
 	 *                type ??? will be used as the default.
-	 * @param  factory_Gh_full
-	 *                [in] Smart pointer to matrix factory for \c Gh_full.  If
-	 *                <tt>factory_Gh_full.get() == NULL</tt> then the concrete matrix
-	 *                type ??? will be used as the default. */
-	void set_mat_factories(
-		const factory_mat_ptr_t     &factory_Gc_full
-		,const factory_mat_ptr_t    &factory_Gh_full
-		);
+	 */
+	void set_factory_Gc_full( const factory_mat_ptr_t &factory_Gc_full );
 
 	//@}
 
@@ -144,14 +128,10 @@ public:
 	
 	///
 	const mat_fcty_ptr_t factory_Gc() const;
-	///
-	const mat_fcty_ptr_t factory_Gh() const;
 	/// Calls <tt>basis_sys_fcty()->create()</tt>
 	const basis_sys_ptr_t basis_sys() const;
 	/// Validates the type of Gc is correct
 	void set_Gc(MatrixOp* Gc);
-	/// Validates the type of Gh is correct
-	void set_Gh(MatrixOp* Gh);
 
 	//@}
 
@@ -162,13 +142,11 @@ public:
 	bool get_next_basis(
 		Permutation*  P_var,   Range1D* var_dep
 		,Permutation* P_equ,   Range1D* equ_decomp
-		,Permutation* P_inequ, Range1D* inequ_decomp
 		);
 	///
 	void set_basis(
 		const Permutation   &P_var,   const Range1D  &var_dep
 		,const Permutation  *P_equ,   const Range1D  *equ_decomp
-		,const Permutation  *P_inequ, const Range1D  *inequ_decomp
 		);
 
 	//@}
@@ -181,11 +159,6 @@ protected:
 
 	///
 	void imp_calc_Gc(
-		const Vector& x, bool newx
-		,const FirstOrderInfo& first_order_info
-		) const;
-	///
-	void imp_calc_Gh(
 		const Vector& x, bool newx
 		,const FirstOrderInfo& first_order_info
 		) const;
@@ -406,9 +379,7 @@ private:
 	options_ptr_t options_;         // The options being used
 
 	factory_mat_ptr_t   factory_Gc_full_;
-	factory_mat_ptr_t   factory_Gh_full_;
 	mat_fcty_ptr_t      factory_Gc_;
-	mat_fcty_ptr_t      factory_Gh_;
 
 	mutable size_type   Gc_nz_orig_;    // Number of nonzeros in the original NLP Gc
 	mutable size_type   Gh_nz_orig_;    // Number of nonzeros in the original NLP Gh
@@ -422,7 +393,6 @@ private:
 	mutable FirstOrderExplInfo::jvect_t  Gh_jvect_orig_;
 
 	mutable bool                         Gc_perm_new_basis_updated_;  // Flag for if a new basis was set!
-	mutable bool                         Gh_perm_new_basis_updated_;  // Flag for if a new basis was set!
 
 	// ////////////////////////////
 	// Private member functions
@@ -459,9 +429,21 @@ inline
 const NLPSerialPreprocessExplJac::FirstOrderExplInfo
 NLPSerialPreprocessExplJac::first_order_expl_info() const
 {
+	const FirstOrderInfo &foi = this->first_order_info();
+	if(!foi.Gc)
+		return FirstOrderExplInfo(
+			NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+			,obj_grad_orig_info()
+			);
 	return FirstOrderExplInfo(
-		&Gc_nz_orig_,&Gc_val_orig_,&Gc_ivect_orig_,&Gc_jvect_orig_
-		,&Gh_nz_orig_,&Gh_val_orig_,&Gh_ivect_orig_,&Gh_jvect_orig_
+		&Gc_nz_orig_
+		,&Gc_val_orig_
+		,&Gc_ivect_orig_
+		,&Gc_jvect_orig_
+		,&Gh_nz_orig_
+		,&Gh_val_orig_
+		,&Gh_ivect_orig_
+		,&Gh_jvect_orig_
 		,obj_grad_orig_info()
 		);
 }

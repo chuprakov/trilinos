@@ -58,10 +58,10 @@ public:
 
 	///
 	void update_D(
-		const MatrixOpNonsing&  C
-		,const MatrixOp&            N
-		,MatrixOp*                  D
-		,EMatRelations                  mat_rel
+		const MatrixOpNonsing       &C
+		,const MatrixOp             &N
+		,MatrixOp                   *D
+		,EMatRelations               mat_rel
 		) const;
 
 	//@}

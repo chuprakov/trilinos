@@ -63,12 +63,6 @@ ExampleNLPFirstOrder::factory_Gc() const
 	return factory_Gc_;
 }
 
-const NLPFirstOrder::mat_fcty_ptr_t
-ExampleNLPFirstOrder::factory_Gh() const
-{
-	return MemMngPack::null;
-}
-
 const NLPFirstOrder::basis_sys_ptr_t
 ExampleNLPFirstOrder::basis_sys() const
 {
@@ -156,12 +150,6 @@ void ExampleNLPFirstOrder::imp_calc_Gc(
 			,first_order_info.Gc
 			);
 	}
-}
-
-void ExampleNLPFirstOrder::imp_calc_Gh(
-	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
-{
-	assert(0); // This should never be called!
 }
 
 }	// end namespace NLPInterfacePack

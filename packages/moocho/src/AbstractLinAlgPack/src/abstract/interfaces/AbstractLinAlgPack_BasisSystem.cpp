@@ -47,22 +47,7 @@ Range1D BasisSystem::equ_undecomp() const
 	return Range1D::Invalid;
 }
 
-Range1D BasisSystem::inequ_decomp() const
-{
-	return Range1D::Invalid;
-}
-
-Range1D BasisSystem::inequ_undecomp() const
-{
-	return Range1D::Invalid;
-}
-
 const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
-{
-	return MemMngPack::null;
-}
-
-const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GhUP() const
 {
 	return MemMngPack::null;
 }

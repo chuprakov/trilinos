@@ -53,17 +53,14 @@ DecompositionSystemTester::DecompositionSystemTester(
 {}
  
 bool DecompositionSystemTester::test_decomp_system(
-	const DecompositionSystem       &ds
+	const DecompositionSystem   &ds
 	,const MatrixOp             &Gc
-	,const MatrixOp             *Gh
 	,const MatrixOp             *Z
 	,const MatrixOp             *Y
-	,const MatrixOpNonsing  *R
+	,const MatrixOpNonsing      *R
 	,const MatrixOp             *Uz
 	,const MatrixOp             *Uy
-	,const MatrixOp             *Vz
-	,const MatrixOp             *Vy
-	,std::ostream                   *out
+	,std::ostream               *out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -123,10 +120,10 @@ bool DecompositionSystemTester::test_decomp_system(
 
 	// validate input matrices
 	THROW_EXCEPTION(
-	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL&&Vz==NULL&&Vy==NULL
+	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
 		, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
-		"at least one of Z, Y, R, Uz, Uy, Vz or Vy can not be NULL NULL!" );
+		"at least one of Z, Y, R, Uz or Uy can not be NULL!" );
 	THROW_EXCEPTION(
 		m == r && Uz != NULL, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
@@ -135,21 +132,11 @@ bool DecompositionSystemTester::test_decomp_system(
 		m == r && Uy != NULL, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
 		"Uy must be NULL if m==r is NULL!" );
-	THROW_EXCEPTION(
-	    Gh == NULL && Vz != NULL, std::invalid_argument
-		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
-		"Vz must be NULL if Gh is NULL!" );
-	THROW_EXCEPTION(
-	    Gh == NULL && Vy != NULL, std::invalid_argument
-		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
-		"Vy must be NULL if Gh is NULL!" );
 
 	// Print the input?
 	if( out && print_tests != PRINT_NONE ) {
 		if(dump_all()) {
 			*out << "\nGc =\n"       << Gc;
-			if(Gh)
-				*out << "\nGh =\n"   << *Gh;
 			if(Z)
 				*out << "\nZ =\n"    << *Z;
 			if(Y)
@@ -160,10 +147,6 @@ bool DecompositionSystemTester::test_decomp_system(
 				*out << "\nUz =\n"   << *Uz;
 			if(Uy)
 				*out << "\nUy =\n"   << *Uy;
-			if(Vz)
-				*out << "\nVz =\n"   << *Vz;
-			if(Vy)
-				*out << "\nVy =\n"   << *Vy;
 		}
 	}
 
@@ -216,7 +199,7 @@ bool DecompositionSystemTester::test_decomp_system(
 
 	if(out && print_tests >= PRINT_BASIC)
 		*out
-			<< "\n2) Check the compatibility of the vector spaces for Gc, Gh Z, Y, R, Uz, Uy, Vz and Vy  ...";
+			<< "\n2) Check the compatibility of the vector spaces for Gc, Z, Y, R, Uz and Uy  ...";
 	lresult = true;
 	
 	if(Z) {
@@ -344,63 +327,13 @@ bool DecompositionSystemTester::test_decomp_system(
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
-	if(Vz) {
-		if(out && print_tests >= PRINT_MORE)
-			*out
-				<< "\n2.f) Check consistency of the vector spaces for:"
-				<< "\n    Vz.space_cols() == Gh.space_cols() and Vz.space_rows() == ds.space_null()";
-		llresult = true;
-		if(out && print_tests >= PRINT_ALL)
-			*out << "\n\n2.f.1) Vz->space_cols().is_compatible(Gh->space_cols()) == true : ";
-		result = Vz->space_cols().is_compatible(Gh->space_cols());	
-		if(out && print_tests >= PRINT_ALL)
-			*out << ( result ? "passed" : "failed" )
-				 << std::endl;
-		if(!result) llresult = false;
-		if(out && print_tests >= PRINT_ALL)
-			*out << "\n\n2.f.2) Vz->space_cols().is_compatible(*ds.space_null()) == true : ";
-		result = Vz->space_rows().is_compatible(*ds.space_null());	
-		if(out && print_tests >= PRINT_ALL)
-			*out << ( result ? "passed" : "failed" )
-				 << std::endl;
-		if(!result) llresult = false;
-		if(!llresult) lresult = false;
-		if( out && print_tests == PRINT_MORE )
-			*out << " : " << ( llresult ? "passed" : "failed" );
-	}
-
-	if(Vy) {
-		if(out && print_tests >= PRINT_MORE)
-			*out
-				<< "\n2.g) Check consistency of the vector spaces for:"
-				<< "\n    Vy.space_cols() == Gh.space_cols() and Vy.space_rows() == ds.space_range()";
-		llresult = true;
-		if(out && print_tests >= PRINT_ALL)
-			*out << "\n\n2.g.1) Vy->space_cols().is_compatible(Gh->space_cols()) == true : ";
-		result = Vy->space_cols().is_compatible(Gh->space_cols());	
-		if(out && print_tests >= PRINT_ALL)
-			*out << ( result ? "passed" : "failed" )
-				 << std::endl;
-		if(!result) llresult = false;
-		if(out && print_tests >= PRINT_ALL)
-			*out << "\n\n2.g.2) Vy->space_cols().is_compatible(*ds.space_range()) == true : ";
-		result = Vy->space_rows().is_compatible(*ds.space_range());	
-		if(out && print_tests >= PRINT_ALL)
-			*out << ( result ? "passed" : "failed" )
-				 << std::endl;
-		if(!result) llresult = false;
-		if(!llresult) lresult = false;
-		if( out && print_tests == PRINT_MORE )
-			*out << " : " << ( llresult ? "passed" : "failed" );
-	}
-
 	if(!lresult) success = false;
 	if( out && print_tests == PRINT_BASIC )
 		*out << " : " << ( lresult ? "passed" : "failed" );
 
 	if(out && print_tests >= PRINT_BASIC)
 		*out
-			<< "\n3) Check the compatibility of the matrices Gc, Gh Z, Y, R, Uz, Uy, Vz and Vy numerically ...";
+			<< "\n3) Check the compatibility of the matrices Gc, Z, Y, R, Uz and Uy numerically ...";
 	
 	if(Z) {
 
@@ -408,13 +341,11 @@ bool DecompositionSystemTester::test_decomp_system(
 			*out
 				<< std::endl
 				<< "\n3.a) Check consistency of:"
-				<< "\n     op ( alpha*[ Gc(:,equ_decomp)'   ]"
-				<< "\n                [ Gc(:,equ_undecomp)' ] * beta*Z ) * v"
-				<< "\n         \\_____________________________________/"
+				<< "\n     op ( alpha* Gc(:,equ_decomp)' * beta*Z ) * v"
+				<< "\n         \\__________________________________/"
 				<< "\n                         A"
-				<< "\n    ==  op( alpha*beta*[ 0  ]"
-				<< "\n                       [ Uz ] ) * v"
-				<< "\n            \\_______________/"
+				<< "\n    ==  op( alpha*beta*Uz * v"
+				<< "\n            \\___________/"
 				<< "\n                     B"
 				<< "\nfor random vectors v ...";
 
@@ -729,8 +660,6 @@ bool DecompositionSystemTester::test_decomp_system(
 				<< std::endl
 				<< "\n3.b) Warning! Y ==NULL; Y, R and Uy are not checked numerically ...\n";
 	}
-
-	assert(Vz == NULL && Vy == NULL); // ToDo: 3.c) Check Vz and Vy
 
 	if(R) {
 		if(out && print_tests >= PRINT_MORE)

@@ -139,8 +139,6 @@ public:
 	 *                  will be thrown.
 	 * @param  Gc       [in] A matrix object for the Gc computed at xo.
 	 *                  If Gc==NULL then this is not tested for.
-	 * @param  Gh       [in] A matrix object for the Gh computed at xo.
-	 *                  If Gh==NULL then this is not tested for.
 	 * @param  Gf       [in] Gradient of f(x) computed at xo.
 	 *                  If Gf==NULL then this is not tested for.
 	 * @param  print_all_warnings
@@ -154,43 +152,40 @@ public:
 	 * otherwise.
 	 */
 	bool finite_diff_check(
-		NLP                     *nlp
+		NLP               *nlp
 		,const Vector     &xo
 		,const Vector     *xl
 		,const Vector     *xu
-		,const MatrixOp     *Gc
-		,const MatrixOp     *Gh
+		,const MatrixOp   *Gc
 		,const Vector     *Gf
-		,bool                   print_all_warnings
-		,std::ostream           *out
+		,bool             print_all_warnings
+		,std::ostream     *out
 		) const;
 
 private:
 
 	///
 	bool fd_check_all(
-		NLP                     *nlp
+		NLP               *nlp
 		,const Vector     &xo
 		,const Vector     *xl
 		,const Vector     *xu
-		,const MatrixOp     *Gc
-		,const MatrixOp     *Gh
+		,const MatrixOp   *Gc
 		,const Vector     *Gf
-		,bool                   print_all_warnings
-		,std::ostream           *out
+		,bool             print_all_warnings
+		,std::ostream     *out
 		) const;
 
 	///
 	bool fd_directional_check(
-		NLP                     *nlp
+		NLP               *nlp
 		,const Vector     &xo
 		,const Vector     *xl
 		,const Vector     *xu
-		,const MatrixOp     *Gc
-		,const MatrixOp     *Gh
+		,const MatrixOp   *Gc
 		,const Vector     *Gf
-		,bool                   print_all_warnings
-		,std::ostream           *out
+		,bool             print_all_warnings
+		,std::ostream     *out
 		) const;
 };
 

@@ -64,8 +64,7 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 
 	const size_type
 		n  = nlp.n(),
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp.m();
 	IterQuantityAccess<MeritFuncNLP>
 		&merit_func_nlp_iq = s.merit_func_nlp();
 
@@ -143,9 +142,9 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 		direc_deriv->calc_deriv(
 			s.Gf().get_k(0)
 			,m  ? &s.c().get_k(0) : NULL
-			,mI ? &s.h().get_k(0) : NULL
-			,mI ? &nlp.hl()       : NULL
-			,mI ? &nlp.hu()       : NULL
+			,NULL   // h
+			,NULL   // hl
+			,NULL   // hu
 			,s.d().get_k(0)
 			);
 		

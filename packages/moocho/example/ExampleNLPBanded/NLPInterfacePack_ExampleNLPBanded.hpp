@@ -183,10 +183,6 @@ public:
 	bool is_initialized() const;
 	///
 	value_type max_var_bounds_viol() const;
-	///
-	void set_multi_calc(bool multi_calc) const;
-	///
-	bool multi_calc() const;
 
 	//@}
 
@@ -302,8 +298,6 @@ private:
 
 	value_type   f_offset_;
 
-	mutable bool multi_calc_;
-
 	size_type    nD_;
 	size_type    nI_;
 	size_type    bw_;
@@ -315,15 +309,15 @@ private:
 	size_type    Gc_orig_nz_;
 	size_type    Gh_orig_nz_;
 
-	DVector       xinit_orig_;
-	DVector       xl_orig_;
-	DVector       xu_orig_;
-	DVector       hl_orig_;
-	DVector       hu_orig_;
+	DVector      xinit_orig_;
+	DVector      xl_orig_;
+	DVector      xu_orig_;
+	DVector      hl_orig_;
+	DVector      hu_orig_;
 
-	DVector       co_orig_;
+	DVector      co_orig_;
 
-	mutable bool  c_orig_updated_;
+	mutable bool c_orig_updated_;
 
 	value_type   diag_scal_;
 	value_type   diag_vary_;

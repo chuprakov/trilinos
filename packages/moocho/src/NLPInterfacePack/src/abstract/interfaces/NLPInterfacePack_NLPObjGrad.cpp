@@ -55,6 +55,12 @@ const AbstractLinAlgPack::Vector& NLPObjGrad::Gf() const
 	return StandardCompositionRelationshipsPack::role_name(Gf_, false, name_Gf);
 }
 
+void NLPObjGrad::unset_quantities()
+{
+	NLP::unset_quantities();
+	Gf_ = NULL;
+}
+
 // calculations
 
 void NLPObjGrad::calc_Gf(const Vector& x, bool newx) const

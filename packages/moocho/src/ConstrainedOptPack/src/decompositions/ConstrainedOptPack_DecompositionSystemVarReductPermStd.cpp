@@ -31,10 +31,9 @@ DecompositionSystemVarReductPermStd::DecompositionSystemVarReductPermStd(
 	,bool                              basis_selected
 	,EExplicitImplicit                 D_imp
 	,EExplicitImplicit                 Uz_imp
-	,EExplicitImplicit                 Vz_imp
 	)
 {
-	this->initialize(decomp_sys_imp,basis_sys,basis_selected,D_imp,Uz_imp,Vz_imp);
+	this->initialize(decomp_sys_imp,basis_sys,basis_selected,D_imp,Uz_imp);
 }
 
 void DecompositionSystemVarReductPermStd::initialize(
@@ -43,7 +42,6 @@ void DecompositionSystemVarReductPermStd::initialize(
 	,bool                              basis_selected
 	,EExplicitImplicit                 D_imp
 	,EExplicitImplicit                 Uz_imp
-	,EExplicitImplicit                 Vz_imp
 	)
 {
 	decomp_sys_imp_ = decomp_sys_imp;
@@ -51,7 +49,6 @@ void DecompositionSystemVarReductPermStd::initialize(
 	basis_selected_ = basis_selected;
 	this->D_imp(D_imp);
 	this->Uz_imp(Uz_imp);
-	this->Vz_imp(Vz_imp);
 }
 
 // Overridden from DecompositionSystem
@@ -127,38 +124,23 @@ DecompositionSystemVarReductPermStd::factory_Uy() const
 	return decomp_sys_imp()->factory_Uy();
 }
 
-const DecompositionSystem::mat_fcty_ptr_t
-DecompositionSystemVarReductPermStd::factory_Vz() const
-{
-	return decomp_sys_imp()->factory_Vz();
-}
-
-const DecompositionSystem::mat_fcty_ptr_t
-DecompositionSystemVarReductPermStd::factory_Vy() const
-{
-	return decomp_sys_imp()->factory_Vy();
-}
-
 void DecompositionSystemVarReductPermStd::update_decomp(
-	std::ostream              *out
-	,EOutputLevel             olevel
-	,ERunTests                test_what
+	std::ostream          *out
+	,EOutputLevel         olevel
+	,ERunTests            test_what
 	,const MatrixOp       &Gc
-	,const MatrixOp       *Gh
 	,MatrixOp             *Z
 	,MatrixOp             *Y
-	,MatrixOpNonsing  *R
+	,MatrixOpNonsing      *R
 	,MatrixOp             *Uz
 	,MatrixOp             *Uy
-	,MatrixOp             *Vz
-	,MatrixOp             *Vy
-	,EMatRelations            mat_rel
+	,EMatRelations        mat_rel
 	) const
 {
 	assert_basis_selected();
 	decomp_sys_imp()->update_decomp(
-		out,olevel,test_what,Gc,Gh,Z,Y
-		,R,Uz,Uy,Vz,Vy,mat_rel
+		out,olevel,test_what,Gc,Z,Y
+		,R,Uz,Uy,mat_rel
 		);
 }
 
@@ -201,29 +183,25 @@ bool DecompositionSystemVarReductPermStd::has_basis() const
 }
 
 void DecompositionSystemVarReductPermStd::set_decomp(
-	std::ostream              *out
-	,EOutputLevel             olevel
-	,ERunTests                test_what
-	,const Permutation        &P_var
-	,const Range1D            &var_dep
-	,const Permutation        *P_equ
-	,const Range1D            *equ_decomp
+	std::ostream          *out
+	,EOutputLevel         olevel
+	,ERunTests            test_what
+	,const Permutation    &P_var
+	,const Range1D        &var_dep
+	,const Permutation    *P_equ
+	,const Range1D        *equ_decomp
 	,const MatrixOp       &Gc
-	,const MatrixOp       *Gh
 	,MatrixOp             *Z
 	,MatrixOp             *Y
-	,MatrixOpNonsing  *R
+	,MatrixOpNonsing      *R
 	,MatrixOp             *Uz
 	,MatrixOp             *Uy
-	,MatrixOp             *Vz
-	,MatrixOp             *Vy
-	,EMatRelations            mat_rel
+	,EMatRelations        mat_rel
 	)
 {
 	// Forward these setting on to the implementation.
 	decomp_sys_imp_->D_imp(  this->D_imp()  );
 	decomp_sys_imp_->Uz_imp( this->Uz_imp() );
-	decomp_sys_imp_->Vz_imp( this->Vz_imp() );
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
@@ -232,7 +210,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
-		,Z, Y, R, Uz, Uy, Vz, Vy
+		,Z, Y, R, Uz, Uy
 		,&C_ptr
 		,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
 		);
@@ -241,12 +219,10 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		basis_sys_->set_basis(
 			P_var, var_dep
 			,P_equ, equ_decomp
-			,NULL, NULL
-			,&Gc, Gh
+			,&Gc
 			,C_ptr.get()
 			,D_ptr.get() // May be NULL
 			,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL
-			,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
 			,(mat_rel == MATRICES_INDEP_IMPS
 			  ? BasisSystem::MATRICES_INDEP_IMPS : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
 			,out
@@ -267,24 +243,20 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	const size_type
 		n  = Gc.rows(),
 		m  = Gc.cols(),
-		mI = Gh ? Gh->cols() : 0,
 		r  = C_ptr->rows();
 	decomp_sys_imp_->set_basis_matrices(
 		out, olevel, test_what
 		,C_ptr
 		,D_ptr // D_ptr.get() may be NULL
 		,r > m ? Uz : NULL
-		,mI    ? Vz : NULL
 		,basis_sys_ // Always reset
 		);
 	C_ptr = MemMngPack::null;
 	D_ptr = MemMngPack::null;
 	decomp_sys_imp()->update_decomp(
-		out,olevel,test_what,Gc,Gh,Z,Y,R
+		out,olevel,test_what,Gc,Z,Y,R
 		,r > m ? Uz : NULL
 		,r > m ? Uy : NULL
-		,mI    ? Vz : NULL
-		,mI    ? Vy : NULL
 		,mat_rel
 		);
 	// We have a basis!
@@ -292,30 +264,26 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 }
 
 void DecompositionSystemVarReductPermStd::select_decomp(
-	std::ostream              *out
-	,EOutputLevel             olevel
-	,ERunTests                test_what
-	,const Vector       *nu
+	std::ostream          *out
+	,EOutputLevel         olevel
+	,ERunTests            test_what
+	,const Vector         *nu
 	,MatrixOp             *Gc
-	,MatrixOp             *Gh
-	,Permutation              *P_var
-	,Range1D                  *var_dep
-	,Permutation              *P_equ
-	,Range1D                  *equ_decomp
+	,Permutation          *P_var
+	,Range1D              *var_dep
+	,Permutation          *P_equ
+	,Range1D              *equ_decomp
 	,MatrixOp             *Z
 	,MatrixOp             *Y
-	,MatrixOpNonsing  *R
+	,MatrixOpNonsing      *R
 	,MatrixOp             *Uz
 	,MatrixOp             *Uy
-	,MatrixOp             *Vz
-	,MatrixOp             *Vy
-	,EMatRelations            mat_rel
+	,EMatRelations        mat_rel
 	)
 {
 	// Forward these setting on to the implementation.
 	decomp_sys_imp_->D_imp(  this->D_imp()  );
 	decomp_sys_imp_->Uz_imp( this->Uz_imp() );
-	decomp_sys_imp_->Vz_imp( this->Vz_imp() );
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
@@ -324,22 +292,19 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
-		,Z, Y, R, Uz, Uy, Vz, Vy
+		,Z, Y, R, Uz, Uy
 		,&C_ptr
 		,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
 		);
 	// Ask the basis system object to select a basis
 	basis_sys_->select_basis(
 		nu
-		,NULL // lambdaI
-		,Gc, Gh
+		,Gc
 		,P_var, var_dep
 		,P_equ, equ_decomp
-		,NULL, NULL // P_inequ, inequ_decomp
 		,C_ptr.get()
 		,D_ptr.get() // May be NULL
 		,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL
-		,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
 		,(mat_rel == MATRICES_INDEP_IMPS
 		  ? BasisSystem::MATRICES_INDEP_IMPS : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
 		,out
@@ -366,34 +331,26 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 			<< "\nGc =\n" << *Gc;
 	}
 
-	
-
-
-
 	// If we get here a nonsinguar basis selection has been made and the basis matrices
 	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
 	const size_type
 		n  = Gc->rows(),
 		m  = Gc->cols(),
-		mI = Gh ? Gh->cols() : 0,
 		r  = C_ptr->rows();
 	decomp_sys_imp_->set_basis_matrices(
 		out, olevel, test_what
 		,C_ptr
 		,D_ptr // D_ptr.get() may be NULL
 		,r > m ? Uz : NULL
-		,mI    ? Vz : NULL
 		,basis_sys_ // Always reset
 		);
 	C_ptr = MemMngPack::null;
 	D_ptr = MemMngPack::null;
 	decomp_sys_imp()->update_decomp(
-		out,olevel,test_what,*Gc,Gh,Z,Y,R
+		out,olevel,test_what,*Gc,Z,Y,R
 		,r > m ? Uz : NULL
 		,r > m ? Uy : NULL
-		,mI    ? Vz : NULL
-		,mI    ? Vy : NULL
 		,mat_rel
 		);
 	// We have a basis!

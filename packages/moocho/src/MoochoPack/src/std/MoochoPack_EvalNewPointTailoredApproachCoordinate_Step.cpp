@@ -33,24 +33,22 @@ EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordin
 
 // protected
 
-void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uv_Uy(
+void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uy(
 	MatrixOp         *Y
 	,MatrixOp        *Uy
-	,MatrixOp        *Vy
 	)
 {
 	// Nothing to free
 }
 
-void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
-	const NLPDirect   &nlp
-	,const D_ptr_t              &D
+void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy(
+	const NLPDirect       &nlp
+	,const D_ptr_t        &D
 	,VectorMutable        *py
-	,MatrixOp               *Y
-	,MatrixOp               *Uy
-	,MatrixOp               *Vy
-	,EJournalOutputLevel        olevel
-	,std::ostream               &out
+	,MatrixOp             *Y
+	,MatrixOp             *Uy
+	,EJournalOutputLevel  olevel
+	,std::ostream         &out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -83,16 +81,16 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::recalc_py(
-	const MatrixOp       &D
-	,VectorMutable     *py
-	,EJournalOutputLevel     olevel
-	,std::ostream            &out
+	const MatrixOp          &D
+	,VectorMutable          *py
+	,EJournalOutputLevel    olevel
+	,std::ostream           &out
 	)
 {
 	// py is not altered here!
 }
 
-void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy_Vy(
+void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy(
 	std::ostream& out, const std::string& L
 	) const
 {
@@ -101,7 +99,6 @@ void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy_Vy(
 		<< L << "py_k = py_k\n"
 		<< L << "Y = [ I ; 0 ] <: R^(n x m) [0 represented using MatrixZero]\n"
 		<< L << "Uy = Gc(var_dep,con_undecomp)\'\n"
-		<< L << "Vy = Gh(var_dep,:)\'\n"
 		;
 }
 

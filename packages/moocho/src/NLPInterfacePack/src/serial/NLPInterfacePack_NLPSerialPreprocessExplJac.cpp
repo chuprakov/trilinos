@@ -42,33 +42,25 @@ namespace NLPInterfacePack {
 NLPSerialPreprocessExplJac::NLPSerialPreprocessExplJac(
 	const basis_sys_fcty_ptr_t  &basis_sys_fcty
 	,const factory_mat_ptr_t    &factory_Gc_full
-	,const factory_mat_ptr_t    &factory_Gh_full
 	)
 	:initialized_(false),test_setup_(false)
 {
 	this->set_basis_sys_fcty(basis_sys_fcty);
-	this->set_mat_factories(factory_Gc_full,factory_Gh_full);
+	this->set_factory_Gc_full(factory_Gc_full);
 }
 
-void NLPSerialPreprocessExplJac::set_mat_factories(
+void NLPSerialPreprocessExplJac::set_factory_Gc_full(
 	const factory_mat_ptr_t     &factory_Gc_full
-	,const factory_mat_ptr_t    &factory_Gh_full
 	)
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	namespace afp = MemMngPack;
 	if(factory_Gc_full.get())
 		factory_Gc_full_ = factory_Gc_full;
 	else 
-		factory_Gc_full_ = rcp::rcp(
+		factory_Gc_full_ = mmp::rcp(
 			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
-	if(factory_Gh_full.get())
-		factory_Gh_full_ = factory_Gh_full;
-	else 
-		factory_Gc_full_ = rcp::rcp(
-			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
-	factory_Gc_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
-	factory_Gh_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
+	factory_Gc_ = mmp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
 }
 
 // Overridden public members from NLP
@@ -86,7 +78,7 @@ NLPSerialPreprocessExplJac::get_options() const
 
 void NLPSerialPreprocessExplJac::initialize(bool test_setup)
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 
 	test_setup_ = test_setup;
 
@@ -102,22 +94,17 @@ void NLPSerialPreprocessExplJac::initialize(bool test_setup)
 	NLPFirstOrder::initialize(test_setup);
 	NLPSerialPreprocess::initialize(test_setup);  // Some duplication but who cares!
 
-	const NLP::vec_space_ptr_t
-		space_x = this->space_x(),
-		space_c = this->space_c(),
-		space_h = this->space_h();
-
 	// Initialize the storage for the intermediate quanities
 	Gc_nz_orig_ = imp_Gc_nz_orig();         // Get the estimated number of nonzeros in Gc
 	Gc_val_orig_.resize(Gc_nz_orig_);
 	Gc_ivect_orig_.resize(Gc_nz_orig_);
 	Gc_jvect_orig_.resize(Gc_nz_orig_);
-	Gc_perm_new_basis_updated_ = false;
 	Gh_nz_orig_ = imp_Gh_nz_orig();			// Get the estimated number of nonzeros in Gh
 	Gh_val_orig_.resize(Gh_nz_orig_);
 	Gh_ivect_orig_.resize(Gh_nz_orig_);
 	Gh_jvect_orig_.resize(Gh_nz_orig_);
-	Gh_perm_new_basis_updated_ = false;
+
+	Gc_perm_new_basis_updated_ = false;
 
 	// If you get here then the initialization went Ok.
 	initialized_ = true;
@@ -133,12 +120,6 @@ const NLPFirstOrder::mat_fcty_ptr_t
 NLPSerialPreprocessExplJac::factory_Gc() const
 {
 	return factory_Gc_;
-}
-
-const NLPFirstOrder::mat_fcty_ptr_t
-NLPSerialPreprocessExplJac::factory_Gh() const
-{
-	return factory_Gh_;
 }
 
 const NLPFirstOrder::basis_sys_ptr_t
@@ -159,30 +140,18 @@ void NLPSerialPreprocessExplJac::set_Gc(MatrixOp* Gc)
 	NLPFirstOrder::set_Gc(Gc);
 }
 
-void NLPSerialPreprocessExplJac::set_Gh(MatrixOp* Gh)
-{
-	using DynamicCastHelperPack::dyn_cast;
-	assert_initialized();
-	if( Gh != NULL ) {
-		dyn_cast<MatrixPermAggr>(*Gh); // With throw exception if not correct type!
-	}
-	NLPFirstOrder::set_Gh(Gh);
-}
-
 // Overridden public members from NLPVarReductPerm
 
 bool NLPSerialPreprocessExplJac::get_next_basis(
 	Permutation*  P_var,   Range1D* var_dep
 	,Permutation* P_equ,   Range1D* equ_decomp
-	,Permutation* P_inequ, Range1D* inequ_decomp
 	)
 {
 	const bool new_basis = NLPSerialPreprocess::get_next_basis(
-		P_var,var_dep,P_equ,equ_decomp,P_inequ,inequ_decomp
+		P_var,var_dep,P_equ,equ_decomp
 		);
 	if( new_basis ) {
 		Gc_perm_new_basis_updated_ = false;
-		Gh_perm_new_basis_updated_ = false;
 	}
 	return new_basis;
 }
@@ -190,14 +159,12 @@ bool NLPSerialPreprocessExplJac::get_next_basis(
 void NLPSerialPreprocessExplJac::set_basis(
 	const Permutation   &P_var,   const Range1D  &var_dep
 	,const Permutation  *P_equ,   const Range1D  *equ_decomp
-	,const Permutation  *P_inequ, const Range1D  *inequ_decomp
 	)
 {
 	NLPSerialPreprocess::set_basis(
-		P_var,var_dep,P_equ,equ_decomp,P_inequ,inequ_decomp
+		P_var,var_dep,P_equ,equ_decomp
 		);
 	Gc_perm_new_basis_updated_ = false;
-	Gh_perm_new_basis_updated_ = false;
 }
 
 // Overridden protected members from NLPFirstOrder
@@ -207,59 +174,15 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 	,const FirstOrderInfo& first_order_info
 	) const
 {
-	imp_calc_Gc_or_Gh(
-		true        // Calcuate Gc
-		,x,newx
-		,first_order_info
-		);
-}
-
-void NLPSerialPreprocessExplJac::imp_calc_Gh(
-	const Vector& x, bool newx
-	,const FirstOrderInfo& first_order_info
-	) const
-{
-	imp_calc_Gc_or_Gh(
-		false        // Calcuate Gh
-		,x,newx
-		,first_order_info
-		);
-}
-
-// protected members
-
-void NLPSerialPreprocessExplJac::assert_initialized() const
-{
-	THROW_EXCEPTION(
-		!initialized_, UnInitialized
-		,"NLPSerialPreprocessExplJac : The nlp has not been initialized yet" );
-}
-
-// private members
-
-void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
-	bool calc_Gc
-	,const Vector& x, bool newx
-	,const FirstOrderInfo& first_order_info
-	) const
-{
-	//
-	// Note that this function should never be called with calc_Gc == false
-	// if convert_inequ_to_equ == true.  Therefore, we can assume that
-	// if calc_Gc == false, then convert_inequ_to_equ == false.
-	//
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
 	assert_initialized();
 
 	const Range1D
 		var_dep      = this->var_dep(),
-		equ_decomp   = this->equ_decomp(),
-		inequ_decomp = this->inequ_decomp();
+		equ_decomp   = this->equ_decomp();
 	// Get the dimensions of the original NLP
-	const bool
-		cinequtoequ = this->convert_inequ_to_equ();
 	const size_type
 		n       = this->n(),
 		n_orig  = this->imp_n_orig(),
@@ -267,12 +190,11 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		mI_orig = this->imp_mI_orig();
 	// Get the dimensions of the full matrices
 	const size_type
-		n_full  = n_orig + ( cinequtoequ ? mI_orig : 0       ),
-		m_full  = m_orig + ( cinequtoequ ? mI_orig : 0       ),
-		mI_full =          ( cinequtoequ ? 0       : mI_orig );
+		n_full  = n_orig + mI_orig,
+		m_full  = m_orig + mI_orig;
 	// Get the number of columns in the matrix being constructed here
 	const size_type
-		num_cols = (calc_Gc	? m_full : mI_full );
+		num_cols = m_full;
 
 	//
 	// Get references to the constituent objects
@@ -280,25 +202,23 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 
 	// Get the concrete type for the Jacobian matrix
 	MatrixPermAggr
-		&G_aggr = dyn_cast<MatrixPermAggr>( calc_Gc
-											? *first_order_info.Gc
-											: *first_order_info.Gh );
+		&G_aggr = dyn_cast<MatrixPermAggr>( *first_order_info.Gc );
 	// Get smart pointers to the constituent members
-	rcp::ref_count_ptr<MatrixOp>
-		G_full = rcp::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
-	rcp::ref_count_ptr<PermutationSerial>
-		P_row = rcp::rcp_dynamic_cast<PermutationSerial>(
-			rcp::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
-	rcp::ref_count_ptr<PermutationSerial>
-		P_col = rcp::rcp_dynamic_cast<PermutationSerial>(
-			rcp::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
-	rcp::ref_count_ptr<const MatrixOp>
+	mmp::ref_count_ptr<MatrixOp>
+		G_full = mmp::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
+	mmp::ref_count_ptr<PermutationSerial>
+		P_row = mmp::rcp_dynamic_cast<PermutationSerial>(
+			mmp::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
+	mmp::ref_count_ptr<PermutationSerial>
+		P_col = mmp::rcp_dynamic_cast<PermutationSerial>(
+			mmp::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
+	mmp::ref_count_ptr<const MatrixOp>
 		G_perm = G_aggr.mat_perm();
 	// Remove references to G_full, G_perm, P_row and P_col.
 	G_aggr.set_uninitialized();
 	// Allocate the original matrix object if not done so yet
 	if( G_full.get() == NULL || G_full.count() > 1 )
-		G_full = (calc_Gc ? factory_Gc_full_ : factory_Gh_full_)->create();
+		G_full = factory_Gc_full_->create();
 	// Get reference to the MatrixLoadSparseElements interface
 	MatrixLoadSparseElements
 		&G_lse = dyn_cast<MatrixLoadSparseElements>(*G_full);
@@ -308,21 +228,14 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	//
 
 	set_x_full( VectorDenseEncap(x)(), newx, &x_full() );
-	if(calc_Gc) {
-		if( m_orig )
-			imp_calc_Gc_orig( x_full(), newx, first_order_expl_info() );
-		if( cinequtoequ && mI_orig )
-			imp_calc_Gh_orig( x_full(), newx, first_order_expl_info() );
-	}
-	else { // Should not get here if convert_inequ_to_equ == true or mI_orig == 0
+	if( m_orig )
+		imp_calc_Gc_orig( x_full(), newx, first_order_expl_info() );
+	if( mI_orig )
 		imp_calc_Gh_orig( x_full(), newx, first_order_expl_info() );
-	}
 
 	// Now get the actual number of nonzeros
 	const size_type nz_full
-		= (calc_Gc
-		   ? Gc_nz_orig_ + (cinequtoequ ? Gh_nz_orig_ + mI_orig : 0 ) // Gc_orig, Gh_orig, -I
-		   :               (cinequtoequ ? 0 : Gh_nz_orig_ ) );        // Gh_orig
+		= Gc_nz_orig_ + Gh_nz_orig_ + mI_orig;  // Gc_orig, Gh_orig, -I
 
 	// Determine if we need to set the structure and the nonzeros or just the nonzero values
 	const bool load_struct = (G_lse.nz() == 0);
@@ -357,91 +270,75 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	const index_type      *jvect_orig   = NULL;
 
 	index_type nz = 0;
-	if( calc_Gc ) {
-		if( m_orig ) {
-			// Load entries for Gc_orig
-			val_orig		= &Gc_val_orig_[0];
-			val_orig_end	= val_orig + Gc_nz_orig_;
-			ivect_orig		= &Gc_ivect_orig_[0];
-			jvect_orig		= &Gc_jvect_orig_[0];
-			imp_fill_jacobian_entries(
-				n, n_full, load_struct
-				,0 // column offset
-				,val_orig, val_orig_end, ivect_orig, jvect_orig
-				,&nz // This will be incremented
-				,val, ivect, jvect
-				);
-		}
-		if( cinequtoequ && mI_orig > 0 ) {
-			// Load entires for Gc_orig and -I
-			val_orig		= &Gh_val_orig_[0];
-			val_orig_end	= val_orig + Gh_nz_orig_;
-			ivect_orig		= &Gh_ivect_orig_[0];
-			jvect_orig		= &Gh_jvect_orig_[0];
-			imp_fill_jacobian_entries(
-				n, n_full, load_struct
-				,m_orig // column offset (i.e. [ Gc_orig, Gh_orig ] )
-				,val_orig, val_orig_end, ivect_orig, jvect_orig
-				,&nz // This will be incremented
-				,val + nz, ivect + nz, jvect + nz
-				);
-			// -I
-			value_type         *val_itr    = val   + nz;
-			index_type         *ivect_itr  = ivect + nz;
-			index_type         *jvect_itr  = jvect + nz;
-			const IVector& var_full_to_remove_fixed = this->var_full_to_remove_fixed();
-			if( load_struct ) {
-				// Fill values and i and j
-				for( index_type k = 1; k <= mI_orig; ++k ) {
-					size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
-#ifdef _DEBUG
-					assert( 0 < var_idx && var_idx <= n_full );
-#endif
-					if(var_idx <= n) {
-						// This is not a fixed variable
-						*val_itr++ = -1.0;
-						*ivect_itr++ = var_idx;
-						*jvect_itr++ = m_orig + k; // (i.e. [ 0,  -I ] )
-						++nz;
-					}
-				}
-			}
-			else {
-				// Just fill values
-				for( index_type k = 1; k <= mI_orig; ++k ) {
-					size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
-#ifdef _DEBUG
-					assert( 0 < var_idx && var_idx <= n_full );
-#endif
-					if(var_idx <= n) {
-						// This is not a fixed variable
-						*val_itr++ = -1.0;
-						++nz;
-					}
-				}
-			}
-		}
+	if( m_orig ) {
+		// Load entries for Gc_orig
+		val_orig		= &Gc_val_orig_[0];
+		val_orig_end	= val_orig + Gc_nz_orig_;
+		ivect_orig		= &Gc_ivect_orig_[0];
+		jvect_orig		= &Gc_jvect_orig_[0];
+		imp_fill_jacobian_entries(
+			n, n_full, load_struct
+			,0 // column offset
+			,val_orig, val_orig_end, ivect_orig, jvect_orig
+			,&nz // This will be incremented
+			,val, ivect, jvect
+			);
 	}
-	else {
-		// Load entries for Gh_orig
+	if( mI_orig > 0 ) {
+		// Load entires for Gc_orig and -I
 		val_orig		= &Gh_val_orig_[0];
 		val_orig_end	= val_orig + Gh_nz_orig_;
 		ivect_orig		= &Gh_ivect_orig_[0];
 		jvect_orig		= &Gh_jvect_orig_[0];
 		imp_fill_jacobian_entries(
 			n, n_full, load_struct
-			,0 // column offset
+			,m_orig // column offset (i.e. [ Gc_orig, Gh_orig ] )
 			,val_orig, val_orig_end, ivect_orig, jvect_orig
-			,&nz // This will be updated
-			,val, ivect, jvect
+			,&nz // This will be incremented
+			,val + nz, ivect + nz, jvect + nz
 			);
+		// -I
+		value_type         *val_itr    = val   + nz;
+		index_type         *ivect_itr  = ivect + nz;
+		index_type         *jvect_itr  = jvect + nz;
+		const IVector& var_full_to_remove_fixed = this->var_full_to_remove_fixed();
+		if( load_struct ) {
+			// Fill values and i and j
+			for( index_type k = 1; k <= mI_orig; ++k ) {
+				size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
+#ifdef _DEBUG
+				assert( 0 < var_idx && var_idx <= n_full );
+#endif
+				if(var_idx <= n) {
+					// This is not a fixed variable
+					*val_itr++ = -1.0;
+					*ivect_itr++ = var_idx;
+					*jvect_itr++ = m_orig + k; // (i.e. [ 0,  -I ] )
+					++nz;
+				}
+			}
+		}
+		else {
+			// Just fill values
+			for( index_type k = 1; k <= mI_orig; ++k ) {
+				size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
+#ifdef _DEBUG
+				assert( 0 < var_idx && var_idx <= n_full );
+#endif
+				if(var_idx <= n) {
+					// This is not a fixed variable
+					*val_itr++ = -1.0;
+					++nz;
+				}
+			}
+		}
 	}
 
 	if( !load_struct ) {
 		// Check that the number of nonzeros added matches the number of nonzeros in G
 		THROW_EXCEPTION(
 			G_nz_previous != nz, std::runtime_error
-			,"NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(...): Error, "
+			,"NLPSerialPreprocessExplJac::imp_calc_Gc(...): Error, "
 			"The number of added nonzeros does not match the number of nonzeros "
 			"in the previous matrix load!." );
 	}
@@ -461,21 +358,20 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 
 	// Setup row (variable) permutation
 	if( P_row.get() == NULL || P_col.count() > 1 )
-	    P_row = rcp::rcp(new PermutationSerial());
-	rcp::ref_count_ptr<IVector>        var_perm;
-	if( P_row->perm().get() == NULL )  var_perm = rcp::rcp(new IVector(n_full));
-	else                               var_perm = rcp::rcp_const_cast<IVector>(P_row->perm());
+	    P_row = mmp::rcp(new PermutationSerial());
+	mmp::ref_count_ptr<IVector>        var_perm;
+	if( P_row->perm().get() == NULL )  var_perm = mmp::rcp(new IVector(n_full));
+	else                               var_perm = mmp::rcp_const_cast<IVector>(P_row->perm());
 	*var_perm = this->var_perm();
-	P_row->initialize(var_perm,rcp::null);
+	P_row->initialize(var_perm,mmp::null);
 	// Setup column (constraint) permutation
 	if( P_col.get() == NULL || P_col.count() > 1 )
-	    P_col = rcp::rcp(new PermutationSerial());
-	rcp::ref_count_ptr<IVector>        con_perm;
-	if( P_col->perm().get() == NULL )  con_perm = rcp::rcp(new IVector(calc_Gc?m_full:mI_full));
-	else                               con_perm = rcp::rcp_const_cast<IVector>(P_col->perm());
-	if( calc_Gc )                      *con_perm = this->equ_perm();
-	else                               DenseLinAlgPack::identity_perm(con_perm.get());
-	P_col->initialize(con_perm,rcp::null);
+	    P_col = mmp::rcp(new PermutationSerial());
+	mmp::ref_count_ptr<IVector>        con_perm;
+	if( P_col->perm().get() == NULL )  con_perm = mmp::rcp(new IVector(m_full));
+	else                               con_perm = mmp::rcp_const_cast<IVector>(P_col->perm());
+	*con_perm = this->equ_perm();
+	P_col->initialize(con_perm,mmp::null);
 	// Setup G_perm
 	int num_row_part, num_col_part;
 	index_type row_part[3], col_part[3];
@@ -490,33 +386,18 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		row_part[0] = 1;
 		row_part[1] = n+1;
 	}
-	if(calc_Gc) {
-		if(equ_decomp.size()) {
-			num_col_part = 2;
-			col_part[0] = 1;
-			col_part[1] = (equ_decomp.lbound() == 1 ? equ_decomp.ubound()+1 : equ_decomp.lbound());
-			col_part[2] = m_full+1;
-		}
-		else {
-			num_col_part = 1;
-			col_part[0] = 1;
-			col_part[1] = m_full+1;
-		}
+	if(equ_decomp.size()) {
+		num_col_part = 2;
+		col_part[0] = 1;
+		col_part[1] = (equ_decomp.lbound() == 1 ? equ_decomp.ubound()+1 : equ_decomp.lbound());
+		col_part[2] = m_full+1;
 	}
 	else {
-		if(inequ_decomp.size()) {
-			num_col_part = 2;
-			col_part[0] = 1;
-			col_part[1] = (inequ_decomp.lbound() == 1 ? inequ_decomp.ubound()+1 : inequ_decomp.lbound());
-			col_part[2] = mI_full+1;
-		}
-		else {
-			num_col_part = 1;
-			col_part[0] = 1;
-			col_part[1] = mI_full+1;
-		}
+		num_col_part = 1;
+		col_part[0] = 1;
+		col_part[1] = m_full+1;
 	}
-	if( G_perm.get() == NULL || (calc_Gc ? !Gc_perm_new_basis_updated_ : !Gh_perm_new_basis_updated_) ) {
+	if( G_perm.get() == NULL || !Gc_perm_new_basis_updated_ ) {
 		G_perm = G_full->perm_view(
 			P_row.get(),row_part,num_row_part
 			,P_col.get(),col_part,num_col_part
@@ -529,15 +410,25 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 			,G_perm
 			);
 	}
-	(calc_Gc ? Gc_perm_new_basis_updated_ : Gh_perm_new_basis_updated_) = true;
+	Gc_perm_new_basis_updated_ = true;
 
 	//
 	// Reinitialize the aggregate matrix object.
 	//
 
 	G_aggr.initialize(G_full,P_row,P_col,G_perm);
-
 }
+
+// protected members
+
+void NLPSerialPreprocessExplJac::assert_initialized() const
+{
+	THROW_EXCEPTION(
+		!initialized_, UnInitialized
+		,"NLPSerialPreprocessExplJac : The nlp has not been initialized yet" );
+}
+
+// private
 
 void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
 	size_type           n

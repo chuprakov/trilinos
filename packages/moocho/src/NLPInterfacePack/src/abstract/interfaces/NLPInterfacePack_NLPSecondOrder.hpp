@@ -31,16 +31,13 @@ namespace NLPInterfacePack {
  * Specifically the Hesssian of the Lagrangian is defined as:
  \verbatim
 
- HL = Hf + sum( Hc(j) * lambda(j), j = 1...m ) + sub( Hh(j) * lambdaI(j), j = 1...mI )
+ HL = Hf + sum( Hc(j) * lambda(j), j = 1...m )
  \endverbatim
  * Where: <ul>
  * <li> \c Hf is the hessian of the objective function \a f(x)
  * <li> \c Hc(j) is the hessian of the \c jth equality constriant <i>c<sub>j</sub>(x)</i>
- * <li> \c Hh(j) is the hessian of the \c jth inequality constriant <i>h<sub>j</sub>(x)</i>
  * <li> \c lambda is the vector of lagrange multipliers for the equality
  *      constraints \a c(x) 
- * <li> lambdaI is the vector of lagrange multipliers for the inequality
- *      constraints \a h(x)
  * </ul>
  *
  * <b>Client Usage:</b>
@@ -147,6 +144,27 @@ public:
 
 	//@}
 
+	/** @name Unset calculation quantities */
+	//@{
+	
+	///
+	/** Call to unset all storage quantities (both in this class and all subclasses).
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> See <tt>NLPFirstOrder::unset_quantities()</tt>
+	 * <li> <tt>this->get_HL() == NULL</tt>
+	 * </ul>
+	 *
+	 * This method must be called by all subclasses that override it.
+	 */
+	void unset_quantities();
+
+	//@}
+
 	/** @name Calculation Members */
 	//@{
 
@@ -154,8 +172,8 @@ public:
 	/** Update the matrix for <tt>HL</tt> at the point <tt>x</tt>, <tt>lambda</tt>,
 	 * <tt>lambdaI</tt> and put it in the stored reference.
 	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for <tt>f</tt>, <tt>c</tt>,
-	 * <tt>h</tt>, <tt>Gf</tt>, <tt>Gc</tt> and <tt>Gh</tt> may also be  changed but are not guarentied to be.
+	 * The referenced storage for <tt>f</tt>, <tt>c</tt>, <tt>Gf</tt> and <tt>Gc</tt>
+	 * may also be changed but are not guarentied to be.
 	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
 	 *
 	 * @param  x        [in] Unknown primal variables
@@ -163,10 +181,6 @@ public:
 	 *                  If <tt>m() == 0</tt> then <tt>lambda</tt> must be <tt>NULL</tt>.  However, if
 	 *                  <tt>m() > 0</tt> then <tt>lambda == NULL</tt> is still allowed and is treated
 	 *                  as <tt>lambda = 0</tt>.
-	 * @param  lambdaI  [in] Lagrange muitipliers for inequality constriants.
-	 *                  If <tt>mI() == 0</tt> then <tt>lambdaI</tt> must be <tt>NULL</tt>.  However, if
-	 *                  <tt>mI() > 0</tt> then <tt>lambdaI == NULL</tt> is still allowed and is treated
-	 *                  as <tt>lambdaI = 0</tt>
 	 * @param  newpoint [in] (default \c true) If \c true, the values in \c x, \c lambda and \c lambdaI
 	 *                  are the same as the last call to <tt>this->calc_HL()</tt>.
 	 *                  If \c false, then this is a new point.
@@ -178,9 +192,6 @@ public:
 	 * <li> [<tt>this->m() == 0</tt>] <tt>lambda == NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> [<tt>this->m() != 0 && lambda != 0</tt>] <tt>lambda->space().is_compatible(*this->space_c()) == true)</tt>
 	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> [<tt>this->mI() == 0</tt>] <tt>lambdaI == NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> [<tt>this->mI() != 0 && lambdaI != 0</tt>] <tt>lambdaI->space().is_compatible(*this->space_h()) == true)</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -188,7 +199,7 @@ public:
 	 * </ul>
 	 */ 
 	virtual void calc_HL(
-		const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint = true) const;
+		const Vector& x, const Vector* lambda, bool newpoint = true) const;
 
 	//@}
 
@@ -213,27 +224,23 @@ protected:
 	struct SecondOrderInfo {
 		///
 		SecondOrderInfo()
-			: HL(NULL), Gc(NULL), Gh(NULL), Gf(NULL), f(NULL), c(NULL), h(NULL)
+			: HL(NULL), Gc(NULL), Gf(NULL), f(NULL), c(NULL)
 			{}
 		///
 		SecondOrderInfo( MatrixSymOp* HL_in, const FirstOrderInfo& first_order_info )
-			: HL(HL_in), Gc(first_order_info.Gc), Gh(first_order_info.Gh), Gf(first_order_info.Gf)
-			, f(first_order_info.f), c(first_order_info.c), h(first_order_info.h)
+			:HL(HL_in), Gc(first_order_info.Gc), Gf(first_order_info.Gf)
+			,f(first_order_info.f), c(first_order_info.c)
 			{}
 		/// Pointer to Hessiand of the Lagrangian <tt>HL</tt>) (may be NULL is not set)
 		MatrixSymOp*        HL;
 		/// Pointer to Hessian of the equality constraints <tt>Gc</tt> (may be NULL if not set)
 		MatrixOp*           Gc;
-		/// Pointer to Hessian of the inequality constraints <tt>Gh</tt> (may be NULL if not set)
-		MatrixOp*           Gh;
 		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		VectorMutable*    Gf;
+		VectorMutable*      Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
-		value_type*             f;
+		value_type*         f;
 		/// Pointer to equality constraints residule <tt>c</tt> (may be NULL if not set)
-		VectorMutable*    c;
-		/// Pointer to inequality constraints residule <tt>h</tt> (may be NULL if not set)
-		VectorMutable*    h;
+		VectorMutable*      c;
 	}; // end struct SecondOrderInfo
 
 	/// Return objective gradient and zero order information.
@@ -243,21 +250,17 @@ protected:
 	//@{
 
 	///
-	/** Overridden to compute Gc(x) and perhaps G(x), f(x) and c(x) (if multiple calculaiton = true).
+	/** Overridden to compute <tt>Gc(x)</tt> and perhaps <tt>Gf(x)</tt>, <tt>f(x)</tt> and <tt>c(x)</tt>.
 	 *
 	 * @param x                     [in] Unknown vector (size n).
 	 * @param lambda                [in] Lagrange multipliers for equality constraints c(x).
 	 *                              Must be <tt>NULL</tt> if <tt>m() == 0</tt>.  If \c NULL, then
 	 *                              treated as <tt>lambda = 0</tt>.
-	 * @param lambdaI               [in] Lagrange multipliers for inequality constraints h(x).
-	 *                              Must be <tt>NULL</tt> if <tt>mI() == 0</tt>.  If \c NULL, then
-	 *                              treated as <tt>lambdaI = 0</tt>.
 	 * @param newpoint              [in] True if is a new point.
 	 * @param second_order_info     [out] Pointers to \c HL, \c Gc, \c Gh, \c Gf, \c f, \c c and \c h
 	 *                              On output <tt>*second_order_info.HL</tt> is updated to \a HL(x).
 	 *                              Any of the other objects pointed to in \c second_order_info may
-	 *                              be updated if <tt>this->multi_calc() == true</tt> but are
-	 *                              now guaranteed to be.
+	 *                              also be updated but are not guaranteed to be.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
@@ -269,8 +272,9 @@ protected:
 	 * </ul>
 	 */
 	virtual void imp_calc_HL(
-		const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint
-		, const SecondOrderInfo& second_order_info) const = 0;
+		const Vector& x, const Vector* lambda, bool newpoint
+		,const SecondOrderInfo& second_order_info
+		) const = 0;
 
 	//@}
 
@@ -280,7 +284,7 @@ private:
 	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixSymOp>  *factory_HL;
 #endif
 	mutable MatrixSymOp   *HL_;
-	mutable bool              num_HL_evals_;
+	mutable bool          num_HL_evals_;
 
 };	// end class NLPSecondOrder
 

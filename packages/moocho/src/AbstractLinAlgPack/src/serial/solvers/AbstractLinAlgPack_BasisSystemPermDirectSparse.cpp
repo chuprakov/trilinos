@@ -33,9 +33,9 @@ BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	)
 	:BasisSystemPerm(
 		MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())               // D'*D
+			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())         // D'*D
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())    // S
+			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())  // S
 		)
 {
 	this->initialize(direct_solver);
@@ -46,7 +46,7 @@ void BasisSystemPermDirectSparse::initialize(
 	)
 {
 	direct_solver_ = direct_solver;
-	n_ = m_ = mI_ = r_ = Gc_nz_ = 0;
+	n_ = m_ = r_ = Gc_nz_ = 0;
 	init_var_inv_perm_.resize(0);
 	init_equ_inv_perm_.resize(0);
 	init_var_rng_    = Range1D::Invalid;
@@ -83,14 +83,6 @@ BasisSystemPermDirectSparse::factory_GcUP() const
 		);
 }
 
-const BasisSystem::mat_fcty_ptr_t
-BasisSystemPermDirectSparse::factory_GhUP() const
-{
-	return MemMngPack::rcp(
-		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
-		);
-}
-
 Range1D BasisSystemPermDirectSparse::var_dep() const
 {
 	return var_dep_;
@@ -112,14 +104,12 @@ Range1D BasisSystemPermDirectSparse::equ_undecomp() const
 }
 
 void BasisSystemPermDirectSparse::update_basis(
-	const MatrixOp*         Gc
-	,const MatrixOp*        Gh
-	,MatrixOpNonsing*   C
-	,MatrixOp*              D
-	,MatrixOp*              GcUP
-	,MatrixOp*              GhUP
-	,EMatRelations              mat_rel
-	,std::ostream               *out
+	const MatrixOp          *Gc
+	,MatrixOpNonsing        *C
+	,MatrixOp               *D
+	,MatrixOp               *GcUP
+	,EMatRelations          mat_rel
+	,std::ostream           *out
 	) const
 {
 	namespace mmp = MemMngPack;
@@ -135,19 +125,13 @@ void BasisSystemPermDirectSparse::update_basis(
 #endif
 	const size_type
 		n  = Gc->rows(),
-		m  = Gc->cols(),
-		mI = Gh ? Gh->cols() : 0;
+		m  = Gc->cols();
 #ifdef _DEBUG
-	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz()
-		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = mI;
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz();
 	THROW_EXCEPTION(
 		Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
 		"This matrix object is not compatible with last call to set_basis() or select_basis()!" );
-	THROW_EXCEPTION(
-		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
-		"Gc and Gh are not compatible!" )
 	THROW_EXCEPTION(
 		C == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
@@ -182,7 +166,7 @@ void BasisSystemPermDirectSparse::update_basis(
 			"is singular : " << excpt.what() );
 	}
 	// Update the aggregate basis matrix and compute the auxiliary projected matrices
-	update_basis_and_auxiliary_matrices( *Gc, C_bm, &C_aggr, D, GcUP, GhUP );
+	update_basis_and_auxiliary_matrices( *Gc, C_bm, &C_aggr, D, GcUP );
 }
 
 // Overridded from BasisSystemPerm
@@ -213,16 +197,12 @@ void BasisSystemPermDirectSparse::set_basis(
 	,const Range1D             &var_dep
 	,const Permutation         *P_equ
 	,const Range1D             *equ_decomp
-	,const Permutation         *P_inequ
-	,const Range1D             *inequ_decomp
-	,const MatrixOp        *Gc
-	,const MatrixOp        *Gh
-	,MatrixOpNonsing   *C
-	,MatrixOp              *D
-	,MatrixOp              *GcUP
-	,MatrixOp              *GhUP
-	,EMatRelations              mat_rel
-	,std::ostream               *out
+	,const MatrixOp            *Gc
+	,MatrixOpNonsing           *C
+	,MatrixOp                  *D
+	,MatrixOp                  *GcUP
+	,EMatRelations             mat_rel
+	,std::ostream              *out
 	)
 {
 	namespace mmp = MemMngPack;
@@ -238,28 +218,14 @@ void BasisSystemPermDirectSparse::set_basis(
 #endif
 	const size_type
 		n  = Gc->rows(),
-		m  = Gc->cols(),
-		mI = Gh ? Gh->cols() : 0;
+		m  = Gc->cols();
 #ifdef _DEBUG
-	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz()
-		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = mI;
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz();
 	THROW_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 	THROW_EXCEPTION(
-		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
-		"Gc and Gh are not compatible!" )
-	THROW_EXCEPTION(
-		Gh != NULL && (P_inequ != NULL || inequ_decomp != NULL)
-		,std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
-		"Can not handle decomposed inequalities yet!" );
-	THROW_EXCEPTION(
 		C == NULL, std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
-	if(Gh) THROW_EXCEPTION(
-		var_dep.size() != equ_decomp->size(), std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 #endif
 	// Get the aggreate matrix object for Gc
@@ -296,26 +262,21 @@ void BasisSystemPermDirectSparse::set_basis(
 		assert(0); // ToDo: Throw an exception with a good error message!
 	}
 	// Update the rest of the basis stuff
-	do_some_basis_stuff(*Gc,Gh,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP,GhUP);
+	do_some_basis_stuff(*Gc,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
 }
 
 void BasisSystemPermDirectSparse::select_basis(
-	const Vector          *nu
-	,const Vector         *lambdaI
-	,MatrixOp               *Gc
-	,MatrixOp               *Gh
-	,Permutation                *P_var
-	,Range1D                    *var_dep
-	,Permutation                *P_equ
-	,Range1D                    *equ_decomp
-	,Permutation                *P_inequ
-	,Range1D                    *inequ_decomp
-	,MatrixOpNonsing    *C
-	,MatrixOp               *D
-	,MatrixOp               *GcUP
-	,MatrixOp               *GhUP
-	,EMatRelations              mat_rel
-	,std::ostream               *out
+	const Vector               *nu
+	,MatrixOp                  *Gc
+	,Permutation               *P_var
+	,Range1D                   *var_dep
+	,Permutation               *P_equ
+	,Range1D                   *equ_decomp
+	,MatrixOpNonsing           *C
+	,MatrixOp                  *D
+	,MatrixOp                  *GcUP
+	,EMatRelations             mat_rel
+	,std::ostream              *out
 	)
 {
 	namespace mmp = MemMngPack;
@@ -331,22 +292,14 @@ void BasisSystemPermDirectSparse::select_basis(
 #endif
 	const size_type
 		n  = Gc->rows(),
-		m  = Gc->cols(),
-		mI = Gh ? Gh->cols() : 0;
+		m  = Gc->cols();
 #ifdef _DEBUG
 	// Validate input
-	const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz()
-		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = Gh ? Gh->cols() : 0;
+	const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz();
 	THROW_EXCEPTION(
 		P_var == NULL || var_dep == NULL, std::invalid_argument, msg_err_head );
 	THROW_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument, msg_err_head );
-	THROW_EXCEPTION(
-		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
-		,msg_err_head << " Gc and Gh are not compatible!" )
-	THROW_EXCEPTION(
-		Gh != NULL && (P_inequ != NULL || inequ_decomp != NULL), std::invalid_argument
-		,msg_err_head << "Can not handle decomposed inequalities yet!" );
 	THROW_EXCEPTION(
 		C == NULL, std::invalid_argument, msg_err_head );
 #endif
@@ -408,7 +361,7 @@ void BasisSystemPermDirectSparse::select_basis(
 			)
 		);
 	// Update the rest of the basis stuff
-	do_some_basis_stuff(*Gc,Gh,*var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP,GhUP);
+	do_some_basis_stuff(*Gc,*var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
 }
 
 // private
@@ -453,7 +406,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 	const MatrixOp& Gc
 	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
 	,MatrixOpNonsingAggr *C_aggr
-	,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
+	,MatrixOp* D, MatrixOp* GcUP
 	) const
 {
 	namespace mmp = MemMngPack;
@@ -480,23 +433,19 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 	if( GcUP ) {
 		assert(0); // ToDo: Implement!
 	}
-	if( GhUP ) {
-		assert(0); // ToDo: Implement!
-	}
 }
 
 void BasisSystemPermDirectSparse::do_some_basis_stuff(
-	const MatrixOp& Gc, const MatrixOp* Gh
+	const MatrixOp& Gc
 	,const Range1D& var_dep, const Range1D& equ_decomp
 	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
 	,MatrixOpNonsingAggr *C_aggr
-	,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
+	,MatrixOp* D, MatrixOp* GcUP
 	)
 {
 	const size_type
 		n  = Gc.rows(),
-		m  = Gc.cols(),
-		mI = Gh ? Gh->cols() : 0;
+		m  = Gc.cols();
 	// Set the ranges
 	var_dep_      = var_dep;
 	var_indep_   = ( var_dep.size() == n
@@ -513,11 +462,10 @@ void BasisSystemPermDirectSparse::do_some_basis_stuff(
 	// Set the basis system dimensions
 	n_     = n;
 	m_     = m;
-	mI_    = mI;
 	r_     = var_dep.size();
 	Gc_nz_ = Gc.nz();
 	// Update the aggregate basis matrix and compute the auxiliary projected matrices
-	update_basis_and_auxiliary_matrices( Gc, C_bm, C_aggr, D, GcUP, GhUP );
+	update_basis_and_auxiliary_matrices( Gc, C_bm, C_aggr, D, GcUP );
 }
 	
 } // end namespace AbstractLinAlgPack

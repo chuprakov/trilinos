@@ -21,54 +21,44 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 
 bool NLPInterfacePack::test_basis_system(
- 	NLPFirstOrder*                             nlp
-	,BasisSystem*                                  basis_sys
-	,OptionsFromStreamPack::OptionsFromStream*     options
-	,std::ostream*                                 out
+ 	NLPFirstOrder                                 *nlp
+	,BasisSystem                                  *basis_sys
+	,OptionsFromStreamPack::OptionsFromStream     *options
+	,std::ostream                                 *out
 	)
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 
 	const index_type
 		n = nlp->n(),
-		m = nlp->m(),
-		mI = nlp->mI();
+		m = nlp->m();
 
 	// Create the matrices Gc and Gh
 	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
-		Gc = ( m  ? nlp->factory_Gc()->create() : rcp::null ),
-		Gh = ( mI ? nlp->factory_Gh()->create() : rcp::null );
+		Gc = ( m  ? nlp->factory_Gc()->create() : mmp::null );
 	
 	// Compute the matrices at xinit
 	const Vector
 		&xo = nlp->xinit();
 	if(m)
 		nlp->set_Gc(Gc.get());
-	if(mI)
-		nlp->set_Gh(Gh.get());
 	if(m)
 		nlp->calc_Gc(xo);
-	if(mI)
-		nlp->calc_Gh(xo,m==0);
 
 	// Create the matrices C and D
 	BasisSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
-		C = ( m ? basis_sys->factory_C()->create() : rcp::null);
+		C = ( m ? basis_sys->factory_C()->create() : mmp::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : rcp::null);
+		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : mmp::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : rcp::null);
-	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GhUP = ( mI && n > m && basis_sys->factory_GhUP().get() ? basis_sys->factory_GhUP()->create() : rcp::null);
+		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : mmp::null);
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(
 		Gc.get()
-		,Gh.get()
 		,C.get()
 		,D.get()
 		,GcUP.get()
-		,GhUP.get()
 		);
 
 	// Test the basis and basis system objects.
@@ -82,12 +72,10 @@ bool NLPInterfacePack::test_basis_system(
 	const bool result = basis_sys_tester.test_basis_system(
 		*basis_sys
 		,Gc.get()
-		,Gh.get()
 		,C.get()
 		,NULL    // Create the N matrix internally
 		,D.get()
 		,GcUP.get()
-		,GhUP.get()
 		,out
 		);
 

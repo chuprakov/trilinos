@@ -39,10 +39,9 @@ EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogo
 
 // protected
 
-void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
+void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uy(
 	MatrixOp         *Y
 	,MatrixOp        *Uy
-	,MatrixOp        *Vy
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -51,24 +50,20 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
 	MatrixComposite
 		*Uy_cpst = Uy ? &dyn_cast<MatrixComposite>(*Uy) : NULL;			
-	MatrixComposite
-		*Vy_cpst = Vy ? &dyn_cast<MatrixComposite>(*Vy) : NULL;
 
 	if(Y_orth)
 		Y_orth->set_uninitialized();
 	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
-	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities
 }
 
-void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
-	const NLPDirect   &nlp
-	,const D_ptr_t              &D
+void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
+	const NLPDirect       &nlp
+	,const D_ptr_t        &D
 	,VectorMutable        *py
-	,MatrixOp               *Y
-	,MatrixOp               *Uy
-	,MatrixOp               *Vy
-	,EJournalOutputLevel        olevel
-	,std::ostream               &out
+	,MatrixOp             *Y
+	,MatrixOp             *Uy
+	,EJournalOutputLevel  olevel
+	,std::ostream         &out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -93,8 +88,6 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
 	MatrixComposite
 		*Uy_cpst = Uy ? &dyn_cast<MatrixComposite>(*Uy) : NULL;			
-	MatrixComposite
-		*Vy_cpst = Vy ? &dyn_cast<MatrixComposite>(*Vy) : NULL;
 
 	//
 	// Initialize the matrices
@@ -131,7 +124,6 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 	syrk(*D,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 
 	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
-	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities
 
 	recalc_py(*D,py,olevel,out);
 
@@ -172,7 +164,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
 
 }
 
-void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy_Vy(
+void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy(
 	std::ostream& out, const std::string& L
 	) const
 {
@@ -181,7 +173,6 @@ void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy_Vy(
 		<< L << "py = inv(I + D*D') * py <: space_range\n"
 		<< L << "Y = [ I ; -D' ] <: space_x|space_range\n"
 		<< L << "Uy = ???\n"
-		<< L << "Vy = ???\n"
 		;
 }
 

@@ -30,10 +30,10 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 bool test_basis_system(
- 	NLPFirstOrder*                             nlp
-	,BasisSystem*                                  basis_sys
-	,OptionsFromStreamPack::OptionsFromStream*     options
-	,std::ostream*                                 out
+ 	NLPFirstOrder                               *nlp
+	,BasisSystem                                *basis_sys
+	,OptionsFromStreamPack::OptionsFromStream   *options
+	,std::ostream                               *out
 	);
 
 } // end NLPInterfacePack

@@ -22,7 +22,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 7;
+	const int local_num_options = 6;
 
 	enum local_EOptions {
 		FD_METHOD_ORDER
@@ -31,7 +31,6 @@ namespace {
 		,FD_STEP_SIZE_MIN
 		,FD_STEP_SIZE_F
 		,FD_STEP_SIZE_C
-		,FD_STEP_SIZE_H
 	};
 
 	const char* local_SOptions[local_num_options]	= {
@@ -41,7 +40,6 @@ namespace {
 		,"fd_step_size_min"
 		,"fd_step_size_f"
 		,"fd_step_size_c"
-		,"fd_step_size_h"
 	};
 
 }
@@ -112,9 +110,6 @@ void CalcFiniteDiffProdSetOptions::set_option(
 			break;
 	    case FD_STEP_SIZE_C:
 			target().fd_step_size_c(::atof(option_value.c_str()));
-			break;
-	    case FD_STEP_SIZE_H:
-			target().fd_step_size_h(::atof(option_value.c_str()));
 			break;
 		default:
 			assert(0);	// Local error only?

@@ -130,36 +130,23 @@ public:
 	///
 	void calc_point(
 		const Vector     &x
-		,value_type            *f
+		,value_type      *f
 		,VectorMutable   *c
-		,bool                  recalc_c
-		,VectorMutable   *h
+		,bool            recalc_c
 		,VectorMutable   *Gf
 		,VectorMutable   *py
 		,VectorMutable   *rGf
-		,MatrixOp          *GcU
-		,MatrixOp          *Gh
-		,MatrixOp          *D
-		,MatrixOp          *V
-		,MatrixOp          *P
+		,MatrixOp        *GcU
+		,MatrixOp        *D
+		,MatrixOp        *Uz
 		) const;
 	///
 	void calc_semi_newton_step(
 		const Vector    &x
 		,VectorMutable  *c
-		,bool                 recalc_c
+		,bool           recalc_c
 		,VectorMutable  *py
 		) const;
-
-	//@}
-
-protected:
-
-	/** @name Overridden protected members from NLP */
-	//@{
-
-	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
 
@@ -168,9 +155,9 @@ private:
 	// /////////////////////////////////////////
 	// Private data members
 
-	mat_fcty_ptr_t              factory_D_;         // Matrix space object for D
+	mat_fcty_ptr_t   factory_D_;         // Matrix space object for D
 
-	bool         initialized_;            // flag for if initialized has been called.
+	bool             initialized_;            // flag for if initialized has been called.
 
 	// /////////////////////////////////////////
 	// Private member functions

@@ -38,7 +38,7 @@ public:
 		,AbstractLinAlgPack::size_type                       num_vecs
 		)
 		:vec_space_(vec_space)
-		 ,num_vecs_(num_vecs)
+		,num_vecs_(num_vecs)
 	{}
 	typedef MemMngPack::ref_count_ptr<
 		AbstractLinAlgPack::MultiVectorMutable>               ptr_t;
@@ -168,7 +168,7 @@ void BasisSystemComposite::initialize_Gc(
 
 void BasisSystemComposite::get_C_N(
 	MatrixOp               *Gc
-	,MatrixOpNonsing   **C
+	,MatrixOpNonsing       **C
 	,MatrixOp              **N
 	)
 {
@@ -208,7 +208,7 @@ void BasisSystemComposite::get_C_N(
 
 void BasisSystemComposite::get_C_N(
 	const MatrixOp               &Gc
-	,const MatrixOpNonsing   **C
+	,const MatrixOpNonsing       **C
 	,const MatrixOp              **N
 	)
 {
@@ -275,14 +275,12 @@ BasisSystemComposite::BasisSystemComposite(
 	,const mat_sym_fcty_ptr_t            &factory_transDtD
 	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	,const mat_fcty_ptr_t                &factory_D
-	,const VectorSpace::space_ptr_t      &space_h
-	,const mat_fcty_ptr_t                &factory_GhUP
 	)
 	:BasisSystem(MemMngPack::null,MemMngPack::null)
 {
 	this->initialize(
 		space_x,var_dep,var_indep,space_c,factory_C,factory_transDtD,factory_S
-		,factory_D,space_h,factory_GhUP
+		,factory_D
 		);
 }
 	
@@ -295,8 +293,6 @@ void BasisSystemComposite::initialize(
 	,const mat_sym_fcty_ptr_t            &factory_transDtD
 	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	,const mat_fcty_ptr_t                &factory_D
-	,const VectorSpace::space_ptr_t      &space_h
-	,const mat_fcty_ptr_t                &factory_GhUP
 	)
 {
 	namespace rcp = MemMngPack;
@@ -319,9 +315,6 @@ void BasisSystemComposite::initialize(
 	THROW_EXCEPTION(
 		factory_C.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
-	THROW_EXCEPTION(
-		space_h.get() == NULL && factory_GhUP.get() != NULL, std::invalid_argument
-		,"BasisSystemComposite::initialize(...): Error!" );
 
 	space_x_         = space_x;
 	var_dep_         = var_dep;
@@ -329,16 +322,9 @@ void BasisSystemComposite::initialize(
 	space_c_         = space_c;
 	factory_C_       = factory_C;
 	factory_D_       = factory_D;
-	space_h_         = space_h;
-	inequ_undecomp_  = ( space_h.get() != NULL ? Range1D(1,space_h->dim()) : Range1D::Invalid );
-	factory_GhUP_    = factory_GhUP;
 	if( factory_D_.get() == NULL ) {
 		factory_D_ = afp::abstract_factory_std_alloc<MatrixOp,MultiVectorMutable>(
 			AllocatorMultiVectorMutable(space_x_->sub_space(var_dep),var_indep.size() ) );
-	}
-	if( space_h_.get() != NULL && factory_GhUP_.get() == NULL ) {
-		factory_GhUP_ = afp::abstract_factory_std_alloc<MatrixOp,MultiVectorMutable>(
-			AllocatorMultiVectorMutable(space_h_,var_indep.size() ) );
 	}
 	BasisSystem::initialize(factory_transDtD,factory_S);
 }
@@ -352,9 +338,6 @@ void BasisSystemComposite::set_uninitialized()
 	var_indep_       = Range1D::Invalid;
 	factory_C_       = rcp::null;
 	factory_D_       = rcp::null;
-	space_h_         = rcp::null;
-	inequ_undecomp_  = Range1D::Invalid;
-	factory_GhUP_    = rcp::null;
 }
 
 const VectorSpace::space_ptr_t&
@@ -369,34 +352,17 @@ BasisSystemComposite::space_c() const
 	return space_c_;
 }
 
-const VectorSpace::space_ptr_t&
-BasisSystemComposite::space_h() const
-{
-	return space_h_;
-}
-
 // To be overridden by subclasses
 
 void BasisSystemComposite::update_D(
-	const MatrixOpNonsing&  C
-	,const MatrixOp&            N
-	,MatrixOp*                  D
-	,EMatRelations                  mat_rel
+	const MatrixOpNonsing       &C
+	,const MatrixOp             &N
+	,MatrixOp                   *D
+	,EMatRelations              mat_rel
 	) const
 {
 	using LinAlgOpPack::M_StInvMtM;
 	M_StInvMtM( D, -1.0, C, BLAS_Cpp::no_trans, N, BLAS_Cpp::no_trans ); // D = -inv(C)*N
-}
-
-void BasisSystemComposite::update_GhUP(
-	const MatrixOpNonsing&  C
-	,const MatrixOp&            N
-	,const MatrixOp*            D
-	,MatrixOp*                  GhUP
-	,EMatRelations                  mat_rel
-	) const
-{
-	assert(0); // ToDo: Implement when needed!
 }
 
 // Overridden from BasisSytem
@@ -413,12 +379,6 @@ BasisSystemComposite::factory_D() const
 	return factory_D_;
 }
 
-const BasisSystem::mat_fcty_ptr_t
-BasisSystemComposite::factory_GhUP() const
-{
-	return factory_GhUP_;
-}
-
 Range1D BasisSystemComposite::var_dep() const
 {
 	return var_dep_;
@@ -429,42 +389,25 @@ Range1D BasisSystemComposite::var_indep() const
 	return var_indep_;
 }
 
-Range1D BasisSystemComposite::inequ_undecomp() const
-{
-	return inequ_undecomp_;
-}
-
 void BasisSystemComposite::update_basis(
-	const MatrixOp*         Gc
-	,const MatrixOp*        Gh
-	,MatrixOpNonsing*   C
-	,MatrixOp*              D
-	,MatrixOp*              GcUP
-	,MatrixOp*              GhUP
-	,EMatRelations              mat_rel
-	,std::ostream               *out
+	const MatrixOp          *Gc
+	,MatrixOpNonsing        *C
+	,MatrixOp               *D
+	,MatrixOp               *GcUP
+	,EMatRelations          mat_rel
+	,std::ostream           *out
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
 	const index_type
 		n  = var_dep_.size() + var_indep_.size(),
-		m  = var_dep_.size(),
-		mI = inequ_undecomp_.size();
+		m  = var_dep_.size();
 	THROW_EXCEPTION(
 		n == 0, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, this must be initialized first!" );
 	THROW_EXCEPTION(
 		Gc == NULL, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, Gc can not be NULL!" );
-	THROW_EXCEPTION(
-		mI == 0 && Gh != NULL, std::logic_error
-		,"BasisSystemComposite::update_basis(...): Error, Gh must be NULL!" );
-	THROW_EXCEPTION(
-		GcUP, std::logic_error
-		,"BasisSystemComposite::update_basis(...): Error, GcUP must be NULL!" );
-	THROW_EXCEPTION(
-		mI == 0 && GhUP != NULL, std::logic_error
-		,"BasisSystemComposite::update_basis(...): Error, GhUP must be NULL!" );
 	THROW_EXCEPTION(
 		C == NULL && D == NULL, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, C or D must be non-NULL!" );
@@ -481,10 +424,6 @@ void BasisSystemComposite::update_basis(
 	// Compute D
 	if( D ) {
 		update_D(*C_aggr,*N_aggr,D,mat_rel);
-	}
-	// Compute GhUP
-	if( GhUP ) {
-		update_GhUP(*C_aggr,*N_aggr,D,GhUP,mat_rel);
 	}
 }
 

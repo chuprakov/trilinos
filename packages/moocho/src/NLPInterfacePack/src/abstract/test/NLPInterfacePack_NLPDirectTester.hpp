@@ -129,8 +129,7 @@ namespace NLPInterfacePack {
   * \c Gf shown in (1) for instance.  The tolerances \c Gc_warning_tol and \c Gc_error_tol
   * are used for the comparisions (2), (3) and (4).
   * 
-  * There is one minor hitch to this testing.  For many NLPs, there is a
-  * strict region of \a x where \a f(x) or \a c(x) are not defined.  In order to
+  * There is one minor hitch to this testing.  For many NLPs, there is a  * strict region of \a x where \a f(x) or \a c(x) are not defined.  In order to
   * help ensure that we stay out of these regions, variable bounds and a scalar
   * \c max_var_bounds_viol can be included so that the testing software
   * will never evaluate \a f(x) or \a c(x) outside the region:
@@ -163,10 +162,6 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
 	/// Members for option \c Gc_error_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
-	/// Members for option \c Gh_warning_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_warning_tol )
-	/// Members for option \c Gh_error_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_error_tol )
 	/// Members for option \c num_fd_directions()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
 
@@ -179,9 +174,7 @@ public:
 		,value_type               Gf_error_tol        = 1e-1
 		,value_type               Gc_warning_tol      = 1e-6
 		,value_type               Gc_error_tol        = 1e-1
-		,value_type               Gh_warning_tol      = 1e-6
-		,value_type               Gh_error_tol        = 1e-1
-		,size_type                num_fd_directions   = 3
+		,size_type                num_fd_directions   = 1
 		);
 
 	///
@@ -208,9 +201,6 @@ public:
 	 * @param  c       [in] Value of c(x) computed at xo.
 	 *                 If NULL, then none of the tests involving it will
 	 *                 be performed.
-	 * @param  h       [in] Value of h(x) computed at xo.
-	 *                 If NULL, then none of the tests involving it will
-	 *                 be performed.  Should be NULL if <tt>nlp->mI() == 0</tt>.
 	 * @param  Gf      [in] Gradient of f(x) computed at xo.
 	 *                 If NULL, then none of the tests involving it will
 	 *                 be performed.
@@ -222,13 +212,9 @@ public:
 	 *                 then none of the tests involving it will be performed.
 	 * @param  GcU     [in]  Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
 	 *                 If NULL, htne none of the tests involving it will be performed.
-	 * @param  Gh      [in] Auxiliary jacobian matrix <tt>del(h,x)</tt>.  If NULL, then none
-	 *                 of the tests involving it will be performed.
 	 * @param  D       [in] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If NULL,
 	 *                 none of the tests involving it will be performed.
 	 * @param  Uz      [in] <tt>Uz = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
-	 *                 If NULL, then none of the tests involving it will be performed.
-	 * @param  Vz      [in]  <tt>Vz = GhI' + GhD'* D</tt>, which is the an auxiliary sensitivity matrix.
 	 *                 If NULL, then none of the tests involving it will be performed.
 	 * @param  print_all_warnings
 	 *                 [in] If true then all errors greater than warning_tol
@@ -239,26 +225,23 @@ public:
 	 *
 	 * @return Returns <tt>true</tt> if all the derivatives comparisons are
 	 * within the error tolerances or returns false
-	 *	otherwise.  This function will return false if any NaN or Inf values
-	 *	where encountered.
+	 * otherwise.  This function will return false if any NaN or Inf values
+	 * where encountered.
 	 */
 	bool finite_diff_check(
-		NLPDirect     *nlp
+		NLPDirect         *nlp
 		,const Vector     &xo
 		,const Vector     *xl
 		,const Vector     *xu
 		,const Vector     *c
-		,const Vector     *h
 		,const Vector     *Gf
 		,const Vector     *py
 		,const Vector     *rGf
-		,const MatrixOp     *GcU
-		,const MatrixOp     *Gh
-		,const MatrixOp     *D
-		,const MatrixOp     *Uz
-		,const MatrixOp     *Vz
-		,bool                   print_all_warnings
-		,std::ostream           *out
+		,const MatrixOp   *GcU
+		,const MatrixOp   *D
+		,const MatrixOp   *Uz
+		,bool             print_all_warnings
+		,std::ostream     *out
 		) const;
 
 };	// end class NLPDirectTester

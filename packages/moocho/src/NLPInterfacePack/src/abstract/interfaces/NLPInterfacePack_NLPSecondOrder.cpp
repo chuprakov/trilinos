@@ -20,55 +20,64 @@ namespace {
 	const char name_HL[] = "HL";
 }
 
+namespace NLPInterfacePack {
+
 // constructors
 
-NLPInterfacePack::NLPSecondOrder::NLPSecondOrder()
-	: HL_(0)
+NLPSecondOrder::NLPSecondOrder()
+	: HL_(NULL)
 {}
 
 
-void NLPInterfacePack::NLPSecondOrder::initialize(bool test_setup) {
+void NLPSecondOrder::initialize(bool test_setup) {
 	num_HL_evals_ = 0;
 	NLPFirstOrder::initialize(test_setup);
 }
 
 // <<std aggr>> members for HL
 
-void NLPInterfacePack::NLPSecondOrder::set_HL(MatrixSymOp* HL)
+void NLPSecondOrder::set_HL(MatrixSymOp* HL)
 {
 	HL_ = HL;
 }
 
-NLPInterfacePack::MatrixSymOp* NLPInterfacePack::NLPSecondOrder::get_HL()
+MatrixSymOp* NLPSecondOrder::get_HL()
 {
 	return StandardCompositionRelationshipsPack::get_role_name(HL_, false, name_HL);
 }
 
-NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrder::HL()
+MatrixSymOp& NLPSecondOrder::HL()
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
-const NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrder::HL() const
+const MatrixSymOp& NLPSecondOrder::HL() const
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
+}
+
+void NLPSecondOrder::unset_quantities()
+{
+	NLPFirstOrder::unset_quantities();
+	HL_ = NULL;
 }
 
 // calculations
 
-void NLPInterfacePack::NLPSecondOrder::calc_HL(
-	const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint
+void NLPSecondOrder::calc_HL(
+	const Vector& x, const Vector* lambda, bool newpoint
 	) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
-	THROW_EXCEPTION( lambdaI && this->mI() == 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
-	imp_calc_HL(x,lambda,lambdaI,newpoint,second_order_info());
+	imp_calc_HL(x,lambda,newpoint,second_order_info());
 }
 
-NLPInterfacePack::size_type NLPInterfacePack::NLPSecondOrder::num_HL_evals() const
+size_type NLPSecondOrder::num_HL_evals() const
 {
 	return num_HL_evals_;
 }
+
+} // namespace NLPInterfacePack

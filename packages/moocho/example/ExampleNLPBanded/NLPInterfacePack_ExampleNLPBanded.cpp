@@ -50,7 +50,6 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,basis_selection_was_given_(false)
 	,has_var_bounds_(false)
 	,f_offset_(f_offset)
-	,multi_calc_(false)
 	,nD_(nD)
 	,nI_(nI)
 	,bw_(bw)
@@ -101,7 +100,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 		hl_orig_    = hl;
 		hu_orig_    = hu;
 	}
-	co_orig_    = co;
+	co_orig_ = co;
 	//
 	const value_type inf = NLP::infinite_bound();
 	if( xDl > -inf || xDu < +inf || xIl > -inf || xIu < +inf )
@@ -131,23 +130,6 @@ bool ExampleNLPBanded::is_initialized() const
 value_type ExampleNLPBanded::max_var_bounds_viol() const
 {
 	return +1e+20; // Functions defined everywhere!
-}
-
-void ExampleNLPBanded::set_multi_calc(bool multi_calc) const
-{
-	multi_calc_ = multi_calc;
-}
-
-bool ExampleNLPBanded::multi_calc() const
-{
-	return multi_calc_;
-}
-
-// Overridden from NLPVarReductPerm
-
-bool ExampleNLPBanded::nlp_selects_basis() const
-{
-	return nlp_selects_basis_;
 }
 
 // Overridden protected methods from NLPSerialPreprocess
@@ -315,13 +297,12 @@ bool ExampleNLPBanded::imp_get_next_basis(
 	assert(equ_perm_full);
 	assert(rank);
 #endif
-	const bool         cinequtoequ = this->convert_inequ_to_equ();
-	const size_type    n_orig = nD_ + nI_;
-	const size_type    n_full = n_orig + ( cinequtoequ ? mI_ : 0 );
-	const size_type    m_full = nD_    + ( cinequtoequ ? mI_ : 0 );
+	const size_type    n_orig = nD_    + nI_;
+	const size_type    n_full = n_orig + mI_;
+	const size_type    m_full = nD_    + mI_;
 	var_perm_full->resize(n_full);
 	equ_perm_full->resize(m_full);
-	if( cinequtoequ && mI_ ) {
+	if( mI_ ) {
 		index_type k, i_perm = 1;;
 		// basic variables
 		for( k = 1; k <= nD_; ++k, ++i_perm )  // Put xD variables first
@@ -343,7 +324,7 @@ bool ExampleNLPBanded::imp_get_next_basis(
 		if( xl_orig_(k) == xu_orig_(k) )
 			++num_fixed;
 	}
-	if( cinequtoequ && mI_ ) {
+	if( mI_ ) {
 		for( index_type k = 1; k <= mI_; ++k ) {
 			if( hl_orig_(k) == hu_orig_(k) )
 				++num_fixed;
@@ -361,10 +342,15 @@ void ExampleNLPBanded::imp_report_orig_final_solution(
 	,const DVectorSlice     *lambda_orig
 	,const DVectorSlice     *lambdaI_orig
 	,const DVectorSlice     *nu_orig
-	,bool                  is_optimal
+	,bool                   is_optimal
 	) const
 {
 	// ToDo: Do something with the final soltuion?
+}
+
+bool ExampleNLPBanded::nlp_selects_basis() const
+{
+	return nlp_selects_basis_;
 }
 
 // Overridden protected methods from NLPSerialPreprocessExplJac

@@ -92,8 +92,6 @@ public:
 	 * @param  decomp_sys
 	 *              [in] The \c DecompositionSystem object that \c DecompositionSystem::update_basis() was called on.
 	 * @param  Gc   [in] Must be matrix that was passed to <tt>decomp_sys.update_decomp(Gc,...)</tt>.
-	 * @param  Gh   [in] If <tt>Gh!=NULL</tt> then must be matrix that was passed to
-	 *              <tt>decomp_sys.update_decomp(...,Gh,...)</tt>.
 	 * @param  Z    [in] Must be matrix that was passed to and returned from
 	 *              <tt>decomp_sys.update_decomp(...,Z,...)</tt>.
 	 * @param  Y    [in] Must be matrix that was passed to and returned from
@@ -104,10 +102,6 @@ public:
 	 *              <tt>decomp_sys.update_decomp(...,Uz,...)</tt>.
 	 * @param  Uy   [in] If <tt>Uy!=NULL</tt> then Must be matrix that was passed to and returned from
 	 *              <tt>decomp_sys.update_decomp(...,Uy,...)</tt>.
-	 * @param  Vz   [in] If <tt>Vz!=NULL</tt> then Must be matrix that was passed to and returned from
-	 *              <tt>decomp_sys.update_decomp(...,Vz,...)</tt>.
-	 * @param  Vy   [in] If <tt>Vy!=NULL</tt> then Must be matrix that was passed to and returned from
-	 *              <tt>decomp_sys.update_decomp(...,Vy,...)</tt>.
 	 * @param  out  [in/out] If <tt>out != NULL</tt> any and all output will be sent here.  If
 	 *              <tt>out == NULL</tt> then no output will be produced.
 	 *
@@ -132,17 +126,14 @@ public:
 	 * </ul>
 	 */
 	bool test_decomp_system(
-		const DecompositionSystem       &decomp_sys
+		const DecompositionSystem   &decomp_sys
 		,const MatrixOp             &Gc
-		,const MatrixOp             *Gh
 		,const MatrixOp             *Z
 		,const MatrixOp             *Y
-		,const MatrixOpNonsing  *R
+		,const MatrixOpNonsing      *R
 		,const MatrixOp             *Uz
 		,const MatrixOp             *Uy
-		,const MatrixOp             *Vz
-		,const MatrixOp             *Vy
-		,std::ostream                   *out
+		,std::ostream               *out
 		);
 
 }; // end class DecompositionSystemTester

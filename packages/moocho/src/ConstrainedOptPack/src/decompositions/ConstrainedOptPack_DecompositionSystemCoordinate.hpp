@@ -37,8 +37,6 @@ namespace ConstrainedOptPack {
   Uy = Gc(:,con_undecomp)'*Y = [ E  F ] * [ I ] = E
                                           [ 0 ]
 
-  Vy = Gh'*Y = [ Gh(var_dep,:)'   Gh(var_indep,:)' ] * [ I ] = Gh(var_dep,:)'
-                                                       [ 0 ]
  \endverbatim
  * The solution of the
  *
@@ -54,12 +52,10 @@ public:
 	DecompositionSystemCoordinate(
 		const VectorSpace::space_ptr_t     &space_x          = MemMngPack::null
 		,const VectorSpace::space_ptr_t    &space_c          = MemMngPack::null
-		,const VectorSpace::space_ptr_t    &space_h          = MemMngPack::null
 		,const basis_sys_ptr_t             &basis_sys        = MemMngPack::null
 		,const basis_sys_tester_ptr_t      &basis_sys_tester = MemMngPack::null
 		,EExplicitImplicit                 D_imp             = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp            = MAT_IMP_AUTO
-		,EExplicitImplicit                 Vz_imp            = MAT_IMP_AUTO
 		);
 
 	//@}
@@ -73,8 +69,6 @@ public:
 	const mat_nonsing_fcty_ptr_t factory_R() const;
 	///
 	const mat_fcty_ptr_t factory_Uy() const;
-	///
-	const mat_fcty_ptr_t factory_Vy() const;
 
 	//@}
 
@@ -85,12 +79,11 @@ protected:
 
 	///
 	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
-		std::ostream                                           *out
-		,EOutputLevel                                          olevel
+		std::ostream                                       *out
+		,EOutputLevel                                      olevel
 		,MatrixOp                                          *Y
-		,MatrixOpNonsing                               *R
+		,MatrixOpNonsing                                   *R
 		,MatrixOp                                          *Uy
-		,MatrixOp                                          *Vy
 		) const;
 	///
 	void initialize_matrices(
@@ -98,10 +91,9 @@ protected:
 		,EOutputLevel                                          olevel
 		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-		,MatrixOp                                          *Y
-		,MatrixOpNonsing                               *R
-		,MatrixOp                                          *Uy
-		,MatrixOp                                          *Vy
+		,MatrixOp                                              *Y
+		,MatrixOpNonsing                                       *R
+		,MatrixOp                                              *Uy
 		,EMatRelations                                         mat_rel
 		) const;
 	///

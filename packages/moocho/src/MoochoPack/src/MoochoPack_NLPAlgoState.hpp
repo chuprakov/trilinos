@@ -50,15 +50,12 @@ extern const std::string HL_name;
 extern const std::string c_name;
 extern const std::string h_name;
 extern const std::string Gc_name;
-extern const std::string Gh_name;
 // Constraint Gradient Null Space / Range Space Decomposition Info
 extern const std::string Y_name;
 extern const std::string Z_name;
 extern const std::string R_name;
 extern const std::string Uy_name;
 extern const std::string Uz_name;
-extern const std::string Vy_name;
-extern const std::string Vz_name;
 // Search Direction Info
 extern const std::string py_name;
 extern const std::string Ypy_name;
@@ -84,7 +81,6 @@ extern const std::string comp_kkt_err_name;
 extern const std::string GL_name;
 extern const std::string rGL_name;
 extern const std::string lambda_name;
-extern const std::string lambdaI_name;
 extern const std::string nu_name;
 
 //@}
@@ -291,8 +287,6 @@ public:
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
 	/// Set the VectorSpace of c
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
-	/// Set the VectorSpace of h
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_h )
 	///
 	/** Set the VectorSpace of the range space (py).
 	 * 
@@ -325,7 +319,6 @@ public:
 		const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
 		,const vec_space_ptr_t& space_x      = MemMngPack::null
 		,const vec_space_ptr_t& space_c      = MemMngPack::null
-		,const vec_space_ptr_t& space_h      = MemMngPack::null
 		,const vec_space_ptr_t& space_range  = MemMngPack::null
 		,const vec_space_ptr_t& space_null   = MemMngPack::null
 		);
@@ -356,12 +349,8 @@ public:
 	STATE_IQ_DECL(MatrixSymOp,HL)
 	/// c:  DVector of general nonlinear equality constraints ( m x 1 )
 	STATE_VECTOR_IQ_DECL(c)
-	/// h:  DVector of general nonlinear inequality constraints ( mI x 1 )
-	STATE_VECTOR_IQ_DECL(h)
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
 	STATE_IQ_DECL(MatrixOp,Gc)
-	/// Gh:  Gradient of inequality constraints ('h') matrix ( n x mI )
-	STATE_IQ_DECL(MatrixOp,Gh)
 
 	//@}
 
@@ -378,10 +367,6 @@ public:
 	STATE_IQ_DECL(MatrixOp,Uy)
 	/// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
 	STATE_IQ_DECL(MatrixOp,Uz)
-	/// Vy:  Represents Gh' * Y ( mI x r )
-	STATE_IQ_DECL(MatrixOp,Vy)
-	/// Vz:  Represents Gh' * Z ( mI x (m-r) )
-	STATE_IQ_DECL(MatrixOp,Vz)
 
 	//@}
 
@@ -448,8 +433,6 @@ public:
 	STATE_VECTOR_IQ_DECL(rGL)
 	/// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
 	STATE_VECTOR_IQ_DECL(lambda)
-	/// lambdaI:  Lagrange multipliers for the ineequality constraints 'h' ( mI x 1 )
-	STATE_VECTOR_IQ_DECL(lambdaI)
 	/// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
 	STATE_VECTOR_IQ_DECL(nu)
 
@@ -489,9 +472,8 @@ protected:
 	enum EVecSpaceType {
 		VST_SPACE_X       = 0
 		,VST_SPACE_C      = 1
-		,VST_SPACE_H      = 2
-		,VST_SPACE_RANGE  = 3
-		,VST_SPACE_NULL   = 4
+		,VST_SPACE_RANGE  = 2
+		,VST_SPACE_NULL   = 3
 	};
 
 	// /////////////////////////////

@@ -73,13 +73,11 @@ bool NLPTester::test_interface(
 		
 		const size_type
 			n = nlp->n(),
-			m = nlp->m(),
-			mI = nlp->mI();
+			m = nlp->m();
 		if(out)
 			*out << "\n*** Dimensions of the NLP"
 				 << "\nnlp->n()  = " << n
 				 << "\nnlp->m()  = " << m
-				 << "\nnlp->mI() = " << mI
 				 << std::endl;
 		if( n < m ) {
 			if(*out)
@@ -112,21 +110,6 @@ bool NLPTester::test_interface(
 			update_success( result, &success );
 			if(out)
 				*out << "\ncheck: nlp->space_c().get() = " << nlp->space_c().get()
-					 << " == NULL: " << result;
-		}
-
-		if( nlp->mI() ) {
-			result = nlp->space_h()->dim() == nlp->mI();
-			update_success( result, &success );
-			if(out)
-				*out << "\ncheck: nlp->space_h()->dim() = " << nlp->space_h()->dim()
-					 << " == nlp->mI() = " << nlp->mI() << ": " << result;
-		}
-		else {
-			result = nlp->space_h().get() == NULL;
-			update_success( result, &success );
-			if(out)
-				*out << "\ncheck: nlp->space_h().get() = " << nlp->space_h().get()
 					 << " == NULL: " << result;
 		}
 
@@ -170,7 +153,8 @@ bool NLPTester::test_interface(
 			
 		size_type 
 			num_bounded_x = AbstractLinAlgPack::num_bounded(
-				nlp->xl(), nlp->xu(), NLP::infinite_bound() );
+				nlp->xl(), nlp->xu(), NLP::infinite_bound()
+				);
 		result = (num_bounded_x == nlp->num_bounded_x());
 		update_success( result, &success );
 		if(out)
@@ -178,24 +162,13 @@ bool NLPTester::test_interface(
 				 << " == nlp->num_bounded_x() = " << nlp->num_bounded_x()
 				 << ": " << result << std::endl;
 
-		// Validate bounds on the general inequalities
-		if( nlp->mI() ) {
-			
-			assert(0); // ToDo: Implement this once we have an NLP with general inequalities
-
-		}
-
 		// Get the initial Lagrange multipliers
 		if(out)
 			*out << "\nGetting the initial estimates for the Lagrange mutipliers ...\n";
-		VectorSpace::vec_mut_ptr_t
-			lambda, lambdaI, nu;
+		VectorSpace::vec_mut_ptr_t  lambda, nu;
 		nlp->get_init_lagrange_mult(
 			(  nlp->m()
 			   ? (lambda  = nlp->space_c()->create_member()).get() 
-			   : (VectorMutable*)NULL )
-			,( nlp->mI()
-			   ? (lambdaI = nlp->space_h()->create_member()).get()
 			   : (VectorMutable*)NULL )
 			,( nlp->num_bounded_x()
 			   ? (nu = nlp->space_x()->create_member()).get()
@@ -205,9 +178,6 @@ bool NLPTester::test_interface(
 		if(out) {
 			if(lambda.get())
 				*out << "\n||lambda||inf  = " << lambda->norm_inf();
-			if(lambdaI.get())
-				*out << "\n||lambdaI||inf = " << lambda->norm_inf()
-					 << "\nlambdaI.nz()   = " << lambda->nz();
 			if(nu.get())
 				*out << "\n||nu||inf      = " << nu->norm_inf()
 					 << "\nnu.nz()        = " << nu->nz();
@@ -215,73 +185,55 @@ bool NLPTester::test_interface(
 			if(print_all()) {
 				if(lambda.get())
 					*out << "\nlambda =\n" << *lambda;
-				if(lambdaI.get())
-					*out << "\nlambdaI =\n" << *lambdaI;
 				if(nu.get())
 					*out << "\nnu =\n" << *nu;
 			}
 		}
 		if(lambda.get())
 			assert_print_nan_inf(*lambda,"lambda",true,out); 
-		if(lambdaI.get())
-			assert_print_nan_inf(*lambdaI,"lambdaI",true,out); 
 		if(nu.get())
 			assert_print_nan_inf(*nu,"nu",true,out); 
 
 		// Save the current reference that are set to be set back at the end
-		value_type            *f_saved = NULL;
+		value_type      *f_saved = NULL;
 		VectorMutable   *c_saved = NULL;
-		VectorMutable   *h_saved = NULL;
 		f_saved = nlp->get_f();
 		if( nlp->m() )  c_saved = nlp->get_c();
-		if( nlp->mI() ) h_saved = nlp->get_h();
 
 		// Create calcualtion quantities
 		value_type                   f;
 		VectorSpace::vec_mut_ptr_t   c;
-		VectorSpace::vec_mut_ptr_t   h;
 		if( nlp->m() )
 			c = nlp->space_c()->create_member();
-		if( nlp->mI() )
-			h = nlp->space_h()->create_member();
 
 		// Set the calculation quantities
 		nlp->set_f(&f);
 		if( nlp->m() )  nlp->set_c(c.get());
-		if( nlp->mI() ) nlp->set_h(h.get());
 
 		// Calculate the quantities at xo
 		if(out)
 			*out << "\n*** Evaluate the point xo ...\n";
-		nlp->set_multi_calc(true);
 		nlp->calc_f(xo,true);
 		if(nlp->m())  nlp->calc_c(xo,false);
-		if(nlp->mI()) nlp->calc_h(xo,false);
 
 		if(out) {
 			*out << "\nf(xo) = " << f;
 			if(nlp->m())
 				*out << "\n||c(xo)||inf = " << nlp->c().norm_inf();
-			if(nlp->mI())
-				*out << "\n||h(xo)||inf = " << nlp->h().norm_inf();
 			*out << std::endl;
 			if(print_all()) {
 				if(nlp->m())
 					*out << "\nc(xo) =\n" << nlp->c();
-				if(nlp->mI())
-					*out << "\nh(xo) =\n" << nlp->h();
 			}
 		}
 
 		if(c.get())
 			assert_print_nan_inf(*c,"c(xo)",true,out); 
-		if(h.get())
-			assert_print_nan_inf(*h,"h(xo)",true,out); 
 
 		// Report the final solution!
 		if(out)
 			*out << "\n*** Report this point to the NLP as suboptimal ...\n";
-		nlp->report_final_solution(	xo, lambda.get(), lambdaI.get(), nu.get(), false );
+		nlp->report_final_solution(	xo, lambda.get(), nu.get(), false );
 
 		// Print the number of evaluations!
 		if(out) {
@@ -289,15 +241,12 @@ bool NLPTester::test_interface(
 			*out << "\nnlp->num_f_evals() = " << nlp->num_f_evals();
 			if(nlp->m())
 				*out << "\nnlp->num_c_evals() = " << nlp->num_c_evals();
-			if(nlp->mI())
-				*out << "\nnlp->num_h_evals() = " << nlp->num_h_evals();
 			*out << std::endl;
 		}
 
 		// Set the original quantities back
 		nlp->set_f(f_saved);
 		if(nlp->m())  nlp->set_c(c_saved);
-		if(nlp->mI()) nlp->set_h(h_saved);
 
 	}
 	catch(const std::exception& except) {

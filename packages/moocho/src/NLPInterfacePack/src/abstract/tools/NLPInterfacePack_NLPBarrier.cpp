@@ -143,10 +143,19 @@ void NLPBarrier::imp_calc_c(
 	assert(false && !"This should never get called.");
 	}
 
-void NLPBarrier::imp_calc_h(
+void NLPBarrier::imp_calc_c_hat(
   const Vector& x, 
   bool newx, 
-  const ZeroOrderInfo& zero_order_info
+  const ZeroOrderInfo& zero_order_info_hat
+  ) const
+	{	
+	assert(false && !"This should never get called.");
+	}
+
+void NLPBarrier::imp_calc_h_hat(
+  const Vector& x, 
+  bool newx, 
+  const ZeroOrderInfo& zero_order_info_hat
   ) const
 	{	
 	assert(false && !"This should never get called.");

@@ -86,14 +86,13 @@ public:
 	 *
 	 * ToDo: Finish documentation!
 	 */
-	virtual void uninitialize_Y_Uv_Uy(
+	virtual void uninitialize_Y_Uy(
 		MatrixOp         *Y
 		,MatrixOp        *Uy
-		,MatrixOp        *Vy
 		) = 0;
 
 	///
-	/** Overridden by subclass to compute \c py, \c Y, \c Uy and \c Vy.
+	/** Overridden by subclass to compute \c py, \c Y and \c Uy.
 	 *
 	 * @param  D    [in/out] Smart pointer to matrix <tt>D = -inv(C)*N</tt>.
 	 *              On output, D->count() may be incremented in order to
@@ -102,20 +101,18 @@ public:
 	 *              On output <tt>py = -inv((Gc(decomp)'*Y)*c(decomp)</tt>
 	 * @param  Y    [in/out] On ouput <tt>Y</tt> is initialized properly.
 	 * @param  Uy   [in/out] On ouput <tt>Uy</tt> is initialized properly.
-	 * @param  Vy   [in/out] On ouput <tt>Y</tt> is initialized properly.
 	 * @param  olevel
 	 *              [in] Determines output level.
 	 * @param  out  [out] Journal outputting.
 	 */
-	virtual void calc_py_Y_Uy_Vy(
-		const NLPDirect   &nlp
-		,const D_ptr_t              &D
+	virtual void calc_py_Y_Uy(
+		const NLPDirect       &nlp
+		,const D_ptr_t        &D
 		,VectorMutable        *py
-		,MatrixOp               *Y
-		,MatrixOp               *Uy
-		,MatrixOp               *Vy
-		,EJournalOutputLevel        olevel
-		,std::ostream               &out
+		,MatrixOp             *Y
+		,MatrixOp             *Uy
+		,EJournalOutputLevel  olevel
+		,std::ostream         &out
 		) = 0;
 
 	///
@@ -126,16 +123,16 @@ public:
 	 *              On output <tt>py = -inv((Gc(decomp)'*Y)*c(decomp)</tt>
 	 */
 	virtual void recalc_py(
-		const MatrixOp       &D
-		,VectorMutable     *py
-		,EJournalOutputLevel     olevel
-		,std::ostream            &out
+		const MatrixOp          &D
+		,VectorMutable          *py
+		,EJournalOutputLevel    olevel
+		,std::ostream           &out
 		) = 0;
 	
 	///
 	/** Overridden by subclass to print how \c py and \c Y are computed.
 	 */
-	virtual void print_calc_py_Y_Uy_Vy(
+	virtual void print_calc_py_Y_Uy(
 		std::ostream& out, const std::string& leading_str
 		) const = 0;
 

@@ -37,8 +37,6 @@ namespace ConstrainedOptPack {
 
   Uz  = F + E * D
 
-  Vz  = Gh(var_indep,:)' + Gh(var_dep,:)'*D
-
       where:
            C = Gc(var_dep,con_decomp)'     [nonsingular]
            N = Gc(var_indep,con_decomp)'
@@ -47,7 +45,7 @@ namespace ConstrainedOptPack {
            D = -inv(C) * N
  \endverbatim
  *
- * This interface simply allows clients to determine how \c D, \c Uz and \c Vz
+ * This interface simply allows clients to determine how \c D and \c Uz
  * are implemented (implicitly or explicity).
  */
 class DecompositionSystemVarReduct : public DecompositionSystem {
@@ -72,8 +70,6 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp)
 	/// Set whether to use explicit or implicit <tt>Uz = F + E * D</tt> matrix.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Uz_imp)
-	/// Set whether to use explicit or implicit <tt>Vz = Gh(var_indep,:)' + Gh(var_dep,:)'*D</tt> matrix.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Vz_imp)
 
 		// ToDo: The above could be implemented as pure virtual funtions if needed later!
 
@@ -86,9 +82,8 @@ public:
 	DecompositionSystemVarReduct(
 		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
 		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
-		,EExplicitImplicit    Vz_imp   = MAT_IMP_AUTO
 		)
-		:D_imp_(D_imp), Uz_imp_(Uz_imp), Vz_imp_(Vz_imp)
+		:D_imp_(D_imp), Uz_imp_(Uz_imp)
 	{}
 
 	//@}

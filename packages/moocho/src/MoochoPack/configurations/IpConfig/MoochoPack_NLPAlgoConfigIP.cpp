@@ -242,7 +242,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 	const size_type
 		n   = nlp.n(),
 		m   = nlp.m(),
-		mI  = nlp.mI(),
 		r   = m, // ToDo: Compute this for real!
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
@@ -250,8 +249,8 @@ void NLPAlgoConfigIP::config_algo_cntr(
 	// Process the NLP
 	NLPFirstOrder    *nlp_foi = NULL;
 	NLPSecondOrder   *nlp_soi = NULL;
-	NLPDirect  *nlp_fod = NULL;
-	bool                 tailored_approach = false;
+	NLPDirect        *nlp_fod = NULL;
+	bool             tailored_approach = false;
 	decomp_sys_step_builder_.process_nlp_and_options(
 		trase_out, nlp
 		,&nlp_foi, &nlp_soi, &nlp_fod, &tailored_approach
@@ -269,10 +268,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		n == m, std::logic_error
 		,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 		"can not currently solve a square system of equations!" );
-	THROW_EXCEPTION(
-		mI, std::logic_error
-		,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
-		"can not currently solve an NLPcd .. with general inequalities!" );
 
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
@@ -401,7 +396,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 					decomp_sys
 					,nlp.space_x()
 					,nlp.space_c()
-					,nlp.space_h()
 					,( tailored_approach
 					   ? ( nlp_fod->var_dep().size() 
 						   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
@@ -625,7 +619,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		if(m) dyn_cast<IQ_vector_cngs>(state->c()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->Gf()).resize(2);
 		if(m && nlp_foi) state->Gc();
-		if(mI) state->Gh();
 
 		if( m
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
@@ -661,7 +654,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			dyn_cast<IQ_vector_cngs>(state->rGL()).resize(2);
 		}
 		if(m) dyn_cast<IQ_vector_cngs>(state->lambda()).resize(2);
-		if(mI) dyn_cast<IQ_vector_cngs>(state->lambdaI()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->nu()).resize(2);
 
 		// Set the state object
@@ -844,7 +836,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		algo_step_ptr_t    null_space_step = mmp::rcp(new TangentialStepIP_Step());
 		/*		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
 		algo_step_ptr_t    null_space_step_step = mmp::null;
-		if( mI == 0 && nb == 0 ) {
+		if( nb == 0 ) {
 			null_space_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
@@ -1038,30 +1030,30 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		// Create the algorithm depending on the type of NLP we are trying to solve.
 		//
 
-		if( m == 0 && mI == 0 ) {
+		if( m == 0 ) {
 			if( nb == 0 ) {
 				//
-				// Unconstrained NLP (m == 0, mI == 0, num_bounded_x == 0)
+				// Unconstrained NLP (m == 0, num_bounded_x == 0)
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for an unconstrained "
-						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
+						<< "NLP (m == 0, num_bounded_x == 0) ...\n";
 				THROW_EXCEPTION(
-					m == 0 && mI == 0 && nb == 0, std::logic_error
+					m == 0 && nb == 0, std::logic_error
 					,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
 					"Unconstrained NLPs are not supported yet!" );
 			}
 			else {
 				//
-				// Simple bound constrained NLP (m == 0, mI == 0, num_bounded_x > 0)
+				// Simple bound constrained NLP (m == 0, num_bounded_x > 0)
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a simple bound constrained "
-						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
+						<< "NLP (m == 0, num_bounded_x > 0) ...\n";
 				THROW_EXCEPTION(
-					m == 0 && mI == 0 && nb == 0, std::logic_error
+					m == 0 && nb == 0, std::logic_error
 					,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
 					"Bound constrained NLPs are not supported yet!" );
 			}
@@ -1080,27 +1072,27 @@ void NLPAlgoConfigIP::config_algo_cntr(
 				"Nonlinear equation (NLE) problems are not supported yet!" );
 			assert(0); // ToDo: add the step objects for this algorithm
 		}
-		else if ( m > 0 || mI > 0 || nb > 0 ) {
+		else if ( m > 0 || nb > 0 ) {
 			//
-			// General nonlinear NLP ( m > 0 || mI > 0 )
+			// General nonlinear NLP ( m > 0 )
 			//
-			if(  mI == 0 && nb == 0 ) {
+			if( nb == 0 ) {
 				//
-				// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
+				// Nonlinear equality constrained NLP ( m > 0 && num_bounded_x == 0 )
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a nonlinear equality constrained "
-						<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
+						<< "NLP ( m > 0 && num_bounded_x == 0) ...\n";
 			}
 			else {
 				//
-				// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
+				// Nonlinear inequality constrained NLP ( num_bounded_x > 0 )
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a nonlinear generally constrained "
-						<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
+						<< "NLP ( num_bounded_x > 0 ) ...\n";
 			}
 
 
@@ -1142,9 +1134,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
 				} 
-
-			//			if( mI == 0 && nb == 0 ) 
-			//{
 
  				// CalcReducedGradLagrangian
 				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
@@ -1193,55 +1182,14 @@ void NLPAlgoConfigIP::config_algo_cntr(
 						);
 			}
 
-			/*			// ReducedGradient
- 			if( !tailored_approach ) {
-	 			algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
-		 	}
-
-			if( mI == 0 && nb == 0 ) {
-
-				// CalcReducedGradLagrangian
-				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
-
-				// CalcLagrangeMultDecomposed
-				// Compute these here so that in case we converge we can report them
-				if( !tailored_approach ) {
-					// ToDo: Insert this step
-				}
-
-				// CheckConvergence
-				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-				}*/
-
 			// ReducedHessian
 			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
-
-			// (.-1) CheckSkipBFGSUpdate
-			/*algo->insert_assoc_step(
-				step_num
-				,IterationPack::PRE_STEP
-				,1
-				,CheckSkipBFGSUpdate_name
-				,check_skip_bfgs_update_step
-				);*/
 
 			// UpdateReducedSigma_Step
 			algo->insert_step( ++step_num, "UpdateReducedSigma", updateReducedSigma_step);
 
 			// NullSpaceStep
 			algo->insert_step( ++step_num, "NullSpaceStepIP", null_space_step);
-			/*algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
-			if( mI > 0 || nb > 0 ) {
-				// SetDBoundsStd
-				algo->insert_assoc_step(
-					step_num
-					,IterationPack::PRE_STEP
-					,1
-					,"SetDBoundsStd"
-					,set_d_bounds_step
-				  );
-				  }*/
-
 			// CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
 			
@@ -1250,21 +1198,6 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
 			// PreProcessBarrierLineSearch_Step
 			algo->insert_step( ++step_num, "PreProcessBarrierLineSearch_Step", preprocess_barrier_linesearch_step );
-
-			/*			if( mI > 0 || nb > 0 ) {
-
-				// CalcReducedGradLagrangian
-				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
-
-				// CalcLagrangeMultDecomposed
-				// Compute these here so that in case we converge we can report them
-				if( !tailored_approach ) {
-					// ToDo: Insert this step
-				}
-
-				// CheckConvergence
-				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-				}*/
 
 			// LineSearch
 			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
@@ -1321,10 +1254,10 @@ void NLPAlgoConfigIP::init_algo(NLPAlgoInterface* _algo)
 		"_algo can not be NULL" );
 
 	NLPAlgo             &algo    = dyn_cast<NLPAlgo>(*_algo);
-	NLPAlgoState	         &state   = algo.rsqp_state();
-	NLP			         &nlp     = algo.nlp();
-	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-	NLPDirect  *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
+	NLPAlgoState	    &state   = algo.rsqp_state();
+	NLP			        &nlp     = algo.nlp();
+	NLPVarReductPerm    *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
+	NLPDirect           *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );

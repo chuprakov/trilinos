@@ -60,20 +60,17 @@ bool CheckConvergenceStd_AddedStep::do_step(
 	if( found_solution )
 		{
 		const size_type
-			m  = nlp.m(),
-			mI = nlp.mI();
+			m  = nlp.m();
 		
 		IterQuantityAccess<VectorMutable>
 			&x_iq       = s.x(),
 			*lambda_iq  = m  ? &s.lambda()  : NULL,
-			*lambdaI_iq = mI ? &s.lambdaI() : NULL,
 			&nu_iq      = s.nu();
 		
 		nlp.report_final_solution(
 		  x_iq.get_k(0),
 		  m  && lambda_iq->updated_k(0)  ? &lambda_iq->get_k(0)  : NULL,
-		  mI && lambdaI_iq->updated_k(0) ? &lambdaI_iq->get_k(0) : NULL,
-		  nu_iq.updated_k(0)            ? &nu_iq.get_k(0)        : NULL,
+		  nu_iq.updated_k(0)             ? &nu_iq.get_k(0)       : NULL,
 		  true
 		  );
 

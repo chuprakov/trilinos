@@ -64,31 +64,13 @@ NLPDirect::factory_GcU() const
 }
 
 const NLPDirect::mat_fcty_ptr_t
-NLPDirect::factory_Gh() const
-{
-	return MemMngPack::null;
-}
-
-const NLPDirect::mat_fcty_ptr_t
 NLPDirect::factory_Uz() const
 {
 	return MemMngPack::null;
 }
 
 const NLPDirect::mat_fcty_ptr_t
-NLPDirect::factory_Vz() const
-{
-	return MemMngPack::null;
-}
-
-const NLPDirect::mat_fcty_ptr_t
 NLPDirect::factory_GcUD() const
-{
-	return MemMngPack::null;
-}
-
-const NLPDirect::mat_fcty_ptr_t
-NLPDirect::factory_GhD() const
 {
 	return MemMngPack::null;
 }
@@ -108,29 +90,6 @@ NLPDirect::factory_S() const
 void NLPDirect::initialize(bool test_setup)
 {
 	NLPObjGrad::initialize(test_setup);
-}
-
-NLP::vec_space_ptr_t NLPDirect::space_h() const
-{
-	return MemMngPack::null;
-}
-
-const Vector& NLPDirect::hl() const
-{
-	THROW_EXCEPTION( true, NoBounds, "NLPDirect::hl(), Error, default is for mI() == 0" );
-	return xl(); // will never execute.
-}
-
-const Vector& NLPDirect::hu() const
-{
-	THROW_EXCEPTION( true, NoBounds, "NLPDirect::hl(), Error, default is for mI() == 0" );
-	return xu(); // will never execute.
-}
-
-void NLPDirect::imp_calc_h(
-	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
-{
-	assert(0); // Should never be called!
 }
 
 } // end namespace NLPIntefacePack

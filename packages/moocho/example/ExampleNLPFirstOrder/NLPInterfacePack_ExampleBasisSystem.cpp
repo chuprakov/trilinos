@@ -37,11 +37,11 @@ ExampleBasisSystem::ExampleBasisSystem(
 		,MemMngPack::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())               // D'*D
+			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
 		,MemMngPack::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())                  // D
+			new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
 		)
 {}
 	
@@ -62,17 +62,17 @@ void ExampleBasisSystem::initialize(
 		,var_indep
 		,space_x->sub_space(var_dep)
 		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())              // D'*D
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
 		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())                 // D
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
 		);
 }
 
 void ExampleBasisSystem::update_D(
-	const MatrixOpNonsing&  C
-	,const MatrixOp&            N
-	,MatrixOp*                  D
-	,EMatRelations                  mat_rel
+	const MatrixOpNonsing   &C
+	,const MatrixOp         &N
+	,MatrixOp               *D
+	,EMatRelations          mat_rel
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;

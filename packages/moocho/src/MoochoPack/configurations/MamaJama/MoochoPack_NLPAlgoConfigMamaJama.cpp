@@ -258,7 +258,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	const size_type
 		n   = nlp.n(),
 		m   = nlp.m(),
-		mI  = nlp.mI(),
 		r   = m, // ToDo: Compute this for real!
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
@@ -281,11 +280,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		n == m, std::logic_error
 		,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 		"can not currently solve a square system of equations!" );
-	THROW_EXCEPTION(
-		mI, std::logic_error
-		,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-		"can not currently solve an NLP with general inequalities!" );
-	
+
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
 
@@ -369,7 +364,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			assert(0); // Invalid option!
 	}
 
-	if( uov_.qp_solver_type_ == QP_AUTO && nb == 0 && mI == 0 ) {
+	if( uov_.qp_solver_type_ == QP_AUTO && nb == 0 ) {
 		cov_.qp_solver_type_ = QP_AUTO;
 	}
 
@@ -397,10 +392,10 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	}
 	
 	// Adjust the Quasi-Newton if QPKWIK is used!
-	if( cov_.qp_solver_type_ == QP_QPKWIK && ( nb || mI ) ) {
+	if( cov_.qp_solver_type_ == QP_QPKWIK && nb ) {
 		if(trase_out)
 			*trase_out
-				<< "\nqp_solver == QPKWIK and nlp.num_bounded_x() == " << nb << " and nlp.mI() == " << mI << ":\n"
+				<< "\nqp_solver == QPKWIK and nlp.num_bounded_x() == " << nb << ":\n"
 				<< "Setting quasi_newton == BFGS...\n";
 		cov_.quasi_newton_ = QN_BFGS;
 	}
@@ -439,7 +434,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					decomp_sys
 					,nlp.space_x()
 					,nlp.space_c()
-					,nlp.space_h()
 					,( m
 					   ? ( tailored_approach
 						   ? ( nlp_fod->var_dep().size() 
@@ -479,11 +473,11 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
 			// iterative refinement).
 			const bool
-				maintain_original = ( nb || mI );
+				maintain_original = nb;
 			// Maintain the factor if a QP solver is needed, QPSchur is being used, or we are checking
 			// results
 			const bool
-				maintain_inverse = ( (!nb && !mI && m==r) || cov_.qp_solver_type_==QP_QPSCHUR
+				maintain_inverse = ( (!nb && m==r) || cov_.qp_solver_type_==QP_QPSCHUR
 									 || algo->algo_cntr().check_results() );
 			switch( cov_.quasi_newton_ ) {
 				case QN_BFGS:
@@ -572,7 +566,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		    );
 		  }
 
-		if( nb || mI ) {
+		if( nb ) {
 			// Add bounds on d
 			state->set_iter_quant(
 				dl_name
@@ -617,9 +611,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);
 		if(m) dyn_cast<IQ_vector_cngs>(state->c()).resize(2);
 		state->Gf();
-		if(mI) dyn_cast<IQ_vector_cngs>(state->h()).resize(2);
 		if(m && nlp_foi) state->Gc();
-		if(mI) state->Gh();
 
 		if( m
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
@@ -653,7 +645,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			dyn_cast<IQ_vector_cngs>(state->rGL()).resize(2);
 		}
 		if(m) dyn_cast<IQ_vector_cngs>(state->lambda()).resize(2);
-		if(mI) dyn_cast<IQ_vector_cngs>(state->lambdaI()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->nu()).resize(2);
 
 		// Set the state object
@@ -835,7 +826,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// NullSpace_Step
 		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
 		algo_step_ptr_t    null_space_step_step = mmp::null;
-		if( mI == 0 && nb == 0 ) {
+		if( nb == 0 ) {
 			null_space_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
@@ -1073,25 +1064,25 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// Create the algorithm depending on the type of NLP we are trying to solve.
 		//
 
-		if( m == 0 && mI == 0 ) {
+		if( m == 0 ) {
 
 			if( nb == 0 ) {
 				//
-				// Unconstrained NLP (m == 0, mI == 0, num_bounded_x == 0)
+				// Unconstrained NLP (m == 0, num_bounded_x == 0)
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for an unconstrained "
-						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
+						<< "NLP (m == 0, num_bounded_x == 0) ...\n";
 			}
 			else {
 				//
-				// Simple bound constrained NLP (m == 0, mI == 0, num_bounded_x > 0)
+				// Simple bound constrained NLP (m == 0, num_bounded_x > 0)
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a simple bound constrained "
-						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
+						<< "NLP (m == 0, num_bounded_x > 0) ...\n";
 			}
 
 			int step_num       = 0;
@@ -1127,7 +1118,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			
 			// NullSpaceStep
 			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
-			if( mI > 0 || nb > 0 ) {
+			if( nb > 0 ) {
 				// SetDBoundsStd
 				algo->insert_assoc_step(
 					step_num
@@ -1194,27 +1185,27 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				"Nonlinear equation (NLE) problems are not supported yet!" );
 			assert(0); // ToDo: add the step objects for this algorithm
 		}
-		else if ( m > 0 || mI > 0 || nb > 0 ) {
+		else if ( m > 0 || nb > 0 ) {
 			//
-			// General nonlinear NLP ( m > 0 || mI > 0 )
+			// General nonlinear NLP ( m > 0 )
 			//
-			if(  mI == 0 && nb == 0 ) {
+			if( nb == 0 ) {
 				//
-				// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
+				// Nonlinear equality constrained NLP ( m > 0 && num_bounded_x == 0 )
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a nonlinear equality constrained "
-						<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
+						<< "NLP ( m > 0 && num_bounded_x == 0) ...\n";
 			}
 			else {
 				//
-				// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
+				// Nonlinear inequality constrained NLP ( num_bounded_x > 0 )
 				//
 				if(trase_out)
 					*trase_out 
 						<< "\nConfiguring an algorithm for a nonlinear generally constrained "
-						<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
+						<< "NLP ( num_bounded_x > 0 ) ...\n";
 			}
 
 			int step_num       = 0;
@@ -1268,7 +1259,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
 			}
 
-			if( mI == 0 && nb == 0 ) {
+			if( nb == 0 ) {
 
 				// CalcReducedGradLagrangian
 				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
@@ -1306,7 +1297,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 			// NullSpaceStep
 			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
-			if( mI > 0 || nb > 0 ) {
+			if( nb > 0 ) {
 				// SetDBoundsStd
 				algo->insert_assoc_step(
 					step_num
@@ -1320,7 +1311,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			// CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
 			
-			if( mI > 0 || nb > 0 ) {
+			if( nb > 0 ) {
 
 				// CalcReducedGradLagrangian
 				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );

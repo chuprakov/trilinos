@@ -119,12 +119,7 @@ bool LineSearchFilter_Step::do_step(
 		}
     
     const size_type
-		m  = nlp_->m(),
-		mI = nlp_->mI();
-    
-    THROW_EXCEPTION(
-	  mI > 0, std::logic_error
-	  ,"Don't currently handle inequality constraints\n");
+		m  = nlp_->m();
     
     // Get the iteration quantity container objects
     IterQuantityAccess<value_type>
@@ -134,7 +129,7 @@ bool LineSearchFilter_Step::do_step(
     IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		*c_iq   = m > 0 ? &s.c() : NULL,
-		*h_iq   = mI > 0 ? &s.h() : NULL,
+		*h_iq   = NULL,                   // RAB: Replace latter!
 		&Gf_iq  = grad_obj_f_(s);
 
     // check that all the pertinent information is known
@@ -538,13 +533,12 @@ void LineSearchFilter_Step::UpdatePoint(
     if (assert_print_nan_inf(x_kp1, "x", true, NULL))
 		{
 		// Calcuate f and c at the new point.
-		nlp.set_multi_calc(true);
+		nlp.unset_quantities();
 		nlp.set_f( &f.set_k(+1) );
 		if (c) nlp.set_c( &c->set_k(+1) );
-		if (h) nlp.set_h( &h->set_k(+1) );
 		nlp.calc_f( x_kp1 ); 
 		if (c) nlp.calc_c( x_kp1, false );
-		if (h) nlp.calc_h( x_kp1, false ); 
+		nlp.unset_quantities();
 		}
 	}
 

@@ -40,9 +40,6 @@ namespace ConstrainedOptPack {
                                           [ -D' ]
       = E - F*D'
 
-  Vy = Gh'*Y = [ Gh(var_dep,:)'   Gh(var_indep,:)' ] * [  I  ]
-                                                       [ -D' ]
-     =  = Gh(var_dep,:)' -  = Gh(var_indep,:)'*D'
  \endverbatim
  * See the matrix subclass <tt>MatrixDecompRangeOrthog</tt> for
  * details on how linear systems with <tt>R</tt> are solved for.
@@ -59,12 +56,10 @@ public:
 	DecompositionSystemOrthogonal(
 		const VectorSpace::space_ptr_t           &space_x                    = MemMngPack::null
 		,const VectorSpace::space_ptr_t          &space_c                    = MemMngPack::null
-		,const VectorSpace::space_ptr_t          &space_h                    = MemMngPack::null
 		,const basis_sys_ptr_t                   &basis_sys                  = MemMngPack::null
 		,const basis_sys_tester_ptr_t            &basis_sys_tester           = MemMngPack::null
 		,EExplicitImplicit                       D_imp                       = MAT_IMP_EXPLICIT
 		,EExplicitImplicit                       Uz_imp                      = MAT_IMP_EXPLICIT
-		,EExplicitImplicit                       Vz_imp                      = MAT_IMP_EXPLICIT
 		);
 
 	//@}
@@ -78,8 +73,6 @@ public:
 	const mat_nonsing_fcty_ptr_t factory_R() const;
 	///
 	const mat_fcty_ptr_t factory_Uy() const;
-	///
-	const mat_fcty_ptr_t factory_Vy() const;
 
 	//@}
 
@@ -92,12 +85,11 @@ protected:
 	void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
 	///
 	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
-		std::ostream                                           *out
-		,EOutputLevel                                          olevel
+		std::ostream                                       *out
+		,EOutputLevel                                      olevel
 		,MatrixOp                                          *Y
-		,MatrixOpNonsing                               *R
+		,MatrixOpNonsing                                   *R
 		,MatrixOp                                          *Uy
-		,MatrixOp                                          *Vy
 		) const;
 	///
 	void initialize_matrices(
@@ -105,10 +97,9 @@ protected:
 		,EOutputLevel                                          olevel
 		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-		,MatrixOp                                          *Y
-		,MatrixOpNonsing                               *R
-		,MatrixOp                                          *Uy
-		,MatrixOp                                          *Vy
+		,MatrixOp                                              *Y
+		,MatrixOpNonsing                                       *R
+		,MatrixOp                                              *Uy
 		,EMatRelations                                         mat_rel
 		) const;
 	///

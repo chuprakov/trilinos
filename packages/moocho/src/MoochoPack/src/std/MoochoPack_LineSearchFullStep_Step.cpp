@@ -111,11 +111,12 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	}
 
 	// Calcuate f and c at the new point.
-	nlp.set_multi_calc(true);
+	nlp.unset_quantities();
 	nlp.set_f( &s.f().set_k(+1) );
 	if(m) nlp.set_c( &s.c().set_k(+1) );
 	nlp.calc_f(x_kp1);
 	if(m) nlp.calc_c( x_kp1, false );
+	nlp.unset_quantities();
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nf_kp1        = " << s.f().get_k(+1);

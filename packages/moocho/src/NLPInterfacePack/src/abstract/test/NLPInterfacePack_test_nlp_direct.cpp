@@ -129,18 +129,6 @@ bool NLPInterfacePack::test_nlp_direct(
 		}
 		update_success( result, &success );
 	}
-	if( nlp->mI() ) {
-		if(out)
-			*out << "\nTesting nlp->space_h() ...\n";
-		result = vec_space_tester.check_vector_space(*nlp->space_h(),out);
-		if(out) {
-			if(result)
-				*out << "nlp->space_h() checks out!\n";
-			else
-				*out << "nlp->space_h() check failed!\n";
-		}
-		update_success( result, &success );
-	}
 
 	// Test the NLP interface first!
 
@@ -162,8 +150,7 @@ bool NLPInterfacePack::test_nlp_direct(
 		*out << "\nCalling nlp->calc_point(...) at nlp->xinit() ...\n";
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 	const Range1D
 		var_dep      = nlp->var_dep(),
 		var_indep    = nlp->var_indep(),
@@ -171,19 +158,16 @@ bool NLPInterfacePack::test_nlp_direct(
 		con_undecomp = nlp->con_undecomp();
 	VectorSpace::vec_mut_ptr_t
 		c   =      nlp->space_c()->create_member(),
-		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member(),
 		py  =      nlp->space_x()->sub_space(var_dep)->create_member(),
 		rGf =      nlp->space_x()->sub_space(var_indep)->create_member();
 	NLPDirect::mat_fcty_ptr_t::element_type::obj_ptr_t
 		GcU = con_decomp.size() < m ? nlp->factory_GcU()->create() : rcp::null,
-		Gh  = mI                    ? nlp->factory_Gh()->create()  : rcp::null,
 		D   =                         nlp->factory_D()->create(),
-		Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : rcp::null,
-		Vz   = mI                    ? nlp->factory_Vz()->create()   : rcp::null;
+		Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : rcp::null;
 	nlp->calc_point(
-		nlp->xinit(), NULL, c.get(), true, h.get(), Gf.get(), py.get(), rGf.get()
-		,GcU.get(), Gh.get(), D.get(), Uz.get(), Vz.get() );
+		nlp->xinit(), NULL, c.get(), true, Gf.get(), py.get(), rGf.get()
+		,GcU.get(), D.get(), Uz.get() );
 	if(out) {
 		*out << "\n||Gf||inf  = " << Gf->norm_inf();
 		if(nlp_tester.print_all())
@@ -198,9 +182,6 @@ bool NLPInterfacePack::test_nlp_direct(
 			*out << "\nD =\n" << *D;
 		if( con_decomp.size() < m ) {
 			assert(0); // ToDo: Print GcU and Uz
-		}
-		if( mI ) {
-			assert(0); // ToDo: Print Gh and Vz
 		}
 	}
 
@@ -222,9 +203,10 @@ bool NLPInterfacePack::test_nlp_direct(
 		nlp, nlp->xinit()
 		,nlp->num_bounded_x() ? &nlp->xl() : NULL
 		,nlp->num_bounded_x() ? &nlp->xu() : NULL
-		,c.get(), h.get()
-		,Gf.get(),py.get(),rGf.get(),GcU.get(),Gh.get(),D.get(),Uz.get(),Vz.get()
-		,print_all_warnings, out );
+		,c.get()
+		,Gf.get(),py.get(),rGf.get(),GcU.get(),D.get(),Uz.get()
+		,print_all_warnings, out
+		);
 	update_success( result, &success );
 
 	return success;

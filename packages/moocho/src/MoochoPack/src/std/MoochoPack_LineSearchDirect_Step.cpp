@@ -60,8 +60,7 @@ bool LineSearchDirect_Step::do_step(
 
 	const size_type
 		n  = nlp.n(),
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp.m();
 
 	// /////////////////////////////////////////
 	// Set references to iteration quantities
@@ -76,19 +75,16 @@ bool LineSearchDirect_Step::do_step(
 	IterQuantityAccess<VectorMutable>
 		&x_iq    = s.x(),
 		&d_iq    = s.d(),
-		&c_iq    = s.c(),
-		&h_iq    = s.h();
+		&c_iq    = s.c();
 	
 	VectorMutable        &x_kp1   = x_iq.get_k(+1);
 	const Vector         &x_k     = x_iq.get_k(0);
-	value_type                 &f_kp1   = f_iq.get_k(+1);
-	const value_type           &f_k     = f_iq.get_k(0);
+	value_type           &f_kp1   = f_iq.get_k(+1);
+	const value_type     &f_k     = f_iq.get_k(0);
 	VectorMutable        *c_kp1   = m  ? &c_iq.get_k(+1) : NULL;
 	const Vector         *c_k     = m  ? &c_iq.get_k(0)  : NULL;
-	VectorMutable        *h_kp1   = mI ? &h_iq.get_k(+1) : NULL;
-	const Vector         *h_k     = mI ? &h_iq.get_k(0)  : NULL;
 	const Vector         &d_k     = d_iq.get_k(0);
-	value_type                 &alpha_k = alpha_iq.get_k(0);
+	value_type           &alpha_k = alpha_iq.get_k(0);
 
 	// /////////////////////////////////////
 	// Compute Dphi_k, phi_kp1 and phi_k
@@ -116,18 +112,18 @@ bool LineSearchDirect_Step::do_step(
 		&phi_kp1 = phi_iq.set_k(+1) = merit_func_nlp_k.value(
 			f_kp1
 			,c_kp1
-			,h_kp1
-			,mI ? &nlp.hl() : NULL
-			,mI ? &nlp.hu() : NULL
+			,NULL     // h
+			,NULL     // hl
+			,NULL     // hu
 			);
 	// Must compute phi(x) at the base point x_k since the penalty parameter may have changed.
 	const value_type
 		&phi_k = phi_iq.set_k(0) = merit_func_nlp_k.value(
 			f_k
 			,c_k
-			,h_k
-			,mI ? &nlp.hl() : NULL
-			,mI ? &nlp.hu() : NULL
+			,NULL     // h
+			,NULL     // hl
+			,NULL     // hu
 			);
 	
 	// //////////////////////////////////////
@@ -135,9 +131,9 @@ bool LineSearchDirect_Step::do_step(
 
 	// Here f_kp1, c_kp1 and h_kp1 are updated at the same time the
 	// line search is being performed!
+	nlp.unset_quantities();
 	nlp.set_f( &f_kp1 );
 	if(m)  nlp.set_c( c_kp1 );
-	if(mI) nlp.set_h( h_kp1 );
 	MeritFuncCalcNLP
 		phi_calc( &merit_func_nlp_k, &nlp );
 
@@ -166,6 +162,7 @@ bool LineSearchDirect_Step::do_step(
 			true, LineSearchFailure
 			,"LineSearchDirect_Step::do_step(): Line search failure" );
 	}
+	nlp.unset_quantities();
 	
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		out	<< "\nalpha_k                = " << alpha_k;
@@ -173,11 +170,6 @@ bool LineSearchDirect_Step::do_step(
 		out << "\nf_kp1                  = " << f_kp1;
 		if(m)
 			out << "\n||c_kp1||inf           = " << c_kp1->norm_inf();
-		if(mI) {
-			assert(0); // Todo: Implement below with a reduction operator!
-			out << "\n||min(h_kp1-hl,0)||inf = " << 0.0;
-			out << "\n||max(h_kp1-hu,0)||inf = " << 0.0;
-		}
 		out << "\nphi_kp1                = " << phi_kp1;
 		out << std::endl;
 	}
@@ -186,8 +178,6 @@ bool LineSearchDirect_Step::do_step(
 		out << "\nx_kp1 =\n" << x_kp1;
 		if(m)
 			out <<"\nc_kp1 =\n" << *c_kp1;
-		if(mI)
-			out <<"\nh_kp1 =\n" << *h_kp1;
 	}
 
 	return true;

@@ -45,31 +45,29 @@ protected:
 	//@{
 
 	///
-	void uninitialize_Y_Uv_Uy(
+	void uninitialize_Y_Uy(
 		MatrixOp         *Y
 		,MatrixOp        *Uy
-		,MatrixOp        *Vy
 		);
 	///
-	void calc_py_Y_Uy_Vy(
-		const NLPDirect   &nlp
-		,const D_ptr_t              &D
+	void calc_py_Y_Uy(
+		const NLPDirect       &nlp
+		,const D_ptr_t        &D
 		,VectorMutable        *py
-		,MatrixOp               *Y
-		,MatrixOp               *Uy
-		,MatrixOp               *Vy
-		,EJournalOutputLevel        olevel
-		,std::ostream               &out
+		,MatrixOp             *Y
+		,MatrixOp             *Uy
+		,EJournalOutputLevel  olevel
+		,std::ostream         &out
 		);
 	///
 	void recalc_py(
-		const MatrixOp       &D
-		,VectorMutable     *py
+		const MatrixOp           &D
+		,VectorMutable           *py
 		,EJournalOutputLevel     olevel
 		,std::ostream            &out
 		);
 	///
-	void print_calc_py_Y_Uy_Vy(
+	void print_calc_py_Y_Uy(
 		std::ostream& out, const std::string& leading_str
 		) const;
 

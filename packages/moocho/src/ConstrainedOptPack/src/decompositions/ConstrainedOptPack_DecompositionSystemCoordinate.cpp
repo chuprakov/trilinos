@@ -30,16 +30,14 @@ namespace ConstrainedOptPack {
 DecompositionSystemCoordinate::DecompositionSystemCoordinate(
 	const VectorSpace::space_ptr_t     &space_x
 	,const VectorSpace::space_ptr_t    &space_c
-	,const VectorSpace::space_ptr_t    &space_h
 	,const basis_sys_ptr_t             &basis_sys
 	,const basis_sys_tester_ptr_t      &basis_sys_tester
 	,EExplicitImplicit                 D_imp
 	,EExplicitImplicit                 Uz_imp
-	,EExplicitImplicit                 Vz_imp
 	)
 	:DecompositionSystemVarReductImp(
-		space_x, space_c, space_h, basis_sys, basis_sys_tester
-		,D_imp,Uz_imp,Vz_imp )
+		space_x, space_c, basis_sys, basis_sys_tester
+		,D_imp, Uz_imp )
 {}
 
 // Overridden from DecompositionSystem
@@ -67,22 +65,15 @@ DecompositionSystemCoordinate::factory_Uy() const
 	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
-const DecompositionSystem::mat_fcty_ptr_t
-DecompositionSystemCoordinate::factory_Vy() const
-{
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
-}
-
 // Overridden from DecompositionSystemVarReductImp
 
 DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemCoordinate::uninitialize_matrices(
-	std::ostream                                           *out
-	,EOutputLevel                                          olevel
+	std::ostream                                       *out
+	,EOutputLevel                                      olevel
 	,MatrixOp                                          *Y
-	,MatrixOpNonsing                               *R
+	,MatrixOpNonsing                                   *R
 	,MatrixOp                                          *Uy
-	,MatrixOp                                          *Vy
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -96,8 +87,6 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
 	MatrixOpSubView
 		*Uy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
-	MatrixOpSubView
-		*Vy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
 
 	//
 	// Only uninitialize the sub_view matrices
@@ -105,8 +94,6 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 
 	if(Uy_sv)
 		Uy_sv->initialize(rcp::null);
-	if(Vy_sv)
-		Vy_sv->initialize(rcp::null);
 
 	//
 	// Return the basis matrix object R == C as a smart pointer that is
@@ -125,10 +112,9 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	,EOutputLevel                                          olevel
 	,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 	,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-	,MatrixOp                                          *Y
-	,MatrixOpNonsing                               *R
-	,MatrixOp                                          *Uy
-	,MatrixOp                                          *Vy
+	,MatrixOp                                              *Y
+	,MatrixOpNonsing                                       *R
+	,MatrixOp                                              *Uy
 	,EMatRelations                                         mat_rel
 	) const
 {
@@ -153,8 +139,6 @@ void DecompositionSystemCoordinate::initialize_matrices(
 		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
 	MatrixOpSubView
 		*Uy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
-	MatrixOpSubView
-		*Vy_sv = Uy ? &dyn_cast<MatrixOpSubView>(*Uy) : NULL;			
 
 	//
 	// Initialize the matrices
@@ -175,7 +159,6 @@ void DecompositionSystemCoordinate::initialize_matrices(
 			);
 	}
 	assert(Uy_sv == NULL); // ToDo: Implement for undecomposed equalities
-	assert(Vy_sv == NULL); // ToDo: Implement for general inequalities
 
 	// The R = C matrix object should already be updateded
 
@@ -185,11 +168,10 @@ void DecompositionSystemCoordinate::print_update_matrices(
 	std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Coordinate decompositon Y, R, Uy and Vy matrices (class DecompositionSystemCoordinate)\n"
+		<< L << "*** Coordinate decompositon Y, R and Uy matrices (class DecompositionSystemCoordinate)\n"
 		<< L << "Y = [ I; 0 ] (using class MatrixIdentConcatStd with MatrixZero)\n"
 		<< L << "R = Gc(var_dep,equ_decomp)' = C\n"
 		<< L << "Uy = Gc(var_dep,equ_undecomp)'\n"
-		<< L << "Vy = Gh(var_dep,:)'\n"
 		;
 }
 		

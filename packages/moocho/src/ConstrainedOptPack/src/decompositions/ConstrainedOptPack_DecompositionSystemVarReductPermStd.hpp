@@ -52,7 +52,6 @@ public:
 		,bool                              basis_selected  = false
 		,EExplicitImplicit                 D_imp           = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp          = MAT_IMP_AUTO
-		,EExplicitImplicit                 Vz_imp          = MAT_IMP_AUTO
 		);
 
 	/// Initialize given decomposition system and basis system objects.
@@ -62,7 +61,6 @@ public:
 		,bool                              basis_selected  = false
 		,EExplicitImplicit                 D_imp           = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp          = MAT_IMP_AUTO
-		,EExplicitImplicit                 Vz_imp          = MAT_IMP_AUTO
 		);
 
 	//@}
@@ -105,24 +103,17 @@ public:
 	///
 	const mat_fcty_ptr_t factory_Uy() const;
 	///
-	const mat_fcty_ptr_t factory_Vz() const;
-	///
-	const mat_fcty_ptr_t factory_Vy() const;
-	///
 	void update_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
 		,const MatrixOp       &Gc
-		,const MatrixOp       *Gh
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
 		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
-		,EMatRelations            mat_rel
+		,EMatRelations        mat_rel
 		) const;
 	///
 	void print_update_decomp(
@@ -151,44 +142,38 @@ public:
 	bool has_basis() const;
 	///
 	void set_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
-		,const Permutation        &P_var
-		,const Range1D            &var_dep
-		,const Permutation        *P_equ
-		,const Range1D            *equ_decomp
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
+		,const Permutation    &P_var
+		,const Range1D        &var_dep
+		,const Permutation    *P_equ
+		,const Range1D        *equ_decomp
 		,const MatrixOp       &Gc
-		,const MatrixOp       *Gh
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
 		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
-		,EMatRelations            mat_rel
+		,EMatRelations        mat_rel
 		);
 	///
 	void select_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
-		,const Vector       *nu
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
+		,const Vector         *nu
 		,MatrixOp             *Gc
-		,MatrixOp             *Gh
-		,Permutation              *P_var
-		,Range1D                  *var_dep
-		,Permutation              *P_equ
-		,Range1D                  *equ_decomp
+		,Permutation          *P_var
+		,Range1D              *var_dep
+		,Permutation          *P_equ
+		,Range1D              *equ_decomp
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
 		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
-		,EMatRelations            mat_rel
+		,EMatRelations        mat_rel
 		);
 
 	//@}

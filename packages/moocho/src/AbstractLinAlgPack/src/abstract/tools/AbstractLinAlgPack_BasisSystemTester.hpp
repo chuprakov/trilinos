@@ -32,7 +32,7 @@ namespace AbstractLinAlgPack {
  * <tt>basis_sys\ref BasisSystem::update_basis ".update_basis(...)"</tt> is called on the <tt>BasisSystem</tt>
  * object <tt>basis_sys</tt>.  The output basis matrix \a C and/or direct sensitivity matrix \a D are passed through
  * a series of tests using the testing classes <tt>MatrixOpNonsingTester</tt> and <tt>MatrixWithOpTester</tt>
- * respectively.  The compatibility of the matrices \c Gc, \c Gh, \c C and/or \c D are also checked in a series of
+ * respectively.  The compatibility of the matrices \c Gc, \c C and/or \c D are also checked in a series of
  * tests.  If the method \c test_basis_system() returns true, then the client can feel fairly confident that the
  * basis matrix object is functioning properly.
  *
@@ -100,7 +100,6 @@ public:
 	 * @param  basis_sys
 	 *              [in] The \c BasisSystem object that \c BasisSystem::update_basis() was called on.
 	 * @param  Gc   [in] Matrix \c Gc that was passed into \c basis_sys.update_basis() (if not \c NULL).
-	 * @param  Gh   [in] Matrix \c Gh that was passed into \c basis_sys.update_basis() (if not \c NULL).
 	 * @param  C    [in] Matrix \c C that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
 	 * @param  N    [in] If not \c NULL, then this must the matrix \a N described in the documentation for
 	 *              \c BasisSystem.  This allows a matrix object created by the client to be check out here
@@ -112,10 +111,6 @@ public:
 	 * @param  GcUP [in] Matrix \c GcUP that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
 	 *              Actually, this can be any matrix object that the client may want to define that takes the
 	 *              role of \c GcUP.  Such a matrix object can be tested here in this function along with the rest
-	 *              of the matrices.
-	 * @param  GhUP [in] Matrix \c GhUP that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
-	 *              Actually, this can be any matrix object that the client may want to define that takes the
-	 *              role of \c GhUP.  Such a matrix object can be tested here in this function along with the rest
 	 *              of the matrices.
 	 * @param  out  [in/out] If <tt>out != NULL</tt> any and all output will be sent here.  If
 	 *              <tt>out == NULL</tt> then no output will be produced.
@@ -140,15 +135,13 @@ public:
 	 * </ul>
 	 */
 	bool test_basis_system(
-		const BasisSystem               &basis_sys
+		const BasisSystem           &basis_sys
 		,const MatrixOp             *Gc
-		,const MatrixOp             *Gh
-		,const MatrixOpNonsing  *C
+		,const MatrixOpNonsing      *C
 		,const MatrixOp             *N
 		,const MatrixOp             *D
 		,const MatrixOp             *GcUP
-		,const MatrixOp             *GhUP
-		,std::ostream                   *out
+		,std::ostream               *out
 		);
 
 	//@}

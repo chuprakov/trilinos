@@ -25,10 +25,9 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "Range1D.hpp"
 #include "ThrowException.hpp"
 
@@ -41,7 +40,6 @@ CalcFiniteDiffProd::CalcFiniteDiffProd(
 	,value_type                 fd_step_size_min
 	,value_type                 fd_step_size_f
 	,value_type                 fd_step_size_c
-	,value_type                 fd_step_size_h
 	)
 	:fd_method_order_(fd_method_order)
 	,fd_step_select_(fd_step_select)
@@ -49,23 +47,20 @@ CalcFiniteDiffProd::CalcFiniteDiffProd(
 	,fd_step_size_min_(fd_step_size_min)
 	,fd_step_size_f_(fd_step_size_f)
 	,fd_step_size_c_(fd_step_size_c)
-	,fd_step_size_h_(fd_step_size_h)
 {}
 
 bool CalcFiniteDiffProd::calc_deriv_product(
-	const Vector     &xo
-	,const Vector    *xl
-	,const Vector    *xu
-	,const Vector    &v
-	,const value_type      *fo
-	,const Vector    *co
-	,const Vector    *ho
-	,bool                  check_nan_inf
-	,NLP                   *nlp
-	,value_type            *Gf_prod
-	,VectorMutable   *Gc_prod
-	,VectorMutable   *Gh_prod
-	,std::ostream          *out
+	const Vector       &xo
+	,const Vector      *xl
+	,const Vector      *xu
+	,const Vector      &v
+	,const value_type  *fo
+	,const Vector      *co
+	,bool              check_nan_inf
+	,NLP               *nlp
+	,value_type        *Gf_prod
+	,VectorMutable     *Gc_prod
+	,std::ostream      *out
 	) const
 {
 
@@ -133,8 +128,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 
 	const size_type
 		n = nlp->n(),
-		m = nlp->m(),
-		mI = nlp->mI();
+		m = nlp->m();
 
 	const value_type
 		max_bnd_viol = nlp->max_var_bounds_viol();
@@ -151,16 +145,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 		,std::invalid_argument
 		,"CalcFiniteDiffProd::calc_deriv(...) : "
 		"Error, Gc_prod (type \' "<<typeid(*Gc_prod).name()<<"\' "
-		"is not compatible with the NLP" );
-	THROW_EXCEPTION(
-		mI==0 && Gh_prod, std::invalid_argument
-		,"CalcFiniteDiffProd::calc_deriv(...) : "
-		"Error, if nlp->mI() == 0, then Gh_prod must equal NULL" );
-	THROW_EXCEPTION(
-		Gh_prod && !Gh_prod->space().is_compatible(*nlp->space_h())
-		,std::invalid_argument
-		,"CalcFiniteDiffProd::calc_deriv(...) : "
-		"Error, Gh_prod (type \' "<<typeid(*Gh_prod).name()<<"\' "
 		"is not compatible with the NLP" );
 	THROW_EXCEPTION(
 		(xl && !xu) || (!xl && xu), std::invalid_argument
@@ -212,7 +196,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 		uh      = this->fd_step_size(),
 		uh_f    = this->fd_step_size_f(),
 		uh_c    = this->fd_step_size_c(),
-		uh_h    = this->fd_step_size_h(),
 		uh_min  = this->fd_step_size_min();
 
 	// uh
@@ -231,10 +214,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	else if(fd_step_select() == FD_STEP_RELATIVE)
 		uh_c *= (xo_norm_inf + 1.0);
 	// uh_h
-	if( uh_h < 0 )
-		uh_h = uh;
-	else if(fd_step_select() == FD_STEP_RELATIVE)
-		uh_h *= (xo_norm_inf + 1.0);
 
 	//
  	// Determine the maximum step size that can be used and
@@ -326,7 +305,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	uh   = ( abs_max_u_feas/num_u_i < uh   ? max_u_feas/num_u_i : uh   ); // This can be a negative number!
 	uh_f = ( abs_max_u_feas/num_u_i < uh_f ? max_u_feas/num_u_i : uh_f ); //""
 	uh_c = ( abs_max_u_feas/num_u_i < uh_c ? max_u_feas/num_u_i : uh_c ); //""
-	uh_h = ( abs_max_u_feas/num_u_i < uh_h ? max_u_feas/num_u_i : uh_h ); //""
 
 	if( uh_min < 0 ) {
 		uh_min = uh / 100.0;
@@ -340,13 +318,11 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	// Remember some stuff
 	//
 	
-	value_type              *f_saved = NULL;
+	value_type        *f_saved = NULL;
 	VectorMutable     *c_saved = NULL;
-	VectorMutable     *h_saved = NULL;
 
 	f_saved = nlp->get_f();
 	if(m)  c_saved = nlp->get_c();
-	if(mI) h_saved = nlp->get_h();
 
 	int p_saved;
 	if(out)
@@ -362,14 +338,12 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	vec_mut_ptr_t
 		x = nlp->space_x()->create_member();
 	vec_mut_ptr_t
-		c = m  && Gc_prod ? nlp->space_c()->create_member() : rcp::null,
-		h = mI && Gh_prod? nlp->space_h()->create_member()  : rcp::null;
+		c = m  && Gc_prod ? nlp->space_c()->create_member() : rcp::null;
 	
 	// Set the quanitities used to compute with
 
 	nlp->set_f(&f);
 	if(m)  nlp->set_c( c.get() );
-	if(mI) nlp->set_h( h.get() );
 
 	const int dbl_p = 15;
 	if(out)
@@ -523,25 +497,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 				Vp_StV( Gc_prod, wgt_i, *c );
 		}
 		
-		if(Gh_prod) {
-			if( ho && uh_i == 0.0 ) {
-				*h = *ho;
-			}
-			else {
-				if( new_point || uh_h != uh ) {
-					*x = xo; Vp_StV( x.get(), uh_i * uh_h, v ); // x = xo + uh_i*uh_h*v
-				}
-				nlp->calc_h(*x,new_point);
-			}
-			new_point = false;
-			if(check_nan_inf)
-				assert_print_nan_inf(*h,"h(xo+u*v)",true,out);
-			if(eval_i == 1)
-				V_StV( Gh_prod, wgt_i, *h );
-			else
-				Vp_StV( Gh_prod, wgt_i, *h );
-		}
-
 		if(Gf_prod) {
 			if( fo && uh_i == 0.0 ) {
 				f = *fo;
@@ -571,10 +526,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 		Vt_S( Gc_prod, 1.0 / (dwgt * uh_c) );
 	}
 		
-	if(Gh_prod) {
-		Vt_S( Gh_prod, 1.0 / (dwgt * uh_h) );
-	}
-
 	if(Gf_prod) {
 		*Gf_prod *= ( 1.0 / (dwgt * uh_f) );
 	}
@@ -583,7 +534,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	catch(...) {
 		nlp->set_f( f_saved );
 		if(m)  nlp->set_c( c_saved );
-		if(mI) nlp->set_h( h_saved );
 		if(out)
 			*out << std::setprecision(p_saved);
 		throw;
@@ -591,7 +541,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	
 	nlp->set_f( f_saved );
 	if(m)  nlp->set_c( c_saved );
-	if(mI) nlp->set_h( h_saved );
 	if(out)
 		*out << std::setprecision(p_saved);
 	

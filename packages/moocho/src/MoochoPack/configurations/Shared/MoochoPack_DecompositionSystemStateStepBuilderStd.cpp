@@ -99,12 +99,12 @@ DecompositionSystemStateStepBuilderStd::get_options() const
 }
 
 void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
-	std::ostream          *trase_out
-	,NLP                  &nlp
+	std::ostream      *trase_out
+	,NLP              &nlp
 	,NLPFirstOrder    **nlp_foi
 	,NLPSecondOrder   **nlp_soi
-	,NLPDirect  **nlp_fod
-	,bool                 *tailored_approach
+	,NLPDirect        **nlp_fod
+	,bool             *tailored_approach
 	)
 {
 
@@ -116,7 +116,6 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 	const size_type
 		n   = nlp.n(),
 		m   = nlp.m(),
-		mI  = nlp.mI(),
 		r   = m, // ToDo: Compute this for real!
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
@@ -201,13 +200,13 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 }
 
 void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
-	std::ostream                                                     *trase_out
-	,NLP                                                             &nlp
-	,NLPFirstOrder                                               *nlp_foi
-	,NLPSecondOrder                                              *nlp_soi
+	std::ostream                                           *trase_out
+	,NLP                                                   &nlp
+	,NLPFirstOrder                                         *nlp_foi
+	,NLPSecondOrder                                        *nlp_soi
 	,NLPDirect                                             *nlp_fod
-	,bool                                                            tailored_approach
-	,MemMngPack::ref_count_ptr<DecompositionSystem>                  *decomp_sys
+	,bool                                                  tailored_approach
+	,MemMngPack::ref_count_ptr<DecompositionSystem>        *decomp_sys
 	)
 {
 	namespace mmp = MemMngPack;
@@ -269,7 +268,6 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 					= mmp::rcp(new DecompositionSystemCoordinate(
 						nlp.space_x()
 						,nlp.space_c()
-						,nlp.space_h()
 						,basis_sys  // Will have basis_sys_->var_dep().size() == 0 if permutation
 						,basis_sys_tester
 						,D_imp
@@ -280,7 +278,6 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 					= mmp::rcp(new DecompositionSystemOrthogonal(
 						nlp.space_x()
 						,nlp.space_c()
-						,nlp.space_h()
 						,basis_sys  // Will have basis_sys_->var_dep().size() == 0 if permutation
 						,basis_sys_tester
 						) );
@@ -315,7 +312,6 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 			decomp_sys_imp->initialize(
 				nlp.space_x()
 				,nlp.space_c()
-				,nlp.space_h()
 				,basis_sys   // Must already be ready to go with a basis selection!
 				);
 			*decomp_sys = decomp_sys_imp;
@@ -326,14 +322,14 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 }
 
 void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
-	std::ostream                                                     *trase_out
-	,NLP                                                             &nlp
-	,NLPFirstOrder                                               *nlp_foi
-	,NLPSecondOrder                                              *nlp_soi
+	std::ostream                                           *trase_out
+	,NLP                                                   &nlp
+	,NLPFirstOrder                                         *nlp_foi
+	,NLPSecondOrder                                        *nlp_soi
 	,NLPDirect                                             *nlp_fod
-	,bool                                                            tailored_approach
-	,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
-	,const MemMngPack::ref_count_ptr<NLPAlgoState>                      &state
+	,bool                                                  tailored_approach
+	,const MemMngPack::ref_count_ptr<DecompositionSystem>  &decomp_sys
+	,const MemMngPack::ref_count_ptr<NLPAlgoState>         &state
 	)
 {
 	namespace mmp = MemMngPack;
@@ -482,12 +478,12 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	std::ostream                                                      *trase_out
 	,NLP                                                              &nlp
-	,NLPFirstOrder                                                *nlp_foi
-	,NLPSecondOrder                                               *nlp_soi
-	,NLPDirect                                              *nlp_fod
+	,NLPFirstOrder                                                    *nlp_foi
+	,NLPSecondOrder                                                   *nlp_soi
+	,NLPDirect                                                        *nlp_fod
 	,bool                                                             tailored_approach
 	,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
-	,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>   *eval_new_point_step
+	,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>          *eval_new_point_step
 	,MemMngPack::ref_count_ptr<CalcFiniteDiffProd>                    *calc_fd_prod
 	,MemMngPack::ref_count_ptr<VariableBoundsTester>                  *bounds_tester
 	,MemMngPack::ref_count_ptr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy

@@ -29,24 +29,21 @@ namespace ConstrainedOptPack {
 DecompositionSystemVarReductImp::DecompositionSystemVarReductImp(
 	const VectorSpace::space_ptr_t     &space_x
 	,const VectorSpace::space_ptr_t    &space_c
-	,const VectorSpace::space_ptr_t    &space_h
 	,const basis_sys_ptr_t             &basis_sys
 	,const basis_sys_tester_ptr_t      &basis_sys_tester
 	,EExplicitImplicit                 D_imp
 	,EExplicitImplicit                 Uz_imp
-	,EExplicitImplicit                 Vz_imp
 	)
-	:DecompositionSystemVarReduct(D_imp,Uz_imp,Vz_imp)
+	:DecompositionSystemVarReduct(D_imp,Uz_imp)
 	,basis_sys_tester_(basis_sys_tester)
 	,D_imp_used_(MAT_IMP_AUTO)
 {
-	this->initialize(space_x,space_c,space_h,basis_sys);
+	this->initialize(space_x,space_c,basis_sys);
 }
 
 void DecompositionSystemVarReductImp::initialize(
 	const VectorSpace::space_ptr_t     &space_x
 	,const VectorSpace::space_ptr_t    &space_c
-	,const VectorSpace::space_ptr_t    &space_h
 	,const basis_sys_ptr_t             &basis_sys
 	)
 {
@@ -62,11 +59,6 @@ void DecompositionSystemVarReductImp::initialize(
 	if(basis_sys.get()) {
 		num_vars = basis_sys->var_dep().size() + basis_sys->var_indep().size();
 #ifdef _DEBUG
-		const size_type num_inequ_decomp = basis_sys->inequ_decomp().size();
-		THROW_EXCEPTION(
-			num_inequ_decomp > 0, std::invalid_argument
-			,"DecompositionSystemVarReductImp::initialize(...) : Error, "
-			"decomposed inequality constraints can not be handled!" );
 		const size_type
 			space_x_dim = space_x->dim(),
 			space_c_dim = space_c->dim(),
@@ -76,20 +68,10 @@ void DecompositionSystemVarReductImp::initialize(
 			, std::invalid_argument
 			,"DecompositionSystemVarReductImp::initialize(...) : Error, "
 			"the dimensions of space_x, space_c and basis_sys do not match up!" );
-		if( space_h.get() ) {
-			const size_type
-				space_h_dim = space_h->dim(),
-				num_inequ   = basis_sys->inequ_decomp().size() + basis_sys->inequ_undecomp().size();
-			THROW_EXCEPTION(
-				num_vars != 0 && (space_h_dim != num_inequ), std::invalid_argument
-				,"DecompositionSystemVarReductImp::initialize(...) : Error, "
-				"the dimensions of space_h, and basis_sys do not match up!" );
-		}
 #endif
 	}
 	space_x_    = space_x;
 	space_c_    = space_c;
-	space_h_    = space_h;
 	basis_sys_  = basis_sys;
 	if(num_vars) {
 		space_range_ = space_x_->sub_space(basis_sys->var_dep())->clone();
@@ -104,17 +86,15 @@ void DecompositionSystemVarReductImp::initialize(
 // Basis manipulation
 
 void DecompositionSystemVarReductImp::get_basis_matrices(
-	std::ostream                                          *out
-	,EOutputLevel                                         olevel
-	,ERunTests                                            test_what
+	std::ostream                                      *out
+	,EOutputLevel                                     olevel
+	,ERunTests                                        test_what
 	,MatrixOp                                         *Z
 	,MatrixOp                                         *Y
-	,MatrixOpNonsing                              *R
+	,MatrixOpNonsing                                  *R
 	,MatrixOp                                         *Uz
 	,MatrixOp                                         *Uy
-	,MatrixOp                                         *Vz
-	,MatrixOp                                         *Vy
-	,MemMngPack::ref_count_ptr<MatrixOpNonsing>   *C_ptr
+	,MemMngPack::ref_count_ptr<MatrixOpNonsing>       *C_ptr
 	,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
 	)
 {
@@ -145,7 +125,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// R object.
 	//
 
-	(*C_ptr) = uninitialize_matrices(out,olevel,Y,R,Uy,Vy);
+	(*C_ptr) = uninitialize_matrices(out,olevel,Y,R,Uy);
 
 	//
 	// Determine if we should be using an explicit or implicit D = -inv(C)*N object
@@ -276,14 +256,13 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 }
 
 void DecompositionSystemVarReductImp::set_basis_matrices(
-	std::ostream                                               *out
-	,EOutputLevel                                              olevel
-	,ERunTests                                                 test_what
-	,const MemMngPack::ref_count_ptr<MatrixOpNonsing>  &C_ptr
+	std::ostream                                           *out
+	,EOutputLevel                                          olevel
+	,ERunTests                                             test_what
+	,const MemMngPack::ref_count_ptr<MatrixOpNonsing>      &C_ptr
 	,const MemMngPack::ref_count_ptr<MatrixOp>             &D_ptr
 	,MatrixOp                                              *Uz
-	,MatrixOp                                              *Vz
-	,const basis_sys_ptr_t                                     &basis_sys
+	,const basis_sys_ptr_t                                 &basis_sys
 	)
 {
 	C_ptr_ = C_ptr;
@@ -353,26 +332,17 @@ DecompositionSystemVarReductImp::factory_Uz() const
 	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
-const DecompositionSystem::mat_fcty_ptr_t
-DecompositionSystemVarReductImp::factory_Vz() const
-{
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
-}
-
 void DecompositionSystemVarReductImp::update_decomp(
-	std::ostream              *out
-	,EOutputLevel             olevel
-	,ERunTests                test_what
+	std::ostream          *out
+	,EOutputLevel         olevel
+	,ERunTests            test_what
 	,const MatrixOp       &Gc
-	,const MatrixOp       *Gh
 	,MatrixOp             *Z
 	,MatrixOp             *Y
-	,MatrixOpNonsing  *R
+	,MatrixOpNonsing      *R
 	,MatrixOp             *Uz
 	,MatrixOp             *Uy
-	,MatrixOp             *Vz
-	,MatrixOp             *Vy
-	,EMatRelations            mat_rel
+	,EMatRelations        mat_rel
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -409,10 +379,10 @@ void DecompositionSystemVarReductImp::update_decomp(
 #ifdef _DEBUG
 	// Validate input
 	THROW_EXCEPTION(
-	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL&&Vz==NULL&&Vy==NULL
+	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
 		, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
-		"at least one of Z, Y, R, Uz, Uy, Vz or Vy can not be NULL NULL!" );
+		"at least one of Z, Y, R, Uz and Uycan not be NULL!" );
 	THROW_EXCEPTION(
 		m == r && Uz != NULL, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
@@ -421,14 +391,6 @@ void DecompositionSystemVarReductImp::update_decomp(
 		m == r && Uy != NULL, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 		"Uy must be NULL if m==r is NULL!" );
-	THROW_EXCEPTION(
-	    Gh == NULL && Vz != NULL, std::invalid_argument
-		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
-		"Vz must be NULL if Gh is NULL!" );
-	THROW_EXCEPTION(
-	    Gh == NULL && Vy != NULL, std::invalid_argument
-		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
-		"Vy must be NULL if Gh is NULL!" );
 #endif
 
 	//
@@ -438,7 +400,6 @@ void DecompositionSystemVarReductImp::update_decomp(
 	MatrixIdentConcatStd
 		*Z_vr = Z ? &dyn_cast<MatrixIdentConcatStd>(*Z) : NULL;
 	assert(Uz == NULL); // ToDo: Implement undecomposed general equalities
-	assert(Vz == NULL); // ToDo: Implement general inequalities
 
 	//
 	// Get smart pointers to unreferenced C and D matrix objects.
@@ -460,7 +421,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 		// pointers to C and D (explicit only!).
 		//
 		const_cast<DecompositionSystemVarReductImp*>(this)->get_basis_matrices(
-			out,olevel,test_what,Z,Y,R,Uz,Uy,Vz,Vy,&C_ptr,&D_ptr);
+			out,olevel,test_what,Z,Y,R,Uz,Uy,&C_ptr,&D_ptr);
 	}
 
 	// Get the D matrix created by get_basis_matrices() and set by
@@ -491,11 +452,9 @@ void DecompositionSystemVarReductImp::update_decomp(
 	
 		basis_sys_->update_basis(
 			&Gc                                                      // Gc
-			,Gh                                                      // Gh?
 			,C_ptr.get()                                             // C
-			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
+			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL    // D?
 			,NULL                                                    // GcUP == Uz
-			,NULL                                                    // GhUP == Vz
 			,(mat_rel == mat_rel == MATRICES_INDEP_IMPS
 			  ? BasisSystem::MATRICES_INDEP_IMPS
 			  : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
@@ -571,12 +530,10 @@ void DecompositionSystemVarReductImp::update_decomp(
 		const bool passed = basis_sys_tester_->test_basis_system(
 			*basis_sys_                                              // basis_sys
 			,&Gc                                                     // Gc
-			,Gh                                                      // Gh?
 			,C_ptr.get()                                             // C
 			,N_ptr.get()                                             // N
-			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
+			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL    // D?
 			,NULL                                                    // GcUP == Uz
-			,NULL                                                    // GhUP == Vz
 			,out                                                     // out
 			);
 		THROW_EXCEPTION(
@@ -612,11 +569,10 @@ void DecompositionSystemVarReductImp::update_decomp(
 	}
 
 	//
-	// Call on the subclass to construct Y, R, Uy and Vy given
-	// C and D.
+	// Call on the subclass to construct Y, R and Uy given C and D.
 	//
 
-	initialize_matrices(out,olevel,C_ptr,D_ptr,Y,R,Uy,Vy,mat_rel);
+	initialize_matrices(out,olevel,C_ptr,D_ptr,Y,R,Uy,mat_rel);
 
 	//
 	// Reconstruct Z, Uz and Uy.
@@ -634,7 +590,6 @@ void DecompositionSystemVarReductImp::update_decomp(
 	}
 
 	assert(Uz == NULL); // ToDo: Implement for undecomposed general equalities
-	assert(Vz == NULL); // ToDo: Implement for general inequalities
 
 	// Clear cache for basis matrices.
 	C_ptr_ = rcp::null;
@@ -659,12 +614,11 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 		<< L << "end\n"
 		<< L << "Z = [ D; I ] (class MatrixIdentConcatStd)\n"
 		<< L << "Uz = Gc(var_indep,equ_undecomp)' - Gc(var_dep,equ_undecomp)'*D\n"
-		<< L << "Vz = Gh(var_indep,:)' - Gh(var_dep,:)'*D\n"
-		<< L << "begin update Y, R, Uy, and Vy\n"
+		<< L << "begin update Y, R and Uy\n"
 		;
 	print_update_matrices( out, L + "  " );
 	out
-		<< L << "end update of Y, R, Uy, and Vy\n"
+		<< L << "end update of Y, R and Uy\n"
 		;
 }
 

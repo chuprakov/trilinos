@@ -72,13 +72,12 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	const size_type
 		n  = nlp.n(),
 		m  = nlp.m(),
-		mI = nlp.mI(),
 		r  = nlp.var_dep().size();
 
 	THROW_EXCEPTION(
-		m > r || mI, TestFailed
+		m > r, TestFailed
 		,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
-		"Neither undecomposed equalities nor general inequalities are supported yet!" );
+		"Undecomposed equalities are supported yet!" );
 
 	IterQuantityAccess<VectorMutable>
 		&x_iq = s.x();
@@ -123,12 +122,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		out << "\nx_k = \n" << x;
 	}
 
-	// allow multiple updates as defined in NLP
-	nlp.set_multi_calc(true);
-
 	// If c_k is not updated then we must compute it
 	bool recalc_c = true;
-	
+
 	if( !s.c().updated_k(0) ) {
 		s.c().set_k(0);
 		recalc_c = true;
@@ -137,18 +133,16 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		recalc_c = false;
 	}
 		
-	// Get references to Z, Y, Uz, Uy, Vz and Vy
+	// Get references to Z, Y, Uz and Uy
 	MatrixOp
 		&Z_k  = s.Z().set_k(0),
 		&Y_k  = s.Y().set_k(0),
 		*Uz_k = (m > r) ? &s.Uz().set_k(0) : NULL,
-		*Uy_k = (m > r) ? &s.Uy().set_k(0) : NULL,
-		*Vz_k = mI      ? &s.Vz().set_k(0) : NULL,
-		*Vy_k = mI      ? &s.Vy().set_k(0) : NULL;
+		*Uy_k = (m > r) ? &s.Uy().set_k(0) : NULL;
 	MatrixIdentConcatStd
 		&cZ_k = dyn_cast<MatrixIdentConcatStd>(Z_k);
-	// Release any references to D in Y, Uy or Vy
-	 uninitialize_Y_Uv_Uy(&Y_k,Uy_k,Vy_k);
+	// Release any references to D in Y or Uy
+	 uninitialize_Y_Uy(&Y_k,Uy_k);
 	// If Z has not been initialized or Z.D is being shared by someone else we need to reconstruct Z.D
 	bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().count() > 1);
 	MatrixIdentConcatStd::D_ptr_t
@@ -163,20 +157,18 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		GcU = (m > r) ? nlp.factory_GcU()->create() : rcp::null; // ToDo: Reuse GcU somehow? 
 	VectorMutable
 		&py_k  = s.py().set_k(0);
+	nlp.unset_quantities();
 	nlp.calc_point(
 		x                                                     // x
 		,!s.f().updated_k(0) ? &s.f().set_k(0) : NULL         // f
 		,&s.c().get_k(0)                                      // c
 		,recalc_c                                             // recalc_c
-		,(mI && !s.h().updated_k(0)) ? &s.h().set_k(0) : NULL // h 
 		,&s.Gf().set_k(0)                                     // Gf
 		,&py_k                                                // -inv(C)*c
 		,&s.rGf().set_k(0)                                    // rGf
 		,GcU.get()                                            // GcU
-		,mI ? &s.Gh().set_k(0) : NULL                         // Gh
-		,const_cast<MatrixOp*>(D_ptr.get())               // -inv(C)*N
+		,const_cast<MatrixOp*>(D_ptr.get())                   // -inv(C)*N
 		,Uz_k                                                 // Uz
-		,Vz_k                                                 // Vz
 		);
 	s.equ_decomp(   nlp.con_decomp()   );
 	s.equ_undecomp( nlp.con_undecomp() );
@@ -184,8 +176,6 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\nf_k           = " << s.f().get_k(0);
 		out << "\n||c_k||inf    = " << s.c().get_k(0).norm_inf();
-		if(mI)
-			out << "\n||h_k||inf    = " << s.h().get_k(0).norm_inf();
 		out << "\n||Gf_k||inf   = " << s.Gf().get_k(0).norm_inf();
 		out << "\n||py_k||inf   = " << s.py().get_k(0).norm_inf();
 		out << "\n||rGf_k||inf  = " << s.rGf().get_k(0).norm_inf();
@@ -194,8 +184,6 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out	<< "\nc_k  = \n" << s.c().get_k(0);
-		if(mI)
-			out	<< "\nh_k  = \n" << s.h().get_k(0);
 		out	<< "\nGf_k = \n" << s.Gf().get_k(0);
 		out	<< "\npy_k = \n" << s.py().get_k(0);
 		out	<< "\nrGf_k = \n" << s.rGf().get_k(0);
@@ -209,8 +197,6 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf(s.f().get_k(0),   "f_k",true,&out); 
 		assert_print_nan_inf(s.c().get_k(0),   "c_k",true,&out); 
-		if(mI)
-			assert_print_nan_inf(s.c().get_k(0),"h_k",true,&out); 
 		assert_print_nan_inf(s.Gf().get_k(0),  "Gf_k",true,&out); 
 		assert_print_nan_inf(s.py().get_k(0),  "py_k",true,&out);
 		assert_print_nan_inf(s.rGf().get_k(0), "rGf_k",true,&out);
@@ -232,15 +218,12 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 			,has_bounds ? &nlp.xl() : (const Vector*)NULL
 			,has_bounds ? &nlp.xu() : (const Vector*)NULL
 			,&s.c().get_k(0)
-			,mI ? &s.h().get_k(0) : (const Vector*)NULL
 			,&s.Gf().get_k(0)
 			,&s.py().get_k(0)
 			,&s.rGf().get_k(0)
 			,GcU.get()
-			,mI ? &s.Gh().get_k(0) : (const MatrixOp*)NULL
 			,D_ptr.get()
 			,Uz_k
-			,Vz_k
 			,olevel >= PRINT_VECTORS
 			,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : (std::ostream*)NULL
 			);
@@ -266,8 +249,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 			);
 	}
 
-	// Compute py, Y, Uy and Vy
-	calc_py_Y_Uy_Vy( nlp, D_ptr, &py_k, &Y_k, Uy_k, Vy_k, olevel, out ); 
+	// Compute py, Y and Uy
+	calc_py_Y_Uy( nlp, D_ptr, &py_k, &Y_k, Uy_k, olevel, out ); 
 
 	// Compute Ypy = Y*py
 	VectorMutable
@@ -312,13 +295,12 @@ void EvalNewPointTailoredApproach_Step::print_step(
 		<< L << "  rGf_k = Gf_k(var_indep) + D'*Gf_k(var_dep)\n"
 		<< L << "  Z_k = [ D ; I ] <: R^(n x (n-m))\n"
 		<< L << "  if m > r Uz_k = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D\n"
-		<< L << "  if mI > 0 Yz_k = Gh(var_indep,:)' + Gh(var_dep,:)'*D\n"
 		<< L << "if ( (fd_deriv_testing==FD_TEST)\n"
 		<< L << "    or (fd_deriv_testing==FD_DEFAULT and check_results==true\n"
 		<< L << "  ) then\n"
 		<< L << "  check Gf_k, py_k, rGf_k, D, Uz (if m > r) and Vz (if mI > 0) by finite differences.\n"
 		<< L << "end\n";
-	print_calc_py_Y_Uy_Vy( out, L );
+	print_calc_py_Y_Uy( out, L );
 	out
 		<< L << "Ypy_k = Y_k * py_k\n"
 		<< L << "if c_k is not updated c_k = c(x_k) <: space_c\n"

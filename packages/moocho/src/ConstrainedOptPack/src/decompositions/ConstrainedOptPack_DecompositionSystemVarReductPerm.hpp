@@ -47,9 +47,8 @@ public:
 	DecompositionSystemVarReductPerm(
 		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
 		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
-		,EExplicitImplicit    Vz_imp   = MAT_IMP_AUTO
 		)
-		:DecompositionSystemVarReduct(D_imp,Uz_imp,Vz_imp)
+		:DecompositionSystemVarReduct(D_imp,Uz_imp)
 	{}
 
 	//@}
@@ -78,23 +77,20 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void set_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
-		,const Permutation        &P_var
-		,const Range1D            &var_dep
-		,const Permutation        *P_equ
-		,const Range1D            *equ_decomp
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
+		,const Permutation    &P_var
+		,const Range1D        &var_dep
+		,const Permutation    *P_equ
+		,const Range1D        *equ_decomp
 		,const MatrixOp       &Gc
-		,const MatrixOp       *Gh
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
 		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
-		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
+		,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
 		) = 0;
 	
 	///
@@ -106,20 +102,17 @@ public:
 		std::ostream              *out
 		,EOutputLevel             olevel
 		,ERunTests                test_what
-		,const Vector       *nu
-		,MatrixOp             *Gc
-		,MatrixOp             *Gh
+		,const Vector             *nu
+		,MatrixOp                 *Gc
 		,Permutation              *P_var
 		,Range1D                  *var_dep
 		,Permutation              *P_equ
 		,Range1D                  *equ_decomp
-		,MatrixOp             *Z
-		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
-		,MatrixOp             *Uz
-		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
+		,MatrixOp                 *Z
+		,MatrixOp                 *Y
+		,MatrixOpNonsing          *R
+		,MatrixOp                 *Uz
+		,MatrixOp                 *Uy
 		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
 		) = 0;
 

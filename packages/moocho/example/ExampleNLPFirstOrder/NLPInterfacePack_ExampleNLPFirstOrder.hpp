@@ -78,8 +78,6 @@ public:
 	void set_Gc(MatrixOp* Gc);
 	///
 	const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
-	/// Return NULL
-	const NLPFirstOrder::mat_fcty_ptr_t factory_Gh() const;
 	/// Returns an ExampleBasisSystem
 	const basis_sys_ptr_t basis_sys() const;
 
@@ -92,8 +90,6 @@ protected:
 
 	///
 	void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
-	///
-	void imp_calc_Gh(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
 
 	//@}
 
@@ -102,7 +98,7 @@ private:
 	// /////////////////////////////////////////
 	// Private data members
 
-	bool                                    initialized_;  // flag for if initialized has been called.
+	bool                                initialized_;  // flag for if initialized has been called.
 	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
 	NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
 

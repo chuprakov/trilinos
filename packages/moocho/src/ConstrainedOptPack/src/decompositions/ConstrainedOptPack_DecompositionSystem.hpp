@@ -45,17 +45,15 @@ namespace ConstrainedOptPack {
 	 R = Gc(:,equ_decomp)' * Y is nonsingular
 	 Uz = Gc(:,equ_undecomp)' * Z
 	 Uy = Gc(:,equ_undecomp)' * Y
-	 Vz = Gh' * Z
-	 Vy = Gh' * Y
  \endverbatim
  *
  * The matrix factory objects returned by ??? are ment to have a lifetime that is
  * independent of \c this.
  *
- * The decomposition matrices \c Z, \c Y, \c R, \c Uz, \c Uy, \c Vz and \c Vy which
+ * The decomposition matrices \c Z, \c Y, \c R, \c Uz and \c Uy which
  * are updated in <tt>this->update_decomp()</tt> must be completely independent from
- * \c this and from each other and \c Gc and \c Gh that they based on.  For example,
- * Once \c update_decomp() is called, \c this, \c Gc and \c Gh can be destroyed and
+ * \c this and from each other and \c Gc that they based on.  For example,
+ * Once \c update_decomp() is called, \c this, \c Gc can be destroyed and
  * the behaviors of the decomposition matrices must not be altered.  In this respect
  * the <tt>%DecompositionSystem</tt> interface is really nothing more than a "Strategy"
  * interface (with some state data of course) for computing range/null decompositions.
@@ -103,7 +101,7 @@ public:
 	//@{
 
 	///
-	/** Return the number of rows in \c Gc and \c Gh.
+	/** Return the number of rows in \c Gc.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>n > m</tt>
@@ -205,16 +203,6 @@ public:
 	 */
 	virtual const mat_fcty_ptr_t factory_Uy() const = 0;
 
-	///
-	/** Return a matrix factory object for <tt>Vz</tt>
-	 */
-	virtual const mat_fcty_ptr_t factory_Vz() const = 0;
-
-	///
-	/** Return a matrix factory object for <tt>Vy</tt>
-	 */
-	virtual const mat_fcty_ptr_t factory_Vy() const = 0;
-
 	//@}
 
 	/** @name Update range/null decomposition */
@@ -235,16 +223,14 @@ public:
 	 R = Gc(:,equ_decomp)' * Y is nonsingular
 	 Uz = Gc(:,equ_undecomp)' * Z
 	 Uy = Gc(:,equ_undecomp)' * Y
-	 Vz = Gh' * Z
-	 Vy = Gh' * Y
 	 \endverbatim
 	 * If there is some problem creating the decomposition then exceptions
 	 * with the base class \c std::exception may be thrown.  The meaning
 	 * of these exceptions are more associated with the subclasses
 	 * that implement this operation.
 	 *
-	 * The concrete types for <tt>Gc</tt>, <tt>Gh</tt>, <tt>Z</tt>, <tt>Y</tt>,
-	 * <tt>Uz</tt>, <tt>Uy</tt>, <tt>Vz</tt> and <tt>Vy</tt> must be compatable with
+	 * The concrete types for <tt>Gc</tt>, <tt>Z</tt>, <tt>Y</tt>,
+	 * <tt>Uz</tt> and <tt>Uy</tt> must be compatable with
 	 * the concrete implementation of \c this or an <tt>InvalidMatrixType</tt> exeption
 	 * will be thrown..
 	 *
@@ -285,8 +271,6 @@ public:
 	 *             If a test fails, then a \c TestFailed exception will be thrown with
 	 *             a helpful error message.
 	 * @param  Gc  [in] The matrix for which the range/null decomposition is defined.
-	 * @param  Gh  [in] An auxlillary matrix that will have the range/null decompositon applied to.
-	 *             It is allowed for <tt>Gh == NULL</tt>.
 	 * @param  Z   [out] On output represents the <tt>n x (n-r)</tt> null space	matrix such that
 	 *             <tt>Gc(:,equ_decomp) * Z == 0</tt>.  This matrix object must have been created
 	 *             by <tt>this->factory_Z()->create()</tt>.
@@ -305,16 +289,6 @@ public:
 	 *             If <tt>this->m() == this->r()</tt> then <tt>Uy == NULL</tt> must be true.
 	 *             If <tt>Uy!=NULL</tt>, then this matrix object must have been created by
 	 *             <tt>this->factory_Uy()->create()</tt>.
-	 * @param  Vz  [in/out] If <tt>Vz != NULL</tt> (<tt>Gh != NULL</tt> only) then on output
-	 *             <tt>*Vz</tt> represents the <tt>mI x (n-r)</tt> matrix <tt>Gh * Z</tt>.
-	 *             If <tt>Gh == NULL</tt> then <tt>Vz == NULL</tt> must be true.
-	 *             If <tt>Vz!=NULL</tt>, then this matrix object must have been created by
-	 *             <tt>this->factory_Vz()->create()</tt>.
-	 * @param  Vy  [in/out] If <tt>Vy != NULL</tt> (<tt>Gh != NULL</tt> only) then on output
-	 *             <tt>*Vy</tt> represents the <tt>mI x r</tt> matrix <tt>Gh * Y</tt>.
-	 *             If <tt>Gh == NULL</tt> then <tt>Vy == NULL</tt> must be true.
-	 *             If <tt>Vy!=NULL</tt>, then this matrix object must have been created by
-	 *             <tt>this->factory_Vy()->create()</tt>.
 	 * @param mat_rel
 	 *             [in] Determines if the ouput matrix objects must be completely independent or not.
 	 *             <ul>
@@ -327,10 +301,7 @@ public:
 	 * <li> <tt>Gc.cols() == this->m()</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uz == NULL</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uy == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Gh->space_cols().is_compatible(Gc.space_cols()) == true</tt> (throw \c ???)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Vz == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Vy == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>Z!=NULL || Y!=NULL || R!=NULL || Uz!=NULL || Uy!=NULL || Vz!=NULL | Vy!=NULL</tt>
+	 * <li> <tt>Z!=NULL || Y!=NULL || R!=NULL || Uz!=NULL || Uy!=NULL</tt>
 	 *      (throw \c std::invalid_argument)
 	 * </ul>
 	 *
@@ -350,12 +321,6 @@ public:
 	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(equ_undecomp())) == true</tt>
 	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_rows().is_compatible(*space_range()) == true</tt>
 	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy == Gc(:,equ_undecomp())'*Y</tt>
-	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_cols().is_compatible(Gh->space_rows()) == true</tt>
-	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_rows().is_compatible(*space_null())</tt>
-	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz == Gh'*Z</tt>
-	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_cols().is_compatible(Gh->space_rows()) == true</tt>
-	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_rows().is_compatible(*space_range())</tt>
-	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy == Gh'*Y</tt>
 	 * <li> [<tt>mat_rel == MATRICES_INDEP_IMPS</tt>] The behaviors of all of the participating output matrix
 	 *      objects must not be altered by changes to other matrix objects.
 	 * <li> [<tt>mat_rel == MATRICES_ALLOW_DEP_IMPS</tt>] The behaviors of all of the participating output matrix
@@ -369,19 +334,16 @@ public:
 	 * but makes things much easier for the client and gives the client much more power.
 	 */
 	virtual void update_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
 		,const MatrixOp       &Gc
-		,const MatrixOp       *Gh
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
-		,MatrixOp             *Uy
-		,MatrixOp             *Vz
 		,MatrixOp             *Vy
-		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
+		,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
 		) const = 0;
 	
 	///

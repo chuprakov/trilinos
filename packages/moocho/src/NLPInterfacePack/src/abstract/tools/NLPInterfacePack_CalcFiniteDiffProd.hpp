@@ -135,8 +135,6 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f )
 	/// Set the step size for \a c(x)
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
-	/// Set the step size for \a h(x)
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_h )
 
 	///
 	CalcFiniteDiffProd(
@@ -146,7 +144,6 @@ public:
 		,value_type                 fd_step_size_min = -1.0
 		,value_type                 fd_step_size_f   = -1.0
 		,value_type                 fd_step_size_c   = -1.0
-		,value_type                 fd_step_size_h   = -1.0
 		);
 
 	///
@@ -181,8 +178,6 @@ public:
 	 *                  value of <tt>f(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
 	 * @param  co       [in] If <tt>co != NULL</tt> then <tt>*co</tt> should be set to the
 	 *                  value of <tt>c(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
-	 * @param  ho       [in] If <tt>ho != NULL</tt> then <tt>*ho</tt> should be set to the
-	 *                  value of <tt>h(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
 	 * @param  check_nan_inf
 	 *                  [in] If \c true, the the computed values will be checked for nan and inf.
 	 * @param  nlp      [in] Used to compute \a f(x), \a c(x) and \a h(x).  The current set
@@ -195,9 +190,6 @@ public:
 	 * @param  Gc_prod	[out] If <tt>!= NULL</tt>, the will contain the finite
 	 *                  difference computed product <tt>Gc'*v</tt>.  If <tt>== NULL</tt>,
 	 *                  then \a c(x) is not specifically computed.
-	 * @param  Gh_prod	[out] If <tt>!= NULL</tt>, the will contain the finite
-	 *                  difference computed product <tt>Gh'*v</tt>.  If <tt>== NULL</tt>,
-	 *                  then \a h(x) is not specifically computed.
 	 * @param  out      [in/out] If <tt>out != NULL</tt> then any waring or error messages are
 	 *                  output here.
 	 *
@@ -208,19 +200,17 @@ public:
 	 * ToDo: Discuss options!
 	 */
 	virtual bool calc_deriv_product(
-		const Vector     &xo
-		,const Vector    *xl
-		,const Vector    *xu
-		,const Vector    &v
-		,const value_type      *fo
-		,const Vector    *co
-		,const Vector    *ho
-		,bool                  check_nan_inf
-		,NLP                   *nlp
-		,value_type            *Gf_prod
-		,VectorMutable   *Gc_prod
-		,VectorMutable   *Gh_prod
-		,std::ostream          *out
+		const Vector       &xo
+		,const Vector      *xl
+		,const Vector      *xu
+		,const Vector      &v
+		,const value_type  *fo
+		,const Vector      *co
+		,bool              check_nan_inf
+		,NLP               *nlp
+		,value_type        *Gf_prod
+		,VectorMutable     *Gc_prod
+		,std::ostream      *out
 		) const;
 
 };	// end class CalcFiniteDiffProd

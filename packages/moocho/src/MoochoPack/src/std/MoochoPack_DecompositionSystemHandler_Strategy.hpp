@@ -50,11 +50,11 @@ public:
 	 */
 	virtual bool update_decomposition(
 		NLPAlgo                                &algo
-		,NLPAlgoState                              &s
-		,NLPFirstOrder                      &nlp
-		,EDecompSysTesting                      decomp_sys_testing
-		,EDecompSysPrintLevel                   decomp_sys_testing_print_level
-		,bool                                   *new_decomp_selected
+		,NLPAlgoState                          &s
+		,NLPFirstOrder                         &nlp
+		,EDecompSysTesting                     decomp_sys_testing
+		,EDecompSysPrintLevel                  decomp_sys_testing_print_level
+		,bool                                  *new_decomp_selected
 		) = 0;
 
 	///
@@ -62,9 +62,9 @@ public:
 	 */
 	virtual void print_update_decomposition(
 		const NLPAlgo                          &algo
-		,const NLPAlgoState                        &s
-		,std::ostream                           &out
-		,const std::string                      &leading_spaces
+		,const NLPAlgoState                    &s
+		,std::ostream                          &out
+		,const std::string                     &leading_spaces
 		) const = 0;
 
 }; // end class DecompositionSystemHandler_Strategy

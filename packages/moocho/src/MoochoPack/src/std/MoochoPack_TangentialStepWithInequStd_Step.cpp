@@ -93,7 +93,6 @@ bool TangentialStepWithInequStd_Step::do_step(
 	const size_type
 		n  = algo.nlp().n(),
 		m  = algo.nlp().m(),
-		mI = algo.nlp().mI(),
 		r  = s.equ_decomp().size();
 
 	// Get the iteration quantity container objects
@@ -108,8 +107,6 @@ bool TangentialStepWithInequStd_Step::do_step(
 		&nu_iq      = s.nu(),
 		*c_iq       = m > 0  ? &s.c()       : NULL,
 		*lambda_iq  = m > 0  ? &s.lambda()  : NULL,
-		*h_iq       = mI > 0 ? &s.h()       : NULL,
-		*lambdaI_iq = mI > 0 ? &s.lambdaI() : NULL,
 		&rGf_iq     = s.rGf(),
 		&w_iq       = s.w(),
 		&qp_grad_iq = s.qp_grad(),
@@ -121,9 +118,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 		&Z_iq   = s.Z(),
 		*Y_iq   = m        ? &s.Y()  : NULL,
 		*Uz_iq  = (m > r)  ? &s.Uz() : NULL,
-		*Uy_iq  = (m > r)  ? &s.Uy() : NULL,
-		*Vz_iq  = (mI > 0) ? &s.Vz() : NULL,
-		*Vy_iq  = (mI > 0) ? &s.Vy() : NULL;
+		*Uy_iq  = (m > r)  ? &s.Uy() : NULL;
 	IterQuantityAccess<MatrixSymOp>
 		&rHL_iq = s.rHL();
 	IterQuantityAccess<ActSetStats>
@@ -305,13 +300,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 		out
 			<< (use_simple_pz_bounds ? "\nUsing simple bounds on pz ...\n" : "\nUsing bounds on full Z*pz ...\n");
 
-	if( mI && use_simple_pz_bounds ) {
-		assert(0); // ToDo: Implement general inequalities!
-	}
-	else if( mI && !use_simple_pz_bounds ) {	
-		assert(0); // ToDo: Implement general inequalities!
-	}
-	else if( !mI && use_simple_pz_bounds ) {
+	if( use_simple_pz_bounds ) {
 		// Set simple bound constraints on pz
 		qp_dL = bl->sub_view(var_indep);
 		qp_dU = bu->sub_view(var_indep);
@@ -326,7 +315,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 			qp_Ed  = Zpz_k.sub_view(var_dep); // Zpz_k(var_dep) will be updated directly!
 		}
 	}
-	else if( !mI && !use_simple_pz_bounds ) {
+	else if( !use_simple_pz_bounds ) {
 		// There are no simple bounds! (leave qp_dL, qp_dU and qp_nu as null)
 		// Set general inequality constraints for Z*pz
 		qp_E   = mmp::rcp(&Z_k,false);
@@ -441,16 +430,10 @@ bool TangentialStepWithInequStd_Step::do_step(
 	//
 	// Set the solution
 	//
-	if( mI && use_simple_pz_bounds ) {
-		assert(0); // ToDo: Implement general inequalities!
-	}
-	else if( mI && !use_simple_pz_bounds ) {	
-		assert(0); // ToDo: Implement general inequalities!
-	}
-	else if( !mI && !use_simple_pz_bounds ) {
+	if( !use_simple_pz_bounds ) {
 		// Everything is already updated!
 	}
-	else if( !mI && use_simple_pz_bounds ) {
+	else if( use_simple_pz_bounds ) {
 		// Just have to set Zpz_k(var_indep) = pz_k
 		*Zpz_k.sub_view(var_indep) = pz_k;
 	}
@@ -591,11 +574,6 @@ return;
 		<< L << "if w_k is updated then set qp_grad_k = qp_grad_k + zeta_k * w_k\n"
 		<< L << "bl = dl_k - Ypy_k\n"
 		<< L << "bu = du_k - Ypy_k\n"
-		<< L << "if (mI > 0) then\n"
-		<< L << "           / h_k - hl  : if h_k < hl\n"
-		<< L << "  h_eta =  | 0         : if hl <= h_k <= hu\n"
-		<< L << "           \\ h_k - hu  : if h_k > hu\n"
-		<< L << "end\n"
 		<< L << "etaL = 0.0\n"
 		<< L << "*** Determine if we can use simple bounds on pz or not\n"
 		<< L << "if m==0 or (Z_k is a variable reduction null space matrix and ||Ypy_k(var_indep)||inf == 0) then\n"
@@ -606,35 +584,13 @@ return;
 		<< L << "*** Setup QP arguments\n"
 		<< L << "qp_g = qp_grad_k\n"
 		<< L << "qp_G = rHL_k\n"
-		<< L << "if (mI > 0 ) and (use_simple_pz_bounds == true) then\n"
-		<< L << "  qp_dL = bl(var_indep)\n"
-		<< L << "  qp_dU = bu(var_indep)\n"
-		<< L << "  qp_E  = [ Z_k.D ]\n"
-		<< L << "          [ Vz_k  ]\n"
-		<< L << "  qp_b  = [ Ypy_k(var_dep)    ]\n"
-		<< L << "          [ Vy_k*py_k + h_eta ]\n" 
-		<< L << "  qp_eL = [ bl(var_dep)          ]\n"
-		<< L << "          [ hl - h_k - Vy_k*py_k ]\n"
-		<< L << "  qp_eU = [ bu(var_dep)          ]\n"
-		<< L << "          [ hu - h_k - Vy_k*py_k ]\n"
-		<< L << "elseif (mI > 0) and (use_simple_pz_bounds == false) then\n"
-		<< L << "  qp_dL = -inf\n"
-		<< L << "  qp_dU = +inf\n"
-		<< L << "  qp_E  = [ Z_k  ]\n"
-		<< L << "          [ Vz_k ]\n"
-		<< L << "  qp_b  = [ Ypy_k             ]\n"
-		<< L << "          [ Vy_k*py_k + h_eta ]\n" 
-		<< L << "  qp_eL = [ bl                   ]\n"
-		<< L << "          [ hl - h_k - Vy_k*py_k ]\n"
-		<< L << "  qp_eU = [ bu                   ]\n"
-		<< L << "          [ hu - h_k - Vy_k*py_k ]\n"
-		<< L << "elseif (mI == 0) and (use_simple_pz_bounds == true) then\n"
+		<< L << "if (use_simple_pz_bounds == true) then\n"
 		<< L << "  qp_dL = bl(var_indep),  qp_dU = bu(var_indep)\n"
 		<< L << "  if (m > 0) then\n"
 		<< L << "    qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)\n"
 		<< L << "    qp_eL = bl(var_dep),    qp_eU = bu(var_dep)\n"
 		<< L << "  end\n"
-		<< L << "elseif (mI == 0) and (use_simple_pz_bounds == false) then\n"
+		<< L << "elseif (use_simple_pz_bounds == false) then\n"
 		<< L << "  qp_dL = -inf,           qp_dU = +inf\n"
 		<< L << "  qp_E  = Z_k,            qp_b  = Ypy_k\n"
 		<< L << "  qp_eL = bl,             qp_eU = bu\n"
@@ -666,18 +622,10 @@ return;
 		<< L << "*** Set the solution to the QP subproblem\n"
 		<< L << "pz_k  = qp_d\n"
 		<< L << "eta_k = qp_eta\n"
-		<< L << "if (mI > 0) and (use_simple_pz_bounds == true) then\n"
-		<< L << "  nu_k(var_dep)  = qp_mu(1:r),  nu_k(var_indep) = qp_nu\n"
-		<< L << "  lambdaI_k      = qp_mu(r+1:r+mI)\n"
-		<< L << "  Zpz_k(var_dep) = qp_Ed(1:r), Zpz_k(var_indep) = pz_k\n"
-		<< L << "elseif (mI > 0) and (use_simple_pz_bounds == false) then\n"
-		<< L << "  nu_k           = qp_mu(1:n)\n"
-		<< L << "  lambdaI_k      = qp_mu(n+1:n+mI)\n"
-		<< L << "  Zpz_k          = qp_Ed(1:n)\n"
-		<< L << "if (mI == 0) and (use_simple_pz_bounds == true) then\n"
+		<< L << "if (use_simple_pz_bounds == true) then\n"
 		<< L << "  nu_k(var_dep)  = qp_mu,  nu_k(var_indep)  = qp_nu\n"
 		<< L << "  Zpz_k(var_dep) = qp_Ed,  Zpz_k(var_indep) = pz_k\n"
-		<< L << "elseif (mI == 0) and (use_simple_pz_bounds == false) then\n"
+		<< L << "elseif (use_simple_pz_bounds == false) then\n"
 		<< L << "  nu_k  = qp_mu\n"
 		<< L << "  Zpz_k = qp_Ed\n"
 		<< L << "end\n"

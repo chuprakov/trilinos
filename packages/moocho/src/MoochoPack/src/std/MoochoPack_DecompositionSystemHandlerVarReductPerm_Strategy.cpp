@@ -47,11 +47,11 @@ DecompositionSystemHandlerVarReductPerm_Strategy::DecompositionSystemHandlerVarR
 
 bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	NLPAlgo                                &algo
-	,NLPAlgoState                              &s
-	,NLPFirstOrder                      &nlp
-	,EDecompSysTesting                      decomp_sys_testing
-	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
-	,bool                                   *new_decomp_selected
+	,NLPAlgoState                          &s
+	,NLPFirstOrder                         &nlp
+	,EDecompSysTesting                     decomp_sys_testing
+	,EDecompSysPrintLevel                  decomp_sys_testing_print_level
+	,bool                                  *new_decomp_selected
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -69,8 +69,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	const size_type
 		n  = nlp.n(),
 		nb = nlp.num_bounded_x(),
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp.m();
 	size_type
 		r  = s.decomp_sys().equ_decomp().size();
 
@@ -98,13 +97,10 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 		&nu_iq  = s.nu();
 	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0                                   ? &s.Gc() : NULL,
-		*Gh_iq  = mI > 0                                   ? &s.Gh() : NULL,
 		*Z_iq   = ( n > m && r > 0 )    || get_new_basis   ? &s.Z()  : NULL,
 		*Y_iq   = ( r > 0 )             || get_new_basis   ? &s.Y()  : NULL,
 		*Uz_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uz() : NULL,
-		*Uy_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uy() : NULL,
-		*Vz_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vz() : NULL,
-		*Vy_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vy() : NULL;
+		*Uy_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uy() : NULL;
 	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = ( m > 0 )                                ? &s.R()  : NULL;
 	
@@ -152,14 +148,11 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 				,ds_olevel                         // olevel
 				,ds_test_what                      // test_what
 				,Gc_iq->get_k(0)                   // Gc
-				,Gh_iq ? &Gh_iq->get_k(0) : NULL   // Gh
 				,&Z_iq->set_k(0)                   // Z
 				,&Y_iq->set_k(0)                   // Y
 				,&R_iq->set_k(0)                   // R
 				,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
 				,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-				,Vz_iq ? &Vz_iq->set_k(0) : NULL   // Vz
-				,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
 				,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
 				);
 			s.equ_decomp(   s.decomp_sys().equ_decomp()   );
@@ -183,7 +176,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 				var_dep,
 				equ_decomp;
 			nlp_vrp.get_basis(
-				P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
+				P_var.get(), &var_dep, P_equ.get(), &equ_decomp );
 			s.set_P_var_current( P_var );
 			s.set_P_equ_current( P_equ );
 		}
@@ -213,10 +206,10 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 			bool a_basis_was_singular = false;
 			if(very_first_basis)
 				nlp_vrp.get_basis(
-					P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
+					P_var.get(), &var_dep, P_equ.get(), &equ_decomp );
 			while( very_first_basis
 				   || nlp_vrp.get_next_basis(
-					   P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL )
+					   P_var.get(), &var_dep, P_equ.get(), &equ_decomp )
 				)
 			{
 				try {
@@ -230,14 +223,11 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 						,P_equ.get()                       // P_equ
 						,&equ_decomp                       // equ_decomp
 						,Gc_iq->get_k(0)                   // Gc
-						,Gh_iq ? &Gh_iq->get_k(0) : NULL   // Gh
 						,&Z_iq->set_k(0)                   // Z
 						,&Y_iq->set_k(0)                   // Y
 						,&R_iq->set_k(0)                   // R
 						,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
 						,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-						,Vz_iq ? &Vz_iq->set_k(0) : NULL   // Vz
-						,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
 						,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
 						);
 					// If you get here the basis was not singular.
@@ -277,7 +267,6 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 				,ds_test_what                               // test_what
 				,nu_iq.updated_k(0)?&nu_iq.get_k(0):NULL    // nu
 				,&Gc_iq->get_k(0)                           // Gc
-				,Gh_iq ? &Gh_iq->get_k(0) : NULL            // Gh
 				,P_var.get()                                // P_var
 				,&var_dep                                   // var_dep
 				,P_equ.get()                                // P_equ
@@ -287,11 +276,9 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 				,&R_iq->set_k(0)                            // R
 				,Uz_iq ? &Uz_iq->set_k(0) : NULL            // Uz
 				,Uy_iq ? &Uy_iq->set_k(0) : NULL            // Uy
-				,Vz_iq ? &Vz_iq->set_k(0) : NULL            // Vz
-				,Vy_iq ? &Vy_iq->set_k(0) : NULL            // Vy
 				,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
 				);
-			nlp_vrp.set_basis(	*P_var, var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
+			nlp_vrp.set_basis(	*P_var, var_dep, P_equ.get(), &equ_decomp );
 		}
 		
 		// If you get here then no unexpected exceptions where thrown and a new
@@ -385,7 +372,7 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::print_update_decompositio
 		<< L << "  nlp_selected_basis = false\n"
 		<< L << "  if (nlp.selects_basis() == true) then\n"
 		<< L << "    for each basis returned from nlp.get_basis(...) or nlp.get_next_basis()\n"
-		<< L << "      decomp_sys.set_decomp(Gc_k,Gh_k...) -> Z_k,Y_k,R_k,Uz_k,Uy_k,Vz_k,Vy_k \n"
+		<< L << "      decomp_sys.set_decomp(Gc_k...) -> Z_k,Y_k,R_k,Uz_k,Uy_k \n"
 		<< L << "      if SingularDecompositon exception was not thrown then\n"
 		<< L << "        nlp_selected_basis = true\n"
 		<< L << "        exit loop\n"
@@ -393,8 +380,8 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::print_update_decompositio
 		<< L << "    end\n"
 		<< L << "  end\n"
 		<< L << "  if (nlp_selected_basis == false) then\n"
-		<< L << "    decomp_sys.select_decomp(Gc_k,Gh_k...) -> P_var,P_equ,Z,Y,R,Uz,Uy,Vz,Vy\n"
-		<< L << "                                              and permute Gc,Gh\n"
+		<< L << "    decomp_sys.select_decomp(Gc_k...) -> P_var,P_equ,Z,Y,R,Uz,Uy\n"
+		<< L << "                                              and permute Gc\n"
 		<< L << "  end\n"
 		<< L << "  *** If you get here then no unexpected exceptions were thrown and a new\n"
 		<< L << "  *** basis has been selected\n"

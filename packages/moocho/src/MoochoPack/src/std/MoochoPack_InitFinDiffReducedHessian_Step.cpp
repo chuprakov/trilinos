@@ -172,8 +172,8 @@ bool InitFinDiffReducedHessian_Step::do_step(
 
 		// Gf_fd = Gf(x_fd)
 		VectorSpace::vec_mut_ptr_t Gf_fd = x_k.space().create_member();
+		nlp.unset_quantities();
 		nlp.set_Gf(	Gf_fd.get() );
-		nlp.set_multi_calc( false );
 		nlp.calc_Gf( *x_fd );
 
 		if( (int)olevel >= (int)PRINT_VECTORS ) {
@@ -248,6 +248,7 @@ bool InitFinDiffReducedHessian_Step::do_step(
 					assert(0);	// only local programming error?
 			}
 		}
+		nlp.unset_quantities();
 
 		quasi_newton_stats_(s).set_k(0).set_updated_stats(
 			QuasiNewtonStats::REINITIALIZED );

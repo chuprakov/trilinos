@@ -237,6 +237,7 @@ bool MatrixZero::syrk(
 {
 	assert_initialized();
 	sym_lhs->Mt_S(beta);
+	return true;
 }
 
 // private

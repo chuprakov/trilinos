@@ -171,7 +171,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
     if (assert_print_nan_inf(x_kp1, "x", true, NULL))
 		{
 		// Calcuate f and c at the new point.
-		barrier_nlp_->set_multi_calc(true);
+		barrier_nlp_->unset_quantities();
 		barrier_nlp_->set_f( &s.barrier_obj().set_k(+1) );
 		if (c_iq)
 			{
@@ -179,6 +179,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 			barrier_nlp_->calc_c( x_kp1, true );
 			}
 		barrier_nlp_->calc_f( x_kp1, false ); 
+		barrier_nlp_->unset_quantities();
 		}
 	
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 

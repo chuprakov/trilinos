@@ -57,19 +57,11 @@ NLPSerialPreprocess::fixed_var_mult()
 // Constructors / nitializers
 
 NLPSerialPreprocess::NLPSerialPreprocess(
-	bool  convert_inequ_to_equ
 	)
-	:convert_inequ_to_equ_(convert_inequ_to_equ)
-	,initialized_(false)
+	:initialized_(false)
 	,force_xinit_in_bounds_(true)
 	,scale_f_(1.0)
 {}
-
-void NLPSerialPreprocess::set_convert_inequ_to_equ( bool convert_inequ_to_equ )
-{
-	convert_inequ_to_equ_ = convert_inequ_to_equ;
-	initialized_          = false;
-}
 
 // Overridden public members from NLP
 
@@ -104,9 +96,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	
 	// Get the dimensions of the full problem
 
-	n_full_  = n_orig_  + ( convert_inequ_to_equ_ ? mI_orig_ : 0         );
-	m_full_  = m_orig_  + ( convert_inequ_to_equ_ ? mI_orig_ : 0         );
-	mI_full_ =            ( convert_inequ_to_equ_ ? 0        : mI_orig_  );
+	n_full_  = n_orig_ + mI_orig_;
+	m_full_  = m_orig_ + mI_orig_;
 
 	// Initialize the storage for the intermediate quanities
 	
@@ -121,10 +112,10 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	equ_perm_.resize(m_full_);
 	inv_equ_perm_.resize(m_full_);
 	space_c_.initialize(m_full_);
-	space_h_.initialize(mI_full_);
+	space_c_hat_.initialize(m_orig_);
+	space_h_hat_.initialize(mI_orig_);
 	factory_P_var_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
 	factory_P_equ_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
-	factory_P_inequ_ = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
 
 	// Intialize xinit_full_, xl_full_ and xu_full_ for the initial point which will set the
 	// fixed elements which will not change during the optimization.
@@ -224,9 +215,9 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	xinit_.initialize(n_);
 	xl_.initialize(n_);
 	xu_.initialize(n_);
-	if(mI_full_) {
-		hl_.initialize(mI_full_);
-		hu_.initialize(mI_full_);
+	if(mI_orig_) {
+		hl_hat_.initialize(mI_orig_);
+		hu_hat_.initialize(mI_orig_);
 	}
 
 	if( m_full_ ) {
@@ -326,12 +317,6 @@ size_type NLPSerialPreprocess::m() const
 	return m_full_;
 }
 
-size_type NLPSerialPreprocess::mI() const 
-{	
-	assert_initialized(); 
-	return mI_full_;
-}
-
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_x() const
 {
 	namespace mmp = MemMngPack;
@@ -342,12 +327,6 @@ NLP::vec_space_ptr_t NLPSerialPreprocess::space_c() const
 {
 	namespace mmp = MemMngPack;
 	return ( m_full_ ? mmp::rcp(&space_c_,false) : mmp::null );
-}
-
-NLP::vec_space_ptr_t NLPSerialPreprocess::space_h() const
-{
-	namespace mmp = MemMngPack;
-	return ( mI_full_ ? mmp::rcp(&space_h_,false) : mmp::null );
 }
 
 size_type NLPSerialPreprocess::num_bounded_x() const 
@@ -367,18 +346,6 @@ const Vector& NLPSerialPreprocess::xu() const
 	return xu_;
 }
 
-const Vector& NLPSerialPreprocess::hl() const 
-{
-	assert_initialized();
-	return hl_;
-}
-
-const Vector& NLPSerialPreprocess::hu() const 
-{
-	assert_initialized();
-	return hu_;
-}
-
 const Vector& NLPSerialPreprocess::xinit() const 
 {
 	assert_initialized();
@@ -387,37 +354,37 @@ const Vector& NLPSerialPreprocess::xinit() const
 
 void NLPSerialPreprocess::get_init_lagrange_mult(
 	VectorMutable*   lambda
-	,VectorMutable*  lambdaI
 	,VectorMutable*  nu
 	) const
 {
+	assert_initialized();
 	// ToDo: Get subclass to define what these are!
 	if(lambda)
 		*lambda   = 0.0;
-	if(lambdaI)
-		*lambdaI = 0.0;
 	if(nu)
 		*nu      = 0.0;
 }
 
 void NLPSerialPreprocess::scale_f( value_type scale_f )
 {
+	assert_initialized();
 	scale_f_ = scale_f;
 }
 
 value_type NLPSerialPreprocess::scale_f() const
 {
+	assert_initialized();
 	return scale_f_;
 }
 
 void NLPSerialPreprocess::report_final_solution(
 	const Vector&    x
 	,const Vector*   lambda
-	,const Vector*   lambdaI
 	,const Vector*   nu
 	,bool                  is_optimal
 	) const
 {
+	assert_initialized();
 	// set x_full
 	VectorDenseEncap  x_d(x);
 	DVector x_full(n_full_);
@@ -432,12 +399,6 @@ void NLPSerialPreprocess::report_final_solution(
 		for(size_type j = 1; j <= m_full_; j++)
 			lambda_full(equ_perm_(j)) = lambda(j);
 	}
-	// set lambdaI_full
-	DVector lambdaI_full;
-	if(lambdaI) {
-		VectorDenseEncap lambdaI_d(*lambdaI);
-		lambdaI_full = lambdaI_d();
-	}
 	// set nu_full
 	DVector nu_full(n_full_);
 	if(nu) {
@@ -449,11 +410,9 @@ void NLPSerialPreprocess::report_final_solution(
 	// Report the final solution
 	DVectorSlice
 		lambda_orig   = lambda && m_orig_ ? lambda_full(1,m_orig_) : DVectorSlice(),
-		lambdaI_orig  = ( lambdaI
-						  ? lambdaI_full()
-						  : ( lambda && m_full_ > m_orig_ 
-							  ? lambda_full(m_orig_+1,m_full_)
-							  : DVectorSlice() ) ),
+		lambdaI_orig  = ( lambda && m_full_ > m_orig_ 
+							? lambda_full(m_orig_+1,m_full_)
+							: DVectorSlice() ),
 		nu_orig       = nu ? nu_full(1,n_orig_) : DVectorSlice();
 	imp_report_orig_final_solution(
 		x_full
@@ -462,6 +421,51 @@ void NLPSerialPreprocess::report_final_solution(
 		,nu_orig.dim()      ? &nu_orig      : NULL
 		,is_optimal
 		);
+}
+
+size_type NLPSerialPreprocess::ns() const
+{
+	assert_initialized();
+	return mI_orig_;
+}
+
+NLP::vec_space_ptr_t
+NLPSerialPreprocess::space_c_hat() const
+{
+	namespace mmp = MemMngPack;
+	assert_initialized();
+	return ( m_orig_ ? mmp::rcp(&space_c_hat_,false) : mmp::null );
+} 
+NLP::vec_space_ptr_t
+NLPSerialPreprocess::space_h_hat() const
+{
+	namespace mmp = MemMngPack;
+	assert_initialized();
+	return ( mI_orig_ ? mmp::rcp(&space_h_hat_,false) : mmp::null );
+}
+
+const Vector& NLPSerialPreprocess::hl_hat() const
+{
+	assert_initialized();
+	return hl_hat_;
+}
+
+const Vector& NLPSerialPreprocess::hu_hat() const
+{
+	assert_initialized();
+	return hu_hat_;
+}
+
+const Permutation& NLPSerialPreprocess::P_var() const
+{
+	assert_initialized();
+	return P_var_;
+}
+
+const Permutation& NLPSerialPreprocess::P_equ() const
+{
+	assert_initialized();
+	return P_equ_;
 }
 
 // Overridden public members from NLPVarReductPerm
@@ -476,12 +480,6 @@ const NLPVarReductPerm::perm_fcty_ptr_t
 NLPSerialPreprocess::factory_P_equ() const
 {
 	return factory_P_equ_;
-}
-
-const NLPVarReductPerm::perm_fcty_ptr_t
-NLPSerialPreprocess::factory_P_inequ() const
-{
-	return factory_P_inequ_;
 }
 
 Range1D NLPSerialPreprocess::var_dep() const
@@ -508,22 +506,9 @@ Range1D NLPSerialPreprocess::equ_undecomp() const
 	return r_ < m_full_ ? Range1D(r_+1,m_full_) : Range1D::Invalid;
 }
 
-Range1D NLPSerialPreprocess::inequ_decomp() const
-{
-	assert_initialized();
-	return Range1D::Invalid; // Decomposed inequalities are not allowed yet!
-}
-
-Range1D NLPSerialPreprocess::inequ_undecomp() const
-{
-	assert_initialized();
-	return mI_full_ ? Range1D(1,mI_full_) : Range1D::Invalid;
-}
-
 bool NLPSerialPreprocess::get_next_basis(
 	Permutation*  P_var,   Range1D* var_dep
 	,Permutation* P_equ,   Range1D* equ_decomp
-	,Permutation* P_inequ, Range1D* inequ_decomp
 	)
 {
 	assert_initialized();
@@ -534,27 +519,21 @@ bool NLPSerialPreprocess::get_next_basis(
 		assert_and_set_basis( var_perm_, equ_perm_, rank );
 	else
 		return false; // The NLP subclass did not have a new basis to give us!
-	this->get_basis(P_var,var_dep,P_equ,equ_decomp,P_inequ,inequ_decomp);
+	this->get_basis(P_var,var_dep,P_equ,equ_decomp);
 	return true;
 }
 
 void NLPSerialPreprocess::set_basis(
 	const Permutation   &P_var,   const Range1D  &var_dep
 	,const Permutation  *P_equ,   const Range1D  *equ_decomp
-	,const Permutation  *P_inequ, const Range1D  *inequ_decomp
 	)
 {
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	THROW_EXCEPTION(
 		(m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
-		|| (mI_full_ > 0 && (P_inequ == NULL || inequ_decomp == NULL ))
 		,std::invalid_argument
 		,"NLPSerialPreprocess::set_basis(...) : Error!" );
-	THROW_EXCEPTION(
-		mI_full_ > 0 && inequ_decomp->size() > 0
-		,InvalidBasis
-		,"NLPSerialPreprocess::set_basis(...) : Error, can't handle decomposed inequalities yet!" );
 	THROW_EXCEPTION(
 		m_full_ > 0 && var_dep.size() != equ_decomp->size()
 		,InvalidBasis
@@ -562,25 +541,17 @@ void NLPSerialPreprocess::set_basis(
 	// Get the concrete types
 	const PermutationSerial
 		&P_var_s   = dyn_cast<const PermutationSerial>(P_var),
-		*P_equ_s   = m_full_  ? &dyn_cast<const PermutationSerial>(*P_equ)   : NULL,
-		*P_inequ_s = mI_full_ ? &dyn_cast<const PermutationSerial>(*P_inequ) : NULL;
+		*P_equ_s   = m_full_  ? &dyn_cast<const PermutationSerial>(*P_equ)   : NULL;
 	// Get the underlying permutation vectors
 	mmp::ref_count_ptr<IVector>
 		var_perm   = mmp::rcp_const_cast<IVector>(P_var_s.perm()),
 		equ_perm   = ( m_full_
 					   ? mmp::rcp_const_cast<IVector>(P_equ_s->perm())
-					   : mmp::null ),
-		inequ_perm = ( mI_full_
-					   ? mmp::rcp_const_cast<IVector>(P_inequ_s->perm())
 					   : mmp::null );
 	THROW_EXCEPTION(
 		(m_full_ > 0 && equ_perm.get() == NULL)
 		,std::invalid_argument
 		,"NLPSerialPreprocess::set_basis(...) : Error, P_equ is not initialized properly!" );
-	THROW_EXCEPTION(
-		(mI_full_ > 0 && inequ_perm.get() == NULL)
-		,std::invalid_argument
-		,"NLPSerialPreprocess::set_basis(...) : Error, P_inequ is not initialized properly!" );
 	// Set the basis
 	assert_and_set_basis( *var_perm, *equ_perm, var_dep.size() );
 }
@@ -588,7 +559,6 @@ void NLPSerialPreprocess::set_basis(
 void NLPSerialPreprocess::get_basis(
 	Permutation*  P_var,   Range1D* var_dep
 	,Permutation* P_equ,   Range1D* equ_decomp
-	,Permutation* P_inequ, Range1D* inequ_decomp
 	) const
 {
 	namespace mmp = MemMngPack;
@@ -597,30 +567,23 @@ void NLPSerialPreprocess::get_basis(
 	THROW_EXCEPTION(
 		P_var == NULL || var_dep == NULL
 		|| (m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
-		|| (mI_full_ > 0 && (P_inequ == NULL || inequ_decomp == NULL ))
 		,std::invalid_argument
 		,"NLPSerialPreprocess::get_basis(...) : Error!" );
 	// Get the concrete types
 	PermutationSerial
 		&P_var_s   = dyn_cast<PermutationSerial>(*P_var),
-		*P_equ_s   = m_full_  ? &dyn_cast<PermutationSerial>(*P_equ)   : NULL,
-		*P_inequ_s = mI_full_ ? &dyn_cast<PermutationSerial>(*P_inequ) : NULL;
+		*P_equ_s   = m_full_  ? &dyn_cast<PermutationSerial>(*P_equ)   : NULL;
 	// Get the underlying permutation vectors
 	mmp::ref_count_ptr<IVector>
 		var_perm   = mmp::rcp_const_cast<IVector>(P_var_s.perm()),
 		equ_perm   = ( m_full_
 					   ? mmp::rcp_const_cast<IVector>(P_equ_s->perm())
-					   : mmp::null ),
-		inequ_perm = ( mI_full_
-					   ? mmp::rcp_const_cast<IVector>(P_inequ_s->perm())
 					   : mmp::null );
 	// Allocate permutation vectors if none allocated yet or someone else has reference to them
 	if( var_perm.get() == NULL || var_perm.count() > 2 ) // P_var reference and my reference
 		var_perm = mmp::rcp( new IVector(n_) );
 	if( m_full_ && ( equ_perm.get() == NULL || equ_perm.count() > 2 ) ) // P_equ reference and my reference
 		equ_perm = mmp::rcp( new IVector(m_full_) );
-	if( mI_full_ && ( inequ_perm.get() == NULL || inequ_perm.count() > 2 ) ) // P_inequ reference and my reference
-		inequ_perm = mmp::rcp( new IVector(mI_full_) );
 	// Copy the basis selection
 	(*var_perm)   = var_perm_;
 	(*var_dep)    = Range1D(1,r_);
@@ -628,82 +591,93 @@ void NLPSerialPreprocess::get_basis(
 		(*equ_perm)   = equ_perm_;
 		(*equ_decomp) = Range1D(1,r_);
 	}
-	if(mI_full_) {
-		DenseLinAlgPack::identity_perm( inequ_perm.get() ); // No decomposed inequalities right now!
-		*inequ_decomp = Range1D::Invalid;
-	}
 	// Reinitialize the Permutation arguments.
 	P_var_s.initialize( var_perm, mmp::null, true );  // Allocate the inverse permuation as well!
 	if(m_full_)
 		P_equ_s->initialize( equ_perm, mmp::null, true );
-	if(mI_full_)
-		P_inequ_s->initialize( inequ_perm, mmp::null, true );
 }
 
 // Overridden protected members from NLP
 
 void NLPSerialPreprocess::imp_calc_f(
-	const Vector      &x
+	const Vector            &x
 	,bool                   newx
 	,const ZeroOrderInfo    &zero_order_info
 	) const
 {
 	assert_initialized();
-	VectorDenseEncap          x_d(x);
+	VectorDenseEncap  x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
 	imp_calc_f_orig( x_full(), newx, zero_order_orig_info() );
 	*zero_order_info.f = scale_f_ * f_orig_;
 }
 
 void NLPSerialPreprocess::imp_calc_c(
-	const Vector      &x
+	const Vector            &x
 	,bool                   newx
 	,const ZeroOrderInfo    &zero_order_info
 	) const
 {
 	assert_initialized();
-	VectorDenseEncap          x_d(x);
+	VectorDenseEncap  x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
 	if( m_orig_ )
 		imp_calc_c_orig( x_full(), newx, zero_order_orig_info() );
-	if( mI_orig_ && convert_inequ_to_equ_ )
+	if( mI_orig_ )
 		imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
 	VectorDenseMutableEncap  c_d(*zero_order_info.c);
 	equ_from_full(
-		m_orig_                            ? c_orig_()                     : DVectorSlice()
-		,mI_orig_ && convert_inequ_to_equ_ ? h_orig_()                     : DVectorSlice()
-		,mI_orig_ && convert_inequ_to_equ_ ? x_full()(n_orig_+1,n_full_)   : DVectorSlice() // s_orig
+		m_orig_   ? c_orig_()                     : DVectorSlice()
+		,mI_orig_ ? h_orig_()                     : DVectorSlice()
+		,mI_orig_ ? x_full()(n_orig_+1,n_full_)   : DVectorSlice() // s_orig
 		,&c_d()
 		);
 }
 
-void NLPSerialPreprocess::imp_calc_h(
-	const Vector      &x
+void NLPSerialPreprocess::imp_calc_c_hat(
+	const Vector            &x
 	,bool                   newx
-	,const ZeroOrderInfo    &zero_order_info
+	,const ZeroOrderInfo    &zero_order_info_hat
+	) const
+{
+	assert_initialized();
+	VectorDenseEncap x_d(x);
+	set_x_full( x_d(), newx, &x_full_() );
+	if( m_orig_ )
+		imp_calc_c_orig( x_full(), newx, zero_order_orig_info() );
+	if( mI_orig_ )
+		imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
+	VectorDenseMutableEncap  c_hat_d(*zero_order_info_hat.c);
+	c_hat_d() = c_orig_();
+}
+
+void NLPSerialPreprocess::imp_calc_h_hat(
+	const Vector            &x
+	,bool                   newx
+	,const ZeroOrderInfo    &zero_order_info_hat
 	) const
 {
 	// If this function gets called then this->mI() > 0 must be true
 	// which means that convert_inequ_to_equ must be false!
 	assert_initialized();
-	VectorDenseEncap          x_d(x);
+	VectorDenseEncap  x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
 	imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
-	VectorDenseMutableEncap  h_d(*zero_order_info.h);
-	h_d() = h_orig_(); // Nothing fancy right now
+	VectorDenseMutableEncap  h_hat_d(*zero_order_info_hat.h);
+	h_hat_d() = h_orig_(); // Nothing fancy right now
 }
 
 // Overridden protected members from NLPObjGrad
 
 void NLPSerialPreprocess::imp_calc_Gf(
-	const Vector      &x
+	const Vector            &x
 	,bool                   newx
 	,const ObjGradInfo      &obj_grad_info
 	) const
 {
 	using DenseLinAlgPack::Vt_S;
 	assert_initialized();
-	VectorDenseEncap          x_d(x);
+	VectorDenseEncap  x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
 	if( n_full_ > n_orig_ ) Gf_full_(n_orig_+1,n_full_) = 0.0; // Initialize terms for slacks to zero!
 	imp_calc_Gf_orig( x_full(), newx, obj_grad_orig_info() );
@@ -958,6 +932,8 @@ void NLPSerialPreprocess::assert_and_set_basis(
 	const IVector& var_perm, const IVector& equ_perm, size_type rank
 	)
 {
+	namespace mmp = MemMngPack;
+
 	// Assert that this is a valid basis and set the internal basis.  Also repivot 'xinit', 
 	// 'xl', and 'xu'.
 
@@ -991,6 +967,8 @@ void NLPSerialPreprocess::assert_and_set_basis(
 		xl_ = -NLP::infinite_bound();
 		xu_ = +NLP::infinite_bound();
 	}
+	P_var_.initialize(mmp::rcp(new IVector(var_perm)),mmp::null);
+	P_equ_.initialize(mmp::rcp(new IVector(equ_perm)),mmp::null);
 }
 
 void NLPSerialPreprocess::assert_bounds_on_variables() const

@@ -54,9 +54,9 @@ namespace NLPInterfacePack {
  * objects.
  */
 bool test_nlp_direct(
-	NLPDirect*                          nlp
-	,OptionsFromStreamPack::OptionsFromStream*    options
-	,std::ostream*                                out
+	NLPDirect                                     *nlp
+	,OptionsFromStreamPack::OptionsFromStream     *options
+	,std::ostream                                 *out
 	);
 
 } // end namespace NLPInterfacePack

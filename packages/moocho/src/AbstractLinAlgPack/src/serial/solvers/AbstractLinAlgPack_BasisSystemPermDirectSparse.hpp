@@ -68,8 +68,6 @@ public:
 	///
 	const mat_fcty_ptr_t factory_GcUP() const;
 	///
-	const mat_fcty_ptr_t factory_GhUP() const;
-	///
 	Range1D var_dep() const;
 	///
 	Range1D var_indep() const;
@@ -79,14 +77,12 @@ public:
 	Range1D equ_undecomp() const;
 	///
 	void update_basis(
-		const MatrixOp*         Gc
-		,const MatrixOp*        Gh
-		,MatrixOpNonsing*   C
-		,MatrixOp*              D
-		,MatrixOp*              GcUP
-		,MatrixOp*              GhUP
-		,EMatRelations              mat_rel
-		,std::ostream               *out
+		const MatrixOp          *Gc
+		,MatrixOpNonsing        *C
+		,MatrixOp               *D
+		,MatrixOp               *GcUP
+		,EMatRelations          mat_rel
+		,std::ostream           *out
 		) const;
 
 	//@}
@@ -106,35 +102,26 @@ public:
 		,const Range1D             &var_dep
 		,const Permutation         *P_equ
 		,const Range1D             *equ_decomp
-		,const Permutation         *P_inequ
-		,const Range1D             *inequ_decomp
-		,const MatrixOp        *Gc
-		,const MatrixOp        *Gh
-		,MatrixOpNonsing   *C
-		,MatrixOp              *D
-		,MatrixOp              *GcUP
-		,MatrixOp              *GhUP
-		,EMatRelations              mat_rel
-		,std::ostream               *out
+		,const MatrixOp            *Gc
+		,MatrixOpNonsing           *C
+		,MatrixOp                  *D
+		,MatrixOp                  *GcUP
+		,EMatRelations             mat_rel
+		,std::ostream              *out
 		);
 	///
 	void select_basis(
-		const Vector          *nu
-		,const Vector         *lambdaI
-		,MatrixOp               *Gc
-		,MatrixOp               *Gh
-		,Permutation                *P_var
-		,Range1D                    *var_dep
-		,Permutation                *P_equ
-		,Range1D                    *equ_decomp
-		,Permutation                *P_inequ
-		,Range1D                    *inequ_decomp
-		,MatrixOpNonsing    *C
-		,MatrixOp               *D
-		,MatrixOp               *GcUP
-		,MatrixOp               *GhUP
-		,EMatRelations              mat_rel
-		,std::ostream               *out
+		const Vector               *nu
+		,MatrixOp                  *Gc
+		,Permutation               *P_var
+		,Range1D                   *var_dep
+		,Permutation               *P_equ
+		,Range1D                   *equ_decomp
+		,MatrixOpNonsing           *C
+		,MatrixOp                  *D
+		,MatrixOp                  *GcUP
+		,EMatRelations             mat_rel
+		,std::ostream              *out
 		);
 	
 	//@}
@@ -147,7 +134,6 @@ private:
 	direct_solver_ptr_t   direct_solver_;
 	size_type             n_;
 	size_type	          m_;
-	size_type             mI_;
 	size_type             r_;
 	size_type             Gc_nz_;
 	Range1D               init_var_rng_;
@@ -179,16 +165,16 @@ private:
 		const MatrixOp& Gc
 		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
 		,MatrixOpNonsingAggr *C_aggr
-		,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUp
+		,MatrixOp* D, MatrixOp* GcUP
 		) const;
 
 	///
 	void do_some_basis_stuff(
-		const MatrixOp& Gc, const MatrixOp* Gh
+		const MatrixOp& Gc
 		,const Range1D& var_dep, const Range1D& equ_decomp
 		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
 		,MatrixOpNonsingAggr *C_aggr
-		,MatrixOp* D, MatrixOp* GcUP, MatrixOp* GhUP
+		,MatrixOp* D, MatrixOp* GcUP
 		);
 
 

@@ -106,7 +106,6 @@ class IpState
 		  const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
 		  ,const vec_space_ptr_t& space_x      = MemMngPack::null
 		  ,const vec_space_ptr_t& space_c      = MemMngPack::null
-		  ,const vec_space_ptr_t& space_h      = MemMngPack::null
 		  ,const vec_space_ptr_t& space_range  = MemMngPack::null
 		  ,const vec_space_ptr_t& space_null   = MemMngPack::null
 		  );

@@ -36,17 +36,13 @@ const std::string MoochoPack::f_name				= "f";
 const std::string MoochoPack::Gf_name				= "Gf";
 const std::string MoochoPack::HL_name				= "HL";
 const std::string MoochoPack::c_name				= "c";
-const std::string MoochoPack::h_name				= "h";
 const std::string MoochoPack::Gc_name				= "Gc";
-const std::string MoochoPack::Gh_name				= "Gh";
 // Constraint Gradient Null Space / Range Space Decomposition Info
 const std::string MoochoPack::Y_name				= "Y";
 const std::string MoochoPack::Z_name				= "Z";
 const std::string MoochoPack::R_name				= "R";
 const std::string MoochoPack::Uy_name				= "Uy";
 const std::string MoochoPack::Uz_name				= "Uz";
-const std::string MoochoPack::Vy_name				= "Vy";
-const std::string MoochoPack::Vz_name				= "Vz";
 // Search Direction Info
 const std::string MoochoPack::py_name				= "py";
 const std::string MoochoPack::Ypy_name				= "Ypy";
@@ -72,7 +68,6 @@ const std::string MoochoPack::comp_kkt_err_name	= "comp_kkt_err";
 const std::string MoochoPack::GL_name				= "GL";
 const std::string MoochoPack::rGL_name				= "rGL";
 const std::string MoochoPack::lambda_name			= "lambda";
-const std::string MoochoPack::lambdaI_name			= "lambdaI";
 const std::string MoochoPack::nu_name				= "nu";
 
 namespace MoochoPack {
@@ -95,42 +90,36 @@ NLPAlgoState::NLPAlgoState(
 	const decomp_sys_ptr_t& decomp_sys
 	,const vec_space_ptr_t& space_x
 	,const vec_space_ptr_t& space_c
-	,const vec_space_ptr_t& space_h
 	,const vec_space_ptr_t& space_range
 	,const vec_space_ptr_t& space_null
 	)
 	:decomp_sys_(decomp_sys)
 	,space_x_(space_x)
 	,space_c_(space_c)
-	,space_h_(space_h)
 	,space_range_(space_range)
 	,space_null_(space_null)
 {}
 
 // Iteration Info
 
-STATE_INDEX_IQ_DEF(  NLPAlgoState,                  num_basis, num_basis_name          )
+STATE_INDEX_IQ_DEF(  NLPAlgoState,              num_basis, num_basis_name          )
 
 // NLP Problem Info
 
-STATE_VECTOR_IQ_DEF( NLPAlgoState,                  x,         x_name,  get_space_x(), VST_SPACE_X  )
-STATE_SCALAR_IQ_DEF( NLPAlgoState,                  f,         f_name                               )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,              x,         x_name,  get_space_x(), VST_SPACE_X  )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,              f,         f_name                               )
 STATE_IQ_DEF(        NLPAlgoState, MatrixSymOp, HL,        HL_name                              )
-STATE_VECTOR_IQ_DEF( NLPAlgoState,                  Gf,        Gf_name, get_space_x(), VST_SPACE_X  )
-STATE_VECTOR_IQ_DEF( NLPAlgoState,                  c,         c_name,  get_space_c(), VST_SPACE_C  )
-STATE_VECTOR_IQ_DEF( NLPAlgoState,                  h,         h_name,  get_space_h(), VST_SPACE_H  )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,              Gf,        Gf_name, get_space_x(), VST_SPACE_X  )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,              c,         c_name,  get_space_c(), VST_SPACE_C  )
 STATE_IQ_DEF(        NLPAlgoState, MatrixOp,    Gc,        Gc_name                              )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,    Gh,        Gh_name                              )
 
 // Constraint Gradient Null Space / Range Space Decomposition Info
 
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Y,  Y_name                  )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Z,  Z_name                  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,        Y,  Y_name                  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,        Z,  Z_name                  )
 STATE_IQ_DEF(        NLPAlgoState, MatrixOpNonsing, R,  R_name                  )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Uy, Uy_name                 )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Uz, Uz_name                 )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Vy, Vy_name                 )
-STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Vz, Vz_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,        Uy, Uy_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,        Uz, Uz_name                 )
 
 // Search Direction Info
 
@@ -143,7 +132,7 @@ STATE_VECTOR_IQ_DEF( NLPAlgoState,                  d,   d_name,    get_space_x(
 // QP Subproblem Info
 
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  rGf,     rGf_name,      get_space_null(), VST_SPACE_NULL )
-STATE_IQ_DEF(        NLPAlgoState, MatrixSymOp, rHL,     rHL_name                                        )
+STATE_IQ_DEF(        NLPAlgoState, MatrixSymOp,     rHL,     rHL_name                                        )
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  w,       w_name,        get_space_null(), VST_SPACE_NULL ) 
 STATE_SCALAR_IQ_DEF( NLPAlgoState,                  zeta,    zeta_name                                       )
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  qp_grad, qp_grad_name,  get_space_null(), VST_SPACE_NULL )
@@ -164,7 +153,6 @@ STATE_SCALAR_IQ_DEF( NLPAlgoState,                  comp_kkt_err,   comp_kkt_err
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  GL,             GL_name,           get_space_x(),    VST_SPACE_X    )
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  rGL,            rGL_name,          get_space_null(), VST_SPACE_NULL )
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  lambda,         lambda_name,       get_space_c(),    VST_SPACE_C    )
-STATE_VECTOR_IQ_DEF( NLPAlgoState,                  lambdaI,        lambdaI_name,      get_space_h(),    VST_SPACE_H    )
 STATE_VECTOR_IQ_DEF( NLPAlgoState,                  nu,             nu_name,           get_space_x(),    VST_SPACE_X    )
 
 // protected

@@ -21,6 +21,7 @@
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
 #include "ref_count_ptr.hpp"
 
@@ -75,7 +76,7 @@ namespace NLPInterfacePack {
  *
  * Special types of NLPs are identified as: <ol>
  * <li> Fully general %NLP :
- *      <ul><li><tt>( xl != -Inf || xu != +inf ) && ( m  > 0 )</tt></ul>
+ *      <ul><li><tt>( xl != -Inf || xu != +Inf ) && ( m  > 0 )</tt></ul>
  * <li> General equality only constrained %NLP :
  *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m  > 0 )</tt></ul>
  * <li> Bound constrained %NLP :
@@ -86,11 +87,13 @@ namespace NLPInterfacePack {
  *      <ul><li><tt>n == m</tt></ul>
  * </ol>
  *
- * If some of the equations in <tt>c(x)</tt> are linearly
- * dependent (but consistent) then it is possible that some of these extra inequalities
- * my be active at the solution but in general they can not be (unless they are degenerate).
+ * If <tt>n==m</tt> but some of the equations in <tt>c(x)</tt> are
+ * dependent (but consistent) then the problem is actually an NLP
+ * and not an NLE and it is possible that some of the variable bounds
+ * my be active at the solution but in general they can not be.
  * An optimization algorithm may refuse to solve some of the above problems but this
- * interface allows all of these possibilities.
+ * interface allows all of these different types of mathematical programming problems
+ * to be represented using this interface.
  *
  * The Lagrangian for this problem is defined by:
  \verbatim
@@ -120,7 +123,7 @@ namespace NLPInterfacePack {
  *
  * The underlying NLP may containe general inequality
  * constraints which where converted to equalities using slack
- * variables.  The actual underlying NLP may have taken the form
+ * variables.  The actual underlying NLP may take the form
  * (in mathematical and ASCII notation):
  \f[
  \begin{array}{lcl}
@@ -196,17 +199,17 @@ namespace NLPInterfacePack {
  * method <tt>get_init_lagrange_mult()</tt>.  
  * 
  * The bread and butter of an %NLP interface is the calculation of the functions that define the objective
- * and constraints and various points \a x and the methods \c calc_f() and \c calc_c()
- * accomplish this.  The quantities that these functions update must be set prior by calling the methods
+ * and constraints and various points \a x using the methods \c calc_f() and \c calc_c().
+ * The quantities that these functions update must be set prior by calling the methods
  * \c set_f() and \c set_c() respectively.  It may seem strange not to pass these quantities
- * directly to the calculation functions but there is a good reason why it is done this way.
+ * directly to the calculation functions but there is a good reason for this.
  * The reason is that this interface supports the efficient update of mutiple quantities at a given
  * point \a x.  For example, in many %NLPs some of the same terms are shared between the constriants
  * functions and objective function.  Therefore it is more efficient to compute \a f(x) and \a c(x)
  * simultaneously rather than computing them separately.  In order to allow for this possibility,
  * the client can set the desired quantities (i.e. \c set_f() and \c set_c()) prior to calling \c calc_f()
- * and \c calc_c().  Another reason for structuring this %NLP interface this way is when automatic differentiation is used
- * to compute derivatives (see \c NLPFirstOrder) the function values are computed for free.
+ * and \c calc_c().  Then, whatever quantities that have been set will be computed my any call to
+ * <tt>calc_?()</tt> method.
  *
  * Once an optimization algorithm has the solution (or gives up with a suboptimal point), it should
  * report this solution to the %NLP object using the method \c report_final_solution().
@@ -363,7 +366,6 @@ public:
 	 *      <tt>this->xl() <= this->xinit() <= this->xu()</tt>
 	 * <li> <tt>this->num_f_evals() == 0</tt>
 	 * <li> [<tt>this->m() > 0</tt>] <tt>this->num_c_evals() == 0</tt>
-	 * <li> [<tt>this->mI() > 0</tt>] <tt>this->num_h_evals() == 0</tt>
 	 * </ul>
 	 *
 	 * Note that subclasses must call this function to reset what needs to be
@@ -397,13 +399,13 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * Default implementation returns <tt>this->space_c().get() != NULL ? this-space_c()->dim() : 0</tt>.
+	 * Default implementation returns <tt>( this->space_c().get() != NULL ? this-space_c()->dim() : 0 )</tt>.
 	 */
 	virtual size_type m() const;
 
 	//@}
 
-	/** @name Vector Space objects. */
+	/** @name Vector space objects */
 	//@{
 
 	///
@@ -523,7 +525,7 @@ public:
 
 	//@}
 
-	/** @name <<std aggr>> members for the objective function value f(x). */
+	/** @name Set and access storage for the objective function value f(x). */
 	//@{
 
 	///
@@ -569,7 +571,7 @@ public:
 
 	//@}
 
-	/** @name <<std aggr>> members for the residual of the general equality constriants c(x). */
+	/** @name Set and access storage for the residual of the general equality constriants c(x). */
 	//@{
 
 	///
@@ -613,7 +615,31 @@ public:
 
 	//@}
 
-	/** @name Calculation Members. */
+	/** @name Unset calculation quantities */
+	//@{
+	
+	///
+	/** Call to unset all storage quantities (both in this class and all subclasses).
+	 *
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_f() == NULL</tt>
+	 * <li> <tt>this->get_c() == NULL</tt>
+	 * <li> <tt>this->get_c_hat() == NULL</tt>
+	 * <li> <tt>this->get_h_hat() == NULL</tt>
+	 * </ul>
+	 *
+	 * This method must be called by all subclasses that override it.
+	 */
+	virtual void unset_quantities();
+
+	//@}
+
+	/** @name Calculation members */
 	//@{
 
 	///
@@ -655,7 +681,7 @@ public:
 	 * <li> <tt>this->f()</tt> is updated to \a f(x)
 	 * </ul>
 	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>c</tt> and/or <tt>h</tt> may also be changed
+	 * The storage reference for <tt>c</tt> may also be updated at this point (if <tt>get_c() != NULL</tt>)
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -679,7 +705,7 @@ public:
 	 * <li> <tt>this->c()</tt> is updated to \a c(x)
 	 * </ul>
 	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>h</tt> may also be changed
+	 * The storage reference for <tt>f</tt> may also be updated at this point (if <tt>get_f() != NULL</tt>)
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -738,6 +764,239 @@ public:
 
 	//@}
 
+	/** @name General inequalities and slack variables */
+	//@{
+
+	///
+	/** Return the number of slack variables (i.e. number of general inequalities).
+	 *
+	 * Default implementation returns
+	 * <tt>(this->space_h_hat().get() ? this->space_h_hat()->dim() : 0)</tt>.
+	 */
+	virtual size_type ns() const;
+
+	///
+	/** Vector space object for the original equalities <tt>c_hat(x_hat)</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->m() - this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->m() - this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
+	 * </ul>
+	 *
+	 * The default implementation returns <tt>this->space_c()</tt>.
+	 */
+	virtual vec_space_ptr_t space_c_hat() const;
+
+	///
+	/** Vector space object for the original inequalities <tt>h_hat(x_hat)</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
+	 * </ul>
+	 *
+	 * The default implementation returns <tt>return.get() == NULL</tt>.
+	 */
+	virtual vec_space_ptr_t space_h_hat() const;
+
+	///
+	/** Returns a reference to the vector of lower bounds on the general inequality constraints <tt>h_hat(x_hat)</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->ns() > 0</tt> (throw <tt>std::logic_error</tt>)
+	 * </ul>
+	 *
+	 * Any bounds that are non-existant will return <tt>this->hl_hat().get_ele(i) == -NLP::infinite_bound()</tt>.
+	 *
+	 * The default implementation throws an exception.
+	 */
+	virtual const Vector& hl_hat() const;
+
+	///
+	/** Returns a reference to the vector of upper bounds on the general inequality constraints <tt>h_hat(x_hat)</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Any bounds that are non-existant will return <tt>this->hu_hat().get_ele(i) == +NLP::infinite_bound()</tt>.
+	 *
+	 * The default implementation throws an exception.
+	 */
+	virtual const Vector& hu_hat() const;
+
+	///
+	/** Set a pointer to a vector to be updated when <tt>this->calc_c_hat()</tt> is called.
+	 *
+	 * @param  c_hat  [in] Pointer to constraint residual vector.  May be \c NULL.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c_hat()) == true</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_c_hat() == c_hat</tt>
+	 * </ul>
+	 */
+	virtual void set_c_hat(VectorMutable* c_hat);
+	///
+	/** Return pointer passed to <tt>this->set_c_hat()</tt>.
+	 */
+	virtual VectorMutable* get_c_hat();
+	///
+	/** Returns non-<tt>const</tt> <tt>*this->get_c_hat()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
+	virtual VectorMutable& c_hat();
+	///
+	/** Returns <tt>const</tt> <tt>*this->get_c_hat()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_c_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
+	virtual const Vector& c_hat() const;
+
+	///
+	/** Set a pointer to a vector to be updated when <tt>this->calc_h_hat()</tt> is called.
+	 *
+	 * @param  h_hat  [in] Pointer to constraint residual vector.  May be \c NULL.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_h_hat()) == true</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_h_hat() == h_hat</tt>
+	 * </ul>
+	 */
+	virtual void set_h_hat(VectorMutable* h_hat);
+	///
+	/** Return pointer passed to <tt>this->set_h_hat()</tt>.
+	 */
+	virtual VectorMutable* get_h_hat();
+	///
+	/** Returns non-<tt>const</tt> <tt>*this->get_h_hat()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
+	virtual VectorMutable& h_hat();
+	///
+	/** Returns <tt>const</tt> <tt>*this->get_h_hat()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_h_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
+	virtual const Vector& h_hat() const;
+
+	///
+	/** Return the permutation object for the variables.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.space()is_compatible(*this->space_x()) == true</tt>
+	 * </ul>
+	 *
+	 * The default returns <tt>return.is_identity() == true</tt>
+	 */
+	virtual const Permutation& P_var() const;
+
+	///
+	/** Return the permutation object for the constraints.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->m() > 0</tt> (throw <tt>std::logic_error</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.space()is_compatible(*this->space_c()) == true</tt>
+	 * </ul>
+	 *
+	 * The default returns <tt>return.is_identity() == true</tt>
+	 */
+	virtual const Permutation& P_equ() const;
+
+	///
+	/** Update the constraint residual vector for <tt>c_hat</tt> at the point <tt>x</tt> and put it
+	 * in the stored reference.
+	 *
+	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c_hat</tt>.
+	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               <tt>this->calc_*(x,newx)</tt> member.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>this->get_c_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->c_hat()</tt> is updated to \a c_hat(x_hat)
+	 * </ul>
+	 *
+	 * The storage reference for <tt>f</tt> and/or <tt>h_hat</tt> may also be updated at this point
+	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_h_hat() != NULL</tt>) but is not guarentied to be.
+	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
+	 */ 
+	virtual void calc_c_hat(const Vector& x, bool newx = true) const;
+
+	///
+	/** Update the constraint residual vector for <tt>h_hat</tt> at the point <tt>x</tt> and put it
+	 * in the stored reference.
+	 *
+	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>h_hat</tt>.
+	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               <tt>this->calc_*(x,newx)</tt> member.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>this->get_h_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->h_hat()</tt> is updated to \a h_hat(x_hat)
+	 * </ul>
+	 *
+	 * The storage reference for <tt>f</tt> and/or <tt>c_hat</tt> may also be updated at this point
+	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_c_hat() != NULL</tt>) but is not guarentied to be.
+	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
+	 */ 
+	virtual void calc_h_hat(const Vector& x, bool newx = true) const;
+
+	//@}
+
 	///
 	/** Struct for objective and constriants (pointer).
 	 *
@@ -747,20 +1006,25 @@ public:
 	struct ZeroOrderInfo {
 	public:
 		///
-        ZeroOrderInfo() : f(NULL), c(NULL)
+        ZeroOrderInfo() : f(NULL), c(NULL), h(NULL)
 		{}
 		///
-		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in )
-			: f(f_in), c(c_in)
+		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in, VectorMutable* h_in )
+			: f(f_in), c(c_in), h(h_in)
 		{}
 		/// Pointer to objective function <tt>f</tt> (Will be NULL if not set)
 		value_type*           f;
 		/// Pointer to constraints residual <tt>c</tt> (Will be NULL if not set)
 		VectorMutable*  c;
+		/// Pointer to inequality constraints <tt>h</tt> (Will be NULL if not set)
+		VectorMutable*  h;
 	}; // end struct ZeroOrderInfo
 
 	/// Return pointer to set quantities
 	const ZeroOrderInfo zero_order_info() const;
+
+	/// Return pointer to set <tt>hat</tt> quantities
+	const ZeroOrderInfo zero_order_info_hat() const;
 
 protected:
 
@@ -812,7 +1076,28 @@ protected:
 	 */
 	virtual void imp_calc_c(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 	///
-	/** Overridden to compute h(x) and perhaps f(x) and/or c(x) (if multiple calculaiton = true).
+	/** Overridden to compute c_hat(x_hat) and perhaps f(x) and/or h_hat(x_hat)
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+	 * <li> <tt>zero_order_info.c != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*zero_order_info.c</tt> is updated to c_hat(x_hat).
+	 * </ul>
+	 *
+	 * @param x       [in]  Unknown vector (size n).
+	 * @param newx    [in]  True if is a new point.
+	 * @param zero_order_info_hat
+	 *                [out] Pointers to \c f, \c c_hat and \c h_hat.
+	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c_hat(x_hat)
+	 *
+	 * The default implementation calls <tt>this->imp_calc_c()</tt>.
+	 */
+	virtual void imp_calc_c_hat(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_hat) const;
+	///
+	/** Overridden to compute h_hat(x_hat) and perhaps f(x) and/or c_hat(x_hat).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
@@ -820,19 +1105,18 @@ protected:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.h</tt> is updated to h(x).
+	 * <li> <tt>*zero_order_info.h</tt> is updated to <tt>h_hat(x_hat)</tt>.
 	 * </ul>
 	 *
 	 * @param x       [in]  Unknown vector (size n).
 	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info
-	 *                [out] Pointers to \c f, \c c and \c h.
-	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h(x)
-	 *                If <tt>this->multi_calc() == true</tt> then
-	 *                any of the other quantities pointed to in \c zero_order_info may be set on
-	 *                output, but are not guaranteed to be.
+	 * @param zero_order_info_hat
+	 *                [out] Pointers to \c f, \c c_hat and \c h_hat.
+	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h_hat(x_hat)
+	 *
+	 * The default implementation throws an exception.
 	 */
-	virtual void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+	virtual void imp_calc_h_hat(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_hat) const;
 
 	//@}
 
@@ -850,12 +1134,18 @@ private:
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::VectorSpace *space_x;
 	AbstractLinAlgPack::VectorSpace *space_c;
-	AbstractLinAlgPack::VectorSpace *space_h;
+	AbstractLinAlgPack::VectorSpace *space_c_hat;
+	AbstractLinAlgPack::VectorSpace *space_h_hat;
+	Permutation                     *P_var;
+	Permtuation                     *P_equ;
+#else
+	MemMngPack::ref_count_ptr<Permutation>  P_var_;
+	MemMngPack::ref_count_ptr<Permutation>  P_equ_;
 #endif
 	mutable ZeroOrderInfo           first_order_info_;
+	mutable ZeroOrderInfo           first_order_info_hat_;
 	mutable size_type				num_f_evals_;
 	mutable size_type				num_c_evals_;
-	mutable size_type				num_h_evals_;
 	
 };	// end class NLP
 
@@ -866,6 +1156,12 @@ inline
 const NLP::ZeroOrderInfo NLP::zero_order_info() const
 {
 	return first_order_info_;
+}
+
+inline
+const NLP::ZeroOrderInfo NLP::zero_order_info_hat() const
+{
+	return first_order_info_hat_;
 }
 
 }	// end namespace NLPInterfacePack 

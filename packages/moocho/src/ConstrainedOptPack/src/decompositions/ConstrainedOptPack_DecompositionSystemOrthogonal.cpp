@@ -34,16 +34,14 @@ namespace ConstrainedOptPack {
 DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 	const VectorSpace::space_ptr_t           &space_x
 	,const VectorSpace::space_ptr_t          &space_c
-	,const VectorSpace::space_ptr_t          &space_h
 	,const basis_sys_ptr_t                   &basis_sys
 	,const basis_sys_tester_ptr_t            &basis_sys_tester
 	,EExplicitImplicit                       D_imp
 	,EExplicitImplicit                       Uz_imp
-	,EExplicitImplicit                       Vz_imp
 	)
 	:DecompositionSystemVarReductImp(
-		space_x, space_c, space_h, basis_sys, basis_sys_tester
-		,D_imp,Uz_imp,Vz_imp )
+		space_x, space_c, basis_sys, basis_sys_tester
+		,D_imp, Uz_imp )
 {}
 
 // Overridden from DecompositionSystem
@@ -72,12 +70,6 @@ DecompositionSystemOrthogonal::factory_Uy() const
 	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
-const DecompositionSystem::mat_fcty_ptr_t
-DecompositionSystemOrthogonal::factory_Vy() const
-{
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
-}
-
 // Overridden from DecompositionSystemVarReductImp
 
 void DecompositionSystemOrthogonal::update_D_imp_used(EExplicitImplicit *D_imp_used) const
@@ -87,12 +79,11 @@ void DecompositionSystemOrthogonal::update_D_imp_used(EExplicitImplicit *D_imp_u
 
 DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemOrthogonal::uninitialize_matrices(
-	std::ostream                                           *out
-	,EOutputLevel                                          olevel
+	std::ostream                                       *out
+	,EOutputLevel                                      olevel
 	,MatrixOp                                          *Y
-	,MatrixOpNonsing                               *R
+	,MatrixOpNonsing                                   *R
 	,MatrixOp                                          *Uy
-	,MatrixOp                                          *Vy
 	) const
 {
 	namespace rcp = MemMngPack;
@@ -110,8 +101,6 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
 	MatrixOpSubView
 		*Uy_cpst = Uy ? &dyn_cast<MatrixOpSubView>(*Uy)  : NULL;			
-	MatrixOpSubView
-		*Vy_cpst = Vy ? &dyn_cast<MatrixOpSubView>(*Vy)  : NULL;
 
 	//
 	// Get the smart pointer to the basis matrix object C and the
@@ -134,8 +123,6 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 		R_orth->set_uninitialized();
 	if(Uy_cpst)
 		Uy_cpst->initialize(rcp::null);
-	if(Vy_cpst)
-		Vy_cpst->initialize(rcp::null);
 
 	//
 	// Return the owned? basis matrix object C
@@ -150,10 +137,9 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 	,EOutputLevel                                          olevel
 	,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
 	,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-	,MatrixOp                                          *Y
-	,MatrixOpNonsing                               *R
-	,MatrixOp                                          *Uy
-	,MatrixOp                                          *Vy
+	,MatrixOp                                              *Y
+	,MatrixOpNonsing                                       *R
+	,MatrixOp                                              *Uy
 	,EMatRelations                                         mat_rel
 	) const
 {
@@ -185,8 +171,6 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
 	MatrixOpSubView
 		*Uy_cpst = Uy ? &dyn_cast<MatrixOpSubView>(*Uy)      : NULL;			
-	MatrixOpSubView
-		*Vy_cpst = Vy ? &dyn_cast<MatrixOpSubView>(*Vy)      : NULL;
 
 	//
 	// Initialize the matrices
@@ -256,11 +240,10 @@ void DecompositionSystemOrthogonal::print_update_matrices(
 	std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Orthogonal decompositon Y, R, Uy and Vy matrices (class DecompositionSystemOrthogonal)\n"
+		<< L << "*** Orthogonal decompositon Y, R and Uy matrices (class DecompositionSystemOrthogonal)\n"
 		<< L << "Y  = [ I; -D' ] (using class MatrixIdentConcatStd)\n"
 		<< L << "R  = C*(I + D*D')\n"
 		<< L << "Uy = E - F*D'\n"
-		<< L << "Vy = Gh(var_dep,:)' - Gh(var_indep,:)'*D'\n"
 		;
 }
 		

@@ -26,17 +26,27 @@ value_type MeritFuncCalcNLP::operator()(const Vector& x) const
 {
 	const size_type
 		m  = nlp().m(),
-		mI = nlp().mI();
+		ns = nlp().ns();
 	nlp().calc_f(x);
 	if(m)  nlp().calc_c(x,false);
-	if(mI) nlp().calc_h(x,false);
 	return phi().value(
 		nlp().f()
 		,m  ? &nlp().c()  : NULL
-		,mI ? &nlp().h()  : NULL
-		,mI ? &nlp().hl() : NULL
-		,mI ? &nlp().hu() : NULL
+		,NULL  // h
+		,NULL  // hl
+		,NULL  // hu
 		);
+/* RAB: 20020112: ToDo: Get this working
+	if(m)  nlp().calc_c_hat(x,false);
+	if(ns) nlp().calc_h_hat(x,false);
+	return phi().value(
+		nlp().f()
+		,m  ? &nlp().c_hat()  : NULL
+		,ns ? &nlp().h_hat()  : NULL
+		,ns ? &nlp().hl_hat() : NULL
+		,ns ? &nlp().hu_hat() : NULL
+		);
+*/
 }
 
 value_type MeritFuncCalcNLP::deriv() const {
@@ -48,7 +58,7 @@ void MeritFuncCalcNLP::print_merit_func(
 	) const
 {
 	out	<< L << "*** MeritFuncCalcNLP\n"
-		<< L << "f = f(x), c = c(x)\n";
+		<< L << "f = f(x), c = c_hat(x_hat), h = h_hat(x_hat)\n";
 	phi().print_merit_func(out,L);
 }
 

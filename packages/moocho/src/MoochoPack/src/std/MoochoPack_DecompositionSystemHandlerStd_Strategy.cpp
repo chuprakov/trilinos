@@ -43,11 +43,11 @@ DecompositionSystemHandlerStd_Strategy::DecompositionSystemHandlerStd_Strategy()
 
 bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	NLPAlgo                                &algo
-	,NLPAlgoState                              &s
-	,NLPFirstOrder                      &nlp
-	,EDecompSysTesting                      decomp_sys_testing
-	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
-	,bool                                   *new_decomp_selected
+	,NLPAlgoState                          &s
+	,NLPFirstOrder                         &nlp
+	,EDecompSysTesting                     decomp_sys_testing
+	,EDecompSysPrintLevel                  decomp_sys_testing_print_level
+	,bool                                  *new_decomp_selected
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -58,8 +58,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	const size_type
 		n  = nlp.n(),
 		nb = nlp.num_bounded_x(),
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp.m();
 	size_type
 		r  = s.decomp_sys().equ_decomp().size();
 
@@ -71,13 +70,10 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 		&nu_iq  = s.nu();
 	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0                  ? &s.Gc() : NULL,
-		*Gh_iq  = mI > 0                  ? &s.Gh() : NULL,
 		*Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL,
 		*Y_iq   = ( r > 0 )               ? &s.Y()  : NULL,
 		*Uz_iq  = ( m  > 0 && m  > r )    ? &s.Uz() : NULL,
-		*Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL,
-		*Vz_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vz() : NULL,
-		*Vy_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vy() : NULL;
+		*Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL;
 	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = ( m > 0 )               ? &s.R()  : NULL;
 	
@@ -114,7 +110,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 			assert(0); // Should not get here!
 	};
 
-	// Form the decomposition of Gc and Gh and update the decomposition system matrices
+	// Form the decomposition of Gc and update the decomposition system matrices
 	if( olevel >= PRINT_ALGORITHM_STEPS ) {
 		out << "\nUpdating the range/null decompostion matrices ...\n";
 	}
@@ -123,14 +119,11 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 		,ds_olevel                         // olevel
 		,ds_test_what                      // test_what
 		,Gc_iq->get_k(0)                   // Gc
-		,Gh_iq ? &Gh_iq->get_k(0) : NULL   // Gh
 		,&Z_iq->set_k(0)                   // Z
 		,&Y_iq->set_k(0)                   // Y
 		,&R_iq->set_k(0)                   // R
 		,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
 		,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-		,Vz_iq ? &Vz_iq->set_k(0) : NULL   // Vz
-		,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
 		,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
 		);
 	s.equ_decomp(   s.decomp_sys().equ_decomp()   );
@@ -143,9 +136,9 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 
 void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
 	const NLPAlgo                          &algo
-	,const NLPAlgoState                        &s
-	,std::ostream                           &out
-	,const std::string                      &L
+	,const NLPAlgoState                    &s
+	,std::ostream                          &out
+	,const std::string                     &L
 	) const
 {
 	out

@@ -129,6 +129,27 @@ public:
 
 	//@}
 
+	/** @name Unset calculation quantities */
+	//@{
+	
+	///
+	/** Call to unset all storage quantities (both in this class and all subclasses).
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> See <tt>NLP::unset_quantities()</tt>
+	 * <li> <tt>this->get_Gf() == NULL</tt>
+	 * </ul>
+	 *
+	 * This method must be called by all subclasses that override it.
+	 */
+	void unset_quantities();
+
+	//@}
+
 	/** @name Calculation Members */
 	//@{
 
@@ -151,7 +172,7 @@ public:
 	 * <li> <tt>this->Gf()</tt> is updated to \c Gf(x)
 	 * </ul>
 	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c and/or \c h
+	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c
 	 * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect (i.e. no higher order derivatives).
 	 */ 
@@ -185,16 +206,14 @@ public:
 		{}
 		///
 		ObjGradInfo( VectorMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
-			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
+			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c)
 		{}
 		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
 		VectorMutable*       Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
-		value_type*                f;
+		value_type*          f;
 		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
 		VectorMutable*       c;
-		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		VectorMutable*       h;
 	}; // end struct ObjGradInfo
 
 	//@}
@@ -222,7 +241,7 @@ protected:
 	 * @param x       [in]  Unknown vector (size n).
 	 * @param newx    [in]  True if is a new point.
 	 * @param obj_grad_info
-	 *                [out] Pointers to \c f, \c c, \c h and \c Gf.
+	 *                [out] Pointers to \c f, \c c and \c Gf.
 	 *                On output <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
 	 *                Any of the other objects pointed to in
 	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
@@ -235,7 +254,7 @@ protected:
 private:
 
 	mutable VectorMutable     *Gf_;
-	mutable size_type				num_Gf_evals_;
+	mutable size_type         num_Gf_evals_;
 
 };	// end class NLPObjGrad
 

@@ -86,8 +86,7 @@ bool EvalNewPointStd_Step::do_step(
 	const size_type
 		n  = nlp.n(),
 		nb = nlp.num_bounded_x(),
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp.m();
 	size_type
 		r  = m ? s.decomp_sys().equ_decomp().size() : 0;
 
@@ -100,17 +99,13 @@ bool EvalNewPointStd_Step::do_step(
 		&x_iq   = s.x(),
 		&nu_iq  = s.nu(),
 		*c_iq   = m > 0  ? &s.c() : NULL,
-		*h_iq   = mI > 0 ? &s.h() : NULL,
 		&Gf_iq  = s.Gf();
 	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0 ? &s.Gc() : NULL,
-		*Gh_iq  = mI > 0 ? &s.Gh() : NULL,
 		*Z_iq   = &s.Z(),
 		*Y_iq   = NULL,
 		*Uz_iq  = NULL,
-		*Uy_iq  = NULL,
-		*Vz_iq  = NULL,
-		*Vy_iq  = NULL;
+		*Uy_iq  = NULL;
 	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = NULL;
 
@@ -160,31 +155,19 @@ bool EvalNewPointStd_Step::do_step(
 	const bool f_k_updated  = f_iq.updated_k(0);
 	const bool Gf_k_updated = Gf_iq.updated_k(0);
 	const bool c_k_updated  = m  > 0 ? c_iq->updated_k(0)  : false;
-	const bool h_k_updated  = mI > 0 ? h_iq->updated_k(0)  : false;
 	const bool Gc_k_updated = m  > 0 ? Gc_iq->updated_k(0) : false;
-	const bool Gh_k_updated = mI > 0 ? Gh_iq->updated_k(0) : false;
+	nlp.unset_quantities();
 	nlp.set_f( &f_iq.set_k(0) );
 	nlp.set_Gf( &Gf_iq.set_k(0) );
 	if( m > 0 ) {
 		nlp.set_c( &c_iq->set_k(0) );
 		nlp.set_Gc( &Gc_iq->set_k(0) );
 	}
-	if( mI > 0 ) {
-		nlp.set_h( &h_iq->set_k(0) );
-		nlp.set_Gh( &Gh_iq->set_k(0) );
-	}
 
-	// Allow multiple updates as defined in NLP and NLPFirstOrder interfaces
-	nlp.set_multi_calc(true);
-
-	// Calculate Gc and Gh at x_k
+	// Calculate Gc at x_k
 	bool new_point = true;
 	if(m > 0) {
 		nlp.calc_Gc( x, new_point );
-		new_point = false;
-	}
-	if(mI > 0) {
-		nlp.calc_Gh( x, new_point );
 		new_point = false;
 	}
 
@@ -206,8 +189,6 @@ bool EvalNewPointStd_Step::do_step(
 		Y_iq   = ( r > 0 )               ? &s.Y()  : NULL;
 		Uz_iq  = ( m  > 0 && m  > r )    ? &s.Uz() : NULL;
 		Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL;
-		Vz_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vz() : NULL;
-		Vy_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vy() : NULL;
 		R_iq   = ( m > 0 )               ? &s.R()  : NULL;
 
 		// Determine if we will test the decomp_sys or not
@@ -273,14 +254,11 @@ bool EvalNewPointStd_Step::do_step(
 				decomp_sys_passed = decomp_sys_tester().test_decomp_system(
 					s.decomp_sys()
 					,Gc_iq->get_k(0)                   // Gc
-					,mI > 0 ? &Gh_iq->get_k(0) : NULL  // Gh
 					,&Z_iq->get_k(0)                   // Z
 					,&Y_iq->get_k(0)                   // Y
 					,&R_iq->get_k(0)                   // R
 					,m > r  ? &Uz_iq->get_k(0) : NULL  // Uz
 					,m > r  ? &Uy_iq->get_k(0) : NULL  // Uy
-					,mI > 0 ? &Vz_iq->get_k(0) : NULL  // Vz
-					,mI > 0 ? &Vy_iq->get_k(0) : NULL  // Vy
 					,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
 					);
 			THROW_EXCEPTION(
@@ -305,18 +283,15 @@ bool EvalNewPointStd_Step::do_step(
 	nlp.calc_Gf( x, new_point ); new_point = false;
 	if( m && (!c_k_updated || new_decomp_selected ) )
 		nlp.calc_c( x, false);
-	if( mI && (!h_k_updated || new_decomp_selected ) )
-		nlp.calc_h( x, false);
 	if( !f_k_updated || new_decomp_selected )
 		nlp.calc_f( x, false);
+	nlp.unset_quantities();
 
 	// Check for NaN and Inf
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf(f_iq.get_k(0),"f_k",true,&out); 
 		if(m)
 			assert_print_nan_inf(c_iq->get_k(0),"c_k",true,&out); 
-		if(mI)
-			assert_print_nan_inf(h_iq->get_k(0),"h_k",true,&out); 
 		assert_print_nan_inf(Gf_iq.get_k(0),"Gf_k",true,&out); 
 	}
 
@@ -383,7 +358,6 @@ bool EvalNewPointStd_Step::do_step(
 				,nb ? &nlp.xl() : NULL
 				,nb ? &nlp.xu() : NULL
 				,m  ? &Gc_iq->get_k(0) : NULL
-				,mI ? &Gh_iq->get_k(0) : NULL
 				,&Gf_iq.get_k(0)
 				,olevel >= PRINT_VECTORS
 				,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
@@ -427,10 +401,6 @@ void EvalNewPointStd_Step::print_step(
 			<< L << "                                  s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
 			<< L << "    if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
 			<< L << "                                  s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
-			<< L << "    if mI > 0 : Vz_k <: space_h|space_null\n"
-			<< L << "                                  s.t. Vz_k = Gh_k' * Z_k\n"
-			<< L << "    if mI > 0 : Vy_k <: space_h|space_range\n"
-			<< L << "                                  s.t. Vy_k = Gh_k' * Y_k\n"
 			<< L << "  begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
 			;
 		decomp_sys_handler().print_update_decomposition( algo, s, out, L + "    " );
@@ -439,7 +409,7 @@ void EvalNewPointStd_Step::print_step(
 			<< L << "  if ( (decomp_sys_testing==DST_TEST)\n"
 			<< L << "    or (decomp_sys_testing==DST_DEFAULT and check_results==true)\n"
 			<< L << "    ) then\n"
-			<< L << "    check properties for Z_k, Y_k, R_k, Uz_k, Uy_k, Vz_k and Vy_k.\n"
+			<< L << "    check properties for Z_k, Y_k, R_k, Uz_k and Uy_k\n"
 			<< L << "  end\n"
 			;
 	}

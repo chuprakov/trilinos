@@ -20,8 +20,9 @@
 
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 
@@ -59,7 +60,7 @@ namespace NLPInterfacePack {
  *
  * <b>Conversion of general inequalities to equalities using slack variables</b>
  *
- * If <tt>convert_inequ_to_equ == true</tt>, then the original %NLP formulation above
+ * The original %NLP formulation above
  * is transformed by adding slack variables <tt>s_orig <: REAL^mI_orig</tt>,
  * defining a new <tt>x_full = [ x_orig; s_orig ]</tt> and forming the new %NLP:
  \verbatim
@@ -104,31 +105,10 @@ namespace NLPInterfacePack {
  * variables in the objective function but the most common behavior
  * will be to just ignore slack varaibles in the subclass.
  *
- * If <tt>convert_inequ_to_equ == false</tt>, then the "full" and "original" %NLP
- * formulations are identical:
- \verbatim
-
-     min    f_full(x_full)
-     s.t.   c_full(x_full) = 0
-	        hl_full <= h_full(x_full) <= xu_full
-	        xl_full <= x_full <= xu_full
-
-	where:
-
-	        x_full         = x_orig
-            f_full(x_full) = f_orig(x_orig)
-            c_full(x_full) = c_orig(x_orig)
-            h_full(x_full) = h_orig(x_orig)
-	        hl_full        = hl_orig
-	        hu_full        = hu_orig
-	        xl_full        = xl_orig
-	        xu_full        = xu_orig
- \endverbatim
- *
  * <b>Preprocessing and basis manipulaiton</b>
  *
  * The initial basis selection is the original order (<tt>x_full = [ x_orig; s_orig ]</tt>
- * if <tt>convert_inequ_to_equ == true</tt>) with the variables fixed by bounds being removed,
+ * with the variables fixed by bounds being removed,
  * and assuming there are no dependent equations (<tt>r == m</tt>).
  *
  * The implementations of the Jacobian matrices \c Gc and \c Gh are not determined here and
@@ -216,20 +196,8 @@ public:
 	  * if not picks to first \c r variables as the dependent variables and the last
 	  * <tt>n-r</tt> variables as the independent variables.  Also the default behavior
 	  * is to force the initial point in bounds.
-	  *
-	  * @param  convert_inequ_to_equ
-	  *                 [in] If true, then any original general inequality constraints
-	  *                 will be converted to equalities using slack variables (see above).
 	  */
-	NLPSerialPreprocess(
-		bool  convert_inequ_to_equ  = true
-		);
-
-	///
-	bool convert_inequ_to_equ() const;
-
-	///
-	void set_convert_inequ_to_equ(bool convert_inequ_to_equ);
+	NLPSerialPreprocess();
 
 	///
 	/** Gives the value of a Lagrange multipler for a fixed variable bound
@@ -259,23 +227,16 @@ public:
 	///
 	vec_space_ptr_t space_c() const;
 	///
-	vec_space_ptr_t space_h() const;
-	///
 	size_type num_bounded_x() const;
 	///
 	const Vector& xl() const;
 	///
 	const Vector& xu() const;
 	///
-	const Vector& hl() const;
-	///
-	const Vector& hu() const;
-	///
 	const Vector& xinit() const;
 	///
 	void get_init_lagrange_mult(
 		VectorMutable*   lambda
-		,VectorMutable*  lambdaI
 		,VectorMutable*  nu
 		) const;
 	///
@@ -286,18 +247,31 @@ public:
 	/** Overridden to permute the variables back into an order that is natural to the subclass.
 	  *
 	  * The default implementation of this function is to call the method
-	  * <tt>imp_report_full_final_solution(x_full,lambda_full,lambdaI_full,nu_full)</tt>.
-	  * This function translates from \c x, \c lambda, \c lambdaI and \c nu into the original
+	  * <tt>imp_report_full_final_solution(x_full,lambda_full,nu_full)</tt>.
+	  * This function translates from \c x, \c lambda and \c nu into the original
 	  * order with fixed variables added back to form \c x_full, \c lambda_full, \c lambdaI_full
 	  * and \c nu_full.
 	  */
 	void report_final_solution(
 		const Vector&    x
 		,const Vector*   lambda
-		,const Vector*   lambdaI
 		,const Vector*   nu
-		,bool                  is_optimal
+		,bool            is_optimal
 		) const;
+	///
+	virtual size_type ns() const;
+	///
+	vec_space_ptr_t space_c_hat() const;
+	///
+	vec_space_ptr_t space_h_hat() const;
+	///
+	const Vector& hl_hat() const;
+	///
+	const Vector& hu_hat() const;
+	///
+	const Permutation& P_var() const;
+	///
+	const Permutation& P_equ() const;
 
 	//@}
 
@@ -309,8 +283,6 @@ public:
 	///
 	const perm_fcty_ptr_t factory_P_equ() const;
 	///
-	const perm_fcty_ptr_t factory_P_inequ() const;
-	///
 	Range1D var_dep() const;
 	///
 	Range1D var_indep() const;
@@ -319,26 +291,19 @@ public:
 	///
 	Range1D equ_undecomp() const;
 	///
-	Range1D inequ_decomp() const;
-	///
-	Range1D inequ_undecomp() const;
-	///
 	bool get_next_basis(
 		Permutation*  P_var,   Range1D* var_dep
 		,Permutation* P_equ,   Range1D* equ_decomp
-		,Permutation* P_inequ, Range1D* inequ_decomp
 		);
 	///
 	void set_basis(
 		const Permutation   &P_var,   const Range1D  &var_dep
 		,const Permutation  *P_equ,   const Range1D  *equ_decomp
-		,const Permutation  *P_inequ, const Range1D  *inequ_decomp
 		);
 	///
 	void get_basis(
 		Permutation*  P_var,   Range1D* var_dep
 		,Permutation* P_equ,   Range1D* equ_decomp
-		,Permutation* P_inequ, Range1D* inequ_decomp
 		) const;
 
 	//@}
@@ -350,21 +315,27 @@ protected:
 
 	///
 	void imp_calc_f(
-		const Vector      &x
+		const Vector            &x
 		,bool                   newx
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
 	///
 	void imp_calc_c(
-		const Vector      &x
+		const Vector            &x
 		,bool                   newx
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
 	///
-	void imp_calc_h(
-		const Vector      &x
+	void imp_calc_c_hat(
+		const Vector            &x
 		,bool                   newx
-		,const ZeroOrderInfo    &zero_order_info
+		,const ZeroOrderInfo    &zero_order_info_hat
+		) const;
+	///
+	void imp_calc_h_hat(
+		const Vector            &x
+		,bool                   newx
+		,const ZeroOrderInfo    &zero_order_info_hat
 		) const;
 
 	//@}
@@ -374,7 +345,7 @@ protected:
 
 	///
 	void imp_calc_Gf(
-		const Vector      &x
+		const Vector            &x
 		,bool                   newx
 		,const ObjGradInfo      &obj_grad_info
 		) const;
@@ -527,16 +498,16 @@ protected:
 	/** Calculate the vector for the gradient of the objective in the original NLP.
 	 *
 	 * Note that the dimension of <tt>obj_grad_info.Gf->dim()</tt> is
-	 * <tt>n_orig + ( convert_inequ_to_equ ? mI_orig : 0)</tt>.
+	 * <tt>n_orig + mI_orig</tt>.
 	 *
-	 * On input, if <tt>convert_inequ_to_equ == true && mI_orig > 0</tt>
+	 * On input, if <tt>mI_orig > 0</tt>
 	 * then <tt><tt>(*obj_grad_info.Gf)(n_orig+1,n_orig+mI_orig)</tt> is
 	 * initialized to 0.0 (since slacks do not ordinarily do not appear
 	 * in the objective function).  However, the subclass can assign
 	 * (smooth) contributions for the slacks if desired.
 	 */
 	virtual void imp_calc_Gf_orig(
-		const DVectorSlice            &x_full
+		const DVectorSlice           &x_full
 		,bool                        newx
 		,const ObjGradInfoSerial     &obj_grad_info
 		) const = 0;
@@ -544,10 +515,10 @@ protected:
 	/** Return the next basis selection (default returns \c false).
 	 *
 	 * @param  var_perm_full
-	 *                   [out] (size = <tt>n_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 *                   [out] (size = <tt>n_orig + mI_orig</tt>).
 	 *                   Contains the variable permutations (including slack variables possibly).
 	 * @param  equ_perm_full
-	 *                   [out] (size = <tt>m_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 *                   [out] (size = <tt>m_orig + mI_orig)</tt>).
 	 *                   Contains the constriant permutations (including general inequalities
 	 *                   possibly).
 	 * @param  rank_full
@@ -577,8 +548,7 @@ protected:
 	 * remove the variables fixed by bounds from \c var_perm_full as
 	 * they will be removed by this class as they are translated.  In
 	 * addition, the subclass can also include slack variables in the
-	 * basis (if <tt>convert_inequ_to_equ == true && mI_orig >
-	 * 0>/tt>).  Therefore, a nonsingular basis before fixed variables
+	 * basis (if mI_orig > 0>/tt>).  Therefore, a nonsingular basis before fixed variables
 	 * are removed may not be nonsingular once the fixed variables are
 	 * removed.  During the translation of <tt>var_perm_perm</tt>, the
 	 * variables fixed by bounds are removed by compacting
@@ -624,7 +594,7 @@ protected:
 		,const DVectorSlice     *lambda_orig
 		,const DVectorSlice     *lambdaI_orig
 		,const DVectorSlice     *nu_orig
-		,bool                  optimal
+		,bool                   optimal
 		) const
 	{}
 
@@ -736,9 +706,7 @@ private:
 	// ///////////////////////////
 	// Private data members
 
-	bool                                convert_inequ_to_equ_;
-
-	mutable value_type					f_orig_;    // Filled by subclasses as needed
+	mutable value_type					f_orig_;    // Computed by subclasses
 	mutable DVector						c_orig_;    // ...
 	mutable DVector						h_orig_;    // ...
 	mutable DVector						Gf_full_;   // ...
@@ -790,34 +758,34 @@ private:
 	DVector         xl_full_;
 	DVector         xu_full_;
 	// The full vector (length = n_full_).  This vector may include
-	// slack variables if convert_inequ_to_equ == true and mI_orig > 0:
+	// slack variables if mI_orig > 0:
 	//
-	//    [ x_orig ]           : if convert_inequ_to_equ == false
-	//    [ x_orig; s_orig ]   : if convert_inequ_to_equ == true
+	//    [ x_orig; s_orig ]
 	//
 
 	perm_fcty_ptr_t            factory_P_var_;
 	perm_fcty_ptr_t            factory_P_equ_;
-	perm_fcty_ptr_t            factory_P_inequ_;
 	VectorSpaceSerial          space_x_;
 	VectorSpaceSerial          space_c_;
-	VectorSpaceSerial          space_h_;
-	VectorMutableDense   xinit_; // Initial point of the shrunken NLP
+	VectorSpaceSerial          space_c_hat_;
+	VectorSpaceSerial          space_h_hat_;
 	size_type                  num_bounded_x_;
-	VectorMutableDense   xl_;    // Lower bounds of transformed NLP
-	VectorMutableDense   xu_;    // Uppers bounds of transformed NLP
-	VectorMutableDense   hl_;    // Lower bounds for general inequalities of transformed NLP
-	VectorMutableDense   hu_;    // Uppers bounds for general inequalitiess of transformed NLP
-	size_type    n_orig_;              // Number of variables in the original NLP
-	size_type    m_orig_;              // Number of general equality constraints in the original NLP
-	size_type    mI_orig_;             // Number of general inequality constraints in the original NLP
-	size_type    n_full_;              // Number of variables in the transformed NLP (before fixed variables are removed)
-	size_type    m_full_;              // Number of general equality constraints in the transformed NLP
-	size_type    mI_full_;             // Number of general inequality constraints in the transformed NLP
-	size_type    n_;                   // Number of variables in the transformed NLP (with slacks and not fixed by bounds)
-	size_type    r_;                   // Number of independent equations in the transformed NLP
+	VectorMutableDense         xinit_; // Initial point of the shrunken NLP
+	VectorMutableDense         xl_;    // Lower bounds of transformed NLP
+	VectorMutableDense         xu_;    // Uppers bounds of transformed NLP
+	VectorMutableDense         hl_hat_;// Lower bounds for general inequalities of transformed NLP
+	VectorMutableDense         hu_hat_;// Uppers bounds for general inequalitiess of transformed NLP
+	PermutationSerial          P_var_;
+	PermutationSerial          P_equ_;
+	size_type              n_orig_;  // Number of variables in the original NLP
+	size_type              m_orig_;  // Number of general equality constraints in the original NLP
+	size_type              mI_orig_; // Number of general inequality constraints in the original NLP
+	size_type              n_full_;  // Number of variables in the transformed NLP (before fixed variables are removed)
+	size_type              m_full_;  // Number of general equality constraints in the transformed NLP
+	size_type              n_;       // Number of variables in the transformed NLP (with slacks and not fixed by bounds)
+	size_type              r_;       // Number of independent equations in the transformed NLP
 
-	int          basis_selection_num_; // Number of the basis to select next
+	int                    basis_selection_num_; // Number of the basis to select next
 
 	// ///////////////////////////
 	// Private member functions
@@ -845,14 +813,6 @@ private:
 // //////////////////////////////////////////////////
 // Inline member functions
 
-// public
-
-inline
-bool NLPSerialPreprocess::convert_inequ_to_equ() const
-{
-	return convert_inequ_to_equ_;
-}
-
 // protected
 
 inline
@@ -871,14 +831,20 @@ inline
 const NLPSerialPreprocess::ZeroOrderInfoSerial
 NLPSerialPreprocess::zero_order_orig_info() const
 {
-	return ZeroOrderInfoSerial( &f_orig_, &c_orig_, &h_orig_ );
+	const ZeroOrderInfo zoi = this->zero_order_info();
+	return ZeroOrderInfoSerial(    // Only pass on storage for quantities
+		zoi.f ?  &f_orig_ : NULL   // that have been set by the user.
+		,zoi.c ? &c_orig_ : NULL
+		,zoi.c ? &h_orig_ : NULL
+		);
 }
 
 inline
 const NLPSerialPreprocess::ObjGradInfoSerial
 NLPSerialPreprocess::obj_grad_orig_info() const
 {
-	return ObjGradInfoSerial( &Gf_full_, zero_order_orig_info() );
+	const ObjGradInfo &ogi = this->obj_grad_info();
+	return ObjGradInfoSerial( ogi.Gf ? &Gf_full_ : NULL, zero_order_orig_info() );
 }
 
 inline

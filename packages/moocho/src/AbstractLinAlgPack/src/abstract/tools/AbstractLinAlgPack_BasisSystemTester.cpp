@@ -48,15 +48,13 @@ BasisSystemTester::BasisSystemTester(
 {}
 
 bool BasisSystemTester::test_basis_system(
-	const BasisSystem               &bs
+	const BasisSystem           &bs
 	,const MatrixOp             *Gc
-	,const MatrixOp             *Gh
-	,const MatrixOpNonsing  *C
+	,const MatrixOpNonsing      *C
 	,const MatrixOp             *N_in
 	,const MatrixOp             *D
 	,const MatrixOp             *GcUP
-	,const MatrixOp             *GhUP
-	,std::ostream                   *out
+	,std::ostream               *out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -109,8 +107,6 @@ bool BasisSystemTester::test_basis_system(
 		if(dump_all()) {
 			if(Gc)
 				*out << "\nGc =\n"    << *Gc;
-			if(Gh)
-				*out << "\nGh =\n"    << *Gh;
 			if(C)
 				*out << "\nC =\n"     << *C;
 			if(N_in)
@@ -130,9 +126,7 @@ bool BasisSystemTester::test_basis_system(
 		var_dep          = bs.var_dep(),
 		var_indep        = bs.var_indep(),
 		equ_decomp       = bs.equ_decomp(),
-		equ_undecomp     = bs.equ_undecomp(),
-		inequ_decomp     = bs.inequ_decomp(),
-		inequ_undecomp   = bs.inequ_undecomp();
+		equ_undecomp     = bs.equ_undecomp();
 
 	if( out && print_tests >= PRINT_MORE ) {
 		*out
@@ -140,8 +134,6 @@ bool BasisSystemTester::test_basis_system(
 			<< "\nbs.var_indep( )     = ["<<var_indep.lbound()<<","<<var_indep.ubound()<<"]"
 			<< "\nbs.equ_decomp()     = ["<<equ_decomp.lbound()<<","<<equ_decomp.ubound()<<"]"
 			<< "\nbs.equ_undecomp()   = ["<<equ_undecomp.lbound()<<","<<equ_undecomp.ubound()<<"]"
-			<< "\nbs.inequ_decomp()   = ["<<inequ_decomp.lbound()<<","<<inequ_decomp.ubound()<<"]"
-			<< "\nbs.inequ_undecomp() = ["<<inequ_undecomp.lbound()<<","<<inequ_undecomp.ubound()<<"]"
 			<< std::endl;
 	}
 
@@ -150,8 +142,8 @@ bool BasisSystemTester::test_basis_system(
 	lresult = true;
 
 	if( out && print_tests >= PRINT_MORE )
-		*out << "\n\n1.a) check: var_dep.size() != equ_decomp.size() + inequ_decomp.size() : ";
-	result = var_dep.size() == equ_decomp.size() + inequ_decomp.size();
+		*out << "\n\n1.a) check: var_dep.size() != equ_decomp.size() : ";
+	result = var_dep.size() == equ_decomp.size();
 	if(out && print_tests >= PRINT_MORE)
 		*out << ( result ? "passed" : "failed" );
 	if(!result) lresult = false;
@@ -165,28 +157,10 @@ bool BasisSystemTester::test_basis_system(
 		if(!result) lresult = false;
 	}	
 
-	if(Gh) {
-		if( out && print_tests >= PRINT_MORE )
-			*out << "\n1.c) check: var_dep.size() + var_indep.size() == Gh->rows() : ";
-		result = var_dep.size() + var_indep.size() == Gh->rows();
-		if(out && print_tests >= PRINT_MORE)
-			*out << ( result ? "passed" : "failed" );
-		if(!result) lresult = false;
-	}
-
 	if(Gc) {
 		if( out && print_tests >= PRINT_MORE )
 			*out << "\n1.d) check: equ_decomp.size() + equ_undecomp.size() == Gc->cols() : ";
 		result = equ_decomp.size() + equ_undecomp.size() == Gc->cols();
-		if(out && print_tests >= PRINT_MORE)
-			*out << ( result ? "passed" : "failed" );
-		if(!result) lresult = false;
-	}	
-
-	if(Gh) {
-		if( out && print_tests >= PRINT_MORE )
-			*out << "\n1.e) check: inequ_decomp.size() + inequ_undecomp.size() == Gh->cols() : ";
-		result = inequ_decomp.size() + inequ_undecomp.size() == Gh->cols();
 		if(out && print_tests >= PRINT_MORE)
 			*out << ( result ? "passed" : "failed" );
 		if(!result) lresult = false;
@@ -202,7 +176,7 @@ bool BasisSystemTester::test_basis_system(
 	// Create the N matrix if not input
 	rcp::ref_count_ptr<const AbstractLinAlgPack::MatrixOp>
 		N = rcp::rcp(N_in,false);
-	if( (Gc || Gh) && C && N.get() == NULL ) {
+	if( Gc && C && N.get() == NULL ) {
 		if(out && print_tests >= PRINT_BASIC)
 			*out
 				<< "\nCreating the matrix N since it was not input by the client ...";
@@ -213,8 +187,6 @@ bool BasisSystemTester::test_basis_system(
 			N_comp = rcp::rcp(new AbstractLinAlgPack::MatrixComposite(var_dep.size(),var_indep.size()));
 		if( equ_decomp.size() )
 			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, rcp::null, BLAS_Cpp::trans, var_indep );
-		if( Gh && inequ_decomp.size() )
-			N_comp->add_matrix( equ_decomp.size(), 0, 1.0, inequ_decomp, Gh, rcp::null, BLAS_Cpp::trans, var_indep );
 		N_comp->finish_construction(
 			Gc->space_rows().sub_space(equ_decomp)->clone()
 			,Gc->space_cols().sub_space(var_indep)->clone()
@@ -228,9 +200,6 @@ bool BasisSystemTester::test_basis_system(
 	if( equ_undecomp.size() ) {
 		assert(0); // ToDo: Create matrix objects for Gc(var_dep,equ_undecomp) and Gc(var_indep,equ_undecomp)
 	}
-	if( inequ_undecomp.size() ) {
-		assert(0); // ToDo: Create matrix objects for Gh(var_dep,inequ_undecomp) and Gh(var_indep,inequ_undecomp)
-	}
 
 	//
 	// Perform the tests
@@ -240,7 +209,7 @@ bool BasisSystemTester::test_basis_system(
 
 		if(out && print_tests >= PRINT_BASIC)
 			*out
-				<< "\n2) Check the compatibility of the vector spaces for C, N, D, Gc and Gh ...";
+				<< "\n2) Check the compatibility of the vector spaces for C, N, D and Gc ...";
 		lresult = true;
 
 		if(out && print_tests >= PRINT_MORE)
@@ -286,8 +255,7 @@ bool BasisSystemTester::test_basis_system(
 		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.c) Check consistency of the vector spaces for:"
-				<< "\n    [ Gc'(equ_decomp,  var_dep) ]"
-				<< "\n    [ Gh'(inequ_decomp,var_dep) ] == C";
+				<< "\n    Gc'(equ_decomp,  var_dep) == C";
 		llresult = true;
 		if( equ_decomp.size() ) {
 			if(out && print_tests >= PRINT_ALL)
@@ -303,20 +271,6 @@ bool BasisSystemTester::test_basis_system(
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 		}
-		if( inequ_decomp.size() ) {
-			if(out && print_tests >= PRINT_ALL)
-				*out << "\n2.c.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*C->space_cols().sub_space(inequ_decomp)) == true : ";
-			result = Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*C->space_cols().sub_space(inequ_decomp));
-			if(out && print_tests >= PRINT_ALL)
-				*out << ( result ? "passed" : "failed" );
-			if(!result) llresult = false;
-			if(out && print_tests >= PRINT_ALL)
-				*out << "\n2.c.4) Gh->space_cols().sub_space(var_dep)->is_compatible(C->space_rows()) == true : ";
-			result = Gh->space_cols().sub_space(var_dep)->is_compatible(C->space_rows());
-			if(out && print_tests >= PRINT_ALL)
-				*out << ( result ? "passed" : "failed" );
-			if(!result) llresult = false;
-		}
 		if(out && print_tests >= PRINT_ALL)
 			*out << std::endl;
 		if(!llresult) lresult = false;
@@ -326,8 +280,7 @@ bool BasisSystemTester::test_basis_system(
 		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.d) Check consistency of the vector spaces for:"
-				<< "\n    [ Gc'(equ_decomp,  var_indep) ]"
-				<< "\n    [ Gh'(inequ_decomp,var_indep) ] == N";
+				<< "\n    Gc'(equ_decomp, var_indep) == N";
 		llresult = true;
 		if( equ_decomp.size() ) {
 			if(out && print_tests >= PRINT_ALL)
@@ -339,20 +292,6 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests >= PRINT_ALL)
 				*out << "\n2.d.2) Gc->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true : ";
 			result = Gc->space_cols().sub_space(var_indep)->is_compatible(N->space_rows());
-			if(out && print_tests >= PRINT_ALL)
-				*out << ( result ? "passed" : "failed" );
-			if(!result) llresult = false;
-		}
-		if( inequ_decomp.size() ) {
-			if(out && print_tests >= PRINT_ALL)
-				*out << "\n2.d.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*N->space_cols().sub_space(inequ_decomp)) == true : ";
-			result = Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*N->space_cols().sub_space(inequ_decomp));
-			if(out && print_tests >= PRINT_ALL)
-				*out << ( result ? "passed" : "failed" );
-			if(!result) llresult = false;
-			if(out && print_tests >= PRINT_ALL)
-				*out << "\n2.d.4) Gh->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true : ";
-			result = Gh->space_cols().sub_space(var_indep)->is_compatible(N->space_rows());
 			if(out && print_tests >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
@@ -370,14 +309,14 @@ bool BasisSystemTester::test_basis_system(
 
 		if(out && print_tests >= PRINT_BASIC)
 			*out
-				<< "\n3) Check the compatibility of the matrices C, N, D, Gc and Gh numerically ...";
+				<< "\n3) Check the compatibility of the matrices C, N, D and Gc numerically ...";
 
 		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.a) Check consistency of:"
-				<< "\n                [ Gc'(equ_decomp,  var_dep) Gc'(equ_decomp,  var_indep) ]"
-				<< "\n    op ( alpha* [ Gh'(inequ_decomp,var_dep) Gh'(inequ_decomp,var_indep) ] ) * v"
+				<< "\n                "
+				<< "\n    op ( alpha* [ Gc'(equ_decomp,  var_dep) Gc'(equ_decomp,  var_indep) ] ) * v"
 				<< "\n         \\______________________________________________________________/"
 				<< "\n                                        A"
 				<< "\n    ==  op( alpha*[ C  N ] ) * v"
@@ -387,15 +326,13 @@ bool BasisSystemTester::test_basis_system(
 		{
 
 			VectorSpace::vec_mut_ptr_t
-				Gc_v_x    = ( Gc ? Gc->space_cols().create_member() : rcp::null ),
-				Gc_v_c    = ( Gc ? Gc->space_rows().create_member() : rcp::null ),
-				Gh_v_x    = ( Gh ? Gh->space_cols().create_member() : rcp::null ),
-				Gh_v_h    = ( Gh ? Gh->space_rows().create_member() : rcp::null ),
+				Gc_v_x    = Gc->space_cols().create_member(),
+				Gc_v_c    = Gc->space_rows().create_member(),
 				C_v_xD    = C->space_rows().create_member(),
 				C_v_chD   = C->space_cols().create_member(),
 				N_v_xI    = N->space_rows().create_member(),
 				N_v_chD   = N->space_cols().create_member(),
-				v_x       = ( Gc ? Gc->space_cols().create_member() : Gh->space_cols().create_member() ),
+				v_x       = Gc->space_cols().create_member(),
 				v_x_tmp   = v_x->space().create_member(),
 				v_chD     = C_v_xD->space().create_member(),
 				v_chD_tmp = v_chD->space().create_member();
@@ -417,11 +354,6 @@ bool BasisSystemTester::test_basis_system(
 					V_StMtV( Gc_v_c.get(), alpha, *Gc, trans, *v_x );
 					*v_chD_tmp->sub_view(equ_decomp)
 						= *Gc_v_c->sub_view(equ_decomp);
-				}
-				if(Gh && inequ_decomp.size()) {
-					V_StMtV( Gh_v_h.get(), alpha, *Gh, trans, *v_x );
-					*v_chD_tmp->sub_view(equ_decomp.size() + inequ_decomp)
-						= *Gh_v_h->sub_view(inequ_decomp);
 				}
 				V_StMtV( C_v_chD.get(), alpha, *C, no_trans, *v_x->sub_view(var_dep) );
 				V_StMtV( N_v_chD.get(), alpha, *N, no_trans, *v_x->sub_view(var_indep) );
@@ -454,12 +386,9 @@ bool BasisSystemTester::test_basis_system(
 							<< std::endl;
 					if(calc_err >= error_tol()) {
 						if(dump_all() && print_tests >= PRINT_ALL) {
-							*out << "\nalpha = " << alpha << std::endl;
+							*out << "\nalpha = "             << alpha << std::endl;
 							*out << "\nv_x =\n"              << *v_x;
-							if(Gc_v_c.get() && equ_decomp.size())
-								*out << "\nalpha*Gc*v_x =\n" << *Gc_v_c;
-							if(Gh_v_h.get() && inequ_decomp.size())
-								*out << "\nalpha*Gh*v_x =\n" << *Gh_v_h;
+							*out << "\nalpha*Gc*v_x =\n"     << *Gc_v_c;
 							*out << "A*v =\n"                << *v_chD_tmp;
 							*out << "\nalpha*C*v_x =\n"      << *C_v_chD;
 							*out << "\nalpha*N*v_x =\n"      << *N_v_chD;
@@ -494,13 +423,6 @@ bool BasisSystemTester::test_basis_system(
 						*Gc_v_c->sub_view(equ_undecomp) = 0.0;
 					V_StMtV( Gc_v_x.get(), alpha, *Gc, no_trans, *Gc_v_c );
 					Vp_V( v_x_tmp.get(), *Gc_v_x );
-				}
-				if(Gh && inequ_decomp.size()) {
-					*Gh_v_h->sub_view(inequ_decomp) = *v_chD->sub_view(equ_decomp.size()+inequ_decomp);
-					if(inequ_undecomp.size())
-						*Gh_v_h->sub_view(inequ_undecomp) = 0.0;
-					V_StMtV( Gh_v_x.get(), alpha, *Gh, no_trans, *Gh_v_h );
-					Vp_V( v_x_tmp.get(), *Gh_v_x );
 				}
 				V_StMtV( C_v_xD.get(), alpha, *C, trans, *v_chD );
 				*v_x->sub_view(var_dep) = *C_v_xD;
@@ -540,11 +462,6 @@ bool BasisSystemTester::test_basis_system(
 								*out << "\nGc_v_c =\n"       << *Gc_v_c;
 								*out << "\nalpha*Gc'*[v_chD(equ_decomp); 0] =\n"
 									 << *Gc_v_x;
-							}
-							if(Gh_v_x.get() && inequ_decomp.size()) {
-								*out << "\nGh_v_h =\n"       << *Gh_v_h;
-								*out << "\nalpha*Gh'*[v_chD(equ_decomp.size()+inequ_decomp); 0] =\n"
-									 << *Gh_v_x;
 							}
 							*out << "A'*v =\n"               << *v_x_tmp;
 							*out << "\nalpha*C*v_chD =\n"    << *C_v_xD;
@@ -826,10 +743,6 @@ bool BasisSystemTester::test_basis_system(
 		
 		if( GcUP ) {
 				assert(0); // ToDo: Validate GcUP and the related matrices
-		}
-
-		if( GhUP ) {
-				assert(0); // ToDo: Validate GhUP and the related matrices
 		}
 
 		if(!lresult) success = false;

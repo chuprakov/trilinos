@@ -34,9 +34,9 @@
 #include "update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_first_order(
-	NLPFirstOrder*                          nlp
-	,OptionsFromStreamPack::OptionsFromStream*    options
-	,std::ostream*                                out
+	NLPFirstOrder                                 *nlp
+	,OptionsFromStreamPack::OptionsFromStream     *options
+	,std::ostream                                 *out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -87,19 +87,6 @@ bool NLPInterfacePack::test_nlp_first_order(
 		update_success( result, &success );
 	}
 
-	if( nlp->mI() ) {
-		if(out)
-			*out << "\nTesting nlp->space_h() ...\n";
-		result = vec_space_tester.check_vector_space(*nlp->space_h(),out);
-		if(out) {
-			if(result)
-				*out << "nlp->space_h() checks out!\n";
-			else
-				*out << "nlp->space_h() check failed!\n";
-		}
-		update_success( result, &success );
-	}
-	
 	// Test the NLP interface first!
 
 	NLPTester nlp_tester;
@@ -118,15 +105,12 @@ bool NLPInterfacePack::test_nlp_first_order(
 
 	const size_type
 		n  = nlp->n(),
-		m  = nlp->m(),
-		mI = nlp->mI();
+		m  = nlp->m();
 	VectorSpace::vec_mut_ptr_t
 		c   = m  ? nlp->space_c()->create_member() : rcp::null,
-		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member();
 	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
-		Gc  = m  ? nlp->factory_Gc()->create() : rcp::null,
-		Gh  = mI ? nlp->factory_Gh()->create() : rcp::null;
+		Gc  = m  ? nlp->factory_Gc()->create() : rcp::null;
 
 	if(m) {
 		if(out)
@@ -136,19 +120,11 @@ bool NLPInterfacePack::test_nlp_first_order(
 		if(nlp_tester.print_all())
 			*out << "\nGc =\n" << *Gc;
 	}
-	if(mI) {
-		if(out)
-			*out << "\nCalling nlp->calc_Gh(...) at nlp->xinit() ...\n";
-		nlp->set_Gh( Gh.get() );
-		nlp->calc_Gh( nlp->xinit(), m == 0 );
-		if(nlp_tester.print_all())
-			*out << "\nGh =\n" << *Gh;
-	}
 
 	if(out)
 		*out << "\nCalling nlp->calc_Gf(...) at nlp->xinit() ...\n";
 	nlp->set_Gf( Gf.get() );
-	nlp->calc_Gf( nlp->xinit(), m == 0 && mI == 0 );
+	nlp->calc_Gf( nlp->xinit(), m == 0 );
 	if(nlp_tester.print_all())
 		*out << "\nGf =\n" << *Gf;
 
@@ -170,7 +146,7 @@ bool NLPInterfacePack::test_nlp_first_order(
 		nlp, nlp->xinit()
 		,nlp->num_bounded_x() ? &nlp->xl() : NULL
 		,nlp->num_bounded_x() ? &nlp->xu() : NULL
-		,Gc.get(), Gh.get(), Gf.get()
+		,Gc.get(), Gf.get()
 		,print_all_warnings, out
 		);
 	update_success( result, &success );

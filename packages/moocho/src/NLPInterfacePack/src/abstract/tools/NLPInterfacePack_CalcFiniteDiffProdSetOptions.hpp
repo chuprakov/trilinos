@@ -45,7 +45,6 @@ namespace NLPInterfacePack {
  *    fd_step_size_min = -1.0; *** (default)
  *    fd_step_size_f = -1.0; *** (default)
  *    fd_step_size_c = -1.0; *** (default)
- *    fd_step_size_h = -1.0; *** (default)
  }
  \endverbatim
  */

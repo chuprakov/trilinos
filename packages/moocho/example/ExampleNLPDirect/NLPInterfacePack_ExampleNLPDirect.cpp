@@ -136,18 +136,15 @@ ExampleNLPDirect::factory_D() const
 
 void ExampleNLPDirect::calc_point(
 	const Vector     &x
-	,value_type            *f
+	,value_type      *f
 	,VectorMutable   *c
-	,bool                  recalc_c
-	,VectorMutable   *h
+	,bool            recalc_c
 	,VectorMutable   *Gf
 	,VectorMutable   *py
 	,VectorMutable   *rGf
-	,MatrixOp          *GcU
-	,MatrixOp          *Gh
-	,MatrixOp          *D
-	,MatrixOp          *V
-	,MatrixOp          *P
+	,MatrixOp        *GcU
+	,MatrixOp        *D
+	,MatrixOp        *Uz
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -170,9 +167,6 @@ void ExampleNLPDirect::calc_point(
 		c && !this->space_c()->is_compatible(c->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error c is not compatible" );
 	THROW_EXCEPTION(
-		h, std::invalid_argument
-		,"ExampleNLPDirect::calc_point(...), Error, there are no inequalities h(x)" );
-	THROW_EXCEPTION(
 		Gf && !this->space_x()->is_compatible(Gf->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, Gf is not compatible" );
 	THROW_EXCEPTION(
@@ -185,17 +179,8 @@ void ExampleNLPDirect::calc_point(
 		GcU, std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
 	THROW_EXCEPTION(
-		Gh, std::invalid_argument
-		,"ExampleNLPDirect::calc_point(...), Error, there are no inequalities h(x)" );
-	THROW_EXCEPTION(
 		D && !dynamic_cast<MatrixSymDiagStd*>(D), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, D is not compatible" );
-	THROW_EXCEPTION(
-		V, std::invalid_argument
-		,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
-	THROW_EXCEPTION(
-		P, std::invalid_argument
-		,"ExampleNLPDirect::calc_point(...), Error, there are no general inequalities h(x)" );
 	THROW_EXCEPTION(
 		py!=NULL && c==NULL, std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...) : "
@@ -309,21 +294,13 @@ void ExampleNLPDirect::calc_point(
 void ExampleNLPDirect::calc_semi_newton_step(
 	const Vector    &x
 	,VectorMutable  *c
-	,bool                 recalc_c
+	,bool           recalc_c
 	,VectorMutable  *py
 	) const
 {
 	// In this case just call calc_point(...).
 	// In a more specialized application, this could be much cheaper!
-	calc_point(x,NULL,c,recalc_c,NULL,NULL,py,NULL,NULL,NULL,NULL,NULL,NULL);
-}
-
-// Overriden protected members for NLP
-
-void ExampleNLPDirect::imp_calc_h(
-	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
-{
-	assert(0); // Should never be called!
+	calc_point(x,NULL,c,recalc_c,NULL,py,NULL,NULL,NULL,NULL);
 }
 
 }	// end namespace NLPInterfacePack

@@ -40,8 +40,6 @@ namespace ConstrainedOptPack {
 
   Uz  = F + E * D
 
-  Vz  = Gh(var_indep,:)' + Gh(var_dep,:)'*D
-
       where:
            C = Gc(var_dep,equ_decomp)'     [nonsingular]
            N = Gc(var_indep,equ_decomp)'
@@ -51,7 +49,7 @@ namespace ConstrainedOptPack {
  \endverbatim
  *
  * Above, \a C is a <tt>r x r</tt> nonsingular matrix.  Subclasses define
- * how \c Y is defined which in turn determines how \c R, \c Uy and \c Vy are
+ * how \c Y is defined which in turn determines how \c R and \c Uy are
  * defined.
  *
  * The implementation of this subclass is completly determined by an aggregate
@@ -60,8 +58,8 @@ namespace ConstrainedOptPack {
  *
  * <b>Subclass implementors notes:</b>
  *
- * It is up to subclasses to override \c factory_R(), \c factory_Uy() and
- * \c factory_Vy() in order to define the types for \c R, \c Uy and \c Vy
+ * It is up to subclasses to override \c factory_R() and \c factory_Uy()
+ * in order to define the types for \c R and \c Uy
  * respectively.
  *
  * ToDo: Finish documentation!
@@ -101,12 +99,10 @@ public:
 	DecompositionSystemVarReductImp(
 		const VectorSpace::space_ptr_t     &space_x
 		,const VectorSpace::space_ptr_t    &space_c
-		,const VectorSpace::space_ptr_t    &space_h
 		,const basis_sys_ptr_t             &basis_sys
 		,const basis_sys_tester_ptr_t      &basis_sys_tester
 		,EExplicitImplicit                 D_imp
 		,EExplicitImplicit                 Uz_imp
-		,EExplicitImplicit                 Vz_imp
 		);
 
 	//@}
@@ -118,8 +114,6 @@ public:
 	 *             [in] DVector space for variables \c x.
 	 * @param  space_c
 	 *             [in] DVector space for general equalities \c c.
-	 * @param  space_h
-	 *             [in] DVector space for general inequalities \c h.
 	 * @param  basis_sys
 	 *             [in] The <tt>BasisSystem</tt> object that defines the
 	 *             variable reduction that the decomposition is based on.
@@ -140,7 +134,6 @@ public:
 	void initialize(
 		const VectorSpace::space_ptr_t     &space_x
 		,const VectorSpace::space_ptr_t    &space_c
-		,const VectorSpace::space_ptr_t    &space_h
 		,const basis_sys_ptr_t             &basis_sys
 		);
 
@@ -151,8 +144,6 @@ public:
 	const VectorSpace::space_ptr_t& space_x() const;
 	///
 	const VectorSpace::space_ptr_t& space_c() const;
-	///
-	const VectorSpace::space_ptr_t& space_h() const;
 	///
 	const basis_sys_ptr_t& basis_sys() const;
 
@@ -174,12 +165,6 @@ public:
 	 *               and it is expected that the client will initialize it properly before
 	 *               the next call to \c this->set_basis_matrices().
 	 * @param  Uy    [in/out] On output, \c Uy will have all references to \c C and \c D removed.
-	 * @param  Yz    [in/out] If <tt>this->Vz_imp() == MAT_IMP_IMPLICIT</tt> then on output,
-	 *               \c Vz will have all references to \c C and \c D removed.  If
-	 *               <tt>this->Vz_imp() == MAT_IMP_EXPLICIT</tt> then \c Vz will be unaltered
-	 *               and it is expected that the client will initialize it properly before
-	 *               the next call to \c this->set_basis_matrices().
-	 * @param  Vy    [in/out] On output, \c Vy will have all references to \c C and \c D removed.
 	 * @param  C_ptr [out] On output, <tt>C_ptr->get() != NULL</tt> will point to the basis matrix to
 	 *               be updated by the client before the next call to \c this->set_basis_matrices().
 	 *               It is guarrenteed that \c *C_ptr->get() will not be referenced by any other entity
@@ -205,17 +190,15 @@ public:
 	 * </ul>
 	 */
 	void get_basis_matrices(
-		std::ostream                                          *out
-		,EOutputLevel                                         olevel
-		,ERunTests                                            test_what
+		std::ostream                                      *out
+		,EOutputLevel                                     olevel
+		,ERunTests                                        test_what
 		,MatrixOp                                         *Z
 		,MatrixOp                                         *Y
-		,MatrixOpNonsing                              *R
+		,MatrixOpNonsing                                  *R
 		,MatrixOp                                         *Uz
 		,MatrixOp                                         *Uy
-		,MatrixOp                                         *Vz
-		,MatrixOp                                         *Vy
-		,MemMngPack::ref_count_ptr<MatrixOpNonsing>   *C_ptr
+		,MemMngPack::ref_count_ptr<MatrixOpNonsing>       *C_ptr
 		,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
 		);
 
@@ -234,10 +217,6 @@ public:
 	 *                projected sensitivity matrix \c Uz which must be updated for the current
 	 *                basis for the current Jacobian matrices.  If <tt>this->Uz_imp() == MAT_IMP_IMPLICIT</tt>
 	 *                then \c Uz must be \c NULL.
-	 * @param  Vz     [in] If <tt>this->D_imp() == MAT_IMP_EXPLICIT</tt>, then \c Vz points to the
-	 *                projected sensitivity matrix \c Vz which must be updated for the current
-	 *                basis for the current Jacobian matrices.  If <tt>this->Vz_imp() == MAT_IMP_IMPLICIT</tt>
-	 *                then \c Vz must be \c NULL.
 	 * @param  basis_sys
 	 *                [in] If the basis system has changed then set <tt>basis_sys.get() != NULL</tt> to
 	 *                pass in this new basis system object.
@@ -253,14 +232,13 @@ public:
 	 * will be called to update the rest of the decomposition matrices for these basis matrices.
 	 */
 	void set_basis_matrices(
-		std::ostream                                               *out
-		,EOutputLevel                                              olevel
-		,ERunTests                                                 test_what
+		std::ostream                                       *out
+		,EOutputLevel                                      olevel
+		,ERunTests                                         test_what
 		,const MemMngPack::ref_count_ptr<MatrixOpNonsing>  &C_ptr
-		,const MemMngPack::ref_count_ptr<MatrixOp>             &D_ptr
-		,MatrixOp                                              *Uz
-		,MatrixOp                                              *Vz
-		,const basis_sys_ptr_t                                     &basis_sys   = MemMngPack::null
+		,const MemMngPack::ref_count_ptr<MatrixOp>         &D_ptr
+		,MatrixOp                                          *Uz
+		,const basis_sys_ptr_t                             &basis_sys   = MemMngPack::null
 		);
 
 	/// Get the type of D matrix to be used or is being used (returns MAT_IMP_EXPLICIT or MAT_IMP_IMPLICIT only).
@@ -286,31 +264,25 @@ public:
 	///
 	const mat_fcty_ptr_t factory_Uz() const;
 	///
-	const mat_fcty_ptr_t factory_Vz() const;
-	///
 	/**
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->space_x().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> <tt>this->space_c().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> [<tt>Gh != NULL</tt>] <tt>this->space_h().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> [<tt>test_what == TEST</tt>] <tt>this->basis_sys_tester().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * </ul>
 	 */
 	void update_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
+		std::ostream          *out
+		,EOutputLevel         olevel
+		,ERunTests            test_what
 		,const MatrixOp       &Gc
-		,const MatrixOp       *Gh
 		,MatrixOp             *Z
 		,MatrixOp             *Y
-		,MatrixOpNonsing  *R
+		,MatrixOpNonsing      *R
 		,MatrixOp             *Uz
 		,MatrixOp             *Uy
-		,MatrixOp             *Vz
-		,MatrixOp             *Vy
-		,EMatRelations            mat_rel
+		,EMatRelations        mat_rel
 		) const;
 	///
 	void print_update_decomp(
@@ -334,7 +306,7 @@ protected:
 	virtual void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
 
 	///
-	/** Overridden by subclasses to uninitialized Y, R, Uy and Vy and return C if referenced.
+	/** Overridden by subclasses to uninitialized Y, R and Uy then return C if referenced.
 	 *
 	 * Note that the returned smart pointer to \c C may have <tt>return.has_ownership() == false</tt>
 	 * in which case this will not be a shared resource with any other object (at least not
@@ -343,16 +315,15 @@ protected:
 	 * ToDo: Finish documentatation!
 `	 */
 	virtual	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
-		std::ostream                             *out
-		,EOutputLevel                            olevel
-		,MatrixOp                            *Y
+		std::ostream                     *out
+		,EOutputLevel                    olevel
+		,MatrixOp                        *Y
 		,MatrixOpNonsing                 *R
-		,MatrixOp                            *Uy
-		,MatrixOp                            *Vy
+		,MatrixOp                        *Uy
 		) const = 0;
 
 	///
-	/** Overridden by subclasses to initialize Y, R, Uy and Vy given C and D.
+	/** Overridden by subclasses to initialize Y, R and Uy given C and D.
 	 *
  	 * If C_ptr.has_ownership() == false, then the subclass implementation of this
 	 * method will use clone_mwons() to clone it so that the output matrices are
@@ -365,10 +336,9 @@ protected:
 		,EOutputLevel                                          olevel
 		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C_ptr
 		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D_ptr
-		,MatrixOp                                          *Y
-		,MatrixOpNonsing                               *R
-		,MatrixOp                                          *Uy
-		,MatrixOp                                          *Vy
+		,MatrixOp                                              *Y
+		,MatrixOpNonsing                                       *R
+		,MatrixOp                                              *Uy
 		,EMatRelations                                         mat_rel
 		) const = 0;
 
@@ -389,14 +359,12 @@ private:
 	AbstractLinAlgPack::BasisSystem       *basis_sys;
 	VectorSpace                           *space_x;
 	VectorSpace                           *space_c;
-	VectorSpace                           *space_h;
 	VectorSpace                           *space_range;
 	VectorSpace                           *space_null;
 #else
 	basis_sys_ptr_t                       basis_sys_;
 	VectorSpace::space_ptr_t              space_x_;
 	VectorSpace::space_ptr_t              space_c_;
-	VectorSpace::space_ptr_t              space_h_;
 	VectorSpace::space_ptr_t              space_range_;
 	VectorSpace::space_ptr_t              space_null_;
 	mutable MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr_;
@@ -434,13 +402,6 @@ const VectorSpace::space_ptr_t&
 DecompositionSystemVarReductImp::space_c() const
 {
 	return space_c_;
-}
-
-inline
-const VectorSpace::space_ptr_t&
-DecompositionSystemVarReductImp::space_h() const
-{
-	return space_h_;
 }
 
 inline

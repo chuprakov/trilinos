@@ -109,7 +109,7 @@ namespace AbstractLinAlgPack {
  * The ranges of the dependent and independent variables, and decomposed and undecomposed
  * equality constriants are returned  * by the methods \c var_dep(), \c var_indep(),
  * \c equ_decomp() and\c equ_undecomp() respectively.  There are a few obvious assertions
- * for the values that these ranges can take on.  Assuming that \c Gc and \c Gh are non-null
+ * for the values that these ranges can take on.  Assuming that \c Gc is non-null
  * when passed to \c update_basis(), the following assertions apply:
  *
  * <A NAME="ranges_assertions"></A>
@@ -205,10 +205,10 @@ public:
 		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
 		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
@@ -267,14 +267,6 @@ public:
 	 * accept a \c GcUP matrix to be computed.
 	 */
 	virtual const mat_fcty_ptr_t factory_GcUP() const;
-
-	///
-	/** Return a matrix factory object for auxiliary sensitivity matrix <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)'*D</tt>.
-	 *
-	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
-	 * accept a \c GhUP matrix to be computed.
-	 */
-	virtual const mat_fcty_ptr_t factory_GhUP() const;
 
 	///
 	/** Returns a matrix factory for the result of <tt>J = D'*D</tt>
@@ -345,24 +337,6 @@ public:
 	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
 	virtual Range1D equ_undecomp() const;
-	///
-	/** Range for decomposed general inequality constraints.
-	 *
-	 * If there are no decomposed general inequality constriants then
-	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
-	 *
-	 * The default implementation return <tt>Range1D::Invalid</tt>
-	 */
-	virtual Range1D inequ_decomp() const;
-	///
-	/** Range for undecomposed general inequality constraints.
-	 *
-	 * If there are no undecomposed general inequality constriants then
-	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
-	 *
-	 * The default implementation return <tt>Range1D::Invalid</tt>
-	 */
-	virtual Range1D inequ_undecomp() const;
 
 	//@}
 
@@ -374,7 +348,6 @@ public:
 	 * set of Jacobian matrices.
 	 *
 	 * @param  Gc    [in] Jacobian of the equality constriants.
-	 * @param  Gh    [in] Jacobian of the inequality constraints.
 	 * @param  C     [out] Basis matrix.  If <tt>C == NULL</tt> on input, then this
 	 *               quantity is not updated.  If <tt>C != NULL</tt> then this must
 	 *               have been created by <tt>this->factory_C()->create()</tt>.
@@ -402,16 +375,6 @@ public:
 	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
 	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
 	 *               and/or \c D without affecting the behavior of the matrix object \c GcUP.
-	 * @param  GhUP  [out] Auxiliary sensistivity matrix
-	 *               <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)'*D</tt>.
-	 *               If <tt>GhUP == NULL</tt> on input then this quantity is not updated.
-	 *               If <tt>GhUP != NULL</tt> then this must have been created by
-	 *               <tt>this->factory_GhUP()->create()</tt>.  This matrix object
-	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
-	 *               on return.
-	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
-	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
-	 *               and/or \c D without affecting the behavior of the matrix object \c GhUP.
 	 * @param mat_rel
 	 *               [in] Determines if the matrix objects must be completely independent or not.
 	 *               <ul>
@@ -434,13 +397,7 @@ public:
 	 *      <tt>Gc.space_rows().sub_space(equ_decomp()).get() != NULL</tt>
 	 * <li> [<tt>Gc != NULL && equ_undecomp().size() > 0 </tt>]
 	 *      <tt>Gc.space_rows().sub_space(equ_undecomp()).get() != NULL</tt>
-	 * <li> [<tt>Gh != NULL && inequ_decomp().size() > 0</tt>]
-	 *      <tt>Gh->space_rows().sub_space(inequ_decomp()).get() != NULL</tt>
-	 * <li> [<tt>Gh != NULL && inequ_undecomp().size() > 0</tt>]
-	 *      <tt>Gh->space_rows().sub_space(inequ_undecomp()).get() != NULL</tt>
-	 * <li> [<tt>Gc == NULL || equ_undecomp().size() == 0</tt>] <tt>GcUP == NULL</tt>
-	 * <li> [<tt>Gh == NULL || inequ_undecomp().size() == 0</tt>] <tt>GhUP == NULL</tt>
-	 * <li> <tt>C != NULL || D != NULL || GcUP != NULL || GhUP != NULL</tt>
+	 * <li> <tt>C != NULL || D != NULL || GcUP != NULL</tt>
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -460,23 +417,18 @@ public:
 	 * <li> [<tt>GcUP != NULL && var_indep().size() > 0 && equ_undecomp().size() > 0</tt>]
 	 *      <tt>GcUP->space_rows()->is_compatible(Gc->space_cols().sub_space(var_indep()))
 	 *      && GcUP->space_cols()->is_compatible(Gc->space_rows().sub_space(equ_undecomp()))</tt>
-	 * <li> [<tt>GhUP != NULL && var_indep().size() > 0 && inequ_undecomp().size() > 0</tt>]
-	 *      <tt>GhUP->space_rows()->is_compatible(Gh->space_cols().sub_space(var_indep()))
-	 *      && GhUP->space_cols()->is_compatible(Gh->space_rows().sub_space(inequ_undecomp()))</tt>
 	 * </ul>
 	 *
 	 * This method with throw a \c SingularBasis exception if the updated basis matrix \a C is too close
 	 * (as defined by the underlying implementation by some means) to being numerically singular.
 	 */
 	virtual void update_basis(
-		const MatrixOp*         Gc
-		,const MatrixOp*        Gh
-		,MatrixOpNonsing*   C
-		,MatrixOp*              D
-		,MatrixOp*              GcUP
-		,MatrixOp*              GhUP
-		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
-		,std::ostream               *out    = NULL
+		const MatrixOp          *Gc
+		,MatrixOpNonsing        *C
+		,MatrixOp               *D
+		,MatrixOp               *GcUP
+		,EMatRelations          mat_rel = MATRICES_INDEP_IMPS
+		,std::ostream           *out    = NULL
 		) const = 0;
 
 	//@}

@@ -70,7 +70,6 @@ bool CheckConvergenceStd_Strategy::Converged(
 	const size_type
 		n  = nlp.n(),
 		m  = nlp.m(),
-		mI = nlp.mI(),
 		nb = nlp.num_bounded_x();
 
 	// Get the iteration quantities
@@ -84,11 +83,9 @@ bool CheckConvergenceStd_Strategy::Converged(
 		&d_iq       = s.d(),
 		&Gf_iq      = s.Gf(),
 		*c_iq       = m  ? &s.c() : NULL,
-		*h_iq       = mI ? &s.h() : NULL,
 		&rGL_iq     = s.rGL(),
 		&GL_iq      = s.GL(),
 		*lambda_iq  = m  ? &s.lambda()  : NULL,
-		*lambdaI_iq = mI ? &s.lambdaI() : NULL,
 		&nu_iq      = s.nu();
 
 	// opt_err = (||rGL||inf or ||GL||) / (||Gf|| + scale_kkt_factor)
@@ -104,9 +101,9 @@ bool CheckConvergenceStd_Strategy::Converged(
 
 	// NOTE:
 	// The strategy object CheckConvergenceIP_Strategy assumes
-	//  that this will always be the gradient of the lagrangian
-	//  of the original problem, not the gradient of the lagrangian
-	//  for psi. (don't use augmented nlp info here)
+	// that this will always be the gradient of the lagrangian
+	// of the original problem, not the gradient of the lagrangian
+	// for psi. (don't use augmented nlp info here)
 	if( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ) 
 		{
 		assert_print_nan_inf( norm_inf_GLrGL_k = rGL_iq.get_k(0).norm_inf(),
