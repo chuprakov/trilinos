@@ -48,6 +48,11 @@ template<class Scalar>
 class MPIMultiVectorStd : virtual public MPIMultiVectorBase<Scalar> {
 public:
 
+  ///
+  using MultiVector<Scalar>::subView;
+  ///
+  using MultiVector<Scalar>::col;
+
   /** @name Constructors/initializers/accessors */
   //@{
 

@@ -51,6 +51,9 @@ template<class Scalar>
 class ProductVector : virtual public ProductVectorBase<Scalar> {
 public:
 
+	///
+	using MultiVector<Scalar>::applyOp;
+
 	/** @name Constructors/initializers/accessors */
 	//@{
 

@@ -52,6 +52,9 @@ template<class Scalar>
 class VectorMultiVector : virtual public Vector<Scalar> {
 public:
 
+  ///
+  using Vector<Scalar>::col;
+
 	/** @name Constructors/initializers/accessors */
 	//@{
 

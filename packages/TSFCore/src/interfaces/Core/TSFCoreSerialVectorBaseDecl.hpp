@@ -51,6 +51,9 @@ class SerialVectorBase : virtual public Vector<Scalar> {
 public:
 
 	///
+	using MultiVector<Scalar>::applyOp;
+
+	///
 	SerialVectorBase();
 
 	/** @name Overridden from Vector */

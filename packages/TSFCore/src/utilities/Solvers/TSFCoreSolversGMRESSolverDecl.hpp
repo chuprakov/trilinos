@@ -54,6 +54,9 @@ template<class Scalar>
 class GMRESSolver : virtual public IterativeLinearSolver<Scalar> {
 public:
 
+  ///
+  using IterativeLinearSolver<Scalar>::solve;
+
 	///
 	typedef typename Teuchos::ScalarTraits<Scalar>::magnitudeType ScalarMagnitude;
 
