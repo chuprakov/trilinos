@@ -74,7 +74,8 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 void QuasiRangeSpaceStepTailoredApproach_Strategy::print_step( std::ostream& out, const std::string& L ) const
 {
 	out << L << "*** Compute the approximate range space step by calling on the \"Tailored Approach\" NLP interface:\n"
-		<< L << "ToDo: Finish documentation!\n"
+		<< L << "Compute vy s.t. ||Gc_k'*Y_k*vy + c_xo|| << ||c_xo|| (nlp.calc_semi_newton_step(...))\n"
+		<< L << "update vy and compute v = Yvy from EvalNewPointTailoredApproach_Step::recalc_py_Ypy(...)\n";
 		;
 }
 

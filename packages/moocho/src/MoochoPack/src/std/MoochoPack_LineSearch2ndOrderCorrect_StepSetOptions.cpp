@@ -13,13 +13,15 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 6;
+	const int local_num_options = 8;
 
 	enum local_EOptions {
 	    NEWTON_OLEVEL,
 		CONSTR_NORM_THRESHOLD,
+		CONSTR_INCR_RATIO,
 		AFTER_K_ITER,
 		FORCED_CONSTR_REDUCTION,
+		FORCED_REDUCT_RATIO,
 		MAX_STEP_RATIO,
 		MAX_NEWTON_ITER
 	};
@@ -27,8 +29,10 @@ namespace {
 	const char* local_SOptions[local_num_options]	= {
 	    "newton_olevel",
 		"constr_norm_threshold",
+		"constr_incr_ratio",
 		"after_k_iter",
 		"forced_constr_reduction",
+		"forced_reduct_ratio",
 		"max_step_ratio",
 		"max_newton_iter"
 	};
@@ -54,7 +58,9 @@ void LineSearch2ndOrderCorrect_StepSetOptions::set_option(
 	    case NEWTON_OLEVEL:
 		{
 			const std::string &option = option_value.c_str();
-			if( option == "PRINT_NOTHING" )
+			if( option == "PRINT_USE_DEFAULT" )
+				target().newton_olevel( target_t::PRINT_USE_DEFAULT );
+			else if( option == "PRINT_NOTHING" )
 				target().newton_olevel( target_t::PRINT_NEWTON_NOTHING );
 			else if( option == "PRINT_SUMMARY_INFO" )
 				target().newton_olevel( target_t::PRINT_NEWTON_SUMMARY_INFO );
@@ -69,6 +75,9 @@ void LineSearch2ndOrderCorrect_StepSetOptions::set_option(
 		}
 	    case CONSTR_NORM_THRESHOLD:
 			target().constr_norm_threshold(::fabs(::atof(option_value.c_str())));
+			break;
+	    case CONSTR_INCR_RATIO:
+			target().constr_incr_ratio(::fabs(::atof(option_value.c_str())));
 			break;
 		case AFTER_K_ITER:
 			target().after_k_iter(::abs(::atoi(option_value.c_str())));
@@ -85,6 +94,9 @@ void LineSearch2ndOrderCorrect_StepSetOptions::set_option(
 					"\"forced_constr_reduction\"." );
 			break;
 		}
+	    case FORCED_REDUCT_RATIO:
+			target().forced_reduct_ratio(::fabs(::atof(option_value.c_str())));
+			break;
 		case MAX_STEP_RATIO:
 			target().max_step_ratio(::fabs(::atof(option_value.c_str())));
 			break;

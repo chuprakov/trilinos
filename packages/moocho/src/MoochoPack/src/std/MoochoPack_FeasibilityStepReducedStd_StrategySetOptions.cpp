@@ -57,7 +57,7 @@ void FeasibilityStepReducedStd_StrategySetOptions::set_option(
 				throw std::invalid_argument( "Error, incorrect value for "
 					"\"qp_objective\".  Only the options "
 					"OBJ_MIN_FULL_STEP, OBJ_MIN_NULL_SPACE_STEP, and  OBJ_RSQP"
-					"are available" );
+					" are available" );
 			break;
 		}
 	    case QP_TESTING:

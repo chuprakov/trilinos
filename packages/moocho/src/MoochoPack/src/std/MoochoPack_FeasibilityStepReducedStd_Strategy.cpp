@@ -9,6 +9,7 @@
 #include "ConstrainedOptimizationPack/include/ZVarReductMatrix.h"
 #include "ConstrainedOptimizationPack/include/QPSolverStats.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymIdentity.h"
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/MatrixFactorized.h"
 #include "SparseLinAlgPack/include/sparse_bounds.h"
@@ -141,7 +142,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		if( qp_objective() != OBJ_RSQP )
 			grad_store_.resize(n-r);
 		if( qp_objective() == OBJ_MIN_FULL_STEP )
-			Hess_store_.resize(n-r,n-r);
+			Hess_store_.resize(n-r+1,n-r+1);
 	}
 	VectorSlice grad;
 	switch(qp_objective())
@@ -149,8 +150,29 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	    case OBJ_MIN_FULL_STEP: // grad = (Z'*Ywy), Hess = Z'*Z
 		{
 			grad.bind( grad_store_() );
-			LinAlgOpPack::V_MtV( &grad, Z_k, BLAS_Cpp::trans, Ywy );
-			assert(0); // ToDo: Need to implement initialization of Hess_store = Z'*Z (add to MatrixWithOp?)
+			if( current_k_ != s->k() ) {
+				// grad = (Z'*Ywy)
+				LinAlgOpPack::V_MtV( &grad, Z_k, BLAS_Cpp::trans, Ywy );
+				// Hess = Z'*Z
+				sym_gms S(Hess_store_(2,n-r+1,1,n-r),BLAS_Cpp::lower); // Must be strictly lower triangular here!
+				Z_k.syrk( BLAS_Cpp::trans, 1.0, 0.0, &S ); // S = 1.0*Z'*Z + 0.0*S
+				MatrixSymPosDefCholFactor
+					*H_ptr = NULL;
+				if( Hess_ptr_.get() == NULL || dynamic_cast<const MatrixSymPosDefCholFactor*>(Hess_ptr_.get()) == NULL )
+					Hess_ptr_ = new MatrixSymPosDefCholFactor;
+				H_ptr = const_cast<MatrixSymPosDefCholFactor*>(dynamic_cast<const MatrixSymPosDefCholFactor*>(Hess_ptr_.get()));
+				assert(H_ptr); // Should not be null!
+				H_ptr->init_setup(
+					&Hess_store_()  // The original matrix is stored in the lower triangular part (below diagonal)!
+					,NULL           // Nothing to deallocate
+					,n-r
+					,true           // maintain the original factor
+					,false          // don't maintain the factor
+					,true           // allow the factor to be computed if needed
+					,true           // Set the view
+					,1.0            // Scale the matrix by one
+					);
+			}
 			break;
 		}
 	    case OBJ_MIN_NULL_SPACE_STEP: // grad = 0, Hess = I
@@ -171,7 +193,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	    case OBJ_RSQP: // grad = qp_grad, Hess = rHL_k
 		{
 			grad.bind( s->qp_grad().get_k(0)() );
-			Hess_ptr_ = Hess_ptr_t( &s->rHL().get_k(0), false );
+			Hess_ptr_ = Hess_ptr_t( &s->rHL().get_k(0), false ); // don't delete memory!
 			break;
 		}
 	    defaut:
@@ -259,9 +281,9 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 			dep		= Zvr ? Zvr->dep()   : Range1D();
 
 		const bool
-			use_simple_pz_bounds = ( Zvr!=NULL && norm_inf(Ywy(indep))==0.0 );
+			use_simple_wz_bounds = ( Zvr!=NULL && norm_inf(Ywy(indep))==0.0 );
 
-		if( use_simple_pz_bounds ) {
+		if( use_simple_wz_bounds ) {
 
 			// Set simple bound constraints on pz
 			qp_dL.bind( bl(indep) );
@@ -388,7 +410,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		//
 		// Set the solution
 		//
-		if( use_simple_pz_bounds ) {
+		if( use_simple_wz_bounds ) {
 			// Set Zwz
 			Zwz(dep)   = _Dwz;
 			Zwz(indep) = wz;
@@ -430,7 +452,8 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		if(  static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out << omsg.str();
 		}
-		throw InfeasibleConstraints(omsg.str());
+		throw_qp_failure = true;
+//		throw InfeasibleConstraints(omsg.str());
 	}
 
 	//
@@ -448,6 +471,8 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		out << "\nw = \n" << *w;
 	}
 
+	current_k_ = s->k();
+
 	if( throw_qp_failure )
 		return false;
 	return true;
@@ -455,8 +480,104 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 
 void FeasibilityStepReducedStd_Strategy::print_step( std::ostream& out, const std::string& L ) const
 {
-	out << L << "*** Computes the step by solving range and null space problems\n"
-		<< L << "*** ToDo: Finish documentation!\n";
+	out << L << "*** Computes feasibility steps by solving a constrained QP using the range and null\n"
+		<< L << "*** space decomposition\n"
+		<< L << "begin quais-range space step: \"" << typeid(quasi_range_space_step()).name() << "\"\n";
+
+ 	quasi_range_space_step().print_step( out, L + "  " );
+
+	out << L << "end quasi-range space step\n"
+		<< L << "if quasi-range space step failed then\n"
+		<< L << "  this feasibility step fails also!\n"
+		<< L << "end\n"
+		<< L << "Ywy = v\n"
+		<< L << "*** Set the bounds for bl <= Z*wz <= bu\n"
+		<< L << "bl = d_bounds_k.l - (xo - x_k) - Ywy\n"
+		<< L << "bu = d_bounds_k.u - (xo - x_k) - Ywy\n"
+		<< L << "Set bl(i) = bu(i) for those nu_k(i) != 0.0\n"
+		<< L << "if (qp_objective == OBJ_MIN_FULL_STEP) and (current_k != k) then\n"
+		<< L << "  grad = Z_k'*Ywy\n"
+		<< L << "  Hess = Z_k'*Z_k\n"
+		<< L << "elseif (qp_objective == OBJ_MIN_NULL_SPACE_STEP) and (current_k != k) then\n"
+		<< L << "  grad = 0\n"
+		<< L << "  Hess = I\n"
+		<< L << "elseif (qp_objective == OBJ_RSQP) and (current_k != k) then\n"
+		<< L << "  grad = qp_grad_k\n"
+		<< L << "  Hess = rHL_k\n"
+		<< L << "end\n"
+		<< L << "if check_results == true then\n"
+		<< L << "  assert that bl and bu are valid and sorted\n"
+		<< L << "end\n"
+		<< L << "etaL = 0.0\n"
+		<< L << "*** Determine if we can use simple bounds on pz or not\n"
+		<< L << "if Z_k is a variable reduction null space matrix and norm(Ypy_k(indep),0) == 0 then\n"
+		<< L << "  use_simple_wz_bounds = true\n"
+		<< L << "else\n"
+		<< L << "  use_simple_wz_bounds = false\n"
+		<< L << "end\n"
+		<< L << "*** Setup QP arguments\n"
+		<< L << "qp_g = qp_grad_k\n"
+		<< L << "qp_G = rHL_k\n"
+		<< L << "if use_simple_wz_bounds == true then\n"
+		<< L << "  qp_dL = bl(indep),  qp_dU = bu(indep)\n"
+		<< L << "  qp_E  = Z_k.D,      qp_b  = Ywy(dep)\n"
+		<< L << "  qp_eL = bl(dep),    qp_eU = bu(dep)\n"
+		<< L << "else\n"
+		<< L << "  qp_dL = -inf,       qp_dU = +inf\n"
+		<< L << "  qp_E  = Z_k,        qp_b  = Ywy\n"
+		<< L << "  qp_eL = bl,         qp_eU = bu\n"
+		<< L << "end\n"
+		<< L << "if m > r then\n"
+		<< L << "  qp_F  = V_k,        qp_f  = c_k(undecomp) + Gc_k(undecomp)'*Ywy\n"
+		<< L << "else\n"
+		<< L << "  qp_F  = empty,      qp_f  = empty\n"
+		<< L << "end\n"
+		<< L << "Use a warm start given the active-set in nu_k\n"
+		<< L << "Solve the following QP to compute qp_d, qp_eta, qp_Ed = qp_E * qp_d\n"
+		<< L << ",qp_nu, qp_mu and qp_lambda (" << typeid(qp_solver()).name() << "):\n"
+		<< L << "  min    qp_g' * qp_d + 1/2 * qp_d' * qp_G * qp_d + M(eta)\n"
+		<< L << "  qp_d <: R^(n-r)\n"
+		<< L << "  s.t.\n"
+		<< L << "         etaL  <=  qp_eta\n"
+		<< L << "         qp_dL <= qp_d <= qp_dU                          [qp_nu]\n"
+		<< L << "         qp_eL <= qp_E * qp_d + (1-eta)*qp_b  <= qp_eU   [qp_mu]\n"
+		<< L << "         qp_F * d_qp + (1-eta) * qp_f = 0                [qp_lambda]\n"
+		<< L << "if (qp_teing==QP_TEST) or (fd_deriv_testing==QP_TEST_DEFAULT\n"
+		<< L << "and check_results==true) then\n"
+		<< L << "  Check the optimality conditions of the above QP\n"
+		<< L << "  if the optimality conditions do not check out then\n"
+		<< L << "    set throw_qp_failure = true\n"
+		<< L << "  end\n"
+		<< L << "end\n"
+		<< L << "*** Set the solution to the QP subproblem\n"
+		<< L << "wz  = qp_d\n"
+		<< L << "eta = qp_eta\n"
+		<< L << "if use_simple_wz_bounds == true then\n"
+		<< L << "  Zwz(dep)   = qp_Ed,  Zwz(indep) = wz\n"
+		<< L << "else\n"
+		<< L << "  Zwz = qp_Ed\n"
+		<< L << "end\n"
+		<< L << "if eta > 0 then set Ywy = (1-eta) * Ywy\n"
+		<< L << "if QP solution is suboptimal then\n"
+		<< L << "  throw_qp_failure = true\n"
+		<< L << "elseif QP solution is primal feasible (not optimal) then\n"
+		<< L << "  throw_qp_failure = primal_feasible_point_error\n"
+		<< L << "elseif QP solution is dual feasible (not optimal) then\n"
+		<< L << "  find max u s.t.\n"
+		<< L << "    d_bounds_k.l <= (xo - x) + u*(Ywy+Zwz) <= d_bounds_k.u\n"
+		<< L << "  alpha_k = u\n"
+		<< L << "  throw_qp_failure = true\n"
+		<< L << "end\n"
+		<< L << "if eta == 1.0 then\n"
+		<< L << "  The constraints are infeasible!\n"
+		<< L << "  throw_qp_failure = true\n"
+		<< L << "end\n"
+		<< L << "current_k = k\n"
+		<< L << "w = Zwz + Ywy\n"
+		<< L << "if (throw_qp_failure == true) then\n"
+		<< L << "  The feasibility step computation has failed!\n"
+		<< L << "end\n"
+		;
 }
 
 } // end namespace ReducedSpaceSQPPack

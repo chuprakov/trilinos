@@ -22,8 +22,10 @@ namespace ReducedSpaceSQPPack {
 	options_group LineSearch2ndOrderCorrect {
 	    newton_olevel           = PRINT_NOTHING;
 	    constr_norm_threshold   = 1e-3;
+	    constr_incr_ratio       = 5.0;
 	    after_k_iter            = 3;
 	    forced_constr_reduction = LESS_X_D;
+	    forced_reduct_ratio     = 1.0;
 	    max_step_ratio          = 0.7;
 	    max_newton_iter         = 3;
 	}
@@ -37,8 +39,9 @@ namespace ReducedSpaceSQPPack {
   *		in the LinSearch2ndOrderCorrect step.
   *		The output level can be set specifically to the values of:
   *		\begin{description}
+  *		\item[PRINT_USE_DEFAULT] Let it be determined by overall algorithm print level.
   *		\item[PRINT_NOTHING] No output about the newton iterations is performed.
-  *		\item[PRINT_SUMMAR_INFO] A compact summary table is created.
+  *		\item[PRINT_SUMMARY_INFO] A compact summary table is created.
   *		\item[PRINT_STEPS] Print more detailed info about the steps.
   *		\item[PRINT_VECTORS] Also print out calculated vectors.  Careful, this
   *			could produced a lot of output for large problems.

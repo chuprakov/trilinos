@@ -163,9 +163,9 @@ void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_Y_py_Ypy(
 {
 	out
 		<< L << "*** Orthogonal decomposition\n"
-		<< L << "py_k = inv(I + D*D') * py_k\n"
-		<< L << "Y = [ I ; -D' ] <: R^(n x m)   [Not computed explicity]\n"
-		<< L << "Ypy_k = Y * py_k\n"
+		<< L << "py = inv(I + D*D') * py\n"
+		<< L << "Y = [ I ; -D' ] <: R^(n x m)   [Not computed explicitly]\n"
+		<< L << "Ypy = Y * py\n"
 		;
 }
 

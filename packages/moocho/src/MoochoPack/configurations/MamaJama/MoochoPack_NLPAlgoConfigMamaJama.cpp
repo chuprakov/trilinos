@@ -309,67 +309,58 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	}
 
 	// Determine whether to use direct or adjoint factorization
-	switch(uov_.null_space_matrix_type_) {
-		case NULL_SPACE_MATRIX_EXPLICIT:
-			cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
-			break;
-		case NULL_SPACE_MATRIX_IMPLICIT:
-			cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-			break;
-		case NULL_SPACE_MATRIX_AUTO:
-		{
-			if( !nlp.has_bounds() || uov_.qp_solver_type_ == QP_QPSCHUR )
-			{
-				if(trase_out) {
-					*trase_out << "\nnull_sapce_matrix == AUTO:";
-					if(!nlp.has_bounds())
-						*trase_out << "\nnlp.has_bounds() == " << algo->nlp().has_bounds() << ":";
-					else if( uov_.qp_solver_type_ == QP_QPSCHUR )
-						*trase_out << "\nqp_solver == QPSCHUR:";
-					else
-						assert(0);
-					*trase_out << "\nsetting null_space_matrix = IMPLICIT ...\n";
-				}
+	if( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_AUTO ) {
+		switch(uov_.null_space_matrix_type_) {
+		    case NULL_SPACE_MATRIX_EXPLICIT:
+				cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
+				break;
+		    case NULL_SPACE_MATRIX_IMPLICIT:
 				cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-			}
-			else {
-				if(trase_out)
-					*trase_out << "\nnull_sapce_matrix == AUTO:\n"
-									"Checking the total number of variable bounds ...\n";
-				// If the total number of bounds is less than the number
-				// of degrees of freedom then the adjoint factorization
-				// will be faster.
-				if(trase_out)
-					*trase_out << "#bounds = " << nb << ", n-r = " << dof << std::endl;
-				if( nb < dof ) { 
-					if(trase_out)
-						*trase_out
-							<< "There are fewer bounds than degrees of freedom:\n"
-							"setting null_space_matrix = IMPLICIT ...\n";
+				break;
+		    case NULL_SPACE_MATRIX_AUTO:
+			{
+				if( !nlp.has_bounds() || uov_.qp_solver_type_ == QP_QPSCHUR )
+				{
+					if(trase_out) {
+						*trase_out << "\nnull_sapce_matrix == AUTO:";
+						if(!nlp.has_bounds())
+							*trase_out << "\nnlp.has_bounds() == " << algo->nlp().has_bounds() << ":";
+						else if( uov_.qp_solver_type_ == QP_QPSCHUR )
+							*trase_out << "\nqp_solver == QPSCHUR:";
+						else
+							assert(0);
+						*trase_out << "\nsetting null_space_matrix = IMPLICIT ...\n";
+					}
 					cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
 				}
 				else {
 					if(trase_out)
-						*trase_out
-							<< "There are more bounds than degrees of freedom:\n"
-							"setting null_space_matrix = EXPLICIT ...\n";
-					cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
+						*trase_out <<
+							"\nnull_sapce_matrix == AUTO:\n"
+							"Checking the total number of variable bounds ...\n";
+					// If the total number of bounds is less than the number
+					// of degrees of freedom then the adjoint factorization
+					// will be faster.
+					if(trase_out)
+						*trase_out << "#bounds = " << nb << ", n-r = " << dof << std::endl;
+					if( nb < dof ) { 
+						if(trase_out)
+							*trase_out <<
+								"There are fewer bounds than degrees of freedom:\n"
+								"setting null_space_matrix = IMPLICIT ...\n";
+						cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
+					}
+					else {
+						if(trase_out)
+							*trase_out <<
+								"There are more bounds than degrees of freedom:\n"
+								"setting null_space_matrix = EXPLICIT ...\n";
+						cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
+					}
 				}
+				break;
 			}
-			break;
 		}
-	}
-
-	// ToDo: Implement the orthogonal decompositon for general NLPs
-	if( !tailored_approach
-		&& uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE )
-	{
-		if(trase_out)
-			*trase_out << "\nrange_space_matrix != COORDINATE:\n"
-							"Sorry, the orthogonal decomposition is not "
-							"supported for general NLPs yet!\n"
-							"setting range_space_matrix = COORDINATE ...\n";
-		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
 	}
 
 	// Set default
@@ -383,7 +374,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		case QN_AUTO: {
 			if(trase_out)
 				*trase_out
-					<< "\nquasi_newton == AUTO:\n"
+					<< "\nquasi_newton == AUTO:"
 					<< "\nnlp.has_bounds() == " << nlp.has_bounds() << ":\n";
 			if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
 				if(trase_out)
@@ -431,6 +422,36 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			break;
 	    default:
 			assert(0); // Invalid option!
+	}
+
+	// Decide what type of range space matrix to use
+	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
+		const bool use_orth = dof*dof*r
+			<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
+		if(trase_out)
+			*trase_out
+				<< "\nrange_space_matrix == AUTO:"
+				<< "\n(n-r)^2*r = (" << dof << ")^2 * " << r << " = " << (dof*dof*r)
+				<< ( use_orth ? " <= " : " > " ) << "max_dof_quasi_newton_dense^2 = ("
+				<< cov_.max_dof_quasi_newton_dense_ << ")^2 = "
+				<< cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_
+				<< ( use_orth
+					 ? "\nsetting nrange_space_matrix = ORTHOGONAL\n"
+					 : "\nsetting nrange_space_matrix = COORDINATE\n" );
+		cov_.range_space_matrix_type_ =
+			( use_orth
+			  ? RANGE_SPACE_MATRIX_COORDINATE
+			  : RANGE_SPACE_MATRIX_ORTHOGONAL );
+	}
+	// ToDo: Implement the orthogonal decompositon for general NLPs
+	if( !tailored_approach && uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE ) {
+		if(trase_out)
+			*trase_out <<
+				"\nrange_space_matrix != COORDINATE:\n"
+				"Sorry, the orthogonal decomposition is not "
+				"supported for general NLPs yet!\n"
+				"setting range_space_matrix = COORDINATE ...\n";
+		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
 	}
 
 	// Set the default options that where not already set yet
@@ -2004,8 +2025,8 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	if( cov->qp_solver_type_ == QP_AUTO && uov.qp_solver_type_ == QP_AUTO ) {
 		if(trase_out)
 			*trase_out
-				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPKWIK\n";
-		cov->qp_solver_type_ = QP_QPKWIK;
+				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPSCHUR\n";
+		cov->qp_solver_type_ = QP_QPSCHUR;
 	}
 	else if(cov->qp_solver_type_ == QP_AUTO) {
 		cov->qp_solver_type_ = uov.qp_solver_type_;
@@ -2014,8 +2035,8 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	if( cov->line_search_method_ == LINE_SEARCH_AUTO && uov.line_search_method_ == LINE_SEARCH_AUTO ) {
 		if(trase_out)
 			*trase_out
-				<< "\nline_search_method == AUTO: setting line_search_method = DIRECT\n";
-		cov->line_search_method_ = LINE_SEARCH_DIRECT;
+				<< "\nline_search_method == AUTO: setting line_search_method = 2ND_ORDER_CORRECT\n";
+		cov->line_search_method_ = LINE_SEARCH_2ND_ORDER_CORRECT;
 	}
 	else if(cov->line_search_method_ == LINE_SEARCH_AUTO) {
 		cov->line_search_method_ = uov.line_search_method_;

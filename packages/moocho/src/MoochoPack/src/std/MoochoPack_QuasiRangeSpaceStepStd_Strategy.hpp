@@ -10,7 +10,7 @@ namespace ReducedSpaceSQPPack {
 
 ///
 /** Strategy class for computing a quasi range space step by solving
- * the range space problem directly.
+ * the approximate range space problem directly.
  */
 class QuasiRangeSpaceStepStd_Strategy : public QuasiRangeSpaceStep_Strategy {
 public:

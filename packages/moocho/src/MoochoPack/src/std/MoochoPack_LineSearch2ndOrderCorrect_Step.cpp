@@ -38,8 +38,10 @@ LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 	,value_type							eta
 	,ENewtonOutputLevel					newton_olevel
 	,value_type							constr_norm_threshold
+	,value_type							constr_incr_ratio
 	,int								after_k_iter
 	,EForcedConstrReduction				forced_constr_reduction
+	,value_type                         forced_reduct_ratio
 	,value_type							max_step_ratio
 	,int								max_newton_iter
 	)
@@ -50,11 +52,12 @@ LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 	,eta_(eta)
 	,newton_olevel_(newton_olevel)
 	,constr_norm_threshold_(constr_norm_threshold)
+	,constr_incr_ratio_(constr_incr_ratio)
 	,after_k_iter_(after_k_iter)
 	,forced_constr_reduction_(forced_constr_reduction)
+	,forced_reduct_ratio_(forced_reduct_ratio)
 	,max_step_ratio_(max_step_ratio)
 	,max_newton_iter_(max_newton_iter)
-	,considering_correction_(false)
 {}
 
 bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
@@ -145,21 +148,33 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	MeritFuncCalcNLP
 		phi_calc( &merit_func(), &nlp );
 
-	// ///////////////////////////////////////////////
-	// Concider 2nd order correction if near solution
-
-	if( !considering_correction_ ) {
+	// //////////////////////////////////////////////////
+	// Concider 2nd order correction if near solution?
+	
+	bool considering_correction = false;
+	{
 		const value_type
-			nrm_c_x  = s.c().get_k(0).norm_inf();
-		if( nrm_c_x <= constr_norm_threshold() && s.k() >= after_k_iter() ) {
-			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out	<< "\nConsider the 2nd order correction for x_kp1 = x_k + d_k + w from now on:\n"
-					<< "||c_k|| = " << nrm_c_x << " <= constr_norm_threshold = "
-						<< constr_norm_threshold() << std::endl
-					<< "k = " << s.k() << " <= after_k_iter = "
-						<< after_k_iter() << std::endl;
-			}
-			considering_correction_ = true;
+			small_num = std::numeric_limits<value_type>::min(),
+			nrm_c_k   = s.c().get_k(0).norm_inf(),
+			nrm_c_kp1 = s.c().get_k(+1).norm_inf();
+		const bool
+			test_1 = nrm_c_k <= constr_norm_threshold(),
+			test_2 = (nrm_c_kp1/(1.0 + nrm_c_k)) < constr_incr_ratio(),
+			test_3 = s.k() >= after_k_iter();
+		considering_correction = test_1 && test_2 && test_3;
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+			out	<< "\n||c_k||inf = " << nrm_c_k << (test_1 ? " <= " : " > " )
+				<< "constr_norm_threshold = " << constr_norm_threshold()
+				<< "\n||c_kp1||inf/(1.0+||c_k||inf) = "
+				<< "(" << nrm_c_kp1 << ")/(" << 1.0 << " + " << nrm_c_k << ") = "
+				<< ( nrm_c_kp1 / (1.0 + nrm_c_k ) ) << (test_2 ? " <= " : " > " )
+				<< "constr_incr_ratio = " << constr_incr_ratio()
+				<< "\nk = " << s.k() << (test_3 ? " >= " : " < ")
+				<< "after_k_iter = " << after_k_iter()
+				<< (considering_correction
+					? ("\nThe computation of a 2nd order correction for x_kp1 = x_k + alpha_k*d_k + alpha_k^2*w"
+					   " will be considered ...\n")
+					: "\nThe critera for considering a 2nd order correction has not been met ...\n" );
 		}
 	}
 
@@ -188,7 +203,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	bool use_correction = false;
 	bool newton_failed  = true;
 	
-	bool considered_correction = ( considering_correction_ && !chose_point );
+	bool considered_correction = ( considering_correction && !chose_point );
 	if( considered_correction ) {
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -226,22 +241,21 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 
 		Vector wy(s.con_decomp().size());	// Range space wy (see latter).
 
-		if( phi_c_xd < phi_c_x ) {
-			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out	<< "\nphi_c(c(x_k+d_k)) = " << phi_c_xd
-						<< " < phi_c(c(x_k)) = " << phi_c_x << std::endl
-					<< "No need for a 2nd order correciton, perform regular line search ... \n";
-			}
+		const bool sufficient_reduction =
+			phi_c_xd < forced_reduct_ratio() * phi_c_x;
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+			out	<< "\nphi_c(c(x_k+d_k)) = " << phi_c_xd << (sufficient_reduction ? " <= " : " > ")
+				<< "forced_reduct_ratio* phi_c(c(x_k)) = " << forced_reduct_ratio() << " * " << phi_c_x
+				<< " = " << (forced_reduct_ratio()*phi_c_x)
+				<< (sufficient_reduction
+					? "\nNo need for a 2nd order correciton, perform regular line search ... \n"
+					: "\nWe need to try to compute a correction w ...\n" );
+		}
+		if(sufficient_reduction) {
 			use_correction = false;
 		}
 		else {
 			// Try to compute a second order correction term.
-
-			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out	<< "\nphi_c(c(x_k+d_k)) = " << phi_c_xdw
-						<< " >= phi_c(c(x_k)) = " << phi_c_x << std::endl
-					<< "Lets try to compute a second order correction w ... \n";
-			}
 
 			// Set print level newton iterations
 			ENewtonOutputLevel  use_newton_olevel;
@@ -296,7 +310,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 				out	<< "\nStarting Newton iterations ...\n"
 					<< "\nphi_c_x   = "	<< phi_c_x 
 					<< "\nphi_c_xd  = "	<< phi_c_xd
-					<< "\n||d_k||nf = "	<< phi_c_xd << "\n\n"
+					<< "\n||d_k||nf = "	<< nrm_d << "\n\n"
 					<< setw(5)			<< "it"
 					<< setw(dbl_w)		<< "||w||inf"
 					<< setw(dbl_w)		<< "u"
@@ -444,22 +458,26 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 				bool good_correction = false;
 				switch( forced_constr_reduction() ) {
 					case CONSTR_LESS_X_D: {
-						good_correction = ( phi_c_xdww < phi_c_xd );
+						good_correction = ( phi_c_xdww < forced_reduct_ratio()*phi_c_xd );
 						if( good_correction
 							&& (int)use_newton_olevel >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO )
 						{
 							out << "\nphi_c(c(x_k+d_k+w)) = " << phi_c_xdww
-									<< " < phi_c(c(x_k+d_k)) = " << phi_c_xd << std::endl;
+								<< " < forced_reduct_ratio * phi_c(c(x_k+d_k)) = "
+								<< forced_reduct_ratio() << " * " << phi_c_xd
+								<< " = " << (forced_reduct_ratio()*phi_c_xd) << std::endl;
 						}
 						break;
 					}
 					case CONSTR_LESS_X: {
-						good_correction = ( phi_c_xdww < phi_c_x );
+						good_correction = ( phi_c_xdww < forced_reduct_ratio()*phi_c_x );
 						if( good_correction
 							&& (int)use_newton_olevel >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO )
 						{
 							out << "\nphi_c(c(x_k+d_k+w)) = " << phi_c_xdww
-									<< " < phi_c(c(x_k)) = " << phi_c_x << std::endl;
+								<< " < forced_reduct_ratio * phi_c(c(x_k)) = "
+								<< forced_reduct_ratio() << " * " << phi_c_x
+								<< " = " << (forced_reduct_ratio()*phi_c_x) << std::endl;
 						}
 						break;
 					}
@@ -629,7 +647,8 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	return true;
 }
 
-void LineSearch2ndOrderCorrect_Step::print_step( const Algorithm& algo
+void LineSearch2ndOrderCorrect_Step::print_step(
+	const Algorithm& algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
@@ -638,117 +657,122 @@ void LineSearch2ndOrderCorrect_Step::print_step( const Algorithm& algo
 		<< L << "*** line search along x_kp1 = x_k + alpha_k * d_k + alpha_k^2 * w.\n"
 		<< L << "default: eta                     = " << eta() << std::endl
 		<< L << "         constr_norm_threshold   = " << constr_norm_threshold() << std::endl
+		<< L << "         constr_incr_ratio       = " << constr_incr_ratio() << std::endl
 		<< L << "         after_k_iter            = " << after_k_iter() << std::endl
-		<< L << "         forced_constr_reduction = CONSTR_LESS_X_D\n"
+		<< L << "         forced_constr_reduction = " << (forced_constr_reduction()== CONSTR_LESS_X_D
+														  ? "CONSTR_LESS_X_D\n"
+														  : "CONSTR_LESS_X\n" )
+		<< L << "         forced_reduct_ratio     = " << forced_reduct_ratio() << std::endl
 		<< L << "         max_step_ratio          = " << max_step_ratio() << std::endl
 		<< L << "         max_newton_iter         = " << max_newton_iter() << std::endl
-		<< L << "         considering_correction  = false\n"
 		<< L << "begin definition of NLP merit function phi.value(f(x),c(x)):\n";
-
-	merit_func().print_merit_func( out, L + "    " );
+	
+	merit_func().print_merit_func( out, L + "  " );
 	
 	out	<< L << "end definition\n"
 		<< L << "Dphi_k = phi.deriv()\n"
 		<< L << "if Dphi_k >= 0 then\n"
-		<< L << "    throw line_search_failure\n"
+		<< L << "  throw line_search_failure\n"
 		<< L << "end\n"
 		<< L << "phi_kp1 = phi_k.value(f_kp1,c_kp1)\n"
 		<< L << "phi_k = phi.value(f_k,c_k)\n"
-		<< L << "if considering_correction == false then\n"
-		<< L << "    if (norm_inf_c_k < constr_norm_threshold) and (k >= after_k_iter) then\n"
-		<< L << "        considering_correction = true\n"
-		<< L << "    end\n"
-		<< L << "end\n"
+		<< L << "if (norm(c_k,inf) <= constr_norm_threshold)\n"
+		<< L << "and (norm(c_kp1,inf)/(norm(c_k,inf)+small_num) <= constr_incr_ratio)\n"
+		<< L << "and (k >= after_k_iter) then\n"
+		<< L << "considering_correction = ( (norm(c_k,inf) <= constr_norm_threshold)\n"
+		<< L << "  and (norm(c_kp1,inf)/(1.0 + norm(c_k,inf)) <= constr_incr_ratio)\n"
+		<< L << "  and (k >= after_k_iter) )\n"
 		<< L << "chose_point = false\n"
 		<< L << "if phi_kp1 < phi_k + eta * Dphi_k then\n"
-		<< L << "    chose_point = true\n"
+		<< L << "  chose_point = true\n"
 		<< L << "else\n"
 		<< L << "if (considering_correction == true) and (chose_point == false) then\n"
-		<< L << "    considered_correction = true\n"
-		<< L << "    begin definition of c(x) merit function phi_c.value(c(x)):\n";
+		<< L << "  considered_correction = true\n"
+		<< L << "  begin definition of c(x) merit function phi_c.value(c(x)):\n";
 
 	ConstrainedOptimizationPack::MeritFuncNLESqrResid().print_merit_func(
-		out, L + "        " );
+		out, L + "    " );
 
-	out	<< L << "    end definition\n"
-		<< L << "    xdw = x_kp1;\n"
-		<< L << "    phi_c_x = phi_c.value(c_k);\n"
-		<< L << "    phi_c_xd = phi_c.value(c_kp1);\n"
-		<< L << "    phi_c_xdw = phi_c_xd;\n"
-		<< L << "    phi_c_xdww = phi_c_xdw;\n"
-		<< L << "    if phi_c_xd < phi_c_x then\n"
-		<< L << "        *** There is no need to perform a correction.\n"
+	out	<< L << "  end definition\n"
+		<< L << "  xdw = x_kp1;\n"
+		<< L << "  phi_c_x = phi_c.value(c_k);\n"
+		<< L << "  phi_c_xd = phi_c.value(c_kp1);\n"
+		<< L << "  phi_c_xdw = phi_c_xd;\n"
+		<< L << "  phi_c_xdww = phi_c_xdw;\n"
+		<< L << "  if phi_c_xd < forced_reduct_ratio * phi_c_x then\n"
+		<< L << "    *** There is no need to perform a correction.\n"
+		<< L << "    use_correction = false;\n"
+		<< L << "  else\n"
+		<< L << "    *** Lets try to compute a correction by performing\n"
+		<< L << "    *** a series of newton steps to compute local steps w\n"
+		<< L << "    for newton_i = 1...max_newton_itr\n"
+		<< L << "      begin feasibility step calculation: \"" << typeid(feasibility_step()).name() << "\"\n";
+
+	feasibility_step().print_step( out, L + "        " );
+
+	out << L << "      end feasibility step calculation\n"
+		<< L << "      Find the largest positive step u where the slightly\n"
+		<< L << "      relaxed variable bounds:\n"
+		<< L << "        xl - delta <= xdw + u * w <= xu + delta\n"
+		<< L << "      are strictly satisfied (where delta = max_var_bounds_viol).\n"
+		<< L << "      a = min(1,u);\n"
+		<< L << "      step_ratio = norm(w,inf)/norm(d,inf);\n"
+		<< L << "      a = min(a,max_step_ratio/step_ratio);\n"
+		<< L << "      Perform line search for phi_c.value(c(xdww = xdw+a*w))\n"
+		<< L << "      starting from a and compute:\n"
+		<< L << "        a,\n"
+		<< L << "        xdww = xdw + a * w,\n"
+		<< L << "        phi_c_xdww = phi_c.value(c(xdww))\n"
+		<< L << "      print summary information;\n"
+		<< L << "      if line search failed then\n"
 		<< L << "        use_correction = false;\n"
-		<< L << "    else\n"
-		<< L << "        *** Lets try to compute a correction by performing\n"
-		<< L << "        *** a series of newton steps to compute local steps w\n"
-		<< L << "        for newton_i = 1...max_newton_itr\n"
-		<< L << "            wy = -inv(Gc'*Y)*c(xdw);\n"
-		<< L << "            w = Y*wy;\n"
-		<< L << "            Find the largest positive step u where the slightly\n"
-		<< L << "            relaxed variable bounds:\n"
-		<< L << "                xl - delta <= xdw + u * w <= xu + delta\n"
-		<< L << "            are strictly satisfied (where delta = max_var_bounds_viol).\n"
-		<< L << "            a = min(1,u);\n"
-		<< L << "            step_ratio = norm(w,inf)/norm(d,inf);\n"
-		<< L << "            a = min(a,max_step_ratio/step_ratio);\n"
-		<< L << "            Perform line search for phi_c.value(c(xdww = xdw+a*w))\n"
-		<< L << "            starting from a and compute:\n"
-		<< L << "                a,\n"
-		<< L << "                xdww = xdw + a * w,\n"
-		<< L << "                phi_c_xdww = phi_c.value(c(xdww))\n"
-		<< L << "            print summary information;\n"
-		<< L << "            if line search failed then\n"
-		<< L << "                use_correction = false;\n"
-		<< L << "                exit for loop;\n"
-		<< L << "            end\n"
-		<< L << "            *** Determine if this is sufficent reduction in c(x) error\n"
-		<< L << "            if forced_constr_reduction == CONSTR_LESS_X_D then\n"
-		<< L << "                good_correction = (phi_c.value(c(xdww))\n"
-		<< L << "                                        < phi_c_xd);\n"
-		<< L << "            else if forced_constr_reduction == CONSTR_LESS_X then\n"
-		<< L << "                good_correction = (phi_c.value(c(xdww))\n"
-		<< L << "                                        < phi_c_x);\n"
-		<< L << "            end\n"
-		<< L << "            if good_correction == true then\n"
-		<< L << "                w = xdww - (x_k+d_k);\n"
-		<< L << "                use_correction = true;\n"
-		<< L << "                exit for loop;\n"
-		<< L << "            end\n"
-		<< L << "            *** This is not sufficient reduction is c(x) error yet.\n"
-		<< L << "            xdw = xdww;\n"
-		<< L << "            phi_c_xdw = phi_c_xdww;\n"
-		<< L << "        end\n"
-		<< L << "        if use_correction == false then\n"
-		<< L << "            if forced_constr_reduction == CONSTR_LESS_X_D then\n"
-		<< L << "               *** Dam! We could not find a point phi_c_xdww < phi_c_xd.\n"
-		<< L << "               *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
-		<< L << "            else if forced_constr_reduction == CONSTR_LESS_X then\n"
-		<< L << "               if phi_c_dww < phi_c_xd then\n"
-		<< L << "                   *** Accept this correction anyway.\n"
-		<< L << "                   use_correction = true\n"
-		<< L << "               else\n"
-		<< L << "                   *** Dam! we could not find any reduction in phi_c so\n"
-		<< L << "                   *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
-		<< L << "            end\n"
-		<< L << "        end\n"
+		<< L << "        exit for loop;\n"
+		<< L << "      end\n"
+		<< L << "      *** Determine if this is sufficent reduction in c(x) error\n"
+		<< L << "      if forced_constr_reduction == CONSTR_LESS_X_D then\n"
+		<< L << "        good_correction = (phi_c.value(c(xdww)) < forced_reduct_ratio*phi_c_xd);\n"
+		<< L << "      else if forced_constr_reduction == CONSTR_LESS_X then\n"
+		<< L << "        good_correction = (phi_c.value(c(xdww)) < forced_reduct_ratio*phi_c_x);\n"
+		<< L << "      end\n"
+		<< L << "      if good_correction == true then\n"
+		<< L << "        w = xdww - (x_k+d_k);\n"
+		<< L << "        use_correction = true;\n"
+		<< L << "        exit for loop;\n"
+		<< L << "      end\n"
+		<< L << "      *** This is not sufficient reduction is c(x) error yet.\n"
+		<< L << "      xdw = xdww;\n"
+		<< L << "      phi_c_xdw = phi_c_xdww;\n"
 		<< L << "    end\n"
+		<< L << "    if use_correction == false then\n"
+		<< L << "      if forced_constr_reduction == CONSTR_LESS_X_D then\n"
+		<< L << "        *** Dam! We could not find a point phi_c_xdww < phi_c_xd.\n"
+		<< L << "        *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
+		<< L << "      else if forced_constr_reduction == CONSTR_LESS_X then\n"
+		<< L << "        if phi_c_dww < phi_c_xd then\n"
+		<< L << "           *** Accept this correction anyway.\n"
+		<< L << "           use_correction = true\n"
+		<< L << "        else\n"
+		<< L << "          *** Dam! we could not find any reduction in phi_c so\n"
+		<< L << "          *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
+		<< L << "      end\n"
+		<< L << "    end\n"
+		<< L << "  end\n"
 		<< L << "end\n"
 		<< L << "if chose_point == false then\n"
-		<< L << "    if use_correction == true then\n"
-		<< L << "        Perform line search along x_kp1 = x_k + alpha_k * d_k + alpha_k^2 * w\n"
-		<< L << "    else\n"
-		<< L << "        Perform line search along x_kp1 = x_k + alpha_k * d_k\n"
-		<< L << "    end\n"
-		<< L << "    begin direct line search : \"" << typeid(direct_ls_sqp()).name() << "\"\n";
+		<< L << "  if use_correction == true then\n"
+		<< L << "    Perform line search along x_kp1 = x_k + alpha_k * d_k + alpha_k^2 * w\n"
+		<< L << "  else\n"
+		<< L << "    Perform line search along x_kp1 = x_k + alpha_k * d_k\n"
+		<< L << "  end\n"
+		<< L << "  begin direct line search : \"" << typeid(direct_ls_sqp()).name() << "\"\n";
 
-	direct_ls_sqp().print_algorithm( out, L + "        " );
+	direct_ls_sqp().print_algorithm( out, L + "    " );
 
 	out
-		<< L << "    end direct line search\n"
-		<< L << "    if maximum number of linesearch iterations are exceeded then\n"
-		<< L << "        throw line_search_failure\n"
-		<< L << "    end\n"
+		<< L << "  end direct line search\n"
+		<< L << "  if maximum number of linesearch iterations are exceeded then\n"
+		<< L << "    throw line_search_failure\n"
+		<< L << "  end\n"
 		<< L << "end\n";
 }
 

@@ -73,10 +73,12 @@ public:
 		,const direct_ls_newton_ptr_t&		direct_ls_newton		= 0
 		,value_type							eta						= 1.0e-4
 		,ENewtonOutputLevel					newton_olevel			= PRINT_USE_DEFAULT
-		,value_type							constr_norm_threshold	= 1e-3
-		,int								after_k_iter			= 2
-		,EForcedConstrReduction				forced_constr_reduction	= CONSTR_LESS_X_D
-		,value_type							max_step_ratio			= 0.7
+		,value_type							constr_norm_threshold	= 1.0
+		,value_type							constr_incr_ratio		= 10.0
+		,int								after_k_iter			= 0
+		,EForcedConstrReduction				forced_constr_reduction	= CONSTR_LESS_X
+		,value_type                         forced_reduct_ratio     = 1.0
+		,value_type							max_step_ratio			= 1.0
 		,int								max_newton_iter			= 3
 		);
 
@@ -94,11 +96,17 @@ public:
 	/// constr_norm_threshold.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_norm_threshold)
 
+	/// constr_incr_ratio
+	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,constr_incr_ratio)
+
 	/// after_k_iter.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter)
 
 	/// forced_constr_reduction.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(EForcedConstrReduction,forced_constr_reduction)
+
+	/// forced_reduct_ratio
+	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,forced_reduct_ratio)
 
 	/// max_step_ratio.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_step_ratio)
@@ -119,9 +127,6 @@ public:
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
-private:
-	bool considering_correction_;
-	
 };	// end class LineSearch2ndOrderCorrect_Step
 
 }	// end namespace ReducedSpaceSQPPack 
