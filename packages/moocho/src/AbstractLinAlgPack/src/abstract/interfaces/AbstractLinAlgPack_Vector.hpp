@@ -254,7 +254,7 @@ public:
 		,index_type global_offset = 0 ) const;
 
 	///
-	/** Fetch an element in the vector .
+	/** Fetch an element in the vector.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>1 <= i <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
