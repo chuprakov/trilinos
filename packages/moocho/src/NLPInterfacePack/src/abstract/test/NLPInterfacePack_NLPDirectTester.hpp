@@ -19,8 +19,9 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
 #include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace NLPInterfacePack {
 
@@ -143,38 +144,44 @@ class NLPFirstOrderDirectTester {
 public:
 
 	///
-	enum ETestingMethod { FD_COMPUTE_ALL, FD_DIRECTIONAL };
+	enum ETestingMethod {
+		FD_COMPUTE_ALL
+		,FD_DIRECTIONAL
+	};
 
-	/// Members for option \c Gf_testing_method() (see StandardMemberCompositionMacros.h).
+	///
+	STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+	/// Members for option \c Gf_testing_method()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
-	/// Members for option \c Gc_testing_method() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gc_testing_method()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
-	/// Members for option \c Gf_warning_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gf_warning_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
-	/// Members for option \c Gf_error_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gf_error_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
-	/// Members for option \c Gc_warning_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gc_warning_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
-	/// Members for option \c Gc_error_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gc_error_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
-	/// Members for option \c Gh_warning_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gh_warning_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_warning_tol )
-	/// Members for option \c Gh_error_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c Gh_error_tol()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_error_tol )
-	/// Members for option \c num_fd_directions() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c num_fd_directions()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
 
 	/// Constructor
 	NLPFirstOrderDirectTester(
-		ETestingMethod          Gf_testing_method   = FD_DIRECTIONAL
-		,ETestingMethod         Gc_testing_method   = FD_DIRECTIONAL
-		,value_type             Gf_warning_tol      = 1e-6
-		,value_type             Gf_error_tol        = 1e-1
-		,value_type             Gc_warning_tol      = 1e-6
-		,value_type             Gc_error_tol        = 1e-1
-		,value_type             Gh_warning_tol      = 1e-6
-		,value_type             Gh_error_tol        = 1e-1
-		,size_type              num_fd_directions   = 3
+		const calc_fd_prod_ptr_t  &calc_fd_prod       = new CalcFiniteDiffProd()
+		,ETestingMethod           Gf_testing_method   = FD_DIRECTIONAL
+		,ETestingMethod           Gc_testing_method   = FD_DIRECTIONAL
+		,value_type               Gf_warning_tol      = 1e-6
+		,value_type               Gf_error_tol        = 1e-1
+		,value_type               Gc_warning_tol      = 1e-6
+		,value_type               Gc_error_tol        = 1e-1
+		,value_type               Gh_warning_tol      = 1e-6
+		,value_type               Gh_error_tol        = 1e-1
+		,size_type                num_fd_directions   = 3
 		);
 
 	///

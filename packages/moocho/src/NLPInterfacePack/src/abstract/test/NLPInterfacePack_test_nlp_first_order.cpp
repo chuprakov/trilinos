@@ -16,6 +16,8 @@
 #include <assert.h>
 
 #include "test_nlp_first_order_info.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProdSetOptions.h"
 #include "NLPTester.h"
 #include "NLPTesterSetOptions.h"
 #include "NLPFirstDerivativesTester.h"
@@ -38,6 +40,7 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 	,std::ostream*                                out
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	using TestingHelperPack::update_success;
 
 	bool result;
@@ -150,7 +153,15 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 	if(nlp_tester.print_all())
 		*out << "\nGf =\n" << *Gf;
 
-	NLPFirstDerivativesTester nlp_first_derivatives_tester;
+	CalcFiniteDiffProd
+		calc_fd_prod;
+	if(options) {
+		CalcFiniteDiffProdSetOptions
+			options_setter( &calc_fd_prod );
+		options_setter.set_options(*options);
+	}
+	NLPFirstDerivativesTester
+		nlp_first_derivatives_tester(rcp::rcp(&calc_fd_prod,false));
 	if(options) {
 		NLPFirstDerivativesTesterSetOptions
 			nlp_tester_opt_setter(&nlp_first_derivatives_tester);

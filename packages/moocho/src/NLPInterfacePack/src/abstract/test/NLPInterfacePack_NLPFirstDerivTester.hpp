@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-//#include "SparseLinAlgPack/test/CompareDenseSparseMatrices.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 
@@ -97,26 +97,29 @@ class NLPFirstDerivativesTester {
 public:
 
 	///
-	enum ETestingMethod { FD_COMPUTE_ALL, FD_DIRECTIONAL };
+	enum ETestingMethod {
+		FD_COMPUTE_ALL
+		,FD_DIRECTIONAL
+	};
 
+	///
+	STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method )
-
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
-
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
-
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	/// Constructor
 	NLPFirstDerivativesTester(
-			  ETestingMethod		fd_testing_method	= FD_DIRECTIONAL
-			, size_type				num_fd_directions	= 3
-			, value_type			warning_tol 		= 1e-6
-			, value_type			error_tol			= 1e-1
+		const calc_fd_prod_ptr_t  &calc_fd_prod      = new CalcFiniteDiffProd()
+		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
+		,size_type                num_fd_directions  = 3
+		,value_type               warning_tol        = 1e-8
+		,value_type               error_tol          = 1e-3
 		);
 
 	///

@@ -47,7 +47,8 @@ namespace NLPInterfacePack {
  * class.
  *
  * The options groups "VectorSpaceTester" (see <tt>\ref AbstractLinAlgPack::VectorSpaceTesterSetOptions "VectorSpaceTesterSetOptions"</tt>),
- * "%NLPTester" (see <tt>\ref NLPInterfacePack::NLPTesterSetOptions "NLPTesterSetOptions"</tt>) and "%NLPFirstOrderDirectTester"
+ * "%NLPTester" (see <tt>\ref NLPInterfacePack::NLPTesterSetOptions "NLPTesterSetOptions"</tt>), "%CalcFiniteDiffProd"
+ * (see <tt>\ref NLPInterfacePack::CalcFiniteDiffProdSetOptions "CalcFiniteDiffProdSetOptions"</tt>) and "%NLPFirstOrderDirectTester"
  * (see <tt>\ref NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions "NLPFirstOrderDirectTesterSetOptions"</tt>) are looked for in
  * in <tt>*options</tt> (if <tt>options != NULL</tt>) in order to extract options to use for this testing function and the other testing
  * objects.

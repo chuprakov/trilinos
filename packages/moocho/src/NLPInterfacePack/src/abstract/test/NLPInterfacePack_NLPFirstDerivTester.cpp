@@ -21,8 +21,7 @@
 
 #include "NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivativeProduct.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
+//#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
@@ -34,19 +33,17 @@
 #include "update_success.h"
 #include "ThrowException.h"
 
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StMtV;
-}
-
 namespace NLPInterfacePack {
 
 NLPFirstDerivativesTester::NLPFirstDerivativesTester(
-	ETestingMethod      fd_testing_method
-	,size_type          num_fd_directions
-	,value_type         warning_tol
-	,value_type         error_tol
+	const calc_fd_prod_ptr_t  &calc_fd_prod
+	,ETestingMethod           fd_testing_method
+	,size_type                num_fd_directions
+	,value_type               warning_tol
+	,value_type               error_tol
 	)
-	:fd_testing_method_(fd_testing_method)
+	:calc_fd_prod_(calc_fd_prod)
+	,fd_testing_method_(fd_testing_method)
 	,num_fd_directions_(num_fd_directions)
 	,warning_tol_(warning_tol)
 	,error_tol_(error_tol)
@@ -236,7 +233,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 //	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
  	using TestingHelperPack::update_success;
 
-	bool success = true, result;
+	bool success = true;
 
 	const size_type
 		n  = nlp->n(),
@@ -251,9 +248,8 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 		space_c = nlp->space_c(),
 		space_h = nlp->space_h();
 
-	CalcFiniteDiffFirstDerivativeProduct
-		fd_deriv_prod;
-//	CompareDenseVectors	comp_v;
+	const CalcFiniteDiffProd
+		&fd_deriv_prod = this->calc_fd_prod();
 
 	const value_type
 		rand_y_l = -1.0, rand_y_u = 1.0,
@@ -292,14 +288,27 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 		// Compute finite difference values
 		value_type
 			FDGf_y;
-		fd_deriv_prod.calc_deriv_product(
+		const bool preformed_fd = fd_deriv_prod.calc_deriv_product(
 			xo,xl,xu,max_var_bounds_viol
-			,*y,nlp
+			,*y
+			,NULL // fo
+			,NULL // co
+			,NULL // ho
+			,true // check_nan_inf
+			,nlp
 			,Gf ? &FDGf_y : NULL
 			,Gc ? FDGc_prod.get() : NULL
 			,Gh ? FDGc_prod.get() : NULL
 			,out
 			);
+		if( !preformed_fd ) {
+			if(out)
+				*out
+					<< "\nError, the finite difference computation was not preformed due to cramped bounds\n"
+					<< "Finite difference test failed!\n" << endl;
+			return false;
+		}
+		
 		// Compare the quantities
 		// Gf
 		assert_print_nan_inf(FDGf_y, "FDGf'*y",true,out);

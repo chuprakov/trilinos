@@ -22,8 +22,7 @@
 
 #include "NLPFirstOrderDirectTester.h"
 #include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivativeProduct.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
+//#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
 //#include "SparseLinAlgPack/test/CompareDenseSparseMatrices.h"
 //#include "SparseLinAlgPack/test/CompareDenseVectors.h"
 //#include "LinAlgPack/include/GenMatrixClass.h"
@@ -40,17 +39,19 @@
 namespace NLPInterfacePack {
 
 NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
-	ETestingMethod          Gf_testing_method
-	,ETestingMethod         Gc_testing_method
-	,value_type             Gf_warning_tol
-	,value_type             Gf_error_tol
-	,value_type             Gc_warning_tol
-	,value_type             Gc_error_tol
-	,value_type             Gh_warning_tol
-	,value_type             Gh_error_tol
-	,size_type              num_fd_directions
+	const calc_fd_prod_ptr_t  &calc_fd_prod
+	,ETestingMethod           Gf_testing_method
+	,ETestingMethod           Gc_testing_method
+	,value_type               Gf_warning_tol
+	,value_type               Gf_error_tol
+	,value_type               Gc_warning_tol
+	,value_type               Gc_error_tol
+	,value_type               Gh_warning_tol
+	,value_type               Gh_error_tol
+	,size_type                num_fd_directions
 	)
-	:Gf_testing_method_(Gf_testing_method)
+	:calc_fd_prod_(calc_fd_prod)
+	,Gf_testing_method_(Gf_testing_method)
 	,Gc_testing_method_(Gc_testing_method)
 	,Gf_warning_tol_(Gf_warning_tol)
 	,Gf_error_tol_(Gf_error_tol)
@@ -104,8 +105,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 
 	using TestingHelperPack::update_success;
 
-	bool success = true, result;
-
+	bool success = true, result, preformed_fd;
 	if(out) {
 		*out << std::boolalpha
 			 << std::endl
@@ -136,9 +136,9 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		,"NLPFirstOrderDirectTester::finite_diff_check(...) : "
 		"Error, if py!=NULL then c!=NULL must also be true!" );
 
-	CalcFiniteDiffFirstDerivativeProduct
-									fd_deriv_prod;
-	CalcFiniteDiffFirstDerivatives 	fd_deriv_computer;
+	const CalcFiniteDiffProd
+		&fd_deriv_prod = this->calc_fd_prod();
+//	CalcFiniteDiffFirstDerivatives 	fd_deriv_computer;
 //	CompareDenseVectors				comp_v;
 //	CompareDenseSparseMatrices		comp_M;
 
@@ -155,6 +155,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		switch( Gf_testing_method() ) {
 			case FD_COMPUTE_ALL: {
 				// Compute FDGf outright
+/*
 				vec_mut_ptr_t FDGf = space_x->create_member();
 				fd_deriv_computer.calc_deriv(
 					xo, xl, xu, max_var_bounds_viol
@@ -164,9 +165,10 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					*out
 						<< "\nComparing derivatives of objective f(x)\n"
 						<< "where u(i) = finite_d(f(x))/d(x(i)), v(i) = d(f(x))/d(x(i)) ...\n";
-//				result = comp_v.comp( FDGf, *Gf, Gf_warning_tol(), Gf_error_tol()
-//					, print_all_warnings, out );
-				assert(0); // ToDo: implement above!
+				result = comp_v.comp( FDGf, *Gf, Gf_warning_tol(), Gf_error_tol()
+					, print_all_warnings, out );
+*/
+				assert(0); // ToDo: update above!
 				update_success( result, &success );
 				if(!result) return false;
 				break;
@@ -185,10 +187,13 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					value_type
 						Gf_y = dot( *Gf, *y ),
 						FDGf_y;
-					fd_deriv_prod.calc_deriv_product(
+					preformed_fd = fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu,max_var_bounds_viol
-						,*y,nlp,&FDGf_y,NULL,NULL,out
+						,*y,NULL,NULL,NULL,true,nlp
+						,&FDGf_y,NULL,NULL,out
 						);
+					if( !preformed_fd )
+						goto FD_NOT_PREFORMED;
 					assert_print_nan_inf(FDGf_y, "FDGf'*y",true,out);
 					const value_type
 						calc_err = ::fabs( ( Gf_y - FDGf_y )/( ::fabs(Gf_y) + ::fabs(FDGf_y) + small_num ) );
@@ -254,8 +259,12 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		// t2 = FDA'*t1
 		VectorSpace::vec_mut_ptr_t
 			t2 = nlp->space_c()->create_member();
-		fd_deriv_prod.calc_deriv_product(xo,xl,xu,max_var_bounds_viol
-			,*t1,nlp,NULL,t2.get(),NULL,out);
+		preformed_fd = fd_deriv_prod.calc_deriv_product(
+			xo,xl,xu,max_var_bounds_viol
+			,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
+			);
+		if( !preformed_fd )
+			goto FD_NOT_PREFORMED;
 		const value_type
 			sum_c  = sum(*c),
 			sum_t2 = sum(*t2);
@@ -308,9 +317,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 				// 
 				// Compare T \approx FDN
 				//
-
 /*
-
 				// FDN
 				GenMatrix FDN(m,n-m);
 				fd_deriv_computer.calc_deriv( xo, xl, xu, max_var_bounds_viol
@@ -380,14 +387,20 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					*t1->sub_view(var_dep)   = 0.0;
 					*t1->sub_view(var_indep) = *y;
 					// t2 = FDA' * t1  (  FDN * y ) <: R^(m)
-					fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,max_var_bounds_viol,*t1,nlp,NULL,t2.get(),NULL,out);
+					preformed_fd = fd_deriv_prod.calc_deriv_product(
+						xo,xl,xu,max_var_bounds_viol
+						,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
+						);
+					if( !preformed_fd )
+						goto FD_NOT_PREFORMED;
 					// t1 = [ -D * y ; 0 ]  <: R^(n)
 					V_StMtV( t1->sub_view(var_dep).get(), -1.0, *D, BLAS_Cpp::no_trans, *y );
 					*t1->sub_view(var_indep) = 0.0;
 					// t3 = FDA' * t1  ( -FDC * D * y ) <: R^(m)
-					fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,max_var_bounds_viol,*t1,nlp,NULL,t3.get(),NULL,out);
+					preformed_fd = fd_deriv_prod.calc_deriv_product(
+						xo,xl,xu,max_var_bounds_viol
+						,*t1,NULL,NULL,NULL,true,nlp,NULL,t3.get(),NULL,out
+						);
 					// Compare t2 \approx t3
 					const value_type
 						sum_t2 = sum(*t2),
@@ -488,6 +501,16 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		assert(0); // ToDo: Implement!
 	}
 
+FD_NOT_PREFORMED:
+
+	if(!preformed_fd) {
+		if(out)
+			*out
+				<< "\nError, the finite difference computation was not preformed due to cramped bounds\n"
+				<< "Finite difference test failed!\n" << endl;
+		return false;
+	}
+
 	} // end try
 	catch( const AbstractLinAlgPack::NaNInfException& except ) {
 		if(out)
@@ -502,6 +525,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 				"specified error tolerances!\n";
 
 	return success;
+
 }
 
 }	// end namespace NLPInterfacePack
