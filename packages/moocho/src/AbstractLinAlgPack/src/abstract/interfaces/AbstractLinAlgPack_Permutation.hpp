@@ -50,6 +50,9 @@ public:
 	/// Returns true if \c this is the identity permutation \a I.
 	virtual bool is_identity() const = 0;
 
+	/// Prints debug type of information
+	virtual std::ostream& output(std::ostream& out) const = 0;
+
 	//@}
 
 	/** @name Vector permutations */
