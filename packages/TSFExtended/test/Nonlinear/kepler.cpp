@@ -50,31 +50,32 @@ namespace TSFExtended
   public:
     /** */
     Kepler(const double& e, const double& m, const VectorType<double>& type)
-      : NonlinearOperatorBase<double>(type.createSpace(1, 1, &(tuple(0)[0])), 
-                                      type.createSpace(1, 1, &(tuple(0)[0]))),
+      : NonlinearOperatorBase<double>(),
         e_(e), m_(m), type_(type)
-    {;}
+    {
+      VectorSpace<double> space = type.createSpace(1, 1, &(tuple(0)[0]));
+      setDomainAndRange(space, space);
+    }
 
     /** */
     void setM(double m) {m_ = m;}
 
+    
     /** */
-    void apply(const Vector<double>& in, Vector<double>& out) const 
-    {
-      const double& xIn = in.getElement(0);
-      double xOut = xIn + e_*::sin(xIn) - m_;
-      out.setElement(0, xOut);
-    }
-    /** */
-    RefCountPtr<TSFCore::LinearOp<double> > jacobian(const Vector<double>& in) const 
+    LinearOperator<double> computeJacobianAndFunction(Vector<double>& f) const 
     {
       /* create a new operator */
       LinearOperator<double> J = type_.createMatrix(domain(), range());
       /* get a "view" of a loadable matrix underneath the operator */
       RefCountPtr<LoadableMatrix<double> > matview = J.matrix();
 
+      
+      const double& xIn = currentEvalPt().getElement(0);
+
+      /* compute the residual */
+      f = range()->createMember();
+      f.setElement(0,  xIn + e_ * ::sin(xIn) - m_);
       /* compute the derivative of the residual */
-      const double& xIn = in.getElement(0);
       double jVal = 1 + e_*::cos(xIn);
 
       /* insert the derivative into the (0,0) element of the matrix */
@@ -83,8 +84,17 @@ namespace TSFExtended
       matview->setRowValues(0, colIndices.size(), &(colIndices[0]),
                             &(colValues[0]));
       matview->freezeValues();
-    
+
+
       return J.ptr();
+    }
+
+    /** */
+    Vector<double> getInitialGuess() const 
+    {
+      Vector<double> rtn = domain()->createMember();
+      rtn.setElement(0, m_);
+      return rtn;
     }
 
     /* */
@@ -119,10 +129,8 @@ int main(int argc, void *argv[])
 
       Kepler* kepler = new Kepler(e, 0.0, type);
       NonlinearOperator<double> F  = kepler;
-      
-      
-      Vector<double> x0 = F.domain().createMember();
-      x0.setElement(0, 0.0);
+        
+      Vector<double> x0 = F.getInitialGuess();
 
       Vector<double> resid =  F.range().createMember();
 
@@ -146,8 +154,9 @@ int main(int argc, void *argv[])
           Vector<double> step;
           while(iters < maxiters)
             {
-              F.apply(x0, resid);
-              LinearOperator<double> J = F.jacobian(x0);
+              F.setEvalPt(x0);
+              LinearOperator<double> J = F.getJacobian();
+              Vector<double> resid = F.getFunctionValue();
               solver.solve(J, resid, step);
               cerr << "iter=" << iters << " " << " |step|=" << step.norm2() 
                    << " |F|=" << resid.norm2() << endl;
@@ -161,7 +170,7 @@ int main(int argc, void *argv[])
           else
             {
               cerr << "Converged! Yippee!" << endl;
-              cerr << "m= " << m << " x=" << x0.getElement(0) << endl;
+              cerr << "m= " << m/pi << " x=" << x0.getElement(0)/pi << endl;
             }
         }
     }

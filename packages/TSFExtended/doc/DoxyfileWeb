@@ -60,3 +60,12 @@ INPUT                  = ../../../../Trilinos/packages/TSFExtended/doc/index.doc
                          ../../../../Trilinos/packages/TSFExtended/src/LinearSolvers/ \  
                          ../../../../Trilinos/packages/TSFExtended/src/Preconditioners/  
 
+
+#
+# Links to other packages
+#
+TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html \
+                         ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html \
+                        ../../../../Trilinos/packages/TSFCore/doc/TSFCore.tag=../../../../../Trilinos/packages/TSFCore/doc/html
+GENERATE_TAGFILE       = TSFExtended.tag
+ALLEXTERNALS           = NO

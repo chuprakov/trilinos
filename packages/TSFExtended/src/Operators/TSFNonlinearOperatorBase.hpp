@@ -46,26 +46,108 @@ namespace TSFExtended
     : public Handleable<NonlinearOperatorBase<Scalar> >
     {
     public:
-      /** */
+      /** Empty ctor, for contexts in which we don't know the
+       * domain and range spaces at the beginning of construction time */
+      NonlinearOperatorBase() 
+        : domain_(), range_(), 
+          jacobianIsValid_(false),
+          residualIsValid_(false),
+          currentEvalPt_(),
+          currentFunctionValue_(),
+          currentJ_()
+      {;}
+
+      /** Construct a nonlinear operator with a domain and range */
       NonlinearOperatorBase(const VectorSpace<Scalar>& domain,
                             const VectorSpace<Scalar>& range) 
-        : domain_(domain.ptr()), range_(range.ptr()) 
+        : domain_(domain.ptr()), range_(range.ptr()), 
+          jacobianIsValid_(false),
+          residualIsValid_(false),
+          currentEvalPt_(),
+          currentFunctionValue_(),
+          currentJ_()
       {;}
                             
-      /** */
+      /** Return the domain space */
       const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& domain() const 
       {return domain_;}
 
-      /** */
+      /** Return the range space */
       const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& range() const 
       {return range_;}
 
-      /** */
-      virtual void apply(const Vector<Scalar>& in,
-                         Vector<Scalar>& out) const = 0 ;
+      /** Set the evaluation point */
+      void setEvalPt(const Vector<Scalar>& x)
+      {
+        jacobianIsValid_ = false;
+        residualIsValid_ = false;
 
-      /** */
-      virtual RefCountPtr<TSFCore::LinearOp<Scalar> > jacobian(const Vector<Scalar>& x) const = 0 ;
+        TEST_FOR_EXCEPTION(!x.space().isCompatible(*domain()),
+                           runtime_error,
+                           "evaluation point " << x
+                           << " for nonlinear operator is not in the "
+                           "operator's domain space ");
+        
+        currentEvalPt_ = x.copy();
+      }
+
+      /** Get the current point at which the function is to be 
+       * evaluated */
+      const Vector<double>& currentEvalPt() const {return currentEvalPt_;}
+
+      /** Return the Jacobian at the current evaluation point */
+       LinearOperator<double> getJacobian() const 
+      {
+        if (!jacobianIsValid_)
+          {
+            currentJ_ 
+              = computeJacobianAndFunction(currentFunctionValue_);
+            jacobianIsValid_ = true;
+            residualIsValid_ = true;
+          }
+        return currentJ_;
+      }
+
+      
+
+      /** Return the function value at the current evaluation point */
+      Vector<double> getFunctionValue() const 
+      {
+        if (!residualIsValid_)
+          {
+            currentFunctionValue_ = computeFunctionValue();
+            residualIsValid_ = true;
+          }
+        return currentFunctionValue_;
+      }
+
+
+      /** Return an initial guess appropriate to this problem */
+      virtual Vector<double> getInitialGuess() const = 0 ;
+
+
+    protected:
+
+      /** Compute the Jacobian at the current eval point */
+      virtual LinearOperator<Scalar> computeJacobianAndFunction(Vector<double>& functionValue) const = 0 ;
+
+      /** Compute the function value at the current eval point */
+      virtual Vector<Scalar> computeFunctionValue() const 
+      {
+        computeJacobianAndFunction(currentFunctionValue_);
+        return currentFunctionValue_;
+      }
+
+      
+      /** Set the domain and range. This is protected so that solver
+       * developers don't try to change the spaces on the fly */
+      void setDomainAndRange(const VectorSpace<Scalar>& domain,
+                             const VectorSpace<Scalar>& range)
+      {
+        domain_ = domain.ptr();
+        range_ = range.ptr();
+      }
+
 
     private:
       /** */
@@ -73,6 +155,21 @@ namespace TSFExtended
 
       /** */
       RefCountPtr<const TSFCore::VectorSpace<Scalar> > range_;
+
+      /** */
+      mutable bool jacobianIsValid_;
+
+      /** */
+      mutable bool residualIsValid_;
+
+      /** */
+      Vector<double> currentEvalPt_;
+
+      /** */
+      mutable Vector<double> currentFunctionValue_;
+
+      /** */
+      mutable LinearOperator<double> currentJ_;
     };
 
 

@@ -26,66 +26,49 @@
 // **********************************************************************/
 /* @HEADER@ */
 
-#ifndef TSFNONLINEAROPERATOR_HPP
-#define TSFNONLINEAROPERATOR_HPP
+#ifndef TSFNONLINEARSOLVERBASE_HPP
+#define TSFNONLINEARSOLVERBASE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFHandle.hpp"
-#include "TSFNonlinearOperatorBase.hpp"
-#include "Teuchos_TimeMonitor.hpp"
+#include "TSFLinearSolverBase.hpp"
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
   using namespace Teuchos;
 
-  /** 
-   * User-level nonlinear operator class
+  /**
+   *
    */
   template <class Scalar>
-  class NonlinearOperator : public Handle<NonlinearOperatorBase<Scalar> >
-    {
-    public:
-      /* boilerplate ctors */
-      HANDLE_CTORS(NonlinearOperator<Scalar>, NonlinearOperatorBase<Scalar>);
+  class NonlinearSolverBase 
+    : public ObjectWithVerbosity<NonlinearSolverBase>
+  {
+  public:
+    /** */
+    NonlinearSolverBase(const ParameterList& params = ParameterList());
 
-      /** */
-      VectorSpace<Scalar> domain() const 
-      {return ptr()->domain();}
+    /** */
+    virtual ~NonlinearSolverBase(){;}
 
-      /** */
-      VectorSpace<Scalar>  range() const 
-      {return ptr()->range();}
+    /** */
+    virtual Vector<double> solve() const = 0  ;
 
-      /** */
-      void setEvalPt(const Vector<double>& evalPt)
-      {
-        ptr()->setEvalPt(evalPt);
-      }
-      
-      /** */
-      LinearOperator<Scalar> getJacobian() const 
-      {
-        return ptr()->getJacobian();
-      }
+  protected:
 
-      /** */
-      Vector<double> getFunctionValue() const 
-      {
-        return ptr()->getFunctionValue();
-      }
+    const ParameterList& params() const {return params_;}
 
-      
+  private:
+    ParameterList params_;
+  };
 
-      /** */
-      Vector<double> getInitialGuess() const 
-      {
-        return ptr()->getInitialGuess();
-      }
-
-    private:
-    };
+  
+  template <class Scalar> inline
+  NonlinearSolverBase<Scalar>
+  ::NonlinearSolverBase(const ParameterList& params)
+    : params_(params);
+   
+  {;}
+  
 }
-
 
 #endif
