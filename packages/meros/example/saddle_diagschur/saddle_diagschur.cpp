@@ -28,6 +28,7 @@
 
 #include "diag.h"
 #include "Epetra2TSFutils.h"
+#include "TSFHashtable.h"
 
 using namespace TSF;
 using namespace SPP;
@@ -103,11 +104,21 @@ int main(int argc, void** argv)
   
   // 1) Build solver for inv(F) so that it corresponds to using GMRES with ML.
 
-  TSFLinearSolver FSolver;
-  ML_solverData   Fsolver_data;
-  bool symmetric = false;
-  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  //  TSFLinearSolver FSolver;
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_sym, 0);
+  azOptionsF.put(AZ_ml_levels, 4);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
   FSolver.setVerbosityLevel(4);
+
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
   
   // 2) Build a Schur complement factory for getting inv(X) approximation.
@@ -119,13 +130,27 @@ int main(int argc, void** argv)
   //   ML_solverData   schurSolver_data;
   //   symmetric = true;
   //   ML_TSF_defaults(schurSolver, &schurSolver_data, symmetric, X_crs);
-  int fill = 0;
-  int overlap = 0; 
-  double tol = 1.0e-8;
-  int maxiter = 100;
-  int kspace = 100;
-  // unpreconditioned GMRES
-  TSFLinearSolver schurSolver = new GMRESSolver(tol, maxiter, kspace);
+//   int fill = 0;
+//   int overlap = 0; 
+//   double tol = 1.0e-8;
+//   int maxiter = 100;
+//   int kspace = 100;
+//   // unpreconditioned GMRES
+//   TSFLinearSolver schurSolver = new GMRESSolver(tol, maxiter, kspace);
+
+  TSFHashtable<int, int> azOptionsSchur;
+  TSFHashtable<int, double> azParamsSchur;
+  azOptionsSchur.put(AZ_solver, AZ_gmres);
+  azOptionsSchur.put(AZ_ml, 1);
+  azOptionsSchur.put(AZ_ml_levels, 4);
+  azOptionsSchur.put(AZ_precond, AZ_dom_decomp);
+  azOptionsSchur.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsSchur.put(AZ_tol, 1e-6);
+  azOptionsSchur.put(AZ_max_iter, 200);
+  azOptionsSchur.put(AZ_recursive_iterate, 1);
+  azOptionsSchur.put(AZ_output, 1);
+  TSFLinearSolver schurSolver = new AZTECSolver(azOptionsSchur,azParamsSchur);
+
   schurSolver.setVerbosityLevel(4);
   
   // 2 b) Build a Schur complement factory of type DiagSchurFactory.
