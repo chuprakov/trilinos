@@ -137,15 +137,15 @@ int main(int argc, char* argv[] ) {
 		//
 		// Determine the mapping of elements to processors for MPIDenseVectorSpace
 		RTOp_index_type local_dim = n/num_proc; // assume n > num_proc
-		wsp::Workspace<RTOp_index_type>  ind_map(wss,num_proc);
+		RTOp_index_type *ind_map  = new RTOp_index_type[num_proc];
 		RTOp_index_type i_u = local_dim;
-		for( int p = 0; p < num_proc; ++p, ++i_u )
+		for( int p = 0; p < num_proc; ++p, i_u += local_dim )
 			ind_map[p] = i_u;
-		ind_map[num_proc-1] = n;
+		ind_map[num_proc-1] = n; // Make sure we don't go past n
 		local_dim = ( proc_rank > 0
 					  ? ind_map[proc_rank]-ind_map[proc_rank-1]
 					  : ind_map[0] );
-		vec_space = rcp::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,&ind_map[0],false,1,n));
+		vec_space = rcp::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,ind_map,true,1,n));
 	}
 	else {
 		//
