@@ -24,7 +24,7 @@
 
 #include "GeneralIterationPack/test/TestGeneralIterationPack.h"
 #include "GeneralIterationPack/include/AlgorithmState.h"
-#include "GeneralIterationPack/include/IterQuantityAccessContinuous.h"
+#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
 #include "AbstractFactoryStd.h"
 #include "update_success.h"
 #include "ThrowException.h"
@@ -90,9 +90,9 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	typedef double													alpha_k_t;
 	typedef std::vector<double>										x_k_t;
 	typedef B														V_k_t;
-	typedef IterQuantityAccessContinuous<alpha_k_t>					alpha_t;
-	typedef IterQuantityAccessContinuous<x_k_t>						x_t;
-	typedef IterQuantityAccessContinuous<V_k_t>						V_t;
+	typedef IterQuantityAccessContiguous<alpha_k_t>					alpha_t;
+	typedef IterQuantityAccessContiguous<x_k_t>						x_t;
+	typedef IterQuantityAccessContiguous<V_k_t>						V_t;
 
 	if(out) *out << "\n*** Create state object ...\n";
 	AlgorithmState state(4);
@@ -101,10 +101,10 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	if(out) *out << "\n*** Set three types of iteration quantity access objects.\n";
 
-	if(out) *out << "set IterQuantityAccessContinuous<double>(2,\"alpha\")\n";
+	if(out) *out << "set IterQuantityAccessContiguous<double>(2,\"alpha\")\n";
 	state.set_iter_quant( "alpha", rcp::rcp(new alpha_t(2,"alpha")) );
 
-	if(out) *out << "set IterQuantityAccessContinuous<std::vector<double> >(2,\"x\")\n";
+	if(out) *out << "set IterQuantityAccessContiguous<std::vector<double> >(2,\"x\")\n";
 	state.set_iter_quant( "x", rcp::rcp(new x_t(2,"x")) );
 
 	if(out) *out << "set IterQuantityAccessDerivedToBase<B,D>(1,\"V\")\n";
