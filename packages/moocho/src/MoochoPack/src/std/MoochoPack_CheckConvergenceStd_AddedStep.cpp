@@ -184,7 +184,7 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		out
 			<< L << "opt_err = norm_inf(GL_k)/opt_scale_factor\n";
 	out
-		<< L << "feas_err = norm_inf_c_k\n"
+		<< L << "feas_err = norm_inf(c_k)\n"
 		<< L << "opt_kkt_err_k = opt_err/scale_kkt_factor\n"
 		<< L << "feas_kkt_err_k = feas_err/scale_kkt_factor\n"
 		<< L << "if d_k is updated then\n"

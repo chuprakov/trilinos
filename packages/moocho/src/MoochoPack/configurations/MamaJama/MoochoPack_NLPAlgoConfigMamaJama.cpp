@@ -89,6 +89,7 @@
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithoutBounds_Step.h"
 #include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
@@ -591,8 +592,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			if(_rHL) {
 				_rHL->initial_setup(
 					dof, cov_.num_lbfgs_updates_stored_
-					,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
-					                                              // QPOPT or QPSOL but not QPSchur
+					,true  // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
 					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
 					                                              // but now QPOPT or QPSOL
 					,cov_.lbfgs_auto_scaling_
@@ -616,8 +616,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					LB_RR_ptr = new MatrixSymPosDefLBFGS;
 				LB_RR_ptr->initial_setup(
 					dof, cov_.num_lbfgs_updates_stored_
-					,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
-					                                              // QPOPT or QPSOL but not QPSchur
+					,true  // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
 					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
 					                                              // but now QPOPT or QPSOL
 					,cov_.lbfgs_auto_scaling_
@@ -631,8 +630,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					DB_RR_ptr = new MatrixSymPosDefCholFactor(
 						NULL    // Let it allocate its own memory
 						,NULL,0 // ...
-						,cov_.qp_solver_type_==QP_QPSCHUR?false:true  // Maintain the original matrix for
-						                                              // QPOPT or QPSOL but not QPSchur
+						,true   // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
 						,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the cholesky factor for QPSchur
 						                                              // but now QPOPT or QPSOL
 						);
@@ -662,8 +660,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					_rHL->init_setup(
 						NULL    // Let it allocate its own memory
 						,NULL,0 // ...
-						,cov_.qp_solver_type_==QP_QPSCHUR?false:true // Maintain the original matrix for
-						                                             // QPOPT or QPSOL but not QPSchur
+						,true // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
 						,cov_.qp_solver_type_==QP_QPSCHUR?true:false // Maintian the cholesky factor for QPSchur
 						                                             // but now QPOPT or QPSOL
 					);
@@ -734,6 +731,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		typedef SparseSolverPack::TestingPack::BasisSystemTester basis_sys_tester_t;
 		basis_sys_tester_t
 			*basis_sys_tester = new basis_sys_tester_t;
+		basis_sys_tester->solve_error_tol(1e-5); // ToDo: Make better documented?
 		SparseSolverPack::TestingPack::BasisSystemTesterSetOptions
 			basis_sys_options_setter( basis_sys_tester );
 		basis_sys_options_setter.set_options( *options_ );
@@ -1372,17 +1370,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 	// 10/15/99: Add basis checking step
 	if( !tailored_approach && cov_.max_basis_cond_change_frac_ < INF_BASIS_COND_CHANGE_FRAC ) {
-		CheckBasisFromPy_Step
-			*basis_check_step = new CheckBasisFromPy_Step(
+		// 3/7/01: Added another test also
+		CheckBasisFromCPy_Step
+			*basis_check_step1 = new CheckBasisFromCPy_Step(
 				new NewBasisSelectionStd_Strategy(decomp_sys) );
-		if( cov_.max_basis_cond_change_frac_ > 0.0 )
-			basis_check_step->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
+		CheckBasisFromPy_Step
+			*basis_check_step2 = new CheckBasisFromPy_Step(
+				new NewBasisSelectionStd_Strategy(decomp_sys) );
+		if( cov_.max_basis_cond_change_frac_ > 0.0 ) {
+			basis_check_step1->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
+			basis_check_step2->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
+		}
 		Algorithm::poss_type poss;
 		assert(poss = algo->get_step_poss( DepDirec_name ) );
 		algo->insert_step(
 			  poss+1
-			, "CheckBasis"
-			, basis_check_step
+			, "CheckBasis1"
+			, basis_check_step1
+		  );
+		algo->insert_step(
+			  poss+1
+			, "CheckBasis2"
+			, basis_check_step2
 		  );
 	}
 
