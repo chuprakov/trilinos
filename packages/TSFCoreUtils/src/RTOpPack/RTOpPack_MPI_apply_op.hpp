@@ -260,7 +260,7 @@ void RTOpPack::extract_reduct_obj_ext_state(
 template<class Scalar>
 void RTOpPack::load_reduct_obj_ext_state(
   const RTOpT<Scalar>    &op
-	,const void               *_reduct_obj_ext
+	,const void            *_reduct_obj_ext
 	,ReductTarget          *reduct_obj
 	)
 {
