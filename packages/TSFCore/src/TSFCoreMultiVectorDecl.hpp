@@ -18,15 +18,16 @@ namespace TSFCore {
  * matrix-matrix multiplication and the solution of linear systems for
  * multiple right hand sides.  Every application area (serial
  * parallel, out-of-core etc.) should be able to define at least one
- * reasonbly efficient implementation of a <tt>%MultiVector<Scalar></tt>.
+ * reasonbly efficient implementation of <tt>%MultiVector</tt>.
  *
- * The <tt>%MultiVector<Scalar></tt> interface is derived from the
- * <tt>LinearOp</tt> interface and therefore a <tt>%MultiVector<Scalar></tt>
+ * The <tt>%MultiVector</tt> interface is derived from the
+ * <tt>LinearOp</tt> interface and therefore a <tt>%MultiVector</tt>
  * can be considered as a linear operator which has some interesting
- * implications. 
+ * implications.
  *
- * Note that since, this interface is derived from <tt>LinearOp</tt> that it must
- * support the methods <tt>domain()<tt> and <tt>range()</tt>.
+ * Note that since, this interface is derived from <tt>LinearOp</tt>
+ * that it must support the methods <tt>domain()<tt> and
+ * <tt>range()</tt>.
  *
  * Another very powerful feature of this interface is the ability to
  * apply reduction/transformation operators over a sub-set of rows and
@@ -40,30 +41,31 @@ namespace TSFCore {
  *
  * <b>Notes for subclass developers</b>
  *
- * Only one method overrid is required (in addition to the methods
+ * Only one method override is required (in addition to the methods
  * that must be overridden from <tt>LinearOp</tt>, except
  * <tt>apply()</tt>, see below) to create a concrete
- * <tt>MultiVector<Scalar></tt> subclass: the non-constant version of
- * <tt>col()</tt>.  All of the other methods have default
+ * <tt>MultiVector<Scalar></tt> subclass which is the non-constant
+ * version of <tt>col()</tt>.  All of the other methods have default
  * implementations that are quite good in most cases.
  *
  * Note that through the magic of the <tt>applyOp()</tt> methods that
  * this interface is able to implement the pure virtual
  * <tt>apply()</tt> method from the <tt>LinearOp</tt> interface.  This
- * implementation is not optimal, but will be sufficient in many different
- * contexts.
+ * implementation is not optimal, but will be sufficient in many
+ * different contexts.
  *
  * The <tt>applyOp()</tt> methods should only be overridden if the
  * subclass can do something more efficient than simply applying the
  * reduction/transformation operators one column at a time.
  *
- * The non-const version of <tt>subView()</tt> should be overridden
- * if the performance if this method is important.  The default
+ * The non-const versions of <tt>subView()</tt> should be overridden
+ * if the performance of these methods are important.  The default
  * implementation will not achieve near-optimal performance.
  *
  * Methods that subclasses should almost never need (or want) to
  * override are the const version of <tt>col()</tt>, the const version
- * of <tt>clone_mv()</tt>, the const version of <tt>subView()</tt>,
+ * of <tt>clone_mv()</tt> or the the const versions of
+ * <tt>subView()</tt>.
  */
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
@@ -136,12 +138,18 @@ public:
 	//@{
 
 	///
-	/** Returns a const sub-view of the columns of the this multi-vector.
+	/** Returns a const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> <tt>col_rng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
 	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
+	 * <li> <tt>return->domain()->dim() == RangePack::full_range(col_rng,1,this->domain()->dim()).size()</tt>
+	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(col_rng.lbound()+k)</tt>,
+	 *      for <tt>k=0...RangePack::full_range(col_rng,1,this->domain()->dim()).ubound()</tt>
 	 * </ul>
 	 *
 	 * The default implementation (which is the only implementation needed by subclasses)
@@ -150,18 +158,77 @@ public:
 	virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView( const Range1D& col_rng ) const;
 	
 	///
-	/** Returns a non-const sub-view of the columns of the this multi-vector.
+	/** Returns a non-const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> <tt>col_rng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
 	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
+	 * <li> <tt>return->domain()->dim() == RangePack::full_range(col_rng,1,this->domain()->dim()).size()</tt>
+	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(col_rng.lbound()+k)</tt>,
+	 *      for <tt>k=0...RangePack::full_range(col_rng,1,this->domain()->dim()).ubound()</tt>
 	 * </ul>
 	 *
 	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
 	 * a good default implementation in general.
 	 */
 	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+
+	///
+	/** Returns a const sub-view of a non-contiguous set of columns of the this multi-vector.
+	 *
+	 * @param  numCols  [in] The number of columns to extract a view for.
+	 * @param  cols[]   [in] Array (length <tt>numCols</tt>) of the columns indices to use in the
+	 *                  returned view.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> <tt>numCols <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>1 <= cols[k] <= this->domain()->dim()</tt>, for <tt>k=0...numCols-1</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>col[k1] != col[k2]</tt>, for all <tt>k1 != k2</tt> in the range <tt>[0,numCols-1]</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
+	 * <li> <tt>return->domain()->dim() == numCols</tt>
+	 * <li> <tt>*return->col(k+1)</tt> represents the same column vector as <tt>this->col(cols[k])</tt>,
+	 *      for <tt>k=0...numCols</tt>
+	 * </ul>
+	 *
+	 * The default implementation (which is the only implementation needed by subclasses)
+	 * is to return object from the non-const verstion <tt>subView()</tt>.
+	 */
+	virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView( const int numCols, const int cols[] ) const;
+
+
+	///
+	/** Returns a non-const sub-view of a non-contiguous set of columns of the this multi-vector.
+	 *
+	 * @param  numCols  [in] The number of columns to extract a view for.
+	 * @param  cols[]   [in] Array (length <tt>numCols</tt>) of the columns indices to use in the
+	 *                  returned view.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> <tt>1 <= numCols <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>1 <= cols[k] <= this->domain()->dim()</tt>, for <tt>k=0...numCols-1</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>col[k1] != col[k2]</tt>, for all <tt>k1 != k2</tt> in the range <tt>[0,numCols-1]</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
+	 * <li> <tt>return->domain()->dim() == numCols</tt>
+	 * <li> <tt>*return->col(k+1)</tt> represents the same column vector as <tt>this->col(cols[k])</tt>,
+	 *      for <tt>k=0...numCols</tt>
+	 * </ul>
+	 *
+	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
+	 * a good default implementation in general.
+	 */
+	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
 	
 	//@}
 

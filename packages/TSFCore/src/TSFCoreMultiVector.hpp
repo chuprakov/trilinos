@@ -82,9 +82,46 @@ MultiVector<Scalar>::subView( const Range1D& col_rng_in )
 	}
 	return mmp::null; // There was an empty set in col_rng_in!
 }
-	
+
+template<class Scalar>
+MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
+MultiVector<Scalar>::subView( const int numCols, const int cols[] ) const
+{
+	return const_cast<MultiVector<Scalar>*>(this)->subView(numCols,cols);
+}
+
+template<class Scalar>
+MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+MultiVector<Scalar>::subView( const int numCols, const int cols[] )
+{
+	namespace mmp = MemMngPack;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
+	const VectorSpace<Scalar>  &domain   = *this->domain();
+	const VectorSpace<Scalar>  &range    = *this->range();
+	const Index                dimDomain = domain.dim();
+#ifdef _DEBUG
+	const char msg_err[] = "MultiVector<Scalar>::subView(numCols,cols[]): Error!";
+ 	THROW_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
+#endif
+	// We have to create a view of a subset of the columns
+	wsp::Workspace< mmp::ref_count_ptr< Vector<Scalar> > > col_vecs(wss,numCols);
+	for( int k = 0; k < numCols; ++k ) {
+		const int col_k = cols[k];
+#ifdef _DEBUG
+		THROW_EXCEPTION(
+			col_k < 1 || dimDomain < col_k, std::invalid_argument
+			,msg_err << " col["<<k<<"] = " << col_k << " is not in the range [1,"<<dimDomain<<"]!"
+			);
+#endif
+		col_vecs[k] = this->col(col_k);
+	}
+	return mmp::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(numCols),&col_vecs[0]));
+}
+
 // Collective applyOp() methods
 
+template<class Scalar>
 void MultiVector<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &prim_op
 	,const size_t                   num_multi_vecs
