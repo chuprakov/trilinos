@@ -116,7 +116,7 @@ namespace ReducedSpaceSQPPack {
  *   <b>Enabler</b>:  This can be done By simply calling <tt>this->get_nlp()</tt> (if
  *   needed to access the NLP that was set using <tt>this->set_nlp()</tt>),
  *   modifying the NLP object in some way (i.e. a new initial point) and then calling
- *   <tt>this->find_min()</tt>.
+ *   <tt>this->solve_nlp()</tt>.
  * <li> Allow clients to configure a new rSQP++ algorithm with a potentially new NLP
  *   object (i.e. different dimensions, different structure etc).<br>
  *   <b>Enabler</b>: The client can just call <tt>this->set_uninitialized()</tt> which
@@ -527,7 +527,7 @@ public:
 	 * <b>Specifying options:</b><br>
 	 * The options used by the configuration object to configure the optimization algorithm as well
 	 * as solver tolerances, maximum number of iterations etc are taken from the
-	 * <tt>OptionsFromSteamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
+	 * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
 	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'rSQPpp.opt'
 	 * in the current directory.  If this file does not exist, then a default set of options is used
 	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>
@@ -549,7 +549,7 @@ public:
 	 * <li> [<tt>this->do_algo_outputting() == true</tt>] Output will be set to <tt>*this->get_algo_out()</tt>
 	 *      (or the file 'rSQPppAlgo.out' in the current directory if <tt>this->get_algo_out().get()
 	 *      == NULL</tt>) which contains information on how the optimization algorithm is configured and what
-	 *      the algorithm is (if the option 'rSQPppSolver::print_alg == true', see the options file
+	 *      the algorithm is (if the option 'rSQPppSolver::print_algo == true', see the options file
 	 *      <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>).
 	 * </ul>
 	 *
@@ -594,11 +594,6 @@ public:
 	 * interface functions.
 	 *
 	 * ToDo: Finish documentation!
-	 *
-	 * @return The solution status:<ul>
-	 * <li> ToDo: Fill these in and discuss them!
-	 * </ul>
-	 *
 	 */
 	rSQPSolverClientInterface& get_solver();
 
