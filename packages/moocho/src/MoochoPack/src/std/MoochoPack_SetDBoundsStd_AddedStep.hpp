@@ -16,36 +16,40 @@
 #ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
 #define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_Step.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "GeneralIterationPack/include/CastIQMember.h"
 #include "ReducedSpaceSQPPack/include/std/d_bounds_iter_quant.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Updates the active set statistics for the current iteration.
-  *
-  * The function act_set_stats(...) is used to access the iteration
-  * quantity object for the active set object.
-  */
-class SetDBoundsStd_AddedStep : public rSQPAlgo_Step {
+/** Computes the bounds for the QP subproblem from the %NLP bounds.
+ */
+class SetDBoundsStd_AddedStep
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
-	// ////////////////////
-	// Overridden
+	///
+	SetDBoundsStd_AddedStep();
 
+	/** @name Overridden from AlgorithmStep */
+	//@{
 	///
 	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
-
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+	//@}
 
 private:
-	d_bounds_iq_member		d_bounds_;
+	GeneralIterationPack::CastIQMember<VectorWithOpMutable> dl_iq_;
+	GeneralIterationPack::CastIQMember<VectorWithOpMutable> du_iq_;
 
-};	// end class SetDBoundsStd_AddedStep
+}; // end class SetDBoundsStd_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+} // end namespace ReducedSpaceSQPPack 
 
-#endif	// SET_D_BOUNDS_STD_ADDED_STEP_HH
+#endif // SET_D_BOUNDS_STD_ADDED_STEP_HH

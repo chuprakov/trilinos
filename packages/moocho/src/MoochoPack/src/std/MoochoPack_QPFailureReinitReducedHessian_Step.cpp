@@ -18,6 +18,7 @@
 
 #include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
@@ -25,26 +26,29 @@
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
 
-ReducedSpaceSQPPack::QPFailureReinitReducedHessian_Step::QPFailureReinitReducedHessian_Step(
+namespace ReducedSpaceSQPPack {
+
+QPFailureReinitReducedHessian_Step::QPFailureReinitReducedHessian_Step(
 	const null_space_step_ptr_t& null_space_step
 	)
 	:null_space_step_(null_space_step)
 	,last_qp_failure_k_(-100) // has not failed yet.
 {}
 
-bool ReducedSpaceSQPPack::QPFailureReinitReducedHessian_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+bool QPFailureReinitReducedHessian_Step::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss
+	)
 {
 	try {
 		return null_space_step().do_step(_algo,step_poss,type,assoc_step_poss);
 	}
 	catch(const QPFailure& qp_excpt) {
-		rSQPAlgo	&algo	= rsqp_algo(_algo);
-		rSQPState	&s		= algo.rsqp_state();
-		NLP			&nlp	= algo.nlp();
-
-		EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-		std::ostream& out = algo.track().journal_out();
+		rSQPAlgo              &algo   = rsqp_algo(_algo);
+		rSQPState             &s      = algo.rsqp_state();
+		NLP                   &nlp    = algo.nlp();
+		EJournalOutputLevel   olevel  = algo.algo_cntr().journal_output_level();
+		std::ostream          &out    = algo.track().journal_out();
 
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
 			out	<< "\nQP failed! "
@@ -84,10 +88,11 @@ bool ReducedSpaceSQPPack::QPFailureReinitReducedHessian_Step::do_step(Algorithm&
 	return false;	// will never be executed.
 }
 
-void ReducedSpaceSQPPack::QPFailureReinitReducedHessian_Step::print_step(
-	  const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+void QPFailureReinitReducedHessian_Step::print_step(
+	const Algorithm& algo
+	,poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	,std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "do null space step : " << typeid(null_space_step()).name() << std::endl;
@@ -95,14 +100,16 @@ void ReducedSpaceSQPPack::QPFailureReinitReducedHessian_Step::print_step(
 	out
 		<< L << "end null space step\n"
 		<< L << "if QPFailure was thrown then\n"
-		<< L << "    if QP failed already then\n"
-		<< L << "        rethrow QPFailure\n"
-		<< L << "    end\n"
-		<< L << "    if k > max_iter then\n"
-		<< L << "        terminate the algorithm!\n"
-		<< L << "    end\n"
-		<< L << "    set all rHL_{k} to not updated\n"
-		<< L << "    goto ReducedHessian\n"
+		<< L << "  if QP failed already then\n"
+		<< L << "    rethrow QPFailure\n"
+		<< L << "  end\n"
+		<< L << "  if k > max_iter then\n"
+		<< L << "    terminate the algorithm!\n"
+		<< L << "  end\n"
+		<< L << "  set all rHL_{k} to not updated\n"
+		<< L << "  goto ReducedHessian\n"
 		<< L << "end\n"
 		;
 }
+
+} // end namespace ReducedSpaceSQPPack

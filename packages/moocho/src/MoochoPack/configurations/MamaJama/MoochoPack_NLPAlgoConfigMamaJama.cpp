@@ -105,8 +105,8 @@
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromRPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
-//#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
+#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
+#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
@@ -1216,9 +1216,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// NullSpace_Step
+		algo_step_ptr_t    set_d_bounds_step    = rcp::null;
 		algo_step_ptr_t    null_space_step_step = rcp::null;
-		{
+		if( mI == 0 && nb == 0 ) {
 			null_space_step_step = rcp::rcp(new NullSpaceStepWithoutBounds_Step());
+		}
+		else {
+			set_d_bounds_step = rcp::rcp(new SetDBoundsStd_AddedStep());
+			// ToDo: set NullSpaceStepWithInequStd_Step
+			null_space_step_step = rcp::rcp(
+				new QPFailureReinitReducedHessian_Step(null_space_step_step)
+				);
 		}
 
 		// CalcDFromYPYZPZ_Step
@@ -1341,9 +1349,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 	
 		//
-		// Create the algorithm depending on the type of NLP we are
-		// trying to solve.
+		// Create the algorithm depending on the type of NLP we are trying to solve.
 		//
+
 		if( m == 0 && mI == 0 ) {
 			if( nb == 0 ) {
 				//
@@ -1386,19 +1394,33 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				"Nonlinear equation (NLE) problems are not supported yet!" );
 			assert(0); // ToDo: add the step objects for this algorithm
 		}
-		else if ( m > 0 && mI == 0 && nb == 0 ) {
+		else if ( m > 0 || mI > 0 || nb > 0 ) {
 			//
-			// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
+			// General nonlinear NLP ( m > 0 || mI > 0 )
 			//
-			if(trase_out)
-				*trase_out 
-					<< "\nConfiguring an algorithm for a nonlinear equality constrained "
-					<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
+			if(  mI == 0 && nb == 0 ) {
+				//
+				// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
+				//
+				if(trase_out)
+					*trase_out 
+						<< "\nConfiguring an algorithm for a nonlinear equality constrained "
+						<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
+			}
+			else {
+				//
+				// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
+				//
+				if(trase_out)
+					*trase_out 
+						<< "\nConfiguring an algorithm for a nonlinear generally constrained "
+						<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
+			}
 
 			int step_num       = 0;
 			int assoc_step_num = 0;
 	
-			// (1) EvalNewPoint
+			// EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
 			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
 			{
@@ -1411,7 +1433,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					);
 			}
 			
-			// (2) RangeSpaceStep
+			// RangeSpaceStep
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
 				assoc_step_num = 0;
@@ -1441,27 +1463,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						);
 			}
 
-			// (3) ReducedGradient
+			// ReducedGradient
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
 			}
 
-			// (4) CalcReducedGradLagrangian
-			algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+			if( mI == 0 && nb == 0 ) {
 
-			// (5) CalcLagrangeMultDecomposed
-			// Compute these here so that in case we converge we can report them
-			if( !tailored_approach ) {
-//				assert(0); // ToDo: Insert this step
+				// CalcReducedGradLagrangian
+				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+				// CalcLagrangeMultDecomposed
+				// Compute these here so that in case we converge we can report them
+				if( !tailored_approach ) {
+					// ToDo: Insert this step
+				}
+
+				// CheckConvergence
+				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 			}
 
-			// (6) CheckConvergence
-			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-
-			// (7) ReducedHessian
+			// ReducedHessian
 			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
 
-			// (7.-1) CheckSkipBFGSUpdate
+			// (.-1) CheckSkipBFGSUpdate
 			algo->insert_assoc_step(
 				step_num
 				,GeneralIterationPack::PRE_STEP
@@ -1470,24 +1495,48 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				,check_skip_bfgs_update_step
 			  );
 
-			// (8) NullSpaceStep
+			// NullSpaceStep
 			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+			if( mI > 0 || nb > 0 ) {
+				// SetDBoundsStd
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,1
+					,"SetDBoundsStd"
+					,set_d_bounds_step
+				  );
+			}
 
-			// (9) CalcDFromYPYZPZ
+			// CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
-			// ToDo: Add ths step!
 			
-			// (10) LineSearch
+			if( mI > 0 || nb > 0 ) {
+
+				// CalcReducedGradLagrangian
+				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+				// CalcLagrangeMultDecomposed
+				// Compute these here so that in case we converge we can report them
+				if( !tailored_approach ) {
+					// ToDo: Insert this step
+				}
+
+				// CheckConvergence
+				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+			}
+
+			// LineSearch
 			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
 				algo->insert_step( ++step_num, LineSearch_name, line_search_full_step_step );
 			}
 			else {
-				// (10) Main line search step
+				// Main line search step
 				algo->insert_step( ++step_num, LineSearch_name, line_search_step );
 				// Insert presteps
 				Algorithm::poss_type
 					pre_step_i = 0;
-				// (10.-?) LineSearchFullStep
+				// (.-?) LineSearchFullStep
 				algo->insert_assoc_step(
 					step_num
 					,GeneralIterationPack::PRE_STEP
@@ -1495,7 +1544,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,"LineSearchFullStep"
 					,line_search_full_step_step
 					);
-				// (10.-?) MeritFunc_PenaltyPramUpdate
+				// (.-?) MeritFunc_PenaltyPramUpdate
 				algo->insert_assoc_step(
 					step_num
 					,GeneralIterationPack::PRE_STEP
@@ -1506,20 +1555,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				// ToDo: Add other LineSearch step objects
 			}
 
-		}
-		else if ( mI > 0 || nb > 0 ) {
-			//
-			// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
-			//
-			if(trase_out)
-				*trase_out 
-					<< "\nConfiguring an algorithm for a nonlinear generally constrained "
-					<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
-
-			THROW_EXCEPTION(
-				mI > 0 || nb > 0, std::logic_error
-				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
-				"General inequality constrained NLPS are not supported yet!" );
 		}
 		else {
 			assert(0); // Error, this should not ever be called!

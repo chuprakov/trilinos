@@ -15,5 +15,5 @@
 
 #include "ReducedSpaceSQPPack/include/std/d_bounds_iter_quant.h"
 
-const std::string
-	ReducedSpaceSQPPack::d_bounds_name = "d_bounds";
+const std::string  ReducedSpaceSQPPack::dl_name = "dl";
+const std::string  ReducedSpaceSQPPack::du_name = "du";

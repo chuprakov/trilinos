@@ -16,8 +16,9 @@
 #ifndef QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 #define QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -25,16 +26,18 @@ namespace ReducedSpaceSQPPack {
 /** Directs the algorithm to reinitalize the reduced Hessian on the event
  * of a QP failure.
  *
- * If the delegated Step object throws a QPFailure exception
+ * If the delegated Step object throws a \c QPFailure exception
  * then this Step object wipes out all reduced Hessian info rHL
  * for the current and previous iterations and then directs the algorithm
  * back to the ReducedHessian step (see the printed step description).
  */
-class QPFailureReinitReducedHessian_Step : public LineSearch_Step {
+class QPFailureReinitReducedHessian_Step
+	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+{
 public:
 
-	/// <<std comp>> members for LineSearch object.
-	STANDARD_COMPOSITION_MEMBERS( rSQPAlgo_Step, null_space_step )
+	///
+	STANDARD_COMPOSITION_MEMBERS( GeneralIterationPack::AlgorithmStep, null_space_step )
 
 	///
 	QPFailureReinitReducedHessian_Step( const null_space_step_ptr_t& null_space_step );
