@@ -1149,6 +1149,7 @@ void QPSchur::ActiveSet::initialize(
 	using SparseLinAlgPack::Mp_StPtMtP;
 	using SparseLinAlgPack::M_StMtInvMtM;
 	using LinAlgPack::sym;
+	typedef MatrixSymAddDelUpdateable MSADU;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -1485,9 +1486,18 @@ void QPSchur::ActiveSet::initialize(
 				<< S_store;
 		}
 		// Initialize and factorize the schur complement!
-		schur_comp().update_interface().initialize(
-			S, q_hat_max, true
-			, MatrixSymAddDelUpdateable::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat ) );
+		try {
+			schur_comp().update_interface().initialize(
+				S,q_hat_max,true,MSADU::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat )
+				,pivot_tols() );
+		}
+		catch(const MSADU::WarnNearSingularUpdateException& excpt) {
+			if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+				*out
+					<< "\nActiveSet::initialize(...) : " << excpt.what()
+					<< std::endl;
+			}
+		}
 		// ToDo: Think about how to deal with the case where we may want to
 		// selectively remove some rows/columns of S in order to
 		// get a nonsingular schur complement.  This may be complicated though.
@@ -4075,14 +4085,28 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					}
 					else {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-							*out
-								<< "We are not using iterative refinement yet so turn it on and recompute the steps ... \n";
+							*out << "We are not using iterative refinement yet so turn it on";
+							if(assume_lin_dep_ja)
+								*out << "\nthen pick another violated constriant to add ... \n";
+							else
+								*out << "\nthen recompute the steps ...\n";
 						}
 						summary_lines_counter = 0;
 						last_jd = 0;  // erase this memory!
 						last_ja = 0;  // ..
 						using_iter_refinement = true;
-						next_step = COMPUTE_SEARCH_DIRECTION;
+						if(assume_lin_dep_ja) {
+							EIterRefineReturn status = iter_refine(
+								*act_set, out, output_level, -1.0, &qp.fo(), -1.0, act_set->q_hat() ? &act_set->d_hat() : NULL
+								,v, act_set->q_hat() ? &act_set->z_hat() : NULL
+								,iter_refine_num_resid, iter_refine_num_solves
+								);
+							next_step = PICK_VIOLATED_CONSTRAINT;
+						}
+						else {
+							// Iterative refinement will be performed there
+							next_step = COMPUTE_SEARCH_DIRECTION;
+						}
 						continue;
 					}
 				}
@@ -4119,25 +4143,59 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						}
 						else {
 							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-								*out
-									<< "We are not using iterative refinement yet so turn it on and recompute the steps ... \n";
+								*out << "We are not using iterative refinement yet so turn it on";
+								if(assume_lin_dep_ja)
+									*out << "\nthen pick another violated constriant to add ... \n";
+								else
+									*out << "\nthen recompute the steps ...\n";
 							}
 							summary_lines_counter = 0;
 							last_jd = 0;  // erase this memory!
 							last_ja = 0;  // ..
 							using_iter_refinement = true;
-							next_step = COMPUTE_SEARCH_DIRECTION;
+							if(assume_lin_dep_ja) {
+								EIterRefineReturn status = iter_refine(
+									*act_set, out, output_level, -1.0, &qp.fo(), -1.0, act_set->q_hat() ? &act_set->d_hat() : NULL
+									,v, act_set->q_hat() ? &act_set->z_hat() : NULL
+									,iter_refine_num_resid, iter_refine_num_solves
+									);
+								next_step = PICK_VIOLATED_CONSTRAINT;
+							}
+							else {
+								// Iterative refinement will be performed there
+								next_step = COMPUTE_SEARCH_DIRECTION;
+							}
 							continue;
 						}
 					}
 					// Update the augmented KKT system
-					if( assume_lin_dep_ja ) {
-						if(act_set->drop_add_constraints( jd, ja, bnd_ja, true, out, output_level ))
-							summary_lines_counter = 0;
+					try {
+						if( assume_lin_dep_ja ) {
+							if(act_set->drop_add_constraints( jd, ja, bnd_ja, true, out, output_level ))
+								summary_lines_counter = 0;
+						}
+						else {
+							if(act_set->drop_constraint( jd, out, output_level, true, true ))
+								summary_lines_counter = 0;
+						}
 					}
-					else {
-						if(act_set->drop_constraint( jd, out, output_level, true, true ))
-							summary_lines_counter = 0;
+					catch( const MatrixSymAddDelUpdateable::SingularUpdateException& excpt ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "\n\nSchur complement appears to be singular and should not be:\n"
+								<< excpt.what()
+								<< "\nThe QP appears to be nonconvex and we therefore terminate the primal-dual QP algorithm!\n";
+						}
+						return NONCONVEX_QP;
+					}
+					catch( const MatrixSymAddDelUpdateable::WrongInertiaUpdateException& excpt ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "\n\nSchur complement appears to have the wrong inertia:\n"
+								<< excpt.what()
+								<< "\nThe QP appears to be nonconvex and we therefore terminate the primal-dual QP algorithm!\n";
+						}
+						return NONCONVEX_QP;
 					}
 					// z_hat = z_hat + beta * t_D * p_z_hat
 					if(act_set->q_hat())
