@@ -10,9 +10,8 @@ std::ostream& RTOpPack::output(
 {
 	int w = o.width(0) - 1; // get the set width (minus 1 since a space is inserted)
 	if( print_dim ) {
-		o.setf(ios::left);
-		o << std::setw(0) << v.subDim() << std::endl;
-		o.setf(ios::right);
+		o << std::setiosflags(std::ios::left) << std::setw(0) << v.subDim() 
+			<< std::endl << std::setiosflags(std::ios::right);
 	}
 	const RTOp_value_type  *v_val        = v.values();
 	const ptrdiff_t        v_val_s       = v.stride();
