@@ -30,17 +30,14 @@
 #define TSFZEROOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreVectorSpace.hpp"
-#include "TSFVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace TSFExtended
 {
-using namespace Teuchos;
 
   /** 
    * ZeroOperator is the zero operator, which maps any vector in the
