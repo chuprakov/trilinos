@@ -20,7 +20,7 @@
 
 #include "NLPSerialPreprocess.hpp"
 #include "NLPFirstOrderInfo.hpp"
-#include "SparseSolverPack/src/BasisSystemFactoryStd.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "AbstractFactory.hpp"
 #include "StandardCompositionMacros.hpp"
@@ -56,7 +56,7 @@ namespace NLPInterfacePack {
  * <tt>BasisSystemPermFactory</tt> object that the client (or the
  * subclass) can specify.  The default implementation for this factory
  * object is from <tt>BasisSystemPermFactoryStd</tt> which uses the
- * <tt>SparseSolverPack::BasisSystemPermDirectSparse</tt> subclass and
+ * <tt>AbstractLinAlgPack::BasisSystemPermDirectSparse</tt> subclass and
  * supports several different linear solvers by default.  The client
  * (or subclass) can augment the list of supported linear solvers
  * easily.

@@ -16,11 +16,11 @@
 #ifndef SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 #define SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "SparseSolverPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
 #include "AbstractFactory.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Default implementation for <tt>BasisSystemPermDirectSparse</tt> obejcts
@@ -86,6 +86,6 @@ private:
 
 }; // end class BasisSystemFactoryStd
 
-}  // end namespace SparseSolverPack
+}  // end namespace AbstractLinAlgPack
 
 #endif // SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H

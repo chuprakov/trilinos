@@ -18,7 +18,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
@@ -49,7 +49,7 @@ std::valarray<T>& cva(const std::valarray<T>& va )
 
 } // end namespace
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 //
 // Implementation of DirectSparseSolver(Imp) interface using dense LAPACK routines.
@@ -416,4 +416,4 @@ void DirectSparseSolverDense::imp_factor(
 
 // private
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 

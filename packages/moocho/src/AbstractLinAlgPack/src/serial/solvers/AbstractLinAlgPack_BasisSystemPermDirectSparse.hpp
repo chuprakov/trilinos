@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Permutatble basis system subclass that uses a direct sparse solver.
@@ -194,6 +194,6 @@ private:
 
 }; // end class BasisSystemPermDirectSparse
 
-}  // end namespace SparseSolverPack
+}  // end namespace AbstractLinAlgPack
 
 #endif // ABSTRACT_LIN_ALG_PACK_BASIS_PERM_DIRECT_SPARSE_SYSTEM_H

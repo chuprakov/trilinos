@@ -13,18 +13,18 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseSolverPack/src/BasisSystemFactoryStd.hpp"
-#include "SparseSolverPack/src/BasisSystemPermDirectSparse.hpp"
-#include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
-#include "SparseSolverPack/src/DirectSparseSolverMA28.hpp"
-#include "SparseSolverPack/src/DirectSparseSolverMA28SetOptions.hpp"
-#include "SparseSolverPack/src/DirectSparseSolverSuperLU.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemPermDirectSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverDense.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28SetOptions.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
 #include "ThrowException.hpp"
 #include "OptionsFromStream.hpp"
 #include "StringToIntMap.hpp"
 #include "StringToBool.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 BasisSystemFactoryStd::BasisSystemFactoryStd()
 	:direct_linear_solver_type_(
@@ -77,7 +77,7 @@ BasisSystemFactoryStd::create() const
 			mmp::ref_count_ptr<DirectSparseSolverMA28>
 				dss_ma28 = mmp::rcp(new DirectSparseSolverMA28());
 			if(options_.get()) {
-				SparseSolverPack::DirectSparseSolverMA28SetOptions
+				AbstractLinAlgPack::DirectSparseSolverMA28SetOptions
 					opt_setter(dss_ma28.get());
 				opt_setter.set_options(*options_);
 			}
@@ -198,4 +198,4 @@ void BasisSystemFactoryStd::read_options() const
 	
 }
 
-}  // end namespace SparseSolverPack
+}  // end namespace AbstractLinAlgPack

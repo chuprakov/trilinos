@@ -73,7 +73,7 @@ class MatrixKKTFullSpaceRelaxed
 public:
 	
 	///
-	typedef SparseSolverPack::DirectSparseFortranCompatibleSolver
+	typedef AbstractLinAlgPack::DirectSparseFortranCompatibleSolver
 		DirectSparseFortranCompatibleSolver;
 
 	///

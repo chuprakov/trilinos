@@ -16,7 +16,7 @@
 #ifndef MATRIX_SCALING_STRATEGY_H
 #define MATRIX_SCALING_STRATEGY_H
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface for sparse matrix scaling strategies
@@ -49,6 +49,6 @@ public:
 
 }; // end class MatrixScaling_Strategy
 
-} // end namespace SparseSolverPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_SCALING_STRATEGY_H

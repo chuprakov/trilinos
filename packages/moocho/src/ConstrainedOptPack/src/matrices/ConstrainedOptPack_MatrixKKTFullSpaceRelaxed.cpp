@@ -21,7 +21,7 @@
 #include <typeinfo>
 
 #include "ConstrainedOptimizationPack/src/MatrixKKTFullSpaceRelaxed.hpp"
-#include "SparseSolverPack/src/DirectSparseFortranCompatibleSolver.h"
+#include "AbstractLinAlgPack/src/DirectSparseFortranCompatibleSolver.h"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "AbstractLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

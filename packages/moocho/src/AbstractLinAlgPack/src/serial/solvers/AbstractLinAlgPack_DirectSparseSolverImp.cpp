@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "SparseSolverPack/src/DirectSparseSolverImp.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverImp.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 // /////////////////////////////////////////
 // DirectSparseSolverImp::BasisMatrixImp
@@ -224,4 +224,4 @@ void DirectSparseSolverImp::set_uninitialized()
 	fact_struc_ = MemMngPack::null;
 }
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 

@@ -187,6 +187,28 @@ class MatrixSymDiagonalSparseStd;
 
 //@}
 
+/** @name Serial solvers library */
+//@{
+
+// Matrix scaling classes
+
+class MatrixScaling_Strategy;
+
+// Sparse linear solver classes
+
+class DirectSparseSolver;        // Abstract interface
+class DirectSparseSolverImp;     // Node implementation classs
+class DirectSparseSolverMA28;    // Concrete subclass
+class DirectSparseSolverMA48;    // ""
+class DirectSparseSolverSuperLU; // ""
+
+// BasisSystem classes
+
+class BasisSystemPermDirectSparse;
+class BasisSystemFactoryStd;
+
+//@}
+
 } // end namespace AbstractLinAlgPack
 
 #endif // ABSTRACT_LIN_ALG_PACK_TYPES_H

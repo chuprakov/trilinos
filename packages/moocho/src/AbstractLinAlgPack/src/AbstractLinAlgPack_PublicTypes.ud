@@ -92,7 +92,7 @@ using AbstractLinAlgPack::BasisSystemTester;
 using AbstractLinAlgPack::BasisSystemTesterSetOptions;
 
 //
-// Serial interface library
+// Serial interface and implementations libraries
 //
 
 using AbstractLinAlgPack::VectorDenseEncap;
@@ -125,3 +125,14 @@ using AbstractLinAlgPack::MatrixSparseCOORSerial;
 using AbstractLinAlgPack::MatrixSymPosDefCholFactor;
 using AbstractLinAlgPack::MatrixConvertToSparseEncap;
 using AbstractLinAlgPack::MultiVectorMutableDense;
+
+//
+// Serial solvers library
+//
+
+using AbstractLinAlgPack::DirectSparseSolver;
+using AbstractLinAlgPack::DirectSparseSolverMA28;
+using AbstractLinAlgPack::DirectSparseSolverMA48;
+using AbstractLinAlgPack::DirectSparseSolverSuperLU;
+using AbstractLinAlgPack::BasisSystemPermDirectSparse;
+using AbstractLinAlgPack::BasisSystemFactoryStd;

@@ -19,7 +19,7 @@
 #include "DirectSparseSolver.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 class DirectSparseSolverImp;
 
@@ -284,6 +284,6 @@ private:
 
 };	// end class DirectSparseSolverImp 
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H

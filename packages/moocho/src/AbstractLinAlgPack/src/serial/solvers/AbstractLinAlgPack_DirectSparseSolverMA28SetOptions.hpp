@@ -22,7 +22,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Set options for DirectSparseSolverMA28 from
@@ -63,7 +63,7 @@ protected:
 
 };	// end class DirectSparseSolverMA28SetOptions
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 

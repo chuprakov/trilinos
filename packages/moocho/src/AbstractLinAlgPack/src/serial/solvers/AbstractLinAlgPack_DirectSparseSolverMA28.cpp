@@ -20,8 +20,8 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/src/DirectSparseSolverMA28.hpp"
-#include "SparseSolverPack/src/MatrixScaling_Strategy.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/MatrixScaling_Strategy.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -44,7 +44,7 @@ std::valarray<T>& cva(const std::valarray<T>& va )
 }
 }
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 //
 // Implementation of DirectSparseSolver(Imp) interface using MA28.
@@ -597,6 +597,6 @@ void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
 	}
 }
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif // SPARSE_SOLVER_PACK_USE_MA28

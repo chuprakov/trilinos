@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseSolverPack/src/BasisSystemPermDirectSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemPermDirectSparse.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
@@ -26,7 +26,7 @@
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	const direct_solver_ptr_t&   direct_solver
@@ -520,4 +520,4 @@ void BasisSystemPermDirectSparse::do_some_basis_stuff(
 	update_basis_and_auxiliary_matrices( Gc, C_bm, C_aggr, D, GcUP, GhUP );
 }
 	
-} // end namespace SparseSolverPack
+} // end namespace AbstractLinAlgPack

@@ -53,7 +53,7 @@ In the future this docuentation will be much more extensive.
 	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: Concreate C++ classes
 		for sparse linear algebra with implementations of abstract interfaces
 		in  <tt>%AbstractLinAlgPack</tt>.
-	<li> <A HREF="../SparseSolverPack/html/index.html">SparseSolverPack</A>: Abstract C++ interfaces
+	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: Abstract C++ interfaces
 		and subclasses for serial linear solvers with implementations of abstract interfaces
 		in  <tt>%AbstractLinAlgPack</tt>.
 	<li> <A HREF="../ConstrainedOptimizationPack/html/index.html">ConstrainedOptimizationPack</A>:

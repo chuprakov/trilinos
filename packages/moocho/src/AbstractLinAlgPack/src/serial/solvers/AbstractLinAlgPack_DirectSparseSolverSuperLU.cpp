@@ -20,7 +20,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/src/DirectSparseSolverSuperLU.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -75,7 +75,7 @@ void convet_to_csr(
 
 } // end namespace
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 //
 // Implementation of DirectSparseSolver(Imp) interface using SuperLU.
@@ -391,6 +391,6 @@ void DirectSparseSolverSuperLU::imp_factor(
 
 // private
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif // SPARSE_SOLVER_PACK_USE_SUPERLU

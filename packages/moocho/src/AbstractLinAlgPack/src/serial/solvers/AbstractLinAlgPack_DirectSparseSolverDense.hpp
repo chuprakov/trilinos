@@ -25,7 +25,7 @@
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Concreate sparse solver subclass that uses the dense LAPACK routines.
@@ -142,6 +142,6 @@ protected:
 
 };	// end class DirectSparseSolverDense 
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_SOLVER_DENSE_H

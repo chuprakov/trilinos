@@ -19,7 +19,7 @@
 #include <valarray>
 #include <stdexcept>
 
-#include "SparseSolverPack/src/SuperLUSolver.hpp"
+#include "AbstractLinAlgPack/src/serial/solvers/SuperLUSolver.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"

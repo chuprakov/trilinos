@@ -28,7 +28,7 @@
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Concreate sparse solver subclass that uses SuperLU.
@@ -158,7 +158,7 @@ private:
 // ////////////////////////////////////////
 // Inline members
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_SOLVER_SUPERLU_H
 

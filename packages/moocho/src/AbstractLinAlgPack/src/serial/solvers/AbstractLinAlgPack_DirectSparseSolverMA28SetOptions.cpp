@@ -49,7 +49,7 @@ namespace {
 
 }
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 DirectSparseSolverMA28SetOptions::DirectSparseSolverMA28SetOptions(
 			DirectSparseSolverMA28* qp_solver )
@@ -105,6 +105,6 @@ void DirectSparseSolverMA28SetOptions::set_option(
 	}
 }
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif // SPARSE_SOLVER_PACK_USE_MA28

@@ -16,13 +16,13 @@
 #ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 
-#include "SparseSolverPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 #include "ref_count_ptr.hpp"
 #include "AbstractFactory.hpp"
 
-namespace SparseSolverPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface to serial direct sparse linear solvers.
@@ -587,6 +587,6 @@ public:
 
 };	// end class DirectSparseSolver 
 
-}	// end namespace SparseSolverPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
