@@ -419,15 +419,18 @@ options_group LineSearch2ndOrderCorrect {
 *** [NLPAlgoConfigMamaJama::line_search_method = FILTER]
 ***
 options_group LineSearchFilter {
-*    gamma_theta      = 1e-5;
-*    gamma_f          = 1e-5;
-*    gamma_alpha      = 5e-2;
-*    delta            = 1e-4;
-*    s_theta          = 1.1;
-*    s_f              = 2.3;	
-*    theta_small_fact = 1e-4;
-*    eta_f            = 1e-4;
-*    back_track_frac  = 0.5;
+*    gamma_theta      = 1e-5; *** (default)
+*    gamma_f          = 1e-5; *** (default)
+*    f_min            = UNBOUNDED; *** (default)
+*    f_min            = 0.0;       *** If 0 is minimum ...
+*    gamma_alpha      = 5e-2; *** (default)
+*    delta            = 1e-4; *** (default)
+*    s_theta          = 1.1;  *** (defualt)
+*    s_f              = 2.3;	*** (default)
+*    theta_small_fact = 1e-4; *** (default)
+*    theta_max        = 1e10; *** (default)
+*    eta_f            = 1e-4; *** (default)
+*    back_track_frac  = 0.5;  *** (default)
 }
 
 *******************************************************************

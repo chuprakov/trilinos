@@ -10,6 +10,25 @@
 *** alone but they are there in any case.
 ***
 
+***********************************************************
+*** Options for IterationPack::Algorithm
+***
+*** These are options that are used by every IterationPack::Algorithm
+*** object that gets created and used.
+***
+options_group IterationPack::Algorithm {
+
+*   interrupt_file_name = "";             *** (default) Does not check for interrupt
+*   interrupt_file_name = "interrupt.in"; *** checks for this file in current directory
+    *** This specifys a file name that is looked for at the end of every
+    *** step in a running algorithm.  If this file exists, it is read for
+    *** algorithm termination criteria (see the class IterationPack::Algorithm
+    *** and the option interrupt_file_name).  Using a file to interrupt allows
+    *** algorithms to be gracefully terminated when run in batch mode or when
+    *** access to standard out or standard in is just not possible.
+
+}
+
 *****************************************************************
 *** Options specific for the shared rSQP algorithm builder
 *** class DecompositionSystemStateStepBuilderStd.

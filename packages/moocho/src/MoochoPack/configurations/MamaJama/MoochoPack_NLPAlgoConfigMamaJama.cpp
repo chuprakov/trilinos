@@ -24,6 +24,7 @@
 #include "NLPAlgoConfigMamaJama.hpp"
 #include "MoochoPack/src/NLPAlgo.hpp"
 #include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "IterationPack/src/AlgorithmSetOptions.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
@@ -225,10 +226,15 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 	typedef Teuchos::RefCountPtr<NLPAlgo>	algo_ptr_t;
 	algo_ptr_t algo = Teuchos::rcp(new NLPAlgo);
-	assert(algo.get());
+	TEST_FOR_EXCEPTION(!algo.get(),std::runtime_error,"Error!");
+	if(options_.get()) {
+		IterationPack::AlgorithmSetOptions
+			opt_setter( algo.get() );
+		opt_setter.set_options( *options_ );
+	}
 	algo_cntr->set_algo(algo);
 	algo->set_algo_cntr(algo_cntr);
-
+	
 	// /////////////////////////////////////////////
 	// C. Configure algo
 

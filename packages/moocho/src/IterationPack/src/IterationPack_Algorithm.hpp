@@ -29,6 +29,7 @@
 #include "AlgorithmStep.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace IterationPack {
 
@@ -143,6 +144,43 @@ public:
 	virtual ~Algorithm();
 
 	//@}
+
+	///
+	/** Name of an file that will cause the algorithm to terminate.
+	 *
+	 * If <tt>interrupt_file_name()!=""</tt> then the file <tt>interrupt_file_name()</tt>
+	 * will be looked for in the current directory and if it exists, it will be read
+	 * to determine how the algorithm should be terminated.  The format of this file
+	 * is as follows:
+	 *
+	 \verbatim
+	 
+   abort_mode  terminate_bool
+
+   \endverbatim
+	 *
+	 * Above, <tt>abort_mode</tt> can be:
+	 * <tt>a</tt> for "abort the program immediately",
+	 * <tt>s</tt> for "Gracefully terminate the algorithm at the end of this step",
+	 * <tt>i</tt> for "Gracefully terminate the algorithm at the end of this iteration"
+	 *
+	 * If the option <tt>abort_mode</tt> is set to <tt>s</tt> or <tt>i</tt> then the the
+	 * value of <tt>terminate_bool</tt> must be set to <tt>t</tt> for "true" or
+	 * <tt>f</tt> for "false".  If this <tt>abort_mode</tt> is set ot <tt>a</tt> then the
+	 * value of <tt>terminate_bool</tt> is not read.
+	 *
+	 * Note that the option values <tt>abort_mode</tt> and
+	 * <tt>terminate_bool</tt> are simple <tt>char</tt> data objects and
+	 * the only requirement is that they be seperated by whitespace.
+	 *
+	 * If the format of this file is not as described above, then an
+	 * exception will be thrown (which will have the affect of aborting
+	 * the process most likely).
+	 *
+	 * The default is <tt>interrupt_file_name()==""</tt> which means
+	 * that this file will not be looked for.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, interrupt_file_name );
 
 	/** @name «std comp» members for state */
 	//@{

@@ -64,7 +64,7 @@ int static_proc_rank = 0;
 bool static_interrupt_called = false;
 bool static_processed_user_interrupt = false;
 EInterruptStatus static_interrupt_status = NOT_INTERRUPTED;
-bool static_interrupt_terminate_return = true;
+bool static_interrupt_terminate_return = false;
 
 } // end namespace
 
@@ -870,7 +870,8 @@ bool Algorithm::imp_do_step(poss_type step_poss) {
 	// do the post steps in order
 	if( !imp_do_assoc_steps(POST_STEP) ) return false;
 	// if you get here all the pre steps, step, and post steps returned true.
-	look_for_interrupt();
+	if( static_interrupt_status == NOT_INTERRUPTED )
+		look_for_interrupt();
 	if( static_interrupt_status == STOP_END_STEP ) {
 		terminate( static_interrupt_terminate_return );
 		return false;
@@ -1033,29 +1034,29 @@ void Algorithm::look_for_interrupt()
 				<< "  (s) Gracefully terminate the algorithm at the end of this step?\n"
 				<< "  (i) Gracefully terminate the algorithm at the end of this iteration?\n"
 				<< "Answer a, c, s or i ? ";
-			char c_response;
-			std::cin >> c_response;
-			if( c_response == 'a' ) {
+			char abort_mode;
+			std::cin >> abort_mode;
+			if( abort_mode == 'a' ) {
 				response = R_ABORT_NOW;
 				valid_response = true;
 			}
-			if( c_response == 'c' ) {
+			if( abort_mode == 'c' ) {
 				response = R_CONTINUE;
 				valid_response = true;
 			}
-			else if( c_response == 's' || c_response == 'i' ) {
-				if( c_response == 's')
+			else if( abort_mode == 's' || abort_mode == 'i' ) {
+				if( abort_mode == 's')
 					response = R_STOP_END_STEP;
 				else
 					response = R_STOP_END_ITER;
 				std::cerr
 					<< "\nTerminate the algorithm with true (t) or false (f) ? ";
-				std::cin >> c_response;
-				if( c_response == 't' ) {
+				std::cin >> abort_mode;
+				if( abort_mode == 't' ) {
 					static_interrupt_terminate_return = true;
 					valid_response = true;
 				}
-				else if( c_response == 'f' ) {
+				else if( abort_mode == 'f' ) {
 					static_interrupt_terminate_return = false;
 					valid_response = true;
 				}
@@ -1097,6 +1098,70 @@ void Algorithm::look_for_interrupt()
 		}
 		static_processed_user_interrupt = true;
 	}
+	else if( interrupt_file_name().length() && !static_processed_user_interrupt && static_proc_rank == 0 ) {
+		//
+		// If there was not an interactive interrupt then look for an
+		// interrupt file if we have not already done this
+		// (static_processed_user_interrupt).
+		//
+		std::ifstream interrupt_file(interrupt_file_name().c_str());
+		if(interrupt_file) {
+			std::cerr
+				<< "\nIterationPack::Algorithm: Found the interrupt file \""<<interrupt_file_name()<<"\"!"
+				<< "\nJust completed current step curr_step_name = \""
+				<< get_step_name(curr_step_poss_) << "\",  curr_step_poss = "
+				<< curr_step_poss_ << " of steps [1..." << num_steps() << "].\n";
+			char abort_mode = 0;
+			interrupt_file >> abort_mode;
+			std::cerr	<< "Read a value of abort_mode = \'"<<abort_mode<<"\': ";
+			if( abort_mode == 'a' ) {
+				std::cerr	<< "Will abort the program immediatly!\n";
+				static_interrupt_status = ABORT_PROGRAM;
+			}
+			else if( abort_mode == 's' || abort_mode == 'i' ) {
+				if( abort_mode == 's') {
+					std::cerr	<< "Will abort the program gracefully at the end of this step!\n";
+					static_interrupt_status = STOP_END_STEP;
+				}
+				else {
+					std::cerr	<< "Will abort the program gracefully at the end of this iteration!\n";
+					static_interrupt_status = STOP_END_ITER;
+				}
+				TEST_FOR_EXCEPTION(
+					interrupt_file.eof(), std::logic_error,
+					"IterationPack::Algorithm: Error, expected input for terminate_bool option from the "
+					"file \""<<interrupt_file_name()<<"\"!"
+					);
+				char terminate_bool = 0;
+				interrupt_file >> terminate_bool;
+				std::cerr	<< "Read a value of terminate_bool = \'"<<terminate_bool<<"\': ";
+				if( terminate_bool == 't' ) {
+					std::cerr	<< "Will return a success flag!\n";
+					static_interrupt_terminate_return = true;
+				}
+				else if( terminate_bool == 'f' ) {
+					std::cerr	<< "Will return a failure flag!\n";
+					static_interrupt_terminate_return = false;
+				}
+				else {
+					TEST_FOR_EXCEPTION(
+						true, std::logic_error
+						,"Error, the value of terminate_bool = \'"<<terminate_bool<<"\' is not "
+						"valid!  Valid values include only \'t\' or \'f\'\n"
+						);
+				}
+			}
+			else {
+				TEST_FOR_EXCEPTION(
+					true, std::logic_error
+					,"Error, the value of abort_mode = \'"<<abort_mode<<"\' is not "
+					"valid!  Valid values include only \'a\', \'s\' or \'i\'\n"
+					);
+			}
+			std::cerr << std::endl;
+			static_processed_user_interrupt = true;
+		}
+	}
 	//
 	// Make sure that all of the processes get the same
 	// response
@@ -1106,12 +1171,12 @@ void Algorithm::look_for_interrupt()
 	if( static_num_proc > 1 && query_for_interrupt ) {
 		//
 		// Here we will do a global reduction to see of a processor has
-		// recieved an interrupt.  Here we will do a sum since only the
-		// root processes values should be nonzero.
+		// recieved an interrupt.  Here we will do a sum operation since only the
+		// root process should be getting these options.
 		//
 		int sendbuf[2] = { 0, 0 };
 		int recvbuf[2] = { 0, 0 };
-		if( static_proc_rank == 0 ) {
+		if(static_proc_rank == 0) {
 			sendbuf[0] = (int)static_interrupt_status;
 			sendbuf[1] = static_interrupt_terminate_return ? 1 : 0;
 		}
