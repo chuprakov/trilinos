@@ -2,9 +2,9 @@
 // QPSchur.cpp
 
 // disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
+#pragma warning(disable : 4786)
 // disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
+#pragma warning(disable : 4503)
 
 #include <assert.h>
 
@@ -1423,6 +1423,7 @@ void QPSchur::ActiveSet::initialize(
 	if(q_D_hat) {
 		for( size_type k = 0; k < q_D_hat; ++k ) {
 			l_fxfx_[k] = l_x_X_map(Q_XD_hat_row_[k]);
+			assert( l_fxfx_[k] != 0 );
 		}
 	}
 
@@ -4060,9 +4061,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					const size_type q_D_hat = act_set->q_D_hat();
 					VectorSlice mu_D_hat = act_set->mu_D_hat();
 					VectorSlice p_mu_D_hat = act_set->p_mu_D_hat();
-					VectorSlice::iterator
-						mu_D_itr		= mu_D_hat.begin(),
-						p_mu_D_itr		= p_mu_D_hat.begin();
 					const size_type
 						qD = assume_lin_dep_ja && return_to_init_fixed ? q_D_hat-1 : q_D_hat;
 					// Print header for k, i, mu_D_hat(k), p_mu_D_hat(k), x_init(k), t, t_D, jd
@@ -4086,9 +4084,16 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							<< setw(dbl_w)	<< "--------------"
 							<< setw(5)	<< "----"	<< endl;
 					}
-					for( int k = 1; k <= qD; ++k, ++mu_D_itr, ++p_mu_D_itr ) {
+					GenPermMatrixSlice::const_iterator
+						Q_XD_itr = act_set->Q_XD_hat().begin(),
+						Q_XD_end = Q_XD_itr + qD;
+					for( ; Q_XD_itr != Q_XD_end; ++Q_XD_itr ) {
+						const size_type k = Q_XD_itr->col_j();
+						const size_type i = Q_XD_itr->row_i();
+						VectorSlice::iterator
+							mu_D_itr		= mu_D_hat.begin() + (k-1),
+							p_mu_D_itr		= p_mu_D_hat.begin() + (k-1);
 						const size_type l = act_set->l_fxfx(k);
-						const size_type i = i_x_X_map(l);
 						EBounds bnd = qp.x_init()(i);
 						// Print first part of row for s, j, z_hat(s), p_z_hat(s), bnds(s) ....
 						if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
