@@ -24,7 +24,7 @@
 // KL: Read the configuration header
 // RAB: 2003/3/5
 #ifndef MOOCHO_NO_TRILINOS
-#include "TSFCoreUtilsConfig.h"
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #endif
 
 // KL: Test value of HAVE_MPI, conforming to autotools conventions for

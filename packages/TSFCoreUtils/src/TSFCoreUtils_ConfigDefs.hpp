@@ -25,10 +25,6 @@
 #ifndef _TSFCOREUTILS_CONFIGDEFS_CPP_H_
 #define _TSFCOREUTILS_CONFIGDEFS_CPP_H_
 
-#ifndef __cplusplus
-#define __cplusplus
-#endif
-
 /*
  * The macros PACKAGE, PACKAGE_NAME, etc, get defined for each package and need to
  * be undef'd here to avoid warnings when this file is included from another package.
@@ -64,6 +60,8 @@
 
 #include <TSFCoreUtilsConfig.h>
 
+#ifdef __cplusplus
+
 #ifdef HAVE_CSTDLIB
 #include <cstdlib>
 #else
@@ -86,7 +84,7 @@
 #include <ostream>
 #elif defined(HAVE_IOSTREAM)
 #include <iostream>
-#else
+#elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
 #endif
 
@@ -172,6 +170,7 @@ using std::ostream;
 using std::cerr;
 using std::cout;
 using std::endl;
+#endif
 #endif
 #endif
 
