@@ -75,7 +75,7 @@ public:
 	///
 	typedef DecompositionSystem	                                          inherited;
 	///
-	typedef BasisSystem::NumericallySingular                              NumericallySingular;
+	typedef BasisSystem::SingularBasis                                    SingularBasis;
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const BasisSystem>       basis_sys_ptr_t;
 	///
