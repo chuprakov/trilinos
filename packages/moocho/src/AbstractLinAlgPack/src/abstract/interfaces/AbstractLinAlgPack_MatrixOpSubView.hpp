@@ -248,12 +248,18 @@ public:
 
 private:
 	
+#ifdef DOXYGEN_COMPILE	
+	MatrixWithOp              *M_full;
+	Range1D                   rng_rows;
+	Range1D                   rng_cols;
+#else
 	mat_ptr_t                 M_full_;
 	Range1D                   rng_rows_;
 	Range1D                   rng_cols_;
 	BLAS_Cpp::Transp          M_trans_;
 	VectorSpace::space_ptr_t  space_cols_;
 	VectorSpace::space_ptr_t  space_rows_;
+#endif
 
 	//
 	void assert_initialized() const;
