@@ -33,7 +33,7 @@
 #define TSFCORE_EPETRA_LINEAR_OP_HPP
 
 #include "TSFCoreLinearOp.hpp"
-#include "ReleaseResource.hpp"
+#include "TSFCoreEpetraTypes.hpp"
 
 class Epetra_Operator;
 
@@ -46,8 +46,10 @@ class EpetraVectorSpace;
  *
  * This subclass can be used to represent the non-transposed operator
  * or transposed operator defined by an <tt>Epetra_Operator</tt>
- * object.  This class assumes that both the non-transposed and
- * transposed applications of the operator can be performed.
+ * object.  This class can implement <tt>apply()</tt> using either
+ * <tt>Epetra_Operator::Apply()</tt> or
+ * <tt>Epetra_Operator::ApplyInverse()</tt>.  In addition, the user
+ * can specify whether adjoints are supported or not.
  */
 class EpetraLinearOp : public LinearOp<RTOp_value_type> {
 public:
@@ -73,7 +75,9 @@ public:
 	/// Calls <tt>initialize()</tt>.
 	EpetraLinearOp(
 		const Teuchos::RefCountPtr<Epetra_Operator>   &op
-		,ETransp                                      opTrans = NOTRANS
+		,ETransp                                      opTrans         = NOTRANS
+		,EApplyEpetraOpAs                             applyAs         = EPETRA_OP_APPLY_APPLY
+		,EAdjointEpetraOp                             adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
 		);
 
 	///
@@ -83,6 +87,9 @@ public:
 	 * @param  opTrans  [in] If <tt>opTrans==NOTRANS</tt> then <tt>op</tt> will be viewed as <tt>op</tt>
 	 *                  and if <tt>opTrans==TRANS</tt> then <tt>op</tt> will be viewed as its transpose
 	 *                  <tt>op'</tt> for the behavior of <tt>apply()</tt>.
+	 * @param  applyAs  [in] If <tt>applyAs==APPLY_APPLY</tt> then <tt>op->Apply()</tt> will be used
+	 *                  and if <tt>applyAs==APPLY_APPLY_INVERSE</tt> then <tt>op->ApplyInverse()</tt>
+	 *                  is used instead.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>op.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
@@ -95,7 +102,9 @@ public:
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<Epetra_Operator>   &op
-		,ETransp                                      opTrans = NOTRANS
+		,ETransp                                      opTrans         = NOTRANS
+		,EApplyEpetraOpAs                             applyAs         = EPETRA_OP_APPLY_APPLY
+		,EAdjointEpetraOp                             adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
 		);
 	
 	///
@@ -107,8 +116,10 @@ public:
 	 * </ul>
 	 */
 	void setUninitialized(
-		Teuchos::RefCountPtr<Epetra_Operator>    *op      = NULL
-		,ETransp                                 *opTrans = NULL
+		Teuchos::RefCountPtr<Epetra_Operator>    *op             = NULL
+		,ETransp                                 *opTrans        = NULL
+		,EApplyEpetraOpAs                        *applyAs        = NULL
+		,EAdjointEpetraOp                        *adjointSupport = NULL
 		);
 
   ///
@@ -130,18 +141,22 @@ public:
 	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraDomain() const;
 
   ///
-  /** Return a smart pointer to the Epetra_Operator object. Added by KL
-   * to support operator loading in TSFExtended */
+  /** Return a smart pointer to the Epetra_Operator object.
+	 */
 	Teuchos::RefCountPtr<Epetra_Operator> epetra_op();
 
-  /** Return a smart pointer to the Epetra_Operator object. Added by KL
-   * to support operator loading in TSFExtended */
+	///
+  /** Return a smart pointer to the Epetra_Operator object.
+	 */
 	const Teuchos::RefCountPtr<Epetra_Operator>& epetra_op() const ;
+
 	//@}
 	
 	/** @name Overridden from OpBase */
 	//@{
-	
+
+	///
+	bool opSupported(ETransp M_trans) const;
 	///
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> > range() const;
 	///
@@ -175,38 +190,46 @@ public:
 
   
 protected:
-  // ////////////////////////////////////
-  // protected methods
-
 
   /** \name Allocators for domain and range spaces */
   //@{
-  /** Allocate the domain space of the operator. Purpose: In
-   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
-   * extended from the TSFCore versions by inheritance, and the
-   * TSFExtended operator subclasses expect to work with an extended
-   * vector space subclass. Thus, it is necessary for the base
-   * operator class to never directly allocate vector space objects,
-   * and allocation is delegated to a virtual allocator function. 
-   * KRL and RAB, 2/18/04. */
+
+	///
+  /** Allocate the domain space of the operator.
+	 *
+	 * Purpose: In TSFExtended, both EpetraLinearOp and
+	 * EpetraVectorSpace are extended from the TSFCore versions by
+	 * inheritance, and the TSFExtended operator subclasses expect to
+	 * work with an extended vector space subclass. Thus, it is
+	 * necessary for the base operator class to never directly allocate
+	 * vector space objects, and allocation is delegated to a virtual
+	 * allocator function.
+	 */
   virtual Teuchos::RefCountPtr<const EpetraVectorSpace> 
-  allocateDomain(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
-                 ,ETransp  op_trans 
-                 )  const ; 
+  allocateDomain(
+		const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+		,ETransp                                     op_trans 
+		) const; 
   
-  /** Allocate the range space of the operator.Purpose: In
-   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
-   * extended from the TSFCore versions by inheritance, and the
-   * TSFExtended operator subclasses expect to work with an extended
-   * vector space subclass. Thus, it is necessary for the base
-   * operator class to never directly allocate vector space objects,
-   * and allocation is delegated to a virtual allocator function. 
-   * KRL and RAB, 2/18/04. */
-  virtual Teuchos::RefCountPtr<const EpetraVectorSpace> allocateRange( 
+	///
+  /** Allocate the range space of the operator.
+	 *
+	 * Purpose: In TSFExtended, both EpetraLinearOp and
+	 * EpetraVectorSpace are extended from the TSFCore versions by
+	 * inheritance, and the TSFExtended operator subclasses expect to
+	 * work with an extended vector space subclass. Thus, it is
+	 * necessary for the base operator class to never directly allocate
+	 * vector space objects, and allocation is delegated to a virtual
+	 * allocator function.
+	 */
+  virtual Teuchos::RefCountPtr<const EpetraVectorSpace>
+	allocateRange( 
     const Teuchos::RefCountPtr<Epetra_Operator>  &op 
-    ,ETransp  op_trans 
-    )  const ; 
+    ,ETransp                                     op_trans 
+    ) const; 
+
   //@}
+
 private:
 
 	// ////////////////////////////////////
@@ -214,6 +237,8 @@ private:
 
 	Teuchos::RefCountPtr<Epetra_Operator>          op_;
 	ETransp                                        opTrans_;
+	EApplyEpetraOpAs                               applyAs_;
+	EAdjointEpetraOp                               adjointSupport_;
 	Teuchos::RefCountPtr<const EpetraVectorSpace>  domain_;
 	Teuchos::RefCountPtr<const EpetraVectorSpace>  range_;
 

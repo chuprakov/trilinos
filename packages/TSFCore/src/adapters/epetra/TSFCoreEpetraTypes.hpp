@@ -42,6 +42,18 @@ class Epetra_Operator;
 
 namespace TSFCore {
 
+/// Determine if adjoints are supported on Epetra_Opeator or not
+enum EAdjointEpetraOp {
+	EPETRA_OP_ADJOINT_SUPPORTED      ///< Adjoint supported
+	,EPETRA_OP_ADJOINT_UNSUPPORTED   ///< Adjoint not supported
+};
+
+/// Determine how the apply an Epetra_Operator as a linear operator
+enum EApplyEpetraOpAs {
+	EPETRA_OP_APPLY_APPLY            ///< Apply using Epetra_Operator::Apply(...)
+	,EPETRA_OP_APPLY_APPLY_INVERSE   ///< Apply using Epetra_Operator::ApplyInverse(...)
+};
+
 class EpetraVectorSpace;
 class EpetraVectorSpaceFactory;
 class EpetraVector;

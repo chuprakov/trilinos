@@ -51,14 +51,18 @@ EpetraLinearOp::EpetraLinearOp()
 EpetraLinearOp::EpetraLinearOp(
 	const Teuchos::RefCountPtr<Epetra_Operator>   &op
 	,ETransp                                      opTrans
+	,EApplyEpetraOpAs                             applyAs
+	,EAdjointEpetraOp                             adjointSupport
 	)
 {
-	initialize(op,opTrans);
+	initialize(op,opTrans,applyAs,adjointSupport);
 }
 
 void EpetraLinearOp::initialize(
 	const Teuchos::RefCountPtr<Epetra_Operator>   &op
 	,ETransp                                      opTrans
+	,EApplyEpetraOpAs                             applyAs
+	,EAdjointEpetraOp                             adjointSupport
 	)
 {
 	namespace mmp = MemMngPack;
@@ -67,23 +71,29 @@ void EpetraLinearOp::initialize(
 #endif
 	op_      = op;
 	opTrans_ = opTrans;
-  /* KRL: call allocators to create domain and range space objects. 
-   * This ensures that the correct subtype is created. */
-	domain_  = allocateDomain(op, opTrans);
-	range_   = allocateRange(op, opTrans);
+	applyAs_ = applyAs;
+	adjointSupport_ = adjointSupport;
+	domain_  = ( applyAs==EPETRA_OP_APPLY_APPLY ? allocateDomain(op,opTrans) : allocateRange(op,opTrans)  );
+	range_   = ( applyAs==EPETRA_OP_APPLY_APPLY ? allocateRange(op,opTrans)  : allocateDomain(op,opTrans) );
 }
 
 void EpetraLinearOp::setUninitialized(
 	Teuchos::RefCountPtr<Epetra_Operator>    *op
 	,ETransp                                 *opTrans
+	,EApplyEpetraOpAs                        *applyAs
+	,EAdjointEpetraOp                        *adjointSupport
 	)
 {
 
 	if(op)      *op      = op_;
 	if(opTrans) *opTrans = opTrans_;
+	if(applyAs) *applyAs = applyAs_;
+	if(adjointSupport) *adjointSupport = adjointSupport_;
 
 	op_      = Teuchos::null;
 	opTrans_ = NOTRANS;
+	applyAs_ = EPETRA_OP_APPLY_APPLY;
+	adjointSupport_ = EPETRA_OP_ADJOINT_SUPPORTED;
 	domain_  = Teuchos::null;
 	range_   = Teuchos::null;
 
@@ -114,6 +124,11 @@ EpetraLinearOp::epetra_op()
 }
 
 // Overridden from OpBase
+
+bool EpetraLinearOp::opSupported(ETransp M_trans) const
+{
+	return ( M_trans == NOTRANS ? true : adjointSupport_==EPETRA_OP_ADJOINT_SUPPORTED );
+}
 
 Teuchos::RefCountPtr<const VectorSpace<EpetraLinearOp::Scalar> >
 EpetraLinearOp::range() const
@@ -149,7 +164,7 @@ void EpetraLinearOp::apply(
 	MultiVectorCols<Scalar>
 		X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)),
 		Y(Teuchos::rcp(y,false));
-	apply(M_trans,X,&Y,alpha,beta);
+	this->apply(M_trans,X,&Y,alpha,beta);
 }
 
 void EpetraLinearOp::apply(
@@ -162,6 +177,11 @@ void EpetraLinearOp::apply(
 {
 #ifdef _DEBUG
 	// ToDo: Assert vector spaces!
+	TEST_FOR_EXCEPTION(
+		M_trans==TRANS && adjointSupport_==EPETRA_OP_ADJOINT_UNSUPPORTED
+		,Exceptions::OpNotSupported
+		,"EpetraLinearOp::apply(...): *this was informed that adjoints are not supported when initialized." 
+		);
 #endif
 	//
 	// Get Epetra_MultiVector objects for the arguments
@@ -186,12 +206,14 @@ void EpetraLinearOp::apply(
 	//
 	// Perform the operation
 	//
-	if( beta == 0 ) {
+	if( beta == 0.0 ) {
 		// Y = M * X
-		op_->Apply(
-			*X
-			,*Y
-			);
+		if( applyAs_ == EPETRA_OP_APPLY_APPLY )
+			op_->Apply( *X, *Y );
+		else if( applyAs_ == EPETRA_OP_APPLY_APPLY_INVERSE )
+			op_->ApplyInverse( *X, *Y );
+		else
+			TEST_FOR_EXCEPT(true);
 		// Y = alpha * Y
 		if( alpha != 1.0 ) Y->Scale(alpha);
 	}
@@ -205,10 +227,12 @@ void EpetraLinearOp::apply(
 			,X_in.domain()->dim()
 			,false
 			);
-		op_->Apply(
-			*X
-			,T
-			);
+		if( applyAs_ == EPETRA_OP_APPLY_APPLY )
+			op_->Apply( *X, T );
+		else if( applyAs_ == EPETRA_OP_APPLY_APPLY_INVERSE )
+			op_->ApplyInverse( *X, T );
+		else
+			TEST_FOR_EXCEPT(true);
 		// Y_inout += alpha * T
 		update(
       alpha
@@ -222,25 +246,22 @@ void EpetraLinearOp::apply(
 	}
 }
 
-
-// --------- KRL: allocator methods for domain and range spaces ---- 
-
 Teuchos::RefCountPtr<const EpetraVectorSpace> 
-EpetraLinearOp::allocateDomain(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
-                               ,ETransp  op_trans 
-                               )  const
+EpetraLinearOp::allocateDomain(
+	const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+	,ETransp                                     op_trans 
+	)  const
 {
   return Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorDomainMap(),false) ) );
 }
 
 Teuchos::RefCountPtr<const EpetraVectorSpace> 
-EpetraLinearOp::allocateRange(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
-                              ,ETransp  op_trans 
-                               )  const
+EpetraLinearOp::allocateRange(
+	const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+	,ETransp                                     op_trans 
+	)  const
 {
   return Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorRangeMap(),false) ) );
 }
-
-
 
 }	// end namespace TSFCore
