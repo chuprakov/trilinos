@@ -28,7 +28,6 @@
 #include "MoochoPack/src/IpState.hpp"
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "RTOpPack/src/check_nan_inf.h"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
