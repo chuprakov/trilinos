@@ -2,6 +2,7 @@
 #include "TSFError.h"
 #ifdef HAVE_RTOP
 #include "RTOpPack/include/RTOp_apply_op_serial.h"
+#include <typeinfo>
 #endif
 
 using namespace TSF;
@@ -134,14 +135,30 @@ ostream& TSFSerialVector::print(ostream& os) const
 const DenseSerialVector& TSFSerialVector::getConcrete(const TSFVector& x)
 {
 	const TSFSerialVector* v = dynamic_cast<const TSFSerialVector*>(x.ptr());
-	if (v==0) TSFError::raise("bad cast in TSFSerialVector::getConcrete");
+	if (v==0) {
+	    std::cerr << "bad vector is ";
+	    x.print(cerr);
+	    cerr << endl;
+#ifdef HAVE_RTOP
+		cerr << "With the type \'" << typeid(*x.ptr()).name() << endl;
+#endif
+	    TSFError::raise("bad cast in TSFSerialVector::getConcrete");
+	}
 	return v->x_;
 }
 
 DenseSerialVector& TSFSerialVector::getConcrete(TSFVector& x)
 {
 	TSFSerialVector* v = dynamic_cast<TSFSerialVector*>(x.ptr());
-	if (v==0) TSFError::raise("bad cast in TSFSerialVector::getConcrete");
+	if (v==0) {
+	    std::cerr << "bad vector is ";
+	    x.print(cerr);
+	    cerr << endl;
+#ifdef HAVE_RTOP
+		cerr << "With the type \'" << typeid(*x.ptr()).name() << endl;
+#endif
+	    TSFError::raise("bad cast in TSFSerialVector::getConcrete");
+	}
 	return v->x_;
 }
 

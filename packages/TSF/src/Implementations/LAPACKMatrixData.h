@@ -18,10 +18,10 @@ namespace TSF
 		{
 		public:
 			/** empty ctor */
-			LAPACKGeneralMatrixData();
+			LAPACKGeneralMatrixData() : is_factored_(false) {}
 
 			/** make a deep copy of the data */
-			LAPACKGeneralMatrixData deepCopy() const ;
+			LAPACKGeneralMatrixData deepCopy() const { assert(0); return *this; }
 
 			/** number of rows */
 			int nRows_;
@@ -32,8 +32,15 @@ namespace TSF
 			/** the data */
 			TSFSmartPtr<DenseSerialVector> data_;
 
+			/** the factor's data */
+			TSFSmartPtr<DenseSerialVector> factor_data_;
+
 			/** pivot vector */
 			TSFSmartPtr<TSFArray<int> > iPiv_;
+			
+			/** Is factored! */
+			bool is_factored_;
+			
 		};
 
 }

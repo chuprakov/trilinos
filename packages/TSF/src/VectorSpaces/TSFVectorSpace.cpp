@@ -20,8 +20,14 @@ TSFVectorSpace::TSFVectorSpace(TSFVectorSpaceBase* ptr)
 bool TSFVectorSpace::operator==(const TSFVectorSpace& other) const 
 {
 	/* first make sure our two spaces have the same type and dimension */
-	if (typeid(*other.ptr_) != typeid(*ptr_) || other.dim() != dim()) return false;
+	if (typeid(*other.ptr_) != typeid(*ptr_) || other.dim() != dim()){
+	    cerr << "TSFVectorSpace::operator== this->ptr of type " 
+		 << typeid(*ptr_).name() << " and dim " << dim() 
+		 << " incompatible with other->ptr of type" 
+		 << typeid(*other.ptr_).name() << " and dim " << other.dim() << endl;
 
+	    return false;
+	}
 	/* if they're the same type and dimension, defer to the
 	 * implementations to decide if they are in fact equivalent spaces */
 	return ptr_->checkEquality(other.ptr_);

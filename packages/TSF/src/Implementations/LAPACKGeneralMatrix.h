@@ -88,7 +88,11 @@ namespace TSF
 
 			DenseSerialVector data_;
 
+			DenseSerialVector factor_data_;
+
 			TSFArray<int> iPiv_;
+
+			bool is_factored_;
 
 			int nRows_;
 			

@@ -36,7 +36,7 @@ void TSFBlockVector::apply_reduction(
 			targ_vecs[k] = dynamic_cast<TSFBlockVector*>(targ_vecs_in[k]);
 		}
 	}
-	apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+	apply_op(op,num_vecs+1,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
 }
 
 void TSFBlockVector::apply_transformation(
@@ -48,9 +48,10 @@ void TSFBlockVector::apply_transformation(
 	// Convert vectors to TSFBlockVector and append this to the beginning of targ_vecs[]
 	typedef const TSFBlockVector*   const_vec_base_ptr_t;
 	typedef TSFBlockVector*         vec_base_ptr_t;
-	const_vec_base_ptr_t    *vecs      = NULL;
-	vec_base_ptr_t          *targ_vecs = new vec_base_ptr_t[num_targ_vecs+1];
+	const_vec_base_ptr_t            *vecs      = NULL;
+	vec_base_ptr_t                  *targ_vecs = new vec_base_ptr_t[num_targ_vecs+1];
 	if(num_vecs) {
+		vecs = new const_vec_base_ptr_t[num_vecs];
 		for(int k = 0; k < num_vecs; ++k) {
 			vecs[k] = dynamic_cast<const TSFBlockVector*>(vecs_in[k]);
 		}
@@ -59,7 +60,7 @@ void TSFBlockVector::apply_transformation(
 	for(int k = 1; k <= num_targ_vecs; ++k) {
 		targ_vecs[k] = dynamic_cast<TSFBlockVector*>(targ_vecs_in[k-1]);
 	}
-	apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+	apply_op(op,num_vecs,vecs,num_targ_vecs+1,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
 }
 
 void TSFBlockVector::apply_op(

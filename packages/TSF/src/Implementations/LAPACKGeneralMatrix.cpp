@@ -13,10 +13,11 @@ using namespace TSF;
 LAPACKGeneralMatrix::LAPACKGeneralMatrix(const TSFVectorSpace& domain,
 																				 const TSFVectorSpace& range)
 	: TSFMatrixOperator(domain, range), 
-	data_(range.dim()*domain.dim()), 
-	iPiv_(), 
-	nRows_(range.dim()), 
-	nCols_(domain.dim())
+	  data_(range.dim()*domain.dim()),
+	  iPiv_(),
+	  is_factored_(false),
+	  nRows_(range.dim()), 
+	  nCols_(domain.dim())
 {}
 
 
@@ -70,24 +71,11 @@ void LAPACKGeneralMatrix::mvMult(bool transpose, const TSFVector& in,
 	char transFlag='N';
 	if (transpose) transFlag='T';
 	
-	if (isFactored())
-		{
-			TSFError::raise("LAPACKGeneralMatrix::apply doesn't work on factored "
-											"matrices... I'm too lazy to do the bookkeeping to make "
-											"it work.");
-		}
-	else
-		{
-			TSFBlas<TSFReal>::gemv(&transFlag, &nRows_, &nCols_, &onePointZero, 
-														 &(data_[0]),
-														 &nRows_, inPtr, &one, &zero, 
-														 outPtr, &one);
-		}
-    //cout << " vOut after\n";
-    //cout << vOut;
-    //vOut.print(cout);
-    //cout << endl;
-
+	// RAB & ADP : 7/10/2002 : We have fixed this!
+	TSFBlas<TSFReal>::gemv(&transFlag, &nRows_, &nCols_, &onePointZero, 
+						   &(data_[0]),
+						   &nRows_, inPtr, &one, &zero, 
+						   outPtr, &one);
 }
 
 void LAPACKGeneralMatrix::solve(bool transpose, const TSFVector& in,
@@ -99,7 +87,6 @@ void LAPACKGeneralMatrix::solve(bool transpose, const TSFVector& in,
 	const DenseSerialVector& vIn = TSFSerialVector::getConcrete(in);
 	DenseSerialVector& vOut = TSFSerialVector::getConcrete(out);
 
-	TSFReal* dataPtr = const_cast<TSFReal*>(&(data_[0]));
 	const TSFReal* inPtr = &(vIn[0]);
 	TSFReal* outPtr = &(vOut[0]);
 
@@ -109,10 +96,11 @@ void LAPACKGeneralMatrix::solve(bool transpose, const TSFVector& in,
 	TSFBlas<TSFReal>::copy(&nRows_, inPtr, &one, outPtr, &one);
 
 	/* factor if we haven't already done so */
-	if (!isFactored())
+	if (!is_factored_)
 		{
 			const_cast<LAPACKGeneralMatrix*>(this)->factor();
 		}
+	TSFReal* dataPtr = const_cast<TSFReal*>(&(factor_data_[0]));
 
 	/* set the LAPACK transpose flag = "N" for no transpose, "T" for transpose */
 	char transFlag='N';
@@ -135,6 +123,7 @@ void LAPACKGeneralMatrix::addToRow(int globalRowIndex,
 																	 const int* globalColumnIndices,
 																	 const TSFReal* a)
 {
+	is_factored_ = false;
 	for (int i=0; i<nCols; i++)
 		{
 			data_[nRows_*globalColumnIndices[i] + globalRowIndex] += a[i];
@@ -143,11 +132,13 @@ void LAPACKGeneralMatrix::addToRow(int globalRowIndex,
 
 void LAPACKGeneralMatrix::setElement(int i, int j, const TSFReal& aij)
 {
+	is_factored_ = false;
 	data_[nRows_*j + i] = aij;
 }
 
 void LAPACKGeneralMatrix::zero()
 {
+	is_factored_ = false;
 	data_.zero();
 }
 
@@ -158,7 +149,11 @@ void LAPACKGeneralMatrix::factor()
 	iPiv_.resize(nRows_);
 
 	int* pivPtr = const_cast<int*>(&(iPiv_[0]));
-	TSFReal* dataPtr = const_cast<TSFReal*>(&(data_[0]));
+
+//	factor_data_.resize(data_.length());
+	factor_data_ = data_;
+
+	TSFReal* dataPtr = const_cast<TSFReal*>(&(factor_data_[0]));
 
 	TSFBlas<TSFReal>::getrf(&nRows_, &nCols_, dataPtr,
 													&nRows_, pivPtr, &info);
@@ -168,7 +163,7 @@ void LAPACKGeneralMatrix::factor()
 			TSFError::raise("LAPACKGeneralMatrix factor failed with error code"
 											+ TSFUtils::toString(info));
 		}
-	isFactored_ = true;
+	is_factored_ = true;
 }
 
 void LAPACKGeneralMatrix::print(ostream& os) const

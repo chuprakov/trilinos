@@ -142,7 +142,7 @@ EXPAND_AS_DEFINED      =
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
 TAGFILES               = qtools_docs/qtools.tag=../../qtools_docs/html
-GENERATE_TAGFILE       = 
+GENERATE_TAGFILE       = $(TSF_ROOT)/doc/TSF.tag
 ALLEXTERNALS           = NO
 PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
@@ -169,3 +169,5 @@ DOC_URL                =
 DOC_ABSPATH            = 
 BIN_ABSPATH            = /usr/local/bin/
 EXT_DOC_PATHS          = 
+
+
