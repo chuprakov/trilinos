@@ -6,7 +6,7 @@
 #include "TSFGeneralizedIndex.h"
 
 #if HAVE_RTOP
-#include "RTOp.h"
+#include "RTOpPack/include/RTOp.h"
 #endif
 
 namespace TSF
@@ -80,11 +80,21 @@ namespace TSF
 			//@}
 
 #if HAVE_RTOP
+
 			/** \name General reduction and transformation operators */
 			//@{
-			/** apply a transformation operator */
-			virtual void apply(RTOp op) = 0 ;
-			//@}
+			/** See documentation for TSFVector::apply_reduction() */
+			virtual void apply_reduction(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) const = 0;
+			/** See documentation for TSFVector::apply_transformation() */
+			virtual void apply_transformation(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) = 0;
 #endif
 					
 			/** \name access to elements */

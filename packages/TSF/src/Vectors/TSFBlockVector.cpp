@@ -6,8 +6,135 @@
 #include "TSFError.h"
 #include "TSFUtils.h"
 
+#ifdef HAVE_RTOP
+#include "RTOpPack/include/RTOp_parallel_helpers.h"
+#endif
+
 using namespace TSF;
 using namespace std;
+
+#ifdef HAVE_RTOP
+
+void TSFBlockVector::apply_reduction(
+	const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs_in[]
+	,int num_targ_vecs, TSFVectorBase* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	) const
+{
+	// Convert vectors to TSFBlockVector and append this to the beginning of vecs[]
+	typedef const TSFBlockVector*   const_vec_base_ptr_t;
+	typedef TSFBlockVector*         vec_base_ptr_t;
+	const_vec_base_ptr_t    *vecs      = new const_vec_base_ptr_t[num_vecs+1];
+	vec_base_ptr_t          *targ_vecs = NULL;
+	vecs[0] = this;
+	for(int k = 1; k <= num_vecs; ++k) {
+		vecs[k] = dynamic_cast<const TSFBlockVector*>(vecs_in[k-1]);
+	}
+	if(num_targ_vecs) {
+		targ_vecs = new vec_base_ptr_t[num_targ_vecs];
+		for(int k = 0; k < num_targ_vecs; ++k) {
+			targ_vecs[k] = dynamic_cast<TSFBlockVector*>(targ_vecs_in[k]);
+		}
+	}
+	apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+}
+
+void TSFBlockVector::apply_transformation(
+	const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs_in[]
+	,int num_targ_vecs, TSFVectorBase* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	)
+{
+	// Convert vectors to TSFBlockVector and append this to the beginning of targ_vecs[]
+	typedef const TSFBlockVector*   const_vec_base_ptr_t;
+	typedef TSFBlockVector*         vec_base_ptr_t;
+	const_vec_base_ptr_t    *vecs      = NULL;
+	vec_base_ptr_t          *targ_vecs = new vec_base_ptr_t[num_targ_vecs+1];
+	if(num_vecs) {
+		for(int k = 0; k < num_vecs; ++k) {
+			vecs[k] = dynamic_cast<const TSFBlockVector*>(vecs_in[k]);
+		}
+	}
+	targ_vecs[0] = this;
+	for(int k = 1; k <= num_targ_vecs; ++k) {
+		targ_vecs[k] = dynamic_cast<TSFBlockVector*>(targ_vecs_in[k-1]);
+	}
+	apply_op(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
+}
+
+void TSFBlockVector::apply_op(
+	const RTOp_RTOp &op, int num_vecs, const TSFBlockVector* vecs[]
+	,int num_targ_vecs, TSFBlockVector* targ_vecs[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	) const
+{
+	// Storage of pointers to constituent TSFVector subvectors.
+	typedef const TSFVector*     const_vec_ptr_t;
+	typedef TSFVector*           vec_ptr_t;
+	const_vec_ptr_t              *sub_vecs      = NULL;
+	vec_ptr_t                    *targ_sub_vecs = NULL;
+	if( num_vecs ) {
+		sub_vecs = new const_vec_ptr_t[num_vecs];
+	}
+	if( num_targ_vecs ) {
+		targ_sub_vecs = new vec_ptr_t[num_targ_vecs];
+	}
+	// Loop through the subvectors and apply the operator to regions of overlap
+	// Here we can use the utility function for parallel vectors since the idea
+	// is very similar.
+	RTOp_index_type    global_dim = this->space().dim();
+	RTOp_index_type
+		local_sub_dim = 0,
+		local_offset  = 0,
+		overlap_first_local_ele  = 0,
+		overalap_local_sub_dim   = 0,
+		overlap_global_offset    = 0;
+	const int numBlocks = this->numBlocks();
+	for( int k = 0; k < numBlocks; ++k ) { // Loop through the subvector blocks
+		const TSFVector &curr_sv = subvectors_[k];
+		local_sub_dim = curr_sv.space().dim();
+		RTOp_parallel_calc_overlap(
+			global_dim, local_sub_dim, local_offset, first_ele, sub_dim, global_offset
+			,&overlap_first_local_ele, &overalap_local_sub_dim, &overlap_global_offset
+			);
+		if( overlap_first_local_ele ) {
+			// This block subvector overlaps the logical subvector requested by the client.
+			// Fill up the subvector arguments
+			if( num_vecs ) {
+				for( int j = 0; j < num_vecs; ++j )
+					sub_vecs[j] = &vecs[j]->subvectors_[k];
+			}
+			if( num_targ_vecs ) {
+				for( int j = 0; j < num_targ_vecs; ++j )
+					targ_sub_vecs[j] = &targ_vecs[j]->subvectors_[k];
+			}
+			// Apply the operator and accumulate the result of the reduction in reduct_obj
+			if( num_vecs )
+				sub_vecs[0]->apply_reduction(
+					op
+					,num_vecs-1, num_vecs > 1 ? &sub_vecs[1] : NULL
+					,num_targ_vecs, targ_sub_vecs
+					,reduct_obj
+					,overlap_first_local_ele, overalap_local_sub_dim, overlap_global_offset
+					);
+			else
+				targ_sub_vecs[0]->apply_transformation(
+					op
+					,num_vecs, sub_vecs
+					,num_targ_vecs-1, num_targ_vecs > 1 ? &targ_sub_vecs[1] : NULL
+					,reduct_obj
+					,overlap_first_local_ele, overalap_local_sub_dim, overlap_global_offset
+					);
+		}
+		//
+		local_offset += local_sub_dim;
+	}
+	// Delete arrays
+	if( sub_vecs ) delete [] sub_vecs;
+	if( targ_sub_vecs ) delete [] targ_sub_vecs;
+}
+
+#endif
 
 TSFBlockVector::TSFBlockVector(const TSFVectorSpace& space)
 	: TSFVectorBase(space), subvectors_(space.numBlocks())

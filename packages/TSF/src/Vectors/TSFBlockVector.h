@@ -73,12 +73,19 @@ namespace TSF
 
 
 		
-#if HAVE_RTOP
-			/** \name General reduction and transformation operators */
-			//@{
-			/** apply a transformation operator */
-			virtual void apply(RTOp op) ;
-			//@}
+#ifdef HAVE_RTOP
+			///
+			void apply_reduction(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) const;
+			///
+ 			void apply_transformation(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				);
 #endif
 					
 			/** \name access to elements */
@@ -134,6 +141,16 @@ namespace TSF
 		protected:
 			/* array of subvectors */
 			TSFArray<TSFVector> subvectors_;
+		private:
+#ifdef HAVE_RTOP
+			// Note: *this is first element of vec[] or targ_vec[]
+			void apply_op(
+				const RTOp_RTOp &op, int num_vecs, const TSFBlockVector* vecs[]
+				,int num_targ_vecs, TSFBlockVector* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+				) const;
+#endif
+			
 		};
 };
 

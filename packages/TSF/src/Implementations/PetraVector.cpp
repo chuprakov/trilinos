@@ -30,6 +30,81 @@ PetraVector::PetraVector(const TSFVectorSpace& space,
 		ghostValuesAreValid_(false)
 {}
 
+#ifdef HAVE_RTOP
+
+void PetraVector::apply_reduction(
+	const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs_in[]
+	,int num_targ_vecs, TSFVectorBase* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	) const
+{
+	// Convert from TSFVectorBase arrays to Epetra_MultiVector arrays
+	typedef const Epetra_MultiVector*   const_vec_ptr_t;
+	typedef Epetra_MultiVector*         vec_ptr_t;
+	const_vec_ptr_t      *vecs      = NULL;
+	vec_ptr_t            *targ_vecs = NULL;
+	if(num_vecs) {
+		vecs = new const_vec_ptr_t[num_vecs];
+		for( int k = 0; k < num_vecs; ++k )
+			vecs[k] = &(*dynamic_cast<const PetraVector*>(vecs_in[k])->localValues_);
+	}
+	if(num_targ_vecs) {
+		targ_vecs = new vec_ptr_t[num_targ_vecs];
+		for( int k = 0; k < num_targ_vecs; ++k ) {
+			PetraVector *petra_v = dynamic_cast<PetraVector*>(targ_vecs_in[k]);
+			targ_vecs[k] = &(*petra_v->localValues_);
+			petra_v->invalidateGhostValues(); // These vector will be changes!
+		}
+	}
+	// Call the implementation to invoke the operator
+	localValues_->apply_reduction(
+		op,num_vecs,vecs,num_targ_vecs,targ_vecs
+		,&reduct_obj // First element in an array of one RTOp_ReductTarget objects
+		,first_ele,sub_dim,global_offset
+		);
+	// Delete the arrays
+	if(vecs)      delete [] vecs;
+	if(targ_vecs) delete [] targ_vecs;
+}
+
+void PetraVector::apply_transformation(
+	const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs_in[]
+	,int num_targ_vecs, TSFVectorBase* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	)
+{
+	// Convert from TSFVectorBase arrays to Epetra_MultiVector arrays
+	typedef const Epetra_MultiVector*   const_vec_ptr_t;
+	typedef Epetra_MultiVector*         vec_ptr_t;
+	const_vec_ptr_t      *vecs      = NULL;
+	vec_ptr_t            *targ_vecs = NULL;
+	if(num_vecs) {
+		vecs = new const_vec_ptr_t[num_vecs];
+		for( int k = 0; k < num_vecs; ++k )
+			vecs[k] = &(*dynamic_cast<const PetraVector*>(vecs_in[k])->localValues_);
+	}
+	if(num_targ_vecs) {
+		targ_vecs = new vec_ptr_t[num_targ_vecs];
+		for( int k = 0; k < num_targ_vecs; ++k ) {
+			PetraVector *petra_v = dynamic_cast<PetraVector*>(targ_vecs_in[k]);
+			targ_vecs[k] = &(*petra_v->localValues_);
+			petra_v->invalidateGhostValues(); // These vector will be changes!
+		}
+	}
+	// Call the implementation to invoke the operator
+	localValues_->apply_reduction(
+		op,num_vecs,vecs,num_targ_vecs,targ_vecs
+		,&reduct_obj // First element in an array of one RTOp_ReductTarget objects
+		,first_ele,sub_dim,global_offset
+		);
+	this->invalidateGhostValues();
+	// Delete the arrays
+	if(vecs)      delete [] vecs;
+	if(targ_vecs) delete [] targ_vecs;
+}
+
+#endif
+
 TSFReal& PetraVector::setElement(int globalIndex) 
 {
 	return allValues_->operator[](getLocalIndex(globalIndex));

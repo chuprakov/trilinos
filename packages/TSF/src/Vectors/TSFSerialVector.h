@@ -23,6 +23,21 @@ namespace TSF
 			/** the usual virtual dtor */
 			virtual ~TSFSerialVector(){;}
 
+#ifdef HAVE_RTOP
+			///
+			void apply_reduction(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) const;
+			///
+ 			void apply_transformation(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				);
+#endif
+
 			/** \name Element access */
 			//@{
 			/** read-write access */
@@ -79,6 +94,19 @@ namespace TSF
 				{return localValue;}
 
 			DenseSerialVector x_;
+
+		private:
+#ifdef HAVE_RTOP
+  void apply_op(
+	  const TSFSerialVector* const_this, TSFSerialVector* nonconst_this
+	  ,const RTOp_RTOp& op
+	  ,const int num_vecs,      const TSFVectorBase**   vecs
+	  ,const int num_targ_vecs, TSFVectorBase**         targ_vecs
+	  ,RTOp_ReductTarget reduct_obj
+	  ,const int first_ele  , const int sub_dim  , const int global_offset
+	  ) const;
+#endif // HAVE_RTOP
+
 		};
 };
 

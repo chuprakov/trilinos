@@ -51,6 +51,21 @@ namespace TSF
 			/** the usual virtual dtor */
 			virtual ~PetraVector(){;}
 	
+#ifdef HAVE_RTOP
+			///
+			void apply_reduction(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) const;
+			///
+ 			void apply_transformation(
+				const RTOp_RTOp &op, int num_vecs, const TSFVectorBase* vecs[]
+				,int num_targ_vecs, TSFVectorBase* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				);
+#endif
+
 			/** \name Element access */
 			//@{
 			/** read-write access */

@@ -141,6 +141,147 @@ namespace TSF
 			
 			//@}
 
+#if HAVE_RTOP
+
+			/** \name Reduction/Transformation operators. */
+			//@{
+
+			///
+			/** Apply a reduction/transformation,operation over a set of vectors:
+			 * <tt>op(op((*this),v[0]...v[nv-1],z[0]...z[nz-1]),(*reduct_obj)) -> z[0]...z[nz-1],(*reduct_obj)</tt>.
+			 *
+			 * The first nonmutable vector in the argument list to <tt>op</tt> will be <tt>this</tt>
+			 * vector then followed by those in <tt>vecs[k], k = 0...num_vecs-1</tt>.  Therefore, the number
+			 * of nonmutable vectors passed to <tt>\ref RTOp_apply_op "apply_op"(&op,...)"</tt> will be
+			 * <tt>num_vecs+1</tt>.
+			 *
+			 * The vector to be represented <tt>v</tt> by <tt>this</tt> and passed to the
+			 * <tt>\ref RTOp_apply_op "RTOp_apply_op"(&op,...)</tt> method is:
+			 \verbatim
+
+			 v(k + global_offset) = this->get_ele(first_ele + k - 1)
+			 , for k = 1 ... sub_dim
+			 \endverbatim
+			 * The other vector arguments are represented similarly.  The situation where
+			 * <tt>first_ele == 1</tt> and <tt>global_offset > 1</tt> corresponds to the
+			 * case where the vectors are representing consitituent vectors in a larger
+			 * aggregrate vector.  The situation where <tt>first_ele > 1</tt> and
+			 * <tt>global_offset == 0</tt> is for when a sub-view of the vectors are being
+			 * treated as full vectors.  Other combinations of these arguments is possible.
+			 *
+			 * Preconditions:<ul>
+			 * <li> All of the input vectors is compatible with <tt>this</tt> vector object.
+			 * <li> <tt>1 <= first_ele <= this->dim()</tt>
+			 * <li> <tt>global_offset >= 0</tt>
+			 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt>
+			 * </ul>
+			 *
+			 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
+			 *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
+			 *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
+			 * @param  num_vecs
+			 *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.
+			 *              If <tt>vecs==NULL</tt> then this argument is ignored but should be set to zero.
+			 * @param  vecs
+			 *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
+			 *				nonmutable vectors to include in the operation.
+			 *				The order of these vectors is significant to <tt>op</tt>.
+			 *				If <tt>vecs==NULL</tt> then <tt>op</tt> is called with the
+			 *				single vector represented by <tt>this</tt> object.
+			 * @param  num_targ_vecs
+			 *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.
+			 *              If <tt>targ_vecs==NULL</tt>	then this argument is ignored but should be set to zero.
+			 * @param  targ_vecs
+			 *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
+			 *				mutable vectors to include in the operation.
+			 *				The order of these vectors is significant to <tt>op</tt>.
+			 *				If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with no mutable vectors.
+			 * @param  reduct_obj
+			 *				[in/out] Target object of the reduction operation.
+			 *				This object must have been created by the <tt>RTOp_reduct_obj_create(&op,&reduct_obj)</tt>
+			 *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
+			 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
+			 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
+			 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
+			 *              composite vectors instance.  If <tt>RTOp_get_reduct_type_num_entries(&op,...)</tt> returns
+			 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
+			 *              <tt>reduct_obj</tt> should be set to <tt>RTOp_REDUCT_OBJ_NULL</tt> and no reduction will be performed.
+			 * @param  first_ele
+			 *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
+			 * @param  sub_dim
+			 *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
+			 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
+			 * @param  global_offset
+			 *				[in] (default = 0) The offset applied to the included vector elements.
+			 */
+			void apply_reduction(
+				const RTOp_RTOp &op, int num_vecs, const TSFVector* vecs[]
+				,int num_targ_vecs, TSFVector* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				) const;
+
+			///
+			/** Apply a reduction/transformation,operation over a set of vectors:
+			 * <tt>op(op(v[0]...v[nv-1],(*this),z[0]...z[nz-1]),(*reduct_obj)) -> (*this),z[0]...z[nz-1],(*reduct_obj)</tt>.
+			 *
+			 * The first mutable vector in the argument list to <tt>op</tt> will be
+			 * <tt>this</tt> vector then followed by those in <tt>targ_vecs[k]</tt>, <tt>k = 0...num_targ_vecs-1</tt>
+			 * Therefore, the number of mutable vectors passed to <tt>\ref RTOp_apply_op "apply_op"(&op,...)"</tt>
+			 * will be <tt>num_targ_vecs+1</tt>.
+			 *
+			 * See <tt>\ref TSFVector::apply_reduction "apply_reduction(...)" for a discussion of the significance of the
+			 * arguments <tt>first_ele</tt>, <tt>sub_dim</tt> and <tt>global_offset</tt>.
+			 *
+			 * Preconditions:<ul>
+			 * <li> See <tt>\ref TSFVector::apply_reduction "apply_reduction(...)".
+			 * </ul>
+			 *
+			 * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
+			 *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
+			 *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
+			 * @param  num_vecs
+			 *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.  If <tt>vecs==NULL</tt>
+			 *				then this argument is ignored but should be set to zero.
+			 * @param  vecs
+			 *				[in] Array (length <tt>num_vecs</tt>) of a set of pointers to
+			 *				nonmutable vectors to include in the operation.
+			 *				The order of these vectors is significant to <tt>op</tt>.  if <tt>vecs==NULL</tt>,
+			 *              then <tt>op.apply_op(...)</tt> is called with no non-mutable sub-vector arguments.
+			 * @param  num_targ_vecs
+			 *				[in] Number of mutable vectors in <tt>targ_vecs[]</tt>.  If <tt>targ_vecs==NULL</tt>
+			 *				then this argument is ignored but should be set to zero.
+			 * @param  targ_vecs
+			 *				[in] Array (length <tt>num_targ_vecs</tt>) of a set of pointers to
+			 *				mutable vectors to include in the operation. The order of these vectors
+			 * 		        is significant to <tt>op</tt>.  If <tt>targ_vecs==NULL</tt> then <tt>op</tt> is called with
+			 *				only one mutable vector (<tt>*this</tt>).
+			 * @param  reduct_obj
+			 *				[in/out] Target object of the reduction operation.
+			 *				This object must have been created by the <tt>op.reduct_obj_create_raw(&reduct_obj)</tt>
+			 *              function first.  The reduction operation will be added to <tt>(*reduct_obj)</tt> if
+			 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
+			 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
+			 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
+			 *              composite vectors instance.  If <tt>op.get_reduct_type_num_entries<tt>(...)</tt> returns
+			 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
+			 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
+			 * @param  first_ele
+			 *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
+			 * @param  sub_dim
+			 *              [in] (default = 0) The number of elements in these vectors to include in the reduction/transformation
+			 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
+			 * @param  global_offset
+			 *				[in] (default = 0) The offset applied to the included vector elements.
+			 */
+ 			void apply_transformation(
+				const RTOp_RTOp &op, int num_vecs, const TSFVector* vecs[]
+				,int num_targ_vecs, TSFVector* targ_vecs[], RTOp_ReductTarget reduct_obj
+				,const RTOp_index_type first_ele = 1, const RTOp_index_type sub_dim = 0, const RTOp_index_type global_offset = 0
+				);
+
+			//@}
+
+#endif
 
 			/** \name Setting, getting, and adding to individual elements or groups of elements. */
 			//@{

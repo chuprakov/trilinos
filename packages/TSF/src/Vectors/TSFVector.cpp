@@ -101,6 +101,72 @@ TSFVector& TSFVector::setBlock(int i, const TSFVector& sub)
 	return *this;
 }
 
+#if HAVE_RTOP
+
+void TSFVector::apply_reduction(
+	const RTOp_RTOp &op, int num_vecs, const TSFVector* vecs_in[]
+	,int num_targ_vecs, TSFVector* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	) const
+{
+	// Convert from TSFVector arrays to TSFVectorBase arrays
+	typedef const TSFVectorBase*        const_vec_base_ptr_t;
+	typedef TSFVectorBase*              vec_base_ptr_t;
+	const_vec_base_ptr_t      *vecs      = NULL;
+	vec_base_ptr_t            *targ_vecs = NULL;
+	if(num_vecs) {
+		vecs = new const_vec_base_ptr_t[num_vecs];
+		for( int k = 0; k < num_vecs; ++k )
+			vecs[k] = vecs_in[k]->ptr();
+	}
+	if(num_targ_vecs) {
+		targ_vecs = new vec_base_ptr_t[num_targ_vecs];
+		for( int k = 0; k < num_targ_vecs; ++k )
+			targ_vecs[k] = targ_vecs_in[k]->ptr();
+	}
+	// Call the implementation to invoke the operator
+	ptr_->apply_reduction(
+		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+		,first_ele,sub_dim,global_offset
+		);
+	// Delete the arrays
+	if(vecs)      delete [] vecs;
+	if(targ_vecs) delete [] targ_vecs;
+}
+
+void TSFVector::apply_transformation(
+	const RTOp_RTOp &op, int num_vecs, const TSFVector* vecs_in[]
+	,int num_targ_vecs, TSFVector* targ_vecs_in[], RTOp_ReductTarget reduct_obj
+	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
+	)
+{
+	// Convert from TSFVector arrays to TSFVectorBase arrays
+	typedef const TSFVectorBase*        const_vec_base_ptr_t;
+	typedef TSFVectorBase*              vec_base_ptr_t;
+	const_vec_base_ptr_t      *vecs      = NULL;
+	vec_base_ptr_t            *targ_vecs = NULL;
+	if(num_vecs) {
+		vecs = new const_vec_base_ptr_t[num_vecs];
+		for( int k = 0; k < num_vecs; ++k )
+			vecs[k] = vecs_in[k]->ptr();
+	}
+	if(num_targ_vecs) {
+		targ_vecs = new vec_base_ptr_t[num_targ_vecs];
+		for( int k = 0; k < num_targ_vecs; ++k )
+			targ_vecs[k] = targ_vecs_in[k]->ptr();
+	}
+	// Call the implementation to invoke the operator
+	ptr_->apply_transformation(
+		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+		,first_ele,sub_dim,global_offset
+		);
+	// Delete the arrays
+	if(vecs)      delete [] vecs;
+	if(targ_vecs) delete [] targ_vecs;
+}
+
+#endif
+
 const TSFReal& TSFVector::operator[](int i) const 
 {
 	return ptr_->getElement(i);
@@ -227,12 +293,6 @@ TSFVector TSFVector::abs() const
 	rtn.ptr_->abs();
 	return rtn;
 }
-
-
-
-
-
-
 
 TSFReal TSFVector::sumElements() const
 {
