@@ -18,7 +18,7 @@
 \setlength{\parskip}{01.5ex plus 0.3ex minus 0.3ex}
 \renewcommand{\baselinestretch}{1.2}
 
-%*** Page formating
+%*** Page formatting
 
 \setlength{\topmargin}{0.0in}
 \setlength{\headheight}{0.3in}
@@ -169,7 +169,7 @@ which is common to many different types of numerical problems.  This
 is followed by an overview of the TSFCore linear algebra interfaces in
 Section \ref{tsfcore:sec:TSFCore_base}.  A more detailed discussion of
 the design of the TSFCore linear algebra interfaces is presented in
-Section \ref{tsfcore:sec:TSFCore_Details} which includes numerious
+Section \ref{tsfcore:sec:TSFCore_Details} which includes numerous
 examples.  A complete example ANA for the iterative solution of
 simultaneous systems of linear equations (using a simple block BiCG
 method) is described in Section
@@ -291,20 +291,20 @@ that is the cornerstone for many different types of ANAs.
 
 There are many different types of ANAs that are related to the type of
 formulation in (\ref{tsfcore:eqn:c}) and (\ref{tsfcore:eqn:c_newton})
-and the requirements assoicated for each will be a little different.
+and the requirements associated for each will be a little different.
 There are also different levels of ANAs where ANAs build on one
 another.  For example, ANAs for iterative linear solvers [???] solve
 equations of the form (\ref{tsfcore:eqn:c_newton}) that generate
 Newton steps for ANAs for solving the nonlinear equations [???] in
 (\ref{tsfcore:eqn:c}).  The solution of linear systems is also
-required in stability anaysis and bifurcation methods [???], implicit
+required in stability analysis and bifurcation methods [???], implicit
 DAE and ODE solvers [???], uncertainty quantification methods
 (i.e.~SFE [???]) and many different types of optimization methods
 [???].  In addition, various types numerical analysis methods such as
 for eigenvalue problems [???] that can be applied, for example, to
 matrices such as the Jacobian $\frac{\partial c}{\partial y}$, can be
-consisered to be ANAs.  TSFCore is designed to provide functionality
-for the intersection of all of the requriements for all of these
+considered to be ANAs.  TSFCore is designed to provide functionality
+for the intersection of all of the requirements for all of these
 different types of ANAs.  Requirements for more specific types is
 deferred [???].
 
@@ -416,7 +416,7 @@ top the basic TSFCore abstractions (e.g.~using TSF).
 
 \item
 ANAs developed with TSFCore should be able to transparently utilize
-different types of computing enviornments such as SPMD\footnote{Single
+different types of computing environments such as SPMD\footnote{Single
 Program Multiple Data (SPMD): A single program running in a
 distributed-memory environment on multiple parallel processors},
 client/server\footnote{Client/Server: The ANA runs in a process on a
@@ -478,7 +478,7 @@ is a tall thin dense matrix where each column in the matrix is a
 \texttt{\textit{col(...)}} method.  \texttt{\textit{MultiVector}}s
 are needed in order to allow for both near optimal processor cache
 performance (in serial and parallel programs) and to minimize the
-number of global comunications in a distributed parallel.  The
+number of global communications in a distributed parallel.  The
 \texttt{\textit{MultiVector}} interface is used to represent the
 Jacobian matrix objects $\frac{\partial g}{\partial y}$ and
 $\frac{\partial g}{\partial u_l}$ and is useful in many different
@@ -635,7 +635,7 @@ Figure \ref{tsfcore:fig:LBFGS}) of the quasi-Newton matrix $B$ is
 approximated using the tall thin multi-vectors $S$ and $Y$ along with
 a small (serial) coordinating matrix $Q$ (which is computed and
 updated from $S$ and $Y$).  The scalar $g$ is chosen for scaling
-reasons and $H_0 = B_0^{-1} = g I$ represetns the initial matrix
+reasons and $H_0 = B_0^{-1} = g I$ represents the initial matrix
 approximation from which the updates are performed.  A similar compact
 formula also exists for $B$ directly which involves the same matrices
 (and requires solves with $Q$).  In an SPMD configuration, the
@@ -734,7 +734,7 @@ HCL and TSF for instance.  In HCL 1.0, the compatibility of vector
 spaces is tested with a virtual \texttt{operator==(...)}  method.
 This implies that vector spaces will be compatible only if they are of
 the same concrete type and have the same setup.  Ideally, however, we
-don't want to require that only vectors and vector spaces with the
+do not want to require that only vectors and vector spaces with the
 same {\em concrete} type to be compatible but instead we would like to
 allow vectors and vector spaces of the same {\em general} type be
 compatible.  To see the difference, consider parallel programs running
@@ -1153,7 +1153,7 @@ void foo1( const Vector<Scalar>& x, Scalar v[] )
 {
     RTOpPack::SubVectorT<Scalar> sub_vec;                 // Create and initialize the object that will provide the subvector view
     x.getSubVector(Range1D(),&sub_vec);                   // Have the vector object initialize the view and store in sub_vec
-    for( Index i = 0; i < sub_vec.subDim(); ++i )         // Loop through the explict elements and extract the values into v[]
+    for( Index i = 0; i < sub_vec.subDim(); ++i )         // Loop through the explicit elements and extract the values into v[]
         v[i] = sub_vec(i+1)                               // ...
     x.freeSubVector(&sub_vec);                            // Free the view of the vector x
 }
@@ -1431,7 +1431,7 @@ void TSFCore::bad_long_expression(
     )
 {
     MemMngPack::ref_count_ptr<Vector<Scalar> >
-        t = A.range()->createMember(); // Create a temporary to store the intermidate matrix-vector products
+        t = A.range()->createMember(); // Create a temporary to store the intermidiate matrix-vector products
     A.apply(NOTRANS,u,y);              // y  =  A*u
     B.aply(TRANS,v,t.get());           // t  =  B'*v
     axpy(gamma,*t,y);                  // y +=  gamma*t
@@ -1458,8 +1458,8 @@ If the method \texttt{\textit{opSupported(M\_trans)}} returns
 passed to \texttt{\textit{apply(...)}} and
 \texttt{\textit{solve(...)}}, will result in an
 \texttt{OpNotSupported} exception being thrown.
-This specfication, while not ideal form an object-orientation purest
-point of view, does satsisfy the basic principles outlined in Section
+This specification, while not ideal form an object-orientation purest
+point of view, does satisfy the basic principles outlined in Section
 \ref{tsfcore:sec:general_software_concepts}.
 
 %
@@ -1654,7 +1654,7 @@ parallel computer (using MPI).  Without the concept of a
 \texttt{\textit{applyOp(...)}} method, this type of mulit-vector
 reduction operation would require $m$ separate global reductions,
 where $m$ is the number of columns in the multi-vector.  This is
-critical for a near optimial implementation with respect the
+critical for a near optimal implementation with respect the
 minimizing communication.
 
 %
@@ -1711,7 +1711,7 @@ public:
     }
     void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha, Scalar beta ) const
     {
-        // Optimized implemetation for multi-vectors
+        // Optimized implementation for multi-vectors
         ...
     }
     ...
@@ -1795,7 +1795,7 @@ void TSFCore::LBFGS_solve(
     const int p = V.domain()->dim();                // Get the number of columns in V and U
     MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
         S = get_updated(S_store,m),                 // Get the view of only the columns in S_store for stored updates
-        Y = get_updated(S_store,m);                 // Get the view of only the columns in Y_store for stored updatse
+        Y = get_updated(S_store,m);                 // Get the view of only the columns in Y_store for stored updates
     MemMngPack::ref_count_ptr<MultiVector<Scalar> >
         T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
         T_2 = Y->domain()->createMembers(p),        // ...
@@ -1820,7 +1820,7 @@ the elements for the multi-vector objects \texttt{S\_store},
 many different processors.  Note that in this case all of the elements
 in the multi-vector objects \texttt{Q\_ss}, \texttt{Q\_sy}, \texttt{Q\_yy},
 \texttt{T\_1}, \texttt{T\_2}, \texttt{T\_3} and \texttt{T\_4} are stored
-locally and in duplicate on each processor.  Now let's consider the
+locally and in duplicate on each processor.  Now let us consider the
 performance of this set of operations in this context.  Note that
 there are principally three different types of operations with
 multi-vectors that are performed through the
@@ -1882,7 +1882,7 @@ multiplications performed in the lines
 This type of operation involves fully scalable work with no
 communication or synchronization required.  For this type of operation
 a vector-by-vector implementation would not be a bottleneck form a
-standpoint of global comunication.  However, this operation will
+standpoint of global communication.  However, this operation will
 utilize level-3 BLAS and yield near optimal local cache performance
 where a vector-by-vector implementation would not.
 
@@ -1953,7 +1953,7 @@ of test would require special methods be added to the
 methods would complicate the development of these types of subclasses
 greatly.
 
-In summary, dont't alias output arguments with each other or with
+In summary, do not alias output arguments with each other or with
 other input arguments in any of the TSFCore interface methods.
 
 %
@@ -1964,7 +1964,7 @@ other input arguments in any of the TSFCore interface methods.
 In this section we describe how TSFCore can be directly used to build
 ANAs and while this is not the primary role TSFCore is designed for, this
 example shows that TSFCore provides all of the needed functionality for a
-near optimial performing implementation.  Code for a partial ANA in
+near optimal performing implementation.  Code for a partial ANA in
 the form of a compact LBFGS method was described in Section
 \ref{tsfcore:sec:LBFGS}.  In this section, we will describe the
 implementation of a simple block BiCG
@@ -2260,7 +2260,7 @@ described above are issues concerning object allocation verses object
 initialization.  Scott Myers \cite{ref:meyers_1996} and others
 advocate the ``object initialization on construction'' style of
 developing subclasses on the basis that is makes the subclasses easier
-to write.  However, this approach is not optimal for the reusablity of
+to write.  However, this approach is not optimal for the reusability of
 a subclass in different use cases from the ones for which the subclass
 was originally designed.  To maximize ease of use by clients and
 maximize reusability, another style of developing subclasses
