@@ -116,7 +116,7 @@ public:
 	///
 	vec_mut_ptr_t sub_view( const Range1D& rng );
 	///
-	void set_sub_vector( const RTOp_SubVector& sub_vec );
+	void set_sub_vector( const RTOp_SparseSubVector& sub_vec );
 
 	//@}
 

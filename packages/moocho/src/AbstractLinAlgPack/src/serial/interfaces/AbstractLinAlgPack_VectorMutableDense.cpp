@@ -141,7 +141,7 @@ void VectorMutableDense::get_sub_vector(
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 	// Just return the dense view regardless of spare_or_dense argument
 	RTOp_SubVector _sub_vec;
-	RTOp_sub_vector_dense(
+	RTOp_sub_vector(
 		rng.lbound()-1                             // global_offset
 		,rng.size()                                // sub_dim
 		,v_.raw_ptr()+v_.stride()*(rng.lbound()-1) // values
@@ -273,7 +273,7 @@ void VectorMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 	this->has_changed(); // Be aware of any final changes!
 }
 
-void VectorMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
+void VectorMutableDense::set_sub_vector( const RTOp_SparseSubVector& sub_vec )
 {
 	CLASS_MEMBER_PTRS
 	VectorMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?

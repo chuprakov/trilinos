@@ -68,7 +68,8 @@ const int indices_stride = (int)sizeof(AbstractLinAlgPack::SpVectorSlice::elemen
 
 } // end namespace
 
-RTOp_SubVector AbstractLinAlgPack::sub_vec_view(
+RTOp_SparseSubVector
+AbstractLinAlgPack::sub_vec_view(
 	const SpVectorSlice&   sv_in
 	,const Range1D&        rng_in
 	)
@@ -76,10 +77,10 @@ RTOp_SubVector AbstractLinAlgPack::sub_vec_view(
 	const Range1D        rng = RangePack::full_range(rng_in,1,sv_in.dim());
 	const SpVectorSlice  sv = sv_in(rng);
 
-	RTOp_SubVector  sub_vec;
+	RTOp_SparseSubVector  sub_vec;
 
 	if(!sv.nz()) {
-		RTOp_sub_vector_sparse(
+		RTOp_sparse_sub_vector(
 			rng.lbound()-1  // global_offset
 			,rng.size()     // sub_dim
 			,0              // nz
@@ -96,22 +97,25 @@ RTOp_SubVector AbstractLinAlgPack::sub_vec_view(
 		SpVectorSlice::const_iterator
 			itr = sv.begin();
 		assert(itr != sv.end());
-		const value_type   *values  = &itr->value();
-		const index_type   *indexes = &itr->index();
+		const value_type  *values  = &itr->value();
 		if( sv.dim() && sv.nz() == sv.dim() && sv.is_sorted() ) {
-			RTOp_sub_vector_dense(
+			RTOp_SubVector dense_sub_vec;
+			RTOp_sub_vector(
 				rng.lbound()-1    // global_offset
 				,rng.size()       // sub_dim
 				,values           // values
 				,values_stride    // values_stride
-				,&sub_vec
+				,&dense_sub_vec
 				);
+			RTOp_sparse_sub_vector_from_dense( &dense_sub_vec, &sub_vec );
 		}
 		else {
-			RTOp_sub_vector_sparse(
+			const value_type   *values  = &itr->value();
+			const index_type   *indexes = &itr->index();
+			RTOp_sparse_sub_vector(
 				rng.lbound()-1    // global_offset
 				,sv.dim()         // sub_dim
-				,sv.nz()          // nz
+				,sv.nz()          // sub_nz
 				,values           // values
 				,values_stride    // values_stride
 				,indexes          // indices

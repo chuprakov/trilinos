@@ -17,13 +17,14 @@
 #define SP_VECTOR_VIEW_H
 
 #include "SpVectorClass.hpp"
+#include "RTOpPack/src/RTOp_SparseSubVector.h"
 
 namespace AbstractLinAlgPack {
 
 ///
 /** Create an RTOp_SubVector view object from a SpVectorSlice object.
  */
-RTOp_SubVector sub_vec_view(
+RTOp_SparseSubVector sub_vec_view(
 	const SpVectorSlice&   sv
 	,const Range1D&        rng = Range1D()
 	);

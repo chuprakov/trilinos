@@ -250,7 +250,6 @@ void Vector::get_sub_vector(
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
 	if( sub_vec->values ) {
 		free( (void*)sub_vec->values  );
-		free( (void*)sub_vec->indices );
 	}
 	RTOp_sub_vector_null( sub_vec );
 	// Initialize the operator
@@ -268,15 +267,8 @@ void Vector::get_sub_vector(
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will
 	// own the memory allocated within get_sub_vector_op.create_reduct_obj_raw(...).  This is okay
 	//  since the client is required to call release_sub_vector(...) so release memory!
-	RTOp_ROp_get_sub_vector_ESparseOrDense  _sparse_or_dense;
-	if( sparse_or_dense == SPARSE )
-		_sparse_or_dense = RTOP_ROP_GET_SUB_VECTOR_SPARSE;
-	else if ( sparse_or_dense == DENSE )
-		_sparse_or_dense = RTOP_ROP_GET_SUB_VECTOR_DENSE;
-	else
-		assert(0); // Error!
 
-	*sub_vec = RTOp_ROp_get_sub_vector_val(_sparse_or_dense,reduct_obj);
+	*sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj);
 	free(reduct_obj); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
@@ -285,8 +277,6 @@ void Vector::free_sub_vector( RTOp_SubVector* sub_vec ) const
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
 	if( sub_vec->values )
 		free( (void*)sub_vec->values  );
-	if( sub_vec->indices )
-		free( (void*)sub_vec->indices );
 	RTOp_sub_vector_null( sub_vec );
 }
 

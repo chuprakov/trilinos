@@ -176,7 +176,7 @@ public:
 	///
 	void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
 	///
-	void set_sub_vector( const RTOp_SubVector& sub_vec );
+	void set_sub_vector( const RTOp_SparseSubVector& sub_vec );
 	///
 	void Vp_StMtV(
 		value_type                       alpha

@@ -19,7 +19,6 @@
 
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorGetSparse.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSMutable.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSTri.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
@@ -494,9 +493,6 @@ void MatrixOpSerial::Vp_StMtV(
 	, const Vector& v_rhs2, value_type beta) const
 {
 	VectorDenseMutableEncap       vs_lhs(*v_lhs);
-	const VectorGetSparse   *sv_rhs2 = dynamic_cast<const VectorGetSparse*>(&v_rhs2);
-	if(sv_rhs2)
-		this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, VectorSparseEncap(*sv_rhs2)(), beta );
 	VectorDenseEncap              vs_rhs2(v_rhs2);
 	this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, vs_rhs2(), beta );	
 }
@@ -516,11 +512,6 @@ void MatrixOpSerial::Vp_StPtMtV(
 	, const Vector& v_rhs3, value_type beta) const
 {
 	VectorDenseMutableEncap       vs_lhs(*v_lhs);
-	const VectorGetSparse   *sv_rhs3 = dynamic_cast<const VectorGetSparse*>(&v_rhs3);
-	if(sv_rhs3) {
-		this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, VectorSparseEncap(*sv_rhs3)(), beta );
-		return;
-	}
 	VectorDenseEncap              vs_rhs3(v_rhs3);
 	this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, vs_rhs3(), beta );	
 }

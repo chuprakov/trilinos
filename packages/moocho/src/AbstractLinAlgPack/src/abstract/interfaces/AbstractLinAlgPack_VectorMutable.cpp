@@ -38,52 +38,27 @@ static RTOpPack::RTOpC          set_sub_vector_op;
 // axpy operator
 static RTOpPack::RTOpC          axpy_op;
 
-// Simple class for an object that will initialize the RTOp_Server for get_ele operator.
+// Simple class for an object that will initialize the operator objects
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		// DVector scalar assignment operator
+		// Vector scalar assignment operator
 		if(0>RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_assign_scalar_name
-			   ,&RTOp_TOp_assign_scalar_vtbl
-			   ))
-			assert(0);
-		// DVector assignment operator
+		// Vector assignment operator
 		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
-			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_assign_vectors_name
-			   ,&RTOp_TOp_assign_vectors_vtbl
-			   ))
 			assert(0);
 		// Set element operator
 		if(0>RTOp_TOp_set_ele_construct( 0, 0.0, &set_ele_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_set_ele_name
-			   ,&RTOp_TOp_set_ele_vtbl
-			   ))
-			assert(0);	
 		// Set sub-vector operator
-		RTOp_SubVector sub_vec;
-		RTOp_sub_vector_null(&sub_vec);
-		if(0>RTOp_TOp_set_sub_vector_construct( &sub_vec, &set_sub_vector_op.op() ))
+		RTOp_SparseSubVector spc_sub_vec;
+		RTOp_sparse_sub_vector_null(&spc_sub_vec);
+		if(0>RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_set_sub_vector_name
-			   ,&RTOp_TOp_set_sub_vector_vtbl
-			   ))
-			assert(0);	
 		// axpy operator
 		if(0>RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
 			assert(0);
-		if(0>RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_axpy_name
-			   ,&RTOp_TOp_axpy_vtbl
-			   ))
-			assert(0);	
 	}
 }; 
 
@@ -197,18 +172,20 @@ void VectorMutable::get_sub_vector(
 void VectorMutable::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
 	RTOp_SubVector _sub_vec;
-	RTOp_sub_vector_dense(
+	RTOp_sub_vector(
 		sub_vec->global_offset
 		,sub_vec->sub_dim
 		,sub_vec->values
 		,sub_vec->values_stride
 		,&_sub_vec
 		);
-	VectorMutable::set_sub_vector( _sub_vec ); // Commit the changes!
+	RTOp_SparseSubVector spc_sub_vec;
+	RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
+	VectorMutable::set_sub_vector( spc_sub_vec ); // Commit the changes!
 	Vector::free_sub_vector( &_sub_vec );      // Free the memory!
 }
 
-void VectorMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
+void VectorMutable::set_sub_vector( const RTOp_SparseSubVector& sub_vec )
 {
 	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
 		assert(0);

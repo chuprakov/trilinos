@@ -17,6 +17,7 @@
 #define VECTOR_WITH_OP_MUTABLE_H
 
 #include "Vector.hpp"
+#include "RTOpPack/src/RTOp_SparseSubVector.h"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
@@ -330,7 +331,7 @@ public:
 	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
 	 */
-	virtual void set_sub_vector( const RTOp_SubVector& sub_vec );
+	virtual void set_sub_vector( const RTOp_SparseSubVector& sub_vec );
 
 	///
 	/** Perform a gather or scatter operation with a vector.

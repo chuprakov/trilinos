@@ -365,7 +365,9 @@ bool VectorSpaceTester::check_vector_space(
 
 			if(out && print_all_tests())
 				*out << z_name << ".set_sub_vector(sub_vec)\n";
-			z_to.set_sub_vector(sub_vec);
+			RTOp_SparseSubVector spc_sub_vec;
+			RTOp_sparse_sub_vector_from_dense( &sub_vec, &spc_sub_vec );
+			z_to.set_sub_vector(spc_sub_vec);
 			if(out && print_vectors())
 				*out << std::endl << z_name << " =\n" << z_to;
 			

@@ -121,10 +121,10 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 			) );
 }
 
-void VectorMutableSubView::set_sub_vector( const RTOp_SubVector& sub_vec_in )
+void VectorMutableSubView::set_sub_vector( const RTOp_SparseSubVector& sub_vec_in )
 {
-	const index_type  this_offset = space_impl().rng().lbound() - 1;
-	RTOp_SubVector    sub_vec = sub_vec_in;
+	const index_type       this_offset = space_impl().rng().lbound() - 1;
+	RTOp_SparseSubVector   sub_vec = sub_vec_in;
 	sub_vec.global_offset += this_offset;
 	full_vec_->set_sub_vector( sub_vec );
 }

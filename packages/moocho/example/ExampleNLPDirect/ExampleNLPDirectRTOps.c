@@ -53,8 +53,6 @@ static int explnlp2_c_eval_apply_op(
 		|| targ_vecs[0].global_offset != vecs[0].global_offset
 		|| targ_vecs[0].global_offset != vecs[1].global_offset )
 		return RTOp_ERR_INCOMPATIBLE_VECS;
-	if( vecs[0].indices || vecs[0].sub_nz == 0 || vecs[1].indices || vecs[1].sub_nz == 0 )
-		return RTOp_ERR_UNSUPPORTED_VEC_TYPE;
 
 	//
 	// Get pointers to data
@@ -170,9 +168,6 @@ static int explnlp2_calc_py_D_apply_op(
 		|| ( task == 2 && (targ_vecs[0].global_offset != vecs[2].global_offset ) )
 		|| ( task == 2 && ( targ_vecs[0].global_offset != targ_vecs[1].global_offset ) ) )
 		return RTOp_ERR_INCOMPATIBLE_VECS;
-	if( vecs[0].indices || vecs[0].sub_nz == 0 || vecs[1].indices || vecs[1].sub_nz == 0
-		|| ( task == 2 && (vecs[2].indices || vecs[2].sub_nz == 0) ) )
-		return RTOp_ERR_UNSUPPORTED_VEC_TYPE;
 
 	//
 	// Get pointers to data

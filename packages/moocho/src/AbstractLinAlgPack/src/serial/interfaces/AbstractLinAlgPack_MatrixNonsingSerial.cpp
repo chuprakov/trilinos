@@ -21,7 +21,6 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixNonsingSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorGetSparse.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSMutable.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSTri.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
@@ -205,9 +204,6 @@ void MatrixNonsingSerial::V_InvMtV(
 	,const Vector& v_rhs2) const
 {
 	VectorDenseMutableEncap       vs_lhs(*v_lhs);
-	const VectorGetSparse   *sv_rhs2 = dynamic_cast<const VectorGetSparse*>(&v_rhs2);
-	if(sv_rhs2)
-		this->V_InvMtV( &vs_lhs(), trans_rhs1, VectorSparseEncap(*sv_rhs2)() );
 	VectorDenseEncap              vs_rhs2(v_rhs2);
 	this->V_InvMtV( &vs_lhs(), trans_rhs1, vs_rhs2() );	
 }
