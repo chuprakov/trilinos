@@ -3,7 +3,7 @@
 ***
 begin_vary_options
   begin_options_group:
-  rSQPAlgo_ConfigMamaJama
+  NLPAlgoConfigMamaJama
     begin_option:
     null_space_matrix
       AUTO

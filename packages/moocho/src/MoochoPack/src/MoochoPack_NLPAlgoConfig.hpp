@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_Config.hpp
+// NLPAlgoConfig.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,25 +16,25 @@
 #ifndef RSQP_ALGO_CONFIG_H
 #define RSQP_ALGO_CONFIG_H
 
-#include "ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPackTypes.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-class rSQPAlgoContainer;
-class rSQPAlgoInterface;
+class NLPAlgoContainer;
+class NLPAlgoInterface;
 
 ///
 /** Interface for objects responsible for configuring an rSQP algorithm.
  *
- * Objects of this type configure a \c rSQPAlgoContainer object with an rSQP algorithm object,
+ * Objects of this type configure a \c NLPAlgoContainer object with an rSQP algorithm object,
  * configuring the algo with step, state etc. objects and initailizing the algorithm before the
  * interations start.
  */
-class rSQPAlgo_Config {
+class NLPAlgoConfig {
 public:
 
 	/** @name Public types */
@@ -53,7 +53,7 @@ public:
 	//@{
 
 	///
-	virtual ~rSQPAlgo_Config() {}
+	virtual ~NLPAlgoConfig() {}
 
 	//@}
 
@@ -96,7 +96,7 @@ public:
 	 * @param  algo_cntr
 	 *                [in/out] On input, \c algo_cntr may or may not already have
 	 *                a configured algorithm.  The options set from the interface
-	 *                \c rSQPSolverClientInterface may be used determine how the
+	 *                \c NLPSolverClientInterface may be used determine how the
 	 *                algorithm is to be configured.  On output, \c algo_cntr will
 	 *                have a configured algorithm (ready to call
 	 *                \c algo_cntr->algo().interface_print_algorithm(...)).
@@ -120,7 +120,7 @@ public:
 	 * thrown.
 	 */
 	virtual void config_algo_cntr(
-		rSQPAlgoContainer*       algo_cntr
+		NLPAlgoContainer*       algo_cntr
 		,std::ostream*           trase_out = 0
 		) = 0;
 
@@ -145,7 +145,7 @@ public:
 	 * </ul>
 	 */
 	virtual void init_algo(
-		rSQPAlgoInterface* algo
+		NLPAlgoInterface* algo
 		) = 0;
 
 	//@}
@@ -157,8 +157,8 @@ private:
 	OptionsFromStreamPack::OptionsFromStream    *options;
 #endif
 
-};	// end class rSQPAlgo_Config
+};	// end class NLPAlgoConfig
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_CONFIG_H

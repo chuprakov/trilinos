@@ -19,10 +19,10 @@
 #include <limits>
 #include <sstream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckConvergenceStd_Strategy.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -34,7 +34,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckConvergenceStd_Strategy::CheckConvergenceStd_Strategy(
 	EOptErrorCheck         opt_error_check
@@ -60,8 +60,8 @@ bool CheckConvergenceStd_Strategy::Converged(
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using AbstractLinAlgPack::combined_nu_comp_err;
 	
-	rSQPAlgo	&algo	  = rsqp_algo(_algo);
-	rSQPState	&s		  = algo.rsqp_state();
+	NLPAlgo	&algo	  = rsqp_algo(_algo);
+	NLPAlgoState	&s		  = algo.rsqp_state();
 	NLP			&nlp	  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -253,7 +253,7 @@ void CheckConvergenceStd_Strategy::print_step( const Algorithm& _algo, std::ostr
 	}
 
 
-value_type CheckConvergenceStd_Strategy::CalculateScalingFactor( rSQPState& state, EScaleKKTErrorBy scale_by ) const
+value_type CheckConvergenceStd_Strategy::CalculateScalingFactor( NLPAlgoState& state, EScaleKKTErrorBy scale_by ) const
 	{
 	// scale_kkt_factor
 	value_type scale_factor = 1.0;
@@ -275,5 +275,5 @@ value_type CheckConvergenceStd_Strategy::CalculateScalingFactor( rSQPState& stat
 	return scale_factor;
 	}
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 

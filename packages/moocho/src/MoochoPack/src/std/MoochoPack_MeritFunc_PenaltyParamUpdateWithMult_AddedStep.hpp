@@ -18,7 +18,7 @@
 
 #include "MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Specializes the update of the penalty parameter for a merit function as:
@@ -43,7 +43,7 @@ protected:
 	// Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep
 
 	///
-	bool min_mu( rSQPState& s, value_type* min_mu ) const;
+	bool min_mu( NLPAlgoState& s, value_type* min_mu ) const;
 
 	///
 	void print_min_mu_step( std::ostream& out
@@ -51,6 +51,6 @@ protected:
 	
 };	// end class MeritFunc_PenaltyParamUpdateWithMult_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_PENALTY_PARAM_UPDATE_WITH_MULT_ADDED_STEP_H

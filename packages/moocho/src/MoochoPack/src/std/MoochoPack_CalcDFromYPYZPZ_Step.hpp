@@ -16,10 +16,10 @@
 #ifndef CALC_D_FROM_YPY_ZPZ_STEP_H
 #define CALC_D_FROM_YPY_ZPZ_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculates <tt>d = Ypy + Zpz</tt>
@@ -41,6 +41,6 @@ public:
 
 };	// end class CalcDFromYPYZPZ_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CALC_D_FROM_YPY_ZPZ_STEP_H

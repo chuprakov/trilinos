@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepIP_Step.hpp
+// TangentialStepIP_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,10 +16,10 @@
 #ifndef NullSpaceStepIP_Step_H
 #define NullSpaceStepIP_Step_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Null Space Step for Interior Point algorithm
@@ -28,7 +28,7 @@ namespace ReducedSpaceSQPPack {
  *
  */
 
-class NullSpaceStepIP_Step
+class TangentialStepIP_Step
 	: public IterationPack::AlgorithmStep // doxygen needs full path
 	{
 	public:
@@ -46,8 +46,8 @@ class NullSpaceStepIP_Step
 
 	private:
 
-	}; // end class NullSpaceStepIP_Step
+	}; // end class TangentialStepIP_Step
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // #if !defined NullSpaceStepIP_Step_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_Step.hpp
+// TangentialStepWithInequStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,18 +16,18 @@
 #ifndef NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 #define NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
-#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "MoochoPack/src/std/d_bounds_iter_quant.hpp"
+#include "MoochoPack/src/std/qp_solver_stats.hpp"
+#include "MoochoPack/src/std/act_set_stats.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Solves the reduced QP subproblem with bounds and/or general
@@ -35,7 +35,7 @@ namespace ReducedSpaceSQPPack {
  *
  * ToDo: Finish documentation.
  */
-class NullSpaceStepWithInequStd_Step
+class TangentialStepWithInequStd_Step
 	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
@@ -75,7 +75,7 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
 
 	/// Construct and initialize
-	NullSpaceStepWithInequStd_Step(
+	TangentialStepWithInequStd_Step(
 		const qp_solver_ptr_t       &qp_solver
 		,const qp_tester_ptr_t      &qp_tester
 		,value_type                 warm_start_frac             = 0.8
@@ -101,10 +101,10 @@ private:
 	act_set_stats_iq_member                                  act_set_stats_;
 
 	// not defined and not to be called
-	NullSpaceStepWithInequStd_Step();
+	TangentialStepWithInequStd_Step();
 
-};	// end class NullSpaceStepWithInequStd_Step
+};	// end class TangentialStepWithInequStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterfaceSetOptions.cpp
+// NLPSolverClientInterfaceSetOptions.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterfaceSetOptions.hpp"
+#include "MoochoPack/src/NLPSolverClientInterfaceSetOptions.hpp"
 #include "StringToBool.hpp"
 
 // Define the options
@@ -52,24 +52,24 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-rSQPSolverClientInterfaceSetOptions::rSQPSolverClientInterfaceSetOptions(
-			  rSQPSolverClientInterface* target
+NLPSolverClientInterfaceSetOptions::NLPSolverClientInterfaceSetOptions(
+			  NLPSolverClientInterface* target
 			, const char opt_grp_name[] )
 	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
 			  opt_grp_name, local_num_options, local_SOptions )
 		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			rSQPSolverClientInterface >( target )
+			NLPSolverClientInterface >( target )
 {}
 
-void rSQPSolverClientInterfaceSetOptions::set_option(
+void NLPSolverClientInterfaceSetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::StringToBool;
 
-	typedef rSQPSolverClientInterface target_t;
+	typedef NLPSolverClientInterface target_t;
 	switch( (local_EOptions)option_num ) {
 	    case MAX_ITER:
 			target().max_iter(::abs(::atoi(option_value.c_str())));
@@ -104,7 +104,7 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
 				target().journal_output_level(PRINT_ITERATION_QUANTITIES);
 			else
-				throw std::invalid_argument( "rSQPSolverClientInterfaceSetOptions::set_option(...) : "
+				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::set_option(...) : "
 					"Error, incorrect value for \"journal_output_level\"." );
 			break;
 		}
@@ -126,4 +126,4 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

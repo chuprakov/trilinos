@@ -16,8 +16,8 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncPenaltyParam.hpp"
@@ -31,7 +31,7 @@ inline
 T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_PenaltyParamUpdateGuts_AddedStep::MeritFunc_PenaltyParamUpdateGuts_AddedStep(
 	value_type                     small_mu
@@ -49,8 +49,8 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -234,4 +234,4 @@ value_type MeritFunc_PenaltyParamUpdateGuts_AddedStep::kkt_near_sol() const
 	return kkt_near_sol_;
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

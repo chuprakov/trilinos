@@ -1,6 +1,6 @@
 begin_options
 
-options_group rSQPSolverClientInterface {
+options_group NLPSolverClientInterface {
     max_iter = 10; *** Don't run too long
     check_results = true;
 }

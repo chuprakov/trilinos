@@ -38,7 +38,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 LineSearchWatchDog_StepSetOptions::LineSearchWatchDog_StepSetOptions(
 			LineSearchWatchDog_Step* target )
@@ -65,4 +65,4 @@ void LineSearchWatchDog_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

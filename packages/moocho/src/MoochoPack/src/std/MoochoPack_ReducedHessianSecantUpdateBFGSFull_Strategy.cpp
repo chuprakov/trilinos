@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ReducedHessianSecantUpdateBFGSFull_Strategy::ReducedHessianSecantUpdateBFGSFull_Strategy(
 	const bfgs_update_ptr_t&      bfgs_update
@@ -31,8 +31,8 @@ bool ReducedHessianSecantUpdateBFGSFull_Strategy::perform_update(
 	,bool                   first_update
 	,std::ostream           & out
 	,EJournalOutputLevel    olevel
-	,rSQPAlgo               *algo
-	,rSQPState              *s
+	,NLPAlgo               *algo
+	,NLPAlgoState              *s
 	,MatrixSymOp        *rHL_k
 	)
 {
@@ -50,4 +50,4 @@ void ReducedHessianSecantUpdateBFGSFull_Strategy::print_step( std::ostream& out,
 	bfgs_update().print_step(out,L);
 }
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack

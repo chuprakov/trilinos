@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// Algo_ConfigIP.cpp
+// NLPAlgoConfigIP.cpp
 //
 // Copyright (C) 2001
 //
@@ -21,11 +21,11 @@
 
 #include "debug.hpp"
 
-#include "Algo_ConfigIP.hpp"
+#include "NLPAlgoConfigIP.hpp"
 #include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
@@ -47,68 +47,68 @@
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPerm.hpp"
 #endif
 
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
+#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
 
-#include "ReducedSpaceSQPPack/src/std/UpdateBarrierParameter_Step.hpp"
+#include "MoochoPack/src/std/UpdateBarrierParameter_Step.hpp"
 
-#include "ReducedSpaceSQPPack/src/std/PreEvalNewPointBarrier_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/PostEvalNewPointBarrier_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/ReducedGradientStd_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_StepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/RangeSpaceStepStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckDescentRangeSpaceStep_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromPy_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromRPy_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepIP_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/SetDBoundsStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/CalcD_vStep_Step.hpp"
+#include "MoochoPack/src/std/PreEvalNewPointBarrier_Step.hpp"
+#include "MoochoPack/src/std/PostEvalNewPointBarrier_Step.hpp"
+#include "MoochoPack/src/std/ReducedGradientStd_Step.hpp"
+//#include "MoochoPack/src/std/InitFinDiffReducedHessian_Step.hpp"
+//#include "MoochoPack/src/std/InitFinDiffReducedHessian_StepSetOptions.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
+//#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
+//#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
+//#include "MoochoPack/src/std/ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
+//#include "MoochoPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
+#include "MoochoPack/src/std/QuasiNormalStepStd_Step.hpp"
+#include "MoochoPack/src/std/CheckDescentRangeSpaceStep_Step.hpp"
+#include "MoochoPack/src/std/CheckDecompositionFromPy_Step.hpp"
+#include "MoochoPack/src/std/CheckDecompositionFromRPy_Step.hpp"
+#include "MoochoPack/src/std/TangentialStepIP_Step.hpp"
+//#include "MoochoPack/src/std/TangentialStepWithoutBounds_Step.hpp"
+//#include "MoochoPack/src/std/TangentialStepWithInequStd_Step.hpp"
+//#include "MoochoPack/src/std/TangentialStepWithInequStd_StepSetOptions.hpp"
+//#include "MoochoPack/src/std/SetDBoundsStd_AddedStep.hpp"
+#include "MoochoPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
+#include "MoochoPack/src/std/CalcDFromYPYZPZ_Step.hpp"
+#include "MoochoPack/src/std/CalcD_vStep_Step.hpp"
 
-#include "ReducedSpaceSQPPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFailureNewDecompositionSelection_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_StepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFullStep_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_StepSetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_StrategySetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_StepSetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchFullStepAfterKIter_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/CalcLambdaIndepStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_StepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp"
-//#include "ReducedSpaceSQPPack/src/std/ActSetStats_AddedStep.hpp"
-//#include "ReducedSpaceSQPPack/src/std/NumFixedDepIndep_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.hpp"
+#include "MoochoPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
+#include "MoochoPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
+#include "MoochoPack/src/std/LineSearchFailureNewDecompositionSelection_Step.hpp"
+#include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
+#include "MoochoPack/src/std/LineSearchFilter_StepSetOptions.hpp"
+#include "MoochoPack/src/std/LineSearchFullStep_Step.hpp"
+#include "MoochoPack/src/std/LineSearchDirect_Step.hpp"
+//#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
+//#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_StepSetOptions.hpp"
+//#include "MoochoPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
+//#include "MoochoPack/src/std/FeasibilityStepReducedStd_StrategySetOptions.hpp"
+//#include "MoochoPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
+//#include "MoochoPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
+//#include "MoochoPack/src/std/LineSearchWatchDog_Step.hpp"
+//#include "MoochoPack/src/std/LineSearchWatchDog_StepSetOptions.hpp"
+//#include "MoochoPack/src/std/LineSearchFullStepAfterKIter_Step.hpp"
+//#include "MoochoPack/src/std/CalcLambdaIndepStd_AddedStep.hpp"
+#include "MoochoPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
+#include "MoochoPack/src/std/CheckConvergenceStd_AddedStep.hpp"
+#include "MoochoPack/src/std/CheckConvergenceIP_Strategy.hpp"
+#include "MoochoPack/src/std/CheckSkipBFGSUpdateStd_StepSetOptions.hpp"
+#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
+#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
+//#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
+//#include "MoochoPack/src/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp"
+//#include "MoochoPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
+//#include "MoochoPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp"
+//#include "MoochoPack/src/std/ActSetStats_AddedStep.hpp"
+//#include "MoochoPack/src/std/NumFixedDepIndep_AddedStep.hpp"
+#include "MoochoPack/src/std/UpdateReducedSigma_Step.hpp"
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 
 // Misc utilities
 #include "AbstractFactoryStd.hpp"
@@ -121,21 +121,21 @@
 #include "StringToBool.hpp"
 
 // Stuff for exact reduced hessian
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/CrossTermExactStd_Step.hpp"
-//#include "ReducedSpaceSQPPack/src/std/DampenCrossTermStd_Step.hpp"
+//#include "MoochoPack/src/std/ReducedHessianExactStd_Step.hpp"
+//#include "MoochoPack/src/std/CrossTermExactStd_Step.hpp"
+//#include "MoochoPack/src/std/DampenCrossTermStd_Step.hpp"
 
 namespace {
 	const double INF_BASIS_COND_CHANGE_FRAC      = 1e+20;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 //
 // Here is where we define the default values for the algorithm.  These
-// should agree with what are in the rSQPpp.opt.Algo_ConfigIP file.
+// should agree with what are in the Moocho.opt.NLPAlgoConfigIP file.
 //
-Algo_ConfigIP::SOptionValues::SOptionValues()
+NLPAlgoConfigIP::SOptionValues::SOptionValues()
 	:max_basis_cond_change_frac_(-1.0)
 	,exact_reduced_hessian_(false)
 	,quasi_newton_(QN_AUTO)
@@ -150,28 +150,28 @@ Algo_ConfigIP::SOptionValues::SOptionValues()
 	,full_steps_after_k_(-1)
 {}
 
-Algo_ConfigIP::Algo_ConfigIP()
+NLPAlgoConfigIP::NLPAlgoConfigIP()
 {}
 
-Algo_ConfigIP::~Algo_ConfigIP()
+NLPAlgoConfigIP::~NLPAlgoConfigIP()
 {}
 
-// overridden from rSQPAlgo_Config
+// overridden from NLPAlgoConfig
 
-void Algo_ConfigIP::set_options( const options_ptr_t& options )
+void NLPAlgoConfigIP::set_options( const options_ptr_t& options )
 {
 	options_ = options;
 	decomp_sys_step_builder_.set_options(options);
 }
 
-const rSQPAlgo_Config::options_ptr_t&
-Algo_ConfigIP::get_options() const
+const NLPAlgoConfig::options_ptr_t&
+NLPAlgoConfigIP::get_options() const
 {
 	return options_;
 }
 
-void Algo_ConfigIP::config_algo_cntr(
-	rSQPAlgoContainer   *algo_cntr
+void NLPAlgoConfigIP::config_algo_cntr(
+	NLPAlgoContainer   *algo_cntr
 	,std::ostream       *trase_out
 	)
 {
@@ -185,7 +185,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		*trase_out
 			<< std::endl
 			<< "*****************************************************************\n"
-			<< "*** Algo_ConfigIP configuration                               ***\n"
+			<< "*** NLPAlgoConfigIP configuration                               ***\n"
 			<< "***                                                           ***\n"
 			<< "*** Here, summary information about how the algorithm is      ***\n"
 			<< "*** configured is printed so that the user can see how the    ***\n"
@@ -201,10 +201,10 @@ void Algo_ConfigIP::config_algo_cntr(
 	// B. Create an algo object, give to algo_cntr, then give algo_cntr to algo
 
 	if(trase_out)
-		*trase_out << "\n*** Creating the rSQPAlgo algo object ...\n";
+		*trase_out << "\n*** Creating the NLPAlgo algo object ...\n";
 
-	typedef mmp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
-	algo_ptr_t algo = mmp::rcp(new rSQPAlgo);
+	typedef mmp::ref_count_ptr<NLPAlgo>	algo_ptr_t;
+	algo_ptr_t algo = mmp::rcp(new NLPAlgo);
 	assert(algo.get());
 	algo_cntr->set_algo(algo);
 	algo->set_algo_cntr(algo_cntr);
@@ -263,15 +263,15 @@ void Algo_ConfigIP::config_algo_cntr(
 	// Make sure that we can handle this type of NLP currently
 	THROW_EXCEPTION(
 		m == 0, std::logic_error
-		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 		"can not currently solve an unconstrained NLP!" );
 	THROW_EXCEPTION(
 		n == m, std::logic_error
-		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 		"can not currently solve a square system of equations!" );
 	THROW_EXCEPTION(
 		mI, std::logic_error
-		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 		"can not currently solve an NLPcd .. with general inequalities!" );
 
 	// //////////////////////////////////////////////////////
@@ -394,10 +394,10 @@ void Algo_ConfigIP::config_algo_cntr(
 		// Create the state object with the vector spaces
 		//
 
-		typedef ref_count_ptr<ipState>   state_ptr_t;
+		typedef ref_count_ptr<IpState>   state_ptr_t;
 		state_ptr_t
 			state = mmp::rcp(
-				new ipState(
+				new IpState(
 					decomp_sys
 					,nlp.space_x()
 					,nlp.space_c()
@@ -532,7 +532,7 @@ void Algo_ConfigIP::config_algo_cntr(
 			)
 		  );
 
-		// These iteration quantities are defined in ipState, 		
+		// These iteration quantities are defined in IpState, 		
 		// force their creation and resize them
 		dyn_cast< IterQuantityAccessContiguous<value_type> >(state->barrier_obj()).resize(2);
 		dyn_cast< IterQuantityAccessContiguous<VectorMutable> >(state->grad_barrier_obj()).resize(2);
@@ -724,7 +724,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		// RangeSpace_Step
 		algo_step_ptr_t    range_space_step_step = mmp::null;
 		if( !tailored_approach ) {
-			range_space_step_step = mmp::rcp(new RangeSpaceStepStd_Step());
+			range_space_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
 		}
 
 		// Check and change decomposition 
@@ -802,7 +802,7 @@ void Algo_ConfigIP::config_algo_cntr(
 						{
 							THROW_EXCEPTION(
 								true, std::logic_error
-								,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+								,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 								"The quansi_newton options of PBFGS and LPBFGS have not been updated yet!" );
 							break;
 						}
@@ -841,11 +841,11 @@ void Algo_ConfigIP::config_algo_cntr(
 			}
 		
 		// NullSpace_Step
-		algo_step_ptr_t    null_space_step = mmp::rcp(new NullSpaceStepIP_Step());
+		algo_step_ptr_t    null_space_step = mmp::rcp(new TangentialStepIP_Step());
 		/*		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
 		algo_step_ptr_t    null_space_step_step = mmp::null;
 		if( mI == 0 && nb == 0 ) {
-			null_space_step_step = mmp::rcp(new NullSpaceStepWithoutBounds_Step());
+			null_space_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
 			// Step object that sets bounds for QP subproblem
@@ -862,12 +862,12 @@ void Algo_ConfigIP::config_algo_cntr(
 				opt_setter.set_options( *options_ );
 			}
 			// The null-space step
-			mmp::ref_count_ptr<NullSpaceStepWithInequStd_Step>
+			mmp::ref_count_ptr<TangentialStepWithInequStd_Step>
 				null_space_step_with_inequ_step = mmp::rcp(
-					new NullSpaceStepWithInequStd_Step(
+					new TangentialStepWithInequStd_Step(
 						qp_solver, qp_solver_tester ) );
 			if(options_.get()) {
-				NullSpaceStepWithInequStd_StepSetOptions
+				TangentialStepWithInequStd_StepSetOptions
 					opt_setter( null_space_step_with_inequ_step.get() );
 				opt_setter.set_options( *options_ );
 			}
@@ -940,7 +940,7 @@ void Algo_ConfigIP::config_algo_cntr(
 //								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
 							THROW_EXCEPTION(
 								true, std::logic_error
-								,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+								,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 								"The l1_penalty_parameter_update option of MULT_FREE has not been updated yet!" );
 							break;
 						case L1_PENALTY_PARAM_MULT_FREE:
@@ -958,7 +958,7 @@ void Algo_ConfigIP::config_algo_cntr(
 //											mmp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+						,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 						"The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
 					break;
 				default:
@@ -996,14 +996,14 @@ void Algo_ConfigIP::config_algo_cntr(
 				case LINE_SEARCH_2ND_ORDER_CORRECT: {
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+						,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 						"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
 					break;
 				}
 				case LINE_SEARCH_WATCHDOG: {
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+						,"NLPAlgoConfigIP::config_algo_cntr(...) : Error, "
 						"The line_search_method option of WATCHDOG has not been updated yet!" );
 					break;
 				}
@@ -1049,7 +1049,7 @@ void Algo_ConfigIP::config_algo_cntr(
 						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
+					,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
 					"Unconstrained NLPs are not supported yet!" );
 			}
 			else {
@@ -1062,7 +1062,7 @@ void Algo_ConfigIP::config_algo_cntr(
 						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
+					,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
 					"Bound constrained NLPs are not supported yet!" );
 			}
 		}
@@ -1076,7 +1076,7 @@ void Algo_ConfigIP::config_algo_cntr(
 					<< "NLP (n == m) ...\n";
 			THROW_EXCEPTION(
 				n == m, std::logic_error
-				,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
+				,"NLPAlgoConfigIP::config_alg_cntr(...) : Error, "
 				"Nonlinear equation (NLE) problems are not supported yet!" );
 			assert(0); // ToDo: add the step objects for this algorithm
 		}
@@ -1310,18 +1310,18 @@ void Algo_ConfigIP::config_algo_cntr(
 	
 }
 
-void Algo_ConfigIP::init_algo(rSQPAlgoInterface* _algo)
+void NLPAlgoConfigIP::init_algo(NLPAlgoInterface* _algo)
 {
 	using DynamicCastHelperPack::dyn_cast;
 	namespace mmp = MemMngPack;
 
 	THROW_EXCEPTION(
 		_algo == NULL, std::invalid_argument
-		,"Algo_ConfigIP::init_algo(_algo) : Error, "
+		,"NLPAlgoConfigIP::init_algo(_algo) : Error, "
 		"_algo can not be NULL" );
 
-	rSQPAlgo             &algo    = dyn_cast<rSQPAlgo>(*_algo);
-	rSQPState	         &state   = algo.rsqp_state();
+	NLPAlgo             &algo    = dyn_cast<NLPAlgo>(*_algo);
+	NLPAlgoState	         &state   = algo.rsqp_state();
 	NLP			         &nlp     = algo.nlp();
 	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
 	NLPDirect  *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
@@ -1345,7 +1345,7 @@ void Algo_ConfigIP::init_algo(rSQPAlgoInterface* _algo)
 
 // private
 
-void Algo_ConfigIP::readin_options(
+void NLPAlgoConfigIP::readin_options(
 	  const OptionsFromStreamPack::OptionsFromStream     &options
 	, SOptionValues                                      *ov
 	, std::ostream                                       *trase_out
@@ -1359,8 +1359,8 @@ void Algo_ConfigIP::readin_options(
 
 	assert(ov);	// only a local class error
 
-	// Get the options group for "Algo_ConfigIP"
-	const std::string opt_grp_name = "Algo_ConfigIP";
+	// Get the options group for "NLPAlgoConfigIP"
+	const std::string opt_grp_name = "NLPAlgoConfigIP";
 	const OptionsFromStream::options_group_t optgrp = options.options_group( opt_grp_name );
 	if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
@@ -1419,7 +1419,7 @@ void Algo_ConfigIP::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"quasi_newton\" "
 							", Only options of BFGS, PBFGS"
 							", LBFGS, LPBFGS and AUTO are avalible."
@@ -1449,7 +1449,7 @@ void Algo_ConfigIP::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"hessian_initialization\" "
 							", Only options of IDENTITY, FINITE_DIFF_SCALE_IDENTITY,"
 							" FINITE_DIFF_DIAGONAL, FINITE_DIFF_DIAGONAL_ABS and AUTO"
@@ -1469,7 +1469,7 @@ void Algo_ConfigIP::readin_options(
 #else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : QPOPT is not supported,"
+							,"NLPAlgoConfigIP::readin_options(...) : QPOPT is not supported,"
 							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
 #endif
 					} else if( qp_solver == "QPKWIK" ) {
@@ -1479,7 +1479,7 @@ void Algo_ConfigIP::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "
 							"Only qp solvers QPOPT, QPSOL, QPKWIK, QPSCHUR and AUTO are avalible."	);
 					}
@@ -1506,7 +1506,7 @@ void Algo_ConfigIP::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"line_search_method\".\n"
 							"Only the options NONE, DIRECT, 2ND_ORDER_CORRECT, FILTER, WATCHDOG "
 							"and AUTO are avalible." );
@@ -1527,7 +1527,7 @@ void Algo_ConfigIP::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"merit_function_type\".\n"
 							"Only the options L1, MODIFIED_L1, MODIFIED_L1_INCR "
 							"and AUTO are avalible." );
@@ -1548,7 +1548,7 @@ void Algo_ConfigIP::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
+							,"NLPAlgoConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"l1_penalty_param_update\".\n"
 							"Only the options WITH_MULT, MULT_FREE and AUTO"
 							"are avalible."  );
@@ -1562,7 +1562,7 @@ void Algo_ConfigIP::readin_options(
 	else {
 		if(trase_out)
 			*trase_out
-				<< "\n\n*** Warning!  The options group \"Algo_ConfigIP\" was not found.\n"
+				<< "\n\n*** Warning!  The options group \"NLPAlgoConfigIP\" was not found.\n"
 				<< "Using a default set of options instead ... \n";
 	}
 }
@@ -1571,7 +1571,7 @@ void Algo_ConfigIP::readin_options(
 // This is where some of the default options are set and the user is alerted to what their
 // value is.
 //
-void Algo_ConfigIP::set_default_options( 
+void NLPAlgoConfigIP::set_default_options( 
 	const SOptionValues     &uov
 	,SOptionValues          *cov
 	,std::ostream           *trase_out
@@ -1669,4 +1669,4 @@ void Algo_ConfigIP::set_default_options(
 			<< "\n*** End setting default options\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

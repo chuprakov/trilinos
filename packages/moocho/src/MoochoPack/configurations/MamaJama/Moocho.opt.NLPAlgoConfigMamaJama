@@ -1,8 +1,8 @@
 *************************************************************************
-*** All of these options can be used with the rSQPAlgo_ConfigMamaJama
+*** All of these options can be used with the NLPAlgoConfigMamaJama
 *** algorithm configuration class.
 ***
-*** See the file rSQPpp.opt.DecompositionSystemStateStepBuilderStd
+*** See the file Moocho.opt.DecompositionSystemStateStepBuilderStd
 *** for more options that are used by this class.
 ***
 *** This file will be maintained and will include every option that
@@ -14,9 +14,9 @@ begin_options
 
 **********************************************************
 *** Options specific for the rSQP algorithm configuration
-*** class rSQPAlgo_ConfigMamaJama.
+*** class NLPAlgoConfigMamaJama.
 ***
-options_group rSQPAlgo_ConfigMamaJama {
+options_group NLPAlgoConfigMamaJama {
 
 *** Variable Reduction range/null space decomposition
 
@@ -112,7 +112,7 @@ options_group rSQPAlgo_ConfigMamaJama {
 *********************************************************************
 *** Options for finite difference initialization of reduced hessian.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
+*** [NLPAlgoConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
 ***
 options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
@@ -126,7 +126,7 @@ options_group InitFinDiffReducedHessian {
 *********************************************************************
 *** Options for finite difference initialization of reduced hessian.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
+*** [NLPAlgoConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
 ***
 options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
@@ -140,7 +140,7 @@ options_group InitFinDiffReducedHessian {
 *********************************************************************
 *** Options for the check for if to skip the BFGS update.
 ***
-*** [rSQPAlgo_ConfigMamaJama::exact_hessian == false]
+*** [NLPAlgoConfigMamaJama::exact_hessian == false]
 ***
 options_group CheckSkipBFGSUpdateStd {
 *    skip_bfgs_prop_const = 10.0; *** (+dbl)
@@ -149,7 +149,7 @@ options_group CheckSkipBFGSUpdateStd {
 *********************************************************************
 *** Options the BFGS updating (dense or limited memory)
 *** 
-*** [rSQPAlgo_ConfigMamaJama::exact_hessian == false]
+*** [NLPAlgoConfigMamaJama::exact_hessian == false]
 ***
 options_group BFGSUpdate {
 
@@ -173,7 +173,7 @@ options_group BFGSUpdate {
 *********************************************************************
 *** Options for the convergence test.
 ***
-*** See the printed step description (i.e. 'rSQPppAlgo.out') for a
+*** See the printed step description (i.e. 'MoochoAlgo.out') for a
 *** description of what these options do.
 ***
 options_group CheckConvergenceStd {
@@ -208,7 +208,7 @@ options_group CheckConvergenceStd {
 *** Options for the primal-dual, active-set, schur-complement
 *** QP solver QPSchur.
 ***
-*** [rSQPAlgo_ConfigMamaJama::qp_solver == QPSCHUR]
+*** [NLPAlgoConfigMamaJama::qp_solver == QPSCHUR]
 ***
 options_group QPSolverRelaxedQPSchur {
 *    max_qp_iter_frac  = 10.0;   *** (+dbl) max_qp_itr = max_qp_itr_frac * (# variables)
@@ -309,7 +309,7 @@ options_group QPSolverRelaxedQPSchur {
 *** Options for the direct line search object that is used in all the
 *** line search methods for the SQP step.
 ***
-*** [rSQPAlgo_ConfigMamaJama::line_search_method != NONE]
+*** [NLPAlgoConfigMamaJama::line_search_method != NONE]
 ***
 options_group DirectLineSearchArmQuadSQPStep {
 *    slope_frac       = 1.0e-4;
@@ -321,7 +321,7 @@ options_group DirectLineSearchArmQuadSQPStep {
 *******************************************************************
 *** Options for the watchdog line search.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method = WATCHDOG]
+*** [NLPAlgoConfigMamaJama::line_search_method = WATCHDOG]
 ***
 options_group LineSearchWatchDog {
 *    opt_kkt_err_threshold	= 1e-3; *** (+dbl)
@@ -333,7 +333,7 @@ options_group LineSearchWatchDog {
 *******************************************************************
 *** Options for the second order correction line search.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
+*** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
 ***
 options_group LineSearch2ndOrderCorrect {
 
@@ -417,7 +417,7 @@ options_group LineSearch2ndOrderCorrect {
 *******************************************************************
 *** Options for the filter search.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method = FILTER]
+*** [NLPAlgoConfigMamaJama::line_search_method = FILTER]
 ***
 options_group LineSearchFilter {
 *    gamma_theta      = 1e-5;
@@ -434,7 +434,7 @@ options_group LineSearchFilter {
 *******************************************************************
 *** Options for generating feasibility steps for reduced space.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
+*** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
 ***
 options_group FeasibilityStepReducedStd {
 *    qp_objective = OBJ_MIN_FULL_STEP;
@@ -449,7 +449,7 @@ options_group FeasibilityStepReducedStd {
 *** Options for the direct line search object for
 *** the newton steps of the 2nd order correction (see above).
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
+*** [NLPAlgoConfigMamaJama::line_search_method == 2ND_ORDER_CORRECT]
 ***
 options_group DirectLineSearchArmQuad2ndOrderCorrectNewton {
 *    slope_frac       = 1.0e-4;
@@ -462,7 +462,7 @@ options_group DirectLineSearchArmQuad2ndOrderCorrectNewton {
 *** Change how the penalty parameters for the merit function
 *** are adjusted.
 *** 
-*** [rSQPAlgo_ConfigMamaJama::line_search_method != NONE]
+*** [NLPAlgoConfigMamaJama::line_search_method != NONE]
 ***
 options_group MeritFuncPenaltyParamUpdate {
 *    small_mu     = 1e-6;
@@ -475,8 +475,8 @@ options_group MeritFuncPenaltyParamUpdate {
 *** Change how the penalty parameters for the modifed
 *** L1 merit function are increased.
 ***
-*** [rSQPAlgo_ConfigMamaJama::line_search_method != NONE]
-*** [rSQPAlgo_ConfigMamaJama::merit_function_type == MODIFIED_L1_INCR]
+*** [NLPAlgoConfigMamaJama::line_search_method != NONE]
+*** [NLPAlgoConfigMamaJama::merit_function_type == MODIFIED_L1_INCR]
 ***
 options_group MeritFuncModifiedL1LargerSteps {
 

@@ -16,12 +16,12 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Perform BFGS updates on full reduced Hessian.
@@ -53,8 +53,8 @@ public:
 		,bool                   first_update
 		,std::ostream           & out
 		,EJournalOutputLevel    olevel
-		,rSQPAlgo               *algo
-		,rSQPState              *s
+		,NLPAlgo               *algo
+		,NLPAlgoState              *s
 		,MatrixSymOp        *rHL_k
 		);
 	///
@@ -66,6 +66,6 @@ private:
 
 }; // end class ReducedHessianSecantUpdateBFGSFull_Strategy
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H

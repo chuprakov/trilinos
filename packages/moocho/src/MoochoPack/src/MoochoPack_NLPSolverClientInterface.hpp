@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterface.hpp
+// NLPSolverClientInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,19 +18,19 @@
 
 #include <stdexcept>
 
-#include "ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPackTypes.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** This is the most basic interface that clients use to solve an NLP.
  *
  * ToDo: Finish documentaiton.
  */
-class rSQPSolverClientInterface {
+class NLPSolverClientInterface {
 public:
 
 	/** @name Public Types */
@@ -58,7 +58,7 @@ public:
 	///
 	/** Construct with no references set to nlp or track objects.
 	 */
-	rSQPSolverClientInterface(
+	NLPSolverClientInterface(
 		int                    max_iter             = 10000
 		,double                max_run_time         = 1e+10 // run forever
 		,value_type            opt_tol              = 1e-6
@@ -72,7 +72,7 @@ public:
 		);
 
 	///
-	virtual ~rSQPSolverClientInterface() {}
+	virtual ~NLPSolverClientInterface() {}
 
 	//@}
 
@@ -223,8 +223,8 @@ private:
 	IterationPack::AlgorithmTracker   *track;
 #endif
 
-}; // end class rSQPSolverClientInterface
+}; // end class NLPSolverClientInterface
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif	// RSQP_SOLVER_CLIENT_INTERFACE_H

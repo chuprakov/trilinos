@@ -17,8 +17,8 @@
 #include <typeinfo>
 
 #include "../std/LineSearchWatchDog_Step.hpp"
-#include "../std/rSQPAlgorithmStepNames.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../std/MoochoAlgorithmStepNames.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
@@ -38,7 +38,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
+MoochoPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
 		  const direct_line_search_ptr_t&	direct_line_search
 		, const merit_func_ptr_t&			merit_func
 		, value_type						eta
@@ -54,7 +54,7 @@ ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
 		, watch_k_(NORMAL_LINE_SEARCH)
 {}
 
-bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
+bool MoochoPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using DenseLinAlgPack::norm_inf;
@@ -67,8 +67,8 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 	using ConstrainedOptPack::print_vector_change_stats;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -404,7 +404,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 }
 
-void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& algo
+void MoochoPack::LineSearchWatchDog_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

@@ -16,8 +16,8 @@
 #include <limits>
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_DummyUpdate_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/MeritFunc_DummyUpdate_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool MeritFunc_DummyUpdate_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
@@ -33,8 +33,8 @@ bool MeritFunc_DummyUpdate_Step::do_step(
 {
 	using DynamicCastHelperPack::dyn_cast;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -81,4 +81,4 @@ void MeritFunc_DummyUpdate_Step::print_step(
 		<< L << "if merit_func_nlp_k not updated set merit_func_nlp_k = merit_func_nlp_k(last_updated)\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

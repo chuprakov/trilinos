@@ -16,13 +16,13 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.hpp"
+#include "MoochoPack/src/std/PBFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "MiWorkspacePack.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool PBFGSPack::act_set_calmed_down( 
 	const ActSetStats         &stats
@@ -327,4 +327,4 @@ void PBFGSPack::choose_fixed_free(
 	assert( bnd_fixed_itr - bnd_fixed == *n_pz_X );
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

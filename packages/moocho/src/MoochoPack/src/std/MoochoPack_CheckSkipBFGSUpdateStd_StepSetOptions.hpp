@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for \Ref{CheckSkipBFGSUpdateStd_Step} from a
@@ -57,6 +57,6 @@ protected:
 
 };	// end class CheckSkipBFGSUpdateStd_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// CHECK_SKIP_BFGS_UPDATE_STD_STEP_SET_OPTIONS_H

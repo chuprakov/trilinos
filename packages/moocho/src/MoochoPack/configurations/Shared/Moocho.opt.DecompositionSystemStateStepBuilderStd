@@ -1,5 +1,5 @@
 **********************************************************************************
-*** All of these options can be used with any rSQPAlgo_Config
+*** All of these options can be used with any NLPAlgoConfig
 *** subclass that using the standard DecompositionSystemStateStepBuilderStd
 *** class.
 ***

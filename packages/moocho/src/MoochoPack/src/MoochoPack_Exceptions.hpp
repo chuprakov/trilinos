@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPackExceptions.hpp
+// MoochoPackExceptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
-#include "ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPackTypes.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 /** \defgroup ReducedSpaceSQPPackExceptions_grp Standard exceptions for rSQP++ */
 //@{
@@ -50,6 +50,6 @@ public:
 
 //@}
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif // REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackConsoleStd.cpp
+// MoochoTrackerConsoleStd.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,14 +17,14 @@
 
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackConsoleStd.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/MoochoTrackerConsoleStd.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 using std::endl;
 using std::setw;
@@ -33,18 +33,18 @@ using std::right;
 using std::setprecision;
 
 // Static members
-int		rSQPTrackConsoleStd::w_i2_		= 2;
-char	rSQPTrackConsoleStd::ul_i2_[]	= "--";
-int		rSQPTrackConsoleStd::w_i4_		= 4;
-char	rSQPTrackConsoleStd::ul_i4_[]	= "----";
-int		rSQPTrackConsoleStd::p2_		= 1;
-int		rSQPTrackConsoleStd::w_p2_		= 8;
-char	rSQPTrackConsoleStd::ul_p2_[]	= "--------";
-int		rSQPTrackConsoleStd::p3_		= 2;
-int		rSQPTrackConsoleStd::w_p3_		= 9;
-char	rSQPTrackConsoleStd::ul_p3_[]	= "---------";
+int		MoochoTrackerConsoleStd::w_i2_		= 2;
+char	MoochoTrackerConsoleStd::ul_i2_[]	= "--";
+int		MoochoTrackerConsoleStd::w_i4_		= 4;
+char	MoochoTrackerConsoleStd::ul_i4_[]	= "----";
+int		MoochoTrackerConsoleStd::p2_		= 1;
+int		MoochoTrackerConsoleStd::w_p2_		= 8;
+char	MoochoTrackerConsoleStd::ul_p2_[]	= "--------";
+int		MoochoTrackerConsoleStd::p3_		= 2;
+int		MoochoTrackerConsoleStd::w_p3_		= 9;
+char	MoochoTrackerConsoleStd::ul_p3_[]	= "---------";
 
-rSQPTrackConsoleStd::rSQPTrackConsoleStd(
+MoochoTrackerConsoleStd::MoochoTrackerConsoleStd(
 	const ostream_ptr_t&   o
 	,const ostream_ptr_t&  journal_out
 	)
@@ -53,27 +53,27 @@ rSQPTrackConsoleStd::rSQPTrackConsoleStd(
 	,printed_lines_(NUM_PRINT_LINES)
 {}
 
-void rSQPTrackConsoleStd::set_output_stream(const ostream_ptr_t& o)
+void MoochoTrackerConsoleStd::set_output_stream(const ostream_ptr_t& o)
 {
 	o_ = o;
 }
 
-const rSQPTrackConsoleStd::ostream_ptr_t&
-rSQPTrackConsoleStd::get_output_stream() const
+const MoochoTrackerConsoleStd::ostream_ptr_t&
+MoochoTrackerConsoleStd::get_output_stream() const
 {
 	return o_;
 }
 
-void rSQPTrackConsoleStd::initialize()
+void MoochoTrackerConsoleStd::initialize()
 {
 	timer_.reset();
 	timer_.start();
 }
 
-void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
+void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
 {
-	const rSQPAlgo  &algo = rsqp_algo(p_algo);
-	const rSQPState &s    = algo.rsqp_state();
+	const NLPAlgo  &algo = rsqp_algo(p_algo);
+	const NLPAlgoState &s    = algo.rsqp_state();
 	const NLP       &nlp  = algo.nlp(); 
 	
 	const size_type
@@ -178,13 +178,13 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 	++printed_lines_;
 }
 
-void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
+void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
 	, EAlgoReturn algo_return ) const
 {
 	using DynamicCastHelperPack::dyn_cast;
 
-	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
-	const rSQPState          &s       = algo.rsqp_state();
+	const NLPAlgo           &algo    = rsqp_algo(p_algo);
+	const NLPAlgoState          &s       = algo.rsqp_state();
 	const NLPObjGrad     &nlp     = dyn_cast<const NLPObjGrad>(algo.nlp()); 
 	const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
 	
@@ -325,12 +325,12 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	o << endl;
 }
 
-void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
-	, const rSQPAlgo &algo) const
+void MoochoTrackerConsoleStd::print_top_header(const NLPAlgoState &s
+	, const NLPAlgo &algo) const
 {
 	std::ostream& o = this->o();
 
-	rSQPState::space_c_ptr_t
+	NLPAlgoState::space_c_ptr_t
 		space_c = s.get_space_c();
 
 	o	<< "\n\n********************************\n"
@@ -357,8 +357,8 @@ void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
 	}
 }
 
-void rSQPTrackConsoleStd::print_header(const rSQPState &s
-	, const rSQPAlgo &algo) const
+void MoochoTrackerConsoleStd::print_header(const NLPAlgoState &s
+	, const NLPAlgo &algo) const
 {
 	std::ostream& o = this->o();
 
@@ -388,4 +388,4 @@ void rSQPTrackConsoleStd::print_header(const rSQPState &s
 		<< endl;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

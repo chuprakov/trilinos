@@ -16,10 +16,10 @@
 #ifndef CALC_D_v_STEP_STEP_H
 #define CALC_D_v_STEP_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculates <tt>dvl_k = mu*invXl_k*e - vl_k - invXl_k*Vl_k*d_k</tt>
@@ -42,6 +42,6 @@ public:
 
 };	// end class CalcD_vStep_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CALC_D_v_STEP_STEP_H

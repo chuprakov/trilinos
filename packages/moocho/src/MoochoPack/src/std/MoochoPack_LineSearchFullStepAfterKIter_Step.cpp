@@ -16,14 +16,14 @@
 #include <ostream>
 
 #include "../std/LineSearchFullStepAfterKIter_Step.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 
-bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
+bool MoochoPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -55,7 +55,7 @@ bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& 
 	return true;
 }
 
-void ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::print_step( const Algorithm& algo
+void MoochoPack::LineSearchFullStepAfterKIter_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

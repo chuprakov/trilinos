@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackSummaryStd.cpp
+// MoochoTrackerSummaryStd.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackSummaryStd.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/MoochoTrackerSummaryStd.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
@@ -28,9 +28,9 @@
 using std::endl;
 using std::setw;
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-rSQPTrackSummaryStd::rSQPTrackSummaryStd(
+MoochoTrackerSummaryStd::MoochoTrackerSummaryStd(
 	const ostream_ptr_t      &o
 	,const ostream_ptr_t     &journal_out
 	,EOptError               opt_error
@@ -41,22 +41,22 @@ rSQPTrackSummaryStd::rSQPTrackSummaryStd(
 	,num_total_qp_iter_(0)
 {}	
 
-void rSQPTrackSummaryStd::set_output_stream(const ostream_ptr_t& o)
+void MoochoTrackerSummaryStd::set_output_stream(const ostream_ptr_t& o)
 {	
 	o_ = o;
 }
 
-const rSQPTrackSummaryStd::ostream_ptr_t&
-rSQPTrackSummaryStd::get_output_stream() const
+const MoochoTrackerSummaryStd::ostream_ptr_t&
+MoochoTrackerSummaryStd::get_output_stream() const
 {
 	return o_;
 }
 
-void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
+void MoochoTrackerSummaryStd::output_iteration(const Algorithm& algo) const
 {
 
-	const rSQPAlgo            &_algo  = rsqp_algo(algo);
-	const rSQPState           &s      =_algo.rsqp_state();
+	const NLPAlgo            &_algo  = rsqp_algo(algo);
+	const NLPAlgoState           &s      =_algo.rsqp_state();
 	const NLP                 &nlp    = _algo.nlp(); 
 
 	const size_type
@@ -214,13 +214,13 @@ void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 	o << std::endl;
 }
 
-void rSQPTrackSummaryStd::output_final(const Algorithm& algo
+void MoochoTrackerSummaryStd::output_final(const Algorithm& algo
 	, EAlgoReturn algo_return) const
 {
 	using DynamicCastHelperPack::dyn_cast;
 
-	const rSQPAlgo            &_algo  = rsqp_algo(algo);
-	const rSQPState           &s      =_algo.rsqp_state();
+	const NLPAlgo            &_algo  = rsqp_algo(algo);
+	const NLPAlgoState           &s      =_algo.rsqp_state();
 	const NLPObjGrad      &nlp    = dyn_cast<const NLPObjGrad>(_algo.nlp()); 
 	const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
 
@@ -383,7 +383,7 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 
 }
 
-void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
+void MoochoTrackerSummaryStd::print_header(const NLPAlgoState &s) const
 {
 	// Reset the count of total QP iterations
 	num_total_qp_iter_ = 0;
@@ -393,7 +393,7 @@ void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
 	int w = 15;
 	int prec = 6;
 
-	rSQPState::space_c_ptr_t
+	NLPAlgoState::space_c_ptr_t
 		space_c = s.get_space_c();
 
 	o	<< "\n\n********************************\n"
@@ -457,4 +457,4 @@ void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
 		<< "   ------------\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for FeasibilityStepReducedStd_Strategy from an
@@ -60,6 +60,6 @@ protected:
 
 };	// end class FeasibilityStepReducedStd_StrategySetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H

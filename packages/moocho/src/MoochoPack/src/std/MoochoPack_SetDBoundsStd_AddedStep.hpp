@@ -16,12 +16,12 @@
 #ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
 #define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
-#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
+#include "MoochoPack/src/std/d_bounds_iter_quant.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Computes the bounds for the QP subproblem from the %NLP bounds.
@@ -50,6 +50,6 @@ private:
 
 }; // end class SetDBoundsStd_AddedStep
 
-} // end namespace ReducedSpaceSQPPack 
+} // end namespace MoochoPack 
 
 #endif // SET_D_BOUNDS_STD_ADDED_STEP_HH

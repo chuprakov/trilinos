@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for EvalNewPointTailoredApproach_Step from an
@@ -68,6 +68,6 @@ protected:
 
 };	// end class EvalNewPointTailoredApproach_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// EVAL_NEW_POINT_TAILORED_APPROACH_STD_SET_OPTIONS_H

@@ -18,11 +18,11 @@
 #include <iostream>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/UpdateBarrierParameter_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/UpdateBarrierParameter_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
+#include "MoochoPack/src/IpState.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
@@ -33,7 +33,7 @@
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 UpdateBarrierParameter_Step::UpdateBarrierParameter_Step(
   const value_type init_barrier_parameter,
@@ -61,8 +61,8 @@ bool UpdateBarrierParameter_Step::do_step(
 	using DynamicCastHelperPack::dyn_cast;
 	using IterationPack::print_algorithm_step;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 	NLP                 &nlp    = algo.nlp();
 
 	if (!nlp.is_initialized())
@@ -173,8 +173,8 @@ void UpdateBarrierParameter_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	//const rSQPAlgo   &algo = rsqp_algo(_algo);
-	//const rSQPState  &s    = algo.rsqp_state();
+	//const NLPAlgo   &algo = rsqp_algo(_algo);
+	//const NLPAlgoState  &s    = algo.rsqp_state();
 	out << L << "# Update the interior point barrier parameter (mu)\n"
 		<< L << "if (KKTerror < e_tol) then\n"
 		<< L << "   mu_kp1 = min(tau_mu*mu_k, mu_k^theta_mu)\n"
@@ -257,4 +257,4 @@ void UpdateBarrierParameter_StepSetOptions::set_option(
 		}
 	}
 
-} // end namespace ReducedSpaceSQPPack 
+} // end namespace MoochoPack 

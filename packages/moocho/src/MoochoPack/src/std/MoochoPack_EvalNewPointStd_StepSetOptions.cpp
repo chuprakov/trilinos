@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
+#include "MoochoPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
 #include "StringToBool.hpp"
 #include "ThrowException.hpp"
 
@@ -38,7 +38,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 EvalNewPointStd_StepSetOptions::EvalNewPointStd_StepSetOptions(
 			  EvalNewPointStd_Step* target
@@ -112,4 +112,4 @@ void EvalNewPointStd_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPackTypes.hpp
+// MoochoPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "IterationPack/src/IterationPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // using types from ConstrainedOptPack
 #include "ConstrainedOptPack/src/ConstrainedOptPackPublicTypes.ud"
@@ -39,18 +39,18 @@ enum EJournalOutputLevel {
 
 // public interface classes
 
-class rSQPState;
-class rSQPSolverClientInterface;
-class rSQPAlgoClientInterface;
-class rSQPAlgo_Config;
+class NLPAlgoState;
+class NLPSolverClientInterface;
+class NLPAlgoClientInterface;
+class NLPAlgoConfig;
 
 //
 
-class rSQPAlgo;
+class NLPAlgo;
 typedef IterationPack::AlgorithmStep             rSQPStep;
 typedef IterationPack::AlgorithmTracker            rSQPTrack;
 typedef IterationPack::AlgorithmTrackerComposite   rSQPTrackComposite;
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif // REDUCED_SPACE_SQP_PACK_TYPES_H

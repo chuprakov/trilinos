@@ -17,8 +17,8 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/InitFinDiffReducedHessian_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
@@ -38,7 +38,7 @@ inline
 T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 InitFinDiffReducedHessian_Step::InitFinDiffReducedHessian_Step(
 	EInitializationMethod   initialization_method
@@ -63,8 +63,8 @@ bool InitFinDiffReducedHessian_Step::do_step(
 	using LinAlgOpPack::V_MtV;
 	using AbstractLinAlgPack::max_near_feas_step;
 
-	rSQPAlgo          &algo  = rsqp_algo(_algo);
-	rSQPState         &s     = algo.rsqp_state();
+	NLPAlgo          &algo  = rsqp_algo(_algo);
+	NLPAlgoState         &s     = algo.rsqp_state();
 	NLPObjGrad    &nlp   = dyn_cast<NLPObjGrad>(algo.nlp());
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -328,4 +328,4 @@ void InitFinDiffReducedHessian_Step::print_step(
 		<< L << "end\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

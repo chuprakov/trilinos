@@ -19,16 +19,16 @@
 //#include <limits>
 //#include <sstream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckConvergenceIP_Strategy.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckConvergenceIP_Strategy::CheckConvergenceIP_Strategy(
 	EOptErrorCheck         opt_error_check
@@ -62,8 +62,8 @@ bool CheckConvergenceIP_Strategy::Converged(
 	// Recalculate the complementarity error including mu
 	
 	// Get the iteration quantities
-	ipState &s = dyn_cast<ipState>(*_algo.get_state());
-	rSQPAlgo& algo = rsqp_algo(_algo);
+	IpState &s = dyn_cast<IpState>(*_algo.get_state());
+	NLPAlgo& algo = rsqp_algo(_algo);
 	NLP& nlp = algo.nlp();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -173,5 +173,5 @@ void CheckConvergenceIP_Strategy::print_step( const Algorithm& _algo, std::ostre
 		<< L << "return IP_found_solution\n";
 	}
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 

@@ -16,7 +16,7 @@
 #ifndef UPDATE_BARRIER_PARAMETER_STEP_H
 #define UPDATE_BARRIER_PARAMETER_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
@@ -24,7 +24,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Barrier Parameter (mu) Update 
@@ -128,6 +128,6 @@ class UpdateBarrierParameter_StepSetOptions
 	
 	};	// end class UpdateBarrierParameter_StepSetOptions
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // #if !defined UPDATE_BARRIER_PARAMETER_STEP_H

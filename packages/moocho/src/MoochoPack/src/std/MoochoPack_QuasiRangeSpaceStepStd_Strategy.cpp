@@ -13,16 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool QuasiRangeSpaceStepStd_Strategy::solve_quasi_range_space_step(
-	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+	std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 	,const Vector& xo, const Vector& c_xo, VectorMutable* v
   	)
 {
@@ -47,4 +47,4 @@ void QuasiRangeSpaceStepStd_Strategy::print_step( std::ostream& out, const std::
 		<< L << "v = -Y_k*vy\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

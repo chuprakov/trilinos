@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/TestMatrixSymSecant.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
@@ -27,7 +27,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 BFGSUpdate_Strategy::BFGSUpdate_Strategy(
 	bool               rescale_init_identity
@@ -262,4 +262,4 @@ void BFGSUpdate_Strategy::print_step( std::ostream& out, const std::string& L ) 
 		;
 }
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack

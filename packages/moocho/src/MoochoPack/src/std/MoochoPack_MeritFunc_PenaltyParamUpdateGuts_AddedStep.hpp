@@ -18,7 +18,7 @@
 
 #include "MeritFunc_PenaltyParamUpdate_AddedStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Updates the penalty parameter for a merit function as:
@@ -89,7 +89,7 @@ protected:
 	 * @return	Returns true if the penalty parameter should be updated
 	 * 	or false if the previous mu_km1 should be used.
 	 */
-	virtual bool min_mu( rSQPState& s, value_type* min_mu ) const = 0;
+	virtual bool min_mu( NLPAlgoState& s, value_type* min_mu ) const = 0;
 
 	///
 	/** Override to print how min_mu calculated.
@@ -107,6 +107,6 @@ private:
 	
 };	// end class MeritFunc_PenaltyParamUpdateGuts_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_PENALTY_PARAM_UPDATE_GUTS_ADDED_STEP_H

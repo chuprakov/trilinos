@@ -16,13 +16,13 @@
 #include <typeinfo>
 #include <limits>
 
-#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromPy_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckDecompositionFromPy_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckDecompositionFromPy_Step::CheckDecompositionFromPy_Step(
 	const new_decomp_strategy_ptr_t   &new_decomp_strategy
@@ -45,8 +45,8 @@ bool CheckDecompositionFromPy_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	)
 {
-	rSQPAlgo                &algo       = rsqp_algo(_algo);
-	rSQPState               &s          = algo.rsqp_state();
+	NLPAlgo                &algo       = rsqp_algo(_algo);
+	NLPAlgoState               &s          = algo.rsqp_state();
 	const Range1D           equ_decomp  = s.equ_decomp();
 	EJournalOutputLevel     olevel      = algo.algo_cntr().journal_output_level();
 	std::ostream            &out        = algo.track().journal_out();
@@ -147,4 +147,4 @@ void CheckDecompositionFromPy_Step::print_step(
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

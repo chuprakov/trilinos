@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_StepSetOptions.hpp
+// TangentialStepWithInequStd_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,14 +16,14 @@
 #ifndef INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H
 #define INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H
 
-#include "NullSpaceStepWithInequStd_Step.hpp"
+#include "TangentialStepWithInequStd_Step.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** Set options for NullSpaceStepWithInequStd_Step from an
+/** Set options for TangentialStepWithInequStd_Step from an
  * OptionsFromStream object.
  *
  * The default options group name is IndepDirecWithBoundsStd.
@@ -43,21 +43,21 @@ namespace ReducedSpaceSQPPack {
 	}
  \endverbatim
  */
-class NullSpaceStepWithInequStd_StepSetOptions
+class TangentialStepWithInequStd_StepSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 	, public OptionsFromStreamPack::SetOptionsToTargetBase<
-		NullSpaceStepWithInequStd_Step >
+		TangentialStepWithInequStd_Step >
 {
 public:
 	///
-	NullSpaceStepWithInequStd_StepSetOptions(
-		 NullSpaceStepWithInequStd_Step* target = NULL
+	TangentialStepWithInequStd_StepSetOptions(
+		 TangentialStepWithInequStd_Step* target = NULL
 		,const char opt_grp_name[] = "NullSpaceStepWithInequStd" );
 protected:
 	/// Overridden from SetOptionsFromStreamNode
 	void set_option( int option_num, const std::string& option_value );
-};	// end class NullSpaceStepWithInequStd_StepSetOptions
+};	// end class TangentialStepWithInequStd_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H

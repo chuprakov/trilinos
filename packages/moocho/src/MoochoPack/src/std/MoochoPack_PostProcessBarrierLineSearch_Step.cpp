@@ -23,9 +23,9 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
-#include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
@@ -33,7 +33,7 @@
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
   MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp
@@ -58,8 +58,8 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::Vp_StV;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 
    	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -100,9 +100,9 @@ void PostProcessBarrierLineSearch_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	//const rSQPAlgo   &algo = rsqp_algo(_algo);
-	//const rSQPState  &s    = algo.rsqp_state();
+	//const NLPAlgo   &algo = rsqp_algo(_algo);
+	//const NLPAlgoState  &s    = algo.rsqp_state();
 	out << L << "# Process out the temporary barrier term used for line search\n"
 		<< L << "f_k -= barrier_term_k\n";
 	}
-} // end namespace ReducedSpaceSQPPack 
+} // end namespace MoochoPack 

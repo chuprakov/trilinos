@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.hpp
+// MoochoPack/src/std/CheckConvergenceStd_Strategy.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,9 +17,9 @@
 #if !defined CHECK_CONVERGENCE_STD_STRATEGY_H
 #define CHECK_CONVERGENCE_STD_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergence_Strategy.hpp"
+#include "MoochoPack/src/std/CheckConvergence_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implementation of CheckConvergence_Strategy interface
@@ -54,11 +54,11 @@ class CheckConvergenceStd_Strategy :
 
 	protected:
 
-		value_type CalculateScalingFactor( rSQPState& state, EScaleKKTErrorBy scale_by ) const;
+		value_type CalculateScalingFactor( NLPAlgoState& state, EScaleKKTErrorBy scale_by ) const;
 
 	}; // end class CheckConvergenceStd_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // CHECK_CONVERGENCE_STD_STRATEGY_H
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp
+// MoochoPack/src/std/CheckConvergenceIP_Strategy.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,9 +17,9 @@
 #if !defined CHECK_CONVERGENCE_IP_STRATEGY_H
 #define CHECK_CONVERGENCE_IP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.hpp"
+#include "MoochoPack/src/std/CheckConvergenceStd_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implementation of CheckConvergence_Strategy interface
@@ -53,6 +53,6 @@ class CheckConvergenceIP_Strategy :
 		//@}
 	}; // end class CheckConvergenceStd_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // CHECK_CONVERGENCE_IP_STRATEGY_H

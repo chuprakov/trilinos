@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// ipState.hpp
+// IpState.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,9 +17,9 @@
 #if !defined IP_STATE_H
 #define IP_STATE_H
 
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Iteration Quantity Strings
 extern const std::string barrier_parameter_name;
@@ -40,8 +40,8 @@ extern const std::string alpha_vl_name;
 extern const std::string alpha_vu_name;
 
 
-class ipState 
-	: public ReducedSpaceSQPPack::rSQPState
+class IpState 
+	: public MoochoPack::NLPAlgoState
 	{
 
 	public:
@@ -102,7 +102,7 @@ class ipState
 		 *
 		 * 
 		 */
-		ipState(
+		IpState(
 		  const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
 		  ,const vec_space_ptr_t& space_x      = MemMngPack::null
 		  ,const vec_space_ptr_t& space_c      = MemMngPack::null
@@ -111,11 +111,11 @@ class ipState
 		  ,const vec_space_ptr_t& space_null   = MemMngPack::null
 		  );
 
-		virtual ~ipState();
+		virtual ~IpState();
 
-	}; // end class ipState
+	}; // end class IpState
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 
 

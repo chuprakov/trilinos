@@ -21,7 +21,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Check if the decomposition is going singular and if it is select a new decomposition.
@@ -87,6 +87,6 @@ private:
 
 };	// end class CheckDecompositionFromRPy_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CHECK_DECOMPOSITION_FROM_R_PY_STEP_H

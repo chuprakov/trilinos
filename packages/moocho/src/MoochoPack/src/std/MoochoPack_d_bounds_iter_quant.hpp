@@ -16,15 +16,15 @@
 #ifndef D_BOUNDS_ITE_QUANT_HH
 #define D_BOUNDS_ITE_QUANT_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 extern const std::string dl_name;
 ///
 extern const std::string du_name;
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// D_BOUNDS_ITE_QUANT_HH

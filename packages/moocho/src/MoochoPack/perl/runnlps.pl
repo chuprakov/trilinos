@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 use strict;
-use lib "$ENV{MOOCHO_BASE_DIR}/Moocho/core/ReducedSpaceSQPPack/perl";
+use lib "$ENV{MOOCHO_BASE_DIR}/Moocho/core/MoochoPack/perl";
 #
 my $g_use_msg =
   "Use: runnlps.pl [-h] [-i] [-k0,-k1] [-e executable] [-a \"arguments\"]\n".
@@ -28,7 +28,7 @@ my $g_use_msg_opts =
   "        (default is to run no script after at all).\n".
   "  -b base_opt_file\n".
   "      : Gives the path of the options file with the base options to be used.\n".
-  "        (default is to use the \'rSQPpp.opt\' file in the current directory. If\n".
+  "        (default is to use the \'Moocho.opt\' file in the current directory. If\n".
   "          this file does not exist then no base options will be used).\n".
   "  -v vary_opt_file\n".
   "      : Gives the path of the file containing the options to be varied (default\n".
@@ -58,7 +58,7 @@ my $g_use_msg_opts =
 #       begin_vary_options
 #       ...
 #       begin_options_group:
-#       rSQPAlgo_ConfigMamaJama
+#       NLPAlgoConfigMamaJama
 #           begin_option:
 #           qp_solver
 #               QPKWIK
@@ -265,9 +265,9 @@ if( $g_default_options_file_name ) {
 	}
 }
 else {
-  if(!($g_default_options_fh = new FileHandle "<rSQPpp.opt") )
+  if(!($g_default_options_fh = new FileHandle "<Moocho.opt") )
 	{
-	  print STDERR "Warning, the file rSQPpp.opt could not be found!  Not using any default options!\n";
+	  print STDERR "Warning, the file Moocho.opt could not be found!  Not using any default options!\n";
 	}
 }
 
@@ -325,7 +325,7 @@ print $g_output_fh
 #
 my $g_vary_options
   = RSQPppVaryOptions->new(
-						   "rSQPpp.opt"          # Options file name to create
+						   "Moocho.opt"          # Options file name to create
 						   ,\@g_default_options  # Default options
 						   ,$g_vary_options_fh   # Filehandle to get options to vary
 						 );

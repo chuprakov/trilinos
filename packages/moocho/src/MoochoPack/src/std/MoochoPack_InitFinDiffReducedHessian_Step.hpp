@@ -17,10 +17,10 @@
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Initializes the reduced hessian using a single finite difference
@@ -103,6 +103,6 @@ private:
 
 };	// end class ReducedHessianBFGS_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H

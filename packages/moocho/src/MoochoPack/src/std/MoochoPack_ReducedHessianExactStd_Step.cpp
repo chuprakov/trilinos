@@ -17,8 +17,8 @@
 #include <typeinfo>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/ReducedHessianExactStd_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
@@ -32,7 +32,7 @@
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "Midynamic_cast_verbose.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool ReducedHessianExactStd_Step::do_step(
 	  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
@@ -45,8 +45,8 @@ bool ReducedHessianExactStd_Step::do_step(
 	typedef AbstractLinAlgPack::MatrixSymOp			MatrixSymOp;
 	using ConstrainedOptPack::NLPSecondOrder;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLPSecondOrder
 #ifdef _WINDOWS
 				&nlp	= dynamic_cast<NLPSecondOrder&>(algo.nlp());
@@ -154,4 +154,4 @@ void ReducedHessianExactStd_Step::print_step(
 		<< L << "end\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

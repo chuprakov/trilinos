@@ -16,10 +16,10 @@
 #ifndef REDUCED_GRADIENT_STD_STEP_H
 #define REDUCED_GRADIENT_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Computes the reducecd gradient of the objective <tt>rGf_k = Z_k' * Gf_k</tt>
@@ -41,6 +41,6 @@ public:
 
 };	// end class ReducedGradientStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// REDUCED_GRADIENT_STD_STEP_H

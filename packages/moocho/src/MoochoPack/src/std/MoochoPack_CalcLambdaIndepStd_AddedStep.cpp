@@ -16,7 +16,7 @@
 #include <ostream>
 
 #include "../std/CalcLambdaIndepStd_AddedStep.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
@@ -31,7 +31,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
+bool MoochoPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 
@@ -49,8 +49,8 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_MtV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	Range1D		decomp	= s.equ_decomp();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -108,7 +108,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	return true;
 }
 
-void ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::print_step( const Algorithm& algo
+void MoochoPack::CalcLambdaIndepStd_AddedStep::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

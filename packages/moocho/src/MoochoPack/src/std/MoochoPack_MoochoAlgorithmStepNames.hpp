@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// rSQPAlgorithmStepNames.hpp
+// MoochoAlgorithmStepNames.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <string>
 
-#include "../ReducedSpaceSQPPackTypes.hpp"
+#include "../MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 /** @name Names for rSQP++ steps */
 //@{
@@ -40,6 +40,6 @@ const std::string CheckSkipBFGSUpdate_name          = "CheckSkipBFGSUpdate";
 const std::string CalcDFromYPYZPZ_name				= "CalcDFromYPYZPZ";
 
 //@}
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif // RSQP_ALGORITHM_STEP_NAMES_H

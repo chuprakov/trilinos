@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// rsqp_algo_conversion.hpp
+// moocho_algo_conversion.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,21 +16,21 @@
 #ifndef RSQP_ALGO_CONVERSION_H
 #define RSQP_ALGO_CONVERSION_H
 
-#include "rSQPAlgo.hpp"
+#include "NLPAlgo.hpp"
 #include "IterationPack/src/Algorithm.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-/// Convert from a Algorithm to a rSQPAlgo
+/// Convert from a Algorithm to a NLPAlgo
 inline
-rSQPAlgo& rsqp_algo(Algorithm& algo)
-{	return dynamic_cast<rSQPAlgo&>(algo); }
+NLPAlgo& rsqp_algo(Algorithm& algo)
+{	return dynamic_cast<NLPAlgo&>(algo); }
 
-/// Convert from a Algorithm to a rSQPAlgo
+/// Convert from a Algorithm to a NLPAlgo
 inline
-const rSQPAlgo& rsqp_algo(const Algorithm& algo)
-{	return dynamic_cast<const rSQPAlgo&>(algo); }
+const NLPAlgo& rsqp_algo(const Algorithm& algo)
+{	return dynamic_cast<const NLPAlgo&>(algo); }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_CONVERSION_H

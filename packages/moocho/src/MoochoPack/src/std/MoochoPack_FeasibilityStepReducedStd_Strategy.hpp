@@ -28,7 +28,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implements the feasibility step computation for reduced space SQP.
@@ -92,7 +92,7 @@ public:
 	 *
 	 */
  	bool compute_feasibility_step(
-		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 		,const Vector& xo, const Vector& c_xo, VectorMutable* w
 	  	);
 
@@ -110,6 +110,6 @@ private:
 
 }; // end class FeasibilityStepReducedStd_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // FEASIBILITY_STEP_REDUCED_STD_STRATEGY_H

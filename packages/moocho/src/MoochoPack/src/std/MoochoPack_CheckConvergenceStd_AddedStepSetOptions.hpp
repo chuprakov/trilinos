@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for CheckConvergenceStd_AddedStep from an
@@ -72,6 +72,6 @@ protected:
 
 };	// end class CheckConvergenceStd_AddedStepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// CHECK_CONVERGENCE_STD_ADDED_STEP_SET_OPTIONS_H

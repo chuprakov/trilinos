@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// rSQPppSolver.cpp
+// MoochoSolver.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,18 +21,18 @@
 #include <iomanip>
 #include <sstream>
 
-#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.hpp"
+#include "MoochoPack/configurations/MoochoSolver.hpp"
 
-#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.hpp"
-#include "ReducedSpaceSQPPack/Configurations/ipConfig/Algo_ConfigIP.hpp"
+#include "MoochoPack/configurations/MamaJama/NLPAlgoConfigMamaJama.hpp"
+#include "MoochoPack/configurations/IpConfig/NLPAlgoConfigIP.hpp"
 
-#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterfaceSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoClientInterface.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackSummaryStd.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackConsoleStd.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackStatsStd.hpp"
+#include "MoochoPack/src/NLPSolverClientInterfaceSetOptions.hpp"
+#include "MoochoPack/src/NLPAlgoClientInterface.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/std/MoochoTrackerSummaryStd.hpp"
+#include "MoochoPack/src/std/MoochoTrackerConsoleStd.hpp"
+#include "MoochoPack/src/std/MoochoTrackerStatsStd.hpp"
 #include "IterationPack/src/AlgorithmTrackerComposite.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
@@ -46,11 +46,11 @@
 #include "ThrowException.hpp"
 #include "oblackholestream.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Initialization and algorithm configuration
 
-rSQPppSolver::rSQPppSolver()
+MoochoSolver::MoochoSolver()
 	:reconfig_solver_(true)
 	,workspace_MB_(-1.0)
 	,obj_scale_(1.0)
@@ -68,32 +68,32 @@ rSQPppSolver::rSQPppSolver()
 	 ,configuration_(MAMA_JAMA)
 {}
 
-void rSQPppSolver::set_nlp(const nlp_ptr_t& nlp)
+void MoochoSolver::set_nlp(const nlp_ptr_t& nlp)
 {
 	nlp_ = nlp;
 	reconfig_solver_ = true;
 }
 	
-const rSQPppSolver::nlp_ptr_t&
-rSQPppSolver::get_nlp() const
+const MoochoSolver::nlp_ptr_t&
+MoochoSolver::get_nlp() const
 {
 	return nlp_;
 }
 
-void rSQPppSolver::set_track(const track_ptr_t& track)
+void MoochoSolver::set_track(const track_ptr_t& track)
 {
 	namespace mmp = MemMngPack;
 	track_ = track;
 	solver_.set_track(mmp::null); // Force the track objects to be rebuilt and added!
 }
 	
-const rSQPppSolver::track_ptr_t&
-rSQPppSolver::get_track() const
+const MoochoSolver::track_ptr_t&
+MoochoSolver::get_track() const
 {
 	return track_;
 }
 	
-void rSQPppSolver::set_config( const config_ptr_t& config )
+void MoochoSolver::set_config( const config_ptr_t& config )
 {
 	namespace mmp = MemMngPack;
 	config_ = config;
@@ -101,13 +101,13 @@ void rSQPppSolver::set_config( const config_ptr_t& config )
 	reconfig_solver_ = true;
 }
 
-const rSQPppSolver::config_ptr_t&
-rSQPppSolver::get_config() const
+const MoochoSolver::config_ptr_t&
+MoochoSolver::get_config() const
 {
 	return config_;
 }
 
-void rSQPppSolver::set_options( const options_ptr_t& options )
+void MoochoSolver::set_options( const options_ptr_t& options )
 {
 	namespace mmp = MemMngPack;
 	options_ = options;                  // Must totally free all of the references we
@@ -119,13 +119,13 @@ void rSQPppSolver::set_options( const options_ptr_t& options )
 	reconfig_solver_ = true;
 }
 
-const rSQPppSolver::options_ptr_t&
-rSQPppSolver::get_options() const
+const MoochoSolver::options_ptr_t&
+MoochoSolver::get_options() const
 {
 	return options_;
 }
 
-void rSQPppSolver::set_error_handling(
+void MoochoSolver::set_error_handling(
 	bool                    throw_exception
 	,const ostream_ptr_t&   error_out
 	)
@@ -145,18 +145,18 @@ void rSQPppSolver::set_error_handling(
 	error_out_       = error_out;
 }
 
-bool rSQPppSolver::throw_exception() const
+bool MoochoSolver::throw_exception() const
 {
 	return throw_exception();
 }
 
-const rSQPppSolver::ostream_ptr_t&
-rSQPppSolver::error_out() const
+const MoochoSolver::ostream_ptr_t&
+MoochoSolver::error_out() const
 {
 	return error_out_;
 }
 
-void rSQPppSolver::set_console_out( const ostream_ptr_t& console_out )
+void MoochoSolver::set_console_out( const ostream_ptr_t& console_out )
 {
 	namespace mmp = MemMngPack;
 	console_out_      = console_out;
@@ -164,13 +164,13 @@ void rSQPppSolver::set_console_out( const ostream_ptr_t& console_out )
 	solver_.set_track(mmp::null);
 }
 
-const rSQPppSolver::ostream_ptr_t&
-rSQPppSolver::get_console_out() const
+const MoochoSolver::ostream_ptr_t&
+MoochoSolver::get_console_out() const
 {
 	return console_out_;
 }
 
-void rSQPppSolver::set_summary_out( const ostream_ptr_t& summary_out )
+void MoochoSolver::set_summary_out( const ostream_ptr_t& summary_out )
 {
 	namespace mmp = MemMngPack;
 	summary_out_      = summary_out;
@@ -178,13 +178,13 @@ void rSQPppSolver::set_summary_out( const ostream_ptr_t& summary_out )
 	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
 }
 	
-const rSQPppSolver::ostream_ptr_t&
-rSQPppSolver::get_summary_out() const
+const MoochoSolver::ostream_ptr_t&
+MoochoSolver::get_summary_out() const
 {
 	return summary_out_;
 }
 
-void rSQPppSolver::set_journal_out( const ostream_ptr_t& journal_out )
+void MoochoSolver::set_journal_out( const ostream_ptr_t& journal_out )
 {
 	namespace mmp = MemMngPack;
 	journal_out_      = journal_out;
@@ -192,35 +192,35 @@ void rSQPppSolver::set_journal_out( const ostream_ptr_t& journal_out )
 	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
 }
 	
-const rSQPppSolver::ostream_ptr_t&
-rSQPppSolver::get_journal_out() const
+const MoochoSolver::ostream_ptr_t&
+MoochoSolver::get_journal_out() const
 {
 	return journal_out_;
 }
 
-void rSQPppSolver::set_algo_out( const ostream_ptr_t& algo_out )
+void MoochoSolver::set_algo_out( const ostream_ptr_t& algo_out )
 {
 	namespace mmp = MemMngPack;
 	algo_out_      = algo_out;
 	algo_out_used_ = mmp::null;
 }
 	
-const rSQPppSolver::ostream_ptr_t&
-rSQPppSolver::get_algo_out() const
+const MoochoSolver::ostream_ptr_t&
+MoochoSolver::get_algo_out() const
 {
 	return algo_out_;
 }
 
 // Solve the NLP
 
-rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
+MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 {
 	using std::endl;
 	using std::setw;
 	using StopWatchPack::stopwatch;
 	namespace mmp = MemMngPack;
 	using mmp::ref_count_ptr;
-	typedef ReducedSpaceSQPPack::rSQPSolverClientInterface    solver_interface_t;
+	typedef MoochoPack::NLPSolverClientInterface    solver_interface_t;
 
 	stopwatch                             timer;
 	bool                                  threw_exception = false;
@@ -301,7 +301,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 		if(do_journal_outputting())
 			*journal_out_used_
 				<< "\n************************************"
-				<< "\n*** rSQPppSolver::solve_nlp()    ***"
+				<< "\n*** MoochoSolver::solve_nlp()    ***"
 				<< "\n************************************\n"	
 				<< "\n*** Starting rSQP iterations ...\n\n";
 		
@@ -420,13 +420,13 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 
 // Get the underlying solver object
 
-rSQPSolverClientInterface& rSQPppSolver::get_solver()
+NLPSolverClientInterface& MoochoSolver::get_solver()
 {
 	update_solver();
 	return solver_;
 }
 
-const rSQPSolverClientInterface& rSQPppSolver::get_solver() const
+const NLPSolverClientInterface& MoochoSolver::get_solver() const
 {
 	update_solver();
 	return solver_;
@@ -434,7 +434,7 @@ const rSQPSolverClientInterface& rSQPppSolver::get_solver() const
 
 // private
 
-void rSQPppSolver::update_solver() const
+void MoochoSolver::update_solver() const
 {
 	using std::endl;
 	using std::setw;
@@ -460,7 +460,7 @@ void rSQPppSolver::update_solver() const
 	
 	if( options_used_.get() == NULL ) {
 		if( options_.get() == NULL ) {
-			std::ifstream options_in("rSQPpp.opt");
+			std::ifstream options_in("Moocho.opt");
 			if(options_in)
 				options_used_ = mmp::rcp(new OptionsFromStream(options_in));
 			else
@@ -471,7 +471,7 @@ void rSQPppSolver::update_solver() const
 	}
 	
 	//
-	// Read in some options for "rSQPppSolver" if needed
+	// Read in some options for "MoochoSolver" if needed
 	//
 
 	bool rSQPppSolver_opt_grp_existed = true;
@@ -480,7 +480,7 @@ void rSQPppSolver::update_solver() const
 		
 		options_used_->reset_unaccessed_options_groups();
 		
-		const std::string optgrp_name = "rSQPppSolver";
+		const std::string optgrp_name = "MoochoSolver";
 		OptionsFromStream::options_group_t optgrp = options_used_->options_group( optgrp_name );
 		if( OptionsFromStream::options_group_exists( optgrp ) ) {
 			
@@ -586,13 +586,13 @@ void rSQPppSolver::update_solver() const
 	}
 	if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
 		if( summary_out_.get() == NULL )
-			summary_out_used_ = mmp::rcp(new std::ofstream("rSQPppSummary.out"));
+			summary_out_used_ = mmp::rcp(new std::ofstream("MoochoSummary.out"));
 		else
 			summary_out_used_ = summary_out_;
 	}
 	if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
 		if( journal_out_.get() == NULL )
-			journal_out_used_ = mmp::rcp(new std::ofstream("rSQPppJournal.out"));
+			journal_out_used_ = mmp::rcp(new std::ofstream("MoochoJournal.out"));
 		else
 			journal_out_used_ = journal_out_;
 	}
@@ -601,14 +601,14 @@ void rSQPppSolver::update_solver() const
 	}
 	if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
 		if( algo_out_.get() == NULL )
-			algo_out_used_ = mmp::rcp(new std::ofstream("rSQPppAlgo.out"));
+			algo_out_used_ = mmp::rcp(new std::ofstream("MoochoAlgo.out"));
 		else
 			algo_out_used_ = algo_out_;
 	}
 	
 	if( do_algo_outputting() && !rSQPppSolver_opt_grp_existed )
 		*algo_out_used_
-			<< "\nWarning!  The options group \'rSQPppSolver\' was not found.\n"
+			<< "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
 			"Using a default set of options ...\n";
 
 
@@ -641,7 +641,7 @@ void rSQPppSolver::update_solver() const
 				<< "\n*** setup is given and is followed by detailed printouts of the  ***"
 				<< "\n*** contents of the algorithm state object (i.e. iteration       ***"
 				<< "\n*** quantities) and the algorithm description printout           ***"
-				<< "\n*** (if the option rSQPppSolver::print_algo = true is set).      ***"
+				<< "\n*** (if the option MoochoSolver::print_algo = true is set).      ***"
 				<< "\n********************************************************************\n";
 		if(do_summary_outputting())
 			*summary_out_used_
@@ -650,7 +650,7 @@ void rSQPppSolver::update_solver() const
 				<< "\n***                                                              ***"
 				<< "\n*** Below, a summary table of the SQP iterations is given as     ***"
 				<< "\n*** well as a table of the CPU times for each step (if the       ***"
-				<< "\n*** option rSQPppSolver::algo_timing = true is set).             ***"
+				<< "\n*** option MoochoSolver::algo_timing = true is set).             ***"
 				<< "\n********************************************************************\n";
 		if(do_journal_outputting())
 			*journal_out_used_
@@ -660,7 +660,7 @@ void rSQPppSolver::update_solver() const
 				<< "\n*** Below, detailed information about the SQP algorithm is given ***"
 				<< "\n*** while it is running.  The amount of information that is      ***"
 				<< "\n*** produced can be specified using the option                   ***"
-				<< "\n*** rSQPSolverClientInterface::journal_output_level (the default ***"
+				<< "\n*** NLPSolverClientInterface::journal_output_level (the default ***"
 				<< "\n*** is PRINT_NOTHING and produces no output                      ***"
 				<< "\n********************************************************************\n";
 		
@@ -715,10 +715,10 @@ void rSQPppSolver::update_solver() const
 		config_ptr_t _config;
 		if(config_.get() == NULL) {
 			if (configuration_ == (EConfigOptions) INTERIOR_POINT) {
-			    _config = mmp::rcp(new Algo_ConfigIP());
+			    _config = mmp::rcp(new NLPAlgoConfigIP());
             }
 			else {
-			    _config = mmp::rcp(new rSQPAlgo_ConfigMamaJama());
+			    _config = mmp::rcp(new NLPAlgoConfigMamaJama());
 			}
         }
 		else
@@ -744,7 +744,7 @@ void rSQPppSolver::update_solver() const
 			
 		// Set the client interface options
 		if(options_used_.get()) {
-			rSQPSolverClientInterfaceSetOptions
+			NLPSolverClientInterfaceSetOptions
 				solver_options_setter( &solver_ );
 			solver_options_setter.set_options( *options_used_ );
 		}
@@ -762,16 +762,16 @@ void rSQPppSolver::update_solver() const
 			composite_track = mmp::rcp(new AlgorithmTrackerComposite(journal_out_used_));
 		if(do_console_outputting())
 			composite_track->tracks().push_back(
-				mmp::rcp(new rSQPTrackConsoleStd(console_out_used_,journal_out_used_)) );
+				mmp::rcp(new MoochoTrackerConsoleStd(console_out_used_,journal_out_used_)) );
 		if(do_summary_outputting())
 			composite_track->tracks().push_back(
-				mmp::rcp(new rSQPTrackSummaryStd(summary_out_used_,journal_out_used_)) );
+				mmp::rcp(new MoochoTrackerSummaryStd(summary_out_used_,journal_out_used_)) );
 		if(generate_stats_file_) {
 			ostream_ptr_t
-				stats_out = mmp::rcp(new std::ofstream("rSQPppStats.out"));
+				stats_out = mmp::rcp(new std::ofstream("MoochoStats.out"));
 			assert( !stats_out->eof() );
 			composite_track->tracks().push_back(
-				mmp::rcp(new rSQPTrackStatsStd(stats_out,stats_out)) );
+				mmp::rcp(new MoochoTrackerStatsStd(stats_out,stats_out)) );
 		}
 		if( track_.get() ) {
 			track_->set_journal_out(journal_out_used_);
@@ -792,4 +792,4 @@ void rSQPppSolver::update_solver() const
 	
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

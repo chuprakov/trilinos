@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
+#include "MoochoPack/src/std/PBFGS_helpers.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "ConstrainedOptPack/src/MatrixSymAddDelUpdateable.hpp"
 #include "ConstrainedOptPack/src/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
@@ -34,7 +34,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGSProjected_Strategy(
 	const bfgs_update_ptr_t&      bfgs_update
@@ -50,7 +50,7 @@ ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGS
 
 bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
-	,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+	,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 	,MatrixOp *rHL_k
 	)
 {
@@ -556,4 +556,4 @@ void ReducedHessianSecantUpdateBFGSProjected_Strategy::print_step( std::ostream&
 		;
 }
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack

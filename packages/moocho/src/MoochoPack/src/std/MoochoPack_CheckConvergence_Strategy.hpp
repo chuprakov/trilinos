@@ -16,12 +16,12 @@
 #ifndef CHECK_CONVERGENCE_STRATEGY_H
 #define CHECK_CONVERGENCE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Strategy interface for performing convergence checks.
@@ -152,6 +152,6 @@ class CheckConvergence_StrategySetOptions
 	};	// end class CheckConvergence_Strategy
 
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // CHECK_CONVERGENCE_STRATEGY_H

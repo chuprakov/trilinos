@@ -16,11 +16,11 @@
 #ifndef QP_SOLVER_STATS_HH
 #define QP_SOLVER_STATS_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 /// Name given to the active set statistics iteration quantity
 extern const std::string qp_solver_stats_name;
@@ -40,6 +40,6 @@ public:
     {}
 };
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// QP_SOLVER_STATS_HH

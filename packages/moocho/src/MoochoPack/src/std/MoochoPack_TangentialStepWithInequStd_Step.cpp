@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_Step.cpp
+// TangentialStepWithInequStd_Step.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 #include <ostream>
 #include <sstream>
 
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "MoochoPack/src/std/TangentialStepWithInequStd_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
@@ -38,9 +38,9 @@ inline
 T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-NullSpaceStepWithInequStd_Step::NullSpaceStepWithInequStd_Step(
+TangentialStepWithInequStd_Step::TangentialStepWithInequStd_Step(
 	const qp_solver_ptr_t       &qp_solver
 	,const qp_tester_ptr_t      &qp_tester
 	,value_type                 warm_start_frac
@@ -58,7 +58,7 @@ NullSpaceStepWithInequStd_Step::NullSpaceStepWithInequStd_Step(
 	,du_iq_(du_name)
 {}
 
-bool NullSpaceStepWithInequStd_Step::do_step(
+bool TangentialStepWithInequStd_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
@@ -77,8 +77,8 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	using AbstractLinAlgPack::max_near_feas_step;
 	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 
-	rSQPAlgo             &algo         = rsqp_algo(_algo);
-	rSQPState            &s            = algo.rsqp_state();
+	NLPAlgo             &algo         = rsqp_algo(_algo);
+	NLPAlgoState            &s            = algo.rsqp_state();
 	EJournalOutputLevel  olevel        = algo.algo_cntr().journal_output_level();
 	std::ostream         &out          = algo.track().journal_out();
 	const bool           check_results = algo.algo_cntr().check_results();
@@ -563,7 +563,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 
 	if( qp_eta == 1.0 ) {
 		omsg
-			<< "NullSpaceStepWithInequStd_Step::do_step(...) : Error, a QP relaxation parameter\n"
+			<< "TangentialStepWithInequStd_Step::do_step(...) : Error, a QP relaxation parameter\n"
 			<< "of eta = " << qp_eta << " was calculated and therefore it must be assumed\n"
 			<< "that the NLP's constraints are infeasible\n"
 			<< "Throwing an InfeasibleConstraints exception!\n";
@@ -579,7 +579,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	return true;
 }
 
-void NullSpaceStepWithInequStd_Step::print_step(
+void TangentialStepWithInequStd_Step::print_step(
 	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
 	) const
@@ -705,4 +705,4 @@ return;
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

@@ -15,9 +15,9 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
@@ -30,7 +30,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 EvalNewPointTailoredApproach_Step::EvalNewPointTailoredApproach_Step(
 	const deriv_tester_ptr_t      &deriv_tester
@@ -53,8 +53,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	using IterationPack::print_algorithm_step;
 	namespace rcp = MemMngPack;
 
-	rSQPAlgo             &algo   = rsqp_algo(_algo);
-	rSQPState            &s      = algo.rsqp_state();
+	NLPAlgo             &algo   = rsqp_algo(_algo);
+	NLPAlgoState            &s      = algo.rsqp_state();
 	NLPDirect  &nlp    = dyn_cast<NLPDirect>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -327,4 +327,4 @@ void EvalNewPointTailoredApproach_Step::print_step(
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

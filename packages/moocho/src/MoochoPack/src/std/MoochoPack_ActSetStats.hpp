@@ -16,9 +16,9 @@
 #ifndef ACT_SET_STATS_H
 #define ACT_SET_STATS_H
 
-#include "../ReducedSpaceSQPPackTypes.hpp"
+#include "../MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Class for storing statistics about the changes in the active set
@@ -96,6 +96,6 @@ private:
 
 };	// end class ActSetStats
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// ACT_SET_STATS_H

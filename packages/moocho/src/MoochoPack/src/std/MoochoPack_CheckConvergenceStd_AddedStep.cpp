@@ -17,12 +17,12 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckConvergenceStd_AddedStep.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckConvergenceStd_AddedStep::CheckConvergenceStd_AddedStep(
   MemMngPack::ref_count_ptr<CheckConvergence_Strategy> convergence_strategy
@@ -42,8 +42,8 @@ bool CheckConvergenceStd_AddedStep::do_step(
 					"Don't have a valid convergence_strategy in CheckConvergenceStd_AddedStep\n"
 	  );
 
-	rSQPAlgo	&algo	  = rsqp_algo(_algo);
-	rSQPState	&s		  = algo.rsqp_state();
+	NLPAlgo	&algo	  = rsqp_algo(_algo);
+	NLPAlgoState	&s		  = algo.rsqp_state();
 	NLP			&nlp	  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -101,4 +101,4 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 	convergence_strategy_->print_step(algo, out, L);
 	}
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

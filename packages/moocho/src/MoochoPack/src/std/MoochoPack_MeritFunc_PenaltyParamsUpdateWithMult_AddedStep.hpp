@@ -20,7 +20,7 @@
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Updates a set of penalty parameters for a merit function as:
@@ -87,6 +87,6 @@ private:
 	
 };	// end class MeritFunc_PenaltyParamsUpdateWithMult_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_PENALTY_PARAMS_UPDATE_WITH_MULT_ADDED_STEP_H

@@ -16,14 +16,14 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Base class for evaluating a new point for the "Tailored Approach".
@@ -148,6 +148,6 @@ private:
 
 };	// end class EvalNewPointTailoredApproach_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H

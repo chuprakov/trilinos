@@ -17,13 +17,13 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckSkipBFGSUpdateStd_Step::CheckSkipBFGSUpdateStd_Step(
 	value_type	skip_bfgs_prop_const
@@ -36,8 +36,8 @@ bool CheckSkipBFGSUpdateStd_Step::do_step(
 	, poss_type assoc_step_poss
 	)
 {
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -134,4 +134,4 @@ void CheckSkipBFGSUpdateStd_Step::print_step( const Algorithm& algo
 		<< L << "end\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

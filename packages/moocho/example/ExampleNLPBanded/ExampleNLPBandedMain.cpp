@@ -16,15 +16,15 @@
 #include <iostream>
 
 #include "ExampleNLPBanded.hpp"
-#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.hpp"
+#include "MoochoPack/configurations/MoochoSolver.hpp"
 #include "CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )
 {
 	namespace mmp   = MemMngPack;
-	namespace rsqp  = ReducedSpaceSQPPack;
+	namespace rsqp  = MoochoPack;
 	namespace nlpip = NLPInterfacePack;
-	using rsqp::rSQPppSolver;
+	using rsqp::MoochoSolver;
 	using nlpip::NLP;
 	using nlpip::ExampleNLPBanded;
 	typedef nlpip::size_type  size_type;
@@ -106,11 +106,11 @@ int main( int argc, char* argv[] )
 				,sym_basis,f_offset,co,ignore_constraints
 				);
 
-		rSQPppSolver  solver;
+		MoochoSolver  solver;
 
 		solver.set_nlp( mmp::rcp(&nlp,false) );
 
-		const rSQPppSolver::ESolutionStatus
+		const MoochoSolver::ESolutionStatus
 			solution_status = solver.solve_nlp();
 		
 		return solution_status;
@@ -123,5 +123,5 @@ int main( int argc, char* argv[] )
 		std::cerr << "\nCaught an unknown exception\n";
 	}
 
-	return rSQPppSolver::SOLVE_RETURN_EXCEPTION;
+	return MoochoSolver::SOLVE_RETURN_EXCEPTION;
 }

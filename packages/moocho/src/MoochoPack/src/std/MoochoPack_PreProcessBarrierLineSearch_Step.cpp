@@ -24,9 +24,9 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
-#include "ReducedSpaceSQPPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
@@ -34,7 +34,7 @@
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
   MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp,
@@ -65,8 +65,8 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 	using AbstractLinAlgPack::fraction_to_zero_boundary;
 	using LinAlgOpPack::Vp_StV;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 	NLP                 &nlp    = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -94,7 +94,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 					out << "\nBarrier Parameter changed - resetting the filter ...\n";
 					}
 				// reset the filter
-				ReducedSpaceSQPPack::Filter_T &filter_k = filter_(s).set_k(0);
+				MoochoPack::Filter_T &filter_k = filter_(s).set_k(0);
 				filter_k.clear();
 				}
 			}
@@ -205,8 +205,8 @@ void PreProcessBarrierLineSearch_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	//const rSQPAlgo   &algo = rsqp_algo(_algo);
-	//const rSQPState  &s    = algo.rsqp_state();
+	//const NLPAlgo   &algo = rsqp_algo(_algo);
+	//const NLPAlgoState  &s    = algo.rsqp_state();
 	out << L << "*** calculate alpha max by the fraction to boundary rule\n"
 		<< L << "ToDo: Complete documentation\n";
 	}
@@ -252,4 +252,4 @@ void PreProcessBarrierLineSearch_StepSetOptions::set_option(
 		}
 	}
 
-} // end namespace ReducedSpaceSQPPack 
+} // end namespace MoochoPack 

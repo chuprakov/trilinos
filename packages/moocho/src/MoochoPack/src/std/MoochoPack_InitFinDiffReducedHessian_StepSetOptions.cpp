@@ -40,7 +40,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 InitFinDiffReducedHessian_StepSetOptions::InitFinDiffReducedHessian_StepSetOptions(
 			  InitFinDiffReducedHessian_Step* target
@@ -84,4 +84,4 @@ void InitFinDiffReducedHessian_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

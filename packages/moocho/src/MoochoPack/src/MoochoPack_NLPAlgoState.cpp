@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// rSQPState.cpp
+// NLPAlgoState.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
@@ -26,72 +26,72 @@
 #include "IterationPack/src/cast_iq.hpp"
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 
-// rSQPState iteration quantities names
+// NLPAlgoState iteration quantities names
 
 // Iteration Info
-const std::string ReducedSpaceSQPPack::num_basis_name		= "num_basis";
+const std::string MoochoPack::num_basis_name		= "num_basis";
 // NLP Problem Info 
-const std::string ReducedSpaceSQPPack::x_name				= "x";
-const std::string ReducedSpaceSQPPack::f_name				= "f";
-const std::string ReducedSpaceSQPPack::Gf_name				= "Gf";
-const std::string ReducedSpaceSQPPack::HL_name				= "HL";
-const std::string ReducedSpaceSQPPack::c_name				= "c";
-const std::string ReducedSpaceSQPPack::h_name				= "h";
-const std::string ReducedSpaceSQPPack::Gc_name				= "Gc";
-const std::string ReducedSpaceSQPPack::Gh_name				= "Gh";
+const std::string MoochoPack::x_name				= "x";
+const std::string MoochoPack::f_name				= "f";
+const std::string MoochoPack::Gf_name				= "Gf";
+const std::string MoochoPack::HL_name				= "HL";
+const std::string MoochoPack::c_name				= "c";
+const std::string MoochoPack::h_name				= "h";
+const std::string MoochoPack::Gc_name				= "Gc";
+const std::string MoochoPack::Gh_name				= "Gh";
 // Constraint Gradient Null Space / Range Space Decomposition Info
-const std::string ReducedSpaceSQPPack::Y_name				= "Y";
-const std::string ReducedSpaceSQPPack::Z_name				= "Z";
-const std::string ReducedSpaceSQPPack::R_name				= "R";
-const std::string ReducedSpaceSQPPack::Uy_name				= "Uy";
-const std::string ReducedSpaceSQPPack::Uz_name				= "Uz";
-const std::string ReducedSpaceSQPPack::Vy_name				= "Vy";
-const std::string ReducedSpaceSQPPack::Vz_name				= "Vz";
+const std::string MoochoPack::Y_name				= "Y";
+const std::string MoochoPack::Z_name				= "Z";
+const std::string MoochoPack::R_name				= "R";
+const std::string MoochoPack::Uy_name				= "Uy";
+const std::string MoochoPack::Uz_name				= "Uz";
+const std::string MoochoPack::Vy_name				= "Vy";
+const std::string MoochoPack::Vz_name				= "Vz";
 // Search Direction Info
-const std::string ReducedSpaceSQPPack::py_name				= "py";
-const std::string ReducedSpaceSQPPack::Ypy_name				= "Ypy";
-const std::string ReducedSpaceSQPPack::pz_name				= "pz";
-const std::string ReducedSpaceSQPPack::Zpz_name				= "Zpz";
-const std::string ReducedSpaceSQPPack::d_name				= "d";
+const std::string MoochoPack::py_name				= "py";
+const std::string MoochoPack::Ypy_name				= "Ypy";
+const std::string MoochoPack::pz_name				= "pz";
+const std::string MoochoPack::Zpz_name				= "Zpz";
+const std::string MoochoPack::d_name				= "d";
 // Reduced QP Subproblem Info
-const std::string ReducedSpaceSQPPack::rGf_name				= "rGf";
-const std::string ReducedSpaceSQPPack::rHL_name				= "rHL";
-const std::string ReducedSpaceSQPPack::w_name				= "w";
-const std::string ReducedSpaceSQPPack::zeta_name			= "zeta";
-const std::string ReducedSpaceSQPPack::qp_grad_name			= "qp_grad";
-const std::string ReducedSpaceSQPPack::eta_name				= "eta";
+const std::string MoochoPack::rGf_name				= "rGf";
+const std::string MoochoPack::rHL_name				= "rHL";
+const std::string MoochoPack::w_name				= "w";
+const std::string MoochoPack::zeta_name			= "zeta";
+const std::string MoochoPack::qp_grad_name			= "qp_grad";
+const std::string MoochoPack::eta_name				= "eta";
 // Global Convergence Info
-const std::string ReducedSpaceSQPPack::alpha_name			= "alpha";
-const std::string ReducedSpaceSQPPack::merit_func_nlp_name	= "merit_func_nlp";
-const std::string ReducedSpaceSQPPack::mu_name				= "mu";
-const std::string ReducedSpaceSQPPack::phi_name				= "phi";
+const std::string MoochoPack::alpha_name			= "alpha";
+const std::string MoochoPack::merit_func_nlp_name	= "merit_func_nlp";
+const std::string MoochoPack::mu_name				= "mu";
+const std::string MoochoPack::phi_name				= "phi";
 // KKT Info
-const std::string ReducedSpaceSQPPack::opt_kkt_err_name		= "opt_kkt_err";
-const std::string ReducedSpaceSQPPack::feas_kkt_err_name	= "feas_kkt_err";
-const std::string ReducedSpaceSQPPack::comp_kkt_err_name	= "comp_kkt_err";
-const std::string ReducedSpaceSQPPack::GL_name				= "GL";
-const std::string ReducedSpaceSQPPack::rGL_name				= "rGL";
-const std::string ReducedSpaceSQPPack::lambda_name			= "lambda";
-const std::string ReducedSpaceSQPPack::lambdaI_name			= "lambdaI";
-const std::string ReducedSpaceSQPPack::nu_name				= "nu";
+const std::string MoochoPack::opt_kkt_err_name		= "opt_kkt_err";
+const std::string MoochoPack::feas_kkt_err_name	= "feas_kkt_err";
+const std::string MoochoPack::comp_kkt_err_name	= "comp_kkt_err";
+const std::string MoochoPack::GL_name				= "GL";
+const std::string MoochoPack::rGL_name				= "rGL";
+const std::string MoochoPack::lambda_name			= "lambda";
+const std::string MoochoPack::lambdaI_name			= "lambdaI";
+const std::string MoochoPack::nu_name				= "nu";
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Constructors / initializers
 
-void rSQPState::set_space_range (const vec_space_ptr_t& space_range )
+void NLPAlgoState::set_space_range (const vec_space_ptr_t& space_range )
 {
 	space_range_ = space_range;
 	update_vector_factories(VST_SPACE_RANGE,space_range);
 }
 
-void rSQPState::set_space_null (const vec_space_ptr_t& space_null )
+void NLPAlgoState::set_space_null (const vec_space_ptr_t& space_null )
 {
 	space_null_ = space_null;
 	update_vector_factories(VST_SPACE_NULL,space_null);
 }
 
-rSQPState::rSQPState(
+NLPAlgoState::NLPAlgoState(
 	const decomp_sys_ptr_t& decomp_sys
 	,const vec_space_ptr_t& space_x
 	,const vec_space_ptr_t& space_c
@@ -109,67 +109,67 @@ rSQPState::rSQPState(
 
 // Iteration Info
 
-STATE_INDEX_IQ_DEF(  rSQPState,                  num_basis, num_basis_name          )
+STATE_INDEX_IQ_DEF(  NLPAlgoState,                  num_basis, num_basis_name          )
 
 // NLP Problem Info
 
-STATE_VECTOR_IQ_DEF( rSQPState,                  x,         x_name,  get_space_x(), VST_SPACE_X  )
-STATE_SCALAR_IQ_DEF( rSQPState,                  f,         f_name                               )
-STATE_IQ_DEF(        rSQPState, MatrixSymOp, HL,        HL_name                              )
-STATE_VECTOR_IQ_DEF( rSQPState,                  Gf,        Gf_name, get_space_x(), VST_SPACE_X  )
-STATE_VECTOR_IQ_DEF( rSQPState,                  c,         c_name,  get_space_c(), VST_SPACE_C  )
-STATE_VECTOR_IQ_DEF( rSQPState,                  h,         h_name,  get_space_h(), VST_SPACE_H  )
-STATE_IQ_DEF(        rSQPState, MatrixOp,    Gc,        Gc_name                              )
-STATE_IQ_DEF(        rSQPState, MatrixOp,    Gh,        Gh_name                              )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  x,         x_name,  get_space_x(), VST_SPACE_X  )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  f,         f_name                               )
+STATE_IQ_DEF(        NLPAlgoState, MatrixSymOp, HL,        HL_name                              )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  Gf,        Gf_name, get_space_x(), VST_SPACE_X  )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  c,         c_name,  get_space_c(), VST_SPACE_C  )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  h,         h_name,  get_space_h(), VST_SPACE_H  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,    Gc,        Gc_name                              )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,    Gh,        Gh_name                              )
 
 // Constraint Gradient Null Space / Range Space Decomposition Info
 
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Y,  Y_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Z,  Z_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixOpNonsing, R,  R_name                  )
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Uy, Uy_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Uz, Uz_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Vy, Vy_name                 )
-STATE_IQ_DEF(        rSQPState, MatrixOp,            Vz, Vz_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Y,  Y_name                  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Z,  Z_name                  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOpNonsing, R,  R_name                  )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Uy, Uy_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Uz, Uz_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Vy, Vy_name                 )
+STATE_IQ_DEF(        NLPAlgoState, MatrixOp,            Vz, Vz_name                 )
 
 // Search Direction Info
 
-STATE_VECTOR_IQ_DEF( rSQPState,                  py,  py_name,   get_space_range(), VST_SPACE_RANGE )
-STATE_VECTOR_IQ_DEF( rSQPState,                  Ypy, Ypy_name,  get_space_x(),     VST_SPACE_X     )
-STATE_VECTOR_IQ_DEF( rSQPState,                  pz,  pz_name,   get_space_null(),  VST_SPACE_NULL  )
-STATE_VECTOR_IQ_DEF( rSQPState,                  Zpz, Zpz_name,  get_space_x(),     VST_SPACE_X     )
-STATE_VECTOR_IQ_DEF( rSQPState,                  d,   d_name,    get_space_x(),     VST_SPACE_X     )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  py,  py_name,   get_space_range(), VST_SPACE_RANGE )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  Ypy, Ypy_name,  get_space_x(),     VST_SPACE_X     )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  pz,  pz_name,   get_space_null(),  VST_SPACE_NULL  )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  Zpz, Zpz_name,  get_space_x(),     VST_SPACE_X     )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  d,   d_name,    get_space_x(),     VST_SPACE_X     )
 
 // QP Subproblem Info
 
-STATE_VECTOR_IQ_DEF( rSQPState,                  rGf,     rGf_name,      get_space_null(), VST_SPACE_NULL )
-STATE_IQ_DEF(        rSQPState, MatrixSymOp, rHL,     rHL_name                                        )
-STATE_VECTOR_IQ_DEF( rSQPState,                  w,       w_name,        get_space_null(), VST_SPACE_NULL ) 
-STATE_SCALAR_IQ_DEF( rSQPState,                  zeta,    zeta_name                                       )
-STATE_VECTOR_IQ_DEF( rSQPState,                  qp_grad, qp_grad_name,  get_space_null(), VST_SPACE_NULL )
-STATE_SCALAR_IQ_DEF( rSQPState,                  eta,     eta_name                                        )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  rGf,     rGf_name,      get_space_null(), VST_SPACE_NULL )
+STATE_IQ_DEF(        NLPAlgoState, MatrixSymOp, rHL,     rHL_name                                        )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  w,       w_name,        get_space_null(), VST_SPACE_NULL ) 
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  zeta,    zeta_name                                       )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  qp_grad, qp_grad_name,  get_space_null(), VST_SPACE_NULL )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  eta,     eta_name                                        )
 
 // Global Convergence Info
 
-STATE_SCALAR_IQ_DEF( rSQPState,                  alpha,          alpha_name          )
-STATE_IQ_DEF(        rSQPState, MeritFuncNLP,    merit_func_nlp, merit_func_nlp_name )
-STATE_SCALAR_IQ_DEF( rSQPState,                  mu,             mu_name             )
-STATE_SCALAR_IQ_DEF( rSQPState,                  phi,            phi_name            )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  alpha,          alpha_name          )
+STATE_IQ_DEF(        NLPAlgoState, MeritFuncNLP,    merit_func_nlp, merit_func_nlp_name )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  mu,             mu_name             )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  phi,            phi_name            )
 
 // KKT Info
 
-STATE_SCALAR_IQ_DEF( rSQPState,                  opt_kkt_err,    opt_kkt_err_name                                    )
-STATE_SCALAR_IQ_DEF( rSQPState,                  feas_kkt_err,   feas_kkt_err_name                                   )
-STATE_SCALAR_IQ_DEF( rSQPState,                  comp_kkt_err,   comp_kkt_err_name                                   )
-STATE_VECTOR_IQ_DEF( rSQPState,                  GL,             GL_name,           get_space_x(),    VST_SPACE_X    )
-STATE_VECTOR_IQ_DEF( rSQPState,                  rGL,            rGL_name,          get_space_null(), VST_SPACE_NULL )
-STATE_VECTOR_IQ_DEF( rSQPState,                  lambda,         lambda_name,       get_space_c(),    VST_SPACE_C    )
-STATE_VECTOR_IQ_DEF( rSQPState,                  lambdaI,        lambdaI_name,      get_space_h(),    VST_SPACE_H    )
-STATE_VECTOR_IQ_DEF( rSQPState,                  nu,             nu_name,           get_space_x(),    VST_SPACE_X    )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  opt_kkt_err,    opt_kkt_err_name                                    )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  feas_kkt_err,   feas_kkt_err_name                                   )
+STATE_SCALAR_IQ_DEF( NLPAlgoState,                  comp_kkt_err,   comp_kkt_err_name                                   )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  GL,             GL_name,           get_space_x(),    VST_SPACE_X    )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  rGL,            rGL_name,          get_space_null(), VST_SPACE_NULL )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  lambda,         lambda_name,       get_space_c(),    VST_SPACE_C    )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  lambdaI,        lambdaI_name,      get_space_h(),    VST_SPACE_H    )
+STATE_VECTOR_IQ_DEF( NLPAlgoState,                  nu,             nu_name,           get_space_x(),    VST_SPACE_X    )
 
 // protected
 
-void rSQPState::update_iq_id(
+void NLPAlgoState::update_iq_id(
 	const std::string&                iq_name
 	,iq_id_encap*                     iq_id
 	) const
@@ -179,12 +179,12 @@ void rSQPState::update_iq_id(
 		iq_id->iq_id = this->get_iter_quant_id(iq_name);
 	THROW_EXCEPTION(
 		iq_id->iq_id == DOES_NOT_EXIST, DoesNotExist
-		,"rSQPState::update_iq_id(iq_name,iq_id) : Error, "
+		,"NLPAlgoState::update_iq_id(iq_name,iq_id) : Error, "
 		" The iteration quantity with name \'" << iq_name <<
 		"\' does not exist!" );
 }
 
-void rSQPState::update_index_type_iq_id(
+void NLPAlgoState::update_index_type_iq_id(
 	const std::string&                iq_name
 	,iq_id_encap*                     iq_id
 	)
@@ -214,7 +214,7 @@ void rSQPState::update_index_type_iq_id(
 	}
 }
 
-void rSQPState::update_value_type_iq_id(
+void NLPAlgoState::update_value_type_iq_id(
 	const std::string&                iq_name
 	,iq_id_encap*                     iq_id
 	)
@@ -244,7 +244,7 @@ void rSQPState::update_value_type_iq_id(
 	}
 }
 
-void rSQPState::update_vector_iq_id(
+void NLPAlgoState::update_vector_iq_id(
 	const std::string&                iq_name
 	,const VectorSpace::space_ptr_t&  vec_space
 	,EVecSpaceType                    vec_space_type
@@ -277,7 +277,7 @@ void rSQPState::update_vector_iq_id(
 
 // private
 
-void rSQPState::update_vector_factories(
+void NLPAlgoState::update_vector_factories(
 	EVecSpaceType             vec_space_type
 	,const vec_space_ptr_t&   vec_space
 	)
@@ -288,4 +288,4 @@ void rSQPState::update_vector_factories(
 		dyn_cast<IterQuantityAccessContiguous<VectorMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

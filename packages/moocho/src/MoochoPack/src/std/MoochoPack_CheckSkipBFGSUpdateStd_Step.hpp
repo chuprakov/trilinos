@@ -16,11 +16,11 @@
 #ifndef CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Checks if a BFGS update should be preformed.
@@ -58,6 +58,6 @@ private:
 	
 };	// end class ReducedHessianBFGS_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CHECK_SKIP_BFGS_UPDATE_STD_STEP_H

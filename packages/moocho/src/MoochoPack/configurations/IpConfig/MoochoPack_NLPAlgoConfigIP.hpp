@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// Algo_ConfigIP.hpp
+// NLPAlgoConfigIP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,35 +16,35 @@
 #ifndef ALGO_CONFIG_IP_H
 #define ALGO_CONFIG_IP_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.hpp"
+#include "MoochoPack/src/NLPAlgoConfig.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/configurations/Shared/DecompositionSystemStateStepBuilderStd.hpp"
 #include "OptionsFromStream.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** This is a do all configuration class for <tt>rSQPAlgo</tt>.
+/** This is a do all configuration class for <tt>NLPAlgo</tt>.
  *
  * Options specific for to this configuration class and the classes that
  * it works with that can be set through <tt>this->set_options()</tt>, see the file
- * <tt>\ref Algo_ConfigIP_opts "rSQPpp.opt.Algo_ConfigIP"</tt>.
+ * <tt>\ref Algo_ConfigIP_opts "Moocho.opt.NLPAlgoConfigIP"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
  * can be left out if the macro MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
  * 
  * ToDo: Finish documentation!
  */
-class Algo_ConfigIP : public rSQPAlgo_Config {
+class NLPAlgoConfigIP : public NLPAlgoConfig {
 public:
 
 	///
-	Algo_ConfigIP();
+	NLPAlgoConfigIP();
 
 	///
-	~Algo_ConfigIP();
+	~NLPAlgoConfigIP();
 
-	/** Overridden from rSQPAlgo_Config */
+	/** Overridden from NLPAlgoConfig */
 	//@{
 
 	///
@@ -62,9 +62,9 @@ public:
 	///
 	const options_ptr_t& get_options() const;
 	///
-	void config_algo_cntr(rSQPAlgoContainer* algo_cntr, std::ostream* trase_out);
+	void config_algo_cntr(NLPAlgoContainer* algo_cntr, std::ostream* trase_out);
 	///
-	void init_algo(rSQPAlgoInterface* algo);
+	void init_algo(NLPAlgoInterface* algo);
 
 	//@}
 
@@ -152,17 +152,17 @@ private:
 		, SOptionValues *current_option_values
 		, std::ostream* trase_out );
 
-};	// end class Algo_ConfigIP
+};	// end class NLPAlgoConfigIP
 
-/** \defgroup Algo_ConfigIP_opts Options for Algo_ConfigIP.
+/** \defgroup Algo_ConfigIP_opts Options for NLPAlgoConfigIP.
  *
- * The following is the contents of the file <tt>rSQPpp.opt.Algo_ConfigIP</tt>
- * which are options specific to the class <tt>ReducedSpaceSQPPack::Algo_ConfigIP</tt>
+ * The following is the contents of the file <tt>Moocho.opt.NLPAlgoConfigIP</tt>
+ * which are options specific to the class <tt>MoochoPack::NLPAlgoConfigIP</tt>
  * and the class objects that it configures.
  *
- * \verbinclude rSQPpp.opt.Algo_ConfigIP
+ * \verbinclude Moocho.opt.NLPAlgoConfigIP
  */
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// ALGO_CONFIG_IP_H

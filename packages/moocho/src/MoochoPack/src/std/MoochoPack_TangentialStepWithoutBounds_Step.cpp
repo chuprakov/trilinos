@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithoutBounds_Step.cpp
+// TangentialStepWithoutBounds_Step.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,10 +15,10 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/TangentialStepWithoutBounds_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
@@ -35,9 +35,9 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-bool NullSpaceStepWithoutBounds_Step::do_step(
+bool TangentialStepWithoutBounds_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
@@ -51,8 +51,8 @@ bool NullSpaceStepWithoutBounds_Step::do_step(
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -66,7 +66,7 @@ bool NullSpaceStepWithoutBounds_Step::do_step(
 	if( algo.nlp().num_bounded_x() )
 		THROW_EXCEPTION(
 			true, std::logic_error
-			,"NullSpaceStepWithoutBounds_Step::do_step(...): Error, "
+			,"TangentialStepWithoutBounds_Step::do_step(...): Error, "
 			"can't solve for pz for NLP with undecomposed constraints or "
 			"has bounds on the variables");
 
@@ -114,7 +114,7 @@ bool NullSpaceStepWithoutBounds_Step::do_step(
 	return true;
 }
 
-void NullSpaceStepWithoutBounds_Step::print_step( const Algorithm& algo
+void TangentialStepWithoutBounds_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
@@ -128,4 +128,4 @@ void NullSpaceStepWithoutBounds_Step::print_step( const Algorithm& algo
 		<< L << "nu_k = 0\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

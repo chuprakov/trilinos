@@ -16,12 +16,12 @@
 #ifndef LINE_SEARCH_DIRECT_STEP_H
 #define LINE_SEARCH_DIRECT_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Delegates the line search to a <tt>DirectLineSearch_Strategy</tt> object.
@@ -52,6 +52,6 @@ public:
 
 };	// end class LineSearchDirect_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_DIRECT_STEP_H

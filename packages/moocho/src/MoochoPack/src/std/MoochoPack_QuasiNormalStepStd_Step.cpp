@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// RangeSpaceStepStd_Step.cpp
+// QuasiNormalStepStd_Step.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,17 +15,17 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/RangeSpaceStepStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/QuasiNormalStepStd_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-bool RangeSpaceStepStd_Step::do_step(
+bool QuasiNormalStepStd_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
@@ -36,8 +36,8 @@ bool RangeSpaceStepStd_Step::do_step(
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-	rSQPAlgo         &algo        = rsqp_algo(_algo);
-	rSQPState        &s           = algo.rsqp_state();
+	NLPAlgo         &algo        = rsqp_algo(_algo);
+	NLPAlgoState        &s           = algo.rsqp_state();
 	const Range1D    equ_decomp   = s.equ_decomp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -80,7 +80,7 @@ bool RangeSpaceStepStd_Step::do_step(
 	return true;
 }
 
-void RangeSpaceStepStd_Step::print_step(
+void QuasiNormalStepStd_Step::print_step(
 	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
 	) const
@@ -91,4 +91,4 @@ void RangeSpaceStepStd_Step::print_step(
 		<< L << "Ypy_k = Y_k * py_k\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

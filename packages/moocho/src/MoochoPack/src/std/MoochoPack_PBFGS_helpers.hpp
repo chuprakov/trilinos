@@ -16,10 +16,10 @@
 #ifndef PBFGS_HELPERS
 #define PBFGS_HELPERS
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "ReducedSpaceSQPPack/src/std/ActSetStats.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack/src/std/ActSetStats.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 namespace PBFGSPack {
 
 /** @name Helper functions for PBFGS updating.
@@ -199,6 +199,6 @@ void choose_fixed_free(
 //@}
 
 } // end namespace PBFGSPack
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // PBFGS_HELPERS

@@ -44,7 +44,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions(
 			MeritFunc_ModifiedL1LargerSteps_AddedStep* target )
@@ -83,4 +83,4 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

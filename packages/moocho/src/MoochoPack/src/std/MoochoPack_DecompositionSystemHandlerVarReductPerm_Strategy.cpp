@@ -18,9 +18,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPerm.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
@@ -36,7 +36,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Constructors / initializers
 
@@ -46,8 +46,8 @@ DecompositionSystemHandlerVarReductPerm_Strategy::DecompositionSystemHandlerVarR
 // Overridden from DecompositionSystemHandler_Strategy
 
 bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
-	rSQPAlgo                                &algo
-	,rSQPState                              &s
+	NLPAlgo                                &algo
+	,NLPAlgoState                              &s
 	,NLPFirstOrder                      &nlp
 	,EDecompSysTesting                      decomp_sys_testing
 	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
@@ -350,8 +350,8 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 }
 
 void DecompositionSystemHandlerVarReductPerm_Strategy::print_update_decomposition(
-	const rSQPAlgo                          &algo
-	,const rSQPState                        &s
+	const NLPAlgo                          &algo
+	,const NLPAlgoState                        &s
 	,std::ostream                           &out
 	,const std::string                      &L
 	) const
@@ -415,6 +415,6 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::select_new_decomposition(
 	select_new_decomposition_ = select_new_decomposition;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS

@@ -17,9 +17,9 @@
 #include <ostream>
 #include <iostream>
 
-#include "ReducedSpaceSQPPack/src/std/CalcD_vStep_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CalcD_vStep_Step.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 //#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
@@ -31,7 +31,7 @@
 #include "dynamic_cast_verbose.hpp"
 
 
-bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
+bool MoochoPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 	{
 	using DynamicCastHelperPack::dyn_cast;
@@ -40,8 +40,8 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	using AbstractLinAlgPack::lowerbound_multipliers_step;
 	using AbstractLinAlgPack::upperbound_multipliers_step;
 
-	rSQPAlgo &algo = rsqp_algo(_algo);
-	ipState	 &s    = dyn_cast<ipState>(_algo.state());
+	NLPAlgo &algo = rsqp_algo(_algo);
+	IpState	 &s    = dyn_cast<IpState>(_algo.state());
 	NLP      &nlp  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -106,7 +106,7 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	return true;
 	}
 
-void ReducedSpaceSQPPack::CalcD_vStep_Step::print_step( const Algorithm& algo
+void MoochoPack::CalcD_vStep_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

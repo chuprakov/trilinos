@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterface.cpp
+// NLPSolverClientInterface.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterface.hpp"
+#include "MoochoPack/src/NLPSolverClientInterface.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
 
-ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
+MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	int                      max_iter
 	,double                  max_run_time
 	,value_type              opt_tol

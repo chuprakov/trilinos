@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// RangeSpaceStepStd_Step.hpp
+// QuasiNormalStepStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,16 +16,16 @@
 #ifndef RANGE_SPACE_STEP_STD_STEP_H
 #define RANGE_SPACE_STEP_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculates the range space step by, solving for <tt>py = -inv(R)*c(equ_decomp)</tt>,
  * then setting <tt>Ypy = Y * py</tt>.
  */
-class RangeSpaceStepStd_Step
+class QuasiNormalStepStd_Step
 	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
@@ -40,8 +40,8 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 
-};	// end class RangeSpaceStepStd_Step
+};	// end class QuasiNormalStepStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// RANGE_SPACE_STEP_STD_STEP_H

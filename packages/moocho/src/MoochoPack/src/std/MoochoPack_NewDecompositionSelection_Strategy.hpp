@@ -16,10 +16,10 @@
 #ifndef NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 #define NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/Algorithm.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Abstract interface for an object that directs the selection of a new
@@ -33,19 +33,19 @@ public:
 
 	///
 	virtual bool new_decomposition(
-		rSQPAlgo& algo, Algorithm::poss_type step_poss
+		NLPAlgo& algo, Algorithm::poss_type step_poss
 		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 		) = 0;
 
 	///
 	virtual void print_new_decomposition(
-		const rSQPAlgo& algo, Algorithm::poss_type step_poss
+		const NLPAlgo& algo, Algorithm::poss_type step_poss
 		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 		,std::ostream& out, const std::string& leading_str
 		) const = 0;
 
 };	// end class NewDecompositionSelection_Strategy
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// NEW_DECOMPOSITION_SELECTION_STRATEGY_H

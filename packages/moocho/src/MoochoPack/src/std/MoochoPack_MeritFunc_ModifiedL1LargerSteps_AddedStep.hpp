@@ -21,7 +21,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** This function increases the penalty parameters of the modifed L1
@@ -84,6 +84,6 @@ private:
 	
 };	// end class MeritFunc_ModifiedL1LargerSteps_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H

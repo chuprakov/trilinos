@@ -16,12 +16,12 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "CheckConvergence_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Check for convergence.
@@ -56,6 +56,6 @@ private:
 
 };	// end class CheckConvergenceStd_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CHECK_CONVERGENCE_STD_ADDEDSTEP_H

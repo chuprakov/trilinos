@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordinate_Step(
 	const deriv_tester_ptr_t& 	  deriv_tester
@@ -105,4 +105,4 @@ void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy_Vy(
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

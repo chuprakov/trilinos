@@ -41,7 +41,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::MeritFunc_PenaltyParamUpdate_AddedStepSetOptions(
 			MeritFunc_PenaltyParamUpdate_AddedStep* target )
@@ -76,4 +76,4 @@ void MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

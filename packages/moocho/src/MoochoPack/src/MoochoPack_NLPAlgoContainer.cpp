@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoContainer.cpp
+// NLPAlgoContainer.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,15 +19,15 @@
 
 #include <iostream>	// used for debugging the Release version.
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoInterface.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack/src/NLPAlgoInterface.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "ThrowException.hpp"
 
 namespace {
 
-void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterfacePack::NLP* nlp )
+void report_final_failure( const MoochoPack::NLPAlgoState& s, NLPInterfacePack::NLP* nlp )
 {
 	const AbstractLinAlgPack::size_type
 		m  = nlp->m(),
@@ -48,42 +48,42 @@ void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterface
 
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Overridden from rSQPAlgoClient interface
 
-void rSQPAlgoContainer::set_config(const config_ptr_t& config)
+void NLPAlgoContainer::set_config(const config_ptr_t& config)
 {
 	algo_ = algo_ptr_t(NULL); // Remove our reference to the current (configured?) algorithm.
 	config_ = config;
 }
 
-rSQPAlgoContainer::config_ptr_t&
-rSQPAlgoContainer::get_config()
+NLPAlgoContainer::config_ptr_t&
+NLPAlgoContainer::get_config()
 {	
 	return config_;
 }
 
-const rSQPAlgoContainer::config_ptr_t&
-rSQPAlgoContainer::get_config() const
+const NLPAlgoContainer::config_ptr_t&
+NLPAlgoContainer::get_config() const
 {	
 	return config_;
 }
 
-rSQPAlgo_Config&
-rSQPAlgoContainer::config()
+NLPAlgoConfig&
+NLPAlgoContainer::config()
 {	
 	return *config_;
 }
 
-const rSQPAlgo_Config&
-rSQPAlgoContainer::config() const
+const NLPAlgoConfig&
+NLPAlgoContainer::config() const
 {	
 	return *config_;
 }
 
-rSQPSolverClientInterface::EFindMinReturn
-rSQPAlgoContainer::find_min()
+NLPSolverClientInterface::EFindMinReturn
+NLPAlgoContainer::find_min()
 {
 	config().init_algo(&algo());
 	EFindMinReturn solve_return;
@@ -100,44 +100,44 @@ rSQPAlgoContainer::find_min()
 	return solve_return;
 }
 
-void rSQPAlgoContainer::configure_algorithm(std::ostream* trase_out)
+void NLPAlgoContainer::configure_algorithm(std::ostream* trase_out)
 {
 	assert_valid_setup();
 	if(!get_algo().get())
 		config().config_algo_cntr(this,trase_out);
 }
 
-void rSQPAlgoContainer::print_algorithm(std::ostream& out) const
+void NLPAlgoContainer::print_algorithm(std::ostream& out) const
 {
 	algo().interface_print_algorithm(out);
 }
 
-void rSQPAlgoContainer::set_algo_timing( bool algo_timing )
+void NLPAlgoContainer::set_algo_timing( bool algo_timing )
 {
 	algo().interface_set_algo_timing(algo_timing);
 }
 
-bool rSQPAlgoContainer::algo_timing() const
+bool NLPAlgoContainer::algo_timing() const
 {
 	return algo().interface_algo_timing();
 }
 
-void rSQPAlgoContainer::print_algorithm_times(
+void NLPAlgoContainer::print_algorithm_times(
 	std::ostream& out ) const
 {
 	algo().interface_print_algorithm_times(out);
 }
 
-void rSQPAlgoContainer::assert_valid_setup() const {
+void NLPAlgoContainer::assert_valid_setup() const {
 	THROW_EXCEPTION(
-		!get_nlp().get(), rSQPSolverClientInterface::InvalidSetup
-		,"rSQPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
+		!get_nlp().get(), NLPSolverClientInterface::InvalidSetup
+		,"NLPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
 	THROW_EXCEPTION(
-		!get_track().get(), rSQPSolverClientInterface::InvalidSetup
-		,"rSQPAlgoContainer::assert_valid_setup() : The rSQPTrack object has not been set" );
+		!get_track().get(), NLPSolverClientInterface::InvalidSetup
+		,"NLPAlgoContainer::assert_valid_setup() : The rSQPTrack object has not been set" );
 	THROW_EXCEPTION(
-		!get_config().get(), rSQPSolverClientInterface::InvalidSetup
-		,"rSQPAlgoContainer::assert_valid_setup() : The rSQPAlgo_Config object has not been set" );
+		!get_config().get(), NLPSolverClientInterface::InvalidSetup
+		,"NLPAlgoContainer::assert_valid_setup() : The NLPAlgoConfig object has not been set" );
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -243,7 +243,7 @@ use constant V_OPT_VALUE_ABBR  => "v_opt_value_abbr";
 #
 #begin_vary_options
 #	begin_options_group:
-#	rSQPAlgo_ConfigMamaJama
+#	NLPAlgoConfigMamaJama
 #		begin_option:
 #		qp_solver
 #			QPKWIK
@@ -274,7 +274,7 @@ use constant V_OPT_VALUE_ABBR  => "v_opt_value_abbr";
 #end_vary_options
 #
 #		v_opt_grp					v_first_opt_in_grp
-#	0	rSQPAlgo_ConfigMamaJama		0
+#	0	NLPAlgoConfigMamaJama		0
 #	1	DirectLineSearchArmQuad		2
 #	2								3
 #
@@ -818,7 +818,7 @@ sub _create_nlp_header {
 #
 # Adds a summary line for a run of rSQP++.
 #
-# This sub reads the file rSQPppStats.out.
+# This sub reads the file MoochoStats.out.
 #
 # Here the runs with the minimum time (min_t), minimum iterations (min_it)
 # and minimum function evaluations (min_fn) are remembered for later
@@ -855,14 +855,14 @@ sub _add_summary_line {
   my $nact      = '-';
   my $nBC       = '-';
   my $nQN       = '-';
-  # Read rSQPppStats.out and fill this stuff in
+  # Read MoochoStats.out and fill this stuff in
   my $stats_fh;
-  ($stats_fh = FileHandle->new("<rSQPppStats.out"));
-	#|| die "Error, the file rSQPppStats.out could not be opened: $!";
+  ($stats_fh = FileHandle->new("<MoochoStats.out"));
+	#|| die "Error, the file MoochoStats.out could not be opened: $!";
 #  if (!$stats_fh)
 #    {
 #	  ($stats_fh = FileHandle->new("</home/cdlaird/research/rsqpdev/rSQPppApplications/CUTErSQPpp/rSQPppStats_FailedCompile.out"))
-#		|| die "Error, rSQPppStats.out & rSQPppStats_FailedCompile.out cannot be opened";
+#		|| die "Error, MoochoStats.out & rSQPppStats_FailedCompile.out cannot be opened";
 #	}
   while(<$stats_fh>) { # This may not read anything if an exception is thrown early!
 	my ($stat, $val) = read_stats_val($_);
@@ -880,7 +880,7 @@ sub _add_summary_line {
 		$status = "max_t";
 	  }
 	  else {
-		die "Error, wrong value of $stat = $val from rSQPppStats.out file";
+		die "Error, wrong value of $stat = $val from MoochoStats.out file";
 	  }
 	}
 	elsif( $stat eq "niter" ) {
@@ -914,7 +914,7 @@ sub _add_summary_line {
 	  $nQN = $val unless $val eq "-";
 	}
 	else {
-	  die "Error, wrong value of $stat = $val from rSQPppStats.out file";
+	  die "Error, wrong value of $stat = $val from MoochoStats.out file";
 	}
   }
   $stats_fh->close();	
@@ -966,7 +966,7 @@ sub _add_summary_line {
 # After all the options for an NLP have been run this sub
 # outputs the best runs.
 #
-# This sub reads the file rSQPppSummary.out.
+# This sub reads the file MoochoSummary.out.
 # Here the runs with the minimum time (min_t), minimum iterations (min_it)
 # and minimum function evaluations (min_fn) are output.
 #
@@ -1282,7 +1282,7 @@ sub print_summary_line {
 }
 
 #
-# Read an option from the rSQPppStats.out file
+# Read an option from the MoochoStats.out file
 #
 sub read_stats_val {
   #

@@ -16,9 +16,9 @@
 #ifndef FEASIBILITY_STEP_STRATEGY_H
 #define FEASIBILITY_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Abstract interface for a strategy object that will compute a step that will
@@ -44,9 +44,9 @@ public:
 	 *
 	 * @param out     [out] Output stream journal data is written to.
 	 * @param olevel  [in] Output level for printing to #out#
-	 * @param algo    [in/out] The rSQPAlgo object.  This object can be queryed for
+	 * @param algo    [in/out] The NLPAlgo object.  This object can be queryed for
 	 *                information.
-	 * @param s       [in/out] rSQPState object.  May be queried or modified if needed.
+	 * @param s       [in/out] NLPAlgoState object.  May be queried or modified if needed.
 	 * @param xo      [in] Base point vector (size n) xo.
 	 * @param c_xo    [in] c(xo).
 	 * @param w       [out] Computed step vector (size n) w.  Must not be NULL.
@@ -55,7 +55,7 @@ public:
 	 * be found and false otherwise.
 	 */
  	virtual bool compute_feasibility_step(
-		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 		,const Vector& xo, const Vector& c_xo, VectorMutable* w
 	  	) = 0;
 
@@ -66,6 +66,6 @@ public:
 
 }; // end class FeasibilityStep_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // FEASIBILITY_STEP_STRATEGY_H

@@ -35,7 +35,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 FeasibilityStepReducedStd_StrategySetOptions::FeasibilityStepReducedStd_StrategySetOptions(
 			  FeasibilityStepReducedStd_Strategy* target
@@ -88,4 +88,4 @@ void FeasibilityStepReducedStd_StrategySetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

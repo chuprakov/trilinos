@@ -15,9 +15,9 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearchFullStep_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/LineSearchFullStep_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -27,9 +27,9 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-ReducedSpaceSQPPack::LineSearchFullStep_Step::LineSearchFullStep_Step(
+MoochoPack::LineSearchFullStep_Step::LineSearchFullStep_Step(
 		const bounds_tester_ptr_t&	bounds_tester
 		)
 	:
@@ -44,8 +44,8 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_VpV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
 	const size_type
@@ -149,4 +149,4 @@ void LineSearchFullStep_Step::print_step( const Algorithm& algo
 		<< L << "if m > 0 then c_kp1 = c(x_kp1)\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

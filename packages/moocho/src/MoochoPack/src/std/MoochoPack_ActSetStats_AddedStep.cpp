@@ -17,15 +17,15 @@
 
 #include "../std/ActSetStats_AddedStep.hpp"
 #include "../std/active_set_change.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 
-bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
+bool MoochoPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -65,7 +65,7 @@ bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	return true;
 }
 
-void ReducedSpaceSQPPack::ActSetStats_AddedStep::print_step( const Algorithm& algo
+void MoochoPack::ActSetStats_AddedStep::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

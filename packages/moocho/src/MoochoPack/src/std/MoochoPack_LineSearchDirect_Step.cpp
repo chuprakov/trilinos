@@ -16,9 +16,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/LineSearchDirect_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 LineSearchDirect_Step::LineSearchDirect_Step(
 	const direct_line_search_ptr_t& direct_line_search
@@ -45,8 +45,8 @@ bool LineSearchDirect_Step::do_step(
 	using AbstractLinAlgPack::Vp_StV;
 	using LinAlgOpPack::V_VpV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -215,4 +215,4 @@ void LineSearchDirect_Step::print_step(
 		<< L << "end\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -16,4 +16,4 @@
 #include "../std/act_set_stats.hpp"
 
 extern const std::string
-	ReducedSpaceSQPPack::act_set_stats_name = "act_set_stats";
+	MoochoPack::act_set_stats_name = "act_set_stats";

@@ -48,7 +48,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 LineSearch2ndOrderCorrect_StepSetOptions::LineSearch2ndOrderCorrect_StepSetOptions(
 			  LineSearch2ndOrderCorrect_Step* target
@@ -117,4 +117,4 @@ void LineSearch2ndOrderCorrect_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

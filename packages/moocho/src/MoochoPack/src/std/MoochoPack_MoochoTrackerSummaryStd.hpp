@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackSummaryStd.hpp
+// MoochoTrackerSummaryStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,18 +16,18 @@
 #ifndef RSQP_TRACK_SUMMARY_STD_H
 #define RSQP_TRACK_SUMMARY_STD_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/qp_solver_stats.hpp"
+#include "MoochoPack/src/std/act_set_stats.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** This class simply outputs the convergence information
   * for each iteration.
   */
-class rSQPTrackSummaryStd
+class MoochoTrackerSummaryStd
 	: public IterationPack::AlgorithmTracker
 {
 public:
@@ -36,7 +36,7 @@ public:
 	enum EOptError { OPT_ERROR_REDUCED_GRADIENT_LAGR, OPT_ERROR_GRADIENT_LAGR };
 
 	/// Construct with an output stream
-	rSQPTrackSummaryStd(
+	MoochoTrackerSummaryStd(
 		const ostream_ptr_t      &o
 		,const ostream_ptr_t     &journal_out
 		,EOptError               opt_error = OPT_ERROR_REDUCED_GRADIENT_LAGR
@@ -68,7 +68,7 @@ public:
 protected:
 
 	/// Print the header to the output
-	void print_header(const rSQPState &s) const;
+	void print_header(const NLPAlgoState &s) const;
 
 	std::ostream& o() const
 	{	return *o_; }
@@ -82,10 +82,10 @@ private:
 	act_set_stats_iq_member		    act_set_stats_;
 
 	// Not defined and not to be called
-	rSQPTrackSummaryStd();
+	MoochoTrackerSummaryStd();
 
-};	// end class rSQPTrackSummaryStd
+};	// end class MoochoTrackerSummaryStd
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// RSQP_TRACK_SUMMARY_STD_H

@@ -23,7 +23,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Changes from a line search step to just taking full steps after
@@ -67,6 +67,6 @@ private:
 	
 };	// end class LineSearchFullStepAfterKIter_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_FULL_STEP_AFTER_K_ITER_STEP_H

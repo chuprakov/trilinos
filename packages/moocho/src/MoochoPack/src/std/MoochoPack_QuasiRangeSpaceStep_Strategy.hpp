@@ -16,9 +16,9 @@
 #ifndef QUASI_RANGE_SPACE_STEP_STRATEGY_H
 #define QUASI_RANGE_SPACE_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Abstract interface for a strategy object that will compute a step that will
@@ -50,8 +50,8 @@ public:
 	 *
 	 * @param out      [out] Output stream journal data is written to.
 	 * @param olevel   [in] Output level for printing to <tt>out</tt>.
-	 * @param algo     [in/out] The rSQPAlgo object.  This object can be queryed for information.
-	 * @param s        [in/out] rSQPState object.  May be queried or modified if needed.
+	 * @param algo     [in/out] The NLPAlgo object.  This object can be queryed for information.
+	 * @param s        [in/out] NLPAlgoState object.  May be queried or modified if needed.
 	 * @param xo       [in] Base point vector (size n) xo.
 	 * @param c_xo     [out] Constraints residual c(xo).
 	 * @param v        [out] Computed step vector (size n).  Must not be NULL.
@@ -59,7 +59,7 @@ public:
 	 * @return Returns true if a step could be found and false otherwise.
 	 */
  	virtual bool solve_quasi_range_space_step(
-		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 		,const Vector& xo, const Vector& c_xo, VectorMutable* v
 	  	) = 0;
 
@@ -70,6 +70,6 @@ public:
 
 }; // end class QuasiRangeSpaceStep_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // QUASI_RANGE_SPACE_STEP_STRATEGY_H

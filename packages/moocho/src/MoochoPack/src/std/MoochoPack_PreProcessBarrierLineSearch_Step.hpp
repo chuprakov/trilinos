@@ -18,8 +18,8 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
@@ -27,7 +27,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Fraction to boundary rule for calculating alpha max
@@ -98,6 +98,6 @@ class PreProcessBarrierLineSearch_StepSetOptions
 	
 	};	// end class PreProcessBarrierLineSearch_StepSetOptions
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // #if !defined PRE_PROCESS_BARRIER_LINE_SEARCH_STEP_H

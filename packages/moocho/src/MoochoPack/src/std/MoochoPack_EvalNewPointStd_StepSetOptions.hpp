@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for EvalNewPointStd_Step from an \c OptionsFromStream object.
@@ -81,6 +81,6 @@ protected:
 
 };	// end class EvalNewPointStd_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_ConfigMamaJama.hpp
+// NLPAlgoConfigMamaJama.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,23 +16,23 @@
 #ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
 #define RSQP_ALGO_CONFIG_MAMA_JAMA_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.hpp"
+#include "MoochoPack/src/NLPAlgoConfig.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/configurations/Shared/DecompositionSystemStateStepBuilderStd.hpp"
 #include "OptionsFromStream.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** This is a do all configuration class for <tt>rSQPAlgo</tt>.
+/** This is a do all configuration class for <tt>NLPAlgo</tt>.
  *
  * This class relies on the builder class <tt>DecompositionSystemStateStepBuilderStd</tt>
  * to perform many different tasks.
  *
  * Options specific for to this configuration class and the classes that
  * it works with that can be set through <tt>this->set_options()</tt>, see the files
- * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>.
- * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
+ * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>.
+ * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
  * can be left out if the macro MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS is defined
@@ -41,16 +41,16 @@ namespace ReducedSpaceSQPPack {
  * 
  * ToDo: Finish documentation!
  */
-class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
+class NLPAlgoConfigMamaJama : public NLPAlgoConfig {
 public:
 
 	///
-	rSQPAlgo_ConfigMamaJama();
+	NLPAlgoConfigMamaJama();
 
 	///
-	~rSQPAlgo_ConfigMamaJama();
+	~NLPAlgoConfigMamaJama();
 
-	/** Overridden from rSQPAlgo_Config */
+	/** Overridden from NLPAlgoConfig */
 	//@{
 
 	///
@@ -68,9 +68,9 @@ public:
 	///
 	const options_ptr_t& get_options() const;
 	///
-	void config_algo_cntr(rSQPAlgoContainer* algo_cntr, std::ostream* trase_out);
+	void config_algo_cntr(NLPAlgoContainer* algo_cntr, std::ostream* trase_out);
 	///
-	void init_algo(rSQPAlgoInterface* algo);
+	void init_algo(NLPAlgoInterface* algo);
 
 	//@}
 
@@ -158,17 +158,17 @@ private:
 		, SOptionValues *current_option_values
 		, std::ostream* trase_out );
 
-};	// end class rSQPAlgo_ConfigMamaJama
+};	// end class NLPAlgoConfigMamaJama
 
-/** \defgroup rSQPAlgo_ConfigMamaJama_opts Options for rSQPAlgo_ConfigMamaJama.
+/** \defgroup rSQPAlgo_ConfigMamaJama_opts Options for NLPAlgoConfigMamaJama.
  *
- * The following is the contents of the file <tt>rSQPpp.opt.rSQPAlgo_ConfigMamaJama</tt>
- * which are options specific to the class <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>
+ * The following is the contents of the file <tt>Moocho.opt.NLPAlgoConfigMamaJama</tt>
+ * which are options specific to the class <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>
  * and the class objects that it configures.
  *
- * \verbinclude rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+ * \verbinclude Moocho.opt.NLPAlgoConfigMamaJama
  */
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// RSQP_ALGO_CONFIG_MAMA_JAMA_H

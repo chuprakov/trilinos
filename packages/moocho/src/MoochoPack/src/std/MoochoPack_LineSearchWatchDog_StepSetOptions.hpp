@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for \Ref{LineSearchWatchDog_Step} from a
@@ -60,6 +60,6 @@ protected:
 
 };	// end class LineSearchWatchDog_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H

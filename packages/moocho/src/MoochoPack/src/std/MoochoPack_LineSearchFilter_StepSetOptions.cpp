@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_StepSetOptions.hpp"
+#include "MoochoPack/src/std/LineSearchFilter_StepSetOptions.hpp"
 #include "StringToBool.hpp"
 #include "ThrowException.hpp"
 
@@ -52,7 +52,7 @@ const char* local_SOptions[local_num_options] =
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 LineSearchFilter_StepSetOptions::LineSearchFilter_StepSetOptions(
   LineSearchFilter_Step* target
@@ -104,4 +104,4 @@ void LineSearchFilter_StepSetOptions::set_option(
 		}
 	}
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

@@ -20,13 +20,13 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Standard class for updating the reduced sigma 
@@ -90,7 +90,7 @@ class UpdateReducedSigma_Step
 		//@}
 
 	private:
-		void FormReducedSigmaExplicitly(rSQPAlgo& algo, ipState& s, EJournalOutputLevel olevel,  std::ostream& out);
+		void FormReducedSigmaExplicitly(NLPAlgo& algo, IpState& s, EJournalOutputLevel olevel,  std::ostream& out);
 
 
 	}; // end class EvalNewPointBarrier_Step
@@ -113,6 +113,6 @@ class UpdateReducedSigma_StepSetOptions
 	};	// end class UpdateReducedSigma_StepSetOptions
 
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // UPDATE_REDUCED_SIGMA_STEP_H

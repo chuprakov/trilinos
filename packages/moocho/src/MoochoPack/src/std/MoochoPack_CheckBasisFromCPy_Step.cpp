@@ -15,8 +15,8 @@
 
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/CheckBasisFromCPy_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CheckBasisFromCPy_Step.h"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
@@ -31,7 +31,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckBasisFromCPy_Step::CheckBasisFromCPy_Step(
 	const new_basis_strategy_ptr_t& new_basis_strategy
@@ -59,8 +59,8 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	Range1D		decomp	= s.con_decomp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -159,4 +159,4 @@ void CheckBasisFromCPy_Step::print_step( const Algorithm& algo, poss_type step_p
 		<< L << "end\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

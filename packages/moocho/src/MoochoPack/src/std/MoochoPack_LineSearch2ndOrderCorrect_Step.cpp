@@ -16,8 +16,8 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
@@ -37,7 +37,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 	const direct_ls_sqp_ptr_t&			direct_ls_sqp
@@ -95,8 +95,8 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 
 	typedef LineSearch2ndOrderCorrect_Step	this_t;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -793,4 +793,4 @@ void LineSearch2ndOrderCorrect_Step::print_step(
 		<< L << "end\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

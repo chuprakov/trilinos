@@ -16,11 +16,11 @@
 #ifndef QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 #define QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Directs the algorithm to reinitalize the reduced Hessian on the event
@@ -62,6 +62,6 @@ private:
 	
 };	// end class QPFailureReinitReducedHessian_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H

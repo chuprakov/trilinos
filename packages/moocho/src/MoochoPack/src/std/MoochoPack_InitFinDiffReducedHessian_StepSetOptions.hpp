@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for InitFinDiffReducedHessian_Step from an
@@ -78,6 +78,6 @@ protected:
 
 };	// end class InitFinDiffReducedHessian_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H

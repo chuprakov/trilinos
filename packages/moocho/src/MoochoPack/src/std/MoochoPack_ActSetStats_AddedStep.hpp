@@ -16,10 +16,10 @@
 #ifndef ACT_SET_STATS_ADDED_STEP_H
 #define ACT_SET_STATS_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_Step.h"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "MoochoPack/src/rSQPAlgo_Step.h"
+#include "MoochoPack/src/std/act_set_stats.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Updates the active set statistics for the current iteration.
@@ -46,6 +46,6 @@ private:
 
 };	// end class ActSetStats_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// ACT_SET_STATS_ADDED_STEP_H

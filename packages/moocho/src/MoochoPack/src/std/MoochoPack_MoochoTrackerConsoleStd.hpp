@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackConsoleStd.hpp
+// MoochoTrackerConsoleStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef RSQP_TRACK_CONSOLE_STD_H
 #define RSQP_TRACK_CONSOLE_STD_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
 #include "stpwatch.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** This rSQP iteration class provides a tablular output suitable for
@@ -81,13 +81,13 @@ namespace ReducedSpaceSQPPack {
   * gradient evaluations will be printed.  Note that the timer is started from
   * the moment this object is created or when set_output_stream(...) is called.
   */
-class rSQPTrackConsoleStd
+class MoochoTrackerConsoleStd
 	: public IterationPack::AlgorithmTracker
 {
 public:
 
 	/// Construct with an output stream (console presumably)
-	rSQPTrackConsoleStd(const ostream_ptr_t& o, const ostream_ptr_t& journal_out);
+	MoochoTrackerConsoleStd(const ostream_ptr_t& o, const ostream_ptr_t& journal_out);
 
 	/// Set the output stream for console outputting.
 	void set_output_stream(const ostream_ptr_t& o);
@@ -110,10 +110,10 @@ public:
 protected:
 
 	/// Print the top header to the output
-	void print_top_header(const rSQPState &s, const rSQPAlgo& algo) const;
+	void print_top_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
 
 	/// Print the header to the output
-	void print_header(const rSQPState &s, const rSQPAlgo& algo) const;
+	void print_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
 
 	std::ostream& o() const
 	{	return *o_; }
@@ -149,9 +149,9 @@ private:
 	// Private member funcitons
 
 	// Not defined and not to be called
-	rSQPTrackConsoleStd();
-};	// end class rSQPTrackConsoleStd
+	MoochoTrackerConsoleStd();
+};	// end class MoochoTrackerConsoleStd
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// RSQP_TRACK_CONSOLE_STD_H

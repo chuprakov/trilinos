@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for \Ref{BFGSUpdate_Strategy} from an
@@ -61,6 +61,6 @@ protected:
 
 };	// end class BFGSUpdate_StrategySetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H

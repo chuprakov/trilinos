@@ -16,13 +16,13 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
+#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 QPFailureReinitReducedHessian_Step::QPFailureReinitReducedHessian_Step(
 	const null_space_step_ptr_t& null_space_step
@@ -40,8 +40,8 @@ bool QPFailureReinitReducedHessian_Step::do_step(
 		return null_space_step().do_step(_algo,step_poss,type,assoc_step_poss);
 	}
 	catch(const QPFailure& qp_excpt) {
-		rSQPAlgo              &algo   = rsqp_algo(_algo);
-		rSQPState             &s      = algo.rsqp_state();
+		NLPAlgo              &algo   = rsqp_algo(_algo);
+		NLPAlgoState             &s      = algo.rsqp_state();
 		NLP                   &nlp    = algo.nlp();
 		EJournalOutputLevel   olevel  = algo.algo_cntr().journal_output_level();
 		std::ostream          &out    = algo.track().journal_out();
@@ -108,4 +108,4 @@ void QPFailureReinitReducedHessian_Step::print_step(
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

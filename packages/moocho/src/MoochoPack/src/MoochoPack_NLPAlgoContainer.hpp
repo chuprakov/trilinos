@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoContainer.hpp
+// NLPAlgoContainer.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,35 +16,35 @@
 #ifndef RSQP_ALGO_CONTAINER_H
 #define RSQP_ALGO_CONTAINER_H
 
-#include "rSQPAlgoClientInterface.hpp"
-#include "rSQPAlgoInterface.hpp"
-#include "rSQPAlgo_Config.hpp"
+#include "NLPAlgoClientInterface.hpp"
+#include "NLPAlgoInterface.hpp"
+#include "NLPAlgoConfig.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** Implementation for rSQPAlgo solver.
+/** Implementation for NLPAlgo solver.
  *
- * Acts as a container for rSQPAlgo.  This class is hidden from clients
+ * Acts as a container for NLPAlgo.  This class is hidden from clients
  * by not exposing it to them in header files.
  */
-class rSQPAlgoContainer : public rSQPAlgoClientInterface {
+class NLPAlgoContainer : public NLPAlgoClientInterface {
 public:
 
 	/** @name Constructors / initializers */
 	//@{
 
 	/// Members for <<std comp>> of the algorithm object algo.
-	STANDARD_COMPOSITION_MEMBERS( rSQPAlgoInterface, algo )
+	STANDARD_COMPOSITION_MEMBERS( NLPAlgoInterface, algo )
 
 	/// Construct a container with no configuration object set.
-	rSQPAlgoContainer()
+	NLPAlgoContainer()
 	{}
 
 	//@}
 
-	/** @name Overridden from rSQPAlgoClientInterface */
+	/** @name Overridden from NLPAlgoClientInterface */
 	//@{
 
 	///
@@ -54,13 +54,13 @@ public:
 	///
 	const config_ptr_t& get_config() const;
 	///
-	rSQPAlgo_Config& config();
+	NLPAlgoConfig& config();
 	///
-	const rSQPAlgo_Config& config() const;
+	const NLPAlgoConfig& config() const;
 
 	//@}
 
-	/** @name Overridden from rSQPSolverClientInterface */
+	/** @name Overridden from NLPSolverClientInterface */
 	//@{
 
 	///
@@ -86,11 +86,11 @@ private:
 	void assert_valid_setup() const;
 
 	// Not defined and not to be called
-	rSQPAlgoContainer(const rSQPAlgoContainer&);
-	rSQPAlgoContainer& operator=(const rSQPAlgoContainer&);
+	NLPAlgoContainer(const NLPAlgoContainer&);
+	NLPAlgoContainer& operator=(const NLPAlgoContainer&);
 
-};	// end class rSQPAlgoContainer
+};	// end class NLPAlgoContainer
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_CONTAINER_H

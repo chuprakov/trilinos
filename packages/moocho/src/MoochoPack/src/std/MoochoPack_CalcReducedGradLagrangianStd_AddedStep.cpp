@@ -14,9 +14,9 @@
 // above mentioned "Artistic License" for more details.
 
 #include <ostream>
-#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
@@ -30,7 +30,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
@@ -43,8 +43,8 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::Vp_MtV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -115,4 +115,4 @@ void CalcReducedGradLagrangianStd_AddedStep::print_step(
 		<< L << "end\n";
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

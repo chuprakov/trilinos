@@ -18,7 +18,7 @@
 
 #include "../rSQPAlgo_Step.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** w_k = Z_k' * HL_k * Ypy_k
@@ -39,6 +39,6 @@ public:
 
 };	// end class CrossTermExactStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CROSS_TERM_EXACT_STD_STEP_H

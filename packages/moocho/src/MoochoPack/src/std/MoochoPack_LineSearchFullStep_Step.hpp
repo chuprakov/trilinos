@@ -16,12 +16,12 @@
 #ifndef LINE_SEARCH_FULL_STEP_STEP_H
 #define LINE_SEARCH_FULL_STEP_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Takes the full step <tt>x_kp1 = x_k + d_k (d_k = Ypy_k + Zpz_k)</tt>.
@@ -55,6 +55,6 @@ private:
 
 };	// end class LineSearchFullStep_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_FULL_STEP_STEP_H

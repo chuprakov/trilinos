@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
+#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/NLPrSQPTailoredApproach.h"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptPack/src/DenseIdentVertConcatMatrixSubclass.h"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -29,10 +29,10 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
-	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+	std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 	,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
   	)
 {
@@ -91,4 +91,4 @@ void QuasiRangeSpaceStepTailoredApproach_Strategy::print_step( std::ostream& out
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

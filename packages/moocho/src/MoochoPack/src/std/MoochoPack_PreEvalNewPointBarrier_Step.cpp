@@ -24,15 +24,15 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/std/PreEvalNewPointBarrier_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/std/PreEvalNewPointBarrier_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 
 #include "StringToBool.hpp"
 
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 PreEvalNewPointBarrier_Step::PreEvalNewPointBarrier_Step(
   const value_type relative_bound_push,
@@ -52,8 +52,8 @@ bool PreEvalNewPointBarrier_Step::do_step(
 	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::force_in_bounds_buffer;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 	NLP                 &nlp    = algo.nlp();
 	NLPFirstOrder   *nlp_foi = dynamic_cast<NLPFirstOrder*>(&nlp);
 	
@@ -140,8 +140,8 @@ void PreEvalNewPointBarrier_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	//const rSQPAlgo   &algo = rsqp_algo(_algo);
-	//const rSQPState  &s    = algo.rsqp_state();
+	//const NLPAlgo   &algo = rsqp_algo(_algo);
+	//const NLPAlgoState  &s    = algo.rsqp_state();
 	out << L << "# Evaluate information specific to primal / dual barrier algorithms\n"
 		<< L << "if (x never updated) then\n"
 		<< L << "  x_k = nlp.xinit()\n"
@@ -203,4 +203,4 @@ void PreEvalNewPointBarrier_StepSetOptions::set_option(
 		}
 	}
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack

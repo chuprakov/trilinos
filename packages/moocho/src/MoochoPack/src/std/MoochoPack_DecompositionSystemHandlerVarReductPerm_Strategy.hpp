@@ -18,7 +18,7 @@
 
 #include "DecompositionSystemHandlerSelectNew_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Subclass for selecting and updating the range/null space decomposition using
@@ -46,8 +46,8 @@ public:
 
 	///
 	bool update_decomposition(
-		rSQPAlgo                                &algo
-		,rSQPState                              &s
+		NLPAlgo                                &algo
+		,NLPAlgoState                              &s
 		,NLPFirstOrder                      &nlp
 		,EDecompSysTesting                      decomp_sys_testing
 		,EDecompSysPrintLevel                   decomp_sys_testing_print_level
@@ -55,8 +55,8 @@ public:
 		);
 	///
 	void print_update_decomposition(
-		const rSQPAlgo                          &algo
-		,const rSQPState                        &s
+		const NLPAlgo                          &algo
+		,const NLPAlgoState                        &s
 		,std::ostream                           &out
 		,const std::string                      &leading_spaces
 		) const;
@@ -77,6 +77,6 @@ private:
 
 }; // end class DecompositionSystemHandlerVarReductPerm_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // DECOMPOSITION_SYSTEM_HANDLER_VAR_REDUCT_PERM_STRATEGY_H

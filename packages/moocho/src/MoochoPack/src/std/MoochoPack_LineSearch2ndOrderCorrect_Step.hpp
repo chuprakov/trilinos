@@ -16,7 +16,7 @@
 #ifndef LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_StepBaseClasses.h"
+#include "MoochoPack/src/rSQPAlgo_StepBaseClasses.h"
 #include "FeasibilityStep_Strategy.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
@@ -24,7 +24,7 @@
 #include "MiStandardAggregationMacros.h"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implements second order correction.
@@ -141,6 +141,6 @@ public:
 
 };	// end class LineSearch2ndOrderCorrect_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H

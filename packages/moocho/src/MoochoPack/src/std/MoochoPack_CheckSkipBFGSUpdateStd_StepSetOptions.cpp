@@ -36,7 +36,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 CheckSkipBFGSUpdateStd_StepSetOptions::CheckSkipBFGSUpdateStd_StepSetOptions(
 			CheckSkipBFGSUpdateStd_Step* target )
@@ -59,4 +59,4 @@ void CheckSkipBFGSUpdateStd_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

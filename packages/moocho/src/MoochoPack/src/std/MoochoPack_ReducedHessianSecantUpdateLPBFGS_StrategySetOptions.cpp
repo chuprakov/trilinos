@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp"
 #include "StringToBool.hpp"
 
 // Define the options
@@ -40,7 +40,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::ReducedHessianSecantUpdateLPBFGS_StrategySetOptions(
 	ReducedHessianSecantUpdateLPBFGS_Strategy* target
@@ -75,4 +75,4 @@ void ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

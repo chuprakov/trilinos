@@ -24,13 +24,13 @@
 
 #include "ExampleNLPFirstOrderDirectRun.hpp"
 #include "ExampleNLPFirstOrderDirect.hpp"
-#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.hpp"
+#include "MoochoPack/configurations/MamaJama/NLPAlgoConfigMamaJama.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 #include "OptionsFromStream.hpp"
 
-ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
+MoochoPack::MoochoSolver::ESolutionStatus
 NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
@@ -50,12 +50,12 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	using rcp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
-	namespace rsqp = ReducedSpaceSQPPack;
-	using rsqp::rSQPppSolver;
-	using rsqp::rSQPAlgo_ConfigMamaJama;
+	namespace rsqp = MoochoPack;
+	using rsqp::MoochoSolver;
+	using rsqp::NLPAlgoConfigMamaJama;
 
-	rSQPppSolver::ESolutionStatus
-		solve_return = rSQPppSolver::SOLVE_RETURN_EXCEPTION;
+	MoochoSolver::ESolutionStatus
+		solve_return = MoochoSolver::SOLVE_RETURN_EXCEPTION;
 
 	int err = 0;
 	
@@ -78,7 +78,7 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
 	// Create the solver object and set it up
-	rSQPppSolver solver;
+	MoochoSolver solver;
 	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set the NLP!
 	solver.set_error_handling(                             // set up outputting
 		throw_solve_exception

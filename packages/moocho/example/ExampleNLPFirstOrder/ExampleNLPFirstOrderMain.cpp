@@ -45,8 +45,8 @@ int main(int argc, char* argv[] ) {
 	typedef AbstractLinAlgPack::size_type size_type;
 	typedef AbstractLinAlgPack::value_type value_type;
 	namespace NLPIP = NLPInterfacePack;
-	namespace rsqp = ReducedSpaceSQPPack;
-	using rsqp::rSQPppSolver;
+	namespace rsqp = MoochoPack;
+	using rsqp::MoochoSolver;
 
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::Vector;
@@ -153,7 +153,7 @@ int main(int argc, char* argv[] ) {
 	}
 
 	// Create and test the NLP using this vector space object
-	const rSQPppSolver::ESolutionStatus
+	const MoochoSolver::ESolutionStatus
 		solve_return = NLPIP::ExampleNLPFirstOrderInfoRun(
 			*vec_space, xo, has_bounds, dep_bounded
 			,proc_rank == 0 ? &out  : &blackhole  // console_out
@@ -165,19 +165,19 @@ int main(int argc, char* argv[] ) {
 			);
 
 	switch(solve_return) {
-		case rSQPppSolver::SOLVE_RETURN_SOLVED:
+		case MoochoSolver::SOLVE_RETURN_SOLVED:
 			prog_return = PROG_SUCCESS;
 			break;
-		case rSQPppSolver::SOLVE_RETURN_MAX_ITER:
+		case MoochoSolver::SOLVE_RETURN_MAX_ITER:
 			prog_return = PROG_MAX_ITER_EXEEDED;
 			break;
-		case rSQPppSolver::SOLVE_RETURN_MAX_RUN_TIME:
+		case MoochoSolver::SOLVE_RETURN_MAX_RUN_TIME:
 			prog_return = PROG_MAX_TIME_EXEEDED;
 			break;
-		case rSQPppSolver::SOLVE_RETURN_NLP_TEST_FAILED:
+		case MoochoSolver::SOLVE_RETURN_NLP_TEST_FAILED:
 			prog_return = PROG_NLP_TEST_ERR;
 			break;
-		case rSQPppSolver::SOLVE_RETURN_EXCEPTION:
+		case MoochoSolver::SOLVE_RETURN_EXCEPTION:
 			prog_return = PROG_EXCEPTION;
 			break;
 		default:

@@ -24,15 +24,15 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/std/PostEvalNewPointBarrier_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/std/PostEvalNewPointBarrier_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 
 #include "StringToBool.hpp"
 
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 bool PostEvalNewPointBarrier_Step::do_step(
   Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
@@ -46,8 +46,8 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	using AbstractLinAlgPack::correct_lower_bound_multipliers;
 	using LinAlgOpPack::Vp_StV;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 	NLP                 &nlp    = algo.nlp();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -184,8 +184,8 @@ void PostEvalNewPointBarrier_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	//const rSQPAlgo   &algo = rsqp_algo(_algo);
-	//const rSQPState  &s    = algo.rsqp_state();
+	//const NLPAlgo   &algo = rsqp_algo(_algo);
+	//const NLPAlgoState  &s    = algo.rsqp_state();
 	out << L << "# Evaluate information specific to primal / dual barrier algorithms (Post EvalNewPoint)\n"
 		<< L << "invXl_k = diag(i, 1/(x(i)-xl))"
 		<< L << "invXu_k = diag(i, 1/(xu-x(i)))\n"
@@ -198,4 +198,4 @@ void PostEvalNewPointBarrier_Step::print_step(
 		<< L << "nu_k_k = Vu_k.diag() - Vl_k.diag()\n";
 	}
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

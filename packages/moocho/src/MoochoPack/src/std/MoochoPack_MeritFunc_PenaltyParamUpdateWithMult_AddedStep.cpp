@@ -16,11 +16,11 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_PenaltyParamUpdateWithMult_AddedStep::MeritFunc_PenaltyParamUpdateWithMult_AddedStep(
 		  const merit_func_ptr_t& merit_func, value_type small_mu
@@ -31,7 +31,7 @@ MeritFunc_PenaltyParamUpdateWithMult_AddedStep::MeritFunc_PenaltyParamUpdateWith
 // Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep
 
 bool MeritFunc_PenaltyParamUpdateWithMult_AddedStep::min_mu(
-	rSQPState& s, value_type* min_mu ) const
+	NLPAlgoState& s, value_type* min_mu ) const
 {
 	if ( s.lambda().updated_k(0) ) {
 		*min_mu = s.lambda().get_k(0).norm_inf();
@@ -53,4 +53,4 @@ void MeritFunc_PenaltyParamUpdateWithMult_AddedStep::print_min_mu_step(
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

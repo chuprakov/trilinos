@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackStatsStd.hpp
+// MoochoTrackerStatsStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef RSQP_TRACK_STATS_STD_H
 #define RSQP_TRACK_STATS_STD_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
 #include "stpwatch.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** This is a simple track class for getting statistics about a solved (or not
@@ -51,13 +51,13 @@ namespace ReducedSpaceSQPPack {
  * can be counted.  However, the spacing and the precision of the numbers may be different
  * from what is shown above.
  */
-class rSQPTrackStatsStd
+class MoochoTrackerStatsStd
 	: public IterationPack::AlgorithmTracker
  {
 public:
 
 	/// Construct with an output stream object.
-	rSQPTrackStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
+	MoochoTrackerStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
 
 	///
 	/* Set the output stream for statistics outputting.
@@ -91,10 +91,10 @@ private:
 	mutable StopWatchPack::stopwatch    timer_;
 
 	// Not defined and not to be called
-	rSQPTrackStatsStd();
+	MoochoTrackerStatsStd();
 
-};	// end class rSQPTrackStatsStd
+};	// end class MoochoTrackerStatsStd
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// RSQP_TRACK_STATS_STD_H

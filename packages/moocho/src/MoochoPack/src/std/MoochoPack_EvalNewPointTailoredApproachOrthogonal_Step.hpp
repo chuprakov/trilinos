@@ -19,7 +19,7 @@
 #include "EvalNewPointTailoredApproach_Step.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implements "orthogonal" decompostion for "Tailored Appraoch".
@@ -101,6 +101,6 @@ private:
 
 };	// end class EvalNewPointTailoredApproachOrthogonal_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H

@@ -16,10 +16,10 @@
 #ifndef CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculates the reduced gradient of the Lagrangian
@@ -43,6 +43,6 @@ public:
 
 };	// end class CalcReducedGradLagrangianStd_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H

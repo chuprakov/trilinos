@@ -19,9 +19,9 @@
 #include <fstream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
@@ -32,7 +32,7 @@
 
 //#define FILTER_DEBUG_OUT 1
 
-namespace ReducedSpaceSQPPack 
+namespace MoochoPack 
 {
 
 // This must exist somewhere already, ask Ross
@@ -105,8 +105,8 @@ bool LineSearchFilter_Step::do_step(
 	using std::setw;
     
     // Get Algorithm (cast), state, and problem
-    rSQPAlgo            &algo   = rsqp_algo(_algo);
-    rSQPState             &s    = algo.rsqp_state();
+    NLPAlgo            &algo   = rsqp_algo(_algo);
+    NLPAlgoState             &s    = algo.rsqp_state();
 
     EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
     std::ostream        &out    = algo.track().journal_out();
@@ -429,8 +429,8 @@ void LineSearchFilter_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-    const rSQPAlgo   &algo = rsqp_algo(_algo);
-    const rSQPState  &s    = algo.rsqp_state();
+    const NLPAlgo   &algo = rsqp_algo(_algo);
+    const NLPAlgoState  &s    = algo.rsqp_state();
     out
 		<< L << "*** Filter line search method\n"
 		<< L << "# Assumes initial d_k & alpha_k (0-1) is known and\n"
@@ -727,4 +727,4 @@ void LineSearchFilter_Step::AugmentFilter(
     current_filter.push_front(FilterEntry(f_with_boundary, theta_with_boundary, s.k()));
 	}
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
+#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 NewDecompositionSelectionStd_Strategy::NewDecompositionSelectionStd_Strategy(
 	const decomp_sys_handler_ptr_t   &decomp_sys_handler
@@ -27,11 +27,11 @@ NewDecompositionSelectionStd_Strategy::NewDecompositionSelectionStd_Strategy(
 {}
 
 bool NewDecompositionSelectionStd_Strategy::new_decomposition(
-	rSQPAlgo& algo, Algorithm::poss_type step_poss
+	NLPAlgo& algo, Algorithm::poss_type step_poss
 	,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 	)
 {
-	rSQPState               &s     = algo.rsqp_state();
+	NLPAlgoState               &s     = algo.rsqp_state();
 	EJournalOutputLevel     olevel = algo.algo_cntr().journal_output_level();
 	std::ostream&           out    = algo.track().journal_out();
 
@@ -75,7 +75,7 @@ bool NewDecompositionSelectionStd_Strategy::new_decomposition(
 }
 
 void NewDecompositionSelectionStd_Strategy::print_new_decomposition(
-	const rSQPAlgo& algo, Algorithm::poss_type step_poss
+	const NLPAlgo& algo, Algorithm::poss_type step_poss
 	,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 	,std::ostream& out, const std::string& L
 	) const
@@ -91,4 +91,4 @@ void NewDecompositionSelectionStd_Strategy::print_new_decomposition(
 		<< L << "goto EvalNewPoint\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

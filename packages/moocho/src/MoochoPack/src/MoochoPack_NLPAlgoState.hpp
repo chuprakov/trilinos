@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// rSQPState.hpp
+// NLPAlgoState.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <deque>
 
-#include "ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPackTypes.hpp"
 #include "IterationPack/src/IterQuantityAccess.hpp"
 #include "IterationPack/src/AlgorithmState.hpp"
 #include "IterationPack/src/cast_iq.hpp"
@@ -32,9 +32,9 @@
 #include "StandardMemberCompositionMacros.hpp"
 #include "Range1D.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-/** \defgroup rSQPState_IQ_names_grp rSQPState iteration quantities names.
+/** \defgroup rSQPState_IQ_names_grp NLPAlgoState iteration quantities names.
  *
  * ToDo: Finish documentation!
  */
@@ -89,10 +89,10 @@ extern const std::string nu_name;
 
 //@}
 
-/** \defgroup rSQPState_Macros_grp Macros for adding IterQuantity objects to rSQPState.
+/** \defgroup rSQPState_Macros_grp Macros for adding IterQuantity objects to NLPAlgoState.
  *
  * These macros make it easy to add and remove iteration quantities of any type
- * to the state class.  These macros can even be used by subclasses of rSQPState
+ * to the state class.  These macros can even be used by subclasses of NLPAlgoState
  * (only any <tt>IterationPack::AlgorithmState</tt> subclass) to add
  * iteration quantities.  Since scalars and vectors are so pervasive they have
  * there own special macros that take care of actually instantiating the
@@ -249,7 +249,7 @@ CLASS::NAME() const                                                       \
  *
  * ToDo: Finish documentation.
  */
-class rSQPState
+class NLPAlgoState
 	: public IterationPack::AlgorithmState // doxygen needs full path
 {
 public:
@@ -321,7 +321,7 @@ public:
 	 *
 	 * Initializes num_basis() == 0
 	 */
-	rSQPState(
+	NLPAlgoState(
 		const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
 		,const vec_space_ptr_t& space_x      = MemMngPack::null
 		,const vec_space_ptr_t& space_c      = MemMngPack::null
@@ -331,7 +331,7 @@ public:
 		);
 
 	///
-	virtual ~rSQPState() {}
+	virtual ~NLPAlgoState() {}
 
 	//@}
 
@@ -549,38 +549,38 @@ private:
 		);
 
 	// not defined and not to be called
-	rSQPState(const rSQPState&);
-	rSQPState& operator=(const rSQPState&);
+	NLPAlgoState(const NLPAlgoState&);
+	NLPAlgoState& operator=(const NLPAlgoState&);
 
-};	// end class rSQPState
+};	// end class NLPAlgoState
 
 // ////////////////////////////////////
 // Inline members
 
 inline
-rSQPState::vec_space_ptr_t& rSQPState::get_space_range()
+NLPAlgoState::vec_space_ptr_t& NLPAlgoState::get_space_range()
 {	return space_range_ ; }
 
 inline
-const rSQPState::vec_space_ptr_t& rSQPState::get_space_range() const
+const NLPAlgoState::vec_space_ptr_t& NLPAlgoState::get_space_range() const
 {	return space_range_; }
 
 inline
-const VectorSpace& rSQPState::space_range() const
+const VectorSpace& NLPAlgoState::space_range() const
 {	return *space_range_; }
 
 inline
-rSQPState::vec_space_ptr_t& rSQPState::get_space_null()
+NLPAlgoState::vec_space_ptr_t& NLPAlgoState::get_space_null()
 {	return space_null_ ; }
 
 inline
-const rSQPState::vec_space_ptr_t& rSQPState::get_space_null() const
+const NLPAlgoState::vec_space_ptr_t& NLPAlgoState::get_space_null() const
 {	return space_null_; }
 
 inline
-const VectorSpace& rSQPState::space_null() const
+const VectorSpace& NLPAlgoState::space_null() const
 {	return *space_null_; }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_STATE_H

@@ -16,15 +16,15 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/act_set_stats.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Perform BFGS updates on only the free independent (super basic) variables.
@@ -78,7 +78,7 @@ public:
 	///
 	bool perform_update(
 		DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
-		,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+		,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 		,MatrixOp *rHL_k
 		);
 	///
@@ -97,6 +97,6 @@ private:
 
 }; // end class ReducedHessianSecantUpdateLPBFGS_Strategy
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H

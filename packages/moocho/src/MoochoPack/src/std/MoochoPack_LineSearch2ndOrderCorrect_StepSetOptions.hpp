@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for LineSearch2ndOrderCorrect_Step from an
@@ -102,6 +102,6 @@ protected:
 
 };	// end class LineSearch2ndOrderCorrect_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H

@@ -18,7 +18,7 @@
 #include <limits>
 
 #include "../std/DampenCrossTermStd_Step.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
@@ -26,19 +26,19 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 
-ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const value_type& frac_descent)
+MoochoPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const value_type& frac_descent)
 	: frac_descent_(frac_descent)
 {}
 
-bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
+bool MoochoPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using AbstractLinAlgPack::V_InvMtV;
 	using DenseLinAlgPack::norm_inf;
 	using DenseLinAlgPack::dot;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -103,7 +103,7 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	return true;
 }
 
-void ReducedSpaceSQPPack::DampenCrossTermStd_Step::print_step( const Algorithm& algo
+void MoochoPack::DampenCrossTermStd_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

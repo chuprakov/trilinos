@@ -17,7 +17,7 @@
 #include <typeinfo>
 
 #include "../std/MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
-#include "../rsqp_algo_conversion.hpp"
+#include "../moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncPenaltyParams.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
@@ -28,13 +28,13 @@
 
 namespace {
 
-typedef ReducedSpaceSQPPack::value_type value_type;
+typedef MoochoPack::value_type value_type;
 inline value_type max(value_type v1, value_type v2)
 {	return (v1 > v2) ? v1 : v2; }
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_ModifiedL1LargerSteps_AddedStep::MeritFunc_ModifiedL1LargerSteps_AddedStep(
 		  const merit_func_ptr_t& merit_func
@@ -58,8 +58,8 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 	using DenseLinAlgPack::norm_inf;
 	using DenseLinAlgPack::dot;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -367,4 +367,4 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStep::print_step( const Algorithm& alg
 		<< L << "end\n";
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

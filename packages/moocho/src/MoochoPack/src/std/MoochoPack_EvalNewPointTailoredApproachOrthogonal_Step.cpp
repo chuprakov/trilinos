@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
@@ -27,7 +27,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogonal_Step(
 	const deriv_tester_ptr_t                &deriv_tester
@@ -185,4 +185,4 @@ void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy_Vy(
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

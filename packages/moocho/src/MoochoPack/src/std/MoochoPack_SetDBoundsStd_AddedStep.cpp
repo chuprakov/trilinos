@@ -15,13 +15,13 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/SetDBoundsStd_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/SetDBoundsStd_AddedStep.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 SetDBoundsStd_AddedStep::SetDBoundsStd_AddedStep()
 	:dl_iq_(dl_name)
@@ -33,8 +33,8 @@ bool SetDBoundsStd_AddedStep::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	rSQPAlgo              &algo      = rsqp_algo(_algo);
-	rSQPState             &s         = algo.rsqp_state();
+	NLPAlgo              &algo      = rsqp_algo(_algo);
+	NLPAlgoState             &s         = algo.rsqp_state();
 
 	EJournalOutputLevel   olevel     = algo.algo_cntr().journal_output_level();
 	std::ostream          &out       = algo.track().journal_out();
@@ -79,4 +79,4 @@ void SetDBoundsStd_AddedStep::print_step(
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

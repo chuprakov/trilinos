@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_StepSetOptions.cpp
+// TangentialStepWithInequStd_StepSetOptions.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.hpp"
+#include "MoochoPack/src/std/TangentialStepWithInequStd_StepSetOptions.hpp"
 #include "StringToBool.hpp"
 #include "ThrowException.hpp"
 
@@ -41,24 +41,24 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
-NullSpaceStepWithInequStd_StepSetOptions::NullSpaceStepWithInequStd_StepSetOptions(
-	NullSpaceStepWithInequStd_Step* target
+TangentialStepWithInequStd_StepSetOptions::TangentialStepWithInequStd_StepSetOptions(
+	TangentialStepWithInequStd_Step* target
 	,const char opt_grp_name[]
 	)
 	:OptionsFromStreamPack::SetOptionsFromStreamNode(
 		 opt_grp_name, local_num_options, local_SOptions )
 	,OptionsFromStreamPack::SetOptionsToTargetBase<
-		NullSpaceStepWithInequStd_Step >( target )
+		TangentialStepWithInequStd_Step >( target )
 {}
 
-void NullSpaceStepWithInequStd_StepSetOptions::set_option(
+void TangentialStepWithInequStd_StepSetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;
 
-	typedef NullSpaceStepWithInequStd_Step target_t;
+	typedef TangentialStepWithInequStd_Step target_t;
 	switch( (local_EOptions)option_num ) {
 		case WARM_START_FRAC:
 			target().warm_start_frac(::fabs(::atof(option_value.c_str())));
@@ -92,4 +92,4 @@ void NullSpaceStepWithInequStd_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

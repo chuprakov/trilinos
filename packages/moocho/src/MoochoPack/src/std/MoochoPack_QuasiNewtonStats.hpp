@@ -16,9 +16,9 @@
 #ifndef QUASI_NEWTON_STATS_H
 #define QUASI_NEWTON_STATS_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Class for storing statistics about the Quasi-Newton updating
@@ -56,6 +56,6 @@ private:
 
 };	// end class QuasiNewtonStats
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// QUASI_NEWTON_STATS_H

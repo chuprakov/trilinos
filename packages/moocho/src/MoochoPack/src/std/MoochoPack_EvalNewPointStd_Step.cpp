@@ -16,9 +16,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/EvalNewPointStd_Step.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
@@ -37,7 +37,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #endif
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 EvalNewPointStd_Step::EvalNewPointStd_Step(
 	const decomp_sys_handler_ptr_t                              &decomp_sys_handler
@@ -67,8 +67,8 @@ bool EvalNewPointStd_Step::do_step(
 	using IterationPack::print_algorithm_step;
 	using NLPInterfacePack::NLPFirstOrder;
 
-	rSQPAlgo            &algo   = rsqp_algo(_algo);
-	rSQPState           &s      = algo.rsqp_state();
+	NLPAlgo            &algo   = rsqp_algo(_algo);
+	NLPAlgoState           &s      = algo.rsqp_state();
 	NLPFirstOrder   &nlp    = dyn_cast<NLPFirstOrder>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -402,8 +402,8 @@ void EvalNewPointStd_Step::print_step(
 	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
 	) const
 {
-	const rSQPAlgo   &algo = rsqp_algo(_algo);
-	const rSQPState  &s    = algo.rsqp_state();
+	const NLPAlgo   &algo = rsqp_algo(_algo);
+	const NLPAlgoState  &s    = algo.rsqp_state();
 	const NLP        &nlp  = algo.nlp();
 	const size_type
 		n = nlp.n(),
@@ -463,4 +463,4 @@ void EvalNewPointStd_Step::print_step(
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

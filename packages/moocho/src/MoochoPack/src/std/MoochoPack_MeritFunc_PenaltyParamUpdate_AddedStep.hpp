@@ -16,10 +16,10 @@
 #ifndef MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H
 #define MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Base class for steps that update penalty parameters based on the
@@ -77,6 +77,6 @@ public:
 
 };	// end class MeritFunc_PenaltyParamUpdate_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H

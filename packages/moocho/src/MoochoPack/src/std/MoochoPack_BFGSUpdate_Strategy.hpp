@@ -16,11 +16,11 @@
 #ifndef BFGS_UPDATE_STRATEGY_H
 #define BFGS_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "ReducedSpaceSQPPack/src/std/QuasiNewtonStats.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack/src/std/QuasiNewtonStats.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Strategy interface which contains the guts for a dampened BFGS update.
@@ -126,6 +126,6 @@ public:
 
 }; // end class BFGSUpdate_Strategy
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // BFGS_UPDATE_STRATEGY_H

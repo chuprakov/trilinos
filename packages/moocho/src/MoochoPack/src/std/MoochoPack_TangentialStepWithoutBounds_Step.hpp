@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithoutBounds_Step.hpp
+// TangentialStepWithoutBounds_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 #define NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Solves the unconstrained QP subproblem: <tt>min  qp_grad' * pz + (1/2) * pz' * rHL * pz</tt>.
@@ -34,7 +34,7 @@ namespace ReducedSpaceSQPPack {
   *
   * Then <tt>Zpz = Z * pz</tt>
   */
-class NullSpaceStepWithoutBounds_Step
+class TangentialStepWithoutBounds_Step
 	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
@@ -49,8 +49,8 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 
-};	// end class NullSpaceStepWithoutBounds_Step
+};	// end class TangentialStepWithoutBounds_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H

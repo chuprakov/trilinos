@@ -20,7 +20,7 @@
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Directs the selection of a new decomposition if the line search fails.
@@ -70,6 +70,6 @@ private:
 
 };	// end class LineSearchFailureNewDecompositionSelection_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H

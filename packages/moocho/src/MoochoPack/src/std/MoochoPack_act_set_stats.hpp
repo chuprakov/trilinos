@@ -19,7 +19,7 @@
 #include "ActSetStats.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 /// Name given to the active set statistics iteration quantity
 extern const std::string act_set_stats_name;
@@ -37,6 +37,6 @@ public:
     {}
 };
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// ACT_SET_STATS_HH

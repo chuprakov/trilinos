@@ -18,7 +18,7 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 #include "StandardCompositionMacros.hpp"
@@ -26,7 +26,7 @@
 
 #include "IterationPack/src/AlgorithmState.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
  
 // structure for storing filter points 
 class FilterEntry 
@@ -250,6 +250,6 @@ class LineSearchFilter_Step
 
 	};	// end class LineSearchFilter_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_FILTER_STEP_H

@@ -18,12 +18,12 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 MeritFunc_PenaltyParamUpdateMultFree_AddedStep::MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
 	value_type    small_mu
@@ -36,7 +36,7 @@ MeritFunc_PenaltyParamUpdateMultFree_AddedStep::MeritFunc_PenaltyParamUpdateMult
 // Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep
 
 bool MeritFunc_PenaltyParamUpdateMultFree_AddedStep::min_mu(
-	rSQPState& s, value_type* min_mu
+	NLPAlgoState& s, value_type* min_mu
 	) const
 {
 	using AbstractLinAlgPack::dot;
@@ -72,4 +72,4 @@ void MeritFunc_PenaltyParamUpdateMultFree_AddedStep::print_min_mu_step(
 		;
 }
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack

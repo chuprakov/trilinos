@@ -24,7 +24,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Standard new point evaluation step class.
@@ -110,6 +110,6 @@ private:
 
 };	// end class EvalNewPointStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// EVAL_NEW_POINT_STD_STEP_H

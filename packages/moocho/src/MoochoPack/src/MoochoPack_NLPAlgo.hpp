@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgo.hpp
+// NLPAlgo.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,19 +16,19 @@
 #ifndef RSQP_ALGO_H
 #define RSQP_ALGO_H
 
-#include "rSQPAlgoInterface.hpp"
-#include "rSQPAlgoContainer.hpp"
-#include "rSQPState.hpp"
+#include "NLPAlgoInterface.hpp"
+#include "NLPAlgoContainer.hpp"
+#include "NLPAlgoState.hpp"
 #include "IterationPack/src/Algorithm.hpp"
 #include "StandardAggregationMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** rSQP Algorithm control class.
   */
-class rSQPAlgo
-	: public rSQPAlgoInterface
+class NLPAlgo
+	: public NLPAlgoInterface
 	, public IterationPack::Algorithm
 {
 public:
@@ -39,21 +39,21 @@ public:
 	//@}
 
 	/// Constructs with no step, added_step, pre_step, post_step, state, or decomp_sys objects added.
-	rSQPAlgo();
+	NLPAlgo();
 
 	/// <<std aggr>> members for algo_cntr
-	STANDARD_AGGREGATION_MEMBERS( rSQPAlgoContainer, algo_cntr )
+	STANDARD_AGGREGATION_MEMBERS( NLPAlgoContainer, algo_cntr )
 
 	/// <<std aggr>> members for nlp
 	STANDARD_AGGREGATION_MEMBERS( NLP, nlp )
 
 	///
-	rSQPState& rsqp_state()
-	{	return dynamic_cast<rSQPState&>(state()); }
+	NLPAlgoState& rsqp_state()
+	{	return dynamic_cast<NLPAlgoState&>(state()); }
 
 	///
-	const rSQPState& rsqp_state() const
-	{	return dynamic_cast<const rSQPState&>(state()); }
+	const NLPAlgoState& rsqp_state() const
+	{	return dynamic_cast<const NLPAlgoState&>(state()); }
 
 	///
 	void do_step_first(Algorithm::poss_type first_step_poss)
@@ -63,14 +63,14 @@ public:
 	//@{	
 	
 	///
-	const rSQPState& retrieve_state() const;
+	const NLPAlgoState& retrieve_state() const;
 
 	///
 	/** This is the main control function for the rSQP algorithm.
 	  *
 	  * This function basically just calls Algorithm::do_algorithm(...).
 	  */
-	rSQPSolverClientInterface::EFindMinReturn dispatch();
+	NLPSolverClientInterface::EFindMinReturn dispatch();
 
 	///
 	void interface_print_algorithm(std::ostream& out) const;
@@ -93,8 +93,8 @@ protected:
 	// First step to execute
 	Algorithm::poss_type first_step_poss_;
 
-};	// end class rSQPAlgo
+};	// end class NLPAlgo
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_H

@@ -21,13 +21,13 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Standard evaluation step class for extra parameters in primal/dual barrier method.
@@ -55,6 +55,6 @@ class PostEvalNewPointBarrier_Step
 
 	}; // end class PostEvalNewPointBarrier_Step
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // POST_EVAL_NEW_POINT_BARRIER_STEP_H

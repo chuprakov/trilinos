@@ -19,7 +19,7 @@
 #include "QuasiNewtonStats.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 /// Name given to the quasi-Newton updating staistics iteration quantity
 extern const std::string quasi_newton_stats_name;
@@ -37,6 +37,6 @@ public:
     {}
 };
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// QUASI_NEWTON_STATS_HH

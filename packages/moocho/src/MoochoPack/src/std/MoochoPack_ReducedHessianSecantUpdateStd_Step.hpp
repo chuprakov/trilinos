@@ -16,13 +16,13 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
+#include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Updates rHL_k using a secant update.
@@ -67,6 +67,6 @@ private:
 	
 };	// end class ReducedHessianSecantUpdateStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H

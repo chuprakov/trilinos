@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackStatsStd.cpp
+// MoochoTrackerStatsStd.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackStatsStd.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/MoochoTrackerStatsStd.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -30,7 +30,7 @@ inline
 T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 using std::endl;
 using std::setw;
@@ -38,7 +38,7 @@ using std::left;
 using std::right;
 using std::setprecision;
 
-rSQPTrackStatsStd::rSQPTrackStatsStd(
+MoochoTrackerStatsStd::MoochoTrackerStatsStd(
 	const ostream_ptr_t& o, const ostream_ptr_t& journal_out
 	)
 	: rSQPTrack(journal_out)
@@ -46,28 +46,28 @@ rSQPTrackStatsStd::rSQPTrackStatsStd(
 	set_output_stream(o);
 }
 
-void rSQPTrackStatsStd::set_output_stream(const ostream_ptr_t& o)
+void MoochoTrackerStatsStd::set_output_stream(const ostream_ptr_t& o)
 {
 	o_ = o;
 }
 
-const rSQPTrackStatsStd::ostream_ptr_t&
-rSQPTrackStatsStd::get_output_stream() const
+const MoochoTrackerStatsStd::ostream_ptr_t&
+MoochoTrackerStatsStd::get_output_stream() const
 {
 	return o_;
 }
 
-void rSQPTrackStatsStd::initialize()
+void MoochoTrackerStatsStd::initialize()
 {
 	num_QN_updates_ = 0;
 	timer_.reset();
 	timer_.start();
 }
 
-void rSQPTrackStatsStd::output_iteration(const Algorithm& p_algo) const
+void MoochoTrackerStatsStd::output_iteration(const Algorithm& p_algo) const
 {
-	const rSQPAlgo  &algo = rsqp_algo(p_algo);
-	const rSQPState &s    = algo.rsqp_state();
+	const NLPAlgo  &algo = rsqp_algo(p_algo);
+	const NLPAlgoState &s    = algo.rsqp_state();
 
 	// All we have to do here is to just to count the number of quasi-newton updates
 	const QuasiNewtonStats	*quasi_newt_stats =
@@ -81,13 +81,13 @@ void rSQPTrackStatsStd::output_iteration(const Algorithm& p_algo) const
 	}
 }
 
-void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
+void MoochoTrackerStatsStd::output_final( const Algorithm& p_algo
 	, EAlgoReturn algo_return ) const
 {
 	using DynamicCastHelperPack::dyn_cast;
 
-	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
-	const rSQPState          &s       = algo.rsqp_state();
+	const NLPAlgo           &algo    = rsqp_algo(p_algo);
+	const NLPAlgoState          &s       = algo.rsqp_state();
 	const NLPObjGrad     &nlp     = dyn_cast<const NLPObjGrad>(algo.nlp()); 
 	const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
 
@@ -207,4 +207,4 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

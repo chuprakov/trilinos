@@ -16,11 +16,11 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/get_init_fixed_free_indep.hpp"
+#include "MoochoPack/src/std/get_init_fixed_free_indep.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 
-void ReducedSpaceSQPPack::get_init_fixed_free_indep(
+void MoochoPack::get_init_fixed_free_indep(
 	const size_type                        n
 	,const size_type                       r
 	,const SpVectorSlice                   &nu_indep

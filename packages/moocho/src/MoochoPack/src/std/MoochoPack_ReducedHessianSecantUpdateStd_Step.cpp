@@ -15,9 +15,9 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "MoochoPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
@@ -29,14 +29,14 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
+MoochoPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
 	const secant_update_ptr_t&   secant_update
 	)
 	:secant_update_(secant_update)
 	 ,iter_k_rHL_init_ident_(-1.0) // not a valid iteration?
 {}
 
-bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
+bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
@@ -51,8 +51,8 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
+	NLPAlgo	&algo	= rsqp_algo(_algo);
+	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -264,7 +264,7 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	return return_val;
 }
 
-void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const Algorithm& algo
+void MoochoPack::ReducedHessianSecantUpdateStd_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {

@@ -16,9 +16,9 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implements "coordinate" decompostion for "Tailored Appraoch".
@@ -81,6 +81,6 @@ private:
 
 };	// end class EvalNewPointTailoredApproachCoordinate_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H

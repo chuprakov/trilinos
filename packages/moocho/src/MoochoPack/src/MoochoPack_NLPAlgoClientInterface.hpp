@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoClientInterface.hpp
+// NLPAlgoClientInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_ALGO_CLIENT_INTERFACE_H
 #define RSQP_ALGO_CLIENT_INTERFACE_H
 
-#include "rSQPSolverClientInterface.hpp"
+#include "NLPSolverClientInterface.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Interface that smart clients use to set the algorithm configuration
@@ -26,14 +26,14 @@ namespace ReducedSpaceSQPPack {
  *
  * ToDo: Finish documentation!
  */
-class rSQPAlgoClientInterface : public rSQPSolverClientInterface {
+class NLPAlgoClientInterface : public NLPSolverClientInterface {
 public:
 
 	/** @name Public Types */
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<rSQPAlgo_Config>	config_ptr_t;
+	typedef MemMngPack::ref_count_ptr<NLPAlgoConfig>	config_ptr_t;
 
 	//@}
 
@@ -47,9 +47,9 @@ public:
 	///
 	virtual const config_ptr_t& get_config() const = 0;
 	///
-	virtual rSQPAlgo_Config& config() = 0;
+	virtual NLPAlgoConfig& config() = 0;
 	///
-	virtual const rSQPAlgo_Config& config() const = 0;
+	virtual const NLPAlgoConfig& config() const = 0;
 
 	//@}
 	
@@ -73,11 +73,11 @@ private:
 
 #ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
 	///
-	rSQPAlgo_Config    *config;
+	NLPAlgoConfig    *config;
 #endif
 
-};	// end class rSQPAlgoClientInterface
+};	// end class NLPAlgoClientInterface
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_CLIENT_INTERFACE_H

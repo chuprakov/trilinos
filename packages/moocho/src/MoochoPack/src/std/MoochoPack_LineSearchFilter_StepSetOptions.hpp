@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Set options for LineSearchFilter_Step from an \c OptionsFromStream object.
@@ -55,6 +55,6 @@ class LineSearchFilter_StepSetOptions
 	
 	};	// end class LineSearchFilter_StepSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// LINE_SEARCH_FILTER_STEP_SET_OPTIONS_H

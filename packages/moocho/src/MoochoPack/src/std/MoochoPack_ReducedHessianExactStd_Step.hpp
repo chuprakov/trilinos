@@ -17,9 +17,9 @@
 #define REDUCED_HESSIAN_EXACT_STD_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "../rSQPAlgo.hpp"
+#include "../NLPAlgo.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Computes the exact reduced Hessian rHL_k = Z_k' * HL_k * Z_k
@@ -40,6 +40,6 @@ public:
 
 };	// end class ReducedGradientStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// REDUCED_HESSIAN_EXACT_STD_STEP_H

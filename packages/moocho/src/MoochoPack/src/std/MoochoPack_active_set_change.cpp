@@ -21,7 +21,7 @@
 #include "../std/active_set_change.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 
-void ReducedSpaceSQPPack::active_set_change(
+void MoochoPack::active_set_change(
 	const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep
 	,EJournalOutputLevel olevel, std::ostream* out
 	,size_type* num_adds, size_type* num_drops

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// rSQPppSolver.hpp
+// MoochoSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,15 +16,15 @@
 #ifndef RSSQPP_RSQPPP_SOLVER_H
 #define RSSQPP_RSQPPP_SOLVER_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack/src/NLPAlgoContainer.hpp"
 #include "ref_count_ptr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Universal interface to an rSQP++ solver.
@@ -32,15 +32,15 @@ namespace ReducedSpaceSQPPack {
  * This class is designed to act as a simple encapsulation to several
  * other smaller components needed to solve an NLP.  This class is an
  * instance of the popular "Facade" design pattern (Design Patterns, 1995).
- * This class has a defualt implementation based on <tt>rSQPAlgo_ConfigMamaJama</tt>
+ * This class has a defualt implementation based on <tt>NLPAlgoConfigMamaJama</tt>
  * but the client can set different algorithm configuration objects (see
  * the requirments/specifications section below).
  *
- * There are two distinct activities associated with using a <tt>rSQPppSolver</tt> object:
+ * There are two distinct activities associated with using a <tt>MoochoSolver</tt> object:
  * <ol>
  * <li> Algorithm configuration (i.e. configure an encapsulated
- *   <tt>rSQPAlgoClientInterface</tt> object with an <tt>NLP</tt> and other objects).
- * <li> NLP solution (i.e. call <tt>rSQPSolverClientInterface::find_min()</tt> on the
+ *   <tt>NLPAlgoClientInterface</tt> object with an <tt>NLP</tt> and other objects).
+ * <li> NLP solution (i.e. call <tt>NLPSolverClientInterface::find_min()</tt> on the
  *   encapuslaited solver object).
  * </ol>
  *
@@ -49,12 +49,12 @@ namespace ReducedSpaceSQPPack {
  * The NLP object is needed so that the algorithm configuration object can adapt
  * the rSQP algorithm to the NLP in the best way possible.  The configuration
  * phase can also include setting a user defined track object(s) and a user
- * defined <tt>rSQPAlgo_Config</tt> object.  An NLP is solved by calling
+ * defined <tt>NLPAlgoConfig</tt> object.  An NLP is solved by calling
  * the method <tt>this->solve_nlp()</tt> which returns an <tt>enum</tt>
  * stating what happended and reporting the final point to the <tt>NLP</tt>
  * object.
  *
- * This class encapsulates a <tt>rSQPAlgoClientInterface</tt> object and takes
+ * This class encapsulates a <tt>NLPAlgoClientInterface</tt> object and takes
  * over some of the drudgery of working with this interface.  In most cases
  * all the options that can be set to configuration object and other algorithmic
  * objects can be set using an <tt>OptionsFromStreamPack::OptionsFromStream</tt>
@@ -64,9 +64,9 @@ namespace ReducedSpaceSQPPack {
  * algorithmic objects that it creates) can be set through an
  * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object by passing it to
  * <tt>this->set_options()</tt>.  The files
- * <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>,
- * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>
- * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>
+ * <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>,
+ * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>
+ * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
  *
  * <b>Requirements / Specifications</b>
@@ -74,7 +74,7 @@ namespace ReducedSpaceSQPPack {
  * The requirements and specifications for this class are stated below.  More
  * detailed scenarios are shown else where (??? where ???).
  * <ol>
- * <li> Base default implementation on <tt>rSQPAlgo_ConfigMamaJama</tt> and require
+ * <li> Base default implementation on <tt>NLPAlgoConfigMamaJama</tt> and require
  *   minimal effort to quickly solve an NLP.  This includes setting up standard
  *   <tt>IterationPack::AlgorithmTracker</tt> objects and taking care of
  *   exceptions etc.<br>
@@ -100,17 +100,17 @@ namespace ReducedSpaceSQPPack {
  *   <tt>this->set_journal_out()</tt>.  Default output files can be overwritten
  *   between successive NLP solves by calling <tt>this->set_console_out(NULL)</tt>,
  *   <tt>this->set_summary_out(NULL)</tt> and <tt>this->set_journal_out(NULL)</tt>.
- * <li> Allow clients to set any special options in <tt>rSQPAlgo_ConfigMamaJama</tt>
+ * <li> Allow clients to set any special options in <tt>NLPAlgoConfigMamaJama</tt>
  *   beyond what can be set through the <tt>OptionsFromStream</tt> object (i.e. set
  *   a specialized <tt>BasisSystem</tt> object).<br>
  *   <b>Enabler</b>: This can be accomplished by having the client create a
- *   <tt>rSQPAlgo_ConfigMamaJama</tt> object itself and then configure it using
+ *   <tt>NLPAlgoConfigMamaJama</tt> object itself and then configure it using
  *   the published interface before explicitly setting it using <tt>this->set_config()</tt>.
  * <li> Allow clients to precisly control how an algorithm is configured and initialized
- *   beyond <tt>rSQPAlgo_ConfigMamaJama</tt> and between NLP solves.<br>
+ *   beyond <tt>NLPAlgoConfigMamaJama</tt> and between NLP solves.<br>
  *   <b>Enabler</b>:  This can be accomplised by allowing the client to set a customized
- *   <tt>rSQPAlgo_Config</tt> object.  Clients can simply modify algorithms created by
- *   <tt>rSQPAlgo_ConfigMamaJama</tt> using delegation or subclassing (delegation is
+ *   <tt>NLPAlgoConfig</tt> object.  Clients can simply modify algorithms created by
+ *   <tt>NLPAlgoConfigMamaJama</tt> using delegation or subclassing (delegation is
  *   to be prefered).
  * <li> Allow clients to solve the same NLP (i.e. same dimensions, same structure etc)
  *   multiple times with the same configured rSQP++ algorithm.<br>
@@ -130,7 +130,7 @@ namespace ReducedSpaceSQPPack {
  *
  * ToDo: Finish documentation!
  */
-class rSQPppSolver {
+class MoochoSolver {
 public:
 
 	/** Public types */
@@ -143,7 +143,7 @@ public:
 	typedef MemMngPack::ref_count_ptr<
 		IterationPack::AlgorithmTracker>                        track_ptr_t; // full path needed by doxygen
 	///
-	typedef MemMngPack::ref_count_ptr<rSQPAlgo_Config>    config_ptr_t;
+	typedef MemMngPack::ref_count_ptr<NLPAlgoConfig>    config_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<
 		OptionsFromStreamPack::OptionsFromStream>                    options_ptr_t;
@@ -176,7 +176,7 @@ public:
 	 * <li> ToDo: Fill these in!
 	 * </ul>
 	 */
-	rSQPppSolver();
+	MoochoSolver();
 
 	///
 	/** Set the NLP to be solved.
@@ -225,7 +225,7 @@ public:
 	 *                 <tt>this->solve_nlp()</tt> are called.
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>config.get() == NULL</tt>] A <tt>rSQPAlgo_ConfigMamaJama</tt>
+	 * <li> [<tt>config.get() == NULL</tt>] A <tt>NLPAlgoConfigMamaJama</tt>
 	 *   object will be used to configure the rSQP++ algorithm the next time
 	 *   that <tt>this->do_config_algo()</tt> or <tt>this->solve_nlp()</tt> are called.
 	 * <li> [<tt>config.get() != NULL</tt>] The object <tt>*config</tt> will be used
@@ -258,7 +258,7 @@ public:
 	 *                  is destroyed.
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>options.get() == NULL</tt>] The file "rSQPpp.opt" will be looked for and
+	 * <li> [<tt>options.get() == NULL</tt>] The file "Moocho.opt" will be looked for and
 	 *   opened in the current directory.  If this file does not exist, then a default
 	 *   set of options will be used.  If this file does exist then the options will be
 	 *   read from this file.
@@ -323,7 +323,7 @@ public:
 
 	///
 	/** Set the <tt>std::ostream</tt> object to use for console output
-	 * by a <tt>rSQPTrackConsoleStd</tt> object.
+	 * by a <tt>MoochoTrackerConsoleStd</tt> object.
 	 *
 	 * @param  console_out  [in] Smart pointer to an <tt>std::ostream</tt>
 	 *                      object that output appropriate for the console
@@ -333,11 +333,11 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> [<tt>summary_out.get() == NULL</tt>] The stream <tt>std::cout</tt>
-	 *   will be written to with summary output from a <tt>rSQPTrackConsoleStd</tt>
+	 *   will be written to with summary output from a <tt>MoochoTrackerConsoleStd</tt>
 	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> [<tt>console_out.get() != NULL</tt>] Output appropriate for the
 	 *   console will be sent to <tt>*console_out</tt> the next time
-	 *   <tt>this->solve_nlp()</tt> is called by a <tt>rSQPTrackConsoleStd</tt>
+	 *   <tt>this->solve_nlp()</tt> is called by a <tt>MoochoTrackerConsoleStd</tt>
 	 *   object
 	 * <li> <tt>this->get_console_out().get() == console_out.get()</tt>
 	 * </ul>
@@ -377,11 +377,11 @@ public:
 	 *                     that summary output is sent to.
 	 * 
 	 * Postconditions:<ul>
-	 * <li> [<tt>summary_out.get() == NULL</tt>] The file "rSQPppSummary.out"
-	 *   will be overwritten with summary output by a <tt>rSQPTrackSummaryStd</tt>
+	 * <li> [<tt>summary_out.get() == NULL</tt>] The file "MoochoSummary.out"
+	 *   will be overwritten with summary output by a <tt>MoochoTrackerSummaryStd</tt>
 	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> [<tt>summary_out.get() != NULL</tt>]  The stream <tt>*summary_out</tt> will
-	 *   be written to with summary output by a <tt>rSQPTrackSummaryStd</tt>
+	 *   be written to with summary output by a <tt>MoochoTrackerSummaryStd</tt>
 	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> <tt>this->get_summary_out().get() == summary_out.get()</tt>
 	 * </ul>
@@ -403,7 +403,7 @@ public:
 	 * <tt>summary_out.get() == NULL</tt> on in the last call to
 	 * <tt>this->set_summary_out(summary_out)</tt> this this method returns
 	 * <tt>return.get() == NULL</tt> which is a flag that the file
-	 * "rSQPppSummary.out" is being written to and this function does not
+	 * "MoochoSummary.out" is being written to and this function does not
 	 * provide access to that <tt>std::ofstream</tt> object.
 	 */
 	const ostream_ptr_t& get_summary_out() const;
@@ -426,12 +426,12 @@ public:
 	 *                     that journal output will be set to.
 	 *
 	 * Note that if the option
-	 * <tt>rSQPSolverClientInterface::journal_output_level == PRINT_NOTHING</tt>
+	 * <tt>NLPSolverClientInterface::journal_output_level == PRINT_NOTHING</tt>
 	 * in the last call to <tt>this->set_options(options)</tt> then no output
 	 * is sent to this stream at all.
 	 * 
 	 * Postconditions:<ul>
-	 * <li> [<tt>journal_out.get() == NULL</tt>] The file "rSQPppJournal.out"
+	 * <li> [<tt>journal_out.get() == NULL</tt>] The file "MoochoJournal.out"
 	 *   will be overwritten with journal output.
 	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> [<tt>journal_out.get() != NULL</tt>]  The stream <tt>*journal_out</tt> will
@@ -455,7 +455,7 @@ public:
 	 * <tt>journal_out.get() == NULL</tt> on in the last call to
 	 * <tt>this->set_journal_out(journal_out)</tt> this this method returns
 	 * <tt>return.get() == NULL</tt> which is a flag that the file
-	 * "rSQPppJournal.out" is being written to and this function does not
+	 * "MoochoJournal.out" is being written to and this function does not
 	 * provide access to that <tt>std::ofstream</tt> object.
 	 */
 	const ostream_ptr_t& get_journal_out() const;
@@ -487,7 +487,7 @@ public:
 	 *                   that static algorithm output will be set to.
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>algo_out.get() == NULL</tt>] The file "rSQPppAlgo.out"
+	 * <li> [<tt>algo_out.get() == NULL</tt>] The file "MoochoAlgo.out"
 	 *   will be overwritten with algorithm info.
 	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> [<tt>algo_out.get() != NULL</tt>]  The stream <tt>*algo_out</tt> will
@@ -496,7 +496,7 @@ public:
 	 * <li> <tt>this->get_algo_out().get() == algo_out.get()</tt>
 	 * </ul>
 	 *
-	 * Note that if the option <tt>rSQPSolverClientInterface::print_algo == false</tt>
+	 * Note that if the option <tt>NLPSolverClientInterface::print_algo == false</tt>
 	 * in the last call to <tt>this->set_options(options)</tt> then no output
 	 * is sent to this stream at all.
 	 *
@@ -517,7 +517,7 @@ public:
 	 * <tt>algo_out.get() == NULL</tt> on in the last call to
 	 * <tt>this->set_algo_out(algo_out)</tt> this this method returns
 	 * <tt>return.get() == NULL</tt> which is a flag that the file
-	 * "rSQPppAlgo.out" is being written to and this function does not
+	 * "MoochoAlgo.out" is being written to and this function does not
 	 * provide access to that <tt>std::ofstream</tt> object.
 	 */
 	const ostream_ptr_t& get_algo_out() const;
@@ -535,39 +535,39 @@ public:
 	 * </ul>
 	 *
 	 * <b>Algorithm configuration:</b><br>
-	 * The <tt>rSQPAlgo_Config</tt> object used to configure an optimization algorithm is specified
+	 * The <tt>NLPAlgoConfig</tt> object used to configure an optimization algorithm is specified
 	 * by <tt>*this->get_config()</tt>.  If <tt>this->get_config().get() == NULL</tt> then
-	 * the default configuratiion class <tt>rSQPAlgo_ConfigMamaJama</tt> is used.  This default
+	 * the default configuratiion class <tt>NLPAlgoConfigMamaJama</tt> is used.  This default
 	 * configuration class is full featured and should have a good shot at solving any NLP thrown at it.
 	 *
 	 * <b>Specifying options:</b><br>
 	 * The options used by the configuration object to configure the optimization algorithm as well
 	 * as solver tolerances, maximum number of iterations etc are taken from the
 	 * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
-	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'rSQPpp.opt'
+	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'Moocho.opt'
 	 * in the current directory.  If this file does not exist, then a default set of options is used
-	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>,
-	 * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>
-	 * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt> show which
-	 * options can be used with this solver interface and a <tt>rSQPAlgo_ConfigMamaJama</tt> configuration
+	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>,
+	 * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>
+	 * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt> show which
+	 * options can be used with this solver interface and a <tt>NLPAlgoConfigMamaJama</tt> configuration
 	 * object respectively.  Other configuration classes will use a different set of options.  See the
 	 * documentation for those configuration classes for details.
 	 *
 	 * <b>Outputting to streams:</b><ul>
 	 * <li> [<tt>this->do_console_outputting() == true</tt>] Output will be set to <tt>*this->get_console_out()</tt>
 	 *      (or <tt>std::cout</tt> if <tt>this->get_console_out().get() == NULL</tt>) by a
-	 *      <tt>rSQPTrackConsoleStd</tt> object.
+	 *      <tt>MoochoTrackerConsoleStd</tt> object.
 	 * <li> [<tt>this->do_summary_outputting() == true</tt>] Output will be set to <tt>*this->get_summary_out()</tt>
-	 *      (or the file 'rSQPppSummary.out' in the current directory if <tt>this->get_summary_out().get()
-	 *      == NULL</tt>) by a <tt>rSQPTrackSummaryStd</tt> object.
+	 *      (or the file 'MoochoSummary.out' in the current directory if <tt>this->get_summary_out().get()
+	 *      == NULL</tt>) by a <tt>MoochoTrackerSummaryStd</tt> object.
 	 * <li> [<tt>this->do_journal_outputting() == true</tt>] Output will be set to <tt>*this->get_journal_out()</tt>
-	 *      (or the file 'rSQPppJournal.out' in the current directory if <tt>this->get_journal_out().get()
+	 *      (or the file 'MoochoJournal.out' in the current directory if <tt>this->get_journal_out().get()
 	 *      == NULL</tt>) by the step objects in the optimization algorithm.
 	 * <li> [<tt>this->do_algo_outputting() == true</tt>] Output will be set to <tt>*this->get_algo_out()</tt>
-	 *      (or the file 'rSQPppAlgo.out' in the current directory if <tt>this->get_algo_out().get()
+	 *      (or the file 'MoochoAlgo.out' in the current directory if <tt>this->get_algo_out().get()
 	 *      == NULL</tt>) which contains information on how the optimization algorithm is configured and what
-	 *      the algorithm is (if the option 'rSQPppSolver::print_algo == true', see the options file
-	 *      <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>).
+	 *      the algorithm is (if the option 'MoochoSolver::print_algo == true', see the options file
+	 *      <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>).
 	 * </ul>
 	 *
 	 * If <tt>this->throw_exception() == false</tt> then any exceptions that may be thown
@@ -595,10 +595,10 @@ public:
 	//@{
 
 	///
-	/** Get the underlying <tt>rSQPSolverClientInterface</tt> object.
+	/** Get the underlying <tt>NLPSolverClientInterface</tt> object.
 	 *
 	 * If the algorithm has not already been configured it will be here using whatever
-	 * <tt>rSQPAlgo_Config</tt> object that it has (set using <tt>this->set_config*()</tt>
+	 * <tt>NLPAlgoConfig</tt> object that it has (set using <tt>this->set_config*()</tt>
 	 * or using the default).  Whatever options where set (i.e. using <tt>this->set_options()</tt>)
 	 * will be used when this algorithm is configured and the NLP is solved.
 	 *
@@ -612,10 +612,10 @@ public:
 	 *
 	 * ToDo: Finish documentation!
 	 */
-	rSQPSolverClientInterface& get_solver();
+	NLPSolverClientInterface& get_solver();
 
 	///
-	const rSQPSolverClientInterface& get_solver() const;
+	const NLPSolverClientInterface& get_solver() const;
 	
 	//@}
 
@@ -625,15 +625,15 @@ private:
 	// Private types
 
 	///
-	typedef MemMngPack::ref_count_ptr<rSQPSolverClientInterface>    solver_ptr_t;
+	typedef MemMngPack::ref_count_ptr<NLPSolverClientInterface>    solver_ptr_t;
 		
 	// ////////////////////////////////////
 	// Private data members
 
 #ifndef DOXYGEN_COMPILE
-	mutable rSQPAlgoContainer solver_;          // Solver object.
+	mutable NLPAlgoContainer solver_;          // Solver object.
 #else
-	mutable rSQPAlgoContainer solver;
+	mutable NLPAlgoContainer solver;
 #endif
 	mutable bool              reconfig_solver_; // If true then we must reconfigure the solver!
 	mutable value_type        workspace_MB_;
@@ -673,91 +673,91 @@ private:
 	///
 	void update_solver() const;
 
-}; // end class rSQPppSolver
+}; // end class MoochoSolver
 
-/** \defgroup rSQPppSolver_opts Options for an rSQPppSolver object.
+/** \defgroup rSQPppSolver_opts Options for an MoochoSolver object.
  *
- * The following is the contents of the file <tt>rSQPpp.opt.rSQPppSolver</tt> which
- * are options specific to the class <tt>ReducedSpaceSQPPack::rSQPppSolver</tt>.
- * For options specific to the <tt>%rSQPAlgo_ConfigMamaJama</tt> configuration class
+ * The following is the contents of the file <tt>Moocho.opt.MoochoSolver</tt> which
+ * are options specific to the class <tt>MoochoPack::MoochoSolver</tt>.
+ * For options specific to the <tt>%NLPAlgoConfigMamaJama</tt> configuration class
  * see the documentation for
- * <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>.
+ * <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>.
  *
- * \verbinclude rSQPpp.opt.rSQPppSolver
+ * \verbinclude Moocho.opt.MoochoSolver
  */
 
 /** \defgroup DecompositionSystemStateStepBuilderStd_opts Options for common builder object of type DecompositionSystemStateStepBuilderStd object.
  *
- * The following is the contents of the file <tt>rSQPpp.opt.DecompositionSystemStateStepBuilderStd</tt> which
+ * The following is the contents of the file <tt>Moocho.opt.DecompositionSystemStateStepBuilderStd</tt> which
  * are options that are shared by different specific configuration classes (for example, see
- * <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>).
+ * <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>).
  *
- * \verbinclude rSQPpp.opt.DecompositionSystemStateStepBuilderStd
+ * \verbinclude Moocho.opt.DecompositionSystemStateStepBuilderStd
  */
 
 // /////////////////////////////////////////
 // Inline members
 
 inline
-void rSQPppSolver::do_console_outputting(bool do_console_outputting)
+void MoochoSolver::do_console_outputting(bool do_console_outputting)
 {
 	do_console_outputting_ = do_console_outputting;
 }
 
 inline
-bool rSQPppSolver::do_console_outputting() const
+bool MoochoSolver::do_console_outputting() const
 {
 	return do_console_outputting_;
 }
 
 inline
-void rSQPppSolver::do_summary_outputting(bool do_summary_outputting)
+void MoochoSolver::do_summary_outputting(bool do_summary_outputting)
 {
 	do_summary_outputting_ = do_summary_outputting;
 }
 
 inline
-bool rSQPppSolver::do_summary_outputting() const
+bool MoochoSolver::do_summary_outputting() const
 {
 	return do_summary_outputting_;
 }
 
 inline
-void rSQPppSolver::do_journal_outputting(bool do_journal_outputting)
+void MoochoSolver::do_journal_outputting(bool do_journal_outputting)
 {
 	do_journal_outputting_ = do_journal_outputting;
 }
 
 inline
-bool rSQPppSolver::do_journal_outputting() const
+bool MoochoSolver::do_journal_outputting() const
 {
 	return do_journal_outputting_;
 }
 
 inline
-void rSQPppSolver::do_algo_outputting(bool do_algo_outputting)
+void MoochoSolver::do_algo_outputting(bool do_algo_outputting)
 {
 	do_algo_outputting_ = do_algo_outputting;
 }
 
 inline
-bool rSQPppSolver::do_algo_outputting() const
+bool MoochoSolver::do_algo_outputting() const
 {
 	return do_algo_outputting_;
 }
 
 inline
-void rSQPppSolver::generate_stats_file(bool generate_stats_file)
+void MoochoSolver::generate_stats_file(bool generate_stats_file)
 {
 	generate_stats_file_ = generate_stats_file;
 }
 
 inline
-bool rSQPppSolver::generate_stats_file() const
+bool MoochoSolver::generate_stats_file() const
 {
 	return generate_stats_file_;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // RSSQPP_RSQPPP_SOLVER_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterfaceSetOptions.hpp
+// NLPSolverClientInterfaceSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,21 +16,21 @@
 #ifndef RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 #define RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 
-#include "rSQPSolverClientInterface.hpp"
+#include "NLPSolverClientInterface.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** Set options for rSQPSolverClientInterface from an \c OptionsFromStream object.
+/** Set options for NLPSolverClientInterface from an \c OptionsFromStream object.
  *
- * The default options group name is rSQPSolverClientInterface.
+ * The default options group name is NLPSolverClientInterface.
  *
  * The options group is:
  *
  \verbatim
-	options_group rSQPSolverClientInterface {
+	options_group NLPSolverClientInterface {
         max_iter = ?;
         max_run_time = ?;  *** In minutes
         opt_tol = ?;
@@ -43,28 +43,28 @@ namespace ReducedSpaceSQPPack {
 	}
  \endverbatim
  *
- * See the class \c rSQPSolverClientInterface for a description of these
+ * See the class \c NLPSolverClientInterface for a description of these
  * parameters.
  */
-class rSQPSolverClientInterfaceSetOptions
+class NLPSolverClientInterfaceSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			rSQPSolverClientInterface >
+			NLPSolverClientInterface >
 {
 public:
 
 	///
-	rSQPSolverClientInterfaceSetOptions(
-		  rSQPSolverClientInterface* target = 0
-		, const char opt_grp_name[] = "rSQPSolverClientInterface" );
+	NLPSolverClientInterfaceSetOptions(
+		  NLPSolverClientInterface* target = 0
+		, const char opt_grp_name[] = "NLPSolverClientInterface" );
 
 protected:
 
 	/// Overridden from SetOptionsFromStreamNode
 	void set_option( int option_num, const std::string& option_value );
 
-};	// end class rSQPSolverClientInterfaceSetOptions
+};	// end class NLPSolverClientInterfaceSetOptions
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H

@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergence_Strategy.hpp"
+#include "MoochoPack/src/std/CheckConvergence_Strategy.hpp"
 #include "StringToBool.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///*******************************************
 //  CheckConvergence_Strategy
@@ -143,4 +143,4 @@ void CheckConvergence_StrategySetOptions::set_option(
 		}
 	}
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -16,10 +16,10 @@
 #ifndef MERIT_FUNC_DUMMY_UPDATE_STEP_H
 #define MERIT_FUNC_DUMMY_UPDATE_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Simply updates <tt>merit_func_nlp_k = merit_func_nlp_km1</tt>
@@ -41,6 +41,6 @@ public:
 
 };	// end class MeritFunc_DummyUpdate_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// MERIT_FUNC_DUMMY_UPDATE_STEP_H

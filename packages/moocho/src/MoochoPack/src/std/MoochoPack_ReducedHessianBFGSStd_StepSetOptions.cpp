@@ -42,7 +42,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ReducedHessianBFGSStd_StepSetOptions::ReducedHessianBFGSStd_StepSetOptions(
 			  ReducedHessianBFGSStd_Step* target
@@ -92,4 +92,4 @@ void ReducedHessianBFGSStd_StepSetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

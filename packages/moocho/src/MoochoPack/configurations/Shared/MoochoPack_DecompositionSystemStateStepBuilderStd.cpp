@@ -34,8 +34,8 @@
 // Range/null decomposition
 
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
+#include "MoochoPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
+#include "MoochoPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemCoordinate.hpp"
@@ -48,15 +48,15 @@
 
 // Eval new point
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "MoochoPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 
 // Other classes
 
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
 #include "ConstrainedOptPack/src/misc/VariableBoundsTesterSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
@@ -72,11 +72,11 @@ namespace {
 	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
 } // end namespace
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 //
 // Here is where we define the default values for the algorithm.  These
-// should agree with what are in the rSQPpp.opt.rSQPAlgo_ConfigMamaJama file.
+// should agree with what are in the Moocho.opt.NLPAlgoConfigMamaJama file.
 //
 DecompositionSystemStateStepBuilderStd::SOptionValues::SOptionValues()
 	:null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
@@ -143,7 +143,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 		else {
 			THROW_EXCEPTION(
 				true, std::logic_error
-				,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+				,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 				"the NLP object of type \'" << typeid(nlp).name() <<
 				"\' does not support the NLPDirect or "
 				"NLPFirstOrder interfaces!" );
@@ -333,7 +333,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	,NLPDirect                                             *nlp_fod
 	,bool                                                            tailored_approach
 	,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
-	,const MemMngPack::ref_count_ptr<rSQPState>                      &state
+	,const MemMngPack::ref_count_ptr<NLPAlgoState>                      &state
 	)
 {
 	namespace mmp = MemMngPack;
@@ -691,7 +691,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"null_space_matrix\" "
 							", Only the options for Z of EXPLICIT, IMPLICIT"
 							", and AUTO are avalible."	);
@@ -710,7 +710,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"range_space_matrix\" "
 							", Only the options for Z of COORDINATE,"
 							", ORTHOGONAL and AUTO are avalible."	);
@@ -775,4 +775,4 @@ void DecompositionSystemStateStepBuilderStd::set_default_options(
 			<< "\n*** End setting default options\n";
 }
 
-} // end class ReducedSpaceSQPPack
+} // end class MoochoPack

@@ -18,7 +18,7 @@
 
 #include "../rSQPAlgo_Step.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Computes and outputs the number of fixed variables from the dependent
@@ -42,6 +42,6 @@ public:
 
 };	// end class NumFixedDepIndep_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// NUM_FIXED_DEP_INDEP_ADDED_STEP_H

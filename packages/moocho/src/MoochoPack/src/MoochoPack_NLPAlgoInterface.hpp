@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoInterface.hpp
+// NLPAlgoInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,21 +16,21 @@
 #ifndef RSQP_ALGO_INTERFACE_H
 #define RSQP_ALGO_INTERFACE_H
 
-#include "ReducedSpaceSQPPackTypes.hpp"
-#include "rSQPSolverClientInterface.hpp"
+#include "MoochoPackTypes.hpp"
+#include "NLPSolverClientInterface.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
-/** Interface \c rSQPAlgoContainer uses to access \c rSQPAlgo.
+/** Interface \c NLPAlgoContainer uses to access \c NLPAlgo.
  *
- * This interface helps avoid dangerous usage stategies for an \c rSQPAlgo object.
+ * This interface helps avoid dangerous usage stategies for an \c NLPAlgo object.
  */
-class rSQPAlgoInterface {
+class NLPAlgoInterface {
 public:
 
 	///
-	virtual ~rSQPAlgoInterface() {}
+	virtual ~NLPAlgoInterface() {}
 
 	///
 	/** Print the algorithm description.
@@ -44,12 +44,12 @@ public:
 	  * if the maximum number of iterations was reached before the
 	  * solution was found.
 	  */
-	virtual rSQPSolverClientInterface::EFindMinReturn dispatch() = 0;
+	virtual NLPSolverClientInterface::EFindMinReturn dispatch() = 0;
 
 	///
 	/** Return the state object.
 	 */
-	virtual const rSQPState& retrieve_state() const = 0;
+	virtual const NLPAlgoState& retrieve_state() const = 0;
 
 	/** @name Algorithm timing */
 	//@{
@@ -63,8 +63,8 @@ public:
 
 	//@}
 
-};	// end class rSQPAlgoInterface
+};	// end class NLPAlgoInterface
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// RSQP_ALGO_INTERFACE_H

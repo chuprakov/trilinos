@@ -28,15 +28,15 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/IpState.hpp"
+#include "MoochoPack/src/std/UpdateReducedSigma_Step.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 
 #include "StringToIntMap.hpp"
 
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 UpdateReducedSigma_Step::UpdateReducedSigma_Step(
   const e_update_methods update_method
@@ -53,8 +53,8 @@ bool UpdateReducedSigma_Step::do_step(
 	using DynamicCastHelperPack::dyn_cast;
 	using IterationPack::print_algorithm_step;
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
+	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+	IpState             &s      = dyn_cast<IpState>(_algo.state());
 	
 	EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
 	std::ostream        &out    = algo.track().journal_out();
@@ -116,7 +116,7 @@ void UpdateReducedSigma_Step::print_step(
 	}
 
 void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
-	rSQPAlgo& algo, ipState& s, EJournalOutputLevel olevel,  std::ostream& out
+	NLPAlgo& algo, IpState& s, EJournalOutputLevel olevel,  std::ostream& out
 	)
 	{
 	namespace mmp = MemMngPack;
@@ -330,4 +330,4 @@ void UpdateReducedSigma_StepSetOptions::set_option(
 		}
 	}
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

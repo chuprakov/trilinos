@@ -19,7 +19,7 @@
 #include "../rSQPAlgo_Step.h"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Compute a dampening term zeta_k for the cross term w_k such that
@@ -69,6 +69,6 @@ public:
 
 };	// end class DampenCrossTermStd_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// DAMPEN_CROSS_TERM_STD_STEP_H

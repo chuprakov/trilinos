@@ -18,7 +18,7 @@
 
 #include "QuasiRangeSpaceStep_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Strategy class for computing a quasi-range-space step by solving
@@ -40,7 +40,7 @@ public:
 	 \endverbatim
 	 */
  	 bool solve_quasi_range_space_step(
-		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 		,const Vector& xo, const Vector& c_xo, VectorMutable* v
 	  	);
 
@@ -51,6 +51,6 @@ public:
 
 }; // end class QuasiRangeSpaceStepStd_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // QUASI_RANGE_SPACE_STEP_STD_STRATEGY_H

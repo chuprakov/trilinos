@@ -16,9 +16,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "MoochoPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
@@ -32,7 +32,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 // Constructors / initializers
 
@@ -42,8 +42,8 @@ DecompositionSystemHandlerStd_Strategy::DecompositionSystemHandlerStd_Strategy()
 // Overridden from DecompositionSystemHandler_Strategy
 
 bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
-	rSQPAlgo                                &algo
-	,rSQPState                              &s
+	NLPAlgo                                &algo
+	,NLPAlgoState                              &s
 	,NLPFirstOrder                      &nlp
 	,EDecompSysTesting                      decomp_sys_testing
 	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
@@ -142,8 +142,8 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 }
 
 void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
-	const rSQPAlgo                          &algo
-	,const rSQPState                        &s
+	const NLPAlgo                          &algo
+	,const NLPAlgoState                        &s
 	,std::ostream                           &out
 	,const std::string                      &L
 	) const
@@ -159,4 +159,4 @@ void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

@@ -38,7 +38,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions(
 	ReducedHessianSecantUpdateBFGSProjected_Strategy* target
@@ -69,4 +69,4 @@ void ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

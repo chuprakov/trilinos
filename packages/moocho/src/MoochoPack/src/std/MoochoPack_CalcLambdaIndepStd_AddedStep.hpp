@@ -18,7 +18,7 @@
 
 #include "../rSQPAlgo_Step.h"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculates the lagrange multipliers for the independent constraints.
@@ -39,6 +39,6 @@ public:
 
 };	// end class CalcLambdaIndepStd_AddedStep
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// CALC_LAMBDA_INDEP_STD_ADDED_STEP_H

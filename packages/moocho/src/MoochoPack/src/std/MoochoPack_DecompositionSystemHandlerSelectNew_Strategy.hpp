@@ -18,7 +18,7 @@
 
 #include "DecompositionSystemHandler_Strategy.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Interface for range/null decomposition handling.
@@ -38,6 +38,6 @@ public:
 
 }; // end class DecompositionSystemHandlerSelectNew_Strategy
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // DECOMPOSITION_SYSTEM_HANDLER_SELECT_NEW_STRATEGY_H

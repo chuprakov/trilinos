@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Strategy interface for performing secant updates {abstract}.
@@ -54,10 +54,10 @@ public:
 	 *                used in order to deliver a beter initial update.
 	 * @param  out    [out] Output stream journal data is written to.
 	 * @param  olevel [in] Output level for printing to <tt>out</tt>
-	 * @param  algo   [in/out] The rSQPAlgo object.  This object can be queryed for
+	 * @param  algo   [in/out] The NLPAlgo object.  This object can be queryed for
 	 *                information and also be called to redirect control (in which
 	 *                case this function should probably return false).
-	 * @param  s      [in/out] rSQPState object.  May be queried or modified if needed.
+	 * @param  s      [in/out] NLPAlgoState object.  May be queried or modified if needed.
 	 * @param  rHL_k  [in/out] The matrix to be updated.  Note that <tt>rHL_k</tt> was already
 	 *                set to <tt>rHL_km1</tt> before this call was made.  Also, <tt>rHL_k</tt> will
 	 *                probably have to support the <tt>MatrixSymSecant</tt> interface
@@ -72,8 +72,8 @@ public:
 		,bool                   first_update
 		,std::ostream           & out
 		,EJournalOutputLevel    olevel
-		,rSQPAlgo               *algo
-		,rSQPState              *s
+		,NLPAlgo               *algo
+		,NLPAlgoState              *s
 		,MatrixSymOp        *rHL_k
 		) = 0;
 	
@@ -85,6 +85,6 @@ public:
 
 }; // end class ReducedHessianSecantUpdate_Strategy
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H

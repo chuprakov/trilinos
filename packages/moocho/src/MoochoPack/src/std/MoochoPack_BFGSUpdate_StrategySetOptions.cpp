@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
+#include "MoochoPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
 #include "StringToBool.hpp"
 
 // Define the options
@@ -42,7 +42,7 @@ namespace {
 
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 BFGSUpdate_StrategySetOptions::BFGSUpdate_StrategySetOptions(
 			  BFGSUpdate_Strategy* target
@@ -92,4 +92,4 @@ void BFGSUpdate_StrategySetOptions::set_option(
 	}
 }
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 

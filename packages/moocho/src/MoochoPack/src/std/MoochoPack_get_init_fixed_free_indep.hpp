@@ -16,9 +16,9 @@
 #ifndef GET_INIT_FIXED_FREE_INDEP_H
 #define GET_INIT_FIXED_FREE_INDEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Determine the set of initially fixed and free independent variables.
@@ -57,6 +57,6 @@ void get_init_fixed_free_indep(
 	,ConstrainedOptPack::EBounds  bnd_fixed[]
 	);
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack
 
 #endif // GET_INIT_FIXED_FREE_INDEP_H

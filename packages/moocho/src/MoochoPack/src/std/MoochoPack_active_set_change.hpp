@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "../ReducedSpaceSQPPackTypes.hpp"
+#include "../MoochoPackTypes.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Calculate the change in the active set and output change
@@ -59,6 +59,6 @@ void active_set_change(
 	,size_type* num_active_indep, size_type* num_adds_indep, size_type* num_drops_indep
 	); 
 
-}	// end namespace ReducedSpaceSQPPack
+}	// end namespace MoochoPack
 
 #endif	// ACTIVE_SET_CHANGE_H

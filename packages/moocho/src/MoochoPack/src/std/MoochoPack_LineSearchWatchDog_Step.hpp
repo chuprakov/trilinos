@@ -24,7 +24,7 @@
 #include "MiStandardAggregationMacros.h"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Implements watchdog line search.
@@ -91,6 +91,6 @@ private:
 	
 };	// end class LineSearchWatchDog_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+}	// end namespace MoochoPack 
 
 #endif	// LINE_SEARCH_WATCH_DOG_STEP_H

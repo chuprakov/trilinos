@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
-#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "MoochoPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
+#include "MoochoPack/src/NLPAlgo.hpp"
+#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack/src/MoochoPackExceptions.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 FeasibilityStepReducedStd_Strategy::FeasibilityStepReducedStd_Strategy(
 	const quasi_range_space_step_ptr_t   &quasi_range_space_step
@@ -39,7 +39,7 @@ FeasibilityStepReducedStd_Strategy::FeasibilityStepReducedStd_Strategy(
 {}
 
 bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
-	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
+	std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
 	,const Vector& xo, const Vector& c_xo, VectorMutable* w
   	)
 {
@@ -580,4 +580,4 @@ void FeasibilityStepReducedStd_Strategy::print_step( std::ostream& out, const st
 		;
 }
 
-} // end namespace ReducedSpaceSQPPack
+} // end namespace MoochoPack

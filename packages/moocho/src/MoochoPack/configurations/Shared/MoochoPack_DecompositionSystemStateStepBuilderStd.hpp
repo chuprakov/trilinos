@@ -16,23 +16,23 @@
 #ifndef DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 #define DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "MoochoPack/src/MoochoPackTypes.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #endif
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelection_Strategy.hpp"
+#include "MoochoPack/src/std/NewDecompositionSelection_Strategy.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
 }
 
-namespace ReducedSpaceSQPPack {
+namespace MoochoPack {
 
 ///
 /** Standard builder object for creating DecompositionSystem, EvalNewPoint Step and other objects
  * and setting up some of the state object.
  *
- * This class is designed to be used by <tt>rSQPAlgo_Config</tt> subclasses based on SQP
+ * This class is designed to be used by <tt>NLPAlgoConfig</tt> subclasses based on SQP
  * and performs many different tasks that are common to all of these algorithms.
  *
  * ToDo: Finish documentation!
@@ -132,7 +132,7 @@ public:
 		,NLPDirect                                             *nlp_fod
 		,bool                                                            tailored_approach
 		,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
-		,const MemMngPack::ref_count_ptr<rSQPState>                      &state
+		,const MemMngPack::ref_count_ptr<NLPAlgoState>                      &state
 		);
 
 	///
@@ -203,6 +203,6 @@ DecompositionSystemStateStepBuilderStd::current_option_values()
 	return cov_;
 }
 
-}  // end namespace ReducedSpaceSQPPack
+}  // end namespace MoochoPack
 
 #endif // DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
