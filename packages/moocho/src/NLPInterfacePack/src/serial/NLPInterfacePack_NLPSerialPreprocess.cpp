@@ -872,9 +872,6 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			,"Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
 		basis_file >> n;
 		THROW_EXCEPTION(
-#ifdef _GNU_GXX
-			n == NAN ||
-#endif
 			n <= 0, std::logic_error
 			, "Incorrect basis file format - n > 0 \"" << n << "\" found.");
 
@@ -885,9 +882,6 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			,"Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
 		basis_file >> m;
 		THROW_EXCEPTION(
-#ifdef _GNU_GXX
-			m == NAN ||
-#endif
 			m > n , std::logic_error
 			,"Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
 		
@@ -898,9 +892,6 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			,"Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
 		basis_file >> r;
 		THROW_EXCEPTION(
-#ifdef _GNU_GXX
-			r == NAN ||
-#endif
 			r > m, std::logic_error
 			,"Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
 		if (rank)
@@ -917,9 +908,6 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			int var_index;
 			basis_file >> var_index;
 			THROW_EXCEPTION(
-#ifdef _GNU_GXX
-				var_index == NAN ||
-#endif
 				var_index >= n, std::logic_error
 				,"Incorrect basis file format for var_perm: 0 <= indice <= n expected, \"" << n << "\" found.");
 			(*var_perm)(i) = var_index;
@@ -936,9 +924,6 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			int equ_index;
 			basis_file >> equ_index;
 			THROW_EXCEPTION(
-#ifdef _GNU_GXX
-				equ_index == NAN ||
-#endif
 				equ_index >= m, std::logic_error
 				,"Incorrect basis file format for equ_perm: 0 <= indice <= m expected, \"" << n << "\" found.");
 			(*equ_perm)(i) = equ_index;
