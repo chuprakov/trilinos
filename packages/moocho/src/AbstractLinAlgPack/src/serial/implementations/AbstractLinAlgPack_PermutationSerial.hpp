@@ -16,7 +16,7 @@
 #ifndef SLAP_PERMUTATION_SERIAL_H
 #define SLAP_PERMUTATION_SERIAL_H
 
-#include "VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
 
 namespace AbstractLinAlgPack {

@@ -13,7 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+// Include the types from DenseLinAlgPack
+#include "DenseLinAlgPack/src/DenseLinAlgPackPublicTypes.ud"
+
+//
 // Main interface library
+//
 
 typedef AbstractLinAlgPack::size_type   size_type;
 typedef AbstractLinAlgPack::value_type  value_type;
@@ -60,7 +65,9 @@ using AbstractLinAlgPack::GenPermMatrixSlice;
 using AbstractLinAlgPack::SpVector;
 using AbstractLinAlgPack::SpVectorSlice;
 
+//
 // Tools library
+//
 
 using AbstractLinAlgPack::PermVector;
 
@@ -83,3 +90,38 @@ using AbstractLinAlgPack::VectorSpaceTesterSetOptions;
 using AbstractLinAlgPack::MatrixOpNonsingTester;
 using AbstractLinAlgPack::BasisSystemTester;
 using AbstractLinAlgPack::BasisSystemTesterSetOptions;
+
+//
+// Serial interface library
+//
+
+using AbstractLinAlgPack::VectorDenseEncap;
+using AbstractLinAlgPack::VectorDenseMutableEncap;
+using AbstractLinAlgPack::MatrixDenseEncap;
+using AbstractLinAlgPack::MatrixDenseMutableEncap;
+using AbstractLinAlgPack::MatrixDenseSymEncap;
+using AbstractLinAlgPack::MatrixDenseSymMutableEncap;
+using AbstractLinAlgPack::MatrixDenseTriEncap;
+using AbstractLinAlgPack::MatrixWithOpSerial;
+using AbstractLinAlgPack::MatrixNonsingularSerial;
+using AbstractLinAlgPack::MatrixWithOpNonsingularSerial;
+using AbstractLinAlgPack::MatrixSymDenseInitialize;
+using AbstractLinAlgPack::MatrixSymWithOpSerial;
+using AbstractLinAlgPack::MatrixSymNonsingularSerial;
+using AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial;
+using AbstractLinAlgPack::MatrixSymDiagonalSparse;
+using AbstractLinAlgPack::MatrixLoadSparseElements;
+using AbstractLinAlgPack::MatrixConvertToSparse;
+using AbstractLinAlgPack::MatrixExtractSparseElements;
+using AbstractLinAlgPack::MatrixExtractInvCholFactor;
+using AbstractLinAlgPack::MatrixSymWithOpGetGMSSymMutable;
+using AbstractLinAlgPack::MatrixSymWithOpGetGMSSym;
+using AbstractLinAlgPack::MatrixSymAddDelUpdateable;
+using AbstractLinAlgPack::PermutationSerial;
+using AbstractLinAlgPack::VectorSpaceSerial;
+using AbstractLinAlgPack::VectorWithOpMutableDense;
+using AbstractLinAlgPack::VectorWithOpSparse;
+using AbstractLinAlgPack::MatrixSparseCOORSerial;
+using AbstractLinAlgPack::MatrixSymPosDefCholFactor;
+using AbstractLinAlgPack::MatrixConvertToSparseEncap;
+using AbstractLinAlgPack::MultiVectorMutableDense;

@@ -22,7 +22,7 @@
 #include "MatrixSymHessianRelaxNonSing.hpp"
 #include "ConstraintsRelaxedStd.hpp"
 #include "MatrixSymAddDelBunchKaufman.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

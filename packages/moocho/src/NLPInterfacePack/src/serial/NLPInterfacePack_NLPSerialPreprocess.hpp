@@ -20,7 +20,7 @@
 
 #include "NLPFirstOrderInfo.hpp"
 #include "NLPVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"

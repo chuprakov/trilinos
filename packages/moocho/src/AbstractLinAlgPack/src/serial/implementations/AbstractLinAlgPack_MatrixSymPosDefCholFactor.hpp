@@ -17,11 +17,11 @@
 #define MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "MatrixExtractInvCholFactor.hpp"
-#include "MatrixSymAddDelUpdateable.hpp"
-#include "MatrixSymWithOpNonsingularSerial.hpp"
-#include "MatrixSymDenseInitialize.hpp"
-#include "MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"

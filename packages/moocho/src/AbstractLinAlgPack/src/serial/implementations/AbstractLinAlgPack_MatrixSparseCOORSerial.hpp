@@ -17,9 +17,9 @@
 #define MATRIX_SPARSE_COOR_SERIAL_H
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "VectorSpaceSerial.hpp"
-#include "MatrixLoadSparseElements.hpp"
-#include "MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixLoadSparseElements.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {

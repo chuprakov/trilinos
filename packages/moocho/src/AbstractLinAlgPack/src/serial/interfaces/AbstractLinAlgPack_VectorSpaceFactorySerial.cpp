@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 
 namespace AbstractLinAlgPack {
 

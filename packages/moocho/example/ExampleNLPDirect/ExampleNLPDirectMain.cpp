@@ -28,7 +28,7 @@
 
 #include "ExampleNLPFirstOrderDirectRun.hpp"
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "OptionsFromStream.hpp"
 #include "WorkspacePack.hpp"
 #include "oblackholestream.hpp"

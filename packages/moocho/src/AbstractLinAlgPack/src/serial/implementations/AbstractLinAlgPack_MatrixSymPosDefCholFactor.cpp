@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/rank_2_chol_update.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPack.hpp"

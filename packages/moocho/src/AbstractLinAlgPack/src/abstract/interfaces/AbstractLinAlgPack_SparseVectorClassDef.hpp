@@ -229,23 +229,23 @@ SparseVector<T_Element,T_Alloc>::operator=(
 template <class T_Element, class T_Alloc>
 EOverLap SparseVector<T_Element,T_Alloc>::overlap(const SparseVectorSlice<T_Element>& sv) const
 {
-	if(!sv.dim()) return AbstractLinAlgPack::NO_OVERLAP;
+	if(!sv.dim()) return DenseLinAlgPack::NO_OVERLAP;
 
 	const_iterator										this_begin	= begin();
 	SparseVectorSlice<T_Element>::const_iterator		sv_begin	= sv.begin();
 
 	if( this_begin == sv_begin && end() == sv.end() )
 	{
-		return AbstractLinAlgPack::SAME_MEM;
+		return DenseLinAlgPack::SAME_MEM;
 	}
 
 	if(		( this_begin < sv_begin && end() < sv_begin )
 		||	( sv_begin < this_begin && sv.end() < this_begin )	)
 	{
-		return AbstractLinAlgPack::NO_OVERLAP;
+		return DenseLinAlgPack::NO_OVERLAP;
 	}
 
-	return AbstractLinAlgPack::SOME_OVERLAP;
+	return DenseLinAlgPack::SOME_OVERLAP;
 }
 
 template <class T_Element, class T_Alloc>
@@ -392,23 +392,23 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
 template <class T_Element>
 EOverLap SparseVectorSlice<T_Element>::overlap(const SparseVectorSlice<T_Element>& sv) const
 {
-	if(!sv.dim()) return AbstractLinAlgPack::NO_OVERLAP;
+	if(!sv.dim()) return DenseLinAlgPack::NO_OVERLAP;
 
 	const_iterator					this_begin	= begin(),
 									sv_begin	= sv.begin();
 
 	if( this_begin == sv_begin && end() == sv.end() )
 	{
-		return AbstractLinAlgPack::SAME_MEM;
+		return DenseLinAlgPack::SAME_MEM;
 	}
 
 	if(		( this_begin < sv_begin && end() < sv_begin )
 		||	( sv_begin < this_begin && sv.end() < this_begin )	)
 	{
-		return AbstractLinAlgPack::NO_OVERLAP;
+		return DenseLinAlgPack::NO_OVERLAP;
 	}
 
-	return AbstractLinAlgPack::SOME_OVERLAP;
+	return DenseLinAlgPack::SOME_OVERLAP;
 }
 
 } // end namespace AbstractLinAlgPack 
