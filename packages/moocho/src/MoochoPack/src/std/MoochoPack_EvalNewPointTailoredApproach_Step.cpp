@@ -14,6 +14,7 @@
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "ConstrainedOptimizationPack/include/DenseIdentVertConcatMatrixSubclass.h"
+#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -105,6 +106,19 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	assert_print_nan_inf(s.Gf().get_k(0)(), "Gf_k",true,&out); 
 	assert_print_nan_inf(s.py().get_k(0)(), "py_k",true,&out); 
 
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		out
+			<< "\nf_k           = "	<< s.f().get_k(0)
+			<< "\n||Gf_k||inf   = "	<< s.Gf().get_k(0).norm_inf()
+			<< "\n||c_k||inf    = " << s.c().get_k(0).norm_inf()
+			<< "\n";
+	}
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+		out	<< "\nGf_k = \n" << s.Gf().get_k(0)();
+		out	<< "\nc_k  = \n" << s.c().get_k(0)() << "\n";
+	}
+
 	// Check the derivatives if we are checking the results
 	if(		fd_deriv_testing() == FD_TEST
 		|| ( fd_deriv_testing() == FD_DEFAULT && algo.algo_cntr().check_results() )  )
@@ -115,12 +129,13 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 		}
 
 		const bool result = deriv_tester().finite_diff_check(
-			  &nlp, D, s.py().get_k(0)(), s.Gf().get_k(0)(), s.c().get_k(0)(), x()
+			  &nlp, x(), &nlp.xl(), &nlp.xu(), algo.algo_cntr().max_var_bounds_viol()
+			, &D, &s.py().get_k(0)(), &s.Gf().get_k(0)(), &s.c().get_k(0)()
 			, olevel >= PRINT_VECTORS
 			, ( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : 0 );
 		if( !result ) {
 			throw std::logic_error( "EvalNewPointTailoredApproach_Step::do_step(...) : "
-				"Error, the finite test of the first derivatives of the NLP failed" );
+				"Error, the finite derivative test of the first derivatives of the NLP failed" );
 		}
 	}
 
@@ -128,17 +143,12 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	calc_py_Ypy( D, &s.py().get_k(0).v()(), &s.Ypy().set_k(0).v(), olevel, out ); 
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nf_k           = "	<< s.f().get_k(0)
-			<< "\n||Gf_k||inf   = "	<< s.Gf().get_k(0).norm_inf()
-			<< "\n||c_k||inf    = " << s.c().get_k(0).norm_inf()
-			<< "\n||py_k||inf   = " << s.py().get_k(0).norm_inf()
+		out	<< "\n||py_k||inf   = " << s.py().get_k(0).norm_inf()
 			<< "\n||Ypy_k||inf  = " << s.py().get_k(0).norm_inf()
 			<< "\n";
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nGf_k = \n" << s.Gf().get_k(0)();
-		out	<< "\nc_k  = \n" << s.c().get_k(0)();
 		out	<< "\npy_k = \n" << s.py().get_k(0)();
 		out	<< "\nYpy_k = \n" << s.Ypy().get_k(0)()	<< "\n";
 	}

@@ -8,7 +8,6 @@
 
 #include "../../include/std/InitFinDiffReducedHessian_Step.h"
 #include "../../include/std/quasi_newton_stats.h"
-#include "../../include/std/max_near_feas_step.h"
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
@@ -16,6 +15,7 @@
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
+#include "SparseLinAlgPack/include/max_near_feas_step.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -63,6 +63,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
+	using SparseLinAlgPack::max_near_feas_step;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();

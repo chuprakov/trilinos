@@ -599,7 +599,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				deriv_tester_ptr_t;
 
 			nonconst_deriv_tester_ptr_t
-				deriv_tester = new NLPrSQPTailoredApproachTester();
+				deriv_tester = new NLPrSQPTailoredApproachTester(
+										NLPrSQPTailoredApproachTester::FD_DIRECTIONAL		// Gf
+										,NLPrSQPTailoredApproachTester::FD_COMPUTE_ALL		// -Inv(C)*N
+										);
 
 			{
 				NLPrSQPTailoredApproachTesterSetOptions options_setter(deriv_tester.get());

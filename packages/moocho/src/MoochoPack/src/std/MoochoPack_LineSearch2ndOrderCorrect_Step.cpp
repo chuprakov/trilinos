@@ -9,7 +9,6 @@
 
 #include "../../include/std/LineSearch2ndOrderCorrect_Step.h"
 #include "../../include/rsqp_algo_conversion.h"
-#include "../../include/std/max_near_feas_step.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
@@ -19,6 +18,7 @@
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
+#include "SparseLinAlgPack/include/max_near_feas_step.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -69,6 +69,8 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
+
+	using SparseLinAlgPack::max_near_feas_step;
 
 	using ConstrainedOptimizationPack::print_vector_change_stats;
 
