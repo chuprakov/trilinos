@@ -112,31 +112,31 @@ TSFParameter TSFParameterListImplem::getParameter(const string& name) const
 
 void TSFParameterListImplem::setValue(const string& name, char value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 
 void TSFParameterListImplem::setValue(const string& name, const string& value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 
 void TSFParameterListImplem::setValue(const string& name, int value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 
 void TSFParameterListImplem::setValue(const string& name, const TSFArray<int>& value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 
 void TSFParameterListImplem::setValue(const string& name, double value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 void TSFParameterListImplem::setValue(const string& name, const TSFArray<double>& value) 
 {
-	getParameter(name).set(value);
+	parameters_.put(name, TSFParameter(name, value));
 }
 
 void TSFParameterListImplem::print(ostream& os, int indentDepth) const 
