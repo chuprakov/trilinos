@@ -65,9 +65,22 @@ public:
 	using MultiVector::diag;
 
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>         vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>       vec_mut_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MultiVectorMutable>    multi_vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>  multi_vec_mut_ptr_t;
+
+	/** @name Clone */
+	//@{
+
+	///
+	/** Clone the non-const multi-vector object.
+	 *
+	 * The default implementation creates a new multi-vector
+	 * and then copies the values.
+	 */
+	virtual multi_vec_mut_ptr_t mv_clone();
+
+	//@}
 
 	/** @name Provide mutable row, column and/or diagonal access */
 	//@{
@@ -130,15 +143,40 @@ public:
 
 	//@}
 
+	/** @name Overridden from MatrixOp */
+	//@{
+
+	///
+	mat_mut_ptr_t clone();
+	///
+	void zero_out();
+	///
+	void Mt_S( value_type alpha );
+	///
+	MatrixOp& operator=(const MatrixOp& mwo_rhs);
+	///
+	bool Mp_StM(
+		MatrixOp* mwo_lhs, value_type alpha
+		,BLAS_Cpp::Transp trans_rhs
+		) const;
+	///
+	bool Mp_StM(
+		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+		);
+
+	//@}
+
 	/** @name Overridden from MultiVector */
 	//@{
 
 	///
-	virtual vec_ptr_t col(index_type j) const;
+	multi_vec_ptr_t mv_clone() const;
 	///
-	virtual vec_ptr_t row(index_type i) const;
+	vec_ptr_t col(index_type j) const;
 	///
-	virtual vec_ptr_t diag(int k) const;
+	vec_ptr_t row(index_type i) const;
+	///
+	vec_ptr_t diag(int k) const;
 	///
 	multi_vec_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 

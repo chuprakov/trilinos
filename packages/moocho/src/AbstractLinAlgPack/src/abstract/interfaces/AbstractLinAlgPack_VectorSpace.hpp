@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_SPACE_H
-#define VECTOR_SPACE_H
+#ifndef ALAP_VECTOR_SPACE_HPP
+#define ALAP_VECTOR_SPACE_HPP
 
 #include "InnerProduct.hpp"
 #include "AbstractFactory.hpp"
@@ -121,7 +121,7 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpaceFactory>    space_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>         vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorMutable>               vec_mut_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
@@ -381,4 +381,4 @@ VectorSpace::sub_space( const index_type il, const index_type iu ) const
 
 } // end namespace AbstractLinAlgPack
 
-#endif  // VECTOR_SPACE_H
+#endif  // ALAP_VECTOR_SPACE_HPP

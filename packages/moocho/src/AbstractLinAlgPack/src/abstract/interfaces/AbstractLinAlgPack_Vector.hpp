@@ -223,9 +223,9 @@ protected:
 		,const size_t              num_targ_vecs
 		,VectorMutable*            targ_vecs[]
 		,RTOp_ReductTarget         reduct_obj
-		,const index_type               first_ele
-		,const index_type               sub_dim
-		,const index_type               global_offset
+		,const index_type          first_ele
+		,const index_type          sub_dim
+		,const index_type          global_offset
 		) const = 0;
 
 	//@}
@@ -494,7 +494,7 @@ private:
 	mutable index_type  num_nonzeros_;  ///< < 0 == not initialized, > 0 == already calculated
 	mutable value_type  norm_1_, norm_2_, norm_inf_;  ///< < 0 == not initialized, > 0 == already calculated
 
-}; // end class MatrixOp
+}; // end class Vector
 
 // ////////////////////////////////////////////////
 // Inline functions

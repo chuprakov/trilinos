@@ -41,7 +41,7 @@ void apply_op(
 	,const MultiVector*             multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]
+	,RTOp_ReductTarget              reduct_objs[]         = NULL
 	,const index_type               primary_first_ele     = 1
 	,const index_type               primary_sub_dim       = 0
 	,const index_type               primary_global_offset = 0
@@ -156,7 +156,7 @@ public:
 		,DIAG_ACCESS  = 0x4 ///<
 	};
 	///
-	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const Vector>         vec_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const MultiVector>    multi_vec_ptr_t;
 
@@ -196,6 +196,18 @@ public:
 		,const index_type               secondary_first_ele
 		,const index_type               secondary_sub_dim
 		);
+
+	//@}
+
+	/** @name Clone */
+	//@{
+
+	///
+	/** Clone the non-const multi-vector object.
+	 *
+	 * The default implementation returns <tt>return.get()==NULL</tt>.
+	 */
+	virtual multi_vec_ptr_t mv_clone() const;
 
 	//@}
 
@@ -322,6 +334,11 @@ public:
 	//@{
 
 	///
+	/** Returns <tt>this->mv_clone()<tt>.
+	 */
+	mat_ptr_t clone() const;
+
+	///
 	/** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
 	 */
 	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
@@ -344,7 +361,8 @@ public:
 		MatrixOp* mwo_lhs, value_type alpha
 		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
-		,value_type beta ) const;
+		,value_type beta
+		) const;
 
 	///
 	/** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
@@ -364,7 +382,8 @@ public:
 		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
 		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-		,value_type beta ) const;
+		,value_type beta
+		) const;
 
 	//@}
 

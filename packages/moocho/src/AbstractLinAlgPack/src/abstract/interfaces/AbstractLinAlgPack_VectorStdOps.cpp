@@ -147,7 +147,7 @@ void AbstractLinAlgPack::max_abs_ele(
 void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
 #endif
 	if(0!=RTOp_TOp_add_scalar_set_alpha( alpha, &add_scalar_op.op() )) assert(0);
 	VectorMutable* targ_vecs[1] = { v_lhs };

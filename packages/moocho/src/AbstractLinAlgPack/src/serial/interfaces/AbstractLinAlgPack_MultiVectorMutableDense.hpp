@@ -181,6 +181,15 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
+	bool Mp_StM(
+		MatrixOp* mwo_lhs, value_type alpha
+		,BLAS_Cpp::Transp trans_rhs
+		) const;
+	///
+	bool Mp_StM(
+		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+		);
+	///
 	bool syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		,value_type beta, MatrixSymOp* sym_lhs

@@ -116,6 +116,12 @@ bool mat_vec(
 namespace AbstractLinAlgPack {
 
 MultiVector::multi_vec_ptr_t
+MultiVector::mv_clone() const
+{
+	return MemMngPack::null;
+}
+
+MultiVector::multi_vec_ptr_t
 MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	assert(0); // ToDo: return a MultiVectorSubView object.
@@ -123,8 +129,6 @@ MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 	// so that a client can rely on the MatrixOpSubView interface.
 	return MemMngPack::null;
 }
-
-
 
 void MultiVector::apply_op(
 	EApplyBy apply_by, const RTOpPack::RTOp& prim_op
@@ -155,9 +159,9 @@ void MultiVector::apply_op(
 	//
 
 	wsp::Workspace<MultiVector::vec_ptr_t>             vecs_s(wss,num_multi_vecs);
-	wsp::Workspace<const Vector*>                vecs(wss,num_multi_vecs);
+	wsp::Workspace<const Vector*>                      vecs(wss,num_multi_vecs);
 	wsp::Workspace<MultiVectorMutable::vec_mut_ptr_t>  targ_vecs_s(wss,num_targ_multi_vecs);
-	wsp::Workspace<VectorMutable*>               targ_vecs(wss,num_multi_vecs);
+	wsp::Workspace<VectorMutable*>                     targ_vecs(wss,num_multi_vecs);
 
 	{for(size_type j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments 
@@ -170,21 +174,12 @@ void MultiVector::apply_op(
 			targ_vecs[k] = targ_vecs_s[k].get();
 		}}
 		// Apply the reduction/transformation operator
-		if( num_multi_vecs > 0 )
-			AbstractLinAlgPack::apply_op(
-				prim_op
-				,num_multi_vecs, &vecs[0]
-				,num_targ_multi_vecs, &targ_vecs[0]
-				,reduct_objs[j - sec_first_ele_in]
-				,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
-			);
-		else
-			AbstractLinAlgPack::apply_op(
-				prim_op
-				,num_multi_vecs, &vecs[0]
-				,num_targ_multi_vecs-1, &targ_vecs[0]
-				,reduct_objs[j - sec_first_ele_in]
-				,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
+		AbstractLinAlgPack::apply_op(
+			prim_op
+			,num_multi_vecs, &vecs[0]
+			,num_targ_multi_vecs, &targ_vecs[0]
+			,reduct_objs ? reduct_objs[j-1] : RTOp_REDUCT_OBJ_NULL
+			,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 			);
 	}}
 
@@ -243,6 +238,12 @@ void MultiVector::apply_op(
 // Overridden form MatrixOp
 
 MatrixOp::mat_ptr_t
+MultiVector::clone() const
+{
+	return this->mv_clone();
+}
+
+MatrixOp::mat_ptr_t
 MultiVector::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	return mv_sub_view(row_rng,col_rng);
@@ -278,7 +279,7 @@ bool MultiVector::Mp_StMtM(
 		);
 }
 
-} // end namespace
+} // end namespace AbstractLinAlgPack
 
 // nonmembers
 

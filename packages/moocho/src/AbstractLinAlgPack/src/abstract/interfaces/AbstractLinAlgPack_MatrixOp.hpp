@@ -503,7 +503,8 @@ protected:
 	 */
 	virtual bool Mp_StM(
 		MatrixOp* mwo_lhs, value_type alpha
-		, BLAS_Cpp::Transp trans_rhs) const;
+		,BLAS_Cpp::Transp trans_rhs
+		) const;
 
 	///
 	/** M_lhs += alpha * op(mwo_rhs) (BLAS xAXPY).
@@ -514,7 +515,8 @@ protected:
 	 * Instead, use <tt>AbstractLinAlgPack::Mp_StM()</tt>.
 	 */
 	virtual bool Mp_StM(
-		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
+		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+		);
 
 	///
 	/** mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
@@ -611,36 +613,42 @@ protected:
 	/// v_lhs = alpha * op(M_rhs1) * v_rhs2 + beta * v_lhs (BLAS xGEMV)
 	virtual void Vp_StMtV(
 		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const Vector& v_rhs2, value_type beta) const = 0;
+		,const Vector& v_rhs2, value_type beta
+		) const = 0;
 
 	/// v_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * v_lhs (BLAS xGEMV)
 	virtual void Vp_StMtV(
 		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2, value_type beta) const;
+		,const SpVectorSlice& sv_rhs2, value_type beta
+		) const;
 
 	/// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * v_rhs3 + beta * v_rhs
 	virtual void Vp_StPtMtV(
 		VectorMutable* v_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const Vector& v_rhs3, value_type beta) const;
+		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		,BLAS_Cpp::Transp M_rhs2_trans
+		,const Vector& v_rhs3, value_type beta
+		) const;
 
 	/// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * v_rhs
 	virtual void Vp_StPtMtV(
 		VectorMutable* v_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const SpVectorSlice& sv_rhs3, value_type beta) const;
+		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		,BLAS_Cpp::Transp M_rhs2_trans
+		,const SpVectorSlice& sv_rhs3, value_type beta
+		) const;
 
 	/// result = v_rhs1' * op(M_rhs2) * v_rhs3
 	virtual value_type transVtMtV(
 		const Vector& v_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const Vector& v_rhs3) const;
+		,const Vector& v_rhs3
+		) const;
 
 	/// result = sv_rhs1' * op(M_rhs2) * sv_rhs3
 	virtual value_type transVtMtV(
 		const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const SpVectorSlice& sv_rhs3) const;
+		,const SpVectorSlice& sv_rhs3
+		) const;
 
 	///
 	/** Perform a specialized rank-2k update of a dense symmetric matrix of the form:
@@ -655,10 +663,11 @@ protected:
 	 * override this method.
 	 */
 	virtual void syr2k(
-		 BLAS_Cpp::Transp M_trans, value_type alpha
-		, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
-		, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-		, value_type beta, MatrixSymOp* symwo_lhs ) const;
+		BLAS_Cpp::Transp M_trans, value_type alpha
+		,const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
+		,const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
+		,value_type beta, MatrixSymOp* symwo_lhs
+		) const;
 
 	//@}
 
@@ -678,7 +687,8 @@ protected:
 		MatrixOp* mwo_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
 		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-		,value_type beta ) const;
+		,value_type beta
+		) const;
 
 	///
 	/** mwo_lhs = alpha * op(mwo_rhs1) * op(M_rhs2) + beta * mwo_lhs (right) (xGEMM)
@@ -693,7 +703,8 @@ protected:
 		MatrixOp* mwo_lhs, value_type alpha
 		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2
-		,value_type beta ) const;
+		,value_type beta
+		) const;
 
 	///
 	/** M_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * mwo_lhs (left) (xGEMM)
@@ -708,7 +719,8 @@ protected:
 		value_type alpha
 		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
-		,value_type beta );
+		,value_type beta
+		);
 	
 	///
 	/** Perform a rank-k update of a symmetric matrix of the form:
@@ -726,7 +738,7 @@ protected:
 		BLAS_Cpp::Transp   M_trans
 		,value_type        alpha
 		,value_type        beta
-		,MatrixSymOp   *sym_lhs
+		,MatrixSymOp      *sym_lhs
 		) const;
 	
 	///
@@ -742,7 +754,7 @@ protected:
 	 * The default implementation returns <tt>false</tt> and does nothing.
 	 */
 	virtual bool syrk(
-		const MatrixOp  &mwo_rhs
+		const MatrixOp      &mwo_rhs
 		,BLAS_Cpp::Transp   M_trans
 		,value_type         alpha
 		,value_type         beta
