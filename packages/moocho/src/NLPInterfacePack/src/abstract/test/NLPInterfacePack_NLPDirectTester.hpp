@@ -26,110 +26,117 @@ namespace NLPInterfacePack {
 
 ///
 /** Concrete class that tests the computed values of the
-  * NLPrSQPTailoredApproach interface using finite differences.
+  * <tt>NLPFirstOrderDirect</tt> interface using finite differences.
   *
   * There are two options for testing the derivatives by finite differences.
   * Each option can be picked independently for the computations with
-  * the objective f(x) and its gradient Gf and for the constraints
-  * c(x) and its Jacobian Gc' = [ C, N ].  The tests involving the objective
+  * the objective \c f(x) and its gradient \c Gf and for the constraints
+  * \a c(x) and its Jacobian <tt>Gc'</tt>.  The tests involving the objective
   * and the constraints will be discussed separatly.
   * 
   * For testing the gradient of the objective function, two options
-  * are available.  The first option (Gf_testing_method==FD_COMPUTE_ALL)
-  * is to compute FDGf by brute force which requries 2*n evaluations of
-  * f(x) using central differences.  Given FDGf the following comparison
-  * is then make:
+  * are available.  The first option (<tt>Gf_testing_method==FD_COMPUTE_ALL</tt>)
+  * is to compute \c FDGf by brute force which requries <tt>2*n</tt> evaluations of
+  * \a f(x) using central differences.  Given <tt>FDGf</tt> the following comparison
+  * is then made:
+  \verbatim
+
+    (1)    FDGf \approx Gf
+  \endverbatim 
+  * The other option (<tt>Gf_testing_method==FD_DIRECTIONAL</tt>) is to compute
+  * random dot products of the form <tt>DFGf'*y</tt> where \c y is a randomly generated
+  * vector.  Using central differences <tt>DFGf'*y</tt> can be computed using
+  * two evaluations of \a f(x) per random \c y.  The number of random
+  * <tt>y</tt>'s used is determined by the option <tt>num_fd_directions()</tt>.  So the
+  * number of evaluations of \a f(x) for this option is <tt>2*num_fd_directions()</tt>.
   * 
-  *  (1)    FDGf \approx Gf
+  * The test for the quantity <tt>py = -inv(C)*c(con_decomp)</tt> is shown below:
+  \verbatim
+
+    (2)  - FDC * (-inv(C)*c) \approx c(c_decomp)
+                 \_________/
+                     py
+  \endverbatim
+  * Computing <tt>-FDC * py</tt> requires only two evaluations of
+  * \a c(x) using central differences.  There is no other option needed
+  * for this test.
   * 
-  * The other option (Gf_testing_method==FD_DIRECTIONAL) is to compute
-  * random dot products of the form DFGf'*y where y is a randomly generated
-  * vector.  Using central differences DFGf'*y can be computed using
-  * two evaluations of f(x) per random y.  The number of random
-  * y's used is determined by the option num_fd_directions.  So the
-  * number of evaluations of f(x) for this option is 2*num_fd_directions.
+  * Lastly, we have to test <tt>D = -inv(C)*N</tt>.  The first option
+  * (<tt>Gc_testing_method==FD_COMPUTE_ALL</tt>) is to directly compute
+  * \c N using central differences (<tt>2*(n-m)</tt> evaluations of \a c(x)) as
+  * \c FDN and then perform the comparison:
+  \verbatim 
+
+    (3)  - FDC * (-inv(C)*N) \approx FDN
+                 \_________/
+                      D
+  \endverbatim 
+  * The matrix <tt>-FDC * D</tt> can be computed using <tt>2*(n-m)</tt> evaluations
+  * with \a c(x) using central differences.
+  * Therefore, the total number of evaluations with \a c(x) for
+  * comparing (3) is <tt>4*(n-m)</tt>.  If <tt>n-m</tt> is not too large then this
+  * is definitely the preferred method to use.
   * 
-  * The test for the quantity py = -inv(C)*c is shown below:
-  * 
-  *  (2)  - FDC * (-inv(C)*c) \approx c
-  *               \_________/
-  *                   py
-  * 
-  * Computing -FDC * py requires only two evaluations of
-  * c(x) using central differences.  There is no other option needed
-  * for test.
-  * 
-  * Lastly, we have to test D = -inv(C)*N.  The first option
-  * (Gc_testing_method==FD_COMPUTE_ALL) is to directly compute
-  * N using central differences (2*(n-m) evaluations of c(x)) as
-  * FDN and then perform the comparison:
-  * 
-  *  (3)  - FDC * (-inv(C)*N) \approx FDN
-  *               \_________/
-  *                    D
-  * 
-  * The matrix -FDC * D can be computed using 2*(n-m) evaluations
-  * with c(x) using central differences.
-  * Therefore, the total number of evaluations with c(x) for
-  * comparing (3) is 4*(n-m).  If n-m is not too large then this
-  * is definitly the preferred method to use.
-  * 
-  * The other option for testing D = -inv(C)*N is to compute
-  * directional derivatives using finite differences.  In this approach
-  * for the random vector y, we can compute:
-  * 
-  *  (4)  - FDC * (-inv(C)*N) * y \approx FDN * y
-  *               \_________/
-  *                    D
-  * 
+  * The other option for testing <tt>D = -inv(C)*N</tt> is to compute
+  * directional derivatives using finite differences.  In this approach,
+  * for the random vector \c y, we can compute:
+  \verbatim
+
+    (4)  - FDC * (-inv(C)*N) * y \approx FDN * y
+                 \_________/
+                      D
+  \endverbatim 
   * Using central differences, (4) can be computed with 4 evaluations
-  * of c(x).  The number of random y's used is determined by the option
-  * num_fd_directions.  So the number of evaluations of c(x) for this
-  * option is 4*num_fd_directions.
+  * of \a c(x).  The number of random <tt>y</tt>'s used is determined by the option
+  * \c num_fd_directions().  So the number of evaluations of \a c(x) for this
+  * option is <tt>4*num_fd_directions()</tt>.
   * 
   * The client can pick a set of tolerances to measure if the
   * values of the above comparisons are close enough to the finite difference
   * values.  Let's define the relative error between the computed value and the
   * finite difference value to be:
-  *
-  *   err(i) = | (h(i) - fdh(i)) | /  (||h||inf + ||fdh||inf + sqrt(epsilon))
-  *
+  \verbatim
+
+  err(i) = | (h(i) - fdh(i)) | /  (||h||inf + ||fdh||inf + sqrt(epsilon))
+  \endverbatim
   * The above error takes into account the relative sizes of the elements and also
-  * allows one or both of the elements to be zero without ending up with 0/0
-  * or something like 1e-16 not comparing with zero.
+  * allows one or both of the elements to be zero without ending up with <i>0/0</i>
+  * or something like <tt>1e-16</tt> not comparing with zero.
   *
-  * All errors err(i) >= warning_tol are reported to *out if out != NULL.
-  * The first error err(i) >= error_tol that is found is reported
-  * to *out if out != NULL and immediatly finite_diff_check(...) returns false.
-  * If all errors err(i) < error_tol then finite_diff_check(...) will return true.
+  * All errors <tt>err(i) >= warning_tol</tt> are reported to <tt>*out</tt> if
+  * <tt>out != NULL</tt>.  The first error <tt>err(i) >= error_tol</tt> that is found
+  * is reported to <tt>*out</tt> if <tt>out != NULL</tt> and immediatly
+  * <tt>finite_diff_check()</tt> returns \c false.  If all errors <tt>err(i) < error_tol</tt>,
+  * then <tt>finite_diff_check()</tt> will return \c true.
   *
   * Given these two tolerances the client can do many things:
   *
-  * 1) Print out all the comparisons that are not equal by setting warning_tol
-  *    <= epsilon and error_tol = very_large_number.
+  * 1) Print out all the comparisons that are not equal by setting <tt>warning_tol
+  *    <= epsilon</tt> and <tt>error_tol >> 1</tt>.
   *
-  * 2) Print out all suspect comparisons by setting epsilon < warning_tol < 1
-  *    and error_tol = very_large_number.
+  * 2) Print out all suspect comparisons by setting <tt>epsilon < warning_tol < 1</tt>
+  *    and <tt>error_tol >> 1</tt>.
   *
-  * 3) Just validate that matrices are approximatly equal and report the first
-  *    discrepency if not by setting epsilon < error_tol < 1 and warning_tol
-  *    >= error_tol.
+  * 3) Just validate that the quantities are approximatly equal and report the first
+  *    discrepency if not by setting <tt>epsilon < error_tol < 1</tt> and <tt>warning_tol
+  *    >= error_tol</tt>.
   *
-  * 4) Print out any suspect comparisons by setting epsilon < warning_tol < 1
-  *    but also quit if the error is too large by setting error_tol > warning_tol.
+  * 4) Print out any suspect comparisons by setting <tt>epsilon < warning_tol < 1</tt>
+  *    but also quit if the error is too large by setting <tt>1 > error_tol > warning_tol</tt>.
   *
-  * The tolerances Gf_warning_tol and Gf_error_tol are applied to the tests for
-  * Gf shown in (1) for instance.  The tolerances Gc_warning_tol and Gc_error_tol
+  * The tolerances \c Gf_warning_tol and \c Gf_error_tol are applied to the tests for
+  * \c Gf shown in (1) for instance.  The tolerances \c Gc_warning_tol and \c Gc_error_tol
   * are used for the comparisions (2), (3) and (4).
   * 
   * There is one minor hitch to this testing.  For many NLPs, there is a
-  * strict region of x where f(x) or c(x) are not defined.  In order to
-  * help ensure that we stay out of these regions, variable bounds can be
-  * included and a scalar max_var_bounds_viol so that the testing software
-  * will never evaluation f(x) or c(x) outside the region:
-  * 
-  * xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
-  * 
+  * strict region of \a x where \a f(x) or \a c(x) are not defined.  In order to
+  * help ensure that we stay out of these regions, variable bounds and a scalar
+  * \c max_var_bounds_viol can be included so that the testing software
+  * will never evaluate \a f(x) or \a c(x) outside the region:
+  \verbatim 
+
+   xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+  \endverbatim
   * This is an important agreement made with the user.
   */
 class NLPFirstOrderDirectTester {
@@ -141,35 +148,56 @@ public:
 	///
 	typedef const MatrixSpace<MatrixWithOpMutable>  mat_space_t;
 
-	///
+	/// Members for option \c mat_space() (see StandardCompositionMacros.h).
 	STANDARD_COMPOSITION_MEMBERS( mat_space_t, mat_space )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gf_testing_method() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gc_testing_method() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gf_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gf_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gc_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gc_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gh_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_warning_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c Gh_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_error_tol )
-
-	///
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
+	/// Members for option \c num_fd_directions() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+#ifdef DOXYGEN_COMPILE
+		;
+#endif		
 
 	/// Constructor
 	NLPFirstOrderDirectTester(
@@ -189,7 +217,7 @@ public:
 	/** This function takes an NLP object and its computed derivatives
 	 * and function values and validates
 	 * the functions and the derivatives by evaluating them
-	 * about the given point #xo#.
+	 * about the given point <tt>xo</tt>.
 	 * 
 	 * If all the checks as described in the
 	 * intro checkout then this function will return true, otherwise it
@@ -199,7 +227,7 @@ public:
 	 * bounds then a warning message is printed and the derivatives
 	 * computed could be very inaccurate.
 	 *
-	 * @param  nlp     [in] NLP object used to compute and test derivatives for.
+	 * @param  nlp     [in] %NLP object used to compute and test derivatives for.
 	 * @param  xo      [in] Point at which the derivatives are computed at.
 	 * @param  xl      [in] If != NULL then this is the lower variable bounds.
 	 * @param  xu      [in] If != NULL then this is the upper variable bounds.
@@ -216,34 +244,34 @@ public:
 	 *                 be performed.
 	 * @param  h       [in] Value of h(x) computed at xo.
 	 *                 If NULL, then none of the tests involving it will
-	 *                 be performed.  Should be NULL if nlp->mI() == 0.
+	 *                 be performed.  Should be NULL if <tt>nlp->mI() == 0</tt>.
 	 * @param  Gf      [in] Gradient of f(x) computed at xo.
 	 *                 If NULL, then none of the tests involving it will
 	 *                 be performed.
-	 * @param  py      [in] Newton step #py = -inv(C) * c(con_decomp)
+	 * @param  py      [in] Newton step <tt>py = -inv(C) * c(con_decomp)</tt>
 	 *                 If NULL, then none of the tests involving it will
 	 *                 be performed.
 	 * @param  rGf     [in] Reduced gradient of the objective function
-	 *                 #rGf = Gf(var_indep) - D' * Gf(var_dep).  If NULL,
+	 *                 </tt>rGf = Gf(var_indep) - D' * Gf(var_dep)</tt>.  If NULL,
 	 *                 then none of the tests involving it will be performed.
-	 * @param  GcU     [in]  Auxiliary jacobian matrix #del(c(con_undecomp),x)#.
+	 * @param  GcU     [in]  Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
 	 *                 If NULL, htne none of the tests involving it will be performed.
-	 * @param  Gh      [in] Auxiliary jacobian matrix #del(h,x)#.  If NULL, then none
+	 * @param  Gh      [in] Auxiliary jacobian matrix <tt>del(h,x)</tt>.  If NULL, then none
 	 *                 of the tests involving it will be performed.
-	 * @param  D       [in] Direct sensitivity matrix #D = -inv(C)*N#.  If NULL,
+	 * @param  D       [in] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If NULL,
 	 *                 none of the tests involving it will be performed.
-	 * @param  V       [in] #V = F + E * D#, which is the an auxiliary sensitivity matrix.
+	 * @param  V       [in] <tt>V = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
 	 *                 If NULL, then none of the tests involving it will be performed.
-	 * @param  P       [in]  #P = GhI' + GhD'* D#, which is the an auxiliary sensitivity matrix.
+	 * @param  P       [in]  <tt>P = GhI' + GhD'* D</tt>, which is the an auxiliary sensitivity matrix.
 	 *                 If NULL, then none of the tests involving it will be performed.
 	 * @param  print_all_warnings
 	 *                 [in] If true then all errors greater than warning_tol
 	 *                 will be printed if out!=NULL
 	 * @param  out     [in/out] If != null then some summary information is printed to it
 	 *                 and if a derivative does not match up then it prints which
-	 *                 derivative failed.  If #out == 0# then no output is printed.
+	 *                 derivative failed.  If <tt>out == 0</tt> then no output is printed.
 	 *
-	 * @return Returns #true# if all the derivatives comparisons are
+	 * @return Returns <tt>true</tt> if all the derivatives comparisons are
 	 * within the error tolerances or returns false
 	 *	otherwise.  This function will return false if any NaN or Inf values
 	 *	where encountered.

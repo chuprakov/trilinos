@@ -23,26 +23,26 @@
 namespace NLPInterfacePack {
 
 ///
-/** Set options for NLPFirstOrderDirectTester from an
-  * OptionsFromStream object.
+/** Set options for <tt>NLPFirstOrderDirectTester</tt> from an
+  * <tt>\ref OptionsFromStreamPack::OptionsFromStream "OptionsFromStream"</tt> object.
   *
-  * The default options group name is NLPFirstOrderDirectTester.
+  * The default options group name is 'NLPFirstOrderDirectTester'.
   *
   * The options group is:
-  *
-  \begin{verbatim}
+  \verbatim
+
 	options_group NLPFirstOrderDirectTester {
 	*    Gf_testing_method = FD_COMPUTE_ALL;
 	    Gf_testing_method = FD_DIRECTIONAL;
-	    Gf_warning_tol    = 1e-3;
+	    Gf_warning_tol    = 1e-6;
 	    Gf_error_tol      = 1e-1;
-		Gc_testing_method = FD_COMPUTE_ALL;
-	*    Gc_testing_method = FD_DIRECTIONAL;
-	    Gc_warning_tol    = 1e-3;
+	*    Gc_testing_method = FD_COMPUTE_ALL;
+	    Gc_testing_method = FD_DIRECTIONAL;
+	    Gc_warning_tol    = 1e-6;
 	    Gc_error_tol      = 1e-1;
-		num_fd_directions = 3;  *** [*testing_method == FD_DIRECTIONAL]
+		num_fd_directions = 3;  *** [testing_method == FD_DIRECTIONAL]
 	}
-  \end{verbatim}
+  \endverbatim
   */
 class NLPFirstOrderDirectTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 

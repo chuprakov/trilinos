@@ -23,20 +23,20 @@
 namespace NLPInterfacePack {
 
 ///
-/** Set options for NLPFirstDerivativesTester from an
-  * OptionsFromStream object.
-  *
-  * The default options group name is NLPFirstDerivativesTester.
-  *
-  * The options group is:
-  *
-  \begin{verbatim}
+/** Set options for <tt>NLPTester</tt> from an
+ * <tt>\ref OptionsFromStreamPack::OptionsFromStream "OptionsFromStream"</tt> object.
+ *
+ * The default options group name is '%NLPTester'.
+ *
+ * The options group is:
+ \verbatim
+
 	options_group NLPTester {
         print_all = false;
         throw_exception = true;
 	}
-  \end{verbatim}
-  */
+ \endverbatim
+ */
 class NLPTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<

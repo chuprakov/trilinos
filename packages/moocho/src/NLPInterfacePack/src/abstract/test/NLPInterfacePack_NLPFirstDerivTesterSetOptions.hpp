@@ -31,7 +31,7 @@ namespace TestingPack {
   *
   * The options group is:
   *
-  \begin{verbatim}
+  \verbatim
 	options_group NLPFirstDerivativesTester {
 	*	fd_testing_method = FD_COMPUTE_ALL;
 		fd_testing_method = FD_DIRECTIONAL;
@@ -39,7 +39,7 @@ namespace TestingPack {
 	    warning_tol   = 1e-3;
 	    error_tol     = 1e-1;
 	}
-  \end{verbatim}
+  \endverbatim
   */
 class NLPFirstDerivativesTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
