@@ -1,10 +1,23 @@
 // ////////////////////////////////////////////////////////////////////////////
 // VectorSpaceSerial.cpp
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #include <assert.h>
 
 #include "SparseLinAlgPack/include/VectorSpaceSerial.h"
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "LinAlgPack/include/VectorClass.h"
 
@@ -44,6 +57,13 @@ VectorSpaceSerial::create_member() const
 {
 	namespace rcp = ReferenceCountingPack;
 	return rcp::rcp(new VectorWithOpMutableDense(dim_));
+}
+
+VectorSpace::multi_vec_mut_ptr_t
+VectorSpaceSerial::create_members(size_type num_vecs) const
+{
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(new MultiVectorMutableDense(dim_,num_vecs));
 }
 
 } // end namespace SparseLinAlgPack
