@@ -26,26 +26,15 @@
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/ipState.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"               // Y, Z
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
+#include "SparseLinAlgPack/include/MatrixSymPosDefCholFactor.h"                     // rHL 
 //#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
 //#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
-#include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
-
 #include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.h"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.h"
-
-#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffProdSetOptions.h"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
-
-#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
 #include "NLPInterfacePack/include/NLPVarReductPerm.h"
+#include "NLPInterfacePack/include/CalcFiniteDiffProd.h"
 
 // line search
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
@@ -53,48 +42,17 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
 
-// Range/null decomposition
-
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerStd_Strategy.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthogDenseStd_Strategy.h"
-
-#include "AbstractLinAlgPack/include/BasisSystemTester.h"
-#include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
-
 // Basis permutations and direct sparse solvers
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
-#include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
-#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
-#include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
-#endif
-
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
-//#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
-//#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
-#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPerm.h"
 #endif
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
 #include "ReducedSpaceSQPPack/include/std/UpdateBarrierParameter_Step.h"
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/PreEvalNewPointBarrier_Step.h"
 #include "ReducedSpaceSQPPack/include/std/PostEvalNewPointBarrier_Step.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
@@ -122,7 +80,6 @@
 #include "ReducedSpaceSQPPack/include/std/PreProcessBarrierLineSearch_Step.h"
 #include "ReducedSpaceSQPPack/include/std/PostProcessBarrierLineSearch_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
-#include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
@@ -151,11 +108,7 @@
 //#include "ReducedSpaceSQPPack/include/std/NumFixedDepIndep_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/UpdateReducedSigma_Step.h"
 
-#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
-#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
 #include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-
-//#include "SparseLinAlgPack/include/sparse_bounds.h"
 
 // Misc utilities
 #include "AbstractFactoryStd.h"
@@ -174,7 +127,6 @@
 
 namespace {
 	const double INF_BASIS_COND_CHANGE_FRAC      = 1e+20;
-	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
 }
 
 namespace ReducedSpaceSQPPack {
@@ -184,13 +136,9 @@ namespace ReducedSpaceSQPPack {
 // should agree with what are in the rSQPpp.opt.Algo_ConfigIP file.
 //
 Algo_ConfigIP::SOptionValues::SOptionValues()
-	:direct_linear_solver_type_(LA_AUTO)
-	,null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
-	,range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
-	,max_basis_cond_change_frac_(-1.0)
+	:max_basis_cond_change_frac_(-1.0)
 	,exact_reduced_hessian_(false)
 	,quasi_newton_(QN_AUTO)
-	,max_dof_quasi_newton_dense_(-1)
 	,num_lbfgs_updates_stored_(-1)
 	,lbfgs_auto_scaling_(true)
 	,hessian_initialization_(INIT_HESS_AUTO)
@@ -202,33 +150,18 @@ Algo_ConfigIP::SOptionValues::SOptionValues()
 	,full_steps_after_k_(-1)
 {}
 
-Algo_ConfigIP::Algo_ConfigIP(
-	const basis_sys_ptr_t                     &basis_sys
-	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
-	)
-{
-	this->initialize(basis_sys,var_reduct_orthog_strategy);
-}
-
-void Algo_ConfigIP::initialize(
-	const basis_sys_ptr_t                     &basis_sys
-	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
-	)
-{
-	basis_sys_                  = basis_sys;
-	var_reduct_orthog_strategy_ = var_reduct_orthog_strategy;
-}
+Algo_ConfigIP::Algo_ConfigIP()
+{}
 
 Algo_ConfigIP::~Algo_ConfigIP()
-{
-	// No need to really do anything!
-}
+{}
 
 // overridden from rSQPAlgo_Config
 
 void Algo_ConfigIP::set_options( const options_ptr_t& options )
 {
 	options_ = options;
+	decomp_sys_step_builder_.set_options(options);
 }
 
 const rSQPAlgo_Config::options_ptr_t&
@@ -252,7 +185,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		*trase_out
 			<< std::endl
 			<< "*****************************************************************\n"
-			<< "*** Algo_ConfigIP configuration                     ***\n"
+			<< "*** Algo_ConfigIP configuration                               ***\n"
 			<< "***                                                           ***\n"
 			<< "*** Here, summary information about how the algorithm is      ***\n"
 			<< "*** configured is printed so that the user can see how the    ***\n"
@@ -303,49 +236,29 @@ void Algo_ConfigIP::config_algo_cntr(
 		}
 	}	
 
-	if(trase_out)
-		*trase_out << "\n*** Probing the NLP object for supported interfaces ...\n";
-
-	// Get the dimensions of the NLP
 	NLP &nlp = algo->nlp();
 	nlp.initialize(algo->algo_cntr().check_results());
+	// Get the dimensions of the NLP
 	const size_type
-		n   = algo->nlp().n(),
-		m   = algo->nlp().m(),
-		mI  = algo->nlp().mI(),
+		n   = nlp.n(),
+		m   = nlp.m(),
+		mI  = nlp.mI(),
 		r   = m, // ToDo: Compute this for real!
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
-	
-	// Determine which NLP interface is supported
-	NLPFirstOrderInfo    *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(   algo->get_nlp() );	
-	NLPSecondOrderInfo   *nlp_soi = dynamic_cast<NLPSecondOrderInfo*>(  algo->get_nlp() );	
-	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>( algo->get_nlp() );
-	bool tailored_approach = false;
-	if( nlp_foi ) {
-		if(trase_out)
-			*trase_out << "\nDetected that NLP object supports the NLPFirstOrderInfo interface!\n";
-		tailored_approach = false;
-	}
-	else {
-		if( nlp_fod ) {
-			if(trase_out)
-				*trase_out << "\nDetected that NLP object supports the NLPFirstOrderDirect interface!\n";
-			tailored_approach = true;
-		}
-		else {
-			THROW_EXCEPTION(
-				true, std::logic_error
-				,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
-				"the NLP object of type \'" << typeid(algo->nlp()).name() <<
-				"\' does not support the NLPFirstOrderDirect or "
-				"NLPFirstOrderInfo interfaces!" );
-		}
-	}
-	if( nlp_soi ) {
-		if(trase_out)
-			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrderInfo interface!\n";
-	}
+
+	// Process the NLP
+	NLPFirstOrderInfo    *nlp_foi = NULL;
+	NLPSecondOrderInfo   *nlp_soi = NULL;
+	NLPFirstOrderDirect  *nlp_fod = NULL;
+	bool                 tailored_approach = false;
+	decomp_sys_step_builder_.process_nlp_and_options(
+		trase_out, nlp
+		,&nlp_foi, &nlp_soi, &nlp_fod, &tailored_approach
+		);
+
+	const int max_dof_quasi_newton_dense
+		= decomp_sys_step_builder_.current_option_values().max_dof_quasi_newton_dense_;
 
 	// Make sure that we can handle this type of NLP currently
 	THROW_EXCEPTION(
@@ -378,9 +291,12 @@ void Algo_ConfigIP::config_algo_cntr(
 				<< "null_space_matrix           = EXPLICIT;\n"
 				;
 		}
-		cov_.merit_function_type_		= MERIT_FUNC_L1;
-		cov_.l1_penalty_param_update_	= L1_PENALTY_PARAM_MULT_FREE;
-		cov_.null_space_matrix_type_    = NULL_SPACE_MATRIX_EXPLICIT;
+		cov_.merit_function_type_
+			= MERIT_FUNC_L1;
+		cov_.l1_penalty_param_update_
+			= L1_PENALTY_PARAM_MULT_FREE;
+		decomp_sys_step_builder_.current_option_values().null_space_matrix_type_
+			= DecompositionSystemStateStepBuilderStd::NULL_SPACE_MATRIX_EXPLICIT;
 	}
 
 	if( !tailored_approach && uov_.merit_function_type_ != MERIT_FUNC_L1  ) {
@@ -392,12 +308,6 @@ void Algo_ConfigIP::config_algo_cntr(
 		}
 		cov_.merit_function_type_		= MERIT_FUNC_L1;
 	}
-
-	// Set default
-	if( uov_.max_dof_quasi_newton_dense_ < 0 )
-		cov_.max_dof_quasi_newton_dense_ = DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE;
-	else
-		cov_.max_dof_quasi_newton_dense_ = uov_.max_dof_quasi_newton_dense_;
 
 	// Decide what type of quasi newton update to use
 	switch( uov_.quasi_newton_ ) {
@@ -418,7 +328,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				if(trase_out)
 					*trase_out
 						<< "n-r = " << n-r << " <= max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_ << ":\n"
+						<< max_dof_quasi_newton_dense << ":\n"
 						<< "setting quasi_newton == BFGS\n";
 				cov_.quasi_newton_ = QN_BFGS;
 				//}
@@ -432,25 +342,6 @@ void Algo_ConfigIP::config_algo_cntr(
 			break;
 	    default:
 			assert(0); // Invalid option!
-	}
-
-	// Decide what type of range space matrix to use
-	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
-		const bool use_orth = dof*dof*r	<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
-		if(trase_out)
-			*trase_out
-				<< "\nrange_space_matrix == AUTO:"
-				<< "\n(n-r)^2*r = (" << dof << ")^2 * " << r << " = " << (dof*dof*r)
-				<< ( use_orth ? " <= " : " > " ) << "max_dof_quasi_newton_dense^2 = ("
-				<< cov_.max_dof_quasi_newton_dense_ << ")^2 = "
-				<< cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_
-				<< ( use_orth
-					 ? "\nsetting range_space_matrix = ORTHOGONAL\n"
-					 : "\nsetting range_space_matrix = COORDINATE\n" );
-		cov_.range_space_matrix_type_ =
-			( use_orth
-			  ? RANGE_SPACE_MATRIX_ORTHOGONAL
-			  : RANGE_SPACE_MATRIX_COORDINATE );
 	}
 
 	// ToDo: Sort out the rest of the options!
@@ -476,149 +367,19 @@ void Algo_ConfigIP::config_algo_cntr(
 		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
 	}
 	
-	// Create a default VarReductOrthog_Strategy object for serial applications!
-	if( cov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL && var_reduct_orthog_strategy_.get() == NULL ) {
-		if(trase_out)
-			*trase_out
-				<< "\nrange_space_matrix == ORTHOGONAL and the client has not given a specialized VarReductOrthog_Strategy object\n"
-				<< "Using the default implementation VarReductOrthogDenseStd_Strategy ...\n";
-		var_reduct_orthog_strategy_ = mmp::rcp(new VarReductOrthogDenseStd_Strategy());
-	}
-
 	// /////////////////////////////////////////////////////
 	// C.1. Create the decomposition system object
 
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-	typedef ref_count_ptr<BasisSystemPerm> basis_sys_perm_ptr_t;
-	basis_sys_perm_ptr_t  basis_sys_perm;
-#endif
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
-	decomp_sys_ptr_t decomp_sys = mmp::null;
-	if(!tailored_approach) {
-		// Set the default basis system if one is not set
-		if( basis_sys_.get() == NULL ) {
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-			if(trase_out)
-				*trase_out <<
-					"\nA specialized basis system object was not specified by the client.\n"
-					"Creating BasisSystemPermDirectSparse object for direct sparse matrices ...\n";
-			mmp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
-			switch(cov_.direct_linear_solver_type_) {
-				case LA_MA28: {
-					if(trase_out)
-						*trase_out <<
-							"Using DirectSparseSolverMA28 ...\n";
-					mmp::ref_count_ptr<DirectSparseSolverMA28>
-						dss_ma28 = mmp::rcp(new DirectSparseSolverMA28());
-					if(options_.get()) {
-						SparseSolverPack::DirectSparseSolverMA28SetOptions
-							opt_setter(dss_ma28.get());
-						opt_setter.set_options(*options_);
-					}
-					direct_sparse_solver = dss_ma28;
-					break;
-				}
-				case LA_MA48:
-					if(trase_out)
-						*trase_out <<
-							"Using DirectSparseSolverMA48 ...\n";
-					THROW_EXCEPTION(
-						true, std::logic_error
-						,"Error, This direct solver is not supported yet!" );
-					break;
-				case LA_SUPERLU:
-					if(trase_out)
-						*trase_out <<
-							"Using DirectSparseSolverSuperLU ...\n";
-					THROW_EXCEPTION(
-						true, std::logic_error
-						,"Error, This direct solver is not supported yet!" );
-					break;
-				default:
-					assert(0); // Should not be called?
-			}
-			basis_sys_ = mmp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
-#else
-			THROW_EXCEPTION(
-				true, std::logic_error
-				,"\nA specialized basis system object was not specified by the client "
-				"and support for direct sparse solvers was not compiled in since the preprocessing macro "
-				"RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS was defined" );
+	decomp_sys_ptr_t decomp_sys;
+	decomp_sys_step_builder_.create_decomp_sys(
+		trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach
+		,&decomp_sys
+		);
 
-#endif
-		}
-		// Create the testing object for the basis system and set it up.
-		ref_count_ptr<BasisSystemTester>
-			basis_sys_tester = mmp::rcp(new BasisSystemTester());
-		if(options_.get()) {
-			BasisSystemTesterSetOptions
-				opt_setter(basis_sys_tester.get());
-			opt_setter.set_options(*options_);
-		}
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		// See if the basis system object supports basis permutations
-		basis_sys_perm = mmp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
-#endif
-		// Create the DecompositionSystem implementation object
-		typedef ref_count_ptr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
-		decomp_sys_imp_ptr_t decomp_sys_imp;
-		switch( cov_.range_space_matrix_type_ ) {
-			case RANGE_SPACE_MATRIX_COORDINATE:
-				decomp_sys_imp
-					= mmp::rcp(new DecompositionSystemCoordinate(
-						nlp.space_x()
-						,nlp.space_c()
-						,nlp.space_h()
-						,basis_sys_  // Will have basis_sys_->var_dep().size() == 0 if permutation
-						,basis_sys_tester
-						) );
-				break;
-			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
-				decomp_sys_imp
-					= mmp::rcp(new DecompositionSystemOrthogonal(
-						nlp.space_x()
-						,nlp.space_c()
-						,nlp.space_h()
-						,basis_sys_  // Will have basis_sys_->var_dep().size() == 0 if permutation
-						,basis_sys_tester
-						,var_reduct_orthog_strategy_
-						) );
-				break;
-			}
-			default:
-				assert(0);	// only a local error
-		}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		// Create the actual DecompositionSystem object being used
-		if( basis_sys_perm.get() != NULL ) {
-			if(trase_out)
-				*trase_out
-					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
-					<< "\' supports the BasisSystemPerm interface.\n"
-					<< "Using DecompositionSystemVarReductPermStd to support basis permutations ...\n";
-			decomp_sys = mmp::rcp(
-				new DecompositionSystemVarReductPermStd(
-					decomp_sys_imp
-					,basis_sys_perm
-					) );
-		}
-		else {
-#endif
-			if(trase_out)
-				*trase_out
-					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
-					<< "\' does not support the BasisSystemPerm interface.\n"
-					<< "Using " << typeid(*decomp_sys_imp).name() << " with a fixed basis ...\n";
-			decomp_sys_imp->initialize(
-				nlp.space_x()
-				,nlp.space_c()
-				,nlp.space_h()
-				,basis_sys_   // Must already be ready to go with a basis selection!
-				);
-			decomp_sys = decomp_sys_imp;
-		}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-	}
+	ref_count_ptr<DecompositionSystemVarReductPerm>
+		decomp_sys_perm = mmp::rcp_dynamic_cast<DecompositionSystemVarReductPerm>(decomp_sys);
 #endif
 
 	// /////////////////////////////////////////////////////
@@ -655,6 +416,15 @@ void Algo_ConfigIP::config_algo_cntr(
 						)
 					)
 				);
+
+		//
+		// Set the iteration quantities for the NLP matrix objects
+		//
+
+		decomp_sys_step_builder_.add_iter_quantities(
+			trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach, decomp_sys
+			,state
+			);
 
 		///*****************************************************
 		// Set the iteration quantities for the barrier terms
@@ -767,171 +537,6 @@ void Algo_ConfigIP::config_algo_cntr(
 		dyn_cast< IterQuantityAccessContiguous<value_type> >(state->barrier_obj()).resize(2);
 		dyn_cast< IterQuantityAccessContiguous<VectorWithOpMutable> >(state->grad_barrier_obj()).resize(2);
 
-		//
-		// Set the iteration quantities for the NLP matrix objects
-		//
-
-		THROW_EXCEPTION( // ToDo: Remove this and support mI > 0 in the futrue!
-			mI, std::logic_error
-			,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
-			"general inequaity constraints are not supported yet!" );
-		if( tailored_approach ) {
-			// NLPFirstOrderDirect
-			assert( mI == 0 && nlp_fod->con_undecomp().size() == 0 );
-			// ToDo: Add the necessary iteration quantities when mI > 0 and
-			// con_undecomp().size() > 0 are supported!
-		}
-		else {
-			// NLPFirstOrderInfo
-			if(m)
-				state->set_iter_quant(
-					Gc_name
-					,mmp::rcp(
-						new IterQuantityAccessContiguous<MatrixWithOp>(
-							1
-							,Gc_name
-							,nlp_foi->factory_Gc()
-							)
-						)
-					);
-			if(mI)
-				state->set_iter_quant(
-					Gh_name
-					,mmp::rcp(
-						new IterQuantityAccessContiguous<MatrixWithOp>(
-							1
-							,Gh_name
-							,nlp_foi->factory_Gh()
-							)
-						)
-					);
-			if(nlp_soi)
-				state->set_iter_quant(
-					HL_name
-					,mmp::rcp(
-						new IterQuantityAccessContiguous<MatrixSymWithOp>(
-							1
-							,HL_name
-							,nlp_soi->factory_HL()
-							)
-						)
-					);
-		}
-
-		//
-		// Set the algorithm specific matrix objects
-		//
-		
-		// Add range/null decomposition matrices
-
-		if(tailored_approach) {
-			// Z
-			state->set_iter_quant(
-				Z_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Z_name
-						,mmp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
-						)
-					)
-				);
-			// Y
-			state->set_iter_quant(
-				Y_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Y_name
-						,mmp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
-						)
-					)
-				);
-			// ToDo: Add matrix iq object for Uz
-			// ToDo: Add matrix iq object for Uy
-			// ToDo: Add matrix iq object for Vz
-			// ToDo: Add matrix iq object for Vy
-		}
-		else {
-			// Z
-			state->set_iter_quant(
-				Z_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Z_name
-						,decomp_sys->factory_Z()
-						)
-					)
-				);
-			// Y
-			state->set_iter_quant(
-				Y_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Y_name
-						,decomp_sys->factory_Y()
-						)
-					)
-				);
-			// R
-			state->set_iter_quant(
-				R_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
-						1
-						,R_name
-						,decomp_sys->factory_R()
-						)
-					)
-				);
-			// Uz
-			state->set_iter_quant(
-				Uz_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Uz_name
-						,decomp_sys->factory_Uz()
-						)
-					)
-				);
-			// Uy
-			state->set_iter_quant(
-				Uy_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Uy_name
-						,decomp_sys->factory_Uy()
-						)
-					)
-				);
-			// Vz
-			state->set_iter_quant(
-				Vz_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Vz_name
-						,decomp_sys->factory_Vz()
-						)
-					)
-				);
-			// Vy
-			state->set_iter_quant(
-				Vy_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Vy_name
-						,decomp_sys->factory_Vy()
-						)
-					)
-				);
-		}
-
 		// Add reduced Hessian of the Lagrangian
 
 		if( !cov_.exact_reduced_hessian_ ) {
@@ -1004,21 +609,6 @@ void Algo_ConfigIP::config_algo_cntr(
 		    );
 		  }
 
-		if( nb || mI ) {
-			// Add active-set iteration quantity
-			state->set_iter_quant(
-				act_set_stats_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<ActSetStats>( 1, act_set_stats_name ) )
-				);
-			// Add QP solver stats iteration quantity
-			state->set_iter_quant(
-				qp_solver_stats_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<QPSolverStats>( 1, qp_solver_stats_name ) )
-				);
-		}
-
 		//
 		// Resize the number of storage locations (these can be changed later).
 		//
@@ -1039,13 +629,13 @@ void Algo_ConfigIP::config_algo_cntr(
 
 		if( m
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		   && basis_sys_perm.get() == NULL
+		   && decomp_sys_perm.get() == NULL
 #endif
 			) state->py();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
 		if( m
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-			&& basis_sys_perm.get() == NULL
+			&& decomp_sys_perm.get() == NULL
 #endif
 			) state->pz();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
@@ -1084,21 +674,6 @@ void Algo_ConfigIP::config_algo_cntr(
 	if(trase_out)
 		*trase_out << "\n*** Creating and setting the step objects ...\n";
 
-//	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
-//	qp_solver_ptr_t qp_solver;
-//	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester QPSolverRelaxedTester;
-//	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
-//	qp_tester_ptr_t qp_tester;
-//	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
-//	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
-	typedef ref_count_ptr<DecompositionSystemHandler_Strategy> decomp_sys_handler_ptr_t;
-	decomp_sys_handler_ptr_t  decomp_sys_handler;
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-	typedef ref_count_ptr<DecompositionSystemHandlerSelectNew_Strategy> decomp_sys_handler_select_new_ptr_t;
-	decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new;
-	typedef ref_count_ptr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy_ptr_t;
-	new_decomp_selection_strategy_ptr_t  new_decomp_selection_strategy;
-#endif
 	{
 
 		//
@@ -1106,57 +681,17 @@ void Algo_ConfigIP::config_algo_cntr(
 		// specific algorithms
 		//
 		
-		typedef ref_count_ptr<AlgorithmStep>    algo_step_ptr_t;
+		typedef ref_count_ptr<AlgorithmStep>   algo_step_ptr_t;
 
-		// Create the variable bounds testing object.
-		typedef mmp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
-		bounds_tester_ptr_t   bounds_tester = mmp::null;
-		if(nb) { // has variable bounds?
-			const value_type var_bounds_warning_tol = 1e-10;
-			const value_type var_bounds_error_tol   = 1e-5;
-			bounds_tester = mmp::rcp(
-				new VariableBoundsTester(
-					var_bounds_warning_tol      // default warning tolerance
-					,var_bounds_error_tol       // default error tolerance
-					) );
-			if(options_.get()) {
-				ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
-					options_setter( bounds_tester.get() );
-				options_setter.set_options(*options_);
-				}
-		}
-
-		// Create the finite difference class
-		typedef mmp::ref_count_ptr<CalcFiniteDiffProd>     calc_fd_prod_ptr_t;
-		calc_fd_prod_ptr_t   calc_fd_prod = mmp::null;
-		{
-			calc_fd_prod = mmp::rcp(new CalcFiniteDiffProd());
-			if(options_.get()) {
-				ConstrainedOptimizationPack::CalcFiniteDiffProdSetOptions
-					options_setter( calc_fd_prod.get() );
-				options_setter.set_options(*options_);
-			}
-		}
-
-		// Decomposition system handler
-		if( nlp_foi ) {
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-			if( basis_sys_perm.get() )
-				decomp_sys_handler = decomp_sys_handler_select_new
-					= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
-			else
-#endif
-				decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
-		}
-	
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		// NewDecompositionSelectionStd_Strategy
-		if( decomp_sys_handler_select_new.get() ) {
-			new_decomp_selection_strategy = mmp::rcp(
-				new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
-				);
-		}
-#endif
+		// Create the EvalNewPoint step and associated objects
+		algo_step_ptr_t                                    eval_new_point_step           = mmp::null;
+		ref_count_ptr<CalcFiniteDiffProd>                  calc_fd_prod                  = mmp::null;
+		ref_count_ptr<VariableBoundsTester>                bounds_tester                 = mmp::null;
+		ref_count_ptr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy = mmp::null;
+		decomp_sys_step_builder_.create_eval_new_point(
+			trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach, decomp_sys
+			,&eval_new_point_step, &calc_fd_prod, &bounds_tester, &new_decomp_selection_strategy
+			);
 
 		// UpdateBarrierParameter_Step
 		mmp::ref_count_ptr<UpdateBarrierParameter_Step>	updateBarrierParameter_step  = mmp::null;
@@ -1176,90 +711,6 @@ void Algo_ConfigIP::config_algo_cntr(
 				options_setter(preEvalNewPointBarrier_step.get());
 			options_setter.set_options(*options_);
 			}
-
-		// EvalNewPoint_Step
-		algo_step_ptr_t    eval_new_point_step = mmp::null;
-		{
-			// Create the step object
-			if( tailored_approach ) {
-				// create and setup the derivative tester
-				typedef mmp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
-				deriv_tester_ptr_t
-					deriv_tester = mmp::rcp(
-						new NLPFirstOrderDirectTester(
-							calc_fd_prod
-							,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
-							,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // -Inv(C)*N testing
-							) );
-				if(options_.get()) {
-					NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions
-						options_setter(deriv_tester.get());
-					options_setter.set_options(*options_);
-				}
-				// create the step
-				typedef mmp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
-				_eval_new_point_step_ptr_t
-					_eval_new_point_step = mmp::null;
-				switch( cov_.range_space_matrix_type_ ) {
-					case RANGE_SPACE_MATRIX_COORDINATE:
-						_eval_new_point_step
-							= mmp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester));
-						break;
-					case RANGE_SPACE_MATRIX_ORTHOGONAL:
-						_eval_new_point_step
-							= mmp::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(
-								var_reduct_orthog_strategy_,deriv_tester,bounds_tester) );
-						break;
-					default:
-						assert(0);	// only a local error
-				}
-				if(options_.get()) {
-					EvalNewPointTailoredApproach_StepSetOptions
-						options_setter(_eval_new_point_step.get());
-					options_setter.set_options(*options_);
-				}
-				eval_new_point_step = _eval_new_point_step;
-			}
-			else {
-				// create and setup the derivative tester
-				typedef mmp::ref_count_ptr<NLPFirstDerivativesTester>   deriv_tester_ptr_t;
-				deriv_tester_ptr_t
-					deriv_tester = mmp::rcp(
-						new NLPFirstDerivativesTester(
-							calc_fd_prod
-							,NLPFirstDerivativesTester::FD_DIRECTIONAL
-							) );
-				if(options_.get()) {
-					NLPInterfacePack::NLPFirstDerivativesTesterSetOptions
-						options_setter(deriv_tester.get());
-					options_setter.set_options(*options_);
-				}
-				// create and setup the decomposition system tester
-				typedef mmp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
-				decomp_sys_tester_ptr_t
-					decomp_sys_tester = mmp::rcp( new DecompositionSystemTester() );
-				if(options_.get()) {
-					DecompositionSystemTesterSetOptions
-						options_setter(decomp_sys_tester.get());
-					options_setter.set_options(*options_);
-				}
-				typedef mmp::ref_count_ptr<EvalNewPointStd_Step>  _eval_new_point_step_ptr_t;
-				_eval_new_point_step_ptr_t
-					_eval_new_point_step = mmp::rcp(
-						new EvalNewPointStd_Step(
-							decomp_sys_handler
-							,deriv_tester
-							,decomp_sys_tester
-							,bounds_tester
-							) );
-				if(options_.get()) {
-					EvalNewPointStd_StepSetOptions
-						options_setter(_eval_new_point_step.get());
-					options_setter.set_options(*options_);
-				}
-				eval_new_point_step = _eval_new_point_step;
-			}
-		}
 
 		// PostEvalNewPointBarrier_Step
 		algo_step_ptr_t postEvalNewPointBarrier_step = mmp::rcp(new PostEvalNewPointBarrier_Step());
@@ -1913,16 +1364,12 @@ void Algo_ConfigIP::readin_options(
 	const OptionsFromStream::options_group_t optgrp = options.options_group( opt_grp_name );
 	if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
-		// Define map for options group "MamaJama".
-		const int num_opts = 15;
-		enum EMamaJama {
-			DIRECT_LINEAR_SOLVER
-			,NULL_SPACE_MATRIX
-			,RANGE_SPACE_MATRIX
-			,MAX_BASIS_COND_CHANGE_FRAC
+		// Define map for options group "IpConfig".
+		const int num_opts = 11;
+		enum EIpConfig {
+			MAX_BASIS_COND_CHANGE_FRAC
 			,EXACT_REDUCED_HESSIAN
 			,QUASI_NEWTON
-			,MAX_DOF_QUASI_NEWTON_DENSE
 			,NUM_LBFGS_UPDATES_STORED
 			,LBFGS_AUTO_SCALING
 			,HESSIAN_INITIALIZATION
@@ -1932,14 +1379,10 @@ void Algo_ConfigIP::readin_options(
 			,MERIT_FUNCTION_TYPE
 			,L1_PENALTY_PARAM_UPDATE
 		};
-		const char* SMamaJama[num_opts]	= {
-			"direct_linear_solver"
-			,"null_space_matrix"
-			,"range_space_matrix"
-			,"max_basis_cond_change_frac"
+		const char* SIpConfig[num_opts]	= {
+			"max_basis_cond_change_frac"
 			,"exact_reduced_hessian"
 			,"quasi_newton"
-			,"max_dof_quasi_newton_dense"
 			,"num_lbfgs_updates_stored"
 			,"lbfgs_auto_scaling"
 			,"hessian_initialization"
@@ -1949,80 +1392,11 @@ void Algo_ConfigIP::readin_options(
 			,"merit_function_type"
 			,"l1_penalty_parameter_update"
 		};
-		StringToIntMap	mama_jama_map(	opt_grp_name, num_opts, SMamaJama );
+		StringToIntMap	map(	opt_grp_name, num_opts, SIpConfig );
 
 		options_group_t::const_iterator itr = optgrp.begin();
 		for( ; itr != optgrp.end(); ++itr ) {
-			switch( (EMamaJama)mama_jama_map( ofsp::option_name(itr) ) ) {
-				case DIRECT_LINEAR_SOLVER:
-				{
-					const std::string &linear_solver = ofsp::option_value(itr);
-					if( linear_solver == "MA28" ) {
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-						ov->direct_linear_solver_type_ = LA_MA28;
-#else
-						THROW_EXCEPTION(
-							true, std::logic_error
-							,"Algo_ConfigIP::readin_options(...) : MA28 is not supported,"
-							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
-#endif
-					} else if( linear_solver == "MA48" ) {
-#ifdef SPARSE_SOLVER_PACK_USE_MA48
-						ov->direct_linear_solver_type_ = LA_MA48;
-#else
-						THROW_EXCEPTION(
-							true, std::logic_error
-							,"Algo_ConfigIP::readin_options(...) : MA48 is not supported,"
-							" must define SPARSE_SOLVER_PACK_USE_MA48!" );
-#endif
-					} else if( linear_solver == "AUTO" ) {
-						ov->direct_linear_solver_type_ = LA_AUTO;
-					} else {
-						THROW_EXCEPTION(
-							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
-							"Error, incorrect value for \"direct_linear_solver\" "
-							"Only the options \'AUTO\' \'MA28\' and \'MA48\' are avalible." );
-					}
-					break;
-				}
-				case NULL_SPACE_MATRIX:
-				{
-					const std::string &opt_val = ofsp::option_value(itr);
-					if( opt_val == "EXPLICIT" ) {
-						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
-					} else if( opt_val == "IMPLICIT" ) {
-						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-					} else if( opt_val == "AUTO" ) {
-						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_AUTO;
-					} else {
-						THROW_EXCEPTION(
-							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
-							"Error, incorrect value for \"null_space_matrix\" "
-							", Only the options for Z of EXPLICIT, IMPLICIT"
-							", and AUTO are avalible."	);
-					}
-					break;
-				}
-				case RANGE_SPACE_MATRIX:
-				{
-					const std::string &opt_val = ofsp::option_value(itr);
-					if( opt_val == "COORDINATE" )
-						ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
-					else if( opt_val == "ORTHOGONAL" )
-						ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_ORTHOGONAL;
-					else if( opt_val == "AUTO" )
-						ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_AUTO;
-					else
-						THROW_EXCEPTION(
-							true, std::invalid_argument
-							,"Algo_ConfigIP::readin_options(...) : "
-							"Error, incorrect value for \"range_space_matrix\" "
-							", Only the options for Z of COORDINATE,"
-							", ORTHOGONAL and AUTO are avalible."	);
-					break;
-				}
+			switch( (EIpConfig)map( ofsp::option_name(itr) ) ) {
 				case MAX_BASIS_COND_CHANGE_FRAC:
 					ov->max_basis_cond_change_frac_ = ::atof( ofsp::option_value(itr).c_str() );
 					break;
@@ -2052,9 +1426,6 @@ void Algo_ConfigIP::readin_options(
 							);
 					break;
 				}
-				case MAX_DOF_QUASI_NEWTON_DENSE:
-					ov->max_dof_quasi_newton_dense_ = ::atoi( ofsp::option_value(itr).c_str() );
-					break;
 				case NUM_LBFGS_UPDATES_STORED:
 					ov->num_lbfgs_updates_stored_ = ::atoi( ofsp::option_value(itr).c_str() );
 					break;
@@ -2210,31 +1581,6 @@ void Algo_ConfigIP::set_default_options(
 		*trase_out
 			<< "\n*** Setting option defaults for options not set by the user or determined some other way ...\n";
 
-	if( cov->direct_linear_solver_type_ == LA_AUTO && uov.direct_linear_solver_type_ == LA_AUTO ) {
-		if(trase_out)
-			*trase_out
-				<< "\ndirect_linear_solver == AUTO: setting direct_linear_solver = MA28\n";
-		cov->direct_linear_solver_type_ = LA_MA28;
-	}
-	else if( cov->direct_linear_solver_type_ == LA_AUTO ) {
-		cov->direct_linear_solver_type_ = uov.direct_linear_solver_type_;
-	}
-	if( cov->null_space_matrix_type_ == NULL_SPACE_MATRIX_AUTO && uov.null_space_matrix_type_ == NULL_SPACE_MATRIX_AUTO ) {
-		if(trase_out)
-			*trase_out
-				<< "\nnull_space_matrix_type == AUTO: Let the algorithm deside as it goes along\n";
-	}
-	else if(cov->null_space_matrix_type_ == NULL_SPACE_MATRIX_AUTO) {
-		cov->null_space_matrix_type_ = uov.null_space_matrix_type_;
-	}
-	if( cov->range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO && uov.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
-		if(trase_out)
-			*trase_out
-				<< "\nrange_space_matrix_type == AUTO: Let the algorithm deside as it goes along\n";
-	}
-	else if(cov->range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO) {
-		cov->range_space_matrix_type_ = uov.range_space_matrix_type_;
-	}
 	if( cov->max_basis_cond_change_frac_ < 0.0 &&  uov.max_basis_cond_change_frac_ < 0.0 ) {
 		if(trase_out)
 			*trase_out
@@ -2253,15 +1599,6 @@ void Algo_ConfigIP::set_default_options(
 	}
 	else if(cov->quasi_newton_ == QN_AUTO) {
 		cov->quasi_newton_ = uov.quasi_newton_;
-	}
-	if( cov->max_dof_quasi_newton_dense_ < 0 && uov.max_dof_quasi_newton_dense_ < 0 ) {
-		if(trase_out)
-			*trase_out
-				<< "\nmax_dof_quasi_newton_dense < 0 : setting max_dof_quasi_newton_dense = 500\n";
-		cov->max_dof_quasi_newton_dense_ = 500;
-	}
-	else if(cov->max_dof_quasi_newton_dense_ < 0) {
-		cov->max_dof_quasi_newton_dense_ = uov.max_dof_quasi_newton_dense_;
 	}
 	if( cov->num_lbfgs_updates_stored_ < 0 && uov.num_lbfgs_updates_stored_ < 0 ) {
 		if(trase_out)

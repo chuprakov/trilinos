@@ -54,9 +54,6 @@ public:
 	/** @name Constructors / initializers */
 	//@{
 
-	/// Set the strategy object for forming <tt>S = I + D'*D</tt>.
-	STANDARD_CONST_COMPOSITION_MEMBERS( VarReductOrthog_Strategy, var_reduct_orthog_strategy )
-
 	///
 	DecompositionSystemOrthogonal(
 		const VectorSpace::space_ptr_t           &space_x                    = MemMngPack::null
@@ -64,7 +61,6 @@ public:
 		,const VectorSpace::space_ptr_t          &space_h                    = MemMngPack::null
 		,const basis_sys_ptr_t                   &basis_sys                  = MemMngPack::null
 		,const basis_sys_tester_ptr_t            &basis_sys_tester           = MemMngPack::null
-		,const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy = MemMngPack::null
 		,EExplicitImplicit                       D_imp                       = MAT_IMP_EXPLICIT
 		,EExplicitImplicit                       Uz_imp                      = MAT_IMP_EXPLICIT
 		,EExplicitImplicit                       Vz_imp                      = MAT_IMP_EXPLICIT

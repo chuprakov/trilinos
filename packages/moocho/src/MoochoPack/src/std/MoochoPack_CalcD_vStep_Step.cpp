@@ -28,7 +28,6 @@
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "dynamic_cast_verbose.h"
 
 
@@ -42,8 +41,8 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	using AbstractLinAlgPack::upperbound_multipliers_step;
 
 	rSQPAlgo &algo = rsqp_algo(_algo);
-	ipState	&s = dyn_cast<ipState>(_algo.state());
-	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+	ipState	 &s    = dyn_cast<ipState>(_algo.state());
+	NLP      &nlp  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

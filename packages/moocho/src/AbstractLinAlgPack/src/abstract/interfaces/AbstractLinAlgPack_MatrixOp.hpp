@@ -560,18 +560,42 @@ public:
 		,value_type beta );
 	
 	///
-	/** Perform a rank-k update of a dense symmetric matrix of the form:
+	/** Perform a rank-k update of a symmetric matrix of the form:
 	 *
 	 * <tt>symwo_lhs += alpha*op(M)*op(M') + beta*symwo_lhs</tt>
 	 *
-	 * The default implementation relays on <tt>dynamic_cast<MultiVectorSymMutable*>(sym_lhs)</tt>
-	 * and is based on <tt>this->Vp_StMtV()</tt>.  If <tt>dynamic_cast</tt> returns <tt>NULL</tt>, the this
-	 * default implementation throws <tt>MethodNotImplemented</tt>.  Of course in situations where this
-	 * default implemention is inefficient the subclass should override this method.
+	 * where <tt>this</tt> is the rhs matrix argument.
+	 *
+	 * Never call this method directly.  Instead use the nonmember function
+	 * <tt>AbstractLinAlgPack::syrk()</tt>.
+	 *
+	 * The default implementation returns <tt>false</tt> and does nothing.
 	 */
-	virtual void syrk(
-		 BLAS_Cpp::Transp M_trans, value_type alpha
-		, value_type beta, MatrixSymWithOp* sym_lhs ) const;
+	virtual bool syrk(
+		BLAS_Cpp::Transp   M_trans
+		,value_type        alpha
+		,value_type        beta
+		,MatrixSymWithOp   *sym_lhs
+		) const;
+	
+	///
+	/** Perform a rank-k update of a symmetric matrix of the form:
+	 *
+	 * <tt>M += alpha*op(mwo_rhs)*op(mwo_rhs') + beta*M</tt>
+	 *
+	 * where <tt>this</tt> is the lhs matrix argument.
+	 *
+	 * Never call this method directly.  Instead use the nonmember function
+	 * <tt>AbstractLinAlgPack::syrk()</tt>.
+	 *
+	 * The default implementation returns <tt>false</tt> and does nothing.
+	 */
+	virtual bool syrk(
+		const MatrixWithOp  &mwo_rhs
+		,BLAS_Cpp::Transp   M_trans
+		,value_type         alpha
+		,value_type         beta
+		);
 
 	//		end Level-3 BLAS
 	//@}
@@ -742,6 +766,21 @@ void Mp_StMtM(
 	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0 );
+
+///
+/** Perform a rank-k update of a symmetric matrix of the form:
+ *
+ * <tt>symwo_lhs += alpha*op(mwo_rhs)*op(mwo_rhs') + beta*symwo_lhs</tt>
+ *
+ * The default implementation returns <tt>false</tt> and does nothing.
+ */
+void syrk(
+	const MatrixWithOp  &mwo_rhs
+	,BLAS_Cpp::Transp   M_trans
+	,value_type         alpha
+	,value_type         beta
+	,MatrixSymWithOp    *sym_lhs
+	);
 
 //		end Level-3 BLAS
 //@}

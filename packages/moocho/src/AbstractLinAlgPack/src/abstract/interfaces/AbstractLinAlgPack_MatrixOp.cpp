@@ -18,7 +18,7 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
 #include "AbstractLinAlgPack/include/MatrixPermAggr.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
@@ -322,11 +322,24 @@ bool MatrixWithOp::Mp_StMtM(
 	return false;
 }
 
-void MatrixWithOp::syrk(
-	BLAS_Cpp::Transp M_trans, value_type alpha
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+bool MatrixWithOp::syrk(
+	BLAS_Cpp::Transp   M_trans
+	,value_type        alpha
+	,value_type        beta
+	,MatrixSymWithOp   *sym_lhs
+	) const
 {
-	assert(0); // ToDo: Implement!
+	return false;
+}
+
+bool MatrixWithOp::syrk(
+	const MatrixWithOp  &mwo_rhs
+	,BLAS_Cpp::Transp   M_trans
+	,value_type         alpha
+	,value_type         beta
+	)
+{
+	return false;
 }
 
 } // end namespace AbstractLinAlgPack
@@ -526,4 +539,28 @@ void AbstractLinAlgPack::Mp_StMtM(
 		// C(:,j) = a*op(A)*t + b*C(:,j)
 		Vp_StMtV( Cmv->col(j).get(), a, A, A_trans, *t, b );
 	}
+}
+
+void AbstractLinAlgPack::syrk(
+	const MatrixWithOp  &A
+	,BLAS_Cpp::Transp   A_trans
+	,value_type         a
+	,value_type         b
+	,MatrixSymWithOp    *B
+	)
+{
+	// Give A a chance
+	if(A.syrk(A_trans,a,b,B))
+		return;
+	// Give B a chance
+	if(B->syrk(A,A_trans,a,b))
+		return;
+	
+	THROW_EXCEPTION(
+		true, MatrixWithOp::MethodNotImplemented
+		,"AbstractLinAlgPack::syrk(...) : Error, neither the right-hand-side matrix "
+		"argument mwo_rhs of type \'" << typeid(A).name() << " nore the left-hand-side matrix "
+		"argument sym_lhs of type \'" << typeid(*B).name() << "\' could implement this operation!"
+		);
+
 }

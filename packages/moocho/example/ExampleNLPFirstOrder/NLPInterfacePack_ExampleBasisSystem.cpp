@@ -35,9 +35,13 @@ ExampleBasisSystem::ExampleBasisSystem(
 		,var_indep
 		,space_x->sub_space(var_dep)
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
+			new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())       // C
 		,MemMngPack::rcp(
-			new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())               // D'*D
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())    // S
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())                  // D
 		)
 {}
 	
@@ -47,21 +51,21 @@ void ExampleBasisSystem::initialize(
 	,const Range1D                       &var_indep
 	)
 {
-	namespace rcp = MemMngPack;
-
-	if( space_x.get() != NULL ) {
-		BasisSystemCompositeStd::initialize(
-			space_x
-			,var_dep
-			,var_indep
-			,space_x->sub_space(var_dep)
-			,rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())
-			,rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())
-			);
-	}
-	else {
-		BasisSystemCompositeStd::set_uninitialized();
-	}
+	namespace mmp = MemMngPack;
+	THROW_EXCEPTION(
+		space_x.get() == NULL, std::invalid_argument
+		,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
+		);
+	BasisSystemCompositeStd::initialize(
+		space_x
+		,var_dep
+		,var_indep
+		,space_x->sub_space(var_dep)
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>())      // C
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())              // D'*D
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())   // S
+		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>())                 // D
+		);
 }
 
 void ExampleBasisSystem::update_D(

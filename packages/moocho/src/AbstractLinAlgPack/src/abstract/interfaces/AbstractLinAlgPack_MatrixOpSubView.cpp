@@ -398,12 +398,12 @@ bool MatrixWithOpSubView::Mp_StMtM(
 		alpha,mvw_rhs1,trans_rhs1,mwo_rhs2,trans_rhs2,beta); // ToDo: Specialize?
 }
 
-void MatrixWithOpSubView::syrk(
+bool MatrixWithOpSubView::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
 	assert_initialized();
-	MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // ToDo: Specialize?
+	return MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // ToDo: Specialize?
 }
 
 // private

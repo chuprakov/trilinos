@@ -66,6 +66,8 @@ using AbstractLinAlgPack::Mp_StM;
 ///
 using AbstractLinAlgPack::Mp_StMtM;
 ///
+using AbstractLinAlgPack::syrk;
+///
 using AbstractLinAlgPack::V_InvMtV;
 ///
 using AbstractLinAlgPack::M_StInvMtM;

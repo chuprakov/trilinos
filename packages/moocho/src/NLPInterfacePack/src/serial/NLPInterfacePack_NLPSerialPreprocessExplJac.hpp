@@ -20,8 +20,10 @@
 
 #include "NLPSerialPreprocess.h"
 #include "NLPFirstOrderInfo.h"
+#include "SparseSolverPack/include/BasisSystemFactoryStd.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "AbstractFactory.h"
+#include "StandardCompositionMacros.h"
 
 namespace NLPInterfacePack {
 
@@ -49,6 +51,15 @@ namespace NLPInterfacePack {
 
     Gf_full = Empty
  \endverbatim
+ * This class also comes with a default implementation for the
+ * <tt>BasisSystemPerm</tt> object which is created by a
+ * <tt>BasisSystemPermFactory</tt> object that the client (or the
+ * subclass) can specify.  The default implementation for this factory
+ * object is from <tt>BasisSystemPermFactoryStd</tt> which uses the
+ * <tt>SparseSolverPack::BasisSystemPermDirectSparse</tt> subclass and
+ * supports several different linear solvers by default.  The client
+ * (or subclass) can augment the list of supported linear solvers
+ * easily.
  *
  * ToDo: Finish documentation!
  *
@@ -81,11 +92,15 @@ public:
 	/** @name Constructors / initializers */
 	//@{
 
+	/// Set the <tt>BasisSystemFactory</tt> object used to create the basis system.
+	STANDARD_COMPOSITION_MEMBERS( BasisSystemFactory, basis_sys_fcty )
+
 	///
-	/** Calls <tt>this->set_mat_factories()</tt>.
+	/** Calls <tt>this->set_basis_sys_fcty()</tt> and <tt>this->set_mat_factories()</tt> methods.
 	 */
 	NLPSerialPreprocessExplJac(
-		const factory_mat_ptr_t     &factory_Gc_full = MemMngPack::null
+		const basis_sys_fcty_ptr_t  &basis_sys_fcty  = MemMngPack::rcp(new BasisSystemFactoryStd())
+		,const factory_mat_ptr_t    &factory_Gc_full = MemMngPack::null
 		,const factory_mat_ptr_t    &factory_Gh_full = MemMngPack::null
 		);
 
@@ -113,6 +128,10 @@ public:
 	/** @name Overridden public members from NLP */
 	//@{
 
+	/// Passes these options on to <tt>this->basis_sys_fcty().set_options(options)</tt>.
+	void set_options( const options_ptr_t& options );
+	///
+	const options_ptr_t& get_options() const;
 	///
 	void initialize(bool test_setup);	
 	///
@@ -127,6 +146,8 @@ public:
 	const mat_fcty_ptr_t factory_Gc() const;
 	///
 	const mat_fcty_ptr_t factory_Gh() const;
+	/// Calls <tt>basis_sys_fcty()->create()</tt>
+	const basis_sys_ptr_t basis_sys() const;
 	/// Validates the type of Gc is correct
 	void set_Gc(MatrixWithOp* Gc);
 	/// Validates the type of Gh is correct
@@ -354,6 +375,7 @@ private:
 	
 	bool initialized_;              // Flag for if the NLP has has been properly initialized
 	bool test_setup_;               // Flag for if to test the setup of things or not
+	options_ptr_t options_;         // The options being used
 
 	factory_mat_ptr_t   factory_Gc_full_;
 	factory_mat_ptr_t   factory_Gh_full_;

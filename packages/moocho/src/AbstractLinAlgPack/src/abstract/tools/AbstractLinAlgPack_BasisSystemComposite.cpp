@@ -247,17 +247,22 @@ void BasisSystemCompositeStd::get_C_N(
 // Constructors / initializers
 
 BasisSystemCompositeStd::BasisSystemCompositeStd()
+	:BasisSystem(MemMngPack::null,MemMngPack::null)
 {}
 
 BasisSystemCompositeStd::BasisSystemCompositeStd(
 	const VectorSpace::space_ptr_t       &space_x
 	,const VectorSpace::space_ptr_t      &space_c
 	,const mat_nonsing_fcty_ptr_t        &factory_C
+	,const mat_sym_fcty_ptr_t            &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	)
+	:BasisSystem(MemMngPack::null,MemMngPack::null)
 {
+	namespace mmp = MemMngPack;
 	this->initialize(
 		space_x,Range1D(1,space_c->dim()),Range1D(space_c->dim()+1,space_x->dim())
-		,space_c,factory_C
+		,space_c,factory_C,factory_transDtD,factory_S
 		);
 }
 
@@ -267,12 +272,18 @@ BasisSystemCompositeStd::BasisSystemCompositeStd(
 	,const Range1D                       &var_indep
 	,const VectorSpace::space_ptr_t      &space_c
 	,const mat_nonsing_fcty_ptr_t        &factory_C
+	,const mat_sym_fcty_ptr_t            &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	,const mat_fcty_ptr_t                &factory_D
 	,const VectorSpace::space_ptr_t      &space_h
 	,const mat_fcty_ptr_t                &factory_GhUP
 	)
+	:BasisSystem(MemMngPack::null,MemMngPack::null)
 {
-	this->initialize(space_x,var_dep,var_indep,space_c,factory_C,factory_D,space_h,factory_GhUP);
+	this->initialize(
+		space_x,var_dep,var_indep,space_c,factory_C,factory_transDtD,factory_S
+		,factory_D,space_h,factory_GhUP
+		);
 }
 	
 void BasisSystemCompositeStd::initialize(
@@ -281,6 +292,8 @@ void BasisSystemCompositeStd::initialize(
 	,const Range1D                       &var_indep
 	,const VectorSpace::space_ptr_t      &space_c
 	,const mat_nonsing_fcty_ptr_t        &factory_C
+	,const mat_sym_fcty_ptr_t            &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	,const mat_fcty_ptr_t                &factory_D
 	,const VectorSpace::space_ptr_t      &space_h
 	,const mat_fcty_ptr_t                &factory_GhUP
@@ -327,6 +340,7 @@ void BasisSystemCompositeStd::initialize(
 		factory_GhUP_ = afp::abstract_factory_std_alloc<MatrixWithOp,MultiVectorMutable>(
 			AllocatorMultiVectorMutable(space_h_,var_indep.size() ) );
 	}
+	BasisSystem::initialize(factory_transDtD,factory_S);
 }
 
 void BasisSystemCompositeStd::set_uninitialized()

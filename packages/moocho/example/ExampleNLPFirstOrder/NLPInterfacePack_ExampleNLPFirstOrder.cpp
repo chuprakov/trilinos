@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include "ExampleNLPFirstOrderInfo.h"
+#include "ExampleBasisSystem.h"
 #include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
 #include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
@@ -38,7 +39,15 @@ ExampleNLPFirstOrderInfo::ExampleNLPFirstOrderInfo(
 	)
 	:ExampleNLPObjGradient(vec_space,xo,has_bounds,dep_bounded)
 	,initialized_(false)
-{}
+{
+	basis_sys_ = MemMngPack::rcp(
+		new ExampleBasisSystem(
+			this->space_x()
+			,this->var_dep()
+			,this->var_indep()
+			)
+		);
+}
 
 // Overridden public members from NLPFirstOrderInfo
 
@@ -59,6 +68,12 @@ const NLPFirstOrderInfo::mat_fcty_ptr_t
 ExampleNLPFirstOrderInfo::factory_Gh() const
 {
 	return MemMngPack::null;
+}
+
+const NLPFirstOrderInfo::basis_sys_ptr_t
+ExampleNLPFirstOrderInfo::basis_sys() const
+{
+	return basis_sys_;
 }
 
 // Overridden public members from NLP

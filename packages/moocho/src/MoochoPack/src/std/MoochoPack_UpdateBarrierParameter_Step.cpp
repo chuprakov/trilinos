@@ -21,7 +21,6 @@
 #include "ReducedSpaceSQPPack/include/std/UpdateBarrierParameter_Step.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "dynamic_cast_verbose.h"
 #include "ReducedSpaceSQPPack/include/ipState.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
@@ -64,7 +63,7 @@ bool UpdateBarrierParameter_Step::do_step(
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
-	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+	NLP                 &nlp    = algo.nlp();
 
 	if (!nlp.is_initialized())
 		{

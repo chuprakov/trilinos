@@ -206,7 +206,7 @@ void MultiVectorMutableCols::Vp_StMtV(
 	}
 }
 
-void MultiVectorMutableCols::syrk(
+bool MultiVectorMutableCols::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
@@ -214,8 +214,7 @@ void MultiVectorMutableCols::syrk(
 	MatrixSymWithOpGetGMSSymMutable
 		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(sym_lhs);
 	if(!symwo_gms_lhs) {
-		MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
-		return;
+		return MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
 	}
 	MatrixDenseSymMutableEncap  sym_gms(symwo_gms_lhs);
 	const int num_vecs = this->col_vecs_.size();
@@ -237,6 +236,7 @@ void MultiVectorMutableCols::syrk(
 			}
 		}
 	}
+	return true;
 }
 
 // Overridden from MultiVector

@@ -64,8 +64,9 @@ namespace ReducedSpaceSQPPack {
  * algorithmic objects that it creates) can be set through an
  * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object by passing it to
  * <tt>this->set_options()</tt>.  The files
- * <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt> and
- * <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>
+ * <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>,
+ * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>
+ * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
  *
  * <b>Requirements / Specifications</b>
@@ -545,7 +546,8 @@ public:
 	 * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
 	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'rSQPpp.opt'
 	 * in the current directory.  If this file does not exist, then a default set of options is used
-	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>
+	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>,
+	 * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>
 	 * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt> show which
 	 * options can be used with this solver interface and a <tt>rSQPAlgo_ConfigMamaJama</tt> configuration
 	 * object respectively.  Other configuration classes will use a different set of options.  See the
@@ -682,6 +684,15 @@ private:
  * <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>.
  *
  * \verbinclude rSQPpp.opt.rSQPppSolver
+ */
+
+/** \defgroup DecompositionSystemStateStepBuilderStd_opts Options for common builder object of type DecompositionSystemStateStepBuilderStd object.
+ *
+ * The following is the contents of the file <tt>rSQPpp.opt.DecompositionSystemStateStepBuilderStd</tt> which
+ * are options that are shared by different specific configuration classes (for example, see
+ * <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>).
+ *
+ * \verbinclude rSQPpp.opt.DecompositionSystemStateStepBuilderStd
  */
 
 // /////////////////////////////////////////

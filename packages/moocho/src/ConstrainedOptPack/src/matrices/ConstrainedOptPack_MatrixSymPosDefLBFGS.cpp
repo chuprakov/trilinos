@@ -48,7 +48,7 @@
 #include <typeinfo>
 
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"
-#include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
+#include "SparseLinAlgPack/include/BFGS_helpers.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
@@ -489,6 +489,7 @@ void MatrixSymPosDefLBFGS::secant_update(
 	VectorWithOpMutable* s, VectorWithOpMutable* y, VectorWithOpMutable* Bs
 	)
 {
+	using SparseLinAlgPack::BFGS_sTy_suff_p_d;
 	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
 	namespace wsp = WorkspacePack;

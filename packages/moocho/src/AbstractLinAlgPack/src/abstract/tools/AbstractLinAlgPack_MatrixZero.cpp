@@ -231,7 +231,7 @@ bool MatrixZero::Mp_StMtM(
 	return true;
 }
 
-void MatrixZero::syrk(
+bool MatrixZero::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {

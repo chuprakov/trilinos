@@ -88,7 +88,26 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const MemMngPack::AbstractFactory<MatrixWithOp> >          mat_fcty_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixSymWithOp> >            mat_sym_fcty_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixSymWithOpNonsingular> > mat_sym_nonsing_fcty_ptr_t;
+
+	///
+	/** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
+	 * <li>this->factory_S().get() == factory_S.get()</tt>
+	 * </ul>
+	 */
+	void set_factories(
+		const mat_sym_fcty_ptr_t             &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		);
 
 	/** @name Dimensionality */
 	//@{
@@ -254,6 +273,20 @@ public:
 	 */
 	virtual const mat_fcty_ptr_t factory_GhD() const;
 
+	///
+	/** Returns a matrix factory for the result of <tt>J = D'*D</tt>
+	 * 
+	 * The resulting matrix is symmetric but is assumed to be singular.
+	 */
+	virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
+	
+	///
+	/** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
+	 * 
+	 * The resulting matrix is symmetric and is guarrenteed to be nonsingular
+	 */
+	virtual const mat_sym_nonsing_fcty_ptr_t factory_S() const;
+
 	//@}
 
 	/** @name Calculation members */
@@ -380,6 +413,18 @@ public:
 	/** @name Overridden from NLP */
 	//@{
 
+	///
+	/** Initialize the NLP for its first use.
+	  *
+	  * This function implementation should be called by subclass implementations
+	  * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.
+	  * This implementation calls <tt>this->NLPObjGradient::initialize()</tt>
+	  *
+	  * Postconditions:<ul>
+	  * <li> See <tt>NLPObjGradient::initialize()</tt>
+	  * </ul>
+	  */
+	void initialize(bool test_setup);
 	/// Returns <tt>return.get() == NULL</tt>.
 	vec_space_ptr_t space_h() const;
 	/// Throws exception.
@@ -398,6 +443,10 @@ protected:
 	void imp_calc_h(const VectorWithOp& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
 	//@}
+
+private:
+	mat_sym_fcty_ptr_t             factory_transDtD_;
+	mat_sym_nonsing_fcty_ptr_t     factory_S_;
 
 };	// end class NLPFirstOrderDirect
 

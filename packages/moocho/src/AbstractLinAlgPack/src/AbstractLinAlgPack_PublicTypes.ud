@@ -39,8 +39,11 @@ using AbstractLinAlgPack::MatrixSymDiagonal;
 using AbstractLinAlgPack::MultiVector;
 using AbstractLinAlgPack::MultiVectorMutable;
 
+using AbstractLinAlgPack::MatrixSymSecantUpdateable;
+
 using AbstractLinAlgPack::BasisSystem;
 using AbstractLinAlgPack::BasisSystemPerm;
+using AbstractLinAlgPack::BasisSystemFactory;
 
 using AbstractLinAlgPack::Permutation;
 

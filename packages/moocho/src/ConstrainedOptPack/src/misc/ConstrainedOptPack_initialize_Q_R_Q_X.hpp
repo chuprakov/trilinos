@@ -81,4 +81,4 @@ void initialize_Q_R_Q_X(
 
 }  // end namespace ConstrainedOptimizationPack
 
-#endif INITIALIZE_Q_R_Q_X_H
+#endif // INITIALIZE_Q_R_Q_X_H

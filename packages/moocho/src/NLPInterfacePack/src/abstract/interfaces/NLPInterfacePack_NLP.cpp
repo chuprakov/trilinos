@@ -44,7 +44,17 @@ NLPInterfacePack::NLP::NLP()
 NLPInterfacePack::NLP::~NLP()
 {}
 
-void NLPInterfacePack::NLP::initialize(bool test_setup) {
+void NLPInterfacePack::NLP::set_options( const options_ptr_t& options )
+{}
+
+const NLPInterfacePack::NLP::options_ptr_t&
+NLPInterfacePack::NLP::get_options() const
+{
+	return MemMngPack::null;
+}
+
+void NLPInterfacePack::NLP::initialize(bool test_setup)
+{
 	num_f_evals_ = num_c_evals_ = num_h_evals_ = 0;
 }
 

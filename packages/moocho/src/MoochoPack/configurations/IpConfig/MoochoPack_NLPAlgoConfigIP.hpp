@@ -18,8 +18,7 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
 #include "OptionsFromStream.h"
 
 namespace ReducedSpaceSQPPack {
@@ -40,26 +39,7 @@ class Algo_ConfigIP : public rSQPAlgo_Config {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<BasisSystem>  basis_sys_ptr_t;
-	///
-	typedef MemMngPack::ref_count_ptr<VarReductOrthog_Strategy>
-                                                               var_reduct_orthog_strategy_ptr_t;
-
-	/// Calls <tt>this->initalize()</tt>
-	Algo_ConfigIP( 
-		const basis_sys_ptr_t                     &basis_sys                  = MemMngPack::null
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = MemMngPack::null
-		);
-
-	///
-	/** Initialize.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	void initialize(
-		const basis_sys_ptr_t                     &basis_sys                  = MemMngPack::null
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = MemMngPack::null
-		);
+	Algo_ConfigIP();
 
 	///
 	~Algo_ConfigIP();
@@ -94,17 +74,6 @@ public:
 	//@{
 
 	///
-	enum EDirectLinearSolverType {
-		LA_AUTO, LA_MA28, LA_MA48, LA_SUPERLU };
-	///
-	enum ENullSpaceMatrixType {
-		NULL_SPACE_MATRIX_AUTO, NULL_SPACE_MATRIX_EXPLICIT
-		, NULL_SPACE_MATRIX_IMPLICIT };
-	///
-	enum ERangeSpaceMatrixType {
-		RANGE_SPACE_MATRIX_AUTO, RANGE_SPACE_MATRIX_COORDINATE
-		, RANGE_SPACE_MATRIX_ORTHOGONAL };
-	///
 	enum EQuasiNewton {
 		QN_AUTO, QN_BFGS, QN_PBFGS, QN_LBFGS, QN_LPBFGS };
 	///
@@ -137,16 +106,11 @@ public:
 	struct SOptionValues {
 		// Constructor (sets default values)
 		SOptionValues();
-		// Direct linear solvers
-		EDirectLinearSolverType	direct_linear_solver_type_;
 		// Variable Reduction,  Range/Null space decompositions
-		ENullSpaceMatrixType	null_space_matrix_type_;
-		ERangeSpaceMatrixType	range_space_matrix_type_;
 		value_type				max_basis_cond_change_frac_;	// If < , don't change default
 		// Reduced Hessian Approximations
 		bool					exact_reduced_hessian_;
 		EQuasiNewton			quasi_newton_;
-		int						max_dof_quasi_newton_dense_;    // If < 0, don't change default
 		int						num_lbfgs_updates_stored_;      // If < 0, don't change default
 		bool					lbfgs_auto_scaling_;
 		EHessianInitialization	hessian_initialization_;
@@ -164,9 +128,8 @@ public:
 
 private:
 
-	/// Possible user supplied stuff
-	basis_sys_ptr_t                   basis_sys_;
-	var_reduct_orthog_strategy_ptr_t  var_reduct_orthog_strategy_;
+	/// Builder class for some common code
+	DecompositionSystemStateStepBuilderStd   decomp_sys_step_builder_;
 
 	/// Smart pointer to options
 	options_ptr_t      options_;

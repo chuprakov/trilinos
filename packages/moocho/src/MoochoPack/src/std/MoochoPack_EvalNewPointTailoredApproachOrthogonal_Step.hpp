@@ -39,12 +39,8 @@ class EvalNewPointTailoredApproachOrthogonal_Step
 public:
 
 	///
-	STANDARD_CONST_COMPOSITION_MEMBERS( VarReductOrthog_Strategy, var_reduct_orthog_strategy )
-
-	///
 	EvalNewPointTailoredApproachOrthogonal_Step(
-		const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy
-		,const deriv_tester_ptr_t               &deriv_tester
+		const deriv_tester_ptr_t                &deriv_tester
 		,const bounds_tester_ptr_t              &bounds_tester
 		,EFDDerivTesting                        fd_deriv_testing = FD_DEFAULT
 		);

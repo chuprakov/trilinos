@@ -138,7 +138,7 @@ public:
 		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
-	void syrk(
+	bool syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		, value_type beta, MatrixSymWithOp* sym_lhs ) const;
 

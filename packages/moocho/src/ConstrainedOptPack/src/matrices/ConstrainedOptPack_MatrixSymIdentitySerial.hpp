@@ -16,7 +16,8 @@
 #ifndef COP_MATRIX_SYM_IDENTITY_SERIAL_H
 #define COP_MATRIX_SYM_IDENTITY_SERIAL_H
 
-#include "MatrixExtractInvCholFactor.h"
+#include "ConstrainedOptimizationPackTypes.h"
+#include "SparseLinAlgPack/include/MatrixExtractInvCholFactor.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
 
 namespace ConstrainedOptimizationPack {
@@ -28,7 +29,7 @@ namespace ConstrainedOptimizationPack {
  */
 class MatrixSymIdentitySerial
 	: virtual public SparseLinAlgPack::MatrixSymWithOpNonsingularSerial // doxygen needs full name
-	, virtual public MatrixExtractInvCholFactor
+	, virtual public SparseLinAlgPack::MatrixExtractInvCholFactor
 {
 public:
 	

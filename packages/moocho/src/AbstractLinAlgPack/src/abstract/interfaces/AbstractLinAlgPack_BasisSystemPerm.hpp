@@ -38,6 +38,17 @@ public:
 
 	//@}
 
+
+	///
+	/** Required constructor (calls <tt>initialize()</tt>).
+	 */
+	BasisSystemPerm(
+		const mat_sym_fcty_ptr_t             &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		)
+		:BasisSystem(factory_transDtD,factory_S)
+			{}
+
 	/** @name Permutation factories */
 	//@{
 
@@ -100,6 +111,10 @@ public:
 		) = 0;
 	
 	//@}
+
+private:
+	// not defined and not to be called
+	BasisSystemPerm();
 
 }; // end class BasisSystemPerm
 

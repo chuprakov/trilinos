@@ -89,9 +89,6 @@ ExampleNLPObjGradient::ExampleNLPObjGradient(
 	//                }  for i <: bounded_rng
 	// xu(i) = 20    /
 
-	const size_type
-		m = n_ / 2;
-
 	xl_ = vec_space_comp_->create_member();
 	xu_ = vec_space_comp_->create_member();
 
@@ -266,7 +263,7 @@ void ExampleNLPObjGradient::imp_calc_c(const VectorWithOp& x, bool newx
 	, const ZeroOrderInfo& zero_order_info) const
 {
 	assert_is_initialized();
-	const size_type n = this->n(), m = n/2;
+	const size_type n = this->n();
 	THROW_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGradient::imp_calc_c(...)"  );
 
 	// c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m

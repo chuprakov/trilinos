@@ -35,8 +35,6 @@ class VariableBoundsTester;
 
 // abstract classes
 
-class MatrixSymSecantUpdateable;
-class MatrixSymAddDelUpdateable;
 class MatrixSymAddDelUpdateableWithOpFactorized;
 class MatrixIdentConcat;
 class MeritFuncCalc1D;
@@ -61,7 +59,6 @@ class MeritFuncNLPModL1;
 //class MatrixHessianSuperBasic;
 //class MatrixHessianSuperBasicInitDiagonal;
 //class MatrixSymPosDefInvCholFactor;
-class MatrixSymPosDefCholFactor;
 class MatrixSymPosDefLBFGS;
 class MatrixSymAddDelBunchKaufman;
 class MatrixSymHessianRelaxNonSing;

@@ -27,7 +27,6 @@
 #include "ReducedSpaceSQPPack/include/ipState.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 
@@ -61,7 +60,6 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
-	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
 
    	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

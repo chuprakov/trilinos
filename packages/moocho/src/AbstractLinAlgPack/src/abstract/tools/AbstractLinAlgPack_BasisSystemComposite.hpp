@@ -193,9 +193,7 @@ public:
 	/** @name Constructors / initializers */
 	//@{
 
-	/// Constructs uninitialized
-	/**
-	 * See postconditions for <tt>this->set_uninitialized()</tt>.
+	/** Default constructor.
 	 */
 	BasisSystemCompositeStd();
 
@@ -206,6 +204,8 @@ public:
 		const VectorSpace::space_ptr_t       &space_x
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
+		,const mat_sym_fcty_ptr_t            &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 		);
 
 	/// Calls <tt>this->initialize()</tt>
@@ -215,9 +215,11 @@ public:
 		,const Range1D                       &var_indep
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
-		,const mat_fcty_ptr_t                &factory_D    = MemMngPack::null
-		,const VectorSpace::space_ptr_t      &space_h      = MemMngPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP = MemMngPack::null
+		,const mat_sym_fcty_ptr_t            &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
+		,const VectorSpace::space_ptr_t      &space_h          = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_GhUP     = MemMngPack::null
 		);
 	
 	///
@@ -227,6 +229,9 @@ public:
 	 * @param  var_dep    [in] Range for dependent variables \c xD.
 	 * @param  var_indep  [in] Range for independent variables \c xI.
 	 * @param  factory_C  [in] Smart pointer to factory object for basis matrix \c C.
+	 * @param  factory_transDtD
+	 *                    [in] Smart point to the factory object for the matrix <tt>J = D'*D</tt>.
+	 * @param  factory_S  [in] Smart point to the factory object for the matrix <tt>S = I + D'*D</tt>.
 	 * @param  factory_D  [in] Smart pointer to factory object for direct sensitivity matrix
 	 *                    \c D.  If <tt>factory_D == NULL</tt> then an <tt>AbstractFactoryStd<></tt>
 	 *                    object will be used which calls <tt>space_xD->create_members(space_xI->dim())</tt>.
@@ -272,9 +277,11 @@ public:
 		,const Range1D                       &var_indep
 		,const VectorSpace::space_ptr_t      &space_c
 		,const mat_nonsing_fcty_ptr_t        &factory_C
-		,const mat_fcty_ptr_t                &factory_D    = MemMngPack::null
-		,const VectorSpace::space_ptr_t      &space_h      = MemMngPack::null
-		,const mat_fcty_ptr_t                &factory_GhUP = MemMngPack::null
+		,const mat_sym_fcty_ptr_t            &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
+		,const VectorSpace::space_ptr_t      &space_h          = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_GhUP     = MemMngPack::null
 		);
 
 	///
@@ -293,7 +300,7 @@ public:
 	 * <tt> <tt>this->factory_GhUP().get() == NULL</tt>
 	 * </ul>
 	 */
-	void set_uninitialized();
+	virtual void set_uninitialized();
 
 	//@}
 

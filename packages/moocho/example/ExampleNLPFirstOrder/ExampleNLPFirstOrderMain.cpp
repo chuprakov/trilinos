@@ -57,8 +57,6 @@ int main(int argc, char* argv[] ) {
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	int err = 0;
-
 /*
 	// Print out the input arguments
 	printf("argc = %d\n",argc);

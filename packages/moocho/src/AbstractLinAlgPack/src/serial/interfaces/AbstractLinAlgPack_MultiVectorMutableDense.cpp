@@ -207,7 +207,7 @@ std::ostream& MultiVectorMutableDense::output(std::ostream& out) const
 	return MatrixWithOpSerial::output(out);
 }
 
-void MultiVectorMutableDense::syrk(
+bool MultiVectorMutableDense::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	,value_type beta, MatrixSymWithOp* sym_lhs
 	) const
@@ -219,9 +219,12 @@ void MultiVectorMutableDense::syrk(
 		,"MultiVectorMutableDense::syrk(...) : Error!" );
 #endif
 	MatrixSymWithOpGetGMSSymMutable
-		&sym_get_lhs = dyn_cast<MatrixSymWithOpGetGMSSymMutable>(*sym_lhs);
-	MatrixDenseSymMutableEncap  sym_gms_lhs(&sym_get_lhs);
+		*sym_get_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(sym_lhs);
+	if(!sym_get_lhs)
+		return false;
+	MatrixDenseSymMutableEncap  sym_gms_lhs(sym_get_lhs);
 	LinAlgPack::syrk( M_trans, alpha, get_gms(), beta, &sym_gms_lhs() );
+	return true;
 }
 
 bool MultiVectorMutableDense::Mp_StMtM(

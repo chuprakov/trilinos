@@ -31,13 +31,13 @@
 #include <iomanip>
 
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"
 #include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
+#include "SparseLinAlgPack/include/MatrixSymPosDefCholFactor.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "AbstractLinAlgPack/include/SpVectorOut.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSliceOut.h"
 #include "SparseLinAlgPack/include/LinAlgOpPackHack.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSliceOut.h"
+#include "AbstractLinAlgPack/include/SpVectorOut.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"

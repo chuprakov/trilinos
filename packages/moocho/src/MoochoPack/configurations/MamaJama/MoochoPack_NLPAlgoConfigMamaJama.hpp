@@ -18,8 +18,7 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
 #include "OptionsFromStream.h"
 
 namespace ReducedSpaceSQPPack {
@@ -27,12 +26,18 @@ namespace ReducedSpaceSQPPack {
 ///
 /** This is a do all configuration class for <tt>rSQPAlgo</tt>.
  *
+ * This class relies on the builder class <tt>DecompositionSystemStateStepBuilderStd</tt>
+ * to perform many different tasks.
+ *
  * Options specific for to this configuration class and the classes that
- * it works with that can be set through <tt>this->set_options()</tt>, see the file
- * <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
+ * it works with that can be set through <tt>this->set_options()</tt>, see the files
+ * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "rSQPpp.opt.DecompositionSystemStateStepBuilderStd"</tt>.
+ * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
- * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
+ * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined
+ * This will result in smaller executables for programs that don't need this
+ * extra functionality..
  * 
  * ToDo: Finish documentation!
  */
@@ -40,26 +45,7 @@ class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<BasisSystem>  basis_sys_ptr_t;
-	///
-	typedef MemMngPack::ref_count_ptr<VarReductOrthog_Strategy>
-                                                               var_reduct_orthog_strategy_ptr_t;
-
-	/// Calls <tt>this->initalize()</tt>
-	rSQPAlgo_ConfigMamaJama( 
-		const basis_sys_ptr_t                     &basis_sys                  = MemMngPack::null
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = MemMngPack::null
-		);
-
-	///
-	/** Initialize.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	void initialize(
-		const basis_sys_ptr_t                     &basis_sys                  = MemMngPack::null
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = MemMngPack::null
-		);
+	rSQPAlgo_ConfigMamaJama();
 
 	///
 	~rSQPAlgo_ConfigMamaJama();
@@ -94,17 +80,6 @@ public:
 	//@{
 
 	///
-	enum EDirectLinearSolverType {
-		LA_AUTO, LA_MA28, LA_MA48, LA_SUPERLU };
-	///
-	enum ENullSpaceMatrixType {
-		NULL_SPACE_MATRIX_AUTO, NULL_SPACE_MATRIX_EXPLICIT
-		, NULL_SPACE_MATRIX_IMPLICIT };
-	///
-	enum ERangeSpaceMatrixType {
-		RANGE_SPACE_MATRIX_AUTO, RANGE_SPACE_MATRIX_COORDINATE
-		, RANGE_SPACE_MATRIX_ORTHOGONAL };
-	///
 	enum EQuasiNewton {
 		QN_AUTO, QN_BFGS, QN_PBFGS, QN_LBFGS, QN_LPBFGS };
 	///
@@ -137,16 +112,11 @@ public:
 	struct SOptionValues {
 		// Constructor (sets default values)
 		SOptionValues();
-		// Direct linear solvers
-		EDirectLinearSolverType	direct_linear_solver_type_;
 		// Variable Reduction,  Range/Null space decompositions
-		ENullSpaceMatrixType	null_space_matrix_type_;
-		ERangeSpaceMatrixType	range_space_matrix_type_;
 		value_type				max_basis_cond_change_frac_;	// If < , don't change default
 		// Reduced Hessian Approximations
 		bool					exact_reduced_hessian_;
 		EQuasiNewton			quasi_newton_;
-		int						max_dof_quasi_newton_dense_;    // If < 0, don't change default
 		int						num_lbfgs_updates_stored_;      // If < 0, don't change default
 		bool					lbfgs_auto_scaling_;
 		EHessianInitialization	hessian_initialization_;
@@ -164,9 +134,8 @@ public:
 
 private:
 
-	/// Possible user supplied stuff
-	basis_sys_ptr_t                   basis_sys_;
-	var_reduct_orthog_strategy_ptr_t  var_reduct_orthog_strategy_;
+	/// Builder class for some common code
+	DecompositionSystemStateStepBuilderStd   decomp_sys_step_builder_;
 
 	/// Smart pointer to options
 	options_ptr_t      options_;

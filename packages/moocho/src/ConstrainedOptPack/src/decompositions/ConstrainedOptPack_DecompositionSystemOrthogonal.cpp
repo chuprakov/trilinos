@@ -21,7 +21,8 @@
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
 #include "ConstrainedOptimizationPack/include/MatrixDecompRangeOrthog.h"
 #include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
@@ -37,7 +38,6 @@ DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 	,const VectorSpace::space_ptr_t          &space_h
 	,const basis_sys_ptr_t                   &basis_sys
 	,const basis_sys_tester_ptr_t            &basis_sys_tester
-	,const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy
 	,EExplicitImplicit                       D_imp
 	,EExplicitImplicit                       Uz_imp
 	,EExplicitImplicit                       Vz_imp
@@ -45,7 +45,6 @@ DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 	:DecompositionSystemVarReductImp(
 		space_x, space_c, space_h, basis_sys, basis_sys_tester
 		,D_imp,Uz_imp,Vz_imp )
-	 ,var_reduct_orthog_strategy_(var_reduct_orthog_strategy)
 {}
 
 // Overridden from DecompositionSystem
@@ -161,6 +160,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 {
 	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
+	using LinAlgOpPack::syrk;
 	typedef DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 		C_ptr_t;
 	typedef DecompositionSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
@@ -235,12 +235,14 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 				"since mat_rel == MATRICES_INDEP_IMPS!" );
 		}
 		if(S_ptr_.get() == NULL) {
-			S_ptr_ = var_reduct_orthog_strategy().factory_S()->create();
+			S_ptr_ = basis_sys()->factory_S()->create();
 		}
 		try {
-			var_reduct_orthog_strategy().update_S(*D_ptr,S_ptr_.get());
+			// S = I + (D)'*(D')'
+			dyn_cast<MatrixSymInitDiagonal>(*S_ptr_).init_identity(D_ptr->space_rows());
+			syrk(*D_ptr,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 		}
-		catch( const VarReductOrthog_Strategy::SingularMatrix& except ) {
+		catch( const MatrixNonsingular::SingularMatrix& except ) {
 			THROW_EXCEPTION(
 				true, SingularDecomposition
 				,"DecompositionSystemOrthogonal::initialize_matrices(...) : Error, update of S failed : "

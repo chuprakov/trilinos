@@ -37,6 +37,14 @@ void NLPFirstOrderInfo::initialize(bool test_setup) {
 	NLPObjGradient::initialize(test_setup);
 }
 
+// BasisSystem
+
+const NLPFirstOrderInfo::basis_sys_ptr_t
+NLPFirstOrderInfo::basis_sys() const
+{
+	return MemMngPack::null;
+}
+
 // <<std aggr>> members for Gc
 
 void NLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)

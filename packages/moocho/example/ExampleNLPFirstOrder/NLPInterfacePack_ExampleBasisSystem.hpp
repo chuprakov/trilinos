@@ -44,6 +44,8 @@ public:
 	 * @param  space_x   [in]
 	 * @param  var_dep   [in]
 	 * @param  var_indep [in]
+	 *
+	 * ToDo: Finish documentation!
 	 */
 	void initialize(
 		const VectorSpace::space_ptr_t       &space_x
@@ -63,6 +65,10 @@ public:
 		) const;
 
 	//@}
+
+private:
+	// Not defined and not to be called!
+	ExampleBasisSystem();
 
 }; // end class ExampleBasisSystem
 

@@ -80,6 +80,8 @@ public:
 	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gc() const;
 	/// Return NULL
 	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gh() const;
+	/// Returns an ExampleBasisSystem
+	const basis_sys_ptr_t basis_sys() const;
 
 	//@}
 
@@ -102,6 +104,7 @@ private:
 
 	bool                                    initialized_;  // flag for if initialized has been called.
 	NLPFirstOrderInfo::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
+	NLPFirstOrderInfo::basis_sys_ptr_t      basis_sys_;    // The basis system
 
 	// /////////////////////////////////////////
 	// Private member functions

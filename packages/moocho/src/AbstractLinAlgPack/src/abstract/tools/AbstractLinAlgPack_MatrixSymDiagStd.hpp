@@ -129,6 +129,18 @@ public:
 	///
 	void Vp_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
+	///
+	/** Implements the symmetric rank-k update for all diagonal matrix lhs
+	 *
+	 * @return Returns <tt>true</tt> if <tt>dynamic_cast<MatrixSymDiagonalStd>(sym_lhs) != NULL</tt>.
+	 * Otherwise, returns false.
+	 */
+	bool syrk(
+		BLAS_Cpp::Transp   M_trans
+		,value_type        alpha
+		,value_type        beta
+		,MatrixSymWithOp   *sym_lhs
+		) const;
 
 	//@}
 

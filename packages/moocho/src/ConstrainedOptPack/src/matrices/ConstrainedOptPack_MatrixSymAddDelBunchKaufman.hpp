@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "MatrixSymAddDelUpdateableWithOpNonsingular.h"
-#include "MatrixSymAddDelUpdateable.h"
-#include "MatrixSymPosDefCholFactor.h"
+#include "SparseLinAlgPack/include/MatrixSymAddDelUpdateable.h"
+#include "SparseLinAlgPack/include/MatrixSymPosDefCholFactor.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
 

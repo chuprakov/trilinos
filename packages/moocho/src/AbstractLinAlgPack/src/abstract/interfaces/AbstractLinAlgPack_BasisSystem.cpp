@@ -19,6 +19,23 @@
 
 namespace AbstractLinAlgPack {
 
+BasisSystem::BasisSystem(
+	const mat_sym_fcty_ptr_t             &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+	)
+{
+	this->initialize(factory_transDtD,factory_S);
+}
+
+void BasisSystem::initialize(
+	const mat_sym_fcty_ptr_t             &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+	)
+{
+	factory_transDtD_ = factory_transDtD;
+	factory_S_        = factory_S;
+}
+
 Range1D BasisSystem::equ_decomp() const
 {
 	const size_type r = this->var_dep().size();
@@ -48,6 +65,18 @@ const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
 const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GhUP() const
 {
 	return MemMngPack::null;
+}
+
+const BasisSystem::mat_sym_fcty_ptr_t
+BasisSystem::factory_transDtD() const
+{
+	return factory_transDtD_;
+}
+	
+const BasisSystem::mat_sym_nonsing_fcty_ptr_t
+BasisSystem::factory_S() const
+{
+	return factory_S_;
 }
 
 } // end namespace AbstractLinAlgPack

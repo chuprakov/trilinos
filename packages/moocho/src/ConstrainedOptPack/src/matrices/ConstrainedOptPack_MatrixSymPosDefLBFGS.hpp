@@ -18,7 +18,8 @@
 
 #include <vector>
 
-#include "MatrixSymSecantUpdateable.h"
+#include "ConstrainedOptimizationPackTypes.h"
+#include "AbstractLinAlgPack/include/MatrixSymSecantUpdateable.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"

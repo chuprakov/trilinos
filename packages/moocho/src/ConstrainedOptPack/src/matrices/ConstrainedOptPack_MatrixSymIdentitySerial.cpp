@@ -22,11 +22,6 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
 
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
-}
-
 namespace ConstrainedOptimizationPack {
 
 // Constructors

@@ -22,12 +22,12 @@
 
 #include "ConstrainedOptimizationPackTypes.h"
 #include "MatrixSymAddDelUpdateableWithOpNonsingular.h"
-#include "MatrixSymAddDelUpdateable.h"
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "SparseLinAlgPack/include/MatrixSymAddDelUpdateable.h"
 #include "SparseLinAlgPack/include/MatrixWithOpSerial.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "StandardCompositionMacros.h"

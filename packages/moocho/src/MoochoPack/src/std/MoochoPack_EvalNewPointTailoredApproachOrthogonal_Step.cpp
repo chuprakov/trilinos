@@ -18,6 +18,7 @@
 #include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
@@ -29,13 +30,11 @@
 namespace ReducedSpaceSQPPack {
 
 EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogonal_Step(
-	const var_reduct_orthog_strategy_ptr_t  &var_reduct_orthog_strategy
-	,const deriv_tester_ptr_t               &deriv_tester
+	const deriv_tester_ptr_t                &deriv_tester
 	,const bounds_tester_ptr_t              &bounds_tester
 	,EFDDerivTesting                        fd_deriv_testing
 	)
 	:EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
-	,var_reduct_orthog_strategy_(var_reduct_orthog_strategy)
 {}
 
 // protected
@@ -74,6 +73,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 {
 	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
+	using LinAlgOpPack::syrk;
 
 	const size_type
 		n = nlp.n(),
@@ -124,9 +124,11 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
 
 	// S
 	if(S_ptr_.get() == NULL) {
-		S_ptr_ = var_reduct_orthog_strategy().factory_S()->create();
+		S_ptr_ = nlp.factory_S()->create();
 	}
-	var_reduct_orthog_strategy().update_S(*D,S_ptr_.get());
+	// S = I + (D)'*(D')'
+	dyn_cast<MatrixSymInitDiagonal>(*S_ptr_).init_identity(D->space_rows());
+	syrk(*D,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 
 	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
 	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities

@@ -67,6 +67,8 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<
 		const MemMngPack::AbstractFactory<MatrixWithOp> >        mat_fcty_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<BasisSystem>               basis_sys_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -115,6 +117,21 @@ public:
 	 * Otherwise, it must must return a valid matrix factory object.
 	 */
 	virtual const mat_fcty_ptr_t factory_Gh() const = 0;
+
+	//@}
+
+	/** @name BasisSystem */
+	//@{
+
+	///
+	/** Return a <tt>BasisSystem</tt> object compatible with <tt>Gc</tt> and <tt>Gh</tt>.
+	 *
+	 * Note that multiple calls to this method may return the same <tt>return.get()</tt>
+	 * value so the client must not assume that they are unique.
+	 *
+	 * The default implementation returns <tt>return.get() == NULL</tt>.
+	 */
+	virtual const basis_sys_ptr_t basis_sys() const;
 
 	//@}
 

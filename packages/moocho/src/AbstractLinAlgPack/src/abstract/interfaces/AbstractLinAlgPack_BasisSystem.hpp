@@ -107,6 +107,9 @@ namespace AbstractLinAlgPack {
  * vary from simple dense serial matrices all the way up massively parallel matrices using
  * iterative solvers for \a C running on computers with thousands of nodes.
  *
+ * This interface also allows clients to compute the matrices <tt>J = D'*D</tt> and
+ * <tt>S = I + D'*D</tt>.
+ *
  * <b>Client usage:</b>
  *
  * The matrix objects for the basis matrix \a C and the direct sensitivity matrix
@@ -197,6 +200,15 @@ namespace AbstractLinAlgPack {
  op(D)*v = op(-inv(C)*N)*v = -inv(C)*(N*v) or -N'*(inv(C')*v)
  \endverbatim
  *
+ * The client can form matrices of the form <tt>S = I + D'*D</tt> as follows:
+ \code
+ MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>
+     S = basis_sys.factory_S()->create();
+ DynamicCastHelperPack::dyn_cast<MatrixSymInitDiagonal>(*S).init_identity(D.space_rows());
+ syrk(D,BLAS_Cpp::trans,1.0,1.0,S.get();
+ \endcode
+ * The matrix <tt>S</tt> must then be fully initialized and ready to go.
+ *
  * <b>Subclass developer's notes:</b>
  *
  * The default implementation (of the methods that have default implementations) assume
@@ -218,12 +230,39 @@ public:
 	typedef MemMngPack::ref_count_ptr<
 		const MemMngPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
 	///
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixSymWithOp> >            mat_sym_fcty_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<
+		const MemMngPack::AbstractFactory<MatrixSymWithOpNonsingular> > mat_sym_nonsing_fcty_ptr_t;
+	///
 	class SingularBasis : public std::runtime_error
 	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 	///
 	enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
 	//@}
+
+	///
+	/** Required constructor (calls <tt>initialize()</tt>).
+	 */
+	BasisSystem(
+		const mat_sym_fcty_ptr_t             &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		);
+
+	///
+	/** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
+	 * <li>this->factory_S().get() == factory_S.get()</tt>
+	 * </ul>
+	 */
+	virtual void initialize(
+		const mat_sym_fcty_ptr_t             &factory_transDtD
+		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+		);
 
 	///
 	virtual ~BasisSystem() {}
@@ -260,6 +299,29 @@ public:
 	 */
 	virtual const mat_fcty_ptr_t factory_GhUP() const;
 
+	///
+	/** Returns a matrix factory for the result of <tt>J = D'*D</tt>
+	 * 
+	 * The resulting matrix is symmetric but is assumed to be singular.
+	 *
+	 * Postconditions:<ul>
+	 * <li> The function <tt>AbstractLinAlgPack::syrk(D,trans,alpha,beta,return->create().get())</tt>
+	 *      must not throw an exception once <tt>D</tt> has been initialized by <tt>this</tt>.
+	 * </ul>
+	 */
+	virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
+	
+	///
+	/** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
+	 * 
+	 * The resulting matrix is symmetric and is guarrenteed to be nonsingular.
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>dynamic_cast<MatrixSymInitDiagonal*>(return->create().get()) != NULL</tt>
+	 * </ul>
+	 */
+	virtual const mat_sym_nonsing_fcty_ptr_t factory_S() const;
+	
 	//@}
 
 	/** @name Return the ranges for variable and constraint partitioning */
@@ -441,6 +503,13 @@ public:
 		) const = 0;
 
 	//@}
+
+private:
+	mat_sym_fcty_ptr_t             factory_transDtD_;
+	mat_sym_nonsing_fcty_ptr_t     factory_S_;
+
+	// not defined and not to be called
+	BasisSystem();
 
 }; // end class BasisSystem
 

@@ -14,8 +14,6 @@
 
 using ConstrainedOptimizationPack::VariableBoundsTester;
 
-using ConstrainedOptimizationPack::MatrixSymSecantUpdateable;
-using ConstrainedOptimizationPack::MatrixSymAddDelUpdateable;
 using ConstrainedOptimizationPack::MatrixSymAddDelUpdateableWithOpFactorized;
 using ConstrainedOptimizationPack::MatrixIdentConcat;
 using ConstrainedOptimizationPack::MeritFuncCalc1D;
@@ -38,7 +36,6 @@ using ConstrainedOptimizationPack::MeritFuncNLPModL1;
 //using ConstrainedOptimizationPack::MatrixHessianSuperBasic;
 //using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
 //using ConstrainedOptimizationPack::MatrixSymPosDefInvCholFactor;
-using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
 using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
 //using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
 using ConstrainedOptimizationPack::MatrixIdentConcatStd;

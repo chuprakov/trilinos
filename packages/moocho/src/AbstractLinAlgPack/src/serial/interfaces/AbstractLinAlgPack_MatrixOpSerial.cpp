@@ -595,17 +595,17 @@ bool MatrixWithOpSerial::Mp_StMtM(
 	return MatrixWithOp::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta); // Boot it!
 }
 
-void MatrixWithOpSerial::syrk(
+bool MatrixWithOpSerial::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* symwo_lhs ) const
 {
 	MatrixSymWithOpGetGMSSymMutable
 		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(symwo_lhs);
 	if(!symwo_gms_lhs) {
-		MatrixWithOp::syrk(M_trans,alpha,beta,symwo_lhs); // Boot it
-		return;
+		return MatrixWithOp::syrk(M_trans,alpha,beta,symwo_lhs); // Boot it
 	}
 	this->syrk(M_trans,alpha,beta,&MatrixDenseSymMutableEncap(symwo_gms_lhs)());
+	return true;
 }
 
 }	// end namespace SparseLinAlgPack

@@ -82,6 +82,13 @@ public:
 	typedef MemMngPack::ref_count_ptr<MatrixNonsingular>          mat_mns_mut_ptr_t;
 #endif
 
+	///
+	/** This exception will be thrown if it turns out at runtime that
+	 * the matrix is numerically singular.
+	 */
+	class SingularMatrix : public std::logic_error
+	{public: SingularMatrix(const std::string& what_arg) : std::logic_error(what_arg) {}};
+
 	//@}
 
 	/** @name Clone */

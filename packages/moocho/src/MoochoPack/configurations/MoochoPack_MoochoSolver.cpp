@@ -23,8 +23,8 @@
 
 #include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
 
-#include "ReducedSpaceSQPPack/Configurations/ipConfig/Algo_ConfigIP.h"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
+#include "ReducedSpaceSQPPack/Configurations/ipConfig/Algo_ConfigIP.h"
 
 #include "ReducedSpaceSQPPack/include/rSQPSolverClientInterfaceSetOptions.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
@@ -688,6 +688,7 @@ void rSQPppSolver::update_solver() const
 		// Allocate the workspace
 		//
 			
+		nlp_->set_options(options_used_);
 		nlp_->initialize();
 		const int default_ws_scale = 10;
 		if( workspace_MB_ < 0.0 ) {

@@ -180,7 +180,7 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	void syrk(
+	bool syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		,value_type beta, MatrixSymWithOp* sym_lhs
 		) const;

@@ -57,8 +57,11 @@ class MatrixSymDiagonal;
 class MultiVector;
 class MultiVectorMutable;
 
+class MatrixSymSecantUpdateable;
+
 class BasisSystem;
 class BasisSystemPerm;
+class BasisSystemFactory;
 
 class Permutation;
 

@@ -18,11 +18,11 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
-#include "ConstrainedOptimizationPack/include/MatrixExtractInvCholFactor.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
+#include "SparseLinAlgPack/include/MatrixExtractInvCholFactor.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "SparseLinAlgPack/include/LinAlgOpPackHack.h"

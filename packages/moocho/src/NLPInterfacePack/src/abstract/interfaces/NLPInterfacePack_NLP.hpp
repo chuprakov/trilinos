@@ -24,6 +24,10 @@
 #include "StandardCompositionRelationshipsPack.h"
 #include "ref_count_ptr.h"
 
+namespace OptionsFromStreamPack {
+	class OptionsFromStream;
+}
+
 namespace NLPInterfacePack {
 
 ///
@@ -253,6 +257,10 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpace>  vec_space_ptr_t;
 
+	///
+	typedef MemMngPack::ref_count_ptr<
+		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
+
 	/** @name exceptions */
 	//@{
 
@@ -304,6 +312,25 @@ public:
 	/** Returns if the initial point must be within the bounds.
 	  */
 	virtual bool force_xinit_in_bounds() const = 0;
+	///
+	/** Set the options that <tt>this</tt> %NLP may be interested in.
+	 *
+	 * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
+	 * this method is called so <tt>this</tt> had better read the options inside of
+	 * the <tt>this->initialize()</tt> method.
+	 *
+	 * The default implementation is to just ignore these options.
+	 *
+	 * Note that if the subclass overrides this method then it must also override
+	 * the <tt>get_options()</tt> method.
+	 */
+	virtual void set_options( const options_ptr_t& options );
+	///
+	/** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+	 *
+	 * The default implementation returns <tt>return.get() == NULL</tt>.
+	 */
+	virtual const options_ptr_t& get_options() const;
 	///
 	/** Initialize the NLP for it is used.
 	 *

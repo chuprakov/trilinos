@@ -24,12 +24,14 @@
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "AbstractLinAlgPack/include/MatrixPermAggr.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/include/BasisSystemFactory.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/IVector.h"
 #include "LinAlgPack/include/PermVecMat.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"
 #include "AbstractFactoryStd.h"
+#include "OptionsFromStream.h"
 
 namespace NLPInterfacePack {
 
@@ -38,11 +40,13 @@ namespace NLPInterfacePack {
 // Constructors / initializers
 
 NLPSerialPreprocessExplJac::NLPSerialPreprocessExplJac(
-	const factory_mat_ptr_t     &factory_Gc_full
+	const basis_sys_fcty_ptr_t  &basis_sys_fcty
+	,const factory_mat_ptr_t    &factory_Gc_full
 	,const factory_mat_ptr_t    &factory_Gh_full
 	)
 	:initialized_(false),test_setup_(false)
 {
+	this->set_basis_sys_fcty(basis_sys_fcty);
 	this->set_mat_factories(factory_Gc_full,factory_Gh_full);
 }
 
@@ -68,6 +72,17 @@ void NLPSerialPreprocessExplJac::set_mat_factories(
 }
 
 // Overridden public members from NLP
+
+void NLPSerialPreprocessExplJac::set_options( const options_ptr_t& options )
+{
+	options_ = options;
+}
+
+const NLP::options_ptr_t&
+NLPSerialPreprocessExplJac::get_options() const
+{
+	return options_;
+}
 
 void NLPSerialPreprocessExplJac::initialize(bool test_setup)
 {
@@ -124,6 +139,14 @@ const NLPFirstOrderInfo::mat_fcty_ptr_t
 NLPSerialPreprocessExplJac::factory_Gh() const
 {
 	return factory_Gh_;
+}
+
+const NLPFirstOrderInfo::basis_sys_ptr_t
+NLPSerialPreprocessExplJac::basis_sys() const
+{
+	BasisSystemFactory &fcty = const_cast<NLPSerialPreprocessExplJac*>(this)->basis_sys_fcty();
+	fcty.set_options(options_);
+	return fcty.create();
 }
 
 void NLPSerialPreprocessExplJac::set_Gc(MatrixWithOp* Gc)

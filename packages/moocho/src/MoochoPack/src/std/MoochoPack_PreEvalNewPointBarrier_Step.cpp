@@ -22,8 +22,8 @@
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ReducedSpaceSQPPack/include/ipState.h"
 #include "ReducedSpaceSQPPack/include/std/PreEvalNewPointBarrier_Step.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
@@ -54,7 +54,8 @@ bool PreEvalNewPointBarrier_Step::do_step(
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
-	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+	NLP                 &nlp    = algo.nlp();
+	NLPFirstOrderInfo   *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(&nlp);
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -97,7 +98,7 @@ bool PreEvalNewPointBarrier_Step::do_step(
 			&Gf_iq   = s.Gf(),
 			*c_iq    = nlp.m() > 0 ? &s.c() : NULL;
 		IterQuantityAccess<MatrixWithOp>
-			*Gc_iq   = c_iq ? &s.Gc() : NULL;
+			*Gc_iq   = nlp_foi ? &s.Gc() : NULL;
 
 		using AbstractLinAlgPack::assert_print_nan_inf;
 		assert_print_nan_inf(x_k, "x", true, NULL); // With throw exception if Inf or NaN!
@@ -111,6 +112,9 @@ bool PreEvalNewPointBarrier_Step::do_step(
 			{
 			if(c_iq->updated_k(0))
 				c_iq->set_not_updated_k(0);
+			}
+		if (nlp_foi)
+			{
 			if(Gc_iq->updated_k(0))
 				Gc_iq->set_not_updated_k(0);
 			}

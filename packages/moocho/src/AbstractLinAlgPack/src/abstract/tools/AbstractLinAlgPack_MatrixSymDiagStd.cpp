@@ -20,6 +20,7 @@
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
@@ -151,6 +152,23 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	, const SpVectorSlice& sv_rhs2) const
 {
 	MatrixNonsingular::V_InvMtV(v_lhs,trans_rhs1,sv_rhs2 ); // ToDo: Implement specialized!
+}
+
+bool MatrixSymDiagonalStd::syrk(
+	BLAS_Cpp::Transp   A_trans
+	,value_type        a
+	,value_type        b
+	,MatrixSymWithOp   *B
+	) const
+{
+	MatrixSymDiagonalStd    *B_sd = dynamic_cast<MatrixSymDiagonalStd*>(B);
+	if(!B_sd) return false;
+	VectorWithOpMutable     &B_diag = B_sd->diag();
+	const VectorWithOp      &A_diag = this->diag();
+	// B = b*B + a*A*A
+	Vt_S( &B_diag, b );
+	ele_wise_prod( 1.0, A_diag, A_diag, &B_diag );   // B.diag(i) += a * (A.diag)(i) * (A.diag)(i)
+	return true;
 }
 
 // Overridden from MatrixSymInitDiagonal

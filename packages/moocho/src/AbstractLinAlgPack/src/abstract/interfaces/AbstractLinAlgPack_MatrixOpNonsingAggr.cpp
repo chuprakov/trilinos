@@ -250,11 +250,11 @@ bool MatrixWithOpNonsingularAggr::Mp_StMtM(
 	return mwo_->Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs2),beta);
 }
 
-void MatrixWithOpNonsingularAggr::syrk(
+bool MatrixWithOpNonsingularAggr::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
-		mwo_->syrk(BLAS_Cpp::trans_trans(mwo_trans_,M_trans),alpha,beta,sym_lhs);
+		return mwo_->syrk(BLAS_Cpp::trans_trans(mwo_trans_,M_trans),alpha,beta,sym_lhs);
 }
 
 // Overridden from MatrixNonsingular */

@@ -71,7 +71,12 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 	// Create the factory object for D
 	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>());
-
+	NLPFirstOrderDirect::set_factories(
+		MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymDiagonalStd>())               // D'*D
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymDiagonalStd>())    // S
+		);
 }
 
 // Overridden public members from NLP

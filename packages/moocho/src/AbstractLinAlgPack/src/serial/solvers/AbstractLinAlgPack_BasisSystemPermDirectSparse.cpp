@@ -17,6 +17,7 @@
 #include "SparseLinAlgPack/include/PermutationSerial.h"
 #include "SparseLinAlgPack/include/MatrixConvertToSparseEncap.h"
 #include "SparseLinAlgPack/include/MatrixExtractSparseElements.h"
+#include "SparseLinAlgPack/include/MatrixSymPosDefCholFactor.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingularAggr.h"
 #include "AbstractLinAlgPack/include/MatrixPermAggr.h"
@@ -30,6 +31,12 @@ namespace SparseSolverPack {
 BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	const direct_solver_ptr_t&   direct_solver
 	)
+	:BasisSystemPerm(
+		MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor>())               // D'*D
+		,MemMngPack::rcp(
+			new MemMngPack::AbstractFactoryStd<MatrixSymWithOpNonsingular,MatrixSymPosDefCholFactor>())    // S
+		)
 {
 	this->initialize(direct_solver);
 }

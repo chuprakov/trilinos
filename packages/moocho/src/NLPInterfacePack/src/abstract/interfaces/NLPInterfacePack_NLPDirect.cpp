@@ -25,6 +25,15 @@ namespace NLPInterfacePack {
 
 // NLPFirstOrderDirect
 
+void NLPFirstOrderDirect::set_factories(
+	const mat_sym_fcty_ptr_t             &factory_transDtD
+	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+	)
+{
+	factory_transDtD_ = factory_transDtD;
+	factory_S_        = factory_S;
+}
+
 size_type NLPFirstOrderDirect::r() const
 {
 	return this->con_decomp().size();
@@ -82,6 +91,23 @@ const NLPFirstOrderDirect::mat_fcty_ptr_t
 NLPFirstOrderDirect::factory_GhD() const
 {
 	return MemMngPack::null;
+}
+
+const NLPFirstOrderDirect::mat_sym_fcty_ptr_t
+NLPFirstOrderDirect::factory_transDtD() const
+{
+	return factory_transDtD_;
+}
+	
+const NLPFirstOrderDirect::mat_sym_nonsing_fcty_ptr_t
+NLPFirstOrderDirect::factory_S() const
+{
+	return factory_S_;
+}
+
+void NLPFirstOrderDirect::initialize(bool test_setup)
+{
+	NLPObjGradient::initialize(test_setup);
 }
 
 NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
