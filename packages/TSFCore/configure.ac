@@ -155,16 +155,10 @@ TAC_ARG_CHECK_MPI
 # Checks for header files
 # ------------------------------------------------------------------------
 
-AC_CHECK_HEADERS([ostream iostream iostream.h], [break],)
-AC_CHECK_HEADERS([iomanip iomanip.h], [break],)
-AC_CHECK_HEADERS([cassert assert.h], [break],)
-AC_CHECK_HEADERS([algorithm algo.h algorithm.h], [break],)
-AC_CHECK_HEADERS([string string.h], [break],)
-AC_CHECK_HEADER([valarray],,)
-AC_CHECK_HEADER([stdexcept],,)
-AC_CHECK_HEADER([typeinfo],,)
-AC_CHECK_HEADER([vector],,)
-AC_CHECK_HEADER([memory],,)
+AC_CHECK_HEADERS([ostream iostream iostream.h iomanip iomanip.h],,,)
+AC_CHECK_HEADERS([valarray stdexcept typeinfo cassert assert.h],,,)
+AC_CHECK_HEADERS([vector algorithm algo.h algorithm.h],,,)
+AC_CHECK_HEADERS([memory string string.h],,,)
 
 if test "X$ac_cv_header_ostream" != "Xyes" && test "X$ac_cv_header_iostream" != "Xyes" && "X$ac_cv_header_iostream_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find ostream, iostream, or iostream.h.  TSFCore requires at least one or the other.]])
@@ -251,12 +245,10 @@ AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
 # ------------------------------------------------------------------------
 
 TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
-TAC_ARG_ENABLE_FEATURE_SUB_CHECK( tsfcore, tests, [Build TSFCore tests], TSFCORE_TESTS)
-AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tsfcore_tests" != "Xno")
+AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tests" != "Xno")
 
 TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
-TAC_ARG_ENABLE_FEATURE_SUB_CHECK( tsfcore, examples, [Build TSFCore examples], TSFCORE_EXAMPLES)
-AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_tsfcore_examples" != "Xno")
+AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
 
 TAC_ARG_ENABLE_FEATURE(libcheck, [Check for some third-party libraries including BLAS and LAPACK.  (Cannot be disabled unless tests and examples are also disabled.)], LIBCHECK, yes)
 
@@ -283,7 +275,7 @@ AC_F77_WRAPPERS
 
 # If tests, examples and libcheck are disabled, we don't have to check
 # for these libraries.
-if test "X$ac_cv_use_tsfcore_tests" != "Xno" || test "X$ac_cv_use_tsfcore_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
+if test "X$ac_cv_use_tests" != "Xno" || test "X$ac_cv_use_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
 
 # #np# - 
 # To add any libraries that you want to check for, replace pow below 

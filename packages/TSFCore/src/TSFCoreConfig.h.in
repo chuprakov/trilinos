@@ -59,6 +59,9 @@
 /* Define if want to build libcheck */
 #undef HAVE_LIBCHECK
 
+/* Define to 1 if you have the <memory> header file. */
+#undef HAVE_MEMORY
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
@@ -76,6 +79,9 @@
 
 /* Define to 1 if you have the <ostream> header file. */
 #undef HAVE_OSTREAM
+
+/* Define to 1 if you have the <stdexcept> header file. */
+#undef HAVE_STDEXCEPT
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -116,17 +122,20 @@
 /* Define if want to build tsfcore-epetra */
 #undef HAVE_TSFCORE_EPETRA
 
-/* Define if want to build tsfcore-examples */
-#undef HAVE_TSFCORE_EXAMPLES
-
 /* Define if want to build tsfcore-mpi */
 #undef HAVE_TSFCORE_MPI
 
-/* Define if want to build tsfcore-tests */
-#undef HAVE_TSFCORE_TESTS
+/* Define to 1 if you have the <typeinfo> header file. */
+#undef HAVE_TYPEINFO
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <valarray> header file. */
+#undef HAVE_VALARRAY
+
+/* Define to 1 if you have the <vector> header file. */
+#undef HAVE_VECTOR
 
 /* Name of package */
 #undef PACKAGE
