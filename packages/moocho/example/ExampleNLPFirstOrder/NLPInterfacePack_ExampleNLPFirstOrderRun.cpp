@@ -88,13 +88,13 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 		prog_return = false;
 
 	if(prog_return == true) {
-		if(eout)
+		if(eout && eout != out)
 			*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
 		if(out)
 			*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
 	}
 	else {
-		if(eout)
+		if(eout && eout != out)
 			*eout   << "Oh No!  Something did not checkout!\n";
 		if(out)
 			*out    << "\nOh No!  Something did not checkout!\n";
