@@ -72,6 +72,11 @@ namespace TSFCore {
  */
 int main_body( int argc, char* argv[] ) {
 
+	// ToDo: Restructure the test program to show head-to-head
+	// comparisons of raw Epetra and wrapped Epetra operations and
+	// give the relative performance right in the output!  Show the
+	// performance in percent to make it clear what the numbers are!
+
 	typedef double Scalar;
 
 	using DynamicCastHelperPack::dyn_cast;
@@ -246,6 +251,8 @@ int main_body( int argc, char* argv[] ) {
 				<< "\n*** Testing individual vector/multi-vector RTOps"
 				<< "\n***\n";
 
+		// ToDo: Time these assignment operations and compare with raw Epetra
+
 		assign( &*ev1, 0.0 );
 		assign( &*ev2, scalar );
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
@@ -258,6 +265,8 @@ int main_body( int argc, char* argv[] ) {
 		assign( &*neV1, 0.0 );
 		assign( &*neV2, scalar );
 #endif
+
+		// ToDo: Time these norm calculations and compare with raw Epetra
 
 		Scalar
 			ev1_nrm = norm_1(*ev1),
@@ -359,6 +368,8 @@ int main_body( int argc, char* argv[] ) {
 
 		RefCountPtr<MultiVector<Scalar> >
 			T = eV1->domain()->createMembers(num_mv_cols);
+
+		// ToDo: Show a more direct comparison of raw Epetra and wrapped Epetra
 
 		if(verbose)
 			out
@@ -480,6 +491,8 @@ int main_body( int argc, char* argv[] ) {
 		RefCountPtr<MultiVector<Scalar> >
 			neY = non_epetra_vs->createMembers(num_mv_cols);
 #endif
+
+		// ToDo: Show a more direct comparison of raw Epetra and wrapped Epetra
 
 		if(verbose)
 			out
