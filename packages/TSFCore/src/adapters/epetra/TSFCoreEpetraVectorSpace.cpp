@@ -21,6 +21,7 @@
 #endif
 #include "Epetra_Vector.h"
 #include "Epetra_MultiVector.h"
+#include "Epetra_Map.h"
 
 namespace TSFCore {
 
@@ -30,14 +31,14 @@ EpetraVectorSpace::EpetraVectorSpace()
 }
 
 EpetraVectorSpace::EpetraVectorSpace(
-	const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
+	const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 	)
 {
 	initialize(epetra_map);
 }
 
 void EpetraVectorSpace::initialize(
-	const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
+	const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -78,7 +79,7 @@ void EpetraVectorSpace::initialize(
 }
 
 void EpetraVectorSpace::setUninitialized(
-	Teuchos::RefCountPtr<const Epetra_BlockMap> *epetra_map
+	Teuchos::RefCountPtr<const Epetra_Map> *epetra_map
 	)
 {
 	if(epetra_map) *epetra_map = epetra_map_;
@@ -99,7 +100,12 @@ Index EpetraVectorSpace::dim() const
 Teuchos::RefCountPtr<Vector<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::createMember() const
 {
-	return Teuchos::rcp(new EpetraVector(Teuchos::rcp(new Epetra_Vector(*epetra_map_,false))));
+	return Teuchos::rcp(
+    new EpetraVector(
+      Teuchos::rcp(new Epetra_Vector(*epetra_map_,false))
+      ,Teuchos::rcp(this,false)
+      )
+    );
 }
 
 Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >

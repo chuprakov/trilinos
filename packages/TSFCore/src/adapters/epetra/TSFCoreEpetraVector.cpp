@@ -6,6 +6,7 @@
 #include "Teuchos_TestForException.hpp"
 
 #include "Epetra_Vector.h"
+#include "Epetra_Map.h"
 
 namespace TSFCore {
 
@@ -27,17 +28,13 @@ void EpetraVector::initialize(
 	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 	)
 {
+  using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !epetra_vec.get(), std::invalid_argument, "EpetraVector::initialize(...): Error!");
+	TEST_FOR_EXCEPTION( !epetra_vec_spc.get(), std::invalid_argument, "EpetraVector::initialize(...): Error!");
 #endif
-	//
 	epetra_vec_ = epetra_vec;
-	if(epetra_vec_spc.get()) {
-		epetra_vec_spc_ = epetra_vec_spc;
-	}
-	else {
-		epetra_vec_spc_ = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp( &epetra_vec->Map(), false ) ) );
-	}
+  epetra_vec_spc_ = epetra_vec_spc;
 	updateMpiSpace();
 }
 

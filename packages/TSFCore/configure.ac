@@ -212,10 +212,13 @@ AC_CXX_STD_SPRINTF
 # Checks for special package flags
 # ------------------------------------------------------------------------
 
-TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, epetra, [enable TSFCore's Epetra adapters], TSFCORE_EPETRA, no)
-AM_CONDITIONAL(HAVE_TSFCORE_EPETRA, [test "X$ac_cv_use_tsfcore_epetra" != "Xno"])
+TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, aztecoo, [enable TSFCore's AztecOO adapters], TSFCORE_AZTECOO, no)
+AM_CONDITIONAL(HAVE_TSFCORE_AZTECOO, [test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"])
 
-#The Epetra Adapters require some of the mpi adapters' header files
+TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, epetra, [enable TSFCore's Epetra adapters], TSFCORE_EPETRA, no)
+AM_CONDITIONAL(HAVE_TSFCORE_EPETRA, [test "X$ac_cv_use_tsfcore_epetra" != "Xno" ||
+	test "X$ac_cv_use_tsfcore_aztecoo" != "Xno"])
+
 TAC_ARG_ENABLE_FEATURE_SUB( tsfcore, mpi, [enable TSFCore's mpi adapters], TSFCORE_MPI, no)
 AM_CONDITIONAL(HAVE_TSFCORE_MPI, [test "X$ac_cv_use_tsfcore_mpi" != "Xno" ||
 	test "X$ac_cv_use_tsfcore_epetra" != "Xno"])

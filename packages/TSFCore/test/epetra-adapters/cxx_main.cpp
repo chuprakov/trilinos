@@ -131,7 +131,7 @@ int main_body( int argc, char* argv[] ) {
 		// Read options from the commandline
 		//
 
-		int     local_dim         = 4;
+		int     local_dim         = 1000;
 		int     num_mv_cols       = 4;
 		double  max_rel_err       = 1e-13;
 		double  scalar            = 1.5;

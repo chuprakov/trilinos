@@ -46,20 +46,26 @@ public:
 	/// Calls <tt>initalize()</tt>.
 	EpetraMultiVector(
 		const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range       = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain      = Teuchos::null
 		);
 	
 	///
 	/** Initialize given the <tt>Epetra_multi_vec</tt>.
+   *
+   * ToDo: Finish documentation!
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range       = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain      = Teuchos::null
 		);
 	
-	/// Set uninitalized.
+	///
+  /** Set uninitalized.
+   *
+   * ToDo: Finish documentation!
+   */
 	void setUninitialized(
 		Teuchos::RefCountPtr<Epetra_MultiVector>        *epetra_multi_vec = NULL
 		,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_range     = NULL

@@ -12,15 +12,21 @@ namespace TSFCore {
 ///
 /** <tt>%VectorSpace</tt> Subclass for Epetra vectors and multi-vectors.
  *
- * This uses an <tt>Epetra_BlockMap</tt> object to implement the
+ * This uses an <tt>Epetra_Map</tt> object to implement the
  * <tt>MPIVectorSpaceBase</tt> interface.  By implementing the
  * <tt>MPIVectorSpaceBase</tt> interface, this implementation allows
  * the seemless collaboration of different vectors and multi-vectors
  * through the interface classes <tt>MPIVectorBase</tt> and
  * <tt>MPIMultiVectorBase</tt>.
  *
+ * The fact that this class embeds a <tt>Epetra_Map</tt> object means
+ * that only maps that have elements of size one can be used to define
+ * a vector space.  General <tt>Epetra_BlockMap</tt>s can not be used.
+ * This is not a serious limitation since <tt>Epetra_Operator</tt>'s
+ * domain and range maps are of type <tt>Epetra_Map</tt>.
+ *
  * This class works properly even if Epetra is not compiled with
- * support for MPI (i.e. <tt>PETRA_COMM_MPI</tt> is not defined when
+ * support for MPI (i.e. <tt>HAVE_MPI</tt> is not defined when
  * compiling and linking).  If MPI support is not compiled into
  * Epetra, then the dummy implementation defined in
  * <tt>RTOp_mpi.h</tt> is used instead.
@@ -48,11 +54,11 @@ public:
 	/** Calls <tt>initialize()</tt>.
 	 */
 	EpetraVectorSpace(
-		const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
+		const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 		);
 
 	///
-	/** Initialize given an <tt>Epetra_BlockMap</tt>.
+	/** Initialize given an <tt>Epetra_Map</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>epetra_map.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
@@ -70,11 +76,11 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
+		const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 		);
 
 	///
-	/** Set uninitialized and return the underlying <tt>Epetra_BlockMap</tt>
+	/** Set uninitialized and return the underlying <tt>Epetra_Map</tt>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->epetra_map.get()==NULL</tt>
@@ -85,13 +91,13 @@ public:
 	 * </ul>
 	 */
 	void setUninitialized(
-		Teuchos::RefCountPtr<const Epetra_BlockMap> *epetra_map = NULL
+		Teuchos::RefCountPtr<const Epetra_Map> *epetra_map = NULL
 		);
 
 	///
-	/** Return a smart pointer to the underlying <tt>Epetra_BlockMap</tt> object.
+	/** Return a smart pointer to the underlying <tt>Epetra_Map</tt> object.
 	 */
-	Teuchos::RefCountPtr<const Epetra_BlockMap> epetra_map() const;
+	Teuchos::RefCountPtr<const Epetra_Map> epetra_map() const;
 
 	//@}
 
@@ -124,10 +130,10 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	Epetra_BlockMap                                        *epetra_map;
+	Epetra_Map                                             *epetra_map;
 	EpetraVectorSpaceFactory                               *smallVecSpcFcty;
 #else	
-	Teuchos::RefCountPtr<const Epetra_BlockMap>            epetra_map_;
+	Teuchos::RefCountPtr<const Epetra_Map>                 epetra_map_;
 	MPI_Comm                                               mpiComm_;
 	Index                                                  localSubDim_;
 	Teuchos::RefCountPtr<const EpetraVectorSpaceFactory>   smallVecSpcFcty_;
@@ -139,7 +145,7 @@ private:
 // Inline members
 
 inline
-Teuchos::RefCountPtr<const Epetra_BlockMap>
+Teuchos::RefCountPtr<const Epetra_Map>
 EpetraVectorSpace::epetra_map() const
 {
 	return epetra_map_;

@@ -6,6 +6,7 @@
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "Epetra_MultiVector.h"
+#include "Epetra_Map.h"
 
 Teuchos::RefCountPtr<Epetra_MultiVector>
 TSFCore::get_Epetra_MultiVector(

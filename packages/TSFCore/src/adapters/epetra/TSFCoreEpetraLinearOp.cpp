@@ -155,7 +155,15 @@ void EpetraLinearOp::apply(
 			,T
 			);
 		// Y_inout += alpha * T
-		update( alpha, EpetraMultiVector( Teuchos::rcp( &T, false) ), Y_inout );
+		update(
+      alpha
+      ,EpetraMultiVector(
+        Teuchos::rcp( &T, false)
+        ,Teuchos::rcp_dynamic_cast<const EpetraVectorSpace>(Y_inout->range())
+        ,Teuchos::rcp_dynamic_cast<const EpetraVectorSpace>(Y_inout->domain())
+        )
+      ,Y_inout
+      );
 	}
 }
 

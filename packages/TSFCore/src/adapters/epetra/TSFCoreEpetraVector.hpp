@@ -50,17 +50,22 @@ public:
 	 */
 	EpetraVector(
 		const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc  = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 		);
 
 	///
 	/** Initialize given <tt>Epetra_Vector</tt> and <tt>EpetraVectorSpace</tt> objects.
 	 *
-	 * @param  epetra_vec [in] Smart pointer to the <tt>Epetra_Vector</tt> object that
-	 *                    <tt>*this</tt> wraps.
+	 * @param  epetra_vec
+   *              [in] Smart pointer to the <tt>Epetra_Vector</tt> object that
+	 *              <tt>*this</tt> wraps.
+	 * @param  epetra_vec_spc
+   *              [in] Smart pointer to the <tt>EpetraVectorSpace</tt> object that
+	 *              wraps a <tt>Epetra_Map</tt> defining this vector space.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>epetra_vec.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>epetra_vec_spc.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -70,7 +75,7 @@ public:
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<Epetra_Vector>              &epetra_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc  = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 		);
 
 	///

@@ -1,4 +1,5 @@
 #include "TSFCoreSolversGmresSolver.hpp"
+#include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFCoreVectorStdOps.hpp"
@@ -17,6 +18,10 @@
 
 int main(int argc, char *argv[]) {
 
+  using Teuchos::RefCountPtr;
+  using Teuchos::rcp;
+  using Teuchos::rcp_dynamic_cast;
+  
 	bool success = true;
 	bool verbose = false;
 
@@ -102,15 +107,15 @@ int main(int argc, char *argv[]) {
 		//
 		// Create a Epetra_Matrix
 		//
-		Teuchos::RefCountPtr<Epetra_CrsMatrix> A =
-			Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
+		RefCountPtr<Epetra_CrsMatrix> A =
+			rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
 		//
 		// Create some Epetra_Vectors
 		//
-		Teuchos::RefCountPtr<Epetra_Vector> xx = Teuchos::rcp( new Epetra_Vector(Copy, Map, xexact) );
-		Teuchos::RefCountPtr<Epetra_Vector> bb = Teuchos::rcp( new Epetra_Vector(Copy, Map, b) );
+		RefCountPtr<Epetra_Vector> xx = rcp( new Epetra_Vector(Copy, Map, xexact) );
+		RefCountPtr<Epetra_Vector> bb = rcp( new Epetra_Vector(Copy, Map, b) );
 		// Solution vector, initialize to zero.
-		Teuchos::RefCountPtr<Epetra_Vector> x = Teuchos::rcp( new Epetra_Vector(Map) ); 
+		RefCountPtr<Epetra_Vector> x = rcp( new Epetra_Vector(Map) ); 
 		x->PutScalar( 0.0 ); 
 		// 
 		// Add rows one-at-a-time
@@ -133,8 +138,8 @@ int main(int argc, char *argv[]) {
 		// Create the TSFCore Linear Operator and Vectors
 		//
 		TSFCore::EpetraLinearOp ELOp( A ); 
-		TSFCore::EpetraVector RHS( bb );
-		TSFCore::EpetraVector Soln( x );
+		TSFCore::EpetraVector RHS( bb, rcp_dynamic_cast<const TSFCore::EpetraVectorSpace>(ELOp.range()) );
+		TSFCore::EpetraVector Soln( x, rcp_dynamic_cast<const TSFCore::EpetraVectorSpace>(ELOp.domain()) );
 		//
 		// ********Other information used by the GMRES solver***********
 		//

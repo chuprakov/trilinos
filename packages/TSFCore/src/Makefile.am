@@ -132,6 +132,16 @@ EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp\
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 
+EXTRA_ADAPTERS_AZTECOO_H = \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp
+
+EXTRA_ADAPTERS_AZTECOO = \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+
 if HAVE_TSFCORE_MPI
 
 ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
@@ -154,13 +164,29 @@ ADAPTERS_EPETRA =
 
 endif
 
+if HAVE_TSFCORE_AZTECOO
+
+ADAPTERS_AZTECOO_H = $(EXTRA_ADAPTERS_AZTECOO_H)
+ADAPTERS_AZTECOO = $(EXTRA_ADAPTERS_AZTECOO)
+
+else
+
+ADAPTERS_AZTECOO_H =
+ADAPTERS_AZTECOO =
+
+endif
+
 #Specify locations of include files within Trilinos, but outside TSFCore
 
 AM_CPPFLAGS = \
 -I$(srcdir) \
 -I$(srcdir)/interfaces/Core \
+-I$(srcdir)/interfaces/Solvers \
+-I$(srcdir)/interfaces/Nonlin \
 -I$(srcdir)/utilities/Core \
 -I$(srcdir)/adapters/mpi-base \
+-I$(srcdir)/adapters/epetra \
+-I$(srcdir)/adapters/aztecoo \
 -I$(top_srcdir)/../TSFCoreUtils/src \
 -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
@@ -184,15 +210,19 @@ TSFCORE_H = \
 	$(SOLVERS_H) \
 	$(NONLIN_H) \
 	$(ADAPTERS_MPI_H) \
-	$(ADAPTERS_EPETRA_H) 
+	$(ADAPTERS_EPETRA_H)\
+  $(ADAPTERS_AZTECOO_H)
 
 libTSFCore_a_SOURCES = \
-	$(ADAPTERS_EPETRA) 
+	$(ADAPTERS_EPETRA)\
+  $(ADAPTERS_AZTECOO)
 
 EXTRA_libTSFCore_a_SOURCES = \
 	$(EXTRA_ADAPTERS_MPI_H) \
 	$(EXTRA_ADAPTERS_EPETRA_H) \
-	$(EXTRA_ADAPTERS_EPETRA)
+	$(EXTRA_ADAPTERS_EPETRA) \
+	$(EXTRA_ADAPTERS_AZTECOO_H) \
+	$(EXTRA_ADAPTERS_AZTECOO)
 
 #We need the following to support separate build directories
 

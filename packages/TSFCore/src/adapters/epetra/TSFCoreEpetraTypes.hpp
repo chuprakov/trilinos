@@ -7,7 +7,7 @@
 #include "TSFCoreTypes.hpp"
 
 class Epetra_Comm;
-class Epetra_BlockMap;
+class Epetra_Map;
 class Epetra_MultiVector;
 class Epetra_Vector;
 class Epetra_Operator;
@@ -17,7 +17,7 @@ namespace TSFCore {
 class EpetraVectorSpace;
 class EpetraVectorSpaceFactory;
 class EpetraVector;
-class EpetraVectorMultiVector;
+class EpetraMultiVector;
 class EpetraLinearOp;
 
 } // namespace TSFCore

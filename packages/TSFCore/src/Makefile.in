@@ -231,6 +231,18 @@ EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 
 
+EXTRA_ADAPTERS_AZTECOO_H = \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp
+
+
+EXTRA_ADAPTERS_AZTECOO = \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+
+
 @HAVE_TSFCORE_MPI_TRUE@ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
 @HAVE_TSFCORE_MPI_FALSE@ADAPTERS_MPI_H = 
 
@@ -239,13 +251,22 @@ EXTRA_ADAPTERS_EPETRA = \
 @HAVE_TSFCORE_EPETRA_TRUE@ADAPTERS_EPETRA = $(EXTRA_ADAPTERS_EPETRA)
 @HAVE_TSFCORE_EPETRA_FALSE@ADAPTERS_EPETRA = 
 
+@HAVE_TSFCORE_AZTECOO_TRUE@ADAPTERS_AZTECOO_H = $(EXTRA_ADAPTERS_AZTECOO_H)
+@HAVE_TSFCORE_AZTECOO_FALSE@ADAPTERS_AZTECOO_H = 
+@HAVE_TSFCORE_AZTECOO_TRUE@ADAPTERS_AZTECOO = $(EXTRA_ADAPTERS_AZTECOO)
+@HAVE_TSFCORE_AZTECOO_FALSE@ADAPTERS_AZTECOO = 
+
 
 #Specify locations of include files within Trilinos, but outside TSFCore
 AM_CPPFLAGS = \
 -I$(srcdir) \
 -I$(srcdir)/interfaces/Core \
+-I$(srcdir)/interfaces/Solvers \
+-I$(srcdir)/interfaces/Nonlin \
 -I$(srcdir)/utilities/Core \
 -I$(srcdir)/adapters/mpi-base \
+-I$(srcdir)/adapters/epetra \
+-I$(srcdir)/adapters/aztecoo \
 -I$(top_srcdir)/../TSFCoreUtils/src \
 -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
@@ -269,17 +290,21 @@ TSFCORE_H = \
 	$(SOLVERS_H) \
 	$(NONLIN_H) \
 	$(ADAPTERS_MPI_H) \
-	$(ADAPTERS_EPETRA_H) 
+	$(ADAPTERS_EPETRA_H)\
+  $(ADAPTERS_AZTECOO_H)
 
 
 libTSFCore_a_SOURCES = \
-	$(ADAPTERS_EPETRA) 
+	$(ADAPTERS_EPETRA)\
+  $(ADAPTERS_AZTECOO)
 
 
 EXTRA_libTSFCore_a_SOURCES = \
 	$(EXTRA_ADAPTERS_MPI_H) \
 	$(EXTRA_ADAPTERS_EPETRA_H) \
-	$(EXTRA_ADAPTERS_EPETRA)
+	$(EXTRA_ADAPTERS_EPETRA) \
+	$(EXTRA_ADAPTERS_AZTECOO_H) \
+	$(EXTRA_ADAPTERS_AZTECOO)
 
 
 
@@ -346,7 +371,12 @@ am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
 	TSFCore_get_Epetra_MultiVector.$(OBJEXT)
 @HAVE_TSFCORE_EPETRA_TRUE@am__objects_2 = $(am__objects_1)
 @HAVE_TSFCORE_EPETRA_FALSE@am__objects_2 =
-am_libTSFCore_a_OBJECTS = $(am__objects_2)
+am__objects_3 = Epetra_NonlinearProblem.$(OBJEXT) \
+	Epetra_NonlinearProblemFirstOrder.$(OBJEXT) \
+	TSFCoreNonlinEpetraNPFO.$(OBJEXT)
+@HAVE_TSFCORE_AZTECOO_TRUE@am__objects_4 = $(am__objects_3)
+@HAVE_TSFCORE_AZTECOO_FALSE@am__objects_4 =
+am_libTSFCore_a_OBJECTS = $(am__objects_2) $(am__objects_4)
 libTSFCore_a_OBJECTS = $(am_libTSFCore_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -356,11 +386,14 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFCoreEpetraLinearOp.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Epetra_NonlinearProblem.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraLinearOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraMultiVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -451,6 +484,12 @@ TSFCoreEpetraVectorSpaceFactory.$(OBJEXT): \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp
 TSFCore_get_Epetra_MultiVector.$(OBJEXT): \
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+Epetra_NonlinearProblem.$(OBJEXT): \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp
+Epetra_NonlinearProblemFirstOrder.$(OBJEXT): \
+	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
+TSFCoreNonlinEpetraNPFO.$(OBJEXT): \
+	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
 libTSFCore.a: $(libTSFCore_a_OBJECTS) $(libTSFCore_a_DEPENDENCIES) 
 	-rm -f libTSFCore.a
 	$(libTSFCore_a_AR) libTSFCore.a $(libTSFCore_a_OBJECTS) $(libTSFCore_a_LIBADD)
@@ -462,11 +501,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Epetra_NonlinearProblem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraLinearOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraMultiVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po@am__quote@
 
 distclean-depend:
@@ -555,6 +597,42 @@ TSFCore_get_Epetra_MultiVector.obj: $(srcdir)/adapters/epetra/TSFCore_get_Epetra
 @AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_MultiVector.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp`
+
+Epetra_NonlinearProblem.o: $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp' object='Epetra_NonlinearProblem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Epetra_NonlinearProblem.Po' tmpdepfile='$(DEPDIR)/Epetra_NonlinearProblem.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Epetra_NonlinearProblem.o `test -f '$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp
+
+Epetra_NonlinearProblem.obj: $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp' object='Epetra_NonlinearProblem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Epetra_NonlinearProblem.Po' tmpdepfile='$(DEPDIR)/Epetra_NonlinearProblem.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Epetra_NonlinearProblem.obj `cygpath -w $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp`
+
+Epetra_NonlinearProblemFirstOrder.o: $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp' object='Epetra_NonlinearProblemFirstOrder.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po' tmpdepfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Epetra_NonlinearProblemFirstOrder.o `test -f '$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
+
+Epetra_NonlinearProblemFirstOrder.obj: $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp' object='Epetra_NonlinearProblemFirstOrder.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po' tmpdepfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Epetra_NonlinearProblemFirstOrder.obj `cygpath -w $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp`
+
+TSFCoreNonlinEpetraNPFO.o: $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp' object='TSFCoreNonlinEpetraNPFO.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po' tmpdepfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreNonlinEpetraNPFO.o `test -f '$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+
+TSFCoreNonlinEpetraNPFO.obj: $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp' object='TSFCoreNonlinEpetraNPFO.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po' tmpdepfile='$(DEPDIR)/TSFCoreNonlinEpetraNPFO.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreNonlinEpetraNPFO.obj `cygpath -w $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
@@ -635,7 +713,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/$(srcdir)/adapters/epetra $(distdir)/$(srcdir)/adapters/mpi-base $(distdir)/$(srcdir)/interfaces/Core $(distdir)/$(srcdir)/interfaces/Nonlin $(distdir)/$(srcdir)/interfaces/Solvers $(distdir)/$(srcdir)/utilities/Core $(distdir)/$(srcdir)/utilities/Nonlin $(distdir)/$(srcdir)/utilities/Solvers
+	$(mkinstalldirs) $(distdir)/$(srcdir)/adapters/aztecoo $(distdir)/$(srcdir)/adapters/epetra $(distdir)/$(srcdir)/adapters/mpi-base $(distdir)/$(srcdir)/interfaces/Core $(distdir)/$(srcdir)/interfaces/Nonlin $(distdir)/$(srcdir)/interfaces/Solvers $(distdir)/$(srcdir)/utilities/Core $(distdir)/$(srcdir)/utilities/Nonlin $(distdir)/$(srcdir)/utilities/Solvers
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \

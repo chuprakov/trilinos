@@ -104,6 +104,9 @@
 /* Define if want to build teuchos-experimental */
 #undef HAVE_TEUCHOS_EXPERIMENTAL
 
+/* Define if want to build tsfcore-aztecoo */
+#undef HAVE_TSFCORE_AZTECOO
+
 /* Define if want to build tsfcore-epetra */
 #undef HAVE_TSFCORE_EPETRA
 

@@ -11,6 +11,7 @@
 #include "Epetra_SerialComm.h"
 #include "Epetra_LocalMap.h"
 #include "WorkspacePack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace TSFCore {
 
@@ -34,26 +35,18 @@ void EpetraMultiVector::initialize(
 	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
 	)
 {
+  using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	const char err_msg[] = "EpetraMultiVector::initialize(...): Error!";
 	TEST_FOR_EXCEPTION( epetra_multi_vec.get() == NULL, std::invalid_argument, err_msg ); 
-	TEST_FOR_EXCEPTION( epetra_range.get() && epetra_range->dim() == 0, std::invalid_argument, err_msg ); 
+	TEST_FOR_EXCEPTION( !epetra_range.get() || epetra_range->dim() == 0, std::invalid_argument, err_msg ); 
 	TEST_FOR_EXCEPTION( epetra_domain.get() && epetra_domain->dim() == 0,std::invalid_argument, err_msg );
 	// ToDo: Check the compatibility of the vectors in col_vecs!
 #endif
 	// Set multi-vector
 	epetra_multi_vec_ = epetra_multi_vec;
 	// set range
-	if(epetra_range.get()) {
-		epetra_range_  = epetra_range;
-	}
-	else {
-		epetra_range_ = Teuchos::rcp(
-			new EpetraVectorSpace(
-				Teuchos::rcp(&epetra_multi_vec->Map(),false)
-				)
-			);
-	}
+  epetra_range_  = epetra_range;
 	// set domain
 	if(epetra_domain.get()) {
 		epetra_domain_  = epetra_domain;
@@ -140,11 +133,12 @@ void EpetraMultiVector::apply(
 Teuchos::RefCountPtr<Vector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::col(Index j)
 {
+  using DynamicCastHelperPack::dyn_cast;
 	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= epetra_domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
 	return Teuchos::rcp(
 		new EpetraVector(
 			Teuchos::rcp(
-				new Epetra_Vector( ::View, epetra_multi_vec_->Map(), (*epetra_multi_vec_)[j-1] )
+				new Epetra_Vector( ::View, *epetra_range_->epetra_map(), (*epetra_multi_vec_)[j-1] )
 				)
 			,epetra_range_
 			)
@@ -166,6 +160,7 @@ EpetraMultiVector::subView( const Range1D& col_rng_in )
 					,colRng.size()                 // NumVectors
 					)
 				)
+      ,epetra_range_
 			)
 		);
 }
@@ -202,6 +197,7 @@ EpetraMultiVector::subView( const int numCols, const int cols[] )
 					,numCols                       // NumVectors
 					)
 				)
+      ,epetra_range_
 			)
 		);
 }
