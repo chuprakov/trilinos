@@ -178,7 +178,7 @@ namespace TSF
             {
               if (!first) rtn += ", ";
               first = false;
-              rtn += toString(data_[i][j]);
+              rtn += TSF::toString(data_[i][j]);
             }
         }
       rtn += "]";

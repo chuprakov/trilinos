@@ -323,10 +323,10 @@ namespace TSF
 
   template<class T> inline int hashCode(const TSFArray<T>& array)
     {
-      int rtn = hashCode(len_);
-      for (int i=0; i<a.length(); i++)
+      int rtn = hashCode(array.length());
+      for (int i=0; i<array.length(); i++)
         {
-          rtn += hashCode(a[i]);
+          rtn += hashCode(array[i]);
         }
       return rtn;
     }
@@ -447,6 +447,41 @@ namespace TSF
       return rtn;
     }
 
+ template<class T> inline
+    TSFArray<T> tuple(const T& a, const T& b, const T& c, const T& d, const T& e,
+                      const T& f, const T& g, const T& h, const T& i)
+    {
+      TSFArray<T> rtn(8);
+      rtn[0] = a;
+      rtn[1] = b;
+      rtn[2] = c;
+      rtn[3] = d;
+      rtn[4] = e;
+      rtn[5] = f;
+      rtn[6] = g;
+      rtn[7] = h;
+      rtn[8] = i;
+      return rtn;
+    }
+
+
+ template<class T> inline
+    TSFArray<T> tuple(const T& a, const T& b, const T& c, const T& d, const T& e,
+                      const T& f, const T& g, const T& h, const T& i, const T& j)
+    {
+      TSFArray<T> rtn(8);
+      rtn[0] = a;
+      rtn[1] = b;
+      rtn[2] = c;
+      rtn[3] = d;
+      rtn[4] = e;
+      rtn[5] = f;
+      rtn[6] = g;
+      rtn[7] = h;
+      rtn[8] = i;
+      rtn[9] = j;
+      return rtn;
+    }
 }
 
 #endif
