@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-//#include <iostream> // Debug only
-//#include "LinAlgPack/include/PermOut.h"
+#include <iostream> // Debug only
+#include "LinAlgPack/include/PermOut.h"
 
 #include <algorithm>
 #include <sstream>
@@ -197,6 +197,9 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		n_ = n_full_;
 		LinAlgPack::identity_perm( &var_full_to_fixed_ );
 	}
+
+//	std::cerr << "n_ =" << n_ << std::endl;
+//	std::cerr << "var_full_to_fixed_ =\n" << var_full_to_fixed_;
 	
 	num_bounded_x_ = num_bnd_x;
 
@@ -210,6 +213,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	// Initialize inverse of var_full_to_fixed_
 	LinAlgPack::inv_perm( var_full_to_fixed_, &inv_var_full_to_fixed_ );
 
+//	std::cerr << "inv_var_full_to_fixed_ =\n"  << inv_var_full_to_fixed_;
+
 	var_perm_.resize(n_);
 	space_x_.initialize(n_);
 	
@@ -217,11 +222,11 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	xinit_.initialize(n_);
 	if(has_var_bounds) {
 		xl_.initialize(n_);
-		xu_.initialize(n_);	
+		xu_.initialize(n_);
 	}
 	if(mI_full_) {
 		hl_.initialize(mI_full_);
-		hu_.initialize(mI_full_);	
+		hu_.initialize(mI_full_);
 	}
 
 	if( m_full_ ) {
@@ -230,8 +235,11 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 			// The NLP is not selecting the first basis so set to the initial basis to
 			// the indentity permutations and assume full column rank for Gc.
 			LinAlgPack::identity_perm(&var_perm_);
+//			std::cerr << "var_perm_ =\n" << var_perm_;
 			LinAlgPack::identity_perm(&equ_perm_);
+//			std::cerr << "equ_perm_ =\n" << equ_perm_;
 			LinAlgPack::identity_perm(&inv_equ_perm_);
+//			std::cerr << "inv_equ_perm_ =\n" << inv_equ_perm_;
 			r_ = m_full_;
 			var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
 			if(has_var_bounds) {
@@ -257,6 +265,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 					" If nlp_selects_basis() is true then imp_get_next_basis() "
 					" must return true for the first call" );
 				assert_and_set_basis( var_perm_, equ_perm_, rank );
+//				std::cerr << "var_perm_ =\n" << var_perm_;
+//				std::cerr << "equ_perm_ =\n" << equ_perm_;
 			}
 			catch(...) {
 				// In case an exception was thrown I don't want to leave #this#
@@ -269,9 +279,12 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		}
 	}
 
-//	std::cerr << "var_full_to_fixed_ =\n"      << var_full_to_fixed_;
+//	std::cerr << "n_full_ = " << n_full_ << std::endl;
+//	std::cerr << "n_ = " << n_ << std::endl;
+//	std::cerr << "var_full_to_fixed_ =\n" << var_full_to_fixed_;
 //	std::cerr << "inv_var_full_to_fixed_ =\n"  << inv_var_full_to_fixed_;
-//	std::cerr << "equ_perm_ =\n"               << equ_perm_;
+//	std::cerr << "var_perm_ =\n" << var_perm_;
+//	std::cerr << "equ_perm_ =\n" << equ_perm_;
 
 	// If you get here then the initialization went Ok.
 	NLPObjGradient::initialize(test_setup);
@@ -416,10 +429,12 @@ void NLPSerialPreprocess::report_final_solution(
 		lambdaI_full = lambdaI_d();
 	}
 	// set nu_full
-	Vector nu_full;
+	Vector nu_full(n_full_);
 	if(nu) {
+		nu_full = 0.0; // We don't give lagrange multipliers for fixed varaibles!
+		// ToDo: Define a special constrant for multiplier values for fixed variables 
 		VectorDenseEncap nu_d(*nu);
-		nu_full = nu_d();
+		var_to_full( nu_d().begin(), nu_full().begin() );	// set the nonfixed components
 	}
 	// Report the final solution
 	VectorSlice
@@ -690,9 +705,10 @@ void NLPSerialPreprocess::imp_calc_Gf(
 // protected members
 
 bool NLPSerialPreprocess::imp_get_next_basis(
-	IVector     *var_perm
-	,IVector    *equ_perm
-	,size_type  *rank
+	IVector      *var_perm_full
+	,IVector     *equ_perm_full
+	,size_type   *rank_full
+	,size_type   *rank
 	)
 {
 	return false; // default is that the subclass does not select the basis
@@ -761,33 +777,82 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 {
 	IVector var_perm_full(n_full_);
 	equ_perm->resize(m_full_);
-	size_type rank_full;
-	if( imp_get_next_basis( &var_perm_full, equ_perm, &rank_full ) ) {
+	size_type rank_full, rank_fixed_removed;
+	if( imp_get_next_basis( &var_perm_full, equ_perm, &rank_full, &rank_fixed_removed ) ) {
+//		std::cerr << "var_perm_full =\n"  << var_perm_full;
+//		std::cerr << "equ_perm =\n"  << *equ_perm;
+//		std::cerr << "rank_full = "  << rank_full << std::endl;
 		//
-		// The NLP subclass does have another basis to select
+		// The NLP subclass has another basis to select
 		//
 		// Translate the basis by removing variables fixed by bounds.
-		// This is where it is important that var_perm is
-		// sorted in assending order.
+		// This is where it is important that var_perm_full is
+		// sorted in assending order for basis and non-basis variables
+		//
+		// This is a little bit of a tricky algorithm.  We have to
+		// essentially loop through the set of basic and non-basic
+		// variables, remove fixed variables and adjust the indexes
+		// of the remaining variables.  Since the set of indexes in
+		// the basic and non-basis sets are sorted, this will not
+		// be too bad of an algorithm.
 
-		IVector::const_iterator     itr_fixed     = var_full_to_fixed_.begin() + n_;
-		IVector::iterator           itr_var_perm  = var_perm_full.begin();
-		size_type                   count_fixed   = 0,
-			                        total_fixed   = n_full_ - n_;
-		while( count_fixed != total_fixed ) {
-			if( *itr_var_perm == *itr_fixed ) {
-				// This is a variable fixed by bounds so remove it.
-				count_fixed++;
-			}
-			// Compact and adjust the indice
-			*(itr_var_perm - count_fixed) = *itr_var_perm - count_fixed;
-			++itr_var_perm;
-		}
-		// We have found and removed all of the fixed variables from _var_perm
+		// Iterator for the fixed variables that we are to remove
+		IVector::const_iterator     fixed_itr     = var_full_to_fixed_.begin() + n_;
+		IVector::const_iterator     fixed_end     = var_full_to_fixed_.end();
+
+		// Iterator for the basis variables
+		IVector::iterator           basic_itr  = var_perm_full.begin();
+		IVector::iterator           basic_end  = basic_itr + rank_full;
+
+		// Iterator for the non-basis variables
+		IVector::iterator           nonbasic_itr  = basic_end;
+		IVector::iterator           nonbasic_end  = var_perm_full.end();
 		
+		// Count the number of fixed basic and non-basic variables
+		index_type
+			count_fixed          = 0,
+			count_basic_fixed    = 0,
+			count_nonbasic_fixed = 0;
+
+		// Loop through all of the fixed variables and remove and compact
+		for( ; fixed_itr != fixed_end; ++fixed_itr ) {
+			const index_type
+				next_fixed = ( fixed_itr +1 != fixed_end ? *(fixed_itr+1) : n_full_+1);
+			// Bring the basic and nonbasic variables up to this fixed variable
+			for( ; *basic_itr < *fixed_itr; ++basic_itr )
+				*(basic_itr - count_basic_fixed) = *basic_itr - count_fixed;
+			for( ; *nonbasic_itr < *fixed_itr; ++nonbasic_itr )
+				*(nonbasic_itr - count_nonbasic_fixed) = *nonbasic_itr - count_fixed;
+			// Update the count of the fixed variables
+			if( *basic_itr == *fixed_itr ) {
+				++count_basic_fixed;
+				++basic_itr;
+			}
+			else {
+				assert(*nonbasic_itr == *fixed_itr); // If basic was not fixed then nonbasic better be!
+				++count_nonbasic_fixed;
+				++nonbasic_itr;
+
+			}
+			++count_fixed;
+			// Now update the indexes until the next fixed variable
+			for( ; *basic_itr < next_fixed; ++basic_itr )
+				*(basic_itr - count_basic_fixed) = *basic_itr - count_fixed;
+			for( ; *nonbasic_itr < next_fixed; ++nonbasic_itr )
+				*(nonbasic_itr - count_nonbasic_fixed) = *nonbasic_itr - count_fixed;
+		}
+		assert(count_fixed == n_full_ - n_); // Basic check
+
 		var_perm->resize(n_);
-		std::copy( var_perm_full.begin(), var_perm_full.begin() + n_, var_perm->begin() );
-		*rank = rank_full;
+		std::copy(
+			var_perm_full.begin(), var_perm_full.begin() + rank_fixed_removed
+			,var_perm->begin()
+			);
+		std::copy(
+			var_perm_full.begin() + rank_full, var_perm_full.begin() + rank_full + n_ - count_nonbasic_fixed
+			,var_perm->begin() + rank_fixed_removed
+			);
+		*rank = rank_fixed_removed;
 		return true;
 	}
 	return false;

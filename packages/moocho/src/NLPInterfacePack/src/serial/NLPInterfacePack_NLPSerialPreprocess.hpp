@@ -534,32 +534,58 @@ protected:
 	///
 	/** Return the next basis selection (default returns \c false).
 	 *
-	 * @param  var_perm  [out] (size = <tt>n_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 * @param  var_perm_full
+	 *                   [out] (size = <tt>n_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
 	 *                   Contains the variable permutations (including slack variables possibly).
-	 * @param  equ_perm  [out] (size = <tt>m_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 * @param  equ_perm_full
+	 *                   [out] (size = <tt>m_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
 	 *                   Contains the constriant permutations (including general inequalities
 	 *                   possibly).
-	 * @param  rank      [out] Returns the rank of the basis specified by \c var_perm and \c equ_perm
+	 * @param  rank_full
+	 *                   [out] Returns the rank of the basis before fixed variables are taken out of
+	 *                   \c var_perm_full and \c equ_perm.
+	 * @param  rank      [out] Returns the rank of the basis after fixed variables are taken out of
+	 *                   \c var_perm_full and \c equ_perm.
+	 *                   If there are no fixed variables then <tt>rank</tt> should be equal to
+	 *                   <tt>rank_full</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>return == true</tt>]
+	 *      <tt>var_perm_full(i) < var_perm_full(i+1)</tt>, for <tt>i = 1...rank_full-1</tt>
+	 * <li> [<tt>return == true</tt>]
+	 *      <tt>var_perm_full(i) < var_perm_full(i+1)</tt>, for <tt>i = rank_full...n_full-1</tt>
+	 * <li> [<tt>return == true</tt>]
+	 *      <tt>equ_perm_full(i) < equ_perm_full(i+1)</tt>, for <tt>i = 1...rank-1</tt>
+	 * <li> [<tt>return == true</tt>]
+	 *      <tt>equ_perm_full(i) < equ_perm_full(i+1)</tt>, for <tt>i = rank...m_full-1</tt>
+	 * </ul>
 	 *
 	 * This method will only be called if <tt>this->nlp_selects_basis() == true</tt>.
 	 *
-	 * The basis returned by the subclass must be sorted <tt>var_perm = [ dep  indep ]</tt>
-	 * and <tt>equ_perm = [ equ_decomp  equ_undecomp ]</tt>.  The subclass should not
-	 * remove the variables fixed by bounds from \c var_perm as they will be removed by this
-	 * class as they are translated.  In addition, the subclass can also include
-	 * slack variables in the basis (if <tt>convert_inequ_to_equ == true && mI_orig > 0>/tt>).
-	 * Therefore, a nonsingular basis before fixed variables are
-	 * removed may not be nonsingular once the fixed variables are removed.
-	 * During the translation of \c var_perm, the variables fixed by bounds are removed
-	 * by compacting \c var_perm and adjusting the remaining indexes.  For this
-	 * to be correct with variables fixed by bounds, it is assumed that the
-	 * subclass knows which variables are fixed by bounds and can construct \c var_perm
-	 * so that after the translation the basis will be nonsingular.  The first
-	 * \c rank entries in \c var_perm left after the fixed variables have been removed give
-	 * the indexes of the dependent (basic) variables and the remaining variables are the indexes
-	 * for the independent (nonbasic) variables.  To simplify things, it would be wise for the 
-	 * %NLP subclass not to put fixed variables in the basis since this will greatly
-	 * simplify selecting a nonsingular basis.
+	 * The basis returned by the subclass must be sorted
+	 * <tt>var_perm_full = [ dep | indep ]</tt> and <tt>equ_perm_full
+	 * = [ equ_decomp | equ_undecomp ]</tt>.  The subclass should not
+	 * remove the variables fixed by bounds from \c var_perm_full as
+	 * they will be removed by this class as they are translated.  In
+	 * addition, the subclass can also include slack variables in the
+	 * basis (if <tt>convert_inequ_to_equ == true && mI_orig >
+	 * 0>/tt>).  Therefore, a nonsingular basis before fixed variables
+	 * are removed may not be nonsingular once the fixed variables are
+	 * removed.  During the translation of <tt>var_perm_perm</tt>, the
+	 * variables fixed by bounds are removed by compacting
+	 * <tt>var_perm_full</tt> and adjusting the remaining indexes.
+	 * For this to be correct with variables fixed by bounds, it is
+	 * assumed that the subclass knows which variables are fixed by
+	 * bounds and can construct <tt>var_perm_full</tt> so that after
+	 * the translated the basis will be nonsingular.  The first
+	 * <tt>rank</tt> entries in <tt>var_perm_full[1:rank_full]</tt>
+	 * left after the fixed variables have been removed give the
+	 * indexes of the dependent (basic) variables and the remaining
+	 * variables in <tt>var_perm_full[rank_full+1,n_full]</tt> are the
+	 * indexes for the independent (nonbasic) variables.  To simplify
+	 * things, it would be wise for the %NLP subclass not to put fixed
+	 * variables in the basis since this will greatly simplify
+	 * selecting a nonsingular basis.
 	 *
 	 * The first time this method is called, the subclass should return the first suggested
 	 * basis selection (even if it happens to be identical to the original ordering).
@@ -567,8 +593,9 @@ protected:
 	 * The default implementation returns false.
 	 */
 	virtual bool imp_get_next_basis(
-		IVector      *var_perm
-		,IVector     *equ_perm
+		IVector      *var_perm_full
+		,IVector     *equ_perm_full
+		,size_type   *rank_full
 		,size_type   *rank
 		);
 	///
