@@ -278,13 +278,13 @@ public:
 	///
 	virtual size_type ns() const;
 	///
-	vec_space_ptr_t space_c_hat() const;
+	vec_space_ptr_t space_c_breve() const;
 	///
-	vec_space_ptr_t space_h_hat() const;
+	vec_space_ptr_t space_h_breve() const;
 	///
-	const Vector& hl_hat() const;
+	const Vector& hl_breve() const;
 	///
-	const Vector& hu_hat() const;
+	const Vector& hu_breve() const;
 	///
 	const Permutation& P_var() const;
 	///
@@ -345,16 +345,16 @@ protected:
 		,const ZeroOrderInfo    &zero_order_info
 		) const;
 	///
-	void imp_calc_c_hat(
+	void imp_calc_c_breve(
 		const Vector            &x
 		,bool                   newx
-		,const ZeroOrderInfo    &zero_order_info_hat
+		,const ZeroOrderInfo    &zero_order_info_breve
 		) const;
 	///
-	void imp_calc_h_hat(
+	void imp_calc_h_breve(
 		const Vector            &x
 		,bool                   newx
-		,const ZeroOrderInfo    &zero_order_info_hat
+		,const ZeroOrderInfo    &zero_order_info_breve
 		) const;
 
 	//@}
@@ -789,14 +789,14 @@ private:
 	perm_fcty_ptr_t            factory_P_equ_;
 	VectorSpaceSerial          space_x_;
 	VectorSpaceSerial          space_c_;
-	VectorSpaceSerial          space_c_hat_;
-	VectorSpaceSerial          space_h_hat_;
+	VectorSpaceSerial          space_c_breve_;
+	VectorSpaceSerial          space_h_breve_;
 	size_type                  num_bounded_x_;
 	VectorMutableDense         xinit_; // Initial point of the shrunken NLP
 	VectorMutableDense         xl_;    // Lower bounds of transformed NLP
 	VectorMutableDense         xu_;    // Uppers bounds of transformed NLP
-	VectorMutableDense         hl_hat_;// Lower bounds for general inequalities of transformed NLP
-	VectorMutableDense         hu_hat_;// Uppers bounds for general inequalitiess of transformed NLP
+	VectorMutableDense         hl_breve_;// Lower bounds for general inequalities of transformed NLP
+	VectorMutableDense         hu_breve_;// Uppers bounds for general inequalitiess of transformed NLP
 	PermutationSerial          P_var_;
 	PermutationSerial          P_equ_;
 	size_type              n_orig_;  // Number of variables in the original NLP

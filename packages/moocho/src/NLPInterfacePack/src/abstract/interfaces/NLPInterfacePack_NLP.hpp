@@ -144,18 +144,18 @@ namespace NLPInterfacePack {
  * </ul>
  \verbatim
 
-     min    f_hat(x_hat)
-     s.t.   c_hat(x_hat) = 0
-            hl_hat <= h_hat(x_hat) <= hu_hat
-	        xl_hat <= x_hat <= xu_hat
+     min    f_breve(x_breve)
+     s.t.   c_breve(x_breve) = 0
+            hl_breve <= h_breve(x_breve) <= hu_breve
+	        xl_breve <= x_breve <= xu_breve
 	where:
-	        x_hat    <: space_x
-            f_hat(x_hat) <: space_x_hat -> R^1
-	        c_hat(x_hat) <: space_x_hat -> space_c_hat 
-	        h_hat(x_hat) <: space_x_hat -> space_h_hat
-            space_x_hat <: R^n_hat
-            space_c_hat <: R^n -> R^m_hat
-            space_h_hat <: R^n -> R^mI_hat
+	        x_breve    <: space_x
+            f_breve(x_breve) <: space_x_breve -> R^1
+	        c_breve(x_breve) <: space_x_breve -> space_c_breve 
+	        h_breve(x_breve) <: space_x_breve -> space_h_breve
+            space_x_breve <: R^n_breve
+            space_c_breve <: R^n -> R^m_breve
+            space_h_breve <: R^n -> R^mI_breve
  \endverbatim
  *
  * ToDo: Finish!
@@ -187,9 +187,9 @@ namespace NLPInterfacePack {
  * <tt>xl().get_ele(i) == -infinite_bound()</tt> and an upper bound is considered infinite if
  * <tt>xu().get_ele(i) == +infinite_bound()</tt>.
  *
- * If <tt>ns() > 0</tt>, the methods \c hl_hat() and \c hu_hat() return references to the upper and lower
- * bounds to the general inequality constraints \a h_hat(x_hat).  While it is expected that 
- * <tt>hl_hat().get_ele(j) != -infinite_bound() || hu_hat().get_ele(j) != +infinite_bound</tt> for <tt>j = 1...ns()</tt>
+ * If <tt>ns() > 0</tt>, the methods \c hl_breve() and \c hu_breve() return references to the upper and lower
+ * bounds to the general inequality constraints \a h_breve(x_breve).  While it is expected that 
+ * <tt>hl_breve().get_ele(j) != -infinite_bound() || hu_breve().get_ele(j) != +infinite_bound</tt> for <tt>j = 1...ns()</tt>
  * this is not required by this interface.  On the other hand it seems silly to define general inequality constriants
  * that are not bounded but there may be some reason to include these that makes things easier for the
  * implementor of the NLP subclass.
@@ -629,8 +629,8 @@ public:
 	 * Postconditions:<ul>
 	 * <li> <tt>this->get_f() == NULL</tt>
 	 * <li> <tt>this->get_c() == NULL</tt>
-	 * <li> <tt>this->get_c_hat() == NULL</tt>
-	 * <li> <tt>this->get_h_hat() == NULL</tt>
+	 * <li> <tt>this->get_c_breve() == NULL</tt>
+	 * <li> <tt>this->get_h_breve() == NULL</tt>
 	 * </ul>
 	 *
 	 * This method must be called by all subclasses that override it.
@@ -771,12 +771,12 @@ public:
 	/** Return the number of slack variables (i.e. number of general inequalities).
 	 *
 	 * Default implementation returns
-	 * <tt>(this->space_h_hat().get() ? this->space_h_hat()->dim() : 0)</tt>.
+	 * <tt>(this->space_h_breve().get() ? this->space_h_breve()->dim() : 0)</tt>.
 	 */
 	virtual size_type ns() const;
 
 	///
-	/** Vector space object for the original equalities <tt>c_hat(x_hat)</tt>
+	/** Vector space object for the original equalities <tt>c_breve(x_breve)</tt>
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -789,10 +789,10 @@ public:
 	 *
 	 * The default implementation returns <tt>this->space_c()</tt>.
 	 */
-	virtual vec_space_ptr_t space_c_hat() const;
+	virtual vec_space_ptr_t space_c_breve() const;
 
 	///
-	/** Vector space object for the original inequalities <tt>h_hat(x_hat)</tt>
+	/** Vector space object for the original inequalities <tt>h_breve(x_breve)</tt>
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -805,112 +805,112 @@ public:
 	 *
 	 * The default implementation returns <tt>return.get() == NULL</tt>.
 	 */
-	virtual vec_space_ptr_t space_h_hat() const;
+	virtual vec_space_ptr_t space_h_breve() const;
 
 	///
-	/** Returns a reference to the vector of lower bounds on the general inequality constraints <tt>h_hat(x_hat)</tt>.
+	/** Returns a reference to the vector of lower bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> <tt>this->ns() > 0</tt> (throw <tt>std::logic_error</tt>)
 	 * </ul>
 	 *
-	 * Any bounds that are non-existant will return <tt>this->hl_hat().get_ele(i) == -NLP::infinite_bound()</tt>.
+	 * Any bounds that are non-existant will return <tt>this->hl_breve().get_ele(i) == -NLP::infinite_bound()</tt>.
 	 *
 	 * The default implementation throws an exception.
 	 */
-	virtual const Vector& hl_hat() const;
+	virtual const Vector& hl_breve() const;
 
 	///
-	/** Returns a reference to the vector of upper bounds on the general inequality constraints <tt>h_hat(x_hat)</tt>.
+	/** Returns a reference to the vector of upper bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * Any bounds that are non-existant will return <tt>this->hu_hat().get_ele(i) == +NLP::infinite_bound()</tt>.
+	 * Any bounds that are non-existant will return <tt>this->hu_breve().get_ele(i) == +NLP::infinite_bound()</tt>.
 	 *
 	 * The default implementation throws an exception.
 	 */
-	virtual const Vector& hu_hat() const;
+	virtual const Vector& hu_breve() const;
 
 	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_c_hat()</tt> is called.
+	/** Set a pointer to a vector to be updated when <tt>this->calc_c_breve()</tt> is called.
 	 *
-	 * @param  c_hat  [in] Pointer to constraint residual vector.  May be \c NULL.
+	 * @param  c_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c_hat()) == true</tt>
+	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c_breve()) == true</tt>
 	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->get_c_hat() == c_hat</tt>
+	 * <li> <tt>this->get_c_breve() == c_breve</tt>
 	 * </ul>
 	 */
-	virtual void set_c_hat(VectorMutable* c_hat);
+	virtual void set_c_breve(VectorMutable* c_breve);
 	///
-	/** Return pointer passed to <tt>this->set_c_hat()</tt>.
+	/** Return pointer passed to <tt>this->set_c_breve()</tt>.
 	 */
-	virtual VectorMutable* get_c_hat();
+	virtual VectorMutable* get_c_breve();
 	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_c_hat()</tt>.
+	/** Returns non-<tt>const</tt> <tt>*this->get_c_breve()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual VectorMutable& c_hat();
+	virtual VectorMutable& c_breve();
 	///
-	/** Returns <tt>const</tt> <tt>*this->get_c_hat()</tt>.
+	/** Returns <tt>const</tt> <tt>*this->get_c_breve()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const Vector& c_hat() const;
+	virtual const Vector& c_breve() const;
 
 	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_h_hat()</tt> is called.
+	/** Set a pointer to a vector to be updated when <tt>this->calc_h_breve()</tt> is called.
 	 *
-	 * @param  h_hat  [in] Pointer to constraint residual vector.  May be \c NULL.
+	 * @param  h_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_h_hat()) == true</tt>
+	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_h_breve()) == true</tt>
 	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->get_h_hat() == h_hat</tt>
+	 * <li> <tt>this->get_h_breve() == h_breve</tt>
 	 * </ul>
 	 */
-	virtual void set_h_hat(VectorMutable* h_hat);
+	virtual void set_h_breve(VectorMutable* h_breve);
 	///
-	/** Return pointer passed to <tt>this->set_h_hat()</tt>.
+	/** Return pointer passed to <tt>this->set_h_breve()</tt>.
 	 */
-	virtual VectorMutable* get_h_hat();
+	virtual VectorMutable* get_h_breve();
 	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_h_hat()</tt>.
+	/** Returns non-<tt>const</tt> <tt>*this->get_h_breve()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual VectorMutable& h_hat();
+	virtual VectorMutable& h_breve();
 	///
-	/** Returns <tt>const</tt> <tt>*this->get_h_hat()</tt>.
+	/** Returns <tt>const</tt> <tt>*this->get_h_breve()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_h_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 */
-	virtual const Vector& h_hat() const;
+	virtual const Vector& h_breve() const;
 
 	///
 	/** Return the permutation object for the variables.
@@ -944,10 +944,10 @@ public:
 	virtual const Permutation& P_equ() const;
 
 	///
-	/** Update the constraint residual vector for <tt>c_hat</tt> at the point <tt>x</tt> and put it
+	/** Update the constraint residual vector for <tt>c_breve</tt> at the point <tt>x</tt> and put it
 	 * in the stored reference.
 	 *
-	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c_hat</tt>.
+	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c_breve</tt>.
 	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
 	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
 	 *               If \c false, the values in \c x are not the same as the last call to a
@@ -956,24 +956,24 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_c_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->c_hat()</tt> is updated to \a c_hat(x_hat)
+	 * <li> <tt>this->c_breve()</tt> is updated to \a c_breve(x_breve)
 	 * </ul>
 	 *
-	 * The storage reference for <tt>f</tt> and/or <tt>h_hat</tt> may also be updated at this point
-	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_h_hat() != NULL</tt>) but is not guarentied to be.
+	 * The storage reference for <tt>f</tt> and/or <tt>h_breve</tt> may also be updated at this point
+	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_h_breve() != NULL</tt>) but is not guarentied to be.
 	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
 	 */ 
-	virtual void calc_c_hat(const Vector& x, bool newx = true) const;
+	virtual void calc_c_breve(const Vector& x, bool newx = true) const;
 
 	///
-	/** Update the constraint residual vector for <tt>h_hat</tt> at the point <tt>x</tt> and put it
+	/** Update the constraint residual vector for <tt>h_breve</tt> at the point <tt>x</tt> and put it
 	 * in the stored reference.
 	 *
-	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>h_hat</tt>.
+	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>h_breve</tt>.
 	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
 	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
 	 *               If \c false, the values in \c x are not the same as the last call to a
@@ -982,18 +982,18 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_h_hat() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->h_hat()</tt> is updated to \a h_hat(x_hat)
+	 * <li> <tt>this->h_breve()</tt> is updated to \a h_breve(x_breve)
 	 * </ul>
 	 *
-	 * The storage reference for <tt>f</tt> and/or <tt>c_hat</tt> may also be updated at this point
-	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_c_hat() != NULL</tt>) but is not guarentied to be.
+	 * The storage reference for <tt>f</tt> and/or <tt>c_breve</tt> may also be updated at this point
+	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_c_breve() != NULL</tt>) but is not guarentied to be.
 	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
 	 */ 
-	virtual void calc_h_hat(const Vector& x, bool newx = true) const;
+	virtual void calc_h_breve(const Vector& x, bool newx = true) const;
 
 	//@}
 
@@ -1024,7 +1024,7 @@ public:
 	const ZeroOrderInfo zero_order_info() const;
 
 	/// Return pointer to set <tt>hat</tt> quantities
-	const ZeroOrderInfo zero_order_info_hat() const;
+	const ZeroOrderInfo zero_order_info_breve() const;
 
 protected:
 
@@ -1076,7 +1076,7 @@ protected:
 	 */
 	virtual void imp_calc_c(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 	///
-	/** Overridden to compute c_hat(x_hat) and perhaps f(x) and/or h_hat(x_hat)
+	/** Overridden to compute c_breve(x_breve) and perhaps f(x) and/or h_breve(x_breve)
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
@@ -1084,20 +1084,20 @@ protected:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.c</tt> is updated to c_hat(x_hat).
+	 * <li> <tt>*zero_order_info.c</tt> is updated to c_breve(x_breve).
 	 * </ul>
 	 *
 	 * @param x       [in]  Unknown vector (size n).
 	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info_hat
-	 *                [out] Pointers to \c f, \c c_hat and \c h_hat.
-	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c_hat(x_hat)
+	 * @param zero_order_info_breve
+	 *                [out] Pointers to \c f, \c c_breve and \c h_breve.
+	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c_breve(x_breve)
 	 *
 	 * The default implementation calls <tt>this->imp_calc_c()</tt>.
 	 */
-	virtual void imp_calc_c_hat(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_hat) const;
+	virtual void imp_calc_c_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
 	///
-	/** Overridden to compute h_hat(x_hat) and perhaps f(x) and/or c_hat(x_hat).
+	/** Overridden to compute h_breve(x_breve) and perhaps f(x) and/or c_breve(x_breve).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
@@ -1105,18 +1105,18 @@ protected:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.h</tt> is updated to <tt>h_hat(x_hat)</tt>.
+	 * <li> <tt>*zero_order_info.h</tt> is updated to <tt>h_breve(x_breve)</tt>.
 	 * </ul>
 	 *
 	 * @param x       [in]  Unknown vector (size n).
 	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info_hat
-	 *                [out] Pointers to \c f, \c c_hat and \c h_hat.
-	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h_hat(x_hat)
+	 * @param zero_order_info_breve
+	 *                [out] Pointers to \c f, \c c_breve and \c h_breve.
+	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h_breve(x_breve)
 	 *
 	 * The default implementation throws an exception.
 	 */
-	virtual void imp_calc_h_hat(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_hat) const;
+	virtual void imp_calc_h_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
 
 	//@}
 
@@ -1134,8 +1134,8 @@ private:
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::VectorSpace *space_x;
 	AbstractLinAlgPack::VectorSpace *space_c;
-	AbstractLinAlgPack::VectorSpace *space_c_hat;
-	AbstractLinAlgPack::VectorSpace *space_h_hat;
+	AbstractLinAlgPack::VectorSpace *space_c_breve;
+	AbstractLinAlgPack::VectorSpace *space_h_breve;
 	Permutation                     *P_var;
 	Permtuation                     *P_equ;
 #else
@@ -1143,7 +1143,7 @@ private:
 	MemMngPack::ref_count_ptr<Permutation>  P_equ_;
 #endif
 	mutable ZeroOrderInfo           first_order_info_;
-	mutable ZeroOrderInfo           first_order_info_hat_;
+	mutable ZeroOrderInfo           first_order_info_breve_;
 	mutable size_type				num_f_evals_;
 	mutable size_type				num_c_evals_;
 	
@@ -1159,9 +1159,9 @@ const NLP::ZeroOrderInfo NLP::zero_order_info() const
 }
 
 inline
-const NLP::ZeroOrderInfo NLP::zero_order_info_hat() const
+const NLP::ZeroOrderInfo NLP::zero_order_info_breve() const
 {
-	return first_order_info_hat_;
+	return first_order_info_breve_;
 }
 
 }	// end namespace NLPInterfacePack 

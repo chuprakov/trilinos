@@ -37,14 +37,14 @@ value_type MeritFuncCalcNLP::operator()(const Vector& x) const
 		,NULL  // hu
 		);
 /* RAB: 20020112: ToDo: Get this working
-	if(m)  nlp().calc_c_hat(x,false);
-	if(ns) nlp().calc_h_hat(x,false);
+	if(m)  nlp().calc_c_breve(x,false);
+	if(ns) nlp().calc_h_breve(x,false);
 	return phi().value(
 		nlp().f()
-		,m  ? &nlp().c_hat()  : NULL
-		,ns ? &nlp().h_hat()  : NULL
-		,ns ? &nlp().hl_hat() : NULL
-		,ns ? &nlp().hu_hat() : NULL
+		,m  ? &nlp().c_breve()  : NULL
+		,ns ? &nlp().h_breve()  : NULL
+		,ns ? &nlp().hl_breve() : NULL
+		,ns ? &nlp().hu_breve() : NULL
 		);
 */
 }
@@ -58,7 +58,7 @@ void MeritFuncCalcNLP::print_merit_func(
 	) const
 {
 	out	<< L << "*** MeritFuncCalcNLP\n"
-		<< L << "f = f(x), c = c_hat(x_hat), h = h_hat(x_hat)\n";
+		<< L << "f = f(x), c = c_breve(x_breve), h = h_breve(x_breve)\n";
 	phi().print_merit_func(out,L);
 }
 

@@ -116,8 +116,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	equ_perm_.resize(m_full_);
 	inv_equ_perm_.resize(m_full_);
 	space_c_.initialize(m_full_);
-	space_c_hat_.initialize(m_orig_);
-	space_h_hat_.initialize(mI_orig_);
+	space_c_breve_.initialize(m_orig_);
+	space_h_breve_.initialize(mI_orig_);
 	factory_P_var_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
 	factory_P_equ_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
 
@@ -220,8 +220,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	xl_.initialize(n_);
 	xu_.initialize(n_);
 	if(mI_orig_) {
-		hl_hat_.initialize(mI_orig_);
-		hu_hat_.initialize(mI_orig_);
+		hl_breve_.initialize(mI_orig_);
+		hu_breve_.initialize(mI_orig_);
 	}
 
 	if( m_full_ ) {
@@ -434,30 +434,30 @@ size_type NLPSerialPreprocess::ns() const
 }
 
 NLP::vec_space_ptr_t
-NLPSerialPreprocess::space_c_hat() const
+NLPSerialPreprocess::space_c_breve() const
 {
 	namespace mmp = MemMngPack;
 	assert_initialized();
-	return ( m_orig_ ? mmp::rcp(&space_c_hat_,false) : mmp::null );
+	return ( m_orig_ ? mmp::rcp(&space_c_breve_,false) : mmp::null );
 } 
 NLP::vec_space_ptr_t
-NLPSerialPreprocess::space_h_hat() const
+NLPSerialPreprocess::space_h_breve() const
 {
 	namespace mmp = MemMngPack;
 	assert_initialized();
-	return ( mI_orig_ ? mmp::rcp(&space_h_hat_,false) : mmp::null );
+	return ( mI_orig_ ? mmp::rcp(&space_h_breve_,false) : mmp::null );
 }
 
-const Vector& NLPSerialPreprocess::hl_hat() const
+const Vector& NLPSerialPreprocess::hl_breve() const
 {
 	assert_initialized();
-	return hl_hat_;
+	return hl_breve_;
 }
 
-const Vector& NLPSerialPreprocess::hu_hat() const
+const Vector& NLPSerialPreprocess::hu_breve() const
 {
 	assert_initialized();
-	return hu_hat_;
+	return hu_breve_;
 }
 
 const Permutation& NLPSerialPreprocess::P_var() const
@@ -656,10 +656,10 @@ void NLPSerialPreprocess::imp_calc_c(
 		);
 }
 
-void NLPSerialPreprocess::imp_calc_c_hat(
+void NLPSerialPreprocess::imp_calc_c_breve(
 	const Vector            &x
 	,bool                   newx
-	,const ZeroOrderInfo    &zero_order_info_hat
+	,const ZeroOrderInfo    &zero_order_info_breve
 	) const
 {
 	assert_initialized();
@@ -669,14 +669,14 @@ void NLPSerialPreprocess::imp_calc_c_hat(
 		imp_calc_c_orig( x_full(), newx, zero_order_orig_info() );
 	if( mI_orig_ )
 		imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
-	VectorDenseMutableEncap  c_hat_d(*zero_order_info_hat.c);
-	c_hat_d() = c_orig_();
+	VectorDenseMutableEncap  c_breve_d(*zero_order_info_breve.c);
+	c_breve_d() = c_orig_();
 }
 
-void NLPSerialPreprocess::imp_calc_h_hat(
+void NLPSerialPreprocess::imp_calc_h_breve(
 	const Vector            &x
 	,bool                   newx
-	,const ZeroOrderInfo    &zero_order_info_hat
+	,const ZeroOrderInfo    &zero_order_info_breve
 	) const
 {
 	// If this function gets called then this->mI() > 0 must be true
@@ -685,8 +685,8 @@ void NLPSerialPreprocess::imp_calc_h_hat(
 	VectorDenseEncap  x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
 	imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
-	VectorDenseMutableEncap  h_hat_d(*zero_order_info_hat.h);
-	h_hat_d() = h_orig_(); // Nothing fancy right now
+	VectorDenseMutableEncap  h_breve_d(*zero_order_info_breve.h);
+	h_breve_d() = h_orig_(); // Nothing fancy right now
 }
 
 // Overridden protected members from NLPObjGrad

@@ -23,8 +23,8 @@
 namespace {
 const char name_f[] = "f";
 const char name_c[] = "c";
-const char name_c_hat[] = "c_hat";
-const char name_h_hat[] = "h_hat";
+const char name_c_breve[] = "c_breve";
+const char name_h_breve[] = "h_breve";
 NLPInterfacePack::NLP::options_ptr_t  null_options = MemMngPack::null;
 } // end namespace
 
@@ -164,9 +164,9 @@ void NLP::unset_quantities()
 	first_order_info_.f = NULL;
 	first_order_info_.c = NULL;
 	first_order_info_.h = NULL;
-	first_order_info_hat_.f = NULL;
-	first_order_info_hat_.c = NULL;
-	first_order_info_hat_.h = NULL;
+	first_order_info_breve_.f = NULL;
+	first_order_info_breve_.c = NULL;
+	first_order_info_breve_.h = NULL;
 }
 
 // calculations
@@ -215,98 +215,98 @@ size_type NLP::num_c_evals() const
 
 size_type NLP::ns() const
 {
-	vec_space_ptr_t space_h_hat = this->space_h_hat();
-	return space_h_hat.get() ? space_h_hat->dim() : 0;
+	vec_space_ptr_t space_h_breve = this->space_h_breve();
+	return space_h_breve.get() ? space_h_breve->dim() : 0;
 }
 
-NLP::vec_space_ptr_t NLP::space_c_hat() const
+NLP::vec_space_ptr_t NLP::space_c_breve() const
 {
 	return this->space_c();
 }
 
-NLP::vec_space_ptr_t NLP::space_h_hat() const
+NLP::vec_space_ptr_t NLP::space_h_breve() const
 {
 	return MemMngPack::null;
 }
 
-const Vector& NLP::hl_hat() const
+const Vector& NLP::hl_breve() const
 {
 	THROW_EXCEPTION(
 		true, std::logic_error
-		,"NLP::hl_hat(): Error, this method must be overridden if space_h_hat is defined" );
+		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }
 
-const Vector& NLP::hu_hat() const
+const Vector& NLP::hu_breve() const
 {
 	THROW_EXCEPTION(
 		true, std::logic_error
-		,"NLP::hl_hat(): Error, this method must be overridden if space_h_hat is defined" );
+		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }
 
-void NLP::set_c_hat(VectorMutable* c_hat)
+void NLP::set_c_breve(VectorMutable* c_breve)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( c_hat && !this->space_c_hat()->is_compatible(c_hat->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+	THROW_EXCEPTION( c_breve && !this->space_c_breve()->is_compatible(c_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
-	first_order_info_hat_.c = c_hat;
+	first_order_info_breve_.c = c_breve;
 }
 
-VectorMutable* NLP::get_c_hat()
-{
-#ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
-#endif
-	return first_order_info_hat_.c;
-}
-
-VectorMutable& NLP::c_hat()
+VectorMutable* NLP::get_c_breve()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(first_order_info_hat_.c, false, name_c_hat);
+	return first_order_info_breve_.c;
 }
 
-const Vector& NLP::c_hat() const
+VectorMutable& NLP::c_breve()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(first_order_info_hat_.c, false, name_c_hat);
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_c_breve);
 }
 
-void NLP::set_h_hat(VectorMutable* h_hat)
-{
-#ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( h_hat && !this->space_h_hat()->is_compatible(h_hat->space()), VectorSpace::IncompatibleVectorSpaces, "" );
-#endif
-	first_order_info_hat_.c = h_hat;
-}
-
-VectorMutable* NLP::get_h_hat()
+const Vector& NLP::c_breve() const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
-	return first_order_info_hat_.h;
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_c_breve);
 }
 
-VectorMutable& NLP::h_hat()
+void NLP::set_h_breve(VectorMutable* h_breve)
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	THROW_EXCEPTION( h_breve && !this->space_h_breve()->is_compatible(h_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+#endif
+	first_order_info_breve_.c = h_breve;
+}
+
+VectorMutable* NLP::get_h_breve()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(first_order_info_hat_.c, false, name_h_hat);
+	return first_order_info_breve_.h;
 }
 
-const Vector& NLP::h_hat() const
+VectorMutable& NLP::h_breve()
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(first_order_info_hat_.c, false, name_h_hat);
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_h_breve);
+}
+
+const Vector& NLP::h_breve() const
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_h_breve);
 }
 
 const Permutation& NLP::P_var() const
@@ -323,46 +323,46 @@ const Permutation& NLP::P_equ() const
 	return *P_equ_;
 }
 
-void NLP::calc_c_hat(const Vector& x, bool newx) const
+void NLP::calc_c_breve(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0 || this->ns() > 0, std::logic_error, "" );
 #endif
-	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_hat_.c, "NLP::calc_c_hat()", name_c_hat);
-	imp_calc_c_hat(x,newx,zero_order_info_hat());
+	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_breve_.c, "NLP::calc_c_breve()", name_c_breve);
+	imp_calc_c_breve(x,newx,zero_order_info_breve());
 	num_c_evals_++;
 }
 
-void NLP::calc_h_hat(const Vector& x, bool newx) const
+void NLP::calc_h_breve(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->ns() == 0, std::logic_error, "" );
 #endif
-	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_hat_.h, "NLP::calc_h_hat()", name_h_hat);
-	imp_calc_c_hat(x,newx,zero_order_info_hat());
+	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_breve_.h, "NLP::calc_h_breve()", name_h_breve);
+	imp_calc_c_breve(x,newx,zero_order_info_breve());
 	num_c_evals_++;
 }
 
 // protected
 
-void NLP::imp_calc_c_hat(
+void NLP::imp_calc_c_breve(
 	const Vector           &x
 	,bool                  newx
-	,const ZeroOrderInfo   &zero_order_info_hat
+	,const ZeroOrderInfo   &zero_order_info_breve
 	) const
 {
-	imp_calc_c(x,newx,zero_order_info_hat);
+	imp_calc_c(x,newx,zero_order_info_breve);
 }
 
-void NLP::imp_calc_h_hat(
+void NLP::imp_calc_h_breve(
 	const Vector           &x
 	,bool                  newx
-	,const ZeroOrderInfo   &zero_order_info_hat
+	,const ZeroOrderInfo   &zero_order_info_breve
 	) const
 {
 	THROW_EXCEPTION(
 		true, std::logic_error
-		,"NLP::hl_hat(): Error, this method must be overridden if space_h_hat is defined" );
+		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }
 
 } // namespace NLPInterfacePack

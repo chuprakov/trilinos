@@ -191,41 +191,41 @@ public:
 	size_type ns() const
 	{ return nlp_->ns(); }
 	///
-	vec_space_ptr_t space_c_hat() const
-	{ return nlp_->space_c_hat(); }
+	vec_space_ptr_t space_c_breve() const
+	{ return nlp_->space_c_breve(); }
 	///
-	vec_space_ptr_t space_h_hat() const
-	{ return nlp_->space_h_hat(); }
+	vec_space_ptr_t space_h_breve() const
+	{ return nlp_->space_h_breve(); }
 	///
-	const Vector& hl_hat() const
-	{ return nlp_->hl_hat(); }
+	const Vector& hl_breve() const
+	{ return nlp_->hl_breve(); }
 	///
-	const Vector& hu_hat() const
-	{ return nlp_->hu_hat(); }
+	const Vector& hu_breve() const
+	{ return nlp_->hu_breve(); }
 	///
-	void set_c_hat(VectorMutable* c_hat)
-	{ nlp_->set_c_hat(c_hat); }
+	void set_c_breve(VectorMutable* c_breve)
+	{ nlp_->set_c_breve(c_breve); }
 	///
-	VectorMutable* get_c_hat()
-	{ return nlp_->get_c_hat(); }
+	VectorMutable* get_c_breve()
+	{ return nlp_->get_c_breve(); }
 	///
-	VectorMutable& c_hat()
-	{ return nlp_->c_hat(); }
+	VectorMutable& c_breve()
+	{ return nlp_->c_breve(); }
 	///
-	const Vector& c_hat() const
-	{ return nlp_->c_hat(); }
+	const Vector& c_breve() const
+	{ return nlp_->c_breve(); }
 	///
-	void set_h_hat(VectorMutable* h_hat)
-	{ nlp_->set_h_hat(h_hat); }
+	void set_h_breve(VectorMutable* h_breve)
+	{ nlp_->set_h_breve(h_breve); }
 	///
-	VectorMutable* get_h_hat()
-	{ return nlp_->get_h_hat(); }
+	VectorMutable* get_h_breve()
+	{ return nlp_->get_h_breve(); }
 	///
-	VectorMutable& h_hat()
-	{ return nlp_->h_hat(); }
+	VectorMutable& h_breve()
+	{ return nlp_->h_breve(); }
 	///
-	const Vector& h_hat() const
-	{ return nlp_->h_hat(); }
+	const Vector& h_breve() const
+	{ return nlp_->h_breve(); }
 	///
 	const Permutation& P_var() const
 	{ return nlp_->P_var(); }
@@ -233,11 +233,11 @@ public:
 	const Permutation& P_equ() const
 	{ return nlp_->P_equ(); }
 	///
-	void calc_c_hat(const Vector& x, bool newx ) const
-	{ nlp_->calc_c_hat(x,newx); }
+	void calc_c_breve(const Vector& x, bool newx ) const
+	{ nlp_->calc_c_breve(x,newx); }
 	///
-	void calc_h_hat(const Vector& x, bool newx ) const
-	{ nlp_->calc_h_hat(x,newx); }
+	void calc_h_breve(const Vector& x, bool newx ) const
+	{ nlp_->calc_h_breve(x,newx); }
 
 	//@}
 
@@ -259,16 +259,16 @@ protected:
 		,const ZeroOrderInfo& zero_order_info
 	  ) const;
 	///
-	void imp_calc_c_hat(
+	void imp_calc_c_breve(
 		const Vector& x
 		,bool newx 
-		,const ZeroOrderInfo& zero_order_info_hat
+		,const ZeroOrderInfo& zero_order_info_breve
 	  ) const;
 	///
-	void imp_calc_h_hat(
+	void imp_calc_h_breve(
 		const Vector& x
 		,bool newx 
-		,const ZeroOrderInfo& zero_order_info_hat
+		,const ZeroOrderInfo& zero_order_info_breve
 	  ) const;
 
 	//@}
