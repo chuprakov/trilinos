@@ -3,10 +3,9 @@
 
 // ////////////////////////////////////////////////////////////
 // When using the Intel BLAS you have to use lower case names
-
-#ifdef _WINDOWS
-#define _INTEL_BLAS
-#endif
+//
+// To set this define the macro _INTEL_BLAS
+//
 
 #ifdef _INTEL_BLAS
 #define FORTRAN_NAMES_UPPERCASE 0
@@ -77,14 +76,18 @@ FORTRAN_FUNC_DECL_UL(f_dbl_prec,IDAMAX,idamax)(const f_int& N, const f_dbl_prec*
 // Level 2 BLAS (matrix-vector operations)
 
 // General rectangular matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DGEMV,dgemv)(const char* TRANSA, const f_int& M, const f_int& N, const f_dbl_prec& ALPHA,
-			const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* X, const f_int& INCX,
-			const f_dbl_prec& BETA, f_dbl_prec* Y, const f_int& INCY);
+FORTRAN_FUNC_DECL_UL(void,DGEMV,dgemv)(FORTRAN_CONST_CHAR_1_ARG(TRANSA)
+	, const f_int& M, const f_int& N, const f_dbl_prec& ALPHA
+	, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* X, const f_int& INCX
+	, const f_dbl_prec& BETA, f_dbl_prec* Y, const f_int& INCY
+	);
 
 // General band matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DGBMV,dgbmv)(const char* TRANSA, const f_int& M, const f_int& N, const f_int& KL, const f_int& KU,
-		   const f_dbl_prec& ALPHA,	const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* X,
-		   const f_int& INCX,	const f_dbl_prec& BETA, f_dbl_prec* Y, const f_int& INCY);
+FORTRAN_FUNC_DECL_UL(void,DGBMV,dgbmv)(FORTRAN_CONST_CHAR_1_ARG(TRANSA)
+	, const f_int& M, const f_int& N, const f_int& KL, const f_int& KU
+	, const f_dbl_prec& ALPHA,	const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* X
+	, const f_int& INCX, const f_dbl_prec& BETA, f_dbl_prec* Y, const f_int& INCY
+	);
 
 // Hermitian matrix-vector products
 
@@ -93,46 +96,60 @@ FORTRAN_FUNC_DECL_UL(void,DGBMV,dgbmv)(const char* TRANSA, const f_int& M, const
 // Hermitian packed matrix-vector products
 
 // Symmetric matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DSYMV,dsymv)(const char* UPLO, const f_int& N,
-		   const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA,
-		   const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA,
-		   f_dbl_prec* Y, const f_int& INCY);
+FORTRAN_FUNC_DECL_UL(void,DSYMV,dsymv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA
+	, const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA
+	, f_dbl_prec* Y, const f_int& INCY
+	);
 
 // Symmetric band matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DSBMV,dsbmv)(const char* UPLO, const f_int& N, const f_int& K,
-		   const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA,
-		   const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA,
-		   f_dbl_prec* Y, const f_int& INCY);
+FORTRAN_FUNC_DECL_UL(void,DSBMV,dsbmv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N, const f_int& K
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA
+	, const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA
+	, f_dbl_prec* Y, const f_int& INCY
+	);
 
 // Symmetric packed matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DSPMV,dspmv)(const char* UPLO, const f_int& N,
-		   const f_dbl_prec& ALPHA, const f_dbl_prec* AP,
-		   const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA,
-		   f_dbl_prec* Y, const f_int& INCY);
+FORTRAN_FUNC_DECL_UL(void,DSPMV,dspmv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* AP
+	, const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec& BETA
+	, f_dbl_prec* Y, const f_int& INCY
+	);
 
 // Triangular matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DTRMV,dtrmv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
-		   const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTRMV,dtrmv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG), const f_int& N
+	, const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular band matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DTBMV,dtbmv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N, const f_int& K,
-		   const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTBMV,dtbmv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG)
+	, const f_int& N, const f_int& K
+	, const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular packed matrix-vector products
-FORTRAN_FUNC_DECL_UL(void,DTPMV,dtpmv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
-		   const f_dbl_prec* AP, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTPMV,dtpmv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG), const f_int& N
+	, const f_dbl_prec* AP, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular equation solve
-FORTRAN_FUNC_DECL_UL(void,DTRSV,dtrsv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
-		   const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTRSV,dtrsv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG), const f_int& N
+	, const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular band equation solve
-FORTRAN_FUNC_DECL_UL(void,DTBSV,dtbsv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N, const f_int& K,
-		   const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTBSV,dtbsv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG), const f_int& N
+	, const f_int& K
+	, const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular packed equation solve
-FORTRAN_FUNC_DECL_UL(void,DTPSV,dtpsv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
-		   const f_dbl_prec* AP, f_dbl_prec* X, const f_int& INCX);
+FORTRAN_FUNC_DECL_UL(void,DTPSV,dtpsv)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), FORTRAN_CONST_CHAR_1_ARG(DIAG), const f_int& N
+	, const f_dbl_prec* AP, f_dbl_prec* X, const f_int& INCX);
 
 // General rank-1 update
 FORTRAN_FUNC_DECL_UL(void,DGER,dger)(const f_int& M, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX,
@@ -147,59 +164,71 @@ FORTRAN_FUNC_DECL_UL(void,DGER,dger)(const f_int& M, const f_int& N, const f_dbl
 // Hermitian packed rank-2 update
 
 // Symmetric rank-1 update
-FORTRAN_FUNC_DECL_UL(void,DSYR,dsyr)(const char* UPLO, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX,
-		  f_dbl_prec* A, const f_int& LDA);
+FORTRAN_FUNC_DECL_UL(void,DSYR,dsyr)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX
+	, f_dbl_prec* A, const f_int& LDA);
 
 // Symmetric packed rank-1 update
-FORTRAN_FUNC_DECL_UL(void,DSPR,dspr)(const char* UPLO, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX,
-		  f_dbl_prec* AP);
+FORTRAN_FUNC_DECL_UL(void,DSPR,dspr)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX
+	, f_dbl_prec* AP);
 
 // Symmetric rank-2 update
-FORTRAN_FUNC_DECL_UL(void,DSYR2,dsyr2)(const char* UPLO, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX,
-		   const f_dbl_prec* Y, const f_int& INCY, f_dbl_prec* A, const f_int& LDA);
+FORTRAN_FUNC_DECL_UL(void,DSYR2,dsyr2)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX
+	, const f_dbl_prec* Y, const f_int& INCY, f_dbl_prec* A, const f_int& LDA);
 
 // Symmetric packed rank-2 update
-FORTRAN_FUNC_DECL_UL(void,DSPR2,dspr2)(const char* UPLO, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX,
-		   const f_dbl_prec* Y, const f_int& INCY, f_dbl_prec* AP);
+FORTRAN_FUNC_DECL_UL(void,DSPR2,dspr2)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, const f_int& N, const f_dbl_prec& ALPHA, const f_dbl_prec* X, const f_int& INCX
+	, const f_dbl_prec* Y, const f_int& INCY, f_dbl_prec* AP);
 
 // ////////////////////////////////////////
 // Level 3 BLAS (matrix-matrix operations)
 
 // General rectangular matrix-matrix product
-FORTRAN_FUNC_DECL_UL(void,DGEMM,dgemm)(const char* TRANSA, const char* TRANSB, const f_int& M, const f_int& N, const f_int& K,  
-		const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B, const f_int& LDB,
-		const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
+FORTRAN_FUNC_DECL_UL(void,DGEMM,dgemm)(FORTRAN_CONST_CHAR_1_ARG(TRANSA)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANSB), const f_int& M, const f_int& N, const f_int& K
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B
+	, const f_int& LDB, const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
 
 // Symmetric matrix-matrix product
-FORTRAN_FUNC_DECL_UL(void,DSYMM,dsymm)(const char* SIDE, const char* UPLO, const f_int& M, const f_int& N,  
-		const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B, const f_int& LDB,
-		const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
+FORTRAN_FUNC_DECL_UL(void,DSYMM,dsymm)(FORTRAN_CONST_CHAR_1_ARG(SIDE)
+	, FORTRAN_CONST_CHAR_1_ARG(UPLO), const f_int& M, const f_int& N
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B
+	, const f_int& LDB, const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
 
 // Hermitian matrix-matrix product
 
 // Symmetric rank-k update
-FORTRAN_FUNC_DECL_UL(void,DSYRK,dsyrk)(const char* UPLO, const char* TRANS, const f_int& N, const f_int& K,  
-		const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA,
-		const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
+FORTRAN_FUNC_DECL_UL(void,DSYRK,dsyrk)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), const f_int& N, const f_int& K
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA
+	, const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
 
 // Hermitian rank-k update
 
 // Symmetric rank-2k update
-FORTRAN_FUNC_DECL_UL(void,DSYR2K,dsyr2k)(const char* UPLO, const char* TRANS, const f_int& N, const f_int& K,  
-		const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B, const f_int& LDB,
-		const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
+FORTRAN_FUNC_DECL_UL(void,DSYR2K,dsyr2k)(FORTRAN_CONST_CHAR_1_ARG(UPLO)
+	, FORTRAN_CONST_CHAR_1_ARG(TRANS), const f_int& N, const f_int& K
+	, const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA, const f_dbl_prec* B
+	, const f_int& LDB, const f_dbl_prec& BETA, f_dbl_prec* C, const f_int& LDC);
 
 // Hermitian rank-2k update
 
 // Triangular matrix-matrix product
-FORTRAN_FUNC_DECL_UL(void,DTRMM,dtrmm)(const char* SIDE, const char* UPLO, const char* TRANSA, const char* DIAG,
-			const f_int& M, const f_int& N,	const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA,
-			f_dbl_prec* B, const f_int& LDB);
+FORTRAN_FUNC_DECL_UL(void,DTRMM,dtrmm)(FORTRAN_CONST_CHAR_1_ARG(SIDE)
+	, FORTRAN_CONST_CHAR_1_ARG(UPLO), FORTRAN_CONST_CHAR_1_ARG(TRANSA)
+	, FORTRAN_CONST_CHAR_1_ARG(DIAG)
+	, const f_int& M, const f_int& N,	const f_dbl_prec& ALPHA, const f_dbl_prec* A
+	, const f_int& LDA, f_dbl_prec* B, const f_int& LDB);
 
 // Solution of triangular system 
-FORTRAN_FUNC_DECL_UL(void,DTRSM,dtrsm)(const char* SIDE, const char* UPLO, const char* TRANSA, const char* DIAG,
-			const f_int& M, const f_int& N,	const f_dbl_prec& ALPHA, const f_dbl_prec* A, const f_int& LDA,
-			f_dbl_prec* B, const f_int& LDB);
+FORTRAN_FUNC_DECL_UL(void,DTRSM,dtrsm)(FORTRAN_CONST_CHAR_1_ARG(SIDE)
+	, FORTRAN_CONST_CHAR_1_ARG(UPLO), FORTRAN_CONST_CHAR_1_ARG(TRANSA)
+	, FORTRAN_CONST_CHAR_1_ARG(DIAG)
+	, const f_int& M, const f_int& N,	const f_dbl_prec& ALPHA
+	, const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* B, const f_int& LDB);
 
 } // end extern "C"
 
