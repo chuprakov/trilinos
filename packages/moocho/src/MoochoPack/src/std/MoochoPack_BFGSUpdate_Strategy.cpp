@@ -19,20 +19,21 @@
 #pragma warning(disable : 4503)	
 
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
-#include "../../include/ReducedSpaceSQPPackExceptions.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
 #include "ConstrainedOptimizationPack/test/TestMatrixSymSecantUpdate.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/MatrixWithOpOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "dynamic_cast_verbose.h"
+#include "ThrowException.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ReducedSpaceSQPPack {
@@ -44,8 +45,7 @@ BFGSUpdate_Strategy::BFGSUpdate_Strategy(
 	,value_type        secant_warning_tol
 	,value_type        secant_error_tol
 	)
-	:
-	rescale_init_identity_(rescale_init_identity)
+	:rescale_init_identity_(rescale_init_identity)
 	,use_dampening_(use_dampening)
 	,secant_testing_(secant_testing)
 	,secant_warning_tol_(secant_warning_tol)
@@ -53,27 +53,26 @@ BFGSUpdate_Strategy::BFGSUpdate_Strategy(
 {}
 
 void BFGSUpdate_Strategy::perform_update(
-		VectorSlice* s_bfgs, VectorSlice* y_bfgs, bool first_update
-		,std::ostream& out, EJournalOutputLevel olevel, bool check_results
-		,MatrixWithOp *B, QuasiNewtonStats* quasi_newton_stats 
+	VectorWithOpMutable      *s_bfgs
+	,VectorWithOpMutable     *y_bfgs
+	,bool                    first_update
+	,std::ostream            &out
+	,EJournalOutputLevel     olevel
+	,bool                    check_results
+	,MatrixSymWithOp         *B
+	,QuasiNewtonStats        * quasi_newton_stats 
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::norm_2;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::dot;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::V_VpV;
-	using LinAlgPack::V_VmV;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::V_StV;
-
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vt_S;
+	using AbstractLinAlgPack::Vp_StV;
 	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_StV;
+	using LinAlgOpPack::V_VpV;
+	using LinAlgOpPack::V_VmV;
 	using LinAlgOpPack::V_MtV;
 
-	using ConstrainedOptimizationPack::MatrixSymSecantUpdateable;
-
-	Vector Bs;
 	const size_type
 		nind = B->rows();
 	const value_type
@@ -84,11 +83,7 @@ void BFGSUpdate_Strategy::perform_update(
 	bool used_dampening = false;
 
 	MatrixSymSecantUpdateable
-#ifdef _WINDOWS
-		&B_updatable = dynamic_cast<MatrixSymSecantUpdateable&>(*B);
-#else
 	    &B_updatable = dyn_cast<MatrixSymSecantUpdateable>(*B);
-#endif
 
 	// /////////////////////////////////////////////////////////////
 	// Consider rescaling the initial identity hessian before
@@ -113,7 +108,7 @@ void BFGSUpdate_Strategy::perform_update(
 					<< "Iscale = (y'*y)/(y'*s) = ("<<yTy<<")/("<<sTy<<") = "<<Iscale<<"\n"
 					<< "B =  Iscale * eye(n-r) ...\n";
 			}
-			B_updatable.init_identity( nind, Iscale );
+			B_updatable.init_identity( y_bfgs->space(), Iscale );
 			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
 				out << "\nB after rescaling = \n" << *B;
 			}
@@ -129,6 +124,8 @@ void BFGSUpdate_Strategy::perform_update(
 
 	// ////////////////////////////////////////////////////
 	// Modify the s_bfgs and y_bfgs vectors for dampening?
+	VectorSpace::vec_mut_ptr_t
+		Bs = NULL;
 	if( use_dampening() ) {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		{
@@ -136,12 +133,13 @@ void BFGSUpdate_Strategy::perform_update(
 				<< "\nConsidering the dampened update ...\n";
 		}
 		// Bs = Bm1 * s_bfgs
-		V_MtV( &Bs, *B, BLAS_Cpp::no_trans, *s_bfgs );
+		Bs = y_bfgs->space().create_member();
+		V_MtV( Bs.get(), *B, BLAS_Cpp::no_trans, *s_bfgs );
 		// sTy = s_bfgs' * y_bfgs
 		if( sTy == NOT_CALCULATED )
 			sTy = dot( *s_bfgs, *y_bfgs );
 		// sTBs = s_bfgs' * Bs
-		const value_type sTBs = dot( *s_bfgs, Bs() );
+		const value_type sTBs = dot( *s_bfgs, *Bs );
 		// Select dampening parameter theta
 		const value_type
 			theta = ( sTy >= 0.2 * sTBs )
@@ -164,7 +162,7 @@ void BFGSUpdate_Strategy::perform_update(
 		else {
 			// y_bfgs = theta*y_bfgs + (1-theta)*B*s_bfgs
 			Vt_S( y_bfgs, theta );
-			Vp_StV( y_bfgs, (1.0-theta), Bs() );
+			Vp_StV( y_bfgs, (1.0-theta), *Bs );
 
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 			{
@@ -172,7 +170,7 @@ void BFGSUpdate_Strategy::perform_update(
 					<< "Dampen the update ...\n"
 					<< "theta = " << theta << std::endl
 					<< "y_bfgs = theta*y_bfgs + (1-theta)*B*s_bfgs ...\n"
-					<< "||y_bfgs||inf = " << norm_inf(*y_bfgs) << std::endl;
+					<< "||y_bfgs||inf = " << y_bfgs->norm_inf() << std::endl;
 			}
 
 			if( (int)olevel >= (int)PRINT_VECTORS )
@@ -187,17 +185,20 @@ void BFGSUpdate_Strategy::perform_update(
 
 	// Perform the update if it is defined (s_bfgs' * y_bfgs > 0.0)
 				
-	Vector s_bfgs_save, y_bfgs_save;
+	VectorSpace::vec_mut_ptr_t
+		s_bfgs_save = NULL,
+		y_bfgs_save = NULL;
 	if( check_results ) {
 		// Save s and y since they may be overwritten in the update.
-		s_bfgs_save = *s_bfgs;
-		y_bfgs_save = *y_bfgs;
+		s_bfgs_save = s_bfgs->clone();
+		y_bfgs_save = y_bfgs->clone();
 	}
 	try {
-		B_updatable.secant_update( s_bfgs, y_bfgs
-								   , Bs.size()
-								   ? static_cast<VectorSlice*>(&Bs())
-								   : static_cast<VectorSlice*>(0) );
+		B_updatable.secant_update(
+			s_bfgs
+			,y_bfgs
+			,Bs.get()
+			);
 	}
 	catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
 		if( (int)olevel >= (int)PRINT_BASIC_ALGORITHM_INFO ) {
@@ -217,8 +218,8 @@ void BFGSUpdate_Strategy::perform_update(
 		|| secant_testing() == SECANT_TEST_ALWAYS )
 	{
 		const bool result =
-			ConstrainedOptimizationPack::TestingPack::TestMatrixSymSecantUpdate(
-				*B, s_bfgs_save(), y_bfgs_save()
+			ConstrainedOptimizationPack::TestMatrixSymSecantUpdate(
+				*B, *s_bfgs_save, *y_bfgs_save
 				, secant_warning_tol(), secant_error_tol()
 				, (int)olevel >= (int)PRINT_VECTORS
 				, (int)olevel >  (int)PRINT_NOTHING ? &out : NULL
@@ -229,7 +230,9 @@ void BFGSUpdate_Strategy::perform_update(
 				msg[] =	"Error, the secant property for the BFGS update failed\n"
 				"Stopping the algorithm ...\n";
 			out << msg;
-			throw TestFailed( msg );
+			THROW_EXCEPTION(
+				true, TestFailed
+				," BFGSUpdate_Strategy::perform_update(...) : " << msg );
 		}
 	}
 	

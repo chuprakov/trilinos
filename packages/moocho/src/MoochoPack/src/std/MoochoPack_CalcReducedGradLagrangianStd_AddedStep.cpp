@@ -17,29 +17,33 @@
 #pragma warning(disable : 4786)	
 
 #include <ostream>
-#include "../../include/std/CalcReducedGradLagrangianStd_AddedStep.h"
-#include "../../include/rSQPAlgoContainer.h"
-#include "../../include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/std/CalcReducedGradLagrangianStd_AddedStep.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/VectorOut.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-bool ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+namespace ReducedSpaceSQPPack {
+
+bool CalcReducedGradLagrangianStd_AddedStep::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss
+	)
 {
 	using BLAS_Cpp::trans;
-	using LinAlgPack::norm_inf;
-	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_VpV;
 	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::Vp_MtV;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -54,48 +58,57 @@ bool ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::do_step(Algori
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	// Calculate rGL = Z' * Gf + Z' * nu + V' * lambda(dep)
+	// Calculate: rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)
 
-	VectorWithNorms &rGL = s.rGL().set_k(0);
+	IterQuantityAccess<VectorWithOpMutable>
+		&rGL_iq  = s.rGL(),
+		&nu_iq   = s.nu(),
+		&Gf_iq   = s.Gf();
 
-	if( s.nu().updated_k(0) ) {
+	VectorWithOpMutable &rGL_k = rGL_iq.set_k(0);
+
+	if( nu_iq.updated_k(0) ) {
 		// Compute rGL = Z'*(Gf + nu) to reduce the effect of roundoff in this
-		// catastropic cancelation.
-		Vector tmp;	// tmp = Gf + nu
-		tmp = s.Gf().get_k(0)();
-		Vp_V( &tmp(), s.nu().get_k(0)() );
-		V_MtV(	&rGL.v(), s.Z().get_k(0), trans, tmp() );
+		// catastropic cancelation
+		const VectorWithOp &nu_k = nu_iq.get_k(0);
+		VectorSpace::vec_mut_ptr_t
+			tmp = nu_k.space().create_member();
+		V_VpV( tmp.get(), Gf_iq.get_k(0), nu_k );
+		V_MtV(	&rGL_k, s.Z().get_k(0), trans, *tmp );
 	}
 	else {
-		rGL.v() = s.rGf().get_k(0)();
+		rGL_k = s.rGf().get_k(0);
 	}
 
-//	int stupid = 1;	// Put is to avoid an internal compiler error in Release mode.
-							
-	// rGL += V' * lambda(dep)					
-	if( algo.nlp().r() < algo.nlp().m() )
-		Vp_MtV( &rGL.v()(), s.V().get_k(0), trans, s.lambda().get_k(0).v()(s.con_undecomp()) );	
+	// ToDo: Add terms for undecomposed equalities and inequalities!
+	// + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||rGL||inf = " << rGL.norm_inf() << "\n";
+		out	<< "\n||rGL_k||inf = " << rGL_k.norm_inf() << "\n";
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nrGL_k = \n" << rGL.v()();
+		out	<< "\nrGL_k = \n" << rGL_k;
 	}
 
 	return true;
 }
 
-void ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+void CalcReducedGradLagrangianStd_AddedStep::print_step(
+	const Algorithm& algo
+	,poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	,std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Evaluate the reduced gradient of the Lagrangian\n"
 		<< L << "if nu_k is updated then\n"
-		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + V_k' * lambda_k(undecomp)\n"
+		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + GcUP_k' * lambda_k(equ_undecomp)\n"
+		<< L << "            + GhUP_k' * lambdaI_k(inequ_undecomp)\n"
 		<< L << "else\n"
-		<< L << "    rGL_k = rGf_k + V_k' * lambda_k(undecomp)\n"
+		<< L << "    rGL_k = rGf_k + GcUP_k' * lambda_k(equ_undecomp)\n"
+		<< L << "            + GhUP_k' * lambdaI_k(inequ_undecomp)\n"
 		<< L << "end\n";
 }
+
+} // end namespace ReducedSpaceSQPPack

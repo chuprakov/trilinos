@@ -17,20 +17,15 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+
 #include <iomanip>
 
-#include "../../include/std/rSQPTrackStatsStd.h"
-#include "../../include/rSQPState.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "ReducedSpaceSQPPack/include/std/rSQPTrackStatsStd.h"
+#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/PermOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -63,7 +58,9 @@ void rSQPTrackStatsStd::output_iteration(const Algorithm& p_algo) const
 
 	// All we have to do here is to just to count the number of quasi-newton updates
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : NULL );
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 	if( quasi_newt_stats ) {
 		QuasiNewtonStats::EUpdate updated = quasi_newt_stats->updated();
 		if( updated == QuasiNewtonStats::DAMPENED_UPDATED || updated == QuasiNewtonStats::UPDATED )
@@ -76,17 +73,10 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 {
 	using DynamicCastHelperPack::const_dyn_cast;
 
-	const rSQPAlgo			&algo = rsqp_algo(p_algo);
-	const rSQPState			&s =algo.rsqp_state();
-#ifdef _WINDOWS
-	const NLPObjGradient
-		&nlp = dynamic_cast<const NLPObjGradient&>(algo.nlp()); 
-#else
-	const NLPObjGradient
-		&nlp = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
-#endif
-	const NLPFirstOrderInfo
-		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
+	const rSQPState          &s       = algo.rsqp_state();
+	const NLPObjGradient     &nlp     = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
+	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
 	// Stop the timer
 	timer_.stop();
@@ -99,7 +89,9 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 
 	// Get a Quasi-Newton statistics.
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 	if( quasi_newt_stats ) {
 		QuasiNewtonStats::EUpdate updated = quasi_newt_stats->updated();
 		if( updated == QuasiNewtonStats::DAMPENED_UPDATED || updated == QuasiNewtonStats::UPDATED )
@@ -183,8 +175,12 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		o() << "-";
 	o() << "; # Number of total active constraints at the final point\n";
 	// nbasis_change
+	const IterQuantityAccess<index_type> &num_basis = s.num_basis();
+	const int lu_k = num_basis.last_updated();
 	o() << left << setw(stat_w) << "nbasis_change" << "= "
-		<< right << setw(val_w) << s.num_basis()
+		<< right << setw(val_w) << ( lu_k != IterQuantity::NONE_UPDATED
+									 ? num_basis.get_k(lu_k)
+									 : 0 ) 
 		<< "; # Number of basis changes\n";
 	// nquasi_newton
 	o() << left << setw(stat_w) << "nquasi_newton" << "= "

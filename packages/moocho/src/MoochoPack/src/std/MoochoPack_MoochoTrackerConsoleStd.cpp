@@ -17,20 +17,15 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+
 #include <iomanip>
 
-#include "../../include/std/rSQPTrackConsoleStd.h"
-#include "../../include/rSQPState.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "ReducedSpaceSQPPack/include/std/rSQPTrackConsoleStd.h"
+#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/PermOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -86,7 +81,9 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 	
 	// Get a Quasi-Newton statistics.
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 
 	// k
 	o() << " " << right << setw(w_i4_) << s.k();
@@ -170,16 +167,10 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 {
 	using DynamicCastHelperPack::const_dyn_cast;
 
-	const rSQPAlgo			&algo = rsqp_algo(p_algo);
-	const rSQPState			&s =algo.rsqp_state();
-	const NLPObjGradient
-#ifdef _WINDOWS
-		&nlp = dynamic_cast<const NLPObjGradient&>(algo.nlp()); 
-#else
-		&nlp = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
-#endif
-	const NLPFirstOrderInfo
-		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
+	const rSQPState          &s       = algo.rsqp_state();
+	const NLPObjGradient     &nlp     = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
+	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
@@ -202,7 +193,9 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	
 	// Get a Quasi-Newton statistics.
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 
 	// k
 	o() << " " << right << setw(w_i4_) << s.k();
@@ -311,13 +304,18 @@ void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
 {
 	o()	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
-		<< "n = " << s.x().get_k(0).cv().size()
-		<< ", m = " << s.c().get_k(0).cv().size()
+		<< "n = " << s.x().get_k(0).dim()
+		<< ", m = " << s.c().get_k(0).dim()
 		<< ", nz = ";
-	if( s.Gc().updated_k(0) )
-		o()	<< s.Gc().get_k(0).nz() << endl;
-	else
-		o()	<< "?\n";
+	try {
+		if( s.Gc().updated_k(0) )
+			o()	<< s.Gc().get_k(0).nz() << endl;
+		else
+			o()	<< "?\n";
+	}
+	catch( const AlgorithmState::DoesNotExist& ) {
+			o()	<< "?\n";
+	}
 	if( algo.nlp().scale_f() != 1.0 ) {
 		o()	<< "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
 	}

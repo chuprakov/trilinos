@@ -1,4 +1,4 @@
-// ////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////
 // EvalNewPointTailoredApproachCoordinate_Step.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -14,54 +14,76 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/assert_print_nan_inf.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
+#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixZero.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 
 namespace ReducedSpaceSQPPack {
 
 EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordinate_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester
-		, const bounds_tester_ptr_t&	bounds_tester
-		, EFDDerivTesting				fd_deriv_testing
-		)
-	:
-		EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
+	const deriv_tester_ptr_t& 	  deriv_tester
+	,const bounds_tester_ptr_t&	  bounds_tester
+	,EFDDerivTesting              fd_deriv_testing
+	)
+	:EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
 {}
+
 // protected
 
-void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Ypy(
-	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-	, EJournalOutputLevel olevel, std::ostream& out
+void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y(
+	const NLPFirstOrderDirect &nlp
+	,const D_ptr_t            &D
+	,VectorWithOpMutable      *py
+	,MatrixIdentConcatStd     *Y
+	,EJournalOutputLevel      olevel
+	,std::ostream             &out
 	)
 {
-	recalc_py_Ypy(D,py,Ypy,olevel,out);
+	namespace rcp = ReferenceCountingPack; 
+	//
+	// Y = [      I     ] space_xD  
+	//     [    Zero    ] space_xI
+	//        space_xD
+	//
+	VectorSpace::space_ptr_t
+		space_x  = nlp.space_x(),
+		space_xD = space_x->sub_space(nlp.var_dep())->clone(),
+		space_xI = space_x->sub_space(nlp.var_indep())->clone();
+	Y->initialize(
+		space_x                                                // space_cols
+		,space_xD                                              // space_rows
+		,MatrixIdentConcatStd::BOTTOM                          // top_or_bottom
+		,1.0                                                   // alpha
+		,rcp::rcp(
+			new MatrixZero(
+				space_xI    // space_cols
+				,space_xD   // space_rows
+				) )                                            // D_ptr
+		,BLAS_Cpp::no_trans                                    // D_trans
+		);
+	// py is not altered here!
 }
 
-void EvalNewPointTailoredApproachCoordinate_Step::recalc_py_Ypy(
-	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-	, EJournalOutputLevel olevel, std::ostream& out
+void EvalNewPointTailoredApproachCoordinate_Step::recalc_py(
+	const MatrixWithOp       &D
+	,VectorWithOpMutable     *py
+	,EJournalOutputLevel     olevel
+	,std::ostream            &out
 	)
 {
-	const size_type
-		n = D.rows()+D.cols(),
-		r = D.cols();
-	// py is not altered
-	LinAlgPack::assert_vs_sizes(Ypy->size(),n);
-	(*Ypy)(1,r) = *py;
-	(*Ypy)(r+1,n) = 0.0;
+	// py is not altered here!
 }
 
-void EvalNewPointTailoredApproachCoordinate_Step::print_calc_Y_py_Ypy(
-	std::ostream& out, const std::string& L ) const
+void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y(
+	std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Coordinate decomposition\n"
 		<< L << "py_k = py_k\n"
-		<< L << "Y = [ I ; 0 ] <: R^(n x m)   [Not computed explicity]\n"
-		<< L << "Ypy_k = Y * py_k\n"
+		<< L << "Y = [ I ; 0 ] <: R^(n x m) [0 represented using MatrixZero]\n"
 		;
 }
 

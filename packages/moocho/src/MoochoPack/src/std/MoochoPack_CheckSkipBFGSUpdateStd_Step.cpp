@@ -16,29 +16,29 @@
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
 
+#include <math.h>
+
 #include <ostream>
 
-#include "../../include/std/CheckSkipBFGSUpdateStd_Step.h"
-#include "../../include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_Step.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 
-ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::CheckSkipBFGSUpdateStd_Step(
-		value_type	skip_bfgs_prop_const
-		)
-	: skip_bfgs_prop_const_(skip_bfgs_prop_const)
+namespace ReducedSpaceSQPPack {
+
+CheckSkipBFGSUpdateStd_Step::CheckSkipBFGSUpdateStd_Step(
+	value_type	skip_bfgs_prop_const
+	)
+	:skip_bfgs_prop_const_(skip_bfgs_prop_const)
 {}
 
-bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+bool CheckSkipBFGSUpdateStd_Step::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	, poss_type assoc_step_poss
+	)
 {
-	using LinAlgPack::norm_2;
-
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 
@@ -51,16 +51,16 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	if( s.rHL().updated_k(-1) )	{
-
+	IterQuantityAccess<MatrixSymWithOp>
+		&rHL = s.rHL();
+	if( rHL.updated_k(-1) )	{
 		bool skip_update = true;
-
 		if( !s.Ypy().updated_k(-1) || !s.Zpz().updated_k(-1)
 			|| !s.rGL().updated_k(-1) || !s.c().updated_k(-1) )
 		{
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out
-					<< "*** Warning, rHL_km1 is updated but one or more of the quantities Ypy_km1, Zpz_km1\n"
+					<< "\n*** Warning, rHL_km1 is updated but one or more of the quantities Ypy_km1, Zpz_km1\n"
 						",rGL_km1 and c_km1 are not updated.  Therefore, there is not sufficient information\n"
 						"to determine if to skip the BFGS update or not.  Check storage requirements for\n"
 						" the above quantities\n"
@@ -69,63 +69,53 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 			skip_update = true;
 		}
 		else {
-
 			// The information exists for the update so determine
 			// if we are in the region to perform the BFGS update.
-			
+			//
 			// Check if we are to skip the update for this iteration
-			
 			const value_type
 				nrm_rGL_km1 = s.rGL().get_k(-1).norm_2(),
 				nrm_c_km1	= s.c().get_k(-1).norm_2(),
 				nrm_Zpz_km1	= s.Zpz().get_k(-1).norm_2(),
 				nrm_Ypy_km1	= s.Ypy().get_k(-1).norm_2();
-
 			// ratio = (skip_bfgs_prop_const / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
 			value_type
 				ratio = ( skip_bfgs_prop_const() / ::sqrt( nrm_rGL_km1 + nrm_c_km1 ) )
 					* ( nrm_Zpz_km1 / nrm_Ypy_km1 );
-
 			// If ratio < 1.0 then skip the update
 			skip_update = ratio < 1.0;
-
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out
+					<< std::endl
 					<< "ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)\n"
 					<< "      = (" << skip_bfgs_prop_const() << "/sqrt("<<nrm_rGL_km1<<"+"<<nrm_c_km1<<"))\n"
 					<< "        * ("<<nrm_Zpz_km1<<"/"<<nrm_Ypy_km1<<")\n"
 					<< "      = " << ratio << std::endl
 					<< "ratio " << (skip_update ? '<' : '>' ) << " 1\n"
 					<< (skip_update
-							? "Skipping BFGS update ...\n"
-							: "Perform BFGS update if you can ...\n"  );
-			}	
-
+						? "Skipping BFGS update ...\n"
+						: "Perform BFGS update if you can ...\n"  );
+			}
 		}
-
 		if(	skip_update ) {
-
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out
 					<< "\nrHL_k = rHL_km1\n";
 			}
-
-			const MatrixWithOp &rHL_km1 = s.rHL().get_k(-1);
-			s.rHL().set_k(0) = rHL_km1;
+			const MatrixSymWithOp &rHL_km1 = rHL.get_k(-1);
+			rHL.set_k(0) = rHL_km1;
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::SKIPED );
-
 			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-				s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
+				out << "\nrHL_k =\n" << rHL.get_k(0);
 			}
 		}
-
 	}
-
+	
 	return true;
 }
 
-void ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::print_step( const Algorithm& algo
+void CheckSkipBFGSUpdateStd_Step::print_step( const Algorithm& algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
@@ -146,3 +136,5 @@ void ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::print_step( const Algorit
 		<< L << "    end\n"
 		<< L << "end\n";
 }
+
+} // end namespace ReducedSpaceSQPPack

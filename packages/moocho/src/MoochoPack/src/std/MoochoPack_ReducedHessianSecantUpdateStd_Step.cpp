@@ -20,46 +20,43 @@
 
 #include <ostream>
 
-#include "../../include/std/ReducedHessianSecantUpdateStd_Step.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "../../include/ReducedSpaceSQPPackExceptions.h"
+#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/test/TestMatrixSymSecantUpdate.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "dynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
-		  const secant_update_ptr_t&   secant_update
-		)
-	:
-	secant_update_(secant_update)
-	,iter_k_rHL_init_ident_(-1.0) // not a valid iteration?
+	const secant_update_ptr_t&   secant_update
+	)
+	:secant_update_(secant_update)
+	 ,iter_k_rHL_init_ident_(-1.0) // not a valid iteration?
 {}
 
-bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss
+	)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::norm_2;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::dot;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::V_VpV;
-	using LinAlgPack::V_VmV;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::V_StV;
-
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vt_S;
+	using AbstractLinAlgPack::Vp_StV;
 	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_VpV;
+	using LinAlgOpPack::V_VmV;
+	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -73,22 +70,42 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 		using GeneralIterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
+	
+	// Get iteration quantities
+	IterQuantityAccess<index_type>
+		&num_basis_iq = s.num_basis();
+	IterQuantityAccess<VectorWithOpMutable>
+		&py_iq  = s.py(),
+		&pz_iq  = s.pz(),
+		&rGf_iq = s.rGf(),
+		&w_iq   = s.w();
+	IterQuantityAccess<MatrixWithOp>
+		&Z_iq = s.Z();
+	IterQuantityAccess<MatrixSymWithOp>
+		&rHL_iq = s.rHL();
 
 	// problem size
-	size_type	n		= algo.nlp().n(),
-				r		= algo.nlp().r(),
-				nind	= n - r;
-
-	// Initialize basis counter
-	if( num_basis_ == NO_BASIS_UPDATED_YET ) num_basis_ = s.num_basis();
+	const size_type
+		n    = algo.nlp().n(),
+		r    = py_iq.get_k(py_iq.last_updated()).dim(),
+		nind = n - r;
 
 	// See if a new basis has been selected
-	bool new_basis;
-	if( new_basis = ( num_basis_ != s.num_basis() ) )
-		num_basis_ = s.num_basis();
+	bool new_basis = false;
+	{
+		const int last_updated_k = num_basis_iq.last_updated();
+		if( last_updated_k != IterQuantity::NONE_UPDATED ) {
+			const index_type num_basis_last = num_basis_iq.get_k(last_updated_k);
+			if( num_basis_ == NO_BASIS_UPDATED_YET )
+				num_basis_ = num_basis_last;
+			else if( num_basis_ != num_basis_last )
+				new_basis = true;
+			num_basis_ = num_basis_last;
+		}
+	}
 
 	// If rHL has already been updated for this iteration then just leave it.
-	if( !s.rHL().updated_k(0) ) {
+	if( !rHL_iq.updated_k(0) ) {
 
 		// If a new basis has been selected, reinitialize
 		if( new_basis ) {
@@ -96,11 +113,9 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out << "\nBasis changed.  Reinitializing rHL_k = eye(n-r)\n";
 			}
-#ifdef _WINDOWS
-			dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0)).init_identity(nind);
-#else
-			dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0)).init_identity(nind);
-#endif
+			dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0)).init_identity(
+				Z_iq.get_k(0).space_rows()
+				);
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::REINITIALIZED );
 			iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
@@ -110,7 +125,7 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 		// Determine if rHL has been initialized and if we
 		// can perform the update.  To perform the BFGS update
 		// rHL_km1 and rGf_km1 must have been computed.
-		if( s.rHL().updated_k(-1) && s.rGf().updated_k(-1) ) {
+		if( rHL_iq.updated_k(-1) && rGf_iq.updated_k(-1) ) {
 
 			// /////////////////////////////////////////////////////
 			// Perform the Secant update
@@ -121,40 +136,49 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 					<< "\nPerforming Secant update ...\n";
 			}
 
-			Vector y_bfgs, s_bfgs;
+			const VectorWithOp
+				&rGf_k   = rGf_iq.get_k(0),
+				&rGf_km1 = rGf_iq.get_k(-1),
+				&pz_km1  = pz_iq.get_k(-1);
+			const value_type
+				alpha_km1 = s.alpha().get_k(-1);
+			VectorSpace::vec_mut_ptr_t
+				y_bfgs = rGf_k.space().create_member(),
+				s_bfgs = pz_km1.space().create_member();
 
 			// /////////////////////////////////////////////////////
 			// y_bfgs = rGf_k - rGf_km1 - alpha_km1 * w_km1
 			
 			// y_bfgs = rGf_k - rGf_km1 
-			V_VmV( &y_bfgs, s.rGf().get_k(0)(), s.rGf().get_k(-1)() );	
+			V_VmV( y_bfgs.get(), rGf_k, rGf_km1 );	
 
-			if( s.w().updated_k(-1) )
+			if( w_iq.updated_k(-1) )
 				// y_bfgs += - alpha_km1 * w_km1
-				Vp_StV( &y_bfgs(), - s.alpha().get_k(-1), s.w().get_k(-1)() );
+				Vp_StV( y_bfgs.get(), - alpha_km1, w_iq.get_k(-1) );
 
 			// /////////////////////////////////////////////////////
 			// s_bfgs = alpha_km1 * pz_km1
-			V_StV( &s_bfgs, s.alpha().get_k(-1), s.pz().get_k(-1)() );
+			V_StV( s_bfgs.get(), alpha_km1, pz_iq.get_k(-1) );
 
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-				out << "\n||y_bfgs||inf = " << norm_inf(y_bfgs()) << std::endl;
-				out << "\n||s_bfgs||inf = " << norm_inf(s_bfgs()) << std::endl;
+				out << "\n||y_bfgs||inf = " << y_bfgs->norm_inf() << std::endl;
+				out << "\n||s_bfgs||inf = " << s_bfgs->norm_inf() << std::endl;
 			}
 
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-				out << "\ny_bfgs =\n" << y_bfgs;
-				out << "\ns_bfgs =\n" << s_bfgs;
+				out << "\ny_bfgs =\n" << *y_bfgs;
+				out << "\ns_bfgs =\n" << *s_bfgs;
 			}
 
 			// Update from last
-			MatrixWithOp
-				&rHL_km1 = s.rHL().get_k(-1),
-				&rHL_k = s.rHL().set_k(0) = rHL_km1;
+			MatrixSymWithOp
+				&rHL_km1 = rHL_iq.get_k(-1),
+				&rHL_k   = rHL_iq.set_k(0) = rHL_km1;
 
 			// Perform the secant update
 			if(!secant_update().perform_update(
-				&s_bfgs(), &y_bfgs(), iter_k_rHL_init_ident_ == s.k() - 1
+				s_bfgs.get(), y_bfgs.get()
+				,iter_k_rHL_init_ident_ == s.k() - 1
 				,out, olevel, &algo, &s, &rHL_k
 				))
 			{
@@ -165,10 +189,10 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 		else {
 			// We do not have the info to perform the update
 
-			int k_last_offset = s.rHL().last_updated();
+			int k_last_offset = rHL_iq.last_updated();
 			bool set_current = false;
 			if( k_last_offset != IterQuantity::NONE_UPDATED && k_last_offset < 0 ) {
-				const MatrixWithOp &rHL_k_last = s.rHL().get_k(k_last_offset);
+				const MatrixSymWithOp &rHL_k_last = rHL_iq.get_k(k_last_offset);
 				const size_type nind_last = rHL_k_last.rows();
 				if( nind_last != nind) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -184,12 +208,12 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 							<< "No new basis was selected so using previously updated...\n "
 							<< "rHL_k = rHL_k(" << k_last_offset << ")\n";
 					}
-					s.rHL().set_k(0) = rHL_k_last;
+					rHL_iq.set_k(0) = rHL_k_last;
 					quasi_newton_stats_(s).set_k(0).set_updated_stats(
 						QuasiNewtonStats::SKIPED );
 					
 					if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-						s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
+						rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
 					}
 					set_current = true;
 				}
@@ -203,17 +227,14 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 
 				// Now I will assume that since I can't perform the BFGS update and rHL has
 				// not been set for this iteration yet, that it is up to me to initialize rHL_k = 0
-#ifdef _WINDOWS
-				dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0)).init_identity(nind);
-#else
-				dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0)).init_identity(nind);
-#endif
+				dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0)).init_identity(
+					Z_iq.get_k(0).space_rows() );
 				iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
 				quasi_newton_stats_(s).set_k(0).set_updated_stats(
 					QuasiNewtonStats::REINITIALIZED );
 
 				if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-					s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
+					rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
 				}
 			}
 		}

@@ -19,26 +19,25 @@
 #include <limits>
 #include <ostream>
 
-#include "../../include/std/CalcDFromYPYZPZ_Step.h"
-#include "../../include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+//#include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	using LinAlgPack::V_VpV;
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_inf;
+	using AbstractLinAlgPack::dot;
+	using LinAlgOpPack::V_VpV;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -53,22 +52,25 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	}
 
 	// d = Ypy + Zpz
-	VectorWithNorms &d = s.d().set_k(0);
-	V_VpV( &d.v(), s.Ypy().get_k(0)(), s.Zpz().get_k(0)() );
+	VectorWithOpMutable    &d_k    = s.d().set_k(0);
+	const VectorWithOp     &Ypy_k = s.Ypy().get_k(0);
+	const VectorWithOp     &Zpz_k = s.Zpz().get_k(0);
+	V_VpV( &d_k, Ypy_k, Zpz_k );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		const value_type very_small = std::numeric_limits<value_type>::min();
 		out << "\n(Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps) = "
-			<< dot( s.Ypy().get_k(0)(), s.Zpz().get_k(0)() )
-				/ ( s.Ypy().get_k(0).norm_2() * s.Zpz().get_k(0).norm_2()
-					+ very_small );
-		out	<< "\n||d||inf = " << d.norm_inf() << std::endl;
-		ConstrainedOptimizationPack::print_vector_change_stats(
-			s.x().get_k(0)(), "x", s.d().get_k(0)(), "d", out );
+			<< dot( Ypy_k, Zpz_k ) / ( Ypy_k.norm_2() * Zpz_k.norm_2() + very_small );
+		out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;
+/*
+        ConstrainedOptimizationPack::print_vector_change_stats(
+            s.x().get_k(0), "x", s.d().get_k(0), "d", out );
+*/
+		// ToDo: Replace the above with a reduction operator!
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nd_k = \n" << s.d().get_k(0)();
+		out	<< "\nd_k = \n" << d_k;
 	}
 
 	return true;

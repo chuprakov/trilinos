@@ -24,79 +24,110 @@
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoInterface.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "NLPInterfacePack/include/NLP.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "Misc/include/debug.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "debug.h"
 
 namespace {
 
 void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterfacePack::NLP* nlp )
 {
+	const AbstractLinAlgPack::size_type
+		m  = nlp->m(),
+		mI = nlp->mI(),
+		nb = nlp->num_bounded_x();
 	nlp->report_final_solution(
-		s.x().get_k(0)()
-		, s.lambda().updated_k(0)	? &s.lambda().get_k(0)()	: 0
-		, s.nu().updated_k(0)		? &s.nu().get_k(0)()		: 0
-		, false
+		s.x().get_k(0)                                                     // x
+		,( m  && s.lambda().updated_k(0) ) ? &s.lambda().get_k(0)  : NULL  // lambda
+		,( mI && s.lambda().updated_k(0) ) ? &s.lambdaI().get_k(0) : NULL  // lambdaI
+		,( nb && s.nu().updated_k(0)     ) ? &s.nu().get_k(0)      : NULL  // nu
+		, false                                                            // optimal = false
 		);
 }
 
 } // end namespace
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::set_config(const config_ptr_t& config)
+namespace ReducedSpaceSQPPack {
+
+// Overridden from rSQPAlgoClient interface
+
+void rSQPAlgoContainer::set_config(const config_ptr_t& config)
 {
-	algo_ = algo_ptr_t(0); // Remove our reference to the current (configured?) algorithm.
+	algo_ = algo_ptr_t(NULL); // Remove our reference to the current (configured?) algorithm.
 	config_ = config;
 }
 
-ReducedSpaceSQPPack::rSQPSolverClientInterface::EFindMinReturn
-ReducedSpaceSQPPack::rSQPAlgoContainer::find_min() {
-	config().init_algo(algo());
+rSQPAlgoContainer::config_ptr_t&
+rSQPAlgoContainer::get_config()
+{	
+	return config_;
+}
+
+const rSQPAlgoContainer::config_ptr_t&
+rSQPAlgoContainer::get_config() const
+{	
+	return config_;
+}
+
+rSQPAlgo_Config&
+rSQPAlgoContainer::config()
+{	
+	return *config_;
+}
+
+const rSQPAlgo_Config&
+rSQPAlgoContainer::config() const
+{	
+	return *config_;
+}
+
+rSQPSolverClientInterface::EFindMinReturn
+rSQPAlgoContainer::find_min()
+{
+	config().init_algo(&algo());
 	EFindMinReturn solve_return;
 	try {
 		solve_return = algo().dispatch();
 	}
 	catch(...) {
-		report_final_failure(state(),&nlp());
+		report_final_failure(algo().retrieve_state(),&nlp());
 		throw;
 	}
 	if( solve_return != SOLUTION_FOUND ) {
-		report_final_failure(state(),&nlp());
+		report_final_failure(algo().retrieve_state(),&nlp());
 	}
 	return solve_return;
 }
 
-const ReducedSpaceSQPPack::rSQPState& ReducedSpaceSQPPack::rSQPAlgoContainer::state() const {
-	return algo().retrieve_state();
-}
-
-void ReducedSpaceSQPPack::rSQPAlgoContainer::configure_algorithm(std::ostream* trase_out) {
+void rSQPAlgoContainer::configure_algorithm(std::ostream* trase_out)
+{
 	assert_valid_setup();
 	if(!get_algo().get())
-		config().config_algo_cntr(*this,trase_out);
+		config().config_algo_cntr(this,trase_out);
 }
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::print_algorithm(std::ostream& out) const {
+void rSQPAlgoContainer::print_algorithm(std::ostream& out) const
+{
 	algo().interface_print_algorithm(out);
 }
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::set_algo_timing( bool algo_timing )
+void rSQPAlgoContainer::set_algo_timing( bool algo_timing )
 {
 	algo().interface_set_algo_timing(algo_timing);
 }
 
-bool ReducedSpaceSQPPack::rSQPAlgoContainer::algo_timing() const
+bool rSQPAlgoContainer::algo_timing() const
 {
 	return algo().interface_algo_timing();
 }
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::print_algorithm_times(
+void rSQPAlgoContainer::print_algorithm_times(
 	std::ostream& out ) const
 {
 	algo().interface_print_algorithm_times(out);
 }
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::assert_valid_setup() const {
+void rSQPAlgoContainer::assert_valid_setup() const {
 	if( !get_nlp().get() )
 		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
 				"The NLP object has not been set" );
@@ -107,3 +138,5 @@ void ReducedSpaceSQPPack::rSQPAlgoContainer::assert_valid_setup() const {
 		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
 				"The rSQPAlgo_Config object has not been set" );
 }
+
+} // end namespace ReducedSpaceSQPPack

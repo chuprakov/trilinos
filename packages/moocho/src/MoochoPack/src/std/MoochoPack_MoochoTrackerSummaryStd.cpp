@@ -17,28 +17,22 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+
 #include <iomanip>
 
-#include "../../include/std/rSQPTrackSummaryStd.h"
-#include "../../include/rSQPState.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "ReducedSpaceSQPPack/include/std/rSQPTrackSummaryStd.h"
+#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/PermOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "dynamic_cast_verbose.h"
 
 using std::endl;
 using std::setw;
 
 void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 {
-	using LinAlgPack::norm_2;
-	using LinAlgPack::norm_inf;
 
 	const rSQPState &s = rsqp_algo(algo).rsqp_state();
 	
@@ -56,11 +50,17 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_iteration(const Algorithm&
 	
 	// Get active set and QP solver statistics.
 	const ActSetStats		*act_stats =
-		( act_set_stats_(s).updated_k(0) ? &act_set_stats_(s).get_k(0) : 0 );
+		( act_set_stats_.exists_in(s) && act_set_stats_(s).updated_k(0)
+		  ? &act_set_stats_(s).get_k(0)
+		  : NULL );
 	const QPSolverStats		*qp_stats =
-		( qp_solver_stats_(s).updated_k(0) ? &qp_solver_stats_(s).get_k(0) : 0 );
+		( qp_solver_stats_.exists_in(s) && qp_solver_stats_(s).updated_k(0)
+		  ? &qp_solver_stats_(s).get_k(0)
+		  : NULL );
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 
 	// Get the norms of Ypy and Zpz
 	value_type norm_2_Ypy = -1.0, norm_2_Zpz = -1.0;
@@ -90,7 +90,7 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_iteration(const Algorithm&
 		o() << setw(w) << "-";
 
 	{
-		const rSQPState::IQA_Vector
+		const IterQuantityAccess<VectorWithOpMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )
@@ -190,26 +190,28 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 	, EAlgoReturn algo_return) const
 {
 	using DynamicCastHelperPack::const_dyn_cast;
-	using LinAlgPack::norm_inf;
 
-	const rSQPAlgo			&_algo = rsqp_algo(algo);
-	const rSQPState			&s =_algo.rsqp_state();
-	const NLPObjGradient
-#ifdef _WINDOWS
-		&nlp = dynamic_cast<const NLPObjGradient&>(_algo.nlp()); 
-#else
-		&nlp = const_dyn_cast<NLPObjGradient>(_algo.nlp()); 
-#endif
-	const NLPFirstOrderInfo
-		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+	const rSQPAlgo            &_algo  = rsqp_algo(algo);
+	const rSQPState           &s      =_algo.rsqp_state();
+	const NLPObjGradient      &nlp    = const_dyn_cast<NLPObjGradient>(_algo.nlp()); 
+	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 	int w = 15;
 	int prec = 6;
 	o().precision(prec);
 
-	// Get active set and QP solver statistics.
-	const IterQuantityAccess<ActSetStats>		&act_stats_iq = act_set_stats_(s);
-	const IterQuantityAccess<QPSolverStats>		&qp_stats_iq = qp_solver_stats_(s);
-	const IterQuantityAccess<QuasiNewtonStats>	&quasi_newt_stats_iq = quasi_newton_stats_(s);
+	// Get active set, QP solver and quasi-newton statistics.
+	const ActSetStats		*act_stats =
+		( act_set_stats_.exists_in(s) && act_set_stats_(s).updated_k(0)
+		  ? &act_set_stats_(s).get_k(0)
+		  : NULL );
+	const QPSolverStats		*qp_stats =
+		( qp_solver_stats_.exists_in(s) && qp_solver_stats_(s).updated_k(0)
+		  ? &qp_solver_stats_(s).get_k(0)
+		  : NULL );
+	const QuasiNewtonStats	*quasi_newt_stats =
+		( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
+		  ? &quasi_newton_stats_(s).get_k(0)
+		  : NULL );
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
@@ -249,7 +251,7 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 		o() << setw(w) << "-";
 
 	{
-		const rSQPState::IQA_Vector
+		const IterQuantityAccess<VectorWithOpMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )
@@ -258,10 +260,9 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 			o() << setw(w) << "-";
 	}
 
-	if( quasi_newt_stats_iq.updated_k(0) ) {
-		const QuasiNewtonStats &stats = quasi_newt_stats_iq.get_k(0);
-		o() << setw(w);
-		switch( stats.updated() ) {
+	o() << setw(w);
+	if( quasi_newt_stats ) {
+		switch( quasi_newt_stats->updated() ) {
 			case QuasiNewtonStats::UNKNOWN:
 				o() << "-";
 				break;
@@ -288,48 +289,48 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 		o()	<< setw(w) << "-";;
 	}
 
-	if( act_stats_iq.updated_k(0) ) {
-		const ActSetStats &act_stats = act_stats_iq.get_k(0);
-		o()	<< setw(7) << act_stats.num_active()
-			<< setw(7) << act_stats.num_adds()
-			<< setw(7) << act_stats.num_drops();
+	if( act_stats ) {
+		o()	<< setw(7) << act_stats->num_active()
+			<< setw(7) << act_stats->num_adds()
+			<< setw(7) << act_stats->num_drops();
 	}
 	else {
 		o()	<< setw(7) << "-"
 			<< setw(7) << "-"
 			<< setw(7) << "-";
 	}
-
-	if( qp_stats_iq.updated_k(0) ) {
-		const QPSolverStats &qp_stats = qp_stats_iq.get_k(0);
-		o() << setw(7) << qp_stats.num_qp_iter()
-			<< setw(3) << ( qp_stats.warm_start() ? 'w' : 'c')
-			<< setw(2) << ( qp_stats.infeasible_qp() ? 'i' : 'f');
-		num_total_qp_iter_ += qp_stats.num_qp_iter();
+	
+	if( qp_stats ) {
+		o() << setw(7) << qp_stats->num_qp_iter()
+			<< setw(3) << ( qp_stats->warm_start() ? 'w' : 'c')
+			<< setw(2) << ( qp_stats->infeasible_qp() ? 'i' : 'f');
+		num_total_qp_iter_ += qp_stats->num_qp_iter();
 	}
 	else {
-		o()	<< setw(5) << "-";
+		o() << setw(7) << "-"
+			<< setw(3) << "-"
+			<< setw(2) << "-";
 	}
-
+	
 	if(s.Ypy().updated_k(0))
 		o()	<< setw(w) 
 			<< s.Ypy().get_k(0).norm_2();
 	else
 		o() << setw(w) << "-";
-
+	
 	if(s.Zpz().updated_k(0))
 		o()	<< setw(w)
 			<< s.Zpz().get_k(0).norm_2();
 	else
 		o() << setw(w) << "-";
-
+	
 	if( s.d().updated_k(0) )
 		o() << setw(w)
 			<< s.d().get_k(0).norm_inf();
 	else
 		o() << setw(w) << "-";
-
-	o()	<< "\nNumber of function evaluations:\n"
+	
+	o()	<< "\n\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"
 		<< "f(x)  : " << nlp.num_f_evals() << endl
 		<< "c(x)  : " << nlp.num_c_evals() << endl
@@ -352,13 +353,18 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::print_header(const rSQPState &s) 
 
 	o()	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
-		<< "n = " << s.x().get_k(0).cv().size()
-		<< ", m = " << (s.c().updated_k(0) ? s.c().get_k(0).cv().size() : -1 )
+		<< "n = " << s.x().get_k(0).dim()
+		<< ", m = " << (s.c().updated_k(0) ? s.c().get_k(0).dim() : -1 )
 		<< ", nz = ";
-	if( s.Gc().updated_k(0) )
-		o()	<< s.Gc().get_k(0).nz() << endl;
-	else
-		o()	<< "?\n";
+	try {
+		if( s.Gc().updated_k(0) )
+			o()	<< s.Gc().get_k(0).nz() << endl;
+		else
+			o()	<< "?\n";
+	}
+	catch( const AlgorithmState::DoesNotExist& ) {
+			o()	<< "?\n";
+	}
 	o()
 		<< "\n k   "
 		<< "   f           "
