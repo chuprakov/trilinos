@@ -102,7 +102,7 @@ bool EvalNewPointStd_Step::do_step(
 		&Gf_iq  = s.Gf();
 	IterQuantityAccess<MatrixOp>
 		*Gc_iq  = m  > 0 ? &s.Gc() : NULL,
-		*Z_iq   = &s.Z(),
+		*Z_iq   = NULL,
 		*Y_iq   = NULL,
 		*Uz_iq  = NULL,
 		*Uy_iq  = NULL;
@@ -183,7 +183,7 @@ bool EvalNewPointStd_Step::do_step(
 			,&new_decomp_selected
 			);
 
-		r  = s.decomp_sys().equ_decomp().size();
+		r  = s.equ_decomp().size();
 
 		Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL;
 		Y_iq   = ( r > 0 )               ? &s.Y()  : NULL;
@@ -254,7 +254,7 @@ bool EvalNewPointStd_Step::do_step(
 				decomp_sys_passed = decomp_sys_tester().test_decomp_system(
 					s.decomp_sys()
 					,Gc_iq->get_k(0)                   // Gc
-					,&Z_iq->get_k(0)                   // Z
+					,Z_iq ? &Z_iq->get_k(0) : NULL     // Z
 					,&Y_iq->get_k(0)                   // Y
 					,&R_iq->get_k(0)                   // R
 					,m > r  ? &Uz_iq->get_k(0) : NULL  // Uz
@@ -270,8 +270,6 @@ bool EvalNewPointStd_Step::do_step(
 	else {
 		// Unconstrained problem
 		dyn_cast<MatrixSymIdent>(Z_iq->set_k(0)).initialize( nlp.space_x() );
-		s.var_dep(Range1D::Invalid);
-		s.var_indep(Range1D(1,n));
 		s.equ_decomp(Range1D::Invalid);
 		s.equ_undecomp(Range1D::Invalid);
 	}
@@ -307,9 +305,12 @@ bool EvalNewPointStd_Step::do_step(
 		if(m) {
 			out << "\n||c_k||inf  = " << c_iq->get_k(0).norm_inf();
 			out << "\n||Gc_k||inf = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			out << "\n||Z||inf    = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			out << "\n||Y||inf    = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			out << "\n||R||inf    = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( n > r )
+				out << "\n||Z||inf    = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( r )
+				out << "\n||Y||inf    = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( r )
+				out << "\n||R||inf    = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
 			if(algo.algo_cntr().calc_conditioning()) {
 				out << "\ncond_inf(R) = " << R_iq->get_k(0).calc_cond_num(mat_nrm_inf).value;
 			}
@@ -324,7 +325,8 @@ bool EvalNewPointStd_Step::do_step(
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 		if(m)
 			out << "\nGc_k =\n" << Gc_iq->get_k(0);
-		out << "\nZ_k =\n" << Z_iq->get_k(0);
+		if( n > r )
+			out << "\nZ_k =\n" << Z_iq->get_k(0);
 		if(r) {
 			out << "\nY_k =\n" << Y_iq->get_k(0);
 			out << "\nR_k =\n" << R_iq->get_k(0);

@@ -36,25 +36,25 @@ public:
 	virtual ~MeritFuncNLE() {}
 
 	///
-	/** Return the value of the merit function at c(x).
-	  * This interface requires the client to compute
-	  * c(x) and pass it to this function to have
-	  * the value of phi(c) calculated.
-	  *
-	  * If the merit function has not been initialized properly
-	  * then a #InvalidInitialization# exception will be thrown.
-	  */
-	virtual value_type value(const DVectorSlice& c) const = 0;
+	/** Return the value of the merit function at <tt>c(x)</tt>.
+	 * This interface requires the client to compute
+	 * <tt>c(x)</tt> and pass it to this function to have
+	 * the value of phi(c) calculated.
+	 *
+	 * If the merit function has not been initialized properly
+	 * then a <tt>InvalidInitialization</tt> exception will be thrown.
+	 */
+	virtual value_type value(const Vector& c) const = 0;
 
 	///
 	/** Return the value of the directional derivative of the 
-	  * merit function w.r.t. alpha at alpha = 0.  In other words
-	  * compute return d( phi(c(x)) ) / d(alpha_k) at alpha_k = 0
-	  * where x = x_k + alpha_k * d_k.
-	  *
-	  * If the merit function has not been initialized properly
-	  * then a #InvalidInitialization# exception will be thrown.
-	  */
+	 * merit function w.r.t. <tt>alpha</tt> at <tt>alpha = 0</tt>.  In other words
+	 * compute return <tt>d(phi(c(x)))/d(alpha_k)</tt> at <tt>alpha_k = 0</tt>
+	 * where <tt>x = x_k + alpha_k * d_k</tt>.
+	 *
+	 * If the merit function has not been initialized properly
+	 * then a <tt>InvalidInitialization</tt> exception will be thrown.
+	 */
 	virtual value_type deriv() const = 0;
 
 	///

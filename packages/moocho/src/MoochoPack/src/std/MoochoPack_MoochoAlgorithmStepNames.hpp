@@ -28,8 +28,8 @@ namespace MoochoPack {
 const std::string EvalNewPoint_name                 = "EvalNewPoint";
 const std::string ReducedGradient_name              = "ReducedGradient";
 const std::string ReducedHessian_name               = "ReducedHessian";
-const std::string RangeSpaceStep_name               = "QuasiNormalStep";
-const std::string NullSpaceStep_name                = "TangentialStep";
+const std::string QuasiNormalStep_name              = "QuasiNormalStep";
+const std::string TangentialStep_name               = "TangentialStep";
 const std::string SearchDirec_name                  = "SearchDirec";
 const std::string LineSearch_name                   = "LineSearch";
 const std::string CheckConvergence_name             = "CheckConvergence";

@@ -142,7 +142,8 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 		// R = C
 		// Y = I
 		//
-		nlp.basis_sys()->update_basis(
+		const BasisSystem &basis_sys = *nlp.basis_sys();
+		basis_sys.update_basis(
 			Gc_iq->get_k(0)                        // Gc
 			,&R_iq->set_k(0 )                      // C
 			,NULL                                  // D
@@ -151,6 +152,8 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 			,olevel >= PRINT_BASIC_ALGORITHM_INFO ? &out : NULL
 			);
 		dyn_cast<MatrixSymIdent>(Y_iq->set_k(0)).initialize( nlp.space_x() );
+		s.equ_decomp(   basis_sys.equ_decomp()   );
+		s.equ_undecomp( basis_sys.equ_undecomp() );
 	}
 	
 	return true;

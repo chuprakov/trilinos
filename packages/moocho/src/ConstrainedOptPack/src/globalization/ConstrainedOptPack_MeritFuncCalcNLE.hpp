@@ -18,7 +18,7 @@
 
 #include "MeritFuncCalc.hpp"
 #include "MeritFuncNLE.hpp"
-#include "MiStandardAggregationMacros.h"
+#include "StandardAggregationMacros.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -46,7 +46,7 @@ public:
 	/** Return the value of the merit function at x.
 	  * Here phi(x) is calculated directly using the nlp.
 	  */
-	value_type operator()(const DVectorSlice& x) const;
+	value_type operator()(const Vector& x) const;
 
 	/// Calls phi().deriv() on phi.
 	value_type deriv() const;

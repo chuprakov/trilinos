@@ -451,10 +451,6 @@ public:
 	/** @name Basis Pivot Info (variable reduction decompositions only) */
 	//@{
 
-	/// Range of dependent variables [1,r]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_dep )
-	/// Range of independent variables [r+1,n]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_indep )
 	/// Current permutation for variables
 	STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current )
 	/// Previous permutation for variables

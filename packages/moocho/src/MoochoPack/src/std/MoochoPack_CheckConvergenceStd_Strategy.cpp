@@ -60,9 +60,9 @@ bool CheckConvergenceStd_Strategy::Converged(
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using AbstractLinAlgPack::combined_nu_comp_err;
 	
-	NLPAlgo	&algo	  = rsqp_algo(_algo);
-	NLPAlgoState	&s		  = algo.rsqp_state();
-	NLP			&nlp	  = algo.nlp();
+	NLPAlgo        &algo = rsqp_algo(_algo);
+	NLPAlgoState   &s    = algo.rsqp_state();
+	NLP            &nlp  = algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -82,38 +82,37 @@ bool CheckConvergenceStd_Strategy::Converged(
 		&x_iq       = s.x(),
 		&d_iq       = s.d(),
 		&Gf_iq      = s.Gf(),
-		*c_iq       = m  ? &s.c() : NULL,
-		&rGL_iq     = s.rGL(),
-		&GL_iq      = s.GL(),
-		*lambda_iq  = m  ? &s.lambda()  : NULL,
-		&nu_iq      = s.nu();
+		*c_iq       = m     ? &s.c()      : NULL,
+		*rGL_iq     = n > m ? &s.rGL()    : NULL,
+		*GL_iq      = n > m ? &s.GL()     : NULL,
+		*lambda_iq  = m     ? &s.lambda() : NULL,
+		*nu_iq      = n > m ? &s.nu()     : NULL;
 
 	// opt_err = (||rGL||inf or ||GL||) / (||Gf|| + scale_kkt_factor)
 	value_type 
 		norm_inf_Gf_k = 0.0,
 		norm_inf_GLrGL_k = 0.0;
 
-	if( scale_opt_error_by_Gf() ) 
-		{
+	if( n > m && scale_opt_error_by_Gf() ) {
 		assert_print_nan_inf( norm_inf_Gf_k = Gf_iq.get_k(0).norm_inf(),
 							  "||Gf_k||inf",true,&out);
-		}
+	}
 
 	// NOTE:
 	// The strategy object CheckConvergenceIP_Strategy assumes
 	// that this will always be the gradient of the lagrangian
 	// of the original problem, not the gradient of the lagrangian
 	// for psi. (don't use augmented nlp info here)
-	if( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ) 
-		{
-		assert_print_nan_inf( norm_inf_GLrGL_k = rGL_iq.get_k(0).norm_inf(),
-							  "||rGL_k||inf",true,&out);
+	if( n > m ) {
+		if( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ) {
+			assert_print_nan_inf( norm_inf_GLrGL_k = rGL_iq->get_k(0).norm_inf(),
+								  "||rGL_k||inf",true,&out);
 		}
-	else 
-		{
-		assert_print_nan_inf( norm_inf_GLrGL_k = GL_iq.get_k(0).norm_inf(),
-							  "||GL_k||inf",true,&out);
+		else {
+			assert_print_nan_inf( norm_inf_GLrGL_k = GL_iq->get_k(0).norm_inf(),
+								  "||GL_k||inf",true,&out);
 		}
+	}
 
 	const value_type
 		opt_scale_factor = 1.0 + norm_inf_Gf_k,
@@ -124,20 +123,21 @@ bool CheckConvergenceStd_Strategy::Converged(
 
 	// comp_err
 	value_type comp_err = 0.0;
-	if (nb > 0)
-		{
-		comp_err = combined_nu_comp_err(nu_iq.get_k(0), x_iq.get_k(0), nlp.xl(), nlp.xu());
+	if ( n > m ) {
+		if (nb > 0) {
+			comp_err = combined_nu_comp_err(nu_iq->get_k(0), x_iq.get_k(0), nlp.xl(), nlp.xu());
 		}
-
-	if(m)
-		assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
+		if(m) {
+			assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
+		}
+	}
 
 	// scaling factors
 	const value_type 
 		scale_opt_factor = CalculateScalingFactor(s, scale_opt_error_by()),
 		scale_feas_factor = CalculateScalingFactor(s, scale_feas_error_by()),
 		scale_comp_factor = CalculateScalingFactor(s, scale_comp_error_by());
-
+	
 	// kkt_err
 	const value_type
 		opt_kkt_err_k  = opt_err/scale_opt_factor,
@@ -151,26 +151,25 @@ bool CheckConvergenceStd_Strategy::Converged(
 
 	// step_err
 	value_type step_err = 0.0;
-	if( d_iq.updated_k(0) ) 
-		{
-			step_err = AbstractLinAlgPack::max_rel_step(x_iq.get_k(0),d_iq.get_k(0));
-			assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
-		}
+	if( d_iq.updated_k(0) ) {
+		step_err = AbstractLinAlgPack::max_rel_step(x_iq.get_k(0),d_iq.get_k(0));
+		assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
+	}
 
 	const value_type
 		opt_tol		= algo.algo_cntr().opt_tol(),
 		feas_tol	= algo.algo_cntr().feas_tol(),
 		comp_tol	= algo.algo_cntr().comp_tol(),
 		step_tol	= algo.algo_cntr().step_tol();
-
+	
 	const bool found_solution = 
 		opt_kkt_err_k < opt_tol 
 		&& feas_kkt_err_k < feas_tol 
 		&& comp_kkt_err_k < comp_tol 
 		&& step_err < step_tol;
-
+	
 	if( int(olevel) >= int(PRINT_ALGORITHM_STEPS) || (int(olevel) >= int(PRINT_BASIC_ALGORITHM_INFO) && found_solution) )
-		{
+	{
 		out	
 			<< "\nscale_opt_factor = " << scale_opt_factor
 			<< " (scale_opt_error_by = " << (scale_opt_error_by()==SCALE_BY_ONE ? "SCALE_BY_ONE"

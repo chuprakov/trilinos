@@ -14,8 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "MeritFuncNLESqrResid.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -23,17 +22,17 @@ MeritFuncNLESqrResid::MeritFuncNLESqrResid()
 	: deriv_(0.0)
 {}
 
-value_type MeritFuncNLESqrResid::calc_deriv( const DVectorSlice& c_k )
+value_type MeritFuncNLESqrResid::calc_deriv( const Vector& c_k )
 {
-	using DenseLinAlgPack::dot;
+	using LinAlgOpPack::dot;
 	return deriv_ = - dot(c_k,c_k);
 }
 
 // Overridden from MeritFuncNLP
 
-value_type MeritFuncNLESqrResid::value(const DVectorSlice& c) const
+value_type MeritFuncNLESqrResid::value(const Vector& c) const
 {
-	using DenseLinAlgPack::dot;
+	using LinAlgOpPack::dot;
 	return 0.5 * dot(c,c);
 }
 

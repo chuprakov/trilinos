@@ -22,7 +22,7 @@ MeritFuncCalcNLE::MeritFuncCalcNLE( const MeritFuncNLE* phi, const NLP* nlp )
 	: phi_(phi), nlp_(nlp)
 {}
 
-value_type MeritFuncCalcNLE::operator()(const DVectorSlice& x) const {
+value_type MeritFuncCalcNLE::operator()(const Vector& x) const {
 	nlp().calc_c(x);
 	return phi().value( nlp().c() );
 }

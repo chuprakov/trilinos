@@ -714,9 +714,9 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		}
 
 		// RangeSpace_Step
-		algo_step_ptr_t    range_space_step_step = mmp::null;
+		algo_step_ptr_t    quasi_normal_step_step = mmp::null;
 		if( !tailored_approach ) {
-			range_space_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
+			quasi_normal_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
 		}
 
 		// Check and change decomposition 
@@ -736,9 +736,9 @@ void NLPAlgoConfigIP::config_algo_cntr(
 		}
 
 		// CheckDescentQuasiNormalStep
-		algo_step_ptr_t    check_descent_range_space_step_step = mmp::null;
+		algo_step_ptr_t    check_descent_quasi_normal_step_step = mmp::null;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_range_space_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
+			check_descent_quasi_normal_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
@@ -833,11 +833,11 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			}
 		
 		// NullSpace_Step
-		algo_step_ptr_t    null_space_step = mmp::rcp(new TangentialStepIP_Step());
+		algo_step_ptr_t    tangential_step = mmp::rcp(new TangentialStepIP_Step());
 		/*		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
-		algo_step_ptr_t    null_space_step_step = mmp::null;
+		algo_step_ptr_t    tangential_step_step = mmp::null;
 		if( nb == 0 ) {
-			null_space_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
+			tangential_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
 			// Step object that sets bounds for QP subproblem
@@ -855,18 +855,18 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			}
 			// The null-space step
 			mmp::ref_count_ptr<TangentialStepWithInequStd_Step>
-				null_space_step_with_inequ_step = mmp::rcp(
+				tangential_step_with_inequ_step = mmp::rcp(
 					new TangentialStepWithInequStd_Step(
 						qp_solver, qp_solver_tester ) );
 			if(options_.get()) {
 				TangentialStepWithInequStd_StepSetOptions
-					opt_setter( null_space_step_with_inequ_step.get() );
+					opt_setter( tangential_step_with_inequ_step.get() );
 				opt_setter.set_options( *options_ );
 			}
-			null_space_step_step = null_space_step_with_inequ_step;
+			tangential_step_step = tangential_step_with_inequ_step;
 			// Step for reinitialization reduced Hessian on QP failure
-			null_space_step_step = mmp::rcp(
-				new QPFailureReinitReducedHessian_Step(null_space_step_step)
+			tangential_step_step = mmp::rcp(
+				new QPFailureReinitReducedHessian_Step(tangential_step_step)
 				);
 				}*/
 
@@ -1115,14 +1115,14 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			algo->insert_assoc_step( step_num, IterationPack::PRE_STEP, 1, "PreEvalNewPointBarrier", preEvalNewPointBarrier_step);
 
 			//* EvalNewPoint post steps
-			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
+			if( check_descent_quasi_normal_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
 				{
 				algo->insert_assoc_step(
 				  step_num
 				  ,IterationPack::POST_STEP
 				  ,++assoc_step_num
 				  ,"CheckDescentQuasiNormalStep"
-				  ,check_descent_range_space_step_step
+				  ,check_descent_quasi_normal_step_step
 				  );
 				}
 
@@ -1152,9 +1152,9 @@ void NLPAlgoConfigIP::config_algo_cntr(
 	 		// UpdateBarrierParameter
 			algo->insert_step( ++step_num, "UpdateBarrierParameter", updateBarrierParameter_step );
 
-			// RangeSpaceStep
+			// QuasiNormalStep
 			if( !tailored_approach ) {
-				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
+				algo->insert_step( ++step_num, QuasiNormalStep_name, quasi_normal_step_step );
 				assoc_step_num = 0;
 				if( check_decomp_from_py_step.get() )
 					algo->insert_assoc_step(
@@ -1172,13 +1172,13 @@ void NLPAlgoConfigIP::config_algo_cntr(
 						,"CheckDecompositionFromRPy"
 						,check_decomp_from_Rpy_step
 						);
-				if( check_descent_range_space_step_step.get() )
+				if( check_descent_quasi_normal_step_step.get() )
 					algo->insert_assoc_step(
 						step_num
 						,IterationPack::POST_STEP
 						,++assoc_step_num
 						,"CheckDescentQuasiNormalStep"
-						,check_descent_range_space_step_step
+						,check_descent_quasi_normal_step_step
 						);
 			}
 
@@ -1188,8 +1188,8 @@ void NLPAlgoConfigIP::config_algo_cntr(
 			// UpdateReducedSigma_Step
 			algo->insert_step( ++step_num, "UpdateReducedSigma", updateReducedSigma_step);
 
-			// NullSpaceStep
-			algo->insert_step( ++step_num, "NullSpaceStepIP", null_space_step);
+			// TangentialStep
+			algo->insert_step( ++step_num, "TangentialStepIP", tangential_step);
 			// CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
 			

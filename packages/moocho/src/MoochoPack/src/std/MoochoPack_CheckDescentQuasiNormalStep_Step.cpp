@@ -45,9 +45,9 @@ bool CheckDescentQuasiNormalStep_Step::do_step(
 	using LinAlgOpPack::V_MtV;
 
 	NLPAlgo         &algo        = rsqp_algo(_algo);
-	NLPAlgoState        &s           = algo.rsqp_state();
-	NLP              &nlp         = algo.nlp();
-	const Range1D    equ_decomp   = s.equ_decomp();
+	NLPAlgoState    &s           = algo.rsqp_state();
+	NLP             &nlp         = algo.nlp();
+	const Range1D   equ_decomp   = s.equ_decomp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -116,7 +116,7 @@ bool CheckDescentQuasiNormalStep_Step::do_step(
 		THROW_EXCEPTION(
 			true, TestFailed
 			,"CheckDescentQuasiNormalStep_Step::do_step(...) : Error, descent for the decomposed constraints "
-			"with respect to the range space step c_k(equ_decomp)'*FDGc_k(:,equ_decomp)'*Ypy_k = "
+			"with respect to the quasi-normal step c_k(equ_decomp)'*FDGc_k(:,equ_decomp)'*Ypy_k = "
 			<< descent_c << " > 0.0;  This is not a descent direction!\n" );
 	}
 
@@ -129,7 +129,7 @@ void CheckDescentQuasiNormalStep_Step::print_step(
 	) const
 {
 	out
-		<< L << "*** Check for descent in the decomposed equality constraints for the range space step\n"
+		<< L << "*** Check for descent in the decomposed equality constraints for the quasi-normal step\n"
 		<< L << "if Gc_k exists then\n"
 		<< L << "  descent_c = c_k(equ_decomp)'*Gc_k(:,equ_decomp)'*Ypy_k\n"
 		<< L << "else\n"

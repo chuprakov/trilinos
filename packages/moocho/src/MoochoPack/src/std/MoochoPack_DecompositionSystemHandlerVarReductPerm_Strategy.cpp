@@ -295,8 +295,6 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 			num_basis = ( last_updated_k != IterQuantity::NONE_UPDATED ? num_basis_iq.get_k(last_updated_k) : 0 ) + 1;
 		num_basis_iq.set_k(0) = num_basis;
 
-		s.var_dep(      decomp_sys_perm.var_dep()      );
-		s.var_indep(    decomp_sys_perm.var_indep()    );
 		s.equ_decomp(   decomp_sys_perm.equ_decomp()   );
 		s.equ_undecomp( decomp_sys_perm.equ_undecomp() );
 					

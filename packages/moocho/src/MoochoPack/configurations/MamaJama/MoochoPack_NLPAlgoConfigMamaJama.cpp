@@ -91,12 +91,14 @@
 #include "MoochoPack/src/std/SetDBoundsStd_AddedStep.hpp"
 #include "MoochoPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
 #include "MoochoPack/src/std/CalcDFromYPYZPZ_Step.hpp"
+#include "MoochoPack/src/std/CalcDFromYPY_Step.hpp"
 #include "MoochoPack/src/std/CalcDFromZPZ_Step.hpp"
 #include "MoochoPack/src/std/LineSearchFailureNewDecompositionSelection_Step.hpp"
 #include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
 #include "MoochoPack/src/std/LineSearchFilter_StepSetOptions.hpp"
 #include "MoochoPack/src/std/LineSearchFullStep_Step.hpp"
 #include "MoochoPack/src/std/LineSearchDirect_Step.hpp"
+#include "MoochoPack/src/std/LineSearchNLE_Step.hpp"
 //#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
 //#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_StepSetOptions.hpp"
 //#include "MoochoPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
@@ -275,12 +277,6 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	const int max_dof_quasi_newton_dense
 		= decomp_sys_step_builder_.current_option_values().max_dof_quasi_newton_dense_;
 
-	// Make sure that we can handle this type of NLP currently
-	THROW_EXCEPTION(
-		n == m, std::logic_error
-		,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-		"can not currently solve a square system of equations!" );
-
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
 
@@ -405,10 +401,19 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
 	decomp_sys_ptr_t decomp_sys;
-	decomp_sys_step_builder_.create_decomp_sys(
-		trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach
-		,&decomp_sys
-		);
+	if(
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
+		true
+#else
+		n > m
+#endif
+		)
+	{
+		decomp_sys_step_builder_.create_decomp_sys(
+			trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach
+			,&decomp_sys
+			);
+	}
 
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 	ref_count_ptr<DecompositionSystemVarReductPerm>
@@ -684,10 +689,10 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			,&eval_new_point_step, &calc_fd_prod, &bounds_tester, &new_decomp_selection_strategy
 			);
 
-		// RangeSpace_Step
-		algo_step_ptr_t    range_space_step_step = mmp::null;
+		// QuasiNormal_Step
+		algo_step_ptr_t    quansi_normal_step_step = mmp::null;
 		if( !tailored_approach ) {
-			range_space_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
+			quansi_normal_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
 		}
 
 		// Check and change decomposition 
@@ -707,9 +712,9 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// CheckDescentQuasiNormalStep
-		algo_step_ptr_t    check_descent_range_space_step_step = mmp::null;
+		algo_step_ptr_t    check_descent_quansi_normal_step_step = mmp::null;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_range_space_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
+			check_descent_quansi_normal_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
@@ -825,9 +830,9 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 		// NullSpace_Step
 		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
-		algo_step_ptr_t    null_space_step_step = mmp::null;
+		algo_step_ptr_t    tangential_step_step = mmp::null;
 		if( nb == 0 ) {
-			null_space_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
+			tangential_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
 			// Step object that sets bounds for QP subproblem
@@ -901,18 +906,18 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 			// The null-space step
 			mmp::ref_count_ptr<TangentialStepWithInequStd_Step>
-				null_space_step_with_inequ_step = mmp::rcp(
+				tangential_step_with_inequ_step = mmp::rcp(
 					new TangentialStepWithInequStd_Step(
 						qp_solver, qp_solver_tester ) );
 			if(options_.get()) {
 				TangentialStepWithInequStd_StepSetOptions
-					opt_setter( null_space_step_with_inequ_step.get() );
+					opt_setter( tangential_step_with_inequ_step.get() );
 				opt_setter.set_options( *options_ );
 			}
-			null_space_step_step = null_space_step_with_inequ_step;
+			tangential_step_step = tangential_step_with_inequ_step;
 			// Step for reinitialization reduced Hessian on QP failure
-			null_space_step_step = mmp::rcp(
-				new QPFailureReinitReducedHessian_Step(null_space_step_step)
+			tangential_step_step = mmp::rcp(
+				new QPFailureReinitReducedHessian_Step(tangential_step_step)
 				);
 		}
 
@@ -997,7 +1002,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			merit_func_penalty_param_update_step = param_update_step;
 		}
 
-		// LineSearch_Step
+		// LineSearchFull_Step
 		algo_step_ptr_t    line_search_full_step_step = mmp::null;
 		{
 			line_search_full_step_step = mmp::rcp(new LineSearchFullStep_Step(bounds_tester));
@@ -1013,43 +1018,48 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
 				ls_options_setter.set_options( *options_ );
 			}
-			switch( cov_.line_search_method_ ) {
-				case LINE_SEARCH_DIRECT: {
-					line_search_step = mmp::rcp(new LineSearchDirect_Step(direct_line_search));
-					break;
-				}
-				case LINE_SEARCH_2ND_ORDER_CORRECT: {
-					THROW_EXCEPTION(
-						true, std::logic_error
-						,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-						"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
-					break;
-				}
-				case LINE_SEARCH_WATCHDOG: {
-					THROW_EXCEPTION(
-						true, std::logic_error
-						,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-						"The line_search_method option of WATCHDOG has not been updated yet!" );
-					break;
-				}
-			    case LINE_SEARCH_FILTER: {
-					mmp::ref_count_ptr<LineSearchFilter_Step> 
-						line_search_filter_step = mmp::rcp(
-						  new LineSearchFilter_Step(algo_cntr->get_nlp())
-						  );
-
-					if(options_.get()) 
+			if( n > m ) {
+				switch( cov_.line_search_method_ ) {
+					case LINE_SEARCH_DIRECT: {
+						line_search_step = mmp::rcp(new LineSearchDirect_Step(direct_line_search));
+						break;
+					}
+					case LINE_SEARCH_2ND_ORDER_CORRECT: {
+						THROW_EXCEPTION(
+							true, std::logic_error
+							,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
+							"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
+						break;
+					}
+					case LINE_SEARCH_WATCHDOG: {
+						THROW_EXCEPTION(
+							true, std::logic_error
+							,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
+							"The line_search_method option of WATCHDOG has not been updated yet!" );
+						break;
+					}
+					case LINE_SEARCH_FILTER: {
+						mmp::ref_count_ptr<LineSearchFilter_Step> 
+							line_search_filter_step = mmp::rcp(
+								new LineSearchFilter_Step(algo_cntr->get_nlp())
+								);
+						
+						if(options_.get()) 
 						{
-						LineSearchFilter_StepSetOptions options_setter(line_search_filter_step.get());
-						options_setter.set_options(*options_);
+							LineSearchFilter_StepSetOptions options_setter(line_search_filter_step.get());
+							options_setter.set_options(*options_);
 						}
 
-					line_search_step = line_search_filter_step;					
-				    break;
+						line_search_step = line_search_filter_step;					
+						break;
+					}
 				}
 			}
+			else {
+				line_search_step = mmp::rcp( new LineSearchNLE_Step(direct_line_search) );
+			}
 		}
-
+		
 		// LineSearchFailure
 		if( new_decomp_selection_strategy.get() ) {
 			line_search_step = mmp::rcp(
@@ -1116,8 +1126,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					);
 			}
 			
-			// NullSpaceStep
-			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+			// TangentialStep
+			algo->insert_step( ++step_num, TangentialStep_name, tangential_step_step );
 			if( nb > 0 ) {
 				// SetDBoundsStd
 				algo->insert_assoc_step(
@@ -1179,11 +1189,81 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				*trase_out 
 					<< "\nConfiguring an algorithm for a system of nonlinear equations "
 					<< "NLP (n == m) ...\n";
-			THROW_EXCEPTION(
-				n == m, std::logic_error
-				,"NLPAlgoConfigMamaJama::config_alg_cntr(...) : Error, "
-				"Nonlinear equation (NLE) problems are not supported yet!" );
-			assert(0); // ToDo: add the step objects for this algorithm
+
+			algo->state().erase_iter_quant(merit_func_nlp_name);
+
+			int step_num       = 0;
+			int assoc_step_num = 0;
+	
+			// EvalNewPoint
+			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
+			if( check_descent_quansi_normal_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
+			{
+				algo->insert_assoc_step(
+					step_num
+					,IterationPack::POST_STEP
+					,1
+					,"CheckDescentQuasiNormalStep"
+					,check_descent_quansi_normal_step_step
+					);
+			}
+			
+			// QuasiNormalStep
+			if( !tailored_approach ) {
+				algo->insert_step( ++step_num, QuasiNormalStep_name, quansi_normal_step_step );
+				assoc_step_num = 0;
+				if( check_decomp_from_py_step.get() )
+					algo->insert_assoc_step(
+						step_num
+						,IterationPack::POST_STEP
+						,++assoc_step_num
+						,"CheckDecompositionFromPy"
+						,check_decomp_from_py_step
+						);
+				if( check_decomp_from_Rpy_step.get() )
+					algo->insert_assoc_step(
+						step_num
+						,IterationPack::POST_STEP
+						,++assoc_step_num
+						,"CheckDecompositionFromRPy"
+						,check_decomp_from_Rpy_step
+						);
+				if( check_descent_quansi_normal_step_step.get() )
+					algo->insert_assoc_step(
+						step_num
+						,IterationPack::POST_STEP
+						,++assoc_step_num
+						,"CheckDescentQuasiNormalStep"
+						,check_descent_quansi_normal_step_step
+						);
+			}
+
+			// CheckConvergence
+			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+
+			// CalcDFromYPY
+			algo->insert_step( ++step_num, "CalcDFromYpy", mmp::rcp(new CalcDFromYPY_Step()) );
+			
+			// LineSearch
+			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
+				algo->insert_step( ++step_num, LineSearch_name, line_search_full_step_step );
+			}
+			else {
+				// Main line search step
+				algo->insert_step( ++step_num, LineSearch_name, line_search_step );
+				// Insert presteps
+				Algorithm::poss_type
+					pre_step_i = 0;
+				// (.-?) LineSearchFullStep
+				algo->insert_assoc_step(
+					step_num
+					,IterationPack::PRE_STEP
+					,++pre_step_i
+					,"LineSearchFullStep"
+					,line_search_full_step_step
+					);
+			}
+
 		}
 		else if ( m > 0 || nb > 0 ) {
 			//
@@ -1213,20 +1293,20 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	
 			// EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
-			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
+			if( check_descent_quansi_normal_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
 			{
 				algo->insert_assoc_step(
 					step_num
 					,IterationPack::POST_STEP
 					,1
 					,"CheckDescentQuasiNormalStep"
-					,check_descent_range_space_step_step
+					,check_descent_quansi_normal_step_step
 					);
 			}
 			
-			// RangeSpaceStep
+			// QuasiNormalStep
 			if( !tailored_approach ) {
-				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
+				algo->insert_step( ++step_num, QuasiNormalStep_name, quansi_normal_step_step );
 				assoc_step_num = 0;
 				if( check_decomp_from_py_step.get() )
 					algo->insert_assoc_step(
@@ -1244,13 +1324,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 						,"CheckDecompositionFromRPy"
 						,check_decomp_from_Rpy_step
 						);
-				if( check_descent_range_space_step_step.get() )
+				if( check_descent_quansi_normal_step_step.get() )
 					algo->insert_assoc_step(
 						step_num
 						,IterationPack::POST_STEP
 						,++assoc_step_num
 						,"CheckDescentQuasiNormalStep"
-						,check_descent_range_space_step_step
+						,check_descent_quansi_normal_step_step
 						);
 			}
 
@@ -1295,8 +1375,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				,check_skip_bfgs_update_step
 			  );
 
-			// NullSpaceStep
-			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+			// TangentialStep
+			algo->insert_step( ++step_num, TangentialStep_name, tangential_step_step );
 			if( nb > 0 ) {
 				// SetDBoundsStd
 				algo->insert_assoc_step(
