@@ -1,0 +1,54 @@
+Decomposition Method 	= hsfc
+Zoltan Parameters	= 
+File Type		= Chaco, initial procs = 1
+File Name		= film
+Parallel Disk Info	= number=0
+Global element ids assigned to processor 0
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+92
+93
+94
+95
+96
+97
+98
+99
+100
+102
+103
+104
+107
+160
+161
+162
+163
+164
+165
+166
+167
+168
+171
+208
+210
+211
+248
+249
+250
+251
+252
+253
+267
