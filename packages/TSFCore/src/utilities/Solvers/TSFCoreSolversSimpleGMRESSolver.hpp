@@ -202,6 +202,10 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 
 	if(get_out().get()) {
+		*get_out() << "\nSimpleGMRESSolver<Scalar>::solve(...) : " << ( all_solved ? "Solved for X" : "Did not solve for X" ) << std::endl;
+		if(dump_all()) {
+			*get_out() << "\nX =\n" << *X;
+		}
 		*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
 	}
 
