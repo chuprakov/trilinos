@@ -30,9 +30,6 @@
 /* ///////////////////////////////////////////// */
 /* RTOp_TOp_sign.c */
 
-#include <assert.h>
-#include <math.h>
-
 #include "RTOp_TOp_sign.h"
 #include "RTOp_obj_null_vtbl.h"  /* vtbl for operator object instance data */
 

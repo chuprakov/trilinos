@@ -28,9 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
-
 #include "RTOp_TOp_set_ele.h"
 #include "RTOp_obj_value_index_vtbl.h"
 #include "RTOp_obj_null_vtbl.h"
