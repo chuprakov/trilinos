@@ -256,7 +256,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);
 				if(!result) {
-					const char msg[] = "\nTest failed! exiting!\n";
+					const char msg[] = "\nNLP test failed (see journal file)!  exiting!\n";
 					if(do_summary_outputting())
 						*summary_out_used_ << msg;
 					if(do_journal_outputting())
@@ -277,7 +277,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);
 				if(!result) {
-					const char msg[] = "\nTest failed! exiting!\n";
+					const char msg[] = "\nNLP test failed (see journal file)!  exiting!\n";
 					if(do_summary_outputting())
 						*summary_out_used_ << msg;
 					if(do_journal_outputting())
