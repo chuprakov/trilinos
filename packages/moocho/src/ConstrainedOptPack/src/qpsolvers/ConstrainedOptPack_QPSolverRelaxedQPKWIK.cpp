@@ -287,7 +287,8 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	LDA_ = std::_MAX( 1, M2_ + M3_ );
 	A_.resize( LDA_, (  M2_ + M3_ > 0 ? N_ : 1 ) );
 	YPY_.resize( std::_MAX( 1, M1_ + M2_ ) );
-	YPY_(1,M1_) = 0.0; // Must be for this QP interface
+	if(M1_)
+		YPY_(1,M1_) = 0.0; // Must be for this QP interface
 
 	// Initialize variable bound constraints
 	if( dL.nz() || dU.nz() ) {
