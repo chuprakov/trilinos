@@ -55,6 +55,10 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreDotProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreDotProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp\
@@ -68,6 +72,8 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreTypes.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpace.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceFactory.hpp\

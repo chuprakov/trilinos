@@ -26,45 +26,33 @@
 // ***********************************************************************
 // @HEADER
 
-// ////////////////////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpaceBaseDecl.hpp
+// ///////////////////////////////////////////////////////////////
+// TSFCoreDotProdDecl.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
-#define TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
+#ifndef TSFCORE_DOT_PROD_DECL_HPP
+#define TSFCORE_DOT_PROD_DECL_HPP
 
-#include "TSFCoreVectorSpaceStdBase.hpp"
+#include "TSFCoreScalarProd.hpp"
 
 namespace TSFCore {
 
 ///
-/** <tt>%VectorSpace</tt> node subclass for serial vectors and multi-vectors.
- *
- * All a concrete subclass must do is to override the <tt>createMember()</tt>
- * method.
+/** Implementation of a scalar product using the dot product.
  */
 template<class Scalar>
-class SerialVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
+class DotProd : public ScalarProd<Scalar> {
 public:
-
-	/** @name Overridden from VectorSpece */
+	
+	/** @name Overridden from ScalarProd */
 	//@{
 
-	/// Returns true.
-	virtual bool isInCore() const;
 	///
-	/** Returns true if <tt>vecSpc.dim() == this->dim()</tt>.
-	 *
-	 * The assumption here is that <tt>Vector::getSubVector()</tt>,
-	 * <tt>Vector::freeSubVector()</tt> and <tt>Vector::commitSubVector()</tt>
-	 * can be used to implement all of the methods on an SMP machine in an
-	 * efficient manner.
-	 */
- 	bool isCompatible(const VectorSpace<Scalar>& vecSpc) const;
+	void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const;
 
 	//@}
 
-}; // end class SerialVectorSpaceBase
+}; // end class DotProd
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
+#endif  // TSFCORE_DOT_PROD_DECL_HPP

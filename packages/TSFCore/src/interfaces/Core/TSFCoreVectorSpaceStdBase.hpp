@@ -26,50 +26,59 @@
 // ***********************************************************************
 // @HEADER
 
-// //////////////////////////////////////////////////////////////////////
-// TSFCoreVectorSpace.hpp
+// ///////////////////////////////////////////////////////////////
+// TSFCoreVectorSpaceStdBase.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_HPP
-#define TSFCORE_VECTOR_SPACE_HPP
+#ifndef TSFCORE_VECTOR_SPACE_STD_BASE_HPP
+#define TSFCORE_VECTOR_SPACE_STD_BASE_HPP
 
-#include "TSFCoreVectorSpaceDecl.hpp"
-#include "TSFCoreVector.hpp"
-#include "TSFCoreSerialVectorSpaceFactory.hpp"
-#include "TSFCoreMultiVectorStdOps.hpp"
-#include "TSFCoreMultiVectorCols.hpp"
+#include "TSFCoreVectorSpaceStdBaseDecl.hpp"
+#include "TSFCoreDotProd.hpp"
 
 namespace TSFCore {
 
-// Virtual functions with default implementations
+// Constructors / initializers
 
 template<class Scalar>
-bool VectorSpace<Scalar>::isInCore() const
+VectorSpaceStdBase<Scalar>::VectorSpaceStdBase()
+	:scalarProd_(Teuchos::rcp(new DotProd<Scalar>()))
+{}
+	
+template<class Scalar>
+VectorSpaceStdBase<Scalar>::VectorSpaceStdBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
+	:scalarProd_(scalarProd)
 {
-	return false;
+	TEST_FOR_EXCEPT( scalarProd.get()==NULL );
 }
 
 template<class Scalar>
-Teuchos::RefCountPtr<const VectorSpaceFactory<Scalar> >
-VectorSpace<Scalar>::smallVecSpcFcty() const
+void VectorSpaceStdBase<Scalar>::setScalarProd( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
 {
-	return Teuchos::rcp(new SerialVectorSpaceFactory<Scalar>());
+	TEST_FOR_EXCEPT( scalarProd.get()==NULL );
+	scalarProd_ = scalarProd;
 }
 
 template<class Scalar>
-Teuchos::RefCountPtr<MultiVector<Scalar> > 
-VectorSpace<Scalar>::createMembers(int numMembers) const
+Teuchos::RefCountPtr<const ScalarProd<Scalar> >
+VectorSpaceStdBase<Scalar>::getScalarProd() const
 {
-	return Teuchos::rcp(new MultiVectorCols<Scalar> (Teuchos::rcp(this,false),this->smallVecSpcFcty()->createVecSpc(numMembers)));
+	return scalarProd_;
+}
+
+// Overridden from VectorSpace
+
+template<class Scalar>
+Scalar VectorSpaceStdBase<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
+{
+	return scalarProd_->scalarProd(x,y);
 }
 
 template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-VectorSpace<Scalar>::clone() const
+void VectorSpaceStdBase<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
 {
-	return Teuchos::null;
+	scalarProd_->scalarProds(X,Y,scalar_prods);
 }
-
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_HPP
+#endif  // TSFCORE_VECTOR_SPACE_STD_BASE_HPP

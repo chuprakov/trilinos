@@ -121,13 +121,16 @@ template<class Scalar> class Vector;
 template<class Scalar> class LinearOp;
 template<class Scalar> class MultiVector;
 
-// Basic node support subclasses
+// Basic node support subclasses and interfaces
 
+template<class Scalar> class ScalarProd;
+template<class Scalar> class VectorSpaceStdBase;
 template<class Scalar> class SerialVectorSpaceBase;
 template<class Scalar> class SerialVectorBase;
 
 // Basic concrete support subclasses
 
+template<class Scalar> class DotProd;
 template<class Scalar> class SerialVectorSpaceFactory;
 template<class Scalar> class SerialVectorSpace;
 template<class Scalar> class SerialVector;

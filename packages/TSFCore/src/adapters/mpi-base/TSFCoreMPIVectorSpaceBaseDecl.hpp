@@ -32,7 +32,7 @@
 #ifndef TSFCORE_MPI_VECTOR_SPACE_BASE_DECL_HPP
 #define TSFCORE_MPI_VECTOR_SPACE_BASE_DECL_HPP
 
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFCoreVectorSpaceStdBase.hpp"
 
 namespace TSFCore {
 
@@ -115,12 +115,12 @@ namespace TSFCore {
  * then the <tt>createMembers()</tt> method should also be overridden.
  */
 template<class Scalar>
-class MPIVectorSpaceBase : virtual public VectorSpace<Scalar> {
+class MPIVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
 public:
 
 	///
 	MPIVectorSpaceBase();
-
+	
 	/** @name Pure virtual methods to be overridden by subclasses */
 	//@{
 

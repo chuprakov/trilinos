@@ -26,45 +26,28 @@
 // ***********************************************************************
 // @HEADER
 
-// ////////////////////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpaceBaseDecl.hpp
+// ///////////////////////////////////////////////////////////////
+// TSFCoreScalarProd.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
-#define TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
+#ifndef TSFCORE_SCALAR_PROD_HPP
+#define TSFCORE_SCALAR_PROD_HPP
 
-#include "TSFCoreVectorSpaceStdBase.hpp"
+#include "TSFCoreScalarProdDecl.hpp"
+#include "TSFCoreMultiVectorCols.hpp"
 
 namespace TSFCore {
 
-///
-/** <tt>%VectorSpace</tt> node subclass for serial vectors and multi-vectors.
- *
- * All a concrete subclass must do is to override the <tt>createMember()</tt>
- * method.
- */
 template<class Scalar>
-class SerialVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
-public:
-
-	/** @name Overridden from VectorSpece */
-	//@{
-
-	/// Returns true.
-	virtual bool isInCore() const;
-	///
-	/** Returns true if <tt>vecSpc.dim() == this->dim()</tt>.
-	 *
-	 * The assumption here is that <tt>Vector::getSubVector()</tt>,
-	 * <tt>Vector::freeSubVector()</tt> and <tt>Vector::commitSubVector()</tt>
-	 * can be used to implement all of the methods on an SMP machine in an
-	 * efficient manner.
-	 */
- 	bool isCompatible(const VectorSpace<Scalar>& vecSpc) const;
-
-	//@}
-
-}; // end class SerialVectorSpaceBase
+Scalar ScalarProd<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
+{
+	const MultiVectorCols<Scalar>
+		X( Teuchos::rcp( const_cast<Vector<Scalar>*>(&x), false ) ),
+		Y( Teuchos::rcp( const_cast<Vector<Scalar>*>(&y), false ) );
+	Scalar scalar_prods[1];
+	this->scalarProds(X,Y,scalar_prods);
+	return scalar_prods[0];
+}
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
+#endif  // TSFCORE_SCALAR_PROD_HPP

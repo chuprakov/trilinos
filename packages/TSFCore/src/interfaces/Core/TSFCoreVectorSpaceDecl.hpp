@@ -27,7 +27,7 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// VectorSpaceDecl.hpp
+// TSFCoreVectorSpaceDecl.hpp
 
 #ifndef TSFCORE_VECTOR_SPACE_DECL_HPP
 #define TSFCORE_VECTOR_SPACE_DECL_HPP
@@ -96,13 +96,6 @@ namespace TSFCore {
  * parallel) will require an override of the <tt>smallVecSpcFcty()</tt>
  * method to return a specialized type of <tt>VectorSpaceFactory</tt>
  * object.
- *
- * If a vector space needs a different definition of scalar product
- * then the multi-vector method <tt>scalarProds()</tt> should be
- * overridden.  The vector version <tt>scalarProd()</tt> has a default
- * implementation in terms of <tt>scalarProds()</tt>.  Defining a new
- * scalar product is rarely needed and is only done for a few very
- * specialized types of application areas.
  */
 template<class Scalar>
 class VectorSpace {
@@ -207,10 +200,17 @@ public:
 	///
 	/** Return the scalar product of two vectors in the vector space.
 	 *
-	 * The default implementation calls on the multi-vector version
-	 * <tt>scalarProds()</tt>.
+	 * Preconditions:<ul>
+	 * <li>The vectors <tt>X</tt> and <tt>Y</tt> are compatible with this implementation or
+	 *     an exception will be thrown.
+	 * <li><tt>x.space()->isCompatible(*y.space())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li>The scalar product is returned.
+	 * </ul>
 	 */
-	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
+	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const = 0;
 
 	///
 	/** Return the scalar product of each column in two multi-vectors in the vector space.
@@ -235,8 +235,7 @@ public:
 	 * <tt>RTOp_ROp_dot_prod_construct</tt> and is performed as one
 	 * reduction operation using <tt>MultiVector::applyOp()</tt>.
 	 */
-	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const;
-
+	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const = 0;
 
 	///
 	/** Clone this object (if supported).
