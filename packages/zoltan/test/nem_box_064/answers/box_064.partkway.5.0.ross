@@ -5,16 +5,17 @@ File Name		= box_064-m5-r.par
 Parallel Disk Info	= number=1,offset=1,zeros
 Parallel file location  = root=pio_, subdir=.
 Global element ids assigned to processor 0
-3
-4
-5
-11
-12
-13
-19
-20
-21
-28
-29
-36
-37
+GID	Part	Perm	IPerm
+3	0	-1	-1
+4	0	-1	-1
+5	0	-1	-1
+11	0	-1	-1
+12	0	-1	-1
+13	0	-1	-1
+19	0	-1	-1
+20	0	-1	-1
+21	0	-1	-1
+28	0	-1	-1
+29	0	-1	-1
+36	0	-1	-1
+37	0	-1	-1
