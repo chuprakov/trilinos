@@ -21,7 +21,7 @@
 #include <typeinfo>
 
 #include "IterationPack/src/Algorithm.hpp"
-#include "stpwatch.hpp"
+#include "MoochoMoreUtilities/src/stpwatch.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef HAVE_MPI

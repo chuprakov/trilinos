@@ -17,8 +17,8 @@
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_SET_OPTIONS_H
 
 #include "CheckSkipBFGSUpdateStd_Step.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

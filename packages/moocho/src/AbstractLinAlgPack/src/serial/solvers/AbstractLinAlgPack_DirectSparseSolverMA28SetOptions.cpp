@@ -18,7 +18,7 @@
 #include <assert.h>
 
 #include "DirectSparseSolverMA28SetOptions.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 // Define the options
 namespace {

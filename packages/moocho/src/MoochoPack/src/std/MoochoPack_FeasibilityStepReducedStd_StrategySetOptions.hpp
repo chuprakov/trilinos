@@ -17,8 +17,8 @@
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 
 #include "FeasibilityStepReducedStd_Strategy.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

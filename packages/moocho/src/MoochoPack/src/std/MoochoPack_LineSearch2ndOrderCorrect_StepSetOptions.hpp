@@ -17,8 +17,8 @@
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H
 
 #include "LineSearch2ndOrderCorrect_Step.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

@@ -17,8 +17,8 @@
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_SET_OPTIONS_H
 
 #include "MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

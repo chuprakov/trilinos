@@ -28,7 +28,7 @@
 #include "MoochoPack/src/std/PreEvalNewPointBarrier_Step.hpp"
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 #include "dynamic_cast_verbose.hpp"
 

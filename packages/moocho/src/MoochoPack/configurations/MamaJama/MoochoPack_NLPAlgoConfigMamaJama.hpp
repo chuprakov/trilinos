@@ -19,7 +19,7 @@
 #include "MoochoPack/src/NLPAlgoConfig.hpp"
 #include "MoochoPack/src/NLPAlgo.hpp"
 #include "MoochoPack/configurations/Shared/DecompositionSystemStateStepBuilderStd.hpp"
-#include "OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 
 namespace MoochoPack {
 

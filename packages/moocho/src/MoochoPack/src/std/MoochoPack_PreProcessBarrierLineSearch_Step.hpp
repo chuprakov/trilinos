@@ -24,8 +24,8 @@
 #include "StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

@@ -22,7 +22,7 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "DenseLinAlgPack/src/MatVecCompare.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 namespace {
 

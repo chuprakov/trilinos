@@ -63,9 +63,9 @@
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTesterSetOptions.hpp"
 
 // Common utilities
-#include "StringToIntMap.hpp"
-#include "StringToBool.hpp"
-#include "OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 

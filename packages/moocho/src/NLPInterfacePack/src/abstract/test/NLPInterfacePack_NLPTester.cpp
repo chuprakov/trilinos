@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 namespace NLPInterfacePack {
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "MoochoPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 // Define the options
 namespace {

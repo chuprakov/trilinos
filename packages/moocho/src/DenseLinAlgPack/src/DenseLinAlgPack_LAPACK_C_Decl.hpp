@@ -16,7 +16,7 @@
 #ifndef LAPACK_C_DECL_H
 #define LAPACK_C_DECL_H
 
-#include "fortran_types.hpp"
+#include "MoochoMoreUtilities/src/fortran_types.hpp"
 
 // C Declarations for calling LAPACK functions.
 

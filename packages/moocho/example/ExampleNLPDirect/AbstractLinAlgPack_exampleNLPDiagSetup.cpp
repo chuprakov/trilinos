@@ -13,7 +13,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
 #include "TSFCoreSerialVectorSpaceDecl.hpp"
-#include "OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
 ///

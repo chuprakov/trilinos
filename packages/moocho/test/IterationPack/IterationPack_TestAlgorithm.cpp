@@ -21,7 +21,6 @@
 #include "AlgorithmTrackTesting.hpp"
 #include "IterationPack/src/Algorithm.hpp"
 #include "IterationPack/src/AlgorithmState.hpp"
-#include "debug.hpp"
 
 namespace IterationPack {
 

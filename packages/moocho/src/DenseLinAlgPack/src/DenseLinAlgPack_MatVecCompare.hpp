@@ -24,7 +24,7 @@
 #endif
 
 #include "DenseLinAlgPackTypes.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 namespace DenseLinAlgPack {
 

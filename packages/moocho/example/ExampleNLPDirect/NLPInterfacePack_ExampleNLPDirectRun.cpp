@@ -28,7 +28,7 @@
 #include "IterationPack/src/AlgorithmTracker.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
-#include "OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 
 MoochoPack::MoochoSolver::ESolutionStatus
 NLPInterfacePack::ExampleNLPDirectRun(

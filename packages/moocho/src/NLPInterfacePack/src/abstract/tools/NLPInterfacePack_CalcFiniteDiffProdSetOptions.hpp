@@ -17,8 +17,8 @@
 #define CALC_FINITE_DIFF_PROD_SET_OPTIONS_H
 
 #include "CalcFiniteDiffProd.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "../std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 // Define the options
 namespace {

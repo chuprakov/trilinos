@@ -23,7 +23,7 @@
 #ifndef MA28_CPPDECL_H
 #define MA28_CPPDECL_H
 
-#include "fortran_types.hpp"
+#include "MoochoMoreUtilities/src/fortran_types.hpp"
 
 namespace MA28_CppDecl {
 

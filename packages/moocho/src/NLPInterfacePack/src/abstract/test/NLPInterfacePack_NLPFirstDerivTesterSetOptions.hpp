@@ -17,8 +17,8 @@
 #define NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 
 #include "NLPFirstDerivTester.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

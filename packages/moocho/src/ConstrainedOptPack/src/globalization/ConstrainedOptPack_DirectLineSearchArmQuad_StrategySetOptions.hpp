@@ -17,8 +17,8 @@
 #define DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_SET_OPTIONS_H
 
 #include "DirectLineSearchArmQuad_Strategy.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

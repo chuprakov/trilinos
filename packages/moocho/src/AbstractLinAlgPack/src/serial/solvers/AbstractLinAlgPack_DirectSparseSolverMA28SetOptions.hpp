@@ -19,8 +19,8 @@
 #define DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 
 #include "DirectSparseSolverMA28.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace AbstractLinAlgPack {
 

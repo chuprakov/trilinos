@@ -17,8 +17,8 @@
 #define CHECK_CONVERGENCE_STD_ADDED_STEP_SET_OPTIONS_H
 
 #include "CheckConvergenceStd_AddedStep.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

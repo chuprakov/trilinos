@@ -16,7 +16,7 @@
 #include <ostream>
 
 #include "TestDenseLinAlgPack.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 bool DenseLinAlgPack::TestingPack::TestDenseLinAlgPack(std::ostream* out)
 {

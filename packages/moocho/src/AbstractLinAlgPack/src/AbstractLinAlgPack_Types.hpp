@@ -20,7 +20,7 @@
 #include <stdexcept>
 
 #include "RTOp.h"
-#include "BLAS_CppTypes.hpp"
+#include "MoochoMoreUtilities/src/BLAS_CppTypes.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {

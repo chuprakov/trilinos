@@ -18,7 +18,7 @@
 
 #include "DenseLinAlgPackOptions.hpp"
 #include "Range1D.hpp"
-#include "BLAS_CppTypes.hpp"
+#include "MoochoMoreUtilities/src/BLAS_CppTypes.hpp"
 
 namespace DenseLinAlgPack {
 

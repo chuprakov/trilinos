@@ -17,8 +17,8 @@
 #define REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H
 
 #include "BFGSUpdate_Strategy.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

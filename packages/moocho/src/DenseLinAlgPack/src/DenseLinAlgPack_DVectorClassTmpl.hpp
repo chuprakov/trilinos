@@ -20,7 +20,7 @@
 
 #include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
 #include "Range1D.hpp"
-#include "StrideIter.hpp"
+#include "MoochoMoreUtilities/src/StrideIter.hpp"
 
 namespace DenseLinAlgPack{
 

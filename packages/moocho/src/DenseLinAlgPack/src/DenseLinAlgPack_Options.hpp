@@ -20,7 +20,7 @@
 #define LINALGPACK_OPTIONS_H
 
 #include "extended_value_type.hpp"
-#include "fortran_types.hpp"
+#include "MoochoMoreUtilities/src/fortran_types.hpp"
 
 #if !defined(LINALGPACK_NO_CHECKS)
 

@@ -17,8 +17,8 @@
 #define RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 
 #include "NLPSolverClientInterface.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

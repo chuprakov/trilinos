@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "../std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 // Define the options
 namespace {

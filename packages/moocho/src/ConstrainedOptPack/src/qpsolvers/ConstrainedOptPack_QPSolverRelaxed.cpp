@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "profile_hack.hpp"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {

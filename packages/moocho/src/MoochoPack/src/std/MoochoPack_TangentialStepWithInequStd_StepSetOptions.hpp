@@ -17,8 +17,8 @@
 #define INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H
 
 #include "TangentialStepWithInequStd_Step.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

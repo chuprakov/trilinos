@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "profile_hack.hpp"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

@@ -25,7 +25,7 @@
 #include "exampleNLPDiagSetup.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "WorkspacePack.hpp"
-#include "oblackholestream.hpp"
+#include "Teuchos_oblackholestream.hpp"
 
 int main( int argc, char* argv[] ) {
 
@@ -80,7 +80,7 @@ int main( int argc, char* argv[] ) {
 	// Set the output stream
 	std::ostream &out  = std::cout;
 	std::ostream &eout = std::cerr;
-	IOStreamHelperPack::oblackholestream  blackhole;
+	Teuchos::oblackholestream  blackhole;
 
 	try {
 	

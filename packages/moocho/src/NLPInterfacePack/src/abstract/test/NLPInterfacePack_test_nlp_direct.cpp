@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "Range1D.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_direct(
 	NLPDirect*                          nlp

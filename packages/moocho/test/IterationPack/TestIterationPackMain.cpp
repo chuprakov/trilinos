@@ -16,16 +16,13 @@
 #include <iostream>
 
 #include "TestIterationPack.hpp"
-#include "debug.hpp"
-#include "update_success.hpp"
+#include "MoochoMoreUtilities/src/update_success.hpp"
 
 int main() {
 	using TestingHelperPack::update_success;
 	using namespace IterationPack::TestingPack;
 
 	std::ostream* out = &std::cout;
-
-	CHECKLEAKS(true);
 
 	bool success = true;
 	update_success( TestIterationPack(out), &success );

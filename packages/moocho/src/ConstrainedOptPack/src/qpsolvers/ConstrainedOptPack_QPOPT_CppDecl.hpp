@@ -21,7 +21,7 @@
 #ifndef QPOPT_CPP_DECL_H
 #define QPOPT_CPP_DECL_H
 
-#include "fortran_types.hpp"
+#include "MoochoMoreUtilities/src/fortran_types.hpp"
 
 namespace QPOPT_CppDecl {
 

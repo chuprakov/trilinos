@@ -31,7 +31,7 @@
 #include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 
 namespace NLPInterfacePack {
 

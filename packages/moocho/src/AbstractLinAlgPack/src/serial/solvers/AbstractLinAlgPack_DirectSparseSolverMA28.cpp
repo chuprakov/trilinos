@@ -28,7 +28,7 @@
 #include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "f_open_file.hpp"
+#include "MoochoMoreUtilities/src/f_open_file.hpp"
 
 namespace {
 //

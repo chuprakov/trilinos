@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "MoochoPack/src/std/CheckConvergence_Strategy.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 namespace MoochoPack {
 

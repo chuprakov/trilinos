@@ -20,7 +20,7 @@
 #ifndef LINALGPACK_IO_H
 #define LINALGPACK_IO_H
 
-#include "EatInputComment.hpp"
+#include "MoochoMoreUtilities/src/EatInputComment.hpp"
 #include "DVectorIn.hpp"
 #include "DVectorOut.hpp"
 #include "DMatrixIn.hpp"

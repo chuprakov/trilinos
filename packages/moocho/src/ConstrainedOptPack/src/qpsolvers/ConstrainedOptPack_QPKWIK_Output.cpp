@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "QPKWIK_Output.hpp"
-#include "fortran_types.hpp"
+#include "MoochoMoreUtilities/src/fortran_types.hpp"
 
 namespace QPKWIK_Output {
 	std::ostream* out = 0;

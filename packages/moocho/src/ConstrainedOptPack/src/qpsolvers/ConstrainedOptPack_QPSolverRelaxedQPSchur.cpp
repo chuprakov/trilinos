@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "profile_hack.hpp"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -32,7 +32,7 @@
 #include "MoochoPack/src/std/UpdateReducedSigma_Step.hpp"
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 
-#include "StringToIntMap.hpp"
+#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
 
 #include "dynamic_cast_verbose.hpp"
 

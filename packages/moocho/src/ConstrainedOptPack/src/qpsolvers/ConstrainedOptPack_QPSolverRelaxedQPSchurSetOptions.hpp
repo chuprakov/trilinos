@@ -17,8 +17,8 @@
 #define QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 
 #include "QPSolverRelaxedQPSchur.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

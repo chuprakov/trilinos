@@ -29,8 +29,6 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
-#include "debug.hpp"
-
 
 // //////////////////////////////////////////////////////////
 // Local implementation functions.

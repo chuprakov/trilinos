@@ -17,8 +17,8 @@
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STD_SET_OPTIONS_H
 
 #include "EvalNewPointTailoredApproach_Step.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

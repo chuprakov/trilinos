@@ -41,7 +41,7 @@
 #include "DenseLinAlgPack/src/delete_row_col.hpp"
 #include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "profile_hack.hpp"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Helper functions

@@ -17,8 +17,8 @@
 #define VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 
 #include "VariableBoundsTester.hpp"
-#include "SetOptionsFromStreamNode.hpp"
-#include "SetOptionsToTargetBase.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
+#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -19,8 +19,6 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "debug.hpp"
-
 #include "NLPAlgoConfigMamaJama.hpp"
 #include "MoochoPack/src/NLPAlgo.hpp"
 #include "MoochoPack/src/NLPAlgoContainer.hpp"
@@ -139,8 +137,8 @@
 #include "Teuchos_TestForException.hpp"
 
 // Stuff to read in options
-#include "StringToIntMap.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 // Stuff for exact reduced hessian
 //#include "MoochoPack/src/std/ReducedHessianExactStd_Step.hpp"

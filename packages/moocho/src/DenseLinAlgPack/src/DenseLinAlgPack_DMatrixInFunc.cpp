@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-#include "EatInputComment.hpp"
+#include "MoochoMoreUtilities/src/EatInputComment.hpp"
 #include "DMatrixInFunc.hpp"
 #include "DVectorInFunc.hpp"
 #include "DMatrixClass.hpp"

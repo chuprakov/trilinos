@@ -32,7 +32,7 @@
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "stpwatch.hpp"
+#include "MoochoMoreUtilities/src/stpwatch.hpp"
 
 namespace ConstrainedOptPack {
 

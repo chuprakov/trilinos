@@ -20,9 +20,9 @@
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28SetOptions.hpp"
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "OptionsFromStream.hpp"
-#include "StringToIntMap.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 
 namespace AbstractLinAlgPack {
 

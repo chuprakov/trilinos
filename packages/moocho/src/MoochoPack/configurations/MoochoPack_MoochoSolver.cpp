@@ -38,13 +38,12 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "NLPInterfacePack/src/abstract/test/test_nlp_first_order.hpp"
 #include "NLPInterfacePack/src/abstract/test/test_nlp_direct.hpp"
-#include "OptionsFromStream.hpp"
-#include "stpwatch.hpp"
-#include "StringToIntMap.hpp"
-#include "StringToBool.hpp"
+#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "MoochoMoreUtilities/src/stpwatch.hpp"
+#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
+#include "MoochoMoreUtilities/src/StringToBool.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "oblackholestream.hpp"
 #include "Teuchos_oblackholestream.hpp"
 
 namespace MoochoPack {
@@ -626,7 +625,7 @@ void MoochoSolver::update_solver() const
 			journal_out_used_ = journal_out_;
 	}
 	else {
-		journal_out_used_ = Teuchos::rcp(new IOStreamHelperPack::oblackholestream());
+		journal_out_used_ = Teuchos::rcp(new Teuchos::oblackholestream());
 	}
 	if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
 		if( algo_out_.get() == NULL )

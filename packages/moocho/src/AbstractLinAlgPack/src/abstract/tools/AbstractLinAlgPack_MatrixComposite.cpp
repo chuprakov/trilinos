@@ -22,7 +22,7 @@
 #include "WorkspacePack.hpp"
 #include "Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "profile_hack.hpp"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 
 namespace {
 
