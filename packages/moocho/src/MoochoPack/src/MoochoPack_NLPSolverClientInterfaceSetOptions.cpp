@@ -22,7 +22,7 @@
 // Define the options
 namespace {
 
-const int local_num_options = 11;
+const int local_num_options = 13;
 
 enum local_EOptions {
 	MAX_ITER,
@@ -32,10 +32,12 @@ enum local_EOptions {
 	COMP_TOL,
 	STEP_TOL,
 	JOURNAL_OUTPUT_LEVEL,
+	NULL_SPACE_JOURNAL_OUTPUT_LEVEL,
 	JOURNAL_PRINT_DIGITS,
 	CHECK_RESULTS,
 	CALC_CONDITIONING,
-	CALC_MATRIX_NORMS
+	CALC_MATRIX_NORMS,
+	CALC_MATRIX_INFO_NULL_SPACE_ONLY
 };
 
 const char* local_SOptions[local_num_options]	= {
@@ -46,10 +48,12 @@ const char* local_SOptions[local_num_options]	= {
 	("comp_tol"),
 	("step_tol"),
 	("journal_output_level"),
+	("null_space_journal_output_level"),
 	("journal_print_digits"),
 	("check_results"),
 	("calc_conditioning"),
-	("calc_matrix_norms")
+	("calc_matrix_norms"),
+	("calc_matrix_info_null_space_only")
 };
 
 }
@@ -108,6 +112,23 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 			else
 				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
 																		 "Error, incorrect value for \"journal_output_level\"." );
+			if((int)target().null_space_journal_output_level() <= (int)PRINT_ALGORITHM_STEPS)
+				target().null_space_journal_output_level(target().journal_output_level());
+			break;
+		}
+		case NULL_SPACE_JOURNAL_OUTPUT_LEVEL:
+		{
+			if( option_value == "DEFAULT" )
+				target().null_space_journal_output_level(target().journal_output_level());
+			else if( option_value == "PRINT_ACTIVE_SET" )
+				target().null_space_journal_output_level(PRINT_ACTIVE_SET);
+			else if( option_value == "PRINT_VECTORS" )
+				target().null_space_journal_output_level(PRINT_VECTORS);
+			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
+				target().null_space_journal_output_level(PRINT_ITERATION_QUANTITIES);
+			else
+				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
+																		 "Error, incorrect value for \"null_space_journal_output_level\"." );
 			break;
 		}
 		case JOURNAL_PRINT_DIGITS:
@@ -126,6 +147,11 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 		case CALC_MATRIX_NORMS:
 			target().calc_matrix_norms(
 				StringToBool( "calc_matrix_norms", option_value.c_str() )
+				);
+			break;
+		case CALC_MATRIX_INFO_NULL_SPACE_ONLY:
+			target().calc_matrix_info_null_space_only(
+				StringToBool( "calc_matrix_info_null_space_only", option_value.c_str() )
 				);
 			break;
 		default:

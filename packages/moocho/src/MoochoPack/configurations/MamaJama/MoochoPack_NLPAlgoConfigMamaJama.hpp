@@ -84,7 +84,7 @@ public:
 		QN_AUTO, QN_BFGS, QN_PBFGS, QN_LBFGS, QN_LPBFGS };
 	///
 	enum EHessianInitialization {
-		INIT_HESS_AUTO, INIT_HESS_IDENTITY, INIT_HESS_FIN_DIFF_SCALE_IDENTITY
+		INIT_HESS_AUTO, INIT_HESS_SERIALIZE, INIT_HESS_IDENTITY, INIT_HESS_FIN_DIFF_SCALE_IDENTITY
 		, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS };
 	///
 	enum EQPSolverType {
@@ -113,21 +113,21 @@ public:
 		// Constructor (sets default values)
 		SOptionValues();
 		// Variable Reduction,  Range/Null space decompositions
-		value_type				max_basis_cond_change_frac_;	// If < , don't change default
+		value_type              max_basis_cond_change_frac_;    // If < , don't change default
 		// Reduced Hessian Approximations
-		bool					exact_reduced_hessian_;
-		EQuasiNewton			quasi_newton_;
-		int						num_lbfgs_updates_stored_;      // If < 0, don't change default
-		bool					lbfgs_auto_scaling_;
-		EHessianInitialization	hessian_initialization_;
+		bool                    exact_reduced_hessian_;
+		EQuasiNewton            quasi_newton_;
+		int                     num_lbfgs_updates_stored_;      // If < 0, don't change default
+		bool                    lbfgs_auto_scaling_;
+		EHessianInitialization  hessian_initialization_;
 		// QP subproblem solvers
-		EQPSolverType			qp_solver_type_;
+		EQPSolverType           qp_solver_type_;
 		bool                    reinit_hessian_on_qp_fail_;
 		// Line search methods
-		ELineSearchMethod		line_search_method_;
-		EMeritFunctionType		merit_function_type_;
-		EL1PenaltyParamUpdate	l1_penalty_param_update_;
-		int						full_steps_after_k_;			// If < 0, do not use this option at all.
+		ELineSearchMethod       line_search_method_;
+		EMeritFunctionType      merit_function_type_;
+		EL1PenaltyParamUpdate   l1_penalty_param_update_;
+		int                     full_steps_after_k_;            // If < 0, do not use this option at all.
 	};
 
 	//@}

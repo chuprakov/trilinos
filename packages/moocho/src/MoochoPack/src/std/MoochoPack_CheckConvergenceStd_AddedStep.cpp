@@ -58,27 +58,12 @@ bool CheckConvergenceStd_AddedStep::do_step(
 	const bool found_solution = convergence_strategy_->Converged(_algo);
 
 	if( found_solution )
-		{
-		const size_type
-			m  = nlp.m();
-		
-		IterQuantityAccess<VectorMutable>
-			&x_iq       = s.x(),
-			*lambda_iq  = m  ? &s.lambda()  : NULL,
-			&nu_iq      = s.nu();
-		
-		nlp.report_final_solution(
-		  x_iq.get_k(0),
-		  m  && lambda_iq->updated_k(0)  ? &lambda_iq->get_k(0)  : NULL,
-		  nu_iq.updated_k(0)             ? &nu_iq.get_k(0)       : NULL,
-		  true
-		  );
-
+	{
 		out	<< "\nJackpot!  Found the solution!!!!!! (k = " << algo.state().k() << ")\n";
 		algo.terminate(true);	// found min
 		return false; // skip the other steps and terminate
-		}
-
+	}
+	
 	out	<< "\nHave not found the solution yet, have to keep going :-(\n";
 	
 	// We are not at the solution so keep going

@@ -28,10 +28,11 @@ bool MoochoPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
@@ -57,7 +58,7 @@ bool MoochoPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 		}
 	}
 	else {
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out	<< "\nnu not calculated for the kth iteration\n";
 		}
 	}

@@ -38,8 +38,12 @@ public:
 	//@{
 
 	///
-	enum EFindMinReturn { SOLUTION_FOUND, MAX_ITER_EXCEEDED, MAX_RUN_TIME_EXCEEDED
-		, ALGORITHMIC_ERROR };
+	enum EFindMinReturn {
+		SOLUTION_FOUND
+		,MAX_ITER_EXCEEDED
+		,MAX_RUN_TIME_EXCEEDED
+		,ALGORITHMIC_ERROR
+	};
 
 	/// Thrown if the setup is not valid
 	class InvalidSetup : public std::logic_error
@@ -47,37 +51,6 @@ public:
 
 	//@}
 	
-	/** @name Constructors/initalizers */
-	//@{
-
-	/// <<std comp>> members for the nlp
-	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
-
-	/// <<std comp>> members for the track
-	STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track )
-
-	///
-	/** Construct with no references set to nlp or track objects.
-	 */
-	NLPSolverClientInterface(
-		int                    max_iter             = 10000
-		,double                max_run_time         = 1e+10 // run forever
-		,value_type            opt_tol              = 1e-6
-		,value_type            feas_tol             = 1e-6
-		,value_type            comp_tol             = 1e-6
-		,value_type            step_tol             = 1e-2
-		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
-		,int                   journal_print_digits = 6
-		,bool                  check_results        = false
-		,bool                  calc_conditioning    = false
-		,bool                  calc_matrix_norms    = false
-		);
-
-	///
-	virtual ~NLPSolverClientInterface() {}
-
-	//@}
-
 	/** @name Solver Parameters */
 	//@{
 
@@ -121,6 +94,14 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level )
 
 	///
+	/** Determine the amount of output of the null space to a journal file.
+	 *
+	 * This option allows the user to perform a higher level of output
+	 * for quantities in the null space.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, null_space_journal_output_level )
+
+	///
 	/** Set the precesion of the journal output.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, journal_print_digits )
@@ -140,6 +121,45 @@ public:
 	/** Set whether or not matrix norms are computed and printed.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_norms )
+
+	///
+	/** Set whether calc_conditioning and calc_matrix_norms apply to only
+	 * null space matrices.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_info_null_space_only )
+
+	//@}
+
+	/** @name Constructors/initalizers */
+	//@{
+
+	/// <<std comp>> members for the nlp
+	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
+
+	/// <<std comp>> members for the track
+	STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track )
+
+	///
+	/** Construct with no references set to nlp or track objects.
+	 */
+	NLPSolverClientInterface(
+		int                    max_iter             = 10000
+		,double                max_run_time         = 1e+10 // run forever
+		,value_type            opt_tol              = 1e-6
+		,value_type            feas_tol             = 1e-6
+		,value_type            comp_tol             = 1e-6
+		,value_type            step_tol             = 1e-2
+		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
+		,EJournalOutputLevel   null_space_journal_output_level = PRINT_NOTHING
+		,int                   journal_print_digits = 6
+		,bool                  check_results        = false
+		,bool                  calc_conditioning    = false
+		,bool                  calc_matrix_norms    = false
+		,bool                  calc_matrix_info_null_space_only = false
+		);
+
+	///
+	virtual ~NLPSolverClientInterface() {}
 
 	//@}
 

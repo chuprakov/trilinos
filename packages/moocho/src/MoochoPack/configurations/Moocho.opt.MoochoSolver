@@ -173,6 +173,22 @@ options_group NLPSolverClientInterface {
      *** of information about the algorithm without generating excessive output.
      *** For the fastest possible execution you should set this to PRINT_NOTHING.
 
+*    null_space_journal_output_level = DEFAULT;                    * Set to journal_output_level 
+*    null_space_journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
+*    null_space_journal_output_level = PRINT_VECTORS;              * O(iter*(n-m)) output to journal   (lots!)
+*    null_space_journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*(n-m)^2) output to journal (big lots!)
+
+     *** [MoochoSolver::journal_outputting == true]
+     *** This option determines the type and amount of output to the journal_out stream
+     *** (the file 'MoochoJournal.out' by default) that is generated for quantities in the
+     *** null space while the algorithm runs.  If null_space_journal_output_level is
+     *** set to DEFAULT then it will default to the value of journal_output_level.
+     *** If set to some other value then this value overrides journal_output_level
+     *** for quantities in the null space.  For problems where the null space is small but
+     *** the full space is much larger, setting value of null_space_journal_output_level higher
+     *** than journal_output_level can yield significantly more information while not generating
+     *** too much output or impacting runtime to any great extent.
+
 *    journal_print_digits = 6;  *** (default?)
      *** [MoochoSolver::journal_outputting == true]
      *** (+int) Number of decimal significant figures to print to journal_out stream.
@@ -194,14 +210,20 @@ options_group NLPSolverClientInterface {
      *** If true then estimates of the condition numbers of all of the imporant nonsingular
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially when iterative solvers are being used)
-     *** so it should be used with care.
+     *** so it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
 
 *    calc_matrix_norms = true;  *** (costly?)
 *    calc_matrix_norms = false; *** (default?)
-     *** If true then estimates of the matrix norms of all of the imporant
+     *** If true, then estimates of the matrix norms of all of the imporant
      *** matrices used in the algorithm will be computed and printed.  Note that this can be
      *** a fairly expensive operation (especially if iterative solvers are being used) so
-     *** it should be used with care.
+     *** it should be used with care.  Warning! see the option calc_matrix_info_null_space_only.
+
+*    calc_matrix_info_null_space_only = true;  *** (costly?)
+*    calc_matrix_info_null_space_only = false; *** (default?)
+     *** If true, then the options calc_conditioning and calc_matrix_norms will only
+     *** apply to quantities in the null space and not the quansi-range space
+     *** or the full space for which these options will be considered to be false.
 
 }
 

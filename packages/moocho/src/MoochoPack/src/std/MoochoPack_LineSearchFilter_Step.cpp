@@ -37,10 +37,10 @@ namespace MoochoPack
 
 // This must exist somewhere already, ask Ross
 value_type MIN(value_type x, value_type y)
-	{ return (x < y) ? x : y; }
+{ return (x < y) ? x : y; }
 
 value_type MAX(value_type x, value_type y)
-	{ return (x > y) ? x : y; }
+{ return (x > y) ? x : y; }
 
 LineSearchFilter_Step::LineSearchFilter_Step( 
   Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
@@ -72,7 +72,7 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	eta_f_(eta_f),
 	back_track_frac_(back_track_frac),
 	filter_(FILTER_IQ_STRING)
-	{
+{
 	TEST_FOR_EXCEPTION(
 	  !nlp_.get(),
 	  std::logic_error,
@@ -84,118 +84,118 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	fout << "<FilterDebugDocument>" << std::endl;
 	fout.close();
 #endif
-	}
+}
 
 LineSearchFilter_Step::~LineSearchFilter_Step()
-	{
+{
 #if defined(FILTER_DEBUG_OUT)
 	std::ofstream fout("filter_out.xml", std::ofstream::out | std::ofstream::app);
 	fout << "</FilterDebugDocument>" << std::endl;
 	fout.close();
 #endif
-	}
+}
   
 bool LineSearchFilter_Step::do_step(
   Algorithm& _algo, poss_type step_poss, 
   IterationPack::EDoStepType type
   ,poss_type assoc_step_poss)
-	{
+{
 	// Namespace Declarations
 	using DynamicCastHelperPack::dyn_cast;
 	using IterationPack::print_algorithm_step;
 	using LinAlgOpPack::Vp_StV;
 	using std::setw;
     
-    // Get Algorithm (cast), state, and problem
-    NLPAlgo            &algo   = rsqp_algo(_algo);
-    NLPAlgoState             &s    = algo.rsqp_state();
+	// Get Algorithm (cast), state, and problem
+	NLPAlgo            &algo   = rsqp_algo(_algo);
+	NLPAlgoState             &s    = algo.rsqp_state();
 
-    EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
-    std::ostream        &out    = algo.track().journal_out();
+	EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
+	std::ostream        &out    = algo.track().journal_out();
     
-    // print step header
-    if (static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS)) 
-		{ 
+	// print step header
+	if (static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS)) 
+	{ 
 		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
-		}
+	}
     
-    const size_type
+	const size_type
 		m  = nlp_->m();
     
-    // Get the iteration quantity container objects
-    IterQuantityAccess<value_type>
+	// Get the iteration quantity container objects
+	IterQuantityAccess<value_type>
 		&f_iq = obj_f_(s),
 		&alpha_iq = s.alpha();
     
-    IterQuantityAccess<VectorMutable>
+	IterQuantityAccess<VectorMutable>
 		&x_iq   = s.x(),
 		*c_iq   = m > 0 ? &s.c() : NULL,
 		*h_iq   = NULL,                   // RAB: Replace latter!
 		&Gf_iq  = grad_obj_f_(s);
 
-    // check that all the pertinent information is known
-    if (!s.d().updated_k(0) || !x_iq.updated_k(0))
-		{
+	// check that all the pertinent information is known
+	if (!s.d().updated_k(0) || !x_iq.updated_k(0))
+	{
 		// Dead in the water
 		TEST_FOR_EXCEPTION( true, std::logic_error, "Error, d_k or x_k not updated." ); 		
 		return false;
-		}
+	}
     
-    if (!alpha_iq.updated_k(0) || alpha_iq.get_k(0) > 1 || alpha_iq.get_k(0) <= 0)
-		{
+	if (!alpha_iq.updated_k(0) || alpha_iq.get_k(0) > 1 || alpha_iq.get_k(0) <= 0)
+	{
 		// if alpha_k is not known then we would need to calculate all the new points
 		TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, alpha_k not updated or out of range [0, 1)." ); 		
 		return false;
-		}
+	}
 
-    // Setup some necessary parameters
-    // Assuming that f_iq, Gf_iq, c_iq, h_iq are updated for k
-    const value_type Gf_t_dk = Gf_iq.get_k(0).inner_product( s.d().get_k(0) );
-    const value_type theta_k = CalculateTheta_k( c_iq, h_iq, 0);
-    const value_type theta_small = theta_small_fact_ * MAX(1.0,theta_k);
-    const value_type alpha_min = CalculateAlphaMin( Gf_t_dk, theta_k, theta_small );
-    const value_type f_k = f_iq.get_k(0);
+	// Setup some necessary parameters
+	// Assuming that f_iq, Gf_iq, c_iq, h_iq are updated for k
+	const value_type Gf_t_dk = Gf_iq.get_k(0).inner_product( s.d().get_k(0) );
+	const value_type theta_k = CalculateTheta_k( c_iq, h_iq, 0);
+	const value_type theta_small = theta_small_fact_ * MAX(1.0,theta_k);
+	const value_type alpha_min = CalculateAlphaMin( Gf_t_dk, theta_k, theta_small );
+	const value_type f_k = f_iq.get_k(0);
 
-    value_type &alpha_k = alpha_iq.get_k(0);
-    value_type theta_kp1 = 0.0;;
+	value_type &alpha_k = alpha_iq.get_k(0);
+	value_type theta_kp1 = 0.0;;
 
-    // Print out some header/initial information
-    int w = 15;
-    if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
+	// Print out some header/initial information
+	int w = 15;
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+	{
 		out << "\nBeginning Filter line search method.\n\n";
 
 		out << "  Current Filter\n";
 		out << "-----------------------------------------------------" << std::endl;
 		out << "|" << setw(25) << "f_with_boundary     " 
-			<< "|" << setw(25) << "theta_with_boundary    "
-			<< "|" << std::endl;
+				<< "|" << setw(25) << "theta_with_boundary    "
+				<< "|" << std::endl;
 		out << "-----------------------------------------------------" << std::endl;
 
 		IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
 		if (filter_iq.updated_k(-1))
-			{
+		{
 			Filter_T& filter = filter_iq.get_k(-1);
 			if (!filter.empty())
-				{
-				for (Filter_T::iterator entry = filter.begin(); entry != filter.end(); entry++)
-					{	
-					out << "|" << setw(25) << entry->f
-						<< " " << setw(25) << entry->theta
-						<< "|\n";
-					}
-				}
-			else
-				{
-				out << "Filter is empty.\n";
-				}
-			}
-		else
 			{
-			out << "Filter is empty.\n";
+				for (Filter_T::iterator entry = filter.begin(); entry != filter.end(); entry++)
+				{	
+					out << "|" << setw(25) << entry->f
+							<< " " << setw(25) << entry->theta
+							<< "|\n";
+				}
 			}
+			else
+			{
+				out << "Filter is empty.\n";
+			}
+		}
+		else
+		{
+			out << "Filter is empty.\n";
+		}
 	
 	
 		// dump header
@@ -203,70 +203,70 @@ bool LineSearchFilter_Step::do_step(
 		out << "----------------------------------------------------------------------------------------------------------\n"; 
 
 		out << "|" << setw(w) << "alpha_k    " 
-			<< "|" << setw(w) << "f_kp1     "
-			<< "|" << setw(w) << "theta_kp1   "
-			<< "|" << setw(w) << "pt. status   "
-			<< "|" << setw(40) << "comment                "
-			<< "|" << std::endl;
+				<< "|" << setw(w) << "f_kp1     "
+				<< "|" << setw(w) << "theta_kp1   "
+				<< "|" << setw(w) << "pt. status   "
+				<< "|" << setw(40) << "comment                "
+				<< "|" << std::endl;
 	
 		out << "----------------------------------------------------------------------------------------------------------" 
-			<< std::endl;
-		}
+				<< std::endl;
+	}
 
-    // Begin the line search
-    bool augment_filter = false;
-    bool accepted = false;
-    while (alpha_k > alpha_min && !accepted)
-		{
+	// Begin the line search
+	bool augment_filter = false;
+	bool accepted = false;
+	while (alpha_k > alpha_min && !accepted)
+	{
 		accepted = true;
 
 		// Check that point is safe for calculations (no nans, infs, etc)
 		if (!ValidatePoint(x_iq, f_iq, c_iq, h_iq, false))
-			{
+		{
 			accepted = false;
 	    
 			// Print out some point information
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-				{
+			{
 				int w = 15;
 				// dump point
 				out << "|" << setw(w) << " --- " 
-					<< " " << setw(w) << " --- "
-					<< " " << setw(w) << " --- "
-					<< " " << setw(w) << " failed "
-					<< " " << setw(40) << " nan_or_inf in calc"
-					<< " " << std::endl;
-				}
+						<< " " << setw(w) << " --- "
+						<< " " << setw(w) << " --- "
+						<< " " << setw(w) << " failed "
+						<< " " << setw(40) << " nan_or_inf in calc"
+						<< " " << std::endl;
+			}
 	
 			// Really, we do not need to throw an exception here, we can try and backtrack
 			// alpha to get into an acceptable region
 			TEST_FOR_EXCEPTION( true, std::out_of_range, "Point Not Valid." );	
-			}
+		}
 	    
 		// Check if point satisfies filter
 		if (accepted)
-			{
+		{
 			theta_kp1 = CalculateTheta_k(c_iq, h_iq, +1);
 
 			// Print out some point information
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-				{
+			{
 				// dump point
 				out << "|" << setw(w) << alpha_k 
-					<< " " << setw(w) << f_iq.get_k(+1)
-					<< " " << setw(w) << theta_kp1;
-				}
+						<< " " << setw(w) << f_iq.get_k(+1)
+						<< " " << setw(w) << theta_kp1;
+			}
 
 			accepted = CheckFilterAcceptability(f_iq.get_k(+1), theta_kp1, s);
 
 			// Print out failure information
 			if( !accepted && static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-				{
+			{
 				out << " " << setw(w) << "failed"
-					<< " " << setw(40) << "Unacceptable to filter"
-					<< "|" << std::endl;
-				}
+						<< " " << setw(40) << "Unacceptable to filter"
+						<< "|" << std::endl;
 			}
+		}
 
 		// Check if point has theta less than theta_max
 		if (accepted) {
@@ -275,8 +275,8 @@ bool LineSearchFilter_Step::do_step(
 				// Print out failure information
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 					out << " " << setw(w) << "failed"
-						<< " " << setw(40) << "theta_kp1 > theta_max"
-						<< "|" << std::endl;
+							<< " " << setw(40) << "theta_kp1 > theta_max"
+							<< "|" << std::endl;
 				}
 			}
 		}
@@ -284,77 +284,77 @@ bool LineSearchFilter_Step::do_step(
 
 		// Check if point satisfies sufficient decrease (Armijo on f if switching cond holds)
 		if (accepted)
-			{
+		{
 			// Check for switching condition
 			if (ShouldSwitchToArmijo(Gf_t_dk, alpha_k, theta_k, theta_small))
-				{
+			{
 				accepted = CheckArmijo(Gf_t_dk, alpha_k, f_iq);
 
 				// Print out point information
 				if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-					{
+				{
 					if (accepted)
-						{ out << " " << setw(w) << "accepted"; }
+					{ out << " " << setw(w) << "accepted"; }
 					else
-						{ out << " " << setw(w) << "failed"; }
+					{ out << " " << setw(w) << "failed"; }
 
 					out << " " << setw(40) << "Switch Cond. Holds (Armijo)" << "|" << std::endl;
-					}
 				}
+			}
 			else
-				{
+			{
 				accepted = CheckFractionalReduction(f_iq, theta_kp1, theta_k);
 				if (accepted)
-					{ augment_filter = true; }
+				{ augment_filter = true; }
 
 				// Print out point information
 				if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-					{
+				{
 					if (accepted)
-						{ out << " " << setw(w) << "accepted"; }
+					{ out << " " << setw(w) << "accepted"; }
 					else
-						{ out << " " << setw(w) << "failed"; }
+					{ out << " " << setw(w) << "failed"; }
 
 					out << " " << setw(40) << "Fraction Reduction (! Switch Cond )" << "|" << std::endl;
-					}
-
 				}
+
 			}
+		}
 
 		// if the point fails any of the tests, then backtrack
 		if (!accepted)
-			{
+		{
 			// try a smaller alpha_k
 			alpha_k = alpha_k*back_track_frac_;
 			UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, *nlp_);
-			}	  
+		}	  
 
-		} // end while
+	} // end while
 
 
-    if (accepted)
-		{
+	if (accepted)
+	{
 		if (augment_filter)
-			{
+		{
 			AugmentFilter(f_iq.get_k(+1), theta_kp1, s);
-			}
+		}
 		else
-			{
+		{
 			// Just update the filter from the last iteration
 			UpdateFilter(s);
-			}
+		}
 
 		// Print status
 		if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-			{
-			if (augment_filter)
-				{ out << "\nPoint was accepted - augmented filter with point.\n"; }
-			else
-				{ out << "Point was accepted - did NOT augment filter.\n"; }
-			}
-		}
-    else
 		{
+			if (augment_filter)
+			{ out << "\nPoint was accepted - augmented filter with point.\n"; }
+			else
+			{ out << "Point was accepted - did NOT augment filter.\n"; }
+		}
+	}
+	else
+	{
 		// Could not find an acceptable alpha_k, go to restoration
 		// Print status
 		//if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
@@ -364,90 +364,90 @@ bool LineSearchFilter_Step::do_step(
 			
 		//TEST_FOR_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
 		
-			TEST_FOR_EXCEPTION( true, LineSearchFailure
-							 ,"FilterLineSearchFailure : Should go to restoration"
-			  );
-		}
+		TEST_FOR_EXCEPTION( true, LineSearchFailure
+												,"FilterLineSearchFailure : Should go to restoration"
+			);
+	}
 
-    if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
-		{
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+	{
 		out << "\nx_kp1 =\n" << x_iq.get_k(+1);
 		if (c_iq)
-			{ out << "\nc_kp1 =\n" << c_iq->get_k(+1); }
+		{ out << "\nc_kp1 =\n" << c_iq->get_k(+1); }
 		if (h_iq)
-			{ out << "\nh_kp1 =\n" << h_iq->get_k(+1); }
-		}
+		{ out << "\nh_kp1 =\n" << h_iq->get_k(+1); }
+	}
 
 #if defined(FILTER_DEBUG_OUT)
-    std::ofstream fout("filter_out.xml", std::ofstream::out | std::ostream::app);
-    fout << "   <FilterIteration iter=\"" << s.k() << "\">" << std::endl;
-    fout << "      <SelectedPoint alpha=\"" << alpha_k 
-		 << "\" f=\"" << f_iq.get_k(+1) 
-		 << "\" theta=\"" << theta_kp1
-         << "\" />" << std::endl;
+	std::ofstream fout("filter_out.xml", std::ofstream::out | std::ostream::app);
+	fout << "   <FilterIteration iter=\"" << s.k() << "\">" << std::endl;
+	fout << "      <SelectedPoint alpha=\"" << alpha_k 
+			 << "\" f=\"" << f_iq.get_k(+1) 
+			 << "\" theta=\"" << theta_kp1
+			 << "\" />" << std::endl;
 
-    // Output the filter
-    fout << "      <Filter>" << std::endl;
+	// Output the filter
+	fout << "      <Filter>" << std::endl;
     
-    IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
-    if (filter_iq.updated_k(0))
-		{    
+	IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
+	if (filter_iq.updated_k(0))
+	{    
 		Filter_T& current_filter = filter_iq.get_k(0);
 		for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
-			{
-			fout << "         <FilterPoint iter=\"" << entry->iter 
-				 << "\" f=\"" << entry->f 
-				 << "\" theta=\"" << entry->theta << "\>" << std::endl;
-			}
-		}
-    else
 		{
-		fout << "         <FilterNotUpdated/>" << std::endl;
+			fout << "         <FilterPoint iter=\"" << entry->iter 
+					 << "\" f=\"" << entry->f 
+					 << "\" theta=\"" << entry->theta << "\>" << std::endl;
 		}
+	}
+	else
+	{
+		fout << "         <FilterNotUpdated/>" << std::endl;
+	}
 
-    fout << "      </Filter>" << std::endl;
+	fout << "      </Filter>" << std::endl;
 
     
-    // Output the alpha curve
-    fout << "      <AlphaCurve>" << std::endl;
-    value_type alpha_tmp = 1.0;
-    for (int i=0; i<10 || alpha_tmp > alpha_k; i++)
-		{
+	// Output the alpha curve
+	fout << "      <AlphaCurve>" << std::endl;
+	value_type alpha_tmp = 1.0;
+	for (int i=0; i<10 || alpha_tmp > alpha_k; i++)
+	{
 		UpdatePoint(s.d().get_k(0), alpha_tmp, x_iq, f_iq, c_iq, h_iq, *nlp_);
 		if (ValidatePoint(x_iq, f_iq, c_iq, h_iq, false))
-			{
+		{
 			value_type theta = CalculateTheta_k(c_iq, h_iq, +1);
 			fout << "         <AlphaPoint "
-				 << "alpha=\"" << alpha_tmp << "\" "
-				 << "f=\"" << f_iq.get_k(+1) << "\" "
-				 << "theta=\"" << theta << "\>" << std::endl;
-			}
-
-		alpha_tmp=alpha_tmp*back_track_frac_;
+					 << "alpha=\"" << alpha_tmp << "\" "
+					 << "f=\"" << f_iq.get_k(+1) << "\" "
+					 << "theta=\"" << theta << "\>" << std::endl;
 		}
 
-    // restore alpha_k
-    UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, *nlp_);
+		alpha_tmp=alpha_tmp*back_track_frac_;
+	}
 
-    fout << "      </AlphaCurve>" << std::endl;
+	// restore alpha_k
+	UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, *nlp_);
 
-    fout << "   </FilterIteration" << std::endl;
+	fout << "      </AlphaCurve>" << std::endl;
 
-    fout.close();
+	fout << "   </FilterIteration" << std::endl;
+
+	fout.close();
 
 #endif
     
-    return true;
-	}
+	return true;
+}
   
 void LineSearchFilter_Step::print_step(
   const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
-	{
-    const NLPAlgo   &algo = rsqp_algo(_algo);
-    const NLPAlgoState  &s    = algo.rsqp_state();
-    out
+{
+	const NLPAlgo   &algo = rsqp_algo(_algo);
+	const NLPAlgoState  &s    = algo.rsqp_state();
+	out
 		<< L << "*** Filter line search method\n"
 		<< L << "# Assumes initial d_k & alpha_k (0-1) is known and\n"
 		<< L << "# x_k, f_k, c_k, h_k are calculated for that alpha_k\n"
@@ -512,7 +512,7 @@ void LineSearchFilter_Step::print_step(
 		<< L << "else\n"
 		<< L << "   goto the restoration phase\n"
 		<< L << "end\n";
-	}
+}
   
   
 bool LineSearchFilter_Step::ValidatePoint( 
@@ -521,19 +521,19 @@ bool LineSearchFilter_Step::ValidatePoint(
   IterQuantityAccess<VectorMutable>* c,
   IterQuantityAccess<VectorMutable>* h,
   bool throw_excpt ) const
-	{
+{
 
-    using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::assert_print_nan_inf;
 	
-    if (assert_print_nan_inf(x.get_k(+1), "x", throw_excpt, NULL) 
-		|| assert_print_nan_inf(f.get_k(+1), "f", throw_excpt, NULL)
-      	|| (!c || assert_print_nan_inf(c->get_k(+1), "c", throw_excpt, NULL))
-      	|| (!h || assert_print_nan_inf(h->get_k(+1), "c", throw_excpt, NULL)))
-		{
+	if (assert_print_nan_inf(x.get_k(+1), "x", throw_excpt, NULL) 
+			|| assert_print_nan_inf(f.get_k(+1), "f", throw_excpt, NULL)
+			|| (!c || assert_print_nan_inf(c->get_k(+1), "c", throw_excpt, NULL))
+			|| (!h || assert_print_nan_inf(h->get_k(+1), "c", throw_excpt, NULL)))
+	{
 		return true;
-		}
-	return false;
 	}
+	return false;
+}
   
 
 void LineSearchFilter_Step::UpdatePoint( 
@@ -544,15 +544,15 @@ void LineSearchFilter_Step::UpdatePoint(
   IterQuantityAccess<VectorMutable>* c,
   IterQuantityAccess<VectorMutable>* h,
   NLP& nlp ) const
-	{  
+{  
 	using LinAlgOpPack::Vp_StV;
-    using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::assert_print_nan_inf;
 	VectorMutable& x_kp1 = x.set_k(+1);
 	x_kp1 = x.get_k(0);
-    Vp_StV( &x_kp1, alpha, d);
+	Vp_StV( &x_kp1, alpha, d);
 
-    if (assert_print_nan_inf(x_kp1, "x", true, NULL))
-		{
+	if (assert_print_nan_inf(x_kp1, "x", true, NULL))
+	{
 		// Calcuate f and c at the new point.
 		nlp.unset_quantities();
 		nlp.set_f( &f.set_k(+1) );
@@ -560,53 +560,53 @@ void LineSearchFilter_Step::UpdatePoint(
 		nlp.calc_f( x_kp1 ); 
 		if (c) nlp.calc_c( x_kp1, false );
 		nlp.unset_quantities();
-		}
 	}
+}
 
 value_type LineSearchFilter_Step::CalculateAlphaMin( 
   value_type Gf_t_dk,
   value_type theta_k, 
   value_type theta_small) const
-	{
-    value_type alpha_min = 0;
+{
+	value_type alpha_min = 0;
     
-    if (Gf_t_dk < 0)
-		{
+	if (Gf_t_dk < 0)
+	{
 		alpha_min = MIN(gamma_theta_, gamma_f_*theta_k/(-Gf_t_dk));
 		if (theta_k <= theta_small)
-			{
+		{
 			value_type switch_bound = delta_*pow(theta_k, s_theta_)/pow(-Gf_t_dk,s_f_);
 			alpha_min = MIN(alpha_min, switch_bound);
-			}
 		}
-    else
-		{
-		alpha_min = gamma_theta_;
-		}
-
-    return alpha_min * gamma_alpha_;
 	}
+	else
+	{
+		alpha_min = gamma_theta_;
+	}
+
+	return alpha_min * gamma_alpha_;
+}
 
 
 value_type LineSearchFilter_Step::CalculateTheta_k( 
   IterQuantityAccess<VectorMutable>* c,
   IterQuantityAccess<VectorMutable>* h,
   int k) const
+{
+	value_type theta = 0.0;
+
+	if (h)
 	{
-    value_type theta = 0.0;
-
-    if (h)
-		{
 		TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, do not support inequalities yet" );
-		}
-
-    if (c)
-		{
-		theta  = c->get_k(k).norm_1();
-		}
-
-    return theta;
 	}
+
+	if (c)
+	{
+		theta  = c->get_k(k).norm_1();
+	}
+
+	return theta;
+}
 
 
 bool LineSearchFilter_Step::ShouldSwitchToArmijo( 
@@ -614,132 +614,132 @@ bool LineSearchFilter_Step::ShouldSwitchToArmijo(
   const value_type alpha_k,
   const value_type theta_k,
   const value_type theta_small) const
+{
+	if (theta_k < theta_small && Gf_t_dk < 0)
 	{
-    if (theta_k < theta_small && Gf_t_dk < 0)
-		{
 		if (pow(-Gf_t_dk, s_f_)*alpha_k - delta_*pow(theta_k, s_theta_) > 0)
-			{
+		{
 			return true;
-			}
 		}
-
-    return false;
 	}
+
+	return false;
+}
 
 
 bool LineSearchFilter_Step::CheckArmijo( 
   value_type Gf_t_dk, 
   value_type alpha_k, 
   const IterQuantityAccess<value_type>& f_iq ) const
-	{
-    bool accepted = false;
+{
+	bool accepted = false;
 
-    // Check Armijo on objective fn
+	// Check Armijo on objective fn
 	double f_kp1 = f_iq.get_k(+1);
 	double f_k = f_iq.get_k(0);
 	double lhs = f_k - f_kp1;
 	double rhs = -eta_f_*alpha_k*Gf_t_dk;
-    if ( lhs >= rhs )
-		{
+	if ( lhs >= rhs )
+	{
 		// Accept pt, do NOT augment filter
 		accepted = true;
-		}
-
-    return accepted;
 	}
+
+	return accepted;
+}
 
 bool LineSearchFilter_Step::CheckFractionalReduction( 
   const IterQuantityAccess<value_type>& f_iq,
   value_type theta_kp1, 
   value_type theta_k ) const
+{
+	bool accepted = false;
+	if (theta_kp1 <= (1-gamma_theta_)*theta_k
+			|| f_iq.get_k(+1) <= f_iq.get_k(0)-gamma_f_*theta_k )
 	{
-    bool accepted = false;
-    if (theta_kp1 <= (1-gamma_theta_)*theta_k
-		|| f_iq.get_k(+1) <= f_iq.get_k(0)-gamma_f_*theta_k )
-		{
 		// Accept pt and augment filter
 		accepted = true;
-		}
-
-    return accepted;
 	}
+
+	return accepted;
+}
 
 
 bool LineSearchFilter_Step::CheckFilterAcceptability( 
   value_type f, 
   value_type theta,
   AlgorithmState& s) const
-	{
-    bool accepted = true;
+{
+	bool accepted = true;
 
-    IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
+	IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
-    if (filter_iq.updated_k(-1))
-		{
+	if (filter_iq.updated_k(-1))
+	{
 		Filter_T& current_filter = filter_iq.get_k(-1);
     
 		for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
-			{	
+		{	
 			if (f >= entry->f && theta >= entry->theta)
-				{
+			{
 				accepted = false;
 				break;
-				}
 			}
 		}
-
-    return accepted;
 	}
+
+	return accepted;
+}
 
 
 void LineSearchFilter_Step::UpdateFilter( IterationPack::AlgorithmState& s ) const
-	{
-    IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
+{
+	IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
 	if (!filter_iq.updated_k(0))
-		{
+	{
 		if (filter_iq.updated_k(-1))
-			{
+		{
 			// initialize the filter from the last iteration
 			filter_iq.set_k(0,-1);
-			}
+		}
 		else
-			{
+		{
 			// create an uninitialized filter
 			filter_iq.set_k(0);
-			}
 		}
 	}
+}
 
 
 void LineSearchFilter_Step::AugmentFilter( 
   value_type f,
   value_type theta,
   IterationPack::AlgorithmState& s ) const
-	{
-    value_type f_with_boundary = f-gamma_f_*theta;
-    value_type theta_with_boundary = (1.0-gamma_theta_)*theta;
+{
+	value_type f_with_boundary = f-gamma_f_*theta;
+	value_type theta_with_boundary = (1.0-gamma_theta_)*theta;
 
-    UpdateFilter(s);
-    Filter_T& current_filter = filter_(s).get_k(0);
+	UpdateFilter(s);
+	Filter_T& current_filter = filter_(s).get_k(0);
     
-    if (!current_filter.empty())
-		{
+	if (!current_filter.empty())
+	{
 		for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
-			{	
+		{	
 			if ((*entry).f >= f_with_boundary
-				&& (*entry).theta >= theta_with_boundary)
-				{
+					&& (*entry).theta >= theta_with_boundary)
+			{
 				Filter_T::iterator store = entry;
 				store--;
 				current_filter.erase(entry);
 				entry = store;
-				}
 			}
 		}
-
-    // Now append the current point
-    current_filter.push_front(FilterEntry(f_with_boundary, theta_with_boundary, s.k()));
 	}
+
+	// Now append the current point
+	current_filter.push_front(FilterEntry(f_with_boundary, theta_with_boundary, s.k()));
+}
 
 } // end namespace MoochoPack

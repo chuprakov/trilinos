@@ -54,6 +54,7 @@ options_group NLPAlgoConfigMamaJama {
      *** hessian approximation will be use for LBFGS.
 
 *    hessian_initialization = AUTO;                       *** Let the solver decide dynamically (default)
+*    hessian_initialization = SERIALIZE;                  *** rHL_{0} read from file (see ReducedHessianSerialization)
 *    hessian_initialization = IDENTITY;                   *** rHL_{0} = I
 *    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_{0} = ||fd|| * I
 *    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_{0} = diag(max(fd(i),small),i)
@@ -107,6 +108,18 @@ options_group NLPAlgoConfigMamaJama {
 *    l1_penalty_parameter_update = WITH_MULT; *** [merit_function_type == L1] Use Lagrange multipliers to update mu
 *    l1_penalty_parameter_update = MULT_FREE; *** [merit_function_type == L1] Don't use Lagrange multipliers to update mu
 
+}
+
+*********************************************************************
+*** Options for serialization of the reduced Hessian
+*** 
+*** [NLPAlgoConfigMamaJama::hessian_initialization == SERIALIZE]
+***
+options_group ReducedHessianSerialization {
+*   reduced_hessian_input_file_name = "reduced_hessian.in";   *** (default)
+*   reduced_hessian_input_file_name = "";                     *** Does not read from file
+*   reduced_hessian_output_file_name = "reduced_hessian.out"; *** (default)
+*   reduced_hessian_output_file_name = "";                    *** Does not write to file
 }
 
 *********************************************************************

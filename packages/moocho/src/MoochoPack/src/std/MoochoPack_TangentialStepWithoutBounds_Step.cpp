@@ -55,6 +55,7 @@ bool TangentialStepWithoutBounds_Step::do_step(
 	NLPAlgoState	&s		= algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
@@ -99,8 +100,12 @@ bool TangentialStepWithoutBounds_Step::do_step(
 			<< "\n||Zpz_k||2    = " << s.Zpz().get_k(0).norm_2()  << std::endl;
 	}
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\npz_k = \n" << s.pz().get_k(0);
+		out << std::endl;
+	}
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nnu_k = \n" << s.nu().get_k(0);
 		out << "\nZpz_k = \n" << s.Zpz().get_k(0);
 		out << std::endl;

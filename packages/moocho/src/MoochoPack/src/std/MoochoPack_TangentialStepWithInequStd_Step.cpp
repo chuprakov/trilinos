@@ -77,11 +77,12 @@ bool TangentialStepWithInequStd_Step::do_step(
 	using AbstractLinAlgPack::max_near_feas_step;
 	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 
-	NLPAlgo             &algo         = rsqp_algo(_algo);
-	NLPAlgoState            &s            = algo.rsqp_state();
-	EJournalOutputLevel  olevel        = algo.algo_cntr().journal_output_level();
-	std::ostream         &out          = algo.track().journal_out();
-	const bool           check_results = algo.algo_cntr().check_results();
+	NLPAlgo &algo = rsqp_algo(_algo);
+	NLPAlgoState &s = algo.rsqp_state();
+	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
+	std::ostream &out = algo.track().journal_out();
+	const bool check_results = algo.algo_cntr().check_results();
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -163,8 +164,10 @@ bool TangentialStepWithInequStd_Step::do_step(
 	}
 
 	// Print out the QP bounds for the constraints
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nqp_grad_k = \n" << qp_grad_k;
+	}
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nbl = \n" << *bl;
 		out << "\nbu = \n" << *bu;
 	}
@@ -367,6 +370,8 @@ bool TangentialStepWithInequStd_Step::do_step(
 		default:
 			assert(0);
 	}
+	// ToDo: Set print options so that only vectors matrices etc
+	// are only printed in the null space
 
 	//
 	// Solve the QP
@@ -523,20 +528,23 @@ bool TangentialStepWithInequStd_Step::do_step(
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||pz||inf    = " << s.pz().get_k(0).norm_inf()
-			<< "\nnu.nz()      = " << s.nu().get_k(0).nz()
-			<< "\nmax(|nu(i)|) = " << s.nu().get_k(0).norm_inf()
-//			<< "\nmin(|nu(i)|) = " << min_abs( s.nu().get_k(0)() )
+		out	<< "\n||pz_k||inf    = " << s.pz().get_k(0).norm_inf()
+			<< "\nnu_k.nz()      = " << s.nu().get_k(0).nz()
+			<< "\nmax(|nu_k(i)|) = " << s.nu().get_k(0).norm_inf()
+//			<< "\nmin(|nu_k(i)|) = " << min_abs( s.nu().get_k(0)() )
 			;
 		if( m > r ) out << "\n||lambda_k(undecomp)||inf = " << s.lambda().get_k(0).norm_inf();
-		out	<< "\n||Zpz||2     = " << s.Zpz().get_k(0).norm_2()
+		out	<< "\n||Zpz_k||2     = " << s.Zpz().get_k(0).norm_2()
 			;
 		if(qp_eta > 0.0) out << "\n||Ypy||2 = " << s.Ypy().get_k(0).norm_2();
 		out << std::endl;
 	}
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\npz_k = \n" << s.pz().get_k(0);
+	}
+
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nnu_k = \n" << s.nu().get_k(0);
 		if( m > r )
 			out << "\nlambda_k(equ_undecomp) = \n" << *s.lambda().get_k(0).sub_view(equ_undecomp);

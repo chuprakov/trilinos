@@ -37,6 +37,7 @@ bool ReducedGradientStd_Step::do_step(
 	NLPAlgoState   &s      = algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
@@ -55,11 +56,11 @@ bool ReducedGradientStd_Step::do_step(
 	// rGf = Z' * Gf
 	V_MtV( &rGf_iq.set_k(0), Z_iq.get_k(0), trans, Gf_iq.get_k(0) );
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||rGf||inf = "	<< rGf_iq.get_k(0).norm_inf() << std::endl;
 	}
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nrGf_k =\n" << rGf_iq.get_k(0);
 	}
 

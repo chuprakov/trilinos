@@ -21,6 +21,7 @@
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReduct.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
@@ -72,6 +73,7 @@ bool EvalNewPointStd_Step::do_step(
 	NLPFirstOrder   &nlp    = dyn_cast<NLPFirstOrder>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
@@ -111,6 +113,7 @@ bool EvalNewPointStd_Step::do_step(
 
 	MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
 	const bool calc_matrix_norms = algo.algo_cntr().calc_matrix_norms();
+	const bool calc_matrix_info_null_space_only = algo.algo_cntr().calc_matrix_info_null_space_only();
 	
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -145,11 +148,33 @@ bool EvalNewPointStd_Step::do_step(
 
 	Vector &x = x_iq.get_k(0);
 
+
+	Range1D  var_dep(Range1D::INVALID), var_indep(Range1D::INVALID);
+	if( s.get_decomp_sys().get() ) {
+		const ConstrainedOptPack::DecompositionSystemVarReduct
+			*decomp_sys_vr = dynamic_cast<ConstrainedOptPack::DecompositionSystemVarReduct*>(&s.decomp_sys());
+		if(decomp_sys_vr) {
+			var_dep   = decomp_sys_vr->var_dep();
+			var_indep = decomp_sys_vr->var_indep();
+		}
+	}
+
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
+		out << "\n||x_k||inf            = " << x.norm_inf();
+		if( var_dep.size() )
+			out << "\n||x(var_dep)_k||inf   = " << x.sub_view(var_dep)->norm_inf();
+		if( var_indep.size() )
+			out << "\n||x(var_indep)_k||inf = " << x.sub_view(var_indep)->norm_inf();
+		out << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nx_k = \n" << x;
+		if( var_dep.size() )
+			out << "\nx(var_dep)_k = \n" << *x.sub_view(var_dep);
+	}
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+		if( var_indep.size() )
+			out << "\nx(var_indep)_k = \n" << *x.sub_view(var_indep);
 	}
 
 	// Set the references to the current point's quantities to be updated
@@ -300,29 +325,43 @@ bool EvalNewPointStd_Step::do_step(
 
 	// Print the iteration quantities before we test the derivatives for debugging
 
+	// Update the selection of dependent and independent variables
+	if( s.get_decomp_sys().get() ) {
+		const ConstrainedOptPack::DecompositionSystemVarReduct
+			*decomp_sys_vr = dynamic_cast<ConstrainedOptPack::DecompositionSystemVarReduct*>(&s.decomp_sys());
+		if(decomp_sys_vr) {
+			var_dep   = decomp_sys_vr->var_dep();
+			var_indep = decomp_sys_vr->var_indep();
+		}
+	}
+	
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\nPrinting the updated iteration quantities ...\n";
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nf_k         = "     << f_iq.get_k(0);
-		out << "\n||Gf_k||inf = "     << Gf_iq.get_k(0).norm_inf();
+		out	<< "\nf_k                      = "     << f_iq.get_k(0);
+		out << "\n||Gf_k||inf              = "     << Gf_iq.get_k(0).norm_inf();
+		if( var_dep.size() )
+			out << "\n||Gf_k(var_dep)_k||inf   = " << Gf_iq.get_k(0).sub_view(var_dep)->norm_inf();
+		if( var_indep.size() )
+			out << "\n||Gf_k(var_indep)_k||inf = " << Gf_iq.get_k(0).sub_view(var_indep)->norm_inf();
 		if(m) {
-			out << "\n||c_k||inf  = " << c_iq->get_k(0).norm_inf();
-			if( calc_matrix_norms )
-				out << "\n||Gc_k||inf = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( n > r && calc_matrix_norms )
-				out << "\n||Z||inf    = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( r && calc_matrix_norms )
-				out << "\n||Y||inf    = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( r && calc_matrix_norms )
-				out << "\n||R||inf    = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( algo.algo_cntr().calc_conditioning() ) {
-				out << "\ncond_inf(R) = " << R_iq->get_k(0).calc_cond_num(mat_nrm_inf).value;
+			out << "\n||c_k||inf               = " << c_iq->get_k(0).norm_inf();
+			if( calc_matrix_norms && !calc_matrix_info_null_space_only )
+				out << "\n||Gc_k||inf              = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( n > r && calc_matrix_norms && !calc_matrix_info_null_space_only )
+				out << "\n||Z||inf                 = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( r && calc_matrix_norms && !calc_matrix_info_null_space_only )
+				out << "\n||Y||inf                 = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( r && calc_matrix_norms && !calc_matrix_info_null_space_only  )
+				out << "\n||R||inf                 = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( algo.algo_cntr().calc_conditioning() && !calc_matrix_info_null_space_only ) {
+				out << "\ncond_inf(R)              = " << R_iq->get_k(0).calc_cond_num(mat_nrm_inf).value;
 			}
-			if( m > r && calc_matrix_norms ) {
-				out << "\n||Uz_k||inf = " << Uz_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-				out << "\n||Uy_k||inf = " << Uy_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( m > r && calc_matrix_norms && !calc_matrix_info_null_space_only ) {
+				out << "\n||Uz_k||inf              = " << Uz_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+				out << "\n||Uy_k||inf              = " << Uy_iq->get_k(0).calc_norm(mat_nrm_inf).value;
 			}
 		}
 		out << std::endl;
@@ -342,14 +381,20 @@ bool EvalNewPointStd_Step::do_step(
 			out << "\nUy_k =\n" << Uy_iq->get_k(0);
 		}
 	}
-
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nGf_k = \n" << Gf_iq.get_k(0);
+		out	<< "\nGf_k =\n" << Gf_iq.get_k(0);
+		if( var_dep.size() )
+			out << "\nGf(var_dep)_k =\n " << *Gf_iq.get_k(0).sub_view(var_dep);
+	}
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+		if( var_indep.size() )
+			out << "\nGf(var_indep)_k =\n" << *Gf_iq.get_k(0).sub_view(var_indep);
+	}
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		if(m)
 			out	<< "\nc_k = \n" << c_iq->get_k(0);
-		out << std::endl;
 	}
-
+	
 	// Check the derivatives if we are checking the results
 	if(		fd_deriv_testing() == FD_TEST
 		|| ( fd_deriv_testing() == FD_DEFAULT && algo.algo_cntr().check_results() )  )
@@ -396,29 +441,28 @@ void EvalNewPointStd_Step::print_step(
 		<< L << "if x is not updated for any k then set x_k = xinit\n";
 	if(m) {
 		out
-			<< L << "if m > 0 and Gc_k is not updated Gc_k = Gc(x_k) <: space_x|space_c\n"
-			<< L << "if m > 0 then\n"
-			<< L << "  For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
-			<< L << "    Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
-			<< L << "  Find:\n"
-			<< L << "    Z_k  <: space_x|space_null    s.t. Gc_k(:,equ_decomp)' * Z_k = 0\n"
-			<< L << "    Y_k  <: space_x|space_range   s.t. [Z_k Y_k] is nonsigular \n"
-			<< L << "    R_k  <: space_c(equ_decomp)|space_range\n"
-			<< L << "                                  s.t. R_k = Gc_k(:,equ_decomp)' * Y_k\n"
-			<< L << "    if m > r : Uz_k <: space_c(equ_undecomp)|space_null\n"
-			<< L << "                                  s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
-			<< L << "    if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
-			<< L << "                                  s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
-			<< L << "  begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
+			<< L << "if Gc_k is not updated Gc_k = Gc(x_k) <: space_x|space_c\n"
+			<< L << "For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
+			<< L << "  Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
+			<< L << "Find:\n"
+			<< L << "  Z_k  <: space_x|space_null    s.t. Gc_k(:,equ_decomp)' * Z_k = 0\n"
+			<< L << "  Y_k  <: space_x|space_range   s.t. [Z_k Y_k] is nonsigular \n"
+			<< L << "  R_k  <: space_c(equ_decomp)|space_range\n"
+			<< L << "                                s.t. R_k = Gc_k(:,equ_decomp)' * Y_k\n"
+			<< L << "  if m > r : Uz_k <: space_c(equ_undecomp)|space_null\n"
+			<< L << "                                s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
+			<< L << "  if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
+			<< L << "                                s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
+			<< L << "begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
 			;
-		decomp_sys_handler().print_update_decomposition( algo, s, out, L + "    " );
+		decomp_sys_handler().print_update_decomposition( algo, s, out, L + "  " );
 		out
-			<< L << "  end update decomposition\n"
-			<< L << "  if ( (decomp_sys_testing==DST_TEST)\n"
-			<< L << "    or (decomp_sys_testing==DST_DEFAULT and check_results==true)\n"
-			<< L << "    ) then\n"
-			<< L << "    check properties for Z_k, Y_k, R_k, Uz_k and Uy_k\n"
-			<< L << "  end\n"
+			<< L << "end update decomposition\n"
+			<< L << "if ( (decomp_sys_testing==DST_TEST)\n"
+			<< L << "  or (decomp_sys_testing==DST_DEFAULT and check_results==true)\n"
+			<< L << "  ) then\n"
+			<< L << "  check properties for Z_k, Y_k, R_k, Uz_k and Uy_k\n"
+			<< L << "end\n"
 			;
 	}
 	else {

@@ -71,6 +71,8 @@
 #include "MoochoPack/src/std/ReducedGradientStd_Step.hpp"
 #include "MoochoPack/src/std/InitFinDiffReducedHessian_Step.hpp"
 #include "MoochoPack/src/std/InitFinDiffReducedHessian_StepSetOptions.hpp"
+#include "MoochoPack/src/std/ReducedHessianSerialization_Step.hpp"
+#include "MoochoPack/src/std/ReducedHessianSerialization_StepSetOptions.hpp"
 #include "MoochoPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
 #include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
 
@@ -798,10 +800,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				));
 		}
 
-		// InitFinDiffReducedHessian_Step
+		// Initialization of the Reduced Hessian
 		algo_step_ptr_t  init_red_hess_step = Teuchos::null;
-		if( cov_.hessian_initialization_ != INIT_HESS_IDENTITY ) {
-				Algorithm::poss_type poss;
+		if(
+			cov_.hessian_initialization_ == INIT_HESS_FIN_DIFF_SCALE_IDENTITY
+			|| cov_.hessian_initialization_ == INIT_HESS_FIN_DIFF_SCALE_DIAGONAL
+			|| cov_.hessian_initialization_ == INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS
+			)
+		{
+			// InitFinDiffReducedHessian_Step
+			Algorithm::poss_type poss;
 			assert(poss = algo->get_step_poss( ReducedHessian_name ) );
 			InitFinDiffReducedHessian_Step::EInitializationMethod
 				init_hess;
@@ -827,7 +835,17 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 			init_red_hess_step = _init_red_hess_step;
 		}
-
+		else if(cov_.hessian_initialization_==INIT_HESS_SERIALIZE ) {
+			Teuchos::RefCountPtr<ReducedHessianSerialization_Step>
+				_init_red_hess_step = Teuchos::rcp(new ReducedHessianSerialization_Step());
+			if(options_.get()) {
+				ReducedHessianSerialization_StepSetOptions
+					opt_setter( _init_red_hess_step.get() );
+				opt_setter.set_options( *options_ );
+			}
+			init_red_hess_step = _init_red_hess_step;
+		}
+		
 		// NullSpace_Step
 		algo_step_ptr_t    set_d_bounds_step    = Teuchos::null;
 		algo_step_ptr_t    tangential_step_step = Teuchos::null;
@@ -1121,7 +1139,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			if(init_red_hess_step.get()) {
 				algo->insert_assoc_step(
 					step_num, IterationPack::PRE_STEP, 1
-					,"InitFiniteDiffReducedHessian"
+					,"ReducedHessianInitialization"
 					,init_red_hess_step
 					);
 			}
@@ -1189,8 +1207,9 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				*trase_out 
 					<< "\nConfiguring an algorithm for a system of nonlinear equations "
 					<< "NLP (n == m) ...\n";
-
-			algo->state().erase_iter_quant(merit_func_nlp_name);
+			
+			if(algo->state().get_iter_quant_id(merit_func_nlp_name)!=IterationPack::AlgorithmState::DOES_NOT_EXIST)
+				algo->state().erase_iter_quant(merit_func_nlp_name);
 
 			int step_num       = 0;
 			int assoc_step_num = 0;
@@ -1361,7 +1380,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			if(init_red_hess_step.get()) {
 				algo->insert_assoc_step(
 					step_num, IterationPack::PRE_STEP, 1
-					,"InitFiniteDiffReducedHessian"
+					,"ReducedHessianInitialization"
 					,init_red_hess_step
 					);
 			}
@@ -1580,12 +1599,14 @@ void NLPAlgoConfigMamaJama::readin_options(
 						ov->hessian_initialization_ = INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS;
 					else if( opt_val == "AUTO" )
 						ov->hessian_initialization_ = INIT_HESS_AUTO;
+					else if( opt_val == "SERIALIZE" )
+						ov->hessian_initialization_ = INIT_HESS_SERIALIZE;
 					else
 						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"hessian_initialization\" "
-							", Only options of IDENTITY, FINITE_DIFF_SCALE_IDENTITY,"
+							", Only options of IDENTITY, SERIALIZE, FINITE_DIFF_SCALE_IDENTITY,"
 							" FINITE_DIFF_DIAGONAL, FINITE_DIFF_DIAGONAL_ABS and AUTO"
 							" are available"  );
 					break;

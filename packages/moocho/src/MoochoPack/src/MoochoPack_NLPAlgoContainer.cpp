@@ -92,9 +92,7 @@ NLPAlgoContainer::find_min()
 		report_final_point(algo().retrieve_state(),false,&nlp());
 		throw;
 	}
-	if( solve_return != SOLUTION_FOUND ) {
-		report_final_point(algo().retrieve_state(),solve_return==NLPSolverClientInterface::SOLUTION_FOUND,&nlp());
-	}
+	report_final_point(algo().retrieve_state(),solve_return==NLPSolverClientInterface::SOLUTION_FOUND,&nlp());
 	return solve_return;
 }
 
@@ -132,7 +130,7 @@ void NLPAlgoContainer::assert_valid_setup() const {
 		,"NLPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
 	TEST_FOR_EXCEPTION(
 		!get_track().get(), NLPSolverClientInterface::InvalidSetup
-		,"NLPAlgoContainer::assert_valid_setup() : The rSQPTrack object has not been set" );
+		,"NLPAlgoContainer::assert_valid_setup() : The AlgorithmTracker object has not been set" );
 	TEST_FOR_EXCEPTION(
 		!get_config().get(), NLPSolverClientInterface::InvalidSetup
 		,"NLPAlgoContainer::assert_valid_setup() : The NLPAlgoConfig object has not been set" );

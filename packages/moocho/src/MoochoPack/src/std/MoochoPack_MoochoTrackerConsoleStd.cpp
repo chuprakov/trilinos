@@ -48,7 +48,7 @@ MoochoTrackerConsoleStd::MoochoTrackerConsoleStd(
 	const ostream_ptr_t&   o
 	,const ostream_ptr_t&  journal_out
 	)
-	:rSQPTrack(journal_out)
+	:AlgorithmTracker(journal_out)
 	,o_(o)
 	,printed_lines_(NUM_PRINT_LINES)
 {}

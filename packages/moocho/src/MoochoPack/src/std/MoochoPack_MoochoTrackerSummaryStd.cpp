@@ -35,7 +35,7 @@ MoochoTrackerSummaryStd::MoochoTrackerSummaryStd(
 	,const ostream_ptr_t     &journal_out
 	,EOptError               opt_error
 	)
-	:rSQPTrack(journal_out)
+	:AlgorithmTracker(journal_out)
 	,o_(o)
 	,opt_error_(opt_error)
 	,num_total_qp_iter_(0)

@@ -26,14 +26,14 @@ ReducedHessianSecantUpdateBFGSFull_Strategy::ReducedHessianSecantUpdateBFGSFull_
 {}
 
 bool ReducedHessianSecantUpdateBFGSFull_Strategy::perform_update(
-	VectorMutable     *s_bfgs
-	,VectorMutable    *y_bfgs
+	VectorMutable           *s_bfgs
+	,VectorMutable          *y_bfgs
 	,bool                   first_update
 	,std::ostream           & out
 	,EJournalOutputLevel    olevel
-	,NLPAlgo               *algo
-	,NLPAlgoState              *s
-	,MatrixSymOp        *rHL_k
+	,NLPAlgo                *algo
+	,NLPAlgoState           *s
+	,MatrixSymOp            *rHL_k
 	)
 {
 	bfgs_update().perform_update(

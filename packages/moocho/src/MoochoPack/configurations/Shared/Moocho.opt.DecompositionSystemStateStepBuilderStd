@@ -186,14 +186,14 @@ options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
 *    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
 *    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
-*    warning_tol   = 1e-10;
+*    warning_tol   = 1e-8; *** (default)
 *    warning_tol   = 0.0;  *** Show me all comparisons.
-*    error_tol     = 1e-5;
+*    error_tol     = 1e-3; *** (default)
 }
 
 ***************************************************************
 *** Options for EvalNewPoint for a "Tailored Approach" NLP.
-*** See options_group NLPrSQPTailoredApproachTester
+*** See options_group NLPDirectTester
 ***
 options_group EvalNewPointTailoredApproach {
 *    fd_deriv_testing   = FD_DEFAULT;  *** Test if check_results==true (see above)
@@ -226,9 +226,11 @@ options_group BasisSystemTester {
 *    print_tests = PRINT_BASIC;
 *    print_tests = PRINT_MORE;
 *    print_tests = PRINT_ALL;
-*    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
-*    warning_tol   = 1e-15;       *** (+dbl) Warning tolerance
-*    error_tol     = 1e-12;       *** (+dbl) Error tolerance
+*    dump_all = true;
+*    dump_all = false;          *** (default)
+*    num_random_tests = 1;      *** (+int) Number of sets of random tests to perform
+*    warning_tol   = 1e-15;     *** (+dbl) Warning tolerance
+*    error_tol     = 1e-12;     *** (+dbl) Error tolerance
 }
 
 ****************************************************************
@@ -240,13 +242,13 @@ options_group DecompositionSystemTester {
 *    print_tests = PRINT_BASIC;
 *    print_tests = PRINT_MORE;
 *    print_tests = PRINT_ALL;
-*    dump_all = true;
+*    dump_all = true;             *** (costly)
 *    dump_all = false;            *** (default)
-*    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
-*    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
-*    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
-*    solve_warning_tol  = 1e-12;  *** (+dbl) Warning tolerance for checking linear solves
-*    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
+*    num_random_tests   = 1;      *** (+int) Number of sets of random test to perform
+*    mult_warning_tol   = 1e-14;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
+*    mult_error_tol     = 1e-8;   *** (+dbl) Error tolerance for checking matrix-vector multiplication
+*    solve_warning_tol  = 1e-14;  *** (+dbl) Warning tolerance for checking linear solves
+*    solve_error_tol    = 1e-8;   *** (+dbl) Error tolerance for checking linear solves
 }
 
 *** End Moocho.opt.DecompositionSystemStateStepBuilderStd 

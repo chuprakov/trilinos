@@ -24,10 +24,12 @@ MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	,value_type              comp_tol
 	,value_type              step_tol
 	,EJournalOutputLevel     journal_output_level
+	,EJournalOutputLevel     null_space_journal_output_level
 	,int                     journal_print_digits
 	,bool                    check_results
 	,bool                    calc_conditioning
 	,bool                    calc_matrix_norms
+	,bool                    calc_matrix_info_null_space_only
 	)
 	:max_iter_(max_iter)
 	,max_run_time_(max_run_time)
@@ -36,8 +38,10 @@ MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	,comp_tol_(comp_tol)
 	,step_tol_(step_tol)
 	,journal_output_level_(journal_output_level)
+	,null_space_journal_output_level_(null_space_journal_output_level)
 	,journal_print_digits_(journal_print_digits)
 	,check_results_(check_results)
 	,calc_conditioning_(calc_conditioning)
 	,calc_matrix_norms_(calc_matrix_norms)
+	,calc_matrix_info_null_space_only_(calc_matrix_info_null_space_only)
 {}

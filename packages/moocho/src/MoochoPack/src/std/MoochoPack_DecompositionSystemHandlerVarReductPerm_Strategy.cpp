@@ -61,7 +61,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	std::ostream& out = algo.track().journal_out();
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out << "Updating the decomposition ...\n";
+		out << "\nUpdating the decomposition ...\n";
 	}
 
 	DecompositionSystemVarReductPerm   &decomp_sys_perm = dyn_cast<DecompositionSystemVarReductPerm>(s.decomp_sys());

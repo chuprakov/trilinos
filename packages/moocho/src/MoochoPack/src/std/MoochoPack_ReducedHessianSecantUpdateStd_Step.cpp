@@ -52,10 +52,11 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-	NLPAlgo	&algo	= rsqp_algo(_algo);
-	NLPAlgoState	&s		= algo.rsqp_state();
+	NLPAlgo       &algo = rsqp_algo(_algo);
+	NLPAlgoState  &s    = algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
@@ -84,8 +85,8 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	const size_type
 		n    = nlp.n(),
 		m    = nlp.m(),
-		r    = m ? py_iq.get_k(py_iq.last_updated()).dim() : 0,
-		nind = n - r;
+		nind = m ? Z_iq.get_k(Z_iq.last_updated()).cols() : 0,
+		r    = m - nind;
 
 	// See if a new basis has been selected
 	bool new_basis = false;
@@ -113,7 +114,10 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 			dyn_cast<MatrixSymInitDiag>(rHL_iq.set_k(0)).init_identity(
 				Z_iq.get_k(0).space_rows()
 				);
-			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES )
+			if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) )
+				if( algo.algo_cntr().calc_matrix_norms() )
+					out << "\n||rHL_k||inf = " << rHL_iq.get_k(0).calc_norm(MatrixOp::MAT_NORM_INF).value << std::endl;
+			if( (int)ns_olevel >= (int)PRINT_ITERATION_QUANTITIES )
 				out << "\nrHL_k = \n" << rHL_iq.get_k(0);
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::REINITIALIZED );
@@ -160,12 +164,12 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 				// s_bfgs = alpha_km1 * pz_km1
 				V_StV( s_bfgs.get(), alpha_km1, pz_iq.get_k(-1) );
 
-				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+				if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 					out << "\n||y_bfgs||inf = " << y_bfgs->norm_inf() << std::endl;
 					out << "\n||s_bfgs||inf = " << s_bfgs->norm_inf() << std::endl;
 				}
 
-				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+				if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 					out << "\ny_bfgs =\n" << *y_bfgs;
 					out << "\ns_bfgs =\n" << *s_bfgs;
 				}
@@ -178,7 +182,7 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 				if(!secant_update().perform_update(
 					   s_bfgs.get(), y_bfgs.get()
 					   ,iter_k_rHL_init_ident_ == s.k() - 1
-					   ,out, olevel, &algo, &s, &rHL_k
+					   ,out, ns_olevel, &algo, &s, &rHL_k
 					   ))
 				{
 					return_val = false; // redirect control of algorithm!
@@ -211,7 +215,7 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 						quasi_newton_stats_(s).set_k(0).set_updated_stats(
 							QuasiNewtonStats::SKIPED );
 					
-						if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+						if( (int)ns_olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
 							rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
 						}
 						set_current = true;
@@ -241,7 +245,7 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 		
 		MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
 
-		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+		if( (int)ns_olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 			if(algo.algo_cntr().calc_matrix_norms())
 				out << "\n||rHL_k||inf    = " << rHL_iq.get_k(0).calc_norm(mat_nrm_inf).value << std::endl;
 			if(algo.algo_cntr().calc_conditioning()) {
@@ -251,8 +255,7 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 					out << "\ncond_inf(rHL_k) = " << rHL_ns_k->calc_cond_num(mat_nrm_inf).value << std::endl;
 			}
 		}
-
-		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+		if( (int)ns_olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
 			out << "\nrHL_k = \n" << rHL_iq.get_k(0);
 		}
 		
@@ -266,9 +269,10 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	return return_val;
 }
 
-void MoochoPack::ReducedHessianSecantUpdateStd_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+void MoochoPack::ReducedHessianSecantUpdateStd_Step::print_step(
+	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+	,std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Calculate the reduced hessian of the Lagrangian rHL = Z' * HL * Z\n"

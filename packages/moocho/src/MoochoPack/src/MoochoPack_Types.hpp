@@ -27,14 +27,14 @@ namespace MoochoPack {
 // using types from IterationPack
 #include "IterationPack/src/IterationPackPublicTypes.ud"
 
-// enum for rSQP output.
+// enum for journal output.
 enum EJournalOutputLevel {
-	PRINT_NOTHING = 0,
-	PRINT_BASIC_ALGORITHM_INFO = 1,
-	PRINT_ALGORITHM_STEPS = 2,
-	PRINT_ACTIVE_SET = 3,
-	PRINT_VECTORS = 4,
-	PRINT_ITERATION_QUANTITIES = 5
+	PRINT_NOTHING = 0
+	,PRINT_BASIC_ALGORITHM_INFO = 1
+	,PRINT_ALGORITHM_STEPS = 2
+	,PRINT_ACTIVE_SET = 3
+	,PRINT_VECTORS = 4
+	,PRINT_ITERATION_QUANTITIES = 5
 };
 
 // public interface classes
@@ -47,9 +47,6 @@ class NLPAlgoConfig;
 //
 
 class NLPAlgo;
-typedef IterationPack::AlgorithmStep             rSQPStep;
-typedef IterationPack::AlgorithmTracker            rSQPTrack;
-typedef IterationPack::AlgorithmTrackerComposite   rSQPTrackComposite;
 
 }	// end namespace MoochoPack 
 

@@ -47,10 +47,11 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 	NLPAlgoState    &s     = algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+	EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
 	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+	if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
@@ -77,7 +78,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 		if( (int)olevel >= (int)PRINT_VECTORS )
 			out << "\nGf_k+nu_k = \n" << *tmp;
 		V_MtV(	&rGL_k, s.Z().get_k(0), trans, *tmp );
-		if( (int)olevel >= (int)PRINT_VECTORS )
+		if( (int)ns_olevel >= (int)PRINT_VECTORS )
 			out << "\nrGL_k = \n" << rGL_k;
 	}
 	else {

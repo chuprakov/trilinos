@@ -41,7 +41,7 @@ using std::setprecision;
 MoochoTrackerStatsStd::MoochoTrackerStatsStd(
 	const ostream_ptr_t& o, const ostream_ptr_t& journal_out
 	)
-	: rSQPTrack(journal_out)
+	:AlgorithmTracker(journal_out)
 {
 	set_output_stream(o);
 }
