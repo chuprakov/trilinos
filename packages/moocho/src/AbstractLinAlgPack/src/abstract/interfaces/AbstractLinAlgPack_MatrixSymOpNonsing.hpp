@@ -34,9 +34,6 @@ class MatrixSymWithOpNonsingular
 {
 public:
 
-	///
-	using MatrixSymWithOp::operator=;
-
 	/** @name Public types */
 	//@{
 
