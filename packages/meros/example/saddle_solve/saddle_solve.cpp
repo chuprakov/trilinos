@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   subblock_maps = (Epetra_Map **) malloc(sizeof(Epetra_Map *)*2);
   subblock_maps[0] = new Epetra_Map(Nblks*(blk_size-1), 0, *comm);
   subblock_maps[1] = new Epetra_Map(Nblks, 0, *comm);
-  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
+  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/tmac-vbr/K_reordered");
 
   Epetra_RowMatrix *saddleA_epet = Aztec2TSF(Amat,comm,(Epetra_BlockMap *&) VbrMap,subblock_maps);
 
@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
    TSFLinearOperator saddleM_tsf =  new TSFBlockLinearOperator(saddleA_tsf.range(), saddleA_tsf.domain());
    saddleM_tsf.setBlock(0,0,F_inv);
    TSFLinearOperator ident = new TSFIdentityOperator(saddleA_tsf.getBlock(1,0).range());
-   //   saddleM_tsf.setBlock(1,1,ident);
-   saddleM_tsf.setBlock(1,1,BBt_inv);
+   //      saddleM_tsf.setBlock(1,1,ident);
+       saddleM_tsf.setBlock(1,1,BBt_inv);
 
    TSFLinearOperator2EpetraRowMatrix *saddlePrec_epet = new TSFLinearOperator2EpetraRowMatrix(saddleM_tsf,
                                              comm, (Epetra_Map *) &(saddleA_epet->OperatorDomainMap()),
@@ -162,8 +162,8 @@ int main(int argc, char *argv[])
    Epetra_Vector *x_epet, *rhs_epet;
    x_epet   = new Epetra_Vector(*VbrMap);
    rhs_epet = new Epetra_Vector(*VbrMap);
-   ReadPetraVector(x_epet  , "../data/mac-vbr/guess_reordered");
-   ReadPetraVector(rhs_epet, "../data/mac-vbr/rhs_reordered");
+   ReadPetraVector(x_epet  , "../data/tmac-vbr/guess_reordered");
+   ReadPetraVector(rhs_epet, "../data/tmac-vbr/rhs_reordered");
 
    // Set up the outer iteration
 
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
    AztecOO solver(problem);
    solver.SetPrecOperator(saddlePrec_epet);
    solver.SetAztecOption(AZ_solver,AZ_GMRESR);
-   solver.Iterate(10, 1.0E-8);
+   solver.Iterate(200, 1.0E-8);
 
 
 
