@@ -14,6 +14,7 @@ namespace NLPInterfacePack {
 // NLP interface classes
 
 class NLP;
+class NLPObjGradient;
 class NLPFirstOrderInfo;
 class NLPSecondOrderInfo;
 class NLPReduced;

@@ -4,16 +4,16 @@
 #ifndef NLP_FIRST_ORDER_INFO_H
 #define NLP_FIRST_ORDER_INFO_H
 
-#include "NLP.h"
+#include "NLPObjGradient.h"
 
 namespace NLPInterfacePack {
 ///
-/** NLP First Order Information Interface Class.
+/** NLP first order information interface class {abstract}.
   *
-  * This class adds first order inforamtion to the basic information
-  * given in the \Ref{NLP} interface class.
+  * This class adds Jacobian information for the constraints 
+  * #Gf#, #f# and #c# info from \Ref{NLPObjGradient}.
   */
-class NLPFirstOrderInfo : public NLP {
+class NLPFirstOrderInfo : public NLPObjGradient {
 public:
 
 	/** @name Public Types */
@@ -23,10 +23,6 @@ public:
 	class InvalidMatrixType : public std::logic_error
 	{public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/// Thrown if the computation of a quantity is not supported.
-	class ComputationNotSupported : public std::logic_error
-	{public: ComputationNotSupported(const std::string& what_arg) : std::logic_error(what_arg) {}};
-
 	//@}
 
 	/** @name Constructors */
@@ -35,9 +31,6 @@ public:
 	/// Initialize to no reference set to calculation quanities
 	NLPFirstOrderInfo();
 
-	/// Clean up any memory #this# owns
-	~NLPFirstOrderInfo();
-
 	//@}
 
 	///
@@ -45,51 +38,18 @@ public:
 	  */
 	void initialize();
 
-	/** @name <<std comp>> stereotype member functions
-	  */
-	//@{
-
-	/** @name <<std comp>> members for the gradient if the objective function value, Gf.
+	/** @name <<std aggr>> members for the matrix of the gradient of equality constaints vector, Gc.
 	  *
 	  * The is a reference to a vector storage location that is updated when
-	  * #calc_Gf(...)# is called or when #Gf# is updated as a side effect
+	  * #calc_Gc(...)# is called or when #Gc# is updated as a side effect
 	  * when another "calc" member funciton is called.
 	  */
 	//@{
 
 	///
-	virtual void set_Gf(Vector* Gf, bool owns_Gf = false);
-	///
-	virtual Vector* get_Gf();
-	///
-	virtual void set_owns_Gf(bool owns_Gf);
-	///
-	virtual bool owns_Gf();
-	///
-	virtual Vector& Gf();
-	///
-	virtual const Vector& Gf() const;
-
-	//@}
-
-	/** @name <<std comp>> members for the matrix of the gradient of equality constaints vector, Gc.
-	  *
-	  * The is a reference to a vector storage location that is updated when
-	  * #calc_Gc(...)# is called or when #Gc# is updated as a side effect
-	  * when another "calc" member funciton is called.  The #same_struct# argument
-	  * is ment to be used by subclasses that override #set_Gc(...)# to exploit the
-	  * structure of the currently set Gc matrix.
-	  */
-	//@{
-
-	///
-	virtual void set_Gc(MatrixWithOp* Gc, bool owns_Gc = false, bool same_struct = true);
+	virtual void set_Gc(MatrixWithOp* Gc);
 	///
 	virtual MatrixWithOp* get_Gc();
-	///
-	virtual void set_owns_Gc(bool owns_Gc);
-	///
-	virtual bool owns_Gc();
 	///
 	virtual MatrixWithOp& Gc();
 	///
@@ -106,18 +66,6 @@ public:
 
 	//@{
 
-	/// Return if #Gf# is calcuated analytically (true) or by some numerical technique (false)
-	virtual bool analytic_Gf() const = 0;
-	/// Return if #Gc# is calcuated analytically (true) or by some numerical technique (false)
-	virtual bool analytic_Gc() const = 0;
-	///
-	/** Update the vector for #Gf# at the point #x# and put it in the stored reference.
-	  *
-	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c# and #Gc# may also be changed
-	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
-	  * to be updated as a side effect.
-	  */ 
-	virtual void calc_Gf(const VectorSlice& x, bool newx = true) const;
 	///
 	/** Update the matrix for #Gc# at the point #x# and put it in the stored reference.
 	  *
@@ -129,65 +77,67 @@ public:
 
 	//@}
 
-	/** @name Objective and constraint function gradients.
+	///
+	/** Number of constraint function Jacobian evaluations.
 	  *
-	  * These functions can be called to find out how many evaluations
+	  * This function can be called to find out how many evaluations
 	  * the client requested since initialize() was called.
-	  *
-	  * Also, if the client calls calc_inf( x, false ) several times
-	  * then the count will be incremented for each call even though
-	  * the actual quantity may not actually be
-	  * recalculated each time.  This information is not known here
-	  * in this base class but the subclasses can overide this behavior
-	  * if they want to.
-	  */
-	//@{
-
-	///
-	/** Gives the number of object function f(x) evaluations called by the solver
-	  * since initialize() was called..
-	  */
-	virtual size_type num_Gf_evals() const;
-
-	///
-	/** Gives the number of constraint function c(x) evaluations called by the solver
-	  * since initialize() was called..
 	  */
 	virtual size_type num_Gc_evals() const;
 
-	//@}
-
 protected:
+
+	///
+	/** Struct for zero and first order quantities (pointers)
+	 */
+	struct FirstOrderInfo {
+		///
+		FirstOrderInfo()
+			: Gc(NULL), Gf(NULL), f(NULL), c(NULL)
+		{}
+		///
+		FirstOrderInfo( MatrixWithOp* Gc_in, const ObjGradInfo& obj_grad )
+			: Gc(Gc_in), Gf(obj_grad.Gf), f(obj_grad.f), c(obj_grad.c)
+		{}
+		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
+		MatrixWithOp* Gc;
+		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
+		Vector*       Gf;
+		/// Pointer to objective function #f# (may be NULL if not set)
+		value_type*   f;
+		/// Pointer to constraints residule #c# (may be NULL if not set)
+		Vector*       c;
+	}; // end struct FirstOrderInfo
+
+	/// Return objective gradient and zero order information.
+	const FirstOrderInfo first_order_info() const;
 
 	/** @name Protected methods to be overridden by subclasses */
 	//@{
 
-	/// Override to update the protected member #Gf_#
-	virtual void imp_calc_Gf(const VectorSlice& x, bool newx) const = 0;
-	/// Override to update the protected member #Gc_#
-	virtual void imp_calc_Gc(const VectorSlice& x, bool newx) const = 0;
-
-	//@}
-
-	/** @name Protected members to be updated by subclasses */
-	//@{
-
-	/// Updated by subclass that implements #imp_calc_Gf(x,newx)#.
-	mutable Vector*					Gf_;
-	/// Updated by subclass that implements #imp_calc_Gc(x,newx)#.
-	mutable MatrixWithOp*			Gc_;
-
-	//@}
+	///
+	/** Overridden to compute Gc(x) and perhaps G(x), f(x) and c(x) (if multiple calculaiton = true).
+	 *
+	 * @param x           Unknown vector (size n).
+	 * @param newx        True if is a new point.
+	 * @param obj_grad    Pointers to Gf, f and c
+	 */
+	virtual void imp_calc_Gc(const VectorSlice& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
 
 private:
-	mutable bool					owns_Gf_;
-	static const char				name_Gf_[];
-	mutable size_type				num_Gf_evals_;
-	mutable bool					owns_Gc_;
-	static const char				name_Gc_[];
-	mutable size_type				num_Gc_evals_;
+	mutable MatrixWithOp      *Gc_;
+	mutable size_type         num_Gc_evals_;
 
 };	// end class NLPFirstOrderInfo
+
+// /////////////////////
+// Inline members
+
+inline
+const NLPFirstOrderInfo::FirstOrderInfo NLPFirstOrderInfo::first_order_info() const
+{
+	return FirstOrderInfo(Gc_,obj_grad_info());
+}
 
 }	// end namespace NLPInterfacePack 
 

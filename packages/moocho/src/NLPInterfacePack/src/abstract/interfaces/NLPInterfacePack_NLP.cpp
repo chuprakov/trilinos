@@ -1,122 +1,98 @@
 // ///////////////////////////////////////////////////////////////////////
 // NLP.cpp
 
-#include <iostream>
-
-#include "../include/NLP.h"
+#include "NLPInterfacePack/include/NLP.h"
+#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/VectorClass.h"
 
-// static members
-
-const char NLPInterfacePack::NLP::name_f_[] = "f";
-const char NLPInterfacePack::NLP::name_c_[] = "c";
+namespace {
+	const char name_f[] = "f";
+	const char name_c[] = "c";
+} // end namespace
 
 // constructors
 
-NLPInterfacePack::NLP::NLP() : f_(0), owns_f_(false), c_(0), owns_c_(false)
+NLPInterfacePack::NLP::NLP()
 {}
 
 // destructor
 
 NLPInterfacePack::NLP::~NLP()
-{
-	StandardCompositionRelationshipsPack::destory_container_obj(f_,owns_f_);
-	StandardCompositionRelationshipsPack::destory_container_obj(c_,owns_c_);
-}
+{}
 
 void NLPInterfacePack::NLP::initialize() {
 	num_f_evals_ = num_c_evals_ = 0;
 }
 
-void NLPInterfacePack::NLP::get_lambda_init( Vector* lambda ) const
+void NLPInterfacePack::NLP::get_init_lagrange_mult( Vector* lambda, SpVector* nu ) const
 {
-	lambda->resize(n());
-	(*lambda) = 0.0;
+	const size_type n = this->n();
+	if(lambda) {
+		lambda->resize(n);
+		(*lambda) = 0.0;
+	}
+	if(nu) {
+		nu->resize(n,n); // No nonzero elements!
+	}
 }
 
 // <<std comp>> members for f
 
-void NLPInterfacePack::NLP::set_f(value_type* f, bool owns_f)
+void NLPInterfacePack::NLP::set_f(value_type* f)
 {
-	StandardCompositionRelationshipsPack::set_role_name(f_, owns_f_, name_f_
-		, f, owns_f);
+	f_c_.f = f;
 }
 
 NLPInterfacePack::value_type* NLPInterfacePack::NLP::get_f()
 {
-	return StandardCompositionRelationshipsPack::get_role_name(f_, owns_f_, name_f_);
-}
-
-void NLPInterfacePack::NLP::set_owns_f(bool owns_f)
-{
-	StandardCompositionRelationshipsPack::set_owns_role_name(f_, owns_f_, name_f_
-		, owns_f);
-}
-
-bool NLPInterfacePack::NLP::owns_f()
-{
-	return StandardCompositionRelationshipsPack::owns_role_name(f_, owns_f_, name_f_);
+	return StandardCompositionRelationshipsPack::get_role_name(f_c_.f, false, name_f);
 }
 
 NLPInterfacePack::value_type& NLPInterfacePack::NLP::f()
 {
-	return StandardCompositionRelationshipsPack::role_name(f_, owns_f_, name_f_);
+	return StandardCompositionRelationshipsPack::role_name(f_c_.f, false, name_f);
 }
 
 const NLPInterfacePack::value_type& NLPInterfacePack::NLP::f() const
 {
-	return StandardCompositionRelationshipsPack::role_name(f_, owns_f_, name_f_);
+	return StandardCompositionRelationshipsPack::role_name(f_c_.f, false, name_f);
 }
 
 // <<std comp>> members for c
 
-void NLPInterfacePack::NLP::set_c(Vector* c, bool owns_c)
+void NLPInterfacePack::NLP::set_c(Vector* c)
 {
-	StandardCompositionRelationshipsPack::set_role_name(c_, owns_c_, name_c_
-		, c, owns_c);
+	f_c_.c = c;
 }
 
 NLPInterfacePack::Vector* NLPInterfacePack::NLP::get_c()
 {
-	return StandardCompositionRelationshipsPack::get_role_name(c_, owns_c_, name_c_);
-}
-
-void NLPInterfacePack::NLP::set_owns_c(bool owns_c)
-{
-	StandardCompositionRelationshipsPack::set_owns_role_name(c_, owns_c_, name_c_
-		, owns_c);
-}
-
-bool NLPInterfacePack::NLP::owns_c()
-{
-	return StandardCompositionRelationshipsPack::owns_role_name(c_, owns_c_, name_c_);
+	return StandardCompositionRelationshipsPack::get_role_name(f_c_.c, false, name_c);
 }
 
 NLPInterfacePack::Vector& NLPInterfacePack::NLP::c()
 {
-	return StandardCompositionRelationshipsPack::role_name(c_, owns_c_, name_c_);
+	return StandardCompositionRelationshipsPack::role_name(f_c_.c, false, name_c);
 }
 
 const NLPInterfacePack::Vector& NLPInterfacePack::NLP::c() const
 {
-	return StandardCompositionRelationshipsPack::role_name(c_, owns_c_, name_c_);
+	return StandardCompositionRelationshipsPack::role_name(f_c_.c, false, name_c);
 }
 
 // calculations
 
 void NLPInterfacePack::NLP::calc_f(const VectorSlice& x, bool newx) const
 {
-	StandardCompositionRelationshipsPack::assert_role_name_set(f_, "NLP::calc_f()", name_f_);
-//	std::cout << "calc_f(...): x(1) = " << x(1) << "\n";
-	imp_calc_f(x,newx);
+	StandardCompositionRelationshipsPack::assert_role_name_set(f_c_.f, "NLP::calc_f()", name_f);
+	imp_calc_f(x,newx,zero_order_info());
 	num_f_evals_++;
 }
 
 void NLPInterfacePack::NLP::calc_c(const VectorSlice& x, bool newx) const
 {
-	StandardCompositionRelationshipsPack::assert_role_name_set(c_, "NLP::calc_c()", name_c_);
-//	std::cout << "calc_c(...): x(1) = " << x(1) << "\n";
-	imp_calc_c(x,newx);
+	StandardCompositionRelationshipsPack::assert_role_name_set(f_c_.c, "NLP::calc_c()", name_c);
+	imp_calc_c(x,newx,zero_order_info());
 	num_c_evals_++;
 }
 

@@ -5,11 +5,12 @@
 #define NLP_SECOND_ORDER_INFO_H
 
 #include "NLPFirstOrderInfo.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
 
 namespace NLPInterfacePack {
 
 ///
-/** NLP Second Order Information Interface Class.
+/** NLP second order information interface class {abstract}.
   *
   * This class adds second order inforamtion to the first order information
   * and basic information given in the \Ref{NLPFirstOrderInfo} interface class.
@@ -42,19 +43,16 @@ public:
 	/// Initialize to no reference set to calculation quanities
 	NLPSecondOrderInfo();
 
-	/// Clean up all of the memory #this# owns
-	~NLPSecondOrderInfo();
-
 	//@}
 	
 	///
 	void initialize();
 
-	/** @name <<std comp>> stereotype member functions
+	/** @name <<std aggr>> stereotype member functions
 	  */
 	//@{
 
-	/** @name <<std comp>> members for the Hessian if the objective Lagrangian function
+	/** @name <<std aggr>> members for the Hessian if the objective Lagrangian function
 	  * value, HL.
 	  *
 	  * The is a reference to a matrix storage location that is updated when
@@ -63,17 +61,13 @@ public:
 	//@{
 
 	///
-	virtual void set_HL(MatrixWithOp* HL, bool owns_HL = false);
+	virtual void set_HL(MatrixSymWithOp* HL);
 	///
-	virtual MatrixWithOp* get_HL();
+	virtual MatrixSymWithOp* get_HL();
 	///
-	virtual void set_owns_HL(bool owns_HL);
+	virtual MatrixSymWithOp& HL();
 	///
-	virtual bool owns_HL();
-	///
-	virtual MatrixWithOp& HL();
-	///
-	virtual const MatrixWithOp& HL() const;
+	virtual const MatrixSymWithOp& HL() const;
 
 	//@}
 
@@ -86,9 +80,6 @@ public:
 
 	//@{
 
-	/// Return if #HL# is calcuated analytically (true) or by some numerical technique (false)
-	virtual bool analytic_HL() const = 0;
-
 	///
 	/** Update the matrix for #HL# at the point #x#, #lambda# and put it in the stored reference.
 	  *
@@ -96,35 +87,78 @@ public:
 	  * changed but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_HL(const VectorSlice& x, const VectorSlice& lambda
-		, bool newx = true) const;
+	virtual void calc_HL(const VectorSlice& x, const VectorSlice& lambda, bool newx = true) const;
 
 	//@}
 
+		///
+	/** Number of Hessian evaluations.
+	  *
+	  * This function can be called to find out how many evaluations
+	  * the client requested since initialize() was called.
+	  */
+	virtual size_type num_HL_evals() const;
+
 protected:
+
+	///
+	/** Struct for zero, first and second order quantities (pointers)
+	 */
+	struct SecondOrderInfo {
+		///
+		SecondOrderInfo()
+			: Gc(NULL), Gf(NULL), f(NULL), c(NULL)
+		{}
+		///
+		SecondOrderInfo( MatrixSymWithOp* HL_in, const FirstOrderInfo& first_order_info )
+			: HL(HL_in), Gc(first_order_info.Gc), Gf(first_order_info.Gf)
+			, f(first_order_info.f), c(first_order_info.c)
+		{}
+		/// Pointer to Hessiand of the Lagrangian #HL) (may be NULL is not set)
+		MatrixSymWithOp* HL;
+		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
+		MatrixWithOp*    Gc;
+		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
+		Vector*          Gf;
+		/// Pointer to objective function #f# (may be NULL if not set)
+		value_type*      f;
+		/// Pointer to constraints residule #c# (may be NULL if not set)
+		Vector*          c;
+	}; // end struct SecondOrderInfo
+
+	/// Return objective gradient and zero order information.
+	const SecondOrderInfo second_order_info() const;
 
 	/** @name Protected methods to be overridden by subclasses */
 	//@{
 
-	/// Override to update the protected member #HL_#
-	virtual void imp_calc_HL(const VectorSlice& x, const VectorSlice& lambda
-		, bool newx) const = 0;
-
-	//@}
-
-	/** @name Protected members to be updated by subclasses */
-	//@{
-
-	/// Updated by subclass that implements #imp_calc_HL(x,lambda,newx)#.
-	mutable MatrixWithOp*			HL_;
+	///
+	/** Overridden to compute Gc(x) and perhaps G(x), f(x) and c(x) (if multiple calculaiton = true).
+	 *
+	 * @param x                     [in] Unknown vector (size n).
+	 * @param lambda                [in] Lagrange multipliers for equality constraints
+	 * @param newx                  [in] True if is a new point.
+	 * @param second_order_info     [out] Pointers to HL, Gc, Gf, f and c
+	 */
+	virtual void imp_calc_HL(const VectorSlice& x, const VectorSlice& lambda, bool newx
+		, const SecondOrderInfo& second_order_info) const = 0;
 
 	//@}
 
 private:
-	mutable bool					owns_HL_;
-	static const char				name_HL_[];
+	mutable MatrixSymWithOp   *HL_;
+	mutable bool              num_HL_evals_;
 
 };	// end class NLPSecondOrderInfo
+
+// //////////////////
+// Inline members
+
+inline
+const NLPSecondOrderInfo::SecondOrderInfo NLPSecondOrderInfo::second_order_info() const
+{
+	return SecondOrderInfo(HL_,first_order_info());
+}
 
 }	// end namespace NLPInterfacePack 
 

@@ -13,7 +13,7 @@
 namespace NLPInterfacePack {
 
 ///
-/** NLP Interface Class.
+/** NLP interface class {abstract}.
   *
   * This class represents an abstract interface to a general nonlinear
   * programming problem of the form: \\
@@ -117,7 +117,7 @@ public:
 	///
 	/** Returns if the initial point must be within the bounds.
 	  */
-	virtual bool force_xinit_in_bounds() = 0;
+	virtual bool force_xinit_in_bounds() const = 0;
 	///
 	/** Returns a reference to the vector of the initial guess for the solution #x#
 	  */
@@ -142,16 +142,28 @@ public:
 	/** Get the initial value of the Lagrange multipliers lambda.
 	  *
 	  * By default this function just sets them to zero.
+	  *
+	  * Postconditions: \begin{itemize}
+	  * \item [lambda != NULL] lambda->size() == this->n()
+	  * \item [nu != NULL] nu->size() == this->n()
+	  * \end{itemize}
+	  *
+	  * @param lambda  [out] Pointer to lagrange multipliers for equalities.
+	  *                lambda == NULL is allowd in which case it will not
+	  *                be set.
+	  * @param nu      [out] Pointer to lagrange multipliers for bounds.
+	  *                nu == NULL is allowd in which case it will not
+	  *                be set.
 	  */
-	virtual void get_lambda_init( Vector* lambda ) const;
+	virtual void get_init_lagrange_mult( Vector* lambda, SpVector* nu ) const;
 
 	//@}
 
-	/** @name <<std comp>> stereotype member functions
+	/** @name <<std aggr>> stereotype member functions
 	  */
 	//@{
 
-	/** @name <<std comp>> members for the objective function value, f.
+	/** @name <<std aggr>> members for the objective function value, f.
 	  *
 	  * The is a reference to a scalar storage location that is updated when
 	  * #calc_f(...)# is called or when #f# is updated as a side effect
@@ -160,13 +172,9 @@ public:
 	//@{
 
 	///
-	virtual void set_f(value_type* f, bool owns_f = false);
+	virtual void set_f(value_type* f);
 	///
 	virtual value_type* get_f();
-	///
-	virtual void set_owns_f(bool owns_f);
-	///
-	virtual bool owns_f();
 	///
 	virtual value_type& f();
 	///
@@ -174,7 +182,7 @@ public:
 
 	//@}
 
-	/** @name <<std comp>> members for the equality constaints vector, c.
+	/** @name <<std aggr>> members for the equality constaints vector, c.
 	  *
 	  * The is a reference to a vector storage location that is updated when
 	  * #calc_c(...)# is called or when #c# is updated as a side effect
@@ -183,13 +191,9 @@ public:
 	//@{
 
 	///
-	virtual void set_c(Vector* c, bool owns_c = false);
+	virtual void set_c(Vector* c);
 	///
 	virtual Vector* get_c();
-	///
-	virtual void set_owns_c(bool owns_c);
-	///
-	virtual bool owns_c();
 	///
 	virtual Vector& c();
 	///
@@ -311,41 +315,70 @@ public:
 
 protected:
 
+	///
+	/** Struct for objective and constriants (pointer)
+	 */
+	struct ZeroOrderInfo {
+	public:
+		///
+		ZeroOrderInfo() : f(NULL), c(NULL)
+		{}
+		///
+		ZeroOrderInfo( value_type* f_in, Vector* c_in )
+			: f(f_in), c(c_in)
+		{}
+		/// Pointer to objective function #f# (may be NULL if not set)
+		value_type*   f;
+		/// Pointer to constraints residule #c# (may be NULL if not set)
+		Vector*       c;
+	}; // end struct ZeroOrderInfo
+
+	/// Return pointer to set quantities
+	const ZeroOrderInfo zero_order_info() const;
+
 	/** @name Protected methods to be overridden by subclasses */
 	//@{
 
-	/// Override to update the protected member #f_#
-	virtual void imp_calc_f(const VectorSlice& x, bool newx) const = 0;
-	/// Override to update the protected member #c_#
-	virtual void imp_calc_c(const VectorSlice& x, bool newx) const = 0;
+	///
+	/** Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
+	 *
+	 * @param x           [in]  Unknown vector (size n).
+	 * @param newx        [in]  True if is a new point.
+	 * @param zero_order  [out] Pointers to f and c
+	 */
+	virtual void imp_calc_f(const VectorSlice& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+	///
+	/** Overridden to compute c(x) and perhaps f(x) (if multiple calculaiton = true).
+	 *
+	 * @param x           [in]  Unknown vector (size n).
+	 * @param newx        [in]  True if is a new point.
+	 * @param zero_order  [out] Pointers to f and c
+	 */
+	virtual void imp_calc_c(const VectorSlice& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 
 	//@}
 
-	/** @name Protected members to be filled by subclasses. */
-	//@{
-
-	/// Updated by subclass that implements #imp_calc_f(x,newx)#.
-	mutable value_type*				f_;
-	/// Updated by subclass that implements #imp_calc_c(x,newx)#.
-	mutable Vector*					c_;
-
-	//@}
-
-	// Assert referece has been set for a quanity
+	/// Assert referece has been set for a quanity
 	template<class T>
 	void assert_ref_set(T* p, std::string info) const {
 		StandardCompositionRelationshipsPack::assert_role_name_set(p, false, info);
 	}
 
 private:
-	mutable bool					owns_f_;
-	static const char				name_f_[];
+	mutable ZeroOrderInfo           f_c_;
 	mutable size_type				num_f_evals_;
-	mutable bool					owns_c_;
-	static const char				name_c_[];
 	mutable size_type				num_c_evals_;
 	
 };	// end class NLP
+
+// /////////////////
+// Inline members
+
+inline
+const NLP::ZeroOrderInfo NLP::zero_order_info() const
+{
+	return f_c_;
+}
 
 }	// end namespace NLPInterfacePack 
 
