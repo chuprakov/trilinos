@@ -1,3 +1,6 @@
+// //////////////////////////////////////////////////////
+// TSFCoreNonlinEpetraNPFO.cpp
+//
 // @HEADER
 // ***********************************************************************
 // 
@@ -26,9 +29,6 @@
 // ***********************************************************************
 // @HEADER
 
-// //////////////////////////////////////////////////////
-// TSFCoreNonlinEpetraNPFO.cpp
-
 #include "TSFCoreNonlinEpetraNPFO.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
@@ -40,12 +40,26 @@
 #include "Epetra_Comm.h"
 #include "Ifpack_CrsRiluk.h"
 #include "Teuchos_Time.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 #ifdef _DEBUG
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l) TEST_FOR_EXCEPTION( l > epetra_np_->Nu() || l < 0, std::invalid_argument, "Error!  l == " << l << " out of range")
 #else
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l)
 #endif
+
+
+namespace {
+
+void sqrt( Epetra_Vector *v )
+{
+	const int localDim = v->Map().NumMyPoints();
+	double *v_ptr = &(*v)[0];
+	for( int i = 0; i < localDim; ++i, ++v_ptr )
+		*v_ptr = std::sqrt(*v_ptr);
+}
+
+} // namespace
 
 namespace TSFCore {
 namespace Nonlin {
@@ -57,14 +71,18 @@ namespace Nonlin {
 // Constructors / Initializers / accessors
 
 EpetraNPFO::EpetraNPFO(
-	const int            maxLinSolveIter
+	const bool           autoScaleStateConstraints
+	,const bool          autoScaleStateVariables
+	,const int           maxLinSolveIter
 	,const double        relLinSolveTol
 	,const bool          usePrec
 	,const bool          testOperators
 	,const std::string   &yGuessFileNameBase
 	,const std::string   &yFinalFileNameBase
 	)
-	:maxLinSolveIter_(maxLinSolveIter)
+	:autoScaleStateConstraints_(autoScaleStateConstraints)
+	,autoScaleStateVariables_(autoScaleStateVariables)
+	,maxLinSolveIter_(maxLinSolveIter)
 	,relLinSolveTol_(relLinSolveTol)
 	,usePrec_(usePrec)
 	,testOperators_(testOperators)
@@ -84,6 +102,10 @@ void EpetraNPFO::initialize(
 {
   using Teuchos::RefCountPtr;
   using Teuchos::rcp;
+  using Teuchos::rcp_dynamic_cast;
+	using DynamicCastHelperPack::dyn_cast;
+
+	Teuchos::Time timer("");
 
 	TEST_FOR_EXCEPTION( !epetra_np.get(), std::invalid_argument, "Error!" );
 
@@ -95,10 +117,26 @@ void EpetraNPFO::initialize(
   // Make sure that the Epetra Nonlinear Problem is initialized
   epetra_np_->initialize(false);
 
-  // The the number of auxiliary variables and responce functions
+  // Get the the number of auxiliary variables and response functions
   const int
     Nu  = epetra_np_->Nu(),
     nrf = epetra_np_->numResponseFunctions();
+
+  // Setup cache arrays for dealing with DcDu
+  DcDu_op_.resize(Nu);
+  DcDu_mv_.resize(Nu);
+  DcDu_updated_.resize(Nu);
+  epetra_DcDu_op_.resize(Nu);
+  epetra_DcDu_mv_.resize(Nu);
+  epetra_DcDu_args_.resize(Nu);
+
+  // Setup cache arrays for dealing with DgDu
+  DgDu_.resize(Nu);
+  DgDu_updated_.resize(Nu);
+  epetra_DgDu_.resize(Nu);
+  epetra_DgDu_args_.resize(Nu);
+
+  unsetQuantities();
   
   // Set up vector spaces
   space_y_ = rcp(new EpetraVectorSpace(epetra_np_->map_y()));
@@ -106,27 +144,40 @@ void EpetraNPFO::initialize(
   space_u_.resize(Nu); for(int l=1;l<=Nu;++l) space_u_[l-1] = rcp(new EpetraVectorSpace(epetra_np_->map_u(l)));
   space_g_ = rcp(new EpetraVectorSpace(epetra_np_->map_g()));
 
-  // Set up variable bounds and initial guesses
+	//
+  // Set up variable bounds and initial guesses (unscaled)
+	//
 
   // y
-  yL_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->yL()),false),space_y_));
-  yU_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->yU()),false),space_y_));
-  y0_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->y0()),false),space_y_));
+  yL_ = rcp_dynamic_cast<EpetraVector>(space_y_->createMember()); *yL_->epetra_vec() = epetra_np_->yL();
+  yU_ = rcp_dynamic_cast<EpetraVector>(space_y_->createMember()); *yU_->epetra_vec() = epetra_np_->yU();
+  y0_ = rcp_dynamic_cast<EpetraVector>(space_y_->createMember()); *y0_->epetra_vec() = epetra_np_->y0();
 	read_y_guess( &*y0_ );
   // u
   uL_.resize(Nu);
   uU_.resize(Nu);
   u0_.resize(Nu);
-  u_in_.resize(Nu);
+  u_unscaled_.resize(Nu);
   for(int l=1;l<=Nu;++l) {
-    uL_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uL(l)),false),space_u_[l-1]));
-    uU_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uU(l)),false),space_u_[l-1]));
-    u0_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->u0(l)),false),space_u_[l-1]));
+    uL_[l-1] = rcp_dynamic_cast<EpetraVector>(space_u_[l-1]->createMember()); *uL_[l-1]->epetra_vec() = epetra_np_->uL(l);
+    uU_[l-1] = rcp_dynamic_cast<EpetraVector>(space_u_[l-1]->createMember()); *uU_[l-1]->epetra_vec() = epetra_np_->uU(l);
+    u0_[l-1] = rcp_dynamic_cast<EpetraVector>(space_u_[l-1]->createMember()); *u0_[l-1]->epetra_vec() = epetra_np_->u0(l);
 		// ToDo: Optionally read in u0[l] from file!
   }
   // g
   gL_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->gL()),false),space_g_));
   gU_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->gU()),false),space_g_));
+	
+	//
+	// Compute automatic scaling vectors for c and y
+	//
+	computeScaling();
+
+	//
+	// Rescale the variables and bounds
+	//
+	scale_y( *y0_->epetra_vec(), &*y0_->epetra_vec() );
+	// ToDo: Most modify yL and yU for scaling and maintain constants for unbounded values!
 
   // Setup factories
 	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveAztecOO>());
@@ -137,24 +188,6 @@ void EpetraNPFO::initialize(
     typedef MemMngPack::AbstractFactoryStd<T_itfc,T_itfc,pm_t,DcDu_Allocator>  af_t;
     factory_DcDu_[l-1] = Teuchos::rcp( new af_t( pm_t(), DcDu_Allocator( epetra_np_->use_DcDu_op(l) ) ) );
   }
-
-  // Setup cache arrays for dealing with DcDu
-  DcDu_op_.resize(Nu);
-  DcDu_mv_.resize(Nu);
-  DcDu_updated_.resize(Nu);
-  epetra_DcDu_op_.resize(Nu);
-  epetra_DcDu_mv_.resize(Nu);
-  epetra_DcDu_args_.resize(Nu);
-
-  // Setup cache arrays for dealing with D\gDu
-  DgDu_.resize(Nu);
-  DgDu_updated_.resize(Nu);
-  epetra_DgDu_.resize(Nu);
-  epetra_DgDu_args_.resize(Nu);
-
-  // ToDo: Initialize everything else!
-
-  unsetQuantities();
 
   isInitialized_ = true;
 
@@ -178,76 +211,76 @@ int EpetraNPFO::Nu() const
   return epetra_np_->Nu();
 }
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraNPFO::Scalar> >
 EpetraNPFO::space_y() const
 {
 	return space_y_;
 }
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraNPFO::Scalar> >
 EpetraNPFO::space_u(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
   return space_u_[l-1];
 }
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraNPFO::Scalar> >
 EpetraNPFO::space_c() const
 {
   return space_c_;
 }
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraNPFO::Scalar> >
 EpetraNPFO::space_g() const
 {
 	return space_g_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::yL() const
 {
 	return *yL_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::yU() const
 {
 	return *yU_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::uL(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
   return *uL_[l-1];
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::uU(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
   return *uU_[l-1];
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::gL() const
 {
 	return *gL_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::gU() const
 {
 	return *gU_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::y0() const
 {
   return *y0_;
 }
 
-const Vector<Scalar>&
+const Vector<EpetraNPFO::Scalar>&
 EpetraNPFO::u0(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
@@ -266,7 +299,7 @@ void EpetraNPFO::set_c(Vector<Scalar>* c)
   }
 }
 
-Vector<Scalar>* EpetraNPFO::get_c()
+Vector<EpetraNPFO::Scalar>* EpetraNPFO::get_c()
 {
   return c_;
 }
@@ -283,7 +316,7 @@ void EpetraNPFO::set_g(Vector<Scalar>* g)
   }
 }
 
-Vector<Scalar>* EpetraNPFO::get_g()
+Vector<EpetraNPFO::Scalar>* EpetraNPFO::get_g()
 {
   return g_;
 }
@@ -324,7 +357,7 @@ void EpetraNPFO::reportFinalSolution(
 	)
 {
   // Get Epetra objects for y and u
-  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector &y  = set_y(y_in);
   const Epetra_Vector **u = set_u( u_in, true );
 	// Write solution files
 	write_y_final(y);
@@ -335,13 +368,13 @@ void EpetraNPFO::reportFinalSolution(
 
 // Overridden from NonlinearProblemFirstOrder
 
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >
+Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<EpetraNPFO::Scalar> > >
 EpetraNPFO::factory_DcDy() const
 {
   return factory_DcDy_;
 }
 
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar > > >
+Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<EpetraNPFO::Scalar > > >
 EpetraNPFO::factory_DcDu(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
@@ -370,7 +403,7 @@ void EpetraNPFO::set_DcDy(LinearOpWithSolve<Scalar>* DcDy)
   }
 }
 
-LinearOpWithSolve<Scalar>* EpetraNPFO::get_DcDy()
+LinearOpWithSolve<EpetraNPFO::Scalar>* EpetraNPFO::get_DcDy()
 {
   return DcDy_;
 }
@@ -394,7 +427,7 @@ void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
   }
 }
 
-LinearOp<Scalar>* EpetraNPFO::get_DcDu(int l)
+LinearOp<EpetraNPFO::Scalar>* EpetraNPFO::get_DcDu(int l)
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
   if(epetra_np_->use_DcDu_op(l)) {
@@ -415,7 +448,7 @@ void EpetraNPFO::set_DgDy(MultiVector<Scalar>* DgDy)
   }
 }
 
-MultiVector<Scalar>* EpetraNPFO::get_DgDy()
+MultiVector<EpetraNPFO::Scalar>* EpetraNPFO::get_DgDy()
 {
   return DgDy_;
 }
@@ -433,7 +466,7 @@ void EpetraNPFO::set_DgDu(int l, MultiVector<Scalar>* DgDu_l)
   }
 }
 
-MultiVector<Scalar>* EpetraNPFO::get_DgDu(int l)
+MultiVector<EpetraNPFO::Scalar>* EpetraNPFO::get_DgDu(int l)
 {
   return DgDu_[l-1];
 }
@@ -478,22 +511,35 @@ void EpetraNPFO::calc_DgDu(
 
 // private
 
+const Epetra_Vector&
+EpetraNPFO::set_y( const Vector<Scalar> &y_scaled_in ) const
+{
+	using DynamicCastHelperPack::dyn_cast;
+	const Epetra_Vector &y_scaled = *dyn_cast<const EpetraVector>(y_scaled_in).epetra_vec();
+	if(!y_scaling_.get())
+		return y_scaled; // There is no scaling
+	// Unscale y_scaled into y_unscaled_ and return
+	unscale_y( y_scaled, &*y_unscaled_ );
+	return *y_unscaled_;
+}
+
 const Epetra_Vector**
 EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
 {
+	// ToDo: Must unscaled u_in into u_unscaled_ if we are scaling u!
 	using DynamicCastHelperPack::dyn_cast;
   updateNewPoint(newPoint);
   if( u_in && newPoint ) {
-    for( int l = 1; l <= u_in_.size(); ++l ) {
+    for( int l = 1; l <= u_unscaled_.size(); ++l ) {
       if(u_in[l-1]) {
-        u_in_[l-1] = &*(dyn_cast<const EpetraVector>(*u_in[l-1]).epetra_vec());
+        u_unscaled_[l-1] = &*(dyn_cast<const EpetraVector>(*u_in[l-1]).epetra_vec());
       }
       else {
-        u_in_[l-1] = NULL;  // Tell epetra_np_ to use epetra_np_->u0(l)
+        u_unscaled_[l-1] = &*u0_[l-1]->epetra_vec();
       }
     }
   }
-  return &u_in_[0];
+  return &u_unscaled_[0];
 }
 
 void EpetraNPFO::read_y_guess( EpetraVector *y )
@@ -546,6 +592,161 @@ void EpetraNPFO::write_y_final( const Epetra_Vector &epetra_y )
 	}
 }
 
+void EpetraNPFO::computeScaling()
+{
+	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::rcp;
+	using Teuchos::rcp_dynamic_cast;
+	Teuchos::Time timer("");
+
+	y_unscaled_ = Teuchos::rcp(new Epetra_Vector(*space_y_->epetra_map()));
+	// Setup scaling based on initial matrix values
+	if( autoScaleStateConstraints() || autoScaleStateVariables() ) {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::initialize(epetra_np): Computing automatic scaling vectors from DcDy evaluated at y0, {u0(l)} ...\n";
+		
+		// Get unscaled initial guess
+		const Epetra_Vector &y  = *y0_->epetra_vec();
+		const Epetra_Vector **u = set_u( NULL, true );
+
+		Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op = epetra_np_->create_DcDy_op();
+		bool epetra_DcDy_op_recomputed = true;
+		Epetra_RowMatrix &epetra_DcDy_rm = dyn_cast<Epetra_RowMatrix>(*epetra_DcDy_op); // Must support this interface!
+
+		// ToDo: Save this jacobian object for the first Jacobian returned
+		// from the abstract factory!  We can then check to see if the
+		// first point is the base point (y0,u0) in which case the
+		// Jacobian DcDy is already computed.  That way the cost of
+		// computing these scaling factors will only include the extra
+		// InvRowSum() and InvColSum() calls.
+
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::initialize(epetra_np): Calling " << typeid(*epetra_np_).name()
+				<< ".calc_Dc(...) to compute inital DcDy matrix ...\n";
+		timer.start(true);
+		epetra_np_->calc_Dc(
+			y
+			,u
+			,NULL                       // c
+			,epetra_DcDy_op.get()       // DcDy_op
+			,NULL                       // DcDy_prec
+			,NULL                       // DcDu
+			);
+		timer.stop();
+		if(get_trace_out().get())
+			trace_out()
+				<< "\n  => time = " << timer.totalElapsedTime() << " sec\n";
+		
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::initialize(epetra_np): "
+				<< "Computing row scaling (c_scaling) and column scaling (y_scaling) ...";
+		Teuchos::RefCountPtr<EpetraVector>
+			rowScaling = rcp_dynamic_cast<EpetraVector>(space_c_->createMember()),
+			colScaling = rcp_dynamic_cast<EpetraVector>(space_y_->createMember());
+		timer.start(true);
+		TEST_FOR_EXCEPTION(0!=epetra_DcDy_rm.InvRowSums(*rowScaling->epetra_vec()),std::runtime_error,"Error!");
+		TEST_FOR_EXCEPTION(0!=epetra_DcDy_rm.InvColSums(*colScaling->epetra_vec()),std::runtime_error,"Error!");
+		timer.stop();
+		if(get_trace_out().get()) {
+			double min_row[1], min_col[1];
+			TEST_FOR_EXCEPTION(0!=rowScaling->epetra_vec()->MinValue(min_row),std::runtime_error,"Error!");
+			TEST_FOR_EXCEPTION(0!=colScaling->epetra_vec()->MinValue(min_col),std::runtime_error,"Error!");
+			trace_out()
+				<< "\n  => time = " << timer.totalElapsedTime() << " sec\n"
+				<< "\n  max{rowScaling} = " << norm_inf(*rowScaling)
+				<< "\n  min{rowScaling} = " << min_row[0]
+				<< "\n  max{colScaling} = " << norm_inf(*colScaling)
+				<< "\n  min{colScaling} = " << min_col[0]
+				<< std::endl;
+		}
+
+		if( autoScaleStateConstraints() ) {
+			if(get_trace_out().get())
+				trace_out() << "\nEpetraNPFO::initialize(epetra_np): autoScaleStateConstraints==true: setting c_scaling = rowScaling ...\n";
+			c_scaling_ = rowScaling;
+/*
+			if(get_trace_out().get())
+				trace_out() << "\nEpetraNPFO::initialize(epetra_np): autoScaleStateConstraints==true: setting c_scaling = sqrt(rowScaling) ...\n";
+			c_scaling_ = rowScaling;
+			sqrt(&*c_scaling_->epetra_vec());
+			if(get_trace_out().get()) {
+				double min[1];
+				TEST_FOR_EXCEPTION(0!=c_scaling_->epetra_vec()->MinValue(min),std::runtime_error,"Error!");
+				trace_out()
+					<< "\n  => time = " << timer.totalElapsedTime() << " sec\n"
+					<< "\n  max{c_scaling} = " << norm_inf(*c_scaling_)
+					<< "\n  min{c_scaling} = " << min[0]
+					<< std::endl;
+			}
+*/
+		}
+
+		if( autoScaleStateVariables() ) {
+			if(get_trace_out().get())
+				trace_out() << "\nEpetraNPFO::initialize(epetra_np): autoScaleStateVariables==true: setting y_scaling = colScaling ...\n";
+			y_scaling_ = colScaling;
+/*
+			if(get_trace_out().get())
+				trace_out() << "\nEpetraNPFO::initialize(epetra_np): autoScaleStateVariables==true: setting y_scaling = sqrt(colScaling) ...\n";
+			y_scaling_ = colScaling;
+			sqrt(&*y_scaling_->epetra_vec());
+			if(get_trace_out().get()) {
+				double min[1];
+				TEST_FOR_EXCEPTION(0!=y_scaling_->epetra_vec()->MinValue(min),std::runtime_error,"Error!");
+				trace_out()
+					<< "\n  => time = " << timer.totalElapsedTime() << " sec\n"
+					<< "\n  max{y_scaling} = " << norm_inf(*y_scaling_)
+					<< "\n  min{y_scaling} = " << min[0]
+					<< std::endl;
+			}
+*/
+		}
+
+	}
+
+	if( y_scaling_.get() ) {
+		y_scaling_inv_ = rcp_dynamic_cast<EpetraVector>(space_y_->createMember());
+		y_scaling_inv_->epetra_vec()->Reciprocal(*y_scaling_->epetra_vec());
+	}
+
+}
+
+void EpetraNPFO::scale_y( const Epetra_MultiVector &y_unscaled, Epetra_MultiVector *y_scaled ) const
+{
+	if( y_scaling_.get() ) {
+		y_scaled->Multiply( 1.0, *y_scaling_->epetra_vec(), y_unscaled, 0.0 );
+	}
+	else {
+		if( y_scaled != &y_unscaled  )
+			*y_scaled = y_unscaled;
+	}
+}
+
+void EpetraNPFO::unscale_y( const Epetra_MultiVector &y_scaled, Epetra_MultiVector *y_unscaled ) const
+{
+	if( y_scaling_.get() ) {
+		y_unscaled->ReciprocalMultiply( 1.0, *y_scaling_->epetra_vec(), y_scaled, 0.0 );
+	}
+	else {
+		if( y_unscaled != &y_scaled  )
+			*y_unscaled = y_scaled;
+	}
+}
+
+void EpetraNPFO::scale_c( const Epetra_MultiVector &c_unscaled, Epetra_MultiVector *c_scaled ) const
+{
+	if( c_scaling_.get() ) {
+		c_scaled->Multiply( 1.0, *c_scaling_->epetra_vec(), c_unscaled, 0.0 );
+	}
+	else {
+		if( c_scaled != &c_unscaled )
+			*c_scaled = c_unscaled;
+	}
+}
+
 void EpetraNPFO::updateNewPoint( bool newPoint ) const
 {
 	if(newPoint) {
@@ -562,12 +763,13 @@ void EpetraNPFO::calc_Dc(
   ,bool                    computeGradients
   ) const
 {
+	using DynamicCastHelperPack::dyn_cast;
   const int Nu = epetra_np_->Nu();
 	Teuchos::Time timer("");
   //
   // Get Epetra objects for y and u
   //
-  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector &y  = set_y(y_in);
   const Epetra_Vector **u = set_u( u_in, newPoint );
   //
   // Pick out the raw Epetra objects and in the process set their
@@ -589,42 +791,63 @@ void EpetraNPFO::calc_Dc(
   const bool allow_specialized_DcDy_prec = true; // ToDo: Make this an external parameter!
   const bool specialized_DcDy_prec = ( epetra_np_->specialized_DcDy_prec() && allow_specialized_DcDy_prec );
   if(computeGradients && DcDy_ && !DcDy_updated_) {
-		if(get_trace_out().get())
-			trace_out()
-				<< "\nEpetraNPFO::calc_Dc(...): Computing a new Epetra_Operator object for DcDy ... \n";
-    DcDy_->setUninitialized( &epetra_DcDy_op, NULL, NULL, &epetra_DcDy_prec, NULL );
-    if( !epetra_DcDy_op.get() ) {
-      epetra_DcDy_op = epetra_np_->create_DcDy_op();
-			DcDy_->set_trace_out(get_trace_out());
-    }
-    if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
-      epetra_DcDy_op = epetra_np_->create_DcDy_prec();
-    }
-		computeSomething = true;
+		if( DcDy_->Op().get() && epetra_np_->DcDy_op_is_const() ) {
+			if(get_trace_out().get())
+				trace_out()
+					<< "\nEpetraNPFO::calc_Dc(...): The DcDy is currently initialized and is constant so we will not recompute it ... \n";
+		}
+		else {
+			if(get_trace_out().get())
+				trace_out()
+					<< "\nEpetraNPFO::calc_Dc(...): Computing a new Epetra_Operator object for DcDy ... \n";
+			DcDy_->setUninitialized( &epetra_DcDy_op, NULL, NULL, &epetra_DcDy_prec, NULL );
+			if( !epetra_DcDy_op.get() ) {
+				epetra_DcDy_op = epetra_np_->create_DcDy_op();
+				DcDy_->set_trace_out(get_trace_out());
+			}
+			if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
+				epetra_DcDy_op = epetra_np_->create_DcDy_prec();
+			}
+			computeSomething = true;
+		}
   }
   // DcDu
   for(int l=1;l<=Nu;++l) {
     if(computeGradients && DcDu_op_[l-1] && !DcDu_updated_[l-1]) {
-			if(get_trace_out().get())
-				trace_out()
-					<< "\nEpetraNPFO::calc_Dc(...): Computing a Epetra_Operator object for DcDu("<<l<<") ... \n";
-      DcDu_op_[l-1]->setUninitialized( &epetra_DcDu_op_[l-1] ); // Grab the RCP<Epetra_Operator>
-      if(!epetra_DcDu_op_[l-1].get())
-        epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu_op(l);
-      epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_op_[l-1]);
-			computeSomething = true;
+			if( DcDu_op_[l-1]->epetra_op().get() && epetra_np_->DcDu_is_const(l) ) {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): The DcDu_op("<<l<<") is currently initialized and is constant so we will not recompute it ... \n";
+			}
+			else {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): Computing a Epetra_Operator object for DcDu("<<l<<") ... \n";
+				DcDu_op_[l-1]->setUninitialized( &epetra_DcDu_op_[l-1] ); // Grab the RCP<Epetra_Operator>
+				if(!epetra_DcDu_op_[l-1].get())
+					epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu_op(l);
+				epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_op_[l-1]);
+				computeSomething = true;
+			}
     }
     else if(computeGradients && DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
-			if(get_trace_out().get())
-				trace_out()
-					<< "\nEpetraNPFO::calc_Dc(...): Computing a DcDu("<<l<<") Epetra_MultiVector object ... \n";
-      DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
-      if(!epetra_DcDu_mv_[l-1].get())
-        epetra_DcDu_mv_[l-1] = epetra_np_->create_DcDu_mv(l);
-      epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_mv_[l-1]);
-			computeSomething = true;
-    }
-    else {
+			if( DcDu_mv_[l-1]->epetra_multi_vec().get() && epetra_np_->DcDu_is_const(l) ) {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): The DcDu_mv("<<l<<") is currently initialized and is constant so we will not recompute it ... \n";
+			}
+			else {
+				if(get_trace_out().get())
+					trace_out()
+						<< "\nEpetraNPFO::calc_Dc(...): Computing a DcDu("<<l<<") Epetra_MultiVector object ... \n";
+				DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
+				if(!epetra_DcDu_mv_[l-1].get())
+					epetra_DcDu_mv_[l-1] = epetra_np_->create_DcDu_mv(l);
+				epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_mv_[l-1]);
+				computeSomething = true;
+			}
+		}
+		else {
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(); // No DcDu(l) to compute!
     }
   }
@@ -655,6 +878,8 @@ void EpetraNPFO::calc_Dc(
 		//
 		// c
 		if( epetra_c.get() ) {
+			if( c_scaling_.get() )
+				scale_c( *epetra_c, &*epetra_c );
 			c_->initialize( epetra_c, space_c_ );
 			c_updated_ = true;
 		}
@@ -671,6 +896,14 @@ void EpetraNPFO::calc_Dc(
 					!result, std::runtime_error
 					,"EpetraNPFO::calc_Dc(...): Error, test of DcDy operator object failed!"
 					);
+			}
+			// Scale DcDy (before creating the preconditioner)
+			if( c_scaling_.get() || y_scaling_.get() ) {
+				Epetra_RowMatrix &epetra_DcDy_rm = dyn_cast<Epetra_RowMatrix>(*epetra_DcDy_op);
+				if(c_scaling_.get())
+					TEST_FOR_EXCEPTION(0!=epetra_DcDy_rm.LeftScale(*c_scaling_->epetra_vec()),std::logic_error,"Error!");
+				if(y_scaling_.get())
+					TEST_FOR_EXCEPTION(0!=epetra_DcDy_rm.RightScale(*y_scaling_inv_->epetra_vec()),std::logic_error,"Error!");
 			}
 			// Setup the matrix-based preconditioner
 			if( usePrec() && !specialized_DcDy_prec ) {
@@ -712,11 +945,16 @@ void EpetraNPFO::calc_Dc(
 		// DcDu
 		for(int l=1;l<=Nu;++l) {
 			if(epetra_DcDu_op_[l-1].get()) {
-				DcDu_op_[l-1]->initialize(epetra_DcDu_op_[l-1]);
+				Teuchos::RefCountPtr<Epetra_Operator> &epetra_DcDu_op_l = epetra_DcDu_op_[l-1];
+				if( c_scaling_.get() ) {
+					Epetra_RowMatrix &epetra_DcDu_rm_l = dyn_cast<Epetra_RowMatrix>(*epetra_DcDu_op_l);
+					TEST_FOR_EXCEPTION(0!=epetra_DcDu_rm_l.LeftScale(*c_scaling_->epetra_vec()),std::logic_error,"Error!");
+				}
+				DcDu_op_[l-1]->initialize(epetra_DcDu_op_l);
 				if(testOperators()) {
 					if(get_trace_out().get())
 						trace_out()
-							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_op_[l-1]).name()
+							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_op_l).name()
 							<< "\' object for DcDu("<<l<<") ...\n";
 					bool result = linearOpTester_.check(*DcDu_op_[l-1],get_trace_out().get());
 					TEST_FOR_EXCEPTION(
@@ -724,15 +962,19 @@ void EpetraNPFO::calc_Dc(
 						,"EpetraNPFO::calc_Dc(...): Error, test of DcDu("<<l<<") operator object failed!"
 						);
 				}
-				epetra_DcDu_op_[l-1] = Teuchos::null;
+				epetra_DcDu_op_l = Teuchos::null;
 				DcDu_updated_[l-1] = true;
 			}
 			else if(epetra_DcDu_mv_[l-1].get()) {
-				DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_[l-1],space_c_);
+				Teuchos::RefCountPtr<Epetra_MultiVector> &epetra_DcDu_mv_l = epetra_DcDu_mv_[l-1];
+				if( c_scaling_.get() ) {
+					scale_c( *epetra_DcDu_mv_l, &*epetra_DcDu_mv_l );
+				}
+				DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_l,space_c_);
 				if(testOperators()) {
 					if(get_trace_out().get())
 						trace_out()
-							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_mv_[l-1]).name()
+							<< "\nEpetraNPFO::calc_Dc(...): Testing the \'" << typeid(*epetra_DcDu_mv_l).name()
 							<< "\' object for DcDu("<<l<<") ...\n";
 					bool result = linearOpTester_.check(*DcDu_mv_[l-1],get_trace_out().get());
 					TEST_FOR_EXCEPTION(
@@ -740,7 +982,7 @@ void EpetraNPFO::calc_Dc(
 						,"EpetraNPFO::calc_Dc(...): Error, test of DcDu("<<l<<") operator object failed!"
 						);
 				}
-				epetra_DcDu_mv_[l-1] = Teuchos::null;
+				epetra_DcDu_mv_l = Teuchos::null;
 				DcDu_updated_[l-1] = true;
 			}
 		}
@@ -756,10 +998,11 @@ void EpetraNPFO::calc_Dg(
   ) const
 {
   const int Nu = epetra_np_->Nu();
+	Teuchos::Time timer("");
   //
-  // Get Epetra objects for y and u
+  // Get Epetra objects for y and u (unscaled)
   //
-  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector &y  = set_y(y_in);
   const Epetra_Vector **u = set_u( u_in, newPoint );
   //
   // Pick out the raw Epetra objects and in the process set their
@@ -769,12 +1012,18 @@ void EpetraNPFO::calc_Dg(
   // g
   Teuchos::RefCountPtr<Epetra_Vector>  epetra_g;
   if(g_ && !g_updated_ ) {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dg(...): Computing a Epetra_Vector object for g ... \n";
 		g_->setUninitialized( &epetra_g );
 		computeSomething = true;
 	}
   // DgDy
   Teuchos::RefCountPtr<Epetra_MultiVector>  epetra_DgDy;
   if(computeGradients && DgDy_ && !DgDy_updated_) {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dg(...): Computing a Epetra_MultiVector object for DgDy ... \n";
     DgDy_->setUninitialized( &epetra_DgDy );
     if( !epetra_DgDy.get() ) {
       epetra_DgDy = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_y(),space_g_->dim()));
@@ -784,6 +1033,9 @@ void EpetraNPFO::calc_Dg(
   // DgDu
   for(int l=1;l<=Nu;++l) {
     if(computeGradients && DgDu_[l-1] && !DgDu_updated_[l-1]) {
+			if(get_trace_out().get())
+				trace_out()
+					<< "\nEpetraNPFO::calc_Dg(...): Computing a Epetra_MultiVector object for DgDu("<<l<<") ... \n";
       DgDu_[l-1]->setUninitialized( &epetra_DgDu_[l-1] ); // Grap the RCP<Epetra_MultiVector>
       if(!epetra_DgDu_[l-1].get())
         epetra_DgDu_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_u(l),space_g_->dim()));
@@ -800,6 +1052,11 @@ void EpetraNPFO::calc_Dg(
 		//
 		// Compute the set Epetra objects
 		//
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nEpetraNPFO::calc_Dg(...): Calling " << typeid(*epetra_np_).name()
+				<< ".calc_Dg(...) ...\n";
+		timer.start(true);
 		epetra_np_->calc_Dg(
 			y
 			,u
@@ -807,6 +1064,10 @@ void EpetraNPFO::calc_Dg(
 			,epetra_DgDy.get()
 			,&epetra_DgDu_args_[0]
 			);
+		timer.stop();
+		if(get_trace_out().get())
+			trace_out()
+				<< "\n  => time = " << timer.totalElapsedTime() << " sec\n";
 		
 		//
 		// Put the raw Epetra objects back into the adpater objects
@@ -817,6 +1078,8 @@ void EpetraNPFO::calc_Dg(
 		}
 		// DgDy
 		if(epetra_DgDy.get()) {
+			if( y_scaling_.get() )
+				unscale_y( *epetra_DgDy, &*epetra_DgDy );
 			DgDy_->initialize( epetra_DgDy, space_y_ );
 			epetra_DgDy = Teuchos::null;
 			DgDy_updated_ = true;
@@ -829,9 +1092,9 @@ void EpetraNPFO::calc_Dg(
 				DgDu_updated_[l-1] = true;
 			}
 		}
-
+		
 	}
-
+	
 }
 
 //

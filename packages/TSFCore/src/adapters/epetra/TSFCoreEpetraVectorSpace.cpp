@@ -136,7 +136,7 @@ EpetraVectorSpace::createMember() const
     );
 }
 
-Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >
+Teuchos::RefCountPtr< const VectorSpaceFactory<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::smallVecSpcFcty() const
 {
 	return smallVecSpcFcty_;

@@ -65,6 +65,12 @@ public:
 	/// Stream that trace to which information will be sent
 	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
 
+	/// Set if the constraints c are to be automatically scaled by inverse row-sums of the initial Jacobian
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateConstraints );
+
+	/// Set if the state variables y are to be automatically scaled by inverse column-sums of the initial Jacobian
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateVariables );
+
   /// Set the maximum number of linear solver iterations
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLinSolveIter );
 
@@ -125,18 +131,25 @@ public:
 	 */
 	AztecOO& aztecOO();
 
+	/// Scaling vector for constraints c(y,u)
+	STANDARD_COMPOSITION_MEMBERS( EpetraVector, c_scaling );
+
+	/// Scaling vector for state variables y
+	STANDARD_COMPOSITION_MEMBERS( EpetraVector, y_scaling );
+
 	/** @name Constructors / Initializers / accessors */
 	//@{
 
   ///
 	/** Construct to uninitialized (but with default options set)
 	 *
-	 *
 	 * Note, these defaults where taken from
 	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
 	 */
   EpetraNPFO(
-	 	const int            maxLinSolveIter      = 400
+		const bool           autoScaleStateConstraints = false
+		,const bool          autoScaleStateVariables   = false
+	 	,const int           maxLinSolveIter      = 400
 		,const double        relLinSolveTol       = 1e-6
 		,const bool          usePrec              = true
 		,const bool          testOperators        = false
@@ -145,6 +158,10 @@ public:
 		);
 
   ///
+	/** Initialize this nonlinear problem.
+	 *
+	 * ToDo: Finish documentation!
+	 */
   void initialize(
     const Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>   &epetra_np
     );
@@ -341,7 +358,10 @@ private:
 	Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >       factory_DcDy_;
   std::vector<Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOp<Scalar> > > >  factory_DcDu_;
 
-	mutable std::vector<const Epetra_Vector*>  u_in_;
+	Teuchos::RefCountPtr<EpetraVector>        y_scaling_inv_;
+
+	mutable std::vector<const Epetra_Vector*>  u_unscaled_;
+	Teuchos::RefCountPtr<Epetra_Vector>        y_unscaled_;
 
   mutable bool c_updated_, g_updated_, DcDy_updated_, DgDy_updated_;
   mutable std::vector<bool> DcDu_updated_, DgDu_updated_;
@@ -364,21 +384,24 @@ private:
 	// //////////////////////////////////////
 	// Private member functions
 
-	///
+	//
 	void read_y_guess( EpetraVector *y );
-
-	///
+	//
 	void write_y_final( const Epetra_Vector &y );
-
-  ///
-  static const Epetra_Vector& get_epetra_vec( const Vector<Scalar> &v );
-
+  //
+  const Epetra_Vector& set_y( const Vector<Scalar> &y_scaled ) const;
   //
 	const Epetra_Vector** set_u( const Vector<Scalar>* u[], bool newPoint ) const;
-
+	//
+	void computeScaling();
+	//
+	void scale_y( const Epetra_MultiVector &y_unscaled, Epetra_MultiVector *y_scaled ) const;
+	//
+	void unscale_y( const Epetra_MultiVector &y_scaled, Epetra_MultiVector *y_unscaled ) const;
+	//
+	void scale_c( const Epetra_MultiVector &c_unscaled, Epetra_MultiVector *c_scaled ) const;
   //
 	void updateNewPoint( bool newPoint ) const;
-  
   //
   void calc_Dc(
 		const Vector<Scalar>     &y
@@ -386,8 +409,7 @@ private:
 		,bool                    newPoint
     ,bool                    computeGradients
     ) const;
-
-  //
+	//
   void calc_Dg(
 		const Vector<Scalar>     &y
 		,const Vector<Scalar>*   u[]
@@ -433,13 +455,13 @@ EpetraNPFO::linearSystemScaler() const
 }
 
 inline
-LinearOpTester<Scalar>& EpetraNPFO::linearOpTester()
+LinearOpTester<EpetraNPFO::Scalar>& EpetraNPFO::linearOpTester()
 {
 	return linearOpTester_;
 }
 
 inline
-const LinearOpTester<Scalar>& EpetraNPFO::linearOpTester() const
+const LinearOpTester<EpetraNPFO::Scalar>& EpetraNPFO::linearOpTester() const
 {
 	return linearOpTester_;
 }
@@ -448,15 +470,6 @@ inline
 AztecOO& EpetraNPFO::aztecOO()
 {
 	return aztecOO_;
-}
-
-// private
-
-inline
-const Epetra_Vector& EpetraNPFO::get_epetra_vec( const Vector<Scalar> &v )
-{
-  using DynamicCastHelperPack::dyn_cast;
-  return *dyn_cast<const TSFCore::EpetraVector>(v).epetra_vec();
 }
 
 } // namespace Nonlin

@@ -63,6 +63,11 @@ NonlinearProblemFirstOrder::create_DcDu_op(int l) const
   return Teuchos::null;
 }
 
+bool NonlinearProblemFirstOrder::DcDy_op_is_const() const
+{
+	return false;
+}
+
 bool NonlinearProblemFirstOrder::specialized_DcDy_prec() const
 {
   return false;
@@ -72,6 +77,11 @@ Teuchos::RefCountPtr<Epetra_Operator>
 NonlinearProblemFirstOrder::create_DcDy_prec() const
 {
   return Teuchos::null;
+}
+
+bool NonlinearProblemFirstOrder::DcDy_prec_is_const() const
+{
+	return false;
 }
 
 Teuchos::RefCountPtr<Epetra_MultiVector>
@@ -88,6 +98,11 @@ NonlinearProblemFirstOrder::create_DcDu_mv(int l) const
         )
       );
   }
+}
+
+bool NonlinearProblemFirstOrder::DcDu_is_const(int l) const
+{
+	return false;
 }
 
 // Transpose arguments
@@ -115,6 +130,26 @@ void NonlinearProblemFirstOrder::calc_Dg(
   ) const
 {
   EPETRA_NONLINEARPROBLEMFIRSTORDER_NOT_DEFINED("calc_Dg(...)");
+}
+
+// Overridden from NonlinearProblem
+
+void NonlinearProblemFirstOrder::calc_c(
+  const Epetra_Vector     &y
+  ,const Epetra_Vector*   u[]
+  ,Epetra_Vector          *c
+  ) const
+{
+  calc_Dc( y, u, c, NULL, NULL, NULL );
+}
+
+void NonlinearProblemFirstOrder::calc_g(
+  const Epetra_Vector     &y
+  ,const Epetra_Vector*   u[]
+  ,Epetra_Vector          *g
+  ) const
+{
+  calc_Dg( y, u, g, NULL, NULL );
 }
 
 } // namespace Epetra

@@ -87,6 +87,13 @@ public:
 
 	///
 	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy_op() const = 0;
+
+	///
+	/** Returns true if the operator <tt>DcDy_op</tt> computed by <tt>calc_Dc(...)</tt> is a constant object.
+	 *
+	 * The default implementation returns false.
+	 */
+	virtual bool DcDy_op_is_const() const;
   
   ///
   /** Determines if <tt>this</tt> can create and define a specialized preconditioner for DcDy.
@@ -107,6 +114,13 @@ public:
    * The default implementation returns <tt>return.get()==NULL</tt>.
    */
 	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy_prec() const;
+
+	///
+	/** Returns true if the preconditioner operator <tt>DcDy_prec</tt> computed by <tt>calc_Dc(...)</tt> is a constant object.
+	 *
+	 * The default implementation returns false.
+	 */
+	virtual bool DcDy_prec_is_const() const;
 
   /// Return if a <tt>Epetra_Operator</tt> is used for <tt>DcDu(l)</tt>.
   /**
@@ -164,6 +178,14 @@ public:
    */
  	virtual Teuchos::RefCountPtr<Epetra_MultiVector> create_DcDu_mv(int l) const;
 
+	///
+	/** Returns true if the object (Epetra_MultiVector or Epetra_Operator) for
+	 * <tt>DcDu(l)</tt> computed by <tt>calc_Dc(...)</tt> is a constant object.
+	 *
+	 * The default implementation returns false.
+	 */
+	virtual bool DcDu_is_const(int l) const;
+
 	//@}
 
 	/** @name Transpose arguments */
@@ -200,6 +222,25 @@ public:
 		) const;
 
 	//@}
+
+	/** @name Overridden from NonlinearProblem */
+	//@{
+	
+	/// Calls <tt>calc_Dc(y,u,c,NULL,NULL,NULL)
+	void calc_c(
+		const Epetra_Vector     &y
+		,const Epetra_Vector*   u[]
+    ,Epetra_Vector          *c
+		) const;
+	/// Calls <tt>calc_Dg(y,u,g,NULL,NULL,NULL)
+	void calc_g(
+		const Epetra_Vector     &y
+		,const Epetra_Vector*   u[]
+    ,Epetra_Vector          *g
+		) const;
+
+	//@}
+
 
 }; // class NonlinearProblemFirstOrder
 

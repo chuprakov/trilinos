@@ -120,6 +120,9 @@ public:
     ,bool                                            *adjointSupported    = NULL
     );
 
+	/// Returns <tt>return.get()!=NULL</tt> if <tt>*this</tt> is initialized!.
+	Teuchos::RefCountPtr<Epetra_Operator> Op() const;
+
 	///
 	void resetCounters();
 
@@ -232,6 +235,13 @@ const Epetra::LinearSystemScaler&
 LinearOpWithSolveAztecOO::linearSystemScaler() const
 {
 	return linearSystemScaler_;
+}
+
+inline
+Teuchos::RefCountPtr<Epetra_Operator>
+LinearOpWithSolveAztecOO::Op() const
+{
+	return Op_;
 }
 
 } // namespace Nonlin

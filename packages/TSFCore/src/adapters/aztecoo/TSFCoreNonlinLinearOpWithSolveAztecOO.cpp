@@ -212,13 +212,13 @@ void LinearOpWithSolveAztecOO::resetCounters()
 
 // Overridden from OpBase
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<LinearOpWithSolveAztecOO::Scalar> >
 LinearOpWithSolveAztecOO::domain() const
 {
   return tsfcore_Op_.domain();
 }
 
-Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<LinearOpWithSolveAztecOO::Scalar> >
 LinearOpWithSolveAztecOO::range() const
 {
   return tsfcore_Op_.range();
@@ -433,13 +433,13 @@ void LinearOpWithSolveAztecOO::solve(
 		trace_out() << "\n*** Leaving LinearOpWithSolveAztecOO::solve(...) ...\n\n";
 }
 
-Teuchos::RefCountPtr<const LinearOpWithSolve<Scalar> >
+Teuchos::RefCountPtr<const LinearOpWithSolve<LinearOpWithSolveAztecOO::Scalar> >
 LinearOpWithSolveAztecOO::clone_lows() const
 {
 	return Teuchos::null;  // Cloning can not fully be supported unfortunately (think about this?)
 }
 
-Teuchos::RefCountPtr<const LinearOp<Scalar> >
+Teuchos::RefCountPtr<const LinearOp<LinearOpWithSolveAztecOO::Scalar> >
 LinearOpWithSolveAztecOO::preconditioner() const
 {
 	return Teuchos::rcp(&tsfcore_Prec_,false); // This is the preconditioner!
