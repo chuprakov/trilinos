@@ -32,7 +32,8 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+ //#include "TSFVectorSpace.hpp"
+#include "TSFLinearOperatorDecl.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
@@ -79,22 +80,22 @@ namespace TSFExtended
     }
 
     /** Return the domain of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return domain_;}
+    virtual RefCountPtr< const VectorSpace<Scalar> > domain() const {return domain_;}
     
 
     /** Return the range of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return range_;}
+    virtual RefCountPtr< const VectorSpace<Scalar> > range() const {return range_;}
 
   protected:
     /**
      * The vector space for the range of the operator.
      */
-    RefCountPtr<const TSFCore::VectorSpace<Scalar> > range_;
+    RefCountPtr<const VectorSpace<Scalar> > range_;
  
     /**
      * The vector space for the domain of the operator.
      */
-    RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain_;  
+    RefCountPtr<const VectorSpace<Scalar> > domain_;  
   };
 }
 

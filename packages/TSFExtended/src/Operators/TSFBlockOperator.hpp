@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 //
 // **********************************************************************/
- /* @HEADER@ */
+/* @HEADER@ */
 
 #ifndef TSFBLOCKOPERATOR_HPP
 #define TSFBLOCKOPERATOR_HPP
@@ -32,9 +32,9 @@
 #include "TSFConfigDefs.hpp"
 #include "Teuchos_Array.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
-#include "TSFVectorSpace.hpp"
-#include "TSFLinearOperator.hpp"
-#include "TSFCoreProductVectorSpace.hpp"
+ //#include "TSFVectorSpace.hpp"
+#include "TSFLinearOperatorDecl.hpp"
+#include "TSFProductVectorSpace.hpp"
 
 
 
@@ -100,18 +100,36 @@ namespace TSFExtended
      */
     void finalize(const bool &zeroFill);
 
-
-    /** apply operator to a vector in the domain space, returning a vector
-     * in the range space 
+    /** 
+     * Compute alpha*M*x + beta*y, where M=*this.
+     * @param M_trans specifies whether the operator is transposed:
+     *                op(M) = M, for M_trans == NOTRANS
+     *                op(M) = M', for M_trans == TRANS
+     * @param x       vector of length this->domain()->dim()
+     * @param y       vector of length this->range()->dim()
+     * @param alpha   scalar multiplying M*x (default is 1.0)
+     * @param beta    scalar multiplying y (default is 0.0)
      */
-    void apply(const Vector<Scalar>& in, Vector<Scalar>& out) const ;
+    virtual void apply(
+                       const TSFCore::ETransp            M_trans
+                       ,const TSFCore::Vector<Scalar>    &x
+                       ,TSFCore::Vector<Scalar>          *y
+                       ,const Scalar            //alpha = 1.0
+                       ,const Scalar           // beta  = 0.0
+                       ) const;
+    
+
+//     /** apply operator to a vector in the domain space, returning a vector
+//      * in the range space 
+//      */
+//     void apply(const Vector<Scalar>& in, Vector<Scalar>& out) const ;
 
 
-    /** apply adjoint operator to a vector in the domain space, returning
-     * a vector in the range space. The default implementation throws an
-     * exception */
-    virtual void applyAdjoint(const Vector<Scalar>& in, 
-			      Vector<Scalar>& out) const ;
+//     /** apply adjoint operator to a vector in the domain space, returning
+//      * a vector in the range space. The default implementation throws an
+//      * exception */
+//     virtual void applyAdjoint(const Vector<Scalar>& in, 
+// 			      Vector<Scalar>& out) const ;
 
     /**  create the transpose */
     LinearOperator<Scalar>* formTranspose();
@@ -129,9 +147,9 @@ namespace TSFExtended
     string describe(const int &depth) const;
     
 
-  protected:
-    TSFCore::ProductVectorSpace<Scalar> domain_;
-    TSFCore::ProductVectorSpace<Scalar> range_;
+  private:
+    ProductVectorSpace<Scalar> domain_;
+    ProductVectorSpace<Scalar> range_;
     int nBlockRows_;
     int nBlockCols_;
     bool isUnspecified_;

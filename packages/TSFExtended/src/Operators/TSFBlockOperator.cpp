@@ -27,10 +27,11 @@
 /* @HEADER@ */
 
 #include "TSFBlockOperator.hpp"
-#include "TSFCoreProductVectorSpace.hpp"
-#include "TSFVectorSpace.hpp"
-#include "TSFCoreVectorSpace.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
+// #include "TSFProductVectorSpace.hpp"
+// #include "TSFVectorSpace.hpp"
+// //#include "TSFCoreVectorSpace.hpp"
+// #include "TSFOpDescribableByTypeID.hpp"
+ 
 #include "TSFZeroOperator.hpp"
 
 using namespace TSFExtended;
@@ -38,22 +39,21 @@ using namespace Teuchos;
 using std::ostream;
 
 
-
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 BlockOperator<Scalar>::BlockOperator()
   : isUnspecified_(true),
     isFinal_(false)
 {
-  domain_ = new TSFCore::ProductVectorSpace<Scalar>();
-  range_ = new TSFCore::ProductVectorSpace<Scalar>();
+  domain_ = new ProductVectorSpace<Scalar>();
+  range_ = new ProductVectorSpace<Scalar>();
   sub_.resize(0);
   isSet_.resize(0);
 }
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 BlockOperator<Scalar>::BlockOperator(const VectorSpace<Scalar>& domain,
 				     const VectorSpace<Scalar>& range)
@@ -75,27 +75,10 @@ BlockOperator<Scalar>::BlockOperator(const VectorSpace<Scalar>& domain,
 
 
 
-//========================================================================
-// template <class Scalar>
-// void BlockOperator<Scalar>::getBlock(int i, int j, 
-// 			     LinearOperator<Scalar>& sub) const 
-// {
-//   TEST_FOR_EXCEPTION(i < 0 || i >=nBlockRows_, std::out_of_range,
-// 		     "i is out of range in setBlock: i = " << i 
-// 		     << "and j = " << j << endl);
-//   TEST_FOR_EXCEPTION(j < 0 || j >=nBlockCols_, std::out_of_range,
-// 		     "j is out of range in setBlock: i = " << i 
-// 		     << "and j = " << j << endl);
-
-//   TEST_FOR_EXCEPTION(!isSet[i][j], runtime_error,
-// 		     "Block (" << i << ", " << j << ") is not set." << endl);
-
-//   sub = sub_[i][j];
-// }
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 LinearOperator<Scalar> BlockOperator<Scalar>::getBlock(const int &i, 
 						       const int &j) const
@@ -116,10 +99,10 @@ LinearOperator<Scalar> BlockOperator<Scalar>::getBlock(const int &i,
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::setBlock(const int &i, const int &j, 
-			     const LinearOperator<Scalar>& sub)
+				     const LinearOperator<Scalar>& sub)
 {
   if (isUnspecified_)
     {
@@ -144,48 +127,95 @@ void BlockOperator<Scalar>::setBlock(const int &i, const int &j,
 }  
 
 
-
-
-
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
-void BlockOperator<Scalar>::apply(const Vector<Scalar>& arg,
-			  Vector<Scalar>& out) const
+void BlockOperator<Scalar>::apply(
+				  const TSFCore::ETransp            M_trans
+				  ,const TSFCore::Vector<Scalar>    &x
+				  ,TSFCore::Vector<Scalar>          *y
+				  ,const Scalar            alpha = 1.0
+				  ,const Scalar            beta  = 0.0
+				  ) const 
 {
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
-  for (int i=0; i<nBlockRows_; i++)
-    {
-      Vector<Scalar> tmpRow = range().getBlock(i).createMember();
-      tmpRow.zero();
-      for (int j=0; j<nBlockCols_; j++)
-	{
-	  tmpRow = tmpRow + sub_[i][j] * arg.getBlock(j);
-	}
-      out.setBlock(i, tmpRow);
-    }
+//   TEST_FOR_EXCEPTION(dynamic_cast<ZeroOperator<Scalar>* >(op_) != 0, runtime_error,
+// 		     "InverseOperator<Scalar>::apply() called on a ZeroOperator.");
+//   TEST_FOR_EXCEPTION(op_->domain().dim() != op_->range().dim(), runtime_error,
+// 		     "InverseOperator<Scalar>::apply() called on a non-square operator.");
+//   SolverState<Scalar> haveSoln;
+//   LinearOperator<Scalar> applyOp;      
+//   if (M_trans == NOTRANS)
+//     {
+//       applyOp = op_;
+//     }
+//   else
+//     {
+//       applyOp = op_.transpose();
+//     }
+      
+//   if (beta == 0.0)
+//     {
+//       Vt_S(&x, alpha);
+//     }
+//   else
+//     {
+//       applyOp.ptr()->apply(NOTRANS, *y, &x, beta, alpha);
+//     }
+      
+//   DiagonalOperator<Scalar>* val1 = dynamic_cast<DiagonalOperator<Scalar>* >(op_);
+//   IdentityOperator<Scalar>* val2 = dynamic_cast<IdentityOperator<Scalar>* >(op_);
+//   if (val1 != 0 or val2 != 0)
+//     {
+//       haveSoln = applyOp_.ptr()->applyInverse(x, y);
+//     }      
+//   else
+//     {
+//       haveSoln = solver_.solve(applyOp, x, *y);
+//     }
+//   TEST_FOR_EXCEPTION(haveSoln.finalState() != SolveConverged, runtime_error,
+// 		     "InverseOperator<Scalar>::apply() " << haveSoln.stateDescription());
 }
 
 
-//========================================================================
-template <class Scalar>
-void BlockOperator<Scalar>::applyAdjoint(const Vector<Scalar>& arg,
-				 Vector<Scalar>& out) const
-{
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
-  for (int i=0; i<nBlockCols_; i++)
-    {
-      Vector<Scalar> tmpRow = domain().getBlock(i).createMember();
-      for (int j=0; j<nBlockRows_; j++)
-	{
-	  Vector<Scalar> tmp = domain().getBlock(i).createMember();
-	  sub_[j][i].applyAdjoint(arg.getBlock(j), tmp);
-	  tmpRow.add(tmp, tmpRow);
-	}
-      out.setBlock(i, tmpRow);
-    }
-}
 
-//========================================================================
+// /*==================================================================*/
+// template <class Scalar>
+// void BlockOperator<Scalar>::apply(const Vector<Scalar>& arg,
+// 				  Vector<Scalar>& out) const
+// {
+//   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+//   for (int i=0; i<nBlockRows_; i++)
+//     {
+//       Vector<Scalar> tmpRow = range().getBlock(i).createMember();
+//       tmpRow.zero();
+//       for (int j=0; j<nBlockCols_; j++)
+// 	{
+// 	  tmpRow = tmpRow + sub_[i][j] * arg.getBlock(j);
+// 	}
+//       out.setBlock(i, tmpRow);
+//     }
+// }
+
+
+// /*==================================================================*/
+// template <class Scalar>
+// void BlockOperator<Scalar>::applyAdjoint(const Vector<Scalar>& arg,
+// 					 Vector<Scalar>& out) const
+// {
+//   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+//   for (int i=0; i<nBlockCols_; i++)
+//     {
+//       Vector<Scalar> tmpRow = domain().getBlock(i).createMember();
+//       for (int j=0; j<nBlockRows_; j++)
+// 	{
+// 	  Vector<Scalar> tmp = domain().getBlock(i).createMember();
+// 	  sub_[j][i].applyAdjoint(arg.getBlock(j), tmp);
+// 	  tmpRow.add(tmp, tmpRow);
+// 	}
+//       out.setBlock(i, tmpRow);
+//     }
+// }
+
+/*==================================================================*/
 template <class Scalar>
 LinearOperator<Scalar>* BlockOperator<Scalar>::formTranspose()
 {
@@ -207,7 +237,7 @@ LinearOperator<Scalar>* BlockOperator<Scalar>::formTranspose()
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::print(ostream& os) const 
 {
@@ -228,7 +258,10 @@ void BlockOperator<Scalar>::print(ostream& os) const
   os << "</BlockOperator>" << endl;
 }
 
-//========================================================================
+
+
+
+/*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::finalize(const bool &zerofill)
 {
@@ -276,10 +309,10 @@ void BlockOperator<Scalar>::finalize(const bool &zerofill)
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 bool BlockOperator<Scalar>::buildSpaces(const int &i, const int &j, 
-				const LinearOperator<Scalar>& sub)
+					const LinearOperator<Scalar>& sub)
 {
   try
     {
@@ -334,10 +367,10 @@ bool BlockOperator<Scalar>::buildSpaces(const int &i, const int &j,
 }
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::chkSpaces(const int &i, const int &j, 
-			      const LinearOperator<Scalar>& sub) const
+				      const LinearOperator<Scalar>& sub) const
 {
   if (sub.domain() != domain_.getBlock(j))
     {
@@ -354,7 +387,7 @@ void BlockOperator<Scalar>::chkSpaces(const int &i, const int &j,
 }
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 bool BlockOperator<Scalar>:: chkFinal() const
 {
@@ -370,19 +403,19 @@ bool BlockOperator<Scalar>:: chkFinal() const
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>:: zeroFill(const int &i, const int &j)
 {
-  TSFCore::VectorSpace<Scalar> d = domain_.getBlock(j);
-  TSFCore::VectorSpace<Scalar> r = range_.getBlock(i);
+  VectorSpace<Scalar> d = domain_.getBlock(j);
+  VectorSpace<Scalar> r = range_.getBlock(i);
   LinearOperator<Scalar> z = new ZeroOperator<Scalar>(d, r);
   setBlock(i, j, z);
 }
 
 
 
-//========================================================================
+/*==================================================================*/
 template <class Scalar>
 string BlockOperator<Scalar>::describe(const int &depth) const
 {
@@ -424,3 +457,22 @@ string BlockOperator<Scalar>::describe(const int &depth) const
 
 
 
+
+
+// /*==================================================================*/
+// template <class Scalar>
+// void BlockOperator<Scalar>::getBlock(int i, int j, 
+// 			     LinearOperator<Scalar>& sub) const 
+// {
+//   TEST_FOR_EXCEPTION(i < 0 || i >=nBlockRows_, std::out_of_range,
+// 		     "i is out of range in setBlock: i = " << i 
+// 		     << "and j = " << j << endl);
+//   TEST_FOR_EXCEPTION(j < 0 || j >=nBlockCols_, std::out_of_range,
+// 		     "j is out of range in setBlock: i = " << i 
+// 		     << "and j = " << j << endl);
+
+//   TEST_FOR_EXCEPTION(!isSet[i][j], runtime_error,
+// 		     "Block (" << i << ", " << j << ") is not set." << endl);
+
+//   sub = sub_[i][j];
+// }

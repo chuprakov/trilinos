@@ -29,9 +29,14 @@
 
 #include "Teuchos_MPISession.hpp"
 #include "TSFDouble.hpp"
+#include "TSFVectorType.hpp"
+#include "TSFVectorSpace.hpp"
+#include "TSFVector.hpp"
+
 
 using namespace Teuchos;
-using namespace TSFDouble;
+using namespace TSFExtended;
+//using namespace TSFDouble;
 using namespace TSFExtendedOps;
 
 
@@ -42,10 +47,11 @@ int main(int argc, void *argv[])
   try
     {
       MPISession::init(&argc, &argv);
+      MPIComm::world().synchronize();
 
       int verbosity = 1;
 
-      VectorType type = new EpetraVectorType();
+      VectorType<double> type = new EpetraVectorType();
 
       int n = 20;
 
@@ -61,16 +67,16 @@ int main(int argc, void *argv[])
           localRows[i] = low + i;
         }
 
-      VectorSpace space = type.createSpace(dimension, n, 
+      VectorSpace<double> space = type.createSpace(dimension, n, 
                                                    &(localRows[0]));
 
 
-      Vector u = space.createMember();
-      Vector w = space.createMember();
-      Vector v = space.createMember();
-      Vector x = space.createMember();
-      Vector y = space.createMember();
-      Vector z = space.createMember();
+      Vector<double> u = space.createMember();
+      Vector<double> w = space.createMember();
+      Vector<double> v = space.createMember();
+      Vector<double> x = space.createMember();
+      Vector<double> y = space.createMember();
+      Vector<double> z = space.createMember();
 
       for (int i=low; i<high; i++)
         {
@@ -94,7 +100,7 @@ int main(int argc, void *argv[])
         }
 
       /* assign into an empty vector */
-      Vector  a = space.createMember();
+      Vector<double>  a = space.createMember();
 
       a = x + y + z + u + v + w;
 

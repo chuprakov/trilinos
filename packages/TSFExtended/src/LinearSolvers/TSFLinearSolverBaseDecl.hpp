@@ -1,3 +1,4 @@
+/* @HEADER@ */
 /* ***********************************************************************
 // 
 //           TSFExtended: Trilinos Solver Framework Extended
@@ -23,54 +24,51 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
+/* @HEADER@ */
 
-#ifndef TSFEPETRAVECTORSPACE_HPP
-#define TSFEPETRAVECTORSPACE_HPP
+#ifndef TSFLINEARSOLVERBASEDECL_HPP
+#define TSFLINEARSOLVERBASEDECL_HPP
 
-#include "Epetra_Map.h"
-#include "TSFCoreEpetraVectorSpace.hpp"
-#include "TSFHandleable.hpp"
-#include "TSFDescribable.hpp"
+#include "TSFConfigDefs.hpp"
 #include "TSFVector.hpp"
-
+#include "TSFSolverState.hpp"
+#include "Teuchos_ParameterList.hpp"
+#include "TSFLinearOperatorDecl.hpp"
 
 namespace TSFExtended
 {
   using namespace Teuchos;
 
-  /**
-   * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
-   * This class derives
-   * from TSFCore::EpetraVectorSpace, so it can be used seamlessly in any 
-   * TSFCore-based code.
-   */
-  class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
-                            public Handleable<const TSFCore::VectorSpace<double> >,
-                            public Describable
-    {
-    public:
-      /** */
-      EpetraVectorSpace();
+  /** */
+  template <class Scalar>
+  class LinearSolverBase 
+  {
+  public:
+    /** */
+    LinearSolverBase(const ParameterList& params);
 
-      /** */
-      EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
+    /** */
+    virtual ~LinearSolverBase(){;}
 
-      /** virtual dtor */
-      virtual ~EpetraVectorSpace() {;}
+    /** */
+    virtual SolverState<Scalar> solve(const LinearOperator<Scalar>& op,
+                                      const Vector<Scalar>& rhs,
+                                      Vector<Scalar>& soln) const = 0;
 
-      /** */
-      virtual RefCountPtr<TSFCore::Vector<double> > createMember() const ;
-//       virtual Vector<double> createMember() const ;
+    /** */
+    const ParameterList& parameters() const ;
 
-      /** \name Describable interface */
-      //@{
-      /** Return a short description  */
-      string describe() const ;
-      //@}
+    /** */
+    ParameterList& parameters();
 
-      GET_RCP(const TSFCore::VectorSpace<double>);
-    };
-  
+    /** */
+    int getVerbosity() const ;
+
+    /** */
+    static string verbosityParam();
+  private:
+    ParameterList params_;
+  };
 }
 
 #endif

@@ -43,23 +43,28 @@ namespace TSFExtended
    * TSFIdentityOperator is the identity ("I") operator on a vector space.
    */
   template <class Scalar> 
-  class TSFIdentityOperator : public OpDecribableByTypeID<Scalar>
+  class IdentityOperator : public OpDescribableByTypeID<Scalar>
   {
   public:
     /** The domain and range spaces for an identity operator
      * are equivalent, so the ctor needs only a single space
      */
-    TSFIdentityOperator(const TSFCore::VectorSpace<Scalar>& space)
-      : space_(space.ptr()) {;}
+    IdentityOperator(const TSFCore::VectorSpace<Scalar>& space)
+    //: space_(space.ptr()) {;}
+    {
+      space_ = rcp(&space);  
+      
+    }
+    
 
     /** Virtual dtor */
-    virtual ~TSFIdentityOperator(){;}
+    virtual ~IdentityOperator(){;}
 
     /** 
      * apply returns the input vector
      */
     virtual void apply(
-                       const ETransp            M_trans
+                       const TSFCore::ETransp            M_trans
                        ,const TSFCore::Vector<Scalar>    &x
                        ,TSFCore::Vector<Scalar>          *y
                        ,const Scalar            alpha = 1.0
@@ -82,14 +87,16 @@ namespace TSFExtended
 	}
       else
 	{
-	  linear_combination(1, &alpha, &&x, beta, y);
+	  //TSFCore::linear_combination(1, &alpha, &&x, beta, y);
+	  const TSFCore::Vector<Scalar>* px = &x;
+	  TSFCore::linear_combination(1, &alpha, &px, beta, y);
 	  return;
 	}
     }
 
     /** Return the domain of the operator */
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return space_;}
-    }
+    
 
     /** Return the range of the operator */
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return space_;}

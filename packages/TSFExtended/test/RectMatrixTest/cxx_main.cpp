@@ -66,6 +66,8 @@ int main(int argc, void *argv[])
           localRows[i] = lowRow + i;
         }
 
+      cerr << "Making range and domain\n";
+
       VectorSpace<double> range = type.createSpace(rangeDimension, 
                                                    nLocalRows, 
                                                    &(localRows[0]));
@@ -82,6 +84,9 @@ int main(int argc, void *argv[])
         {
           localCols[i] = lowCol + i;
         }
+
+      cerr << "Made range\n";
+      
 
       VectorSpace<double> domain = type.createSpace(domainDimension, 
                                                     nLocalCols, 
@@ -104,8 +109,12 @@ int main(int argc, void *argv[])
           mat->setRowValues(localRows[i], 2, 
                             &(colIndices[0]), &(colVals[0]));
         }
+      cerr << "Made domain\n";
 
-      mat->freezeValues();
+      cerr << "This test is << NOT >> complete: The next line has been commented out\n";
+
+//       mat->freezeValues();
+
 
       cerr << A << endl;
 

@@ -41,6 +41,7 @@ EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& localM
 {}
 
 RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
+// Vector<double>  EpetraVectorSpace::createMember() const
 {
   Epetra_Vector* v = new Epetra_Vector(*epetra_map(), false);
 

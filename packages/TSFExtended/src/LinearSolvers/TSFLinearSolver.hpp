@@ -40,9 +40,17 @@ namespace TSFExtended
   class LinearSolver : public Handle<LinearSolverBase<Scalar> >
   {
   public:
-    HANDLE_CTORS(LinearSolver<Scalar>, LinearSolverBase<Scalar>);
-
+    //HANDLE_CTORS(LinearSolver<Scalar>, LinearSolverBase<Scalar>);
     /** */
+    LinearSolver() : Handle<LinearSolverBase<Scalar> >() {;}
+    /** */
+    LinearSolver( Handleable<LinearSolverBase<Scalar> >* rawPtr) 
+      : Handle<LinearSolverBase<Scalar> >(rawPtr) {;}
+    /** */
+    LinearSolver(const RefCountPtr<LinearSolverBase<Scalar> >& smartPtr)
+      : Handle<LinearSolverBase<Scalar> >(smartPtr) {;}
+    /** */
+
     SolverState<Scalar> solve(const LinearOperator<Scalar>& op,
                               const Vector<Scalar>& rhs,
                               Vector<Scalar>& soln) const ;

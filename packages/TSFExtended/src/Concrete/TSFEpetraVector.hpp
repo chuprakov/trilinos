@@ -29,7 +29,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFDescribable.hpp"
+#include "TSFDescribableByTypeID.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFAccessibleVector.hpp"
 #include "TSFLoadableVector.hpp"
@@ -51,7 +51,7 @@ namespace TSFExtended
   class EpetraVector : public TSFCore::EpetraVector,
                        public LoadableVector<double>,
                        public AccessibleVector<double>,
-                       public Describable,
+                       public DescribableByTypeID,
                        public Printable
     {
     public:
@@ -102,10 +102,10 @@ namespace TSFExtended
       /** \name Describable interface */
       //@{
       /** Write a brief description */
-      string describe() const 
-      {
-        return "EpetraVector";
-      }
+//       string describe() const 
+//       {
+//         return "EpetraVector";
+//       }
       //@}
 
 

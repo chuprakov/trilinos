@@ -29,55 +29,7 @@
 #ifndef TSFLINEARSOLVERBASE_HPP
 #define TSFLINEARSOLVERBASE_HPP
 
-#include "TSFConfigDefs.hpp"
-#include "TSFVector.hpp"
-#include "TSFLinearOperator.hpp"
-#include "TSFSolverState.hpp"
-#include "Teuchos_ParameterList.hpp"
-
-
-namespace TSFExtended
-{
-  using namespace Teuchos;
-
-  /**
-   *
-   */
-  template <class Scalar>
-  class LinearSolverBase 
-  {
-  public:
-    /** */
-    LinearSolverBase(const ParameterList& params)
-      : params_(params)
-    {;}
-
-    /** */
-    virtual ~LinearSolverBase(){;}
-
-    /** */
-    virtual SolverState<Scalar> solve(const LinearOperator<Scalar>& op,
-                                      const Vector<Scalar>& rhs,
-                                      Vector<Scalar>& soln) const = 0;
-
-    /** */
-    const ParameterList& parameters() const {return params_;}
-
-    /** */
-    ParameterList& parameters() {return params_;}
-
-    /** */
-    int getVerbosity() const 
-	{return parameters().template get<int>(verbosityParam());}
-
-    /** */
-    static string verbosityParam() {return "verbosity";}
-
-  private:
-
-    ParameterList params_;
-  };
-
-}
+#include "TSFLinearSolverBaseDecl.hpp"
+#include "TSFLinearSolverBaseImpl.hpp"
 
 #endif

@@ -1,3 +1,4 @@
+/* @HEADER@ */
 /* ***********************************************************************
 // 
 //           TSFExtended: Trilinos Solver Framework Extended
@@ -23,54 +24,32 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
+/* @HEADER@ */
 
-#ifndef TSFEPETRAVECTORSPACE_HPP
-#define TSFEPETRAVECTORSPACE_HPP
+#ifndef TSFLINEARSOLVERBASEIMPL_HPP
+#define TSFLINEARSOLVERBASEIMPL_HPP
 
-#include "Epetra_Map.h"
-#include "TSFCoreEpetraVectorSpace.hpp"
-#include "TSFHandleable.hpp"
-#include "TSFDescribable.hpp"
-#include "TSFVector.hpp"
+//#include "TSFLinearSolverBaseDecl.hpp"
+
+using namespace TSFExtended;
 
 
-namespace TSFExtended
-{
-  using namespace Teuchos;
+template <class Scalar>
+LinearSolverBase<Scalar>::LinearSolverBase(const ParameterList& params)
+  : params_(params) {;}
 
-  /**
-   * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
-   * This class derives
-   * from TSFCore::EpetraVectorSpace, so it can be used seamlessly in any 
-   * TSFCore-based code.
-   */
-  class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
-                            public Handleable<const TSFCore::VectorSpace<double> >,
-                            public Describable
-    {
-    public:
-      /** */
-      EpetraVectorSpace();
+template <class Scalar>
+const ParameterList& LinearSolverBase<Scalar>::parameters() const 
+{return params_;}
 
-      /** */
-      EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
+template <class Scalar>
+ParameterList& LinearSolverBase<Scalar>::parameters() {return params_;}
 
-      /** virtual dtor */
-      virtual ~EpetraVectorSpace() {;}
+template <class Scalar>
+int LinearSolverBase<Scalar>::getVerbosity() const 
+{return parameters().template get<int>(verbosityParam());}
 
-      /** */
-      virtual RefCountPtr<TSFCore::Vector<double> > createMember() const ;
-//       virtual Vector<double> createMember() const ;
-
-      /** \name Describable interface */
-      //@{
-      /** Return a short description  */
-      string describe() const ;
-      //@}
-
-      GET_RCP(const TSFCore::VectorSpace<double>);
-    };
-  
-}
+template <class Scalar>
+string LinearSolverBase<Scalar>::verbosityParam() {return "verbosity";}
 
 #endif

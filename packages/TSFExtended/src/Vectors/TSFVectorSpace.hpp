@@ -30,25 +30,27 @@
 #define TSFVECTORSPACE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreVectorSpaceStdBase.hpp"
+ //#include "TSFCoreVectorSpaceStdBase.hpp"
+ //#include "TSFVector.hpp"
 #include "TSFHandle.hpp"
 
 namespace TSFExtended
 {
   using namespace Teuchos;
+template<class Scalar> class Vector;
 
   /**
    *
    */
   template <class Scalar>
-  class VectorSpace : public Handle<const TSFCore::VectorSpace<Scalar> >,
-                      public TSFCore::VectorSpaceStdBase<Scalar>
+  class VectorSpace : public Handle<const TSFCore::VectorSpace<Scalar> >//,
+		      // public TSFCore::VectorSpaceStdBase<Scalar>
   {
   public:
     HANDLE_CTORS(VectorSpace<Scalar>, const TSFCore::VectorSpace<Scalar>);
     
     /** Create a new element of this vector space */
-    RefCountPtr<TSFCore::Vector<Scalar> > createMember() const 
+    Vector<Scalar>  createMember() const 
     {return ptr()->createMember();}
 
     /** Return the dimension of the space */
@@ -64,12 +66,57 @@ namespace TSFExtended
      * are dereferenced. If the argument is not a handle, then it
      * ends up comparing to the concrete contents of this handle, giving the
      * same results. */
-    bool isCompatible(const TSFCore::VectorSpace<Scalar>& vecSpc) const 
+    bool isCompatible(const VectorSpace<Scalar>& vecSpc) const 
     {return vecSpc.isCompatible(*ptr());}
+
+//     /*put it to fix problem in nonlinearOperatorBase:97 */
+//     bool isCompatible(const RefCountPtr<TSFCore::VectorSpace<Scalar> >& vecSpc) const
+//     {
+//       VectorSpace<Scalar> vs = vecSpc;
+//       return vs.isCompatible(*ptr());
+//     } 
+
+
+
+      /** test equality between two spaces */
+      bool operator==(const VectorSpace<Scalar>& other) const ;
+
+
+      /** test inequality of two spaces */
+      bool operator!=(const VectorSpace<Scalar>& other) const ;
+
+
+      /** test whether the space contains a given vector */
+//       bool contains(const Vector<Scalar>& vec) const ;
+
+
+      /** return the number of subblocks. */
+      int numBlocks() const ;
+
+      /** get the i-th subblock */
+      VectorSpace<Scalar> getBlock(int i) const ;
+
+
+      /** Describe the vectorSpace.  This gives just the number of
+          elements, if the vector is a simple vector.  It gives
+          the block structure if the vector is a TSFBlockVector
+          if the vector is a block vector.  */
+      string describe() const;
+
+      /** The companion to describe that indents for readability  */
+      string describe(const int& depth) const;
+
+
+      /** access to raw pointer */
+    //const TSFCore::VectorSpace<Scalar>* ptr() const {return ptr();}
+
+
+
+
   };
   
 
-  // template <class Scalar> inline 
+// template <class Scalar> inline 
 //   VectorSpace<Scalar>::VectorSpace()
 //     : Handle<const TSFCore::VectorSpace<Scalar> >()
 //   {}

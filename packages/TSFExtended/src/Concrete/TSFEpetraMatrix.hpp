@@ -37,7 +37,7 @@
 //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFDescribable.hpp"
+#include "TSFDescribableByTypeID.hpp"
 #include "Epetra_CrsMatrix.h"
 
 namespace TSFExtended
@@ -50,7 +50,7 @@ namespace TSFExtended
                        //   public RowAccessibleOp<double>,
                        // public ExplicitlyTransposeableOp<double>,
                        public Printable,
-                       public Describable,
+                       public DescribableByTypeID,
                        public Handleable<TSFCore::LinearOp<double> >
   {
   public:

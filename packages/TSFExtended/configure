@@ -9525,7 +9525,7 @@ fi
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-                                                                                                                        ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile test/VectorTests/Makefile test/Double/Makefile test/RectMatrixTest/Makefile test/PoissonTest/Makefile test/Nonlinear/Makefile doc/Makefile doc/Doxygen/Makefile doc/Doxygen/Doxyfile.user doc/Doxygen/Doxyfile.developer"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile test/VectorTests/Makefile test/Double/Makefile test/RectMatrixTest/Makefile test/PoissonTest/Makefile test/Nonlinear/Makefile test/BlockTests/Makefile doc/Makefile doc/Doxygen/Makefile doc/Doxygen/Doxyfile.user doc/Doxygen/Doxyfile.developer"
 
 
 cat >confcache <<\_ACEOF
@@ -10141,6 +10141,7 @@ do
   "test/RectMatrixTest/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/RectMatrixTest/Makefile" ;;
   "test/PoissonTest/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/PoissonTest/Makefile" ;;
   "test/Nonlinear/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Nonlinear/Makefile" ;;
+  "test/BlockTests/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/BlockTests/Makefile" ;;
   "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
   "doc/Doxygen/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Doxygen/Makefile" ;;
   "doc/Doxygen/Doxyfile.user" ) CONFIG_FILES="$CONFIG_FILES doc/Doxygen/Doxyfile.user" ;;

@@ -47,12 +47,14 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
+	$(srcdir)/Vectors/TSFProductVectorSpace.hpp\
 	$(srcdir)/Vectors/TSFVector.hpp \
 	$(srcdir)/Vectors/TSFVectorSpace.hpp \
 	$(srcdir)/Vectors/TSFVectorType.hpp \
 	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
 
-VECTORS = 
+VECTORS = \
+	$(srcdir)/Vectors/TSFProductVectorSpace.cpp
 
 UTILS_H = \
 	$(srcdir)/Utils/TSFConfigDefs.hpp \

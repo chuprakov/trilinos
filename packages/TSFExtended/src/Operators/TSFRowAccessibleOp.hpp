@@ -1,3 +1,4 @@
+/* @HEADER@ */
 /* ***********************************************************************
 // 
 //           TSFExtended: Trilinos Solver Framework Extended
@@ -23,54 +24,40 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
+/* @HEADER@ */
 
-#ifndef TSFEPETRAVECTORSPACE_HPP
-#define TSFEPETRAVECTORSPACE_HPP
+#ifndef TSFROWACCESSIBLEOP_HPP
+#define TSFROWACCESSIBLEOP_HPP
 
-#include "Epetra_Map.h"
-#include "TSFCoreEpetraVectorSpace.hpp"
-#include "TSFHandleable.hpp"
-#include "TSFDescribable.hpp"
-#include "TSFVector.hpp"
-
+#include "TSFConfigDefs.hpp"
+#include "Teuchos_Array.hpp"
 
 namespace TSFExtended
 {
-  using namespace Teuchos;
-
-  /**
-   * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
-   * This class derives
-   * from TSFCore::EpetraVectorSpace, so it can be used seamlessly in any 
-   * TSFCore-based code.
+  /** 
+   * Base interface for operators for which a row may be extracted.
    */
-  class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
-                            public Handleable<const TSFCore::VectorSpace<double> >,
-                            public Describable
-    {
-    public:
-      /** */
-      EpetraVectorSpace();
+  template <class Scalar>
+  class RowAccessibleOp 
+  {
+  public:
+    /** Virtual dtor */
+    virtual ~RowAccessibleOp(){;}
 
-      /** */
-      EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
+    /** 
+     * Get the non-zero values in the row-th row.
+     * @param row the index of the row
+     * @param indices the column indices of the non-zero values in row row
+     * @param values the non-zero values corresponding to the indices in indices
+     */
+    virtual void getRow(const int& row, 
+			Teuchos::Array<int>& indices, 
+			Teuchos::Array<Scalar>& values) const = 0;
 
-      /** virtual dtor */
-      virtual ~EpetraVectorSpace() {;}
-
-      /** */
-      virtual RefCountPtr<TSFCore::Vector<double> > createMember() const ;
-//       virtual Vector<double> createMember() const ;
-
-      /** \name Describable interface */
-      //@{
-      /** Return a short description  */
-      string describe() const ;
-      //@}
-
-      GET_RCP(const TSFCore::VectorSpace<double>);
-    };
-  
+  private:
+    
+    
+  };
 }
 
 #endif

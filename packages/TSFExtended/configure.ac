@@ -376,6 +376,7 @@ AC_CONFIG_FILES([
 		test/RectMatrixTest/Makefile
 		test/PoissonTest/Makefile
 		test/Nonlinear/Makefile
+		test/BlockTests/Makefile
   doc/Makefile  
   doc/Doxygen/Makefile
   doc/Doxygen/Doxyfile.user
