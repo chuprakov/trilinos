@@ -763,7 +763,7 @@ inline
 const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, size_type size
 	, ptrdiff_t stride )
 {
-	return VectorSliceTmpl<T>( const_cast<VectorSliceTmpl<T>::value_type*>(vs.start_ptr()) + vs.stride() * (start-1)
+	return VectorSliceTmpl<T>( const_cast<typename VectorSliceTmpl<T>::value_type*>(vs.start_ptr()) + vs.stride() * (start-1)
 		, size, vs.stride() * stride );
 }
 
@@ -861,48 +861,48 @@ void VectorSliceTmpl<T>::bind(VectorSliceTmpl vs)
 // Iterator functions
 template<class T>
 inline
-VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::begin()
+typename VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::begin()
 {	return iterator(start_ptr(), stride()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::end()
+typename VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::end()
 {	return iterator(start_ptr() + dim() * stride(), stride()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::begin() const
+typename VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::begin() const
 {	return const_iterator(start_ptr(), stride()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::end() const
+typename VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::end() const
 {	return const_iterator(start_ptr() + dim() * stride(), stride()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::reverse_iterator	VectorSliceTmpl<T>::rbegin()
+typename VectorSliceTmpl<T>::reverse_iterator	VectorSliceTmpl<T>::rbegin()
 {	return reverse_iterator(end()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::reverse_iterator	VectorSliceTmpl<T>::rend()
+typename VectorSliceTmpl<T>::reverse_iterator	VectorSliceTmpl<T>::rend()
 {	return reverse_iterator(begin()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_reverse_iterator VectorSliceTmpl<T>::rbegin() const
+typename VectorSliceTmpl<T>::const_reverse_iterator VectorSliceTmpl<T>::rbegin() const
 {	return const_reverse_iterator(end()); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_reverse_iterator VectorSliceTmpl<T>::rend() const
+typename VectorSliceTmpl<T>::const_reverse_iterator VectorSliceTmpl<T>::rend() const
 {	return const_reverse_iterator(begin()); }
 
 // Element access
 template<class T>
 inline
-VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator()(size_type i) // 1 based
+typename VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator()(size_type i) // 1 based
 {
 	vector_validate_subscript(dim(),i);
 	return ptr_[(i-1)*stride_];
@@ -910,7 +910,7 @@ VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator()(size_type i) // 1 b
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator()(size_type i) const
+typename VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator()(size_type i) const
 {
 	vector_validate_subscript(dim(),i);
 	return ptr_[(i-1)*stride_];
@@ -918,7 +918,7 @@ VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator()(size_type i) 
 
 template<class T>
 inline
-VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator[](size_type i) // 0 based		
+typename VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator[](size_type i) // 0 based		
 {
 	vector_validate_subscript(dim(),i+1);
 	return ptr_[(i)*stride_];
@@ -926,7 +926,7 @@ VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator[](size_type i) // 0 b
 
 template<class T>
 inline
-VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator[](size_type i) const
+typename VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator[](size_type i) const
 {
 	vector_validate_subscript(dim(),i+1);
 	return ptr_[(i)*stride_];
@@ -995,34 +995,34 @@ VectorSliceTmpl<T>& VectorSliceTmpl<T>::operator=(const VectorSliceTmpl<T>& rhs)
 
 template<class T>
 inline
-VectorSliceTmpl<T>::size_type VectorSliceTmpl<T>::dim() const
+typename VectorSliceTmpl<T>::size_type VectorSliceTmpl<T>::dim() const
 {	return size_; }
 
 // Raw pointer access
 
 template<class T>
 inline
-VectorSliceTmpl<T>::value_type*	VectorSliceTmpl<T>::raw_ptr()
+typename VectorSliceTmpl<T>::value_type*	VectorSliceTmpl<T>::raw_ptr()
 {	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (dim() - 1); }
 
 template<class T>
 inline
-const VectorSliceTmpl<T>::value_type* VectorSliceTmpl<T>::raw_ptr() const
+const typename VectorSliceTmpl<T>::value_type* VectorSliceTmpl<T>::raw_ptr() const
 {	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (dim() - 1); }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::value_type*	VectorSliceTmpl<T>::start_ptr()
+typename VectorSliceTmpl<T>::value_type*	VectorSliceTmpl<T>::start_ptr()
 {	return ptr_; }
 
 template<class T>
 inline
-const VectorSliceTmpl<T>::value_type* VectorSliceTmpl<T>::start_ptr() const
+const typename VectorSliceTmpl<T>::value_type* VectorSliceTmpl<T>::start_ptr() const
 {	return ptr_; }
 
 template<class T>
 inline
-VectorSliceTmpl<T>::difference_type VectorSliceTmpl<T>::stride() const
+typename VectorSliceTmpl<T>::difference_type VectorSliceTmpl<T>::stride() const
 {	return stride_; }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -1083,54 +1083,54 @@ void VectorTmpl<T>::free()
 // Size
 template<class T>
 inline
-VectorTmpl<T>::size_type VectorTmpl<T>::dim() const
+typename VectorTmpl<T>::size_type VectorTmpl<T>::dim() const
 {	return v_.size(); }
 
 // Iterator functions
 template<class T>
 inline
-VectorTmpl<T>::iterator VectorTmpl<T>::begin()
+typename VectorTmpl<T>::iterator VectorTmpl<T>::begin()
 {	return start_ptr(); }
 
 template<class T>
 inline
-VectorTmpl<T>::iterator VectorTmpl<T>::end()
+typename VectorTmpl<T>::iterator VectorTmpl<T>::end()
 {	return start_ptr() + dim(); }
 
 template<class T>
 inline
-VectorTmpl<T>::const_iterator VectorTmpl<T>::begin() const
+typename VectorTmpl<T>::const_iterator VectorTmpl<T>::begin() const
 {	return start_ptr(); }
 
 template<class T>
 inline
-VectorTmpl<T>::const_iterator VectorTmpl<T>::end() const 
+typename VectorTmpl<T>::const_iterator VectorTmpl<T>::end() const 
 {	return start_ptr() + dim(); }
 
 template<class T>
 inline
-VectorTmpl<T>::reverse_iterator	VectorTmpl<T>::rbegin()
+typename VectorTmpl<T>::reverse_iterator	VectorTmpl<T>::rbegin()
 {	return reverse_iterator(end()); }
 
 template<class T>
 inline
-VectorTmpl<T>::reverse_iterator	VectorTmpl<T>::rend()
+typename VectorTmpl<T>::reverse_iterator	VectorTmpl<T>::rend()
 {	return reverse_iterator(begin()); }
 
 template<class T>
 inline
-VectorTmpl<T>::const_reverse_iterator VectorTmpl<T>::rbegin() const
+typename VectorTmpl<T>::const_reverse_iterator VectorTmpl<T>::rbegin() const
 {	return const_reverse_iterator(end()); }
 
 template<class T>
 inline
-VectorTmpl<T>::const_reverse_iterator VectorTmpl<T>::rend() const 
+typename VectorTmpl<T>::const_reverse_iterator VectorTmpl<T>::rend() const 
 {	return const_reverse_iterator(begin()); }
 
 // Element access
 template<class T>
 inline
-VectorTmpl<T>::reference VectorTmpl<T>::operator()(size_type i)
+typename VectorTmpl<T>::reference VectorTmpl<T>::operator()(size_type i)
 {
 	vector_validate_subscript(dim(),i);
 	return start_ptr()[i-1];
@@ -1138,7 +1138,7 @@ VectorTmpl<T>::reference VectorTmpl<T>::operator()(size_type i)
 
 template<class T>
 inline
-VectorTmpl<T>::const_reference VectorTmpl<T>::operator()(size_type i) const
+typename VectorTmpl<T>::const_reference VectorTmpl<T>::operator()(size_type i) const
 {
 	vector_validate_subscript(dim(),i);
 	return start_ptr()[i-1];
@@ -1146,7 +1146,7 @@ VectorTmpl<T>::const_reference VectorTmpl<T>::operator()(size_type i) const
 
 template<class T>
 inline
-VectorTmpl<T>::reference VectorTmpl<T>::operator[](size_type i)
+typename VectorTmpl<T>::reference VectorTmpl<T>::operator[](size_type i)
 {
 	vector_validate_subscript(dim(),i+1);
 	return start_ptr()[i];
@@ -1154,7 +1154,7 @@ VectorTmpl<T>::reference VectorTmpl<T>::operator[](size_type i)
 
 template<class T>
 inline
-VectorTmpl<T>::const_reference VectorTmpl<T>::operator[](size_type i) const
+typename VectorTmpl<T>::const_reference VectorTmpl<T>::operator[](size_type i) const
 {
 	vector_validate_subscript(dim(),i+1);
 	return start_ptr()[i];
@@ -1244,27 +1244,27 @@ VectorTmpl<T>& VectorTmpl<T>::operator=(const VectorSliceTmpl<T>& rhs)
 
 template<class T>
 inline
-VectorTmpl<T>::value_type*	VectorTmpl<T>::raw_ptr()
+typename VectorTmpl<T>::value_type*	VectorTmpl<T>::raw_ptr()
 {	return start_ptr(); }
 
 template<class T>
 inline
-const VectorTmpl<T>::value_type* VectorTmpl<T>::raw_ptr() const
+const typename VectorTmpl<T>::value_type* VectorTmpl<T>::raw_ptr() const
 {	return start_ptr(); }
 
 template<class T>
 inline
-VectorTmpl<T>::value_type*	VectorTmpl<T>::start_ptr()
+typename VectorTmpl<T>::value_type*	VectorTmpl<T>::start_ptr()
 {	return dim() ? &(v_)[0] : 0; }
 
 template<class T>
 inline
-const VectorTmpl<T>::value_type* VectorTmpl<T>::start_ptr() const
+const typename VectorTmpl<T>::value_type* VectorTmpl<T>::start_ptr() const
 {	return &const_cast<valarray&>((v_))[0]; }
 
 template<class T>
 inline
-VectorTmpl<T>::difference_type VectorTmpl<T>::stride() const
+typename VectorTmpl<T>::difference_type VectorTmpl<T>::stride() const
 {	return 1; }
 
 // //////////////////////////////////////////////////
@@ -1389,10 +1389,10 @@ EOverLap VectorSliceTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) cons
 template<class T>
 EOverLap VectorTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 
-	const VectorSliceTmpl<T>::value_type
+	const typename VectorSliceTmpl<T>::value_type
 		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (dim()-1)*stride() ),
 		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.dim()-1)*vs.stride() );
-	VectorSliceTmpl<T>::size_type
+	typename VectorSliceTmpl<T>::size_type
 		size1 = dim(),
 		size2 = vs.dim();
 
