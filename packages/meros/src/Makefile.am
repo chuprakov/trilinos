@@ -217,13 +217,13 @@ libmeros_a_LIBADD = $(XTRALDADD)
 lib_LIBRARIES = $(MEROS_LIB)
 
 # ------------------------------------------------------------------------
-# List of all headers to install in $(pkgincludedir)
+# List of all headers to install in $(includedir)
 # ------------------------------------------------------------------------
 
-pkginclude_HEADERS = $(MEROS_H) 
+include_HEADERS = $(MEROS_H) 
 
 # ------------------------------------------------------------------------
-# Special stuff to install in our special $(pkgexecincludedir)
+# Special stuff to install in our special $(execincludedir)
 # ------------------------------------------------------------------------
 
 # SPECIAL NOTE: meros_config.h is a machine-dependent file, so we need
@@ -231,8 +231,8 @@ pkginclude_HEADERS = $(MEROS_H)
 # not a default installation directory, so we had to create it
 # special.
 
-pkgexecincludedir = $(exec_prefix)/include/meros
-nodist_pkgexecinclude_HEADERS = meros_config.h
+execincludedir = $(exec_prefix)/include
+nodist_execinclude_HEADERS = meros_config.h
 
 # ------------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

@@ -221,13 +221,13 @@ libTSFCoreUtils_a_LIBADD = $(XTRALDADD)
 lib_LIBRARIES = $(TSFCOREUTILS_LIB)
 
 # ------------------------------------------------------------------------
-# List of all headers to install in $(pkgincludedir)
+# List of all headers to install in $(includedir)
 # ------------------------------------------------------------------------
 
-pkginclude_HEADERS = $(SOURCES_H)
+include_HEADERS = $(SOURCES_H)
 
 # ------------------------------------------------------------------------
-# Special stuff to install in our special $(pkgexecincludedir)
+# Special stuff to install in our special $(execincludedir)
 # ------------------------------------------------------------------------
 
 # SPECIAL NOTE: TSFCoreUtils_config.h is a machine-dependent file, so we need
@@ -235,8 +235,8 @@ pkginclude_HEADERS = $(SOURCES_H)
 # not a default installation directory, so we had to create it
 # special.
 
-pkgexecincludedir = $(exec_prefix)/include/TSFCoreUtils
-nodist_pkgexecinclude_HEADERS = TSFCoreUtilsConfig.h $(SOURCES_H)
+execincludedir = $(exec_prefix)/include
+nodist_execinclude_HEADERS = TSFCoreUtilsConfig.h $(SOURCES_H)
 
 # ------------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

@@ -46,10 +46,10 @@ libTSF_a_LIBADD = $(XTRALDADD)
 
 lib_LIBRARIES = $(TSF_LIB)
 
-pkginclude_HEADERS = $(SOURCES_H) 
+include_HEADERS = $(SOURCES_H) 
 
 # ------------------------------------------------------------------------
-# Special stuff to install in our special $(pkgexecincludedir)
+# Special stuff to install in our special $(execincludedir)
 # ------------------------------------------------------------------------
 
 # SPECIAL NOTE: Ifpack_config.h is a machine-dependent file, so we need
@@ -57,9 +57,9 @@ pkginclude_HEADERS = $(SOURCES_H)
 # not a default installation directory, so we had to create it
 # special.
 
-pkgexecincludedir = $(exec_prefix)/include/TSF
+execincludedir = $(exec_prefix)/include
 
-nodist_pkgexecinclude_HEADERS = Support/TSFConfig.h
+nodist_execinclude_HEADERS = Support/TSFConfig.h
 
 # ------------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'
