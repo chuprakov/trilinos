@@ -106,7 +106,7 @@ void NLPSerialPreprocess::initialize()
 	
 	xinit_full_.resize(n_full_);
 	xl_full_.resize(n_full_);
-	xl_full_.resize(n_full_);
+	xu_full_.resize(n_full_);
 	x_full_.resize(n_full_);
 	c_orig_.resize(m_orig_);
 	h_orig_.resize(mI_orig_);

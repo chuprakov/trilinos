@@ -91,7 +91,7 @@ void NLPSerialPreprocessExplJac::initialize()
 		space_h = this->space_h();
 
 	// Initialize the storage for the intermediate quanities
-	Gc_nz_orig_ = imp_Gc_nz_full();         // Get the estimated number of nonzeros in Gc
+	Gc_nz_orig_ = imp_Gc_nz_orig();         // Get the estimated number of nonzeros in Gc
 	Gc_val_orig_.resize(Gc_nz_orig_);
 	Gc_ivect_orig_.resize(Gc_nz_orig_);
 	Gc_jvect_orig_.resize(Gc_nz_orig_);
@@ -218,6 +218,11 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	,const FirstOrderInfo& first_order_info
 	) const
 {
+	//
+	// Note that this function should never be called with calc_Gc == false
+	// if convert_inequ_to_equ == true.  Therefore, we can assume that
+	// if calc_Gc == false, then convert_inequ_to_equ == false.
+	//
 	namespace rcp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 
@@ -226,7 +231,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	const Range1D
 		var_dep      = this->var_dep(),
 		equ_decomp   = this->equ_decomp(),
-		inequ_decomp = this->equ_decomp();
+		inequ_decomp = this->inequ_decomp();
 	// Get the dimensions of the original NLP
 	const bool
 		cinequtoequ = this->convert_inequ_to_equ();
@@ -235,11 +240,14 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		n_orig  = this->imp_n_orig(),
 		m_orig  = this->imp_m_orig(),
 		mI_orig = this->imp_mI_orig();
-	// Get the dimensions of the full matrix
+	// Get the dimensions of the full matrices
 	const size_type
-		num_cols = (calc_Gc
-					 ? m_orig + ( cinequtoequ ? mI_orig : 0       )
-					 :          ( cinequtoequ ? 0       : mI_orig ) );
+		n_full  = n_orig + ( cinequtoequ ? mI_orig : 0       ),
+		m_full  = m_orig + ( cinequtoequ ? mI_orig : 0       ),
+		mI_full =          ( cinequtoequ ? 0       : mI_orig );
+	// Get the number of columns in the matrix being constructed here
+	const size_type
+		num_cols = (calc_Gc	? m_full : mI_full );
 
 	//
 	// Get references to the constituent objects
@@ -276,18 +284,20 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 
 	set_x_full( VectorDenseEncap(x)(), newx, &x_full() );
 	if(calc_Gc) {
-		imp_calc_Gc_full( x_full(), newx, first_order_expl_info() );
+		if( m_orig )
+			imp_calc_Gc_orig( x_full(), newx, first_order_expl_info() );
 		if( cinequtoequ && mI_orig )
-			imp_calc_Gh_full( x_full(), newx, first_order_expl_info() );
+			imp_calc_Gh_orig( x_full(), newx, first_order_expl_info() );
 	}
 	else { // Should not get here if convert_inequ_to_equ == true or mI_orig == 0
-		imp_calc_Gh_full( x_full(), newx, first_order_expl_info() );
+		imp_calc_Gh_orig( x_full(), newx, first_order_expl_info() );
 	}
 
 	// Now get the actual number of nonzeros
-	const size_type nz_full = (calc_Gc
-								? Gc_nz_orig_ + (cinequtoequ ? Gh_nz_orig_ + mI_orig : 0 ) // Gc_orig, Gh_orig, -I
-								:               (cinequtoequ ? 0 : Gh_nz_orig_ ) );        // Gh_orig
+	const size_type nz_full
+		= (calc_Gc
+		   ? Gc_nz_orig_ + (cinequtoequ ? Gh_nz_orig_ + mI_orig : 0 ) // Gc_orig, Gh_orig, -I
+		   :               (cinequtoequ ? 0 : Gh_nz_orig_ ) );        // Gh_orig
 
 	// Determine if we need to set the structure and the nonzeros or just the nonzero values
 	const bool load_struct = (G_lse.nz() == 0);
@@ -300,12 +310,10 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		G_nz_previous = G_lse.nz();
 		G_lse.reset_to_load_values();           // Use row and column indexes already set (better be same insert order!)
 	}
-		
-	// Get pointers to the full COOR matrix just updated
-	value_type		*val_full		= &Gc_val_full_[0],
-					*val_full_end	= val_full + nz_full;
- 	index_type		*ivect_full		= &Gc_ivect_full_[0],
-					*jvect_full		= &Gc_jvect_full_[0];
+
+	//
+	// Load the matrix entries where we remove variables fixed by bounds
+	//
 
 	// Get pointers to buffers to fill with nonzero entries
 	value_type			*val    = NULL;
@@ -317,57 +325,94 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		,load_struct ? &ivect : NULL
 		,load_struct ? &jvect : NULL
 		);
+	// Pointers to the full COOR matrix just updated
+	const value_type      *val_orig     = NULL;
+	const value_type      *val_orig_end = NULL;
+ 	const index_type      *ivect_orig   = NULL;
+	const index_type      *jvect_orig   = NULL;
 
-	assert(0);
-	// ToDo: Factor out the below loops into a private function that
-	// you can used to fill Gc_full with Gc_orig, Gh_orig and -I
-	// if cinequtoequ == true && mI_orig > 0
-
-	// Remove the variables fixed by bounds and adjust the row indexes accordingly
-	// Note: only update the row and column indexes the first time since these
-	// will never change and are independent of basis choise.
-
-	value_type  *val_itr    = val;
- 	index_type  *ivect_itr  = ivect,
-		        *jvect_itr  = jvect,
-		        nz          = 0;
-	const IVector& var_full_to_remove_fixed = this->var_full_to_remove_fixed();
-	if( load_struct ) {
-		// Fill values and i and j
-		for( ; val_full != val_full_end ; ++val_full, ++ivect_full, ++jvect_full) {
+	index_type nz = 0;
+	if( calc_Gc ) {
+		if( m_orig ) {
+			// Load entries for Gc_orig
+			val_orig		= &Gc_val_orig_[0];
+			val_orig_end	= val_orig + Gc_nz_orig_;
+			ivect_orig		= &Gc_ivect_orig_[0];
+			jvect_orig		= &Gc_jvect_orig_[0];
+			imp_fill_jacobian_entries(
+				n, n_full, load_struct
+				,0 // column offset
+				,val_orig, val_orig_end, ivect_orig, jvect_orig
+				,&nz // This will be incremented
+				,val, ivect, jvect
+				);
+		}
+		if( cinequtoequ && mI_orig > 0 ) {
+			// Load entires for Gc_orig and -I
+			val_orig		= &Gh_val_orig_[0];
+			val_orig_end	= val_orig + Gh_nz_orig_;
+			ivect_orig		= &Gh_ivect_orig_[0];
+			jvect_orig		= &Gh_jvect_orig_[0];
+			imp_fill_jacobian_entries(
+				n, n_full, load_struct
+				,m_orig // column offset (i.e. [ Gc_orig, Gh_orig ] )
+				,val_orig, val_orig_end, ivect_orig, jvect_orig
+				,&nz // This will be incremented
+				,val + nz, ivect + nz, jvect + nz
+				);
+			// -I
+			value_type         *val_itr    = val   + nz;
+			index_type         *ivect_itr  = ivect + nz;
+			index_type         *jvect_itr  = jvect + nz;
+			const IVector& var_full_to_remove_fixed = this->var_full_to_remove_fixed();
+			if( load_struct ) {
+				// Fill values and i and j
+				for( index_type k = 1; k <= mI_orig; ++k ) {
+					size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef _DEBUG
-			assert( 0 <= *ivect_full && *ivect_full <= n_full );
+					assert( 0 < var_idx && var_idx <= n_full );
 #endif
-			size_type var_idx = var_full_to_remove_fixed(*ivect_full);
+					if(var_idx <= n) {
+						// This is not a fixed variable
+						*val_itr++ = -1.0;
+						*ivect_itr++ = var_idx;
+						*jvect_itr++ = m_orig + k; // (i.e. [ 0,  -I ] )
+						++nz;
+					}
+				}
+			}
+			else {
+				// Just fill values
+				for( index_type k = 1; k <= mI_orig; ++k ) {
+					size_type var_idx = var_full_to_remove_fixed(n_orig+k); // Knows about slacks
 #ifdef _DEBUG
-			assert( 0 < var_idx && var_idx <= n_full );
+					assert( 0 < var_idx && var_idx <= n_full );
 #endif
-			if(var_idx <= n) {
-				// This is not a fixed variable
-				*val_itr++ = *val_full;
-				// Also fill the row and column indices
-				*ivect_itr++ = var_idx;
-				*jvect_itr++ = *jvect_full;
-				++nz;
+					if(var_idx <= n) {
+						// This is not a fixed variable
+						*val_itr++ = -1.0;
+						++nz;
+					}
+				}
 			}
 		}
 	}
 	else {
-		// Just fill values
-		for( ; val_full != val_full_end ; ++val_full, ++ivect_full) {
-#ifdef _DEBUG
-			assert( 0 <= *ivect_full && *ivect_full <= n_full );
-#endif
-			size_type var_idx = var_full_to_remove_fixed(*ivect_full);
-#ifdef _DEBUG
-			assert( 0 < var_idx && var_idx <= n_full );
-#endif
-			if(var_idx <= n) {
-				// This is not a fixed variable
-				*val_itr++ = *val_full;
-				++nz;
-			}
-		}
+		// Load entries for Gh_orig
+		val_orig		= &Gh_val_orig_[0];
+		val_orig_end	= val_orig + Gh_nz_orig_;
+		ivect_orig		= &Gh_ivect_orig_[0];
+		jvect_orig		= &Gh_jvect_orig_[0];
+		imp_fill_jacobian_entries(
+			n, n_full, load_struct
+			,0 // column offset
+			,val_orig, val_orig_end, ivect_orig, jvect_orig
+			,&nz // This will be updated
+			,val, ivect, jvect
+			);
+	}
+
+	if( !load_struct ) {
 		// Check that the number of nonzeros added matches the number of nonzeros in G
 		THROW_EXCEPTION(
 			G_nz_previous != nz, std::runtime_error
@@ -375,7 +420,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 			"The number of added nonzeros does not match the number of nonzeros "
 			"in the previous matrix load!." );
 	}
-
+	
 	// Commit the nonzeros
 	G_lse.commit_load_nonzeros_buffers(
 		nz  // The actual number of nonzeros to set
@@ -467,6 +512,61 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 
 	G_aggr.initialize(G_full,P_row,P_col,G_perm);
 
+}
+
+void NLPSerialPreprocessExplJac::imp_fill_jacobian_entries(
+	size_type           n
+	,size_type          n_full
+	,bool               load_struct
+	,const index_type   col_offset
+	,const value_type   *val_orig
+	,const value_type   *val_orig_end
+	,const index_type   *ivect_orig
+	,const index_type   *jvect_orig
+	,index_type         *nz
+	,value_type         *val_itr
+	,index_type         *ivect_itr
+	,index_type         *jvect_itr
+	) const
+{
+	const IVector& var_full_to_remove_fixed = this->var_full_to_remove_fixed();
+	if( load_struct ) {
+		// Fill values and i and j
+		for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig, ++jvect_orig) {
+#ifdef _DEBUG
+			assert( 0 <= *ivect_orig && *ivect_orig <= n_full );
+#endif
+			size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
+#ifdef _DEBUG
+			assert( 0 < var_idx && var_idx <= n_full );
+#endif
+			if(var_idx <= n) {
+				// This is not a fixed variable
+				*val_itr++ = *val_orig;
+				// Also fill the row and column indices
+				*ivect_itr++ = var_idx;
+				*jvect_itr++ = col_offset + (*jvect_orig);
+				++(*nz);
+			}
+		}
+	}
+	else {
+		// Just fill values
+		for( ; val_orig != val_orig_end ; ++val_orig, ++ivect_orig) {
+#ifdef _DEBUG
+			assert( 0 <= *ivect_orig && *ivect_orig <= n_full );
+#endif
+			size_type var_idx = var_full_to_remove_fixed(*ivect_orig);
+#ifdef _DEBUG
+			assert( 0 < var_idx && var_idx <= n_full );
+#endif
+			if(var_idx <= n) {
+				// This is not a fixed variable
+				*val_itr++ = *val_orig;
+				++(*nz);
+			}
+		}
+	}
 }
 
 } // end namespace NLPInterfacePack

@@ -26,13 +26,13 @@
 namespace NLPInterfacePack {
 
 ///
-/** NLP node subclass for explicit Jacobians.
+/** NLP node subclass complementing \c NLPSerialPreprocess for explicit Jacobians.
  *
  * This subclass does a lot of work.  It has to consider several different
- * types of variability.  The matrices Gc and Gh that are computed must
- * take into consideratiion whether or not inequalities are converted
- * to equalities (<tt>convert_inequ_to_equ</tt>) and then permute
- * the entries according to the current basis selection.
+ * types of variability.  The matrices \c Gc and \c Gh that are computed must
+ * take into consideration whether or not inequalities are converted
+ * to equalities (<tt>convert_inequ_to_equ</tt>) and the permutation
+ * of the entries according to the current basis selection.
  *
  *  When <tt>convert_inequ_to_equ == false</tt> then:
  \verbatim
@@ -51,6 +51,17 @@ namespace NLPInterfacePack {
  \endverbatim
  *
  * ToDo: Finish documentation!
+ *
+ * <b>Subclass developers</b>
+ *
+ * Subclass developer's don't have to worry about slack variables or basis
+ * permutations.  A concreate subclass just has to override the functions
+ * that defined the original %NLP (see the tutorial example %NLP ???).
+ *
+ * In addition to the methods that must be overridden in \c NLPSerialPreprocess
+ * (<A HREF="classNLPInterfacePack_1_1NLPSerialPreprocess.html#must_override">see</A>)
+ * the following methods must be overridden as well: \c imp_Gc_nz_orig(), \c imp_Gh_nz_orig(),
+ * \c imp_calc_Gc_orig(), \c imp_calc_Gh_orig().
  */
 class NLPSerialPreprocessExplJac
 	: virtual public NLPSerialPreprocess
@@ -350,12 +361,10 @@ private:
 	mat_fcty_ptr_t      factory_Gc_;
 	mat_fcty_ptr_t      factory_Gh_;
 
-//	mutable size_type	Gc_nz_;        // Number of nonzeros in the transformed NLP Gc
-//	mutable size_type	Gh_nz_;        // Number of nonzeros in the transformed NLP Gh
 	mutable size_type   Gc_nz_orig_;    // Number of nonzeros in the original NLP Gc
 	mutable size_type   Gh_nz_orig_;    // Number of nonzeros in the original NLP Gh
-	mutable size_type                    Gc_nz_full_;    // Number of nonzeros in the full NLP Gc
-	mutable size_type                    Gh_nz_full_;    // Number of nonzeros in the full NLP Gh
+	mutable size_type   Gc_nz_full_;    // Number of nonzeros in the full NLP Gc
+	mutable size_type   Gh_nz_full_;    // Number of nonzeros in the full NLP Gh
 	mutable FirstOrderExplInfo::val_t    Gc_val_orig_;   // Storage for explicit nonzeros of full Gc
 	mutable FirstOrderExplInfo::ivect_t  Gc_ivect_orig_;
 	mutable FirstOrderExplInfo::jvect_t  Gc_jvect_orig_;
@@ -374,6 +383,22 @@ private:
 		bool calc_Gc
 		,const VectorWithOp& x, bool newx
 		,const FirstOrderInfo& first_order_info
+		) const;
+
+	//
+	void imp_fill_jacobian_entries(
+		size_type           n             // [in]
+		,size_type          n_full        // [in]
+		,bool               load_struct   // [in] If true, then the structure is loaded also
+		,const index_type   col_offset    // [in] Offset for filled column indexes
+		,const value_type   *val_full     // [in] Values (!=NULL)
+		,const value_type   *val_full_end // [in] Values end (!=NULL)
+		,const index_type   *ivect_full   // [in] Row indexes (!=NULL)
+		,const index_type   *jvect_full   // [in] Column indexes (!=NULL)
+		,index_type         *nz           // [in/out] Number of nonzeros added (!=NULL)            
+		,value_type         *val_itr      // [out] Values to fill (!=NULL)
+		,index_type         *ivect_itr    // [out] Row indexes (can be NULL if load_struct == false)
+		,index_type         *jvect_itr    // [out] Column indexes  (can be NULL if load_struct == false)
 		) const;
 
 };	// end class NLPSerialPreprocessExplJac

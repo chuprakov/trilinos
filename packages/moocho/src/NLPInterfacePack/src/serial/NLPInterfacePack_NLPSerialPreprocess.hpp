@@ -70,36 +70,60 @@ namespace NLPInterfacePack {
 
 	where:
 
-	        x_full         = [ x_orig ]
-                             [ s_orig ]
+	        x_full         = [ x_orig ]  n_orig
+                             [ s_orig ]  mI_orig
 
             f_full(x_full) = f_orig(x_orig)
 
-            c_full(x_full) = [ c_orig(x_orig)          ]
-                             [ h_orig(x_orig) - s_orig ]
+            c_full(x_full) = [ c_orig(x_orig)          ]  m_orig
+                             [ h_orig(x_orig) - s_orig ]  mI_orig
 
-	        xl_full        = [ xl_orig ]
-                             [ hl_orig ]
+	        xl_full        = [ xl_orig ]  n_orig
+                             [ hl_orig ]  mI_orig
 
-	        xu_full        = [ xu_orig ]
-                             [ hu_orig ]
+	        xu_full        = [ xu_orig ]  n_orig
+                             [ hu_orig ]  mI_orig
  \endverbatim
  * Note that in this case, the Jacobian of the new equality constraints
  * becomes and the gradient of the new objective becomes:
  \verbatim
 
-    Gc_full = [  Gc_orig    Gh_orig   ]
-              [     0          -I     ]
+    Gc_full = [  Gc_orig    Gh_orig   ]  n_orig
+              [     0          -I     ]  mI_orig
 
-    Gf_full = [ Gf_orig ]
-              [    0    ]
+                  m_orig     mI_orig
+
+    Gf_full = [ Gf_orig ]  n_orig
+              [    0    ]  mI_orig
  \endverbatim
  * Note that it is up to the subclass to implement \c imp_calc_Gc()
  * and \c imp_calc_Gh() in a way that is consistent with the above
  * transformation while also considering basis permutations (see 
- * \c NLPSerialPreprocessExplJac for example).  As for the gradient
+ * \c NLPSerialPreprocessExplJac).  As for the gradient
  * \c Gc_full, the subclass can actually include terms for the slack
- * variables in the objective function.
+ * variables in the objective function but the most common behavior
+ * will be to just ignore slack varaibles in the subclass.
+ *
+ * If <tt>convert_inequ_to_equ == false</tt>, then the "full" and "original" %NLP
+ * formulations are identical:
+ \verbatim
+
+     min    f_full(x_full)
+     s.t.   c_full(x_full) = 0
+	        hl_full <= h_full(x_full) <= xu_full
+	        xl_full <= x_full <= xu_full
+
+	where:
+
+	        x_full         = x_orig
+            f_full(x_full) = f_orig(x_orig)
+            c_full(x_full) = c_orig(x_orig)
+            h_full(x_full) = h_orig(x_orig)
+	        hl_full        = hl_orig
+	        hu_full        = hu_orig
+	        xl_full        = xl_orig
+	        xu_full        = xu_orig
+ \endverbatim
  *
  * <b>Preprocessing and basis manipulaiton</b>
  *
@@ -149,11 +173,26 @@ namespace NLPInterfacePack {
  *
  * <b>Subclass developers notes</b>
  *
+ * <A NAME="must_override"></A>
+ *
  * The following methods from the \c NLP interface must be overridden by the %NLP subclass:
- * \c max_var_bounds_viol(), \c set_mult_calc(), \c mult_calc().
+ * \c max_var_bounds_viol(), \c set_multi_calc(), \c multi_calc().
  *
  * The following methods from the \c NLPVarReductPerm interface msut be overridden by the %NLP subclass:
  * \c nlp_selects_basis().
+ *
+ * In addition, the methods from this interface that must be overridden are: \c imp_n_orig(),
+ * \c imp_m_orig(), \c imp_mI_orig(), \c imp_xinit_orig(), \c imp_has_var_bounds(),
+ * \c imp_xl_orig(), \c imp_xu_orig(), \c imp_hl_orig(), \c imp_hu_orig(), \c imp_calc_f_orig(),
+ * \c imp_calc_c_orig(), \c imp_calc_h_orig() and \c imp_calc_Gf_orig().
+ *
+ * <A NAME="should_override"></A>
+ *
+ * The \c NLP method \c initialize() should also be overridden by all of the subclasses
+ * (and call \c initialize() on its direct subclass).
+ *
+ * The following methods (with default implementations) may also be overridden by a subclass:
+ * \c imp_get_next_basis() and \c imp_report_orig_final_solution().
  */
 class NLPSerialPreprocess
 	: virtual public NLPObjGradient
@@ -764,6 +803,7 @@ private:
 
 // public
 
+inline
 bool NLPSerialPreprocess::convert_inequ_to_equ() const
 {
 	return convert_inequ_to_equ_;
