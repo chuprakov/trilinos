@@ -44,9 +44,9 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_VpV;
 
-	NLPAlgo	&algo	= rsqp_algo(_algo);
-	NLPAlgoState	&s		= algo.rsqp_state();
-	NLP			&nlp	= algo.nlp();
+	NLPAlgo        &algo   = rsqp_algo(_algo);
+	NLPAlgoState   &s      = algo.rsqp_state();
+	NLP            &nlp    = algo.nlp();
 
 	const size_type
 		m = nlp.m();
