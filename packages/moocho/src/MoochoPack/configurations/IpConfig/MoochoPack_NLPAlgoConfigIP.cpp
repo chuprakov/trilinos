@@ -1,7 +1,7 @@
 // /////////////////////////////////////////////////////////////////////////
 // Algo_ConfigIP.cpp
 //
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+// Copyright (C) 2001
 //
 // This is free software; you can redistribute it and/or modify it
 // under the terms of the "Artistic License" (see the web site
@@ -22,14 +22,16 @@
 #include "Misc/include/debug.h"
 
 #include "Algo_ConfigIP.h"
+#include "NLPInterfacePack/include/BarrierNLP.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/include/ipState.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"               // Y, Z
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
 //#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
 //#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
-//#include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
+#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
 
@@ -85,7 +87,11 @@
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
+#include "ReducedSpaceSQPPack/include/std/UpdateBarrierParameter_Step.h"
+
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/PreEvalNewPointBarrier_Step.h"
+#include "ReducedSpaceSQPPack/include/std/PostEvalNewPointBarrier_Step.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
@@ -104,15 +110,21 @@
 #include "ReducedSpaceSQPPack/include/std/CheckDescentRangeSpaceStep_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromRPy_Step.h"
-#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
-#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
+#include "ReducedSpaceSQPPack/include/std/NullSpaceStepIP_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CalcD_vStep_Step.h"
+
+#include "ReducedSpaceSQPPack/include/std/PreProcessBarrierLineSearch_Step.h"
+#include "ReducedSpaceSQPPack/include/std/PostProcessBarrierLineSearch_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
+#include "ReducedSpaceSQPPack/include/std/LineSearchFilter_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchDirect_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
@@ -127,7 +139,7 @@
 //#include "ReducedSpaceSQPPack/include/std/CalcLambdaIndepStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CalcReducedGradLagrangianStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/CheckConvergenceIP_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
@@ -137,6 +149,7 @@
 //#include "ReducedSpaceSQPPack/include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
 //#include "ReducedSpaceSQPPack/include/std/ActSetStats_AddedStep.h"
 //#include "ReducedSpaceSQPPack/include/std/NumFixedDepIndep_AddedStep.h"
+#include "ReducedSpaceSQPPack/include/std/UpdateReducedSigma_Step.h"
 
 #include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
 #include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
@@ -233,6 +246,7 @@ void Algo_ConfigIP::config_algo_cntr(
 	namespace mmp = MemMngPack;
 	using mmp::ref_count_ptr;
 	using DynamicCastHelperPack::dyn_cast;
+	using DynamicCastHelperPack::dyn_cast;
 
 	if(trase_out) {
 		*trase_out
@@ -302,6 +316,9 @@ void Algo_ConfigIP::config_algo_cntr(
 		r   = m, // ToDo: Compute this for real!
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
+	
+	THROW_EXCEPTION(nb == 0, std::logic_error, "Algo_ConfigIP::config_alg_cntr(...) : Error, " <<
+					"you have not set any bounds - Interior Point currently does not handle this.");
 
 	// Determine which NLP interface is supported
 	NLPFirstOrderInfo    *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(   algo->get_nlp() );	
@@ -332,6 +349,20 @@ void Algo_ConfigIP::config_algo_cntr(
 		if(trase_out)
 			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrderInfo interface!\n";
 	}
+
+	// Make sure that we can handle this type of NLP currently
+	THROW_EXCEPTION(
+		m == 0, std::logic_error
+		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		"can not currently solve an unconstrained NLP!" );
+	THROW_EXCEPTION(
+		n == m, std::logic_error
+		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		"can not currently solve a square system of equations!" );
+	THROW_EXCEPTION(
+		mI, std::logic_error
+		,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
+		"can not currently solve an NLPcd .. with general inequalities!" );
 
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
@@ -378,22 +409,22 @@ void Algo_ConfigIP::config_algo_cntr(
 				*trase_out
 					<< "\nquasi_newton == AUTO:"
 					<< "\nnlp.num_bounded_x() == " << nlp.num_bounded_x() << ":\n";
-			if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
-				if(trase_out)
-					*trase_out
-						<< "n-r = " << n-r << " > max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_ <<  ":\n"
-						<< "setting quasi_newton == LBFGS\n";
-				cov_.quasi_newton_ = QN_LBFGS;
-			}
-			else {
+			//if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
+			//	if(trase_out)
+			//		*trase_out
+			//			<< "n-r = " << n-r << " > max_dof_quasi_newton_dense = "
+			//			<< cov_.max_dof_quasi_newton_dense_ <<  ":\n"
+			//			<< "setting quasi_newton == LBFGS\n";
+			//	cov_.quasi_newton_ = QN_LBFGS;
+			//}
+			//else {
 				if(trase_out)
 					*trase_out
 						<< "n-r = " << n-r << " <= max_dof_quasi_newton_dense = "
 						<< cov_.max_dof_quasi_newton_dense_ << ":\n"
 						<< "setting quasi_newton == BFGS\n";
 				cov_.quasi_newton_ = QN_BFGS;
-			}
+				//}
 			break;
 		}
 		case QN_BFGS:
@@ -605,10 +636,10 @@ void Algo_ConfigIP::config_algo_cntr(
 		// Create the state object with the vector spaces
 		//
 
-		typedef ref_count_ptr<rSQPState>   state_ptr_t;
+		typedef ref_count_ptr<ipState>   state_ptr_t;
 		state_ptr_t
 			state = mmp::rcp(
-				new rSQPState(
+				new ipState(
 					decomp_sys
 					,nlp.space_x()
 					,nlp.space_c()
@@ -627,7 +658,118 @@ void Algo_ConfigIP::config_algo_cntr(
 						)
 					)
 				);
+
+		///*****************************************************
+		// Set the iteration quantities for the barrier terms
+		///*****************************************************
+		state->set_iter_quant(
+		  Vu_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			  1,
+			  Vu_name,
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
+						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+				)
+			  )
+			)
+		  );
+
+		state->set_iter_quant(
+		  Vl_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			  1,
+			  Vl_name,
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
+						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+				)
+			  )
+			)
+		  );
+
+		state->set_iter_quant(
+		  invXu_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			  1,
+			  invXu_name,
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
+						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+				)
+			  )
+			)
+		  );
+
+		state->set_iter_quant(
+		  invXl_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			  1,
+			  invXl_name,
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
+						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+				)
+			  )
+			)
+		  );
+
+		state->set_iter_quant(
+		  rHB_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymWithOp>(
+			  1,
+			  rHB_name,
+			  mmp::rcp(
+				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				  MatrixSymPosDefCholFactor::PostMod(
+					true      // maintain_original
+					,false      // maintain_factor
+					,true                  // allow_factor      (always!)
+					)
+				  )
+				)
+			  )
+			)
+		  );
 				
+		state->set_iter_quant(
+		  B_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymWithOp>(
+			  1,
+			  B_name,
+			  mmp::rcp(
+				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+				  MatrixSymPosDefCholFactor::PostMod(
+					true      // maintain_original
+					,false      // maintain_factor
+					,true                  // allow_factor      (always!)
+					)
+				  )
+				)
+			  )
+			)
+		  );
+
+		state->set_iter_quant(
+		  Sigma_name
+		  ,mmp::rcp(
+			new IterQuantityAccessContiguous<MatrixSymDiagonalStd>(
+			  1,
+			  Sigma_name,
+			  mmp::rcp( new afp::AbstractFactoryStd<MatrixSymDiagonalStd,MatrixSymDiagonalStd,
+						MatrixSymDiagonalStd::PostMod>( nlp.space_x() ) 
+				)
+			  )
+			)
+		  );
+
+		// These iteration quantities are defined in ipState, 		
+		// force their creation and resize them
+		dyn_cast< IterQuantityAccessContiguous<value_type> >(state->barrier_obj()).resize(2);
+		dyn_cast< IterQuantityAccessContiguous<VectorWithOpMutable> >(state->grad_barrier_obj()).resize(2);
+
 		//
 		// Set the iteration quantities for the NLP matrix objects
 		//
@@ -951,6 +1093,8 @@ void Algo_ConfigIP::config_algo_cntr(
 		}
 		state->eta();
 		
+		dyn_cast<IQ_scalar_cngs>(state->barrier_parameter()).resize(2);
+
 		dyn_cast<IQ_scalar_cngs>(state->alpha()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->mu()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->phi()).resize(2);
@@ -1048,6 +1192,25 @@ void Algo_ConfigIP::config_algo_cntr(
 		}
 #endif
 
+		// UpdateBarrierParameter_Step
+		mmp::ref_count_ptr<UpdateBarrierParameter_Step>	updateBarrierParameter_step  = mmp::null;
+		updateBarrierParameter_step = mmp::rcp(new UpdateBarrierParameter_Step());
+		if(options_.get()) 
+			{
+			UpdateBarrierParameter_StepSetOptions options_setter(updateBarrierParameter_step.get());
+			options_setter.set_options(*options_);
+			}
+		
+		// PreEvalNewPointBarrier_Step
+		mmp::ref_count_ptr<PreEvalNewPointBarrier_Step>  preEvalNewPointBarrier_step  = mmp::null;
+		preEvalNewPointBarrier_step = mmp::rcp(new PreEvalNewPointBarrier_Step());
+		if(options_.get()) 
+			{
+			PreEvalNewPointBarrier_StepSetOptions
+				options_setter(preEvalNewPointBarrier_step.get());
+			options_setter.set_options(*options_);
+			}
+
 		// EvalNewPoint_Step
 		algo_step_ptr_t    eval_new_point_step = mmp::null;
 		{
@@ -1132,6 +1295,15 @@ void Algo_ConfigIP::config_algo_cntr(
 			}
 		}
 
+		// PostEvalNewPointBarrier_Step
+		algo_step_ptr_t postEvalNewPointBarrier_step = mmp::rcp(new PostEvalNewPointBarrier_Step());
+
+		// ReducedGradient_Step
+		algo_step_ptr_t    reduced_gradient_step = mmp::null;
+		if( !tailored_approach ) {
+			reduced_gradient_step = mmp::rcp(new ReducedGradientStd_Step());
+		}
+
 		// RangeSpace_Step
 		algo_step_ptr_t    range_space_step_step = mmp::null;
 		if( !tailored_approach ) {
@@ -1161,10 +1333,10 @@ void Algo_ConfigIP::config_algo_cntr(
 		}
 
 		// ReducedGradient_Step
-		algo_step_ptr_t    reduced_gradient_step = mmp::null;
-		if( !tailored_approach ) {
-			reduced_gradient_step = mmp::rcp(new ReducedGradientStd_Step());
-		}
+		//algo_step_ptr_t    reduced_gradient_step = mmp::null;
+		//if( !tailored_approach ) {
+		//	reduced_gradient_step = mmp::rcp(new ReducedGradientStd_Step());
+		//}
 
 		// CheckSkipBFGSUpdate
 		algo_step_ptr_t    check_skip_bfgs_update_step = mmp::null;
@@ -1241,8 +1413,19 @@ void Algo_ConfigIP::config_algo_cntr(
 				));
 		}
 
+		// UpdateReducedSigma_Step
+		MemMngPack::ref_count_ptr<UpdateReducedSigma_Step> updateReducedSigma_step = mmp::null;
+		updateReducedSigma_step = mmp::rcp(new UpdateReducedSigma_Step());
+		if(options_.get()) 
+			{
+			UpdateReducedSigma_StepSetOptions
+				options_setter(updateReducedSigma_step.get());
+			options_setter.set_options(*options_);
+			}
+		
 		// NullSpace_Step
-		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
+		algo_step_ptr_t    null_space_step = mmp::rcp(new NullSpaceStepIP_Step());
+		/*		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
 		algo_step_ptr_t    null_space_step_step = mmp::null;
 		if( mI == 0 && nb == 0 ) {
 			null_space_step_step = mmp::rcp(new NullSpaceStepWithoutBounds_Step());
@@ -1276,13 +1459,26 @@ void Algo_ConfigIP::config_algo_cntr(
 			null_space_step_step = mmp::rcp(
 				new QPFailureReinitReducedHessian_Step(null_space_step_step)
 				);
-		}
+				}*/
 
 		// CalcDFromYPYZPZ_Step
-		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = mmp::null;
-		{
+		algo_step_ptr_t calc_d_from_Ypy_Zpy_step = mmp::null;
+			{
 			calc_d_from_Ypy_Zpy_step = mmp::rcp(new CalcDFromYPYZPZ_Step());
-		}
+			}
+
+		// CalcD_vStep_Step
+		algo_step_ptr_t calc_d_v_step_step = mmp::rcp(new CalcD_vStep_Step());
+
+		// build the barrier nlp decorator to be used by the line search
+		MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp = mmp::rcp(new NLPInterfacePack::BarrierNLP());
+		barrier_nlp->InitializeFromNLP( algo_cntr->get_nlp() );
+
+		// PreProcessBarrierLineSearch_Step
+		algo_step_ptr_t preprocess_barrier_linesearch_step = mmp::rcp(new PreProcessBarrierLineSearch_Step(barrier_nlp));
+
+		// PostProcessBarrierLineSearch_Step
+		algo_step_ptr_t postprocess_barrier_linesearch_step = mmp::rcp(new PostProcessBarrierLineSearch_Step(barrier_nlp));
 
 		// CalcReducedGradLagrangianStd_AddedStep
 		algo_step_ptr_t    calc_reduced_grad_lagr_step = mmp::null;
@@ -1293,16 +1489,23 @@ void Algo_ConfigIP::config_algo_cntr(
 
 		// CheckConvergence_Step
 		algo_step_ptr_t    check_convergence_step = mmp::null;
-		{
-			ref_count_ptr<CheckConvergenceStd_AddedStep>
-				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep());
-			if(options_.get()) {
-				CheckConvergenceStd_AddedStepSetOptions
-					opt_setter( _check_convergence_step.get() );
+			{
+			// Create the strategy object
+			ref_count_ptr<CheckConvergenceIP_Strategy>
+				check_convergence_strategy = mmp::rcp(new CheckConvergenceIP_Strategy());
+
+			if(options_.get()) 
+				{
+				CheckConvergence_StrategySetOptions
+					opt_setter( check_convergence_strategy.get() );
 				opt_setter.set_options( *options_ );
-			}
+				}
+			
+			ref_count_ptr<CheckConvergenceStd_AddedStep>
+				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep(check_convergence_strategy));
+			
 			check_convergence_step = _check_convergence_step;
-		}
+			}
 
 		// MeritFuncPenaltyParamUpdate_Step
 		algo_step_ptr_t    merit_func_penalty_param_update_step = mmp::null;
@@ -1387,10 +1590,20 @@ void Algo_ConfigIP::config_algo_cntr(
 						"The line_search_method option of WATCHDOG has not been updated yet!" );
 					break;
 				}
-				case LINE_SEARCH_FILTER: {
-				        line_search_step = mmp::rcp(new LineSearchFilter_Step());
-				        break; 
-				}
+				case LINE_SEARCH_FILTER: 
+					{
+					mmp::ref_count_ptr<LineSearchFilter_Step> 
+						line_search_filter_step = mmp::rcp(new LineSearchFilter_Step(barrier_nlp, barrier_obj_name, grad_barrier_obj_name));
+
+					if(options_.get()) 
+						{
+						LineSearchFilter_StepSetOptions options_setter(line_search_filter_step.get());
+						options_setter.set_options(*options_);
+						}
+
+					line_search_step = line_search_filter_step;					
+					break; 
+					}
 			}
 		}
 
@@ -1473,22 +1686,66 @@ void Algo_ConfigIP::config_algo_cntr(
 						<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
 			}
 
+
+
+			///***********************************************************
+			// Add all the steps to the algorithm
+			///***********************************************************
+			
 			int step_num       = 0;
 			int assoc_step_num = 0;
 	
+	 		// UpdateBarrierParameter
+			//algo->insert_step( ++step_num, "UpdateBarrierParameter", updateBarrierParameter_step );
+
 			// EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
+
+			//* EvalNewPoint pre steps
+			// PreEvalNewPointBarrier
+			algo->insert_assoc_step( step_num, GeneralIterationPack::PRE_STEP, 1, "PreEvalNewPointBarrier", preEvalNewPointBarrier_step);
+
+			//* EvalNewPoint post steps
 			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
-			{
+				{
 				algo->insert_assoc_step(
-					step_num
-					,GeneralIterationPack::POST_STEP
-					,1
-					,"CheckDescentRangeSpaceStep"
-					,check_descent_range_space_step_step
-					);
-			}
+				  step_num
+				  ,GeneralIterationPack::POST_STEP
+				  ,++assoc_step_num
+				  ,"CheckDescentRangeSpaceStep"
+				  ,check_descent_range_space_step_step
+				  );
+				}
+
+			// PostEvalNewPointBarrier
+			algo->insert_assoc_step( step_num, GeneralIterationPack::POST_STEP, ++assoc_step_num, "PostEvalNewPointBarrier", postEvalNewPointBarrier_step);
+			assoc_step_num = 0;
 			
+			// ReducedGradient
+			if( !tailored_approach ) {
+				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
+				} 
+
+			//			if( mI == 0 && nb == 0 ) 
+			//{
+
+ 				// CalcReducedGradLagrangian
+				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+				// CalcLagrangeMultDecomposed
+				// Compute these here so that in case we converge we can report them
+				if( !tailored_approach ) {
+	 				// ToDo: Insert this step
+				}
+
+				// CheckConvergence
+				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+
+				//} 
+
+	 		// UpdateBarrierParameter
+			algo->insert_step( ++step_num, "UpdateBarrierParameter", updateBarrierParameter_step );
+
 			// RangeSpaceStep
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
@@ -1519,10 +1776,10 @@ void Algo_ConfigIP::config_algo_cntr(
 						);
 			}
 
-			// ReducedGradient
-			if( !tailored_approach ) {
-				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
-			}
+			/*			// ReducedGradient
+ 			if( !tailored_approach ) {
+	 			algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
+		 	}
 
 			if( mI == 0 && nb == 0 ) {
 
@@ -1537,22 +1794,26 @@ void Algo_ConfigIP::config_algo_cntr(
 
 				// CheckConvergence
 				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-			}
+				}*/
 
 			// ReducedHessian
 			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
 
 			// (.-1) CheckSkipBFGSUpdate
-			algo->insert_assoc_step(
+			/*algo->insert_assoc_step(
 				step_num
 				,GeneralIterationPack::PRE_STEP
 				,1
 				,CheckSkipBFGSUpdate_name
 				,check_skip_bfgs_update_step
-			  );
+				);*/
+
+			// UpdateReducedSigma_Step
+			algo->insert_step( ++step_num, "UpdateReducedSigma", updateReducedSigma_step);
 
 			// NullSpaceStep
-			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+			algo->insert_step( ++step_num, "NullSpaceStepIP", null_space_step);
+			/*algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
 			if( mI > 0 || nb > 0 ) {
 				// SetDBoundsStd
 				algo->insert_assoc_step(
@@ -1562,12 +1823,18 @@ void Algo_ConfigIP::config_algo_cntr(
 					,"SetDBoundsStd"
 					,set_d_bounds_step
 				  );
-			}
+				  }*/
 
 			// CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
 			
-			if( mI > 0 || nb > 0 ) {
+			// CalcD_vStep_Step
+			algo->insert_step( ++step_num, "CalcD_vStep_Step", calc_d_v_step_step );
+
+			// PreProcessBarrierLineSearch_Step
+			algo->insert_step( ++step_num, "PreProcessBarrierLineSearch_Step", preprocess_barrier_linesearch_step );
+
+			/*			if( mI > 0 || nb > 0 ) {
 
 				// CalcReducedGradLagrangian
 				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
@@ -1580,7 +1847,7 @@ void Algo_ConfigIP::config_algo_cntr(
 
 				// CheckConvergence
 				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-			}
+				}*/
 
 			// LineSearch
 			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
@@ -1593,13 +1860,13 @@ void Algo_ConfigIP::config_algo_cntr(
 				Algorithm::poss_type
 					pre_step_i = 0;
 				// (.-?) LineSearchFullStep
-				algo->insert_assoc_step(
-					step_num
-					,GeneralIterationPack::PRE_STEP
-					,++pre_step_i
-					,"LineSearchFullStep"
-					,line_search_full_step_step
-					);
+				//algo->insert_assoc_step(
+				//	step_num
+				//	,GeneralIterationPack::PRE_STEP
+				//	,++pre_step_i
+				//	,"LineSearchFullStep"
+				//	,line_search_full_step_step
+				//	);
 				// (.-?) MeritFunc_PenaltyPramUpdate
 				if(merit_func_penalty_param_update_step.get()) {
 				  algo->insert_assoc_step(
@@ -1611,6 +1878,12 @@ void Algo_ConfigIP::config_algo_cntr(
 					  );
 				}
 			}
+
+			// PostProcessBarrierLineSearch_Step
+			algo->insert_step( ++step_num, "PostProcessBarrierLineSearch_Step", postprocess_barrier_linesearch_step );
+
+			// CheckConvergence
+			//algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 
 		}
 		else {

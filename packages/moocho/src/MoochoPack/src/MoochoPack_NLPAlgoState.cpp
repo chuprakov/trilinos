@@ -68,6 +68,7 @@ const std::string ReducedSpaceSQPPack::phi_name				= "phi";
 // KKT Info
 const std::string ReducedSpaceSQPPack::opt_kkt_err_name		= "opt_kkt_err";
 const std::string ReducedSpaceSQPPack::feas_kkt_err_name	= "feas_kkt_err";
+const std::string ReducedSpaceSQPPack::comp_kkt_err_name	= "comp_kkt_err";
 const std::string ReducedSpaceSQPPack::GL_name				= "GL";
 const std::string ReducedSpaceSQPPack::rGL_name				= "rGL";
 const std::string ReducedSpaceSQPPack::lambda_name			= "lambda";
@@ -159,6 +160,7 @@ STATE_SCALAR_IQ_DEF( rSQPState,                  phi,            phi_name       
 
 STATE_SCALAR_IQ_DEF( rSQPState,                  opt_kkt_err,    opt_kkt_err_name                                    )
 STATE_SCALAR_IQ_DEF( rSQPState,                  feas_kkt_err,   feas_kkt_err_name                                   )
+STATE_SCALAR_IQ_DEF( rSQPState,                  comp_kkt_err,   comp_kkt_err_name                                   )
 STATE_VECTOR_IQ_DEF( rSQPState,                  GL,             GL_name,           get_space_x(),    VST_SPACE_X    )
 STATE_VECTOR_IQ_DEF( rSQPState,                  rGL,            rGL_name,          get_space_null(), VST_SPACE_NULL )
 STATE_VECTOR_IQ_DEF( rSQPState,                  lambda,         lambda_name,       get_space_c(),    VST_SPACE_C    )

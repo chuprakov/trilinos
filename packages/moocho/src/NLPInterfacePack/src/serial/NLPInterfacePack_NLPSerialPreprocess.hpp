@@ -808,6 +808,8 @@ private:
 	size_type    n_;                   // Number of variables in the transformed NLP (with slacks and not fixed by bounds)
 	size_type    r_;                   // Number of independent equations in the transformed NLP
 
+	size_type    basis_selection_num_;  // Number of the basis to select next
+
 	// ///////////////////////////
 	// Private member functions
 

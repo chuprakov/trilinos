@@ -35,6 +35,23 @@ class MatrixSymDiagonalStd
 {
 public:
 
+	///
+	/** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.
+	 */
+	class PostMod {
+	public:
+		PostMod(VectorSpace::space_ptr_t vectorSpace)
+			: vectorSpace_(vectorSpace) {}
+
+		void initialize(MatrixSymDiagonalStd* matrix) const
+		    { matrix->initialize(vectorSpace_->create_member()); }
+				 
+	private:
+		VectorSpace::space_ptr_t vectorSpace_;
+
+	}; // end PostMod
+
+
 	/** @name Constructors/initalizers */
 	//@{
 

@@ -74,7 +74,7 @@ bool RangeSpaceStepStd_Step::do_step(
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out	<< "\npy_k =\n"  << py_iq.get_k(0);
-		out	<< "\nYpy_k =\n" << py_iq.get_k(0);
+		out	<< "\nYpy_k =\n" << Ypy_iq.get_k(0);
 	}
 
 	return true;

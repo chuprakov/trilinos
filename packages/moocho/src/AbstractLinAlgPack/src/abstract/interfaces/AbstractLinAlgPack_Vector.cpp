@@ -185,7 +185,7 @@ value_type VectorWithOp::norm_1() const {
 }
 
 value_type VectorWithOp::norm_2() const {
-	if( norm_2_ < 0.0 ) {
+	if( 1 /*norm_2_ < 0.0*/ ) {
 		norm_2_targ.reinit();
 		this->apply_reduction(norm_2_op,0,NULL,0,NULL,norm_2_targ.obj());
 		norm_2_ = RTOp_ROp_norm_2_val(norm_2_targ.obj());
@@ -194,7 +194,7 @@ value_type VectorWithOp::norm_2() const {
 }
 
 value_type VectorWithOp::norm_inf() const {
-	if( norm_inf_ < 0.0 ) {
+	if( 1 /*norm_inf_ < 0.0*/ ) {
 		norm_inf_targ.reinit();
 		this->apply_reduction(norm_inf_op,0,NULL,0,NULL,norm_inf_targ.obj());
 		norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_targ.obj());

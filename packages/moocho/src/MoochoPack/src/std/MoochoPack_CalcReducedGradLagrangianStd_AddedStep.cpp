@@ -70,8 +70,16 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 		const VectorWithOp &nu_k = nu_iq.get_k(0);
 		VectorSpace::vec_mut_ptr_t
 			tmp = nu_k.space().create_member();
+
+		out << "nu_k = \n" << nu_k;
+
 		V_VpV( tmp.get(), Gf_iq.get_k(0), nu_k );
+
+		out << "\nGf+nu = \n" << *tmp;
+
 		V_MtV(	&rGL_k, s.Z().get_k(0), trans, *tmp );
+
+		out << "\nrGL = \n" << rGL_k;
 	}
 	else {
 		rGL_k = s.rGf().get_k(0);

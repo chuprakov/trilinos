@@ -113,6 +113,7 @@
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
+#include "ReducedSpaceSQPPack/include/std/LineSearchFilter_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchDirect_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
@@ -127,7 +128,7 @@
 //#include "ReducedSpaceSQPPack/include/std/CalcLambdaIndepStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CalcReducedGradLagrangianStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
@@ -1436,16 +1437,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// CheckConvergence_Step
 		algo_step_ptr_t    check_convergence_step = mmp::null;
-		{
-			ref_count_ptr<CheckConvergenceStd_AddedStep>
-				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep());
-			if(options_.get()) {
-				CheckConvergenceStd_AddedStepSetOptions
-					opt_setter( _check_convergence_step.get() );
+			{
+			// Create the strategy object
+			ref_count_ptr<CheckConvergenceStd_Strategy>
+				check_convergence_strategy = mmp::rcp(new CheckConvergenceStd_Strategy());
+
+			if(options_.get()) 
+				{
+				CheckConvergence_StrategySetOptions
+					opt_setter( check_convergence_strategy.get() );
 				opt_setter.set_options( *options_ );
-			}
+				}
+			
+			ref_count_ptr<CheckConvergenceStd_AddedStep>
+				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep(check_convergence_strategy));
+			
 			check_convergence_step = _check_convergence_step;
-		}
+			}
 
 		// MeritFuncPenaltyParamUpdate_Step
 		algo_step_ptr_t    merit_func_penalty_param_update_step = mmp::null;
@@ -1530,9 +1538,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						"The line_search_method option of WATCHDOG has not been updated yet!" );
 					break;
 				}
-				case LINE_SEARCH_FILTER: {
-				        line_search_step = mmp::rcp(new LineSearchFilter_Step());
-				        break; 
+			    case LINE_SEARCH_FILTER: {
+					mmp::ref_count_ptr<LineSearchFilter_Step> 
+						line_search_filter_step = mmp::rcp(
+						  new LineSearchFilter_Step(algo_cntr->get_nlp())
+						  );
+
+					if(options_.get()) 
+						{
+						LineSearchFilter_StepSetOptions options_setter(line_search_filter_step.get());
+						options_setter.set_options(*options_);
+						}
+
+					line_search_step = line_search_filter_step;					
+				    break;
 				}
 			}
 		}

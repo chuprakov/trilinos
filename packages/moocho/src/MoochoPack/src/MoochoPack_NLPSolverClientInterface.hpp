@@ -63,6 +63,7 @@ public:
 		,double                max_run_time         = 1e+10 // run forever
 		,value_type            opt_tol              = 1e-6
 		,value_type            feas_tol             = 1e-6
+		,value_type            comp_tol             = 1e-6
 		,value_type            step_tol             = 1e-2
 		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
 		,int                   journal_print_digits = 6
@@ -96,6 +97,13 @@ public:
 	 * which is part of the first order necessary optimality conditions.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
+
+	///
+	/** Set the termination tolerance for the complementarity condition 
+	 *  for the (scaled) bound constraints
+	 *  which is part of the first order necessary optimality conditions.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_tol )
 
 	///
 	/** Set the termination tolerance for the change in the estimate of the solution.

@@ -1,7 +1,7 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckConvergenceStd_AddedStep.h
+// PostProcessBarrierLineSearch_Step.h
 //
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+// Copyright (C) 2001
 //
 // This is free software; you can redistribute it and/or modify it
 // under the terms of the "Artistic License" (see the web site
@@ -13,49 +13,61 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
-#define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
+#ifndef POST_PROCESS_BARRIER_LINE_SEARCH_STEP_H
+#define POST_PROCESS_BARRIER_LINE_SEARCH_STEP_H
 
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
 #include "GeneralIterationPack/include/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
-#include "CheckConvergence_Strategy.h"
+#include "StandardMemberCompositionMacros.h"
+
+#include "Misc/include/SetOptionsFromStreamNode.h"
+#include "Misc/include/SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Check for convergence.
-  */
-class CheckConvergenceStd_AddedStep
+/** Fraction to boundary rule for calculating alpha max
+ *   
+ *
+ * This class updates alpha_vl, alpha_vu, and alpha
+ *  and x_kp1, Vl_kp1, and Vu_kp1
+ *
+ */
+
+class PostProcessBarrierLineSearch_Step
 	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
 	{
 	public:
-		
-		///
-		/** Strategy object to be used when checking for convergence
-		 * 
-		 */
-		STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy );
+
+		/** @name Constructors / initializers */
+		//@{
 
 		///
-		CheckConvergenceStd_AddedStep(
-		  MemMngPack::ref_count_ptr<CheckConvergence_Strategy> convergence_strategy
+		/** Constructor.
+		 */
+		PostProcessBarrierLineSearch_Step(
+		  MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp
 		  );
+		//@}
 
 		/** @name Overridden from AlgorithmStep */
 		//@{
 		///
 		bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 					 , poss_type assoc_step_poss);
-		///
-		void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+		
+		
+		void print_step( const GeneralIterationPack::Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 		//@}
 
-private:
+	private:
+		MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp_;
 
-};	// end class CheckConvergenceStd_AddedStep
+	}; // end class PostProcessBarrierLineSearch_Step
 
-}	// end namespace ReducedSpaceSQPPack 
 
-#endif	// CHECK_CONVERGENCE_STD_ADDEDSTEP_H
+} // end namespace ReducedSpaceSQPPack
+
+#endif // #if !defined POST_PROCESS_BARRIER_LINE_SEARCH_STEP_H

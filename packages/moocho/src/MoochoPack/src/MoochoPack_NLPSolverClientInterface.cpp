@@ -21,6 +21,7 @@ ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	,double                  max_run_time
 	,value_type              opt_tol
 	,value_type              feas_tol
+	,value_type              comp_tol
 	,value_type              step_tol
 	,EJournalOutputLevel     journal_output_level
 	,int                     journal_print_digits
@@ -30,6 +31,7 @@ ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	,max_run_time_(max_run_time)
 	,opt_tol_(opt_tol)
 	,feas_tol_(feas_tol)
+	,comp_tol_(comp_tol)
 	,step_tol_(step_tol)
 	,journal_output_level_(journal_output_level)
 	,journal_print_digits_(journal_print_digits)

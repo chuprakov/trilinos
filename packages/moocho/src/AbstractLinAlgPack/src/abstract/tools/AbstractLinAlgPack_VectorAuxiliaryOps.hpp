@@ -75,6 +75,30 @@ value_type max_rel_step(
 	const VectorWithOp& x, const VectorWithOp& d
 	);
 
+/// 
+/** Computes alpha_max by the fraction to boundary rule
+ *
+ *
+ */
+value_type fraction_to_boundary(
+  const value_type tau,
+  const VectorWithOp& x,
+  const VectorWithOp& d,
+  const VectorWithOp& xl,
+  const VectorWithOp& xu
+  );
+
+/// 
+/** Computes alpha_max by the fraction to boundary rule
+ *   assuming only a lower bound of zero
+ *
+ */
+value_type fraction_to_zero_boundary(
+  const value_type tau,
+  const VectorWithOp& x,
+  const VectorWithOp& d
+  );
+
 ///
 /** Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
  *
@@ -87,13 +111,93 @@ size_type num_bounded(
 ///
 /** Computes the log barrier term:
  *
- * ToDo: Add documentation!
+ \verbatim
+
+ sum{ log( x(i) - xl(i) ) + log( xu(i) - x(i) ) , for i = 1...n }
+ \endverbatim
  */
 value_type log_bound_barrier(
 	const VectorWithOp    &x
 	,const VectorWithOp   &xl
 	,const VectorWithOp   &xu
 	); 
+
+///
+/** Computes an estimate of the
+ *   complementarity error
+ *
+ \verbatim
+  for every i...
+     comp_err = max(comp_err, v(i)*(xu(i)-x(i), -v(i)*(x(i)-xl(i))));
+\endverbatim
+ */
+value_type combined_nu_comp_err(
+	const VectorWithOp    &v
+	,const VectorWithOp    &x
+	,const VectorWithOp   &xl
+	,const VectorWithOp   &xu
+	); 
+
+
+///
+/** Computes an estimate of the
+ *   complementarity error when only the lower 
+ *   bounds are non-infinite
+ *
+ \verbatim
+  for every i...
+     comp_err = max(comp_err, v(i)*(xl(i)-x(i))));
+
+NOTE: equivalent to 
+     comp_err = max(comp_err, -v(i)*(x(i)-xl(i))));
+
+\endverbatim
+ */
+value_type combined_nu_comp_err_lower(
+	const VectorWithOp    &v
+	,const VectorWithOp    &x
+	,const VectorWithOp   &xl
+  );
+
+///
+/** Computes an estimate of the
+ *   complementarity error when only the upper
+ *   bounds are non-infinite
+ *
+ \verbatim
+  for every i...
+     comp_err = max(comp_err, v(i)*(xu(i)-x(i))));
+\endverbatim
+ */
+value_type combined_nu_comp_err_upper(
+	const VectorWithOp    &v
+	,const VectorWithOp    &x
+	,const VectorWithOp   &xu
+  );
+
+
+///
+/** Computes the complementarity error
+ *   for a primal/dual interior point
+ *   algorithm using inf norm.
+ *
+ \verbatim
+  for every i...
+     comp_err = max(comp_err, 
+	                ( fabs(vu(i)*(xu(i)-x(i)) - mu) ),
+					( fabs(vl(i)*(x(i)-xl(i)) - mu) )
+					);
+\endverbatim
+ */
+value_type IP_comp_err_with_mu(
+  const value_type mu
+  ,const value_type inf_bound
+  ,const VectorWithOp &x
+  ,const VectorWithOp &xl
+  ,const VectorWithOp &xu
+  ,const VectorWithOp &vl
+  ,const VectorWithOp &vu
+  );
 
 ///
 /** Compute the maximum violation from a set of inequality constraints <tt>vL <= v <= vU</tt>.
@@ -170,6 +274,110 @@ bool max_inequ_viol(
  \endverbatim
  */
 void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWithOpMutable* x );
+
+///
+/** Force a vector sufficiently within bounds according
+ *   to a specified absolute and relative buffer
+ *
+ */
+void force_in_bounds_buffer(
+  const value_type rel_push,
+  const value_type abs_push,
+  const VectorWithOp& xl, 
+  const VectorWithOp& xu, 
+  VectorWithOpMutable& x 
+  );
+
+
+///
+/** Computes the inverse of the difference
+ *   between two vectors
+ *
+ \verbatim
+ z(i) = alpha/(v0(i) - v1(i));
+ \endverbatim
+ */
+value_type inv_of_difference(
+  VectorWithOpMutable& z
+  ,const value_type alpha
+  ,const VectorWithOp    &v0
+  ,const VectorWithOp   &v1
+  );
+
+
+///
+/** Corrects the lower bound multipliers with 
+ *   infinite bounds
+ *
+ \verbatim
+ vl(i) = (xl(i) <= inf_bound_limit) ? 0.0 : v(i);
+ \endverbatim
+ */
+void correct_lower_bound_multipliers(
+  VectorWithOpMutable& vl
+  ,const VectorWithOp    &xl
+  , const value_type inf_bound_limit
+  );
+
+///
+/** Corrects the upper bound multipliers with 
+ *   infinite bounds
+ *
+ \verbatim
+ vl(i) = (xu(i) >= inf_bound_limit) ? 0.0 : v(i);
+ \endverbatim
+ */
+void correct_upper_bound_multipliers(
+  VectorWithOpMutable& vu
+  ,const VectorWithOp    &xu
+  , const value_type inf_bound_limit
+  );
+
+///
+/** Calculates the multiplier step for lower bounds
+ *
+ *
+\verbatim
+dvl(i) = -vl(i) + mu*invXl(i)*e - invXl(i)*Vl(i)*d_k(i)
+\endverbatim
+*/
+void lowerbound_multipliers_step(
+  const value_type mu,
+  const VectorWithOp& invXl,
+  const VectorWithOp& vl,
+  const VectorWithOp& d_k,
+  VectorWithOpMutable* dvl
+  );
+
+///
+/** Calculates the multiplier step for the upper bounds
+ *
+ *
+\verbatim
+dvu(i) = -vu(i) + mu*invXl(i)*e + invXl(i)*Vl(i)*d_k(i)
+\endverbatim
+*/
+void upperbound_multipliers_step(
+  const value_type mu,
+  const VectorWithOp& invXu,
+  const VectorWithOp& vu,
+  const VectorWithOp& d_k,
+  VectorWithOpMutable* dvu
+  );
+
+
+///
+/** Calculates the sqrt of each
+ *   element in the vector
+ * Pre Condition: all elements of z must be positive
+ *
+ \verbatim
+ z(i) = sqrt(z(i));
+ \endverbatim
+ */
+void AbstractLinAlgPack::ele_wise_sqrt(
+  VectorWithOpMutable& z
+  );
 
 ///
 /** Take the maximum value of the vector elements and a scalar.

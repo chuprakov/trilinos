@@ -80,6 +80,7 @@ extern const std::string phi_name;
 // KKT Info
 extern const std::string opt_kkt_err_name;
 extern const std::string feas_kkt_err_name;
+extern const std::string comp_kkt_err_name;
 extern const std::string GL_name;
 extern const std::string rGL_name;
 extern const std::string lambda_name;
@@ -165,7 +166,7 @@ CLASS::NAME()                                                             \
 const IterQuantityAccess<index_type>&                                     \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<rSQPState*>(this)->NAME();                          \
+	return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -184,7 +185,7 @@ CLASS::NAME()                                                             \
 const IterQuantityAccess<value_type>&                                     \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<rSQPState*>(this)->NAME();                          \
+	return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -208,7 +209,7 @@ CLASS::NAME()                                                             \
 const IterQuantityAccess<VectorWithOpMutable>&                            \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<rSQPState*>(this)->NAME();                          \
+	return const_cast<CLASS*>(this)->NAME();                          \
 }
 
 //@}
@@ -439,6 +440,8 @@ public:
 	STATE_SCALAR_IQ_DECL(opt_kkt_err)
 	/// Scaled KKT error for feasibility ||c|| and ||hl <= h <= hu||
 	STATE_SCALAR_IQ_DECL(feas_kkt_err)
+	/// Scaled KKT error for complementarity (bounds)
+	STATE_SCALAR_IQ_DECL(comp_kkt_err)
 	/// GL:  Gradient of the Lagrangian ( n x 1 )
 	STATE_VECTOR_IQ_DECL(GL)
 	/// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )

@@ -37,16 +37,21 @@ int main( int argc, char* argv[] )
 		// Get options from the command line
 		//
 		
-		int      nD = 2;
+		int      nD = 1;
 		int      nI = 1;
 		int      bw = 1;
-		int      mI = 2;
-		double   xo = 0.1;
+		int      mI = 0;
+		double   xo = 1;
 		bool     nlp_selects_basis = true;
 		double   xDl = -NLP::infinite_bound();
-		double   xDu = +NLP::infinite_bound();
-		double   xIl = -NLP::infinite_bound();
+		double   xDu = +NLP::infinite_bound(); 
+		double   xIl = -NLP::infinite_bound(); 
 		double   xIu = +NLP::infinite_bound();
+		/*double   xDl = -1000.;
+		double   xDu = +1000.;
+		double   xIl = -1000.;
+		double   xIu = +1000.;*/
+
 		int      mU = 0;
 		double   hl = -NLP::infinite_bound();
 		double   hu = +NLP::infinite_bound();

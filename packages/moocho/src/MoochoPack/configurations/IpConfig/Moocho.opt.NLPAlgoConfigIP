@@ -120,6 +120,21 @@ options_group Algo_ConfigIP {
 }
 
 ***************************************************************
+*** Options group for UpdateBarrierParameter_Step
+***
+*** These options control how the barrier parameter (mu)
+*** is updated
+***
+options_group UpdateBarrierParameter {
+
+*	tau_mu = 0.2;			*** linear decrease fraction for mu
+*	theta_mu = 1.5;			*** superlinear decrease power for mu
+*	tau_epsilon = 10; 		*** error tolerance fraction
+*	theta_epsilon = 1.1;	*** error tolerance power
+*	e_tol_max = 1000;		*** maximum error tolerance
+
+}
+***************************************************************
 *** Options group for CalcFiniteDiffProd class
 ***
 *** These options control how finite differences are computed
@@ -223,6 +238,29 @@ options_group EvalNewPointStd {
      ***    DSLP_LEAVE_DEFAULT : Whatever values are currently set for DecompositionSystemTester::print_tests and
      ***                         DecompositionSystemTester::dump_all will be used (see the options_group
      ***                         DecompositionSystemTester).
+
+}
+
+***************************************************************
+*** Options for EvalNewPointBarrier.
+*** See options_group NLPFirstDerivativesTester
+***
+options_group EvalNewPointBarrier {
+
+*	 relative_bounds_push = 0.01;   *** 
+*    absolute_bounds_push = 0.001;  *** 
+     *** determines how to push x within bounds if initial values are specified
+     ***  either outside the bounds or too close to the bounds
+	 *** *   xl_sb = min(xl+relative_bound_push*(xu-xl),
+		 *               xl + absolute_bound_push)
+		 *   xu_sb = max(xu-relative_bound_push*(xu-xl),
+		 *               xu - absolute_bound_push)
+		 *   if (xl_sb > xu_sb) then
+		 *      x = (xl + (xu-xl)/2
+		 *   else if (x < xl_sb) then 
+		 *      x = xl_sb
+		 *   else if (x > xu_sb) then
+		 *      x = xu_sb
 
 }
 
@@ -353,6 +391,32 @@ options_group BFGSUpdate {
 }
 
 *********************************************************************
+*** Options the updating of the Reduced Sigma term
+*** 
+***
+options_group UpdateReducedSigma {
+
+*   update_method = always_explicit;
+*	update_method = BFGS_primal;
+*	update_method = BFGS_dual_no_correction;
+*	update_method = BFGS_dual_explicit_correction; *** (default)
+*	update_method = BFGS_dual_scaling_correction;
+	*** These options determine exactly how the reduced sigma
+	*** term will be updated. 
+	***
+	***	always_explicit 				: the full Z_kT*Sigma*Zk at each step (expensive)
+	*** BFGS_primal 					: a BFGS update of mu*X^-2 (exact at solution)
+	*** BFGS_dual_no_correction 		: update with Z_kT*Sigma*Z_k*pz 
+	***										(no correction when mu changes)
+	*** BFGS_dual_explicit_correction 	: same as above
+	***										(do an explicit calculation when mu changes)
+	*** BFGS_dual_scaling_correction    : same as above
+	***										(scale by mu_kp1/mu_k when mu changes)
+
+}
+
+
+*********************************************************************
 *** Options for the convergence test.
 ***
 *** See the printed step description (i.e. 'rSQPppAlgo.out') for a
@@ -360,10 +424,19 @@ options_group BFGSUpdate {
 ***
 options_group CheckConvergenceStd {
 
-*    scale_kkt_error_by   = SCALE_BY_NORM_2_X;
-*    scale_kkt_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_kkt_error_by   = SCALE_BY_ONE;        *** (default)
-     *** Determines if all of the error mesures are scaled by the size of the unknowns x_k
+*    scale_opt_error_by   = SCALE_BY_NORM_2_X;
+*    scale_opt_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_opt_error_by   = SCALE_BY_ONE;        *** (default)
+
+*    scale_feas_error_by   = SCALE_BY_NORM_2_X;
+*    scale_feas_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_feas_error_by   = SCALE_BY_ONE;        *** (default)
+
+*    scale_comp_error_by   = SCALE_BY_NORM_2_X;
+*    scale_comp_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_comp_error_by   = SCALE_BY_ONE;        *** (default)
+
+     *** Determines what all of the error measures are scaled by when checking convergence
      *** SCALE_BY_NORM_2_X   : Scale the optimiality conditions by 1/(1+||x_k||2)
      *** SCALE_BY_NORM_INF_X : Scale the optimality conditions by 1/(1+||x_k||inf)
      *** SCALE_BY_ONE        : Scale the optimality conditions by 1
@@ -376,6 +449,7 @@ options_group CheckConvergenceStd {
      *** false : Scale ||rGL_k||inf ir ||GL_k|| by an addiational 1 (i.e. no extra scaling)
 
 }
+
 
 ********************************************************************
 *** Options for the direct line search object that is used in all the

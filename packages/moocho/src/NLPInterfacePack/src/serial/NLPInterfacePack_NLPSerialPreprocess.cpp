@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <sstream>
 #include <limits>
+#include <stdio.h>
+#include <fstream>
 
 #include "NLPInterfacePack/include/NLPSerialPreprocess.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
@@ -857,6 +859,70 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 		*rank = rank_fixed_removed;
 		return true;
 	}
+	else {
+	
+	// try to find the file giving the basis...
+	char ind[17];
+	sprintf(ind, "%ld", basis_selection_num_);
+	std::string fname = "basis_";
+	fname += ind;
+	fname += ".sel";
+	basis_selection_num_++;
+
+	std::ifstream basis_file(fname.c_str());
+	if (basis_file)
+		{
+		// try to read the basis file
+		std::string tags;
+
+		int n;
+		basis_file >> tags;
+		THROW_EXCEPTION(tags != "n", std::logic_error, "Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
+		basis_file >> n;
+		THROW_EXCEPTION(n == NAN && n == 0, std::logic_error, "Incorrect basis file format - n > 0 \"" << n << "\" found.");
+
+		int m;
+		basis_file >> tags;
+		THROW_EXCEPTION(tags != "m", std::logic_error, "Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
+		basis_file >> m;
+		THROW_EXCEPTION(m == NAN || m == 0 || m > n , std::logic_error, "Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
+		
+		int r;
+		basis_file >> tags;
+		THROW_EXCEPTION(tags != "rank", std::logic_error, "Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
+		basis_file >> r;
+		THROW_EXCEPTION(r == NAN || r == 0 || r > m, std::logic_error, "Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
+		if (rank)
+			{ *rank = r; }
+
+		// var_permutation
+		basis_file >> tags;
+		THROW_EXCEPTION(tags != "var_perm", std::logic_error, "Incorrect basis file format -\"var_perm\" expected, \"" << tags << "\" found.");
+		var_perm->resize(n);
+		for (int i=0; i < n; i++)
+			{
+			int var_index;
+			basis_file >> var_index;
+			THROW_EXCEPTION(var_index == NAN && var_index >= n, std::logic_error, "Incorrect basis file format for var_perm: 0 <= indice <= n expected, \"" << n << "\" found.");
+			(*var_perm)(i) = var_index;
+			}
+
+		// eqn_permutation
+		basis_file >> tags;
+		THROW_EXCEPTION(tags != "equ_perm", std::logic_error, "Incorrect basis file format -\"equ_perm\" expected, \"" << tags << "\" found.");
+		equ_perm->resize(r);
+		for (int i=0; i < r; i++)
+			{
+			int equ_index;
+			basis_file >> equ_index;
+			THROW_EXCEPTION(equ_index == NAN || equ_index >= m, std::logic_error, "Incorrect basis file format for equ_perm: 0 <= indice <= m expected, \"" << n << "\" found.");
+			(*equ_perm)(i) = equ_index;
+			}
+
+		return true;
+		}
+	}
+
 	return false;
 }
 

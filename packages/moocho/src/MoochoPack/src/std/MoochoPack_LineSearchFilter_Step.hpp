@@ -41,7 +41,7 @@ class FilterEntry
 	};
 
 typedef std::list< FilterEntry > Filter_T;
-#define FILTER_IQ_STRING "LS_FilterEntries"
+const std::string FILTER_IQ_STRING = "LS_FilterEntries";
 
 
 ///
@@ -130,7 +130,10 @@ class LineSearchFilter_Step
 		/** Constructor.
 		 */
 		LineSearchFilter_Step(
-		  const value_type           &gamma_theta      = 1e-5
+		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp
+		  ,const std::string obj_iq_name = "f"
+		  ,const std::string grad_obj_iq_name = "Gf"
+		  ,const value_type           &gamma_theta      = 1e-5
 		  ,const value_type          &gamma_f          = 1e-5
 		  ,const value_type          &gamma_alpha      = 5e-2
 		  ,const value_type          &delta            = 1e-4
@@ -171,6 +174,16 @@ class LineSearchFilter_Step
 		// Private Data
 		CastIQMember<Filter_T> filter_;
 
+		/// Iteration quantity access for objective value
+		CastIQMember<value_type> obj_f_;
+
+		/// ITeration quantity access for objective gradient
+		CastIQMember<VectorWithOpMutable> grad_obj_f_;
+
+		
+
+		// nlp to use for calculations
+		MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp_;
 
 		// Validate input parameters - fix if possible
 		bool ValidatePoint( IterQuantityAccess<VectorWithOpMutable>& x,

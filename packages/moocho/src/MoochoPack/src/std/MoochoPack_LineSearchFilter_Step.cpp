@@ -43,7 +43,10 @@ value_type MAX(value_type x, value_type y)
 	{ return (x > y) ? x : y; }
 
 LineSearchFilter_Step::LineSearchFilter_Step( 
-  const value_type &gamma_theta
+  MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp
+  ,const std::string obj_iq_name
+  ,const std::string grad_obj_iq_name
+  ,const value_type &gamma_theta
   ,const value_type &gamma_f
   ,const value_type &gamma_alpha
   ,const value_type &delta        
@@ -54,6 +57,9 @@ LineSearchFilter_Step::LineSearchFilter_Step(
   ,const value_type &back_track_frac
   )
 	:
+	nlp_(nlp),
+	obj_f_(obj_iq_name),
+	grad_obj_f_(grad_obj_iq_name),
 	gamma_theta_(gamma_theta),
 	gamma_f_(gamma_f),
 	gamma_alpha_(gamma_alpha),
@@ -65,6 +71,12 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	back_track_frac_(back_track_frac),
 	filter_(FILTER_IQ_STRING)
 	{
+	THROW_EXCEPTION(
+	  !nlp_.get(),
+	  std::logic_error,
+	  "Null nlp passed to LineSearchFilter_Step constructor"
+	  );
+
 #if defined(FILTER_DEBUG_OUT)
 	std::ofstream fout("filter_out.xml", std::ofstream::out | std::ofstream::trunc);
 	fout << "<FilterDebugDocument>" << std::endl;
@@ -94,9 +106,8 @@ bool LineSearchFilter_Step::do_step(
     
     // Get Algorithm (cast), state, and problem
     rSQPAlgo            &algo   = rsqp_algo(_algo);
-    rSQPState           &s      = algo.rsqp_state();
-    NLP                 &nlp    = algo.nlp();
-    
+    rSQPState             &s    = algo.rsqp_state();
+
     EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
     std::ostream        &out    = algo.track().journal_out();
     
@@ -108,8 +119,8 @@ bool LineSearchFilter_Step::do_step(
 		}
     
     const size_type
-		m  = nlp.m(),
-		mI = nlp.mI();
+		m  = nlp_->m(),
+		mI = nlp_->mI();
     
     THROW_EXCEPTION(
 	  mI > 0, std::logic_error
@@ -117,14 +128,14 @@ bool LineSearchFilter_Step::do_step(
     
     // Get the iteration quantity container objects
     IterQuantityAccess<value_type>
-		&f_iq = s.f(),
+		&f_iq = obj_f_(s),
 		&alpha_iq = s.alpha();
     
     IterQuantityAccess<VectorWithOpMutable>
 		&x_iq   = s.x(),
 		*c_iq   = m > 0 ? &s.c() : NULL,
 		*h_iq   = mI > 0 ? &s.h() : NULL,
-		&Gf_iq  = s.Gf();
+		&Gf_iq  = grad_obj_f_(s);
 
     // check that all the pertinent information is known
     if (!s.d().updated_k(0) || !x_iq.updated_k(0))
@@ -305,7 +316,7 @@ bool LineSearchFilter_Step::do_step(
 			{
 			// try a smaller alpha_k
 			alpha_k = alpha_k*back_track_frac_;
-			UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, nlp);
+			UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, *nlp_);
 			}	  
 
 		} // end while
@@ -386,7 +397,7 @@ bool LineSearchFilter_Step::do_step(
     value_type alpha_tmp = 1.0;
     for (int i=0; i<10 || alpha_tmp > alpha_k; i++)
 		{
-		UpdatePoint(s.d().get_k(0), alpha_tmp, x_iq, f_iq, c_iq, h_iq, nlp);
+		UpdatePoint(s.d().get_k(0), alpha_tmp, x_iq, f_iq, c_iq, h_iq, *nlp_);
 		if (ValidatePoint(x_iq, f_iq, c_iq, h_iq, false))
 			{
 			value_type theta = CalculateTheta_k(c_iq, h_iq, +1);
@@ -400,7 +411,7 @@ bool LineSearchFilter_Step::do_step(
 		}
 
     // restore alpha_k
-    UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, nlp);
+    UpdatePoint(s.d().get_k(0), alpha_k, x_iq, f_iq, c_iq, h_iq, *nlp_);
 
     fout << "      </AlphaCurve>" << std::endl;
 
@@ -532,13 +543,13 @@ void LineSearchFilter_Step::UpdatePoint(
 		if (c)
 			{
 			nlp.set_c( &c->set_k(+1) );
-			nlp.calc_c( x_kp1 );
+			nlp.calc_c( x_kp1, true );
 			}
 
 		if (h)
 			{
 			nlp.set_h( &h->set_k(+1) );
-			nlp.calc_h( x_kp1 ); 
+			nlp.calc_h( x_kp1, true ); 
 			}
 	
 		nlp.calc_f( x_kp1, false ); 
@@ -618,7 +629,11 @@ bool LineSearchFilter_Step::CheckArmijo(
     bool accepted = false;
 
     // Check Armijo on objective fn
-    if (f_iq.get_k(+1) <= f_iq.get_k(0) + eta_f_*alpha_k*Gf_t_dk)
+	double f_kp1 = f_iq.get_k(+1);
+	double f_k = f_iq.get_k(0);
+	double lhs = f_k - f_kp1;
+	double rhs = -eta_f_*alpha_k*Gf_t_dk;
+    if ( lhs >= rhs )
 		{
 		// Accept pt, do NOT augment filter
 		accepted = true;
@@ -675,15 +690,18 @@ void LineSearchFilter_Step::UpdateFilter( GeneralIterationPack::AlgorithmState& 
 	{
     IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
-    if (filter_iq.updated_k(-1))
+	if (!filter_iq.updated_k(0))
 		{
-		// initialize the filter from the last iteration
-		filter_iq.set_k(0,-1);
-		}
-    else
-		{
-		// create an uninitialized filter
-		filter_iq.set_k(0);
+		if (filter_iq.updated_k(-1))
+			{
+			// initialize the filter from the last iteration
+			filter_iq.set_k(0,-1);
+			}
+		else
+			{
+			// create an uninitialized filter
+			filter_iq.set_k(0);
+			}
 		}
 	}
 

@@ -22,13 +22,14 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 8;
+	const int local_num_options = 9;
 
 	enum local_EOptions {
         MAX_ITER,
         MAX_RUN_TIME,
         OPT_TOL,
         FEAS_TOL,
+		COMP_TOL,
         STEP_TOL,
 		JOURNAL_OUTPUT_LEVEL,
 		JOURNAL_PRINT_DIGITS,
@@ -40,6 +41,7 @@ namespace {
         ("max_run_time"),
         ("opt_tol"),
         ("feas_tol"),
+		("comp_tol"),
         ("step_tol"),
 		("journal_output_level"),
 		("journal_print_digits"),
@@ -79,6 +81,9 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 		case FEAS_TOL:
 			target().feas_tol(::fabs(::atof(option_value.c_str())));
 			break;
+	    case COMP_TOL:
+		    target().comp_tol(::fabs(::atof(option_value.c_str())));
+		    break;
 		case STEP_TOL:
 			target().step_tol(::fabs(::atof(option_value.c_str())));
 			break;

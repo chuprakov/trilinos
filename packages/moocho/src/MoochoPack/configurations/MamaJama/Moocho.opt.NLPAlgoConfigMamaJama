@@ -398,10 +398,19 @@ options_group BFGSUpdate {
 ***
 options_group CheckConvergenceStd {
 
-*    scale_kkt_error_by   = SCALE_BY_NORM_2_X;
-*    scale_kkt_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_kkt_error_by   = SCALE_BY_ONE;        *** (default)
-     *** Determines if all of the error mesures are scaled by the size of the unknowns x_k
+*    scale_opt_error_by   = SCALE_BY_NORM_2_X;
+*    scale_opt_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_opt_error_by   = SCALE_BY_ONE;        *** (default)
+
+*    scale_feas_error_by   = SCALE_BY_NORM_2_X;
+*    scale_feas_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_feas_error_by   = SCALE_BY_ONE;        *** (default)
+
+*    scale_comp_error_by   = SCALE_BY_NORM_2_X;
+*    scale_comp_error_by   = SCALE_BY_NORM_INF_X;
+*    scale_comp_error_by   = SCALE_BY_ONE;        *** (default)
+
+     *** Determines what all of the error measures are scaled by when checking convergence
      *** SCALE_BY_NORM_2_X   : Scale the optimiality conditions by 1/(1+||x_k||2)
      *** SCALE_BY_NORM_INF_X : Scale the optimality conditions by 1/(1+||x_k||inf)
      *** SCALE_BY_ONE        : Scale the optimality conditions by 1

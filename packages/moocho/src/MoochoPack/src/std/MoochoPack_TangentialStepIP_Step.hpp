@@ -1,7 +1,7 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckConvergenceStd_AddedStep.h
+// NullSpaceStepIP_Step.h
 //
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+// Copyright (C) 2001
 //
 // This is free software; you can redistribute it and/or modify it
 // under the terms of the "Artistic License" (see the web site
@@ -13,49 +13,41 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
-#define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
+#ifndef NullSpaceStepIP_Step_H
+#define NullSpaceStepIP_Step_H
 
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
 #include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "CheckConvergence_Strategy.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Check for convergence.
-  */
-class CheckConvergenceStd_AddedStep
+/** Null Space Step for Interior Point algorithm
+ *
+ * This class calculates the step pz (and Zpz)
+ *
+ */
+
+class NullSpaceStepIP_Step
 	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
 	{
 	public:
-		
-		///
-		/** Strategy object to be used when checking for convergence
-		 * 
-		 */
-		STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy );
-
-		///
-		CheckConvergenceStd_AddedStep(
-		  MemMngPack::ref_count_ptr<CheckConvergence_Strategy> convergence_strategy
-		  );
 
 		/** @name Overridden from AlgorithmStep */
 		//@{
 		///
 		bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 					 , poss_type assoc_step_poss);
-		///
-		void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+		
+		
+		void print_step( const GeneralIterationPack::Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 		//@}
 
-private:
+	private:
 
-};	// end class CheckConvergenceStd_AddedStep
+	}; // end class NullSpaceStepIP_Step
 
-}	// end namespace ReducedSpaceSQPPack 
+} // end namespace ReducedSpaceSQPPack
 
-#endif	// CHECK_CONVERGENCE_STD_ADDEDSTEP_H
+#endif // #if !defined NullSpaceStepIP_Step_H

@@ -14,15 +14,25 @@
 // above mentioned "Artistic License" for more details.
 //
 #include "ReducedSpaceSQPPack/include/ipState.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 
 // Iteration Quantity Strings
+extern const std::string ReducedSpaceSQPPack::barrier_parameter_name = "barrier_parameter";
+extern const std::string ReducedSpaceSQPPack::barrier_obj_name = "barrier_obj";
+extern const std::string ReducedSpaceSQPPack::grad_barrier_obj_name = "grad_barrier_obj";
+extern const std::string ReducedSpaceSQPPack::e_tol_name = "e_tol";
 extern const std::string ReducedSpaceSQPPack::Vu_name = "Vu";
 extern const std::string ReducedSpaceSQPPack::Vl_name = "Vl";
 extern const std::string ReducedSpaceSQPPack::invXu_name = "invXu";
 extern const std::string ReducedSpaceSQPPack::invXl_name = "invXl";
 extern const std::string ReducedSpaceSQPPack::rHB_name = "rHB";
 extern const std::string ReducedSpaceSQPPack::B_name = "B";
+extern const std::string ReducedSpaceSQPPack::Sigma_name = "Sigma";
+extern const std::string ReducedSpaceSQPPack::w_sigma_name = "w_sigma";
+extern const std::string ReducedSpaceSQPPack::dvl_name = "dvl";
+extern const std::string ReducedSpaceSQPPack::dvu_name = "dvu";
+extern const std::string ReducedSpaceSQPPack::alpha_vl_name = "alpha_vl";
+extern const std::string ReducedSpaceSQPPack::alpha_vu_name = "alpha_vu";
 
 namespace ReducedSpaceSQPPack {
 
@@ -45,16 +55,32 @@ ipState::~ipState()
 
 ///********** Iteration Quantities **************
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, Vu, Vu_name);
+STATE_SCALAR_IQ_DEF(ipState, barrier_parameter, barrier_parameter_name);
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, Vl, Vl_name);
+STATE_SCALAR_IQ_DEF(ipState, barrier_obj, barrier_obj_name);
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, invXu, invXu_name);
+STATE_VECTOR_IQ_DEF(ipState, grad_barrier_obj, grad_barrier_obj_name, get_space_x(), VST_SPACE_X);
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, invXl, invXl_name);
+STATE_SCALAR_IQ_DEF(ipState, e_tol, e_tol_name);
+
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vu, Vu_name);
+
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vl, Vl_name);
+
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXu, invXu_name);
+
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXl, invXl_name);
 
 STATE_IQ_DEF(ipState, MatrixSymWithOp, rHB, rHB_name);
 
 STATE_IQ_DEF(ipState, MatrixSymWithOp, B, B_name);
 
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Sigma, Sigma_name);
+
+STATE_VECTOR_IQ_DEF(ipState, w_sigma, w_sigma_name, get_space_null(), VST_SPACE_NULL );  
+STATE_VECTOR_IQ_DEF(ipState, dvl, dvl_name, get_space_x(), VST_SPACE_X);
+STATE_VECTOR_IQ_DEF(ipState, dvu, dvu_name, get_space_x(), VST_SPACE_X);
+
+STATE_SCALAR_IQ_DEF(ipState, alpha_vl, alpha_vl_name);
+STATE_SCALAR_IQ_DEF(ipState, alpha_vu, alpha_vu_name);
 } // end namespace ReducedSpaceSQPPack

@@ -377,7 +377,7 @@ bool MatrixWithOp::Mp_StMtM(
 		// C(:,j) = a*op(A)*t + b*C(:,j)
 		this->Vp_StMtV( Cmv->col(j).get(), a, A_trans, *t, b );
 	}
-	return false;
+	return true;
 }
 
 bool MatrixWithOp::Mp_StMtM(
