@@ -87,6 +87,7 @@ protected:
 	typedef std::vector<f_int>			IWORK_t;
 	///
 	typedef std::vector<f_dbl_prec>		WORK_t;
+public: // RAB: 2001/05/03: MS VC++ 6.0 must have this public ???
 	///
 	enum EInform {
 		STRONG_LOCAL_MIN,
@@ -94,6 +95,8 @@ protected:
 		MAX_ITER_EXCEEDED,
 		OTHER_ERROR
 	};
+
+protected:
 
 	// //////////////////////////////////////////////////////////////
 	// Protected Data Members.

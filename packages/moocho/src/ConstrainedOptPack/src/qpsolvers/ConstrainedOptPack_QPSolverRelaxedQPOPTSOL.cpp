@@ -136,7 +136,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	N_ = n + 1; // With relaxation
 
 	// NCLIN
-	n_inequ_bnds_ = E ? num_bounds(*eL,*eU) : 0;
+	n_inequ_bnds_ = E ? SparseLinAlgPack::num_bounds(*eL,*eU) : 0;
 	NCLIN_ = n_inequ_bnds_ + (F ? f->size() : 0);
 
 	// A, BL, BU

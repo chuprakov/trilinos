@@ -1,6 +1,11 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // FeasibilityStepReducedStd_Strategy.cpp
 
+// disable VC 5.0 warnings about debugger limitations
+#pragma warning(disable : 4786)	
+// disable VC 5.0 warnings about truncated identifier names (templates).
+#pragma warning(disable : 4503)	
+
 #include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
@@ -44,9 +49,9 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* w
   	)
 {
-	using SparseLinAlgPack::sparse_bounds_itr             sparse_bounds_itr;
-	using ConstrainedOptimizationPack::MatrixSymIdentity  MatrixSymIdentity;
-	using ConstrainedOptimizationPack::QPSolverStats      QPSolverStats;
+	typedef SparseLinAlgPack::sparse_bounds_itr             sparse_bounds_itr;
+	typedef ConstrainedOptimizationPack::MatrixSymIdentity  MatrixSymIdentity;
+	typedef ConstrainedOptimizationPack::QPSolverStats      QPSolverStats;
 	using DynamicCastHelperPack::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -281,7 +286,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 			dep		= Zvr ? Zvr->dep()   : Range1D();
 
 		const bool
-			use_simple_wz_bounds = ( Zvr!=NULL && norm_inf(Ywy(indep))==0.0 );
+			use_simple_wz_bounds = ( Zvr!=NULL && LinAlgPack::norm_inf(Ywy(indep))==0.0 );
 
 		if( use_simple_wz_bounds ) {
 
@@ -426,7 +431,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 				out
 					<< "\n*** Alert! the QP was infeasible (eta = "<<qp_eta<<").  Cutting back Ywy_k = (1.0 - eta)*Ywy  ...\n";
 			}
-			Vt_S( &Ywy , 1.0 - qp_eta );
+			LinAlgPack::Vt_S( &Ywy , 1.0 - qp_eta );
 		}
 	}
 
