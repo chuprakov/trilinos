@@ -153,8 +153,7 @@ public:
 	  * After this function returns, #this->get_qp_stats()# can be called to return
 	  * some statistics for the QP just solved (or attempted to be solved).
 	  *
-	  * Note, the variable bounds can be removed by passing in
-	  * pass in #dL.nz() == dU.nz() == 0#.
+	  * Note, the variable bounds can be removed by passing in #dL.nz() == dU.nz() == 0#.
 	  * 
 	  * By default this function calls the function #this->solve_qp(...)# which accepts
 	  * various sets of constraints.
@@ -207,7 +206,9 @@ public:
 	  *							value of obj_d = g'*d + 1/2*d'*G*d for the value of d
 	  *							returned.
 	  *	@param	eta			[out] scalar:  Relaxation variable
-	  *	@param	d			[out] vector (size n):  Solution vector
+	  *	@param	d			[in/out] vector (size n):  On input, it contains an intial estimate
+	  *                         of the solution.  On output it is the estimate of the solution
+	  *                         (see the return value).
 	  *	@param	nu			[in/out] sparse vector (size n):  Lagrange multipilers
 	  *							for variable bounds.  On input it contains the
 	  *							estimate of the active set and multiplier values.  If
@@ -258,15 +259,16 @@ public:
 	  *			optimality phase (phase 2).
 	  *		#DUAL_FEASIBLE_POINT# : Returned point satisfies the optimality conditions
 	  *			in (2)-(4.1),(4.4),(5) and (6) but not the inequality constraints in (4.2),(4.3).
-	  *			For example, a primal-dual, active-set QP algorithm might return this
+	  *			For example, a dual, active-set QP algorithm might return this
 	  *			value if the maximum number of iterations has been exceeded.
 	  *		#SUBOPTIMAL_POINT# : Returned point does not accurately enough satisfy any of the
 	  *			optimality conditions in (2)-(6) above but the solution may still be
 	  *			of some use.  For example, an active-set (primal, or dual) QP algorithm
 	  *			might return this if there is some serious illconditioning in the QP
 	  *			and a solution satisfying the desired tolerance could not be found.
-	  *			Also, an interior point QP solver might return this if the maxinum
-	  *			number if iterations is exceeded.
+	  *			Also, a primal-dual interior point QP solver might return this if the
+	  *         maxinum number of iterations is exceeded.  The returned solution may
+	  *         still be of some use to the client though.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
@@ -343,10 +345,11 @@ public:
 	  *
 	  * The defualt implementation of this function validates that input
 	  * sizes are correct and that the proper sets of constraints are set
-	  * by calling validate_input(...) first.  Then, print_qp_input(...)
-	  * is called to print the QP intput arguments.  Then imp_solve_qp(...)
-	  * is called which must be implemented by the subclass.  Finally,
-	  * print_qp_output(...) is called to print the QP output.
+	  * by calling validate_input(...) first.  Refere to the method
+	  * \Ref{validate_input}(...) to see how arguments are set.  After validation
+	  * print_qp_input(...) is called to print the QP intput arguments.  Then
+	  * imp_solve_qp(...) is called which must be implemented by the subclass.
+	  * Finally, print_qp_output(...) is called to print the QP output.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
@@ -475,7 +478,7 @@ protected:
 	///
 	/** Subclasses are to override this to implement the QP algorithm.
 	  *
-	  * Called by default solve_qp(...) functions.
+	  * Called by default implementations of solve_qp(...) methods.
 	  */
 	virtual QPSolverStats::ESolutionType imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
