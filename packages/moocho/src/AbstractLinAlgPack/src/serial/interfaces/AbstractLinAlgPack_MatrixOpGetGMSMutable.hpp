@@ -41,25 +41,28 @@ class MatrixWithOpGetGMSMutable : virtual public MatrixWithOpGetGMS {
 public:
 
 	///
+	using MatrixWithOpGetGMS::get_gms_view;
+
+	///
 	/** Get a representation of the abstract matrixr in the form <tt>LinAlgPack::GenMatrixSlice</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
 	 * The output from this function <tt>gms_view = this->get_gms_view()</tt> must be passed to
-	 * <tt>this->free_gms_view(gms)</tt> to free any memory that may have been allocated and to ensure
-	 * the that underlying abstract matrix object has been updated.
-	 * After <tt>this->free_gms_view(gms_view)</tt> is called, \c gms_view must not be used any longer!
+	 * <tt>this->commit_gms_view(gms)</tt> to commit and free any memory that may have been allocated
+	 * and to ensure the that underlying abstract matrix object has been updated.
+	 * After <tt>this->commit_gms_view(gms_view)</tt> is called, \c gms_view must not be used any longer!
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return.rows() == this->rows()</tt>
 	 * <li> <tt>return.cols() == this->cols()</tt>
 	 * </ul>
 	 *
-	 * Warning!  If a subclass overrides this method, it must also override \c free_gms_view().
+	 * Warning!  If a subclass overrides this method, it must also override \c commit_gms_view().
 	 */
 	virtual GenMatrixSlice get_gms_view() = 0;
 
 	///
-	/** Free a view of a dense matrix initialized from <tt>get_gms_view()>/tt>.
+	/** Commit changes to a view of a dense matrix initialized from <tt>this->get_gms_view()</tt>.
 	 *
 	 * @param  gms_view
 	 *              [in/out] On input, \c gms_view must have been initialized from \c this->get_gms_view().
@@ -74,7 +77,7 @@ public:
 	 * <li> \c gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void free_gms_view(GenMatrixSlice* gms_view) = 0;
+	virtual void commit_gms_view(GenMatrixSlice* gms_view) = 0;
 
 }; // end class MatrixWithOpGetGMSMutable
 
@@ -149,7 +152,7 @@ MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixWithOp* mat )
 inline
 MatrixDenseMutableEncap::~MatrixDenseMutableEncap()
 {
-	mat_get_->free_gms_view(&gms_view_);
+	mat_get_->commit_gms_view(&gms_view_);
 }
 
 inline
