@@ -115,7 +115,7 @@ public:
 	//@{
 
 	///
-	void initialize();
+	void initialize(bool test_setup);
 	///
 	bool is_initialized() const;
 	///

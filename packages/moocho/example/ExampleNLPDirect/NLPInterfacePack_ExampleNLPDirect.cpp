@@ -129,7 +129,7 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 // Overridden public members from NLP
 
-void ExampleNLPFirstOrderDirect::initialize()
+void ExampleNLPFirstOrderDirect::initialize(bool test_setup)
 {
 
 #ifndef _WINDOWS
@@ -137,7 +137,7 @@ void ExampleNLPFirstOrderDirect::initialize()
 #endif
 
 	if( initialized_ ) {
-		NLPFirstOrderDirect::initialize();
+		NLPFirstOrderDirect::initialize(test_setup);
 		return;
 	}
 
@@ -146,7 +146,7 @@ void ExampleNLPFirstOrderDirect::initialize()
 //	xinit_->set_ele(n_/3+1,1.0/0.0); // Uncomment to throw in an invalid value
 //	xinit_->set_ele((2*n_)/3+1,0.0/0.0); // Uncomment to throw in an invalid value
 
-	NLPFirstOrderDirect::initialize();
+	NLPFirstOrderDirect::initialize(test_setup);
 
 	initialized_ = true;
 }

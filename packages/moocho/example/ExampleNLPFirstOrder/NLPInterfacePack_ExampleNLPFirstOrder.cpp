@@ -63,12 +63,12 @@ ExampleNLPFirstOrderInfo::factory_Gh() const
 
 // Overridden public members from NLP
 
-void ExampleNLPFirstOrderInfo::initialize()
+void ExampleNLPFirstOrderInfo::initialize(bool test_setup)
 {
 	namespace rcp = MemMngPack;
 
-	ExampleNLPFirstOrderDirect::initialize();
-	NLPFirstOrderInfo::initialize();
+	ExampleNLPFirstOrderDirect::initialize(test_setup);
+	NLPFirstOrderInfo::initialize(test_setup);
 
 	factory_Gc_ = BasisSystemCompositeStd::factory_Gc();
 	
