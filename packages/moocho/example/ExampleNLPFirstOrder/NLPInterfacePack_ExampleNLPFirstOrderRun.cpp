@@ -114,15 +114,15 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 
 	if(prog_return == true) {
 		if(eout_in && eout_in != out_in)
-			*eout_in   << "Congradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
+			*eout_in   << "Congradulations! The VectorSpace, NLP and BasisSystem objects check out!\n";
 		if(out_in)
-			*out_in    << "\nCongradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
+			*out_in    << "\nCongradulations! The VectorSpace, NLP and BasisSystem objects check out!\n";
 	}
 	else {
 		if(eout_in && eout_in!= out_in)
-			*eout_in   << "Oh No!  Something did not checkout!\n";
+			*eout_in   << "Oh No!  Something did not check out!\n";
 		if(out_in)
-			*out_in    << "\nOh No!  Something did not checkout!\n";
+			*out_in    << "\nOh No!  Something did not check out!\n";
 	}
 
 	return prog_return;
