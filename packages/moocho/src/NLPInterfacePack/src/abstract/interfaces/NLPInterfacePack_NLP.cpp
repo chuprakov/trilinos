@@ -198,10 +198,10 @@ const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::h() const
 
 // calculations
 
-void NLPInterfacePack::NLP::set_mult_calc(bool mult_calc) const
+void NLPInterfacePack::NLP::set_multi_calc(bool multi_calc) const
 {}
 
-bool NLPInterfacePack::NLP::mult_calc() const
+bool NLPInterfacePack::NLP::multi_calc() const
 {
 	return false;
 }
