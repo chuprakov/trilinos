@@ -7,6 +7,8 @@
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
+#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "LinAlgPack/include/GenMatrixOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
@@ -233,6 +235,92 @@ void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
 //	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
 	Vp_StPtMtV_imp(y,a,P,P_trans,*this,H_trans,x,b);
 }
+
+// Overridden form MatrixSymWithOp
+
+void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
+	sym_gms* S, value_type a
+	, EMatRhsPlaceHolder dummy_place_holder
+	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	, value_type b ) const
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using BLAS_Cpp::trans_not;
+	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Mp_StPtMtP(...)" );
+#endif
+	assert_initialized();
+
+	MatrixSymWithOp::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b); // ToDo: Override when needed!
+	return;
+
+	const LinAlgPack::size_type
+		no = G().rows(),     // number of original variables
+		nr = M().rows(),     // number of relaxation variables
+		nd = no + nr;        // total number of variables
+
+	LinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
+									 , P.rows(), P.cols(), trans_not(P_trans)
+									 , P.rows(), P.cols(), P_trans );
+	LinAlgPack::Vp_V_assert_sizes( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans), nd );
+
+	//
+	// S = b*S + a * op(P)' * H * op(P)
+	//
+	// S = b*S + a * [op(P1)'  op(P2)' ] * [ G  0 ] * [ op(P1) ]
+	//                                     [ 0  M ]   [ op(P2) ]
+	//
+	// =>
+	//
+	// S = b*S
+	// S1 += op(P1)' * G * op(P1)
+	// S2 += op(P2)' * M * op(P2)
+	//
+	// For this to work op(P) must be sorted by row.
+	//
+	if( 	( P.ordered_by() == GPMSIP::BY_ROW && P_trans == BLAS_Cpp::trans )
+	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::no_trans )
+		||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
+	{
+		// Call the default implementation
+		MatrixSymWithOp::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b);
+		return;
+	}
+	const LinAlgPack::Range1D
+		o_rng(1,no),
+		r_rng(no+1,no+nr);
+	const SparseLinAlgPack::GenPermMatrixSlice
+		P1 = ( P.is_identity() 
+			   ? GenPermMatrixSlice(
+				   P_trans == no_trans ? nd : no 
+				   ,P_trans == no_trans ? no : nd
+				   ,GenPermMatrixSlice::IDENTITY_MATRIX )
+			   : P.create_submatrix(o_rng,P_trans==no_trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
+			),
+		P2 = ( P.is_identity()
+			   ? GenPermMatrixSlice(
+				   P_trans == no_trans ? nd : nr
+				   ,P_trans == no_trans ? nr : nd
+				   ,GenPermMatrixSlice::ZERO_MATRIX )
+			   : P.create_submatrix(r_rng,P_trans==no_trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
+			);
+	// S = b*S
+	LinAlgPack::Mt_S( &tri_ele_gms(S->gms(),S->uplo()),b); // Handles b == 0.0 properly!
+
+	// S1 += a*op(P1)'*G*op(P1)
+	if( P1.nz() )
+		SparseLinAlgPack::Mp_StPtMtP(
+			&sym_gms( S->gms()(1,no,1,no), S->uplo() )
+			, a, dummy_place_holder, G(), P1, P_trans );
+	// S2 += a*op(P2)'*M*op(P2)
+	if( P2.nz() )
+		SparseLinAlgPack::Mp_StPtMtP(
+			&sym_gms( S->gms()(no+1,nd,no+1,nd), S->uplo() )
+			, a, dummy_place_holder, M(), P2, P_trans );
+}
+
 
 // Overridden from MatrixWithOpFactorized
 

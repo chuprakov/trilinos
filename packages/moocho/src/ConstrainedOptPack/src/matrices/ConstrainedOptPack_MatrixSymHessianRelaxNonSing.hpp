@@ -108,6 +108,14 @@ public:
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
 
 	// /////////////////////////////////////////////////////
+	// Overridden form MatrixSymWithOp
+
+	void Mp_StPtMtP( sym_gms* sym_lhs, value_type alpha
+		, EMatRhsPlaceHolder dummy_place_holder
+		, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+		, value_type beta ) const;
+
+	// /////////////////////////////////////////////////////
 	// Overridden from MatrixWithOpFactorized
 
 	///
