@@ -17,11 +17,8 @@
 #define MAT_VEC_COMPARE_H
 
 #include <limits>
-#ifdef _GNU_GXX30
+#if defined(_GNU_GXX)
 #include <cmath>
-#endif
-
-#ifdef _WINDOWS
 #else
 #include <math.h>
 #endif
@@ -45,8 +42,10 @@ using TestingHelperPack::update_success;
 
 ///
 const value_type sqrt_eps
-#ifdef _GNU_GXX
+#if defined(_GNU_GXX)
 	= std::sqrt(std::numeric_limits<value_type>::epsilon());
+#elif defined(_CPQ_CXX)
+	= ::sqrt(std::numeric_limits<value_type>::epsilon());
 #else
 	= ::sqrt(std::numeric_limits<value_type>::epsilon());
 #endif
