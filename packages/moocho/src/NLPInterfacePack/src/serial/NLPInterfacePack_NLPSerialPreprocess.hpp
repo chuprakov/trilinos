@@ -454,18 +454,22 @@ protected:
 	/** Return the original lower variable bounds (size \c imp_n_orig()).
 	 *
 	 * Only to be called if <tt>this->imp_has_var_bounds() == true</tt>.
-	 * A lower bound is considered free if it is equal to:
-	 * 
-	 * <tt>-NLP::infinite_bound()</tt>
+	 * A lower bound is considered free if it is less than or equal to:
+	 \verbatim
+
+	 <tt>-NLP::infinite_bound()</tt>
+	 \endverbatim
 	 */
 	virtual const VectorSlice imp_xl_orig() const = 0;
 	///
 	/** Return the original upper variable bounds (size \c imp_n_orig()).
 	 *
 	 * Only to be called if <tt>this->imp_has_var_bounds() == true</tt>.
-	 * An upper bound is considered free if it is equal to:
-	 * 
-	 * <tt>+NLP::infinite_bound()</tt>
+	 * An upper bound is considered free if it is greater than or equal to:
+	 \verbatim
+
+	 <tt>+NLP::infinite_bound()</tt>
+	 \endverbatim
 	 */
 	virtual const VectorSlice imp_xu_orig() const = 0;
 	///

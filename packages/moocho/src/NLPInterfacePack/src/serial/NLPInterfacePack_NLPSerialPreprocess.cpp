@@ -152,8 +152,9 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		xu_nz     = 0,
 		num_bnd_x = 0;
 	if( has_var_bounds ) {
-		// Determine which variables are fixed by bounds
-		Vector::const_iterator
+		// Determine which variables are fixed by bounds and
+		// adjust the bounds if needed.
+		Vector::iterator
 			xl_full		= xl_full_.begin(),
 			xu_full		= xu_full_.begin();
 		n_ = 0;
@@ -164,12 +165,20 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 				,"NLPSerialPreprocess::initialize() : Error, Inconsistant bounds: xl_full("
 				<< i << ") > xu_full(" << i << ")" ); 
 			if(*xl_full == *xu_full) {
+				//
 				// Fixed between bounds
+				//
 				var_full_to_fixed_(n_full_ - num_fixed) = i;
 				num_fixed++;
 			}
 			else {
+				//
 				// Not Fixed between bounds
+				//
+				// Adjust the bounds if needed
+				*xl_full = *xl_full < -inf_bnd ? -inf_bnd : *xl_full;
+				*xu_full = *xu_full > +inf_bnd ? +inf_bnd : *xu_full;
+				//
 				n_++;
 				var_full_to_fixed_(n_) = i;
 				// Check if xl is bounded
@@ -318,12 +327,20 @@ size_type NLPSerialPreprocess::num_bounded_x() const
 const VectorWithOp& NLPSerialPreprocess::xl() const 
 {
 	assert_initialized();
+	THROW_EXCEPTION(
+		!has_var_bounds_, NoBounds
+		,"NLPSerialPreprocess::xl() : Error, there are no variable bounds!"
+		);
 	return xl_;
 }
 
 const VectorWithOp& NLPSerialPreprocess::xu() const 
 {
 	assert_initialized();
+	THROW_EXCEPTION(
+		!has_var_bounds_, NoBounds
+		,"NLPSerialPreprocess::xu() : Error, there are no variable bounds!"
+		);
 	return xu_;
 }
 
