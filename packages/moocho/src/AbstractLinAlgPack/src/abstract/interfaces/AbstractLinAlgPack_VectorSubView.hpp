@@ -78,7 +78,7 @@ public:
 	 */
 	void set_uninitialized();
 	///
-	const VectorWithOp* full_vec() const;
+	const vec_ptr_t& full_vec() const;
 	///
 	const VectorSpaceSubSpace& space_impl() const;
 
@@ -90,6 +90,21 @@ public:
 	///
 	index_type dim() const;
 	///
+	/** Calls \c apply_reduction() on the underlying full vectors.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
+	 *      (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
+	 *      (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k])->full_vec()->space().is_compatible(
+	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
+	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 */
 	void apply_reduction(
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const VectorWithOp** vecs
@@ -127,9 +142,10 @@ VectorWithOpSubView::VectorWithOpSubView()
 {}
 
 inline
-const VectorWithOp* VectorWithOpSubView::full_vec() const
+const VectorWithOpSubView::vec_ptr_t&
+VectorWithOpSubView::full_vec() const
 {
-	return full_vec_.get();
+	return full_vec_;
 }
 
 inline

@@ -17,8 +17,10 @@
 
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/include/VectorWithOpSubView.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutableSubView.h"
+#include "WorkspacePack.h"
 #include "ThrowException.h"
+#include "dynamic_cast_verbose.h"
 
 namespace AbstractLinAlgPack {
 
@@ -68,8 +70,12 @@ void VectorWithOpSubView::apply_reduction(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
-#ifdef _DEBUG
+	using DynamicCastHelperPack::dyn_cast;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	int k;
 	const index_type this_dim = this->dim();
+#ifdef _DEBUG
 	THROW_EXCEPTION(
 		sub_dim_in < 0
 		|| !(1 <= first_ele_in && first_ele_in <= this_dim)
@@ -86,8 +92,17 @@ void VectorWithOpSubView::apply_reduction(
 						 ? sub_dim_in
 						 : space_impl().rng().size() - (first_ele_in - 1)
 			           );
+	wsp::Workspace<const VectorWithOp*>    vecs_full(wss,num_vecs);
+	for( k = 0; k < num_vecs; ++k )
+		vecs_full[k] = dyn_cast<const VectorWithOpSubView>(*vecs[k]).full_vec().get();
+	wsp::Workspace<VectorWithOpMutable*>   targ_vecs_full(wss,num_targ_vecs);
+	for( k = 0; k < num_targ_vecs; ++k )
+		targ_vecs_full[k] = dyn_cast<VectorWithOpMutableSubView>(*targ_vecs[k]).full_vec().get();
 	full_vec_->apply_reduction(
-		op, num_vecs, vecs, num_targ_vecs, targ_vecs, reduct_obj
+		op
+		,num_vecs,      num_vecs      ? &vecs_full[0]      : NULL
+		,num_targ_vecs, num_targ_vecs ? &targ_vecs_full[0] : NULL
+		,reduct_obj
 		,this_offset + first_ele_in     // first_ele
 		,this_sub_dim                   // sub_dim
 		,global_offset_in               // global_dim

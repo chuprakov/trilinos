@@ -74,6 +74,9 @@ public:
 	 */
 	void set_uninitialized();
 
+	///
+	const vec_mut_ptr_t& full_vec() const;
+
 	/** @name Overridden from VectorWithOp */
 	//@{
 
@@ -86,6 +89,21 @@ public:
 	//@{
 	
 	///
+	/** Calls \c apply_transformation() on the underlying full vectors.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
+	 *      (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
+	 *      (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k])->full_vec()->space().is_compatible(
+	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
+	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 */
 	void apply_transformation(
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const VectorWithOp** vecs
@@ -117,6 +135,13 @@ private:
 inline
 VectorWithOpMutableSubView::VectorWithOpMutableSubView()
 {}
+
+inline
+const VectorWithOpMutableSubView::vec_mut_ptr_t&
+VectorWithOpMutableSubView::full_vec() const
+{
+	return full_vec_;
+}
 
 } // end namespace AbstractLinAlgPack
 
