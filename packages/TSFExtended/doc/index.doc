@@ -91,7 +91,7 @@ explicitly forming the transpose of an operator
 <li> TSFExtended::ILUFactorizableOp defines an interface for obtaining an
 incomplete LU factorization of an operator
 <li> TSFExtended::ICFactorizableOp defines an interface for obtaining
-an incomplete Cholesky factorization of an operator
+an incomplete Cholesky factorization of an operator (not yet)
 </ul>
 </ul>
 
@@ -105,23 +105,23 @@ of the operator to a vector can be carried out by first multiplying by
 \f$B\f$, then multiplying the result by \f$A\f$. 
 
 <ul>
-<li> TSFExtended::ComposedOp represents a composition of two linear
+<li> TSFExtended::ComposedOperator represents a composition of two linear
 operators, \f$A\cdot B\f$.
-<li> TSFExtended::TransposeOp  represents the implicit transpose 
+<li> TSFExtended::TransposeOperator  represents the implicit transpose 
 \f$A^T\f$ of an operator \f$A\f$. 
-<li> TSFExtended::InverseOp represents the implicit inverse of an operator, given
+<li> TSFExtended::InverseOperator represents the implicit inverse of an operator, given
 some specification of a solver. The explicit inverse is never formed; rather,
 the inverse operator is applied implicitly by solving a system
 \f$A x_{out} = x_{in}\f$ with the specified solver.
-<li> TSFExtended::InverseTransposeOp implicit inverse transpose, returns the result
-of \f$A^T x_{out} = x_{in}\f$ obtained with a specified solver.
-<li> TSFExtended::SumOp represents the sum of two operators, \f$A + B\f$.
-<li> TSFExtended::ScaledOp represents a scalar times an operator, \f$\alpha A\f$.
-<li> TSFExtended::ZeroOp represents the zero operator, and returns zero output 
+<li> TSFExtended::InverseTransposeOperator implicit inverse transpose, returns the result
+of \f$A^T x_{out} = x_{in}\f$ obtained with a specified solver (not yet).
+<li> TSFExtended::SumOperator represents the sum of two operators, \f$A + B\f$.
+<li> TSFExtended::ScaledOperator represents a scalar times an operator, \f$\alpha A\f$.
+<li> TSFExtended::ZeroOperator represents the zero operator, and returns zero output 
 for any input. 
-<li> TSFExtended::IdentityOp represents the identity operator, and returns the input
+<li> TSFExtended::IdentityOperator represents the identity operator, and returns the input
 unmodified.
-<li> TSFExtended::DiagonalOp represents a diagonal operator.
+<li> TSFExtended::DiagonalOperator represents a diagonal operator.
 </ul>
 </ul>
 
