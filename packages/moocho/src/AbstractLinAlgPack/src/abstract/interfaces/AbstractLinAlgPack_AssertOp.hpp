@@ -20,8 +20,6 @@
 
 namespace AbstractLinAlgPack {
 
-#ifdef ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
-
 /** \defgroup AbstractLinAlgPackAssertOp_funcs Assertion functions for linear algebra operations.
   *
   * These functions check the compatibility of the vector spaces for many different types
@@ -90,7 +88,7 @@ void Mp_MtM_assert_compatibility(
 
 //@}
 
-#else
+#ifndef ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
 
 // inline definitions that do nothing
 
@@ -148,7 +146,8 @@ void Mp_MtM_assert_compatibility(
 	,const MatrixWithOp& m_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,const MatrixWithOp& m_rhs2, BLAS_Cpp::Transp trans_rhs2 )
 {}
-#endif
+
+#endif // ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
 
 } // end namespace AbstractLinAlgPack
 
