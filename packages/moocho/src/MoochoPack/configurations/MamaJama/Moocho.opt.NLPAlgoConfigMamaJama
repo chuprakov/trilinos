@@ -178,9 +178,9 @@ options_group BFGSUpdate {
 ***
 options_group CheckConvergenceStd {
 
-*    scale_opt_error_by   = SCALE_BY_NORM_2_X;
-*    scale_opt_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_opt_error_by   = SCALE_BY_ONE;        *** (default)
+*    scale_opt_error_by    = SCALE_BY_NORM_2_X;
+*    scale_opt_error_by    = SCALE_BY_NORM_INF_X;
+*    scale_opt_error_by    = SCALE_BY_ONE;        *** (default)
 
 *    scale_feas_error_by   = SCALE_BY_NORM_2_X;
 *    scale_feas_error_by   = SCALE_BY_NORM_INF_X;
