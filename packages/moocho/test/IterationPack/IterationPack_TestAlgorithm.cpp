@@ -167,7 +167,8 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 
 	_out	<< "\n\n*** Test the major loop for two iterations ***\n";
 
-	_out	<< "\nalgo.max_iter(2); algo.do_algorithm();\n\n";
+	_out	<< "\nalgo.set_algo_timing(true); algo.max_iter(2); algo.do_algorithm();\n\n";
+	algo.set_algo_timing(true);
 	algo.max_iter(2);
 	algo.do_algorithm();
 

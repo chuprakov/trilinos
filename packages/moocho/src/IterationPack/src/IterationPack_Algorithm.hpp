@@ -597,6 +597,30 @@ public:
 	  */
 	virtual void print_algorithm_times( std::ostream& out ) const;
 
+	///
+	/** Returns the step_times for iteration offset.
+	 *
+	 * @param  offset       [in] The interation offset to retrieve times for.
+	 * @param  step_times   [out] Array (size <tt>this->num_steps() + 1</tt>) with the
+	 *                      output step times (in seconds) for iteration <tt>k+offset</tt>.
+	 *                      The last entry <tt>step_times[this->num_steps()]</tt> gives
+	 *                      the total time for the entire iteration.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>offset <= 0</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Note that <tt>offset</tt> must be a nonpositive number since we can only retreve
+	 * timings from the current or previous iterations.
+	 */	
+	void get_step_times_k( int offset, double step_times[] ) const;
+
+	///
+	/** Returns the final statistics for a given step
+	  *  Do not call when algorithm is running
+	  */
+	void get_final_step_stats( size_t step, double* total, double* average, double* min, double* max, double* percent) const;
+
 	//@}
 
 private:
@@ -660,7 +684,18 @@ private:
 	typedef std::vector<double> step_times_t;
 
 	///
+	static const int
+	    TIME_STAT_TOTALS_OFFSET	= 0,
+		TIME_STAT_AV_OFFSET		= 1,
+		TIME_STAT_MIN_OFFSET		= 2,
+		TIME_STAT_MAX_OFFSET		= 3,
+		TIME_STAT_PERCENT_OFFSET	= 4;
+	///
 	enum { NUM_STEP_TIME_STATS = 5 };
+	
+	///
+	void compute_final_time_stats() const;
+
 
 	// /////////////////////////////////////////////////////
 	// Private data members

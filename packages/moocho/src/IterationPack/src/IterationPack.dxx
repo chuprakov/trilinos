@@ -20,7 +20,7 @@ acts as a central repository for a set of iteration quantities (of type
 object helps to remove data dependencies between different step objects.  The interface
 <tt>\ref IterationPack::AlgorithmTracker "AlgorithmTracker"</tt> allows outside
 clients the ability to easily monitor (but not control) the progress of the algorithm.
-Multiply <tt>AlgorithmTracker</tt> object can be added by using the composite class
+Multiple <tt>AlgorithmTracker</tt> objects can be added by using the composite class
 <tt>\ref IterationPack::AlgorithmTrackerComposite "AlgorithmTrackerComposite"</tt>.
 
 In order to allow typed access to the iteration quantities, the templated interface

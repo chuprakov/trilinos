@@ -541,42 +541,12 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 		}}
 		out << endl;
 	}}
+
 	// Compute the (1) totals for each step, the (2) average, (3) min and (4) max times
 	// per iteration for each step and the (5) precentages for each step.
 
-	const int
-		TOTALS_OFFSET	= 0,
-		AV_OFFSET		= 1,
-		MIN_OFFSET		= 2,
-		MAX_OFFSET		= 3,
-		PERCENT_OFFSET	= 4;
-
 	if( !time_stats_computed_ ) {
-		time_stats_computed_ = true;
-		// compute totals for each step (1...n) and the full iteration (n+1)
-		double &_total_time = const_cast<double&>(total_time_);
-		_total_time = 0.0;
-		{for( int i = 0; i < n+1; ++i ) {
-			double *step_i_times = &const_cast<step_times_t&>(step_times_)[i*mmm];
-			// compute total step times (and total algorithm time)
-			const double
-				step_time = std::accumulate( step_i_times, step_i_times + m, (double)0.0 );
-			if(i < n)
-				_total_time += step_time;
-			step_i_times[ mm + TOTALS_OFFSET ] = step_time;
-			// compute average per step.
-			step_i_times[ mm + AV_OFFSET ] = step_time / m;
-			// compute min per step
-			step_i_times[ mm + MIN_OFFSET ]= *std::min_element( step_i_times, step_i_times + m );
-			// compute max per step
-			step_i_times[ mm + MAX_OFFSET ]= *std::max_element( step_i_times, step_i_times + m );
-		}}
-		{for( int i = 0; i < n+1; ++i ) {
-			double *step_i_times = &const_cast<step_times_t&>(step_times_)[i*mmm];
-			// compute fractions for each step.
-			step_i_times[ mm + PERCENT_OFFSET ]
-				= step_i_times[ mm + TOTALS_OFFSET ] / total_time_;
-		}}
+		compute_final_time_stats();
 	}
 
 	// Ouput time statistics.
@@ -591,7 +561,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out	<< setw(w)	<< "total(sec)";
 	{for( int i = 0; i < n+1; ++i ) {
 		const double *step_i_times = &step_times_[i*mmm];
-		out	<< setw(w) << step_i_times[ mm + TOTALS_OFFSET ];	
+		out	<< setw(w) << step_i_times[ mm + TIME_STAT_TOTALS_OFFSET ];	
 	}}
 	out << endl;
 
@@ -599,7 +569,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out	<< setw(w)	<< "av(sec)/k";
 	{for( int i = 0; i < n+1; ++i ) {
 		const double *step_i_times = &step_times_[i*mmm];
-		out	<< setw(w) << step_i_times[ mm + AV_OFFSET ];	
+		out	<< setw(w) << step_i_times[ mm + TIME_STAT_AV_OFFSET ];	
 	}}
 	out << endl;
 
@@ -607,7 +577,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out	<< setw(w)	<< "min(sec)";
 	{for( int i = 0; i < n+1; ++i ) {
 		const double *step_i_times = &step_times_[i*mmm];
-		out	<< setw(w) << step_i_times[ mm + MIN_OFFSET ];	
+		out	<< setw(w) << step_i_times[ mm + TIME_STAT_MIN_OFFSET ];	
 	}}
 	out << endl;
 
@@ -615,7 +585,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out	<< setw(w)	<< "max(sec)";
 	{for( int i = 0; i < n+1; ++i ) {
 		const double *step_i_times = &step_times_[i*mmm];
-		out	<< setw(w) << step_i_times[ mm + MAX_OFFSET ];	
+		out	<< setw(w) << step_i_times[ mm + TIME_STAT_MAX_OFFSET ];	
 	}}
 	out << endl;
 
@@ -623,7 +593,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out	<< setw(w)	<< "% total";
 	{for( int i = 0; i < n+1; ++i ) {
 		const double *step_i_times = &step_times_[i*mmm];
-		out	<< setw(w) << step_i_times[ mm + PERCENT_OFFSET ] * 100.0;	
+		out	<< setw(w) << step_i_times[ mm + TIME_STAT_PERCENT_OFFSET ] * 100.0;	
 	}}
 	out << endl;
 
@@ -631,6 +601,89 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	// Print total time for entire algorithm.
 	out << "------------------------------" << endl
 		<< "total CPU time = " << total_time_ << " sec\n";;
+}
+
+
+void Algorithm::get_step_times_k( int offset, double step_times[] ) const
+{
+	THROW_EXCEPTION(
+	  step_times_.size() == 0, std::logic_error
+	  ,"Algorithm::get_step_times_k(...) : times requested, but no times calculated!"
+	  );
+	THROW_EXCEPTION(
+	  offset > 0, std::invalid_argument
+	  ,"Algorithm::get_step_times_k(...) : Can\'t get times for an iteratin that has not occured yet!."
+	  );
+
+	const int n = num_steps();					// Total steps
+	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	const int mm = max_iter()+1;				// Total number of possible iterations
+	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
+	
+	const int k = state().k() + offset;
+	{for (int step = 0; step < n+1; ++step) {
+		step_times[step] = step_times[step*mmm + k];		
+	}}
+
+}
+
+void Algorithm::get_final_step_stats( size_t step, double* total, double* average, double* min, double* max, double* percent) const
+{
+	// Compute the (1) totals for each step, the (2) average, (3) min and (4) max times
+	// per iteration for each step and the (5) precentages for each step.
+
+	if( !time_stats_computed_ ) {
+		compute_final_time_stats();
+	}
+
+	const int n = num_steps();					// Total steps
+	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	const int mm = max_iter()+1;				// Total number of possible iterations
+	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
+
+	double* step_i_times = &const_cast<step_times_t&>(step_times_)[step*mmm];
+	*total   = step_i_times[mm + TIME_STAT_TOTALS_OFFSET];
+	*average = step_i_times[mm + TIME_STAT_AV_OFFSET];
+	*min     = step_i_times[mm + TIME_STAT_MIN_OFFSET];
+	*max     = step_i_times[mm + TIME_STAT_MAX_OFFSET];
+	*percent = step_i_times[mm + TIME_STAT_PERCENT_OFFSET];
+}
+
+void Algorithm::compute_final_time_stats() const
+{
+	time_stats_computed_ = true;
+
+	const int n = num_steps();					// Total steps
+	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	const int mm = max_iter()+1;				// Total number of possible iterations
+	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
+
+	// compute totals for each step (1...n) and the full iteration (n+1)
+	double &_total_time = const_cast<double&>(total_time_);
+	_total_time = 0.0;
+	
+	{for( int i = 0; i < n+1; ++i ) {
+		double *step_i_times = &const_cast<step_times_t&>(step_times_)[i*mmm];
+		// compute total step times (and total algorithm time)
+		const double
+			step_time = std::accumulate( step_i_times, step_i_times + m, (double)0.0 );
+		if(i < n)
+			_total_time += step_time;
+		step_i_times[ mm + TIME_STAT_TOTALS_OFFSET ] = step_time;
+		// compute average per step.
+		step_i_times[ mm + TIME_STAT_AV_OFFSET ] = step_time / m;
+		// compute min per step
+		step_i_times[ mm + TIME_STAT_MIN_OFFSET ]= *std::min_element( step_i_times, step_i_times + m );
+		// compute max per step
+		step_i_times[ mm + TIME_STAT_MAX_OFFSET ]= *std::max_element( step_i_times, step_i_times + m );
+	}}
+	
+	{for( int i = 0; i < n+1; ++i ) {
+		double *step_i_times = &const_cast<step_times_t&>(step_times_)[i*mmm];
+		// compute fractions for each step.
+		step_i_times[ mm + TIME_STAT_PERCENT_OFFSET ]
+			= step_i_times[ mm + TIME_STAT_TOTALS_OFFSET ] / total_time_;
+	}}
 }
 
 // private
