@@ -100,7 +100,7 @@ TSFLinearOperator MatrixMarketReader::read(const TSFVectorType& vectorType) cons
 void MatrixMarketReader::readSparse(FILE* fp, TSFMatrixView& matrix, int nRows,
 																			 MMStructure structure, int nnz) const
 {
-	TSFArray<int> bandwidth(nRows);
+	TSFArray<int> bandwidth(nRows, 0);
 	TSFArray<TSFArray<int> > colIndices(nRows);
 	TSFArray<TSFArray<double> > aij(nRows);
 
