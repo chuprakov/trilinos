@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // MultiVectorMutable.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -21,20 +21,17 @@
 namespace AbstractLinAlgPack {
 
 ///
-/** Mix-in interface of providing mutable row/column/diagonal access to a matrix object.
+/** Matrix interface providing mutable row/column/diagonal access to a matrix object.
  *
- * This interface extends the \c MutiVector interface and is ment to be included
- * in a subclass alone with \c MatrixWithOp in order to add this very specialized
- * functionality.
+ * This interface extends the \c MutiVector interface an allows mutable access to
+ * the constituent vectors and matrices.
  *
- * These vectors allow the modification of the matrix
- * row by row and column by column.  Each of the views
- * is transient and should be ussed and then discarded.
+ * These vectors allow the modification of the matrix row by row and column by column.
+ * Each of the views is transient and should be used and then discarded.
  *
- * Note that the matrix is only guaranteed to be modified
- * after the smart reference counted pointer returned from
- * these methods is destoryed.  Consider the following code:
- \verbatim
+ * Note that the matrix is only guaranteed to be modified after the smart reference
+ * counted pointer returned from these methods is destoryed.  Consider the following code:
+ \code
 
  void f( MultiVectorMutable* M, index_type i )
  {
@@ -47,8 +44,7 @@ namespace AbstractLinAlgPack {
 	// we can assume this in the following code.
 	...
  }
- \endverbatim
- *
+ \endcode
  * Default implementations of the const methods from \c MultiVector call the
  * non-const methods defined here and cast the pointers.
  *

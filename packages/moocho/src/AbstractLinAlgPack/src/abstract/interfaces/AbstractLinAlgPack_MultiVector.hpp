@@ -16,20 +16,17 @@
 #ifndef ALAP_MULTI_VECTOR_H
 #define ALAP_MULTI_VECTOR_H
 
-#include "MatrixBase.h"
+#include "MatrixWithOp.h"
 #include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {
 
 ///
-/** Mix-in interface of providing non-mutable row/column/diagonal access to a matrix object.
- *
- * This interface is ment to be included in a subclass along with \c MatrixWithOp
- * in order to add this very specialized functionality.
+/** Matrix interface for a matrix stored as a set of vectors.
  *
  * This interface is quite restrictive in that it allows a client
- * to access a matrix by accessing rows, columns and diagonals.
- * The vector objects returned from these access methods are still
+ * to access a matrix by accessing rows, columns and/or diagonals.
+ * The vector objects returned from these access methods are
  * abstract vectors so there is still good implementation flexibility
  * but many matrix implementations will not be able to support
  * this interface.  This is somewhat of a "last resort" interface
@@ -37,7 +34,7 @@ namespace AbstractLinAlgPack {
  * based on vector operations.
  *
  * Note that only certain kinds of access may be preferred and it is allowed
- * for subclasses to return NULL vector objects for some types of access.  For
+ * for subclasses to return \c NULL vector objects for some types of access.  For
  * example, a matrix may be naturally oriented by column but row or diagonal
  * access may be very inefficient.  For this reason, the client should call the
  * \c access_by() method which returns a bit field that the client can compare
@@ -50,6 +47,10 @@ namespace AbstractLinAlgPack {
  * the return for \c row(), \c col() and/or \c diag().  For example, if <tt>this->rows(1)</tt>
  * returns \c NULL, then this is a flag that row access is not supported.
  *
+ * Note that since, this interface is derived from \c MatrixWithOp that it must
+ * support the methods \c space_rows() and \c space_cols().  This does not imply
+ * however that the methods \c row() or \c col() must return non-<tt>NULL</tt>.
+ *
  * Examples of matrix implementations that can support this interface are a dense
  * BLAS compatible matrix (\c BY_ROW, \c BY_COL and \c BY_DIAG), a compressed column
  * sparse matrix (\c BY_COL only), a compressed row sparse matrix (\c BY_ROW only)
@@ -57,8 +58,11 @@ namespace AbstractLinAlgPack {
  *
  * ToDo: Finish documentation!
  */
-class MultiVector : virtual public MatrixBase {
+class MultiVector : virtual public MatrixWithOp {
 public:
+
+	///
+	typedef int  access_by_t;
 
 	///
 	enum {
@@ -76,7 +80,7 @@ public:
 	///
 	/** Return a bit field for the types of access that are the most convenient.
 	 */
-	virtual int access_by() const = 0;
+	virtual access_by_t access_by() const = 0;
 
 	///
 	/** Get a non-mutable row vector.
