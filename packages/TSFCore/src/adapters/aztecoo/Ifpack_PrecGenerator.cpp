@@ -180,10 +180,12 @@ void PrecGenerator::setupPrec(
 			if(out)
 				*out << "\nInitializing matrix values of the preconditioner ...\n";
 			timer.start(true);
-      if(Op_crs)
-        Prec_crs_riluk->InitValues(*Op_crs);
-      else if(Op_vbr)
-        Prec_crs_riluk->InitValues(*Op_vbr);
+      if(Op_crs) {
+				TEST_FOR_EXCEPTION(0!=Prec_crs_riluk->InitValues(*Op_crs),std::runtime_error,"Error!");
+			}
+      else if(Op_vbr) {
+        TEST_FOR_EXCEPTION(0!=Prec_crs_riluk->InitValues(*Op_vbr),std::runtime_error,"Error!");
+			}
       else
         assert(0); // Should never get here!
 			timer.stop();
@@ -193,15 +195,15 @@ void PrecGenerator::setupPrec(
 			if(out)
 				*out << "\nFactoring the preconditoner matrix ...\n";
 			timer.start(true);
-      Prec_crs_riluk->Factor();
+			TEST_FOR_EXCEPTION(0!=Prec_crs_riluk->Factor(),std::runtime_error,"Error!");
 			timer.stop();
 			if(out)
 				*out << "\n  => time = " << timer.totalElapsedTime() << " sec\n";
 			// Compute condition number estimate
 			if(out && calcCondEst()) {
 				double fwdCondEst = 0.0, adjCondEst = 0.0;
-				Prec_crs_riluk->Condest(false,fwdCondEst);
-				Prec_crs_riluk->Condest(true,adjCondEst);
+				TEST_FOR_EXCEPTION(0!=Prec_crs_riluk->Condest(false,fwdCondEst),std::runtime_error,"Error!");
+				TEST_FOR_EXCEPTION(0!=Prec_crs_riluk->Condest(true,adjCondEst),std::runtime_error,"Error!");
 				if(out)
 					*out << "\nComputing condition number estimate (calcCondEst()==true):"
 							 << "\n  Prec_crs_riluk->Condest(false,fwdCondEst): fwdCondEst = " << fwdCondEst
