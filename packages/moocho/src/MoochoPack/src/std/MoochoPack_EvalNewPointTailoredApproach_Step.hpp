@@ -6,6 +6,7 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
 #include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTester.h"
+#include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
@@ -24,6 +25,13 @@ public:
 	STANDARD_COMPOSITION_MEMBERS( NLPrSQPTailoredApproachTester, deriv_tester )
 
 	///
+	typedef ConstrainedOptimizationPack::VariableBoundsTester
+		VariableBoundsTester;
+
+	/// «std comp» Members for variable bounds tester object
+	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+
+	///
 	enum EFDDerivTesting { FD_DEFAULT, FD_TEST, FD_NO_TEST };
 
 	///
@@ -36,6 +44,7 @@ public:
 	/// set new_point == true by default.
 	EvalNewPointTailoredApproach_Step(
 		  const deriv_tester_ptr_t& 	deriv_tester
+		, const bounds_tester_ptr_t&	bounds_tester
 		, EFDDerivTesting				fd_deriv_testing
 		);
 
@@ -68,6 +77,11 @@ protected:
 	/** Overridden by subclass print how py and Ypy are computed.
 	  */
 	virtual void print_calc_Y_py_Ypy( std::ostream& out, const std::string& leading_str ) const = 0;
+
+private:
+
+	// Not defined and not to be called
+	EvalNewPointTailoredApproach_Step();
 
 };	// end class EvalNewPointTailoredApproach_Step
 

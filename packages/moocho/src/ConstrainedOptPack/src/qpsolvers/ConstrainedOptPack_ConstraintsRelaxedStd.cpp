@@ -57,12 +57,9 @@ bool imp_update_max_viol(
 LinAlgPack::value_type get_sparse_element( const SparseLinAlgPack::SpVectorSlice& v
 	, LinAlgPack::size_type i )
 {
-	try {
-		return v(i);
-	}
-	catch( SparseLinAlgPack::SpVectorSlice::DoesNotExistException )
-	{}
-	return 0.0;
+	const SparseLinAlgPack::SpVectorSlice::element_type
+		*ele_ptr = v.lookup_element(i);
+	return ele_ptr ? ele_ptr->value() : 0.0;
 }
 
 }	// end namespace
@@ -376,63 +373,54 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	}
 
 	// Lookup the bound! (sparse lookup)
-	try {
-		size_type j_local = j;
-		if( j_local <= A_bar_.nd() && dL_ ) {
-			switch( bnd ) {
-				case QPSchurPack::EQUALITY:
-				case QPSchurPack::LOWER:
-					return (*dL_)(j_local);
-				case QPSchurPack::UPPER:
-					return (*dU_)(j_local);
-				default:
-					assert(0);
-			}
-		}
-		else if( (j_local -= A_bar_.nd()) <= 1 ) {
-			switch( bnd ) {
-				case QPSchurPack::EQUALITY:
-				case QPSchurPack::LOWER:
-					return etaL_;
-				case QPSchurPack::UPPER:
-					return +inf;
-				default:
-					assert(0);
-			}
-		}
-		else if( (j_local -= 1) <= A_bar_.m_in() ) {
-			switch( bnd ) {
-				case QPSchurPack::EQUALITY:
-				case QPSchurPack::LOWER:
-					return (*eL_)(j_local);
-				case QPSchurPack::UPPER:
-					return (*eU_)(j_local);
-				default:
-					assert(0);
-			}
-		}
-		else if( (j_local -= A_bar_.m_in()) <= A_bar_.m_eq() ) {
-			switch( bnd ) {
-				case QPSchurPack::EQUALITY:
-				case QPSchurPack::LOWER:
-				case QPSchurPack::UPPER:
-					return -(*f_)(j_local);
-				default:
-					assert(0);
-			}
+	size_type j_local = j;
+	const SpVectorSlice::element_type *ele_ptr = NULL;
+	if( j_local <= A_bar_.nd() && dL_ ) {
+		switch( bnd ) {
+			case QPSchurPack::EQUALITY:
+			case QPSchurPack::LOWER:
+				return ( ele_ptr = dL_->lookup_element(j_local) )
+					? ele_ptr->value() : -inf;
+			case QPSchurPack::UPPER:
+				return ( ele_ptr = dU_->lookup_element(j_local) )
+					? ele_ptr->value() : +inf;
+			default:
+				assert(0);
 		}
 	}
-	catch( SparseLinAlgPack::SparseVectorUtilityPack::DoesNotExistException )
-	{}
-
-	switch( bnd ) {
-		case QPSchurPack::LOWER:
-			return -inf;
-		case QPSchurPack::UPPER:
-			return +inf;
-		case QPSchurPack::EQUALITY:
-		default:
-			assert(0);	// We should not get here!
+	else if( (j_local -= A_bar_.nd()) <= 1 ) {
+		switch( bnd ) {
+			case QPSchurPack::EQUALITY:
+			case QPSchurPack::LOWER:
+				return etaL_;
+			case QPSchurPack::UPPER:
+				return +inf;
+			default:
+				assert(0);
+		}
+	}
+	else if( (j_local -= 1) <= A_bar_.m_in() ) {
+		switch( bnd ) {
+			case QPSchurPack::EQUALITY:
+			case QPSchurPack::LOWER:
+				return ( ele_ptr = eL_->lookup_element(j_local) )
+					? ele_ptr->value() : -inf;
+			case QPSchurPack::UPPER:
+				return ( ele_ptr = eU_->lookup_element(j_local) )
+					? ele_ptr->value() : +inf;
+			default:
+				assert(0);
+		}
+	}
+	else if( (j_local -= A_bar_.m_in()) <= A_bar_.m_eq() ) {
+		switch( bnd ) {
+			case QPSchurPack::EQUALITY:
+			case QPSchurPack::LOWER:
+			case QPSchurPack::UPPER:
+				return -(*f_)(j_local);
+			default:
+				assert(0);
+		}
 	}
 
 	return 0.0;	// will never be executed!
@@ -505,6 +493,73 @@ MatrixWithOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
 	assert(0);
 	return *this;
 }
+
+/* 10/25/00 I don't think we need this function yet!
+void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
+	  GenMatrixSlice* C, value_type a
+	, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
+	, BLAS_Cpp::Transp M_trans
+	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
+	) const
+{
+	using BLAS_Cpp::trans_not;
+	using SparseLinAlgPack::dot;
+	using SparseLinAlgPack::Vp_StMtV;
+	using SparseLinAlgPack::Vp_StPtMtV;
+	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+
+	//	
+	//	A_bar = [  I   0  op(E')   op(F')  ]
+	//	        [  0   1    b'      -f'    ]
+	//
+
+	const size_type
+		E_start = nd() + 1 + 1,
+		F_start = E_start + m_in(),
+		F_end	= F_start + m_eq() - 1;
+	const Range1D
+		d_rng = Range1D(1,nd()),
+		E_rng = m_in() ? Range1D(E_start,F_start-1) : Range1D(),
+		F_rng = m_eq() ? Range1D(F_start,F_end) : Range1D();
+
+	// For this to work (as shown below) we need to have P1 sorted by
+	// row if op(P1) = P1' or sorted by column if op(P1) = P1.
+	// Also, we must have P1 sorted by
+	// row if op(P2) = P2 or sorted by column if op(P2) = P2'
+	// If P1 or P2 are not sorted properly, we will just use the default
+	// implementation of this operation.
+	if( 	( P1.ordered_by() == GPMSTP::BY_ROW && P1_trans == BLAS_Cpp::no_trans )
+	    || 	( P1.ordered_by() == GPMSTP::BY_COL && P1_trans == BLAS_Cpp::trans )
+	    || 	( P2.ordered_by() == GPMSTP::BY_ROW && P2_trans == BLAS_Cpp::trans )
+	    || 	( P2.ordered_by() == GPMSTP::BY_COL && P2_trans == BLAS_Cpp::no_trans ) )
+	{
+		// Call the default implementation
+		MatrixWithOp::Vp_StPtMtV(C,a,P1,P1_trans,M_trans,P2,P2_trans);
+		return;
+	}
+
+	if( M_trans == BLAS_Cpp::no_trans ) {
+		//
+		// C += a * op(P1) * A_bar * op(P2)
+		//
+		//    = a * [ op(P11)  op(P12) ] * [ I  0  op(E')  op(F') ] * [ op(P21) ]
+		//                                 [ 0  1    b'     -f'   ]   [ op(P22) ]
+		//                                                            [ op(P23) ]
+		//                                                            [ op(P24) ]
+		//
+		// C +=   a*op(P11)*op(P21) + a*op(P21)*op(P22)
+		//      + a*op(P11)*op(E')*op(P23) + a*op(P12)*b'*op(P23)
+		//      + a*op(P11)*op(F')*op(P24) - a*op(P12)*f'*op(P24)
+		//      
+
+		assert(0);	// ToDo: Implement This!
+
+	}
+	else {
+		assert(0);	// ToDo: Finish This!
+	}
+}
+*/
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 	  VectorSlice* y, value_type a, BLAS_Cpp::Transp trans_rhs1

@@ -22,7 +22,8 @@ public:
 
 	///
 	EvalNewPointTailoredApproachCoordinate_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester = 0
+		  const deriv_tester_ptr_t& 	deriv_tester
+		, const bounds_tester_ptr_t&	bounds_tester
 		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
 		);
 
@@ -37,6 +38,10 @@ protected:
 
 	///
 	void print_calc_Y_py_Ypy( std::ostream& out, const std::string& leading_str ) const;
+
+private:
+	// not defined and not to be called
+	EvalNewPointTailoredApproachCoordinate_Step();
 
 };	// end class EvalNewPointTailoredApproachCoordinate_Step
 

@@ -294,6 +294,12 @@ protected:
 
 		///
 		MatrixWithOp& operator=(const MatrixWithOp& m);
+//		///
+//		void Mp_StPtMtP(GenMatrixSlice* gms_lhs, value_type alpha
+//			, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+//			, BLAS_Cpp::Transp M_trans
+//			, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
+//			) const ;
 		///
 		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 			, const VectorSlice& vs_rhs2, value_type beta) const;

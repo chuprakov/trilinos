@@ -285,7 +285,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	Vp_V( &u(), t() );
 	scale += norm_inf(t);
 
-	if(*out) {
+	if(out) {
 		*out << "||g + G*d||inf = " << norm_inf(u()) << endl;
 		if(print_vectors)
 			*out << "g + G*d =\n" << u();
@@ -300,7 +300,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		V_MtV( &t, *E, trans_not(trans_E), (*mu)() );
 		Vp_V( &u(), t() );
 		scale += norm_inf(t);
-		if(*out) {
+		if(out) {
 			*out << "||op(E)'*mu||inf = " << norm_inf(t()) << endl;
 			if(print_vectors)
 				*out << "op(E)'*mu =\n" << t();
@@ -314,7 +314,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(out && print_vectors)
 			*out
 				<< "\nop(F)'*lambda =\n" << t();
-		if(*out) {
+		if(out) {
 			*out << "||op(F)'*lambda||inf = " << norm_inf(t()) << endl;
 			if(print_vectors)
 				*out << "op(F)'*lambda =\n" << t();

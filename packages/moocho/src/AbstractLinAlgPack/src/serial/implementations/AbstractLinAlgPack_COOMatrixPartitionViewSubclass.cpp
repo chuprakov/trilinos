@@ -3,12 +3,12 @@
 
 #pragma warning(disable : 4786)	// too long class name for debugger warning
 
+#include "LinAlgPack/include/LinAlgOpPack.h"
 #include "../include/COOMatrixPartitionViewSubclass.h"
 #include "../include/SparseVectorSliceOp.h"
 #include "../include/SparseElement.h"
 #include "../include/COOMPartitionOp.h"
 #include "LinAlgPack/include/GenMatrixOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
 
 namespace LinAlgOpPack {
 

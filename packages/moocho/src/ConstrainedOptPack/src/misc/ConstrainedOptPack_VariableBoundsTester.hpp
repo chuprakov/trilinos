@@ -1,0 +1,70 @@
+// ///////////////////////////////////////////////////////////////////////////////////////
+// VariableBoundsTester.h
+
+#ifndef VARIABLE_BOUNDS_TESTER_H
+#define VARIABLE_BOUNDS_TESTER_H
+
+#include "ConstrainedOptimizationPackTypes.h"
+#include "Misc/include/StandardMemberCompositionMacros.h"
+
+namespace ConstrainedOptimizationPack {
+
+///
+/** Tests that a set of variables are within their bounds.
+  *
+  \begin{verbatim}
+    xL <= x <= xU
+  \end{verbatim}
+  *
+  * The relative error for each comparison is
+  * rel_err(i) = (xL(i)-x(i))/(1+||x||inf)
+  * or rel_err(i) = (x(i)-xU(i))/(1+||x||inf).
+  * If rel_err(i) >= error_tol, then the tests will be terminated immediately.
+  * All of the rel_err(i) >= warning_tol will be printed.
+  */
+class VariableBoundsTester {
+public:
+
+	///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+
+	///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+
+	///
+	VariableBoundsTester(
+		  value_type	warning_tol		= 1e-10
+		, value_type	error_tol		= 1e-5
+		);
+
+	///
+	virtual ~VariableBoundsTester() {}
+
+	///
+	/** Check that the variables are within bounds.
+	  *
+	  *	@param	print_all_warnings
+	  *						[I]	If true, then all errors greater than warning_tol will
+	  *							be printed.
+	  *	@param	xL			[I]	Sparse lower bound vector (xL.size()==x.size())
+	  *	@param	xL_name		[I]	The name of the vector xL (null terminated string).
+	  *	@param	xU			[I]	Sparse upper bound vector (xU.size()==x.size())
+	  *	@param	xU_name		[I]	The name of the vector xU (null terminated string).
+	  *	@param	x 			[I]	Variable to test that it is in bounds.
+	  *	@param	x_name		[I]	The name of the vector x (null terminated string).
+	  *
+	  * @return #true# if all of the errors are greater than the error tolerances
+	  * 	, otherwise it returns #false#
+	  */
+	virtual bool check_in_bounds(
+		  std::ostream* out, bool print_all_warnings, bool print_vectors
+		, const SpVectorSlice& xL, const char xL_name[]
+		, const SpVectorSlice& xU, const char xU_name[]
+		, const VectorSlice& x, const char x_name[]
+		);
+
+};	// end class VariableBoundsTester
+
+}	// end namespace ConstrainedOptimizationPackTypes
+
+#endif	// VARIABLE_BOUNDS_TESTER_H

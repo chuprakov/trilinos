@@ -47,6 +47,51 @@ void SparseLinAlgPack::V_StMtV(
 	}
 }
 
+void SparseLinAlgPack::V_StMtV(
+	  SpVector* y, value_type a, const GenPermMatrixSlice& P
+	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x )
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	using LinAlgPack::MtV_assert_sizes;
+	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.size() );
+
+	y->resize( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ), P.nz() );
+
+	typedef SpVector::element_type ele_t;
+	const SpVectorSlice::element_type *ele_ptr;
+
+	if( x.is_sorted() ) {
+		if( P_trans == no_trans ) {
+			for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
+				const size_type
+					i = itr->row_i(),
+					j = itr->col_j();
+				if( ele_ptr = x.lookup_element(j) )
+					y->add_element( ele_t( i, a * ele_ptr->value() ) );
+			}
+		}
+		else {
+			for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
+				const size_type
+					j = itr->row_i(),
+					i = itr->col_j();
+				if( ele_ptr = x.lookup_element(j) )
+					y->add_element( ele_t( i, a * ele_ptr->value() ) );
+			}
+		}
+	}
+	else {
+		assert(0);	// ToDo: Implement the other cases!
+	}
+	if(		( P_trans == no_trans	&& P.ordered_by() == GPMSIP::BY_ROW )
+		||	( P_trans == trans		&& P.ordered_by() == GPMSIP::BY_COL )	)
+	{
+		y->assume_sorted(true);
+	}
+}
+
 void SparseLinAlgPack::Vp_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const VectorSlice& x )

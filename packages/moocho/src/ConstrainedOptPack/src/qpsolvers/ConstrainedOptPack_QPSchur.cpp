@@ -5,6 +5,7 @@
 
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
+#include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
 #include "SparseLinAlgPack/include/MatrixWithOpFactorized.h"
 #include "SparseLinAlgPack/include/MatrixWithOpOut.h"
 #include "SparseLinAlgPack/include/SpVectorOut.h"
@@ -99,11 +100,10 @@ void calc_mu_D(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_MtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
+	using SparseLinAlgPack::Vp_MtV;
+	using SparseLinAlgPack::Vp_StPtMtV;
 
 	const ConstrainedOptimizationPack::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -226,6 +226,54 @@ size_type QPSchur::U_hat_t::cols() const
 	return P_plus_hat_->cols();
 }
 
+/* 10/25/00: I don't think we need this function!
+void QPSchur::U_hat_t::Mp_StM(GenMatrixSlice* C, value_type a
+	, BLAS_Cpp::Transp M_trans ) const
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgOpPack::Mp_StMtP;
+	using LinAlgOpPack::Mp_StPtMtP;
+
+	// C += a * op(U_hat)
+
+	LinAlgOpPack::Mp_M_assert_sizes( C->rows(), C->cols(), no_trans
+		, rows(), cols(), M_trans );
+
+	const size_type
+		n_R	= Q_R_->cols(),
+		m 	= A() ? A()->cols()  : 0;
+
+	if( M_trans == no_trans ) {
+		//
+		// C += a * op(U_hat)
+		// 
+		//    = a * [  Q_R' * G * P_XF_hat + Q_R' * A_bar * P_plus_hat ]
+		//          [                  A' * P_XF_hat                   ]
+		//          
+		// C1 += a * Q_R' * G * P_XF_hat + a * Q_R' * A_bar * P_plus_hat
+		// 
+		// C2 += a * A' * P_XF_hat
+		//
+		GenMatrixSlice
+			C1 = (*C)(1,n_R,1,C->cols()),
+			C2 = m ? (*C)(n_R+1,n_R+m,1,C->cols()) : GenMatrixSlice();
+		// C1 += a * Q_R' * G * P_XF_hat
+		if( P_XF_hat().nz() )
+			Mp_StPtMtP( &C1, a, Q_R(), trans, G(), no_trans, P_XF_hat(), no_trans );
+		// C1 += a * Q_R' * A_bar * P_plus_hat
+		if( P_plus_hat().nz() )
+			Mp_StPtMtP( &C1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat(), no_trans );
+		// C2 += a * A' * P_XF_hat
+		if(m && P_XF_hat().nz())
+			Mp_StMtP( &C2, a, *A(), trans, P_plus_hat(), no_trans );
+	}
+	else {
+		assert(0);	// Implement this!
+	}
+}
+*/
+
 void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const VectorSlice& x, value_type b) const
 {
@@ -295,6 +343,102 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 		const VectorSlice
 			x1 = x(1,n_R),
 			x2 = m ? x(n_R+1,n_R+m) : VectorSlice();
+		SpVector
+			Q_R_x1;
+		// Q_R_x1 = Q_R * x1
+		V_MtV( &Q_R_x1, Q_R(), no_trans, x1 );
+		// y = b*y
+		if( b == 0.0 )
+			*y = 0.0;
+		else if( b != 1.0 )
+			Vt_S( y, b );
+		// y += a * P_XF_hat' * G * Q_R_x1
+		if(P_XF_hat().nz())
+			Vp_StPtMtV( y, a, P_XF_hat(), trans, G(), no_trans, Q_R_x1() );
+		// y += a * P_plus_hat' * A_bar' * Q_R_x1
+		if(P_plus_hat().nz())
+			Vp_StPtMtV( y, a, P_plus_hat(), trans, A_bar(), trans, Q_R_x1() );
+		// y += a * P_XF_hat' * A * x2
+		if( m && P_XF_hat().nz() )
+			Vp_StPtMtV( y, a, P_XF_hat(), trans, *A(), no_trans, x2 );
+	}
+	else {
+		assert(0);	// Invalid value for M_trans
+	}
+}
+
+void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const SpVectorSlice& x, value_type b) const
+{
+//	// Uncomment to use the default version
+//	MatrixWithOp::Vp_StMtV(y,a,M_trans,x,b); return;
+
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgPack::Vt_S;
+	using LinAlgOpPack::V_MtV;
+	using SparseLinAlgPack::Vp_StMtV;
+	using SparseLinAlgPack::Vp_StPtMtV;
+
+	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
+
+	//
+	// U_hat = [  Q_R' * G * P_XF_hat + Q_R' * A_bar * P_plus_hat ]
+	//         [                  A' * P_XF_hat                   ]
+	//         
+
+	const size_type
+		n_R	= Q_R_->cols(),
+		m 	= A() ? A()->cols()  : 0;
+
+	if( M_trans == BLAS_Cpp::no_trans ) {
+		//
+		// y =  b*y + a * U_hat * x
+		// 
+		//   = b*y + a * [  Q_R' * G * P_XF_hat + Q_R' * A_bar * P_plus_hat ] * x
+		//               [                  A' * P_XF_hat                   ]
+		// 
+		//  =>
+		// 
+		// y1 = b * y1 + a * Q_R' * G * P_XF_hat * x + a * Q_R' * A_bar * P_plus_hat * x
+		// y2 = b * y2 + a * A' * P_XF_hat * x
+		// 
+		VectorSlice
+			y1 = (*y)(1,n_R),
+			y2 = m ? (*y)(n_R+1,n_R+m) : VectorSlice();
+		SpVector
+			P_XF_hat_P,
+			P_plus_hat_P;
+		// P_XF_hat_P = P_XF_hat * x
+		if( P_XF_hat().nz() )
+			V_MtV( &P_XF_hat_P, P_XF_hat(), no_trans, x );
+		// P_plus_hat_P = P_plus_hat * x
+		if(P_plus_hat().nz())
+			V_MtV( &P_plus_hat_P, P_plus_hat(), no_trans, x );
+		// y1 = b * y1 + a * Q_R' * G * P_XF_hat_P
+		if(P_XF_hat().nz())
+			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P(), b );
+		// y1 += a * Q_R' * A_bar * P_plus_hat_P
+		if(P_plus_hat().nz())
+			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_P() );
+		// y2 = b * y2 + a * A' * P_XF_hat_P
+		if( m && P_XF_hat().nz() )
+			Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P(), b );
+	}
+	else if( M_trans == BLAS_Cpp::trans ) {
+		//
+		// y =  b*y + a * U_hat' * x
+		// 
+		//   = b*y + a * [  P_XF_hat' * G * Q_R + P_plus_hat' * A_bar' * Q_R, P_XF_hat' * A ] * [ x1 ]
+		//                                                                                      [ x2 ]
+		//  =>
+		// 
+		// y = b * y + a * P_XF_hat' * G * Q_R * x1 + a * P_plus_hat' * A_bar' * Q_R * x1
+		//     + a * P_XF_hat' * A * x2
+		// 
+		const SpVectorSlice
+			x1 = x(1,n_R),
+			x2 = m ? x(n_R+1,n_R+m) : SpVectorSlice(NULL,0,0,0);
 		SpVector
 			Q_R_x1;
 		// Q_R_x1 = Q_R * x1
@@ -644,8 +788,8 @@ void QPSchur::ActiveSet::initialize(
 		GenMatrix S_store(q_hat,q_hat);
 		sym_gms S( S_store, BLAS_Cpp::upper );
 		// S = -1.0 * U_hat' * inv(Ko) * U_hat
-		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::no_trans, qp.Ko()
-			, MatrixSymFactorized::DUMMY_ARG );		 
+		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::trans, qp.Ko()
+			, MatrixSymFactorized::DUMMY_ARG );
 		// Now add parts of V_hat
 		if( q_F_hat ) {
 			// S += P_XF_hat' * G * P_XF_hat
@@ -662,8 +806,8 @@ void QPSchur::ActiveSet::initialize(
 
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< "\n*** Initial Schur Complement before it is factorized.\n";
-			*out << "\nS_hat =\n" << S_hat();
+				<< "\n*** Upper part of initial Schur Complement before it is factorized.\n";
+			*out << "\nS_hat =\n" << S_store;
 		}
 
 		schur_comp().update_interface().initialize( S, q_hat_max );
@@ -884,8 +1028,8 @@ void QPSchur::ActiveSet::drop_constraint(
 
 	if( jd < 0 ) {
 		// A variable initially fixed is being freed.
-		// Increae the dimension of the augmented the KKT system!
-		assert(0);	// ToDo: Finish this!
+		// Increase the dimension of the augmented the KKT system!
+		assert(0);	// ToDo: Implement this!
 		--q_F_hat_;
 	}
 	else {
@@ -904,6 +1048,15 @@ void QPSchur::ActiveSet::drop_constraint(
 		// Remove the bnds(s) element from bnds(...)
 		std::copy( bnds_.begin() + sd, bnds_.begin() + q_hat
 			, bnds_.begin() + (sd-1) );
+		// Remove the d_hat(s) element from d_hat(...)
+		std::copy( d_hat_.begin() + sd, d_hat_.begin() + q_hat
+			, d_hat_.begin() + (sd-1) );
+		// Remove the z_hat(s) element from z_hat(...)
+		std::copy( z_hat_.begin() + sd, z_hat_.begin() + q_hat
+			, z_hat_.begin() + (sd-1) );
+		// Remove the p_z_hat(s) element from p_z_hat(...)
+		std::copy( p_z_hat_.begin() + sd, p_z_hat_.begin() + q_hat
+			, p_z_hat_.begin() + (sd-1) );
 		if( is_init_fixed( jd ) ) {
 			// This must be an intially fixed variable, currently fixed at a different
 			// bound.  In this case nothing else has to be modifed.
@@ -914,11 +1067,13 @@ void QPSchur::ActiveSet::drop_constraint(
 			// 
 			// 
 			P_row_t::iterator
-				itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.end()+q_plus_hat_, jd );
+				itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.begin()+q_plus_hat_, jd );
 			assert( itr != P_plus_hat_row_.end() );
 			const size_type p = itr - P_plus_hat_row_.begin();
-			std::copy( P_plus_hat_row_.begin() + p + 1, P_plus_hat_row_.begin() + q_plus_hat_,
+			std::copy( P_plus_hat_row_.begin() + p + 1, P_plus_hat_row_.begin()+q_plus_hat_,
 				P_plus_hat_row_.begin() + p );
+			std::copy( P_plus_hat_col_.begin() + p + 1, P_plus_hat_col_.begin()+q_plus_hat_,
+				P_plus_hat_col_.begin() + p );
 			--q_plus_hat_;
 		}
 		// Deincrement all counters in permutation matrices for removed element
@@ -1179,7 +1334,20 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using std::setw;
 	using std::endl;
 	using std::right;
+	using LinAlgPack::norm_inf;
+	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::V_InvMtV;
+
+	if( !out )
+		output_level = NO_OUTPUT;
+
+	const int	dbl_prec = 6;
+	int			prec_saved = out ? out->precision() : 0;
+
+	ESolveReturn
+		solve_return = SUBOPTIMAL_POINT;
+
+	try {
 
 	// Print QPSchur output header
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -1200,7 +1368,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			<< "\n*** Warm start info\n"
 			<< "\nnum_act_change = " << num_act_change << endl;
 	}
+
 	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
+		*out << std::setprecision(dbl_prec);
 		*out
 			<< endl
 			<< right << setw(5) << "s"
@@ -1214,6 +1384,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				<< right << setw(5) << s
 				<< right << setw(20) << ij_act_change[s-1]
 				<< right << setw(10) << bnd_str(bnds[s-1]) << endl;
+		*out << std::setprecision(prec_saved);
 	}
 
 	// Initialize the active set.
@@ -1242,13 +1413,18 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Compute vo =  inv(Ko) * fo
 	V_InvMtV( &vo_, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
 
-	// Print vo_
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out
+			<< "\n||vo||inf = " << norm_inf(vo_()) << std::endl;
+	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
 			<< "\nvo =\n" << vo_();
 	}
 
+	// ////////////////////////////////////////////////
 	// Remove constraints until we are dual feasible.
+	// 
 	// Here we are essentially performing a primal algorithm where we are only
 	// removing constraints.  If the dual variables are not dual feasible then
 	// we will remove the one with the largest scaled dual feasibility
@@ -1257,8 +1433,11 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// we have to, we will remove all of the inequality constraints and then
 	// this will by default be a dual feasible point (i.e. we picked all the
 	// wrong inequality constraints).
-	const value_type
-		drop_tol = ::sqrt(std::numeric_limits<value_type>::epsilon()); // Adjustable?
+	// 
+	// The difficulty here is in dealing with near degenerate constraints.
+	// If a constraint is near degenerate then we would like to not drop
+	// it since we may have to add it again later.
+	// 
 	*iter = 0;
 	*num_adds = 0;
 	*num_drops = 0;
@@ -1272,6 +1451,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES
 		&& num_act_change > 0  )
 	{
+		*out << std::setprecision(dbl_prec);
 		*out     
 			<< "\nIf max_viol > 0 and jd != 0 then constraint jd will be dropped from the active set\n\n"
 			<< setw(20)	<< "max_viol"
@@ -1316,22 +1496,35 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				QPSchurPack::EBounds bnd = act_set_.bnd(s);
 				const value_type inf = std::numeric_limits<value_type>::max();
 				value_type viol = -inf;
-				if( bnd == QPSchurPack::LOWER && *z_itr > drop_tol ) {
+				if( bnd == QPSchurPack::LOWER ) {
 					viol = (*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
-					if( viol > max_viol ) {
-						max_viol = viol;
-						jd = j;
+					if( viol > 0 ) {
+						if( viol < dual_infeas_tol() ) {
+							// We need to fix the sign of this near degenerate multiplier
+							assert(0);
+						}
+						else if( viol > max_viol ) {
+							max_viol = viol;
+							jd = j;
+						}
 					}
 				}
-				else if( bnd == QPSchurPack::UPPER && *z_itr < -drop_tol ) {
+				else if( bnd == QPSchurPack::UPPER ) {
 					viol = -(*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
-					if( viol > max_viol ) {
-						max_viol = viol;
-						jd = j;
+					if( viol > 0 ) {
+						if( viol < dual_infeas_tol() ) {
+							// We need to fix the sign of this near degenerate multiplier
+							assert(0);
+						}
+						else if( viol > max_viol ) {
+							max_viol = viol;
+							jd = j;
+						}
 					}
 				}
 				// Print row for s, z_hat(s), bnd(s), viol, max_viol and jd
 				if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+					*out << std::setprecision(dbl_prec);
 					*out
 						<< right << setw(5)		<< s
 						<< right << setw(20)	<< *z_itr
@@ -1357,11 +1550,14 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		++(*num_drops);
 		// Print U_hat, S_hat and d_hat.
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+			*out << std::setprecision(prec_saved);
 			*out
 				<< "\n*** drop constraint jd\n";
 			dump_act_set_quantities( act_set_, *out );
 		}
 	}
+
+	if(out) *out << std::setprecision(prec_saved);
 
 	// Print how many constraints where removed from the initial quess
 	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -1375,6 +1571,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	if( act_set_.q_hat() > 0 ) {
 		v_.resize( qp.n_R() + qp.m() );
 		calc_v( qp.Ko(), qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v_() );
+		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\n||v||inf = " << norm_inf(v_()) << std::endl;
+		}
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
 				<< "\nv =\n" << v_();
@@ -1387,6 +1587,11 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// mu_D_hat = ???
 	if( act_set_.q_D_hat() ) {
 		calc_mu_D( act_set_, *x, v_(), &act_set_.mu_D_hat() );
+		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set_.mu_D_hat())
+				<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set_.mu_D_hat()) << std::endl;
+		}
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
 				<< "\nmu_D_hat =\n" << act_set_.mu_D_hat();
@@ -1399,19 +1604,27 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// more expensive than the above algorithm.
 
 	set_x( act_set_, v_(), x );
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out
+			<< "\nInitial x for Primal Dual algorithm\n||x||inf = " << norm_inf(*x);
+	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
-			<< "\nInitial x for Primal Dual algorithm =\n" << *x;
+			<< "x =\n" << *x;
 	}
 
-	ESolveReturn
-		solve_return = qp_algo(
-			  PICK_VIOLATED_CONSTRAINT
-			, out, output_level, test_what
-			, vo_(), &act_set_, &v_()
-			, x, iter, num_adds, num_drops
-			);
-			
+	solve_return = qp_algo(
+		  PICK_VIOLATED_CONSTRAINT
+		, out, output_level, test_what
+		, vo_(), &act_set_, &v_()
+		, x, iter, num_adds, num_drops
+		);
+
+	if(out) *out << std::setprecision(prec_saved);
+
+	if( solve_return != OPTIMAL_SOLUTION )
+		set_x( act_set_, v_(), x );
+
 	set_multipliers( act_set_, v_(), mu, lambda, lambda_breve );
 
 	// Print Solution x, lambda and mu
@@ -1445,6 +1658,20 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				assert(0);
 		}
 	}
+	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out	<< "\n||x||inf                = "	<< norm_inf(*x);
+		*out	<< "\nmax(|mu(i)|)            = " 	<< norm_inf((*mu)());
+		*out	<< "\nmin(|mu(i)|)            = " 	<< min_abs((*mu)());
+		if(lambda)
+			*out
+				<< "\nmax(|lambda(i)|)        = "	<< norm_inf(*lambda)
+				<< "\nmin(|lambda(i)|)        = "	<< min_abs(*lambda);
+		if(lambda_breve)
+			*out
+				<< "\nmax(|lambda_breve(i)|)  = "	<< norm_inf((*lambda_breve)())
+				<< "\nmin(|lambda_breve(i)|)  = "	<< min_abs((*lambda_breve)());
+		*out << std::endl;
+	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out	<< "\nx =\n" 				<< *x;
 		*out	<< "\nmu =\n" 				<< *mu;
@@ -1457,6 +1684,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\n\n*** Leaving QPSchur::solve_qp(...) ***\n";
+	}
+
+	}	// end try
+	catch(...) {
+		if(out) *out << std::setprecision(prec_saved);
+		throw;
 	}
 
 	return solve_return;
@@ -1492,6 +1725,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
 	using SparseLinAlgPack::dot;
+	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::EtaVector;
 	using SparseLinAlgPack::V_InvMtV;
 	using SparseLinAlgPack::Vp_StMtV;
@@ -1503,6 +1737,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		*out
 			<< "\n*** Starting Primal-Dual Iterations ***\n";
 	}
+
+	const int	dbl_prec = 6;
+	int			prec_saved = out ? out->precision() : 0;
 
 	try {
 
@@ -1556,6 +1793,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		// Print header for itr, nact, change (ADD, DROP), indice (ja, jb)
 		//, bound (LOWER, UPPER, EQUALITY), violation (primal or dual), rank (LD,LI)
 		if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
+			if(out) *out << std::setprecision(dbl_prec);
 			if( summary_lines_counter == 0 ) {
 				summary_lines_counter = 1;
 				*out
@@ -1578,7 +1816,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		}
 		if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 			*out
-				<< "\n*** qp_iter = " << itr << " ***\n";
+				<< "\n************************************************"
+				<< "\n*** qp_iter = " << itr
+				<< "\n*** q_hat   = " << act_set->q_hat() << std::endl;
 		}
 		switch( next_step ) {	// no break; statements in this switch statement.
 			case PICK_VIOLATED_CONSTRAINT: {
@@ -1591,7 +1831,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				// initially free and then latter fixed to their bounds so that
 				// they will not be seen as violated.
 				set_x( *act_set, *v, x );
-				// Print x.
+				if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+					*out
+						<< "\n||x||inf = " << norm_inf(*x) << std::endl;
+				}
 				if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 					*out
 						<< "\nx =\n" << *x;
@@ -1887,6 +2130,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					// Compute step for mu_D_hat
 					if( act_set->q_D_hat() ) {
 						calc_p_mu_D( *act_set, p_v(), act_set->p_z_hat(), &act_set->p_mu_D_hat() );
+						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+							*out
+								<< "\n||p_mu_D_hat||inf = " << norm_inf(act_set->p_mu_D_hat()) << std::endl;
+						}
 						if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 							*out
 								<< "\np_mu_D_hat =\n" << act_set->p_mu_D_hat();
@@ -1904,6 +2151,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					z_hat_plus.resize( q_hat );
 					calc_z( act_set->S_hat(), act_set->d_hat(), act_set->U_hat(), vo()
 						, &z_hat_plus() );
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\n||z_hat_plus||inf = " << norm_inf(z_hat_plus()) << std::endl;
+					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 						*out
 							<< "\nz_hat_plus =\n" << z_hat_plus();
@@ -1911,6 +2162,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					// v_plus = inv(Ko) * (fo - U_hat * z_hat_plus)
 					calc_v( act_set->qp().Ko(), act_set->qp().fo(), act_set->U_hat(), z_hat_plus()
 						, &v_plus() );
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\n||v_plus||inf = " << norm_inf(v_plus()) << std::endl;
+					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 						*out
 							<< "\nv_plus =\n" << v_plus();
@@ -1938,6 +2193,16 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					// p_mu_D_hat = p_mu_D_hat / gamma_plus )
 					if( act_set->q_D_hat() )
 						Vt_S( &act_set->p_mu_D_hat(), 1.0 / gamma_plus ); 
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\ngamma_plus        = " << gamma_plus
+							<< "\n||p_z_hat||inf    = " << norm_inf(p_z_hat())
+							<< "\n||p_v||inf        = " << norm_inf(p_v());
+						if( act_set->q_D_hat() )
+							*out
+							<< "\n||p_mu_D_hat||inf =\n" << norm_inf(act_set->p_mu_D_hat());
+						*out << std::endl;
+					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 						*out
 							<< "\ngamma_plus = " << gamma_plus << std::endl
@@ -2034,6 +2299,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							? q_hat : q_hat - 1;
 					// Print header for s, j, z_hat(s), p_z_hat(s), bnds(s), t, t_D, jd
 					if( qq > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
+						if(out) *out << std::setprecision(dbl_prec);
 						*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
 							<< setw(5)	<< "s"
@@ -2102,6 +2368,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							}
 						}
 					}
+					if(out) *out << std::setprecision(prec_saved);
 				}
 					
 				// Search through Lagrange multipliers in mu_D_hat
@@ -2119,6 +2386,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						qD = assume_lin_dep_ja && return_to_init_fixed ? q_D_hat-1 : q_D_hat;
 					// Print header for k, i, mu_D_hat(k), p_mu_D_hat(k), x_init(k), t, t_D, jd
 					if( qD > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
+						if(out) *out << std::setprecision(dbl_prec);
 						*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
 							<< setw(5)	<< "k"
@@ -2138,8 +2406,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							<< setw(20)	<< "--------------"
 							<< setw(5)	<< "----"	<< endl;
 					}
-
-
 					for( int k = 1; k <= qD; ++k, ++mu_D_itr, ++p_mu_D_itr, ++Q_XD_itr )
 					{
 						int i = Q_XD_itr->row_i();	// ith fixed variable
@@ -2190,6 +2456,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							}
 						}
 					}
+					if(out) *out << std::setprecision(prec_saved);
 				}
 
 				// Print t_D, jd
@@ -2294,6 +2561,15 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					++(*num_drops);
 					last_jd = jd;
 
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS )
+					{
+						*out
+							<< "\n||v||inf           = " << norm_inf(*v)
+							<< "\n||z_hat||inf       = " << norm_inf(act_set->z_hat())
+							<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat())
+							<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat())
+							<< endl;
+					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
 					{
 						*out << "\nv = \n" << *v << endl;
@@ -2324,11 +2600,24 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if(act_set->q_D_hat())
 						Vp_StV( &act_set->mu_D_hat(), beta * t_P, act_set->p_mu_D_hat() );
 
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS )
+					{
+						*out
+							<< "\n||v||inf           = " << norm_inf(*v)
+							<< "\n||z_hat||inf       = " << norm_inf(act_set->z_hat())
+							<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat())
+							<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set->mu_D_hat())
+							<< endl;
+					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
 					{
 						*out << "\nv = \n" << *v << endl;
 						if( assume_lin_dep_ja )
 							dump_act_set_quantities( *act_set, *out );
+						else
+							*out
+								<< "\nz_hat =\n" << act_set->z_hat()
+								<< "\nmu_D_hat =\n" << act_set->mu_D_hat() << endl;
 					}
 					next_step = PICK_VIOLATED_CONSTRAINT;
 					continue;
@@ -2347,6 +2636,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				<< excpt.what() << endl
 				<< "*** Rethrowing the exception ...\n";
 		}
+		if(out) *out << std::setprecision(prec_saved);
 		throw;
 	}
 	catch(...) {
@@ -2354,8 +2644,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 			*out
 				<< "\n*** Caught an unknown exception.  Rethrowing the exception ...\n";
 		}
+		if(out) *out << std::setprecision(prec_saved);
 		throw;
 	}
+
+	if(out) *out << std::setprecision(prec_saved);
 
 	// If you get here then the maximum number of QP iterations has been exceeded
 	return MAX_ITER_EXCEEDED;
@@ -2381,9 +2674,8 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 {
 	using BLAS_Cpp::no_trans;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_MtV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using LinAlgOpPack::Vp_MtV;
+	using LinAlgOpPack::Vp_StMtV;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const size_type
@@ -2447,7 +2739,8 @@ void QPSchur::dump_act_set_quantities(
 	const char dbl_ul[] = "------------------";
 
 	const int prec_saved = out.precision();
-	out << std::setprecision(dbl_prec);
+
+	try {
 
 	out	<< "\n*** Dump active-set quantities ***\n"
 		<< "\nn           = " << qp.n()
@@ -2462,6 +2755,7 @@ void QPSchur::dump_act_set_quantities(
 		<< endl;
 
 	// Print table of quantities in augmented KKT system
+	out << std::setprecision(dbl_prec);
 	const size_type q_hat = act_set.q_hat();
 	out	<< endl
 		<< right << setw(int_w) << "s"
@@ -2490,7 +2784,8 @@ void QPSchur::dump_act_set_quantities(
 			<< right << setw(dbl_w) << act_set.p_z_hat()(s)
 			<< endl;
 	}}
-
+	out << std::setprecision(prec_saved);
+	
 	// Print P_XF_hat, P_plus_hat, U_hat and S_hat
 	out	<< "\nP_XF_hat =\n" 	<< act_set.P_XF_hat();
 	out	<< "\nP_plus_hat =\n" 	<< act_set.P_plus_hat();
@@ -2499,6 +2794,7 @@ void QPSchur::dump_act_set_quantities(
 		out	<< "\nS_hat =\n" 		<< act_set.S_hat();
 	
 	// Print table of multipliers for q_D_hat
+	out << std::setprecision(dbl_prec);
 	const size_type q_D_hat = act_set.q_D_hat();
 	out	<< endl
 		<< right << setw(int_w) << "k"
@@ -2515,9 +2811,16 @@ void QPSchur::dump_act_set_quantities(
 			<< right << setw(dbl_w) << act_set.p_mu_D_hat()(k)
 			<< endl;
 	}}
-
+	out << std::setprecision(prec_saved);
+	
 	// Print Q_XD_hat
 	out	<< "\nQ_XD_hat =\n" << act_set.Q_XD_hat();
+
+	}	// end try
+	catch(...) {
+		out << std::setprecision(prec_saved);
+		throw;
+	}
 
 	out << std::setprecision(prec_saved);
 }
@@ -2539,15 +2842,6 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 		n_R = this->n_R(),
 		m = this->m(),
 		m_breve = constraints.m_breve();
-
-	const int int_w = 12;
-	const char int_ul[] = "----------"; 
-	const int dbl_prec = 6;
-	const int dbl_w = 20;
-	const char dbl_ul[] = "------------------";
-
-	const int prec_saved = out.precision();
-	out << std::setprecision(dbl_prec);
 
 	out	<< "\n*** Original QP ***\n"
 		<< "\nn       = " << n
@@ -2579,8 +2873,6 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	out	<< "\nQ_X =\n" << Q_X();
 	out	<< "\nKo =\n" << Ko();
 	out	<< "\nfo =\n" << fo();
-
-	out << std::setprecision(prec_saved);
 
 }
 

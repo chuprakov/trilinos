@@ -6,6 +6,7 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
+#include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
@@ -25,8 +26,15 @@ public:
 	typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTester
 		NLPFirstDerivativesTester;
 
-	/// «std comp» members for comparision object compatible with Gc
+	/// «std comp» Members for first derivative tester object
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivativesTester, deriv_tester )
+
+	///
+	typedef ConstrainedOptimizationPack::VariableBoundsTester
+		VariableBoundsTester;
+
+	/// «std comp» Members for variable bounds tester object
+	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
 
 	///
 	/** Call to set #newx# = #new_point# which is passed to the to the first nlp calc with is Gc.
@@ -52,7 +60,8 @@ public:
 
 	/// set new_point == true by default.
 	EvalNewPointStd_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester = 0
+		  const deriv_tester_ptr_t& 	deriv_tester
+		, const bounds_tester_ptr_t&	bounds_tester
 		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
 		);
 
@@ -66,6 +75,11 @@ public:
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+
+private:
+
+	// Not defined and not to be called
+	EvalNewPointStd_Step();
 
 };	// end class EvalNewPointStd_Step
 

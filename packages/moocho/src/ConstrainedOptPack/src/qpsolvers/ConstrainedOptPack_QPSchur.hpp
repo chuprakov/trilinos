@@ -487,7 +487,7 @@ public:
 	  *					make active.  If ij_act_change(s) < 0 then this is ignored.
 	  * @param	out [O] output stream.  Iteration information is printed to according
 	  *					to output_level.  If #output_level == NO_OUTPUT# then #out# may
-	  *					be #NULL#.
+	  *					be #NULL#.  If out==NULL, then output_level is forced to NO_OUTPUT
 	  * @param	output_level
 	  * 			[I] Specifies the level of output.
 	  *	@param	test_what
@@ -578,9 +578,17 @@ public:
 		// /////////////////////////////////////////////////////////
 		// Overridden from MatrixWithOp
 
+//		///
+//		void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha
+//			, BLAS_Cpp::Transp trans_rhs) const ;
+
 		///
 		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 			, const VectorSlice& vs_rhs2, value_type beta) const;
+
+		///
+		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			, const SpVectorSlice& sv_rhs2, value_type beta) const;
 		
 	private:
 		const MatrixSymWithOp		*G_;

@@ -4,6 +4,7 @@
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
 
+#include <limits>
 #include <ostream>
 
 #include "../../include/std/CalcDFromYPYZPZ_Step.h"
@@ -24,6 +25,7 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using LinAlgPack::V_VpV;
+	using LinAlgPack::dot;
 	using LinAlgPack::norm_inf;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -43,6 +45,11 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	V_VpV( &d.v(), s.Ypy().get_k(0)(), s.Zpz().get_k(0)() );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+		const value_type very_small = std::numeric_limits<value_type>::min();
+		out << "\n(Ypy_k'*Zpz_k)/((eps+||Ypy_k||2)*(eps+||Zpz_k||2)) = "
+			<< dot( s.Ypy().get_k(0)(), s.Zpz().get_k(0)() )
+				/ ((very_small + s.Ypy().get_k(0).norm_2())
+					* (very_small + s.Zpz().get_k(0).norm_2() ) );
 		out	<< "\n||d||inf = " << d.norm_inf() << std::endl;
 		ConstrainedOptimizationPack::print_vector_change_stats(
 			s.x().get_k(0)(), "x", s.d().get_k(0)(), "d", out );

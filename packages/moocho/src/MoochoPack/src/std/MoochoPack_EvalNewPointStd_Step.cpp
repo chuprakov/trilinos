@@ -23,10 +23,12 @@
 
 ReducedSpaceSQPPack::EvalNewPointStd_Step::EvalNewPointStd_Step(
 		  const deriv_tester_ptr_t& 	deriv_tester
+		, const bounds_tester_ptr_t&	bounds_tester = 0
 		, EFDDerivTesting				fd_deriv_testing
 		)
 	:
 		  deriv_tester_(deriv_tester)
+		, bounds_tester_(bounds_tester)
 		, fd_deriv_testing_(fd_deriv_testing)
 		, new_point_(true)
 {}
@@ -58,8 +60,25 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	// ToDo: Put this under check results?
-	assert_print_nan_inf(s.x().get_k(0)(), "x_k",true,&out); 
+	// Validate x
+	if(algo.algo_cntr().check_results()) {
+		assert_print_nan_inf(s.x().get_k(0)(), "x_k",true
+			, int(olevel) >= int(PRINT_ALGORITHM_STEPS) ? &out : NULL );
+		if( nlp.has_bounds() ) {
+			if(!bounds_tester().check_in_bounds(
+				  int(olevel) >= int(PRINT_ALGORITHM_STEPS) ? &out : NULL
+				, int(olevel) >= int(PRINT_VECTORS)					// print_all_warnings
+				, int(olevel) >= int(PRINT_ITERATION_QUANTITIES)	// print_vectors
+				, nlp.xl(), "xl"
+				, nlp.xu(), "xu"
+				, s.x().get_k(0)(), "x_k"
+				))
+			{
+				throw TestFailed( "EvalNewPointStd_Step::do_step(...) : Error, "
+					"the variables bounds xl <= x_k <= xu where violated!" );
+			}
+		}
+	}
 
 	// Set the references to the current point's quantities to be updated
 	bool f_k_updated = s.f().updated_k(0);

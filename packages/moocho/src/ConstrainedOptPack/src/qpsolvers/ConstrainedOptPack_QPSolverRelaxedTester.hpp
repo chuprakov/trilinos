@@ -124,7 +124,7 @@ public:
 	/** Check the optimality conditions for the solved (or partially solved) QP.
 	  *
 	  * The default implementation calls the function check_optimality_conditions(...)
-	  * which excepts various sets of constraints.
+	  * which accepts various sets of constraints.
 	  *
 	  *	@param	solution_type
 	  *						[I]	Value returned from QPSolverRelaxed::solve_qp(...).

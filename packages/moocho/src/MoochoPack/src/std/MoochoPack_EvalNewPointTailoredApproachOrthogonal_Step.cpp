@@ -16,10 +16,11 @@ namespace ReducedSpaceSQPPack {
 
 EvalNewPointTailoredApproachOrthogonal_Step::EvalNewPointTailoredApproachOrthogonal_Step(
 		  const deriv_tester_ptr_t& 	deriv_tester
+		, const bounds_tester_ptr_t&	bounds_tester
 		, EFDDerivTesting				fd_deriv_testing
 		)
 	:
-		EvalNewPointTailoredApproach_Step(deriv_tester,fd_deriv_testing)
+		EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
 {}
 // protected
 

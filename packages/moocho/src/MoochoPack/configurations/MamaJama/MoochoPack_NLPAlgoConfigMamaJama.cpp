@@ -31,6 +31,8 @@
 #include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// rHL
 #include "ConstrainedOptimizationPack/include/SymMatrixSubclass.h"					// rHL
 
+#include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
+
 #include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproach.h"
 #include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTester.h"
 #include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTesterSetOptions.h"
@@ -613,6 +615,25 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 		int step_num = 0;
 
+		// Create the variable bounds testing object.  This will not
+		// be used for algorithms where there are no variable bounds
+		// but who cares.
+
+		const value_type var_bounds_warning_tol = 1e-10;
+		typedef ConstrainedOptimizationPack::VariableBoundsTester
+			VariableBoundsTester;
+		typedef rcp::ref_count_ptr<VariableBoundsTester> bounds_tester_ptr_t;
+		bounds_tester_ptr_t
+			bounds_tester = new VariableBoundsTester(
+				  var_bounds_warning_tol			// default warning tolerance
+				, algo_cntr.max_var_bounds_viol()	// default warning tolerance
+				);
+		{
+			ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
+				options_setter( bounds_tester.get() );
+			options_setter.set_options(*options_);
+		}
+
 		// Set the standard set of step objects.
 		// This default algorithm is for NLPs with no variable bounds.
 
@@ -639,11 +660,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			switch( cov_.range_space_matrix_type_ ) {
 				case RANGE_SPACE_MATRIX_COORDINATE:
 					eval_new_point_step
-						= new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester);
+						= new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester);
 					break;
 				case RANGE_SPACE_MATRIX_ORTHOGONAL:
 					eval_new_point_step
-						= new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester);
+						= new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,bounds_tester);
 					break;
 				default:
 					assert(0);	// only a local error
@@ -674,7 +695,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			}		
 
 			EvalNewPointStd_Step
-				*eval_new_point_step = new EvalNewPointStd_Step(deriv_tester);
+				*eval_new_point_step = new EvalNewPointStd_Step(deriv_tester,bounds_tester);
 
 			{
 				EvalNewPointStd_StepSetOptions options_setter(eval_new_point_step);
@@ -758,7 +779,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			algo->insert_step(
 				  ++step_num
 				, LineSearch_name
-				, new LineSearchFullStep_Step
+				, new LineSearchFullStep_Step(bounds_tester)
 			  );
 			
 		}
@@ -920,7 +941,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 										, GeneralIterationPack::PRE_STEP
 										, ++pre_step_i
 										, "LineSearchFullStep"
-										, new  LineSearchFullStep_Step		);
+										, new  LineSearchFullStep_Step(bounds_tester)	);
 
 			// (10.-?) Increase the penalty parameters to get a larger step.
 			if( cov_.merit_function_type_ == MERIT_FUNC_MOD_L1_INCR ) {
