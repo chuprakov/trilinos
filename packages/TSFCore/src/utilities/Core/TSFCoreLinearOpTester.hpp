@@ -1,0 +1,121 @@
+// ///////////////////////////////////////////////////////////////////
+// TSFCoreLinearOpTester.hpp
+
+#ifndef TSFCORE_LINEAR_OP_TESTER_HPP
+#define TSFCORE_LINEAR_OP_TESTER_HPP
+
+#include "TSFCoreLinearOpTesterDecl.hpp"
+#include "TSFCoreVectorStdOps.hpp"
+#include "TSFCoreTestingTools.hpp"
+#include "TSFCoreLinearOp.hpp"
+
+namespace TSFCore {
+
+template<class Scalar>
+LinearOpTester<Scalar>::LinearOpTester(
+	const double      warning_tol
+	,const double     error_tol
+	)
+	:warning_tol_(warning_tol)
+	,error_tol_(error_tol)
+{}
+
+template<class Scalar>
+bool LinearOpTester<Scalar>::check(
+	const LinearOp<Scalar>      &op
+	,std::ostream               *out
+	) const
+{
+	bool success = true, result;
+	if(out) {
+		*out
+			<< "\n*** Entering LinearOpTester<Scalar>::check(...)\n"
+			<< "\nTesting an operator of concrete type \'" << typeid(op).name() << "\' ...\n";
+	}
+
+	if(out)
+		*out << "\nChecking the domain and range spaces ...\n";
+
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+		domain = op.domain(),
+		range  = op.range();
+
+	if(out)	*out << "op.domain().get() != NULL ? ";
+	result = domain.get() != NULL;
+	if(!result) success = false;
+	if(out)	*out << (result ? "passed" : "failed" ) << std::endl;
+
+	if(out)	*out << "op.range().get() != NULL ? ";
+	result = range.get() != NULL;
+	if(!result) success = false;
+	if(out)	*out << (result ? "passed" : "failed" ) << std::endl;
+	
+	if(out)
+		*out
+			<< "\nChecking that the transpose agrees with the non-transpose operator as:"
+			<< "\n  (v2'*op*0.5)*v1 == v2'*(0.5*op*v1)"
+			<< "\n  \\___________/          \\_________/"
+			<< "\n       v4'                    v3"
+			<< "\n"
+			<< "\n  v4'*v2 == v2'*v3"
+			<< std::endl;
+	
+	if(out) *out << "\nv1 = randomize(-1,+1); ...\n" ;
+	Teuchos::RefCountPtr<Vector<Scalar> >	v1 = domain->createMember();
+	TSFCore::randomize( -1.0, +1.0, &*v1 );
+
+	if(out) *out << "\nv2 = randomize(-1,+1); ...\n" ;
+	Teuchos::RefCountPtr<Vector<Scalar> >	v2 = range->createMember();
+	TSFCore::randomize( -1.0, +1.0, &*v2 );
+
+	if(out) *out << "\nv3 = 0.5*op*v1 ...\n" ;
+	Teuchos::RefCountPtr<Vector<Scalar> >	v3 = range->createMember();
+	op.apply( NOTRANS, *v1, &*v3, 0.5 );
+
+	if(out) *out << "\nv4 = 0.5*op'*v2 ...\n" ;
+	Teuchos::RefCountPtr<Vector<Scalar> >	v4 = domain->createMember();
+	op.apply( TRANS, *v2, &*v4, 0.5 );
+
+	const Scalar
+		prod1 = dot( *v1, *v4 ),
+		prod2 = dot( *v2, *v3 );
+	
+	if(out)
+		*out
+			<< "\nprod1 = dot(v1,v4) = " << prod1
+			<< "\nprod2 = dot(v2,v3) = " << prod2 << std::endl;
+		
+	const Scalar
+		rel_err = std::fabs(prod2 - prod1) / (std::fabs(prod2) + std::fabs(prod1));
+	
+	if(out)
+		*out << "\nrel_err(prod1,prod2) = " << rel_err;
+
+	result = rel_err <= error_tol();
+	if(!result) success = false;
+
+	if( !result ) {
+		if(out)
+			*out << " > error_tol() = " << error_tol() << ": Error!";
+	}
+	else {
+		result = rel_err <= warning_tol();
+
+		if(out) {
+			if(!result)
+				*out << " > warning_tol() = " << warning_tol() << ": Warning!";
+			else
+				*out << ": passed!\n";
+		}
+				
+	}
+
+	if(out)
+		*out << "\n*** Leaving LinearOpTester<Scalar>::check(...)\n";
+
+	return success;
+}
+
+} // namespace TSFCore
+
+#endif // TSFCORE_LINEAR_OP_TESTER_HPP
