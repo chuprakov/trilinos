@@ -637,7 +637,7 @@ void MoochoSolver::update_solver() const
 				<< "\n********************************************************************"
 				<< "\n*** Algorithm information output                                 ***"
 				<< "\n***                                                              ***"
-				<< "\n*** Below, information about how the the rSQP++ algorithm is     ***"
+				<< "\n*** Below, information about how the the MOOCHO algorithm is     ***"
 				<< "\n*** setup is given and is followed by detailed printouts of the  ***"
 				<< "\n*** contents of the algorithm state object (i.e. iteration       ***"
 				<< "\n*** quantities) and the algorithm description printout           ***"
@@ -727,7 +727,7 @@ void MoochoSolver::update_solver() const
 			
 		if( do_summary_outputting() || do_journal_outputting() || do_algo_outputting() ) {
 			std::ostringstream msg;
-			msg << "\n*** Setting up to run rSQP++ on the NLP using a "
+			msg << "\n*** Setting up to run MOOCHO on the NLP using a "
 				<< "configuration object of type \'" << typeid(*_config).name() << "\' ...\n";
 			if(do_summary_outputting())
 				*summary_out_used_ << msg.str();

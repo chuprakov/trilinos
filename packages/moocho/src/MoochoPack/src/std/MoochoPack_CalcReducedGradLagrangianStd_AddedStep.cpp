@@ -43,8 +43,8 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::Vp_MtV;
 
-	NLPAlgo	&algo	= rsqp_algo(_algo);
-	NLPAlgoState	&s		= algo.rsqp_state();
+	NLPAlgo	        &algo  = rsqp_algo(_algo);
+	NLPAlgoState    &s     = algo.rsqp_state();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -55,7 +55,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	// Calculate: rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)
+	// Calculate: rGL = rGf + Z' * nu + Uz' * lambda(equ_undecomp)
 
 	IterQuantityAccess<VectorMutable>
 		&rGL_iq  = s.rGL(),
@@ -85,7 +85,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 	}
 
 	// ToDo: Add terms for undecomposed equalities and inequalities!
-	// + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)
+	// + Uz' * lambda(equ_undecomp)
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||rGL_k||inf = " << rGL_k.norm_inf() << "\n";
@@ -107,11 +107,9 @@ void CalcReducedGradLagrangianStd_AddedStep::print_step(
 	out
 		<< L << "*** Evaluate the reduced gradient of the Lagrangian\n"
 		<< L << "if nu_k is updated then\n"
-		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + GcUP_k' * lambda_k(equ_undecomp)\n"
-		<< L << "            + GhUP_k' * lambdaI_k(inequ_undecomp)\n"
+		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + Uz_k' * lambda_k(equ_undecomp)\n"
 		<< L << "else\n"
-		<< L << "    rGL_k = rGf_k + GcUP_k' * lambda_k(equ_undecomp)\n"
-		<< L << "            + GhUP_k' * lambdaI_k(inequ_undecomp)\n"
+		<< L << "    rGL_k = rGf_k + Uz_k' * lambda_k(equ_undecomp)\n"
 		<< L << "end\n";
 }
 

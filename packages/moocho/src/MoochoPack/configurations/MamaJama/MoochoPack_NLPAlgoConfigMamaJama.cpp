@@ -82,7 +82,7 @@
 #include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
 #include "MoochoPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
 #include "MoochoPack/src/std/QuasiNormalStepStd_Step.hpp"
-#include "MoochoPack/src/std/CheckDescentRangeSpaceStep_Step.hpp"
+#include "MoochoPack/src/std/CheckDescentQuasiNormalStep_Step.hpp"
 #include "MoochoPack/src/std/CheckDecompositionFromPy_Step.hpp"
 #include "MoochoPack/src/std/CheckDecompositionFromRPy_Step.hpp"
 #include "MoochoPack/src/std/TangentialStepWithoutBounds_Step.hpp"
@@ -706,10 +706,10 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					) );
 		}
 
-		// CheckDescentRangeSpaceStep
+		// CheckDescentQuasiNormalStep
 		algo_step_ptr_t    check_descent_range_space_step_step = mmp::null;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_range_space_step_step = mmp::rcp(new CheckDescentRangeSpaceStep_Step(calc_fd_prod));
+			check_descent_range_space_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
@@ -1219,7 +1219,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					step_num
 					,IterationPack::POST_STEP
 					,1
-					,"CheckDescentRangeSpaceStep"
+					,"CheckDescentQuasiNormalStep"
 					,check_descent_range_space_step_step
 					);
 			}
@@ -1249,7 +1249,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 						step_num
 						,IterationPack::POST_STEP
 						,++assoc_step_num
-						,"CheckDescentRangeSpaceStep"
+						,"CheckDescentQuasiNormalStep"
 						,check_descent_range_space_step_step
 						);
 			}
