@@ -179,7 +179,7 @@ bool EvalNewPointStd_Step::do_step(
 	}
 
 	// allow multiple updates as defined in NLP and NLPFirstOrderInfo
-	nlp.set_mult_calc(true);
+	nlp.set_multi_calc(true);
 
 	// Calculate Gc and Gh at x_k
 	bool new_point = true;

@@ -177,7 +177,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		// Gf_fd = Gf(x_fd)
 		Vector Gf_fd;
 		nlp.set_Gf(	&Gf_fd );
-		nlp.set_mult_calc( false );
+		nlp.set_multi_calc( false );
 		nlp.calc_Gf( x_fd );
 
 		if( (int)olevel >= (int)PRINT_VECTORS ) {

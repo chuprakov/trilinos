@@ -127,7 +127,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	}
 
 	// allow multiple updates as defined in NLP
-	nlp.set_mult_calc(true);
+	nlp.set_multi_calc(true);
 
 	// If c_k is not updated then we must compute it
 	bool recalc_c = true;
