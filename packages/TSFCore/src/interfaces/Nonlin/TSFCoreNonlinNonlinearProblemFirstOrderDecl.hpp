@@ -62,7 +62,7 @@ namespace Nonlin {
  * <b>Warning!</b> Note that the <tt>MultiVector</tt> objects that are
  * computed for <tt>DcDy</tt> and <tt>DgDu</tt> are actually
  * transposes of the Jacobians <tt>D(g)/D(y)</tt> and
- * <tt>D(g)/D(u)</tt>.  This is a little confusing but make since in
+ * <tt>D(g)/D(u)</tt>.  This is a little confusing but make sense in
  * the context of things.
  * 
  * The reason fo the methods <tt>opDcDy()</tt> and <tt>opDcDu()</tt>

@@ -53,8 +53,8 @@ namespace TSFCore {
  * implemented through reduction/transformation operators.  There are
  * some operations however that can not always be efficiently
  * implemented with reduction/transforamtion operators and a few of
- * these important methods are included in this interface.  The
- * <tt>applyOp()</tt> method allows to client to specify a sub-set of
+ * these important operations are included in this interface.  The
+ * <tt>applyOp()</tt> operation allows to client to specify a sub-set of
  * the vector elements to include in reduction/transformation
  * operation.  This greatly increases the generality of this vector
  * interface as vector objects can be used as sub objects in larger
@@ -69,10 +69,10 @@ namespace TSFCore {
  * This interface also allows a client to extract a sub-set of
  * elements in an explicit form non-mutable <tt>RTOpPack::SubVectorT<Scalar></tt>
  * non-mutable <tt>RTOpPack::MutableSubVectorT<Scalar></tt> objects using the
- * methods <tt>getSubVector()</tt>.  In general, this is very bad
+ * operations <tt>getSubVector()</tt>.  In general, this is very bad
  * thing to do and should be avoided at all costs.  However, there are
  * some situations where this is needed and therefore it is supported.
- * The default implementation of these methods use
+ * The default implementation of these operations use
  * reduction/transformation operators with <tt>applyOp()</tt> in order
  * to extract and set the needed elements.
  *
@@ -85,15 +85,15 @@ namespace TSFCore {
  * <b>Notes for subclass developers</b>
  *
  * In order to create a concreate subclass of this interface, only two
- * methods must be overridden: <tt>space()</tt> and
- * <tt>applyOp()</tt>.  Overridding the <tt>space()</tt> method
+ * operations must be overridden: <tt>space()</tt> and
+ * <tt>applyOp()</tt>.  Overridding the <tt>space()</tt> operation
  * requires defining a concreate <tt>VectorSpace</tt> class (which has
- * only three pure virtual methods).
+ * only three pure virtual operations).
  *
  * A subclass should only bother overidding the explicit sub-vector
- * access methods <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
+ * access operations <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
  * <tt>commitSubVector()</tt> and <tt>setSubVector()</tt> if profiling
- * shows that these methods are taking too much time.  In most use
+ * shows that these operations are taking too much time.  In most use
  * cases, these default implementations will not impact the overall
  * runtime for a numerical algorithm in any significant way.
  */
@@ -104,7 +104,7 @@ public:
 	///
 	virtual ~Vector() {}
 
-	/** @name Pure virtual methods (must be overridden by subclass) */
+	/** @name Pure virtual operations (must be overridden by subclass) */
 	//@{
 
 	///
@@ -123,20 +123,20 @@ public:
 	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * </ul>
 	 *
-	 * The vector <tt>this</tt> that this method is called on is
+	 * The vector <tt>this</tt> that this operation is called on is
 	 * assumed to be one of the vectors in
-	 * <tt>v[0]...v[nv-1],z[0]...z[nz-1]</tt>.  This method is not
-	 * called directly by the client but is instead
-	 * <tt>TSFCore::applyOp()</tt>.
+	 * <tt>v[0]...v[nv-1],z[0]...z[nz-1]</tt>.  This operation is generally should
+	 * not called directly by a client but instead the client should call the
+	 * nonmember function <tt>TSFCore::applyOp()</tt>.
 	 *
-	 * See the documentation for the method <tt>TSFCore::applyOp()</tt>
-	 * for a description of what this method does.
+	 * See the documentation for the nonmember function <tt>TSFCore::applyOp()</tt>
+	 * for a description of what this operation does.
 	 */
 	virtual void applyOp(
 		const RTOpPack::RTOpT<Scalar>    &op
-		,const int                    num_vecs
+		,const int                       num_vecs
 		,const Vector<Scalar>*           vecs[]
-		,const int                    num_targ_vecs
+		,const int                       num_targ_vecs
 		,Vector<Scalar>*                 targ_vecs[]
 		,RTOpPack::ReductTarget          *reduct_obj
 		,const Index                     first_ele
@@ -188,19 +188,19 @@ public:
 	 * of the memory.  Of course, the same <tt>sub_vec</tt> object must
 	 * be passed to the same vector object for this to work correctly.
 	 *
-	 * This method has a default implementation based on a vector
-	 * reduction operator class (see <tt>RTOp_ROp_get_sub_vector.h</tt>)
+	 * This operation has a default implementation based on a vector
+	 * reduction operator class (see <tt>RTOpPack::ROpGetSubVector</tt>)
 	 * and calls <tt>applyOp()</tt>.  Note that the footprint of the reduction
 	 * object (both internal and external state) will be
 	 * O(<tt>rng.size()</tt>).  For serial applications this is faily
 	 * reasonable and will not be a major performance penalty.  For
 	 * parallel applications, however, this is a terrible
 	 * implementation and must be overridden if <tt>rng.size()</tt> is
-	 * large at all.  Although, this method should not even be used in
+	 * large at all.  Although, this operation should not even be used in
 	 * case where the vector is very large.  If a subclass does
-	 * override this method, it must also override
+	 * override this operation, it must also override
 	 * <tt>freeSubVector()</tt> which has a default implementation
-	 * which is a companion to this method's default implementation.
+	 * which is a companion to this operation's default implementation.
 	 */
 	virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
 
@@ -224,10 +224,10 @@ public:
 	 *
 	 * The sub-vector view must have been allocated by <tt>this->getSubVector()</tt> first.
 	 *
-	 * This method has a default implementation which is a companion
+	 * This operation has a default implementation which is a companion
 	 * to the default implementation for the non-<tt>const</tt>
 	 * version of <tt>getSubVector()</tt>.  If <tt>getSubVector()</tt>
-	 * is overridden by a subclass then this method must be overridden
+	 * is overridden by a subclass then this operation must be overridden
 	 * also!
 	 */
 	virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
@@ -277,18 +277,17 @@ public:
 	 * is called agian, or <tt>this->commitSubVector(sub_vec)</tt> is
 	 * called.
 	 *
-	 * This method has a default implementation based on a vector
-	 * reduction operator class (see
-	 * <tt>RTOp_ROp_get_sub_vector.h</tt>) and calls
+	 * This operation has a default implementation based on a vector
+	 * reduction operator class (see <tt>RTOpPack::ROpGetSubVector</tt>) and calls
 	 * <tt>applyOp()</tt>.  Note that the footprint of the reduction
 	 * object (both internal and external state) will be
 	 * O(<tt>rng.size()</tt>).  For serial applications this is faily
 	 * reasonable and will not be a major performance penalty.  For
 	 * parallel applications, this will be a terrible thing to do and
 	 * must be overridden if <tt>rng.size()</tt> is large at all.  If
-	 * a subclass does override this method, it must also override
+	 * a subclass does override this operation, it must also override
 	 * <tt>commitSubVector()</tt> which has a default implementation
-	 * which is a companion to this method's default implementation.
+	 * which is a companion to this operation's default implementation.
 	 */
 	virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
 
@@ -316,10 +315,10 @@ public:
 	 * The sub-vector view must have been allocated by
 	 * <tt>this->getSubVector()</tt> first.
 	 *
-	 * This method has a default implementation which is a companion
+	 * This operation has a default implementation which is a companion
 	 * to the default implementation for <tt>getSubVector()</tt>.  If
 	 * <tt>getSubVector()</tt> is overridden by a subclass then this
-	 * method must be overridden also!
+	 * operation must be overridden also!
 	 */
 	virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
 
@@ -346,12 +345,12 @@ public:
 	 * </ul>
 	 *
 	 * The default implementation of this operation uses a
-	 * transformation operator class (see RTOp_TOp_setSubVector.h) and
-	 * calls <tt>applyOp()</tt>.  Be forewarned however, that the
-	 * operator objects state data (both internal and external) will
-	 * be O(<tt>sub_vec.subNz</tt>).  For serial applications, this
-	 * is entirely adequate.  For parallel applications this will be
-	 * very bad!
+	 * transformation operator class (see
+	 * <tt>RTOpPack::TOpSetSubVector</tt>) and calls <tt>applyOp()</tt>.
+	 * Be forewarned however, that the operator objects state data (both
+	 * internal and external) will be order O(<tt>sub_vec.subNz</tt>).
+	 * For serial applications, this is entirely adequate.  For parallel
+	 * applications this may be bad!
 	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
 	 */
@@ -423,12 +422,12 @@ public:
  * <li> The vectors in <tt>targ_vecs[]</tt> may be modified as determined by the definition of <tt>op</tt>.
  * <li> [<tt>reduct_obj!=RTOp_REDUCT_OBJ_NULL</tt>] The reduction object <tt>reduct_obj</tt> contains
  *      the combined reduction from the input state of <tt>reduct_obj</tt> and the reductions that
- *      where accumulated during this this method invokation.
+ *      where accumulated during this this operation invokation.
  * </ul>
  *
  * The logical vector passed to the
- * <tt>op\ref RTOpPack::RTOp::apply_op ".apply_op(...)"</tt>
- * method is: \verbatim
+ * <tt>op\ref RTOpPack::RTOpT::apply_op ".apply_op(...)"</tt>
+ * operation is: \verbatim
 
  v(k + global_offset) = this->get_ele(first_ele + k - 1)
  , for k = 1 ... sub_dim
@@ -462,7 +461,6 @@ void applyOp(
 	else if (num_targ_vecs)
 		targ_vecs[0]->applyOp(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
 }
-
 
 } // end namespace TSFCore
 

@@ -47,7 +47,7 @@ MultiVectorCols<Scalar>::MultiVectorCols()
 
 template<class Scalar>
 MultiVectorCols<Scalar>::MultiVectorCols(
-	Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
+	const Teuchos::RefCountPtr<Vector<Scalar> > &col_vec
 	)
 {
 	this->initialize(col_vec);
@@ -57,7 +57,7 @@ template<class Scalar>
 MultiVectorCols<Scalar>::MultiVectorCols(
 	const  Teuchos::RefCountPtr<const VectorSpace<Scalar> >   &range
 	,const  Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &domain
-	,Teuchos::RefCountPtr<Vector<Scalar> >                    col_vecs[]
+	,const Teuchos::RefCountPtr<Vector<Scalar> >              col_vecs[]
 	)
 {
 	this->initialize(range,domain,col_vecs);
@@ -65,7 +65,7 @@ MultiVectorCols<Scalar>::MultiVectorCols(
 
 template<class Scalar>
 void MultiVectorCols<Scalar>::initialize(
-	Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
+	const Teuchos::RefCountPtr<Vector<Scalar> > &col_vec
 	)
 {
 #ifdef _DEBUG
@@ -83,7 +83,7 @@ template<class Scalar>
 void MultiVectorCols<Scalar>::initialize(
 	const  Teuchos::RefCountPtr<const VectorSpace<Scalar> >   &range
 	,const  Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &domain
-	,Teuchos::RefCountPtr<Vector<Scalar> >                    col_vecs[]
+	,const Teuchos::RefCountPtr<Vector<Scalar> >              col_vecs[]
 	)
 {
 #ifdef _DEBUG

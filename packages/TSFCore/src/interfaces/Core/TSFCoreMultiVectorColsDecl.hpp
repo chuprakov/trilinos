@@ -70,14 +70,14 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	MultiVectorCols(
-		Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
+		const Teuchos::RefCountPtr<Vector<Scalar> > &col_vec
 		);
 
 	/// Calls <tt>initalize()</tt>.
 	MultiVectorCols(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &range
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >         &domain
-		,Teuchos::RefCountPtr<Vector<Scalar> >                          col_vecs[] = NULL
+		,const Teuchos::RefCountPtr<Vector<Scalar> >                    col_vecs[] = NULL
 		);
 	
 	///
@@ -98,7 +98,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
+		const Teuchos::RefCountPtr<Vector<Scalar> > &col_vec
 		);
 
 	///
@@ -137,7 +137,7 @@ public:
 	void initialize(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &range
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >         &domain
-		,Teuchos::RefCountPtr<Vector<Scalar> >                          col_vecs[] = NULL
+		,const Teuchos::RefCountPtr<Vector<Scalar> >                    col_vecs[] = NULL
 		);
 
 	/// Set uninitalized.
@@ -170,7 +170,8 @@ private:
 #else
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        range_;
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        domain_;
-	std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_;
+	//std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_; // RAB: 2004/06/03: Causing strange bug in test/product_space/cxx_main.cpp
+	std::deque< Teuchos::RefCountPtr<Vector<Scalar> > >     col_vecs_;
 #endif
 	
 }; // end class MultiVectorCols

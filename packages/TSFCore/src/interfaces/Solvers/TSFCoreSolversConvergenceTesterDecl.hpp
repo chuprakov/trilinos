@@ -83,7 +83,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <tt><tt>isConverged[k]==true</tt> if the linear system <tt>j</tt> is converged where
+	 * <li><tt>isConverged[k]==true</tt> if the linear system <tt>j</tt> is converged where
 	 *     <tt>j = activeSystems[k]</tt> and where <tt>activeSystems[]</tt> is returned from
 	 *     the <tt>solver.SolverState::currActiveSystems()</tt>.
 	 * </ul>

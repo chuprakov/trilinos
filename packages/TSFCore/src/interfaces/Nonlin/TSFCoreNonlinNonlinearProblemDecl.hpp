@@ -71,6 +71,10 @@ namespace Nonlin {
  * ability to compute the zero-order vector functions
  * <tt>c(y,{u(l)})</tt> and <tt>g(y,{u(l)})</tt>.
  *
+ * <b>Warning!</b> If any calculation fails, then <tt>NaN</tt> will be
+ * returned in at least one component of the computed quantity.
+ * Therefore, clients are advised to always chack for <tt>NaN</tt>
+ * whenever quantities are computed.
  *
  * <b>Multiple simultaneous calculations</b>
  *
