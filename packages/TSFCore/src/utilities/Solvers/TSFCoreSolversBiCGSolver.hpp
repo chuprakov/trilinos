@@ -13,12 +13,12 @@
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
 template<class Scalar>
-void compressMember( TSFCore::Index k, TSFCore::Index k_curr, const MemMngPack::ref_count_ptr<TSFCore::MultiVector<Scalar> >& V )
+void compressMember( TSFCore::Index k, TSFCore::Index k_curr, const Teuchos::RefCountPtr<TSFCore::MultiVector<Scalar> >& V )
 {
 	TSFCore::assign<Scalar>( V->col(k_curr+1).get(), *V->col(k+1) ); 
 }
@@ -153,31 +153,31 @@ SolveReturn BiCGSolver<Scalar>::solve(
 	//
 #ifdef _DEBUG
 	const char func_name[] = "BiCGSolver<Scalar>::solve(...)";
-	THROW_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
+	TEST_FOR_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
 	bool adjoint_supported = M.opSupported(not_trans(M_trans));
-	THROW_EXCEPTION(!adjoint_supported,std::invalid_argument,func_name<<": Non-transposed and transposed ops of M must be supported!");
+	TEST_FOR_EXCEPTION(!adjoint_supported,std::invalid_argument,func_name<<": Non-transposed and transposed ops of M must be supported!");
 	if(M_tilde_left_inv) {
 		const VectorSpace<Scalar> &opM_tilde_inv_domain = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->domain() : *M_tilde_left_inv->range()  );
 		const VectorSpace<Scalar> &opM_tilde_inv_range  = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->range()  : *M_tilde_left_inv->domain() );
 		const bool
 			domain_compatible = opM_domain.isCompatible(opM_tilde_inv_range),
 			range_compatible =  opM_range.isCompatible(opM_tilde_inv_domain);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!(domain_compatible && range_compatible), TSFCore::Exceptions::IncompatibleVectorSpaces
 			,func_name<<": Error, the range and/or domain spaces of op(M) and op(M_tilde_inv) do are not compatible!");
 		bool adjoint_supported = M_tilde_left_inv->opSupported(not_trans(M_tilde_left_inv_trans));
-		THROW_EXCEPTION(!adjoint_supported,std::invalid_argument,func_name<<": Non-transposed and transposed ops of M_tilde_inv must be supported!");
+		TEST_FOR_EXCEPTION(!adjoint_supported,std::invalid_argument,func_name<<": Non-transposed and transposed ops of M_tilde_inv must be supported!");
 	}
 	bool is_compatible = opM_domain.isCompatible(*X->range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).domain() not compatible with X->range()!");
 	is_compatible = opM_range.isCompatible(*Y.range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).range() not compatible with Y.range()!");
 	is_compatible = X->domain()->isCompatible(*Y.domain());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the X->domain() not compatible with Y.domain()!");
 #endif
@@ -195,7 +195,7 @@ SolveReturn BiCGSolver<Scalar>::solve(
 	// Resolve default parameters
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-	if (convTester) norm_ = convTester->norm(); else norm_ = mmp::rcp(new Solvers::Norm<Scalar>());
+	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Setup storage and initialize the algorithm
 	//
@@ -248,17 +248,17 @@ SolveReturn BiCGSolver<Scalar>::solve(
 		}
 		if( currIteration_ > 1 ) { for(j=0;j<currNumSystems_;++j) rho_old_[j] = rho_[j]; } // rho_{i-1}[j] = rho_{i-2}[j]
 		// Do the Iteration
-		MemMngPack::ref_count_ptr<MultiVector<Scalar> > X_curr = X_curr_->subView(Range1D(1,currNumSystems_));
+		Teuchos::RefCountPtr<MultiVector<Scalar> > X_curr = X_curr_->subView(Range1D(1,currNumSystems_));
 		doIteration(M,opM_notrans,opM_trans,X_curr.get(),a,M_tilde_left_inv,opM_tilde_inv_notrans,opM_tilde_inv_trans);
 	}
 	return SolveReturn(MAX_ITER_EXCEEDED,currIteration_);
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> >
+Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> >
 BiCGSolver<Scalar>::clone() const
 {
-	return MemMngPack::rcp( new BiCGSolver<Scalar>(*this) );
+	return Teuchos::rcp( new BiCGSolver<Scalar>(*this) );
 }
 
 // private
@@ -296,7 +296,7 @@ void BiCGSolver<Scalar>::doIteration(
 		*get_out() << "\nrho =\n"; for(j=0;j<m;++j) *get_out() << " " << rho_[j]; *get_out() << std::endl;
 	}
 	for(j=0;j<m;++j) { // Check for failure: rho_{i-1} = 0
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			rho_[j] == 0.0, Exceptions::SolverBreakdown
 			,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
 			);
@@ -327,7 +327,7 @@ void BiCGSolver<Scalar>::doIteration(
 		*get_out() << "\nalpha =\n"; for(j=0;j<m;++j) *get_out() << " " << alpha_[j]; *get_out() << std::endl;
 	}
 	for(j=0;j<m;++j) { 	// Check for failure: alpha_{i-1} = 0 or NaN or Inf
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
 			,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
 			);

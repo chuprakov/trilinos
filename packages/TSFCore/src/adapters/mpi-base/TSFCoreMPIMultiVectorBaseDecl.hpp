@@ -28,13 +28,13 @@ public:
 	/** @name Pure virtual methods to be overridden by subclasses */
 	//@{
 	///
-	virtual MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
+	virtual Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
 	//@}
 
 	/** @name Overridden from OpBase */
 	//@{
 	/// Returns <tt>mpiSpace</tt>.
-	MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > range() const;
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
 	//@}
 
 	/** @name Overridden from MultiVector */

@@ -14,14 +14,14 @@
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOpCppC.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
 // Provide access to the columns as Vector objects
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const Vector<Scalar> >
+Teuchos::RefCountPtr<const Vector<Scalar> >
 MultiVector<Scalar>::col(Index j) const
 {
 	return const_cast<MultiVector*>(this)->col(j);
@@ -30,20 +30,20 @@ MultiVector<Scalar>::col(Index j) const
 // Cloning
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
+Teuchos::RefCountPtr<const MultiVector<Scalar> >
 MultiVector<Scalar>::clone_mv() const
 {
 	return const_cast<MultiVector<Scalar>*>(this)->clone_mv();
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<MultiVector<Scalar> > 
+Teuchos::RefCountPtr<MultiVector<Scalar> > 
 MultiVector<Scalar>::clone_mv()
 {
 	const VectorSpace<Scalar>
 		&domain = *this->domain(),
 		&range  = *this->range();
-	MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+	Teuchos::RefCountPtr<MultiVector<Scalar> >
 		copy = range.createMembers(domain.dim());
 	RTOpPack::RTOpC assign_vectors_op;
 	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
@@ -56,17 +56,16 @@ MultiVector<Scalar>::clone_mv()
 // Sub-view methods
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
+Teuchos::RefCountPtr<const MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const Range1D& col_rng ) const
 {
 	return const_cast<MultiVector<Scalar>*>(this)->subView(col_rng);
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const Range1D& col_rng_in )
 {
-	namespace mmp = MemMngPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
@@ -74,29 +73,28 @@ MultiVector<Scalar>::subView( const Range1D& col_rng_in )
 	const Index                dimDomain = domain.dim();
 	const Range1D              col_rng   = RangePack::full_range(col_rng_in,1,dimDomain);
 	if( col_rng.lbound() == 1 && col_rng.ubound() == dimDomain )
-		return mmp::rcp(this,false); // Takes all of the colunns!
+		return Teuchos::rcp(this,false); // Takes all of the colunns!
 	if( col_rng.size() ) {
 		// We have to create a view of a subset of the columns
-		wsp::Workspace< mmp::ref_count_ptr< Vector<Scalar> > >  col_vecs(wss,col_rng.size());
+		wsp::Workspace< Teuchos::RefCountPtr< Vector<Scalar> > >  col_vecs(wss,col_rng.size());
 		for( Index j = col_rng.lbound(); j <= col_rng.ubound(); ++j )
 			col_vecs[j-1] = this->col(j);
-		return mmp::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(col_rng.size()),&col_vecs[0]));
+		return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(col_rng.size()),&col_vecs[0]));
 	}
-	return mmp::null; // There was an empty set in col_rng_in!
+	return Teuchos::null; // There was an empty set in col_rng_in!
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
+Teuchos::RefCountPtr<const MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const int numCols, const int cols[] ) const
 {
 	return const_cast<MultiVector<Scalar>*>(this)->subView(numCols,cols);
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 {
-	namespace mmp = MemMngPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
@@ -104,21 +102,21 @@ MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 	const Index                dimDomain = domain.dim();
 #ifdef _DEBUG
 	const char msg_err[] = "MultiVector<Scalar>::subView(numCols,cols[]): Error!";
- 	THROW_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
+ 	TEST_FOR_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
 #endif
 	// We have to create a view of a subset of the columns
-	wsp::Workspace< mmp::ref_count_ptr< Vector<Scalar> > > col_vecs(wss,numCols);
+	wsp::Workspace< Teuchos::RefCountPtr< Vector<Scalar> > > col_vecs(wss,numCols);
 	for( int k = 0; k < numCols; ++k ) {
 		const int col_k = cols[k];
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			col_k < 1 || dimDomain < col_k, std::invalid_argument
 			,msg_err << " col["<<k<<"] = " << col_k << " is not in the range [1,"<<dimDomain<<"]!"
 			);
 #endif
 		col_vecs[k] = this->col(col_k);
 	}
-	return mmp::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(numCols),&col_vecs[0]));
+	return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(numCols),&col_vecs[0]));
 }
 
 // Collective applyOp() methods
@@ -138,7 +136,6 @@ void MultiVector<Scalar>::applyOp(
 	,const Index                    sec_sub_dim_in
 	) const
 {
-	namespace mmp = MemMngPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -156,8 +153,8 @@ void MultiVector<Scalar>::applyOp(
 		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
-	THROW_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
-	THROW_EXCEPTION( !(0 < sec_sub_dim  && sec_sub_dim  <= sec_dim),  std::invalid_argument, err_msg );
+	TEST_FOR_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
+	TEST_FOR_EXCEPTION( !(0 < sec_sub_dim  && sec_sub_dim  <= sec_dim),  std::invalid_argument, err_msg );
 #endif
 
 	//
@@ -165,9 +162,9 @@ void MultiVector<Scalar>::applyOp(
 	// target vectors and reduce each of the reduction objects.
 	//
 
-	wsp::Workspace< mmp::ref_count_ptr<const Vector<Scalar> > >   vecs_s(wss,num_multi_vecs);
+	wsp::Workspace< Teuchos::RefCountPtr<const Vector<Scalar> > >   vecs_s(wss,num_multi_vecs);
 	wsp::Workspace<const Vector<Scalar>*>                         vecs(wss,num_multi_vecs);
-	wsp::Workspace< mmp::ref_count_ptr<Vector<Scalar> > >         targ_vecs_s(wss,num_targ_multi_vecs);
+	wsp::Workspace< Teuchos::RefCountPtr<Vector<Scalar> > >         targ_vecs_s(wss,num_targ_multi_vecs);
 	wsp::Workspace<Vector<Scalar>*>                               targ_vecs(wss,num_targ_multi_vecs);
 
 	for(Index j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
@@ -227,8 +224,8 @@ void MultiVector<Scalar>::applyOp(
 		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
-	THROW_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
-	THROW_EXCEPTION( !(0 < sec_sub_dim  && sec_sub_dim  <= sec_dim),  std::invalid_argument, err_msg );
+	TEST_FOR_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
+	TEST_FOR_EXCEPTION( !(0 < sec_sub_dim  && sec_sub_dim  <= sec_dim),  std::invalid_argument, err_msg );
 #endif
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
@@ -308,7 +305,7 @@ void MultiVector<Scalar>::apply(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOp<Scalar> >
+Teuchos::RefCountPtr<const LinearOp<Scalar> >
 MultiVector<Scalar>::clone() const
 {
 	return this->clone_mv();

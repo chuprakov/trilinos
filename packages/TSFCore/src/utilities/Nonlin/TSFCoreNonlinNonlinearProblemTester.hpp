@@ -39,7 +39,7 @@ NonlinearProblemTester<Scalar>::doTest(
 
 	// Vector spaces
 
-	typedef MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  vs_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpace<Scalar> >  vs_ptr_t;
 
 	if(o) *o << "prob->space_y().get() -> ";           const vs_ptr_t space_y = prob->space_y();               if(o) *o << space_y.get() << endl;
 	if(o) *o << "prob->space_y().get()!=NULL -> ";     if(!(result=(space_y.get()!=NULL))) success = false;    if(o) *o << passfail(result) << endl;
@@ -90,7 +90,7 @@ NonlinearProblemTester<Scalar>::doTest(
 	// Calculation members
 
 	if(o) *o << "c = prob->space_y()->createMember();\n";
-	mmp::ref_count_ptr<Vector<Scalar> > c = prob->space_y()->createMember(), g;
+	Teuchos::RefCountPtr<Vector<Scalar> > c = prob->space_y()->createMember(), g;
 	if(o) *o << "prob->set_c(c)\n";  prob->set_c(c.get());
 	if(o) *o << "prob->get_c() -> "; Vector<Scalar> *get_c = prob->get_c(); if(o) *o << get_c << endl;
 

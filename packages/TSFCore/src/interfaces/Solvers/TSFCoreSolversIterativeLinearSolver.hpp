@@ -24,8 +24,8 @@ SolveReturn IterativeLinearSolver<Scalar>::solve(
 	) const
 {
 	namespace mmp = MemMngPack;
-	const MultiVectorCols<Scalar>  Y(mmp::rcp(const_cast<Vector<Scalar>*>(&y),false));
-	MultiVectorCols<Scalar>        X(mmp::rcp(x,false));
+	const MultiVectorCols<Scalar>  Y(Teuchos::rcp(const_cast<Vector<Scalar>*>(&y),false));
+	MultiVectorCols<Scalar>        X(Teuchos::rcp(x,false));
 	return solve(
 		M,M_trans,Y,&X,1.0,max_iter,convTester
 		,M_tilde_left_inv,M_tilde_left_inv_trans
@@ -34,10 +34,10 @@ SolveReturn IterativeLinearSolver<Scalar>::solve(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> >
+Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> >
 IterativeLinearSolver<Scalar>::clone() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 } // namespace Solvers

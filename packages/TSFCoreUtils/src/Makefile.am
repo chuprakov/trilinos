@@ -8,22 +8,16 @@ $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
-$(srcdir)/MoochoUtilities/StandardMemberCompositionMacros.hpp\
-$(srcdir)/MoochoUtilities/ThrowException.hpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.hpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
 $(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 MoochoUtilities_SOURCES=\
 $(srcdir)/MoochoUtilities/Range1D.cpp\
-$(srcdir)/MoochoUtilities/ThrowException.cpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.cpp\
 $(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 RTOp_C_SOURCES_H=\
@@ -179,10 +173,12 @@ RTOp_STDOPS_SOURCES_HPP=\
 $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
-  -I$(top_srcdir)/src/MoochoUtilities\
-  -I$(top_srcdir)/src/RTOpPack\
-  -I$(top_srcdir)/src/RTOpStdOps
-
+  -I$(top_srcdir)/src/MoochoUtilities \
+  -I$(top_srcdir)/src/RTOpPack \
+  -I$(top_srcdir)/src/RTOpStdOps \
+  -I$(top_builddir)/../teuchos/src \
+  -I$(top_srcdir)/../teuchos \
+  -I$(top_srcdir)/../teuchos/src
 
 SOURCES_H=\
   $(MoochoUtilities_SOURCES_H)\

@@ -41,9 +41,9 @@ public:
 	/// Returns 0 if uninitialized
 	Index dim() const;
 	/// Returns a <tt>SerialVector</tt> object.
-	MemMngPack::ref_count_ptr<Vector<Scalar> > createMember() const;
+	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
 	///
-	MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > clone() const;
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
 
 	//@}
 

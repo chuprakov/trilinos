@@ -10,7 +10,7 @@
 #include "RTOp_parallel_helpers.h"
 #include "RTOpCppToMPI.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace TSFCore {
@@ -34,7 +34,7 @@ void MPIVectorBase<Scalar>::getLocalData( const Scalar** values, ptrdiff_t* stri
 // Overridden from Vector
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 MPIVectorBase<Scalar>::space() const
 {
 	return mpiSpace();
@@ -54,14 +54,13 @@ void MPIVectorBase<Scalar>::applyOp(
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
-	namespace mmp = MemMngPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	const MPIVectorSpaceBase<Scalar>  &mpiSpc = *mpiSpace();
 	const Index globalDim = mpiSpc.dim(), localOffset = mpiSpc.localOffset(), localSubDim = mpiSpc.localSubDim();
 #ifdef _DEBUG
 	// ToDo: Validate input!
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		in_applyOp_, std::invalid_argument
 		,"MPIVectorBase<>::applyOp(...): Error, this method is being entered recursively which is a "
 		"clear sign that one of the methods getSubVector(...), freeSubVector(...) or commitSubVector(...) "
@@ -204,7 +203,7 @@ Range1D MPIVectorBase<Scalar>::validateRange( const Range1D &rng_in ) const
 	update_cache();
 	const Range1D rng = RangePack::full_range(rng_in,1,globalDim_);
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.lbound() < 1 || globalDim_ < rng.ubound(), std::invalid_argument
 		,"EpetraVector::getLocalData(...): Error, the range ["<<rng.lbound()<<","<<rng.ubound()<<"] is not "
 		"in the range [1,"<<globalDim_<<"]!"

@@ -6,7 +6,7 @@
 
 #include "TSFCoreSerialVectorDecl.hpp"
 #include "TSFCoreSerialVectorBase.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
@@ -18,7 +18,7 @@ SerialVector<Scalar>::~SerialVector()
 
 template<class Scalar>
 SerialVector<Scalar>::SerialVector(
-	const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 	:v_(NULL),vs_(0),ownsMem_(false)
 {
@@ -40,7 +40,7 @@ SerialVector<Scalar>::SerialVector(
 	,int    vs
 	,int    dim
 	,bool   ownsMem
-	,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 	:v_(NULL),vs_(0),ownsMem_(false)
 {
@@ -49,7 +49,7 @@ SerialVector<Scalar>::SerialVector(
 
 template<class Scalar>
 void SerialVector<Scalar>::initialize(
-	const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 {
 	const int dim = vecSpc->dim();
@@ -81,15 +81,15 @@ void SerialVector<Scalar>::initialize(
 	,int    vs
 	,int    dim
 	,bool   ownsMem
-	,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 {
 	if(vecSpc.get()) {
-		THROW_EXCEPTION( vecSpc.get()!=NULL && dim != vecSpc->dim(), std::invalid_argument, "SerialVector<Scalar>::initialize(...): Error!" );
+		TEST_FOR_EXCEPTION( vecSpc.get()!=NULL && dim != vecSpc->dim(), std::invalid_argument, "SerialVector<Scalar>::initialize(...): Error!" );
 		space_serial_ = vecSpc;
 	}
 	else {
-		space_serial_ = MemMngPack::rcp(new SerialVectorSpace<Scalar>(dim));
+		space_serial_ = Teuchos::rcp(new SerialVectorSpace<Scalar>(dim));
 	}
 	free_mem();
 	v_       = v;
@@ -101,7 +101,7 @@ void SerialVector<Scalar>::initialize(
 // Overridden from Vector
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 SerialVector<Scalar>::space() const
 {
 	return space_serial_;
@@ -112,7 +112,7 @@ void SerialVector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVec
 {
 	const Index      this_dim = dim_;
 	const Range1D    rng      = RangePack::full_range(rng_in,1,this_dim);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"SerialVector<Scalar>::getSubVector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
@@ -137,7 +137,7 @@ void SerialVector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::Mutabl
 	const Index     this_dim = dim_;
 	const Range1D   rng = RangePack::full_range(rng_in,1,this_dim);
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"SerialVector<Scalar>::getSubVector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "

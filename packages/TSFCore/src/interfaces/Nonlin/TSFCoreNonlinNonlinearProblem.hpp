@@ -6,7 +6,7 @@
 
 #include "TSFCoreNonlinNonlinearProblemDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -40,28 +40,28 @@ int NonlinearProblem<Scalar>::Nu() const
 template<class Scalar>
 int NonlinearProblem<Scalar>::numResponseFunctions() const
 {
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > space_g = this->space_g();
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > space_g = this->space_g();
 	return space_g.get() ? space_g->dim() : 0;
 }
 
 // VectorSpaces
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > 
+Teuchos::RefCountPtr<const VectorSpace<Scalar> > 
 NonlinearProblem<Scalar>::space_u(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::space_u(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 NonlinearProblem<Scalar>::space_g() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Bounds
@@ -69,7 +69,7 @@ NonlinearProblem<Scalar>::space_g() const
 template<class Scalar>
 const Vector<Scalar>& NonlinearProblem<Scalar>::uL(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::uL(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -79,7 +79,7 @@ const Vector<Scalar>& NonlinearProblem<Scalar>::uL(int l) const
 template<class Scalar>
 const Vector<Scalar>& NonlinearProblem<Scalar>::uU(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::uU(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -89,7 +89,7 @@ const Vector<Scalar>& NonlinearProblem<Scalar>::uU(int l) const
 template<class Scalar>
 const Vector<Scalar>& NonlinearProblem<Scalar>::gL() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::gL(l): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -99,7 +99,7 @@ const Vector<Scalar>& NonlinearProblem<Scalar>::gL() const
 template<class Scalar>
 const Vector<Scalar>& NonlinearProblem<Scalar>::gU() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::gL(l): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -111,7 +111,7 @@ const Vector<Scalar>& NonlinearProblem<Scalar>::gU() const
 template<class Scalar>
 const Vector<Scalar>& NonlinearProblem<Scalar>::u0(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::uU(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -129,7 +129,7 @@ const Vector<Scalar>* NonlinearProblem<Scalar>::get_c() const
 template<class Scalar>
 void NonlinearProblem<Scalar>::set_g(Vector<Scalar>* g)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::set_g(g): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -138,7 +138,7 @@ void NonlinearProblem<Scalar>::set_g(Vector<Scalar>* g)
 template<class Scalar>
 Vector<Scalar>* NonlinearProblem<Scalar>::get_g()
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::get_g(): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -160,7 +160,7 @@ void NonlinearProblem<Scalar>::calc_g(
 	,bool                    newPoint
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblem<Scalar>::calc_g(...): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);

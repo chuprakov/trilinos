@@ -8,7 +8,7 @@
 
 #include "RTOp.h"
 #include "Range1D.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace TSFCore {
 

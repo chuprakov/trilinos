@@ -94,7 +94,7 @@ public:
 	 * implementaion needed by any subclass) is based on the non-const
 	 * version <tt>col()</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const Vector<Scalar> > col(Index j) const;
+	virtual Teuchos::RefCountPtr<const Vector<Scalar> > col(Index j) const;
 
 	///
 	/** Get a mutable view of column vector.
@@ -112,7 +112,7 @@ public:
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
 	 * the smart pointer returned by this function goes out of scope.
 	 */
-	virtual MemMngPack::ref_count_ptr<Vector<Scalar> > col(Index j) = 0;
+	virtual Teuchos::RefCountPtr<Vector<Scalar> > col(Index j) = 0;
 
 	//@}
 
@@ -125,7 +125,7 @@ public:
 	 * The default implementation returns the object from
 	 * the non-const version of <tt>clone_mv()</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > clone_mv() const;
+	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > clone_mv() const;
 
 	///
 	/** Clone the multi-vector object (if supported).
@@ -136,7 +136,7 @@ public:
 	 * this method if it can do something more sophisticated
 	 * (i.e. lazy evaluation) but in general, this is not needed.
 	 */
-	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > clone_mv();
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > clone_mv();
 
 	//@}
 
@@ -165,7 +165,7 @@ public:
 	 * The default implementation (which is the only implementation needed by subclasses)
 	 * is to return object from the non-const verstion <tt>subView()</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView( const Range1D& col_rng ) const;
+	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const Range1D& col_rng ) const;
 	
 	///
 	/** Returns a non-const sub-view of a contiguous set of columns of the this multi-vector.
@@ -192,7 +192,7 @@ public:
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
 	 * the smart pointer returned by this function goes out of scope.
 	 */
-	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
 
 	///
 	/** Returns a const sub-view of a non-contiguous set of columns of this multi-vector.
@@ -218,7 +218,7 @@ public:
 	 * The default implementation (which is the only implementation needed by subclasses)
 	 * is to return object from the non-const verstion <tt>subView()</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView( const int numCols, const int cols[] ) const;
+	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const int numCols, const int cols[] ) const;
 
 	///
 	/** Returns a non-const sub-view of a non-contiguous set of columns of this multi-vector.
@@ -247,7 +247,7 @@ public:
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
 	 * the smart pointer returned by this function goes out of scope.
 	 */
-	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
 	
 	//@}
 
@@ -358,7 +358,7 @@ public:
 		) const;
 
 	/// This method is simply overridden to return <tt>this->clone_lons()</tt>.
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> > clone() const;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 
 	//@}
 

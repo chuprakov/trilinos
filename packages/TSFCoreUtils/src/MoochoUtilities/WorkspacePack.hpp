@@ -16,8 +16,8 @@
 #ifndef WORK_SPACE_PACK_H
 #define WORK_SPACE_PACK_H
 
-#include "ref_count_ptr.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace WorkspacePack {
 
@@ -48,7 +48,7 @@ class RawWorkspace;
  * threads will result in incorrect behavior and could potentially crash the
  * program in some cases.
  */
-extern MemMngPack::ref_count_ptr<WorkspaceStore> default_workspace_store;
+extern Teuchos::RefCountPtr<WorkspaceStore> default_workspace_store;
 
 ///
 /** Encapulsation object for raw temporary workspace that has been allocated.
@@ -330,7 +330,7 @@ inline
 T& Workspace<T>::operator[](size_t i)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( !( 0 <= i && i < this->size() ), std::invalid_argument, "Workspace<T>::operator[](i): Error!" );
+	TEST_FOR_EXCEPTION( !( 0 <= i && i < this->size() ), std::invalid_argument, "Workspace<T>::operator[](i): Error!" );
 #endif	
 	return reinterpret_cast<T*>(raw_workspace_.workspace_ptr())[i];
 }

@@ -744,7 +744,7 @@ As mentioned in Section \ref{tsfcorenonlin:sec:TSFCoreNonlin}, the
 optional access to a preconditioner object which is represented
 through the \texttt{\textit{LinearOp}} interface.  The
 method \texttt{pre\-conditioner()} returns a
-\texttt{ref\_count\_ptr<const LinearOp>} object which may
+\texttt{RefCountPtr<const LinearOp>} object which may
 point to a null object if the \texttt{\textit{Linear\-Solve\-Op}}
 object can not return a meaningful preconditioner.
 
@@ -1072,7 +1072,7 @@ multiple simultaneous calculations which are discussed next.
 
 Memory management of variables, computed functions and computed
 gradients (Jacobians) is handled and controlled by the client ANA
-(through \texttt{ref\_count\_ptr<>} objects), not by the
+(through \texttt{RefCountPtr<>} objects), not by the
 \texttt{\textit{Nonlinear\-Problem\-First\-Order}} object.  These
 interfaces update objects that are controlled by the ANA which opens up
 support for many different types specialized ANAs (e.g.~SFE
@@ -1093,26 +1093,25 @@ are created.
 template<class Scalar>
 void TSFCore::Nonlin::foo( NonlinearProblemFirstOrder<Scalar>* np )
 {
-    namespace mmp = MemMngPack;
     np->initialize();
-    const int                                               Nu        = np->Nu();
-    const int                                               nrf       = np->numResponseFunctions();
-    mmp::ref_count_ptr<Vector<Scalar> >                     c         = np->space_c()->createMember();
-    mmp::ref_count_ptr<Vector<Scalar> >                     g;
-    if(nrf)                                                 g         = np->space_g()->createMember();
-    mmp::ref_count_ptr<LinearOpWithSolve<Scalar> >          DcDy      = np->factory_DcDy()->create();
-    std::vector<mmp::ref_count_ptr<LinearOp<Scalar> > >     DcDu(Nu);
-    for( l = 1; l <= Nu; ++l )                              DcDu[l-l] = np->factory_DcDu(l)->create();
-    mmp::ref_count_ptr<MultiVector<Scalar> >                DgDy;
-    if(nrf)                                                 DgDy      = np->space_y()->createMembers(nrf);
-    std::vector<mmp::ref_count_ptr<MultiVector<Scalar> > >  DgDu(Nu);
-    if(nrf) for( l = 1; l <= Nu; ++l )                      DgDu[l-l] = np->space_u(l)->createMembers(nrf);
+    const int                                                Nu        = np->Nu();
+    const int                                                nrf       = np->numResponseFunctions();
+    Teuchos::RefCountPtr<Vector<Scalar> >                    c         = np->space_c()->createMember();
+    Teuchos::RefCountPtr<Vector<Scalar> >                    g;
+    if(nrf)                                                  g         = np->space_g()->createMember();
+    Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >         DcDy      = np->factory_DcDy()->create();
+    std::vector<Teuchos::RefCountPtr<LinearOp<Scalar> > >    DcDu(Nu);
+    for( l = 1; l <= Nu; ++l )                               DcDu[l-l] = np->factory_DcDu(l)->create();
+    Teuchos::RefCountPtr<MultiVector<Scalar> >               DgDy;
+    if(nrf)                                                  DgDy      = np->space_y()->createMembers(nrf);
+    std::vector<Teuchos::RefCountPtr<MultiVector<Scalar> > > DgDu(Nu);
+    if(nrf) for( l = 1; l <= Nu; ++l )                       DgDu[l-l] = np->space_u(l)->createMembers(nrf);
     ...
 }
 \end{verbatim}}
 
 Note that in the above code snippet that the
-\texttt{ref\_count\_ptr<>} objects for \texttt{g}, \texttt{DcDu},
+\texttt{RefCountPtr<>} objects for \texttt{g}, \texttt{DcDu},
 \texttt{DgDy} and \texttt{DgDu[]} are only initialized if these quantities
 exist since the presence of auxiliary variables and auxiliary response
 functions are optional.
@@ -1155,22 +1154,21 @@ quantities at the initial point supplied by the
 template<class Scalar>
 void TSFCore::Nonlin::foo( NonlinearProblemFirstOrder<Scalar>* np )
 {
-    namespace mmp = MemMngPack;
     np->initialize();
     // Basic info
-    const int                                               Nu        = np->Nu();
-    const int                                               nrf       = np->numResponseFunctions();
+    const int                                                Nu        = np->Nu();
+    const int                                                nrf       = np->numResponseFunctions();
     // Create storage
-    mmp::ref_count_ptr<Vector<Scalar> >                     c         = np->space_c()->createMember();
-    mmp::ref_count_ptr<Vector<Scalar> >                     g;
-    if(nrf)                                                 g         = np->space_g()->createMember();
-    mmp::ref_count_ptr<LinearOpWithSolve<Scalar> >          DcDy      = np->factory_DcDy()->create();
-    std::vector<mmp::ref_count_ptr<LinearOp<Scalar> > >     DcDu(Nu);
-    for( l = 1; l <= Nu; ++l )                              DcDu[l-l] = np->factory_DcDu(l)->create();
-    mmp::ref_count_ptr<MultiVector<Scalar> >                DgDy;
-    if(nrf)                                                 DgDy      = np->space_y()->createMembers(nrf);
-    std::vector<mmp::ref_count_ptr<MultiVector<Scalar> > >  DgDu(Nu);
-    if(nrf) for( l = 1; l <= Nu; ++l )                      DgDu[l-l] = np->space_u(l)->createMembers(nrf);
+    Teuchos::RefCountPtr<Vector<Scalar> >                    c         = np->space_c()->createMember();
+    Teuchos::RefCountPtr<Vector<Scalar> >                    g;
+    if(nrf)                                                  g         = np->space_g()->createMember();
+    Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >         DcDy      = np->factory_DcDy()->create();
+    std::vector<Teuchos::RefCountPtr<LinearOp<Scalar> > >    DcDu(Nu);
+    for( l = 1; l <= Nu; ++l )                               DcDu[l-l] = np->factory_DcDu(l)->create();
+    Teuchos::RefCountPtr<MultiVector<Scalar> >               DgDy;
+    if(nrf)                                                  DgDy      = np->space_y()->createMembers(nrf);
+    std::vector<Teuchos::RefCountPtr<MultiVector<Scalar> > > DgDu(Nu);
+    if(nrf) for( l = 1; l <= Nu; ++l )                       DgDu[l-l] = np->space_u(l)->createMembers(nrf);
     // Setup point
     const Vector<Scalar>                &y0 = np->y0();
     std::vector<const Vector<Scalar>*>  u0_store(Nu); for(l=1;l<=Nu;++l) u0_store[l-1] = &np->u0(l);
@@ -1533,15 +1531,14 @@ Figure \ref{tsfcore:nonlin:fig:newton_solver_code} shows the C++ code for the
  00034 SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
  00035                                    ,Vector<Scalar> *y_inout, std::ostream *out, bool dumpAll ) const
  00036 {
- 00037     namespace mmp = MemMngPack;
  00039     // Create the data for the problem
- 00040     const Index                                     n        = np->space_c()->dim();
- 00041     mmp::ref_count_ptr<Vector<Scalar> >             y        = mmp::rcp(y_inout,false);       // Initial guess/solution
- 00042     mmp::ref_count_ptr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
- 00043     mmp::ref_count_ptr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
- 00044     ETransp                                         opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
- 00045     mmp::ref_count_ptr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
- 00046     mmp::ref_count_ptr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
+ 00040     const Index                                       n        = np->space_c()->dim();
+ 00041     Teuchos::RefCountPtr<Vector<Scalar> >             y        = Teuchos::rcp(y_inout,false);       // Initial guess/solution
+ 00042     Teuchos::RefCountPtr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
+ 00043     Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
+ 00044     ETransp                                           opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
+ 00045     Teuchos::RefCountPtr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
+ 00046     Teuchos::RefCountPtr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
  00047     // Compute the initial starting point
  00048     np->unsetQuantities(); np->set_c(c.get()); np->set_DcDy(DcDy.get()); // These pointers will be maintained throughout
  00049     np->calc_DcDy(*y,NULL); np->calc_c(*y,NULL,false);
@@ -1578,7 +1575,7 @@ Figure \ref{tsfcore:nonlin:fig:newton_solver_code} shows the C++ code for the
  00110             alpha *= 0.5;
  00111         }
  00121         // Take the Newton step
- 00122         std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+ 00122         std::swap<Teuchos::RefCountPtr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
  00123         // Update the Jacobian
  00124         np->calc_DcDy(*y,NULL,false);
  00128     }
@@ -1795,7 +1792,7 @@ estimate of the solution \texttt{y} and the trial point
 \texttt{y\_new} are swapped on line 122
 %
 {\scriptsize\begin{verbatim}
-    std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+    std::swap<Teuchos::RefCountPtr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
 \end{verbatim}}
 %
 \noindent{}which removes the need to copy vectors (this is a small trick that you
@@ -1842,4 +1839,19 @@ concludes the description of this simple ANA.
 \section{Summary}
 %
 
-This design is great and solves everyones problems.  Blah blah blah ...
+TSFCore::Nonlin addresses the need to develop an interface to
+nonlinear problems that TSFCore (purposefully) lacks.  TSFCore::Nonlin
+adds abstractions for invertible linear operators (i.e.~linear
+operations equipped with a solve method) and a generic nonlinear
+problem interface.  The interface
+\texttt{\textit{Nonlinear\-Problem\-First\-Order}} contains
+all of the functionality needed to suppport a varity of nonlinear
+mathematical problems such as nonlinear equation solves (for both
+single and coupled sets of equations), stability and bifurcation
+methods, uncertainty quantification methods, and nonlinear programming
+solvers for simultaneous analysis and design (SAND) optimization.
+These interface provide a great potential to reduce duplication of
+effort.
+
+
+

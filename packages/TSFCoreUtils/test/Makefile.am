@@ -7,4 +7,4 @@
 #np# in a subdirectory of this directory, use the Makefile.am located in
 #np# test1/ rather than this file.
 
-SUBDIRS = rcp_test
+SUBDIRS =

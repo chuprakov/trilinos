@@ -49,7 +49,7 @@ public:
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	EpetraVector(
-		const MemMngPack::ref_count_ptr<Epetra_Vector>  &epetra_vec
+		const Teuchos::RefCountPtr<Epetra_Vector>  &epetra_vec
 		);
 
 	///
@@ -68,7 +68,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const MemMngPack::ref_count_ptr<Epetra_Vector>  &epetra_vec
+		const Teuchos::RefCountPtr<Epetra_Vector>  &epetra_vec
 		);
 
 	///
@@ -80,12 +80,12 @@ public:
 	 * <li> <tt>this->mpiSpace().get() == NULL</tt>
 	 * </ul>
 	 */
-	MemMngPack::ref_count_ptr<Epetra_Vector> setUninitialized();
+	Teuchos::RefCountPtr<Epetra_Vector> setUninitialized();
 
 	///
 	/** Return a smart pointer object to a <tt>const</tt> <tt>Epetra_Vector</tt> object.
 	 */
-	MemMngPack::ref_count_ptr<const Epetra_Vector> epetra_vec() const;
+	Teuchos::RefCountPtr<const Epetra_Vector> epetra_vec() const;
 	
 	//@}
 
@@ -93,7 +93,7 @@ public:
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
 	void getLocalData( Scalar** values, ptrdiff_t* stride );
 
@@ -104,8 +104,8 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 
-	MemMngPack::ref_count_ptr<Epetra_Vector>            epetra_vec_;
-	MemMngPack::ref_count_ptr<const EpetraVectorSpace>  epetra_vec_spc_;
+	Teuchos::RefCountPtr<Epetra_Vector>            epetra_vec_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>  epetra_vec_spc_;
 
 	// ///////////////////////////////////////
 	// Private member functions
@@ -119,7 +119,7 @@ private:
 // Inline members
 
 inline
-MemMngPack::ref_count_ptr<const Epetra_Vector>
+Teuchos::RefCountPtr<const Epetra_Vector>
 EpetraVector::epetra_vec() const
 {
 	return epetra_vec_;

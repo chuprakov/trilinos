@@ -5,7 +5,7 @@
 #define TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_HPP
 
 #include "TSFCoreNonlinNonlinearProblemFirstOrderDecl.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -19,14 +19,14 @@ bool NonlinearProblemFirstOrder<Scalar>::adjointSupported() const
 // Factories for linear operators
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const MemMngPack::AbstractFactory<LinearOp<Scalar> > >
+Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar> > >
 NonlinearProblemFirstOrder<Scalar>::factory_DcDu(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::factory_DcDu(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Transpose arguments
@@ -34,7 +34,7 @@ NonlinearProblemFirstOrder<Scalar>::factory_DcDu(int l) const
 template<class Scalar>
 ETransp NonlinearProblemFirstOrder<Scalar>::opDcDu(int l) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::opDcDu(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -51,7 +51,7 @@ const LinearOpWithSolve<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DcDy() 
 template<class Scalar>
 void NonlinearProblemFirstOrder<Scalar>::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::set_DcDu(l,DcDu_l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -60,7 +60,7 @@ void NonlinearProblemFirstOrder<Scalar>::set_DcDu(int l, LinearOp<Scalar>* DcDu_
 template<class Scalar>
 LinearOp<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DcDu(int l)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::get_DcDu(l): Error, Must be overridden in subclass along with Nu() > 0!"
 		);
@@ -76,7 +76,7 @@ const LinearOp<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DcDu(int l) cons
 template<class Scalar>
 void NonlinearProblemFirstOrder<Scalar>::set_DgDy(MultiVector<Scalar>* DgDy)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::set_DgDy(DgDy): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -85,7 +85,7 @@ void NonlinearProblemFirstOrder<Scalar>::set_DgDy(MultiVector<Scalar>* DgDy)
 template<class Scalar>
 MultiVector<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DgDy()
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::set_DgDy(): Error, Must be overridden in subclass along with space_g().get() != NULL!"
 		);
@@ -101,7 +101,7 @@ const MultiVector<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DgDy() const
 template<class Scalar>
 void NonlinearProblemFirstOrder<Scalar>::set_DgDu(int l, MultiVector<Scalar>* DgDu_l)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::set_DgDu(l,DgDu_l): Error, Must be overridden "
 		"in subclass along with Nu() > 0 and space_g().get() != NULL!"
@@ -111,7 +111,7 @@ void NonlinearProblemFirstOrder<Scalar>::set_DgDu(int l, MultiVector<Scalar>* Dg
 template<class Scalar>
 MultiVector<Scalar>* NonlinearProblemFirstOrder<Scalar>::get_DgDu(int l)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::set_DgDu(l,DgDu_l): Error, Must be overridden "
 		"in subclass along with Nu() > 0 and space_g().get() != NULL!"
@@ -135,7 +135,7 @@ void NonlinearProblemFirstOrder<Scalar>::calc_DcDu(
 	,bool                    newPoint
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::clac_DcDu(...): Error, Must be overridden "
 		"in subclass along with Nu() > 0!"
@@ -149,7 +149,7 @@ void NonlinearProblemFirstOrder<Scalar>::calc_DgDy(
 	,bool                    newPoint
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::clac_DgDy(...): Error, Must be overridden "
 		"in subclass along with space_g().get() != NULL!"
@@ -164,7 +164,7 @@ void NonlinearProblemFirstOrder<Scalar>::calc_DgDu(
 	,bool                    newPoint
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,std::logic_error
 		,"NonlinearProblemFirstOrder<Scalar>::clac_DgDy(...): Error, Must be overridden "
 		"in subclass along with Nu() > 0 and space_g().get() != NULL!"

@@ -158,7 +158,7 @@ public:
 	 * <li> <tt>return.get()!=NULL</tt>
 	 * </ul>
 	 */
-	virtual MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_y() const = 0;
+	virtual Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_y() const = 0;
 	///
 	/** VectorSpace for the auxiliary variables <tt>u(l)</tt>.
 	 *
@@ -175,7 +175,7 @@ public:
 	 * The default implementation throws an exception since by default
 	 * <tt>this->Nu()==0</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_u(int l) const;
+	virtual Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_u(int l) const;
 	///
 	/** VectorSpace for the state constraints.
 	 *
@@ -188,7 +188,7 @@ public:
 	 * <li> <tt>return->dim() == this->space_y()->dim()</tt>
 	 * </ul>
 	 */
-	virtual MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_c() const = 0;
+	virtual Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_c() const = 0;
 	///
 	/** VectorSpace for the auxiliary response functions.
 	 *
@@ -201,7 +201,7 @@ public:
  	 *
 	 * The default implementation returns <tt>return.get() == NULL</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_g() const;
+	virtual Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_g() const;
 
 	//@}
 

@@ -5,7 +5,7 @@
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #include "Epetra_Map.h"
 #include "Epetra_Vector.h"
@@ -19,54 +19,53 @@ EpetraLinearOp::EpetraLinearOp()
 {}
 
 EpetraLinearOp::EpetraLinearOp(
-	const MemMngPack::ref_count_ptr<Epetra_Operator>                &op
-	,ETransp                                                        opTrans
-	,const MemMngPack::ref_count_ptr<MemMngPack::ReleaseResource>   &extra
+	const Teuchos::RefCountPtr<Epetra_Operator>   &op
+	,ETransp                                      opTrans
 	)
 {
-	initialize(op,opTrans,extra);
+	initialize(op,opTrans);
 }
 
 void EpetraLinearOp::initialize(
-	const MemMngPack::ref_count_ptr<Epetra_Operator>                &op
-	,ETransp                                                        opTrans
-	,const MemMngPack::ref_count_ptr<MemMngPack::ReleaseResource>   &extra
+	const Teuchos::RefCountPtr<Epetra_Operator>   &op
+	,ETransp                                      opTrans
 	)
 {
 	namespace mmp = MemMngPack;
 #ifdef _DEBUG
-	THROW_EXCEPTION( op.get()==NULL, std::invalid_argument, "EpetraLinearOp::initialize(...): Error!" );
+	TEST_FOR_EXCEPTION( op.get()==NULL, std::invalid_argument, "EpetraLinearOp::initialize(...): Error!" );
 #endif
-	state_.op      = op;
-	state_.opTrans = opTrans;
-	state_.extra   = extra;
-	domain_        = mmp::rcp( new EpetraVectorSpace( mmp::rcp(&op->OperatorDomainMap(),false) ) );
-	range_         = mmp::rcp( new EpetraVectorSpace( mmp::rcp(&op->OperatorRangeMap(),false) ) );
+	op_      = op;
+	opTrans_ = opTrans;
+	domain_  = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorDomainMap(),false) ) );
+	range_   = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorRangeMap(),false) ) );
 }
 
-EpetraLinearOp::State
-EpetraLinearOp::setUninitialized()
+void EpetraLinearOp::setUninitialized(
+	Teuchos::RefCountPtr<Epetra_Operator>    *op
+	,ETransp                                 *opTrans
+	)
 {
-	namespace mmp = MemMngPack;
 
-	State tmp = state_;
-	
-	state_   = State();
-	domain_  = mmp::null;
-	range_   = mmp::null;
+	if(op)      *op      = op_;
+	if(opTrans) *opTrans = opTrans_;
 
-	return tmp;
+	op_      = Teuchos::null;
+	opTrans_ = NOTRANS;
+	domain_  = Teuchos::null;
+	range_   = Teuchos::null;
+
 }
 
 // Overridden from OpBase
 
-MemMngPack::ref_count_ptr<const VectorSpace<EpetraLinearOp::Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraLinearOp::Scalar> >
 EpetraLinearOp::range() const
 {
 	return range_;
 }
 
-MemMngPack::ref_count_ptr<const VectorSpace<EpetraLinearOp::Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<EpetraLinearOp::Scalar> >
 EpetraLinearOp::domain() const
 {
 	return domain_;
@@ -74,12 +73,12 @@ EpetraLinearOp::domain() const
 
 // Overridden from LinearOp
 
-MemMngPack::ref_count_ptr<const LinearOp<EpetraLinearOp::Scalar> >
+Teuchos::RefCountPtr<const LinearOp<EpetraLinearOp::Scalar> >
 EpetraLinearOp::clone() const
 {
 	namespace mmp = MemMngPack;
-	assert(0);
-	return mmp::null;
+	assert(0); // ToDo: Implement when needed
+	return Teuchos::null;
 }
 
 void EpetraLinearOp::apply(
@@ -98,11 +97,11 @@ void EpetraLinearOp::apply(
 	const EpetraVector   &x = dyn_cast<const EpetraVector>(x_in);
 	EpetraVector         &y = dyn_cast<EpetraVector>(*y_inout);
 	
-	state_.op->SetUseTranspose( trans_trans(state_.opTrans,M_trans) == NOTRANS ? false : true );
+	op_->SetUseTranspose( trans_trans(opTrans_,M_trans) == NOTRANS ? false : true );
 
 	if( alpha == 1.0 && beta == 0 ) {
-		mmp::ref_count_ptr<Epetra_Vector> epetra_y = y.setUninitialized();
-		state_.op->Apply(
+		Teuchos::RefCountPtr<Epetra_Vector> epetra_y = y.setUninitialized();
+		op_->Apply(
 			*x.epetra_vec()
 			,*epetra_y
 			);
@@ -110,12 +109,12 @@ void EpetraLinearOp::apply(
 	}
 	else {
 		Vt_S( y_inout, beta );
-		Epetra_Vector t( M_trans == NOTRANS ? state_.op->OperatorRangeMap() : state_.op->OperatorDomainMap() );
-		state_.op->Apply(
+		Epetra_Vector t( M_trans == NOTRANS ? op_->OperatorRangeMap() : op_->OperatorDomainMap() );
+		op_->Apply(
 			*x.epetra_vec()
 			,t
 			);
-		Vp_StV( y_inout, alpha, EpetraVector( mmp::rcp( &t, false) ) );
+		Vp_StV( y_inout, alpha, EpetraVector( Teuchos::rcp( &t, false) ) );
 	}
 
 }

@@ -9,7 +9,7 @@
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
@@ -18,7 +18,7 @@ void Vector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<S
 {
 	const Range1D rng = rng_in.full_range() ? Range1D(1,this->space()->dim()) : rng_in;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		this->space()->dim() < rng.ubound(), std::out_of_range
 		,"Vector<Scalar>::getSubVector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
 		<<"] is not in range = [1,"<<this->space()->dim()<<"]" );

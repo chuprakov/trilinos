@@ -17,13 +17,13 @@
 #define RELEASE_RESOURCE_REF_COUNT_PTR_H
 
 #include "ReleaseResource.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace MemMngPack {
 
 ///
 /** Template class that implements ReleaseResource interface for
- * a ref_count_ptr<T> object.
+ * a RefCountPtr<T> object.
  *
  * Note that ~ReleaseResource_ref_count_ptr() does not need to be
  * implemented since the compiler generated version will already
@@ -34,7 +34,7 @@ class ReleaseResource_ref_count_ptr : public ReleaseResource {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<T>   ptr_t;
+	typedef Teuchos::RefCountPtr<T>   ptr_t;
 
 	/// Just give public access to pointer
 	ptr_t  ptr;

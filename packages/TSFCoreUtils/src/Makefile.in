@@ -97,12 +97,8 @@ $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
-$(srcdir)/MoochoUtilities/StandardMemberCompositionMacros.hpp\
-$(srcdir)/MoochoUtilities/ThrowException.hpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.hpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
 $(srcdir)/MoochoUtilities/ObjectDB.hpp
@@ -110,10 +106,8 @@ $(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 MoochoUtilities_SOURCES = \
 $(srcdir)/MoochoUtilities/Range1D.cpp\
-$(srcdir)/MoochoUtilities/ThrowException.cpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.cpp\
 $(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 
@@ -277,9 +271,12 @@ $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
 
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
-  -I$(top_srcdir)/src/MoochoUtilities\
-  -I$(top_srcdir)/src/RTOpPack\
-  -I$(top_srcdir)/src/RTOpStdOps
+  -I$(top_srcdir)/src/MoochoUtilities \
+  -I$(top_srcdir)/src/RTOpPack \
+  -I$(top_srcdir)/src/RTOpStdOps \
+  -I$(top_builddir)/../teuchos/src \
+  -I$(top_srcdir)/../teuchos \
+  -I$(top_srcdir)/../teuchos/src
 
 
 SOURCES_H = \
@@ -353,9 +350,8 @@ CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
 libTSFCoreUtils_a_DEPENDENCIES =
-am__objects_1 = Range1D.$(OBJEXT) ThrowException.$(OBJEXT) \
-	WorkspacePack.$(OBJEXT) dynamic_cast_verbose.$(OBJEXT) \
-	ref_count_ptr.$(OBJEXT) ObjectDB.$(OBJEXT)
+am__objects_1 = Range1D.$(OBJEXT) WorkspacePack.$(OBJEXT) \
+	dynamic_cast_verbose.$(OBJEXT) ObjectDB.$(OBJEXT)
 am__objects_2 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
 	RTOp_apply_op_serial.$(OBJEXT) RTOp_mpi.$(OBJEXT) \
@@ -470,15 +466,12 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_min_value.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_value.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_values.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/Range1D.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ThrowException.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/WorkspacePack.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Range1D.Po ./$(DEPDIR)/WorkspacePack.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dynamic_cast_verbose.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/initRTOpStdOpsLibCpp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/init_RTOpStdOpsLib.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/print_sub_vector.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ref_count_ptr.Po
+@AMDEP_TRUE@	./$(DEPDIR)/print_sub_vector.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -557,11 +550,9 @@ uninstall-libLIBRARIES:
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 Range1D.$(OBJEXT): $(srcdir)/MoochoUtilities/Range1D.cpp
-ThrowException.$(OBJEXT): $(srcdir)/MoochoUtilities/ThrowException.cpp
 WorkspacePack.$(OBJEXT): $(srcdir)/MoochoUtilities/WorkspacePack.cpp
 dynamic_cast_verbose.$(OBJEXT): \
 	$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
-ref_count_ptr.$(OBJEXT): $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
 ObjectDB.$(OBJEXT): $(srcdir)/MoochoUtilities/ObjectDB.cpp
 RTOp.$(OBJEXT): $(srcdir)/RTOpPack/RTOp.c
 RTOpToMPI.$(OBJEXT): $(srcdir)/RTOpPack/RTOpToMPI.c
@@ -739,14 +730,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_values.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Range1D.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ThrowException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkspacePack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dynamic_cast_verbose.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initRTOpStdOpsLibCpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init_RTOpStdOpsLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_sub_vector.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ref_count_ptr.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -1472,18 +1461,6 @@ Range1D.obj: $(srcdir)/MoochoUtilities/Range1D.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Range1D.obj `cygpath -w $(srcdir)/MoochoUtilities/Range1D.cpp`
 
-ThrowException.o: $(srcdir)/MoochoUtilities/ThrowException.cpp
-@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ThrowException.cpp' object='ThrowException.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/ThrowException.Po' tmpdepfile='$(DEPDIR)/ThrowException.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ThrowException.o `test -f '$(srcdir)/MoochoUtilities/ThrowException.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ThrowException.cpp
-
-ThrowException.obj: $(srcdir)/MoochoUtilities/ThrowException.cpp
-@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ThrowException.cpp' object='ThrowException.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/ThrowException.Po' tmpdepfile='$(DEPDIR)/ThrowException.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ThrowException.obj `cygpath -w $(srcdir)/MoochoUtilities/ThrowException.cpp`
-
 WorkspacePack.o: $(srcdir)/MoochoUtilities/WorkspacePack.cpp
 @AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/WorkspacePack.cpp' object='WorkspacePack.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/WorkspacePack.Po' tmpdepfile='$(DEPDIR)/WorkspacePack.TPo' @AMDEPBACKSLASH@
@@ -1507,18 +1484,6 @@ dynamic_cast_verbose.obj: $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/dynamic_cast_verbose.Po' tmpdepfile='$(DEPDIR)/dynamic_cast_verbose.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dynamic_cast_verbose.obj `cygpath -w $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp`
-
-ref_count_ptr.o: $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
-@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ref_count_ptr.cpp' object='ref_count_ptr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/ref_count_ptr.Po' tmpdepfile='$(DEPDIR)/ref_count_ptr.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ref_count_ptr.o `test -f '$(srcdir)/MoochoUtilities/ref_count_ptr.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ref_count_ptr.cpp
-
-ref_count_ptr.obj: $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
-@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ref_count_ptr.cpp' object='ref_count_ptr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/ref_count_ptr.Po' tmpdepfile='$(DEPDIR)/ref_count_ptr.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ref_count_ptr.obj `cygpath -w $(srcdir)/MoochoUtilities/ref_count_ptr.cpp`
 
 ObjectDB.o: $(srcdir)/MoochoUtilities/ObjectDB.cpp
 @AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ObjectDB.cpp' object='ObjectDB.o' libtool=no @AMDEPBACKSLASH@

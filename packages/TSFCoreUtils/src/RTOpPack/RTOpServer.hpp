@@ -14,7 +14,7 @@ namespace RTOpPack {
 
 template<class Scalar>
 void RTOpServer<Scalar>::add_op_factory(
-	const MemMngPack::ref_count_ptr<MemMngPack::AbstractFactory<RTOpPack::RTOpT<Scalar> > > &op_factory
+	const Teuchos::RefCountPtr<MemMngPack::AbstractFactory<RTOpPack::RTOpT<Scalar> > > &op_factory
 	)
 {
 	// ToDo: RAB: 20030620: Validate op_factory properly!
@@ -22,11 +22,11 @@ void RTOpServer<Scalar>::add_op_factory(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<MemMngPack::AbstractFactory<RTOpPack::RTOpT<Scalar> > >
+Teuchos::RefCountPtr<MemMngPack::AbstractFactory<RTOpPack::RTOpT<Scalar> > >
 RTOpServer<Scalar>::get_op_factory( const char op_name[] ) const
 {
 	typename op_factories_t::const_iterator itr = op_factories_.find(op_name);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		itr == op_factories_.end(), std::logic_error
 		,"RTOpServer<Scalar>::get_op_factory(...): Error, an operator factory with the "
 		"operator name \'" << op_name << "\' does not exist!"

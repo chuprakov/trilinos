@@ -19,7 +19,7 @@ MPIMultiVectorBase<Scalar>::MPIMultiVectorBase()
 // Overridden form OpBase
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 MPIMultiVectorBase<Scalar>::range() const
 {
 	return mpiSpace();

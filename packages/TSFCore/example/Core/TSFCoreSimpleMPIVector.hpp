@@ -10,14 +10,14 @@
 namespace TSFCore {
 
 template<class Scalar>
-SimpleMPIVector<Scalar>::SimpleMPIVector( const MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > &mpiSpace )
+SimpleMPIVector<Scalar>::SimpleMPIVector( const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > &mpiSpace )
 	: mpiSpace_(mpiSpace), localValues_(mpiSpace->localSubDim())
 {}
 
 // Overridden from MPIVectorBase
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> >
+Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >
 SimpleMPIVector<Scalar>::mpiSpace() const
 {
 	return mpiSpace_;

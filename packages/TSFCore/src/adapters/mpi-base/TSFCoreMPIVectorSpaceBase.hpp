@@ -30,7 +30,7 @@ Index MPIVectorSpaceBase<Scalar>::mapCode() const
 		const MPI_Comm mpiComm = this->mpiComm();
 		int numProc = -1;
 		MPI_Comm_size( mpiComm, &numProc );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			numProc!=1, std::logic_error
 			,"MPIVectorSpaceBase<Scalar>::mapCode(): Error, have not implemented "
 			"this method for more than one processor yet!"

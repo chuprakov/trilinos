@@ -246,7 +246,10 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 -I$(srcdir)/adapters/mpi-base\
 -I$(top_srcdir)/../epetra/src\
 -I$(top_builddir)/../epetra/src \
--I$(top_builddir)/../TSFCoreUtils/src
+-I$(top_builddir)/../TSFCoreUtils/src\
+-I$(top_builddir)/../teuchos/src \
+-I$(top_srcdir)/../teuchos \
+-I$(top_srcdir)/../teuchos/src
 
 
 

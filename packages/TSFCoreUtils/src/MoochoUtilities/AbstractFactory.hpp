@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_FACTORY_PACK_ABSTRACT_FACTORY_H
 #define ABSTRACT_FACTORY_PACK_ABSTRACT_FACTORY_H
 
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace MemMngPack {
 
@@ -30,7 +30,7 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<T>   obj_ptr_t;
+	typedef Teuchos::RefCountPtr<T>   obj_ptr_t;
 #endif
 
 	///

@@ -139,7 +139,7 @@ public:
 	 * object is not required to return a non-NULL value but almost
 	 * every good linear operator implementation should and will.
 	 */
-	virtual MemMngPack::ref_count_ptr<const LinearOp<Scalar> > clone() const;
+	virtual Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 
 	///
 	/** Apply the linear operator (or its transpose) to a multi-vector :

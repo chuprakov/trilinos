@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 // Return constants from class functions
 const int
@@ -146,7 +146,7 @@ public:
 int main() {
 
 	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	using rcp::RefCountPtr;
 	using rcp::rcp_implicit_cast;
 	using rcp::rcp_const_cast;
 	using rcp::rcp_static_cast;
@@ -156,13 +156,13 @@ int main() {
 
 	// Create some smart pointers
 
-	ref_count_ptr<A>       a_ptr1  = rcp_implicit_cast<A>(rcp::rcp(new C));
+	RefCountPtr<A>       a_ptr1  = rcp_implicit_cast<A>(rcp::rcp(new C));
 	assert( a_ptr1.get() );
 	assert( a_ptr1.count()  == 1 );
 #ifdef REF_COUNT_PTR_TEMPLATE_CLASS_TEMPLATE_FUNCTIONS
-	ref_count_ptr<D>       d_ptr1  = rcp::rcp(new E);
+	RefCountPtr<D>       d_ptr1  = rcp::rcp(new E);
 #else
-	ref_count_ptr<D>       d_ptr1  = rcp_implicit_cast<D>(rcp::rcp(new E));
+	RefCountPtr<D>       d_ptr1  = rcp_implicit_cast<D>(rcp::rcp(new E));
 #endif
 	assert( d_ptr1.get() );
 	assert( d_ptr1.count()  == 1 );
@@ -171,11 +171,11 @@ int main() {
 
 		// Create some more smart points (no new memory!)
 
-		const ref_count_ptr<const A> ca_ptr1 = rcp::rcp_const_cast<const A>(a_ptr1); 
+		const RefCountPtr<const A> ca_ptr1 = rcp::rcp_const_cast<const A>(a_ptr1); 
 		assert( a_ptr1.count()  == 2 );
 		assert( ca_ptr1.get() );
 		assert( ca_ptr1.count() == 2 );
-		const ref_count_ptr<const D> cd_ptr1 = rcp::rcp_const_cast<const D>(d_ptr1);
+		const RefCountPtr<const D> cd_ptr1 = rcp::rcp_const_cast<const D>(d_ptr1);
 		assert( d_ptr1.count()  == 2 );
 		assert( cd_ptr1.get() );
 		assert( cd_ptr1.count() == 2 );
@@ -183,7 +183,7 @@ int main() {
 #ifdef SHOW_RUN_TIME_ERROR_1
 		// Conversion using get() is a no no!  When a_ptr2 is deleted so will the allocated
 		// object and then a_ptr1 will be corrupted after this block ends!
-		const ref_count_ptr<A> a_ptr2 = a_ptr1.get();
+		const RefCountPtr<A> a_ptr2 = a_ptr1.get();
 #endif
 
 		// Test assignment functions
@@ -216,7 +216,7 @@ int main() {
 		// Test dynamic and static conversions
 
 		// Cast down the inheritance hiearchy (const A -> const B1)
-		const ref_count_ptr<const B1> cb1_ptr1 = rcp::rcp_dynamic_cast<const B1>(ca_ptr1);
+		const RefCountPtr<const B1> cb1_ptr1 = rcp::rcp_dynamic_cast<const B1>(ca_ptr1);
 		assert( cb1_ptr1.get() );
 		assert( cb1_ptr1.count() == 3 );
 		assert( ca_ptr1.count()  == 3 );
@@ -225,12 +225,12 @@ int main() {
 		// Cast up the inheritance hiearchy (const B1 -> const A)
 		assert( rcp::rcp_implicit_cast<const A>(cb1_ptr1)->A_f()  == A_f_return );
 #ifdef REF_COUNT_PTR_TEMPLATE_CLASS_TEMPLATE_FUNCTIONS
-		assert( ref_count_ptr<const A>(cb1_ptr1)->A_f()           == A_f_return );
+		assert( RefCountPtr<const A>(cb1_ptr1)->A_f()           == A_f_return );
 #endif
 		// Implicit cast from const to non-const (A -> const A)
 		assert( rcp::rcp_implicit_cast<const A>(a_ptr1)->A_f()    == A_f_return );
 #ifdef REF_COUNT_PTR_TEMPLATE_CLASS_TEMPLATE_FUNCTIONS
-		assert( ref_count_ptr<const A>(a_ptr1)->A_f()             == A_f_return );
+		assert( RefCountPtr<const A>(a_ptr1)->A_f()             == A_f_return );
 #endif
 		// Cast away constantness (const B1 -> B1)
 		assert( rcp::rcp_const_cast<B1>(cb1_ptr1)->B1_g()         == B1_g_return );
@@ -240,7 +240,7 @@ int main() {
 		assert( rcp::rcp_dynamic_cast<const C>(cb1_ptr1)->C_f()   == C_f_return );
 
 		// Cast away constantness (const C -> C)
-		const ref_count_ptr<C>
+		const RefCountPtr<C>
 			c_ptr1 = rcp::rcp_const_cast<C>(rcp::rcp_dynamic_cast<const C>(ca_ptr1));
 		assert( c_ptr1.get() );
 		assert( c_ptr1.count()   == 4 );
@@ -248,7 +248,7 @@ int main() {
 		assert( a_ptr1.count()   == 4 );
 
 		// Cast down the inheritance hiearchy using static_cast<...> (const D -> const E)
-		const ref_count_ptr<const E>
+		const RefCountPtr<const E>
 			ce_ptr1 = rcp::rcp_static_cast<const E>(cd_ptr1); // This is not checked at runtime!
 		assert( ce_ptr1.get() );
 		assert( ce_ptr1.count()  == 3 );
@@ -268,8 +268,8 @@ int main() {
 
 		try {
 			// Try to cast form one interface to another that is not supported (B2 -> B1).
-			// The ref_count_ptr<B1> returned from rcp_dynamic_cast<...> should be null!
-			// Note that ref_count_ptr<...>::optertor->() should throw an exception but even
+			// The RefCountPtr<B1> returned from rcp_dynamic_cast<...> should be null!
+			// Note that RefCountPtr<...>::optertor->() should throw an exception but even
 			// so no memory leak occurs.  If you don't believe me then step through with a
 			// debugger and see for yourself.
 			assert( rcp::rcp_dynamic_cast<B1>( rcp::rcp(new B2) )->B1_g() == B1_g_return );
@@ -341,7 +341,7 @@ int main() {
 	a_ptr1 = rcp::null;
 	d_ptr1 = rcp::null;
 
-	std::cerr << "ref_count_ptr<...> seems to checks out!\n";
+	std::cerr << "RefCountPtr<...> seems to checks out!\n";
 
 	} // end try
 	catch( const std::exception &excpt ) {

@@ -14,10 +14,10 @@ namespace TSFCore {
 // Virtual functions with default implemenations
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOp<Scalar> > 
+Teuchos::RefCountPtr<const LinearOp<Scalar> > 
 LinearOp<Scalar>::clone() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 template<class Scalar>

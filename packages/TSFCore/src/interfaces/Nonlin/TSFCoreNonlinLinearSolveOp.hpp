@@ -20,10 +20,10 @@ ENonsingStatus LinearSolveOp<Scalar>::nonsingStatus() const
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearSolveOp<Scalar> >
+Teuchos::RefCountPtr<const LinearSolveOp<Scalar> >
 LinearSolveOp<Scalar>::clone_lso() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 template<class Scalar>
@@ -35,7 +35,6 @@ void LinearSolveOp<Scalar>::solve(
 	,Solvers::ConvergenceTester<Scalar>    *convTester
 	) const
 {
-	namespace mmp = MemMngPack;
 	Mp_MtM_assert_compatibility(X,NOTRANS,*this,M_trans==NOTRANS?TRANS:NOTRANS,Y,NOTRANS);
 	const VectorSpace<Scalar> &space_mv_rows = *Y.domain();
 	const Index               num_mv_cols    = space_mv_rows.dim();
@@ -45,7 +44,7 @@ void LinearSolveOp<Scalar>::solve(
 	//    op(M)*X(j) = alpha*Y(j))
 	//
 	bool scale_y = (alpha != 1.0);
-	mmp::ref_count_ptr<Vector<Scalar> > tmp = ( scale_y ? Y.range()->createMember() : mmp::null );
+	Teuchos::RefCountPtr<Vector<Scalar> > tmp = ( scale_y ? Y.range()->createMember() : Teuchos::null );
 	for( Index j = 1; j <= num_mv_cols; ++j ) {
 		// get tmp = alpha*Y.col(j) (but only scale if alpha != 1.0)
 		if( scale_y ) {
@@ -53,7 +52,7 @@ void LinearSolveOp<Scalar>::solve(
 			Vt_S(tmp.get(),alpha);
 		}
 		else {
-			tmp = mmp::rcp_const_cast<Vector<Scalar> >(Y.col(j));
+			tmp = Teuchos::rcp_const_cast<Vector<Scalar> >(Y.col(j));
 		}
 		// Solve op(M)*X(j) = alpha*Y(j)
 		this->solve(M_trans,*tmp,X->col(j).get(),convTester);

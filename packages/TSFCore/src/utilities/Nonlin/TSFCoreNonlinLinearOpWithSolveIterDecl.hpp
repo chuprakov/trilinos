@@ -13,13 +13,13 @@ namespace Nonlin {
 ///
 template<class Scalar>
 struct LinearOpWithSolveIterState {
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                            M;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> >                            M;
 	ETransp                                                                       M_trans;
-	MemMngPack::ref_count_ptr<const Solvers::IterativeLinearSolver<Scalar> >      solver;
-	MemMngPack::ref_count_ptr<Solvers::ConvergenceTester<Scalar> >                convTester;
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                            M_tilde_left_inv;
+	Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >      solver;
+	Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >                convTester;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> >                            M_tilde_left_inv;
 	ETransp                                                                       M_tilde_left_inv_trans;
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                            M_tilde_right_inv;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> >                            M_tilde_right_inv;
 	ETransp                                                                       M_tilde_right_inv_trans;
 };
 
@@ -43,25 +43,25 @@ public:
 
 	///
 	LinearOpWithSolveIter(
-		const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                          &M
+		const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
 		,ETransp                                                                          M_trans
-		,const MemMngPack::ref_count_ptr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
-		,const MemMngPack::ref_count_ptr<Solvers::ConvergenceTester<Scalar> >             &convTester             = MemMngPack::null
-		,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_left_inv       = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
+		,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester             = Teuchos::null
+		,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv       = Teuchos::null
 		,ETransp                                                                          M_tilde_left_inv_trans  = NOTRANS
-		,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_right_inv      = MemMngPack::null
+		,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv      = Teuchos::null
 		,ETransp                                                                          M_tilde_right_inv_trans = NOTRANS
 		);
 
 	///
 	void initialize(
-		const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                          &M
+		const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
 		,ETransp                                                                          M_trans
-		,const MemMngPack::ref_count_ptr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
-		,const MemMngPack::ref_count_ptr<Solvers::ConvergenceTester<Scalar> >             &convTester             = MemMngPack::null
-		,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_left_inv       = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
+		,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester             = Teuchos::null
+		,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv       = Teuchos::null
 		,ETransp                                                                          M_tilde_left_inv_trans  = NOTRANS
-		,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_right_inv      = MemMngPack::null
+		,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv      = Teuchos::null
 		,ETransp                                                                          M_tilde_right_inv_trans = NOTRANS
 		);
 	
@@ -73,9 +73,9 @@ public:
 	/** @name Overridden from OpBase */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > domain() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > range() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > range() const;
 	///
 	bool opSupported(ETransp M_trans) const;
 	//@}
@@ -118,9 +118,9 @@ public:
 		,Solvers::ConvergenceTester<Scalar>    *convTester
 		) const;
 	///
-	MemMngPack::ref_count_ptr<const LinearOpWithSolve<Scalar> > clone_lows() const;
+	Teuchos::RefCountPtr<const LinearOpWithSolve<Scalar> > clone_lows() const;
 	///
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> > preconditioner() const;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> > preconditioner() const;
 	//@}
 
 private:

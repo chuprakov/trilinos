@@ -37,7 +37,7 @@ public:
 	 * change if <tt>*this</tt> modified so this reference should not
 	 * be maintained for too long.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > domain() const = 0;
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const = 0;
 
 	///
 	/** Range space for <tt>this</tt> operator.
@@ -52,7 +52,7 @@ public:
 	 * change if <tt>*this</tt> modified so this reference should not
 	 * be maintained for too long.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > range() const = 0;
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const = 0;
 
 	//@}
 

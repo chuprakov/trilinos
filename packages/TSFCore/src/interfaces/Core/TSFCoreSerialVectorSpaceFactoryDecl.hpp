@@ -22,7 +22,7 @@ public:
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > createVecSpc(int dim) const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > createVecSpc(int dim) const;
 
 	//@}
 	

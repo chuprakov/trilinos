@@ -40,7 +40,7 @@ public:
 		Scalar                 tol_in 
 		);	
 
-	MemMngPack::ref_count_ptr<const GMRESSolver<Scalar> > clone () const;
+	Teuchos::RefCountPtr<const GMRESSolver<Scalar> > clone () const;
 	
 private:
 
@@ -50,9 +50,9 @@ private:
 	bool				                                          isConverged;
 	Scalar			                                              tol, curr_res, r0; 
 	std::vector<Scalar>                                           z;
-	Teuchos::SerialDenseMatrix<int,Scalar>                              H_;
-	MemMngPack::ref_count_ptr< MultiVector<Scalar> >              V_;
-	MemMngPack::ref_count_ptr< Vector<Scalar> >                   r;
+	Teuchos::SerialDenseMatrix<int,Scalar>                        H_;
+	Teuchos::RefCountPtr< MultiVector<Scalar> >                   V_;
+	Teuchos::RefCountPtr< Vector<Scalar> >                        r;
 	std::vector<Scalar>		                                      cs, sn;	
 
 }; // end class GMRESSolver
@@ -120,11 +120,11 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		//
 		r0 = norm_2( *r );
 		z[0] = r0;
-		MemMngPack::ref_count_ptr<Vector<Scalar> >
+		Teuchos::RefCountPtr<Vector<Scalar> >
 			w = V_->col(1);		    // get a mutable view of the first column of V_.
 		assign( w.get(), *r );      // copy r to the first column of V_.
 		Vt_S( w.get(), 1.0/r0 );    // v_1 = r_0 / ||r_0||
-		w = MemMngPack::null;       // Forces V_ to be modified
+		w = Teuchos::null;       // Forces V_ to be modified
 		//
 		// Calls doIteration() using the current linear system parameters.
 		//
@@ -139,7 +139,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		// Compute the new solution.
 		//
 		if( curr_iter > 0 ) {
-			MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
+			Teuchos::RefCountPtr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
 			SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
 			V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
 		}
@@ -150,10 +150,10 @@ SolveReturn GMRESSolver<Scalar>::solve(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const GMRESSolver<Scalar> >
+Teuchos::RefCountPtr<const GMRESSolver<Scalar> >
 GMRESSolver<Scalar>::clone() const
 {
-	return MemMngPack::rcp( new GMRESSolver<Scalar>(*this) );
+	return Teuchos::rcp( new GMRESSolver<Scalar>(*this) );
 }
 
 template<class Scalar>
@@ -164,7 +164,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     Teuchos::BLAS<int, Scalar> blas;
     Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
     // 
-	MemMngPack::ref_count_ptr<Vector<Scalar> >
+	Teuchos::RefCountPtr<Vector<Scalar> >
 		w = V_->col(curr_iter+2);                              // w = v_{j+1}
     Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() );      // w = Op * v_{j}	
     //

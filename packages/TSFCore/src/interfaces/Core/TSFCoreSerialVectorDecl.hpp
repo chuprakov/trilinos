@@ -39,7 +39,7 @@ public:
 	/** Calls <tt>this->initialize(vecSpc)</tt>.
 	 */
 	SerialVector(
-		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 		);
 	///
 	/** Calls <tt>this->initialize(dim)</tt>.
@@ -55,13 +55,13 @@ public:
 		,int    vs
 		,int    dim
 		,bool   ownsMem = false
-		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc = MemMngPack::null
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc = Teuchos::null
 		);
 	///
 	/** Call <tt>this->initialize(v,vs,true,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
-		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 		);
 	///
 	/** Call <tt>this->initialize(v,vs,true)</tt> with internally dynamically allocated data <tt>v</tt>.
@@ -83,7 +83,7 @@ public:
 	 *                [in] Smart pointer to a <tt>VectorSpace</tt> object that will be used to represent the
 	 *                vector space for <tt>*this</tt>.  If <tt>vecSpc.get()==NULL</tt> on input, then
 	 *                a <tt>SerialVectorSpace</tt> object of dimension <tt>dim</tt> is allocated for this
-	 *                role.  The default is <tt>MemMngPack::null</tt>.
+	 *                role.  The default is <tt>Teuchos::null</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>dim == vecSpc->dim()</tt> (throw <tt>std::invalid_argument</tt>)
@@ -111,7 +111,7 @@ public:
 		,int    vs
 		,int    dim
 		,bool   ownsMem = false
-		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc = MemMngPack::null
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc = Teuchos::null
 		);
 
 	//@}
@@ -136,7 +136,7 @@ public:
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > space() const;
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const;
 	///
 	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
 	///
@@ -159,7 +159,7 @@ private:
 	int                                                     vs_;
 	int                                                     dim_;
 	bool                                                    ownsMem_;
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >   space_serial_;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >   space_serial_;
 
 	// ////////////////////////////////
 	// Private member functions

@@ -35,13 +35,13 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 	if(out) *out << "\n*** Entering SimpleNewtonSolver::solve(...) ...\n";
 	// Create the data for the problem
 	const Index                                     n        = np->space_c()->dim();
-	mmp::ref_count_ptr<Vector<Scalar> >             y        = mmp::rcp(y_inout,false);       // Initial guess/solution
-	mmp::ref_count_ptr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
-	mmp::ref_count_ptr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
+	Teuchos::RefCountPtr<Vector<Scalar> >             y        = Teuchos::rcp(y_inout,false);       // Initial guess/solution
+	Teuchos::RefCountPtr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
+	Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
 	ETransp                                         opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
-	mmp::ref_count_ptr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
-	mmp::ref_count_ptr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
-	mmp::ref_count_ptr<Vector<Scalar> >		y_temp   = np->space_y()->createMember(); // Temp vector for swap
+	Teuchos::RefCountPtr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
+	Teuchos::RefCountPtr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
+	Teuchos::RefCountPtr<Vector<Scalar> >		y_temp   = np->space_y()->createMember(); // Temp vector for swap
 	// Compute the initial starting point
 	np->unsetQuantities(); np->set_c(c.get()); np->set_DcDy(DcDy.get()); // These pointers will be maintained throughout
 	np->calc_DcDy(*y,NULL); np->calc_c(*y,NULL,false);
@@ -119,7 +119,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 		if( lineSearchIter > maxLineSearchIter() ) {
 			if(out) *out << "\nlineSearchIter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
 						 << ": Terminating algorithm (throw SolverBreakDown)...\n";
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				lineSearchIter > maxLineSearchIter(), Solvers::Exceptions::SolverBreakdown
 				,"lineSearchIter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
 				<< ": Terminating algorithm!" );
@@ -132,7 +132,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 		// Used hard-coded swap because not in std:: for GNU 2.96 compiler and won't compile w/o 
 		// std:: for GNU 3.2. (HKT, 09/22/03)
 		// To Do (HKT) : Create macro to inject swap into std:: namespace.
-		//std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+		//std::swap<Teuchos::RefCountPtr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
 		
 	}
 	np->unsetQuantities();

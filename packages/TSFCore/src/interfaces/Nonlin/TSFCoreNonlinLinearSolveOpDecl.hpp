@@ -164,7 +164,7 @@ public:
 	 * required to return a non-NULL value but almost every good
 	 * implementation should and will.
 	 */
-	virtual MemMngPack::ref_count_ptr<const LinearSolveOp<Scalar> > clone_lso() const;
+	virtual Teuchos::RefCountPtr<const LinearSolveOp<Scalar> > clone_lso() const;
 
 	///
 	/** Solve a set of linear systems with this linear operator (or its transpose):

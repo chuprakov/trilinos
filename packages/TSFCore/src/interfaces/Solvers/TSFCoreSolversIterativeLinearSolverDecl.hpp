@@ -59,7 +59,7 @@ public:
 		) const;
 
 	///
-	virtual MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> > clone() const;
+	virtual Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> > clone() const;
 
 	//@}
 

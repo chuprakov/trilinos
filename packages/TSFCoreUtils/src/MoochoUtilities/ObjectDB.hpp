@@ -9,15 +9,17 @@
 #include <list>
 #include <typeinfo>
 
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace MemMngPack {
 
+using Teuchos::RefCountPtr;
+
 ///
-/** An object database based on <tt>ref_count_ptr</tt>.
+/** An object database based on <tt>RefCountPtr</tt>.
  *
  * The advantage of basing this database directly on
- * <tt>ref_count_ptr</tt> is that any objects that are not
+ * <tt>RefCountPtr</tt> is that any objects that are not
  * specifically removed and deleted by the client will
  * be automatically deleted by the object database itself.
  */
@@ -47,7 +49,7 @@ public:
 	 * </ul>
 	 */
 	template<class T>
-	size_t add( const ref_count_ptr<T> &obj_ptr );
+	size_t add( const RefCountPtr<T> &obj_ptr );
 
 	///
 	/** Get the smart pointer for an object that was previously stored.
@@ -66,7 +68,7 @@ public:
 	 * </ul>
 	 */
 	template<class T>
-	ref_count_ptr<T> get( size_t index, const T* ) const;
+	RefCountPtr<T> get( size_t index, const T* ) const;
 	
 	///
 	/** Remove an object from the object database and return its smart pointer.
@@ -93,7 +95,7 @@ private:
 	// ////////////////////////////////
 	// Private types
 
-	typedef PrivateUtilityPack::ref_count_ptr_node  rcp_node_t;
+	typedef Teuchos::PrivateUtilityPack::RefCountPtr_node  rcp_node_t;
 
 	struct object_entry_t {
 		object_entry_t() : obj(NULL), type(NULL), rcp_node(NULL) {}
@@ -128,7 +130,7 @@ private:
 
 template<class T>
 inline
-size_t ObjectDB::add( const ref_count_ptr<T> &obj_ptr )
+size_t ObjectDB::add( const RefCountPtr<T> &obj_ptr )
 {
 	rcp_node_t *rcp_node = obj_ptr.access_node();
 	if(rcp_node) rcp_node->incr_count();
@@ -137,11 +139,11 @@ size_t ObjectDB::add( const ref_count_ptr<T> &obj_ptr )
 
 template<class T>
 inline
-ref_count_ptr<T> ObjectDB::get( size_t index, const T* ) const
+RefCountPtr<T> ObjectDB::get( size_t index, const T* ) const
 {
 	const object_entry_t& entry = get_entry(index, typeid(T).name());
 	assert_types( *entry.type, typeid(T), index );
-	return ref_count_ptr<T>( static_cast<T*>(entry.obj), entry.rcp_node );
+	return RefCountPtr<T>( static_cast<T*>(entry.obj), entry.rcp_node );
 }
 
 } // namespace MemMngPack

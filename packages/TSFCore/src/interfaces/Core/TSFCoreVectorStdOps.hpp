@@ -20,7 +20,7 @@
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOp_TOp_sign.h"
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Reduction operations
 
@@ -102,7 +102,7 @@ template<class Scalar>
 void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");
+	TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");
 #endif
 	RTOpPack::RTOpC  assign_scalar_op;
 	if(0>RTOp_TOp_assign_scalar_construct(alpha,&assign_scalar_op.op())) assert(0);
@@ -114,7 +114,7 @@ template<class Scalar>
 void TSFCore::assign( Vector<Scalar>* v_lhs, const Scalar& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"assign(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"assign(...), Error!");
 #endif
 	RTOpPack::RTOpC  assign_scalar_op;
 	if(0>RTOp_TOp_assign_scalar_construct(alpha,&assign_scalar_op.op())) assert(0);
@@ -126,7 +126,7 @@ template<class Scalar>
 void TSFCore::assign( Vector<Scalar>* v_lhs, const Vector<Scalar>& v_rhs )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"assign(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"assign(...), Error!");
 #endif
 	RTOpPack::RTOpC assign_vectors_op;
 	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
@@ -139,7 +139,7 @@ template<class Scalar>
 void TSFCore::Vp_S( Vector<Scalar>* v_lhs, const Scalar& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
 	RTOpPack::RTOpC  add_scalar_op;
 	if(0>RTOp_TOp_add_scalar_construct(alpha,&add_scalar_op.op())) assert(0);
@@ -152,7 +152,7 @@ void TSFCore::Vt_S(
 	Vector<Scalar>* v_lhs, const Scalar& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
 	if( alpha == 0.0 ) {
 		assign(v_lhs,0.0);
@@ -169,7 +169,7 @@ template<class Scalar>
 void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<Scalar>& v_rhs )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
 	RTOpPack::RTOpC axpy_op;
 	if(0>RTOp_TOp_axpy_construct(alpha,&axpy_op.op())) assert(0);
@@ -185,7 +185,7 @@ void TSFCore::ele_wise_prod(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
 	RTOpPack::RTOpC ele_wise_prod_op;
 	if(0>RTOp_TOp_ele_wise_prod_construct(alpha,&ele_wise_prod_op.op())) assert(0);
@@ -201,7 +201,7 @@ void TSFCore::ele_wise_divide(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
 	RTOpPack::RTOpC ele_wise_divide_op;
 	if(0>RTOp_TOp_ele_wise_divide_construct(alpha,&ele_wise_divide_op.op())) assert(0);
@@ -220,7 +220,7 @@ template<class Scalar>
 void TSFCore::randomize( Scalar l, Scalar u, Vector<Scalar>* v )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
+	TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
 	RTOpPack::RTOpC  random_vector_op;
 	if(0>RTOp_TOp_random_vector_construct(l,u,&random_vector_op.op())) assert(0);

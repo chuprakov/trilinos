@@ -35,7 +35,7 @@ public:
 	 * operator object is not required to return a non-NULL value but
 	 * almost every good implementation should and will.
 	 */
-	virtual MemMngPack::ref_count_ptr<const LinearOpWithSolve> clone_lows() const;
+	virtual Teuchos::RefCountPtr<const LinearOpWithSolve> clone_lows() const;
 
 	///
 	/** Get access to the preconditioner to this nonsingular linear operator.
@@ -46,7 +46,7 @@ public:
 	 *
 	 * The default implementation returns <tt>return.get()==NULL</tt>.
 	 */
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> > preconditioner() const;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> > preconditioner() const;
 
 	//@}
 
@@ -54,7 +54,7 @@ public:
 	//@{
 
 	/// This method is simply overridden to return <tt>this->clone_lons()</tt>.
-	MemMngPack::ref_count_ptr<const LinearOp<Scalar> > clone() const;
+	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 
 	//@}
 
@@ -62,7 +62,7 @@ public:
 	//@{
 
 	/// This method is simply overridden to return <tt>this->clone_lons()</tt>.
-	MemMngPack::ref_count_ptr<const LinearSolveOp<Scalar> > clone_lso() const;
+	Teuchos::RefCountPtr<const LinearSolveOp<Scalar> > clone_lso() const;
 
 	//@}
 

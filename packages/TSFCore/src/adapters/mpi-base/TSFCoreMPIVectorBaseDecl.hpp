@@ -77,7 +77,7 @@ public:
 	///
 	/** Returns the MPI-based vector space object for <tt>*this</tt> vector.
 	 */
-	virtual MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
+	virtual Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
 
 	///
 	/** Returns a pointer to the beginning of the local vector data (and its stride).
@@ -106,7 +106,7 @@ public:
 	//@{
 
 	/// Calls <tt>mpiSpace()</tt>
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > space() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > space() const;
 
 	///
 	/** Implements the <tt>%applyOp()</tt> method through the methods

@@ -15,7 +15,7 @@
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_axpy.h"
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 template<class Scalar>
 void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] )
@@ -58,7 +58,7 @@ template<class Scalar>
 void TSFCore::assign( MultiVector<Scalar>* V, Scalar alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
+	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
 #endif
 	RTOpPack::RTOpC  assign_scalar_op;
 	if(0>RTOp_TOp_assign_scalar_construct(alpha,&assign_scalar_op.op())) assert(0);
@@ -70,7 +70,7 @@ template<class Scalar>
 void TSFCore::assign( MultiVector<Scalar>* V, const MultiVector<Scalar>& U )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
+	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
 #endif
 	RTOpPack::RTOpC assign_vectors_op;
 	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
@@ -83,7 +83,7 @@ template<class Scalar>
 void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    THROW_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
 #endif
     RTOpPack::RTOpC  axpy_op;
     RTOp_TOp_axpy_construct(alpha,&axpy_op.op());
@@ -96,13 +96,13 @@ template<class Scalar>
 void TSFCore::update( Scalar alpha[], Scalar beta, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    THROW_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
 	bool is_compatible = U.range()->isCompatible(*V->range());
-    THROW_EXCEPTION(
+    TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.range()->isCompatible((V->range())==false ");
 	is_compatible = U.domain()->isCompatible(*V->domain());
-    THROW_EXCEPTION(
+    TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.domain().isCompatible(V->domain())==false ");
 #endif
@@ -116,13 +116,13 @@ template<class Scalar>
 void TSFCore::update( const MultiVector<Scalar>& U, Scalar alpha[], Scalar beta, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    THROW_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
 	bool is_compatible = U.range()->isCompatible(*V->range());
-    THROW_EXCEPTION(
+    TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.range()->isCompatible((V->range())==false ");
 	is_compatible = U.domain()->isCompatible(*V->domain());
-    THROW_EXCEPTION(
+    TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.domain().isCompatible(V->domain())==false ");
 #endif
@@ -137,7 +137,7 @@ template<class Scalar>
 void TSFCore::randomize( Scalar l, Scalar u, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    THROW_EXCEPTION(V==NULL,std::logic_error,"randomize(...), Error!");
+    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"randomize(...), Error!");
 #endif
 	const int m = V->domain()->dim();
 	for( int j = 1; j <= m; ++j ) {

@@ -15,7 +15,7 @@ namespace Solvers {
 template<class Scalar>
 Scalar Norm<Scalar>::norm(const Vector<Scalar>& x) const
 {
-	const MultiVectorCols<Scalar> X( MemMngPack::rcp( const_cast<Vector<Scalar>*>(&x), false ) );
+	const MultiVectorCols<Scalar> X( Teuchos::rcp( const_cast<Vector<Scalar>*>(&x), false ) );
 	Scalar norms[1];
 	this->norms(X,norms);
 	return norms[0];

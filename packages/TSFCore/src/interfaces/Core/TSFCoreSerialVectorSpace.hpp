@@ -7,7 +7,7 @@
 #include "TSFCoreSerialVectorSpaceDecl.hpp"
 #include "TSFCoreSerialVectorSpaceBase.hpp"
 #include "TSFCoreSerialVector.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
@@ -32,17 +32,17 @@ Index SerialVectorSpace<Scalar>::dim() const
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<Vector<Scalar> >
+Teuchos::RefCountPtr<Vector<Scalar> >
 SerialVectorSpace<Scalar>::createMember() const
 {
-	return MemMngPack::rcp(new SerialVector<Scalar>(dim_));
+	return Teuchos::rcp(new SerialVector<Scalar>(dim_));
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 SerialVectorSpace<Scalar>::clone() const
 {
-	return MemMngPack::rcp(new SerialVectorSpace<Scalar>(*this));
+	return Teuchos::rcp(new SerialVectorSpace<Scalar>(*this));
 }
 
 } // end namespace TSFCore

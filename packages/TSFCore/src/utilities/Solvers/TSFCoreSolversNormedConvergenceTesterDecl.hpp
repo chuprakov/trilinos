@@ -24,14 +24,14 @@ public:
 	/// Calls <tt>initialize()</tt>
 	NormedConvergenceTester(
 		const Scalar                                           tol             = 1e-12
-		,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm           = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
 	/// Calls <tt>initialize()</tt>
 	NormedConvergenceTester(
 		const Index                                            totalNumSystems
 		,const Scalar                                          tols[]
-		,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm           = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
 	///
@@ -39,7 +39,7 @@ public:
 	 */
 	void initialize(
 		const Scalar                                           tol             = 1e-12
-		,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm           = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
 	///
@@ -48,7 +48,7 @@ public:
 	void initialize(
 		const Index                                            totalNumSystems
 		,const Scalar                                          tols[]
-		,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm           = MemMngPack::null
+		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
 	/// Return the minimum (over all iterations) maximum (over all right-hand-sides) tolerance seen
@@ -60,7 +60,7 @@ public:
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr<const Norm<Scalar> > norm() const;
+	Teuchos::RefCountPtr<const Norm<Scalar> > norm() const;
 	///
 	void reset();
 	///
@@ -74,7 +74,7 @@ public:
 
 private:
 
-	MemMngPack::ref_count_ptr<const Norm<Scalar> >   norm_;
+	Teuchos::RefCountPtr<const Norm<Scalar> >   norm_;
 	std::vector<Scalar>                              tols_;           // if size()==1 then works for multiple systems
 	std::vector<Index>                               activeSystems_;  // cache
 	std::vector<Scalar>                              norms_;          // cache

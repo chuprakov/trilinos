@@ -13,12 +13,12 @@
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
 template<class Scalar>
-void compressMember( TSFCore::Index k, TSFCore::Index k_curr, const MemMngPack::ref_count_ptr<TSFCore::MultiVector<Scalar> >& V )
+void compressMember( TSFCore::Index k, TSFCore::Index k_curr, const Teuchos::RefCountPtr<TSFCore::MultiVector<Scalar> >& V )
 {
 	TSFCore::assign<Scalar>( V->col(k_curr+1).get(), *V->col(k+1) ); 
 }
@@ -137,7 +137,7 @@ SolveReturn CGSolver<Scalar>::solve(
 	,const LinearOp<Scalar> *M_tilde_right_inv, ETransp M_tilde_right_inv_trans
 	) const
 {
-	THROW_EXCEPTION( M_tilde_right_inv != NULL, std::logic_error, "Error, we can not handle right preconditioners yet!" );
+	TEST_FOR_EXCEPTION( M_tilde_right_inv != NULL, std::logic_error, "Error, we can not handle right preconditioners yet!" );
 	namespace mmp = MemMngPack;
 	const VectorSpace<Scalar> &opM_domain     = ( M_trans == NOTRANS                ? *M.domain() : *M.range()  );
 	const VectorSpace<Scalar> &opM_range      = ( M_trans == NOTRANS                ? *M.range()  : *M.domain() );
@@ -153,27 +153,27 @@ SolveReturn CGSolver<Scalar>::solve(
 	//
 #ifdef _DEBUG
 	const char func_name[] = "CGSolver<Scalar>::solve(...)";
-	THROW_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
+	TEST_FOR_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
 	if(M_tilde_left_inv) {
 		const VectorSpace<Scalar> &opM_tilde_inv_domain = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->domain() : *M_tilde_left_inv->range()  );
 		const VectorSpace<Scalar> &opM_tilde_inv_range  = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->range()  : *M_tilde_left_inv->domain() );
 		const bool
 			domain_compatible = opM_domain.isCompatible(opM_tilde_inv_range),
 			range_compatible =  opM_range.isCompatible(opM_tilde_inv_domain);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!(domain_compatible && range_compatible), TSFCore::Exceptions::IncompatibleVectorSpaces
 			,func_name<<": Error, the range and/or domain spaces of op(M) and op(M_tilde_inv) do are not compatible!");
 	}
 	bool is_compatible = opM_domain.isCompatible(*X->range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).domain() not compatible with X->range()!");
 	is_compatible = opM_range.isCompatible(*Y.range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).range() not compatible with Y.range()!");
 	is_compatible = X->domain()->isCompatible(*Y.domain());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the X->domain() not compatible with Y.domain()!");
 #endif
@@ -191,7 +191,7 @@ SolveReturn CGSolver<Scalar>::solve(
 	// Resolve default parameters
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-	if (convTester) norm_ = convTester->norm(); else norm_ = mmp::rcp(new Solvers::Norm<Scalar>());
+	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Setup storage and initialize the algorithm
 	//
@@ -242,17 +242,17 @@ SolveReturn CGSolver<Scalar>::solve(
 		}
 		if( currIteration_ > 1 ) { for(j=0;j<currNumSystems_;++j) rho_old_[j] = rho_[j]; } // rho_{i-1}[j] = rho_{i-2}[j]
 		// Do the Iteration
-		MemMngPack::ref_count_ptr<MultiVector<Scalar> > X_curr = X_curr_->subView(Range1D(1,currNumSystems_));
+		Teuchos::RefCountPtr<MultiVector<Scalar> > X_curr = X_curr_->subView(Range1D(1,currNumSystems_));
 		doIteration(M,opM_notrans,opM_trans,X_curr.get(),a,M_tilde_left_inv,opM_tilde_inv_notrans,opM_tilde_inv_trans);
 	}
 	return SolveReturn(MAX_ITER_EXCEEDED,currIteration_);
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> >
+Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> >
 CGSolver<Scalar>::clone() const
 {
-	return MemMngPack::rcp( new CGSolver<Scalar>(*this) );
+	return Teuchos::rcp( new CGSolver<Scalar>(*this) );
 }
 
 // private
@@ -285,11 +285,11 @@ void CGSolver<Scalar>::doIteration(
 	}
 	dot( *Z_, *R_, &rho_[0] );                                       // rho_{i-1}[j] = Z^{i-1}[j]' * R^{i-1}[j]
 	for(j=0;j<m;++j) { 	// Check indefinite operator
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			RTOp_is_nan_inf(rho_[j]), Exceptions::SolverBreakdown
 			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = " << rho_[j] << " is not valid number, the method has failed!"
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			rho_[j] <= 0.0, Exceptions::Indefinite
 			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = " << rho_[j] << " <= 0, the preconditioner is indefinite!"
 			);
@@ -298,7 +298,7 @@ void CGSolver<Scalar>::doIteration(
 		*get_out() << "\nrho =\n"; for(j=0;j<m;++j) *get_out() << " " << rho_[j]; *get_out() << std::endl;
 	}
 	for(j=0;j<m;++j) { // Check for failure: rho_{i-1} = 0
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			rho_[j] == 0.0, Exceptions::SolverBreakdown
 			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = 0.0, the method has failed!"
 			);
@@ -319,11 +319,11 @@ void CGSolver<Scalar>::doIteration(
 	}
 	dot( *P_, *Q_, &gamma_[0] );                           // P^{i}[j]' * Q^{i}[j]                    -> gamma_{i-1}[j]
 	for(j=0;j<m;++j) { 	// Check indefinite operator
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			RTOp_is_nan_inf(gamma_[j]), Exceptions::SolverBreakdown
 			,TSFCORE_CG_SOLVER_ERR_MSG << "gamma["<<j<<"] = " << gamma_[j] << " is not valid number, the method has failed!"
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			gamma_[j] <= 0.0, Exceptions::Indefinite
 			,TSFCORE_CG_SOLVER_ERR_MSG << "gamma["<<j<<"] = " << gamma_[j] << " <= 0, the operator is indefinite!"
 			);

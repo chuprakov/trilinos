@@ -53,7 +53,7 @@ void add_op_factory(RTOpPack::RTOpServer<RTOp_value_type> *op_server, const RTOp
 	namespace rtop = RTOpPack;
 	typedef mmp::AbstractFactoryStd<rtop::RTOp,rtop::RTOpC,rtop::RTOpCPostMod>  OpFactory_t;
 	op_server->add_op_factory(
-		mmp::rcp(
+		Teuchos::rcp(
 			new OpFactory_t(
 				rtop::RTOpCPostMod(&op_vtbl)
 				,mmp::AllocatorNew<rtop::RTOpC>() // RAB: 2003/10/03: MipsPro needs this *$&%^#&!!!

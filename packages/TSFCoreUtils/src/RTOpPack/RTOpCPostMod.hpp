@@ -15,7 +15,7 @@ public:
 	RTOpCPostMod( const RTOp_RTOp_vtbl_t *vtbl ) : vtbl_(vtbl)
 		{
 #ifdef _DEBUG
-			THROW_EXCEPTION( !(vtbl && vtbl->obj_data_vtbl && vtbl->obj_data_vtbl->obj_create)
+			TEST_FOR_EXCEPTION( !(vtbl && vtbl->obj_data_vtbl && vtbl->obj_data_vtbl->obj_create)
 							 , std::logic_error
 							 , "Error!"	);
 #endif			

@@ -37,9 +37,9 @@ template<class T_impl>
 class AllocatorNew {
 public:
 	///
-	typedef MemMngPack::ref_count_ptr<T_impl>  ptr_t;                       // required!
+	typedef Teuchos::RefCountPtr<T_impl>  ptr_t;                       // required!
 	///
-	const ptr_t allocate() const { return MemMngPack::rcp(new T_impl()); }  // required!
+	const ptr_t allocate() const { return Teuchos::rcp(new T_impl()); }  // required!
 };
 
 ///
@@ -66,17 +66,17 @@ public:
  *
  * The type \c T_Allocator allows for specialized memory allocation and cleanup.
 *  This type must allow the default constructor and copy constructor and have a method
- * <tt>MemMngPack::ref_count_ptr<T_impl> T_Allocator::allocate() const</tt>
+ * <tt>Teuchos::RefCountPtr<T_impl> T_Allocator::allocate() const</tt>
  * which creates a smart reference counted pointer to the allocated object.
- * Also, in returning a <tt>ref_count_ptr<></tt> object, the client can set
+ * Also, in returning a <tt>RefCountPtr<></tt> object, the client can set
  * a function object that can specialize the deallocation of the object (see
- * \c ref_count_ptr).  In defining a specialized \c T_Allocator class, the
+ * \c RefCountPtr).  In defining a specialized \c T_Allocator class, the
  * client can all initialize the object using more than just the default
  * constructor.  Therefore, if the client provides a specialized \c T_Allocator
  * class, there are no restrictions on the class \c T_impl (i.e. does not
  * have to have a default constructor or allow \c new or \c delete).
  * The default class for \c T_Allocator is \c AllocatorNew who's \c allocate()
- * method just returns <tt>MemMngPack::rcp(new T_impl())</tt>.  
+ * method just returns <tt>Teuchos::rcp(new T_impl())</tt>.  
  * 
  * Since the \c T_Allocator class can specialize both the memory management
  * and can initialize the object using more that the default constructor, the
@@ -116,13 +116,12 @@ private:
 
 ///
 template<class T_itfc, class T_impl, class T_Allocator >
-const MemMngPack::ref_count_ptr<const AbstractFactory<T_itfc> >
+const Teuchos::RefCountPtr<const AbstractFactory<T_itfc> >
 abstract_factory_std_alloc(
 	const T_Allocator&  alloc = T_Allocator()
 	)
 {
-	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new AbstractFactoryStd<T_itfc,T_impl,PostModNothing<T_impl>,T_Allocator>(
 			PostModNothing<T_impl>(), alloc )
 		);
@@ -145,7 +144,6 @@ inline
 typename AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::obj_ptr_t
 AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::create() const
 {
-	namespace rcp = MemMngPack;
 	typename T_Allocator::ptr_t
 		ptr = alloc_.allocate();
 	post_mod_.initialize(ptr.get());

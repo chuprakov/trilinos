@@ -11,7 +11,7 @@ Here are many classes and tools for performing memory management in
 C++.
 
 By far, the most important class is
-<tt>MemMngPack::ref_count_ptr</tt><tt><T></tt> which is described in
+<tt>Teuchos::RefCountPtr</tt><tt><T></tt> which is described in
 detail \ref ref_count_ptr_stuff "here".  This class implements smart
 reference counted pointers that perform automatic garbage collection
 when used properly.  This class can be used with build-in,
@@ -19,13 +19,13 @@ non-polymophic and polymorphic types but can only be used with the
 single object creation form of <tt>new T</tt>, not the array form
 <tt>new T[n]</tt>.
 
-To intialize a <tt>ref_count_ptr</tt><tt><T></tt> object, one must
+To intialize a <tt>RefCountPtr</tt><tt><T></tt> object, one must
 know the concrete type of the object so that its constructor can be
 called.  To decouple a client from the implementation of the objects
 it creates, a univeral templated "Abstract Factory" [Design Patters,
 1994] interface <tt>MemMngPack::AbstractFactory</tt><tt><T></tt> is
 included.  This allows a client to create objects that are handled by
-<tt>ref_count_ptr</tt><tt><T></tt> without having the know the
+<tt>RefCountPtr</tt><tt><T></tt> without having the know the
 implementation subclasses of these objects.  In order to make it
 easier for a developer to define a concreate
 <tt>AbstractFactory</tt></tt><T></tt> object, the templated subclass
@@ -68,7 +68,7 @@ a subsystem of a program to report an error and then let an upper
 level entity decide how to handle the error.  The problem is that it
 can be difficult in many debugging environments to examine the state
 of the program that caused the exception to occur.  The macro
-<tt>THROW_EXCEPTION()</tt> is included that trys to help in the debugging
+<tt>TEST_FOR_EXCEPTION()</tt> is included that trys to help in the debugging
 process involving C++ excepttions.  The macro helps in building an
 error message that is associated with the exception object
 (i.e. <tt>std::logic_error</tt>) that includes the file and
@@ -104,7 +104,7 @@ to delete the object being pointed to.  This is a much more difficult
 situation and this is where the macro
 <tt>STANDARD_COMPOSITION_MEMBERS()</tt> comes in handy.  The
 underlying data member here is an
-<tt>MemMngPack::ref_count_ptr</tt><tt><T></tt> object.  This allows
+<tt>Teuchos::RefCountPtr</tt><tt><T></tt> object.  This allows
 garbage collection (i.e. <tt>delete</tt> called) when all of the
 object references to the shared compsite object are removed.
 

@@ -13,7 +13,7 @@
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 namespace Solvers {
@@ -115,7 +115,7 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	,const LinearOp<Scalar> *M_tilde_right_inv, ETransp M_tilde_right_inv_trans
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		M_tilde_right_inv!=NULL || M_tilde_right_inv != NULL, std::logic_error
 		,"Error, we can not handle preconditioners yet!"
 		);
@@ -135,27 +135,27 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 #ifdef _DEBUG
 	const char func_name[] = "SimpleGMRESSolver<Scalar>::solve(...)";
-	THROW_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
+	TEST_FOR_EXCEPTION(X==NULL,std::invalid_argument,": Error!");
 	if(M_tilde_left_inv) {
 		const VectorSpace<Scalar> &opM_tilde_inv_domain = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->domain() : *M_tilde_left_inv->range()  );
 		const VectorSpace<Scalar> &opM_tilde_inv_range  = ( M_tilde_left_inv_trans==NOTRANS ? *M_tilde_left_inv->range()  : *M_tilde_left_inv->domain() );
 		const bool
 			domain_compatible = opM_domain.isCompatible(opM_tilde_inv_range),
 			range_compatible =  opM_range.isCompatible(opM_tilde_inv_domain);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!(domain_compatible && range_compatible), TSFCore::Exceptions::IncompatibleVectorSpaces
 			,func_name<<": Error, the range and/or domain spaces of op(M) and op(M_tilde_inv) do are not compatible!");
 	}
 	bool is_compatible = opM_domain.isCompatible(*X->range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).domain() not compatible with X->range()!");
 	is_compatible = opM_range.isCompatible(*Y.range());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the op(M).range() not compatible with Y.range()!");
 	is_compatible = X->domain()->isCompatible(*Y.domain());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, TSFCore::Exceptions::IncompatibleVectorSpaces
 		,func_name<<": Error, the X->domain() not compatible with Y.domain()!");
 #endif
@@ -173,13 +173,13 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	// Resolve default parameters
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-//	if (convTester) norm_ = convTester->norm(); else norm_ = mmp::rcp(new Solvers::Norm<Scalar>());
+//	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Solve each linear system one at a time
 	//
 	bool all_solved = true;
 	int max_iter_taken = 0;
-	mmp::ref_count_ptr<Vector<Scalar> >
+	Teuchos::RefCountPtr<Vector<Scalar> >
 		y = Y.range()->createMember(),
 		x = X->range()->createMember();
 	for( int k = 1; k <= totalNumSystems; ++k ) {
@@ -213,10 +213,10 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> >
+Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> >
 SimpleGMRESSolver<Scalar>::clone() const
 {
-	return MemMngPack::rcp( new SimpleGMRESSolver<Scalar>(*this) );
+	return Teuchos::rcp( new SimpleGMRESSolver<Scalar>(*this) );
 }
 
 

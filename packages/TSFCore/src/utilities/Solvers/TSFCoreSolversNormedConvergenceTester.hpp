@@ -7,7 +7,7 @@
 #include "TSFCoreSolversNormedConvergenceTesterDecl.hpp"
 #include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversSolverState.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 namespace Solvers{
@@ -17,7 +17,7 @@ namespace Solvers{
 template<class Scalar>
 NormedConvergenceTester<Scalar>::NormedConvergenceTester(
 	const Scalar                                           tol
-	,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm
+	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 	:minMaxErr_(1e+50)
 {
@@ -28,7 +28,7 @@ template<class Scalar>
 NormedConvergenceTester<Scalar>::NormedConvergenceTester(
 	const Index                                            totalNumSystems
 	,const Scalar                                          tols[]
-	,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm
+	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 	:minMaxErr_(1e+50)
 {
@@ -38,13 +38,13 @@ NormedConvergenceTester<Scalar>::NormedConvergenceTester(
 template<class Scalar>
 void NormedConvergenceTester<Scalar>::initialize(
 	const Scalar                                           tol
-	,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm
+	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 {
 	tols_.resize(1);
 	tols_[0] = tol;
 	if(norm.get())   norm_ = norm;
-	else             norm_ = MemMngPack::rcp(new Norm<Scalar>());
+	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
 	minMaxErr_ = 1e+50;
 }
 
@@ -52,20 +52,20 @@ template<class Scalar>
 void NormedConvergenceTester<Scalar>::initialize(
 	const Index                                            totalNumSystems
 	,const Scalar                                          tols[]
-	,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm
+	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 {
 	tols_.resize(totalNumSystems);
 	std::copy( tols, tols + totalNumSystems, tols_.begin() );
 	if(norm.get())   norm_ = norm;
-	else             norm_ = MemMngPack::rcp(new Norm<Scalar>());
+	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
 	minMaxErr_ = 1e+50;
 }
 
 // Overridden from ConvergenceTester
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const Norm<Scalar> >
+Teuchos::RefCountPtr<const Norm<Scalar> >
 NormedConvergenceTester<Scalar>::norm() const
 {
 	return norm_;
@@ -87,15 +87,15 @@ void NormedConvergenceTester<Scalar>::convStatus(
 	const Index  totalNumSystems = solver.totalNumSystems();
 	const int    tols_size       = tols_.size();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		tols_size == 0, std::logic_error
 		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		tols_size > 1 && totalNumSystems != tols_size, std::logic_error
 		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		currNumSystems > totalNumSystems, std::logic_error
 		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
 		);

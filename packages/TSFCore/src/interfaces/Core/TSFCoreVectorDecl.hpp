@@ -85,7 +85,7 @@ public:
 	 * A return value of <tt>space().get()==NULL</tt> is a flag that
 	 * <tt>*this</tt> is not fully initialized.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > space() const = 0;
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const = 0;
 
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:

@@ -20,13 +20,13 @@ class SimpleMPIVector : virtual public MPIVectorBase<Scalar> {
 public:
 
 	///
-	SimpleMPIVector( const MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > &mpiSpace );
+	SimpleMPIVector( const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > &mpiSpace );
 
 	/** @name Overridden from MPIVectorBase */
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
 	void getLocalData( Scalar** values, ptrdiff_t* stride );
 
@@ -37,7 +37,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> >   mpiSpace_;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >   mpiSpace_;
 	std::vector<Scalar>                                            localValues_;
 
 	// not defined and not to be called

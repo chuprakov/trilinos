@@ -28,17 +28,17 @@ Index SimpleMPIVectorSpace<Scalar>::dim() const
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<Vector<Scalar> >
+Teuchos::RefCountPtr<Vector<Scalar> >
 SimpleMPIVectorSpace<Scalar>::createMember() const
 {
-	return MemMngPack::rcp(new SimpleMPIVector<Scalar>(MemMngPack::rcp(this,false)));
+	return Teuchos::rcp(new SimpleMPIVector<Scalar>(Teuchos::rcp(this,false)));
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 SimpleMPIVectorSpace<Scalar>::clone() const
 {
-	return MemMngPack::rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm_,localSubDim_));
+	return Teuchos::rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm_,localSubDim_));
 }
 
 // Overridden from MPIVectorSpaceBase

@@ -17,7 +17,7 @@
 #include "RTOpCppToC.hpp"
 #include "RTOpToMPI.h"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 void RTOpPack::MPI_apply_op(
 	MPI_Comm comm, const RTOp& op, int root_rank

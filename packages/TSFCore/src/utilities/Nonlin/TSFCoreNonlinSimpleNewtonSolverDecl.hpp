@@ -5,7 +5,7 @@
 #define TSFCORE_NONLIN_SIMPLE_NEWTON_SOLVER_DECL_HPP
 
 #include "TSFCoreNonlinTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {

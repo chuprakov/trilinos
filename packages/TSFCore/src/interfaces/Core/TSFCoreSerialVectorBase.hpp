@@ -7,7 +7,7 @@
 #include "TSFCoreSerialVectorBaseDecl.hpp"
 #include "TSFCore_apply_op_helper.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
@@ -34,7 +34,7 @@ void SerialVectorBase<Scalar>::applyOp(
 		"SerialVectorBase::applyOp(...)"
 		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		in_applyOp_, std::logic_error
 		,"SerialVectorBase::applyOp(...): Error, something is not right here!" );
 #endif

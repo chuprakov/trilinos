@@ -27,7 +27,7 @@ public:
 	 * The default implementation returns <tt>return.get()!=NULL</tt>
 	 * and uses the default definition implementation <tt>Norm</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr<const Norm<Scalar> > norm() const;
+	virtual Teuchos::RefCountPtr<const Norm<Scalar> > norm() const;
 
 	///
 	/** Reset the convergence tester for a new set of iterations for solving
@@ -67,7 +67,7 @@ public:
 		) = 0;
 
 	///
-	virtual MemMngPack::ref_count_ptr<ConvergenceTester<Scalar> > clone();
+	virtual Teuchos::RefCountPtr<ConvergenceTester<Scalar> > clone();
 
 	//@}
 

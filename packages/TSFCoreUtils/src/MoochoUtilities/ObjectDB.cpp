@@ -2,7 +2,7 @@
 // ObjectDB.cpp
 
 #include "ObjectDB.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MemMngPack {
 
@@ -30,14 +30,14 @@ size_t ObjectDB::add_entry( const object_entry_t& entry )
 
 const ObjectDB::object_entry_t& ObjectDB::get_entry(size_t index, const char * typeid_name) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		index >= objects_.size(), std::invalid_argument
 		,"ObjectDB::get_entry(index): Error, could not get object of type \'"
 		<< typeid_name << "\'.  The index " << index
 		<< " must be invalid since it does not fall in the range [0," << ((int)objects_.size())-1 << "]!"
 		);
 	const object_entry_t& entry = objects_[index];
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		entry.obj == NULL, std::invalid_argument
 		,"ObjectDB::get_entry(index): Error, the object of type \'"
 		<< typeid_name << "\' with index " << index
@@ -48,13 +48,13 @@ const ObjectDB::object_entry_t& ObjectDB::get_entry(size_t index, const char * t
 
 void ObjectDB::remove(size_t index)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		index >= objects_.size(), std::invalid_argument
 		,"ObjectDB::remove(index): Error, the index " << index
 		<< " must be invalid since it does not fall in the range [0," << ((int)objects_.size()-1) << "]!"
 		);
 	const object_entry_t& entry = objects_[index];
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		entry.obj == NULL, std::invalid_argument
 		,"ObjectDB::remove(index): Error, the index " << index
 		<< " is for an object that has been already removed from the database!"
@@ -65,7 +65,7 @@ void ObjectDB::remove(size_t index)
 
 void ObjectDB::assert_types( const std::type_info &type_stored, const std::type_info &type_requested, size_t index ) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(type_stored==type_requested), std::invalid_argument
 		,"ObjectDB::assert_types(...): Error, for object with index " << index
 		<< ", the stored type \'" << type_stored.name() << "\' is not the same as the requested type \'"

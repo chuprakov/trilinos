@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace RangePack {
 
@@ -23,10 +23,10 @@ const Range1D Range1D::Invalid(Range1D::INVALID);
 //#ifdef _DEBUG
 
 void Range1D::assert_valid_range(size_t lbound, size_t ubound) const {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		lbound < 1, std::range_error
 		,"Range1D::assert_valid_range(): Error, lbound ="<<lbound<<" must be greater than 0." );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		lbound > ubound, std::range_error
 		,"Range1D::assert_valid_range(): Error, lbound = "<<lbound<<" > ubound = "<<ubound );
 }

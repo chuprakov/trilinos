@@ -8,7 +8,7 @@
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 template<class Scalar>
 void TSFCore::apply_op_validate_input(
@@ -29,22 +29,22 @@ void TSFCore::apply_op_validate_input(
 		&space = ( num_vecs ? *vecs[0]->space() : *targ_vecs[0]->space() );
 	const Index
 		dim = space.dim();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		global_offset_in < 0, std::logic_error
 		,func_name << " : Error!  global_offset_in = "
 		<<global_offset_in<<" is not valid" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		first_ele_in > dim, std::logic_error
 		,func_name << " : Error!  first_ele_in = "
 		<<first_ele_in<<" is not compatible with space.dim() = " << dim );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		sub_dim_in < 0 || (sub_dim_in > 0 && sub_dim_in > dim-(first_ele_in-1)), std::logic_error
 		,func_name << " : Error!  first_ele_in = "
 		<<first_ele_in<<" and sub_dim_in = "<<sub_dim_in
 		<<" is not compatible with space.dim() = " << dim );
 	for(k = 0; k < num_vecs; ++k) {
 		const bool isCompatible = space.isCompatible(*vecs[k]->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!isCompatible, Exceptions::IncompatibleVectorSpaces
 			,func_name << " : Error!  vecs["<<k<<"]"
 			" with dimension vecs["<<k<<"].dim() = " << vecs[k]->space()->dim()
@@ -53,7 +53,7 @@ void TSFCore::apply_op_validate_input(
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
 		const bool isCompatible = space.isCompatible(*targ_vecs[k]->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!isCompatible, Exceptions::IncompatibleVectorSpaces
 			,func_name << " : Error!  targ_vecs["<<k<<"]"
 			" with dimension targ_vecs["<<k<<"].dim() = " << targ_vecs[k]->space()->dim()

@@ -58,7 +58,7 @@ public:
 		,const Scalar                                                 b           = 0.0
 		,const Scalar                                                 d         = 10.0
 		,const Scalar                                                 lin_sol_tol = 1e-12
-		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  &space_y_c  = MemMngPack::null
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c  = Teuchos::null
 		);
 	///
 	void set_a( const Scalar a );
@@ -85,9 +85,9 @@ public:
 	///
 	bool isInitialized() const;
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_y() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_y() const;
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >  space_c() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >  space_c() const;
 	///
 	const Vector<Scalar>& yL() const;
 	///
@@ -113,7 +113,7 @@ public:
 	//@{
 
 	///
-	MemMngPack::ref_count_ptr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
+	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
 	///
 	ETransp opDcDy() const;
 	///
@@ -136,11 +136,11 @@ private:
 	Scalar                                                               b_;
 	Scalar                                                               d_;
 	Scalar                                                               lin_sol_tol_;
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >                space_y_c_;
-	MemMngPack::ref_count_ptr<Vector<Scalar> >                           yL_;
-	MemMngPack::ref_count_ptr<Vector<Scalar> >                           yU_;
-	MemMngPack::ref_count_ptr<Vector<Scalar> >                           y0_;
-	MemMngPack::ref_count_ptr<
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >                space_y_c_;
+	Teuchos::RefCountPtr<Vector<Scalar> >                           yL_;
+	Teuchos::RefCountPtr<Vector<Scalar> >                           yU_;
+	Teuchos::RefCountPtr<Vector<Scalar> >                           y0_;
+	Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >  factory_DcDy_;
 	Vector<Scalar>                                                       *c_;
 	LinearOpWithSolveIter<Scalar>                                        *DcDy_;

@@ -5,7 +5,7 @@
 #define TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
 
 #include "TSFCoreSolversIterativeLinearSolver.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
@@ -42,7 +42,7 @@ public:
 
 	///
 	BiCGSolver(
-		const out_ptr_t   &out               = MemMngPack::null
+		const out_ptr_t   &out               = Teuchos::null
 		,bool             dump_all           = false
 		,int              default_max_iter   = 10000
 		,Scalar           default_tol        = 1e-10
@@ -84,7 +84,7 @@ public:
 		,const ETransp                       M_tilde_right_inv_trans
 		) const;
 	///
-	MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> > clone() const;
+	Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> > clone() const;
 
 	//@}
 
@@ -97,9 +97,9 @@ private:
 	mutable Index                                    currNumSystems_;
 	mutable int                                      currIteration_;
 	mutable std::vector<Index>                       activeSystems_;
-	mutable MemMngPack::ref_count_ptr<const Solvers::Norm<Scalar> >
+	mutable Teuchos::RefCountPtr<const Solvers::Norm<Scalar> >
 	    norm_;
-	mutable MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+	mutable Teuchos::RefCountPtr<MultiVector<Scalar> >
 	    X_curr_, R_, R_tilde_, Q_, Q_tilde_, Z_, Z_tilde_, P_, P_tilde_;
 	mutable std::vector<Scalar>
 	    rho_, rho_old_, beta_, gamma_, alpha_;

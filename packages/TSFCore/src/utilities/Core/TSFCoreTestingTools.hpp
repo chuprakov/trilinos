@@ -29,7 +29,7 @@ std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOp<Scalar>& M )
 	// We will extract by column if op==NOTRANS is supported and by row otherwise
 	const ETransp opM = M.opSupported(NOTRANS) ? NOTRANS : TRANS;
 	// Copy into dense matrix (by column or row)
-	mmp::ref_count_ptr<Vector<Scalar> >
+	Teuchos::RefCountPtr<Vector<Scalar> >
 		e_j = ( opM==NOTRANS ? M.domain() : M.range()  )->createMember(),
 		t   = ( opM==NOTRANS ? M.range()  : M.domain() )->createMember(); // temp column or row
 	const Index

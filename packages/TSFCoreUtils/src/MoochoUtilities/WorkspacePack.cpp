@@ -14,10 +14,10 @@
 // above mentioned "Artistic License" for more details.
 
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
-MemMngPack::ref_count_ptr<WorkspacePack::WorkspaceStore>
-WorkspacePack::default_workspace_store(NULL);
+Teuchos::RefCountPtr<WorkspacePack::WorkspaceStore>
+WorkspacePack::default_workspace_store(Teuchos::null);
 
 namespace WorkspacePack {
 
@@ -40,7 +40,7 @@ WorkspaceStore::~WorkspaceStore() {
 
 void WorkspaceStore::protected_initialize(size_t num_bytes)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		curr_ws_ptr_ != workspace_begin_, std::logic_error
 		,"WorkspaceStore::set_workspace_size(...) : Error, "
 		"You can not reset the workspace size when any RawWorkspace objects "
@@ -57,7 +57,7 @@ void WorkspaceStore::protected_initialize(size_t num_bytes)
 
 RawWorkspace::RawWorkspace(WorkspaceStore* workspace_store, size_t num_bytes)
 {
-	THROW_EXCEPTION(!(num_bytes >= 0),std::invalid_argument,"RawWorkspace::RawWorkspace(...): Error!");
+	TEST_FOR_EXCEPTION(!(num_bytes >= 0),std::invalid_argument,"RawWorkspace::RawWorkspace(...): Error!");
 	if(num_bytes) {
 		workspace_store_ = workspace_store;
 		if( !workspace_store_ || workspace_store_->num_bytes_remaining() < num_bytes ) {
@@ -90,7 +90,7 @@ RawWorkspace::~RawWorkspace()
 	}
 	else {
 		if(workspace_store_) {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				workspace_store_->curr_ws_ptr_ != workspace_end_, std::logic_error
 				,"RawWorkspace::~RawWorkspace(...): Error, "
 				"Invalid usage of RawWorkspace class, corrupted WorspaceStore object!" );

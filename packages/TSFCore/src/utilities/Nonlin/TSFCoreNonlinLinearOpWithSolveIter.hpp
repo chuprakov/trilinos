@@ -9,7 +9,7 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -22,13 +22,13 @@ LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter()
 
 template<class Scalar>
 LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter(
-	const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                          &M
+	const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
 	,ETransp                                                                          M_trans
-	,const MemMngPack::ref_count_ptr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
-	,const MemMngPack::ref_count_ptr<Solvers::ConvergenceTester<Scalar> >             &convTester
-	,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_left_inv
+	,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
+	,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester
+	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv
 	,ETransp                                                                          M_tilde_left_inv_trans
-	,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_right_inv
+	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv
 	,ETransp                                                                          M_tilde_right_inv_trans
 	)
 {
@@ -37,23 +37,23 @@ LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter(
 
 template<class Scalar>
 void LinearOpWithSolveIter<Scalar>::initialize(
-	const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                          &M
+	const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
 	,ETransp                                                                          M_trans
-	,const MemMngPack::ref_count_ptr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
-	,const MemMngPack::ref_count_ptr<Solvers::ConvergenceTester<Scalar> >             &convTester
-	,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_left_inv
+	,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
+	,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester
+	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv
 	,ETransp                                                                          M_tilde_left_inv_trans
-	,const MemMngPack::ref_count_ptr<const LinearOp<Scalar> >                         &M_tilde_right_inv
+	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv
 	,ETransp                                                                          M_tilde_right_inv_trans
 	)
 {
 #ifdef _DEBUG
 	const char func_name[] = "LinearOpWithSolveIter<Scalar>::initialize(...)";
-	THROW_EXCEPTION(M.get()==NULL,std::invalid_argument,func_name<<": Error!");
-	THROW_EXCEPTION(solver.get()==NULL,std::invalid_argument,func_name<<": Error!");
+	TEST_FOR_EXCEPTION(M.get()==NULL,std::invalid_argument,func_name<<": Error!");
+	TEST_FOR_EXCEPTION(solver.get()==NULL,std::invalid_argument,func_name<<": Error!");
 	if(solver->adjointRequired()) {
 		const bool adjoint_supported = M->opSupported(not_trans(M_trans));
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!adjoint_supported,std::invalid_argument
 			,func_name<<": Error, solver requires support for both non-transposed and transposed ops and M does not comply!");
 	}
@@ -65,12 +65,12 @@ void LinearOpWithSolveIter<Scalar>::initialize(
 		const bool
 			domain_compatible = opM_domain.isCompatible(opM_tilde_left_inv_range),
 			range_compatible =  opM_range.isCompatible(opM_tilde_left_inv_domain);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!(domain_compatible && range_compatible), Exceptions::IncompatibleVectorSpaces
 			,func_name<<": Error, the range and/or domain spaces of op(M) and op(M_tilde_left_inv) do are not compatible!");
 		if(solver->adjointRequired()) {
 			const bool adjoint_supported = M_tilde_left_inv->opSupported(not_trans(M_tilde_left_inv_trans));
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				!adjoint_supported,std::invalid_argument
 				,func_name<<": Error, solver requires support for both non-transposed and transposed ops and M_tilde_left_inv does not comply!");
 		}
@@ -81,12 +81,12 @@ void LinearOpWithSolveIter<Scalar>::initialize(
 		const bool
 			domain_compatible = opM_domain.isCompatible(opM_tilde_right_inv_range),
 			range_compatible =  opM_range.isCompatible(opM_tilde_right_inv_domain);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!(domain_compatible && range_compatible), Exceptions::IncompatibleVectorSpaces
 			,func_name<<": Error, the range and/or domain spaces of op(M) and op(M_tilde_right_inv) do are not compatible!");
 		if(solver->adjointRequired()) {
 			const bool adjoint_supported = M_tilde_right_inv->opSupported(not_trans(M_tilde_right_inv_trans));
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				!adjoint_supported,std::invalid_argument
 				,func_name<<": Error, solver requires support for both non-transposed and transposed ops and M_tilde_right_inv does not comply!");
 		}
@@ -110,13 +110,13 @@ LinearOpWithSolveIter<Scalar>::setUninitialized()
 
 	LinearOpWithSolveIterState<Scalar> state_tmp = state_;
 
-	state_.M                       = mmp::null;
+	state_.M                       = Teuchos::null;
 	state_.M_trans                 = NOTRANS;
-	state_.solver                  = mmp::null;
-	state_.convTester              = mmp::null;
-	state_.M_tilde_left_inv        = mmp::null;
+	state_.solver                  = Teuchos::null;
+	state_.convTester              = Teuchos::null;
+	state_.M_tilde_left_inv        = Teuchos::null;
 	state_.M_tilde_left_inv_trans  = NOTRANS;
-	state_.M_tilde_right_inv       = mmp::null;
+	state_.M_tilde_right_inv       = Teuchos::null;
 	state_.M_tilde_right_inv_trans = NOTRANS;
 
 	return state_tmp;
@@ -125,14 +125,14 @@ LinearOpWithSolveIter<Scalar>::setUninitialized()
 // Overridden from OpBase
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 LinearOpWithSolveIter<Scalar>::domain() const
 {
 	return (state_.M_trans == NOTRANS ? state_.M->domain() : state_.M->range() );
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 LinearOpWithSolveIter<Scalar>::range() const
 {
 	return (state_.M_trans == NOTRANS ? state_.M->range() : state_.M->domain() );
@@ -181,8 +181,8 @@ void LinearOpWithSolveIter<Scalar>::solve(
 	) const
 {
 	namespace mmp = MemMngPack;
-	const MultiVectorCols<Scalar>  Y(mmp::rcp(const_cast<Vector<Scalar>*>(&y),false));
-	MultiVectorCols<Scalar>        X(mmp::rcp(x,false));
+	const MultiVectorCols<Scalar>  Y(Teuchos::rcp(const_cast<Vector<Scalar>*>(&y),false));
+	MultiVectorCols<Scalar>        X(Teuchos::rcp(x,false));
 	solve(M_trans,Y,&X,1.0,convTester);
 }
 
@@ -216,7 +216,7 @@ void LinearOpWithSolveIter<Scalar>::solve(
 			break;
 		}
 		case Solvers::MAX_ITER_EXCEEDED: {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, Solvers::Exceptions::FailureToConverge
 				,"LinearOpWithSolveIter<Scalar>::solve(...): Error, num_iter = "<<solve_return.num_iter<<" iterations where "
 				"performed by the solver object and exceeded the maximum number!"
@@ -232,28 +232,28 @@ void LinearOpWithSolveIter<Scalar>::solve(
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOpWithSolve<Scalar> >
+Teuchos::RefCountPtr<const LinearOpWithSolve<Scalar> >
 LinearOpWithSolveIter<Scalar>::clone_lows() const
 {
 	namespace mmp = MemMngPack;
 	if(state_.M.get()) {
-		return mmp::rcp(
+		return Teuchos::rcp(
 			new LinearOpWithSolveIter(
 				state_.M->clone()
 				,state_.M_trans
 				,state_.solver->clone()
-				,(state_.convTester.get() ? state_.convTester->clone() : mmp::null )
-				,(state_.M_tilde_left_inv.get() ? state_.M_tilde_left_inv->clone() : mmp::null)
+				,(state_.convTester.get() ? state_.convTester->clone() : Teuchos::null )
+				,(state_.M_tilde_left_inv.get() ? state_.M_tilde_left_inv->clone() : Teuchos::null)
 				,state_.M_tilde_left_inv_trans
-				,(state_.M_tilde_right_inv.get() ? state_.M_tilde_right_inv->clone() : mmp::null)
+				,(state_.M_tilde_right_inv.get() ? state_.M_tilde_right_inv->clone() : Teuchos::null)
 				,state_.M_tilde_right_inv_trans
 				) );
 	}
-	return mmp::rcp( new LinearOpWithSolveIter() );
+	return Teuchos::rcp( new LinearOpWithSolveIter() );
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOp<Scalar> >
+Teuchos::RefCountPtr<const LinearOp<Scalar> >
 LinearOpWithSolveIter<Scalar>::preconditioner() const
 {
 	assert(0); // ToDo: Return a composite operator for M_tilde_left_inv*M_tilde_right_inv

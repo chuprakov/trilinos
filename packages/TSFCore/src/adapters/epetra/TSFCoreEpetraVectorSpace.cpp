@@ -6,7 +6,7 @@
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 //#include "TSFCoreEpetraMultiVector.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 #include "Epetra_Comm.h"
@@ -24,7 +24,7 @@ EpetraVectorSpace::EpetraVectorSpace()
 {}
 
 EpetraVectorSpace::EpetraVectorSpace(
-	const MemMngPack::ref_count_ptr<const Epetra_BlockMap>  &epetra_map
+	const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
 	)
 	:mpiComm_(MPI_COMM_NULL),localOffset_(-1),localSubDim_(-1)
 {
@@ -32,12 +32,12 @@ EpetraVectorSpace::EpetraVectorSpace(
 }
 
 void EpetraVectorSpace::initialize(
-	const MemMngPack::ref_count_ptr<const Epetra_BlockMap>  &epetra_map
+	const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
-	THROW_EXCEPTION( !epetra_map.get(), std::invalid_argument, "EpetraVectorSpace::initialize(...): Error!" );
+	TEST_FOR_EXCEPTION( !epetra_map.get(), std::invalid_argument, "EpetraVectorSpace::initialize(...): Error!" );
 #endif
 	epetra_map_  = epetra_map;
 #ifdef PETRA_COMM_MPI
@@ -50,11 +50,11 @@ void EpetraVectorSpace::initialize(
 	MPIVectorSpaceBase<Scalar>::invalidateState();
 }
 
-MemMngPack::ref_count_ptr<const Epetra_BlockMap>
+Teuchos::RefCountPtr<const Epetra_BlockMap>
 EpetraVectorSpace::setUninitialized()
 {
-	MemMngPack::ref_count_ptr<const Epetra_BlockMap> tmp = epetra_map_;
-	epetra_map_ = MemMngPack::null;
+	Teuchos::RefCountPtr<const Epetra_BlockMap> tmp = epetra_map_;
+	epetra_map_ = Teuchos::null;
 	return tmp;
 }
 
@@ -65,33 +65,30 @@ Index EpetraVectorSpace::dim() const
 	return epetra_map_.get() ? epetra_map_->NumGlobalElements() : 0;
 }
 
-MemMngPack::ref_count_ptr<Vector<EpetraVectorSpace::Scalar> >
+Teuchos::RefCountPtr<Vector<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::createMember() const
 {
-	namespace mmp = MemMngPack;
-	return mmp::rcp(new EpetraVector(mmp::rcp(new Epetra_Vector(*epetra_map_))));
+	return Teuchos::rcp(new EpetraVector(Teuchos::rcp(new Epetra_Vector(*epetra_map_))));
 }
 
-MemMngPack::ref_count_ptr<MultiVector<EpetraVectorSpace::Scalar> > 
+Teuchos::RefCountPtr<MultiVector<EpetraVectorSpace::Scalar> > 
 EpetraVectorSpace::createMembers(int numMembers) const
 {
-	namespace mmp = MemMngPack;
 	return VectorSpace<Scalar>::createMembers(numMembers); // Todo: use the below code!
 /*
-	return mmp::rcp(
+	return Teuchos::rcp(
 		new EpetraMultiVector(
-			mmp::rcp(new Epetra_MultiVector(*epetra_map_,numMembers))  // epetra_multi_vec
-			,mmp::rcp(this,false)                                      // epetra_vec_spc
+			Teuchos::rcp(new Epetra_MultiVector(*epetra_map_,numMembers))  // epetra_multi_vec
+			,Teuchos::rcp(this,false)                                      // epetra_vec_spc
 			)
 		);
 */
 }
 
-MemMngPack::ref_count_ptr< const VectorSpace<EpetraVectorSpace::Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::clone() const
 {
-	namespace mmp = MemMngPack;
-	return mmp::rcp( new EpetraVectorSpace(epetra_map_) );
+	return Teuchos::rcp( new EpetraVectorSpace(epetra_map_) );
 }
 
 // Overriddend from MPIVectorSpaceBase

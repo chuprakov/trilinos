@@ -15,23 +15,23 @@ namespace TSFCore {
 namespace Nonlin {
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOpWithSolve<Scalar> >
+Teuchos::RefCountPtr<const LinearOpWithSolve<Scalar> >
 LinearOpWithSolve<Scalar>::clone_lows() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOp<Scalar> >
+Teuchos::RefCountPtr<const LinearOp<Scalar> >
 LinearOpWithSolve<Scalar>::preconditioner() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Overridden methods from LinearOp
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearOp<Scalar> >
+Teuchos::RefCountPtr<const LinearOp<Scalar> >
 LinearOpWithSolve<Scalar>::clone() const
 {
 	return this->clone_lows();
@@ -40,7 +40,7 @@ LinearOpWithSolve<Scalar>::clone() const
 // Overridden methods from LinearSolveOp
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const LinearSolveOp<Scalar> >
+Teuchos::RefCountPtr<const LinearSolveOp<Scalar> >
 LinearOpWithSolve<Scalar>::clone_lso() const
 {
 	return this->clone_lows();

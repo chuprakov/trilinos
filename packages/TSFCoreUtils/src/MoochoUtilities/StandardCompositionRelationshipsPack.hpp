@@ -17,7 +17,7 @@
 #define STANDARD_COMPOSITION_RELATIONSHIPS_PACK_H
 
 #include "TSFCoreUtils_ConfigDefs.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace StandardCompositionRelationshipsPack {
 
@@ -35,7 +35,7 @@ class NoRefSet : public std::logic_error
 // Throw a NoRefSet exception
 inline void ThrowNoRefSet(const char func_name[], const char name[])
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true,NoRefSet
 		,func_name << ": The reference for \'" << name << "\' has not been set yet"
 		);

@@ -6,7 +6,7 @@
 
 #include "TSFCoreSolversIterativeLinearSolver.hpp"
 #include "TSFCoreSolversGmresSolver.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
@@ -45,7 +45,7 @@ public:
 
 	///
 	SimpleGMRESSolver(
-		const out_ptr_t   &out               = MemMngPack::null
+		const out_ptr_t   &out               = Teuchos::null
 		,bool             dump_all           = false
 		,int              default_max_iter   = 10000
 		,Scalar           default_tol        = 1e-10
@@ -87,7 +87,7 @@ public:
 		,const ETransp                       M_tilde_right_inv_trans
 		) const;
 	///
-	MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> > clone() const;
+	Teuchos::RefCountPtr<const IterativeLinearSolver<Scalar> > clone() const;
 
 	//@}
 

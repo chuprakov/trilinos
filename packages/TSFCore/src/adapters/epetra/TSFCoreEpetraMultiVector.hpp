@@ -50,18 +50,18 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	EpetraMultiVector(
-		const MemMngPack::ref_count_ptr<Epetra_MultiVector>         multi_vec
-		,const MemMngPack::ref_count_ptr<const EpetraVectorSpace>   &range
-		,const MemMngPack::ref_count_ptr<const EpetraVectorSpace>   &domain   = MemMngPack::null
+		const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain   = Teuchos::null
 		);
 	
 	///
 	/** Initialize given the spaces for the columns and rows.
 	 */
 	void initialize(
-		const MemMngPack::ref_count_ptr<Epetra_MultiVector>         multi_vec
-		,const MemMngPack::ref_count_ptr<const EpetraVectorSpace>   &range
-		,const MemMngPack::ref_count_ptr<const EpetraVectorSpace>   &domain   = MemMngPack::null
+		const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain   = Teuchos::null
 		);
 	
 	/// Set uninitalized.
@@ -72,21 +72,21 @@ public:
 	/** @name Overridden from LinearOp */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > domain() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
 	//@}
 
 	/** @name Overridden from MultiVector */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<Vector<Scalar> > col(Index j);
+	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);
 	///
-	MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
 	//@}
 
 	/** @name Overridden from MPIMultiVectorBase */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	//@}
 
 private:
@@ -95,9 +95,9 @@ private:
 	const EpetraVectorSpace                                *range;
 	const EpetraVectorSpace                                *domain;
 #else
-	MemMngPack::ref_count_ptr<Epetra_MultiVector>          multi_vec_;
-	MemMngPack::ref_count_ptr<const EpetraVectorSpace>     range_;
-	MemMngPack::ref_count_ptr<const EpetraVectorSpace>     domain_;
+	Teuchos::RefCountPtr<Epetra_MultiVector>          multi_vec_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>     range_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>     domain_;
 #endif
 	
 }; // end class EpetraMultiVector

@@ -505,10 +505,9 @@ a function that performs several types of tasks:
 temaplate<class Scalar>
 void TSFCore::foo0( const VectorSpace<Scalar>& vecSpc, const LinearOp<Scalar>& M )
 {
-    namespace mmp = MemMngPack;
-    THROW_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check compatibility
-    mmp::ref_count_ptr<Vector<Scalar> > x = vecSpc.createMember();                // Create new vector x
-    mmp::ref_count_ptr<Vector<Scalar> > y = M.range()->createMember();            // Create new vector y
+    TEST_FOR_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check compatibility
+    Teuchos::RefCountPtr<Vector<Scalar> > x = vecSpc.createMember();                // Create new vector x
+    Teuchos::RefCountPtr<Vector<Scalar> > y = M.range()->createMember();            // Create new vector y
     assign(x.get(),1.0);                                                          // x = 1.0
     M.apply(NOTRANS,*x,y.get());                                                  // y = M*x
     M.apply(TRANS,*y,x.get(),0.5,0.1);                                            // x = 0.5*M*y + 0.1*x
@@ -517,7 +516,7 @@ void TSFCore::foo0( const VectorSpace<Scalar>& vecSpc, const LinearOp<Scalar>& M
 
 \noindent The above code snippet shows how memory management in TSFCore is
 handled -- through the templated smart reference-counted pointer class
-\texttt{MemMngPack\-::ref\_count\_ptr<>} (see Section
+\texttt{Teuchos\-::RefCountPtr<>} (see Section
 \ref{tsfcore:sec:general_software_concepts}).  The vector objects pointed
 to by the objects \texttt{x} and \texttt{y} are accessed in various
 ways in the last three lines.  For instance, in the statement
@@ -529,7 +528,7 @@ ways in the last three lines.  For instance, in the statement
 \noindent
 the raw C++ pointer (of type \texttt{Vector<Scalar>*}) to the
 underlying vector object is returned using the method
-\texttt{ref\_count\_ptr<>\-::get()}.  The function
+\texttt{RefCountPtr<>\-::get()}.  The function
 \texttt{assign(...)} is implemented through an RTOp object and its
 implementation is shown in Section \ref{tsfcore:sec:vec_apply_op}.
 The next statement
@@ -541,7 +540,7 @@ The next statement
 \noindent shows the created vectors being passed into the \texttt{apply(\-...)}
 method of a \texttt{\textit{LinearOp}} object.  The expression
 \texttt{*x} invokes the method
-\texttt{ref\_count\_ptr<>\-::operator*()} which returns a reference
+\texttt{RefCountPtr<>\-::operator*()} which returns a reference
 (of type \texttt{Vector<Scalar>\&}) to the underlying vector object.
 
 %
@@ -740,7 +739,7 @@ transformation operator in the following function.
 template<class Scalar>
 void TSFCore::assign( Vector<Scalar>* y, const Scalar& alpha )
 {
-    THROW_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");           // Validate input
+    TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");           // Validate input
     RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                        // Create the operator
     Vector<Scalar>* targ_vecs[] = { y };                                       // Set up vector args
     applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL); // Invoke operator
@@ -812,7 +811,7 @@ is performed using this transformation operator.
 template<class Scalar>
 void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 {
-    THROW_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");               // Validate input
+    TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");               // Validate input
     RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                             // Create op object
     Vector<Scalar>* targ_vecs[1] = { v };                                           // Set up vector args
     applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL,i,1);  // Invoke operator
@@ -1284,7 +1283,7 @@ void TSFCore::bad_long_expression(
     ,Vector<Scalar>* y
     )
 {
-    MemMngPack::ref_count_ptr<Vector<Scalar> >
+    Teuchos::RefCountPtr<Vector<Scalar> >
         t = A.range()->createMember(); // Create a temporary to store the intermediate  products
     A.apply(NOTRANS,u,y);              // y  =  A*u
     B.apply(TRANS,v,t.get());          // t  =  B'*v
@@ -1362,7 +1361,7 @@ as \texttt{\textit{Vector}} objects}
 The columns of a \texttt{\textit{Multi\-Vector}} object can be accessed
 using the \texttt{const} or non-\texttt{const}
 \texttt{\textit{col(j)}} methods which return
-\texttt{ref\_count\_ptr<>} objects which points to an abstract
+\texttt{RefCountPtr<>} objects which points to an abstract
 \texttt{\textit{Vector}} view of a column.  The prototypes for these
 methods are shown below.
 
@@ -1372,8 +1371,8 @@ template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
     ...
-    virtual MemMngPack::ref_count_ptr<Vector<Scalar> >        col(const Index j) = 0;
-    virtual MemMngPack::ref_count_ptr<const Vector<Scalar> >  col(const Index j) const;
+    virtual Teuchos::RefCountPtr<Vector<Scalar> >        col(const Index j) = 0;
+    virtual Teuchos::RefCountPtr<const Vector<Scalar> >  col(const Index j) const;
     ...
 };
 } // namespace TSFCore
@@ -1413,7 +1412,7 @@ void TSFCore::update_S_Y( const Vector<Scalar>& s, const Vector<Scalar>& y
 \noindent Note that the \texttt{\textit{Multi\-Vector}} object that
 \texttt{\textit{col(...)}} is called on is not guaranteed to be
 updated until the returned \texttt{\textit{Vector}} object is
-destroyed when the \texttt{ref\_count\_ptr<>} object returned from
+destroyed when the \texttt{RefCountPtr<>} object returned from
 \texttt{\textit{col(...)}} goes out of scope.  The use in the above function
 guarantees that this happens after each call to the
 \texttt{assign(...)} function.
@@ -1434,11 +1433,11 @@ template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
     ...
-    virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> >       subView(const Range1D& col_rng);
-    virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView(const Range1D& col_rng) const;
-    virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> >       subView(const int numCols
+    virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const Range1D& col_rng);
+    virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const Range1D& col_rng) const;
+    virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const int numCols
                                                                           ,const int cols[]);
-    virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView(const int numCols
+    virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const int numCols
                                                                           ,const int cols[]) const;
     ...
 };
@@ -1461,7 +1460,7 @@ objects are used in later example code.
 
 {\scriptsize\begin{verbatim}
 template<class Scalar>
-MemMngPack::ref_count_ptr<const TSFCore::MultiVector<Scalar> >
+Teuchos::RefCountPtr<const TSFCore::MultiVector<Scalar> >
 TSFCore::get_updated( const MultiVector<Scalar>& Store, int m )
 {
     return Store.subView(Range1D(1,m));
@@ -1526,7 +1525,7 @@ and is implemented in the following function.
 template<class Scalar>
 void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
-    THROW_EXCEPTION(V==NULL,std::logic_error,"axpy(...), Error!");    // Validate input
+    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"axpy(...), Error!");    // Validate input
     RTOpPack::TOpAxpy<Scalar> axpy_op(alpha);                         // Create (init) op object
     const MultiVector<Scalar>* multi_vecs[]       = { &U };           // Set up non-mutable mv args
     MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };           // Set up mutable mv args
@@ -1613,11 +1612,10 @@ public:
     void apply( ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, Scalar alpha
                ,Scalar beta ) const
     {
-        namespace mmp = MemMngPack;
         const MultiVectorCols<Scalar>
-            X(mmp::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create mv views
+            X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create mv views
         MultiVectorCols<Scalar>
-            Y(mmp::rcp(y,false));                               // ...
+            Y(Teuchos::rcp(y,false));                               // ...
         apply(alpha,M_trans,X,&Y,beta);                         // Call mv version
     }
     void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha
@@ -1636,14 +1634,14 @@ for instance called in the line
 
 {\scriptsize\begin{verbatim}
       MultiVectorCols<Scalar>
-          Y(mmp::rcp(y,false));
+          Y(Teuchos::rcp(y,false));
 \end{verbatim}}
 
-\noindent takes a \texttt{ref\_count\_ptr<const Vector<Scalar> >} object.  In
+\noindent takes a \texttt{RefCountPtr<const Vector<Scalar> >} object.  In
 order to call this constructor with memory not owned by the client
 (which is the case here), the \texttt{rcp(...)} function must be
 called with the argument \texttt{owns\_mem = false} so that the last
-\texttt{ref\_count\_ptr<const Vector<Scalar> >} object to be destroyed
+\texttt{RefCountPtr<const Vector<Scalar> >} object to be destroyed
 will not try to free the vector argument.
 
 %
@@ -1706,10 +1704,10 @@ void TSFCore::LBFGS_solve(
     // validate input
     ...
     const int p = V.domain()->dim();                // Get number of columns in V and U
-    MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
+    Teuchos::RefCountPtr<const MultiVector<Scalar> >
         S = get_updated(S_store,m),                 // Get view of only stored columns in S_store
         Y = get_updated(Y_store,m);                 // Get view of only stored columns in Y_store
-    MemMngPack::ref_count_ptr<MultiVector<Scalar> >
+    Teuchos::RefCountPtr<MultiVector<Scalar> >
         T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
         T_2 = Y->domain()->createMembers(p),        // ...
         T_3 = Q_ss->range()->createMembers(p),      // ...
@@ -1846,7 +1844,7 @@ Instead, this operation must be implemented as follows.
 template<class Scalar>
 void foo4( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 {
-    MemMngPack::ref_count_ptr<Vector<Scalar> > x_tmp = x->clone();   // Create a copy
+    Teuchos::RefCountPtr<Vector<Scalar> > x_tmp = x->clone();   // Create a copy
     M.apply(M_trans,*x_tmp,x);                                       // Okay!
 }
 \end{verbatim}}
@@ -1986,7 +1984,7 @@ a single iteration of the BiCG method) as implemented in the file
  00294     }
  00299     dot( *Z_, *R_tilde_, &rho_[0] );
  00303     for(j=0;j<m;++j) {
- 00304         THROW_EXCEPTION(
+ 00304         TEST_FOR_EXCEPTION(
  00305             rho_[j] == 0.0, Exceptions::SolverBreakdown
  00306             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
  00307             );
@@ -2005,7 +2003,7 @@ a single iteration of the BiCG method) as implemented in the file
  00328     dot( *P_tilde_, *Q_, &gamma_[0] );
  00329     for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];
  00334     for(j=0;j<m;++j) {
- 00335         THROW_EXCEPTION(
+ 00335         TEST_FOR_EXCEPTION(
  00336             alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
  00337             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
  00338             );
@@ -2151,40 +2149,40 @@ automatic garbage collection (see \cite[Items 28-29]{ref:meyers_1996})
 these design patterns become very powerful and greatly help C++
 developers to dodge many of the pitfalls of dynamic memory allocation
 in C++.  The basic memory management infrastructure is defined in a
-namespace called \textit{MemMngPack} which is external to TSFCore.  By
-far the most important class in \textit{MemMngPack} (see
+namespace called \textit{Teuchos} which is external to TSFCore.  By
+far the most important class in \textit{Teuchos} (see
 \cite{ref:moochodevguide}) is the templated smart reference-counted pointer class
-\texttt{ref\_count\_ptr<>}.  This templated class is very close to the
+\texttt{RefCountPtr<>}.  This templated class is very close to the
 templated class \texttt{shared\_ptr<>} that is provided in the
 \texttt{boost} library \cite{ref:boost}.  The use of the class
-\texttt{ref\_count\_ptr<>} is described very well in the Doxygen
+\texttt{RefCountPtr<>} is described very well in the Doxygen
 documentation so it will not be described here.  However, example C++
 code that uses this class was shown in the above sections.
 
 All memory management issues associated with abstract objects, which
 include instantiations of all of the classes shown in Figure
 \ref{tsfcore:fig:tsfl_basic}, are handled using
-\texttt{ref\_count\_ptr<>}.  In this way, a client never needs to
+\texttt{RefCountPtr<>}.  In this way, a client never needs to
 explicitly delete any of these objects.  An object will be
 automatically deleted once all of the
-\texttt{ref\_count\_ptr<>} objects that point to the object go out of
+\texttt{RefCountPtr<>} objects that point to the object go out of
 scope.  The methods
 \texttt{\textit{VectorSpace\-::createMember()}} and
 \texttt{\textit{VectorSpace\-::createMembers(...)}}, as well as may others that
 (may) have to allocate new objects, all return pointers to these
-objects embedded in \texttt{ref\_count\_ptr<>} objects.  Note that
+objects embedded in \texttt{RefCountPtr<>} objects.  Note that
 there are many types of C++ client code, such as functions and
 methods, that simply collaborate with preallocated objects for a short
 period of time and do not need to assume any responsibilities for
 memory management.  In these cases, the reference or raw pointer to the
 underlying object can be extracted from the
-\texttt{ref\_count\_ptr<>} object which is then passed on to C++ code
+\texttt{RefCountPtr<>} object which is then passed on to C++ code
 that accepts only references or raw pointers.  There are several
 examples of this type of usage in the code examples in the previous
 sections.
 
 The ``abstract factory'' design pattern (as implemented by
-\texttt{\textit{VectorSpace}} for instance) enabled with \texttt{ref\_count\_ptr<>}
+\texttt{\textit{VectorSpace}} for instance) enabled with \texttt{RefCountPtr<>}
 effectively relieves clients from having to deal with how objects are
 created and destroyed but there is another type of memory management
 task that is also required in some use cases.  To describe the
@@ -2200,7 +2198,7 @@ the ability to ``clone'' an object which is the basis of the
 ``prototype'' design pattern.  Every abstract interface shown in
 Figure \ref{tsfcore:fig:tsfl_basic} defines some type of
 \texttt{\textit{clone()}} method which return
-\texttt{ref\_count\_ptr<>} objects pointing to the cloned (or copied)
+\texttt{RefCountPtr<>} objects pointing to the cloned (or copied)
 object.  In some cases the concrete subclass does not have to
 override the \texttt{\textit{clone()}} method in order achieve this
 functionality (i.e.~\texttt{\textit{Vector}} and
@@ -2208,7 +2206,7 @@ functionality (i.e.~\texttt{\textit{Vector}} and
 (i.e.~\texttt{\textit{LinearOp}}).  In cases
 where a meaningful default implementation for the
 \texttt{\textit{clone()}} method can not be provided, a default implementation
-returning a null \texttt{ref\_count\_ptr<>} object is provided.
+returning a null \texttt{RefCountPtr<>} object is provided.
 The implication of this approach is that while the \texttt{\textit{clone()}}
 method is a useful feature, it is considered an optional feature where
 subclasses are not required to provide an implementation.  However,
@@ -2241,13 +2239,13 @@ arguments.  For an example of this style, see the concrete subclass
 Error handling in TSFCore uses built-in exception handling in C++.
 All exceptions thrown by TSFCore code are derived from
 \texttt{std::exception}.  Exceptions are thrown using the macro
-\texttt{THROW\_EXCEPTION(...)} which results in the \texttt{std::exception::what()}
+\texttt{TEST\_FOR\_EXCEPTION(...)} which results in the \texttt{std::exception::what()}
 method containing an error message with the file name and line number
 from where the exception was thrown.  This type of information is very
 helpful in debugging.  In many cases, armed with just this information
 and a good programmer-developed error message, a bug can be found,
 diagnosed and fixed without even needing to run a debugger.  The use
-of the macro \texttt{THROW\_EXCEPTION(...)} was shown in several of
+of the macro \texttt{TEST\_FOR\_EXCEPTION(...)} was shown in several of
 the above example code snippets.
 
 Finally, a few comments on proper object-oriented design are in order.
@@ -2452,7 +2450,7 @@ Closely associated with operator overloading is the concept of handle
 classes \cite{ref:advanced_c++_coplien}.  Handles assume the same type
 of role as a smart pointers except all of the method forwarding (which
 is performed automatically with the operator function
-\texttt{ref\_count\_ptr<>\-::operator->()}) must be performed manually
+\texttt{RefCountPtr<>\-::operator->()}) must be performed manually
 in handle class (which must be written an maintained for every method
 on every class by some developer).  Handles make the implementation of
 linear algebra operations with operator overloading much easier.

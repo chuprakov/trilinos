@@ -10,17 +10,17 @@ namespace TSFCore {
 namespace Solvers{
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const Norm<Scalar> >
+Teuchos::RefCountPtr<const Norm<Scalar> >
 ConvergenceTester<Scalar>::norm() const
 {
-	return MemMngPack::rcp( new Norm<Scalar>() );
+	return Teuchos::rcp( new Norm<Scalar>() );
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<ConvergenceTester<Scalar> >
+Teuchos::RefCountPtr<ConvergenceTester<Scalar> >
 ConvergenceTester<Scalar>::clone()
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 

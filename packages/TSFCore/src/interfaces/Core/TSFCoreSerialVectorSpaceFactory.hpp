@@ -10,10 +10,10 @@
 namespace TSFCore {
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 SerialVectorSpaceFactory<Scalar>::createVecSpc(int dim) const
 {
-	return MemMngPack::rcp(new SerialVectorSpace<Scalar>(dim));
+	return Teuchos::rcp(new SerialVectorSpace<Scalar>(dim));
 }
 
 } // end namespace TSFCore

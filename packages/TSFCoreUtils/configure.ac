@@ -56,9 +56,6 @@ echo "----------------------------------------"
 # directory with --srcdir.  Any file in that directory will do,
 # preferably one that is unlikely to be removed or renamed.
 
-# #np# - file name below
-AC_CONFIG_SRCDIR(/src/MoochoUtilities/ref_count_ptr.cpp)
-
 # Specify directory for auxillary build tools (e.g., install-sh,
 # config.sub, config.guess) and M4 files.
 
@@ -373,7 +370,6 @@ AC_CONFIG_FILES([
 		Makefile 
 		src/Makefile
 		test/Makefile
-		test/rcp_test/Makefile
 		])
 
 AC_OUTPUT()

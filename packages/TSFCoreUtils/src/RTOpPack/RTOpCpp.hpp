@@ -8,7 +8,7 @@
 #include "RTOpCppC.hpp"
 #include "RTOp_RTOp_C_Cpp.h"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace RTOpPack {
 

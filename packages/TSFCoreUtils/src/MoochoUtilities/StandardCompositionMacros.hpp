@@ -16,7 +16,7 @@
 #ifndef STANDARD_COMPOSITION_MACROS_H
 #define STANDARD_COMPOSITION_MACROS_H
 
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 ///
 /** Macro that adds <<std comp>> members for a composition association.
@@ -41,7 +41,7 @@
   * to the class declaration:<br>
   \verbatim
 	public:
-		MemMngPack::ref_count_ptr<TYPE> NAME_ptr_t;
+		Teuchos::RefCountPtr<TYPE> NAME_ptr_t;
 	private:
 		NAME_ptr_t NAME_;		
   \endverbatim
@@ -51,7 +51,7 @@
   * the type NAME_ptr_t (such as constuctors)
   */
 #define STANDARD_COMPOSITION_MEMBERS( TYPE, NAME )					\
-	typedef MemMngPack::ref_count_ptr<TYPE>				\
+	typedef Teuchos::RefCountPtr<TYPE>				\
 		NAME ## _ptr_t;												\
 	void set_ ## NAME (const NAME ## _ptr_t& NAME )					\
 	{	NAME ## _ = NAME ; }										\
@@ -89,7 +89,7 @@ public:
   * to the class declaration:<br>
   \verbatim
 	public:
-		MemMngPack::ref_count_ptr<TYPE> NAME_ptr_t;
+		Teuchos::RefCountPtr<TYPE> NAME_ptr_t;
 	private:
 		NAME_ptr_t NAME_;		
   \endverbatim
@@ -99,7 +99,7 @@ public:
   * the type NAME_ptr_t (such as constuctors)
   */
 #define STANDARD_NONCONST_COMPOSITION_MEMBERS( TYPE, NAME ) \
-	typedef MemMngPack::ref_count_ptr<TYPE> \
+	typedef Teuchos::RefCountPtr<TYPE> \
 		NAME ## _ptr_t; \
 	void set_ ## NAME (const NAME ## _ptr_t& NAME ) \
 	{	NAME ## _ = NAME ; } \
@@ -134,7 +134,7 @@ public:
   * to the class declaration:<br>
   \verbatim
 	public:
-		MemMngPack::ref_count_ptr<const TYPE> NAME_ptr_t;
+		Teuchos::RefCountPtr<const TYPE> NAME_ptr_t;
 	private:
 		NAME_ptr_t NAME_;		
   \endverbatim
@@ -145,7 +145,7 @@ public:
   */
 #define STANDARD_CONST_COMPOSITION_MEMBERS( TYPE, NAME )			\
 public:																\
-	typedef MemMngPack::ref_count_ptr<const TYPE>		\
+	typedef Teuchos::RefCountPtr<const TYPE>		\
 		NAME ## _ptr_t;												\
 	void set_ ## NAME (const NAME ## _ptr_t& NAME )					\
 	{	NAME ## _ = NAME ; }										\

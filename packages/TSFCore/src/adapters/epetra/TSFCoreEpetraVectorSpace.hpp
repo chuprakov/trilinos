@@ -48,7 +48,7 @@ public:
 	/** Calls <tt>initialize()</tt>.
 	 */
 	EpetraVectorSpace(
-		const MemMngPack::ref_count_ptr<const Epetra_BlockMap>  &epetra_map
+		const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
 		);
 
 	///
@@ -70,7 +70,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const MemMngPack::ref_count_ptr<const Epetra_BlockMap>  &epetra_map
+		const Teuchos::RefCountPtr<const Epetra_BlockMap>  &epetra_map
 		);
 
 	///
@@ -84,12 +84,12 @@ public:
 	 * <li> <tt>this->localSubdim() == -1)</tt>
 	 * </ul>
 	 */
-	MemMngPack::ref_count_ptr<const Epetra_BlockMap> setUninitialized();
+	Teuchos::RefCountPtr<const Epetra_BlockMap> setUninitialized();
 
 	///
 	/** Return a smart pointer to the underlying <tt>Epetra_BlockMap</tt> object.
 	 */
-	MemMngPack::ref_count_ptr<const Epetra_BlockMap> epetra_map() const;
+	Teuchos::RefCountPtr<const Epetra_BlockMap> epetra_map() const;
 
 	//@}
 
@@ -99,11 +99,11 @@ public:
 	/// Returns 0 if uninitialized.
 	Index dim() const;
 	/// Returns an allocated <tt>EpetraVector</tt> object. 
-	MemMngPack::ref_count_ptr<Vector<Scalar> > createMember() const;
+	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
 	/// Returns an allocated <tt>EpetraMultiVector</tt> object. 
-	MemMngPack::ref_count_ptr< MultiVector<Scalar> > createMembers(int numMembers) const;
+	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 	///
-	MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > clone() const;
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
 
 	//@}
 
@@ -124,7 +124,7 @@ private:
 #ifdef DOXYGEN_COMPILE
 	Epetra_BlockMap                                     *epetra_map;
 #else	
-	MemMngPack::ref_count_ptr<const Epetra_BlockMap>    epetra_map_;
+	Teuchos::RefCountPtr<const Epetra_BlockMap>    epetra_map_;
 	MPI_Comm                                            mpiComm_;
 	Index                                               localOffset_;
 	Index                                               localSubDim_;
@@ -136,7 +136,7 @@ private:
 // Inline members
 
 inline
-MemMngPack::ref_count_ptr<const Epetra_BlockMap>
+Teuchos::RefCountPtr<const Epetra_BlockMap>
 EpetraVectorSpace::epetra_map() const
 {
 	return epetra_map_;

@@ -43,7 +43,7 @@ public:
 	 * @return  Returns a smart reference counted pointer to a dynamically
 	 * allocated vector space object that can be used to create vector.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > createVecSpc(int dim) const = 0;
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > createVecSpc(int dim) const = 0;
 
 	//@}
 

@@ -23,26 +23,25 @@ bool VectorSpace<Scalar>::isInCore() const
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<const VectorSpaceFactory<Scalar> >
+Teuchos::RefCountPtr<const VectorSpaceFactory<Scalar> >
 VectorSpace<Scalar>::smallVecSpcFcty() const
 {
-	return MemMngPack::rcp(new SerialVectorSpaceFactory<Scalar>());
+	return Teuchos::rcp(new SerialVectorSpaceFactory<Scalar>());
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr<MultiVector<Scalar> > 
+Teuchos::RefCountPtr<MultiVector<Scalar> > 
 VectorSpace<Scalar>::createMembers(int numMembers) const
 {
-	namespace mmp = MemMngPack;
-	return mmp::rcp(new MultiVectorCols<Scalar> (mmp::rcp(this,false),this->smallVecSpcFcty()->createVecSpc(numMembers)));
+	return Teuchos::rcp(new MultiVectorCols<Scalar> (Teuchos::rcp(this,false),this->smallVecSpcFcty()->createVecSpc(numMembers)));
 }
 
 template<class Scalar>
 Scalar VectorSpace<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
 {
 	const MultiVectorCols<Scalar>
-		X( MemMngPack::rcp( const_cast<Vector<Scalar>*>(&x), false ) ),
-		Y( MemMngPack::rcp( const_cast<Vector<Scalar>*>(&y), false ) );
+		X( Teuchos::rcp( const_cast<Vector<Scalar>*>(&x), false ) ),
+		Y( Teuchos::rcp( const_cast<Vector<Scalar>*>(&y), false ) );
 	Scalar scalar_prods[1];
 	this->scalarProds(X,Y,scalar_prods);
 	return scalar_prods[0];
@@ -55,10 +54,10 @@ void VectorSpace<Scalar>::scalarProds( const MultiVector<Scalar>& X, const Multi
 }
 
 template<class Scalar>
-MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 VectorSpace<Scalar>::clone() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 

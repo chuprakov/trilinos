@@ -126,7 +126,7 @@ public:
 	 * (uninitialized).  This allows for faster execution times.  Note
 	 * that <tt>return->space().get() == this</tt> need not be true.
 	 */
-	virtual MemMngPack::ref_count_ptr< Vector<Scalar> > createMember() const = 0;
+	virtual Teuchos::RefCountPtr< Vector<Scalar> > createMember() const = 0;
 
 	//@}
 
@@ -150,7 +150,7 @@ public:
 	 * Note that if a subclass overrides <tt>createMembers()</tt> then
 	 * it may also need to override this method as well.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
+	virtual Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
 
 	///
 	/** Create a set of vector members (a <tt>MultiVector</tt>) from the vector space.
@@ -174,7 +174,7 @@ public:
 	 * The default implementation returns
 	 * <tt>dynamic_cast<MultiVectorCols>(return.get())!=NULL</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr< MultiVector<Scalar> > createMembers(int numMembers) const;
+	virtual Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 
 	///
 	/** Return the scalar product of two vectors in the vector space.
@@ -218,7 +218,7 @@ public:
 	 *
 	 * The default implementation returns <tt>return.get()==NULL</tt>.
 	 */
-	virtual MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > clone() const;
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
 
 	//@}
 

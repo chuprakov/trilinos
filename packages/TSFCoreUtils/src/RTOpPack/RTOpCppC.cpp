@@ -2,7 +2,7 @@
 // RTOpCppC.cpp
 
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace RTOpPack {
 
@@ -27,7 +27,7 @@ const char* RTOpC::op_name() const
 {
 	const char* op_name = NULL;
 	const int err = RTOp_get_op_name(&op_,&op_name);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::get_op_name(...): Error, "
 		"RTOp_op_name(...) returned != 0" );
@@ -57,7 +57,7 @@ void RTOpC::get_op_type_num_entries(
 	) const
 {
 	const int err = RTOp_get_op_type_num_entries(&op_,num_values,num_indexes,num_chars);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::get_op_type_num_entries(...): Error, "
 		"RTOp_get_op_type_num_entries(...) returned != 0" );
@@ -78,7 +78,7 @@ void RTOpC::extract_op_state(
 		,num_indexes, index_data
 		,num_chars,   char_data
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::extract_opt_state(...): Error, "
 		"RTOp_extract_opt_state(...) returned != 0" );
@@ -99,7 +99,7 @@ void RTOpC::load_op_state(
 		,num_chars,   char_data
 		,&op_
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::load_opt_state(...): Error, "
 		"RTOp_load_opt_state(...) returned != 0" );
@@ -112,7 +112,7 @@ void RTOpC::get_reduct_type_num_entries(
 	) const
 {
 	const int err = RTOp_get_reduct_type_num_entries(&op_,num_values,num_indexes,num_chars);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::get_reduct_type_num_entries(...): Error, "
 		"RTOp_get_reduct_type_num_entries(...) returned != 0" );
@@ -121,7 +121,7 @@ void RTOpC::get_reduct_type_num_entries(
 void RTOpC::reduct_obj_create_raw( RTOp_ReductTarget* reduct_obj ) const
 {
 	const int err = RTOp_reduct_obj_create(&op_,reduct_obj);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::reduct_obj_create(...): Error, "
 		"RTOp_reduct_obj_create(...) returned != 0" );
@@ -130,7 +130,7 @@ void RTOpC::reduct_obj_create_raw( RTOp_ReductTarget* reduct_obj ) const
 void RTOpC::reduct_obj_reinit( RTOp_ReductTarget reduct_obj ) const
 {
 	const int err = RTOp_reduct_obj_reinit(&op_,reduct_obj);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::reduct_obj_reinit(...): Error, "
 		"RTOp_reduct_obj_reinit(...) returned != 0" );
@@ -139,7 +139,7 @@ void RTOpC::reduct_obj_reinit( RTOp_ReductTarget reduct_obj ) const
 void RTOpC::reduct_obj_free( RTOp_ReductTarget* reduct_obj ) const
 {
 	const int err = RTOp_reduct_obj_free(&op_,reduct_obj);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::reduct_obj_free(...): Error, "
 		"RTOp_reduct_obj_free(...) returned != 0" );
@@ -161,7 +161,7 @@ void RTOpC::extract_reduct_obj_state(
 		,num_indexes, index_data
 		,num_chars,   char_data
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::extract_reduct_obj_state(...): Error, "
 		"RTOp_extract_reduct_obj_state(...) returned != 0" );
@@ -184,7 +184,7 @@ void RTOpC::load_reduct_obj_state(
 		,num_chars,   char_data
 		,reduct_obj
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::load_reduct_obj_state(...): Error, "
 		"RTOp_load_reduct_obj_state(...) returned != 0" );
@@ -217,15 +217,15 @@ void RTOpC::apply_op(
 		,num_targ_vecs,  num_targ_vecs  ? &c_targ_sub_vecs[0] : (RTOp_MutableSubVector*)NULL
 		,reduct_obj
 		);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err == RTOp_ERR_INVALID_NUM_VECS, InvalidNumVecs
 		,"RTOpC::apply_op(...): Error, "
 		"RTOp_apply_op(...) returned RTOp_ERR_INVALID_NUM_VECS" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err == RTOp_ERR_INVALID_NUM_TARG_VECS, InvalidNumTargVecs
 		,"RTOpC::apply_op(...): Error, "
 		"RTOp_apply_op(...) returned RTOp_ERR_INVALID_NUM_TARG_VECS" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::apply_op(...): Error, "
 		"RTOp_apply_op(...) returned != 0 with unknown meaning" );
@@ -236,7 +236,7 @@ void RTOpC::reduce_reduct_objs(
 	) const
 {
 	const int err = RTOp_reduce_reduct_objs(&op_,in_reduct_obj,inout_reduct_obj);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::reduce_reduct_objs(...): Error, "
 		"RTOp_reduce_reduct_objs(...) returned != 0" );
@@ -245,7 +245,7 @@ void RTOpC::reduce_reduct_objs(
 void RTOpC::get_reduct_op( RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr ) const
 {
 	const int err = RTOp_get_reduct_op(&op_,reduct_op_func_ptr);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		err != 0, UnknownError
 		,"RTOpC::get_reduct_op(...): Error, "
 		"RTOp_get_reduct_op(...) returned != 0" );

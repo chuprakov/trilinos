@@ -41,8 +41,8 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 
 	// Factories
 
-	typedef mmp::ref_count_ptr< const mmp::AbstractFactory<LinearOpWithSolve<Scalar> > >   DcDy_fcty_ptr_t;
-	typedef mmp::ref_count_ptr< const mmp::AbstractFactory<LinearOp<Scalar > > >           DcDu_fcty_ptr_t;
+	typedef Teuchos::RefCountPtr< const mmp::AbstractFactory<LinearOpWithSolve<Scalar> > >   DcDy_fcty_ptr_t;
+	typedef Teuchos::RefCountPtr< const mmp::AbstractFactory<LinearOp<Scalar > > >           DcDu_fcty_ptr_t;
 
 	if(o) *o << "prob->factory_DcDy().get() -> ";       const DcDy_fcty_ptr_t DcDy_fcty = prob->factory_DcDy(); if(o) *o << DcDy_fcty.get() << endl;
 	if(o) *o << "prob->factory_DcDy().get()!=NULL -> "; if(!(result=(DcDy_fcty.get()!=NULL))) success=false;    if(o) *o << passfail(result) << endl;
@@ -60,13 +60,13 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 	// Calulations
 
 	if(o) *o << "DcDy = prob->factory_DcDy()->create();\n";
-	mmp::ref_count_ptr<LinearOpWithSolve<Scalar> > DcDy = DcDy_fcty->create();
+	Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> > DcDy = DcDy_fcty->create();
 	if(o) *o << "prob->set_DcDy(DcDy)\n"; prob->set_DcDy(DcDy.get());
 	if(o) *o << "prob->get_DcDy() -> ";
 	LinearOpWithSolve<Scalar> *get_DcDy = prob->get_DcDy();
 	if(o) *o << get_DcDy << endl;
 
-	std::vector<mmp::ref_count_ptr<LinearOp<Scalar> > >  DcDu(Nu);
+	std::vector<Teuchos::RefCountPtr<LinearOp<Scalar> > >  DcDu(Nu);
 	for( l = 1; l <= Nu; ++l ) {
 		if(o) *o << "DcDu("<<l<<") = prob->factory_DcDu(l)->create();\n";
 		DcDu[l-l] = prob->factory_DcDu(l)->create();
@@ -74,8 +74,8 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 		if(o) *o << "prob->get_DcDu("<<l<<") -> "; LinearOp<Scalar> *get_DcDu_l = prob->get_DcDu(l); if(o) *o << get_DcDu_l << endl;
 	}
 
-	mmp::ref_count_ptr<MultiVector<Scalar> >                DgDy;
-	std::vector<mmp::ref_count_ptr<MultiVector<Scalar> > >  DgDu(Nu);
+	Teuchos::RefCountPtr<MultiVector<Scalar> >                DgDy;
+	std::vector<Teuchos::RefCountPtr<MultiVector<Scalar> > >  DgDu(Nu);
 	if(nrf) {
 		if(o) *o << "DgDy = prob->space_y()->createMembers(prob->space_g()->dim());\n";
 		DgDy = prob->space_y()->createMembers(nrf);
@@ -125,7 +125,7 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 
 	if(true) {
 		// Test NONTRANS
-		mmp::ref_count_ptr<Vector<Scalar> >
+		Teuchos::RefCountPtr<Vector<Scalar> >
 			t1 = DcDy->range()->createMember(),
 			t2 = DcDy->domain()->createMember(),
 			t3 = DcDy->range()->createMember(),
@@ -143,7 +143,7 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 	}
 	if(prob->adjointSupported()) {
 		// Test TRANS
-		mmp::ref_count_ptr<Vector<Scalar> >
+		Teuchos::RefCountPtr<Vector<Scalar> >
 			t1 = DcDy->domain()->createMember(),
 			t2 = DcDy->range()->createMember(),
 			t3 = DcDy->domain()->createMember(),

@@ -47,7 +47,7 @@ int main()
 		std::cout << "\n*** Solve the equations ...\n\n";
 
 		TSFCore::Nonlin::SimpleNewtonSolver<Scalar> newtonSolver;
-		mmp::ref_count_ptr<TSFCore::Vector<Scalar> > y = np2dsim.space_y()->createMember();
+		Teuchos::RefCountPtr<TSFCore::Vector<Scalar> > y = np2dsim.space_y()->createMember();
 		assign( y.get(), np2dsim.y0() );
 		newtonSolver.solve( &np2dsim, y.get(), &std::cout, true );
 

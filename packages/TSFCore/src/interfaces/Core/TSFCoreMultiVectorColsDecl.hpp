@@ -42,14 +42,14 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	MultiVectorCols(
-		MemMngPack::ref_count_ptr<Vector<Scalar> >  col_vec
+		Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
 		);
 
 	/// Calls <tt>initalize()</tt>.
 	MultiVectorCols(
-		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >          &range
-		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >         &domain
-		,MemMngPack::ref_count_ptr<Vector<Scalar> >                          col_vecs[] = NULL
+		const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &range
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >         &domain
+		,Teuchos::RefCountPtr<Vector<Scalar> >                          col_vecs[] = NULL
 		);
 	
 	///
@@ -70,7 +70,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		MemMngPack::ref_count_ptr<Vector<Scalar> >  col_vec
+		Teuchos::RefCountPtr<Vector<Scalar> >  col_vec
 		);
 
 	///
@@ -107,9 +107,9 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >          &range
-		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >         &domain
-		,MemMngPack::ref_count_ptr<Vector<Scalar> >                          col_vecs[] = NULL
+		const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &range
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >         &domain
+		,Teuchos::RefCountPtr<Vector<Scalar> >                          col_vecs[] = NULL
 		);
 
 	/// Set uninitalized.
@@ -120,17 +120,17 @@ public:
 	/** @name Overridden from LinearOp */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > range() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > range() const;
 	///
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > domain() const;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
 	//@}
 
 	/** @name Overridden from MultiVector */
 	//@{
 	///
-	MemMngPack::ref_count_ptr<Vector<Scalar> > col(Index j);
+	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);
 	///
-	MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
 	//@}
 
 private:
@@ -140,9 +140,9 @@ private:
 	const VectorSpace<Scalar>                  *domain;
 	Vector<Scalar>                             *column_vectors;
 #else
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >        range_;
-	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >        domain_;
-	std::vector< MemMngPack::ref_count_ptr<Vector<Scalar> > >    col_vecs_;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        range_;
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        domain_;
+	std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_;
 #endif
 	
 }; // end class MultiVectorCols

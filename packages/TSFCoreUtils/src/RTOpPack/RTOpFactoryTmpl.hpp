@@ -101,7 +101,7 @@ template<class Op>
 RTOpFactory::op_ptr_t RTOpFactoryTmpl<Op>::create_op() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::ref_count_ptr<Op>(new Op());
+	return rcp::RefCountPtr<Op>(new Op());
 }
 
 } // end namespace RTOpPack
