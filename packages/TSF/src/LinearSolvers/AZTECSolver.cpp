@@ -47,6 +47,7 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
     mlUseDamping_(false),
     mlDamping_(0.0),
     prec_(0),
+    aztec_recursive_iterate_(false),
     aztec_status(AZ_STATUS_SIZE),
     aztec_proc_config(AZ_PROC_SIZE)
 {
@@ -60,6 +61,17 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
       useML_ = true;
       userOptions.remove(AZ_ml);
       TSFOut::println("AZTECSolver is using ML");
+    }
+
+
+  /* AZ_recursive_iterate is not a standard AZ option so we need to 
+   * remove it from the list
+   * before sending options to AZ */
+  if (userOptions.containsKey(AZ_recursive_iterate)) 
+    {
+      aztec_recursive_iterate_ = true;
+      userOptions.remove(AZ_recursive_iterate);
+      TSFOut::println("AZTECSolver is using recursive_iterate");
     }
 
 #ifndef HAVE_ML
@@ -93,7 +105,7 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
     {
       mlUseDamping_ = true;
       mlDamping_ = userParameters.get(AZ_ml_damping);
-      userOptions.remove(AZ_ml_levels);
+      userOptions.remove(AZ_ml_damping);
       TSFOut::printf("AZTECSolver is using ML with damping=%g\n", mlDamping_);
     }
 
@@ -143,8 +155,7 @@ void AZTECSolver::setupML(Epetra_RowMatrix* F) const
 
   if (mlSymmetric_ != true) 
     {
-      ML_Set_Symmetrize(ml_handle, ML_TRUE);
-      if (mlUseDamping_) ML_Aggregate_Set_DampingFactor(agg_object,mlDamping_);
+      ML_Aggregate_Set_DampingFactor(agg_object,0.);
     }
   mlLevels_ = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
                                                  ML_INCREASING, agg_object);
@@ -155,28 +166,16 @@ void AZTECSolver::setupML(Epetra_RowMatrix* F) const
 #else
       AZ_set_proc_config(&(aztec_proc_config[0]), AZ_NOT_MPI);
 #endif 
-
-      int options[AZ_OPTIONS_SIZE];
-      double params[AZ_PARAMS_SIZE];
-      AZ_defaults(options, params);
-      options[AZ_precond] = AZ_dom_decomp;
-      options[AZ_subdomain_solve] = AZ_ilut;
-      options[AZ_overlap] = 1;
-      params[AZ_ilut_fill] = 2.;
       
-      for (int level = 0; level < mlLevels_; level++) {
-        ML_Gen_SmootherAztec(ml_handle, level, options, params, 
-                             &(aztec_proc_config[0]), &(aztec_status[0]), 
-                             AZ_ONLY_PRECONDITIONER,  ML_BOTH, NULL);
-      }
+      ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS, ML_BOTH, 1, 1);
     }
   else 
     {
       ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS, ML_BOTH, 1, 1);
     }
-
+  
   ML_Gen_Solver    (ml_handle, ML_MGV, 0, mlLevels_-1);
-
+  
   Epetra_ML_Operator  *MLop = new Epetra_ML_Operator(ml_handle,
                                                      (F->OperatorDomainMap().Comm()),
                                                      (F->OperatorDomainMap()),
@@ -204,26 +203,30 @@ bool AZTECSolver::solve(const TSFLinearOperator& op,
 
   if (useML_) setupML(A);
 
-	AztecOO aztec(A, x, b);
-
-	aztec.SetAllAztecOptions((int*) &(options_[0]));
-	aztec.SetAllAztecParams((double*) &(parameters_[0]));
-
-	int maxIters = options_[AZ_max_iter];
-	double tol = parameters_[AZ_tol];
-
-  /* VEH/RST - need to use recursiveIterate if we are using */
-  /* an Epetra_Operator as a preconditioner */
-	if (prec_.get() != 0) {
+  AztecOO aztec(A, x, b);
+  
+  aztec.SetAllAztecOptions((int*) &(options_[0]));
+  aztec.SetAllAztecParams((double*) &(parameters_[0]));
+  
+  int maxIters = options_[AZ_max_iter];
+  double tol = parameters_[AZ_tol];
+  
+  /* VEH/RST - check if we are using an Epetra_Operator as 
+   * a preconditioner. Note that in this case user must set
+   * the parameter aztec_recursive_iterate to true */
+  if (prec_.get() != 0)
     aztec.SetPrecOperator(prec_.get());
+  
+  /* VEH/RST Parameter to check if we are calling aztec recursively.
+   * If so, need to set parameter aztec_recursive_iterate to true. */
+  if (aztec_recursive_iterate_)
     aztec.recursiveIterate(maxIters, tol);
-  }
-  
   else
-  	aztec.Iterate(maxIters, tol);
+    aztec.Iterate(maxIters, tol);
   
-	soln = xCopy;
-	return true;
+  
+  soln = xCopy;
+  return true;
 }
 
 

@@ -15,6 +15,7 @@
 #define AZ_ml_levels    102
 #define AZ_ml_sym       103
 #define AZ_ml_damping   104
+#define AZ_recursive_iterate 105
 
 namespace TSF
 {
@@ -59,6 +60,10 @@ namespace TSF
 
       /** Flag indicating whether we are using ML preconditioning */
       bool useML_;
+
+      /** Flag indicating whether we are doing a recursive solve
+       *  with aztec (i.e., using recursiveIterate) */
+      bool aztec_recursive_iterate_;
 
       /** Number of ML levels to use */
       mutable int mlLevels_;
