@@ -528,24 +528,24 @@ void MatrixCompositeStd::remove_matrix( matrix_list_t::iterator itr )
 }
 
 void MatrixCompositeStd::finish_construction(
-	const VectorSpace::space_ptr_t&  space_rows
-	,const VectorSpace::space_ptr_t& space_cols
+	const VectorSpace::space_ptr_t&  space_cols
+	,const VectorSpace::space_ptr_t& space_rows
 	)
 {
-	THROW_EXCEPTION(
-		!space_rows.get(), std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_rows.get() can not be NULL" );
 	THROW_EXCEPTION(
 		!space_cols.get(), std::invalid_argument
 		,"MatrixCompositeStd::finish_construction(...): Error, space_cols.get() can not be NULL" );
 	THROW_EXCEPTION(
-		space_rows->dim() != cols_, std::invalid_argument
-		,"MatrixCompositeStd::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
-		<< " != cols = " << cols_ << " where cols was passed to this->reinitialize(...)" );
+		!space_rows.get(), std::invalid_argument
+		,"MatrixCompositeStd::finish_construction(...): Error, space_rows.get() can not be NULL" );
 	THROW_EXCEPTION(
 		space_cols->dim() != rows_, std::invalid_argument
 		,"MatrixCompositeStd::finish_construction(...): Error, space_colss->dim() = " << space_cols->dim()
 		<< " != rows = " << rows_ << " where cols was passed to this->reinitialize(...)" );
+	THROW_EXCEPTION(
+		space_rows->dim() != cols_, std::invalid_argument
+		,"MatrixCompositeStd::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
+		<< " != cols = " << cols_ << " where cols was passed to this->reinitialize(...)" );
 
 	space_rows_ = space_rows;
 	space_cols_ = space_cols;
