@@ -36,7 +36,6 @@ namespace ReducedSpaceSQPPack {
         opt_tol = ?;
         feas_tol = ?;
         step_tol = ?;
-        max_var_bounds_viol = ?;
 		journal_output_level = ?;
 		journal_print_digits = ?;
 		check_results = ?;

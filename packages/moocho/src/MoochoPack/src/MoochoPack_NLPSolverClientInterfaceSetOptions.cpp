@@ -25,7 +25,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 9;
+	const int local_num_options = 8;
 
 	enum local_EOptions {
         MAX_ITER,
@@ -33,7 +33,6 @@ namespace {
         OPT_TOL,
         FEAS_TOL,
         STEP_TOL,
-        MAX_VAR_BOUNDS_VIOL,
 		JOURNAL_OUTPUT_LEVEL,
 		JOURNAL_PRINT_DIGITS,
 		CHECK_RESULTS
@@ -45,7 +44,6 @@ namespace {
         ("opt_tol"),
         ("feas_tol"),
         ("step_tol"),
-        ("max_var_bounds_viol"),
 		("journal_output_level"),
 		("journal_print_digits"),
 		("check_results")
@@ -86,9 +84,6 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 			break;
 		case STEP_TOL:
 			target().step_tol(::fabs(::atof(option_value.c_str())));
-			break;
-		case MAX_VAR_BOUNDS_VIOL:
-			target().max_var_bounds_viol(::fabs(::atof(option_value.c_str())));
 			break;
 		case JOURNAL_OUTPUT_LEVEL:
 		{

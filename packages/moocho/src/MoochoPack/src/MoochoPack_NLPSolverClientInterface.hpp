@@ -64,7 +64,6 @@ public:
 		,value_type            opt_tol              = 1e-6
 		,value_type            feas_tol             = 1e-6
 		,value_type            step_tol             = 1e-2
-		,value_type            max_var_bounds_viol  = 1e-5
 		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
 		,int                   journal_print_digits = 6
 		,bool                  check_results        = false
@@ -104,20 +103,6 @@ public:
 	 * The test is: <tt>|d(i)|/(1+|x(i)|) < step_tol</tt>. 
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, step_tol )
-
-	///
-	/** Set the maximum absolute value for which the variable bounds may be violated
-	 * by when computing function and gradient values.
-	 *
-	 * In other words the algorithm will never call on the NLP to compute
-	 * a function and gradient evaluation outside of:
-	 \verbatim
-
-	   xl - delta <= x <= xu + delta
-	 \endverbatim
-	 * where <tt>delta = max_var_bounds_viol</tt>.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_var_bounds_viol )
 
 	///
 	/** Determine the amount of output to a journal file.
