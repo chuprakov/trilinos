@@ -11,6 +11,10 @@
 
 #include "AztecOO.h"
 
+#define AZ_ml           101
+#define AZ_ml_levels    102
+#define AZ_ml_sym       103
+
 namespace TSF
 {
   using std::ostream;
@@ -27,14 +31,7 @@ namespace TSF
 
       /** construct a AZTEC solver with the given options and parameters. */
       AZTECSolver(const TSFHashtable<int, int>& aztecOptions,
-                  const TSFHashtable<int, double>& aztecParameters);
-
-      /* VEH/RST - construct AZTEC solver with given options, parameters, */
-      /* and preconditioner. */
-      AZTECSolver(const TSFHashtable<int, int>& aztecOptions,
-                  const TSFHashtable<int, double>& aztecParameters,
-                  const TSFSmartPtr<Epetra_Operator>& prec);
-
+                  const TSFHashtable<int, double>& aztecParameters)
       /** TUVD */
       virtual ~AZTECSolver();
 
@@ -50,15 +47,31 @@ namespace TSF
 
 
     private:
+      void setupML(const Epetra_RowMatrix* A);
+
       /** Aztec options */
       mutable TSFArray<int> options_;
 
       /** Aztec parameters */
       mutable TSFArray<double> parameters_;
 
-      /* preconditioner for Aztec solver */
+      /** Flag indicating whether we are using ML preconditioning */
+      bool useML_;
+
+      /** Number of ML levels to use */
+      int mlLevels_;
+
+      /** whether ML should assume symmetric system */
+      bool mlSymmetric_;
+
+      /** ML preconditioner object */
       TSFSmartPtr<Epetra_Operator> prec_;
 
+      /** Aztec status */
+      TSFArray<double> aztec_status;
+
+      /** Aztec proc_config */
+      TSFArray<int> aztec_proc_config;
    };
 
 }
