@@ -1,10 +1,10 @@
-Decomposition Method	= sfc
+Decomposition Method	= bsfc
 Zdrive debug level 	= 1
 #Zoltan Parameters	= Debug_level=3
 Zoltan Parameters	= obj_weight_dim=1
 Zoltan Parameters	= comm_weight_dim=1
-Zoltan Parameters	= sfc_bins_per_proc=1
-Zoltan Parameters	= sfc_hashtable_divider=10
+Zoltan Parameters	= bsfc_bins_per_proc=1
+Zoltan Parameters	= bsfc_hashtable_divider=10
 File Type		= Chaco
 File Name		= film
 Parallel Disk Info	= number=0
