@@ -157,8 +157,6 @@ bool MatrixWithOp::Mp_StM(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 
-	
-
 	// Give m_lhs a chance to implement this method
 	if(m_lhs->Mp_StM(alpha,*this,trans_rhs))
 		return true;
