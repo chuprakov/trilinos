@@ -1,0 +1,741 @@
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
+# Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+# @HEADER
+# @HEADER
+
+# ------------------------------------------------------------------------
+# For each category, create two variables - NAME and NAME_H. The
+# second is the list of headers to be installed, i.e., any header that
+# might someday be needed by some other code outside meros. The first is
+# the list of all source and any other header files.
+# ------------------------------------------------------------------------
+
+#
+# There is, at present, no distinction between most of the categories, 
+# other than those which start with EXTRA_.  All categories which do not
+# start with EXTRA_ are included in all builds.  Categories which start
+# with EXTRA_ are included in some builds (typically controlled by 
+# --with-xyz or --without-xyz)
+#
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+ALTERNATE_AR = @ALTERNATE_AR@
+AMTAR = @AMTAR@
+AWK = @AWK@
+CC = @CC@
+CXX = @CXX@
+DEPDIR = @DEPDIR@
+EXEEXT = @EXEEXT@
+F77 = @F77@
+FLIBS = @FLIBS@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+MAINT = @MAINT@
+MPI_CC_EXISTS = @MPI_CC_EXISTS@
+MPI_CXX = @MPI_CXX@
+MPI_CXX_EXISTS = @MPI_CXX_EXISTS@
+MPI_F77_EXISTS = @MPI_F77_EXISTS@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
+ac_aux_dir = @ac_aux_dir@
+am__include = @am__include@
+am__quote = @am__quote@
+install_sh = @install_sh@
+
+CORE_H = \
+          $(srcdir)/Aztec2TSF.h  $(srcdir)/ReadPetra.h  \
+          $(srcdir)/TSFLinearOperator2EpetraRowMatrix.h \
+          $(srcdir)/KayLoghinRightOperatorSource.h      \
+          $(srcdir)/RightBlockNSOperatorSource.h        \
+          $(srcdir)/Vbr2Petra.h                         \
+          $(srcdir)/KayLoghinSchurFactory.h             \
+          $(srcdir)/SchurFactoryBase.h                  \
+          $(srcdir)/NSBlockPreconditionerFactory.h  $(srcdir)/SchurFactory.h
+
+
+CORE = \
+          $(srcdir)/Aztec2TSF.cpp  $(srcdir)/ReadPetra.cpp  \
+          $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp \
+          $(srcdir)/KayLoghinRightOperatorSource.cpp      \
+          $(srcdir)/RightBlockNSOperatorSource.cpp        \
+          $(srcdir)/Vbr2Petra.cpp                         \
+          $(srcdir)/KayLoghinSchurFactory.cpp             \
+          $(srcdir)/SchurFactoryBase.cpp                  \
+          $(srcdir)/NSBlockPreconditionerFactory.cpp      \
+          $(srcdir)/SchurFactory.cpp
+
+
+UTIL_H = 
+
+UTIL = 
+
+ENUM_H = 
+
+UNIPROC_H = 
+
+UNIPROC = 
+
+SERIAL_H = 
+
+SERIAL = 
+
+#
+#  Files which are included in select builds are typically have
+#  names that start with EXTRA
+#
+#  EXTRA_MPI is control by --with-mpi and --without-mpi which is
+#  set up by TAC_ARC_CONFIG_MPI 
+#
+EXTRA_MPI_H = 
+
+EXTRA_MPI = 
+
+@HAVE_MPI_TRUE@MPI_H = \
+@HAVE_MPI_TRUE@	$(EXTRA_MPI_H)
+
+@HAVE_MPI_FALSE@MPI_H = 
+@HAVE_MPI_TRUE@MPI = \
+@HAVE_MPI_TRUE@	$(EXTRA_MPI)
+
+@HAVE_MPI_FALSE@MPI = 
+
+USERBASE_H = 
+
+LANG_WRAPS_H = 
+
+LANG_WRAPS = 
+
+DIST_H = 
+
+DIST = 
+
+COMP_H = 
+
+COMP = 
+
+AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src \
+              -I$(top_srcdir)/../TSF/src/LinearOperators  \
+              -I$(top_srcdir)/../TSF/src/Implementations  \
+              -I$(top_srcdir)/../TSF/src/LinearProblem    \
+              -I$(top_srcdir)/../TSF/src/Vectors          \
+              -I$(top_srcdir)/../TSF/src/Support          \
+              -I$(top_srcdir)/../TSF/src/Preconditioners  \
+              -I$(top_srcdir)/../TSF/src/VectorSpaces     \
+              -I$(top_srcdir)/../TSF/src/LinearSolvers    \
+              -I$(top_srcdir)/../aztecoo/src              \
+              -I$(top_builddir)/../TSF/src/LinearOperators  \
+              -I$(top_builddir)/../TSF/src/Implementations  \
+              -I$(top_builddir)/../TSF/src/LinearProblem    \
+              -I$(top_builddir)/../TSF/src/Vectors          \
+              -I$(top_builddir)/../TSF/src/Support          \
+              -I$(top_builddir)/../TSF/src/Preconditioners  \
+              -I$(top_builddir)/../TSF/src/VectorSpaces     \
+              -I$(top_builddir)/../TSF/src/LinearSolvers    \
+              -I$(top_builddir)/../aztecoo/src              
+
+
+
+# ------------------------------------------------------------------------
+# meros  library specifications
+# ------------------------------------------------------------------------
+MEROS_LIB = libmeros.a
+
+MEROS_H = \
+	$(CORE_H) \
+	$(UTIL_H) \
+	$(ENUM_H) \
+	$(UNIPROC_H) \
+	$(SERIAL_H) \
+	$(USERBASE_H) \
+	$(DIST_H) \
+	$(COMP_H) \
+	$(MPI_H)
+
+
+libmeros_a_SOURCES = \
+	$(CORE) \
+	$(UTIL) \
+	$(UNIPROC) \
+	$(SERIAL) \
+	$(DIST) \
+	$(COMP) \
+	$(MPI)
+
+
+
+#We need the following to support separate build directories
+#AM_CPPFLAGS=-I$(builddir)/src
+# ------------------------------------------------------------------------
+# For using a special archiver
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: Why is the "else" there?  For some reason, automake
+# fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
+# define it manually.
+@USE_ALTERNATE_AR_TRUE@libbpack_a_AR = $(ALTERNATE_AR)
+
+@USE_ALTERNATE_AR_FALSE@libmeros_a_AR = $(AR) cru
+
+
+# ------------------------------------------------------------------------
+# Some C++ compilers create extra .o-files for templates. We need to
+# be sure to include these, and this is the hack to do it.
+# ------------------------------------------------------------------------
+libmeros_a_LIBADD = $(XTRALDADD)
+
+
+# ------------------------------------------------------------------------
+# List of all libraries to install in $(libexecdir)
+# ------------------------------------------------------------------------
+lib_LIBRARIES = $(MEROS_LIB)
+
+
+# ------------------------------------------------------------------------
+# List of all headers to install in $(pkgincludedir)
+# ------------------------------------------------------------------------
+pkginclude_HEADERS = $(MEROS_H) 
+
+
+# ------------------------------------------------------------------------
+# Special stuff to install in our special $(pkgexecincludedir)
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: meros_config.h is a machine-dependent file, so we need
+# to install it in the machine-dependent directory. However, that is
+# not a default installation directory, so we had to create it
+# special.
+pkgexecincludedir = $(exec_prefix)/include/meros
+nodist_pkgexecinclude_HEADERS = meros_config.h
+
+
+# ------------------------------------------------------------------------
+# Files to be deleted by 'make maintainer-clean'
+# ------------------------------------------------------------------------
+MAINTAINERCLEANFILES = Makefile.in 
+subdir = src
+mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
+CONFIG_HEADER = meros_config.h
+CONFIG_CLEAN_FILES =
+LIBRARIES = $(lib_LIBRARIES)
+
+libmeros_a_DEPENDENCIES =
+@HAVE_MPI_TRUE@am_libmeros_a_OBJECTS = Aztec2TSF.$(OBJEXT) \
+@HAVE_MPI_TRUE@	ReadPetra.$(OBJEXT) \
+@HAVE_MPI_TRUE@	TSFLinearOperator2EpetraRowMatrix.$(OBJEXT) \
+@HAVE_MPI_TRUE@	KayLoghinRightOperatorSource.$(OBJEXT) \
+@HAVE_MPI_TRUE@	RightBlockNSOperatorSource.$(OBJEXT) \
+@HAVE_MPI_TRUE@	Vbr2Petra.$(OBJEXT) \
+@HAVE_MPI_TRUE@	KayLoghinSchurFactory.$(OBJEXT) \
+@HAVE_MPI_TRUE@	SchurFactoryBase.$(OBJEXT) \
+@HAVE_MPI_TRUE@	NSBlockPreconditionerFactory.$(OBJEXT) \
+@HAVE_MPI_TRUE@	SchurFactory.$(OBJEXT)
+@HAVE_MPI_FALSE@am_libmeros_a_OBJECTS = Aztec2TSF.$(OBJEXT) \
+@HAVE_MPI_FALSE@	ReadPetra.$(OBJEXT) \
+@HAVE_MPI_FALSE@	TSFLinearOperator2EpetraRowMatrix.$(OBJEXT) \
+@HAVE_MPI_FALSE@	KayLoghinRightOperatorSource.$(OBJEXT) \
+@HAVE_MPI_FALSE@	RightBlockNSOperatorSource.$(OBJEXT) \
+@HAVE_MPI_FALSE@	Vbr2Petra.$(OBJEXT) \
+@HAVE_MPI_FALSE@	KayLoghinSchurFactory.$(OBJEXT) \
+@HAVE_MPI_FALSE@	SchurFactoryBase.$(OBJEXT) \
+@HAVE_MPI_FALSE@	NSBlockPreconditionerFactory.$(OBJEXT) \
+@HAVE_MPI_FALSE@	SchurFactory.$(OBJEXT)
+libmeros_a_OBJECTS = $(am_libmeros_a_OBJECTS)
+
+DEFS = @DEFS@
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/Aztec2TSF.Po \
+@AMDEP_TRUE@	$(DEPDIR)/KayLoghinRightOperatorSource.Po \
+@AMDEP_TRUE@	$(DEPDIR)/KayLoghinSchurFactory.Po \
+@AMDEP_TRUE@	$(DEPDIR)/NSBlockPreconditionerFactory.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ReadPetra.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RightBlockNSOperatorSource.Po \
+@AMDEP_TRUE@	$(DEPDIR)/SchurFactory.Po \
+@AMDEP_TRUE@	$(DEPDIR)/SchurFactoryBase.Po \
+@AMDEP_TRUE@	$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po \
+@AMDEP_TRUE@	$(DEPDIR)/Vbr2Petra.Po
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+CXXFLAGS = @CXXFLAGS@
+DIST_SOURCES = $(libmeros_a_SOURCES)
+HEADERS = $(nodist_pkgexecinclude_HEADERS) $(pkginclude_HEADERS)
+
+DIST_COMMON = README $(pkginclude_HEADERS) ./stamp-h.in Makefile.am \
+	Makefile.in meros_config.h.in
+SOURCES = $(libmeros_a_SOURCES)
+
+all: meros_config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-am
+
+.SUFFIXES:
+.SUFFIXES: .cpp .o .obj
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  src/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+meros_config.h: stamp-h
+	@if test ! -f $@; then \
+		rm -f stamp-h; \
+		$(MAKE) stamp-h; \
+	else :; fi
+stamp-h: $(srcdir)/meros_config.h.in $(top_builddir)/config.status
+	@rm -f stamp-h stamp-hT
+	@echo timestamp > stamp-hT 2> /dev/null
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=src/meros_config.h:src/meros_config.h.in \
+	     $(SHELL) ./config.status
+	@mv stamp-hT stamp-h
+$(srcdir)/meros_config.h.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/./stamp-h.in
+	@if test ! -f $@; then \
+		rm -f $(srcdir)/./stamp-h.in; \
+		$(MAKE) $(srcdir)/./stamp-h.in; \
+	else :; fi
+$(srcdir)/./stamp-h.in: $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+	@rm -f $(srcdir)/./stamp-h.in $(srcdir)/./stamp-h.inT
+	@echo timestamp > $(srcdir)/./stamp-h.inT 2> /dev/null
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@mv $(srcdir)/./stamp-h.inT $(srcdir)/./stamp-h.in
+
+distclean-hdr:
+	-rm -f meros_config.h
+
+AR = ar
+install-libLIBRARIES: $(lib_LIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  echo " rm -f $(DESTDIR)$(libdir)/$$p"; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+Aztec2TSF.$(OBJEXT): $(srcdir)/Aztec2TSF.cpp
+ReadPetra.$(OBJEXT): $(srcdir)/ReadPetra.cpp
+TSFLinearOperator2EpetraRowMatrix.$(OBJEXT): \
+	$(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp
+KayLoghinRightOperatorSource.$(OBJEXT): \
+	$(srcdir)/KayLoghinRightOperatorSource.cpp
+RightBlockNSOperatorSource.$(OBJEXT): \
+	$(srcdir)/RightBlockNSOperatorSource.cpp
+Vbr2Petra.$(OBJEXT): $(srcdir)/Vbr2Petra.cpp
+KayLoghinSchurFactory.$(OBJEXT): $(srcdir)/KayLoghinSchurFactory.cpp
+SchurFactoryBase.$(OBJEXT): $(srcdir)/SchurFactoryBase.cpp
+NSBlockPreconditionerFactory.$(OBJEXT): \
+	$(srcdir)/NSBlockPreconditionerFactory.cpp
+SchurFactory.$(OBJEXT): $(srcdir)/SchurFactory.cpp
+libmeros.a: $(libmeros_a_OBJECTS) $(libmeros_a_DEPENDENCIES) 
+	-rm -f libmeros.a
+	$(libmeros_a_AR) libmeros.a $(libmeros_a_OBJECTS) $(libmeros_a_LIBADD)
+	$(RANLIB) libmeros.a
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Aztec2TSF.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/KayLoghinRightOperatorSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/KayLoghinSchurFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/NSBlockPreconditionerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ReadPetra.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RightBlockNSOperatorSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SchurFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/SchurFactoryBase.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Vbr2Petra.Po@am__quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.cpp.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+.cpp.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+Aztec2TSF.o: $(srcdir)/Aztec2TSF.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Aztec2TSF.cpp' object='Aztec2TSF.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Aztec2TSF.Po' tmpdepfile='$(DEPDIR)/Aztec2TSF.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Aztec2TSF.o `test -f $(srcdir)/Aztec2TSF.cpp || echo '$(srcdir)/'`$(srcdir)/Aztec2TSF.cpp
+
+Aztec2TSF.obj: $(srcdir)/Aztec2TSF.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Aztec2TSF.cpp' object='Aztec2TSF.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Aztec2TSF.Po' tmpdepfile='$(DEPDIR)/Aztec2TSF.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Aztec2TSF.obj `cygpath -w $(srcdir)/Aztec2TSF.cpp`
+
+ReadPetra.o: $(srcdir)/ReadPetra.cpp
+@AMDEP_TRUE@	source='$(srcdir)/ReadPetra.cpp' object='ReadPetra.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ReadPetra.Po' tmpdepfile='$(DEPDIR)/ReadPetra.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ReadPetra.o `test -f $(srcdir)/ReadPetra.cpp || echo '$(srcdir)/'`$(srcdir)/ReadPetra.cpp
+
+ReadPetra.obj: $(srcdir)/ReadPetra.cpp
+@AMDEP_TRUE@	source='$(srcdir)/ReadPetra.cpp' object='ReadPetra.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ReadPetra.Po' tmpdepfile='$(DEPDIR)/ReadPetra.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ReadPetra.obj `cygpath -w $(srcdir)/ReadPetra.cpp`
+
+TSFLinearOperator2EpetraRowMatrix.o: $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp
+@AMDEP_TRUE@	source='$(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp' object='TSFLinearOperator2EpetraRowMatrix.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po' tmpdepfile='$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFLinearOperator2EpetraRowMatrix.o `test -f $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp || echo '$(srcdir)/'`$(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp
+
+TSFLinearOperator2EpetraRowMatrix.obj: $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp
+@AMDEP_TRUE@	source='$(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp' object='TSFLinearOperator2EpetraRowMatrix.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po' tmpdepfile='$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFLinearOperator2EpetraRowMatrix.obj `cygpath -w $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp`
+
+KayLoghinRightOperatorSource.o: $(srcdir)/KayLoghinRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/KayLoghinRightOperatorSource.cpp' object='KayLoghinRightOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/KayLoghinRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/KayLoghinRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinRightOperatorSource.o `test -f $(srcdir)/KayLoghinRightOperatorSource.cpp || echo '$(srcdir)/'`$(srcdir)/KayLoghinRightOperatorSource.cpp
+
+KayLoghinRightOperatorSource.obj: $(srcdir)/KayLoghinRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/KayLoghinRightOperatorSource.cpp' object='KayLoghinRightOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/KayLoghinRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/KayLoghinRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinRightOperatorSource.obj `cygpath -w $(srcdir)/KayLoghinRightOperatorSource.cpp`
+
+RightBlockNSOperatorSource.o: $(srcdir)/RightBlockNSOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RightBlockNSOperatorSource.cpp' object='RightBlockNSOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RightBlockNSOperatorSource.Po' tmpdepfile='$(DEPDIR)/RightBlockNSOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RightBlockNSOperatorSource.o `test -f $(srcdir)/RightBlockNSOperatorSource.cpp || echo '$(srcdir)/'`$(srcdir)/RightBlockNSOperatorSource.cpp
+
+RightBlockNSOperatorSource.obj: $(srcdir)/RightBlockNSOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RightBlockNSOperatorSource.cpp' object='RightBlockNSOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RightBlockNSOperatorSource.Po' tmpdepfile='$(DEPDIR)/RightBlockNSOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RightBlockNSOperatorSource.obj `cygpath -w $(srcdir)/RightBlockNSOperatorSource.cpp`
+
+Vbr2Petra.o: $(srcdir)/Vbr2Petra.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Vbr2Petra.cpp' object='Vbr2Petra.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Vbr2Petra.Po' tmpdepfile='$(DEPDIR)/Vbr2Petra.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Vbr2Petra.o `test -f $(srcdir)/Vbr2Petra.cpp || echo '$(srcdir)/'`$(srcdir)/Vbr2Petra.cpp
+
+Vbr2Petra.obj: $(srcdir)/Vbr2Petra.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Vbr2Petra.cpp' object='Vbr2Petra.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Vbr2Petra.Po' tmpdepfile='$(DEPDIR)/Vbr2Petra.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Vbr2Petra.obj `cygpath -w $(srcdir)/Vbr2Petra.cpp`
+
+KayLoghinSchurFactory.o: $(srcdir)/KayLoghinSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/KayLoghinSchurFactory.cpp' object='KayLoghinSchurFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/KayLoghinSchurFactory.Po' tmpdepfile='$(DEPDIR)/KayLoghinSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinSchurFactory.o `test -f $(srcdir)/KayLoghinSchurFactory.cpp || echo '$(srcdir)/'`$(srcdir)/KayLoghinSchurFactory.cpp
+
+KayLoghinSchurFactory.obj: $(srcdir)/KayLoghinSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/KayLoghinSchurFactory.cpp' object='KayLoghinSchurFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/KayLoghinSchurFactory.Po' tmpdepfile='$(DEPDIR)/KayLoghinSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinSchurFactory.obj `cygpath -w $(srcdir)/KayLoghinSchurFactory.cpp`
+
+SchurFactoryBase.o: $(srcdir)/SchurFactoryBase.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SchurFactoryBase.cpp' object='SchurFactoryBase.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SchurFactoryBase.Po' tmpdepfile='$(DEPDIR)/SchurFactoryBase.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SchurFactoryBase.o `test -f $(srcdir)/SchurFactoryBase.cpp || echo '$(srcdir)/'`$(srcdir)/SchurFactoryBase.cpp
+
+SchurFactoryBase.obj: $(srcdir)/SchurFactoryBase.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SchurFactoryBase.cpp' object='SchurFactoryBase.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SchurFactoryBase.Po' tmpdepfile='$(DEPDIR)/SchurFactoryBase.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SchurFactoryBase.obj `cygpath -w $(srcdir)/SchurFactoryBase.cpp`
+
+NSBlockPreconditionerFactory.o: $(srcdir)/NSBlockPreconditionerFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/NSBlockPreconditionerFactory.cpp' object='NSBlockPreconditionerFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/NSBlockPreconditionerFactory.Po' tmpdepfile='$(DEPDIR)/NSBlockPreconditionerFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NSBlockPreconditionerFactory.o `test -f $(srcdir)/NSBlockPreconditionerFactory.cpp || echo '$(srcdir)/'`$(srcdir)/NSBlockPreconditionerFactory.cpp
+
+NSBlockPreconditionerFactory.obj: $(srcdir)/NSBlockPreconditionerFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/NSBlockPreconditionerFactory.cpp' object='NSBlockPreconditionerFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/NSBlockPreconditionerFactory.Po' tmpdepfile='$(DEPDIR)/NSBlockPreconditionerFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NSBlockPreconditionerFactory.obj `cygpath -w $(srcdir)/NSBlockPreconditionerFactory.cpp`
+
+SchurFactory.o: $(srcdir)/SchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SchurFactory.cpp' object='SchurFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SchurFactory.Po' tmpdepfile='$(DEPDIR)/SchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SchurFactory.o `test -f $(srcdir)/SchurFactory.cpp || echo '$(srcdir)/'`$(srcdir)/SchurFactory.cpp
+
+SchurFactory.obj: $(srcdir)/SchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SchurFactory.cpp' object='SchurFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SchurFactory.Po' tmpdepfile='$(DEPDIR)/SchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SchurFactory.obj `cygpath -w $(srcdir)/SchurFactory.cpp`
+CXXDEPMODE = @CXXDEPMODE@
+uninstall-info-am:
+install-nodist_pkgexecincludeHEADERS: $(nodist_pkgexecinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgexecincludedir)
+	@list='$(nodist_pkgexecinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgexecincludedir)/$$f"; \
+	  $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgexecincludedir)/$$f; \
+	done
+
+uninstall-nodist_pkgexecincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nodist_pkgexecinclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgexecincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgexecincludedir)/$$f; \
+	done
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
+	done
+
+uninstall-pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES) meros_config.h.in $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)meros_config.h.in$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags meros_config.h.in $$unique $(LISP)
+
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+
+distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/$(srcdir)
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+check-am: all-am
+check: check-am
+all-am: Makefile $(LIBRARIES) $(HEADERS) meros_config.h
+
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(pkgexecincludedir) $(DESTDIR)$(pkgincludedir)
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+
+installcheck: installcheck-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+clean: clean-am
+
+clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
+
+distclean: distclean-am
+
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-hdr distclean-tags
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am: install-pkgincludeHEADERS
+
+install-exec-am: install-libLIBRARIES \
+	install-nodist_pkgexecincludeHEADERS
+
+install-info: install-info-am
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-am
+
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
+
+uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
+
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libLIBRARIES distclean distclean-compile distclean-depend \
+	distclean-generic distclean-hdr distclean-tags distdir dvi \
+	dvi-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-libLIBRARIES install-man \
+	install-nodist_pkgexecincludeHEADERS install-pkgincludeHEADERS \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic tags uninstall \
+	uninstall-am uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
