@@ -152,7 +152,7 @@ void MatrixZero::Vp_StMtV(
 	) const
 {
 	assert_initialized();
-	Vp_S(y,b);
+	Vt_S(y,b);
 }
 
 void MatrixZero::Vp_StMtV(
@@ -160,7 +160,7 @@ void MatrixZero::Vp_StMtV(
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	Vp_S(y,b);
+	Vt_S(y,b);
 }
 
 void MatrixZero::Vp_StPtMtV(
@@ -170,7 +170,7 @@ void MatrixZero::Vp_StPtMtV(
 	, const VectorWithOp& x, value_type b) const
 {
 	assert_initialized();
-	Vp_S(y,b);
+	Vt_S(y,b);
 }
 
 void MatrixZero::Vp_StPtMtV(
@@ -180,7 +180,7 @@ void MatrixZero::Vp_StPtMtV(
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	Vp_S(y,b);
+	Vt_S(y,b);
 }
 
 value_type MatrixZero::transVtMtV(
