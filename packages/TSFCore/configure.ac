@@ -257,6 +257,8 @@ AC_SEARCH_LIBS(sqrt,[m],,AC_MSG_ERROR(Cannot find math library))
 ### Include Blas/Lapack example here. ###  For now, developers should see
 ### The configure.ac file for epetra (Trilinos/packages/epetra) if blas and
 ### or Lapack are needed.
+ACX_BLAS([], [AC_MSG_ERROR([[Cannot find blas library, specify a path using --with-blas=DIR/LIB (for example --with-blas=/usr/path/lib/libcxml.a)]])])
+ACX_LAPACK([], [AC_MSG_ERROR([[Cannot find lapack library, specify a path using --with-lapack=DIR/LIB (ex. --with-lapack=/usr/path/lib/libcxml.a)]])])
 
 # ------------------------------------------------------------------------
 # Checks for compiler characteristics
