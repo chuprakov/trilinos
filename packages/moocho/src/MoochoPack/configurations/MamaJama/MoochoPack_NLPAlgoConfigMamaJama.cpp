@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)
+#ifdef _INTEL_CXX
+// disable Intel C++ 5.0 warnings about debugger limitations
+#pragma warning(disable : 985)
+#endif
 
 #include <assert.h>
 
@@ -67,11 +67,13 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
 
-//#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
-//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
-//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
 
-//#include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
+#include "AbstractLinAlgPack/include/BasisSystemTester.h"
+#include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
 
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
@@ -86,8 +88,7 @@
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
-//#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
-//#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
@@ -142,7 +143,6 @@
 //#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
 //#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 
-//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
 //#include "SparseLinAlgPack/include/sparse_bounds.h"
 
 //#include "LinAlgPack/include/PermVecMat.h"
@@ -292,10 +292,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>( algo->get_nlp() );
 	bool tailored_approach = false;
 	if( nlp_foi ) {
+		if(trase_out)
+			*trase_out << "\nDetected that NLP object supports the NLPFirstOrderInfo interface!\n";
 		tailored_approach = false;
 	}
 	else {
 		if( nlp_fod ) {
+			if(trase_out)
+				*trase_out << "\nDetected that NLP object supports the NLPFirstOrderDirect interface!\n";
 			tailored_approach = true;
 		}
 		else {
@@ -306,6 +310,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				"\' does not support the NLPFirstOrderDirect or "
 				"NLPFirstOrderInfo interfaces!" );
 		}
+	}
+	if( nlp_soi ) {
+		if(trase_out)
+			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrderInfo interface!\n";
 	}
 
 	// //////////////////////////////////////////////////////
@@ -326,6 +334,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		cov_.null_space_matrix_type_    = NULL_SPACE_MATRIX_EXPLICIT;
 	}
 
+	if( !tailored_approach && uov_.merit_function_type_ != MERIT_FUNC_L1  ) {
+		if(trase_out) {
+			*trase_out
+				<< "\nThe only merit function currently supported is:\n"
+				<< "merit_function_type         = L1;\n"
+				;
+		}
+		cov_.merit_function_type_		= MERIT_FUNC_L1;
+	}
+	
 	if( uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE ) {
 		if(trase_out)
 			*trase_out <<
@@ -359,7 +377,49 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	}
 
 	// /////////////////////////////////////////////////////
-	// C.1. Create and set the state object
+	// C.1. Create the decomposition system object
+
+	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
+	decomp_sys_ptr_t decomp_sys = NULL;
+	if(!tailored_approach) {
+		// Set the default basis system if one is not set
+		THROW_EXCEPTION(
+			basis_sys_.get() == NULL, std::logic_error
+			,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+			"There is no default basis system yet!" );
+		// Create the testing object for the basis system and set it up.
+		ref_count_ptr<BasisSystemTester>
+			basis_sys_tester = rcp::rcp(new BasisSystemTester());
+		if(options_.get()) {
+			BasisSystemTesterSetOptions
+				opt_setter(basis_sys_tester.get());
+			opt_setter.set_options(*options_);
+		}
+		// create the step object
+		switch( cov_.range_space_matrix_type_ ) {
+			case RANGE_SPACE_MATRIX_COORDINATE:
+				decomp_sys
+					= rcp::rcp(new DecompositionSystemCoordinate(
+						nlp.space_x()
+						,nlp.space_c()
+						,nlp.space_h()
+						,basis_sys_
+						,basis_sys_tester
+						) );
+				break;
+			case RANGE_SPACE_MATRIX_ORTHOGONAL:
+				THROW_EXCEPTION(
+					true, std::logic_error
+					,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+					"the othogonal decomposition is not updated for NLPFirstOrderInfo yet!" );
+				break;
+			default:
+				assert(0);	// only a local error
+		}
+	}
+
+	// /////////////////////////////////////////////////////
+	// C.2. Create and set the state object
 
 	if(trase_out)
 		*trase_out << "\nCreating and setting the state object ...\n";
@@ -370,26 +430,26 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		//
 
 		typedef ref_count_ptr<rSQPState>   state_ptr_t;
-		state_ptr_t state = NULL;
-		if( tailored_approach ) {
+		state_ptr_t
 			state = rcp::rcp(
 				new rSQPState(
-					nlp.space_x()
+					decomp_sys
+					,nlp.space_x()
 					,nlp.space_c()
 					,nlp.space_h()
-					,( nlp_fod->var_dep().size() 
-					   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-					   : NULL )
-					,( nlp_fod->var_indep().size()
-					   ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-					   : NULL )
+					,(tailored_approach
+					  ? ( nlp_fod->var_dep().size() 
+					    ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
+					    : NULL )
+                      : decomp_sys->space_range() )
+					,(tailored_approach
+					   ?( nlp_fod->var_indep().size()
+					     ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
+					     : NULL )
+					   : decomp_sys->space_null() )
 					)
 				);
-		}
-		else {
-			assert(0); // ToDo: Implement by adding space_py() and space_pz() to BasisSystem!
-		}
-		
+
 		//
 		// Set the iteration quantities for the NLP matrix objects
 		//
@@ -447,35 +507,73 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		
 		// Add range/null decomposition matrices
 
-		// Y
-		state->set_iter_quant(
-			Y_name
-			,rcp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Y_name
-					,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+		if(tailored_approach) {
+			// Z
+			state->set_iter_quant(
+				Z_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Z_name
+						,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						)
 					)
-				)
-			);
-		// Z
-		state->set_iter_quant(
-			Z_name
-			,rcp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Z_name
-					,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+				);
+			// Y
+			state->set_iter_quant(
+				Y_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Y_name
+						,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						)
 					)
-				)
-			);
-
-		// ToDo: Add matrix iq object for R
-		// ToDo: Add matrix iq object for Uz
-		// ToDo: Add matrix iq object for Uy
-		// ToDo: Add matrix iq object for Vz
-		// ToDo: Add matrix iq object for Vy
-		// ToDo: Add other needed projected matrix iq objects
+				);
+			// ToDo: Add matrix iq object for Uz
+			// ToDo: Add matrix iq object for Uy
+			// ToDo: Add matrix iq object for Vz
+			// ToDo: Add matrix iq object for Vy
+		}
+		else {
+			// Z
+			state->set_iter_quant(
+				Z_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Z_name
+						,decomp_sys->factory_Z()
+						)
+					)
+				);
+			// Y
+			state->set_iter_quant(
+				Y_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Y_name
+						,decomp_sys->factory_Y()
+						)
+					)
+				);
+			// R
+			state->set_iter_quant(
+				R_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
+						1
+						,R_name
+						,decomp_sys->factory_R()
+						)
+					)
+				);
+			// ToDo: Add matrix iq object for Uz
+			// ToDo: Add matrix iq object for Uy
+			// ToDo: Add matrix iq object for Vz
+			// ToDo: Add matrix iq object for Vy
+		}
 
 		// Add reduced Hessian
 
@@ -614,13 +712,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	}
 
 	// /////////////////////////////////////////////////////
-	// C.2. Create and set the decomposition system object
-
-	if(!tailored_approach) {
-		assert(0); // ToDo: Create the proper decomp_sys object
-	}
-
-	// /////////////////////////////////////////////////////
 	// C.3  Create and set the step objects
 
 	if(trase_out)
@@ -667,7 +758,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Create the step object
 			if( tailored_approach ) {
 				// create and setup the derivative tester
-				typedef NLPInterfacePack::NLPFirstOrderDirectTester     NLPFirstOrderDirectTester;
 				typedef rcp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
 				deriv_tester_ptr_t
 					deriv_tester = rcp::rcp(
@@ -708,23 +798,58 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				eval_new_point_step = _eval_new_point_step;
 			}
 			else {
-				THROW_EXCEPTION(
-					true, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-					"NLPFirstOrderInfo is not supported yet!" );
+				// create and setup the derivative tester
+				typedef rcp::ref_count_ptr<NLPFirstDerivativesTester>   deriv_tester_ptr_t;
+				deriv_tester_ptr_t
+					deriv_tester = rcp::rcp(
+						new NLPFirstDerivativesTester(
+							NLPFirstDerivativesTester::FD_DIRECTIONAL
+							) );
+				if(options_.get()) {
+					NLPInterfacePack::NLPFirstDerivativesTesterSetOptions
+						options_setter(deriv_tester.get());
+					options_setter.set_options(*options_);
+				}
+				// create and setup the decomposition system tester
+				typedef rcp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
+				decomp_sys_tester_ptr_t
+					decomp_sys_tester = rcp::rcp( new DecompositionSystemTester() );
+/*
+				if(options_.get()) {
+					NLPInterfacePack::DecompositionSystemTesterSetOptions
+						options_setter(decomp_sys_tester.get());
+					options_setter.set_options(*options_);
+				}
+*/
+				// ToDo: Create the above SetOptions object
+				// create the step
+				typedef rcp::ref_count_ptr<EvalNewPointStd_Step>  _eval_new_point_step_ptr_t;
+				_eval_new_point_step_ptr_t
+					_eval_new_point_step = rcp::rcp(
+						new EvalNewPointStd_Step(
+							deriv_tester
+							,decomp_sys_tester
+							,bounds_tester
+							) );
+				if(options_.get()) {
+					EvalNewPointStd_StepSetOptions
+						options_setter(_eval_new_point_step.get());
+					options_setter.set_options(*options_);
+				}
+				eval_new_point_step = _eval_new_point_step;
 			}
 		}
 
 		// RangeSpace_Step
 		algo_step_ptr_t    range_space_step_step = NULL;
 		if( !tailored_approach ) {
-			assert(0); // ToDo: Implment!
+//			assert(0); // ToDo: Implment!
 		}
 
 		// ReducedGradient_Step
 		algo_step_ptr_t    reduced_gradient_step = NULL;
 		if( !tailored_approach ) {
-			assert(0); // ToDo: Implment!
+//			assert(0); // ToDo: Implment!
 		}
 
 		// CheckSkipBFGSUpdate
@@ -955,22 +1080,32 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// (1) EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
 
-			// (2) CalcReducedGradLagrangian
-			algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
-
-			// (3) CalcLagrangeMultDecomposed
-			// Compute these here so that in case we converge we can report them
+			// (2) RangeSpaceStep
 			if( !tailored_approach ) {
-				assert(0); // ToDo: Insert this step
+//				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
 			}
 
-			// (4) CheckConvergence
+			// (3) ReducedGradient
+			if( !tailored_approach ) {
+//				algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
+			}
+
+			// (4) CalcReducedGradLagrangian
+			algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+			// (5) CalcLagrangeMultDecomposed
+			// Compute these here so that in case we converge we can report them
+			if( !tailored_approach ) {
+//				assert(0); // ToDo: Insert this step
+			}
+
+			// (6) CheckConvergence
 			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 
-			// (5) ReducedHessian
+			// (7) ReducedHessian
 			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
 
-			// (5.-1) CheckSkipBFGSUpdate
+			// (7.-1) CheckSkipBFGSUpdate
 			algo->insert_assoc_step(
 				step_num
 				,GeneralIterationPack::PRE_STEP
@@ -979,24 +1114,24 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				,check_skip_bfgs_update_step
 			  );
 
-			// (6) NullSpaceStep
+			// (8) NullSpaceStep
 			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
 
-			// (7) CalcDFromYPYZPZ
+			// (9) CalcDFromYPYZPZ
 			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
 			// ToDo: Add ths step!
 			
-			// (8) LineSearch
+			// (10) LineSearch
 			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
 				algo->insert_step( ++step_num, LineSearch_name, line_search_full_step_step );
 			}
 			else {
-				// (8) Main line search step
+				// (10) Main line search step
 				algo->insert_step( ++step_num, LineSearch_name, line_search_step );
 				// Insert presteps
 				Algorithm::poss_type
 					pre_step_i = 0;
-				// (8.-?) LineSearchFullStep
+				// (10.-?) LineSearchFullStep
 				algo->insert_assoc_step(
 					step_num
 					,GeneralIterationPack::PRE_STEP
@@ -1004,7 +1139,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,"LineSearchFullStep"
 					,line_search_full_step_step
 					);
-				// (8.-?) MeritFunc_PenaltyPramUpdate
+				// (10.-?) MeritFunc_PenaltyPramUpdate
 				algo->insert_assoc_step(
 					step_num
 					,GeneralIterationPack::PRE_STEP
