@@ -40,12 +40,12 @@ void ExampleBasisSystem::initialize( const VectorSpace::space_ptr_t& space_x_DI 
 		assert( n%2 == 0 );
 		var_dep_   = Range1D(1,m);
 		var_indep_ = Range1D(m+1,n);
-		space_C_ = rcp::rcp_implicit_cast<BasisSystem::space_C_ptr_t::element_type>(
+		space_C_ = rcp::rcp_implicit_cast<BasisSystem::mat_nonsing_space_ptr_t::element_type>(
 			rcp::ref_count_ptr<MatrixSpaceStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd> >(
 				new MatrixSpaceStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>(
 					space_x_DI, space_x_DI
 					) ) );
-		space_D_ = rcp::rcp_implicit_cast<BasisSystem::space_D_ptr_t::element_type>(
+		space_D_ = rcp::rcp_implicit_cast<BasisSystem::mat_space_ptr_t::element_type>(
 			rcp::ref_count_ptr<MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd> >(
 				new MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd>(
 					space_x_DI, space_x_DI
@@ -59,13 +59,13 @@ void ExampleBasisSystem::initialize( const VectorSpace::space_ptr_t& space_x_DI 
 	}
 }
 
-const BasisSystem::space_C_ptr_t&
+const BasisSystem::mat_nonsing_space_ptr_t&
 ExampleBasisSystem::space_C() const
 {
 	return space_C_;
 }
 
-const BasisSystem::space_D_ptr_t&
+const BasisSystem::mat_space_ptr_t&
 ExampleBasisSystem::space_D() const
 {
 	return space_D_;
@@ -86,6 +86,8 @@ void ExampleBasisSystem::update_basis(
 	,const MatrixWithOp*        Gh
 	,MatrixWithOpNonsingular*   C
 	,MatrixWithOp*              D
+	,MatrixWithOp*              GcUP
+	,MatrixWithOp*              GhUP
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -103,6 +105,12 @@ void ExampleBasisSystem::update_basis(
 	THROW_EXCEPTION(
 		Gh, std::logic_error
 		,"ExampleBasisSystem::update_basis(...): Error, Gh must be NULL!" );
+	THROW_EXCEPTION(
+		GcUP, std::logic_error
+		,"ExampleBasisSystem::update_basis(...): Error, GcUP must be NULL!" );
+	THROW_EXCEPTION(
+		GhUP, std::logic_error
+		,"ExampleBasisSystem::update_basis(...): Error, GhUP must be NULL!" );
 	THROW_EXCEPTION(
 		!C && !D, std::logic_error
 		,"ExampleBasisSystem::update_basis(...): Error, C or D must be non-NULL!" );
@@ -139,9 +147,8 @@ void ExampleBasisSystem::update_basis(
 		 	&D_sym_diag = dyn_cast<MatrixSymDiagonalStd>(*D);
 		if( D_sym_diag.rows() != m )
 		 	D_sym_diag.initialize( space_x_DI_->create_member() );
- 		D_sym_diag.diag() = 0.0;                                      //
 		AbstractLinAlgPack::ele_wise_divide(                          // D_diag = N_diag ./ C_diag
-			1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  //
+			1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  // ...
 	}
 }
 

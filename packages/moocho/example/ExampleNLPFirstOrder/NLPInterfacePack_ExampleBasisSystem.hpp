@@ -54,9 +54,9 @@ public:
 	//@{
 
 	///
-	const space_C_ptr_t& space_C() const;
+	const mat_nonsing_space_ptr_t& space_C() const;
 	///
-	const space_D_ptr_t& space_D() const;
+	const mat_space_ptr_t& space_D() const;
 	///
 	Range1D var_dep() const;
 	///
@@ -67,6 +67,8 @@ public:
 		,const MatrixWithOp*        Gh
 		,MatrixWithOpNonsingular*   C
 		,MatrixWithOp*              D
+		,MatrixWithOp*              GcUP
+		,MatrixWithOp*              GhUP
 		);
 
 	//@}
@@ -76,8 +78,8 @@ private:
 	VectorSpace::space_ptr_t   space_x_DI_;
 	Range1D                    var_dep_,
 	                           var_indep_;
-	space_C_ptr_t              space_C_;
-	space_D_ptr_t              space_D_;
+	mat_nonsing_space_ptr_t    space_C_;
+	mat_space_ptr_t            space_D_;
 
 }; // end class ExampleBasisSystem
 
