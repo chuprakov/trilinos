@@ -1,4 +1,5 @@
 Decomposition Method 	= reftree
+Zoltan Parameters	= remap=0
 File Type		= NemesisI
 File Name		= box_064-m5-r.par
 Parallel Disk Info	= number=1,offset=1,zeros

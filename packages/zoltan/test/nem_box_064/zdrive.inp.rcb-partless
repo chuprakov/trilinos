@@ -1,4 +1,5 @@
 Decomposition Method 	= rcb
+Zoltan Parameters	= remap=0
 Zoltan Parameters       = num_global_partitions=3
 File Type		= NemesisI
 File Name		= box_064-m5-r.par
