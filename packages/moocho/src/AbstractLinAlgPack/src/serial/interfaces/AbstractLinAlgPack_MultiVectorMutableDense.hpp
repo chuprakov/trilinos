@@ -184,6 +184,18 @@ public:
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		,value_type beta, MatrixSymWithOp* sym_lhs
 		) const;
+	///
+	bool Mp_StMtM(
+		MatrixWithOp* mwo_lhs, value_type alpha
+		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,BLAS_Cpp::Transp trans_rhs2
+		,value_type beta ) const;
+	///
+	bool Mp_StMtM(
+		MatrixWithOp* mwo_lhs, value_type alpha
+		,BLAS_Cpp::Transp trans_rhs1
+		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,value_type beta ) const;
 
 	//@}
 

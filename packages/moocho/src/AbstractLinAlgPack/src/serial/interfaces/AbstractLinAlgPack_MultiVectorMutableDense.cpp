@@ -224,6 +224,28 @@ void MultiVectorMutableDense::syrk(
 	LinAlgPack::syrk( M_trans, alpha, get_gms(), beta, &sym_gms_lhs() );
 }
 
+bool MultiVectorMutableDense::Mp_StMtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,BLAS_Cpp::Transp trans_rhs2
+	,value_type beta ) const
+{
+	if(MultiVector::Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta))
+		return true;
+	return MatrixWithOpSerial::Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta);
+}
+
+bool MultiVectorMutableDense::Mp_StMtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	,BLAS_Cpp::Transp trans_rhs1
+	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,value_type beta ) const
+{
+	if(MultiVector::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta))
+		return true;
+	return MatrixWithOpSerial::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta);
+}
+
 // Overridden from MatrixWithOpSerial
 
 void MultiVectorMutableDense::Vp_StMtV(
