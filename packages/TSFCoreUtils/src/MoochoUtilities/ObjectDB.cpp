@@ -12,7 +12,7 @@ ObjectDB::ObjectDB()
 ObjectDB::~ObjectDB()
 {
 	for( objects_t::iterator itr = objects_.begin(); itr != objects_.end(); ++itr ) {
-		if(itr->rcp_node && itr->rcp_node->deincr_count() == 0 ) delete itr->rcp_node;
+                if((*itr).rcp_node && (*itr).rcp_node->deincr_count() == 0 ) delete (*itr).rcp_node;
 	}
 }
 
