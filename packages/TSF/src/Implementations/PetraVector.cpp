@@ -239,7 +239,7 @@ PetraVector& PetraVector::getConcrete(TSFVector& x)
 
 void PetraVector::synchronizeGhostValues() const 
 {
-	if (ghostValuesAreValid_ || PetraVectorSpace::getImporter(space())==0) return;
+	if (ghostValuesAreValid_ || PetraVectorSpace::getImporter(space()).get()==0) return;
 	Epetra_Vector& v = const_cast<Epetra_Vector&>(*allValues_);
 	const Epetra_Vector& lv = localValues();
 	const Epetra_Import& i = importer();

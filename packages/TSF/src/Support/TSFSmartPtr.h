@@ -13,7 +13,6 @@
 #define cond_inline inline
 #endif
 
-
 namespace TSF
 {
 	using std::string;
@@ -26,34 +25,46 @@ namespace TSF
 	template <class T>
 		class TSFSmartPtr {
 		public:
-		cond_inline TSFSmartPtr(T* ptr = 0);
+		cond_inline TSFSmartPtr(T* ptr = 0, bool hasOwnership = true );
+		cond_inline TSFSmartPtr(T* ptr, int* refCount, bool hasOwnership = true );
 		cond_inline TSFSmartPtr(const TSFSmartPtr<T>& other);
-		cond_inline TSFSmartPtr(T* ptr, int* refCount);
 		~TSFSmartPtr();
 		const TSFSmartPtr<T>& operator =(const TSFSmartPtr<T>& rhs);
 		cond_inline bool isNull() const;
 		cond_inline T* operator ->() const;
-		/** Read/write dereferencing */
 		cond_inline T& operator *() const;
-		/** Read-only dereferencing */
-		cond_inline operator const T* () const;
+		cond_inline T* get() const;
 		cond_inline bool isNonUnique() const;
-
-		cond_inline int refCount() const;
 
 		cond_inline void error(const string& msg) const ;
 
 		protected:
-		T* ptr_;
-		int* refCount_;
+		//
+		// Assertions:
+		//   if (ptr_ != 0) then (refCount_ != 0)  
+		//
+		T     *ptr_;
+		int   *refCount_;
+		bool  hasOwnership_;
+		public:
+		T*    ptr()          const { return ptr_; }
+		int*  refCount()     const { return refCount_; }
+		bool  hasOwnership() const { return hasOwnership_; }
 	};
 
 	void smartPtrError(const string& msg);
 
+	template<class T2, class T1>
+		TSFSmartPtr<T2> tsf_const_cast(const TSFSmartPtr<T1>& ptr)
+			{
+				return TSFSmartPtr<T2>(const_cast<T2*>(ptr.ptr()),ptr.refCount(),ptr.hasOwnership());
+			}
+	
 	template <class T> cond_inline
-		TSFSmartPtr<T>::TSFSmartPtr(T* ptr)
+		TSFSmartPtr<T>::TSFSmartPtr(T* ptr, bool hasOwnership)
 		: ptr_(ptr),
-		refCount_(0)
+		refCount_(0),
+		hasOwnership_(hasOwnership)
 		{
 			if (ptr_) {
 				refCount_ = new int;
@@ -64,17 +75,20 @@ namespace TSF
 		}
 
 	template <class T> cond_inline
-		TSFSmartPtr<T>::TSFSmartPtr(T* ptr, int* refCount)
+		TSFSmartPtr<T>::TSFSmartPtr(T* ptr, int* refCount, bool hasOwnership)
 		: ptr_(ptr),
-		refCount_(refCount)
+		refCount_(refCount),
+		hasOwnership_(hasOwnership)
 		{
-			*refCount++;
+			if(refCount_)
+				*refCount_++;
 		}
 
 	template <class T> cond_inline
 		TSFSmartPtr<T>::TSFSmartPtr(const TSFSmartPtr<T>& other)
 		: ptr_(other.ptr_),
-		refCount_(other.refCount_)
+		refCount_(other.refCount_),
+		hasOwnership_(other.hasOwnership_)
 		{
 			if (refCount_ != 0)
 				++(*refCount_);
@@ -85,10 +99,11 @@ namespace TSF
 		{
 			if (refCount_ != 0 && --(*refCount_) == 0) 
 				{
-					delete ptr_;
+					if(hasOwnership_) delete ptr_;
 					ptr_ = 0;
 					delete refCount_;
 					refCount_ = 0;
+					hasOwnership_ = false;
 				}
 		}
 
@@ -99,11 +114,12 @@ namespace TSF
 			{
 				if (refCount_ != 0 && --(*refCount_) == 0) 
 					{
-						delete ptr_;
+						if(hasOwnership_) delete ptr_;
 						delete refCount_;
 					}
-				ptr_ = rhs.ptr_;
-				refCount_ = rhs.refCount_;
+				ptr_          = rhs.ptr_;
+				refCount_     = rhs.refCount_;
+				hasOwnership_ = rhs.hasOwnership_;
 				if (refCount_ != 0)
 					++(*refCount_);
 			}
@@ -131,20 +147,16 @@ namespace TSF
 	}
 
 	template <class T> cond_inline
-		TSFSmartPtr<T>::operator const T* () const {
-		return ptr_;
-	}
+		T* TSFSmartPtr<T>::get() const
+			{
+				return ptr_;
+			}
 
 	template <class T> cond_inline
 		bool TSFSmartPtr<T>::isNonUnique() const {
 		return refCount_ == 0 ? false : *refCount_ != 1;
 	}
 
-	template <class T> cond_inline
-		int TSFSmartPtr<T>::refCount() const {
-		return refCount_ == 0 ? 0 : *refCount_;
-	}
-	
 	template <class T>
 		void TSFSmartPtr<T>::error(const string& msg) const 
 		{

@@ -85,7 +85,7 @@ namespace TSF
 			string toString() const {return ptr_->toString();}
 
 			/** Find out if a node is empty */
-			bool isEmpty() const {return ptr_==0;}
+			bool isEmpty() const {return ptr_.get()==0;}
 
 			/** Check that a tag is equal to an expected string */
 			void checkTag(const string& expected) const ;

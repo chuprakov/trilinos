@@ -30,7 +30,7 @@ bool TSFVectorSpace::operator==(const TSFVectorSpace& other) const
 	}
 	/* if they're the same type and dimension, defer to the
 	 * implementations to decide if they are in fact equivalent spaces */
-	return ptr_->checkEquality(other.ptr_);
+	return ptr_->checkEquality(other.ptr_.get());
 }
 
 

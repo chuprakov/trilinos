@@ -20,7 +20,7 @@ TSFPreconditionerFactory
 
 TSFPreconditioner TSFPreconditionerFactory::createPreconditioner(const TSFLinearOperator& A) const
 {
-	if (ptr_==0) return TSFPreconditioner(); 
+	if (ptr_.get()==0) return TSFPreconditioner(); 
 	return ptr_->createPreconditioner(A);
 }
 

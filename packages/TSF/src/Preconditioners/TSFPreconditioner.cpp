@@ -17,13 +17,13 @@ TSFPreconditioner::TSFPreconditioner(TSFPreconditionerBase* ptr)
 
 bool TSFPreconditioner::hasLeft() const 
 {
-	if (ptr_==0) return false;
+	if (ptr_.get()==0) return false;
 	else return ptr_->hasLeft();
 }
 
 bool TSFPreconditioner::hasRight() const 
 {
-	if (ptr_==0) return false;
+	if (ptr_.get()==0) return false;
 	else return ptr_->hasRight();
 }
 

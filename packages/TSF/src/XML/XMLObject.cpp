@@ -11,13 +11,13 @@ using namespace TSF;
 XMLObject::XMLObject(const string& tag)
 	: ptr_(new XMLObjectImplem(tag))
 {
-	if (ptr_==0) TSFError::raise("XMLObject ctor");
+	if (ptr_.get()==0) TSFError::raise("XMLObject ctor");
 }
 
 XMLObject::XMLObject(XMLObjectImplem* ptr)
 	: ptr_(ptr)
 {
-	if (ptr_==0) TSFError::raise("XMLObject ctor");
+	if (ptr_.get()==0) TSFError::raise("XMLObject ctor");
 }
 
 XMLObject XMLObject::deepCopy() const

@@ -230,7 +230,7 @@ void PetraMatrix::zero()
 
 void PetraMatrix::print(ostream& os) const 
 {
-	if (matrix_==0)
+	if (matrix_.get()==0)
 		{
 			os << "PetraMatrix[null]";
 		}
@@ -254,7 +254,7 @@ TSFLinearOperatorBase* PetraMatrix::deepCopy() const
 
 void PetraMatrix::ptrCheck(const string& methodName) const 
 {
-	if (matrix_==0) TSFError::raise("null matriox pointer in PetraMatrix::"
+	if (matrix_.get()==0) TSFError::raise("null matriox pointer in PetraMatrix::"
 																	+ methodName);
 }
 
@@ -317,11 +317,11 @@ PetraMatrix::getConcrete(const TSFLinearOperator& A)
 {
 	if (A.isMatrixOperator())
 		{
-			const TSFMatrixOperator* M = A.getMatrix();
-			const PetraMatrix* pm = dynamic_cast<const PetraMatrix*>(M);
+			const TSFSmartPtr<const TSFMatrixOperator> M = A.getMatrix();
+			const PetraMatrix* pm = dynamic_cast<const PetraMatrix*>(M.get());
 			if (pm==0) TSFError::raise("PetraMatrix::getConcrete bad cast");
 			PetraMatrix* ptr = const_cast<PetraMatrix*>(pm);
-			return &(*(ptr->matrix_));
+			return ptr->matrix_.get();
 		}
 	else
 		{

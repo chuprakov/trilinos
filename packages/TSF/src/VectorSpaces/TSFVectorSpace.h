@@ -60,7 +60,7 @@ namespace TSF
 			ostream& print(ostream& os) const ;
 
 			/** access to raw pointer */
-			const TSFVectorSpaceBase* ptr() const {return ptr_;}
+			const TSFVectorSpaceBase* ptr() const {return ptr_.get();}
 			
 		private:
 			TSFSmartPtr<TSFVectorSpaceBase> ptr_;

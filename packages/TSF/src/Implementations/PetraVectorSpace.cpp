@@ -51,7 +51,7 @@ int PetraVectorSpace::dim() const
 
 TSFVectorBase* PetraVectorSpace::createMember(const TSFVectorSpace& handle) const
 {
-	if (ghostMap_==0)
+	if (ghostMap_.get()==0)
 		{
 			Epetra_Vector* localValues = new Epetra_Vector(*localMap_);
 			return new PetraVector(handle, localValues);
@@ -71,7 +71,7 @@ TSFVectorBase* PetraVectorSpace::createMember(const TSFVectorSpace& handle) cons
 ostream& PetraVectorSpace::print(ostream& os) const 
 {
 	string rtn = "PetraVectorSpace[";
-	if (ghostMap_==0) 
+	if (ghostMap_.get()==0) 
 		{
 			rtn += "nLocal=" 
 				+ TSFUtils::toString(localMap_->NumMyElements())
@@ -95,7 +95,7 @@ ostream& PetraVectorSpace::print(ostream& os) const
 
 TSFSmartPtr<Epetra_Map> PetraVectorSpace::getMap(const TSFVectorSpace& space)
 {
-	if (getPtr(space)->ghostMap_==0) return getPtr(space)->localMap_;
+	if (getPtr(space)->ghostMap_.get()==0) return getPtr(space)->localMap_;
 	return getPtr(space)->ghostMap_;
 }
 

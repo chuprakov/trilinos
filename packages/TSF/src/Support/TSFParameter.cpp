@@ -44,6 +44,6 @@ TSFParameter TSFParameter::deepCopy() const
 {
 	TSFParameter rtn;
 	rtn.ptr_ = ptr_->clone();
-	if (rtn.ptr_==0) TSFError::raise("allocation failure in TSFParameter::deepCopy()");
+	if (rtn.ptr_.get()==0) TSFError::raise("allocation failure in TSFParameter::deepCopy()");
 	return rtn;
 }
