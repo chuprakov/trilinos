@@ -11,6 +11,7 @@
 #include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+#include "Misc/include/profile_hack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -109,6 +110,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	typedef QPSchurPack::ConstraintsRelaxedStd constr_t;
+
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxedQPSchur::imp_solve_qp()" );
+#endif
 
 	const size_type
 		nd = g.size(),

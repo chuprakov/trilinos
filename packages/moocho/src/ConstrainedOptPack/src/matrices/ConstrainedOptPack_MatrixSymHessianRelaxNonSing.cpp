@@ -8,6 +8,7 @@
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
+#include "Misc/include/profile_hack.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -74,6 +75,9 @@ void MatrixSymHessianRelaxNonSing::Mp_StM(
 	GenMatrixSlice* C, value_type a, BLAS_Cpp::Transp H_trans
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Mp_StM(...)" );
+#endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
@@ -87,6 +91,9 @@ void MatrixSymHessianRelaxNonSing::Vp_StMtV(
 	, const VectorSlice& x, value_type b
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StMtV(...VectorSlice...)" );
+#endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
@@ -101,6 +108,9 @@ void MatrixSymHessianRelaxNonSing::Vp_StMtV(
 	, const SpVectorSlice& x, value_type b
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StMtV(...SpVectorSlice...)" );
+#endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
@@ -115,6 +125,9 @@ void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
 	, BLAS_Cpp::Transp H_trans, const VectorSlice& x, value_type b
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...VectorSlice...)" );
+#endif
 	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // called for profiling
 	// ToDo: Implement when needed!  After profiling
 }
@@ -124,6 +137,9 @@ void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
 	, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x, value_type b
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...SpVectorSlice...)" );
+#endif
 	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // called for profiling
 	// ToDo: Implement when needed!  After profiling
 }
@@ -134,6 +150,9 @@ void MatrixSymHessianRelaxNonSing::V_InvMtV(
 	VectorSlice* y, BLAS_Cpp::Transp H_trans, const VectorSlice& x
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::V_InvMtV(...VectorSlice...)" );
+#endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
@@ -146,6 +165,9 @@ void MatrixSymHessianRelaxNonSing::V_InvMtV(
 	VectorSlice* y, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x
 	) const
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::V_InvMtV(...SpVectorSlice...)" );
+#endif
 	assert_initialized();
 	const size_type
 		nG = G_ptr_->rows(),
