@@ -223,6 +223,32 @@ if test -n "${MPI_CXX}"; then
   fi
 fi
 
+
+# ------------------------------------------------------------------------
+# choose whether to enable EXPAT 
+# ------------------------------------------------------------------------
+
+AC_ARG_ENABLE(expat,
+[  --enable-expat            Use expat (yes|no, default=yes)],
+[
+case $enableval in
+  yes)
+    USE_EXPAT=yes
+		AC_DEFINE(HAVE_EXPAT, 1)
+  ;;
+  no)
+    USE_EXPAT=no
+		AC_DEFINE(HAVE_EXPAT, 1)
+  ;;
+  *)
+    AC_MSG_ERROR([Invalid value for --enable-expat ($enableval)])
+  ;;
+esac
+],
+[USE_EXPAT=yes]
+)
+
+
 # ------------------------------------------------------------------------
 # Checks for programs
 # ------------------------------------------------------------------------
@@ -571,9 +597,10 @@ AC_SUBST(HAVE_PETRA)
 AC_SUBST(ARCH)
 AC_SUBST(ac_aux_dir)
 AC_SUBST(PROJECT_ROOT)
-AC_SUBST(HAVE_PKG_EXPAT)
+AC_SUBST(HAVE_EXPAT)
 AC_SUBST(MPI_LIBS)
 AC_SUBST(HAVE_PKG_MPI)
+AC_SUBST(USE_EXPAT)
 AC_SUBST(MPI_LIBDIR)
 AC_SUBST(MPI_INC)
 AC_SUBST(OPT)

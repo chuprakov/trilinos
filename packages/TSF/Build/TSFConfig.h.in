@@ -36,6 +36,12 @@ typedef float TSFReal;
 typedef double TSFReal;
 #endif
 
+
+/* define HAVE_EXPAT=1 to link with the expat XML parser */
+
+#define HAVE_EXPAT 0
+
+
 /* define flags indicating debug and opt level */
 
 #define TSF_DEBUG_LEVEL 1
