@@ -108,6 +108,48 @@ NONLIN_H = $(INTERFACES_NONLIN_H) $(EXTENDED_NONLIN_H)
 
 NONLIN =
 
+EXTRA_ADAPTERS_MPI_H = \
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp
+
+EXTRA_ADAPTERS_EPETRA_H = \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp
+
+EXTRA_ADAPTERS_EPETRA = \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+
+if HAVE_TSFCORE_MPI
+
+ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
+
+else
+
+ADAPTERS_MPI_H = 
+
+endif
+
+if HAVE_TSFCORE_EPETRA
+
+ADAPTERS_EPETRA_H = $(EXTRA_ADAPTERS_EPETRA_H)
+ADAPTERS_EPETRA = $(EXTRA_ADAPTERS_EPETRA)
+
+else
+
+ADAPTERS_EPETRA_H =
+ADAPTERS_EPETRA =
+
+endif
+
 #Specify locations of include files within Trilinos, but outside TSFCore
 
 AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
@@ -120,19 +162,26 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 # TSFCore library specifications
 # --------------------------------------------------------------------
 
-#TSFCORE_LIB = libTSFCore.a
+TSFCORE_LIB = libTSFCore.a
 
 
-#TSFCORE_H = \
-#	$(CORE_H) 
+TSFCORE_H = \
+	$(CORE_H) \
+	$(SOLVERS_H) \
+	$(NONLIN_H) \
+	$(ADAPTERS_MPI_H) \
+	$(ADAPTERS_EPETRA_H) 
 
-#libTSFCore_a_SOURCES = \
-#	$(CORE) 
+libTSFCore_a_SOURCES = \
+	$(ADAPTERS_EPETRA) 
 
-
+EXTRA_libTSFCore_a_SOURCES = \
+	$(EXTRA_ADAPTERS_MPI_H)
+	$(EXTRA_ADAPTERS_EPETRA_H)
+	$(EXTRA_ADAPTERS_EPETRA)
 
 #We need the following to support separate build directories
-#AM_CPPFLAGS=-I$(builddir)/src
+
 # --------------------------------------------------------------------
 # For using a special archiver
 # --------------------------------------------------------------------
@@ -143,10 +192,10 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 
 if USE_ALTERNATE_AR
 
-#libTSFCore_a_AR = $(ALTERNATE_AR)
+libTSFCore_a_AR = $(ALTERNATE_AR)
 else
 
-#libTSFCore_a_AR = $(AR) cru
+libTSFCore_a_AR = $(AR) cru
 
 endif
 
@@ -155,19 +204,19 @@ endif
 # be sure to include these, and this is the hack to do it.
 # --------------------------------------------------------------------
 
-#libTSFCore_a_LIBADD = $(XTRALDADD)
+libTSFCore_a_LIBADD = $(XTRALDADD)
 
 # --------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)
 # --------------------------------------------------------------------
 
-#lib_LIBRARIES = $(TSFCORE_LIB)
+lib_LIBRARIES = $(TSFCORE_LIB)
 
 # --------------------------------------------------------------------
 # List of all headers to install in $(pkgincludedir)
 # --------------------------------------------------------------------
 
-#pkginclude_HEADERS = $(TSFCORE_H) 
+pkginclude_HEADERS = $(TSFCORE_H) 
 
 # --------------------------------------------------------------------
 # Special stuff to install in our special $(pkgexecincludedir)
@@ -179,8 +228,7 @@ endif
 # special.
 
 pkgexecincludedir = $(exec_prefix)/include/TSFCore
-nodist_pkgexecinclude_HEADERS = TSFCoreConfig.h $(CORE_H) $(SOLVERS_H) \
-	$(NONLIN_H)
+nodist_pkgexecinclude_HEADERS = TSFCoreConfig.h $(TSFCORE_H)
 
 # --------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

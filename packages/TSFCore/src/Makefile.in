@@ -201,6 +201,37 @@ NONLIN_H = $(INTERFACES_NONLIN_H) $(EXTENDED_NONLIN_H)
 
 NONLIN = 
 
+EXTRA_ADAPTERS_MPI_H = \
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp
+
+
+EXTRA_ADAPTERS_EPETRA_H = \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp
+
+
+EXTRA_ADAPTERS_EPETRA = \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+
+
+@HAVE_TSFCORE_MPI_TRUE@ADAPTERS_MPI_H = $(EXTRA_ADAPTERS_MPI_H)
+@HAVE_TSFCORE_MPI_FALSE@ADAPTERS_MPI_H = 
+
+@HAVE_TSFCORE_EPETRA_TRUE@ADAPTERS_EPETRA_H = $(EXTRA_ADAPTERS_EPETRA_H)
+@HAVE_TSFCORE_EPETRA_FALSE@ADAPTERS_EPETRA_H = 
+@HAVE_TSFCORE_EPETRA_TRUE@ADAPTERS_EPETRA = $(EXTRA_ADAPTERS_EPETRA)
+@HAVE_TSFCORE_EPETRA_FALSE@ADAPTERS_EPETRA = 
+
 
 #Specify locations of include files within Trilinos, but outside TSFCore
 AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
@@ -214,17 +245,27 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 # --------------------------------------------------------------------
 # TSFCore library specifications
 # --------------------------------------------------------------------
+TSFCORE_LIB = libTSFCore.a
 
-#TSFCORE_LIB = libTSFCore.a
+TSFCORE_H = \
+	$(CORE_H) \
+	$(SOLVERS_H) \
+	$(NONLIN_H) \
+	$(ADAPTERS_MPI_H) \
+	$(ADAPTERS_EPETRA_H) 
 
-#TSFCORE_H = \
-#	$(CORE_H) 
 
-#libTSFCore_a_SOURCES = \
-#	$(CORE) 
+libTSFCore_a_SOURCES = \
+	$(ADAPTERS_EPETRA) 
+
+
+EXTRA_libTSFCore_a_SOURCES = \
+	$(EXTRA_ADAPTERS_MPI_H)
+
+
 
 #We need the following to support separate build directories
-#AM_CPPFLAGS=-I$(builddir)/src
+
 # --------------------------------------------------------------------
 # For using a special archiver
 # --------------------------------------------------------------------
@@ -232,29 +273,28 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 # SPECIAL NOTE: Why is the "else" there?  For some reason, automake
 # fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
 # define it manually.
+@USE_ALTERNATE_AR_TRUE@libTSFCore_a_AR = $(ALTERNATE_AR)
+@USE_ALTERNATE_AR_FALSE@libTSFCore_a_AR = $(AR) cru
 
-#libTSFCore_a_AR = $(ALTERNATE_AR)
-
-#libTSFCore_a_AR = $(AR) cru
 
 # --------------------------------------------------------------------
 # Some C++ compilers create extra .o-files for templates. We need to
 # be sure to include these, and this is the hack to do it.
 # --------------------------------------------------------------------
+libTSFCore_a_LIBADD = $(XTRALDADD)
 
-#libTSFCore_a_LIBADD = $(XTRALDADD)
 
 # --------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)
 # --------------------------------------------------------------------
+lib_LIBRARIES = $(TSFCORE_LIB)
 
-#lib_LIBRARIES = $(TSFCORE_LIB)
 
 # --------------------------------------------------------------------
 # List of all headers to install in $(pkgincludedir)
 # --------------------------------------------------------------------
+pkginclude_HEADERS = $(TSFCORE_H) 
 
-#pkginclude_HEADERS = $(TSFCORE_H) 
 
 # --------------------------------------------------------------------
 # Special stuff to install in our special $(pkgexecincludedir)
@@ -265,9 +305,7 @@ AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
 # not a default installation directory, so we had to create it
 # special.
 pkgexecincludedir = $(exec_prefix)/include/TSFCore
-nodist_pkgexecinclude_HEADERS = TSFCoreConfig.h $(CORE_H) $(SOLVERS_H) \
-	$(NONLIN_H)
-
+nodist_pkgexecinclude_HEADERS = TSFCoreConfig.h $(TSFCORE_H)
 
 
 # --------------------------------------------------------------------
@@ -278,14 +316,52 @@ subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = TSFCoreConfig.h
 CONFIG_CLEAN_FILES =
-DIST_SOURCES =
-HEADERS = $(nodist_pkgexecinclude_HEADERS)
+LIBRARIES = $(lib_LIBRARIES)
 
-DIST_COMMON = Makefile.am Makefile.in TSFCoreConfig.h.in
+libTSFCore_a_DEPENDENCIES =
+am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
+	TSFCoreEpetraMultiVector.$(OBJEXT) \
+	TSFCoreEpetraVector.$(OBJEXT) \
+	TSFCoreEpetraVectorSpace.$(OBJEXT)
+@HAVE_TSFCORE_EPETRA_TRUE@am__objects_2 = $(am__objects_1)
+@HAVE_TSFCORE_EPETRA_FALSE@am__objects_2 =
+am_libTSFCore_a_OBJECTS = $(am__objects_2)
+libTSFCore_a_OBJECTS = $(am_libTSFCore_a_OBJECTS)
+
+DEFS = @DEFS@
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+am__depfiles_maybe = depfiles
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFCoreEpetraLinearOp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraMultiVector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+CXXFLAGS = @CXXFLAGS@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES = $(libTSFCore_a_SOURCES) $(EXTRA_libTSFCore_a_SOURCES)
+HEADERS = $(nodist_pkgexecinclude_HEADERS) $(pkginclude_HEADERS)
+
+DIST_COMMON = $(pkginclude_HEADERS) Makefile.am Makefile.in \
+	TSFCoreConfig.h.in
+SOURCES = $(libTSFCore_a_SOURCES) $(EXTRA_libTSFCore_a_SOURCES)
+
 all: TSFCoreConfig.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
+.SUFFIXES: .cpp .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --foreign  src/Makefile
@@ -308,6 +384,125 @@ $(srcdir)/TSFCoreConfig.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac 
 
 distclean-hdr:
 	-rm -f TSFCoreConfig.h stamp-h1
+
+AR = ar
+libLIBRARIES_INSTALL = $(INSTALL_DATA)
+install-libLIBRARIES: $(lib_LIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " $(libLIBRARIES_INSTALL) $$p $(DESTDIR)$(libdir)/$$f"; \
+	    $(libLIBRARIES_INSTALL) $$p $(DESTDIR)$(libdir)/$$f; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    p="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  p="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(libdir)/$$p"; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+TSFCoreEpetraLinearOp.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp
+TSFCoreEpetraMultiVector.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp
+TSFCoreEpetraVector.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp
+TSFCoreEpetraVectorSpace.$(OBJEXT): \
+	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+libTSFCore.a: $(libTSFCore_a_OBJECTS) $(libTSFCore_a_DEPENDENCIES) 
+	-rm -f libTSFCore.a
+	$(libTSFCore_a_AR) libTSFCore.a $(libTSFCore_a_OBJECTS) $(libTSFCore_a_LIBADD)
+	$(RANLIB) libTSFCore.a
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraLinearOp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraMultiVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVectorSpace.Po@am__quote@
+
+distclean-depend:
+	-rm -rf ./$(DEPDIR)
+
+.cpp.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+.cpp.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+TSFCoreEpetraLinearOp.o: $(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp' object='TSFCoreEpetraLinearOp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraLinearOp.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraLinearOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraLinearOp.o `test -f '$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp
+
+TSFCoreEpetraLinearOp.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp' object='TSFCoreEpetraLinearOp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraLinearOp.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraLinearOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraLinearOp.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp`
+
+TSFCoreEpetraMultiVector.o: $(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp' object='TSFCoreEpetraMultiVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraMultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraMultiVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraMultiVector.o `test -f '$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp
+
+TSFCoreEpetraMultiVector.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp' object='TSFCoreEpetraMultiVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraMultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraMultiVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraMultiVector.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraMultiVector.cpp`
+
+TSFCoreEpetraVector.o: $(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp' object='TSFCoreEpetraVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVector.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVector.o `test -f '$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp
+
+TSFCoreEpetraVector.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp' object='TSFCoreEpetraVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVector.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVector.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp`
+
+TSFCoreEpetraVectorSpace.o: $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp' object='TSFCoreEpetraVectorSpace.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVectorSpace.o `test -f '$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+
+TSFCoreEpetraVectorSpace.obj: $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp' object='TSFCoreEpetraVectorSpace.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.Po' tmpdepfile='$(DEPDIR)/TSFCoreEpetraVectorSpace.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCoreEpetraVectorSpace.obj `cygpath -w $(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp`
+CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 nodist_pkgexecincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 install-nodist_pkgexecincludeHEADERS: $(nodist_pkgexecinclude_HEADERS)
@@ -326,6 +521,24 @@ uninstall-nodist_pkgexecincludeHEADERS:
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " rm -f $(DESTDIR)$(pkgexecincludedir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgexecincludedir)/$$f; \
+	done
+pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
+	done
+
+uninstall-pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
 ETAGS = etags
@@ -369,6 +582,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/$(srcdir)/adapters/epetra $(distdir)/$(srcdir)/adapters/mpi-base $(distdir)/$(srcdir)/extended/Core $(distdir)/$(srcdir)/extended/Nonlin $(distdir)/$(srcdir)/extended/Solvers $(distdir)/$(srcdir)/interfaces/Core $(distdir)/$(srcdir)/interfaces/Nonlin $(distdir)/$(srcdir)/interfaces/Solvers
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -391,10 +605,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(HEADERS) TSFCoreConfig.h
+all-am: Makefile $(LIBRARIES) $(HEADERS) TSFCoreConfig.h
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(pkgexecincludedir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(pkgexecincludedir) $(DESTDIR)$(pkgincludedir)
 
 install: install-am
 install-exec: install-exec-am
@@ -423,11 +637,12 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 
-distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-am
 
@@ -437,9 +652,10 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-pkgincludeHEADERS
 
-install-exec-am: install-nodist_pkgexecincludeHEADERS
+install-exec-am: install-libLIBRARIES \
+	install-nodist_pkgexecincludeHEADERS
 
 install-info: install-info-am
 
@@ -453,21 +669,28 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
-uninstall-am: uninstall-info-am uninstall-nodist_pkgexecincludeHEADERS
+uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
 
-.PHONY: GTAGS all all-am check check-am clean clean-generic distclean \
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libLIBRARIES distclean distclean-compile distclean-depend \
 	distclean-generic distclean-hdr distclean-tags distdir dvi \
 	dvi-am info info-am install install-am install-data \
 	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man \
-	install-nodist_pkgexecincludeHEADERS install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic tags \
-	uninstall uninstall-am uninstall-info-am \
-	uninstall-nodist_pkgexecincludeHEADERS
+	install-info-am install-libLIBRARIES install-man \
+	install-nodist_pkgexecincludeHEADERS install-pkgincludeHEADERS \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic tags uninstall \
+	uninstall-am uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
 
+	$(EXTRA_ADAPTERS_EPETRA_H)
+	$(EXTRA_ADAPTERS_EPETRA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

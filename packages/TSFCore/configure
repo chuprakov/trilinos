@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP FLIBS ac_aux_dir LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP HAVE_TSFCORE_EPETRA_TRUE HAVE_TSFCORE_EPETRA_FALSE HAVE_TSFCORE_MPI_TRUE HAVE_TSFCORE_MPI_FALSE FLIBS ac_aux_dir LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -874,6 +874,8 @@ Optional Features:
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
   --enable-mpi            MPI support
+  --enable-tsfcore-epetra enable TSFCore's Epetra adapters (default is no)
+  --enable-tsfcore-mpi    enable TSFCore's mpi adapters (default is no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3159,7 +3161,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3162:" \
+echo "$as_me:3164:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -5411,6 +5413,78 @@ fi
 # Checks for special package flags
 # ------------------------------------------------------------------------
 
+
+# Check whether --enable-tsfcore-epetra or --disable-tsfcore-epetra was given.
+if test "${enable_tsfcore_epetra+set}" = set; then
+  enableval="$enable_tsfcore_epetra"
+  ac_cv_use_tsfcore_epetra=$enableval
+else
+  ac_cv_use_tsfcore_epetra=no
+fi;
+
+echo "$as_me:$LINENO: checking whether to use tsfcore-epetra" >&5
+echo $ECHO_N "checking whether to use tsfcore-epetra... $ECHO_C" >&6
+
+if test "X$ac_cv_use_tsfcore_epetra" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_TSFCORE_EPETRA
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_tsfcore_epetra" != "Xno"; then
+  HAVE_TSFCORE_EPETRA_TRUE=
+  HAVE_TSFCORE_EPETRA_FALSE='#'
+else
+  HAVE_TSFCORE_EPETRA_TRUE='#'
+  HAVE_TSFCORE_EPETRA_FALSE=
+fi
+
+
+
+# Check whether --enable-tsfcore-mpi or --disable-tsfcore-mpi was given.
+if test "${enable_tsfcore_mpi+set}" = set; then
+  enableval="$enable_tsfcore_mpi"
+  ac_cv_use_tsfcore_mpi=$enableval
+else
+  ac_cv_use_tsfcore_mpi=no
+fi;
+
+echo "$as_me:$LINENO: checking whether to use tsfcore-mpi" >&5
+echo $ECHO_N "checking whether to use tsfcore-mpi... $ECHO_C" >&6
+
+if test "X$ac_cv_use_tsfcore_mpi" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_TSFCORE_MPI
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_tsfcore_mpi" != "Xno"; then
+  HAVE_TSFCORE_MPI_TRUE=
+  HAVE_TSFCORE_MPI_FALSE='#'
+else
+  HAVE_TSFCORE_MPI_TRUE='#'
+  HAVE_TSFCORE_MPI_FALSE=
+fi
+
+
 # ------------------------------------------------------------------------
 # Specify other directories
 # ------------------------------------------------------------------------
@@ -5505,7 +5579,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:5508: \"$ac_link\") >&5
+(eval echo $as_me:5582: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -5585,7 +5659,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:5588: \"$ac_link\") >&5
+(eval echo $as_me:5662: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6488,7 +6562,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:6491: \"$ac_link\") >&5
+(eval echo $as_me:6565: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6568,7 +6642,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:6571: \"$ac_link\") >&5
+(eval echo $as_me:6645: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6909,6 +6983,20 @@ if test -z "${USE_ALTERNATE_AR_TRUE}" && test -z "${USE_ALTERNATE_AR_FALSE}"; th
   { { echo "$as_me:$LINENO: error: conditional \"USE_ALTERNATE_AR\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"USE_ALTERNATE_AR\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_TSFCORE_EPETRA_TRUE}" && test -z "${HAVE_TSFCORE_EPETRA_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_TSFCORE_EPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_TSFCORE_MPI_TRUE}" && test -z "${HAVE_TSFCORE_MPI_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_TSFCORE_MPI\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_TSFCORE_MPI\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -7514,6 +7602,10 @@ s,@USE_ALTERNATE_AR_FALSE@,$USE_ALTERNATE_AR_FALSE,;t t
 s,@ALTERNATE_AR@,$ALTERNATE_AR,;t t
 s,@CXXCPP@,$CXXCPP,;t t
 s,@EGREP@,$EGREP,;t t
+s,@HAVE_TSFCORE_EPETRA_TRUE@,$HAVE_TSFCORE_EPETRA_TRUE,;t t
+s,@HAVE_TSFCORE_EPETRA_FALSE@,$HAVE_TSFCORE_EPETRA_FALSE,;t t
+s,@HAVE_TSFCORE_MPI_TRUE@,$HAVE_TSFCORE_MPI_TRUE,;t t
+s,@HAVE_TSFCORE_MPI_FALSE@,$HAVE_TSFCORE_MPI_FALSE,;t t
 s,@FLIBS@,$FLIBS,;t t
 s,@ac_aux_dir@,$ac_aux_dir,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t

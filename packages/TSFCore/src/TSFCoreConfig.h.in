@@ -71,6 +71,12 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define if want to build tsfcore-epetra */
+#undef HAVE_TSFCORE_EPETRA
+
+/* Define if want to build tsfcore-mpi */
+#undef HAVE_TSFCORE_MPI
+
 /* Define to 1 if you have the <typeinfo> header file. */
 #undef HAVE_TYPEINFO
 
