@@ -19,18 +19,21 @@
 #include "rSQPAlgoClientInterface.h"
 #include "rSQPAlgoInterface.h"
 #include "rSQPAlgo_Config.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
 /** Implementation for rSQPAlgo solver.
-  *
-  * Acts as a container for rSQPAlgo.  This class is hidden from clients
-  * by not exposing it to them in header files.
-  */
+ *
+ * Acts as a container for rSQPAlgo.  This class is hidden from clients
+ * by not exposing it to them in header files.
+ */
 class rSQPAlgoContainer : public rSQPAlgoClientInterface {
 public:
+
+	/** @name Constructors/initializers */
+	//@{
 
 	/// Members for <<std comp>> of the algorithm object algo.
 	STANDARD_COMPOSITION_MEMBERS( rSQPAlgoInterface, algo )
@@ -39,33 +42,29 @@ public:
 	rSQPAlgoContainer()
 	{}
 
-	/** @name Overridden.*/
-	//@{
+	//@}
 
-	/** @name «std comp» members for config. */
+	/** @name Overridden from rSQPAlgoClientInterface */
 	//@{
 
 	///
 	void set_config(const config_ptr_t& config);
 	///
-	config_ptr_t& get_config()
-	{	return config_ ; }
+	config_ptr_t& get_config();
 	///
-	const config_ptr_t& get_config() const
-	{	return config_; }
+	const config_ptr_t& get_config() const;
 	///
-	rSQPAlgo_Config& config()
-	{	return *config_; }
+	rSQPAlgo_Config& config();
 	///
-	const rSQPAlgo_Config& config() const
-	{	return *config_; }
+	const rSQPAlgo_Config& config() const;
 
 	//@}
 
+	/** @name Overridden from rSQPSolverClientInterface */
+	//@{
+
 	///
 	EFindMinReturn find_min();
-	///	
-	const rSQPState& state() const;
 	///
 	void configure_algorithm(std::ostream* trase_out);
 	///
