@@ -53,14 +53,14 @@ bool NLPInterfacePack::test_basis_system(
 		nlp->calc_Gh(xo,m==0);
 
 	// Create the matrices C and D
-	BasisSystem::mat_nonsing_space_ptr_t::element_type::mat_ptr_t
-		C = ( m ? basis_sys->space_C()->create_member() : NULL);
-	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
-		D = ( m && n > m && basis_sys->space_C().get() ? basis_sys->space_C()->create_member() : NULL);
-	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
-		GcUP = ( m && n > m && basis_sys->space_GcUP().get()  ? basis_sys->space_GcUP()->create_member() : NULL);
-	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
-		GhUP = ( mI && n > m && basis_sys->space_GhUP().get() ? basis_sys->space_GhUP()->create_member() : NULL);
+	BasisSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
+		C = ( m ? basis_sys->factory_C()->create() : NULL);
+	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
+		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : NULL);
+	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
+		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : NULL);
+	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
+		GhUP = ( mI && n > m && basis_sys->factory_GhUP().get() ? basis_sys->factory_GhUP()->create() : NULL);
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(
@@ -80,7 +80,6 @@ bool NLPInterfacePack::test_basis_system(
 			opt_setter(&basis_sys_tester);
 		opt_setter.set_options(*options);
 	}
-	const bool print_all_warnings = false; // ToDo: set somehow?
 	const bool result = basis_sys_tester.test_basis_system(
 		*basis_sys
 		,Gc.get()
@@ -90,7 +89,6 @@ bool NLPInterfacePack::test_basis_system(
 		,D.get()
 		,GcUP.get()
 		,GhUP.get()
-		,print_all_warnings
 		,out
 		);
 
