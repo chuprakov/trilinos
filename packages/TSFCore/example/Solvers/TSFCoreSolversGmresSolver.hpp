@@ -28,7 +28,8 @@
 
 // //////////////////////////////////////////////////////////////////////////
 // TSFCoreSolversGmresSolver.hpp
-//
+
+// #define TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD
 
 #ifndef TSFCORE_SOLVERS_GMRES_SOLVER_HPP
 #define TSFCORE_SOLVERS_GMRES_SOLVER_HPP
@@ -87,11 +88,11 @@ private:
 
 template<class Scalar>
 GMRESSolver<Scalar>::GMRESSolver(
-	int			default_max_iter,
+	int			  default_max_iter,
 	Scalar		default_tol
 	)
-    : max_iter(default_max_iter), tol(default_tol),
-      isConverged(false), curr_iter(0), r0( 1.0 ), curr_res( 1.0 )
+	: max_iter(default_max_iter), tol(default_tol),
+		isConverged(false), curr_iter(0), r0( 1.0 ), curr_res( 1.0 )
 {}
 	
 template<class Scalar>
@@ -104,34 +105,38 @@ SolveReturn GMRESSolver<Scalar>::solve(
 	Scalar                 tol_in
 	)
 {
-    // 
-    //  Check compatability of linear operator with rhs and solution vector.
-    //
-    const VectorSpace<Scalar> &Op_domain = ( ( Op_trans == NOTRANS ) ? *Op.domain() : *Op.range() );
-    const VectorSpace<Scalar> &Op_range = ( ( Op_trans == NOTRANS ) ? *Op.range() : *Op.domain() );
-    const bool 	domain_compatable = Op_domain.isCompatible( *curr_soln->space() ),
+	// 
+	//  Check compatability of linear operator with rhs and solution vector.
+	//
+	const VectorSpace<Scalar> &Op_domain = ( ( Op_trans == NOTRANS ) ? *Op.domain() : *Op.range() );
+	const VectorSpace<Scalar> &Op_range = ( ( Op_trans == NOTRANS ) ? *Op.range() : *Op.domain() );
+	const bool 	domain_compatable = Op_domain.isCompatible( *curr_soln->space() ),
 		range_compatable = Op_range.isCompatible( *b.space() );
-    if (!(domain_compatable && range_compatable) ) { std::cout<<"Op is not compatable with x or b"<<std::endl; }
-    //
-    //  Initialize internal data structures
-    //		
+	if (!(domain_compatable && range_compatable) ) { std::cout<<"Op is not compatable with x or b"<<std::endl; }
+	//
+	//  Initialize internal data structures
+	//		
 	curr_iter = 0;
-    V_ = Op_domain.createMembers(max_iter+1);
-    r = Op_domain.createMember();
-    //
-    if ( tol_in != tol ) { tol = tol_in; }
+	V_ = Op_domain.createMembers(max_iter+1);
+	r = Op_domain.createMember();
+	//
+	tol = tol_in;
 	if( max_iter_in+1 != H_.numRows() ) {
 		max_iter = max_iter_in;
 		H_.shape( max_iter+1, max_iter );
 		z.resize(max_iter+1);
 		cs.resize(max_iter); sn.resize(max_iter);
-    }
+	}
 	//
 	// Check if the RHS is zero
 	//
 	isConverged = false;
-	const Scalar norm_2_b = norm_2( b );
-    if(norm_2_b == 0.0) {
+#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
+	const Scalar norm_b = norm_2( b );
+#else
+	const Scalar norm_b = norm( b );
+#endif
+	if(norm_b == 0.0) {
 		isConverged = true;
 		assign( curr_soln, 0.0 );
 	}
@@ -141,12 +146,20 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		//
 		assign( r.get(), b );
 		Op.apply( Op_trans, *curr_soln, r.get(), 1.0, -1.0 );
-		curr_res = norm_2( *r ) / ( 1.0 + norm_2( b ) );
+#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
+		curr_res = norm_2( *r ) / ( 1.0 + norm_b );
+#else
+		curr_res = norm( *r ) / ( 1.0 + norm_b );
+#endif
 		if (curr_res < tol) isConverged = true;
 		//
 		// Set up initial vector.
 		//
+#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
 		r0 = norm_2( *r );
+#else
+		r0 = norm( *r );
+#endif
 		z[0] = r0;
 		Teuchos::RefCountPtr<Vector<Scalar> >
 			w = V_->col(1);		    // get a mutable view of the first column of V_.
@@ -162,7 +175,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		//
 		Teuchos::BLAS<int, Scalar> blas;
 		blas.TRSM(Teuchos::LEFT_SIDE, Teuchos::UPPER_TRI, Teuchos::NO_TRANS, Teuchos::NON_UNIT_DIAG, 
-				  curr_iter, 1, 1.0, H_.values(), max_iter+1, &z[0], max_iter+1 );
+							curr_iter, 1, 1.0, H_.values(), max_iter+1, &z[0], max_iter+1 );
 		//
 		// Compute the new solution.
 		//
@@ -187,46 +200,54 @@ GMRESSolver<Scalar>::clone() const
 template<class Scalar>
 void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp Op_trans )
 {
-    int i;
-    Teuchos::BLAS<int, Scalar> blas;
-    Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
-    // 
+	int i;
+	Teuchos::BLAS<int, Scalar> blas;
+	Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
+	// 
 	Teuchos::RefCountPtr<Vector<Scalar> >
-		w = V_->col(curr_iter+2);                                         // w = v_{j+1}
-    Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() );                 // w = Op * v_{j}	
-    //
-    // Perform MGS to orthogonalize new Krylov vector.
-    //
-   for( i=0; i<curr_iter+1; i++ ) {	
-		H( i, curr_iter ) = w->space()->scalarProd( *w, *V_->col(i+1) );  // h_{i,j} = ( w, v_{i} )
-		Vp_StV( &*w, -H( i, curr_iter ), *V_->col(i+1) );                 // w = w - h_{i,j} * v_{i}
-    }
-    H( curr_iter+1, curr_iter ) = norm_2( *w );                           // h_{j+1,j} = || w ||
-    Vt_S( &*w, 1.0 / H( curr_iter+1, curr_iter ) );                       // v_{j+1} = w / h_{j+1,j}			
-    //
-    // Apply previous Givens rotations
-    //
-    for( i=0; i<curr_iter; i++ ) {
+		w = V_->col(curr_iter+2);                                           // w = v_{j+1}
+	Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() );                 // w = Op * v_{j}	
+	//
+	// Perform MGS to orthogonalize new Krylov vector.
+	//
+	for( i=0; i<curr_iter+1; i++ ) {
+#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
+		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );                       // h_{i,j} = ( w, v_{i} )
+#else
+		H( i, curr_iter ) = w->space()->scalarProd( *w, *V_->col(i+1) );    // h_{i,j} = ( w, v_{i} )
+#endif
+		Vp_StV( &*w, -H( i, curr_iter ), *V_->col(i+1) );                   // w = w - h_{i,j} * v_{i}
+	}
+#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
+	H( curr_iter+1, curr_iter ) = norm_2( *w );                           // h_{j+1,j} = || w ||
+#else
+	H( curr_iter+1, curr_iter ) = norm( *w );                             // h_{j+1,j} = || w ||
+#endif
+	Vt_S( &*w, 1.0 / H( curr_iter+1, curr_iter ) );                       // v_{j+1} = w / h_{j+1,j}			
+	//
+	// Apply previous Givens rotations
+	//
+	for( i=0; i<curr_iter; i++ ) {
 		const Scalar temp = cs[i]*H( i, curr_iter ) + sn[i]*H( i+1, curr_iter );
 		H( i+1, curr_iter ) = -sn[i]*H( i, curr_iter ) + cs[i]*H( i+1, curr_iter );
 		H( i, curr_iter ) = temp;
-    }
-    //
-    // Calculate new Givens rotation
-    //
-    blas.ROTG( &H( curr_iter, curr_iter ), &H( curr_iter+1, curr_iter ), 
-			   &cs[curr_iter], &sn[curr_iter] );
-    //
-    // Update RHS and residual w/ new transform and compute residual.
-    //
-    z[curr_iter+1] = -sn[curr_iter]*z[curr_iter];
-    z[curr_iter] *= cs[curr_iter];
-    curr_res = Teuchos::ScalarTraits<Scalar>::magnitude( z[curr_iter+1] ) / r0; 
-    if (curr_res < tol) { isConverged = true; }
-    //    
-    // Increment the iteration counter.
-    //
-    curr_iter++;
+	}
+	//
+	// Calculate new Givens rotation
+	//
+	blas.ROTG( &H( curr_iter, curr_iter ), &H( curr_iter+1, curr_iter ), 
+						 &cs[curr_iter], &sn[curr_iter] );
+	//
+	// Update RHS and residual w/ new transform and compute residual.
+	//
+	z[curr_iter+1] = -sn[curr_iter]*z[curr_iter];
+	z[curr_iter] *= cs[curr_iter];
+	curr_res = Teuchos::ScalarTraits<Scalar>::magnitude( z[curr_iter+1] ) / r0; 
+	if (curr_res < tol) { isConverged = true; }
+	//    
+	// Increment the iteration counter.
+	//
+	curr_iter++;
 }
 
 } // namespace Solvers
