@@ -114,6 +114,7 @@ std::ostream& PermutationSerial::output(std::ostream& out) const
 		out << "\n" << *inv_perm_;
 	else
 		out << " NULL\n";
+	return out;
 }
 
 void PermutationSerial::permute( 
