@@ -18,7 +18,8 @@ RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
 {
   RefCountPtr<Epetra_Vector> vec 
     = rcp(new Epetra_Vector(*epetra_map(), false));
-  RefCountPtr<const TSFCore::EpetraVectorSpace> me = rcp(this, false);
+  //  RefCountPtr<const TSFCore::EpetraVectorSpace> me = rcp(this, false);
+  RefCountPtr<const EpetraVectorSpace> me = rcp(this, false);
   return rcp(new EpetraVector(vec, me));
 }
 

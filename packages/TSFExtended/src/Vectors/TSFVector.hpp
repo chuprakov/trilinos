@@ -7,12 +7,17 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFHandle.hpp"
 #include "TSFCoreVector.hpp"
+#include "TSFCoreVectorSpace.hpp"
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
+#include "TSFCoreVectorStdOps.hpp"
 
 namespace TSFExtended
 {
   using TSFCore::Index;
+
+  template <class Scalar, class Node1, class Node2> class LCN;
+  template <class Scalar> class LC1;
 
   /** 
    * User-level vector class. 
@@ -28,6 +33,49 @@ namespace TSFExtended
 
       /** Construct with an existing smart pointer */
       Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
+
+      /** */
+      Vector& operator=(const LC1<Scalar>& x);
+
+      /** */
+      template<class Node1, class Node2>
+      Vector& operator=(const LCN<Scalar, Node1, Node2>& x);
+      //@}
+
+      /** */
+      RefCountPtr<const TSFCore::VectorSpace<Scalar> > space() const 
+      {return ptr()->space();}
+
+      /** \name Math operations */
+      //@{
+      /** Multiply this vector by a constant scalar factor 
+       * \code
+       * this = alpha * this;
+       * \endcode
+      */
+      Vector<Scalar>& scale(const Scalar& alpha);
+
+      /** 
+       * Add a scaled vector to this vector:
+       * \code
+       * this = this + alpha*x 
+       * \endcode
+       */
+      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
+
+      /** 
+       * Copy the values of another vector into this vector
+       * \code
+       * this = x
+       * \endcode
+       */
+      Vector<Scalar>& acceptCopyOf(const Vector<Scalar>& x);
+
+      /** 
+       * Create a new vector that is a copy of this vector 
+       */
+      Vector<Scalar> copy() const ;
+      //@}
 
       /** \name Element loading interface */
       //@{
@@ -105,10 +153,42 @@ namespace TSFExtended
     return lv;
   }
 
+  template <class Scalar> inline 
+  Vector<Scalar>& Vector<Scalar>::scale(const Scalar& alpha)
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    TSFCore::Vt_S(p, alpha);
+    return *this;
+  }
+
+  template <class Scalar> inline 
+  Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha, const Vector<Scalar>& x)
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = x.ptr().get();
+    TSFCore::Vp_StV(p, alpha, *px);
+    return *this;
+  }
+
+  template <class Scalar> inline 
+  Vector<Scalar>& Vector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = x.ptr().get();
+    TSFCore::assign(p, *px);
+    return *this;
+  }
+
+  template <class Scalar> inline 
+  Vector<Scalar> Vector<Scalar>::copy() const 
+  {
+    Vector<Scalar> rtn = space()->createMember();
+    rtn.acceptCopyOf(*this);
+    return rtn;
+  }
+
   
 
-
-  
   
 }
 

@@ -22,6 +22,9 @@ namespace TSFExtended
   class Handle
   {
   public:
+    /** Empty ctor  */
+    Handle() : ptr_() {;}
+
     /** Construct */
     Handle(const RefCountPtr<PointerType>& ptr) : ptr_(ptr) {;}
 
