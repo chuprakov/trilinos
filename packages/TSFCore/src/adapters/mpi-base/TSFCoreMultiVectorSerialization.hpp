@@ -40,6 +40,12 @@
 namespace TSFCore {
 
 template<class Scalar>
+union MV_binary_ele {
+	Scalar s;
+	char c[sizeof(Scalar)];
+};
+
+template<class Scalar>
 MultiVectorSerialization<Scalar>::MultiVectorSerialization(
 	const bool  binaryMode
 	)
@@ -49,7 +55,6 @@ MultiVectorSerialization<Scalar>::MultiVectorSerialization(
 template<class Scalar>
 void MultiVectorSerialization<Scalar>::serialize( const MultiVector<Scalar>& mv, std::ostream& out ) const
 {
-	TEST_FOR_EXCEPTION( binaryMode(), std::logic_error, "Can't handle binary mode yet!" );
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >
 		mpi_vec_spc = Teuchos::rcp_dynamic_cast<const MPIVectorSpaceBase<Scalar> >(mv.range());
 	out.precision(std::numeric_limits<Scalar>::digits10+4);
@@ -61,26 +66,38 @@ void MultiVectorSerialization<Scalar>::serialize( const MultiVector<Scalar>& mv,
 			localSubDim = mpi_vec_spc->localSubDim();
 		const Range1D localRng( localOffset+1, localOffset+localSubDim ); 
 		ExplicitMultiVectorView<Scalar> local_mv(mv,localRng,Range1D());
-		out << localSubDim << std::endl;
-		for( Index i = 1; i <= localSubDim; ++i ) {
-			out << " " << i;
+		out << localSubDim << " " << local_mv.numSubCols() << std::endl;
+		if( binaryMode() ) {
+			// Write column-based for better cache performance
+			MV_binary_ele<Scalar> conv;
 			for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
-				out << " " << local_mv(i,j);
+				for( Index i = 1; i <= localSubDim; ++i ) {
+					conv.s = local_mv(i,j);
+					out.write( conv.c, sizeof(Scalar) );
+				}
 			}
-			out << std::endl;
+		}
+		else {
+			// Write row based for better readability
+			for( Index i = 1; i <= localSubDim; ++i ) {
+				out << " " << i;
+				for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
+					out << " " << local_mv(i,j);
+				}
+				out << std::endl;
+			}
 		}
 	}
 	else {
 		//  This is a serial (or locally replicated) vector space so
 		// just write all of the multi-vector elements here.
-		assert(0);
+		TEST_FOR_EXCEPTION( true, std::logic_error, "Does not handle non-MPI spaces yet" );
 	}
 }
 
 template<class Scalar>
 void MultiVectorSerialization<Scalar>::unserialize( std::istream& in, MultiVector<Scalar>* mv ) const
 {
-	TEST_FOR_EXCEPTION( binaryMode(), std::logic_error, "Can't handle binary mode yet!" );
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >
 		mpi_vec_spc = Teuchos::rcp_dynamic_cast<const MPIVectorSpaceBase<Scalar> >(mv->range());
 	if( mpi_vec_spc.get() ) {
@@ -103,31 +120,56 @@ void MultiVectorSerialization<Scalar>::unserialize( std::istream& in, MultiVecto
 			"localSubDim_in = "<<localSubDim_in<<"!"
 			);
 #endif
-		for( Index i = 1; i <= localSubDim; ++i ) {
+		Index numSubCols_in;
+		in >> numSubCols_in;
 #ifdef _DEBUG
-			TEST_FOR_EXCEPTION( !in, std::logic_error, "Error, premature end of input!"	);
+		TEST_FOR_EXCEPTION(
+			local_mv.numSubCols() != numSubCols_in, std::logic_error
+			, "Error, numSubCols = "<<local_mv.numSubCols()<<" does not match the readin value of "
+			"numSubCols_in = "<<numSubCols_in<<"!"
+			);
 #endif
-			Index i_in;
-			in >> i_in;
-#ifdef _DEBUG
-			TEST_FOR_EXCEPTION(
-				i != i_in, std::logic_error
-				, "Error, i = "<<i<<" does not match the readin value of "
-				"i_in = "<<i_in<<"!"
-				);
-#endif
+		// Get rid of extra newline after first line
+		in >> std::ws;
+		// Get the elements
+		if( binaryMode() ) {
+			// Column-wise
+			MV_binary_ele<Scalar> conv;
 			for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
+				for( Index i = 1; i <= localSubDim; ++i ) {
+					in.read( conv.c, sizeof(Scalar) );
+					local_mv(i,j) = conv.s;
+				}
+			}
+		}
+		else {
+			// Row-wise
+			for( Index i = 1; i <= localSubDim; ++i ) {
 #ifdef _DEBUG
 				TEST_FOR_EXCEPTION( !in, std::logic_error, "Error, premature end of input!"	);
 #endif
-				in >> local_mv(i,j);
+				Index i_in;
+				in >> i_in;
+#ifdef _DEBUG
+				TEST_FOR_EXCEPTION(
+					i != i_in, std::logic_error
+					, "Error, i = "<<i<<" does not match the readin value of "
+					"i_in = "<<i_in<<"!"
+					);
+#endif
+				for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
+#ifdef _DEBUG
+					TEST_FOR_EXCEPTION( !in, std::logic_error, "Error, premature end of input!"	);
+#endif
+					in >> local_mv(i,j);
+				}
 			}
 		}
 	}
 	else {
 		//  This is a serial (or locally replicated) vector space so
 		// just read all of the multi-vector elements here.
-		assert(0);
+		TEST_FOR_EXCEPTION( true, std::logic_error, "Does not handle non-MPI spaces yet" );
 	}
 }
 
