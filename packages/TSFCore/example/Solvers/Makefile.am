@@ -66,4 +66,4 @@ TSFCoreSolversGmresTest_CXXFLAGS = \
 
 TSFCoreSolversGmresTest_LDADD = \
 	$(TSFCoreSolversGmresTest_DEPENDENCIES) \
-	$(LAPACK_LIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)
+	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
