@@ -17,10 +17,10 @@
 #define SPARSE_VECTOR_CLASS_DEF_H
 
 #include <algorithm>
-#include <sstream>
 
 #include "SparseVectorClassDecl.h"
 #include "compare_element_indexes.h"
+#include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
 
@@ -39,8 +39,9 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
 		rng = Range1D(1,size);
 	}
 	else {
-		if(rng.ubound() > size)
-			throw std::out_of_range("create_slice(...): Error, rng.ubound() > size");
+#ifdef _DEBUG
+		assert( rng.ubound() <= size );
+#endif
 	}
 
 	// If there are no elements then any subregion will also not have any elements.
@@ -291,10 +292,12 @@ template <class T_Element, class T_Alloc>
 void SparseVector<T_Element,T_Alloc>::uninitialized_resize(size_type size, size_type nz, size_type max_nz
 	, difference_type offset)
 {
-	if(nz > max_nz)
-		throw std::length_error(
-			"SparseVector<...>::uninitialized_resize(...) : nz can not be greater"
-			" than max_nz" );
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		nz > max_nz, std::length_error
+		,"SparseVector<...>::uninitialized_resize(...) : nz can not be greater"
+		" than max_nz" );
+#endif
 	resize(size,max_nz,offset);
 	index_lookup_.set_sp_vec(index_lookup_.ele(), nz, index_lookup_.offset());
 }
@@ -312,10 +315,12 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
 			poss = ( nz() ? index_lookup_.find_poss(ele.index(), SpVecIndexLookup::LOWER_ELE)
 					 : SpVecIndexLookup::poss_type(0,SpVecIndexLookup::BEFORE_ELE) );
 		// Make sure this element does not already exist!
-		if( nz() && poss.rel == SpVecIndexLookup::EQUAL_TO_ELE )
-			throw std::length_error(
-				"SparseVector<...>::insert_element(...) : Error, this index"
-				" all ready exists!" );
+#ifdef _DEBUG
+		THROW_EXCEPTION(
+			nz() && poss.rel == SpVecIndexLookup::EQUAL_TO_ELE, std::length_error
+			,"SparseVector<...>::insert_element(...) : Error, this index"
+			" all ready exists!" );
+#endif
 		const size_type
 			insert_poss = (poss.rel == SpVecIndexLookup::BEFORE_ELE ? poss.poss : poss.poss+1);
 		// Copy elements out of the way to make room for inserted element
@@ -352,35 +357,30 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
 		p < index_lookup_.ele() + index_lookup_.nz(); ++p)
 	{
 		typename T_Element::index_type curr_index = p->index() + offset();
-		if((1 > curr_index) || (curr_index > dim())) {
-			// element index + offset is not in range
-			std::ostringstream omsg;
-			omsg	<< "SparseVector<...>::assert_valid_and_sorted():"
-					<< " Error, not in range:  element (0-based) " << p - index_lookup_.ele() - 1
-					<< " with index + offset = " << curr_index
-					<< " is not in range";
-			throw	std::out_of_range(omsg.str());
-		}
+#ifdef _DEBUG
+		THROW_EXCEPTION(
+			(1 > curr_index) || (curr_index > dim()), std::out_of_range
+			,"SparseVector<...>::assert_valid_and_sorted():"
+			<< " Error, not in range:  element (0-based) " << p - index_lookup_.ele() - 1
+			<< " with index + offset = " << curr_index
+			<< " is not in range" );
+#endif
 		if(p == index_lookup_.ele()) { // skip these tests for the first element
 			last_index = curr_index;
 			continue;
 		}
-		if(curr_index < last_index) {
-			// the elements are not sorted in accending order
-			std::ostringstream omsg;
-			omsg	<< "SparseVector<...>::assert_valid_and_sorted():"
-					<< " Error, not sorted:  element (0-based) " << p - index_lookup_.ele() - 1
-					<< " and " << p - index_lookup_.ele() << " are not in assending order";
-			throw	NotSortedException(omsg.str());
-		}
-		if(curr_index == last_index) {
-			// These are duplicate indexes
-			std::ostringstream omsg;
-			omsg	<< "SparseVector<...>::assert_valid_and_sorted():"
-					<< " Error, duplicate indexes:  element (0-based) " << p - index_lookup_.ele() - 1
-					<< " and " << p - index_lookup_.ele() << " have duplicate indexes";
-			throw	DuplicateIndexesException(omsg.str());
-		}
+#ifdef _DEBUG
+		THROW_EXCEPTION(
+			curr_index < last_index, NotSortedException
+			,"SparseVector<...>::assert_valid_and_sorted():"
+			<< " Error, not sorted:  element (0-based) " << p - index_lookup_.ele() - 1
+			<< " and " << p - index_lookup_.ele() << " are not in assending order" );
+		THROW_EXCEPTION(
+			curr_index == last_index, DuplicateIndexesException
+			,"SparseVector<...>::assert_valid_and_sorted():"
+			<< " Error, duplicate indexes:  element (0-based) " << p - index_lookup_.ele() - 1
+			<< " and " << p - index_lookup_.ele() << " have duplicate indexes" );
+#endif
 		last_index = curr_index;
 	}
 }
