@@ -74,14 +74,14 @@ private:
 
 	void doIteration( const LinearOp<Scalar> &Op, const ETransp Op_trans );
   
-	int				                                              max_iter, curr_iter;
+	int				                                            max_iter, curr_iter;
 	bool				                                          isConverged;
-	Scalar			                                              tol, curr_res, r0; 
-	std::vector<Scalar>                                           z;
-	Teuchos::SerialDenseMatrix<int,Scalar>                        H_;
-	Teuchos::RefCountPtr< MultiVector<Scalar> >                   V_;
-	Teuchos::RefCountPtr< Vector<Scalar> >                        r;
-	std::vector<Scalar>		                                      cs, sn;	
+	Scalar			                                          tol, curr_res, r0; 
+	std::vector<Scalar>                                   z;
+	Teuchos::SerialDenseMatrix<int,Scalar>                H_;
+	Teuchos::RefCountPtr< MultiVector<Scalar> >           V_;
+	Teuchos::RefCountPtr< Vector<Scalar> >                r;
+	std::vector<Scalar>		                                cs, sn;	
 
 }; // end class GMRESSolver
 
@@ -188,7 +188,6 @@ template<class Scalar>
 void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp Op_trans )
 {
     int i;
-    Scalar temp;
     Teuchos::BLAS<int, Scalar> blas;
     Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
     // 
@@ -200,7 +199,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     //
    for( i=0; i<curr_iter+1; i++ ) {	
 		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );          // h_{i,j} = ( w, v_{i} )
-		Vp_StV( w.get(), -H( i, curr_iter ), *V_->col(i+1) );  // w = w - h_{i,j} * v_{i}
+		Vp_StV( &*w, -H( i, curr_iter ), *V_->col(i+1) );      // w = w - h_{i,j} * v_{i}
     }
 /* RAB: Why not this or a MultiVector version???
     for( i=0; i<curr_iter+1; i++ ) {
@@ -211,12 +210,12 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     }
 */
     H( curr_iter+1, curr_iter ) = norm_2( *w );                // h_{j+1,j} = || w ||
-    Vt_S( w.get(), 1.0 / H( curr_iter+1, curr_iter ) ); 	   // v_{j+1} = w / h_{j+1,j}			
+    Vt_S( &*w, 1.0 / H( curr_iter+1, curr_iter ) );            // v_{j+1} = w / h_{j+1,j}			
     //
     // Apply previous Givens rotations
     //
     for( i=0; i<curr_iter; i++ ) {
-		temp = cs[i]*H( i, curr_iter ) + sn[i]*H( i+1, curr_iter );
+		const Scalar temp = cs[i]*H( i, curr_iter ) + sn[i]*H( i+1, curr_iter );
 		H( i+1, curr_iter ) = -sn[i]*H( i, curr_iter ) + cs[i]*H( i+1, curr_iter );
 		H( i, curr_iter ) = temp;
     }
