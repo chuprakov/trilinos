@@ -74,9 +74,20 @@ bool CheckDecompositionFromRPy_Step::do_step( Algorithm& _algo, poss_type step_p
 		beta         = nrm_resid / (nrm_c_decomp+small_num);
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		out	<< "\nbeta = ||(Gc(decomp)'*Y)*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)"
+		out	<< "\nbeta = ||R*py_k + c_k(decomp)||inf / (||c_k(decomp)||inf + small_number)"
 			<< "\n     = "<<nrm_resid<<" / ("<<nrm_c_decomp<<" + "<<small_num<<")"
 			<< "\n     = " << beta << std::endl;
+	}
+
+	// Check to see if a new basis was selected or not
+	IterQuantityAccess<index_type>
+		&num_basis_iq = s.num_basis();
+	if( num_basis_iq.updated_k(0) ) {
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+			out	<< "\nnum_basis_k was updated so the basis changed so we will skip this check\n"
+				<< "    reset min ||R*py+c||/||c|| to current value\n";
+		beta_min_ = beta;
+		return true;
 	}
 	
 	if( beta != 0.0 ) {
@@ -113,12 +124,15 @@ void CheckDecompositionFromRPy_Step::print_step( const Algorithm& algo, poss_typ
 		<< L << "*** Try to detect when the decomposition is becomming illconditioned\n"
 		<< L << "default: beta_min = inf\n"
 		<< L << "         max_decomposition_cond_change_frac = " << max_decomposition_cond_change_frac() << std::endl
-		<< L << "beta = norm_inf((Gc(decomp)'*Y)*py_k + c_k(decomp)) / (norm_inf(c_k(decomp))+small_number)\n"
+		<< L << "beta = norm_inf(R*py_k + c_k(decomp)) / (norm_inf(c_k(decomp))+small_number)\n"
 		<< L << "select_new_decomposition = false\n"
+		<< L << "if num_basis_k is updated then\n"
+		<< L << "  beta_min = beta\n"
+		<< L << "end\n"
 		<< L << "if beta < beta_min then\n"
-		<< L << "    beta_min = beta\n"
+		<< L << "  beta_min = beta\n"
 		<< L << "else\n"
-		<< L << "    if beta/ beta_min > max_decomposition_cond_change_frac then\n"
+		<< L << "  if beta/ beta_min > max_decomposition_cond_change_frac then\n"
 		<< L << "        select_new_decomposition = true\n"
 		<< L << "    end\n"
 		<< L << "end\n"

@@ -28,6 +28,7 @@ namespace SparseSolverPack {
  *
  * Several direct sparse solvers are supported by default.  These include:
  * <ul>
+ * <li> DENSE (using LAPACK xGETRF())
  * <li> MA28
  * <li> MA48 (using MA28 for BasisSystemPerm::select_basis()) (not yet)
  * <li> SuperLU
@@ -70,7 +71,7 @@ private:
 	// ////////////////////////
 	// Private types
 
-	enum EDirectLinearSolverType { LA_MA28, LA_MA48, LA_SUPERLU };
+	enum EDirectLinearSolverType { LA_DENSE, LA_MA28, LA_MA48, LA_SUPERLU };
 
 	// ////////////////////////
 	// Private data members

@@ -144,6 +144,7 @@ public:
 	  */
 	GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
 		, const Range1D& J );
+
 	//@}
 
 	///

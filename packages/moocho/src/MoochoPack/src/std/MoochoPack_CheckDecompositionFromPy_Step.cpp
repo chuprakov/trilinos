@@ -67,6 +67,17 @@ bool CheckDecompositionFromPy_Step::do_step(
 		out	<< "\nbeta = ||py||/||c|| = " << beta << std::endl;
 	}
 
+	// Check to see if a new basis was selected or not
+	IterQuantityAccess<index_type>
+		&num_basis_iq = s.num_basis();
+	if( num_basis_iq.updated_k(0) ) {
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+			out	<< "\nnum_basis_k was updated so the basis changed so we will skip this check\n"
+				<< "    reset min ||py||/||c|| to current value + 1\n";
+		beta_min_ = beta + 1.0;
+		return true;
+	}
+
 	if( beta + 1.0 < beta_min_ ) {
 		beta_min_ = beta + 1.0;
 	}
@@ -112,6 +123,9 @@ void CheckDecompositionFromPy_Step::print_step(
 		<< L << "         max_cond = 0.01 * mach_eps\n"
 		<< L << "beta = norm_inf(py_k) / (norm_inf(c_k(equ_decomp))+small_number)\n"
 		<< L << "select_new_decomposition = false\n"
+		<< L << "if num_basis_k is updated then\n"
+		<< L << "  beta_min = beta + 1\n"
+		<< L << "end\n"
 		<< L << "if beta + 1 < beta_min then\n"
 		<< L << "  beta_min = beta + 1\n"
 		<< L << "else\n"

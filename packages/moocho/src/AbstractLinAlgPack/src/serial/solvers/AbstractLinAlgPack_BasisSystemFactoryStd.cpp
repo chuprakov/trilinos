@@ -15,6 +15,7 @@
 
 #include "SparseSolverPack/include/BasisSystemFactoryStd.h"
 #include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
+#include "SparseSolverPack/include/DirectSparseSolverDense.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
 #include "SparseSolverPack/include/DirectSparseSolverSuperLU.h"
@@ -26,7 +27,17 @@
 namespace SparseSolverPack {
 
 BasisSystemFactoryStd::BasisSystemFactoryStd()
-	:direct_linear_solver_type_(LA_MA28)
+	:direct_linear_solver_type_(
+#ifdef SPARSE_SOLVER_PACK_USE_MA48
+		LA_MA48                        // If we have MA48 use it as a first choice
+#else
+#  ifdef SPARSE_SOLVER_PACK_USE_MA28
+		LA_MA28                        // If we have MA28 use it as a second choice
+#  else
+		LA_DENSE                       // If we don't have any sparse solvers use dense
+#  endif
+#endif
+		)
 {}
 
 // Overridden from BasisSystemFactory
@@ -55,6 +66,12 @@ BasisSystemFactoryStd::create() const
 	// Create the direct sparse solver
 	mmp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
 	switch(direct_linear_solver_type_) {
+		case LA_DENSE: {
+			mmp::ref_count_ptr<DirectSparseSolverDense>
+				dss_dense = mmp::rcp(new DirectSparseSolverDense());
+			direct_sparse_solver = dss_dense;
+			break;
+		}
 		case LA_MA28: {
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 			mmp::ref_count_ptr<DirectSparseSolverMA28>
@@ -132,7 +149,9 @@ void BasisSystemFactoryStd::read_options() const
 				case DIRECT_LINEAR_SOLVER:
 				{
 					const std::string &linear_solver = ofsp::option_value(itr);
-					if( linear_solver == "MA28" ) {
+					if( linear_solver == "DENSE" ) {
+						direct_linear_solver_type_ = LA_DENSE;
+					} else if( linear_solver == "MA28" ) {
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 						direct_linear_solver_type_ = LA_MA28;
 #else
@@ -164,7 +183,7 @@ void BasisSystemFactoryStd::read_options() const
 							true, std::invalid_argument
 							,"BasisSystemFactoryStd::read_options(...) : "
 							"Error, incorrect value for \"direct_linear_solver\" "
-							"Only the options \'MA28\' and \'SUPERLU\' are avalible." );
+							"Only the options \'DENSE\', \'MA28\' and \'SUPERLU\' are avalible." );
 					}
 					break;
 				}

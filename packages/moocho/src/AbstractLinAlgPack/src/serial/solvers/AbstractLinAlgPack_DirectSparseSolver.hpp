@@ -555,6 +555,9 @@ public:
 	 * this structure or the current interally stored structure given by
 	 * \c this->get_fact_struc() would be used instead.
 	 *
+	 * If the factorization can not be performed for some reason then the exception
+	 * \c FactorizationFailure will be thrown.
+	 *
 	 */
 	virtual void factor(
 		const SparseLinAlgPack::MatrixConvertToSparse   &A

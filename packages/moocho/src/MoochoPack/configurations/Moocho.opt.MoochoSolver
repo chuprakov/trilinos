@@ -267,6 +267,7 @@ options_group VectorSpaceTester {
 ***
 options_group BasisSystemFactoryStd {
 
+*    direct_linear_solver = DENSE;   *** Use LAPACK xGETRF()
 *    direct_linear_solver = MA28;    *** Use Harwell MA28 (see options_group DirectSparseSolverMA28)
 *    direct_linear_solver = MA48;    *** Not supported yet
 *    direct_linear_solver = SUPERLU; *** Use SuperLU (see options_group DirectSparseSolverSuperLU)

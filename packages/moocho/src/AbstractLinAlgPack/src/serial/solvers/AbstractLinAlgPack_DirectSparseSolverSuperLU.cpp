@@ -288,6 +288,14 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 		(*col_perm)[j] = perm_c[j] + 1; // Convert from zero based to one based
 	*rank = slu_rank;
 
+	// Sort partitions into assending order (required!)
+	std::sort(&(*row_perm)[0] , &(*row_perm)[0] + (*rank) );
+	std::sort(&(*col_perm)[0] , &(*col_perm)[0] + (*rank) );
+	if( *rank < m )
+		std::sort(&(*row_perm)[0] + (*rank)	, &(*row_perm)[0] + m );
+	if( *rank < n )
+		std::sort(&(*col_perm)[0] + (*rank)	, &(*col_perm)[0] + n );
+
 }
 
 void DirectSparseSolverSuperLU::imp_factor(

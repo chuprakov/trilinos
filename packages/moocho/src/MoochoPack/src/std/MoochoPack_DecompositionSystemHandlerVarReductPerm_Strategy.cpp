@@ -398,6 +398,7 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::print_update_decompositio
 		<< L << "  end\n"
 		<< L << "  *** If you get here then no unexpected exceptions were thrown and a new\n"
 		<< L << "  *** basis has been selected\n"
+		<< L << "  num_basis_k = num_basis_k(last_updated) + 1\n"
 		<< L << "  P_var_last = P_var_current\n"
 		<< L << "  P_equ_last = P_equ_current\n"
 		<< L << "  P_var_current = P_var\n"
