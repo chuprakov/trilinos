@@ -33,7 +33,7 @@
  * sinlge process implementation.
  */
 
-#include <assert.h> // Must be included since I can't include TSFCoreUtilsConfig.h
+#include <assert.h> /* Must be included since I can't include TSFCoreUtilsConfig.h */
 
 /*
  * RAB: 2004/01/22: This file is included because it includes
