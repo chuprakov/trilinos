@@ -146,11 +146,23 @@ TAC_ARG_CHECK_MPI
 # Checks for header files - used in Epetra_ConfigDefs.h 
 # ------------------------------------------------------------------------
 
-AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
-AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h ostream iostream iostream.h],,,)
-AC_CHECK_HEADERS([string string.h malloc.h stdexcept map map.h vector vector.h],,,)
-AC_CHECK_HEADERS([memory memory.h typeinfo limits.h new iosfwd],,,)
-AC_CHECK_HEADERS([sstream sstream.h strstream strstream.h],,,)
+AC_CHECK_HEADERS([cstdlib stdlib.h], [break],)
+AC_CHECK_HEADERS([cstdio stdio.h], [break],)
+AC_CHECK_HEADERS([cassert assert.h], [break],)
+AC_CHECK_HEADERS([cmath math.h], [break],)
+AC_CHECK_HEADERS([iomanip iomanip.h], [break],)
+AC_CHECK_HEADERS([ostream iostream iostream.h], [break],)
+AC_CHECK_HEADERS([string string.h], [break],)
+AC_CHECK_HEADERS([sstream sstream.h strstream strstream.h], [break],)
+AC_CHECK_HEADERS([map map.h], [break],)
+AC_CHECK_HEADERS([vector vector.h], [break],)
+AC_CHECK_HEADERS([memory memory.h], [break],)
+AC_CHECK_HEADER([malloc.h],,)
+AC_CHECK_HEADER([stdexcept],,)
+AC_CHECK_HEADER([typeinfo],,)
+AC_CHECK_HEADER([limits.h],,)
+AC_CHECK_HEADER([new],,)
+AC_CHECK_HEADER([iosfwd],,)
 
 if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  TSFCoreUtils requires at least one or the other.]])

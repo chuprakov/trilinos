@@ -41,9 +41,6 @@
 /* Define to 1 if you have the <iomanip.h> header file. */
 #undef HAVE_IOMANIP_H
 
-/* Define to 1 if you have the <iosfwd> header file. */
-#undef HAVE_IOSFWD
-
 /* Define to 1 if you have the <iostream> header file. */
 #undef HAVE_IOSTREAM
 
@@ -53,15 +50,9 @@
 /* Define if want to build libcheck */
 #undef HAVE_LIBCHECK
 
-/* Define to 1 if you have the <limits.h> header file. */
-#undef HAVE_LIMITS_H
-
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
 #undef HAVE_MALLOC
-
-/* Define to 1 if you have the <malloc.h> header file. */
-#undef HAVE_MALLOC_H
 
 /* Define to 1 if you have the <map> header file. */
 #undef HAVE_MAP
@@ -87,9 +78,6 @@
 /* define if the compiler implements namespaces */
 #undef HAVE_NAMESPACES
 
-/* Define to 1 if you have the <new> header file. */
-#undef HAVE_NEW
-
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
 
@@ -101,9 +89,6 @@
 
 /* Define to 1 if you have the <sstream.h> header file. */
 #undef HAVE_SSTREAM_H
-
-/* Define to 1 if you have the <stdexcept> header file. */
-#undef HAVE_STDEXCEPT
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -146,9 +131,6 @@
 
 /* Define if want to build tsfcoreutils-tests */
 #undef HAVE_TSFCOREUTILS_TESTS
-
-/* Define to 1 if you have the <typeinfo> header file. */
-#undef HAVE_TYPEINFO
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
