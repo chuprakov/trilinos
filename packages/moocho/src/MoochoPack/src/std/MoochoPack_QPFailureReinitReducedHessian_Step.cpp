@@ -21,10 +21,6 @@
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
 
 namespace ReducedSpaceSQPPack {
 
