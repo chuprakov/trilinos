@@ -36,21 +36,26 @@ CastIQMemberBase::iq_name() const
 	return iq_name_;
 }
 
+bool
+CastIQMemberBase::exists_in( const AlgorithmState& s ) const
+{
+	cache_iq_id(s);
+	return iq_id_ != AlgorithmState::DOES_NOT_EXIST;
+}
+
 void CastIQMemberBase::cache_iq_id( const AlgorithmState& s ) const
 {
 	if( iq_id_ == NOT_SET_YET ) {
-		AlgorithmState::iq_id_type
-			tmp_iq_id = s.get_iter_quant_id( iq_name_ );
-		THROW_EXCEPTION(
-			tmp_iq_id == AlgorithmState::DOES_NOT_EXIST, AlgorithmState::DoesNotExist
-			,"CastIQMember<T>::operator()(...) : Error, the iteration quantity \""
-			<< iq_name_ << "\" does not exist in this state object." );
-		iq_id_ = tmp_iq_id;
+		iq_id_ = s.get_iter_quant_id( iq_name_ );
 	}
 }
 
-void CastIQMemberBase::throw_cast_error( const std::string& iqa_name ) const
+void CastIQMemberBase::throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const
 {
+	THROW_EXCEPTION(
+		iq_id == AlgorithmState::DOES_NOT_EXIST, AlgorithmState::DoesNotExist
+		,"CastIQMember<T>::operator()(...) : Error, the iteration quantity \""
+		<< iq_name_ << "\" does not exist in this state object." );
 	THROW_EXCEPTION(
 		true, GeneralIterationPack::InvalidTypeCastException
 		,"CastIQMember<T>::operator()(state) : Error, the iteration quantity \""
