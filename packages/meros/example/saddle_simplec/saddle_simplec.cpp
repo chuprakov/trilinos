@@ -27,6 +27,8 @@
 // @HEADER
 
 #include "simplec.h"
+#include "TSFHashtable.h"
+
 
 using namespace TSF;
 using namespace SPP;
@@ -104,10 +106,17 @@ int main(int argc, void** argv)
  // 4) Make the preconditioner and get a TSFLinearOperator representing the prec. 
 
  // 1) Build inv(F) so that it corresponds to using GMRES with ML.
-  TSFLinearSolver FSolver;
+  //  TSFLinearSolver FSolver;
   ML_solverData   Fsolver_data;
   bool symmetric = false;
-  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  TSFHashtable<int, int> azOptions;
+  TSFHashtable<int, double> azParams;
+  azOptions.put(AZ_solver, AZ_gmres);
+  azParams.put(AZ_tol, 1e-6);
+  azOptions.put(AZ_max_iter, 200);
+  azOptions.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptions,azParams);
+  //  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
   FSolver.setVerbosityLevel(4);
 
  // 2) Build a Schur complement factory for getting inv(X) approximation.
