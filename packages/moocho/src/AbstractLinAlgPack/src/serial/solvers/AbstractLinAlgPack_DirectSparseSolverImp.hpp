@@ -67,6 +67,11 @@ public:
 		typedef MemMngPack::ref_count_ptr<FactorizationNonzeros> fact_nonzeros_ptr_t;
 
 		///
+		/** Default initializers to uninitialized.
+		 */
+		BasisMatrixImp();
+
+		///
 		/** Calls <tt>this->initialize()</tt>
 		 */
 		BasisMatrixImp(

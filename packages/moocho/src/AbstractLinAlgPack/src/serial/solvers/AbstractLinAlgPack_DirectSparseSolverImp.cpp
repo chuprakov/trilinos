@@ -25,6 +25,10 @@ namespace SparseSolverPack {
 // /////////////////////////////////////////
 // DirectSparseSolverImp::BasisMatrixImp
 
+DirectSparseSolverImp::BasisMatrixImp::BasisMatrixImp()
+	: dim_(0)
+{}
+
 DirectSparseSolverImp::BasisMatrixImp::BasisMatrixImp(
 	size_type                      dim
 	,const fact_struc_ptr_t        &fact_struc
