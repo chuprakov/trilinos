@@ -373,6 +373,10 @@ public:
 	 *               <li> MATRICES_INDEP_IMPS: The matrix objects must have independent implementations (default).
 	 *               <li> MATRICES_ALLOW_DEP_IMPS: The matrix objects can have implementation dependencies.
 	 *               </ul>
+	 * @param  out   [in/out] If <tt>out!=NULL</tt>, then some information about the operations performed
+	 *               internally may be printed to \c *out.  The amount of this output should be
+	 *               very minimal and should not significantly increase with the size of the problem
+	 *               being solved.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>Gc != NULL || Gh != NULL</tt>
@@ -427,6 +431,7 @@ public:
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+		,std::ostream               *out    = NULL
 		) const = 0;
 
 	//@}

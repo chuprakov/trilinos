@@ -356,6 +356,7 @@ public:
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
 		,EMatRelations              mat_rel
+		,std::ostream               *out
 		) const;
 
 	//@}

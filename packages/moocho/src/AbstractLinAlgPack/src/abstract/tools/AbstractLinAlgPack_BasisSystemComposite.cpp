@@ -411,6 +411,7 @@ void BasisSystemCompositeStd::update_basis(
 	,MatrixWithOp*              GcUP
 	,MatrixWithOp*              GhUP
 	,EMatRelations              mat_rel
+	,std::ostream               *out
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
