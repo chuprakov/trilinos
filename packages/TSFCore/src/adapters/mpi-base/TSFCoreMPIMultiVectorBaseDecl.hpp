@@ -109,6 +109,19 @@ public:
 		,const Scalar            beta
 		) const;
 
+	///
+	/** Uses GEMM(...) and MPI_Allreduce(...) to implement.
+	 *
+	 * ToDo: Finish documentation!
+	 */
+	void apply(
+		const ETransp                 M_trans
+		,const MultiVector<Scalar>    &X
+		,MultiVector<Scalar>          *Y
+		,const Scalar                 alpha
+		,const Scalar                 beta
+		) const;
+
 	//@}
 
 	/** @name Overridden from MultiVector */
@@ -179,10 +192,10 @@ private:
 	mutable bool in_applyOp_;
 
 	// cached
-	mutable Index  globalDim_;
-	mutable Index  localOffset_;
-	mutable Index  localSubDim_;
-	mutable Index  numCols_;
+	Index  globalDim_;
+	Index  localOffset_;
+	Index  localSubDim_;
+	Index  numCols_;
 
 	
 }; // end class MPIMultiVectorBase

@@ -130,11 +130,11 @@ epetra_adapters_CXXFLAGS = \
 
 
 epetra_adapters_LDADD = \
-  	$(top_builddir)/../teuchos/src/libteuchos.a \
-  	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
-  	$(top_builddir)/../epetra/src/libepetra.a \
-  	$(top_builddir)/src/libTSFCore.a \
-	$(BLAS_LIBS) $(FLIBS)
+  $(top_builddir)/src/libTSFCore.a \
+  $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
+  $(top_builddir)/../epetra/src/libepetra.a \
+  $(top_builddir)/../teuchos/src/libteuchos.a \
+  $(BLAS_LIBS) $(FLIBS)
 
 subdir = test/epetra-adapters
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs

@@ -16,7 +16,7 @@
 #include "dynamic_cast_verbose.hpp"
 
 #include "Epetra_Comm.h"
-#ifdef PETRA_COMM_MPI
+#ifdef RTOp_USE_MPI
 #include "Epetra_MpiComm.h"
 #endif
 #include "Epetra_Vector.h"
@@ -45,17 +45,29 @@ void EpetraVectorSpace::initialize(
 	TEST_FOR_EXCEPTION( !epetra_map.get(), std::invalid_argument, "EpetraVectorSpace::initialize(...): Error!" );
 #endif
 	epetra_map_  = epetra_map;
-#ifdef PETRA_COMM_MPI
+#ifdef RTOp_USE_MPI
 	const Epetra_MpiComm
 		*epetra_mpi_comm = dynamic_cast<const Epetra_MpiComm*>(&epetra_map_->Comm());
-	if(epetra_mpi_comm)
+	if(epetra_mpi_comm) {
+//		std::cout << "EpetraVectorSpace::initialize(...): Using an Epetra_MpiComm!\n";
 		mpiComm_ = epetra_mpi_comm->Comm();
-	else
+#ifdef _DEBUG
+		TEST_FOR_EXCEPTION(
+			mpiComm_ == MPI_COMM_NULL, std::logic_error
+			,"EpetraVectorSpace::initialize(...), Error, if using Epetra_MpiComm then "
+			"the associated MPI_Comm object can not be MPI_COMM_NULL!"
+			);
+#endif
+//		std::cout << "EpetraVectorSpace::initialize(...): mpiComm_ = " << mpiComm_ << std::endl;
+	}
+	else {
+		std::cout << "EpetraVectorSpace::initialize(...): Not using an Epetra_MpiComm!\n";
 		mpiComm_ = MPI_COMM_NULL;
+	}
 #else
+//	std::cout << "EpetraVectorSpace::initialize(...): Not using an Epetra_MpiComm!\n";
 	mpiComm_ = MPI_COMM_NULL;
 #endif
-	localOffset_ = epetra_map->MinMyGID() - epetra_map->IndexBase();
 	localSubDim_ = epetra_map->NumMyElements();
 	smallVecSpcFcty_ = Teuchos::rcp(
 		new EpetraVectorSpaceFactory(
@@ -72,7 +84,6 @@ void EpetraVectorSpace::setUninitialized(
 	if(epetra_map) *epetra_map = epetra_map_;
 	epetra_map_ = Teuchos::null;
 	mpiComm_ = MPI_COMM_NULL;
-	localOffset_ = -1;
 	localSubDim_ = 0; // Flag that this is uninitialized
 	smallVecSpcFcty_ = Teuchos::null;
 	updateState();
@@ -125,11 +136,6 @@ EpetraVectorSpace::clone() const
 MPI_Comm EpetraVectorSpace::mpiComm() const
 {
 	return mpiComm_;
-}
-
-Index EpetraVectorSpace::localOffset() const
-{
-	return localOffset_;
 }
 
 Index EpetraVectorSpace::localSubDim() const

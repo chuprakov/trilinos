@@ -12,40 +12,65 @@ namespace TSFCore {
 /** <tt>%VectorSpace</tt> node subclass for all MPI-based vectors with
  * contiguous local storage.
  *
- * This interface collaborates with the <tt>MPIVetorBase</tt> class
- * to implement MPI-based parallel (or serial of course) vectors
- * that allows different concrete implementations to mix.
+ * This interface collaborates with the classes <tt>MPIVetorBase</tt>
+ * and <tt>MPIMultiVetorBase</tt> to implement MPI-based parallel (or
+ * serial of course) vectors and multi-vectorsthat allows different
+ * concrete implementations to mix together.
+ *
+ * Specifically, these classes are designed to handle three different
+ * use case:
+ * <ul>
+ * <li> Serial vectors on one processor with <tt>localSubDim()==dim()</tt>.
+ *      In this case, the MPI_Comm returned from <tt>mpiComm()</tt> can
+ *      be <tt>MPI_COMM_NULL</tt>.
+ * <li> Distributed parallel vectors on two or more processors with
+ *      <tt>localSubDim() < dim()</tt>.  This implementation assumes
+ *      that all of the elements are stored contiguously on each
+ *      processor and that there are no ghost elements as described
+ *      below.
+ * <li> Locally replicated vectors on one or more processor.  This
+ *      case is similar to serial vectors except that we have
+ *      <tt>localSubDim()==dim()</tt> even if there is more than
+ *      one processor.  This case is checked for so that the reduction
+ *      operations are performed correctly.
+ * </ul>
  *
  * This interface provides all the information necessary to implement
- * <tt>MPIVectorBase::applyOp()</tt>.  This interface returns an MPI
- * communicator (of which all compatible vector spaces must have the
- * same communicator obviously) through the method <tt>mpiComm()</tt>.
+ * <tt>MPIVectorBase::applyOp()</tt> in all of the above described use
+ * cases.  This interface returns an MPI communicator (of which all
+ * compatible vector spaces must have the same communicator obviously)
+ * through the method <tt>mpiComm()</tt>.
  *
  * <A NAME="MPIVectorSpaceBase_Vector_layout"></A>
  * <b>%Vector data layout:</b>
  *
- * This interface base class assumes that vector data is partitioned
- * to processors in contiguous chunks and dense subvectors.  To spell
- * this out, let <tt>v</tt> be the local vector that is sorted on this
- * processor and let <tt>g</tt> be the global vector.  Then these two
- * vectors are related (using one-based indexing) as:
+ * For the case of a distributed parallel vector, this interface base
+ * class assumes that vector data is partitioned to processors in
+ * contiguous chunks and dense subvectors.  To spell this out, let
+ * <tt>v</tt> be the local vector that is sorted on this processor and
+ * let <tt>g</tt> be the global vector.  Then these two vectors are
+ * related (using one-based indexing) as:
  *
  * <tt>v(k) == g(k + this->localOffset()), for k = 1...this->localSubDim()</tt>
  *
  * Any type of mapping of vector data to processors that can not be
- * interpreted in this way can not rely on this base class
- * for interoperability.  In the case that it is found at runtime
- * that the mapping of vector elements to processors is not
- * as shown above, then the method <tt>mapCode()</tt> should be
- * overridden to return an invalid code.  It will then be required
- * that the subclass also override the <tt>isCompatible()</tt> method.
- * if this is needed, then vector interoperability between MPI-based
- * vectors will not be possible.
+ * interpreted in this way can not rely on this base class for
+ * interoperability.  Note that as long as the elements in a processor
+ * are partitioned to unique processors and no ghost elements are
+ * present, the actual indexes used by the application with these
+ * vectors is immaterial.  These indexes are only meaningful to
+ * abstract numerial algorithms and provide an arbitrary label for
+ * certain types of coordinate-dependent types of operations (like in
+ * an active-set method).  Therefore, as long a the underlying vector
+ * represents a unique partitioning of elements, the these classes can
+ * be used.  There is a default implementation of
+ * <tt>localOffset()</tt> that automatically assumes this contiguous
+ * mapping of elements to processors.
  *
  * <b>Notes to subclass developers:</b>
  *
- * The pure virtual methods <tt>mpiComm()</tt>, <tt>localOffset()</tt>
- * and <tt>localSubDim()</tt> defined in this interface along with the
+ * The pure virtual methods <tt>mpiComm()</tt> and
+ * <tt>localSubDim()</tt> defined in this interface along with the
  * pure virtual methods <tt>dim()</tt> and <tt>createMember()</tt> are
  * the only methods that must be overridden.
  *
@@ -55,7 +80,8 @@ namespace TSFCore {
  * If it is possible that the mapping of vector elements to processors
  * is not as described above, then the subclass should override the
  * <tt>mapCode()</tt> and <tt>isCompatible()</tt> methods as described
- * above and below.
+ * above and below but this should never be necessary or desired to do
+ * so.
  *
  * If optimized implementations of multi-vectors can be supported,
  * then the <tt>createMembers()</tt> method should also be overridden.
@@ -75,11 +101,6 @@ public:
 	 */
 	virtual MPI_Comm mpiComm() const = 0;
 	///
-	/** Returns the offset for the local sub-vector stored on this
-	 * processor.
-	 */
-	virtual Index localOffset() const = 0;
-	///
 	/** Returns the number of local elements stored on this processor.
 	 *
 	 * If <tt>this</tt> this is uninitialized then <tt>localSubDim()</tt>
@@ -92,6 +113,20 @@ public:
 	/** @name Virtual methods with default implementations */
 	//@{
 
+	///
+	/** Returns the offset for the local sub-vector stored on this
+	 * processor.
+	 *
+	 * This method has a default implementation which just assigns
+	 * this offset based on counting up <tt>localSubDim() on each
+	 * processor and then setting <tt>localOffset()</tt> by the rank
+	 * of the processor.  For example, if there are 5 elements in
+	 * process 0 and 4 elements in process rank, then
+	 * <tt>localOffset</tt> on each of these processors will be set
+	 * as: <tt>localOffset=0</tt> on process 0, <tt>localOffset=5</tt>
+	 * on process 1, <tt>localOffset=9</tt> on process 2 and so on.
+	 */
+	virtual Index localOffset() const;
 	///
 	/** Returns the code for the mapping of elements to processors.
 	 *
@@ -174,6 +209,14 @@ protected:
 	///
 	/** This function must be called whenever the state of
 	 * <tt>this</tt> changes and some internal state must be updated.
+	 *
+	 * Note that calling this function will involve one or more global
+	 * reductions being called if this is parallel vector space so it
+	 * should only be called when needed by subclasses.
+	 *
+	 * Usually, this operation only needs to be called once for every
+	 * *new* parallel vector space constructed and very few parallel
+	 * vector spaces will be created per application usually.
 	 */
 	virtual void updateState();
 
@@ -184,6 +227,7 @@ private:
 
 	Index     mapCode_;    // < 0 is a flag that everything needs initialized
 	bool      isInCore_;
+	Index     defaultLocalOffset_;
 	
 }; // end class MPIVectorSpaceBase
 

@@ -25,6 +25,8 @@
 #ifndef _TSFCORE_CONFIGDEFS_H_
 #define _TSFCORE_CONFIGDEFS_H_
 
+#include <TSFCoreUtils_ConfigDefs.hpp>
+
 #ifndef __cplusplus
 #define __cplusplus
 #endif
@@ -61,8 +63,6 @@
 #ifdef VERSION
 #undef VERSION
 #endif
-
-#include <TSFCoreUtils_ConfigDefs.hpp>
 
 #include <TSFCoreConfig.h>
 

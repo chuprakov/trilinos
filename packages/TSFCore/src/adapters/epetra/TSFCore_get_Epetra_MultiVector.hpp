@@ -12,7 +12,9 @@ namespace TSFCore {
 /** Get a non-<tt>const</tt> <tt>Epetra_MultiVector</tt> object from a
  * non-<tt>const</tt> <tt>MultiVector</tt> object if possible.
  *
- * ToDo: Finish Documentation!
+ * Preconditions:<ul>
+ * <li> <tt>vs.isCompatible(*mv->range()) == true</tt>
+ * </ul>
  */
 Teuchos::RefCountPtr<Epetra_MultiVector>
 get_Epetra_MultiVector(
@@ -24,7 +26,9 @@ get_Epetra_MultiVector(
 /** Get a <tt>const</tt> <tt>Epetra_MultiVector</tt> object from a
  * <tt>const</tt> <tt>MultiVector</tt> object if possible.
  *
- * ToDo: Finish Documentation!
+ * Preconditions:<ul>
+ * <li> <tt>vs.isCompatible(*mv->range()) == true</tt>
+ * </ul>
  */
 Teuchos::RefCountPtr<const Epetra_MultiVector>
 get_Epetra_MultiVector(

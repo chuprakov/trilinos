@@ -61,6 +61,13 @@ void TSFCore::scale( Scalar alpha, MultiVector<Scalar>* V )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
 #endif
+	if(alpha==0.0) {
+		assign( V, 0.0 );
+		return;
+	}
+	if(alpha==1.0) {
+		return;
+	}
 	RTOpPack::RTOpC  scale_vector_op;
 	if(0>RTOp_TOp_scale_vector_construct(alpha,&scale_vector_op.op())) assert(0);
 	MultiVector<Scalar>* targ_multi_vecs[] = { V };

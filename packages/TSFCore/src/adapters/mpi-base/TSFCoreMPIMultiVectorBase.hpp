@@ -8,9 +8,14 @@
 
 #include "TSFCoreMPIMultiVectorBaseDecl.hpp"
 #include "TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreExplicitMultiVectorView.hpp"
 #include "RTOpCppToMPI.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
+#include "Teuchos_BLAS.hpp"
+#ifdef RTOp_USE_MPI
+#  include "Teuchos_RawMPITraits.hpp"
+#endif
 
 namespace TSFCore {
 
@@ -49,6 +54,223 @@ void MPIMultiVectorBase<Scalar>::apply(
 	apply(M_trans,X,&Y,alpha,beta);
 }
 
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::apply(
+	const ETransp                 M_trans
+	,const MultiVector<Scalar>    &X
+	,MultiVector<Scalar>          *Y
+	,const Scalar                 alpha
+	,const Scalar                 beta
+	) const
+{
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
+	//
+	// This function performs one of two operations.
+	//
+	// The first operation (M_trans == NOTRANS) is:
+	//
+	//     Y = beta * Y + alpha * M * X
+	//
+	// where Y and M have compatible (distrubuted?) range vector
+	// spaces and X is a locally replicated serial mulit-vector.  This
+	// operation does not require any global communication.
+	//
+	// The second operation (M_trans == TRANS) is:
+	//
+	//     Y = beta * Y + alpha * M' * X
+	//
+	// where M and X have compatible (distrubuted?) range vector spaces
+	// and Y is a locally replicated serial multi-vector.  This operation
+	// requires a glocal reduction.
+	//
+
+	//
+	// Get spaces and validate compatibility
+	//
+
+	const VectorSpace<Scalar>
+		&Y_range = *Y->range(),
+		&M_range = *this->range(),
+		&X_range = *X.range();
+
+	// Get the MPIVectorSpace
+	const MPIVectorSpaceBase<Scalar> &mpiSpc = *this->mpiSpace();
+
+	// Get the MPI communicator
+	MPI_Comm mpiComm = mpiSpc.mpiComm();
+#ifdef _DEBUG
+//	std::cout << "MPIMultiVectorBase<Scalar>::apply(...): mpiComm = " << mpiComm << std::endl;
+	TEST_FOR_EXCEPTION(
+		( globalDim_ > localSubDim_ ) && mpiComm == MPI_COMM_NULL, std::logic_error
+		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
+		);
+#endif
+
+	// ToDo: Write a good general validation function that I can call tha will replace
+	// all of these TEST_FOR_EXCEPTION(...) uses
+
+	TEST_FOR_EXCEPTION(
+		M_trans==NOTRANS && !mpiSpc.isCompatible(Y_range), Exceptions::IncompatibleVectorSpaces
+		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
+		);
+	TEST_FOR_EXCEPTION(
+		M_trans==TRANS && !mpiSpc.isCompatible(X_range), Exceptions::IncompatibleVectorSpaces
+		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
+		);
+
+	//
+	// Get explicit (local) views of Y, M and X
+	//
+		
+	ExplicitMutableMultiVectorView<Scalar>
+		Y_local(
+			*Y
+			,M_trans==NOTRANS ? Range1D(localOffset_+1,localOffset_+localSubDim_) : Range1D()
+			,Range1D()
+			);
+	ExplicitMultiVectorView<Scalar>
+		M_local(
+			*this
+			,Range1D(localOffset_+1,localOffset_+localSubDim_)
+			,Range1D()
+			);
+	ExplicitMultiVectorView<Scalar>
+		X_local(
+			*this
+			,M_trans==NOTRANS ? Range1D() : Range1D(localOffset_+1,localOffset_+localSubDim_)
+			,Range1D()
+			);
+		
+	TEST_FOR_EXCEPTION(
+		M_trans==NOTRANS && ( M_local.numSubCols() != X_local.subDim() || X_local.numSubCols() != Y_local.numSubCols() )
+		, Exceptions::IncompatibleVectorSpaces
+		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
+		);
+	TEST_FOR_EXCEPTION(
+		M_trans==TRANS && ( M_local.subDim() != X_local.subDim() || X_local.numSubCols() != Y_local.numSubCols() )
+		, Exceptions::IncompatibleVectorSpaces
+		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
+		);
+
+	//
+	// If nonlocal (i.e. M_trans==TRANS) then create temorary storage
+	// for:
+	//
+	//     Y_local_tmp = alpha * M(local) * X(local)                 : on nonroot processes
+	//
+	// or
+	//
+	//     Y_local_tmp = beta*Y_local + alpha * M(local) * X(local)  : on root process (localOffset_==0)
+	// 
+	// and set
+	//
+	//     localBeta = ( localOffset_ == 0 ? beta : 0.0 )
+	//
+	// Above, we choose localBeta such that we will only perform
+	// Y_local = beta * Y_local + ...  on one process (the root
+	// process where localOffset_==0x).  Then, when we add up Y_local
+	// on all of the processors and we will get the correct result.
+	//
+	// If strictly local (i.e. M_trans == NOTRANS) then set:
+	//
+	//      Y_local_tmp = Y_local
+	//      localBeta = beta
+	//
+		
+	wsp::Workspace<Scalar> Y_local_tmp_store(wss,Y_local.subDim()*Y_local.numSubCols());
+	RTOpPack::MutableSubMultiVectorT<Scalar> Y_local_tmp;
+	Scalar localBeta;
+	if( M_trans == TRANS && globalDim_ > localSubDim_ ) {
+		// Nonlocal
+		Y_local_tmp.initialize(
+			0, Y_local.subDim()
+			,0, Y_local.numSubCols()
+			,&Y_local_tmp_store[0], Y_local.subDim() // leadingDim == subDim (columns are adjacent)
+			);
+		if( localOffset_ == 0 ) {
+			// Root process: Must copy Y_local into Y_local_tmp
+			for( int j = 0; j < Y_local.numSubCols(); ++j ) {
+				Scalar *Y_local_j = Y_local.values() + Y_local.leadingDim()*j;
+				std::copy( Y_local_j, Y_local_j + Y_local.subDim(), Y_local_tmp.values() + Y_local_tmp.leadingDim()*j );
+			}
+			localBeta = beta;
+		}
+		else {
+			// Not the root process
+			localBeta = 0.0;
+		}
+	}
+	else {
+		// Local
+		Y_local_tmp = Y_local.smv(); // Shallow copy only!
+		localBeta = beta;
+	}
+		
+	//
+	// Perform the local multiplication:
+	//
+	//     Y(local) = localBeta * Y(local) + alpha * op(M(local)) * X(local)
+	//
+	// or in BLAS lingo:
+	//
+	//     C        = beta      * C        + alpha * op(A)        * op(B)
+	//
+		
+	Teuchos::BLAS<int,Scalar> blas;
+	blas.GEMM(
+		M_trans==NOTRANS ? Teuchos::NO_TRANS : Teuchos::TRANS   // TRANSA
+		,Teuchos::NO_TRANS                                      // TRANSB
+		,Y_local.subDim()                                       // M
+		,Y_local.numSubCols()                                   // N
+		,M_local.numSubCols()                                   // K
+		,alpha                                                  // ALPHA
+		,const_cast<Scalar*>(M_local.values())                  // A
+		,M_local.leadingDim()                                   // LDA
+		,const_cast<Scalar*>(X_local.values())                  // B
+		,X_local.leadingDim()                                   // LDB
+		,localBeta                                              // BETA
+		,Y_local_tmp.values()                                   // C
+		,Y_local_tmp.leadingDim()                               // LDC
+		);
+
+#ifdef RTOp_USE_MPI
+		
+	//
+	// Perform the global reduction of Y_local_tmp back into Y_local
+	//
+		
+	if( M_trans==TRANS && globalDim_ > localSubDim_ ) {
+		// Contiguous buffer for local send
+		const Scalar *Y_local_buff = Y_local_tmp.values();
+		// Contiguous buffer for final reduction
+		wsp::Workspace<Scalar> Y_local_final_buff(wss,Y_local.subDim()*Y_local.numSubCols());
+		// Perform the reduction
+		MPI_Allreduce(
+			Y_local_tmp.values()                     // sendbuff
+			,&Y_local_final_buff[0]                  // recvbuff
+			,Y_local_final_buff.size()               // count
+			,Teuchos::RawMPITraits<Scalar>::type()   // datatype
+			,MPI_SUM                                 // op
+			,mpiComm                                 // comm
+			);
+		// Load Y_local_final_buff back into Y_local
+		const Scalar *Y_local_final_buff_ptr = &Y_local_final_buff[0];
+		for( int j = 0; j < Y_local.numSubCols(); ++j ) {
+			Scalar *Y_local_ptr = Y_local.values() + Y_local.leadingDim()*j;
+			for( int i = 0; i < Y_local.subDim(); ++i ) {
+				(*Y_local_ptr++) = (*Y_local_final_buff_ptr++);
+			}
+		}
+	}
+
+#endif
+
+	// When you get here the view Y_local will be committed back to Y
+	// in the distructor to Y_local
+}
+
 // Overridden from MultiVector
 
 template<class Scalar>
@@ -82,6 +304,9 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 #endif
 	// Flag that we are in applyOp()
 	in_applyOp_ = true;
+	// First see if this is a locally replicated vector in which case
+	// we treat this as a local operation only.
+	const bool locallyReplicated = (localSubDim_ == globalDim_);
 	// Get the overlap in the current process with the input logical sub-vector
 	// from (first_ele_in,sub_dim_in,global_offset_in)
 	RTOp_index_type  overlap_first_local_ele  = 0;
@@ -116,7 +341,7 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	}
 	// Apply the RTOp operator object (all processors must participate)
 	RTOpPack::MPI_apply_op(
-		mpiSpc.mpiComm()                                                                   // comm
+		locallyReplicated ? MPI_COMM_NULL : mpiSpc.mpiComm()                               // comm
 		,pri_op                                                                            // op
 		,-1                                                                                // root_rank (perform an all-reduce)
 		,col_rng.size()                                                                    // num_cols

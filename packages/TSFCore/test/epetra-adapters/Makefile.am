@@ -43,8 +43,8 @@ epetra_adapters_CXXFLAGS = \
   -I$(top_srcdir)/../teuchos/src
 
 epetra_adapters_LDADD = \
-  	$(top_builddir)/../teuchos/src/libteuchos.a \
-  	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
-  	$(top_builddir)/../epetra/src/libepetra.a \
-  	$(top_builddir)/src/libTSFCore.a \
-	$(BLAS_LIBS) $(FLIBS)
+  $(top_builddir)/src/libTSFCore.a \
+  $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
+  $(top_builddir)/../epetra/src/libepetra.a \
+  $(top_builddir)/../teuchos/src/libteuchos.a \
+  $(BLAS_LIBS) $(FLIBS)

@@ -8,6 +8,9 @@
 
 #include "TSFCoreMPIMultiVectorBase.hpp"
 
+// Define this to use Epetra_MultiVector::Multiply(...) to implement apply(...)
+#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
+
 ///
 class Epetra_MultiVector;
 
@@ -89,6 +92,7 @@ public:
 
 	/** @name Overridden from LinearOp */
 	//@{
+#ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
 	///
 	void apply(
 		const ETransp                 M_trans
@@ -97,6 +101,7 @@ public:
 		,const Scalar                 alpha
 		,const Scalar                 beta
 		) const;
+#endif
 	//@}
 
 	/** @name Overridden from MultiVector */

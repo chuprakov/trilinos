@@ -19,6 +19,8 @@ public:
 	///
 	~ExplicitVectorView() { v_.freeSubVector(&sv_); }
 	///
+	const RTOpPack::SubVectorT<Scalar>& sv() const { return sv_; }
+	///
 	RTOp_index_type   globalOffset() const { return sv_.globalOffset(); }
 	///
 	RTOp_index_type   subDim()       const { return sv_.subDim();  }
@@ -49,6 +51,8 @@ public:
 	ExplicitMutableVectorView( Vector<Scalar>& v, const Range1D &rng = Range1D() ) : v_(v) { v_.getSubVector(rng,&sv_); }
 	///
 	~ExplicitMutableVectorView() { v_.commitSubVector(&sv_); }
+	///
+	const RTOpPack::MutableSubVectorT<Scalar>& sv() const { return sv_; }
 	///
 	RTOp_index_type   globalOffset() const { return sv_.globalOffset(); }
 	///

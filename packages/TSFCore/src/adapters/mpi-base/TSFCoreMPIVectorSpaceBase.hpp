@@ -5,16 +5,25 @@
 #define TSFCORE_MPI_VECTOR_SPACE_BASE_HPP
 
 #include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
+#ifdef RTOp_USE_MPI
+#  include "Teuchos_RawMPITraits.hpp"
+#endif
 
 namespace TSFCore {
 
 ///
 template<class Scalar>
 MPIVectorSpaceBase<Scalar>::MPIVectorSpaceBase()
-	:mapCode_(-1),isInCore_(false)
+	:mapCode_(-1),isInCore_(false),defaultLocalOffset_(-1)
 {}
 
 // Virtual methods with default implementations
+
+template<class Scalar>
+Index MPIVectorSpaceBase<Scalar>::localOffset() const
+{
+	return defaultLocalOffset_;
+}
 
 template<class Scalar>
 Index MPIVectorSpaceBase<Scalar>::mapCode() const
@@ -49,9 +58,10 @@ bool MPIVectorSpaceBase<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc 
 template<class Scalar>
 void MPIVectorSpaceBase<Scalar>::updateState()
 {
-	if( this->localSubDim() > 0 ) {
+	const Index localSubDim = this->localSubDim(); 
+	if( localSubDim > 0 ) {
 		const MPI_Comm mpiComm = this->mpiComm();
-		const Index localSubDim = this->localSubDim(); 
+		const Index globalDim = this->dim(); 
 		int numProc = 1;
 		int procRank = 0;
 #ifdef RTOp_USE_MPI
@@ -59,7 +69,7 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 			MPI_Comm_size( mpiComm, &numProc );
 			MPI_Comm_rank( mpiComm, &procRank );
 		}
-		if(numProc > 1) {
+		if( numProc > 1 && localSubDim < globalDim ) {
 			//
 			// Here we will make a map code out of just the local
 			// sub-dimension on each processor.  If each processor
@@ -69,22 +79,57 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 			// coordinate invariant.  I will work on this issue
 			// if it becomes a problem.
 			//
-			Index localCode = localSubDim % procRank + localSubDim;
-			int *dummy = &localCode; // For now make sure that Index is int so we can use MPI_INT
+			Index localCode = localSubDim % (procRank+1) + localSubDim;
 			MPI_Allreduce(
-				&localCode            // sendbuf
-				,&mapCode_            // recvbuf
-				,1                    // count
-				,MPI_INT              // datatype (ToDo: use traits class on Index to make more general)
-				,MPI_SUM              // op
-				,mpiComm              // comm
+				&localCode                              // sendbuf
+				,&mapCode_                              // recvbuf
+				,1                                      // count
+				,Teuchos::RawMPITraits<Index>::type()   // datatype
+				,MPI_SUM                                // op
+				,mpiComm                                // comm
 				);
-			isInCore_ = false;
+			// Set the default localOffset automatically
+			Index localOffset = localSubDim;
+			MPI_Scan(
+				&localOffset                            // sendbuf
+				,&defaultLocalOffset_                   // recvbuf
+				,1                                      // count
+				,Teuchos::RawMPITraits<Index>::type()   // datatype
+				,MPI_SUM                                // op
+				,mpiComm                                // comm
+				);
+			defaultLocalOffset_ -= localSubDim;
+			//int procRank; MPI_Comm_rank( mpiComm, &procRank );
+			//std::cout << "\nMPIVectorSpaceBase<Scalar>::updateState(): procRank = " << procRank << ", defaultLocalOffset = " << defaultLocalOffset_ << std::endl;
+			// 
+			isInCore_ = false;  // This is not an inCore vector
+#ifdef _DEBUG
+			// Check that the vector does not have any ghost elements
+			Index computedGlobalDim = 0;
+			MPI_Allreduce(
+				&localSubDim                            // sendbuf
+				,&computedGlobalDim                     // recvbuf
+				,1                                      // count
+				,Teuchos::RawMPITraits<Index>::type()   // datatype
+				,MPI_SUM                                // op
+				,mpiComm                                // comm
+				);
+			TEST_FOR_EXCEPTION(
+				computedGlobalDim != globalDim, std::logic_error
+				,"MPIVectorSpaceBase<Scalar>::updateState(): Error, the computed "
+				"global dimension of computedGlobalDim = " << computedGlobalDim
+				<< " is not equal to the reported global dimension of globalDim = this->dim() = "
+				<< globalDim << "!"
+				);
+#endif
 		}
 		else {
-#endif	
+#endif
+			// This is a serial or a locally-replicated parallel
+			// vector space.
 			mapCode_ = localSubDim;
 			isInCore_ = true;
+			defaultLocalOffset_ = 0;
 #ifdef RTOp_USE_MPI
 		}
 #endif
@@ -92,6 +137,7 @@ void MPIVectorSpaceBase<Scalar>::updateState()
     else {
 		mapCode_  = -1;     // Uninitialized!
 		isInCore_ = false;
+		defaultLocalOffset_ = -1;
 	}
 }
 	

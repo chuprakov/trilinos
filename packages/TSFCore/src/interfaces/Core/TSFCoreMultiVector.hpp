@@ -375,7 +375,7 @@ void MultiVector<Scalar>::apply(
 		// Extract an explicit view of x
 		RTOpPack::SubVectorT<Scalar> x_sub_vec;               
 		x.getSubVector(Range1D(),&x_sub_vec);
-		// Loop through and add the multiple if each column
+		// Loop through and add the multiple of each column
 		for(Index j = 1; j <= nc; ++j )
 			Vp_StV( y, alpha*x_sub_vec(j), *this->col(j) );
 		// Release the view of x

@@ -22,6 +22,8 @@ public:
 	///
 	~ExplicitMultiVectorView() { mv_.freeSubMultiVector(&smv_); }
 	///
+	const RTOpPack::SubMultiVectorT<Scalar>& smv() const { return smv_; }
+	///
 	RTOp_index_type   globalOffset() const { return smv_.globalOffset(); }
 	///
 	RTOp_index_type   subDim()       const { return smv_.subDim();  }
@@ -58,6 +60,8 @@ public:
 	///
 	~ExplicitMutableMultiVectorView() { mv_.commitSubMultiVector(&smv_); }
 	///
+	const RTOpPack::MutableSubMultiVectorT<Scalar>& smv() const { return smv_; }
+	///
 	RTOp_index_type   globalOffset() const { return smv_.globalOffset(); }
 	///
 	RTOp_index_type   subDim()       const { return smv_.subDim();  }
@@ -66,7 +70,7 @@ public:
 	///
 	RTOp_index_type   numSubCols()   const { return smv_.numSubCols();  }
 	///
-	const Scalar*     values()       const { return smv_.values();  }
+	Scalar*           values()       const { return smv_.values();  }
 	///
 	RTOp_index_type   leadingDim()   const { return smv_.leadingDim();  }
 	/// One-based indexing: Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<=numSubCols())</tt>

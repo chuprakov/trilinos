@@ -41,7 +41,9 @@ void EpetraMultiVector::initialize(
 	TEST_FOR_EXCEPTION( epetra_domain.get() && epetra_domain->dim() == 0,std::invalid_argument, err_msg );
 	// ToDo: Check the compatibility of the vectors in col_vecs!
 #endif
+	// Set multi-vector
 	epetra_multi_vec_ = epetra_multi_vec;
+	// set range
 	if(epetra_range.get()) {
 		epetra_range_  = epetra_range;
 	}
@@ -52,6 +54,7 @@ void EpetraMultiVector::initialize(
 				)
 			);
 	}
+	// set domain
 	if(epetra_domain.get()) {
 		epetra_domain_  = epetra_domain;
 	}
@@ -60,6 +63,7 @@ void EpetraMultiVector::initialize(
 			epetra_range_->smallVecSpcFcty()->createVecSpc(epetra_multi_vec->NumVectors())
 			);
 	}
+	// Tell the base class object that the vector space is updated
 	updateMpiSpace();
 }
 
@@ -87,6 +91,8 @@ EpetraMultiVector::domain() const
 }
 
 // Overridden from LinearOp
+
+#ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
 
 void EpetraMultiVector::apply(
 	const ETransp                 M_trans
@@ -126,6 +132,8 @@ void EpetraMultiVector::apply(
 		,beta                           // ScalarThis
 		);
 }
+
+#endif
 
 // Overridden from MultiVector
 

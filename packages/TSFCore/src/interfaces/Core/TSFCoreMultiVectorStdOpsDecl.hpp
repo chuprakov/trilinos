@@ -33,13 +33,16 @@ template<class Scalar>
 Scalar norm_1( const MultiVector<Scalar>& V );
 
 ///
-/** V = alpha*V
+/** V = alpha*V.
+ *
+ * Note, if alpha==0.0, then V=alpha is performed and if alpha==1.0,
+ * then nothing is done.
  */
 template<class Scalar>
 void scale( Scalar alpha, MultiVector<Scalar>* V );
 
 ///
-/** V = alpha
+/** V = alpha.
  */
 template<class Scalar>
 void assign( MultiVector<Scalar>* V, Scalar alpha );

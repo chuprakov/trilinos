@@ -117,8 +117,6 @@ public:
 	///
 	MPI_Comm mpiComm() const;
 	///
-	Index localOffset() const;
-	///
 	Index localSubDim() const;
 
 	//@}
@@ -131,7 +129,6 @@ private:
 #else	
 	Teuchos::RefCountPtr<const Epetra_BlockMap>            epetra_map_;
 	MPI_Comm                                               mpiComm_;
-	Index                                                  localOffset_;
 	Index                                                  localSubDim_;
 	Teuchos::RefCountPtr<const EpetraVectorSpaceFactory>   smallVecSpcFcty_;
 #endif

@@ -25,6 +25,8 @@
 #ifndef _TSFCOREUTILS_CONFIGDEFS_CPP_H_
 #define _TSFCOREUTILS_CONFIGDEFS_CPP_H_
 
+#include <Teuchos_ConfigDefs.hpp>
+
 /*
  * The macros PACKAGE, PACKAGE_NAME, etc, get defined for each package and need to
  * be undef'd here to avoid warnings when this file is included from another package.
@@ -58,13 +60,7 @@
 #undef VERSION
 #endif
 
-#include <Teuchos_ConfigDefs.hpp>
-
 #include <TSFCoreUtilsConfig.h>
-
-#ifdef HAVE_MPI
-#define RTOp_USE_MPI
-#endif
 
 #ifdef __cplusplus
 
