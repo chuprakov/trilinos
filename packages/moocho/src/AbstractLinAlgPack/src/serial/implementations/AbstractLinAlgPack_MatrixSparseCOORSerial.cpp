@@ -164,7 +164,7 @@ MatrixWithOp& MatrixSparseCOORSerial::operator=(const MatrixWithOp& M)
 
 std::ostream& MatrixSparseCOORSerial::output(std::ostream& out) const
 {
-	MatrixWithOp::output(out); // ToDo: Specialize!
+	return MatrixWithOp::output(out); // ToDo: Specialize!
 }
 
 void MatrixSparseCOORSerial::Vp_StMtV(
