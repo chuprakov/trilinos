@@ -20,32 +20,11 @@
 /* Define to 1 if you have the <cassert> header file. */
 #undef HAVE_CASSERT
 
-/* Define to 1 if you have the <cmath> header file. */
-#undef HAVE_CMATH
-
-/* Define to 1 if you have the <cstdio> header file. */
-#undef HAVE_CSTDIO
-
-/* Define to 1 if you have the <cstdlib> header file. */
-#undef HAVE_CSTDLIB
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the <iomanip> header file. */
-#undef HAVE_IOMANIP
-
-/* Define to 1 if you have the <iomanip.h> header file. */
-#undef HAVE_IOMANIP_H
-
-/* Define to 1 if you have the <iostream> header file. */
-#undef HAVE_IOSTREAM
-
-/* Define to 1 if you have the <iostream.h> header file. */
-#undef HAVE_IOSTREAM_H
-
-/* Define to 1 if you have the <math.h> header file. */
-#undef HAVE_MATH_H
+/* Define to 1 if you have the <memory> header file. */
+#undef HAVE_MEMORY
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -59,17 +38,14 @@
 /* define if the compiler implements namespaces */
 #undef HAVE_NAMESPACES
 
-/* Define if want to build with newp_swahili enabled */
-#undef HAVE_NEWP_SWAHILI
-
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
 
+/* Define to 1 if you have the <stdexcept> header file. */
+#undef HAVE_STDEXCEPT
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
-
-/* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -95,8 +71,14 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to 1 if you have the <typeinfo> header file. */
+#undef HAVE_TYPEINFO
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <vector> header file. */
+#undef HAVE_VECTOR
 
 /* Name of package */
 #undef PACKAGE

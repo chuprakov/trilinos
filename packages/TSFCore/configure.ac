@@ -142,47 +142,36 @@ TAC_ARG_WITH_AR
 # ------------------------------------------------------------------------
 TAC_ARG_CHECK_MPI
 
-#  #np# - Customize the checks for headers needed in package being added.
-#NOTE: This section still needs to be updated for TSFCore, it is still 
-# code from Epetra
 # ------------------------------------------------------------------------
-# Checks for header files - used in Epetra_ConfigDefs.h 
+# Checks for header files
 # ------------------------------------------------------------------------
 
-AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
-AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h iostream iostream.h],,,)
-AC_CHECK_HEADERS([string string.h],,,)
+AC_CHECK_HEADERS([stdexcept typeinfo cassert assert.h],,,)
+AC_CHECK_HEADERS([vector memory string string.h],,,)
 
-if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  TSFCore requires at least one or the other.]])
+if test "X$ac_cv_header_stdexcept" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find stdexcept.  TSFCore requires this header file.]])
 fi
 
-if test "X$ac_cv_header_cstdio" != "Xyes" && test "X$ac_cv_header_stdio_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  TSFCore requires at least one or the other.]])
+if test "X$ac_cv_header_typeinfo" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find typeinfo.  TSFCore requires this header file.]])
 fi
 
 if test "X$ac_cv_header_cassert" != "Xyes" && test "X$ac_cv_header_assert_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find cassert or assert.h.  TSFCore requires at least one or the other.]])
 fi
 
+if test "X$ac_cv_header_vector" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find vector.  TSFCore requires this header file.]])
+fi
+
+if test "X$ac_cv_header_memory" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find memory.  TSFCore requires this header file.]])
+fi
+
 if test "X$ac_cv_header_string" != "Xyes" && test "X$ac_cv_header_string_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find string or string.h.  TSFCore requires at least one or the other.]])
 fi
-
-if test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  TSFCore requires at least one or the other.]])
-fi
-
-if test "X${host}" != "Xtflop"; then
-  if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find cmath or math.h.  TSFCore requires at least one or the other.]])
-  fi
-else
-  # TFLOP
-  if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find iomanip or iomanip.h.  TSFCore requires at least one or the other.]])
-  fi
-fi  
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -200,61 +189,11 @@ AC_CXX_MUTABLE
 # These are pretty obscure
 # ---------------------------------------------------------------------
 AC_CXX_NEW_FOR_SCOPING
-#AC_CXX_STD_IOS_BASE_FMTFLAGS
 AC_CXX_STD_SPRINTF
 
 # ------------------------------------------------------------------------
 # Checks for special package flags
 # ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-# #np# newp_swahili is an example of a package feature which requires both
-# a cpp #define command and one or more source or header files  - ie 
-# conditional compilation which requires a change to the makefile.
-# If configure is called with "--enable-newp_swahili", it will place 
-# a #define HAVE_NEWP_SWAHILI in New_Package_config.h and add source 
-# and header files as specified in Makefile.am 
-#
-# To add an option to your package, you will need to modify this file
-# (i.e. configure.ac), and src/Makefile.am.  A bootstrap is also required.
-# Look for SWAHILI in both files listed above.
-#
-# TAC_ARG_ENABLE_OPTION performs several tasks, including:
-#   1)  Setting a help string
-#   2)  Printing a message to standard out
-#   3)  Defining HAVE_NEWP_SWAHILI (For use in New_Package_config.h)
-#
-# AM_CONDITIONAL makes HAVE_NEWP_SWAHILI available for use in Makefile.am
-# ------------------------------------------------------------------------
-#
-TAC_ARG_ENABLE_OPTION(newp_swahili, [enable swahili support], NEWP_SWAHILI, no)
-AM_CONDITIONAL(HAVE_NEWP_SWAHILI, [test "X$ac_cv_use_newp_swahili" != "Xno"])
-
-# ------------------------------------------------------------------------
-# Checks for special package flags
-# ------------------------------------------------------------------------
-
-#
-#  #np# - These options are specific to Epetra and are left only as examples.
-#         If uncommented, the following lines would define HAVE_FATAL_MESSAGES
-#         in the (package)_config.h file.  Developers should use a 
-#         more specific name such as 'new_package-fatal_messages', rather
-#         than 'fatal_messages'.
-#TAC_ARG_ENABLE_OPTION(fatal_messages, [enable printing of fatal error messages], 
-#                   FATAL_MESSAGES, yes)
-#TAC_ARG_ENABLE_OPTION(warning_messages, [enable printing of warning error messages], 
-#                   WARNING_MESSAGES, no)
-#TAC_ARG_ENABLE_OPTION(format_io, [Use package-defined IO formatting for output], 
-#                   FORMAT_IO, yes)
-
-#  #np# - These are specific to Epetra and are left only as examples.
-#         If uncommented, the following line would define HAVE_ZOLTAN in
-#         the (package)_config.h file.  Developers should use a more
-#         specific name such as 'new_package-zoltan', rather than 'zoltan'.
-# TAC_ARG_WITH_PACKAGE(zoltan, [Enable Zoltan interface support], ZOLTAN, no)
-# TAC_ARG_WITH_PACKAGE(rtop, [Enable RTOp interface support], RTOP, no)
-# TAC_ARG_WITH_PACKAGE(esi, [Enable ESI interface support], ESI, yes)
-# TAC_ARG_WITH_PACKAGE(superlu, [Enable SuperLU interface support], SUPERLU, no)
 
 # ------------------------------------------------------------------------
 # Specify other directories 
