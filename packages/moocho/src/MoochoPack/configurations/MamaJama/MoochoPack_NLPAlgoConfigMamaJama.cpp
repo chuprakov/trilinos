@@ -57,6 +57,7 @@
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpace.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpaceSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 
 #include "../../include/std/ReducedQPSolverCheckOptimality.h"
 #include "../../include/std/ReducedQPSolverQPOPTSOLStd.h"
@@ -991,7 +992,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// with the calculation of the reduced gradient of the lagrangian).
 			
 			// Setup IndepDirec step
-			if( cov_.qp_solver_type_ == QPSCHUR ) {
+			if( cov_.qp_solver_type_ == QPSCHUR || cov_.qp_solver_type_ == QPKWIK ) {
 			
 				// Add iteration quantity for d_bounds
 				algo->state().set_iter_quant( d_bounds_name
@@ -1010,7 +1011,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpaceSetOptions
 							qp_options_setter( _qp_solver );
 						qp_options_setter.set_options( *options_ );
-						qp_solver = qp_solver_ptr_t(_qp_solver);
+						qp_solver = _qp_solver; // give ownership to delete!
+						break;
+					}
+					case QPKWIK: {
+						using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
+						QPSolverRelaxedQPKWIK
+							*_qp_solver = new QPSolverRelaxedQPKWIK();
+						qp_solver = _qp_solver; // give ownership to delete!
 						break;
 					}
 					default:
@@ -1080,7 +1088,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
 						break;
 					}
-					case QPKWIK:
+				    case QPKWIK:
 					{
 						ReducedQPSolverQPKWIKNEW*
 							_qp_solver = new ReducedQPSolverQPKWIKNEW;

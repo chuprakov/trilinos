@@ -284,7 +284,7 @@ public:
 	///
 	/** Solve the QP without general equality constrants.
 	  *
-	  * By default this function calls #solve_qp(...)# which excepts
+	  * By default this function calls #solve_qp(...)# which accepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
@@ -303,7 +303,7 @@ public:
 	///
 	/** Solve the QP without general inequality constrants.
 	  *
-	  * By default this function calls #solve_qp(...)# which excepts
+	  * By default this function calls #solve_qp(...)# which accepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
@@ -323,7 +323,7 @@ public:
 	/** Solve the QP without general equality or inequality constrants (no relaxation
 	  * needed).
 	  *
-	  * By default this function calls #solve_qp(...)# which excepts
+	  * By default this function calls #solve_qp(...)# which accepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
@@ -341,8 +341,10 @@ public:
 	  *
 	  * The defualt implementation of this function validates that input
 	  * sizes are correct and that the proper sets of constraints are set
-	  * by calling validate_input(...) and then imp_solve_qp(...) which
-	  * must be implemented by the subclass.
+	  * by calling validate_input(...) first.  Then, print_qp_input(...)
+	  * is called to print the QP intput arguments.  Then imp_solve_qp(...)
+	  * is called which must be implemented by the subclass.  Finally,
+	  * print_qp_output(...) is called to print the QP output.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
@@ -413,6 +415,58 @@ public:
 		, const SpVector* mu, const VectorSlice* Ed
 		, const VectorSlice* lambda, const VectorSlice* Fd
 		);
+
+	/** @name Utility functions for dumping input and output argements.
+	 *
+	 * The amount of output is determined by #out# and #olevel#.
+	 *
+	 * @param out [out] stream printed to if #out != NULL#
+	 * @param olevel [in] Determines what is printed.
+	 *   \begin{description}
+	 *   \item[(int)olevel >= (int)PRINT_ITER_STEPS] Prints O(1) information about the arguments.
+	 *   \item[(int)olevel >= (int)PRINT_ITER_ACT_SET] Prints the contents of #nu#, #mu#, and #lambda#.
+	 *      Output is proportional to the number of active constraints O(nu->nz() + mu->nz() + lambda->size()). 
+	 *   \item[(int)olevel >= (int)PRINT_ITER_VECTORS] Prints the contents of all the vectors.
+	 *      Output is proportional to O(d->size()).
+	 *   \item[(int)olevel >= (int)PRINT_EVERY_THING] Prints the contents of all the vectors and matrices.
+	 *      Output could be as large as O(d->size() * d->size()) or larger.
+	 *   \end{description}
+	 *  
+	 */
+	//@{
+
+	///
+	/** Utility (static) function for printing the input input/output arguments before
+	  * the QP solver is run.  The QP solver subclasses can call this function.
+	  */
+	static void print_qp_input( 
+		std::ostream* out, EOutputLevel olevel
+		, const VectorSlice& g, const MatrixWithOp& G
+		, value_type etaL
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+			, const SpVectorSlice* eL, const SpVectorSlice* eU
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, SpVector* mu
+		, VectorSlice* lambda
+		);
+
+	///
+	/** Utility (static) function for printing the output input/output arguments after
+	  * the QP solver is run.  The QP solver subclasses can call this function.
+	  */
+	static void print_qp_output(
+		std::ostream* out, EOutputLevel olevel
+		, const value_type* obj_d
+		, const value_type* eta, const VectorSlice* d
+		, const SpVector* nu
+		, const SpVector* mu, const VectorSlice* Ed
+		, const VectorSlice* lambda, const VectorSlice* Fd
+		);
+
+	//@}
 
 protected:
 
