@@ -17,7 +17,6 @@
 #define NLP_SECOND_ORDER_INFO_H
 
 #include "NLPFirstOrderInfo.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
 
 namespace NLPInterfacePack {
 
@@ -29,25 +28,23 @@ namespace NLPInterfacePack {
   *
   * Specifically the Hesssian of the Lagrangian is defined as:
   *
-  * HL = Hf + sum( Hcj * lambda(j), j = 1...m )
+  * HL = Hf + sum( Hcj * lambda(j), j = 1...m ) + sub( Hhj * lambdaI(j), j = 1...mI )
   *
   * Where:\\
   * Hf is the hessian of the objective function\\
   * Hcj is the hessian of the jth equality constriant cj\\
+  * Hhj is the hessian of the jth inequality constriant hj\\
   * lambda is the vector of lagrange multipliers for the equality
-  * constraints c(x)
+  * constraints c(x) \\
+  * lambdaI is the vector of lagrange multipliers for the inequality
+  * constraints h(x) \\
   */
 class NLPSecondOrderInfo : public NLPFirstOrderInfo {
 public:
 
-	/** @name Public types */
-	//@{
-
 	///
-	typedef	NLPFirstOrderInfo::InvalidMatrixType	InvalidMatrixType;
-
-	//@}
-
+	typedef ReferenceCountingPack::ref_count_ptr<
+		AbstractLinAlgPack::MatrixSpace<const MatrixSymWithOp> >    mat_sym_space_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -59,6 +56,15 @@ public:
 	
 	///
 	void initialize();
+
+	///
+	/** Return a matrix space object for creating #HL#.
+	 *
+	 * The returned matrix object may not support the creation of any
+	 * sub-matrix spaces (i.e. #return->sub_space(rrng,crng).get() == NULL#
+	 * for all #rrng# and #crng#).
+	 */
+	virtual const mat_sym_space_ptr_t& space_HL() const = 0;
 
 	/** @name <<std aggr>> stereotype member functions
 	  */
@@ -93,17 +99,27 @@ public:
 	//@{
 
 	///
-	/** Update the matrix for #HL# at the point #x#, #lambda# and put it in the stored reference.
+	/** Update the matrix for #HL# at the point #x#, #lambda#, #lambdaI# and put it in the stored reference.
 	  *
-	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #Gf#, and #Gc# may also be
+	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #h#, #Gf#, #Gc# and #Gh# may also be
 	  * changed but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
+	  *
+	  * @param  x        [in] Unknown primal variables
+	  * @param  lambda   [in] Lagrange muitipliers for equality constriants.
+	  *                  If #m() == 0# then #lambda# can be #NULL#.
+	  * @param  lambdaI  [in] Lagrange muitipliers for inequality constriants.
+	  *                  If #mI() == 0# then #lambdaI# can be #NULL#.
+	  * @param  newpoint [in] If true then this is the same x that was passed to the last
+	  *                  call to a calc_info(...) method.
+	  *
 	  */ 
-	virtual void calc_HL(const VectorSlice& x, const VectorSlice& lambda, bool newx = true) const;
+	virtual void calc_HL(
+		const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint = true) const;
 
 	//@}
 
-		///
+	///
 	/** Number of Hessian evaluations.
 	  *
 	  * This function can be called to find out how many evaluations
@@ -119,23 +135,27 @@ protected:
 	struct SecondOrderInfo {
 		///
 		SecondOrderInfo()
-			: Gc(NULL), Gf(NULL), f(NULL), c(NULL)
-		{}
+			: HL(NULL), Gc(NULL), Gh(NULL), Gf(NULL), f(NULL), c(NULL), h(NULL)
+			{}
 		///
 		SecondOrderInfo( MatrixSymWithOp* HL_in, const FirstOrderInfo& first_order_info )
-			: HL(HL_in), Gc(first_order_info.Gc), Gf(first_order_info.Gf)
-			, f(first_order_info.f), c(first_order_info.c)
-		{}
+			: HL(HL_in), Gc(first_order_info.Gc), Gh(first_order_info.Gh), Gf(first_order_info.Gf)
+			, f(first_order_info.f), c(first_order_info.c), h(first_order_info.h)
+			{}
 		/// Pointer to Hessiand of the Lagrangian #HL) (may be NULL is not set)
-		MatrixSymWithOp* HL;
+		MatrixSymWithOp*        HL;
+		/// Pointer to Hessian of the equality constraints #Gc# (may be NULL if not set)
+		MatrixWithOp*           Gc;
+		/// Pointer to Hessian of the inequality constraints #Gh# (may be NULL if not set)
+		MatrixWithOp*           Gh;
 		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
-		MatrixWithOp*    Gc;
-		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
-		Vector*          Gf;
+		VectorWithOpMutable*    Gf;
 		/// Pointer to objective function #f# (may be NULL if not set)
-		value_type*      f;
-		/// Pointer to constraints residule #c# (may be NULL if not set)
-		Vector*          c;
+		value_type*             f;
+		/// Pointer to equality constraints residule #c# (may be NULL if not set)
+		VectorWithOpMutable*    c;
+		/// Pointer to inequality constraints residule #h# (may be NULL if not set)
+		VectorWithOpMutable*    h;
 	}; // end struct SecondOrderInfo
 
 	/// Return objective gradient and zero order information.
@@ -148,11 +168,15 @@ protected:
 	/** Overridden to compute Gc(x) and perhaps G(x), f(x) and c(x) (if multiple calculaiton = true).
 	 *
 	 * @param x                     [in] Unknown vector (size n).
-	 * @param lambda                [in] Lagrange multipliers for equality constraints
-	 * @param newx                  [in] True if is a new point.
-	 * @param second_order_info     [out] Pointers to HL, Gc, Gf, f and c
+	 * @param lambda                [in] Lagrange multipliers for equality constraints c(x).
+	 *                              My be #NULL# if #m() == 0#.
+	 * @param lambdaI               [in] Lagrange multipliers for inequality constraints h(x).
+	 *                              My be #NULL# if #mI() == 0#.
+	 * @param newpoint              [in] True if is a new point.
+	 * @param second_order_info     [out] Pointers to HL, Gc, Gh, Gf, f, c and h
 	 */
-	virtual void imp_calc_HL(const VectorSlice& x, const VectorSlice& lambda, bool newx
+	virtual void imp_calc_HL(
+		const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint
 		, const SecondOrderInfo& second_order_info) const = 0;
 
 	//@}

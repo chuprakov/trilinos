@@ -53,13 +53,13 @@ public:
 	//@{
 
 	///
-	virtual void set_Gf(Vector* Gf);
+	virtual void set_Gf(VectorWithOpMutable* Gf);
 	///
-	virtual Vector* get_Gf();
+	virtual VectorWithOpMutable* get_Gf();
 	///
-	virtual Vector& Gf();
+	virtual VectorWithOpMutable& Gf();
 	///
-	virtual const Vector& Gf() const;
+	virtual const VectorWithOp& Gf() const;
 
 	//@}
 
@@ -77,7 +77,7 @@ public:
 	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect (i.e. no higher order derivatives).
 	  */ 
-	virtual void calc_Gf(const VectorSlice& x, bool newx = true) const;
+	virtual void calc_Gf(const VectorWithOp& x, bool newx = true) const;
 
 	//@}
 
@@ -98,15 +98,17 @@ public:
 			: Gf(NULL), f(NULL), c(NULL)
 		{}
 		///
-		ObjGradInfo( Vector* Gf_in, const ZeroOrderInfo& f_c_in )
-			: Gf(Gf_in), f(f_c_in.f), c(f_c_in.c)
+		ObjGradInfo( VectorWithOpMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
+			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
 		{}
 		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
-		Vector*       Gf;
+		VectorWithOpMutable*       Gf;
 		/// Pointer to objective function #f# (may be NULL if not set)
-		value_type*   f;
+		value_type*                f;
 		/// Pointer to constraints residule #c# (may be NULL if not set)
-		Vector*       c;
+		VectorWithOpMutable*       c;
+		/// Pointer to constraints residule #h# (may be NULL if not set)
+		VectorWithOpMutable*       h;
 	}; // end struct ObjGradInfo
 
 protected:
@@ -124,12 +126,12 @@ protected:
 	 * @param newx        [in]  True if is a new point.
 	 * @param obj_grad    [out] Pointers to Gf, f and c
 	 */
-	virtual void imp_calc_Gf(const VectorSlice& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
+	virtual void imp_calc_Gf(const VectorWithOp& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
 
 	//@}
 
 private:
-	mutable Vector                  *Gf_;
+	mutable VectorWithOpMutable     *Gf_;
 	mutable size_type				num_Gf_evals_;
 
 };	// end class NLPObjGradient

@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/NLPSecondOrderInfo.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
+#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
+#include "ThrowException.h"
 
 namespace {
 	const char name_HL[] = "HL";
@@ -56,11 +56,16 @@ const NLPInterfacePack::MatrixSymWithOp& NLPInterfacePack::NLPSecondOrderInfo::H
 
 // calculations
 
-void NLPInterfacePack::NLPSecondOrderInfo::calc_HL( const VectorSlice& x
-	, const VectorSlice& lambda, bool newx) const
+void NLPInterfacePack::NLPSecondOrderInfo::calc_HL(
+	const VectorWithOp& x, const VectorWithOp* lambda, const VectorWithOp* lambdaI, bool newpoint
+	) const
 {
+#ifdef _DEBUG
+	THROW_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
+	THROW_EXCEPTION( lambdaI && this->mI() == 0, std::logic_error, "" );
+#endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
-	imp_calc_HL(x,lambda,newx,second_order_info());
+	imp_calc_HL(x,lambda,lambdaI,newpoint,second_order_info());
 }
 
 NLPInterfacePack::size_type NLPInterfacePack::NLPSecondOrderInfo::num_HL_evals() const

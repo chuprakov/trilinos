@@ -16,20 +16,23 @@
 #ifndef NLP_INTERFACE_PACK_TYPES_H
 #define NLP_INTERFACE_PACK_TYPES_H
 
-#include "SparseLinAlgPack/include/SparseLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackTypes.h"
 
 namespace NLPInterfacePack {
 
-// types from SparseLinAlgPack
-#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackPublicTypes.ud"
 
 // NLP interface classes
 
 class NLP;
 class NLPObjGradient;
+class NLPFirstOrderDirect;
 class NLPFirstOrderInfo;
 class NLPSecondOrderInfo;
 class NLPReduced;
+
+// Node implementation classes
+
 class NLPFullToReduced;
 class NLPDualCalc;
 

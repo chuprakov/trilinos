@@ -13,13 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <limits>
+
 #include "NLPInterfacePack/include/NLP.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "ThrowException.h"
 
 namespace {
 	const char name_f[] = "f";
 	const char name_c[] = "c";
+	const char name_h[] = "h";
 } // end namespace
 
 // constructors
@@ -33,18 +37,43 @@ NLPInterfacePack::NLP::~NLP()
 {}
 
 void NLPInterfacePack::NLP::initialize() {
-	num_f_evals_ = num_c_evals_ = 0;
+	num_f_evals_ = num_c_evals_ = num_h_evals_ = 0;
 }
 
-void NLPInterfacePack::NLP::get_init_lagrange_mult( Vector* lambda, SpVector* nu ) const
+NLPInterfacePack::value_type NLPInterfacePack::NLP::infinite_bound()
 {
-	const size_type n = this->n();
+	return std::numeric_limits<value_type>::max();
+//	return 1e+50;
+}
+
+void NLPInterfacePack::NLP::get_init_lagrange_mult(
+	VectorWithOpMutable*   lambda
+	,VectorWithOpMutable*  lambdaI
+	,VectorWithOpMutable*  nu
+	) const
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( lambda  && this->m()  == 0,            std::logic_error, "" );
+	THROW_EXCEPTION( lambdaI && this->mI() == 0,            std::logic_error, "" );
+	THROW_EXCEPTION( nu      && this->num_bounded_x() == 0, std::logic_error, "" );
+#endif
 	if(lambda) {
-		lambda->resize(n);
-		(*lambda) = 0.0;
+#ifdef _DEBUG
+		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), std::logic_error, "" );
+#endif
+		*lambda = 0.0;
+	}
+	if(lambdaI) {
+#ifdef _DEBUG
+		THROW_EXCEPTION( !this->space_h()->is_compatible(lambdaI->space()), std::logic_error, "" );
+#endif
+		*lambdaI = 0.0;
 	}
 	if(nu) {
-		nu->resize(n,n); // No nonzero elements!
+#ifdef _DEBUG
+		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), std::logic_error, "" );
+#endif
+		*nu = 0.0;
 	}
 }
 
@@ -52,44 +81,92 @@ void NLPInterfacePack::NLP::get_init_lagrange_mult( Vector* lambda, SpVector* nu
 
 void NLPInterfacePack::NLP::set_f(value_type* f)
 {
-	f_c_.f = f;
+	first_order_info_.f = f;
 }
 
 NLPInterfacePack::value_type* NLPInterfacePack::NLP::get_f()
 {
-	return StandardCompositionRelationshipsPack::get_role_name(f_c_.f, false, name_f);
+	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.f, false, name_f);
 }
 
 NLPInterfacePack::value_type& NLPInterfacePack::NLP::f()
 {
-	return StandardCompositionRelationshipsPack::role_name(f_c_.f, false, name_f);
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.f, false, name_f);
 }
 
 const NLPInterfacePack::value_type& NLPInterfacePack::NLP::f() const
 {
-	return StandardCompositionRelationshipsPack::role_name(f_c_.f, false, name_f);
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.f, false, name_f);
 }
 
 // <<std comp>> members for c
 
-void NLPInterfacePack::NLP::set_c(Vector* c)
+void NLPInterfacePack::NLP::set_c(VectorWithOpMutable* c)
 {
-	f_c_.c = c;
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), std::logic_error, "" );
+#endif
+	first_order_info_.c = c;
 }
 
-NLPInterfacePack::Vector* NLPInterfacePack::NLP::get_c()
+NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_c()
 {
-	return StandardCompositionRelationshipsPack::get_role_name(f_c_.c, false, name_c);
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.c, false, name_c);
 }
 
-NLPInterfacePack::Vector& NLPInterfacePack::NLP::c()
+NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::c()
 {
-	return StandardCompositionRelationshipsPack::role_name(f_c_.c, false, name_c);
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.c, false, name_c);
 }
 
-const NLPInterfacePack::Vector& NLPInterfacePack::NLP::c() const
+const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::c() const
 {
-	return StandardCompositionRelationshipsPack::role_name(f_c_.c, false, name_c);
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.c, false, name_c);
+}
+
+// <<std comp>> members for h
+
+void NLPInterfacePack::NLP::set_h(VectorWithOpMutable* h)
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+	THROW_EXCEPTION( h && !this->space_h()->is_compatible(h->space()), std::logic_error, "" );
+#endif
+	first_order_info_.h = h;
+}
+
+NLPInterfacePack::VectorWithOpMutable* NLPInterfacePack::NLP::get_h()
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.h, false, name_h);
+}
+
+NLPInterfacePack::VectorWithOpMutable& NLPInterfacePack::NLP::h()
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.h, false, name_h);
+}
+
+const NLPInterfacePack::VectorWithOp& NLPInterfacePack::NLP::h() const
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+#endif
+	return StandardCompositionRelationshipsPack::role_name(first_order_info_.h, false, name_h);
 }
 
 // calculations
@@ -102,25 +179,40 @@ bool NLPInterfacePack::NLP::mult_calc() const
 	return false;
 }
 
-void NLPInterfacePack::NLP::calc_f(const VectorSlice& x, bool newx) const
+void NLPInterfacePack::NLP::calc_f(const VectorWithOp& x, bool newx) const
 {
-	StandardCompositionRelationshipsPack::assert_role_name_set(f_c_.f, "NLP::calc_f()", name_f);
+	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_.f, "NLP::calc_f()", name_f);
 	imp_calc_f(x,newx,zero_order_info());
 	num_f_evals_++;
 }
 
-void NLPInterfacePack::NLP::calc_c(const VectorSlice& x, bool newx) const
+void NLPInterfacePack::NLP::calc_c(const VectorWithOp& x, bool newx) const
 {
-	StandardCompositionRelationshipsPack::assert_role_name_set(f_c_.c, "NLP::calc_c()", name_c);
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+#endif
+	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_.c, "NLP::calc_c()", name_c);
 	imp_calc_c(x,newx,zero_order_info());
 	num_c_evals_++;
 }
 
+void NLPInterfacePack::NLP::calc_h(const VectorWithOp& x, bool newx) const
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+#endif
+	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_.h, "NLP::calc_h()", name_h);
+	imp_calc_h(x,newx,zero_order_info());
+	num_h_evals_++;
+}
+
 void NLPInterfacePack::NLP::report_final_solution(
-	  const VectorSlice&	x
-	, const VectorSlice*	lambda
-	, const SpVectorSlice*	nu
-	, bool					optimal		) const
+	const VectorWithOp&    x
+	,const VectorWithOp*   lambda
+	,const VectorWithOp*   lambdaI
+	,const VectorWithOp*   nu
+	,bool                  optimal
+	) const
 {
 	// The default behavior is just to ignore this!
 }
@@ -132,5 +224,16 @@ NLPInterfacePack::size_type NLPInterfacePack::NLP::num_f_evals() const
 
 NLPInterfacePack::size_type NLPInterfacePack::NLP::num_c_evals() const
 {
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+#endif
 	return num_c_evals_;
+}
+
+NLPInterfacePack::size_type NLPInterfacePack::NLP::num_h_evals() const
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
+#endif
+	return num_h_evals_;
 }

@@ -14,8 +14,10 @@
 
 using NLPInterfacePack::NLP;
 using NLPInterfacePack::NLPObjGradient;
+using NLPInterfacePack::NLPFirstOrderDirect;
 using NLPInterfacePack::NLPFirstOrderInfo;
 using NLPInterfacePack::NLPSecondOrderInfo;
 using NLPInterfacePack::NLPReduced;
+
 using NLPInterfacePack::NLPFullToReduced;
 using NLPInterfacePack::NLPDualCalc;
