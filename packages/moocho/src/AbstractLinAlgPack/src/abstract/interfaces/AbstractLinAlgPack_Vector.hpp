@@ -416,8 +416,6 @@ public:
 
 	//@}
 
-protected:
-
 	///
 	/** Must be called by any vector subclass that modifies this vector
 	 * object!
