@@ -560,11 +560,11 @@ void NLPSerialPreprocess::get_basis(
 		*inequ_decomp = Range1D::Invalid;
 	}
 	// Reinitialize the Permutation arguments.
-	P_var_s.initialize( var_perm, rcp::null );           // Todo: Give these the inverse permutations as well!
+	P_var_s.initialize( var_perm, rcp::null, true );  // Allocate the inverse permuation as well!
 	if(m_full_)
-		P_equ_s->initialize( equ_perm, rcp::null );
+		P_equ_s->initialize( equ_perm, rcp::null, true );
 	if(mI_full_)
-		P_inequ_s->initialize( inequ_perm, rcp::null );
+		P_inequ_s->initialize( inequ_perm, rcp::null, true );
 }
 
 // Overridden protected members from NLP

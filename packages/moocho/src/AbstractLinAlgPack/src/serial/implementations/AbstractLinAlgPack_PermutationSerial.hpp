@@ -58,6 +58,8 @@ public:
 	PermutationSerial(
 		const i_vector_ptr_t      &perm
 		,const i_vector_ptr_t     &inv_perm
+		,bool                     allocate_missing_perm = true
+		,bool                     check_inv_perm        = false
 		);
 	
 	///
@@ -86,6 +88,9 @@ public:
 	 *              It is allowed for <tt>inv_perm.get() == NULL</tt> in which
 	 *              case the permutation in \c this will be defined in terms
 	 *              of \c perm (which can't be NULL).
+	 * @param  allocate_missing_perm
+	 *              [in] If true, then a missing permutation will be allocated
+	 *              and initialized.
 	 * @param  check_inv_perm
 	 *              [in] If <tt>perm.get() != NULL && inv_perm.get() != NULL</tt> and
 	 *              <tt>check_inv_perm == true</tt> then, a check is performed to see
@@ -103,8 +108,24 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->perm().get() == perm.get()</tt>
-	 * <li> <tt>this->inv_perm().get() == inv_perm.get()</tt>
+	 * <li> If <tt>perm.get() != NULL</tt>
+	 *      <ul><li> <tt>this->perm().get() == perm.get()</tt></ul>
+	 *      else
+	 *      <ul>
+	 *      <li> If <tt>allocate_missing_perm == true</tt>
+	 *           <ul><li><tt>this->perm().get() != NULL</tt></ul>
+	 *           else
+	 *           <ul><li><tt>this->perm().get() == NULL</tt></ul>
+	 *      </ul>
+	 * <li> If <tt>inv_perm.get() != NULL</tt>
+	 *      <ul><li> <tt>this->inv_perm().get() == inv_perm.get()</tt></ul>
+	 *      else
+	 *      <ul>
+	 *      <li> If <tt>allocate_missing_perm == true</tt>
+	 *           <ul><li><tt>this->inv_perm().get() != NULL</tt></ul>
+	 *           else
+	 *           <ul><li><tt>this->inv_perm().get() == NULL</tt></ul>
+	 *      </ul>
 	 * <li> <tt>this->dim() == perm.size()</tt>
 	 * <li> <tt>this->is_identity() == false</tt>
 	 * <li> The behavior of <tt>this->permute()</tt> is defined above.
@@ -117,7 +138,8 @@ public:
 	void initialize(
 		const i_vector_ptr_t      &perm
 		,const i_vector_ptr_t     &inv_perm
-		,bool                     check_inv_perm = false
+		,bool                     allocate_missing_perm = true
+		,bool                     check_inv_perm        = false
 		);
 
 	//@}

@@ -32,9 +32,11 @@ PermutationSerial::PermutationSerial( size_type dim )
 PermutationSerial::PermutationSerial(
 	const i_vector_ptr_t      &perm
 	,const i_vector_ptr_t     &inv_perm
+	,bool                     allocate_missing_perm
+	,bool                     check_inv_perm
 	)
 {
-	this->initialize(perm,inv_perm);
+	this->initialize(perm,inv_perm,allocate_missing_perm,check_inv_perm);
 }
 	
 void PermutationSerial::initialize_identity( size_type dim )
@@ -48,6 +50,7 @@ void PermutationSerial::initialize_identity( size_type dim )
 void PermutationSerial::initialize(
 	const i_vector_ptr_t      &perm
 	,const i_vector_ptr_t     &inv_perm
+	,bool                     allocate_missing_perm
 	,bool                     check_inv_perm
 	)
 {
@@ -65,6 +68,18 @@ void PermutationSerial::initialize(
 	space_.initialize( perm.get() ? perm->size() : inv_perm->size() );
 	perm_     = perm;
 	inv_perm_ = inv_perm;
+	if( allocate_missing_perm && perm_.get() == NULL ) {
+		MemMngPack::ref_count_ptr<IVector>
+			_perm(new IVector(inv_perm_->size()));
+		LinAlgPack::inv_perm( *inv_perm_, _perm.get() );
+		perm_ = _perm;
+	}
+	if( allocate_missing_perm && inv_perm_.get() == NULL ) {
+		MemMngPack::ref_count_ptr<IVector>
+			_inv_perm(new IVector(perm_->size()));
+		LinAlgPack::inv_perm( *perm_, _inv_perm.get() );
+		inv_perm_ = _inv_perm;
+	}
 }
 
 // Overridden from Permutation
