@@ -33,20 +33,26 @@ namespace GeneralIterationPack {
 class CastIQMemberBase {
 public:
 	///
+	/** Name returns the name of the iteration quantity
+	 */
 	const std::string& iq_name() const;
+	///
+	/** Returns if the iteration quantity exists in the state object.
+	 */
+	bool exists_in( const AlgorithmState& s ) const;
 protected:
 	///
 	CastIQMemberBase( const std::string iq_name );
 	///
 	void cache_iq_id( const AlgorithmState& s ) const;
 	///
-	void throw_cast_error( const std::string& iqa_name ) const;
+	void throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const;
 	///
 	const std::string					iq_name_;
 	///
 	mutable AlgorithmState::iq_id_type	iq_id_;
 private:
-	enum { NOT_SET_YET = INT_MAX };
+	enum { NOT_SET_YET = AlgorithmState::DOES_NOT_EXIST - 1 };
 	CastIQMemberBase(); // not defined and not to be called.
 };	// end class CastIQMemberBase
 
@@ -157,10 +163,12 @@ IterQuantityAccess<T>&
 CastIQMember<T>::operator()( AlgorithmState& s ) const
 {
 	cache_iq_id(s);
+	if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
+		throw_cast_error(iq_id_,typeid(T).name());
 	IterQuantityAccess<T>
 		*p = dynamic_cast<IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
 	if( !p )
-		throw_cast_error(typeid(T).name());
+		throw_cast_error(iq_id_,typeid(T).name());
 	return *p;	
 }
 
@@ -169,10 +177,12 @@ const IterQuantityAccess<T>&
 CastIQMember<T>::operator()( const AlgorithmState& s ) const
 {
 	cache_iq_id(s);
+	if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
+		throw_cast_error(iq_id_,typeid(T).name());
 	const IterQuantityAccess<T>
 		*p = dynamic_cast<const IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
 	if( !p )
-		throw_cast_error(typeid(T).name());
+		throw_cast_error(iq_id_,typeid(T).name());
 	return *p;	
 }
 
