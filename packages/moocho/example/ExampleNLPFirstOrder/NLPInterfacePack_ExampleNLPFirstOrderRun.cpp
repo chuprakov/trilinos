@@ -24,6 +24,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <typeinfo>
 
 #include "ExampleNLPFirstOrderInfoRun.h"
 #include "ExampleNLPFirstOrderInfo.h"
@@ -62,9 +63,12 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 		*out_in
 			<< std::setprecision(prec)
 			<< std::scientific
-			<< "*****************************************************\n"
-			<< "*** Running Tests on Example First Order Info NLP ***\n"
-			<< "*****************************************************\n";
+			<< "************************************************************************\n"
+			<< "*** Running Tests on ExampleNLPFirstOrderInfo and ExampleBasisSystem ***\n"
+			<< "************************************************************************\n"
+			<< "\nUsing a vector space of type \'" << typeid(vec_space).name() << "\'"
+			<< "\nwith a dimension of vec_space.dim() = " << vec_space.dim()
+			<< std::endl;
 
 	// Read in the options
 	std::ifstream      options_in_file("ExampleNLPFirstOrderInfoRun.opt");	
