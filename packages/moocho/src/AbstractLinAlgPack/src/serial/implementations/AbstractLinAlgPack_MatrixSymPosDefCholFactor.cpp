@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"

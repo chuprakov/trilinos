@@ -55,7 +55,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 

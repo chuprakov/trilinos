@@ -49,7 +49,7 @@
 #include "ConstrainedOptPack/src/BFGS_helpers.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
 
 namespace {
 

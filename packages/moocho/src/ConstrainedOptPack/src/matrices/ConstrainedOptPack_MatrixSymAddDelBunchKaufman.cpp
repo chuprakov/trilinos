@@ -19,7 +19,7 @@
 #include <limits>
 
 #include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
-#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"

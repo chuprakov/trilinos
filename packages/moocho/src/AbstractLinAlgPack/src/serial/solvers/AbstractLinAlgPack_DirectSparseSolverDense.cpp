@@ -20,7 +20,7 @@
 
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
