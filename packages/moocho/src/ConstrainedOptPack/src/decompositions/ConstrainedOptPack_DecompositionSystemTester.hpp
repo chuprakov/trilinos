@@ -27,11 +27,11 @@ namespace ConstrainedOptimizationPack {
 /** Testing class for \c DecompositionSystem interface.
  *
  * This testing class is basically a unit tester for \c DecompositionSystem.  The method \c test_decomp_system()
- * runs many different tests to validate the interface and the objects allocated with the interface.  The method
- * \c test_decomp_system() should only be called after
+ * runs many different tests to validate the interface and the matrix objects associated with the interface.
+ * The method \c test_decomp_system() should only be called after
  * <tt>decomp_sys\ref DecompositionSystem::update_decomp ".update_decomp(...)"</tt> is called on the
- * <tt>DecompositionSystem</tt> object <tt>decomp_sys</tt>.  The output decomposition matrix are passed through
- * a series of tests.  The compatibility of the matrices described in the postconditions for
+ * <tt>DecompositionSystem</tt> object <tt>decomp_sys</tt>.  The output decomposition matrices are passed
+ * through a series of tests.  The compatibility of the matrices described in the postconditions for
  * <tt>DecompositionSytem::update_decomp()</tt> are also checked in a series of tests.  If the method
  * \c test_decomp_system() returns \c true, then the client can feel fairly confident that the
  * things are functioning properly (but this is not guaranteed of course).
