@@ -39,7 +39,7 @@ namespace {
 
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DirectLineSearchArmQuad_StrategySetOptions::DirectLineSearchArmQuad_StrategySetOptions(
 			  DirectLineSearchArmQuad_Strategy* qp_solver
@@ -75,4 +75,4 @@ void DirectLineSearchArmQuad_StrategySetOptions::set_option(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 

@@ -17,8 +17,8 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPTSOL.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPTSOL.hpp"
+#include "ConstrainedOptPack/src/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
@@ -84,7 +84,7 @@ namespace LinAlgOpPack {
 // ///////////////////////////////////////
 // Members for QPSolverRelaxedQPOPTSOL
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedQPOPTSOL::QPSolverRelaxedQPOPTSOL()
 	:N_(0)
@@ -452,4 +452,4 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	return qp_stats_.solution_type();
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

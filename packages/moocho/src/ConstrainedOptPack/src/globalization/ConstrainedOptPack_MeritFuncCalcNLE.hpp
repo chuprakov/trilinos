@@ -20,7 +20,7 @@
 #include "MeritFuncNLE.hpp"
 #include "MiStandardAggregationMacros.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Adds the ability to compute phi(c(x)) at x
@@ -57,6 +57,6 @@ public:
 
 };	// end class MeritFuncCalcNLE
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_CALC_NLE_H

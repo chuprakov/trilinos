@@ -13,14 +13,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianFull.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	const Vector    &g
@@ -74,4 +74,4 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	V_mV(fo,VectorDenseEncap(g)());
 }
 
-} // end namesapce ConstrainedOptimizationPack
+} // end namesapce ConstrainedOptPack

@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixWithOpConcreteEncap.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implementation of MatrixOp abstract interface for SymInvCholMatrix
@@ -136,6 +136,6 @@ public:
 
 };	// end class MatrixSymPosDefInvCholFactor
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// MATRIX_SYM_POS_DEF_INV_CHOL_FACTOR_H

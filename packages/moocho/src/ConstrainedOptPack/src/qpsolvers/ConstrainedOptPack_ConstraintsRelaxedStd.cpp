@@ -24,7 +24,7 @@
 
 #include <limits>
 
-#include "ConstrainedOptimizationPack/src/ConstraintsRelaxedStd.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/ConstraintsRelaxedStd.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -37,20 +37,20 @@
 
 namespace {
 
-ConstrainedOptimizationPack::EBounds
+ConstrainedOptPack::EBounds
 convert_bnd_type( int bnd_type )
 {
 	switch(bnd_type) {
 		case -1:
-			return ConstrainedOptimizationPack::LOWER;
+			return ConstrainedOptPack::LOWER;
 		case 0:
-			return ConstrainedOptimizationPack::EQUALITY;
+			return ConstrainedOptPack::EQUALITY;
 		case +1:
-			return ConstrainedOptimizationPack::UPPER;
+			return ConstrainedOptPack::UPPER;
 		default:
 			assert(0);
 	}
-	return ConstrainedOptimizationPack::LOWER; // Never be called
+	return ConstrainedOptPack::LOWER; // Never be called
 }
 
 /*
@@ -70,7 +70,7 @@ DenseLinAlgPack::value_type get_sparse_element(
 
 }	// end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
 // members for ConstraintsRelaxedStd
@@ -1065,4 +1065,4 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 }
 
 } // end namespace QPSchurPack 
-} // end namespace ConstrainedOptimizationPack 
+} // end namespace ConstrainedOptPack 

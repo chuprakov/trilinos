@@ -22,7 +22,7 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
@@ -73,7 +73,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
-//	using ConstrainedOptimizationPack::min_abs;
+//	using ConstrainedOptPack::min_abs;
 	using AbstractLinAlgPack::max_near_feas_step;
 	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 

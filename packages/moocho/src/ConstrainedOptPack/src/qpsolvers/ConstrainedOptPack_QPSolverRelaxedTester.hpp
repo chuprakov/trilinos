@@ -19,7 +19,7 @@
 #include "QPSolverRelaxed.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Tests the optimality conditions of the output from a \c QPSolverRelaxed

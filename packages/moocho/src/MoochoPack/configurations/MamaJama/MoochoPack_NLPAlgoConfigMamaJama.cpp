@@ -25,12 +25,12 @@
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
-//#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
-//#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
+//#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
+//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
 //#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
 
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
+#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 
@@ -38,25 +38,25 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
 
 // line search
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_StrategySetOptions.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_StrategySetOptions.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPL1.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPModL1.hpp"
 
 // Basis permutations and direct sparse solvers
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPerm.hpp"
 #endif
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTesterSetOptions.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.hpp"
-#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
-//#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianSuperBasic.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTesterSetOptions.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchur.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchurSetOptions.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianFull.hpp"
+//#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPKWIK.hpp"
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-//#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.hpp"
+//#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPT.hpp"
 #endif
 
 #include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
@@ -668,7 +668,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 //	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
 //	qp_solver_ptr_t qp_solver;
-//	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester QPSolverRelaxedTester;
+//	typedef ConstrainedOptPack::QPSolverRelaxedTester QPSolverRelaxedTester;
 //	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
 //	qp_tester_ptr_t qp_tester;
 //	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
@@ -845,11 +845,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			mmp::ref_count_ptr<QPSolverRelaxed>  qp_solver = mmp::null;
 			switch( cov_.qp_solver_type_ ) {
 				case QP_QPSCHUR: {
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
-					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
-//					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
-					mmp::ref_count_ptr<ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem>
+					using ConstrainedOptPack::QPSolverRelaxedQPSchur;
+					using ConstrainedOptPack::QPSolverRelaxedQPSchurSetOptions;
+					using ConstrainedOptPack::QPSchurInitKKTSystemHessianFull;
+//					using ConstrainedOptPack::QPSchurInitKKTSystemHessianSuperBasic;
+					mmp::ref_count_ptr<ConstrainedOptPack::QPSolverRelaxedQPSchur::InitKKTSystem>
 						init_kkt_sys = mmp::null;
 					switch( cov_.quasi_newton_ ) {
 						case QN_BFGS:
@@ -875,7 +875,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					break;
 				}
 				case QP_QPKWIK: {
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
+					using ConstrainedOptPack::QPSolverRelaxedQPKWIK;
 					mmp::ref_count_ptr<QPSolverRelaxedQPKWIK>
 						_qp_solver = mmp::rcp(new QPSolverRelaxedQPKWIK());
 					qp_solver = _qp_solver; // give ownership to delete!
@@ -885,7 +885,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					THROW_EXCEPTION(true,std::logic_error,"Error! QPKWIK interface is not updated yet!");
 /*
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
+					using ConstrainedOptPack::QPSolverRelaxedQPOPT;
 					QPSolverRelaxedQPOPT
 						*_qp_solver = new QPSolverRelaxedQPOPT();
 					qp_solver = _qp_solver; // give ownership to delete!
@@ -1018,7 +1018,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
 				direct_line_search = mmp::rcp(new  DirectLineSearchArmQuad_Strategy());
 			if(options_.get()) {
-				ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
+				ConstrainedOptPack::DirectLineSearchArmQuad_StrategySetOptions
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
 				ls_options_setter.set_options( *options_ );
 			}

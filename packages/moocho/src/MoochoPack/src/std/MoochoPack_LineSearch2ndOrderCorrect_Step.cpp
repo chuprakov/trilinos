@@ -19,12 +19,12 @@
 #include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.hpp"
-#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLE.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLESqrResid.hpp"
+#include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/max_near_feas_step.hpp"
@@ -91,7 +91,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 
 	using AbstractLinAlgPack::max_near_feas_step;
 
-	using ConstrainedOptimizationPack::print_vector_change_stats;
+	using ConstrainedOptPack::print_vector_change_stats;
 
 	typedef LineSearch2ndOrderCorrect_Step	this_t;
 
@@ -234,7 +234,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 		}
 
 		// Merit function for newton line searches
-		ConstrainedOptimizationPack::MeritFuncNLESqrResid
+		ConstrainedOptPack::MeritFuncNLESqrResid
 			phi_c;
 
 		DVector
@@ -250,7 +250,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 		// Merit function for newton line searches
 		nlp.set_f( &(f_xdww = f_kp1) );
 		nlp.set_c( &(c_xdww = c_kp1) );
-		ConstrainedOptimizationPack::MeritFuncCalcNLE
+		ConstrainedOptPack::MeritFuncCalcNLE
 			phi_c_calc( &phi_c, &nlp );
 
 		DVector wy(s.con_decomp().size());	// Range space wy (see latter).
@@ -707,7 +707,7 @@ void LineSearch2ndOrderCorrect_Step::print_step(
 		<< L << "  considered_correction = true\n"
 		<< L << "  begin definition of c(x) merit function phi_c.value(c(x)):\n";
 
-	ConstrainedOptimizationPack::MeritFuncNLESqrResid().print_merit_func(
+	ConstrainedOptPack::MeritFuncNLESqrResid().print_merit_func(
 		out, L + "    " );
 
 	out	<< L << "  end definition\n"

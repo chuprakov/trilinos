@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPermStd.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductImp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // Constructors / initializers
 
@@ -410,4 +410,4 @@ void DecompositionSystemVarReductPermStd::assert_basis_selected() const
 		"the methods set_decomp() or select_decomp() must be called first!" );
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

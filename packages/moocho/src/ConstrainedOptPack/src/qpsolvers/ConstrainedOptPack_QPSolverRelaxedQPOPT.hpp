@@ -21,7 +21,7 @@
 #include "QPSolverRelaxedQPOPTSOL.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Node base clase for the primal QP solvers QPOPT and QPSOL.
@@ -111,7 +111,7 @@ private:
 
 };	// end class QPSolverRelaxedQPOPT
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif // QP_SOLVER_RELAXED_QPOPT_H
 

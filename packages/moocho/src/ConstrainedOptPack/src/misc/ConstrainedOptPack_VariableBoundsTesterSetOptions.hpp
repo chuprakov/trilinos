@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Set options for \Ref{VariableBoundsTester} from an
@@ -56,6 +56,6 @@ protected:
 
 };	// end class VariableBoundsTesterSetOptions
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H

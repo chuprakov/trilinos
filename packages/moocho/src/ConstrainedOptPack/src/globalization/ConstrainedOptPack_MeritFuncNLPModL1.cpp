@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPModL1.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MeritFuncNLPModL1::MeritFuncNLPModL1()
 	: deriv_(0.0)
@@ -102,7 +102,7 @@ const Vector& MeritFuncNLPModL1::get_mu() const
 	return *mu_;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 /* ToDo: Write a reduction operator for the following!
 
@@ -117,7 +117,7 @@ value_type local_constr_term( const DVector& mu, const DVectorSlice& c
 			<< "MeritFuncNLPModL1::" << func_name << "(...) : "
 			<< "Error, the sizes mu.size() == " << mu.size()
 			<< " != c.size() == " << c.size();
-		throw ConstrainedOptimizationPack::MeritFuncNLP::InvalidInitialization(omsg.str());
+		throw ConstrainedOptPack::MeritFuncNLP::InvalidInitialization(omsg.str());
 	}
 	value_type r = 0.0;
 	DVector::const_iterator

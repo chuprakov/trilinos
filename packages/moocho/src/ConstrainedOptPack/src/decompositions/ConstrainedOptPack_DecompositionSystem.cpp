@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 size_type DecompositionSystem::n() const
 {
@@ -42,4 +42,4 @@ Range1D DecompositionSystem::equ_undecomp() const
 	return m > r ? Range1D(r+1,m) : Range1D::Invalid;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

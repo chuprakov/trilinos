@@ -17,9 +17,9 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemOrthogonal.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixDecompRangeOrthog.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
@@ -29,7 +29,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 	const VectorSpace::space_ptr_t           &space_x
@@ -264,4 +264,4 @@ void DecompositionSystemOrthogonal::print_update_matrices(
 		;
 }
 		
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

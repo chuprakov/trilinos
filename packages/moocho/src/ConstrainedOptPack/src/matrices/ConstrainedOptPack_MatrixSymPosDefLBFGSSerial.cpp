@@ -45,8 +45,8 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
-#include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"
+#include "ConstrainedOptPack/src/BFGS_helpers.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
@@ -69,7 +69,7 @@ namespace {
 
 }	// end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // /////////////////////////////////
 // Inline private member functions
@@ -1057,7 +1057,7 @@ void MatrixSymPosDefLBFGS::assert_initialized() const
 			"Error, matrix not initialized" );
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 namespace {
 

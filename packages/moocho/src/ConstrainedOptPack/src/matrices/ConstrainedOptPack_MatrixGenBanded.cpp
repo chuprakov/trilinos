@@ -16,13 +16,13 @@
 #include <assert.h>
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/MatrixGenBanded.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixGenBanded.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 #include "MiWorkspacePack.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixGenBanded::MatrixGenBanded(
 	size_type                         m
@@ -173,4 +173,4 @@ void MatrixGenBanded::assert_initialized() const
 							   "not initialized!" );
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

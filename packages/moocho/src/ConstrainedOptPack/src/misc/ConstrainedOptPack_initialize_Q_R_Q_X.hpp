@@ -16,9 +16,9 @@
 #ifndef INITIALIZE_Q_R_Q_X_H
 #define INITIALIZE_Q_R_Q_X_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Initialize <tt>GenPermMatrixSlice</tt> mapping matrices for <tt>Q_R</tt> and <tt>Q_X</tt>.
@@ -79,6 +79,6 @@ void initialize_Q_R_Q_X(
 	,GenPermMatrixSlice  *Q_X
 	);
 
-}  // end namespace ConstrainedOptimizationPack
+}  // end namespace ConstrainedOptPack
 
 #endif // INITIALIZE_Q_R_Q_X_H

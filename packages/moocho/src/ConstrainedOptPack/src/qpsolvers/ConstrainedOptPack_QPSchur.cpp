@@ -30,8 +30,8 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ConstrainedOptimizationPack/src/QPSchur.hpp"
-#include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSchur.hpp"
+#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
@@ -71,16 +71,16 @@ T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 // Print a bnd as a string
 //
 inline
-const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd )
+const char* bnd_str( ConstrainedOptPack::EBounds bnd )
 {
 	switch(bnd) {
-		case ConstrainedOptimizationPack::FREE:
+		case ConstrainedOptPack::FREE:
 			return "FREE";
-		case ConstrainedOptimizationPack::UPPER:
+		case ConstrainedOptPack::UPPER:
 			return "UPPER";
-		case ConstrainedOptimizationPack::LOWER:
+		case ConstrainedOptPack::LOWER:
 			return "LOWER";
-		case ConstrainedOptimizationPack::EQUALITY:
+		case ConstrainedOptPack::EQUALITY:
 			return "EQUALITY";
 	}
 	assert(0);	// should never be executed
@@ -226,7 +226,7 @@ void calc_v(
 // 		- Q_XD_hat' * A_bar * P_plus_hat * z_hat
 //
 void calc_mu_D(
-	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
+	const ConstrainedOptPack::QPSchur::ActiveSet  &act_set
 	,const DenseLinAlgPack::DVectorSlice                         &x
 	,const DenseLinAlgPack::DVectorSlice                         &v
 	,DenseLinAlgPack::DVectorSlice                               *mu_D
@@ -242,7 +242,7 @@ void calc_mu_D(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	const ConstrainedOptimizationPack::QPSchurPack::QP
+	const ConstrainedOptPack::QPSchurPack::QP
 		&qp = act_set.qp();
 	const DenseLinAlgPack::size_type
 		n = qp.n(),
@@ -278,7 +278,7 @@ void calc_mu_D(
 // 		- Q_XD_hat' * A_bar * (P_plus_hat * p_z_hat + e(ja))
 //
 void calc_p_mu_D(
-	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
+	const ConstrainedOptPack::QPSchur::ActiveSet  &act_set
 	,const DenseLinAlgPack::DVectorSlice                         &p_v
 	,const DenseLinAlgPack::DVectorSlice                         &p_z_hat
 	,const DenseLinAlgPack::size_type                           *ja       // If != NULL then we will include the term e(ja)
@@ -293,9 +293,9 @@ void calc_p_mu_D(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	const ConstrainedOptimizationPack::QPSchurPack::QP
+	const ConstrainedOptPack::QPSchurPack::QP
 		&qp = act_set.qp();
-	const ConstrainedOptimizationPack::QPSchurPack::Constraints
+	const ConstrainedOptPack::QPSchurPack::Constraints
 		&constraints = qp.constraints();
 	const DenseLinAlgPack::size_type
 		n = qp.n(),
@@ -398,7 +398,7 @@ void calc_p_mu_D(
 //
 template<class val_type>
 void calc_resid(
-	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
+	const ConstrainedOptPack::QPSchur::ActiveSet     &act_set
 	,const DenseLinAlgPack::DVectorSlice                            &v
 	,const DenseLinAlgPack::DVectorSlice                            &z_hat        // Only accessed if q_hat > 0
 	,const DenseLinAlgPack::value_type                             ao            // Only accessed if bo != NULL
@@ -426,7 +426,7 @@ void calc_resid(
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	namespace COP = ConstrainedOptimizationPack;
+	namespace COP = ConstrainedOptPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -588,13 +588,13 @@ void calc_resid(
 //
 int correct_dual_infeas(
 	const DenseLinAlgPack::size_type                                  j                // for output info only
-	,const ConstrainedOptimizationPack::EBounds                  bnd_j
+	,const ConstrainedOptPack::EBounds                  bnd_j
 	,const DenseLinAlgPack::value_type                                t_P              // (> 0) full step length
 	,const DenseLinAlgPack::value_type                                scale            // (> 0) scaling value
 	,const DenseLinAlgPack::value_type                                dual_infeas_tol
 	,const DenseLinAlgPack::value_type                                degen_mult_val
 	,std::ostream                                                *out             // Can be NULL
-	,const ConstrainedOptimizationPack::QPSchur::EOutputLevel    olevel
+	,const ConstrainedOptPack::QPSchur::EOutputLevel    olevel
 	,const bool                                                  print_dual_infeas
 	,const char                                                  nu_j_n[]         // Name of nu_j
 	,DenseLinAlgPack::value_type                                      *nu_j            // required
@@ -606,7 +606,7 @@ int correct_dual_infeas(
 	)
 {
 	typedef DenseLinAlgPack::value_type value_type;
-	namespace COP = ConstrainedOptimizationPack;
+	namespace COP = ConstrainedOptPack;
 
 	value_type nu_j_max = (*scaled_viol) = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0);
 	if( nu_j_max > 0.0 || bnd_j == COP::EQUALITY ) // Leave any multiplier value with the correct sign alone!
@@ -677,7 +677,7 @@ int correct_dual_infeas(
 // be skipped.
 //
 void calc_obj_grad_norm_inf(
-	const ConstrainedOptimizationPack::QPSchurPack::QP     &qp
+	const ConstrainedOptPack::QPSchurPack::QP     &qp
 	,const DenseLinAlgPack::DVectorSlice                         &x
 	,DenseLinAlgPack::value_type                                *qp_grad_norm_inf
 	)
@@ -687,7 +687,7 @@ void calc_obj_grad_norm_inf(
 
 }	// end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // public member functions for QPSchur::U_hat_t
 
@@ -5045,4 +5045,4 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	out	<< "\nfo =\n" << fo();
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
+#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {

@@ -18,7 +18,7 @@
 
 #include "DirectLineSearch_Strategy.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Performs a line search using the Armijo condition and
@@ -134,6 +134,6 @@ value_type DirectLineSearchArmQuad_Strategy::max_frac() const {
 	return max_frac_;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_H

@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"

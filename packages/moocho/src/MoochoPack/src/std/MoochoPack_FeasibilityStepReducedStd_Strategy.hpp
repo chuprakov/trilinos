@@ -20,8 +20,8 @@
 #include "QuasiRangeSpaceStep_Strategy.hpp"
 #include "d_bounds_iter_quant.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
@@ -40,7 +40,7 @@ public:
 	/// <<std comp>> members for the qp solver
 	STANDARD_COMPOSITION_MEMBERS( QuasiRangeSpaceStep_Strategy, quasi_range_space_step )
 
-	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester
+	typedef ConstrainedOptPack::QPSolverRelaxedTester
 		QPSolverRelaxedTester;
 
 	/// QP solver

@@ -20,10 +20,10 @@
 #include "../std/rSQPAlgorithmStepNames.hpp"
 #include "../rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
-#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
-#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
+#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
+#include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
@@ -65,7 +65,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
 
-	using ConstrainedOptimizationPack::print_vector_change_stats;
+	using ConstrainedOptPack::print_vector_change_stats;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();

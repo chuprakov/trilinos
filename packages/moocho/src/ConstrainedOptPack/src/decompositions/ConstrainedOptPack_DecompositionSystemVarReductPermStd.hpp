@@ -21,7 +21,7 @@
 #include "DecompositionSystemVarReductPerm.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Concreate subclass of \c DecompositionSystemVarReductPerm that uses an
@@ -232,6 +232,6 @@ DecompositionSystemVarReductPermStd::basis_sys() const
 	return basis_sys_;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif // DECOMPOSITION_SYSTEM_VAR_REDUCT_PERM_STD_H

@@ -16,9 +16,9 @@
 #ifndef COP_QP_SOLVER_STATS_H
 #define COP_QP_SOLVER_STATS_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Class for storing statistics about a run of a (active set?) QP solver.
@@ -117,6 +117,6 @@ private:
 
 };	// end class ActSetStats
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// COP_QP_SOLVER_STATS_H

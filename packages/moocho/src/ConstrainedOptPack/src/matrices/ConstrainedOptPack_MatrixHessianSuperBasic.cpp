@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
-#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
@@ -27,7 +27,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixHessianSuperBasic::MatrixHessianSuperBasic()
 	: n_(0)
@@ -466,4 +466,4 @@ void MatrixHessianSuperBasic::assert_initialized() const
 			"The matrix is not initialized yet" );
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

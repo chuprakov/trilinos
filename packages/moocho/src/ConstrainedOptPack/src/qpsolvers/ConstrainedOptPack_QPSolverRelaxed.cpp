@@ -17,7 +17,7 @@
 
 #include <limits>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -26,7 +26,7 @@
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // public
 
@@ -396,4 +396,4 @@ void QPSolverRelaxed::print_qp_output(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

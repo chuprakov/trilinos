@@ -20,7 +20,7 @@
 #include "MeritFuncNLP.hpp"
 #include "StandardAggregationMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Adds the ability to compute <tt>phi(f(x),c(x),h(x))</tt> at \c x
@@ -65,6 +65,6 @@ public:
 
 };	// end class MeritFuncCalcNLP
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_CALC_NLP_H

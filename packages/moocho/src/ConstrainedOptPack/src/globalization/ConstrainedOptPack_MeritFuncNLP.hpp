@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Base class for all merit functions for NonLinear Programs (NLP) {abstract}.
@@ -84,6 +84,6 @@ public:
 
 };	// end class MeritFuncNLP
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_NLP_H

@@ -16,10 +16,10 @@
 #ifndef MATRIX_DECOMP_RANGE_ORTHOG_H
 #define MATRIX_DECOMP_RANGE_ORTHOG_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix subclass for variable reduction orthogonal matrix </tt>R = Gc(:,con_decomp)'*Y</tt>.
@@ -208,6 +208,6 @@ MatrixDecompRangeOrthog::S_ptr() const
 	return S_ptr_;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_DECOMP_RANGE_ORTHOG_H

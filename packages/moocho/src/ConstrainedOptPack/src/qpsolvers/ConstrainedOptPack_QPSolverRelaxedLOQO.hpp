@@ -26,7 +26,7 @@
 #include "StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Solves Quadratic Programming (QP) problem using the primal-dual interior-point

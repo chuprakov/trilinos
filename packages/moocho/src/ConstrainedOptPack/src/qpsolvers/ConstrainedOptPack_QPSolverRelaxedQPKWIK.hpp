@@ -23,7 +23,7 @@
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Solves Quadratic Programming (QP) problem using the primal-dual active-set

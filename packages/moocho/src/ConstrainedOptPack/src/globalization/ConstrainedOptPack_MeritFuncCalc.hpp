@@ -16,9 +16,9 @@
 #ifndef MERIT_FUNC_CALC_H
 #define MERIT_FUNC_CALC_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Abstract iterface for n-D merit functions {abstract}.
@@ -47,6 +47,6 @@ public:
 
 };	// end class MeritFuncCalc
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_CALC_H

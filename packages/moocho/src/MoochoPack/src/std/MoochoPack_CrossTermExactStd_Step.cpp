@@ -18,7 +18,7 @@
 #include "../std/CrossTermExactStd_Step.hpp"
 #include "../rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

@@ -20,7 +20,7 @@
 #include "MeritFuncNLPDirecDeriv.hpp"
 #include "MeritFuncPenaltyParam.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** The L1 merit function.
@@ -102,6 +102,6 @@ private:
 
 };	// end class MeritFuncNLPL1
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_NLP_L1_H

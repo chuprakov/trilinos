@@ -16,10 +16,10 @@
 #ifndef MATRIX_IDENT_CONCAT_H
 #define MATRIX_IDENT_CONCAT_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix class for a matrix vertically concatonated with an identity matrix {abstract}.
@@ -92,6 +92,6 @@ public:
 
 }; // end class MatrixIdentConcat
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_IDENT_CONCAT_H

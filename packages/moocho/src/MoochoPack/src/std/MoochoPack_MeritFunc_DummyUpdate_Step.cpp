@@ -18,8 +18,8 @@
 
 #include "ReducedSpaceSQPPack/src/std/MeritFunc_DummyUpdate_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"

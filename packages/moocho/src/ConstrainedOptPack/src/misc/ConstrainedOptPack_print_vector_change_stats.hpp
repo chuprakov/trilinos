@@ -16,9 +16,9 @@
 #ifndef PRINT_VECTOR_CHANGE_STATS_H
 #define PRINT_VECTOR_CHANGE_STATS_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Compute statistics for change in a vector and output to a stream.
@@ -37,6 +37,6 @@ namespace ConstrainedOptimizationPack {
 void print_vector_change_stats( const DVectorSlice& x, const char x_name[]
 	, const DVectorSlice& d, const char d_name[], std::ostream& out );
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// PRINT_VECTOR_CHANGE_STATS_H

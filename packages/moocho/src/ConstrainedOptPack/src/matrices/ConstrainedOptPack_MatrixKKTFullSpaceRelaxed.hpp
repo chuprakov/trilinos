@@ -16,12 +16,12 @@
 #ifndef MATRIX_KKT_FULL_SPACE_RELAXED_H
 #define MATRIX_KKT_FULL_SPACE_RELAXED_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implementation of a KKT matrix factorized in the full space.
@@ -266,6 +266,6 @@ private:
 
 };	// end class MatrixKKTFullSpaceRelaxed
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MATRIX_KKT_FULL_SPACE_RELAXED_H

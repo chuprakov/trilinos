@@ -18,12 +18,12 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "Miref_count_ptr.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix class that represents a hessian matrix where only the super
@@ -292,6 +292,6 @@ MatrixHessianSuperBasic::B_XX_ptr() const
 	return B_XX_ptr_;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_HESSIAN_SUPER_BASIC_H

@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPL1.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MeritFuncNLPL1::MeritFuncNLPL1()
 	: deriv_(0.0), mu_(0.0)
@@ -96,4 +96,4 @@ value_type MeritFuncNLPL1::mu() const
 	return mu_;
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 

@@ -15,10 +15,10 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MeritFuncNLP& MeritFuncNLP::operator=(const MeritFuncNLP& merit_func)
 {
@@ -30,4 +30,4 @@ MeritFuncNLP& MeritFuncNLP::operator=(const MeritFuncNLP& merit_func)
 	return *this;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

@@ -20,14 +20,14 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/MatrixKKTFullSpaceRelaxed.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixKKTFullSpaceRelaxed.hpp"
 #include "AbstractLinAlgPack/src/DirectSparseFortranCompatibleSolver.h"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "AbstractLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixKKTFullSpaceRelaxed::MatrixKKTFullSpaceRelaxed(
 		const direct_solver_ptr_t& direct_solver		)
@@ -439,4 +439,4 @@ void MatrixKKTFullSpaceRelaxed::validate_and_set_matrices(
 }
 
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

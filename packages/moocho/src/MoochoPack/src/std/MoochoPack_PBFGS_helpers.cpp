@@ -168,14 +168,14 @@ void PBFGSPack::choose_fixed_free(
 	,size_type                             *n_pz_R
 	,size_type                             i_x_free[]
 	,size_type                             i_x_fixed[]
-	,ConstrainedOptimizationPack::EBounds  bnd_fixed[]
+	,ConstrainedOptPack::EBounds  bnd_fixed[]
 	)
 {
 	using std::setw;
 	using std::endl;
 	using std::right;
 	using AbstractLinAlgPack::norm_inf;
-	namespace COP = ConstrainedOptimizationPack;
+	namespace COP = ConstrainedOptPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -304,7 +304,7 @@ void PBFGSPack::choose_fixed_free(
 	size_type
 		*i_x_free_itr  = i_x_free,
 		*i_x_fixed_itr = i_x_fixed;
-	ConstrainedOptimizationPack::EBounds
+	ConstrainedOptPack::EBounds
 		*bnd_fixed_itr = bnd_fixed;
 	{for( size_type i = 1; i <= n_pz; ++i ) {
 		long int status = i_x_status[i-1];

@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixVarReductImplicit.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 //#include "AbstractLinAlgPack/src/serial/implementations/dense_Vp_StPtMtV.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
@@ -91,10 +91,10 @@ void imp_Vp_StMtV_implicit(
 //
 void imp_compute_InvCtN_row(
 	DenseLinAlgPack::size_type                                                 r
-	,const ConstrainedOptimizationPack::DecompositionSystemVarReduct      &decomp_sys
+	,const ConstrainedOptPack::DecompositionSystemVarReduct      &decomp_sys
 	,DenseLinAlgPack::size_type                                                j
 	,DenseLinAlgPack::DVectorSlice                                              *e_j  // Set to all zeros on input and output!
-	,ConstrainedOptimizationPack::MatrixVarReductImplicit::InvCtN_rows_t  *InvCtN_rows
+	,ConstrainedOptPack::MatrixVarReductImplicit::InvCtN_rows_t  *InvCtN_rows
 	)
 {
 	typedef  DenseLinAlgPack::value_type  value_type;
@@ -121,12 +121,12 @@ template<class V>
 void imp_Vp_StPtMtV_by_row(
 	DenseLinAlgPack::DVectorSlice                                               *y
 	,DenseLinAlgPack::value_type                                               a
-	,const ConstrainedOptimizationPack::GenPermMatrixSlice                &P
+	,const ConstrainedOptPack::GenPermMatrixSlice                &P
 	,BLAS_Cpp::Transp                                                     P_trans
-	,const ConstrainedOptimizationPack::DecompositionSystemVarReduct      &decomp_sys
+	,const ConstrainedOptPack::DecompositionSystemVarReduct      &decomp_sys
 	,const V                                                              &x
 	,DenseLinAlgPack::value_type                                               b
-	,ConstrainedOptimizationPack::MatrixVarReductImplicit::InvCtN_rows_t *InvCtN_rows
+	,ConstrainedOptPack::MatrixVarReductImplicit::InvCtN_rows_t *InvCtN_rows
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -168,7 +168,7 @@ void imp_Vp_StPtMtV_by_row(
 
 } // end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 void MatrixVarReductImplicit::initialize(
 	const mat_nonsing_ptr_t          &C
@@ -402,4 +402,4 @@ void MatrixVarReductImplicit::assert_initialized() const
 		"initialize(...) has not been called yet!" );
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 

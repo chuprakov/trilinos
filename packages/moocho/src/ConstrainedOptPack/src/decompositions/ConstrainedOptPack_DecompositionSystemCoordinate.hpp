@@ -19,7 +19,7 @@
 #include "DecompositionSystemVarReductImp.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Coordinate variable reduction subclass.
@@ -112,6 +112,6 @@ protected:
 
 };	// end class DecompositionSystemCoordinate
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DECOMPOSITION_SYSTEM_COORDINATE_H

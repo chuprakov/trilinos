@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianSuperBasic.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -24,7 +24,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	const DVectorSlice&    g
@@ -167,4 +167,4 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 
 }
 
-} // end namesapce ConstrainedOptimizationPack
+} // end namesapce ConstrainedOptPack

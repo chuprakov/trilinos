@@ -16,7 +16,7 @@
 #include "print_vector_change_stats.hpp"
 #include "vector_change_stats.hpp"
 
-void ConstrainedOptimizationPack::print_vector_change_stats(
+void ConstrainedOptPack::print_vector_change_stats(
 	  const DVectorSlice& x, const char x_name[]
 	, const DVectorSlice& d, const char d_name[], std::ostream& out )
 {

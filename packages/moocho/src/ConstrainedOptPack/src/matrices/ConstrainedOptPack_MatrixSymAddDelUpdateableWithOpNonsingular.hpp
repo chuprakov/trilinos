@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_ADD_DEL_UPDATEABLE_WITH_OP_NONSINGULAR_H
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_WITH_OP_NONSINGULAR_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Interface for updating a symmetric matrix and its factorization 
@@ -40,6 +40,6 @@ public:
 
 };	// end class MatrixSymAddDelUpdateableWithOpNonsingular
 
-}	// namespace ConstrainedOptimizationPack 
+}	// namespace ConstrainedOptPack 
 
 #endif	// MATRIX_SYM_ADD_DEL_UPDATEABLE_WITH_OP_NONSINGULAR_H

@@ -57,8 +57,8 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedLOQO.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedLOQO.hpp"
+#include "ConstrainedOptPack/src/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
@@ -80,7 +80,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // ///////////////////////////////////////
 // Members for QPSolverRelaxedLOQO::InitLOQOHessianJacobian
@@ -542,6 +542,6 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif // CONSTRAINED_OPTIMIZATION_PACK_USE_LOQO

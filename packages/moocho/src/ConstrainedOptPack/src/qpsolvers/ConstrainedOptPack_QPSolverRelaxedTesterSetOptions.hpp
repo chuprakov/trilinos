@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Set options for QPSolverRelaxedTester from an
@@ -59,6 +59,6 @@ protected:
 
 };	// end class QPSolverRelaxedTesterSetOptions
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// QP_SOLVER_RELAXED_TESTER_SET_OPTIONS_H

@@ -16,13 +16,13 @@
 #ifndef MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 #define MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 ///
 /** Matrix subclass for banded symmetric positive definite matrices and their
  * Cholesky factors.
@@ -249,6 +249,6 @@ BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::UB_uplo() const
 	return UB_uplo_;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_SYM_POS_DEF_BANDED_CHOL_H

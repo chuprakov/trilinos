@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
 ///
@@ -417,6 +417,6 @@ private:
 }; // end class ConstraintsRelaxedStd
 
 } // end namespace QPSchurPack 
-} // end namespace ConstrainedOptimizationPack 
+} // end namespace ConstrainedOptPack 
 
 #endif // QP_SCHUR_CONSTRAINTS_RELAXED_STD_H

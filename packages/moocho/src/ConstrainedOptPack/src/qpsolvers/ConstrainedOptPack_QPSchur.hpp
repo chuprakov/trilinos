@@ -20,8 +20,8 @@
 #include <map>
 #include <vector>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
-#include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
@@ -34,7 +34,7 @@
 #include "StandardMemberCompositionMacros.hpp"
 #include "stpwatch.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 namespace QPSchurPack {
 
@@ -1174,6 +1174,6 @@ private:
 
 };	// end class QPSchur
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// QPSCHUR_H

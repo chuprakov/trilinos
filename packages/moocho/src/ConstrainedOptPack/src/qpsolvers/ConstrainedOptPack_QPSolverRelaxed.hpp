@@ -19,7 +19,7 @@
 #include "QPSolverStats.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Solves Quadratic Programs (QPs) of several different forms while
@@ -532,6 +532,6 @@ protected:
 
 };	// end class QPSovlerRelaxed
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// QP_SOLVER_RELAXED_H

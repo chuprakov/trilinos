@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

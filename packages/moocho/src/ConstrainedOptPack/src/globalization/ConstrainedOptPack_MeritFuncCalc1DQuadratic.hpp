@@ -19,7 +19,7 @@
 #include "MeritFuncCalc1D.hpp"
 #include "MeritFuncCalc.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Adds the ability to compute phi(alpha) at alpha of a given set of vectors.
@@ -90,6 +90,6 @@ private:
 
 };	// end class MeritFuncCalc1DQuadratic
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_CALC_1D_QUADRATIC_H

@@ -21,8 +21,8 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.hpp"
-#include "ConstrainedOptimizationPack/src/QPOPT_CppDecl.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPT.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPOPT_CppDecl.hpp"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
@@ -56,7 +56,7 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 	using DenseLinAlgPack::DVectorSlice;
 	using AbstractLinAlgPack::SpVector;
 	using LinAlgOpPack::V_MtV;
-	using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
+	using ConstrainedOptPack::QPSolverRelaxedQPOPT;
 
 	// Here we have used some casting to pass on information about the qp solver
 	// that called QPSOL.
@@ -119,7 +119,7 @@ namespace LinAlgOpPack {
 // ///////////////////////////////////////
 // QPSolverRelaxedQPOPT
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedQPOPT::QPSolverRelaxedQPOPT(
 	value_type        max_qp_iter_frac
@@ -224,6 +224,6 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
 	return return_inform;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT

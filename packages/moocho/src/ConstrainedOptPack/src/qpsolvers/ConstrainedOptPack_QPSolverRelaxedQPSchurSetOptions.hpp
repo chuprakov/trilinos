@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Set options for QPSolverRelaxedQPSchur from an
@@ -84,6 +84,6 @@ protected:
 
 };	// end class QPSolverRelaxedQPSchurSetOptions
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H

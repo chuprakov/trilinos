@@ -26,11 +26,11 @@ namespace LinAlgOpPack {
 using AbstractLinAlgPack::Vp_StV;
 using AbstractLinAlgPack::Vp_StMtV;
 using AbstractLinAlgPack::Mp_StM;
-using ConstrainedOptimizationPack::Vp_StMtV;
+using ConstrainedOptPack::Vp_StMtV;
 
 }	// end namespace LinAlgOpPack
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // Overridden from Matrix 
 
@@ -54,7 +54,7 @@ std::ostream& MatrixSymPosDefInvCholFactor::output(std::ostream& out) const
 void MatrixSymPosDefInvCholFactor::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
-	ConstrainedOptimizationPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
+	ConstrainedOptPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
 }
 
 void MatrixSymPosDefInvCholFactor::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
@@ -63,13 +63,13 @@ void MatrixSymPosDefInvCholFactor::Vp_StMtV(DVectorSlice* vs_lhs, value_type alp
 	using LinAlgOpPack::assign;
 	DVector vs_rhs2;
 	assign(&vs_rhs2,sv_rhs2);
-	ConstrainedOptimizationPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
+	ConstrainedOptPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
 }
 
 value_type MatrixSymPosDefInvCholFactor::transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const DVectorSlice& vs_rhs3) const
 {
-	return ConstrainedOptimizationPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
+	return ConstrainedOptPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
 }
 
 value_type MatrixSymPosDefInvCholFactor::transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
@@ -79,7 +79,7 @@ value_type MatrixSymPosDefInvCholFactor::transVtMtV(const SpVectorSlice& sv_rhs1
 	DVector vs_rhs1, vs_rhs3;
 	assign(&vs_rhs1,sv_rhs1);
 	assign(&vs_rhs3,sv_rhs3);
-	return ConstrainedOptimizationPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
+	return ConstrainedOptPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
 }
 
 // Overridden from MatrixFactorized
@@ -87,37 +87,37 @@ value_type MatrixSymPosDefInvCholFactor::transVtMtV(const SpVectorSlice& sv_rhs1
 void MatrixSymPosDefInvCholFactor::V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2) const
 {
-	ConstrainedOptimizationPack::V_InvMtV(v_lhs,m(),vs_rhs2);
+	ConstrainedOptPack::V_InvMtV(v_lhs,m(),vs_rhs2);
 }
 
 void MatrixSymPosDefInvCholFactor::V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2) const
 {
-	ConstrainedOptimizationPack::V_InvMtV(vs_lhs,m(),vs_rhs2);
+	ConstrainedOptPack::V_InvMtV(vs_lhs,m(),vs_rhs2);
 }
 
 void MatrixSymPosDefInvCholFactor::V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
-	ConstrainedOptimizationPack::V_InvMtV(v_lhs,m(),sv_rhs2);
+	ConstrainedOptPack::V_InvMtV(v_lhs,m(),sv_rhs2);
 }
 
 void MatrixSymPosDefInvCholFactor::V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
-	ConstrainedOptimizationPack::V_InvMtV(vs_lhs,m(),sv_rhs2);
+	ConstrainedOptPack::V_InvMtV(vs_lhs,m(),sv_rhs2);
 }
 
 value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const DVectorSlice& vs_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const
 {
-	return ConstrainedOptimizationPack::transVtInvMtV(vs_rhs1,m(),vs_rhs3);
+	return ConstrainedOptPack::transVtInvMtV(vs_rhs1,m(),vs_rhs3);
 }
 
 value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const SpVectorSlice& sv_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const
 {
-	return ConstrainedOptimizationPack::transVtInvMtV(sv_rhs1,m(),sv_rhs3);}
+	return ConstrainedOptPack::transVtInvMtV(sv_rhs1,m(),sv_rhs3);}
 
 // Overridden from MatrixSymFactorized
 
@@ -216,10 +216,10 @@ void MatrixSymPosDefInvCholFactor::secant_update(DVectorSlice* s, DVectorSlice* 
 		if(!_Bs) {
 			DVector Bs;
 			V_MtV( &Bs, *this, BLAS_Cpp::no_trans, *s );
-			ConstrainedOptimizationPack::BFGS_update(&m(),s,y,&Bs());
+			ConstrainedOptPack::BFGS_update(&m(),s,y,&Bs());
 		}
 		else {
-			ConstrainedOptimizationPack::BFGS_update(&m(),s,y,_Bs);
+			ConstrainedOptPack::BFGS_update(&m(),s,y,_Bs);
 		}
 	}
 	catch(const BFGSUpdateSkippedException& excpt) {
@@ -234,4 +234,4 @@ void MatrixSymPosDefInvCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol
 	DenseLinAlgPack::assign( InvChol, DenseLinAlgPack::tri_ele( m().UInv(), BLAS_Cpp::upper ) );
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

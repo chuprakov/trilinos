@@ -18,8 +18,8 @@
 
 #include "DecompositionSystemHandler_Strategy.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
+#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"

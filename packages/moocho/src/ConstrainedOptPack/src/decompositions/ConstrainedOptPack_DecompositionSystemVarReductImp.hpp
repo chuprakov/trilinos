@@ -22,7 +22,7 @@
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Specialization node implementation subclass of \c DecompositionSystem for
@@ -458,6 +458,6 @@ DecompositionSystemVarReductImp::D_imp_used() const
 	return D_imp_used_;
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H

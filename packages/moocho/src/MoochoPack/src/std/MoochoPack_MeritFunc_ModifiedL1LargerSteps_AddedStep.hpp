@@ -17,7 +17,7 @@
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

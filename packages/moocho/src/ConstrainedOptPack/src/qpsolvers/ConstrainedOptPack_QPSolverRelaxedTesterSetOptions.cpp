@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTesterSetOptions.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTesterSetOptions.hpp"
 
 // Define the options
 namespace {
@@ -43,7 +43,7 @@ namespace {
 
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedTesterSetOptions::QPSolverRelaxedTesterSetOptions(
 			  QPSolverRelaxedTester* target
@@ -82,4 +82,4 @@ void QPSolverRelaxedTesterSetOptions::set_option(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

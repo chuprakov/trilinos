@@ -18,10 +18,10 @@
 
 #include <iosfwd>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Testing class for \c DecompositionSystem interface.
@@ -147,6 +147,6 @@ public:
 
 }; // end class DecompositionSystemTester
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // DECOMPOSITION_SYSTEM_TESTER_H

@@ -16,13 +16,13 @@
 #ifndef MATRIX_GEN_BANDED_H
 #define MATRIX_GEN_BANDED_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 ///
 /** Matrix subclass for general (possibly singular) banded matrices.
  * 
@@ -185,6 +185,6 @@ const DMatrixSlice& MatrixGenBanded::MB() const
 	return MB_;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_GEN_BANDED_H

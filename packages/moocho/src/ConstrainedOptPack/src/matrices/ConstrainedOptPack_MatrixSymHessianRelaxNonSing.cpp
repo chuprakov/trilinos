@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymHessianRelaxNonSing.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
@@ -32,7 +32,7 @@ template<class V>
 void Vp_StPtMtV_imp( 
 	DenseLinAlgPack::DVectorSlice* y, DenseLinAlgPack::value_type a
 	, const AbstractLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, const ConstrainedOptimizationPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
+	, const ConstrainedOptPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
 	, const V& x, DenseLinAlgPack::value_type b
 	)
 {
@@ -110,7 +110,7 @@ void Vp_StPtMtV_imp(
 
 } // end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing()
 	: vec_space_(NULL,0)
@@ -375,4 +375,4 @@ void MatrixSymHessianRelaxNonSing::assert_initialized() const
 		,"MatrixSymHessianRelaxNonSing::assert_initialized(): Error, Not initalized yet!" );
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

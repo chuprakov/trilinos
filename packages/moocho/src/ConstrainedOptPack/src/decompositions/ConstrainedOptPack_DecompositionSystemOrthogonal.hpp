@@ -19,7 +19,7 @@
 #include "DecompositionSystemVarReductImp.hpp"
 #include "StandardCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Orthogonal variable reduction subclass.
@@ -139,6 +139,6 @@ private:
 
 };	// end class DecompositionSystemOrthogonal
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DECOMPOSITION_SYSTEM_ORTHOGONAL_H

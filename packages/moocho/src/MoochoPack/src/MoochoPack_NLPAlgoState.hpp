@@ -25,7 +25,7 @@
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 //#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardCompositionMacros.hpp"

@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-//#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
+//#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
@@ -60,7 +60,7 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 			<< dot( Ypy_k, Zpz_k ) / ( Ypy_k.norm_2() * Zpz_k.norm_2() + very_small );
 		out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;
 /*
-        ConstrainedOptimizationPack::print_vector_change_stats(
+        ConstrainedOptPack::print_vector_change_stats(
             s.x().get_k(0), "x", s.d().get_k(0), "d", out );
 */
 		// ToDo: Replace the above with a reduction operator!

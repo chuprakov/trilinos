@@ -15,16 +15,16 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductImp.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixVarReductImplicit.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DecompositionSystemVarReductImp::DecompositionSystemVarReductImp(
 	const VectorSpace::space_ptr_t     &space_x
@@ -711,4 +711,4 @@ void DecompositionSystemVarReductImp::alloc_new_D_matrix(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

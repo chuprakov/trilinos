@@ -21,7 +21,7 @@
 #include "DecompositionSystemVarReduct.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Specialization interface of \c DecompositonSystem that allows basis permutations.
@@ -127,6 +127,6 @@ public:
 	
 };	// end class DecompositionSystemVarReductPerm
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif // DECOMPOSITION_SYSTEM_VAR_REDUCT_PERM_H

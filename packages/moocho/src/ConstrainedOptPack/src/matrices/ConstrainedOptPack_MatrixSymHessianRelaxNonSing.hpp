@@ -16,11 +16,11 @@
 #ifndef MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 #define MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix class for non-singular Hessian matrix augmented with a terms for
@@ -233,6 +233,6 @@ MatrixSymHessianRelaxNonSing::M() const
 	return M_;
 }
 	
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_SYM_HESSIAN_RELAX_NON_SING_H

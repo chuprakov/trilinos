@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "Midynamic_cast_verbose.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixHessianSuperBasicInitDiagonal::MatrixHessianSuperBasicInitDiagonal()
 	: B_RR_init_(NULL)
@@ -82,4 +82,4 @@ void MatrixHessianSuperBasicInitDiagonal::init_diagonal(
 		);
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

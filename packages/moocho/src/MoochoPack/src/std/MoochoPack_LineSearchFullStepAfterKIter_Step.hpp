@@ -19,7 +19,7 @@
 #include <limits>
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 

@@ -27,9 +27,9 @@
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
-//#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
-//#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
+//#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
+//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"                          // |
 
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
@@ -37,14 +37,14 @@
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 
 // line search
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_StrategySetOptions.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_StrategySetOptions.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPL1.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPModL1.hpp"
 
 // Basis permutations and direct sparse solvers
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPerm.hpp"
 #endif
 
 #include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
@@ -984,7 +984,7 @@ void Algo_ConfigIP::config_algo_cntr(
 			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
 				direct_line_search = mmp::rcp(new  DirectLineSearchArmQuad_Strategy());
 			if(options_.get()) {
-				ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
+				ConstrainedOptPack::DirectLineSearchArmQuad_StrategySetOptions
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
 				ls_options_setter.set_options( *options_ );
 			}

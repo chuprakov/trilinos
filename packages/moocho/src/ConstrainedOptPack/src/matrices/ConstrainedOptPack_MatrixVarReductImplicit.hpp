@@ -19,12 +19,12 @@
 #include <vector>
 #include <list>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implements <tt>D = - inv(C) * N</tt> for a variable reduction projection.
@@ -281,6 +281,6 @@ MatrixVarReductImplicit::D_direct_ptr() const
 	return D_direct_;
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// MATRIX_VAR_REDUCT_IMPLICIT_H

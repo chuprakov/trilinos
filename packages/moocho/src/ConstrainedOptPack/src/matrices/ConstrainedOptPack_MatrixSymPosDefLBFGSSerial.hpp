@@ -24,7 +24,7 @@
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implementation of limited Memory BFGS matrix.
@@ -416,6 +416,6 @@ size_type MatrixSymPosDefLBFGS::num_secant_updates() const
 }
 
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// MATRIX_SYM_POS_DEF_LBFGS_H

@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
+#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 
@@ -23,8 +23,8 @@ inline
 T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
-ConstrainedOptimizationPack::value_type
-ConstrainedOptimizationPack ::min_abs( const DVectorSlice& mu )
+ConstrainedOptPack::value_type
+ConstrainedOptPack ::min_abs( const DVectorSlice& mu )
 {
 	if( !mu.dim() )
 		return 0.0;
@@ -34,8 +34,8 @@ ConstrainedOptimizationPack ::min_abs( const DVectorSlice& mu )
 	return min;
 }
 
-ConstrainedOptimizationPack::value_type
-ConstrainedOptimizationPack ::min_abs( const SpVectorSlice& mu )
+ConstrainedOptPack::value_type
+ConstrainedOptPack ::min_abs( const SpVectorSlice& mu )
 {
 	if( !mu.dim() )
 		return 0.0;

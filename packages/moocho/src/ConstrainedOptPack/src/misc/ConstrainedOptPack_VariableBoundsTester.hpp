@@ -16,10 +16,10 @@
 #ifndef VARIABLE_BOUNDS_TESTER_H
 #define VARIABLE_BOUNDS_TESTER_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Tests that a set of variables are within their bounds.

@@ -17,7 +17,7 @@
 
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefBandedChol.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefBandedChol.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
@@ -51,7 +51,7 @@ FORTRAN_FUNC_DECL_UL(void,DPBTRS,dpbtrs)(
 
 } // end namespace LAPACK
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixSymPosDefBandedChol::MatrixSymPosDefBandedChol(
 	size_type                         n
@@ -308,4 +308,4 @@ void MatrixSymPosDefBandedChol::update_factorization() const
 	}
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

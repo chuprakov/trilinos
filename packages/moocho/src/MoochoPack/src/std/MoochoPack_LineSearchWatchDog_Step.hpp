@@ -17,8 +17,8 @@
 #define LINE_SEARCH_WATCH_DOG_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"

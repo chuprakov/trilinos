@@ -16,10 +16,10 @@
 #ifndef MATRIX_HESSIAN_RELAXED_H
 #define MATRIX_HESSIAN_RELAXED_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Represents a symmetric Hessian matrix with a relaxation variable
@@ -85,6 +85,6 @@ private:
 
 };	// end class MatrixHessianRelaxed
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif 	// MATRIX_HESSIAN_RELAXED_H

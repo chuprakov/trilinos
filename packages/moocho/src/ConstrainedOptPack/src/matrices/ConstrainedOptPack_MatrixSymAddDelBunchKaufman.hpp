@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** This class maintains the factorization of symmetric indefinite matrix
@@ -243,6 +243,6 @@ const DMatrixSliceSym MatrixSymAddDelBunchKaufman::S(size_type S_size) const
 		, BLAS_Cpp::lower );
 }
 
-}	// namespace ConstrainedOptimizationPack 
+}	// namespace ConstrainedOptPack 
 
 #endif	// MATRIX_SYM_POS_DEF_BUNCH_KAUFMAN_H

@@ -19,14 +19,14 @@
 #include "QPSolverRelaxed.hpp"
 #include "QPSchur.hpp"
 #include "QPInitFixedFreeStd.hpp"
-#include "MatrixSymHessianRelaxNonSing.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
 #include "ConstraintsRelaxedStd.hpp"
-#include "MatrixSymAddDelBunchKaufman.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Solves Quadratic Programming (QP) problems using QPSchur.
@@ -410,6 +410,6 @@ private:
 
 }; // end class QPSolverRelaxedQPSchur
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // QP_SOLVER_RELAXED_QP_SCHUR_H

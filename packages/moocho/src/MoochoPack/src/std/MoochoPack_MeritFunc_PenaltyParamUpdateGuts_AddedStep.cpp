@@ -19,9 +19,9 @@
 #include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParam.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncPenaltyParam.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 

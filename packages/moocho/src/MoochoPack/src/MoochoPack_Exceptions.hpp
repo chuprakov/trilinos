@@ -17,7 +17,7 @@
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
 #include "ReducedSpaceSQPPackTypes.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverStats.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -41,11 +41,11 @@ class QPFailure : public std::runtime_error
 {
 public:
 	QPFailure(const std::string& what_arg
-			  , const ConstrainedOptimizationPack::QPSolverStats& _qp_stats)
+			  , const ConstrainedOptPack::QPSolverStats& _qp_stats)
 		: std::runtime_error(what_arg)
 		, qp_stats(_qp_stats)
 		{}
-	ConstrainedOptimizationPack::QPSolverStats qp_stats;
+	ConstrainedOptPack::QPSolverStats qp_stats;
 };
 
 //@}

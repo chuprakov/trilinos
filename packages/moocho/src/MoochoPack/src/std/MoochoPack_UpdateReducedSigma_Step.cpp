@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.hpp"

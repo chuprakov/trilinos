@@ -17,7 +17,7 @@
 #define QP_SOLVER_STATS_HH
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverStats.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -25,7 +25,7 @@ namespace ReducedSpaceSQPPack {
 /// Name given to the active set statistics iteration quantity
 extern const std::string qp_solver_stats_name;
 
-using ConstrainedOptimizationPack::QPSolverStats;
+using ConstrainedOptPack::QPSolverStats;
 
 ///
 /** Class for object that attempts to return an IterQuantityAccess<QPSolverStats>

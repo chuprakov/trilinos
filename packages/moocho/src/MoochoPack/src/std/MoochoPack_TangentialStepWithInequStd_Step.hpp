@@ -22,8 +22,8 @@
 #include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
 #include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

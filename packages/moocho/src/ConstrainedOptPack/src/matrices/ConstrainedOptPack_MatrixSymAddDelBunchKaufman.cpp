@@ -16,14 +16,14 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymAddDelBunchKaufman.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/delete_row_col.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixSymAddDelBunchKaufman::MatrixSymAddDelBunchKaufman()
 	: S_size_(0), S_indef_(false), fact_updated_(false), fact_in1_(true), inertia_(0,0,0)
@@ -844,4 +844,4 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
 	return throw_exception;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

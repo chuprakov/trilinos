@@ -18,10 +18,10 @@
 
 #include <stdexcept>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** This class abstracts a decomposition choice for the range space \a Y,
@@ -393,6 +393,6 @@ public:
 	
 };	// end class DecompositionSystem
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif // DECOMPOSITION_SYSTEM_H

@@ -19,7 +19,7 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-void ConstrainedOptimizationPack::vector_change_stats(
+void ConstrainedOptPack::vector_change_stats(
 	  const DVectorSlice& x, const DVectorSlice& d
 	, value_type* max_term, size_type* max_k
 	, value_type* min_term, size_type* min_k

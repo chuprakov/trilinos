@@ -16,9 +16,9 @@
 #ifndef MERIT_FUNC_PENALTY_PARAM_H
 #define MERIT_FUNC_PENALTY_PARAM_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** This class provides interface for setting and retrieving a penalty parameter
@@ -38,6 +38,6 @@ public:
 
 };	// end class MeritFuncPenaltyParam
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_PENALTY_PARAM_H

@@ -16,13 +16,13 @@
 #ifndef REDUCED_SPACE_SQP_PACK_TYPES_H
 #define REDUCED_SPACE_SQP_PACK_TYPES_H
 
-#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "IterationPack/src/IterationPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 
-// using types from ConstrainedOptimizationPack
-#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackPublicTypes.ud"
+// using types from ConstrainedOptPack
+#include "ConstrainedOptPack/src/ConstrainedOptPackPublicTypes.ud"
 
 // using types from IterationPack
 #include "IterationPack/src/IterationPackPublicTypes.ud"

@@ -17,7 +17,7 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MeritFuncNLESqrResid::MeritFuncNLESqrResid()
 	: deriv_(0.0)
@@ -52,4 +52,4 @@ void MeritFuncNLESqrResid::print_merit_func(std::ostream& out
 		<< L << "Dphi(x_k,d_k) = - dot(c_k,c_k)\n";
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 

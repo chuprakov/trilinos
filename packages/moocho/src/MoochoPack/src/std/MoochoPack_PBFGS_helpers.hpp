@@ -193,7 +193,7 @@ void choose_fixed_free(
 	,size_type                             *n_pz_R
 	,size_type                             i_x_free[]
 	,size_type                             i_x_fixed[]
-	,ConstrainedOptimizationPack::EBounds  bnd_fixed[]
+	,ConstrainedOptPack::EBounds  bnd_fixed[]
 	);
 
 //@}

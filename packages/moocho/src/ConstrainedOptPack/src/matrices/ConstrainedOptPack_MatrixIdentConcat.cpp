@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
@@ -101,7 +101,7 @@ void mat_vec(
 
 } // end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // Overridden from MatrixBase
 
@@ -168,4 +168,4 @@ void MatrixIdentConcat::Vp_StMtV(
 	mat_vec( y, a, alpha(), D(), D_trans(), D_rng(), I_rng(), M_trans, x, b );
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

@@ -20,7 +20,7 @@
 #include "StandardMemberCompositionMacros.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Specialization of \c DecompositionSystem for variable reduction decompositions.
@@ -111,6 +111,6 @@ private:
 
 };	// end class DecompositionSystemVarReduct
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DECOMPOSITION_SYSTEM_VAR_REDUCT_H

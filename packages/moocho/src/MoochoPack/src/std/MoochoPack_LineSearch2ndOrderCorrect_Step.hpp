@@ -18,8 +18,8 @@
 
 #include "ReducedSpaceSQPPack/src/rSQPAlgo_StepBaseClasses.h"
 #include "FeasibilityStep_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 #include "StandardMemberCompositionMacros.hpp"

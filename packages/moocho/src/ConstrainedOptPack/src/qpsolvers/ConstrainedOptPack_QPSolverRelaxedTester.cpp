@@ -15,7 +15,7 @@
 
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -26,9 +26,9 @@
 namespace {
 
 //
-const char* solution_type_str( ConstrainedOptimizationPack::QPSolverStats::ESolutionType solution_type )
+const char* solution_type_str( ConstrainedOptPack::QPSolverStats::ESolutionType solution_type )
 {
-	typedef ConstrainedOptimizationPack::QPSolverStats qpst;
+	typedef ConstrainedOptPack::QPSolverStats qpst;
 	switch( solution_type ) {
 	
 	case qpst::OPTIMAL_SOLUTION:
@@ -113,7 +113,7 @@ void handle_error(
 
 }	// end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // public
 
@@ -691,4 +691,4 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Base class for all merit functions for systems of NonLinear Equations (NLE) {abstract}.
@@ -65,6 +65,6 @@ public:
 
 };	// end class MeritFuncNLE
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_NLE_H

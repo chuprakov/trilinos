@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Set options for DirectLineSearchArmQuad_Strategy from a
@@ -78,6 +78,6 @@ protected:
 
 };	// end class DirectLineSearchArmQuad_StrategySetOptions
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_SET_OPTIONS_H

@@ -28,7 +28,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPermStd.hpp"
 #endif
 
 // Range/null decomposition
@@ -36,14 +36,14 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemCoordinate.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemOrthogonal.hpp"
 
 // Iteration quantities
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"               // Y, Z
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"               // Y, Z
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 
 // Eval new point
@@ -57,7 +57,7 @@
 
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.hpp"
+#include "ConstrainedOptPack/src/misc/VariableBoundsTesterSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTesterSetOptions.hpp"
@@ -517,7 +517,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 				,var_bounds_error_tol       // default error tolerance
 				) );
 		if(options_.get()) {
-			ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
+			ConstrainedOptPack::VariableBoundsTesterSetOptions
 				options_setter( bounds_tester->get() );
 			options_setter.set_options(*options_);
 		}
@@ -526,7 +526,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	// Create the finite difference class
 	*calc_fd_prod = mmp::rcp(new CalcFiniteDiffProd());
 	if(options_.get()) {
-		ConstrainedOptimizationPack::CalcFiniteDiffProdSetOptions
+		ConstrainedOptPack::CalcFiniteDiffProdSetOptions
 			options_setter( calc_fd_prod->get() );
 		options_setter.set_options(*options_);
 	}

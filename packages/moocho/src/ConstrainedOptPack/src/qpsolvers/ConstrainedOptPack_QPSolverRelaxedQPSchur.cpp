@@ -17,7 +17,7 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchur.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
@@ -28,7 +28,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "profile_hack.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	const init_kkt_sys_ptr_t&  init_kkt_sys
@@ -558,4 +558,4 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	return qp_stats_.solution_type();
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

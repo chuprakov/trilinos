@@ -18,7 +18,7 @@
 
 #include "MeritFuncNLE.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** A merit function for the square of the constriant values.
@@ -62,6 +62,6 @@ private:
 
 };	// end class MeritFuncNLESqrResid
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// MERIT_FUNC_NLE_SQR_RESID_H

@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchurSetOptions.hpp"
 #include "StringToBool.hpp"
 
 // Define the options
@@ -76,7 +76,7 @@ namespace {
 
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedQPSchurSetOptions::QPSolverRelaxedQPSchurSetOptions(
 			  QPSolverRelaxedQPSchur* target
@@ -198,4 +198,4 @@ void QPSolverRelaxedQPSchurSetOptions::set_option(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

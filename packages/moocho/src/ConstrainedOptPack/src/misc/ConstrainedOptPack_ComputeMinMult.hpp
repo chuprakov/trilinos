@@ -16,9 +16,9 @@
 #ifndef COMPUTE_MIN_MULT_H
 #define COMPUTE_MIN_MULT_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 /** @name Compute the minimum absolute value of the given
   * Lagrange multipliers.
@@ -35,6 +35,6 @@ value_type min_abs( const SpVectorSlice& mu );
 
 //@}
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// COMPUTE_MIN_MULT_H

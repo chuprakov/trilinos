@@ -18,7 +18,7 @@
 
 #include "QPSchur.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
 ///
@@ -199,6 +199,6 @@ private:
 };	// end class QPInitFixedFreeStd
 
 }	// end namespace QPSchurPack
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// QP_INIT_FIXED_FREE_STD_H

@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianRelaxed.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianRelaxed.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
@@ -27,7 +27,7 @@ namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MatrixHessianRelaxed::MatrixHessianRelaxed()
 	:
@@ -310,4 +310,4 @@ value_type MatrixHessianRelaxed::transVtMtV(
 	return 0.0; // Will never be executed!
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

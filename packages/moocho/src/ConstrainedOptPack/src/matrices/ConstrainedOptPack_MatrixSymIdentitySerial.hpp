@@ -16,11 +16,11 @@
 #ifndef COP_MATRIX_SYM_IDENTITY_SERIAL_H
 #define COP_MATRIX_SYM_IDENTITY_SERIAL_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix class for a serial scaled identity matrix.
@@ -126,6 +126,6 @@ value_type MatrixSymIdentitySerial::scale() const
 	return scale_;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // COP_MATRIX_SYM_IDENTITY_SERIAL_H

@@ -17,7 +17,7 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPKWIK.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
@@ -160,7 +160,7 @@ f_int constraint_index( const f_int m1, const f_int m2, const f_int m3, const f_
 // ///////////////////////////////////////
 // Members for QPSolverRelaxedQPKWIK
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 QPSolverRelaxedQPKWIK::QPSolverRelaxedQPKWIK(
 	value_type        max_qp_iter_frac
@@ -222,7 +222,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	using AbstractLinAlgPack::EtaVector;
 	using AbstractLinAlgPack::transVtMtV;
 	using AbstractLinAlgPack::num_bounded;
-	using ConstrainedOptimizationPack::MatrixExtractInvCholFactor;
+	using ConstrainedOptPack::MatrixExtractInvCholFactor;
 
 	// /////////////////////////
 	// Map to QPKWIK input
@@ -592,4 +592,4 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	return qp_stats_.solution_type();
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

@@ -15,14 +15,14 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymIdentitySerial.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymIdentitySerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // Constructors
 
@@ -104,4 +104,4 @@ void MatrixSymIdentitySerial::extract_inv_chol( DMatrixSliceTriEle* InvChol ) co
 	InvChol->gms().diag() = 1.0 / ::sqrt(scale_);
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

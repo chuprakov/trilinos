@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ConstrainedOptimizationPackTypes.hpp
+// ConstrainedOptPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 #include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
 
@@ -86,6 +86,6 @@ class QPSolverRelaxedTesterSetOptions;
 //class QPSchur;
 //class QPSolverRelaxedQPSchurRangeSpace;
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif // CONSTRAINED_OPTIMIZATION_PACK_TYPES_H

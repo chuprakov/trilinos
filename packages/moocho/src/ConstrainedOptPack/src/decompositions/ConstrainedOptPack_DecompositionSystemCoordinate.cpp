@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemCoordinate.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
@@ -25,7 +25,7 @@
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DecompositionSystemCoordinate::DecompositionSystemCoordinate(
 	const VectorSpace::space_ptr_t     &space_x
@@ -193,4 +193,4 @@ void DecompositionSystemCoordinate::print_update_matrices(
 		;
 }
 		
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

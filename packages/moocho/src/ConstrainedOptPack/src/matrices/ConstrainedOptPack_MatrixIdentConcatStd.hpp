@@ -21,7 +21,7 @@
 #include "Range1D.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Concrete implementation class for a matrix vertically concatonated with an identity matrix.
@@ -180,6 +180,6 @@ private:
 
 }; // end class MatrixIndentConcatStd
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_IDENT_CONCAT_STD_H

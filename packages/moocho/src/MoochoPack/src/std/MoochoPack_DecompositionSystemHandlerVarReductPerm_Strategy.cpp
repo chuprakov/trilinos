@@ -22,7 +22,7 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPerm.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"

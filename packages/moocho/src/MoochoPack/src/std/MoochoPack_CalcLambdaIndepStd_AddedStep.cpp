@@ -18,8 +18,8 @@
 #include "../std/CalcLambdaIndepStd_AddedStep.hpp"
 #include "../rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
-#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
+#include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -43,7 +43,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 
 	using AbstractLinAlgPack::Vp_StMtV;
 	
-	using ConstrainedOptimizationPack::min_abs;
+	using ConstrainedOptPack::min_abs;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StMtV;

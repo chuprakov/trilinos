@@ -16,9 +16,9 @@
 #ifndef VECTOR_CHANGE_STATS_H
 #define VECTOR_CHANGE_STATS_H
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Compute statistics for change in a vector.
@@ -44,6 +44,6 @@ void vector_change_stats( const DVectorSlice& x, const DVectorSlice& d
 	, value_type* min_term, size_type* min_k
 	, value_type* av_term );
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// VECTOR_CHANGE_STATS_H

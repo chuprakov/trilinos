@@ -15,10 +15,10 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
+#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 
-void ConstrainedOptimizationPack::initialize_Q_R_Q_X(
+void ConstrainedOptPack::initialize_Q_R_Q_X(
 	size_type            n_R
 	,size_type           n_X
 	,const size_type     i_x_free[]

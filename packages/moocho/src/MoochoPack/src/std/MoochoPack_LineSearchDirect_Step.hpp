@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {

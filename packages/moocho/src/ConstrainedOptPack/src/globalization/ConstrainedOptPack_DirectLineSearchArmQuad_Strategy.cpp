@@ -17,11 +17,11 @@
 #include <iomanip>
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1D.hpp"
+#include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_Strategy.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1D.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 inline value_type min(value_type v1, value_type v2) {
 	return (v1 < v2) ? v1 : v2;
 }
@@ -30,27 +30,27 @@ inline value_type max(value_type v1, value_type v2) {
 }
 }
 
-ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::DirectLineSearchArmQuad_Strategy(
+ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::DirectLineSearchArmQuad_Strategy(
 		int max_iter, value_type eta, value_type min_frac, value_type max_frac )
 	: max_iter_(max_iter), eta_(eta), min_frac_(min_frac), max_frac_(max_frac)
 {}
 
-void ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::set_max_iter(int max_iter)
+void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::set_max_iter(int max_iter)
 {
 	max_iter_ = max_iter;
 }
 
-int ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::max_iter() const
+int ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::max_iter() const
 {
 	return max_iter_;
 }
 
-int ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::num_iterations() const
+int ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::num_iterations() const
 {
 	return num_iter_;
 }
 
-bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_search(
+bool ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::do_line_search(
 	  const MeritFuncCalc1D& phi, value_type phi_k
 	, value_type* alpha_k, value_type* phi_kp1
 	, std::ostream* out )
@@ -172,7 +172,7 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 	return false; 
 }
 
-void ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::print_algorithm(
+void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::print_algorithm(
 	std::ostream& out, const std::string& L) const
 {
 	out
@@ -218,7 +218,7 @@ void ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::print_algori
 		<< L << "linesearch_failure = true\n";
 }
 
-void ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::validate_parameters() const
+void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::validate_parameters() const
 {
 	if( eta() < 0.0 || 1.0 < eta() ) {
 		std::ostringstream omsg;

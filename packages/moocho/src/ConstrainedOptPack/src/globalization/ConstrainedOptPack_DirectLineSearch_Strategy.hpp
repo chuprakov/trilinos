@@ -19,9 +19,9 @@
 #include <stdexcept>
 #include <iosfwd>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Abstract strategy interface for 1D line searches {abstract}.
@@ -112,6 +112,6 @@ public:
 
 };	// end class DirectLineSearch_Strategy
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DIRECT_LINE_SEARCH_STRATEGY_H

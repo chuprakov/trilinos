@@ -17,8 +17,8 @@
 
 #include <ostream>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
-#include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DecompositionSystemTester::DecompositionSystemTester(
 	EPrintTestLevel  print_tests
@@ -783,4 +783,4 @@ bool DecompositionSystemTester::test_decomp_system(
 	return success;
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

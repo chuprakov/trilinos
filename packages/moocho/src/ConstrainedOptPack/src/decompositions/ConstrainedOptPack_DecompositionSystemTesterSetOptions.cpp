@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.hpp"
+#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
 #include "StringToBool.hpp"
 #include "ThrowException.hpp"
 
@@ -49,7 +49,7 @@ namespace {
 
 }
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 DecompositionSystemTesterSetOptions::DecompositionSystemTesterSetOptions(
 			  DecompositionSystemTester* target
@@ -115,4 +115,4 @@ void DecompositionSystemTesterSetOptions::set_option(
 	}
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

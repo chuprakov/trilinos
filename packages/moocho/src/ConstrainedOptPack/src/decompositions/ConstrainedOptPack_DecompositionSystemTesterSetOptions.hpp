@@ -20,7 +20,7 @@
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Set options for DecompositionSystemTester from an
@@ -68,6 +68,6 @@ protected:
 
 };	// end class DecompositionSystemTesterSetOptions
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack
 
 #endif	// DECOMPOSITION_SYSTEM_TESTER_SET_OPTIONS_H

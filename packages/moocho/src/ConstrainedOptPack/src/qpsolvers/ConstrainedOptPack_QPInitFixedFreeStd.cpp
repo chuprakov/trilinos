@@ -17,10 +17,10 @@
 
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/QPInitFixedFreeStd.hpp"
-#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
+#include "ConstrainedOptPack/src/qpsolvers/QPInitFixedFreeStd.hpp"
+#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 namespace QPSchurPack {
 
 QPInitFixedFreeStd::QPInitFixedFreeStd()
@@ -327,4 +327,4 @@ void QPInitFixedFreeStd::assert_initialized() const
 }
 
 }	// end namespace QPSchurPack
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 

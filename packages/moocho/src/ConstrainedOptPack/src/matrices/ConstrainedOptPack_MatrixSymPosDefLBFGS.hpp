@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPackTypes.hpp"
+#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
@@ -26,7 +26,7 @@
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implementation of limited Memory BFGS matrix for arbitrary vector spaces.
@@ -384,6 +384,6 @@ size_type MatrixSymPosDefLBFGS::num_secant_updates() const
 	return num_secant_updates_;
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 #endif	// MATRIX_SYM_POS_DEF_LBFGS_H

@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
 #include "ThrowException.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // Setup and representation access
 
@@ -135,4 +135,4 @@ void MatrixIdentConcatStd::assert_initialized() const {
 		,"Error, the MatrixIdentConcatStd object has not been initialized!" );
 }
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack

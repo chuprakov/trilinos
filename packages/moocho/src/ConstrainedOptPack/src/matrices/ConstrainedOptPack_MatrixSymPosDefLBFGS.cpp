@@ -47,7 +47,7 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
@@ -77,7 +77,7 @@ namespace {
 
 }	// end namespace
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 // /////////////////////////////////
 // Inline private member functions
@@ -881,7 +881,7 @@ void MatrixSymPosDefLBFGS::assert_initialized() const
 			"Error, matrix not initialized" );
 }
 
-}	// end namespace ConstrainedOptimizationPack 
+}	// end namespace ConstrainedOptPack 
 
 namespace {
 

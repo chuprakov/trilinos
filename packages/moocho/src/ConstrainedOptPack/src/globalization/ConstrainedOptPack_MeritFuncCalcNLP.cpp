@@ -16,7 +16,7 @@
 #include "MeritFuncCalcNLP.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 MeritFuncCalcNLP::MeritFuncCalcNLP( const MeritFuncNLP* phi, const NLP* nlp )
 	: phi_(phi), nlp_(nlp)
@@ -52,4 +52,4 @@ void MeritFuncCalcNLP::print_merit_func(
 	phi().print_merit_func(out,L);
 }
 
-}	// end namespace ConstrainedOptimizationPack
+}	// end namespace ConstrainedOptPack

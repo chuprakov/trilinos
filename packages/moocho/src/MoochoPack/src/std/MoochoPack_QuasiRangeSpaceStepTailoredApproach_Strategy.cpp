@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
-#include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
+#include "ConstrainedOptPack/src/DenseIdentVertConcatMatrixSubclass.h"
 #include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"

@@ -18,7 +18,7 @@
 
 #include "QPSolverRelaxedQPSchur.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Implementation of initial KKT system for all variables initially free
@@ -77,6 +77,6 @@ public:
 
 }; // end class QPSchurInitKKTSystemHessianFull
 
-} // end namesapce ConstrainedOptimizationPack
+} // end namesapce ConstrainedOptPack
 
 #endif // QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_FULL_H

@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
 
-namespace ConstrainedOptimizationPack {
+namespace ConstrainedOptPack {
 
 ///
 /** Matrix class that adds the ability to initialize to a diagonal
@@ -111,6 +111,6 @@ private:
 	
 }; // end class MatrixHessianSuperBasicInitDiagonal
 
-} // end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptPack
 
 #endif // MATRIX_HESSIAN_SUPER_BASIC_INIT_DIAGONAL_H

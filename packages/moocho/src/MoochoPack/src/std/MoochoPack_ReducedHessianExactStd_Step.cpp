@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -43,7 +43,7 @@ bool ReducedHessianExactStd_Step::do_step(
 	using AbstractLinAlgPack::Mp_StMtMtM;
 	typedef AbstractLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
 	typedef AbstractLinAlgPack::MatrixSymOp			MatrixSymOp;
-	using ConstrainedOptimizationPack::NLPSecondOrder;
+	using ConstrainedOptPack::NLPSecondOrder;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();

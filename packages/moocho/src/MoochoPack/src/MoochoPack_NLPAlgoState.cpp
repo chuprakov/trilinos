@@ -17,7 +17,7 @@
 #include <typeinfo>
 
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "dynamic_cast_verbose.hpp"

@@ -17,9 +17,9 @@
 #include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefCholFactor.hpp"
-#include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
+#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"
+#include "ConstrainedOptPack/src/MatrixSymPosDefCholFactor.hpp"
+#include "ConstrainedOptPack/src/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
@@ -66,7 +66,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using DenseLinAlgPack::dot;
 	using AbstractLinAlgPack::norm_inf;
 	using AbstractLinAlgPack::transVtMtV;
-	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
+	typedef ConstrainedOptPack::MatrixHessianSuperBasic MHSB_t;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -101,7 +101,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 		const value_type
 			sTy = dot(*s_bfgs,*y_bfgs),
 			yTy = dot(*y_bfgs,*y_bfgs);
-		if( !ConstrainedOptimizationPack::BFGS_sTy_suff_p_d(
+		if( !ConstrainedOptPack::BFGS_sTy_suff_p_d(
 			*s_bfgs,*y_bfgs,&sTy
 			,  int(olevel) >= int(PRINT_ALGORITHM_STEPS) ? &out : NULL )
 			&& !proj_bfgs_updater().bfgs_update().use_dampening()
@@ -168,7 +168,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 					// Determine the set of initially fixed and free independent variables.
 					//
 					typedef wsp::Workspace<size_type>                              i_x_t;
-					typedef wsp::Workspace<ConstrainedOptimizationPack::EBounds>   bnd_t;
+					typedef wsp::Workspace<ConstrainedOptPack::EBounds>   bnd_t;
 					i_x_t   i_x_free(wss,n_pz);
 					i_x_t   i_x_fixed(wss,n_pz);
 					bnd_t   bnd_fixed(wss,n_pz);

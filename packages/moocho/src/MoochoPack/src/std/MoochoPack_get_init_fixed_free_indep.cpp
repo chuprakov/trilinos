@@ -31,7 +31,7 @@ void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 	,size_type                             *n_pz_R
 	,size_type                             i_x_free[]
 	,size_type                             i_x_fixed[]
-	,ConstrainedOptimizationPack::EBounds  bnd_fixed[]
+	,ConstrainedOptPack::EBounds  bnd_fixed[]
 	)
 {
 	using std::setw;
@@ -80,7 +80,7 @@ void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 		size_type
 			*i_x_free_itr  = i_x_free,
 			*i_x_fixed_itr = i_x_fixed;
-		ConstrainedOptimizationPack::EBounds
+		ConstrainedOptPack::EBounds
 			*bnd_fixed_itr = bnd_fixed;
 		*n_pz_X = 0;
 		*n_pz_R = 0;
@@ -101,7 +101,7 @@ void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 				}
 				if(!keep) {
 					*i_x_fixed_itr++ = i_indep;
-					namespace COP = ConstrainedOptimizationPack;
+					namespace COP = ConstrainedOptPack;
 					*bnd_fixed_itr++
 						= ( nu_itr->value() > 0.0 ? COP::UPPER : COP::LOWER );
 					// ToDo: Consider fixed variable bounds
