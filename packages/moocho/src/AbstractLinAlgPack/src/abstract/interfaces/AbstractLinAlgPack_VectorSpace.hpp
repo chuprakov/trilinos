@@ -34,10 +34,11 @@ namespace AbstractLinAlgPack {
  * (and the vectors and matrix using those spaces) objects using the \c is_compatible() method.
  *
  * Given a <tt>%VectorSpace</tt> object it may also be possible to create sub-spaces using the
- * \c sub_space() method.
+ * \c sub_space() method.  This subspace is not a sub-space in the mathematical sense but instead
+ * referese to a sub-range of vector elements.
  *
  * Any <tt>%VectorSpace</tt> object can be copied using the \c clone() method.  Therefore,
- * clients have complete control over the lifetime of <tt>%VectorSpace</tt> object.
+ * clients have complete control over the lifetime of <tt>%VectorSpace</tt> objects.
  *
  * A <tt>VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
  * (or \c MutiVectorMutable) object; Or, a <tt>VectorSpace</tt> object can have a lifetime that is
@@ -47,12 +48,43 @@ namespace AbstractLinAlgPack {
  * A vector space is also where the inner product for the space is
  * defined.  It is anticipated that the same implementation of vectors
  * and vector spaces will be reused over and over again with different
- * definitions of the inner product.  Therefore the inner product is
+ * definitions of the inner product.  Therefore, the inner product is
  * represented as a seperate strategy object.  For example, the same
- * parallel vector implementation can be used with several different.
+ * parallel vector implementation can be used with several different
+ * inner product definitions.  In some cases, the same inner product
+ * stategy object may be able to be used with diffeent vector implemenations
+ * (such as the dot product for example).
  *
  * Note that the default copy constructor will transfer the inner product object correctly
- * but the subclass must make sure to copy the inner product object in clone operations.
+ * but the subclass must make sure to copy the inner product object in \c clone() operation.
+ * This is little price to pay considering what this design takes care of already for
+ * <tt>%VectorSpace</tt> subclasses.
+ * However, the default copy constructor will only make a shallow copy of the inner product
+ * object but since this object may never be changed, this is perhaps the correct behavior.
+ * For any other behavior and the subbclass will have to take care of it.
+ *
+ * A vector space may also have another advanced feature; it may be able to define other
+ * vector spaces based on a gatter operation of selected vector elements given a
+ * <tt>GenPermMatrixSlice</tt> (<tt>GPMS</tt>) object.  For example, suppose that a
+ * <tt>GPMS</tt> object \c P is defined which extracts a (relatively) small number of elements
+ * of a vector \c v (from the vector space \c *this) and gathers them into a smaller vector \c q.
+ \verbatim
+
+ q = op(P)*v
+ \endverbatim
+ * The question is, to what vector space \c Q does the vector \c q belong?
+ * The answer is returned by the method <tt>Q = this->space(P,P_trans)</tt>.
+ * Theoretically, \c op(P) could
+ * be any <tt>GPMS</tt> object and <tt>this->space(P,P_trans)</tt> should always be able
+ * to return a non-NULL vector space object.  In reality, the client should only
+ * expect <tt>this->space(P,P_trans).get() != NULL</tt> if
+ * <tt>q_dim = BLAS_Cpp::rows( P.rows(), P.cols(), P_trans )</tt> is a relatively
+ * small number (i.e. less than a few thousand).  If \c q_dim is small, then the vector
+ * \c q can always be represented as a local serial vector.  This is not a terribly
+ * difficult requirement and any <tt>%VectorSpace</tt> subclass should be able to
+ * comply.
+ * 	
+ *
  */
 class VectorSpace
 	: public MemMngPack::AbstractFactory<VectorWithOpMutable>
