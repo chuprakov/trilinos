@@ -164,6 +164,7 @@ void MPIVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec
 	sub_vec->set_uninitialized();  // Nothing to deallocate!
 }
 
+template<class Scalar>
 void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
 {
 	const Range1D rng = validateRange(rng_in);
