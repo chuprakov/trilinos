@@ -59,6 +59,13 @@ namespace AbstractLinAlgPack {
  */
 class MultiVectorMutable : virtual public MultiVector {
 public:
+	
+	///
+	using MultiVector::col;
+	///
+	using MultiVector::row;
+	///
+	using MultiVector::diag;
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
