@@ -120,7 +120,7 @@ FORTRAN_FUNC_DECL_UL(void,QPHESS,qphess) ( const f_int& N, const f_int& LDH
 
 FORTRAN_FUNC_DECL_UL(void,QPOPT_SET_DEFAULTS,qpopt_set_defaults) ();
 
-FORTRAN_FUNC_DECL_UL(void,QPOPT_INT_OPT,qpopt_ini_opt) (const f_int& option, const f_int& );
+FORTRAN_FUNC_DECL_UL(void,QPOPT_INT_OPT,qpopt_int_opt) (const f_int& option, const f_int& );
 
 FORTRAN_FUNC_DECL_UL(void,QPOPT_LOG_OPT,qpopt_log_opt) (const f_int& option, const f_logical& );
 

@@ -34,7 +34,7 @@ FORTRAN_FUNC_DECL_UL(void,MA28BD,ma28bd) (const f_int& n, const f_int& nz, f_dbl
 	, f_dbl_prec w[], f_int& iflag);
 
 // solve for rhs using internally stored factorized matrix
-FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28) (const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
+FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28cd) (const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
 	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype);
 
 // /////////////////////////////////////////////////////////////////////////////////////////
@@ -366,25 +366,25 @@ extern MC23BD_struct FORTRAN_NAME_UL(MC23BD,mc23bd); // link to fortan common bl
 //		begin MA28 Common Block Access
 
 // / Common block with members: #lp#, #mp#, #lblock#, #grow#
-static MA28ED_struct &ma28ed_cb = FORTRAN_COMMMON_BLOCK_NAME(MA28ED);
+static MA28ED_struct &ma28ed_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA28ED,ma28ed);
 // / Common block with members: #eps#, #rmin#, #resid#, #irncp#, #icncp#, #minirc#, #minicn#, #irank#, #abort1#, #abort2#
-static MA28FD_struct &ma28fd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA28FD);
+static MA28FD_struct &ma28fd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA28FD,ma28fd);
 // / Common block with members: #idisp#
-static MA28GD_struct &ma28gd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA28GD);
+static MA28GD_struct &ma28gd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA28GD,ma28gd);
 // / Common block with members: #tol#, #themax#, #big#, #bxmax#, #errmax#, #dres#, #cgce#, #ndrop#, #maxit#, #noiter#, #nsrch#, #istart#, #lbig#
-static MA28HD_struct &ma28hd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA28HD);
+static MA28HD_struct &ma28hd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA28HD,ma28hd);
 // / Common block with members: #lp#, #abort1#, #abort2#, #abort3#
-static MA30ED_struct &ma30ed_cb = FORTRAN_COMMMON_BLOCK_NAME(MA30ED);
+static MA30ED_struct &ma30ed_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30ED,ma30ed);
 // / Common block with members: #irncp#, #icncp#, #irank#, #irn#, #icn#
-static MA30FD_struct &ma30fd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA30FD);
+static MA30FD_struct &ma30fd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30FD,ma30fd);
 // / Common block with members: #eps#, #rmin#
-static MA30GD_struct &ma30gd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA30GD);
+static MA30GD_struct &ma30gd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30GD,ma30gd);
 // / Common block with members: #resid#
-static MA30HD_struct &ma30hd_cb = FORTRAN_COMMMON_BLOCK_NAME(MA30HD);
+static MA30HD_struct &ma30hd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30HD,ma30hd);
 // / Common block with members: #tol#, #big#, #ndrop#, #nsrch#, #lbig#
-static MA30ID_struct &ma30id_cb = FORTRAN_COMMMON_BLOCK_NAME(MA30ID);
+static MA30ID_struct &ma30id_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30ID,ma30id);
 // / Common block with members: #lp#, #numnz#, #num#, #large#, #abort#
-static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME(MC23BD);
+static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MC23BD,mc23bd);
 
 	// The reason that these are declared static is because I need to
 	// make sure that these references are initialized before they are

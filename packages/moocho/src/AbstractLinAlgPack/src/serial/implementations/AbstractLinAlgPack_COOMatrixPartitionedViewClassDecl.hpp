@@ -787,15 +787,15 @@ public:
 	typedef TransSparseCOOElementViewIter<
 				  element_type*
 				, std::random_access_iterator_tag
-				, element_type::indice_type
-				, element_type::value_type&
+				, typename element_type::indice_type
+				, typename element_type::value_type&
 				, difference_type>					iterator;
 	///
 	typedef TransSparseCOOElementViewIter<
 				  const element_type*
 				, std::random_access_iterator_tag
-				, element_type::indice_type
-				, const element_type::value_type&
+				, typename element_type::indice_type
+				, const typename element_type::value_type&
 				, difference_type>					const_iterator;
 
 	//@}

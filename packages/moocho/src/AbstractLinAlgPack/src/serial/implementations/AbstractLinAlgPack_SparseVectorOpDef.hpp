@@ -133,7 +133,8 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 
 	for(typename T_SpVec::const_iterator sv_rhs2_itr = sv_rhs2.begin(); sv_rhs2_itr != sv_rhs2.end(); ++sv_rhs2_itr)
-		Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value(), col( gms_rhs1, trans_rhs1, sv_rhs2_itr->indice() + offset ) );
+		LinAlgPack::Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value()
+            , col( gms_rhs1, trans_rhs1, sv_rhs2_itr->indice() + offset ) );
 }
 
 // vs_lhs += alpha * op(tri_rhs1) * sv_rhs2 (BLAS xTRMV)

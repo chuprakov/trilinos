@@ -3,8 +3,6 @@
 
 #include "../include/sparse_bounds.h"
 
-namespace SparseLinAlgPack {
-
 ///
 /** Count the number of sparse bounds where at least one bound is
   * finite.
@@ -40,5 +38,3 @@ SparseLinAlgPack::num_bounds( const SpVectorSlice& bl, const SpVectorSlice& bu )
 	}
 	return num_bounds;
 }
-
-}	// end namespace SparseLinAlgPack

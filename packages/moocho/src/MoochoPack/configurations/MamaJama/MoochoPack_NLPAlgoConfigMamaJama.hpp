@@ -24,8 +24,8 @@ public:
 	/** @name Public Types */
 	//@{
 
-	///
-	typedef	InvalidNLPType			InvalidNLPType;
+//	///
+//  typedef	InvalidNLPType			InvalidNLPType;
 
 	///
 	enum EMeritFunctionType { MERIT_FUNC_L1, MERIT_FUNC_MOD_L1, MERIT_FUNC_MOD_L1_INCR };
