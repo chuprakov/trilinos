@@ -39,6 +39,12 @@ BasisSystemTester::BasisSystemTester(
 	,value_type      warning_tol
 	,value_type      error_tol
 	)
+	:print_tests_(print_tests)
+	,dump_all_(dump_all)
+	,throw_exception_(throw_exception)
+	,num_random_tests_(num_random_tests)
+	,warning_tol_(warning_tol)
+	,error_tol_(error_tol)
 {}
 
 bool BasisSystemTester::test_basis_system(
@@ -355,10 +361,13 @@ bool BasisSystemTester::test_basis_system(
 			*out
 				<< std::endl
 				<< "\n3.a) Check consistency of:"
-				<< "\n                [ Gc'(equ_decomp,  var_dep)  Gc'(equ_decomp,  var_indep)  ]"
-				<< "\n    op ( alpha* [ Gh'(inequ_decomp,var_dep)  Gh'(inequ_decomp,var_indep)  ] ) * v == op( alpha*[ C  N ] ) * v"
-				<< "\n         \\________________________________________________________________/              \\____________/"
-				<< "\n                               A                                                                B"
+				<< "\n                [ Gc'(equ_decomp,  var_dep) Gc'(equ_decomp,  var_indep) ]"
+				<< "\n    op ( alpha* [ Gh'(inequ_decomp,var_dep) Gh'(inequ_decomp,var_indep) ] ) * v"
+				<< "\n         \\______________________________________________________________/"
+				<< "\n                                        A"
+				<< "\n    ==  op( alpha*[ C  N ] ) * v"
+				<< "\n            \\____________/"
+				<< "\n                   B"
 				<< "\nfor random vectors v ...";
 		{
 
@@ -381,7 +390,7 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests() > PRINT_MORE)
 				*out << std::endl;
 			llresult = true;
- 			for( int k = 1; k <= num_random_tests(); ++k ) {
+ 			{for( int k = 1; k <= num_random_tests(); ++k ) {
 				random_vector( rand_y_l, rand_y_u, v_x.get() );
 			 	if(out && print_tests() >= PRINT_ALL) {
 					*out
@@ -442,7 +451,7 @@ bool BasisSystemTester::test_basis_system(
 						llresult = false;
 					}
 				}
-			}
+			}}
 			if(!llresult) lresult = false;
 			if( out && print_tests() == PRINT_MORE )
 				*out << " : " << ( llresult ? "passed" : "failed" )
@@ -453,7 +462,7 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests() > PRINT_MORE)
 				*out << std::endl;
 			llresult = true;
- 			for( int k = 1; k <= num_random_tests(); ++k ) {
+			{for( int k = 1; k <= num_random_tests(); ++k ) {
 				random_vector( rand_y_l, rand_y_u, v_chD.get() );
 			 	if(out && print_tests() >= PRINT_ALL) {
 					*out
@@ -526,7 +535,7 @@ bool BasisSystemTester::test_basis_system(
 						llresult = false;
 					}
 				}
-			}
+			}}
 			if(!llresult) lresult = false;
 			if( out && print_tests() == PRINT_MORE )
 				*out << " : " << ( llresult ? "passed" : "failed" )
@@ -550,7 +559,7 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests() > PRINT_MORE)
 				*out << std::endl;
 			llresult = true;
- 			for( int k = 1; k <= num_random_tests(); ++k ) {
+ 			{for( int k = 1; k <= num_random_tests(); ++k ) {
 				random_vector( rand_y_l, rand_y_u, v_chD.get() );
 			 	if(out && print_tests() >= PRINT_ALL) {
 					*out
@@ -594,7 +603,7 @@ bool BasisSystemTester::test_basis_system(
 						llresult = false;
 					}
 				}
-			}
+			}}
 			if(!llresult) lresult = false;
 			if( out && print_tests() == PRINT_MORE )
 				*out << " : " << ( llresult ? "passed" : "failed" )
@@ -605,7 +614,7 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests() > PRINT_MORE)
 				*out << std::endl;
 			llresult = true;
- 			for( int k = 1; k <= num_random_tests(); ++k ) {
+ 			{for( int k = 1; k <= num_random_tests(); ++k ) {
 				random_vector( rand_y_l, rand_y_u, v_xD.get() );
 			 	if(out && print_tests() >= PRINT_ALL) {
 					*out
@@ -649,7 +658,7 @@ bool BasisSystemTester::test_basis_system(
 						llresult = false;
 					}
 				}
-			}
+			}}
 			if(!llresult) lresult = false;
 			if( out && print_tests() == PRINT_MORE )
 				*out << " : " << ( llresult ? "passed" : "failed" )
@@ -660,10 +669,131 @@ bool BasisSystemTester::test_basis_system(
 			if(out && print_tests() >= PRINT_MORE)
 				*out
 					<< "\n3.c) Check consistency of:"
-					<< "\n    op(-inv(C)*N) * v == op(D) * v"
+					<< "\n    alpha * op(-inv(C) * N) * v == alpha * op(D) * v"
 					<< "\nfor random vectors v ...";
-			for( int k = 0; k <= num_random_tests(); ++k ) {
-				assert(0); // ToDo: Implement!
+			
+		{
+				VectorSpace::vec_mut_ptr_t
+					v_xD      = C->space_rows().create_member(),
+					v_xI      = N->space_rows().create_member(),
+					v_xD_tmp  = C->space_rows().create_member(),
+					v_xI_tmp  = N->space_rows().create_member(),
+					v_chD_tmp = C->space_cols().create_member();
+
+				if(out && print_tests() >= PRINT_MORE)
+					*out << "\n\n3.b.1) Testing non-transposed: inv(C)*(-alpha*N*v) == alpha*D*v ...";
+				if(out && print_tests() > PRINT_MORE)
+					*out << std::endl;
+				llresult = true;
+ 				{for( int k = 1; k <= num_random_tests(); ++k ) {
+					random_vector( rand_y_l, rand_y_u, v_xI.get() );
+				 	if(out && print_tests() >= PRINT_ALL) {
+						*out
+							<< "\n\n3.b.1."<<k<<") random vector " << k << " ( ||v_xI||_1 / n = " << (v_xI->norm_1() / v_xI->dim()) << " )\n";
+						if(dump_all() && print_tests() >= PRINT_ALL)
+							*out << "\nv_xI =\n" << *v_xI;
+					}
+					V_StMtV( v_chD_tmp.get(), -alpha, *N, no_trans, *v_xI );
+					V_InvMtV( v_xD_tmp.get(), *C, no_trans, *v_chD_tmp );
+					V_StMtV( v_xD.get(), alpha, *D, no_trans, *v_xI );
+					const value_type
+						sum_ICaNv  = sum(*v_xD_tmp),
+						sum_aDv    = sum(*v_xD);
+					const value_type
+						calc_err = ::fabs( ( sum_ICaNv - sum_aDv )
+										   /( ::fabs(sum_ICaNv) + ::fabs(sum_aDv) + small_num ) );
+					if(out && print_tests() >= PRINT_ALL)
+						*out
+							<< "\nrel_err(sum(inv(C)*(-alpha*N*v))),sum(alpha*D*v)) = "
+							<< "rel_err(" << sum_ICaNv << "," << sum_aDv << ") = "
+							<< calc_err << std::endl;
+					if( calc_err >= warning_tol() ) {
+						if(out && print_tests() >= PRINT_ALL)
+							*out
+								<< std::endl
+								<< ( calc_err >= error_tol() ? "Error" : "Warning" )
+								<< ", rel_err(sum(inv(C)*(-alpha*N*v))),sum(alpha*D*v)) = "
+								<< "rel_err(" << sum_ICaNv << "," << sum_aDv << ") = "
+								<< calc_err
+								<< " exceeded "
+								<< ( calc_err >= error_tol() ? "error_tol" : "warning_tol" )
+								<< " = "
+								<< ( calc_err >= error_tol() ? error_tol() : warning_tol() )
+								<< std::endl;
+						if(calc_err >= error_tol()) {
+							if(dump_all() && print_tests() >= PRINT_ALL) {
+								*out << "\nalpha = " << alpha << std::endl;
+								*out << "\nv_xI =\n"                   << *v_xI;
+								*out << "\n-alpha*N*v_xI =\n"          << *v_chD_tmp;
+								*out << "\ninv(C)*(-alpha*N*v_xI) =\n" << *v_xD_tmp;
+								*out << "\nalpha*D*v_xI =\n"           << *v_xD;
+							}
+							llresult = false;
+						}
+					}
+				}}
+				if(!llresult) lresult = false;
+				if( out && print_tests() == PRINT_MORE )
+					*out << " : " << ( llresult ? "passed" : "failed" )
+						 << std::endl;
+
+				if(out && print_tests() >= PRINT_MORE)
+					*out << "\n3.b.1) Testing transposed: -alpha*N'*(inv(C')*v) == alpha*D'*v ...";
+				if(out && print_tests() > PRINT_MORE)
+					*out << std::endl;
+				llresult = true;
+ 				{for( int k = 1; k <= num_random_tests(); ++k ) {
+					random_vector( rand_y_l, rand_y_u, v_xD.get() );
+				 	if(out && print_tests() >= PRINT_ALL) {
+						*out
+							<< "\n\n3.b.1."<<k<<") random vector " << k << " ( ||v_xD||_1 / n = " << (v_xD->norm_1() / v_xD->dim()) << " )\n";
+						if(dump_all() && print_tests() >= PRINT_ALL)
+							*out << "\nv_xD =\n" << *v_xD;
+					}
+					V_InvMtV( v_chD_tmp.get(), *C, trans, *v_xD );
+					V_StMtV( v_xI_tmp.get(), -alpha, *N, trans, *v_chD_tmp );
+					V_StMtV( v_xI.get(), alpha, *D, trans, *v_xD );
+					const value_type
+						sum_aNTICTv  = sum(*v_xI_tmp),
+						sum_aDTv     = sum(*v_xI);
+					const value_type
+						calc_err = ::fabs( ( sum_aNTICTv - sum_aDTv )
+										   /( ::fabs(sum_aNTICTv) + ::fabs(sum_aDTv) + small_num ) );
+					if(out && print_tests() >= PRINT_ALL)
+						*out
+							<< "\nrel_err(sum(-alpha*N'*(inv(C')*v)),sum(alpha*D'*v)) = "
+							<< "rel_err(" << sum_aNTICTv << "," << sum_aDTv << ") = "
+							<< calc_err << std::endl;
+					if( calc_err >= warning_tol() ) {
+						if(out && print_tests() >= PRINT_ALL)
+							*out
+								<< std::endl
+								<< ( calc_err >= error_tol() ? "Error" : "Warning" )
+								<< ", rel_err(sum(-alpha*N'*(inv(C')*v))),sum(alpha*D'*v)) = "
+								<< "rel_err(" << sum_aNTICTv << "," << sum_aDTv << ") = "
+								<< calc_err
+								<< " exceeded "
+								<< ( calc_err >= error_tol() ? "error_tol" : "warning_tol" )
+								<< " = "
+								<< ( calc_err >= error_tol() ? error_tol() : warning_tol() )
+								<< std::endl;
+						if(calc_err >= error_tol()) {
+							if(dump_all() && print_tests() >= PRINT_ALL) {
+								*out << "\nalpha = " << alpha << std::endl;
+								*out << "\nv_xD =\n"                      << *v_xD;
+								*out << "\ninv(C')**v_xD =\n"             << *v_chD_tmp;
+								*out << "\n-alpha*N'*(inv(C')**v_xD) =\n" << *v_xI_tmp;
+								*out << "\nalpha*D*'v_xD =\n"             << *v_xI;
+							}
+							llresult = false;
+						}
+					}
+				}}
+				if(!llresult) lresult = false;
+				if( out && print_tests() == PRINT_MORE )
+					*out << " : " << ( llresult ? "passed" : "failed" )
+						 << std::endl;
+
 			}
 		}
 		
@@ -678,6 +808,13 @@ bool BasisSystemTester::test_basis_system(
 		if(!lresult) success = false;
 		if( out && print_tests() == PRINT_BASIC )
 			*out << " : " << ( lresult ? "passed" : "failed" );
+	}
+
+	if(out && print_tests() >= PRINT_BASIC) {
+		if(success)
+			*out << "\nCongradulations! The BasisSystem object and its associated matrix objects seem to check out!\n";
+		else
+			*out << "\nOops! At last one of the tests did not check out!\n";
 	}
 	
 	return success;
