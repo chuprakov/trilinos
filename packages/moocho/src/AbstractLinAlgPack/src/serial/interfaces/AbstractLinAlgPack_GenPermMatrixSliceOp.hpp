@@ -18,11 +18,11 @@ namespace SparseLinAlgPack {
 /** sv_lhs = alpha * op(P_rhs1) * vs_rhs2.
   * 
   * This function will resize the sparse vector lhs and add only the
-  * nonzero elements in the rhs.
+  * resultant nonzero elements will be added.
   * 
   * If op(P_rhs1) is sorted by row (i.e. op(P_rhs1) = P_rhs1 sorted by row
   * or op(P_rhs1) = P_rhs1' sorted by column) then sv_lhs->assume_sorted(true)
-  * is called.
+  * is called and sv_lhs->is_sorted()==true on output.
   * 
   * This function will execute in O(P_rhs1.nz()) time.
   */ 
