@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 template< class T >
@@ -57,7 +57,7 @@ bool InitFinDiffReducedHessian_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::Vt_S;
 	using LinAlgOpPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;

@@ -31,7 +31,7 @@
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

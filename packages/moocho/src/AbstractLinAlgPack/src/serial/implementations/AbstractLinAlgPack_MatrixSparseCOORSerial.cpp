@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -148,7 +148,7 @@ const VectorSpace& MatrixSparseCOORSerial::space_rows() const
 
 MatrixOp& MatrixSparseCOORSerial::operator=(const MatrixOp& M)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const MatrixSparseCOORSerial
 		&Mc = dyn_cast<const MatrixSparseCOORSerial>(M);
 	if( this == &Mc )

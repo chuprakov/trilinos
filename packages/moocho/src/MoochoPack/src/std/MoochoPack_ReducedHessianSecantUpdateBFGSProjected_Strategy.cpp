@@ -57,7 +57,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using std::setw;
 	using std::endl;
 	using std::right;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using DenseLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
 	using AbstractLinAlgPack::norm_inf;

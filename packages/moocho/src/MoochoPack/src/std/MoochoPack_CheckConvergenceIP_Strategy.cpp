@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -51,7 +51,7 @@ bool CheckConvergenceIP_Strategy::Converged(
   Algorithm& _algo
   )
 	{
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::num_bounded;
 	using AbstractLinAlgPack::IP_comp_err_with_mu;
 

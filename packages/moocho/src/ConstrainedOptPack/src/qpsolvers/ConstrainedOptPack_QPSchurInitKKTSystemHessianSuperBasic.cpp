@@ -48,7 +48,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	) const
 {
 	using BLAS_Cpp::trans;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	using LinAlgOpPack::V_StMtV;
 	using AbstractLinAlgPack::Vp_StMtV;

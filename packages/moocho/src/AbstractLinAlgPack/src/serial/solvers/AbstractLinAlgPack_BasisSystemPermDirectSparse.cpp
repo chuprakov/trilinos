@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -113,7 +113,7 @@ void BasisSystemPermDirectSparse::update_basis(
 	) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to update basis ...\n";
 	const size_type
@@ -199,7 +199,7 @@ void BasisSystemPermDirectSparse::set_basis(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to set a new basis ...\n";
 	const size_type
@@ -266,7 +266,7 @@ void BasisSystemPermDirectSparse::select_basis(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to select a new basis ...\n";
 #ifdef _DEBUG
@@ -356,7 +356,7 @@ Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 BasisSystemPermDirectSparse::get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix> C_bm;
 	if( C_aggr.mns().get() ) {
 		C_bm = Teuchos::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
@@ -396,7 +396,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 	) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	// Initialize the aggregate basis matrix object.
 	C_aggr->initialize(
 		Gc.sub_view(var_dep_,equ_decomp_)

@@ -28,7 +28,7 @@
 #include "MoochoPack/src/IpState.hpp"
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
@@ -58,7 +58,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using IterationPack::print_algorithm_step;
     using AbstractLinAlgPack::assert_print_nan_inf;
 	using AbstractLinAlgPack::fraction_to_boundary;

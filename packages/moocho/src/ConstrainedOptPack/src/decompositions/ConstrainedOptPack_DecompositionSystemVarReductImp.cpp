@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
@@ -102,7 +102,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// ToDo: Implement undecomposed general equalities and general inequalities
 
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	if( out && olevel >= PRINT_BASIC_INFO )
 		*out << "\n****************************************************************"
@@ -346,7 +346,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 	) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	if( out && olevel >= PRINT_BASIC_INFO ) {
 		*out << "\n***********************************************************"

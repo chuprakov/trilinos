@@ -21,7 +21,7 @@
 #include "Permutation.hpp"
 #include "PermutationOut.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -125,7 +125,7 @@ MatrixPermAggr::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 
 MatrixOp& MatrixPermAggr::operator=(const MatrixOp& M)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const MatrixPermAggr
 		Mp = dyn_cast<const MatrixPermAggr>(M);
 	if( this == &Mp )

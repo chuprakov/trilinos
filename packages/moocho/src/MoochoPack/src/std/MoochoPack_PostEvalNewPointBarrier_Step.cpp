@@ -30,7 +30,7 @@
 
 #include "MoochoMoreUtilities/src/StringToBool.hpp"
 
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -39,7 +39,7 @@ bool PostEvalNewPointBarrier_Step::do_step(
   ,poss_type assoc_step_poss
   )
 	{
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::inv_of_difference;
 	using AbstractLinAlgPack::correct_upper_bound_multipliers;

@@ -22,7 +22,7 @@
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 template< class T >
@@ -84,7 +84,7 @@ void MoochoTrackerStatsStd::output_iteration(const Algorithm& p_algo) const
 void MoochoTrackerStatsStd::output_final( const Algorithm& p_algo
 	, EAlgoReturn algo_return ) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	const NLPAlgo           &algo    = rsqp_algo(p_algo);
 	const NLPAlgoState          &s       = algo.rsqp_state();

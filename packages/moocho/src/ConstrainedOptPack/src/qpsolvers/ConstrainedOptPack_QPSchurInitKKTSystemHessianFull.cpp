@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -44,7 +44,7 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::V_mV;
 
 	// Validate type of and convert G

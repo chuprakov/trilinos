@@ -20,7 +20,7 @@
 #include "VectorMutableSubView.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -70,7 +70,7 @@ void VectorSubView::apply_op(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	// If these are in-core vectors then just let a default implementation

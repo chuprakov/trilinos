@@ -21,7 +21,7 @@
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOpPack_RTOpC.hpp"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 

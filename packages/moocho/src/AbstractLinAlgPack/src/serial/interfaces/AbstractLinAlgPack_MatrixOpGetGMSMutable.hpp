@@ -145,7 +145,7 @@ MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixOpGetGMSMutable*  mat_ge
 
 inline
 MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixOp* mat )
-	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixOpGetGMSMutable>(*mat))
+	:mat_get_(&Teuchos::dyn_cast<MatrixOpGetGMSMutable>(*mat))
 	,gms_view_(mat_get_->get_gms_view())
 {}
 

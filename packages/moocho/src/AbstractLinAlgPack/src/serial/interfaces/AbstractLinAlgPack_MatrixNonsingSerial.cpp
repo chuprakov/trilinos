@@ -230,7 +230,7 @@ void MatrixNonsingSerial::M_StInvMtM(
 	,const MatrixOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	MatrixDenseMutableEncap
 		gms_lhs(m_lhs);      // Warning!  This may throw an exception!
 	if(const MatrixOpGetGMS* mwo_gms_rhs2 = dynamic_cast<const MatrixOpGetGMS*>(&mwo_rhs2)) {
@@ -246,7 +246,7 @@ void MatrixNonsingSerial::M_StMtInvM(
 	,BLAS_Cpp::Transp trans_rhs2
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	MatrixDenseMutableEncap
 		gms_lhs(m_lhs);      // Warning!  This may throw an exception!
 	if(const MatrixOpGetGMS* mwo_gms_rhs1 = dynamic_cast<const MatrixOpGetGMS*>(&mwo_rhs1)) {

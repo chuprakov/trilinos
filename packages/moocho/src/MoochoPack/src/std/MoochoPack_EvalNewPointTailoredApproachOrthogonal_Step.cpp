@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
@@ -44,7 +44,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uy(
 	,MatrixOp        *Uy
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	MatrixIdentConcatStd
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)  : NULL;
@@ -67,7 +67,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 	)
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::syrk;
 
 	const size_type

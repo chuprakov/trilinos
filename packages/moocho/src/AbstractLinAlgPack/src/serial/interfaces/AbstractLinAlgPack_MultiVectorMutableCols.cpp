@@ -17,7 +17,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

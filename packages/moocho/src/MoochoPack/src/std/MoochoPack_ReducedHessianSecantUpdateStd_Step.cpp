@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 MoochoPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
 	const secant_update_ptr_t&   secant_update
@@ -42,7 +42,7 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vt_S;
 	using AbstractLinAlgPack::Vp_StV;

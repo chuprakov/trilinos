@@ -36,7 +36,7 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 	,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
   	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 

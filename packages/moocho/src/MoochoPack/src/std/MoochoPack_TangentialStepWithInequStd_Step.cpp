@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 template< class T >
@@ -64,7 +64,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using ::fabs;
 	using LinAlgOpPack::Vt_S;
 	using LinAlgOpPack::V_VpV;

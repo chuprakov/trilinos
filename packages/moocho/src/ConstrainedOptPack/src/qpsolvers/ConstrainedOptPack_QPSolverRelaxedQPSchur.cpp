@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "MoochoMoreUtilities/src/profile_hack.hpp"
 
 namespace ConstrainedOptPack {
@@ -121,7 +121,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	typedef QPSchurPack::ConstraintsRelaxedStd constr_t;
 

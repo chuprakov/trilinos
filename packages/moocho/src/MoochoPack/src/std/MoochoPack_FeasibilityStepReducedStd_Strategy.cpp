@@ -17,7 +17,7 @@
 #include "MoochoPack/src/NLPAlgo.hpp"
 #include "MoochoPack/src/NLPAlgoState.hpp"
 #include "MoochoPack/src/MoochoPackExceptions.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -43,7 +43,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	,const Vector& xo, const Vector& c_xo, VectorMutable* w
   	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 /* Todo: UPdate below code!
 

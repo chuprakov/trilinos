@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace QPKWIKNEW_CppDecl {
@@ -212,7 +212,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using DenseLinAlgPack::nonconst_tri_ele;
 	using LinAlgOpPack::dot;
 	using LinAlgOpPack::V_StV;

@@ -59,7 +59,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using std::setw;
 	using std::endl;
 	using std::right;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace rcp = MemMngPack;
 	using Teuchos::RefCountPtr;
 	using LinAlgOpPack::V_MtV;

@@ -187,7 +187,7 @@ create_N(
  \code
  Teuchos::RefCountPtr<MatrixSymOpNonsing>
      S = basis_sys.factory_S()->create();
- DynamicCastHelperPack::dyn_cast<MatrixSymInitDiag>(*S).init_identity(D.space_rows());
+ Teuchos::dyn_cast<MatrixSymInitDiag>(*S).init_identity(D.space_rows());
  syrk(D,BLAS_Cpp::trans,1.0,1.0,S.get();
  \endcode
  * The matrix <tt>S</tt> must then be fully initialized and ready to go.

@@ -51,7 +51,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	,DVector*              fo
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	namespace rcp = MemMngPack;
 	namespace wsp = WorkspacePack;

@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "Range1D.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
@@ -53,7 +53,7 @@ ExampleNLPFirstOrder::ExampleNLPFirstOrder(
 void ExampleNLPFirstOrder::set_Gc(MatrixOp* Gc)
 {
 	if(Gc) // Throw an exception if this matrix is the wrong type!
-		DynamicCastHelperPack::dyn_cast<AbstractLinAlgPack::MatrixComposite>(*Gc);
+		Teuchos::dyn_cast<AbstractLinAlgPack::MatrixComposite>(*Gc);
 	NLPFirstOrder::set_Gc(Gc);
 }
 
@@ -94,7 +94,7 @@ void ExampleNLPFirstOrder::imp_calc_Gc(
 	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::Vp_S; // Should not have to do this!
 
 	const index_type

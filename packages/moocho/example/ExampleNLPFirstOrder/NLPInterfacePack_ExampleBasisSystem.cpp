@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
@@ -74,7 +74,7 @@ void ExampleBasisSystem::update_D(
 	,EMatRelations          mat_rel
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	TEST_FOR_EXCEPTION(
 		D == NULL, std::logic_error

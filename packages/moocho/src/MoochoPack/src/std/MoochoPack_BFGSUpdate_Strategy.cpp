@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
@@ -57,7 +57,7 @@ void BFGSUpdate_Strategy::perform_update(
 	)
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vt_S;
 	using AbstractLinAlgPack::Vp_StV;

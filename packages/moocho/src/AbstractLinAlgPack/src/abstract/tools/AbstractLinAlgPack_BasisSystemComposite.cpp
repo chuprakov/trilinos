@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
@@ -111,7 +111,7 @@ void BasisSystemComposite::initialize_Gc(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
 		space_x.get() == NULL, std::invalid_argument
@@ -178,7 +178,7 @@ void BasisSystemComposite::get_C_N(
 	,MatrixOp              **N
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
 		Gc == NULL, std::invalid_argument
@@ -224,7 +224,7 @@ void BasisSystemComposite::get_C_N(
 	,const MatrixOp              **N
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const size_type
 		n = Gc.rows(),
 		m = Gc.cols();
@@ -421,7 +421,7 @@ void BasisSystemComposite::update_basis(
 	,std::ostream           *out
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const index_type
 		n  = var_dep_.size() + var_indep_.size(),
 		m  = var_dep_.size();

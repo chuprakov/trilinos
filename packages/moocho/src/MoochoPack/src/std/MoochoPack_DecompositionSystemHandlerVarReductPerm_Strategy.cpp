@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
@@ -55,7 +55,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	,bool                                  *new_decomp_selected
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

@@ -18,7 +18,7 @@
 #include "VectorSpace.hpp"
 #include "LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -118,7 +118,7 @@ MatrixOpNonsingAggr::sub_view(const Range1D& row_rng, const Range1D& col_rng) co
 
 MatrixOp& MatrixOpNonsingAggr::operator=(const MatrixOp& M)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const MatrixOpNonsingAggr
 		Mp = dyn_cast<const MatrixOpNonsingAggr>(M);
 	if( this == &Mp )

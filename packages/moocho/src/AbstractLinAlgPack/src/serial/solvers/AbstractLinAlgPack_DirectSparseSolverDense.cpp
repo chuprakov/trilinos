@@ -25,7 +25,7 @@
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 
@@ -70,7 +70,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
 	) const 
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	size_type k;
@@ -207,7 +207,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -338,7 +338,7 @@ void DirectSparseSolverDense::imp_factor(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();

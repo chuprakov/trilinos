@@ -24,7 +24,7 @@
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;
@@ -90,7 +90,7 @@ void MatrixSymNonsingSerial::M_StMtInvMtM(
 	,EMatrixDummyArg dummy
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	this->M_StMtInvMtM(
 		&MatrixDenseSymMutableEncap(symwo_lhs)(), alpha
 		,dyn_cast<const MatrixOpSerial>(mwo), mwo_trans

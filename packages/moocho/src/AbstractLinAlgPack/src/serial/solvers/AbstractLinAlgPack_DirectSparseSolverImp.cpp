@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverImp.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -127,7 +127,7 @@ void DirectSparseSolverImp::analyze_and_factor(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
 	TEST_FOR_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
@@ -179,7 +179,7 @@ void DirectSparseSolverImp::factor(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
 	// ToDo: Validate that A is compatible!

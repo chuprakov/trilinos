@@ -28,7 +28,7 @@
 #include "RTOpPack_RTOpC.hpp"
 #include "print_sub_vector.hpp"
 #include "Range1D.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Uncomment to ignore cache of reduction data

@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "RTOpPack_RTOpC.hpp"
 #include "Range1D.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 

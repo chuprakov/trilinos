@@ -142,7 +142,7 @@ MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymOpGetGMSSymMuta
 
 inline
 MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymOp* mat )
-	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixSymOpGetGMSSymMutable>(*mat))
+	:mat_get_(&Teuchos::dyn_cast<MatrixSymOpGetGMSSymMutable>(*mat))
 	,sym_gms_view_(mat_get_->get_sym_gms_view())
 {}
 

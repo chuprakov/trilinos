@@ -23,7 +23,7 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -31,7 +31,7 @@ bool MeritFunc_DummyUpdate_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	NLPAlgo	&algo	= rsqp_algo(_algo);
 	NLPAlgoState	&s		= algo.rsqp_state();

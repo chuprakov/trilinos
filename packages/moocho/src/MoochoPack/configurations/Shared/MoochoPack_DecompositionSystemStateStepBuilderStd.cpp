@@ -67,7 +67,7 @@
 #include "MoochoMoreUtilities/src/StringToBool.hpp"
 #include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
@@ -333,7 +333,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	
 	const size_type
 		n = nlp.n(),

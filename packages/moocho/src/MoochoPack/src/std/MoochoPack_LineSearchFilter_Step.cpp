@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutableSubView.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 //#define FILTER_DEBUG_OUT 1
@@ -103,7 +103,7 @@ bool LineSearchFilter_Step::do_step(
   ,poss_type assoc_step_poss)
 {
 	// Namespace Declarations
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using IterationPack::print_algorithm_step;
 	using LinAlgOpPack::Vp_StV;
 	using std::setw;

@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -32,7 +32,7 @@ MeritFuncNLPL1::MeritFuncNLPL1()
 
 MeritFuncNLP& MeritFuncNLPL1::operator=(const MeritFuncNLP& merit_func)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const MeritFuncNLPL1 &merit_func_l1 = dyn_cast<const MeritFuncNLPL1>(merit_func);
 	if(this == &merit_func_l1)
 		return *this; // assignment to self

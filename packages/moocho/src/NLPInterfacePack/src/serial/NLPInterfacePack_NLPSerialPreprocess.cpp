@@ -36,7 +36,7 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;
@@ -551,7 +551,7 @@ void NLPSerialPreprocess::set_basis(
 	)
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	TEST_FOR_EXCEPTION(
 		(m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
 		,std::invalid_argument
@@ -584,7 +584,7 @@ void NLPSerialPreprocess::get_basis(
 	) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	assert_initialized();
 	TEST_FOR_EXCEPTION(
 		P_var == NULL || var_dep == NULL

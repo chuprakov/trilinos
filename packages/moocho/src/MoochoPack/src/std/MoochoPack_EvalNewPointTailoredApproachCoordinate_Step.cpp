@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -52,7 +52,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy(
 	)
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	MatrixIdentConcatStd
 		&cY = dyn_cast<MatrixIdentConcatStd>(*Y);

@@ -29,7 +29,7 @@
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 
@@ -132,7 +132,7 @@ NLPSerialPreprocessExplJac::basis_sys() const
 
 void NLPSerialPreprocessExplJac::set_Gc(MatrixOp* Gc)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	assert_initialized();
 	if( Gc != NULL ) {
 		dyn_cast<MatrixPermAggr>(*Gc); // With throw exception if not correct type!
@@ -175,7 +175,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 	) const
 {
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	assert_initialized();
 

@@ -35,7 +35,7 @@ void MatrixHessianSuperBasicInitDiagonal::initialize(
 	,const B_XX_ptr_t&   B_XX_ptr
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	// Validate the B_RR supports this interface
 #ifdef _WINDOWS

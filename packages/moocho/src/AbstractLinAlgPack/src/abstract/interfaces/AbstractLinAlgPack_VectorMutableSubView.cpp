@@ -16,7 +16,7 @@
 #include "VectorMutableSubView.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 

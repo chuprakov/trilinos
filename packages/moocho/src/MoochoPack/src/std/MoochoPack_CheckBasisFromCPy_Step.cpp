@@ -55,7 +55,7 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	using DenseLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_V;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 

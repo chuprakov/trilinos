@@ -20,7 +20,7 @@
 #include <stdexcept>
 
 #include "AbstractLinAlgPack/src/serial/solvers/SuperLUSolver.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -212,7 +212,7 @@ void SuperLUSolverImpl::analyze_and_factor(
 	,int                        *rank
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -331,7 +331,7 @@ void SuperLUSolverImpl::factor(
 	,FactorizationNonzeros          *fact_nonzeros
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -420,7 +420,7 @@ void SuperLUSolverImpl::solve(
 	) const
 {
 
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	const FactorizationStructureImpl
 		&fs = dyn_cast<const FactorizationStructureImpl>(fact_struct);

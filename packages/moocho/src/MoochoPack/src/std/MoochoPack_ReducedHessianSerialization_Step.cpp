@@ -28,7 +28,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "MoochoMoreUtilities/src/Serializable.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -47,7 +47,7 @@ bool ReducedHessianSerialization_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using SerializationPack::Serializable;
 
 	NLPAlgo       &algo = rsqp_algo(_algo);
@@ -118,7 +118,7 @@ void ReducedHessianSerialization_Step::finalize_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using SerializationPack::Serializable;
 
 	const NLPAlgo       &algo = rsqp_algo(_algo);

@@ -23,7 +23,7 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 using std::endl;
 using std::setw;
@@ -222,7 +222,7 @@ void MoochoTrackerSummaryStd::output_iteration(const Algorithm& algo) const
 void MoochoTrackerSummaryStd::output_final(const Algorithm& algo
 	, EAlgoReturn algo_return) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	const NLPAlgo            &_algo  = rsqp_algo(algo);
 	const NLPAlgoState           &s      =_algo.rsqp_state();

@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
@@ -47,7 +47,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_MtV;
 	using IterationPack::print_algorithm_step;

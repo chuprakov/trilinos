@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
@@ -87,7 +87,7 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	typedef DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 		C_ptr_t;
 
@@ -144,7 +144,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 	) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using LinAlgOpPack::syrk;
 	typedef DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 		C_ptr_t;

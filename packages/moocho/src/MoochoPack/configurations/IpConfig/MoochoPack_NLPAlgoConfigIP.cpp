@@ -110,7 +110,7 @@
 
 // Misc utilities
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -176,8 +176,8 @@ void NLPAlgoConfigIP::config_algo_cntr(
 	namespace afp = MemMngPack;
 	namespace mmp = MemMngPack;
 	using Teuchos::RefCountPtr;
-	using DynamicCastHelperPack::dyn_cast;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	if(trase_out) {
 		*trase_out
@@ -1243,7 +1243,7 @@ void NLPAlgoConfigIP::config_algo_cntr(
 
 void NLPAlgoConfigIP::init_algo(NLPAlgoInterface* _algo)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace mmp = MemMngPack;
 
 	TEST_FOR_EXCEPTION(

@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
@@ -77,7 +77,7 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	//
 	// Get pointers to concreate matrices
@@ -117,7 +117,7 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	) const
 {
 	namespace rcp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	const size_type
 		n = this->n(),

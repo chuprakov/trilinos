@@ -20,7 +20,7 @@
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 #include "IterationPack/src/IterQuantityAccess.hpp"
 #include "IterationPack/src/cast_iq.hpp"
@@ -270,7 +270,7 @@ void NLPAlgoState::update_vector_factories(
 	,const vec_space_ptr_t&   vec_space
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	iq_vector_list_t  &iq_vector_list = vector_iqs_lists_[vec_space_type];
 	for( iq_vector_list_t::const_iterator iq_itr = iq_vector_list.begin(); iq_itr != iq_vector_list.end(); ++iq_itr )
 		dyn_cast<IterQuantityAccessContiguous<VectorMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);

@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -142,7 +142,7 @@ MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymOpGetGMSSym&  mat_get )
 
 inline
 MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymOp& mat )
-	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixSymOpGetGMSSym>(mat))
+	:mat_get_(Teuchos::dyn_cast<const MatrixSymOpGetGMSSym>(mat))
 	,sym_gms_view_(mat_get_.get_sym_gms_view())
 {}
 

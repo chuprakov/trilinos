@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -142,7 +142,7 @@ MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixOpGetGMSTri&  mat_get )
 
 inline
 MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixOp& mat )
-	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixOpGetGMSTri>(mat))
+	:mat_get_(Teuchos::dyn_cast<const MatrixOpGetGMSTri>(mat))
 	,tri_gms_view_(mat_get_.get_tri_gms_view())
 {}
 

@@ -28,13 +28,13 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 
 bool MoochoPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 	{
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::ele_wise_prod;
 	using AbstractLinAlgPack::lowerbound_multipliers_step;

@@ -38,7 +38,7 @@ bool ReducedHessianExactStd_Step::do_step(
 	  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	, poss_type assoc_step_poss)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using DenseLinAlgPack::nonconst_sym;
 	using AbstractLinAlgPack::Mp_StMtMtM;
 	typedef AbstractLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;

@@ -26,7 +26,7 @@
 #include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -101,7 +101,7 @@ void MatrixNonsing::M_StInvMtM(
 	//
 	// C = a * inv(op(M)) * op(B)
 	//
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 #ifdef _DEBUG

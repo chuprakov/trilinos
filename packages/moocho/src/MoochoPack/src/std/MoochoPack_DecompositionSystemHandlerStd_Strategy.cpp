@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
@@ -52,7 +52,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	,bool                                  *new_decomp_selected
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -160,7 +160,7 @@ void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
 	,const std::string                     &L
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	const NLPFirstOrder &nlp = dyn_cast<const NLPFirstOrder>(algo.nlp());
 	const size_type n  = nlp.n(), m = nlp.m(), r = nlp.basis_sys()->equ_decomp().size();

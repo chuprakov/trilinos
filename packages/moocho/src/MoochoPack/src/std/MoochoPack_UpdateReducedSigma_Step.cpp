@@ -34,7 +34,7 @@
 
 #include "MoochoMoreUtilities/src/StringToIntMap.hpp"
 
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {
 
@@ -50,7 +50,7 @@ bool UpdateReducedSigma_Step::do_step(
   ,poss_type assoc_step_poss
   )
 	{
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using IterationPack::print_algorithm_step;
 
 	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
@@ -120,7 +120,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 	)
 	{
 	namespace mmp = MemMngPack;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::ele_wise_prod;
 	using AbstractLinAlgPack::ele_wise_sqrt;
  	using LinAlgOpPack::Mp_M;
