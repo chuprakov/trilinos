@@ -44,28 +44,26 @@ namespace Solvers{
 
 template<class Scalar>
 NormedConvergenceTester<Scalar>::NormedConvergenceTester(
-	const Scalar                                           tol
+	const Scalar                                      tol
 	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
-	:minMaxErr_(1e+50)
 {
 	initialize(tol,norm);
 }
 
 template<class Scalar>
 NormedConvergenceTester<Scalar>::NormedConvergenceTester(
-	const Index                                            totalNumSystems
-	,const Scalar                                          tols[]
+	const Index                                       totalNumSystems
+	,const Scalar                                     tols[]
 	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
-	:minMaxErr_(1e+50)
 {
 	initialize(totalNumSystems,tols,norm);
 }
 
 template<class Scalar>
 void NormedConvergenceTester<Scalar>::initialize(
-	const Scalar                                           tol
+	const Scalar                                      tol
 	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 {
@@ -73,13 +71,14 @@ void NormedConvergenceTester<Scalar>::initialize(
 	tols_[0] = tol;
 	if(norm.get())   norm_ = norm;
 	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
+	minTol_    = tol;
 	minMaxErr_ = 1e+50;
 }
 
 template<class Scalar>
 void NormedConvergenceTester<Scalar>::initialize(
-	const Index                                            totalNumSystems
-	,const Scalar                                          tols[]
+	const Index                                       totalNumSystems
+	,const Scalar                                     tols[]
 	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
 	)
 {
@@ -87,6 +86,7 @@ void NormedConvergenceTester<Scalar>::initialize(
 	std::copy( tols, tols + totalNumSystems, tols_.begin() );
 	if(norm.get())   norm_ = norm;
 	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
+	minTol_    = *std::min_element( tols, tols + totalNumSystems );
 	minMaxErr_ = 1e+50;
 }
 

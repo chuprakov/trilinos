@@ -51,14 +51,14 @@ public:
 	
 	/// Calls <tt>initialize()</tt>
 	NormedConvergenceTester(
-		const Scalar                                           tol             = 1e-12
+		const Scalar                                      tol             = 1e-12
 		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
 	/// Calls <tt>initialize()</tt>
 	NormedConvergenceTester(
-		const Index                                            totalNumSystems
-		,const Scalar                                          tols[]
+		const Index                                       totalNumSystems
+		,const Scalar                                     tols[]
 		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
@@ -66,7 +66,7 @@ public:
 	/** Initialize with one set of tolerances for multiple linear systems
 	 */
 	void initialize(
-		const Scalar                                           tol             = 1e-12
+		const Scalar                                      tol             = 1e-12
 		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
@@ -74,12 +74,15 @@ public:
 	/** Initialize with different tolerances for multiple linear systems.
 	 */
 	void initialize(
-		const Index                                            totalNumSystems
-		,const Scalar                                          tols[]
+		const Index                                       totalNumSystems
+		,const Scalar                                     tols[]
 		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
 		);
 
-	/// Return the minimum (over all iterations) maximum (over all right-hand-sides) tolerance seen
+	/// Return the minimum (over all right-hand sides) tolerance passed into <tt>initialize()</tt>.
+	Scalar minTol() const;
+
+	/// Return the minimum (over all iterations) maximum (over all right-hand sides) error seen
 	Scalar minMaxError() const;
 
 	//@}
@@ -103,16 +106,24 @@ public:
 private:
 
 	Teuchos::RefCountPtr<const Norm<Scalar> >   norm_;
-	std::vector<Scalar>                              tols_;           // if size()==1 then works for multiple systems
-	std::vector<Index>                               activeSystems_;  // cache
-	std::vector<Scalar>                              norms_;          // cache
+	std::vector<Scalar>                         tols_;           // if size()==1 then works for multiple systems
+	std::vector<Index>                          activeSystems_;  // cache
+	std::vector<Scalar>                         norms_;          // cache
 
-	Scalar                                           minMaxErr_;
+	Scalar                                      minTol_;
+	Scalar                                      minMaxErr_;
 
 }; // class NormedConvergenceTester
 
 // ///////////////////////////
 // Inline members
+
+template<class Scalar>
+inline
+Scalar NormedConvergenceTester<Scalar>::minTol() const
+{
+	return minTol_;
+}
 
 template<class Scalar>
 inline
