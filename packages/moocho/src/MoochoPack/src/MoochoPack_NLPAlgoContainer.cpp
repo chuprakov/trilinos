@@ -25,7 +25,6 @@
 #include "ReducedSpaceSQPPack/include/rSQPAlgoInterface.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "NLPInterfacePack/include/NLP.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "ThrowException.h"
 
 namespace {
@@ -36,13 +35,17 @@ void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterface
 		m  = nlp->m(),
 		mI = nlp->mI(),
 		nb = nlp->num_bounded_x();
-	nlp->report_final_solution(
-		s.x().get_k(0)                                                     // x
-		,( m  && s.lambda().updated_k(0) ) ? &s.lambda().get_k(0)  : NULL  // lambda
-		,( mI && s.lambda().updated_k(0) ) ? &s.lambdaI().get_k(0) : NULL  // lambdaI
-		,( nb && s.nu().updated_k(0)     ) ? &s.nu().get_k(0)      : NULL  // nu
-		, false                                                            // optimal = false
-		);
+	const GeneralIterationPack::IterQuantityAccess<AbstractLinAlgPack::VectorWithOpMutable>
+		&x_iq = s.x();
+	if( x_iq.updated_k(0) ) {
+		nlp->report_final_solution(
+			x_iq.get_k(0)                                                      // x
+			,( m  && s.lambda().updated_k(0) ) ? &s.lambda().get_k(0)  : NULL  // lambda
+			,( mI && s.lambda().updated_k(0) ) ? &s.lambdaI().get_k(0) : NULL  // lambdaI
+			,( nb && s.nu().updated_k(0)     ) ? &s.nu().get_k(0)      : NULL  // nu
+			, false                                                            // optimal = false
+			);
+	}
 }
 
 } // end namespace

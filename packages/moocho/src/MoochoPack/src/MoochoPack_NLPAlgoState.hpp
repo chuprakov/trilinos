@@ -16,6 +16,8 @@
 #ifndef RSQP_STATE_H
 #define RSQP_STATE_H
 
+#include <deque>
+
 #include "ReducedSpaceSQPPackTypes.h"
 #include "GeneralIterationPack/include/IterQuantityAccess.h"
 #include "GeneralIterationPack/include/AlgorithmState.h"
@@ -256,6 +258,9 @@ public:
 	/// Thrown if an iteration quantity is of an invalid type.
 	class InvalidType : public std::logic_error
 	{public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
+	
+	///
+	typedef MemMngPack::ref_count_ptr<const VectorSpace>    vec_space_ptr_t;
 
 	//@}
 
@@ -283,10 +288,28 @@ public:
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
 	/// Set the VectorSpace of h
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_h )
-	/// Set the VectorSpace of py
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_range )
-	/// Set the VectorSpace of pz
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_null )
+	///
+	/** Set the VectorSpace of the range space (py).
+	 * 
+	 * Calling this method will cause all of the vector iteration
+	 * quantity objects set in this space to be updated with this
+	 * vector space (factory) object.
+	 */
+	void set_space_range (const vec_space_ptr_t& space_range );
+	vec_space_ptr_t& get_space_range();
+	const vec_space_ptr_t& get_space_range() const;
+	const VectorSpace& space_range() const;
+	///
+	/** Set the VectorSpace of the null space (pz).
+	 * 
+	 * Calling this method will cause all of the vector iteration
+	 * quantity objects set in this space to be updated with this
+	 * vector space (factory) object.
+	 */
+	void set_space_null (const vec_space_ptr_t& space_null );
+	vec_space_ptr_t& get_space_null();
+	const vec_space_ptr_t& get_space_null() const;
+	const VectorSpace& space_null() const;
 
 	///
 	/** Construct
@@ -295,11 +318,11 @@ public:
 	 */
 	rSQPState(
 		const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
-		,const space_x_ptr_t&   space_x      = MemMngPack::null
-		,const space_x_ptr_t&   space_c      = MemMngPack::null
-		,const space_x_ptr_t&   space_h      = MemMngPack::null
-		,const space_x_ptr_t&   space_range  = MemMngPack::null
-		,const space_x_ptr_t&   space_null   = MemMngPack::null
+		,const vec_space_ptr_t& space_x      = MemMngPack::null
+		,const vec_space_ptr_t& space_c      = MemMngPack::null
+		,const vec_space_ptr_t& space_h      = MemMngPack::null
+		,const vec_space_ptr_t& space_range  = MemMngPack::null
+		,const vec_space_ptr_t& space_null   = MemMngPack::null
 		);
 
 	///
@@ -468,13 +491,61 @@ protected:
 private:
 
 	// ////////////////////////////
+	// Private types
+
+	typedef std::deque<iq_id_type>  iq_vector_list_t;
+
+	// ////////////////////////////
+	// Private data member
+
+	vec_space_ptr_t          space_range_;
+	vec_space_ptr_t          space_null_;
+
+	iq_vector_list_t         range_space_vector_iqs_;
+	iq_vector_list_t         null_space_vector_iqs_;
+
+	// ////////////////////////////
 	// Private member functions.
+	
+	// Update the vector factories for all of the iteration quantities
+	// in the input list.
+	void update_vector_factories(
+		const iq_vector_list_t&   iq_vector_list
+		,const vec_space_ptr_t&   vec_space
+		);
 
 	// not defined and not to be called
 	rSQPState(const rSQPState&);
 	rSQPState& operator=(const rSQPState&);
 
 };	// end class rSQPState
+
+// ////////////////////////////////////
+// Inline members
+
+inline
+rSQPState::vec_space_ptr_t& rSQPState::get_space_range()
+{	return space_range_ ; }
+
+inline
+const rSQPState::vec_space_ptr_t& rSQPState::get_space_range() const
+{	return space_range_; }
+
+inline
+const VectorSpace& rSQPState::space_range() const
+{	return *space_range_; }
+
+inline
+rSQPState::vec_space_ptr_t& rSQPState::get_space_null()
+{	return space_null_ ; }
+
+inline
+const rSQPState::vec_space_ptr_t& rSQPState::get_space_null() const
+{	return space_null_; }
+
+inline
+const VectorSpace& rSQPState::space_null() const
+{	return *space_null_; }
 
 }	// end namespace ReducedSpaceSQPPack
 

@@ -54,7 +54,7 @@
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
 
 #include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
-#include "NLPInterfacePack/include/NLPReduced.h"
+#include "NLPInterfacePack/include/NLPVarReductPerm.h"
 //#include "SparseSolverPack/include/COOBasisSystem.h"
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 //#include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
@@ -73,9 +73,14 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
+#include "ConstrainedOptimizationPack/include/VarReductOrthogDenseStd_Strategy.h"
 
 #include "AbstractLinAlgPack/include/BasisSystemTester.h"
 #include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
+
+#include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
+#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
@@ -453,18 +458,59 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				"setting line_search_method = DIRECT ...\n";
 		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
 	}
+	
+	// Create a default VarReductOrthog_Strategy object for serial applications!
+	if( cov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL && var_reduct_orthog_strategy_.get() == NULL ) {
+		if(trase_out)
+			*trase_out
+				<< "\nrange_space_matrix == ORTHOGONAL and the client has not given a specialized VarReductOrthog_Strategy object\n"
+				<< "Using the default implementation VarReductOrthogDenseStd_Strategy ...\n";
+		var_reduct_orthog_strategy_ = rcp::rcp(new VarReductOrthogDenseStd_Strategy());
+	}
 
 	// /////////////////////////////////////////////////////
 	// C.1. Create the decomposition system object
 
+	typedef ref_count_ptr<BasisSystemPerm> basis_sys_perm_ptr_t;
+	basis_sys_perm_ptr_t  basis_sys_perm;
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
 	decomp_sys_ptr_t decomp_sys = rcp::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
-		THROW_EXCEPTION(
-			basis_sys_.get() == NULL, std::logic_error
-			,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-			"There is no default basis system yet!" );
+		if( basis_sys_.get() == NULL ) {
+			if(trase_out)
+				*trase_out <<
+					"\nA specialized basis system object was not specified by the client.\n"
+					"Creating BasisSystemPermDirectSparse object for direct sparse matrices ...\n";
+			rcp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
+			switch(cov_.direct_linear_solver_type_) {
+				case LA_MA28:
+					if(trase_out)
+						*trase_out <<
+							"Using DirectSparseSolverMA28 ...\n";
+					direct_sparse_solver = rcp::rcp(new DirectSparseSolverMA28());
+					break;
+				case LA_MA48:
+					if(trase_out)
+						*trase_out <<
+							"Using DirectSparseSolverMA48 ...\n";
+					THROW_EXCEPTION(
+						true, std::logic_error
+						,"Error, This direct solver is not supported yet!" );
+					break;
+				case LA_SUPERLU:
+					if(trase_out)
+						*trase_out <<
+							"Using DirectSparseSolverSuperLU ...\n";
+					THROW_EXCEPTION(
+						true, std::logic_error
+						,"Error, This direct solver is not supported yet!" );
+					break;
+				default:
+					assert(0); // Should not be called?
+			}
+			basis_sys_ = rcp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
+		}
 		// Create the testing object for the basis system and set it up.
 		ref_count_ptr<BasisSystemTester>
 			basis_sys_tester = rcp::rcp(new BasisSystemTester());
@@ -473,30 +519,29 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				opt_setter(basis_sys_tester.get());
 			opt_setter.set_options(*options_);
 		}
-		// create the step object
+		// See if the basis system object supports basis permutations
+		basis_sys_perm = rcp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
+		// Create the DecompositionSystem implementation object
+		typedef ref_count_ptr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
+		decomp_sys_imp_ptr_t decomp_sys_imp;
 		switch( cov_.range_space_matrix_type_ ) {
 			case RANGE_SPACE_MATRIX_COORDINATE:
-				decomp_sys
+				decomp_sys_imp
 					= rcp::rcp(new DecompositionSystemCoordinate(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
-						,basis_sys_
+						,basis_sys_perm.get() ? rcp::null : basis_sys_
 						,basis_sys_tester
 						) );
 				break;
 			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
-				// Create a default VarReductOrthog_Strategy object for serial applications!
-				if( var_reduct_orthog_strategy_.get() == NULL )
-				{
-					assert(0); // ToDo: Implement
-				}
-				decomp_sys
+				decomp_sys_imp
 					= rcp::rcp(new DecompositionSystemOrthogonal(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
-						,basis_sys_
+						,basis_sys_perm.get() ? rcp::null : basis_sys_
 						,basis_sys_tester
 						,var_reduct_orthog_strategy_
 						) );
@@ -504,6 +549,33 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			}
 			default:
 				assert(0);	// only a local error
+		}
+		// Create the actual DecompositionSystem object being used
+		if( basis_sys_perm.get() != NULL ) {
+			if(trase_out)
+				*trase_out
+					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
+					<< "\' supports the BasisSystemPerm interface.\n"
+					<< "Using DecompositionSystemVarReductPermStd to support basis permutations ...\n";
+			decomp_sys = rcp::rcp(
+				new DecompositionSystemVarReductPermStd(
+					decomp_sys_imp
+					,basis_sys_perm
+					) );
+		}
+		else {
+			if(trase_out)
+				*trase_out
+					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
+					<< "\' does not support the BasisSystemPerm interface.\n"
+					<< "Using " << typeid(*decomp_sys_imp).name() << " with a fixed basis ...\n";
+			decomp_sys_imp->initialize(
+				nlp.space_x()
+				,nlp.space_c()
+				,nlp.space_h()
+				,basis_sys_   // Must already be ready to go with a basis selection!
+				);
+			decomp_sys = decomp_sys_imp;
 		}
 	}
 
@@ -527,19 +599,21 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,nlp.space_x()
 					,nlp.space_c()
 					,nlp.space_h()
-					,(tailored_approach
-					  ? ( nlp_fod->var_dep().size() 
-					    ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-					    : rcp::null )
-                      : decomp_sys->space_range() )
-					,(tailored_approach
+					,( tailored_approach
+					   ? ( nlp_fod->var_dep().size() 
+						   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
+						   : rcp::null )
+					   : decomp_sys->space_range() // could be NULL for BasisSystemPerm
+						)
+					,( tailored_approach
 					   ?( nlp_fod->var_indep().size()
-					     ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-					     : rcp::null )
-					   : decomp_sys->space_null() )
+						  ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
+						  : rcp::null )
+					   : decomp_sys->space_null() // could be NULL for BasisSystemPerm
+						)
 					)
 				);
-
+				
 		//
 		// Set the iteration quantities for the NLP matrix objects
 		//
@@ -659,10 +733,50 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						)
 					)
 				);
-			// ToDo: Add matrix iq object for Uz
-			// ToDo: Add matrix iq object for Uy
-			// ToDo: Add matrix iq object for Vz
-			// ToDo: Add matrix iq object for Vy
+			// Uz
+			state->set_iter_quant(
+				Uz_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Uz_name
+						,decomp_sys->factory_Uz()
+						)
+					)
+				);
+			// Uy
+			state->set_iter_quant(
+				Uy_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Uy_name
+						,decomp_sys->factory_Uy()
+						)
+					)
+				);
+			// Vz
+			state->set_iter_quant(
+				Vz_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Vz_name
+						,decomp_sys->factory_Vz()
+						)
+					)
+				);
+			// Vy
+			state->set_iter_quant(
+				Vy_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Vy_name
+						,decomp_sys->factory_Vy()
+						)
+					)
+				);
 		}
 
 		// Add reduced Hessian
@@ -774,25 +888,29 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if(m && nlp_foi) state->Gc();
 		if(mI) state->Gh();
 
-		if(m) state->py();
+		if(m && basis_sys_perm.get() == NULL) state->py();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
-		if(m) state->pz();
+		if(m && basis_sys_perm.get() == NULL) state->pz();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->d()).resize(2);
 
-		dyn_cast<IQ_vector_cngs>(state->rGf()).resize(2);
-		state->w();
-		state->zeta();
-		state->qp_grad();
+		if( n > m ) {
+			dyn_cast<IQ_vector_cngs>(state->rGf()).resize(2);
+			state->w();
+			state->zeta();
+			state->qp_grad();
+		}
 		state->eta();
-
+		
 		dyn_cast<IQ_scalar_cngs>(state->alpha()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->mu()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->phi()).resize(2);
 
 		dyn_cast<IQ_scalar_cngs>(state->opt_kkt_err()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->feas_kkt_err()).resize(2);
-		dyn_cast<IQ_vector_cngs>(state->rGL()).resize(2);
+		if( n > m ) {
+			dyn_cast<IQ_vector_cngs>(state->rGL()).resize(2);
+		}
 		if(m) dyn_cast<IQ_vector_cngs>(state->lambda()).resize(2);
 		if(mI) dyn_cast<IQ_vector_cngs>(state->lambdaI()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->nu()).resize(2);
@@ -1328,7 +1446,7 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 	rSQPAlgo             &algo    = dyn_cast<rSQPAlgo>(*_algo);
 	rSQPState	         &state   = algo.rsqp_state();
 	NLP			         &nlp     = algo.nlp();
-	NLPReduced           *nlp_red = dynamic_cast<NLPReduced*>(&nlp);
+	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
 	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(&nlp);
 
 	algo.max_iter( algo.algo_cntr().max_iter() );

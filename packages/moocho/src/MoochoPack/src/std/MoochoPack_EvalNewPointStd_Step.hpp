@@ -90,6 +90,18 @@ public:
 
 	//@}
 
+	/** @name Basis selection */
+	//@{
+
+	///
+	/** Force selection of a new basis.
+	 *
+	 * Tells the step object to select a new basis the next time \c do_step() is called.
+	 */
+	void select_new_basis();
+
+	//@}
+
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
@@ -102,10 +114,21 @@ public:
 
 private:
 
+	bool				select_new_basis_;	// flag to select a new basis
+
 	// Not defined and not to be called
 	EvalNewPointStd_Step();
 
 };	// end class EvalNewPointStd_Step
+
+// ////////////////////////////////////////////
+// Inline members
+
+inline
+void EvalNewPointStd_Step::select_new_basis()
+{
+	select_new_basis_ = true;
+}
 
 }	// end namespace ReducedSpaceSQPPack 
 

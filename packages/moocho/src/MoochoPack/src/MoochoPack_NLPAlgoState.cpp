@@ -22,6 +22,7 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "dynamic_cast_verbose.h"
 
 // rSQPState iteration quantities names
 
@@ -73,15 +74,35 @@ const std::string ReducedSpaceSQPPack::nu_name				= "nu";
 
 namespace ReducedSpaceSQPPack {
 
-// rSQPState
+// Constructors / initializers
+
+inline
+void rSQPState::set_space_range (const vec_space_ptr_t& space_range )
+{
+	space_range_ = space_range;
+	update_vector_factories( 
+		range_space_vector_iqs_
+		,space_range
+		);
+}
+
+inline
+void rSQPState::set_space_null (const vec_space_ptr_t& space_null )
+{
+	space_null_ = space_null;
+	update_vector_factories( 
+		null_space_vector_iqs_
+		,space_null
+		);
+}
 
 rSQPState::rSQPState(
 	const decomp_sys_ptr_t& decomp_sys
-	,const space_x_ptr_t&   space_x
-	,const space_x_ptr_t&   space_c
-	,const space_x_ptr_t&   space_h
-	,const space_x_ptr_t&   space_range
-	,const space_x_ptr_t&   space_null
+	,const vec_space_ptr_t& space_x
+	,const vec_space_ptr_t& space_c
+	,const vec_space_ptr_t& space_h
+	,const vec_space_ptr_t& space_range
+	,const vec_space_ptr_t& space_null
 	)
 	:decomp_sys_(decomp_sys)
 	,space_x_(space_x)
@@ -252,7 +273,25 @@ void rSQPState::update_vector_iq_id(
 		else {
 			iq_id->iq_id = _iq_id;
 		}
+		// Record the range and null space vectors since there
+		// spaces may change.
+		if( vec_space.get() == space_range_.get() )
+			range_space_vector_iqs_.push_back(iq_id->iq_id);
+		else if( vec_space.get() == space_null_.get() )
+			null_space_vector_iqs_.push_back(iq_id->iq_id);
 	}
+}
+
+// private
+
+void rSQPState::update_vector_factories(
+	const iq_vector_list_t&   iq_vector_list
+	,const vec_space_ptr_t&   vec_space
+	)
+{
+	using DynamicCastHelperPack::dyn_cast;
+	for( iq_vector_list_t::const_iterator iq_itr = iq_vector_list.begin(); iq_itr != iq_vector_list.end(); ++iq_itr )
+		dyn_cast<IterQuantityAccessContiguous<VectorWithOpMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
 }
 
 }	// end namespace ReducedSpaceSQPPack
