@@ -145,6 +145,20 @@ int RTOp_MPI_apply_op(
 	clock_t ticks_start_start, ticks_start, ticks_end, ticks_total = 0;
 #endif
 
+	if( comm == MPI_COMM_NULL ) {
+		/* Just do the reduction on this processor and be done with it! */
+		if( sub_vecs || sub_targ_vecs ) {
+			for( kc = 0; kc < num_cols; ++kc ) {
+				err = RTOp_apply_op(
+					op, num_vecs, sub_vecs+kc*num_vecs, num_targ_vecs, sub_targ_vecs+kc*num_targ_vecs
+					,reduct_objs ? reduct_objs[kc] : RTOp_REDUCT_OBJ_NULL
+					);
+				if (err) goto ERR_LABEL;
+			}
+		}
+		return 0; // Success!
+	}
+
 	/* 
 	 * Get the description of the datatype of the target object. 
 	 * We need this in order to map it to an MPI user defined 

@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "TSFExtended/src/Core/TSFCoreMPIVectorBase.hpp"
+#include "TSFCoreMPIVectorBase.hpp"
 
 namespace TSFCore {
 

@@ -62,6 +62,8 @@
 #undef VERSION
 #endif
 
+#include <TSFCoreUtils_ConfigDefs.hpp>
+
 #include <TSFCoreConfig.h>
 
 #ifdef HAVE_OSTREAM

@@ -8,6 +8,10 @@
 #include "Epetra_CrsMatrix.h"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_Time.hpp"
+#ifdef RTOp_USE_MPI
+#  include "TSFCoreSimpleMPIVectorSpace.hpp"
+#  include "Epetra_MpiComm.h"
+#endif
 
 // Define this if you want to see only Epetra-based computations
 //#define EPETRA_ADAPTERS_EPETRA_ONLY
@@ -34,11 +38,17 @@ int main_body( int argc, char* argv[] ) {
 	using Teuchos::set_extra_data;
 	
 	bool verbose = true;
+#ifdef RTOp_USE_MPI
+	bool useMPI  = true;
+#else
 	bool useMPI  = false;
+#endif
 	bool success = true;
 	bool result;
 
 	const Scalar err_tol = 1e-10; // Todo: Make this adjustable!
+
+	MPI_Init(&argc,&argv);
 	
 	try {
 
@@ -67,32 +77,47 @@ int main_body( int argc, char* argv[] ) {
 		// Create two different vector spaces (one Epetra and one non-Epetra)
 		// that should be compatible
 		//
-		
-		RefCountPtr<const Epetra_SerialComm> epetra_comm;
+		MPI_Comm mpiComm = MPI_COMM_NULL;
+		int numProc = 1;
+#ifdef RTOp_USE_MPI
+		mpiComm = MPI_COMM_WORLD;
+		MPI_Comm_size( mpiComm, &numProc );
+#endif
+		RefCountPtr<const Epetra_Comm> epetra_comm;
 		RefCountPtr<const Epetra_Map> epetra_map;
 		RefCountPtr<const VectorSpace<Scalar> > epetra_vs;
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		RefCountPtr<const VectorSpace<Scalar> > non_epetra_vs;
 #endif
+#ifdef RTOp_USE_MPI
 		if(useMPI) {
 			//
 			// Create parallel vector spaces using compatible maps
 			//
-			assert(0);
+			epetra_comm = rcp(new Epetra_MpiComm(mpiComm));
+			epetra_map = rcp(new Epetra_Map(-1,local_dim,0,*epetra_comm));
+			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
+#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
+			// Non-Epetra vector space
+			non_epetra_vs = rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
+#endif
 		}
 		else {
+#endif
 			//
 			// Create serial vector spaces (i.e. VectorSpace::isInCore()==true)
 			//
 			// Epetra vector space
-				epetra_comm = rcp(new Epetra_SerialComm);
-				epetra_map = rcp(new Epetra_LocalMap(local_dim,0,*epetra_comm));
+			epetra_comm = rcp(new Epetra_SerialComm);
+			epetra_map = rcp(new Epetra_LocalMap(local_dim,0,*epetra_comm));
 			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 			// Non-Epetra vector space
 			non_epetra_vs = rcp(new SerialVectorSpace<Scalar>(local_dim));
 #endif
+#ifdef RTOp_USE_MPI
 		}
+#endif
 
 		//
 		// Create vectors and multi-vectors from each vector space
@@ -437,6 +462,8 @@ int main_body( int argc, char* argv[] ) {
 			std::cerr << "*** Caught an unknown exception!\n";
 		success = -1;
 	}
+
+ 	MPI_Finalize();
 
 	return (success ? 0 : -1);
 

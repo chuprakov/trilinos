@@ -13,10 +13,17 @@ template<class Scalar>
 SimpleMPIVectorSpace<Scalar>::SimpleMPIVectorSpace( MPI_Comm mpiComm, const Index localSubDim )
 	:mpiComm_(mpiComm), localSubDim_(localSubDim)
 {
-	MPI_Comm_size( mpiComm_, &numProc_  );
-	MPI_Comm_rank( mpiComm_, &procRank_ );
+	if(mpiComm!=MPI_COMM_NULL) {
+		MPI_Comm_size( mpiComm_, &numProc_  );
+		MPI_Comm_rank( mpiComm_, &procRank_ );
+	}
+	else {
+		numProc_  = 1;
+		procRank_ = 0;
+	}
 	globalDim_    = numProc_  * localSubDim_;
 	localOffset_  = procRank_ * localSubDim_;
+	updateState();
 }
 
 // Overridden from VectorSpece

@@ -5,14 +5,16 @@
 #define TSFCORE_SIMPLE_MPI_VECTOR_HPP
 
 #include "TSFCoreSimpleMPIVectorDecl.hpp"
-#include "TSFExtended/src/Core/TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 
 namespace TSFCore {
 
 template<class Scalar>
 SimpleMPIVector<Scalar>::SimpleMPIVector( const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > &mpiSpace )
 	: mpiSpace_(mpiSpace), localValues_(mpiSpace->localSubDim())
-{}
+{
+	updateMpiSpace();
+}
 
 // Overridden from MPIVectorBase
 

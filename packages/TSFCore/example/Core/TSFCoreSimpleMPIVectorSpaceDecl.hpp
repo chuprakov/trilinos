@@ -4,7 +4,7 @@
 #ifndef TSFCORE_SIMPLE_MPI_VECTOR_SPACE_DECL_HPP
 #define TSFCORE_SIMPLE_MPI_VECTOR_SPACE_DECL_HPP
 
-#include "TSFExtended/src/Core/TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 
 namespace TSFCore {
 

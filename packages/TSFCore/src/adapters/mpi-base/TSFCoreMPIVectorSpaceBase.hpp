@@ -51,17 +51,43 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 {
 	if( this->localSubDim() > 0 ) {
 		const MPI_Comm mpiComm = this->mpiComm();
+		const Index localSubDim = this->localSubDim(); 
 		int numProc = 1;
+		int procRank = 0;
 #ifdef RTOp_USE_MPI
-		MPI_Comm_size( mpiComm, &numProc );
+		if( mpiComm != MPI_COMM_NULL ) {
+			MPI_Comm_size( mpiComm, &numProc );
+			MPI_Comm_rank( mpiComm, &procRank );
+		}
+		if(numProc > 1) {
+			//
+			// Here we will make a map code out of just the local
+			// sub-dimension on each processor.  If each processor
+			// has the same number of local elements, then the maps
+			// will be the same and this is all you need for
+			// RTOp compatibility unless the operations are not
+			// coordinate invariant.  I will work on this issue
+			// if it becomes a problem.
+			//
+			Index localCode = localSubDim % procRank + localSubDim;
+			int *dummy = &localCode; // For now make sure that Index is int so we can use MPI_INT
+			MPI_Allreduce(
+				&localCode            // sendbuf
+				,&mapCode_            // recvbuf
+				,1                    // count
+				,MPI_INT              // datatype (ToDo: use traits class on Index to make more general)
+				,MPI_SUM              // op
+				,mpiComm              // comm
+				);
+			isInCore_ = false;
+		}
+		else {
 #endif	
-		TEST_FOR_EXCEPTION(
-			numProc!=1, std::logic_error
-			,"MPIVectorSpaceBase<Scalar>::updateState(): Error, have not implemented "
-			"this method for more than one processor yet!"
-			);
-		mapCode_ = this->dim();
-		isInCore_ = ( numProc == 1 );
+			mapCode_ = localSubDim;
+			isInCore_ = true;
+#ifdef RTOp_USE_MPI
+		}
+#endif
 	}
     else {
 		mapCode_  = -1;     // Uninitialized!
@@ -69,6 +95,6 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 	}
 }
 	
-} // end namespace TSFCore
+} // end namespace TSFCoreo
 
 #endif // TSFCORE_MPI_VECTOR_SPACE_BASE_HPP

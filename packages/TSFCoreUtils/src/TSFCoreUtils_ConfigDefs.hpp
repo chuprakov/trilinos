@@ -58,7 +58,13 @@
 #undef VERSION
 #endif
 
+#include <Teuchos_ConfigDefs.hpp>
+
 #include <TSFCoreUtilsConfig.h>
+
+#ifdef HAVE_MPI
+#define RTOp_USE_MPI
+#endif
 
 #ifdef __cplusplus
 
