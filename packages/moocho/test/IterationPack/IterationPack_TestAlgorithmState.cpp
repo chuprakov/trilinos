@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "IterationPack/test/TestGeneralIterationPack.hpp"
+#include "IterationPack/test/TestIterationPack.hpp"
 #include "IterationPack/src/AlgorithmState.hpp"
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "AbstractFactoryStd.hpp"

@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <vector>
 
-#include "IterationPack/test/TestGeneralIterationPack.hpp"
+#include "IterationPack/test/TestIterationPack.hpp"
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "update_success.hpp"
 

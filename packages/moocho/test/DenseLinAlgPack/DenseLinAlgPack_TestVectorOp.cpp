@@ -20,7 +20,7 @@
 
 #include <math.h>
 
-#include "TestLinAlgPack.hpp"
+#include "TestDenseLinAlgPack.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"

@@ -18,7 +18,7 @@
 #include <vector>
 #include <typeinfo>
 
-#include "TestLinAlgPack.hpp"
+#include "TestDenseLinAlgPack.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "DenseLinAlgPack/src/MatVecCompare.hpp"

@@ -7,7 +7,7 @@ document ???.
 
 <ul>
 
-<li> Main library (<tt>libGeneralIterationPack</tt>)
+<li> Main library (<tt>libIterationPack</tt>)
 
 The objects of type <tt>\ref IterationPack::Algorithm "Algorithm"</tt> acts as the
 central hub for an interative algorithm.  <tt>Algorithm</tt> objects fire off a set of
@@ -51,11 +51,11 @@ The subclass <tt>\ref IterationPack::AlgorithmTrackerComposite "AlgorithmTracker
 is provided to allow a set of <tt>AlgorithmTracker</tt> objects to be called instead of just a single
 <tt>AlgorithmTracker</tt> object by the <tt>Algorithm</tt> object.
 
-<li> Testing library (<tt>libTestGeneralIterationPack</tt>)
+<li> Testing library (<tt>libTestIterationPack</tt>)
 
 Some testing code is available ...
 
-<li> Testing program (<tt>TestGeneralIterationPack</tt>)
+<li> Testing program (<tt>TestIterationPack</tt>)
 
 This testing program runs some rudamentory tests on some of the classes in this framework.
 

@@ -22,7 +22,7 @@
 #include <vector>
 #include <typeinfo>
 
-#include "TestLinAlgPack.hpp"
+#include "TestDenseLinAlgPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"

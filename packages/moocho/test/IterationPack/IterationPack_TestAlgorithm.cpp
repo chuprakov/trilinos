@@ -16,7 +16,7 @@
 #include <ostream>
 #include <iomanip>
 
-#include "TestGeneralIterationPack.hpp"
+#include "TestIterationPack.hpp"
 #include "AlgorithmStepTesting.hpp"
 #include "AlgorithmTrackTesting.hpp"
 #include "IterationPack/src/Algorithm.hpp"
