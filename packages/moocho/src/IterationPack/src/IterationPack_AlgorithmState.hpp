@@ -76,7 +76,7 @@ public:
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<IterQuantity>		IQ_ptr;
 	///
-	enum { DOES_NOT_EXIST = 1000 };	// should not ever be this many insertions.
+	enum { DOES_NOT_EXIST = INT_MAX }; // should not ever be this many insertions.
 
 	/// Thrown if name or id does not exist
 	class DoesNotExist : public std::logic_error
@@ -123,12 +123,12 @@ public:
 	  *
 	  * Time = O(log(num_iter_quant)), Space = O(1).
 	  *
-	  * If an iteration quantity already exists with the name #iq_name# then
-	  * a #AlreadyExists# exception will be thrown.  Otherwise the function
+	  * If an iteration quantity already exists with the name <tt>iq_name</tt> then
+	  * a <tt>AlreadyExists</tt> exception will be thrown.  Otherwise the function
 	  * will return the iq_id assigned to the inserted interation quantity.
 	  *
 	  * Preconditions: <ul>
-	  * <li> #get_iter_quant_id(iq_name) == DOES_NOT_EXIST# (throw #AlreadyExists#)
+	  * <li> <tt>get_iter_quant_id(iq_name) == DOES_NOT_EXIST</tt> (throw <tt>AlreadyExists</tt>)
 	  * </ul>
 	  */
 	virtual iq_id_type set_iter_quant(const std::string& iq_name, const IQ_ptr& iq);
@@ -138,12 +138,12 @@ public:
 	  *
 	  * Time = O(log(num_iter_quant)), Space = O(1).
 	  *
-	  * If #get_iter_quant(iq_name).count() == 1# then the IterQuantity object
+	  * If <tt>get_iter_quant(iq_name).count() == 1</tt> then the IterQuantity object
 	  * pointed to will be deleted.  Subsequently, the iq_id returned from
-	  * #set_iter_quant(...)# when #iq_name# was set is no longer valid.
+	  * <tt>set_iter_quant(...)</tt> when <tt>iq_name</tt> was set is no longer valid.
 	  *
 	  * Preconditions: <ul>
-	  * <li> #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * <li> <tt>get_iter_quant_id(iq_name) != DOES_NOT_EXIST</tt> (throw <tt>DoesNotExist</tt>)
 	  * </ul>
 	  */
 	virtual void erase_iter_quant(const std::string& iq_name);
@@ -151,7 +151,7 @@ public:
 	///
 	/** Return the iteration quantity id (iq_id) for the iteration quantity.
 	  *
-	  * If an iteration quantity with the name #iq_name# does not exist, then
+	  * If an iteration quantity with the name <tt>iq_name</tt> does not exist, then
 	  * the value DOES_NOT_EXIST is returned.
 	  *
 	  * Time = O(log(num_iter_quant)), Space = O(1).
@@ -185,7 +185,7 @@ public:
 	  * Time = O(log(num_iter_quant())), Space = O(1).
 	  *
 	  * Preconditions: <ul>
-	  * <li> #get_iter_quant_id(iq_name) != DOES_NOT_EXIST# (throw #DoesNotExist#)
+	  * <li> <tt>get_iter_quant_id(iq_name) != DOES_NOT_EXIST</tt> (throw <tt>DoesNotExist</tt>)
 	  * </ul>
 	  */
 	virtual IterQuantity& iter_quant(const std::string& iq_name );
@@ -196,7 +196,7 @@ public:
 	  *
 	  * Time = O(1), Space = O(1).
 	  *
-	  * If the IQ object with iq_id does not exist then a #DoesNotExist#
+	  * If the IQ object with iq_id does not exist then a <tt>DoesNotExist</tt>
 	  * exception will be thrown.
 	  */
 	virtual IterQuantity& iter_quant(iq_id_type iq_id);
