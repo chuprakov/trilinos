@@ -43,6 +43,8 @@ int main(int argc, char* argv[] ) {
 	typedef AbstractLinAlgPack::size_type size_type;
 	typedef AbstractLinAlgPack::value_type value_type;
 	namespace NLPIP = NLPInterfacePack;
+	namespace rsqp = ReducedSpaceSQPPack;
+	typedef rsqp::mama_jama_solve_return_t  solve_return_t;
 
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::VectorWithOp;
@@ -155,14 +157,31 @@ int main(int argc, char* argv[] ) {
 	}
 
 	// Create and test the NLP using this vector space object
-	const bool
-		result = NLPIP::ExampleNLPFirstOrderDirectRun(
+	const solve_return_t
+		solve_return = NLPIP::ExampleNLPFirstOrderDirectRun(
 			*vec_space, xo, has_bounds, dep_bounded
 			,&out,&eout
 			);
-	if(!result)
-		prog_return = PROG_NLP_TEST_ERR;
 
+	switch(solve_return.status) {
+		case solve_return_t::SOLVE_RETURN_SOLVED:
+			prog_return = PROG_SUCCESS;
+			break;
+		case solve_return_t::SOLVE_RETURN_MAX_ITER:
+			prog_return = PROG_MAX_ITER_EXEEDED;
+			break;
+		case solve_return_t::SOLVE_RETURN_MAX_RUN_TIME:
+			prog_return = PROG_MAX_TIME_EXEEDED;
+			break;
+		case solve_return_t::SOLVE_RETURN_NLP_TEST_FAILED:
+			prog_return = PROG_NLP_TEST_ERR;
+			break;
+		case solve_return_t::SOLVE_RETURN_EXCEPTION:
+			prog_return = PROG_EXCEPTION;
+			break;
+		default:
+			assert(0);
+	}
 	}	// end try
 	catch(const std::exception& excpt) {
 		out << "\nCaught a std::exception: " << excpt.what() << endl;
