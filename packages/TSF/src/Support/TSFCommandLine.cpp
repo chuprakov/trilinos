@@ -25,8 +25,11 @@ void TSFCommandLine::init(int argc, void** argv)
 	
 #ifdef HAVE_MPI
 	MPI_Bcast(&argc, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 	int rank  = 0;
+#ifdef HAVE_MPI
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
 
 	if (verbose())
 		{
@@ -60,8 +63,9 @@ void TSFCommandLine::init(int argc, void** argv)
 					TSFOut::rootPrintf("root sees argument: %s\n", argv[i+1]);
 					TSFOut::rootPrintf("root sees len: %d\n", len);
 				}
-
+#ifdef HAVE_MPI
 			MPI_Bcast(&len, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 
 			if (verbose())
 				{
@@ -70,6 +74,7 @@ void TSFCommandLine::init(int argc, void** argv)
 
 			if (len > 0)
 				{
+#ifdef HAVE_MPI
 					char* tmp = new char[len+1];
 					if (rank==0)
 						{
@@ -85,12 +90,15 @@ void TSFCommandLine::init(int argc, void** argv)
 							TSFOut::printf("bcast'd argument: %s\n", 
 														 tokens_[count].c_str());
 						}
+#endif
 					tokenMap_.put(tokens_[count], count);
+#ifdef HAVE_MPI
 					delete [] tmp;
+#endif
 				}
 			count++;
 		}
-#endif
+
 	frozen_ = true;
 }
 
