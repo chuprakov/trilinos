@@ -21,7 +21,7 @@ href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
 report</a>.  The purpose of this online documentation is not to
 restate what is in <A
 HREF="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
-report</A>.  Instead, this online documentation is ment to provide a
+report</A>.  Instead, this online documentation is meant to provide a
 roadmap to the Doxygen-generated C++ code documentation and provide
 convient access to helpful examples.
 
@@ -66,7 +66,7 @@ The most fundumental abstract interfaces contained in the %TSFCore package
 <li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
     the scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
 <li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
-<li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for returning domain and range spaces for operators.
+<li><tt>TSFCore::OpBase</tt> is a base interface that defines functions for returning domain and range spaces for operators.
 <li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for linear operators.
 <li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
 <li><tt>RTOpPack::RTOpT</tt> is the fundamental abstract interface to all diagonal vector reduction/transformation operations.
@@ -75,7 +75,7 @@ The most fundumental abstract interfaces contained in the %TSFCore package
 From here on out, the abstract C++ classes
 <tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt>,
 <tt>TSFCore::MultiVector</tt> and <tt>TSFCore::LinearOp</tt> will be
-refereed to as the <b><em>fundamental %TSFCore interfaces</em></b>.
+referred to as the <b><em>fundamental %TSFCore interfaces</em></b>.
 
 The rest of the C++ classes and non-member functions in the TSFCore
 package which are documented in this Doxygen collection are designed
@@ -95,10 +95,10 @@ reason for the creation of %TSFCore in the first place.  The second
 most important use case associated with the fundamental %TSFCore
 interfaces is the \ref TSFCore_Adapters_grp of vector spaces, vectors,
 multi-vectors and linear operators.  These types of subclass
-implementations may also known as "adapter" subclasses if they "adapt"
+implementations are also known as "adapter" subclasses if they "adapt"
 some pre-existing set of classes or interfaces.  The third use case
 for the fundamental %TSFCore interfaces is the use of \ref
-TSFCore_ANA_Development_grp.  While the fundamental %TSFCore iterface
+TSFCore_ANA_Development_grp.  While the fundamental %TSFCore interface
 classes were not directly designed for this use case, with some
 minimal helper functions and classes, directly writing ANA
 implementations in terms of %TSFCore objects is quite straightforward.
@@ -179,7 +179,7 @@ used by an exectuable.  For most platforms and use cases,
 <b><tt>int</tt></b> is sufficient but in other cases <b><tt>long
 int</tt></b> may be necessary on some 64 bit platforms.  Not
 templating on the index (ordinal) type does not result in any
-degration in usability, runtime speed or storage usage for any use
+degradation in usability, runtime speed or storage usage for any use
 case.  However, certain types of subclasses of the %TSFCore
 interfaces, such as sparse matrix subclasses, may need to be templated
 on a local index (ordinal) type.
@@ -234,7 +234,7 @@ built without a dependency on the %Epetra pacakge.
 </ul>
 
 See the output from <tt>./configure --help</tt> (where <tt>./</tt> is
-the base soruce directory) for a complete listing of all of the
+the base source directory) for a complete listing of all of the
 configure options that TSFCore responds to.
 
 The %TSFCore package is also affected by configure options passed to
@@ -311,7 +311,7 @@ Trilinos Smart Reference-Counted Pointer Class for (Almost) Automatic
 Dynamic Memory Management in C++ </a></b>
 
 This paper describes the basics of <tt>Teuchos::RefCountPtr</tt> and
-outlines a convension for passing objects to and from functions that
+outlines a convention for passing objects to and from functions that
 all of the code in %TSFCore adheres to.
 
 <li><b><a href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf"> Vector
@@ -402,7 +402,7 @@ shown in the above UML class diagram are described below.
 <li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
     the scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
 <li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
-<li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for returning domain and range spaces for operators.
+<li><tt>TSFCore::OpBase</tt> is a base interface that defines functions for returning domain and range spaces for operators.
 <li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for linear operators.
 <li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
 </ul>
@@ -436,9 +436,8 @@ RTOp interfaces described in the aforementioned paper.
 
 \ingroup TSFCore_ANA_Iteroperability_grp
 
-\brief These are the
-\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
-that provide the foundation for all ANAs.
+\brief These are the \ref fundamental_TSFCore_interfaces_sec that
+provide the foundation for all ANAs.
 
 */
 
@@ -458,7 +457,7 @@ interfaces in order to provide implementations for the most common use
 cases.
 
 One of the main motivations behind the design of the \ref
-fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces" is
+fundamental_TSFCore_interfaces_sec is
 the uniform support for many different computing environments such as
 serial shared-memory (i.e. SMP) and a varienty of distributed-memory
 models (e.g. SPMD (single program, multiple data), client-server,
@@ -469,7 +468,7 @@ distributed-memory environments.  Because of this, the Trilinos
 package %TSFCore contains a set of base subclasses that makes the
 development of concrete vector space, vector, multi-vector and linear
 operator subclasses as easy as possible.  However, the \ref
-fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+fundamental_TSFCore_interfaces_sec 
 allow for almost limitless possibilities with respect to the types of
 possible implementations so it is not possible to provide pre-packaged
 support for all of the possibilities.
@@ -676,7 +675,7 @@ below depend on.
 
 Below are some concrete implementations of %TSFCore classes that are
 derived from the
-\ref TSFCore_adaptersserial_support_grp "basic serial base subclasses"
+\ref TSFCore_adapters_serial_support_grp "basic serial base subclasses"
 mentioned above.
 
 <ol>
@@ -1118,11 +1117,11 @@ activity in object-oriented programming.
 
 \ingroup TSFCore_use_cases_grp
 
-\brief While the \ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore
-interfaces" where not principally designed to provide a direct API for
-the development of ANA software, with some minimal helper functions
-and classes, directly writing even sophisticated ANA implementations
-directly in terms of %TSFCore objects is quite straightforward.
+\brief While the \ref fundamental_TSFCore_interfaces_sec were not
+principally designed to provide a direct API for the development of
+ANA software, with some minimal helper functions and classes, directly
+writing even sophisticated ANA implementations directly in terms of
+%TSFCore objects is quite straightforward.
 
 It turns out that using %TSFCore for the development of simple ANAs,
 as described below, really does not require any deep understanding of
@@ -1366,7 +1365,7 @@ linear operators.
 /** \defgroup TSFCore_examples_grp Assorted TSFCore Example Code
 
 \brief Below are links to example code that demonstrate various use
-caases for the code in the %TSFCore package:
+cases for the code in the %TSFCore package:
 
 <ol>
 
@@ -1386,7 +1385,7 @@ caases for the code in the %TSFCore package:
 // Silly power method example
 //
 
-/** \defgroup TSFCore_examples_power_method_grp Power Method Exmaples
+/** \defgroup TSFCore_examples_power_method_grp Power Method Examples
 
 \ingroup TSFCore_examples_grp
 
@@ -2513,7 +2512,7 @@ where <tt>./</tt> is the base source directory for %TSFCore.
 
 This testing program will be shown in its entirety below but first we
 will point out some of the more significant parts of the program and
-highlight some intersting functionality.
+highlight some interesting functionality.
 
 First, the testing program reads in a number of options as shown below:
 
