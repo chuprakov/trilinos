@@ -8,7 +8,7 @@ int TSFMPI::nProc_ = 1 ;
 
 void TSFMPI::init(int* argc, void*** argv)
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	/* initialize MPI */
 	int mpiHasBeenStarted = 0;
 	MPI_Initialized(& mpiHasBeenStarted);
@@ -40,7 +40,7 @@ void TSFMPI::init(int* argc, void*** argv)
 
 void TSFMPI::finalize()
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	int mpierr = ::MPI_Finalize();
 	if (mpierr != 0)
 		{

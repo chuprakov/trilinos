@@ -1,7 +1,7 @@
 #ifndef TSFVECTORSPACE_H
 #define TSFVECTORSPACE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVectorSpaceBase.h"
 #include "TSFSmartPtr.h"
 #include "TSFObject.h"

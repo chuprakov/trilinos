@@ -1,7 +1,7 @@
 #ifndef TSFMATRIXWRITERBASE_H
 #define TSFMATRIXWRITERBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearOperatorBase.h"
 #include "TSFLinearOperator.h"
 #include <string>
@@ -10,7 +10,7 @@ namespace TSF
 {
 
   using std::string;
-  
+
   /**
    * Base class for matrix writer implementations.
    *

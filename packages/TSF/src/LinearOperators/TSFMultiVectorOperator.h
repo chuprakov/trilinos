@@ -1,7 +1,7 @@
 #ifndef TSFMULTIVECTOROPERATOR_H
 #define TSFMULTIVECTOROPERATOR_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVector.h"
 #include "TSFLinearOperatorBase.h"
 #include "TSFArray.h"
@@ -23,9 +23,9 @@ namespace TSF
                              int numVectors,
                              bool isVertical);
       /*
-         TSFMultiVectorOperator(const TSFVectorSpace& space,
-         bool isVertical,
-         const TSFArray<TSFVector>& vectors);
+        TSFMultiVectorOperator(const TSFVectorSpace& space,
+        bool isVertical,
+        const TSFArray<TSFVector>& vectors);
       */
 
 
@@ -92,8 +92,8 @@ namespace TSF
         : TSFMultiVectorOperator(space, numVectors, true) {}
 
       /*
-      TSFVerticalMultiVectorOperator(const TSFVectorSpace& space,
-                                     const TSFArray<TSFVector>& vectors)
+        TSFVerticalMultiVectorOperator(const TSFVectorSpace& space,
+        const TSFArray<TSFVector>& vectors)
         : TSFMultiVectorOperator(space, true, vectors) {}
       */
       /** */

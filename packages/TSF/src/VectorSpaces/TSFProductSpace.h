@@ -1,7 +1,7 @@
 #ifndef TSFPRODUCTSPACE_H
 #define TSFPRODUCTSPACE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVectorSpaceBase.h"
 #include "TSFVectorSpace.h"
 #include <string>

@@ -1,7 +1,7 @@
 #ifndef MATLABWRITER_H
 #define MATLABWRITER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFMatrixWriterBase.h"
 #include <string>
 #include <iostream>
@@ -15,14 +15,14 @@ namespace TSF
   /** \ingroup MatrixWriters
    * Writes a matrix in Matlab format.  The particular format of the
    * file is as follows: multiple lines of the form
-   * 
+   *
    *  i   j   value
    *
    * where i is the row index and j the column index of a nonzero value.
    *
    *  Notes:
    *
-   *     1. The first line contains 
+   *     1. The first line contains
    *             numRows  numCols  0.0
    *        so that the right amount of space will be allocated by
    *        Matlab when it loads the file.  This allows for a zero
@@ -38,9 +38,9 @@ namespace TSF
    *
    *           temp = load('myMat.dat');
    *           A = sparse(temp(:,1), temp(:,2), temp(:,3));
-   *     This creates a sparse matrix A with the i, j, values data as above. 
+   *     This creates a sparse matrix A with the i, j, values data as above.
    *     For more information, RTFM for Matlab.
-   *     
+   *
    * */
   class MatlabWriter : public TSFMatrixWriterBase
     {
@@ -67,8 +67,8 @@ namespace TSF
 
     private:
 
-      void writeRow(int i, const TSFArray<int>& indices, 
-		    const TSFArray<TSFReal>& values) const;
+      void writeRow(int i, const TSFArray<int>& indices,
+                    const TSFArray<TSFReal>& values) const;
 
       mutable ofstream fout_;
 

@@ -1,17 +1,16 @@
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "PetraVectorSpace.h"
 
 #include "PetraVector.h"
 #include "TSFUtils.h"
 
 
-#if HAVE_PETRA
 
+#ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
-
+#endif
 
 using namespace TSF;
-
 
 
 PetraVectorSpace::PetraVectorSpace(const TSFSmartPtr<Epetra_Map>& localMap,
@@ -20,7 +19,7 @@ PetraVectorSpace::PetraVectorSpace(const TSFSmartPtr<Epetra_Map>& localMap,
 	: TSFMPIVectorSpace(),
 		localMap_(localMap), ghostMap_(ghostMap), importer_(import)
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	const Epetra_Comm& epetraComm = localMap->Comm();
 	const Epetra_MpiComm& comm = dynamic_cast<const Epetra_MpiComm&>(epetraComm);
 	setMPIComm(comm.Comm());
@@ -32,7 +31,7 @@ PetraVectorSpace::PetraVectorSpace(const TSFSmartPtr<Epetra_Map>& localMap)
 		localMap_(localMap), ghostMap_(0), importer_(0)
 {
 	
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	const Epetra_Comm& epetraComm = localMap->Comm();
 	const Epetra_MpiComm& comm = dynamic_cast<const Epetra_MpiComm&>(epetraComm);
 	setMPIComm(comm.Comm());
@@ -119,4 +118,4 @@ const PetraVectorSpace* PetraVectorSpace::getPtr(const TSFVectorSpace& space)
 
 
 
-#endif
+

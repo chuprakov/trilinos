@@ -1,7 +1,7 @@
 #ifndef TSFMATRIXWRITER_H
 #define TSFMATRIXWRITER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFMatrixWriterBase.h"
 #include <string>
 
@@ -21,25 +21,25 @@ namespace TSF
       //@{
       /** construct with a pointer to a derived writer type. */
       TSFMatrixWriter(TSFMatrixWriterBase* ptr)
-	: ptr_(ptr) {;}
+        : ptr_(ptr) {;}
 
       //@}
       /** \name Write methods */
       //@{
       /** Write and name a matrix (as in Matlab format) */
       void write(const string& name, const TSFLinearOperator A) const
-	{ptr_->write(name, A);}
+        {ptr_->write(name, A);}
 
       /** Write a matrix */
       void write(const TSFLinearOperator& A) const
-	{ptr_->write(A);}
+        {ptr_->write(A);}
       //@}
-      
+
 
     private:
       TSFSmartPtr<TSFMatrixWriterBase> ptr_;
     };
 }
-      
+
 
 #endif

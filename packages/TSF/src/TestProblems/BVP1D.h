@@ -1,86 +1,86 @@
 #ifndef BVP1D_H
 #define BVP1D_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFArray.h"
 #include "TSFDefaultMatrixProblem.h"
 
 namespace TSF
 {
-	
-	
-	/** \ingroup TestProblems
-	 * Sets up a boundary value problem of the form
-	 *
-	 * D[alpha(x) D[u(x)]] + beta(x) u(x) = gamma(x)
-	 *
-	 * with dirichlet boundary conditions
-	 *
-	 * u(a) = uLeft
-	 * u(b) = uRight
-	 */
-	class BVP1D : public TSFDefaultMatrixProblem 
-		{
-		public:
-			BVP1D(int n, TSFReal a, TSFReal b, TSFMatrixOperator* matrix);
-			
-			virtual ~BVP1D(){;}
 
-			virtual TSFReal a() const {return a_;}
 
-			virtual TSFReal b() const {return b_;}
+  /** \ingroup TestProblems
+   * Sets up a boundary value problem of the form
+   *
+   * D[alpha(x) D[u(x)]] + beta(x) u(x) = gamma(x)
+   *
+   * with dirichlet boundary conditions
+   *
+   * u(a) = uLeft
+   * u(b) = uRight
+   */
+  class BVP1D : public TSFDefaultMatrixProblem
+    {
+    public:
+      BVP1D(int n, TSFReal a, TSFReal b, TSFMatrixOperator* matrix);
 
-			virtual int n() const {return n_;}
+      virtual ~BVP1D(){;}
 
-			virtual TSFReal h() const {return h_;}
+      virtual TSFReal a() const {return a_;}
 
-			virtual TSFReal uLeft() const {return 0.0;}
+      virtual TSFReal b() const {return b_;}
 
-			virtual TSFReal uRight() const {return 0.0;}
+      virtual int n() const {return n_;}
 
-			virtual TSFReal alpha(TSFReal x) const {return 1.0;}
+      virtual TSFReal h() const {return h_;}
 
-			virtual TSFReal beta(TSFReal x) const {return 0.0;}
+      virtual TSFReal uLeft() const {return 0.0;}
 
-			virtual TSFReal gamma(TSFReal x) const {return 1.0;}
+      virtual TSFReal uRight() const {return 0.0;}
 
-			virtual TSFReal solution(TSFReal x) const = 0 ;
-			
-		private:
-			virtual int nGlobalRows() const {return n_;}
+      virtual TSFReal alpha(TSFReal x) const {return 1.0;}
 
-			virtual int nLocalRows() const {return nLocal_;}
+      virtual TSFReal beta(TSFReal x) const {return 0.0;}
 
-			virtual int lowestLocalRow() const {return lowestLocalRow_;}
+      virtual TSFReal gamma(TSFReal x) const {return 1.0;}
 
-			TSFReal getX(int i) const {return a_ + ((TSFReal) i)*h_;}
+      virtual TSFReal solution(TSFReal x) const = 0 ;
 
-			virtual void getRowValues(int row, TSFArray<int>& indices, 
-																TSFArray<TSFReal>& values) const ;
+    private:
+      virtual int nGlobalRows() const {return n_;}
 
-			virtual int getRowBandwidth(int row) const ;
+      virtual int nLocalRows() const {return nLocal_;}
 
-			/* */
-			virtual TSFReal getRHSValue(int row) const ;
+      virtual int lowestLocalRow() const {return lowestLocalRow_;}
 
-			/* */
-			virtual TSFReal getSolutionValue(int row) const ;
+      TSFReal getX(int i) const {return a_ + ((TSFReal) i)*h_;}
 
-			/** create the update list */
-			virtual TSFSmartPtr<TSFArray<int> > formUpdateList() const ;
+      virtual void getRowValues(int row, TSFArray<int>& indices,
+                                TSFArray<TSFReal>& values) const ;
 
-			int n_;
+      virtual int getRowBandwidth(int row) const ;
 
-			double a_;
+      /* */
+      virtual TSFReal getRHSValue(int row) const ;
 
-			double b_;
+      /* */
+      virtual TSFReal getSolutionValue(int row) const ;
 
-			TSFReal h_;
+      /** create the update list */
+      virtual TSFSmartPtr<TSFArray<int> > formUpdateList() const ;
 
-			int nLocal_;
+      int n_;
 
-			int lowestLocalRow_;
-		};
+      double a_;
+
+      double b_;
+
+      TSFReal h_;
+
+      int nLocal_;
+
+      int lowestLocalRow_;
+    };
 }
 
 #endif

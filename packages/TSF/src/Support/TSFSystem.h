@@ -1,7 +1,7 @@
 #ifndef TSFSYSTEM_H
 #define TSFSYSTEM_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
 #include <cstdlib>
 #include "TSFArray.h"
@@ -9,63 +9,63 @@
 namespace TSF
 {
 
-/**
- * \ingroup General
- * Operating system calls
- *
- * @author Kevin Long
- */
-
-class TSFSystem
-{
- public:
   /**
-   * get current working directory
+   * \ingroup General
+   * Operating system calls
+   *
+   * @author Kevin Long
    */
-  static string getcwd();
 
-  /**
-   * Change working directory
-   */
-  static int chdir(const string& newDir);
+  class TSFSystem
+    {
+    public:
+      /**
+       * get current working directory
+       */
+      static string getcwd();
 
-  /**
-   * get current date
-   */
-  static string date();
+      /**
+       * Change working directory
+       */
+      static int chdir(const string& newDir);
 
-  /**
-   * look up an environment variable
-   */
-  static string getenv(const string& varName);
+      /**
+       * get current date
+       */
+      static string date();
 
-  /**
-   * make a system call to execute a command
-   */
-  static int system(const string& cmd);
+      /**
+       * look up an environment variable
+       */
+      static string getenv(const string& varName);
 
-  /**
-   * sleep for a specified number of seconds
-   */
-  static void sleep(int sec);
+      /**
+       * make a system call to execute a command
+       */
+      static int system(const string& cmd);
 
-  /**
-   * sleep for a specified number of milliseconds
-   */
-  static void msleep(int millis);
+      /**
+       * sleep for a specified number of seconds
+       */
+      static void sleep(int sec);
 
-  /**
-   * sleep for a specified number of microseconds
-   */
-  static void usleep(int usec);
+      /**
+       * sleep for a specified number of milliseconds
+       */
+      static void msleep(int millis);
 
-  /**
-   * sleep for a specified number of nanoseconds
-   */
-  static void nsleep(int sec, int nanos);
+      /**
+       * sleep for a specified number of microseconds
+       */
+      static void usleep(int usec);
 
-  static void hold();
-};
+      /**
+       * sleep for a specified number of nanoseconds
+       */
+      static void nsleep(int sec, int nanos);
+
+      static void hold();
+    };
 
 
 

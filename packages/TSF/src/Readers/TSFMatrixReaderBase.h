@@ -1,7 +1,7 @@
 #ifndef TSFMATRIXREADERBASE_H
 #define TSFMATRIXREADERBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 #include <iostream>
 #include "TSFLinearOperator.h"
@@ -10,27 +10,27 @@
 
 namespace TSF
 {
-	using std::string;
-	using std::istream;
+  using std::string;
+  using std::istream;
 
-	/** \ingroup MatrixReaders
-	 * */
+  /** \ingroup MatrixReaders
+   * */
 
-	class TSFMatrixReaderBase
-		{
-		public: 
-			/** construct with the name of the file that stores the matrix */
-			TSFMatrixReaderBase(const string& filename) : filename_(filename) {;}
+  class TSFMatrixReaderBase
+    {
+    public:
+      /** construct with the name of the file that stores the matrix */
+      TSFMatrixReaderBase(const string& filename) : filename_(filename) {;}
 
-			/** virtual dtor */
-			virtual ~TSFMatrixReaderBase(){;}
+      /** virtual dtor */
+      virtual ~TSFMatrixReaderBase(){;}
 
-			/** read a matrix */
-			virtual TSFLinearOperator read(const TSFVectorType& vectorType) const = 0 ;
+      /** read a matrix */
+      virtual TSFLinearOperator read(const TSFVectorType& vectorType) const = 0 ;
 
-		protected:
-			string filename_;
-		};
+    protected:
+      string filename_;
+    };
 }
 
 

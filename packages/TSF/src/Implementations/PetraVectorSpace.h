@@ -1,9 +1,9 @@
 #ifndef PETRAVECTORSPACE_H
 #define PETRAVECTORSPACE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
-#if HAVE_PETRA
+
 
 #define PETRA_BOOL_SUPPORTED
 #include "TSFMPIVectorSpace.h"
@@ -67,5 +67,5 @@ namespace TSF
 
 }
 
-#endif // PETRA
+
 #endif

@@ -1,7 +1,7 @@
 #ifndef TSFTIMER_H
 #define TSFTIMER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 #include <stdexcept>
 #include <time.h>
@@ -12,67 +12,67 @@
 
 namespace TSF
 {
-	
-	using std::string;
-	
 
-	/** \ingroup IO
-	 *
-	 */
-	class TSFTimer
-		{
-		public:
-			/** */
-			TSFTimer(const string& name) 
-				: total_(0.0), t0_(0.0), isRunning_(false), name_(name) {;}
-			/** empty ctro for use in containers */
-			TSFTimer() 
-				: total_(0.0), t0_(0.0), isRunning_(false), name_() {;}
+  using std::string;
 
-			/** */
-			inline double getTime() const {return total_/((double) CLOCKS_PER_SEC);}
 
-			/** */
-			inline void reset() {total_=0.0; t0_=0.0; isRunning_=false;}
+  /** \ingroup IO
+   *
+   */
+  class TSFTimer
+    {
+    public:
+      /** */
+      TSFTimer(const string& name)
+        : total_(0.0), t0_(0.0), isRunning_(false), name_(name) {;}
+      /** empty ctro for use in containers */
+      TSFTimer()
+        : total_(0.0), t0_(0.0), isRunning_(false), name_() {;}
 
-			/** */
-			inline void start() 
-				{
-					t0_ = clock(); 
-					isRunning_=true;
-				}
+      /** */
+      inline double getTime() const {return total_/((double) CLOCKS_PER_SEC);}
 
-			/** */
-			inline void stop() 
-				{
-					total_ += clock() - t0_;
-					isRunning_=false;
-				}
+      /** */
+      inline void reset() {total_=0.0; t0_=0.0; isRunning_=false;}
 
-			/** */
-			inline bool isRunning() const {return isRunning_;}
+      /** */
+      inline void start()
+        {
+          t0_ = clock();
+          isRunning_=true;
+        }
 
-			inline const string& name() const {return name_;}
+      /** */
+      inline void stop()
+        {
+          total_ += clock() - t0_;
+          isRunning_=false;
+        }
 
-			/** Print summary statistics for a group of timers. Timings are gathered
-			 * from all processors */
-			static void summarize();
+      /** */
+      inline bool isRunning() const {return isRunning_;}
 
-			/** */
-			static TSFSmartPtr<TSFTimer> getNewTimer(const string& name);
-		private:
+      inline const string& name() const {return name_;}
 
-			static void gatherTimings(const TSFArray<double>& timings,
-																TSFArray<double>& minTime,
-																TSFArray<double>& avgTime,
-																TSFArray<double>& maxTime);
-			double total_;
-			double t0_;
-			bool isRunning_;
-			string name_;
+      /** Print summary statistics for a group of timers. Timings are gathered
+       * from all processors */
+      static void summarize();
 
-			static TSFArray<TSFSmartPtr<TSFTimer> > timers_;
-		};
+      /** */
+      static TSFSmartPtr<TSFTimer> getNewTimer(const string& name);
+    private:
+
+      static void gatherTimings(const TSFArray<double>& timings,
+                                TSFArray<double>& minTime,
+                                TSFArray<double>& avgTime,
+                                TSFArray<double>& maxTime);
+      double total_;
+      double t0_;
+      bool isRunning_;
+      string name_;
+
+      static TSFArray<TSFSmartPtr<TSFTimer> > timers_;
+    };
 
 }
 #endif

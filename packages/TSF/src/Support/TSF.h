@@ -1,7 +1,7 @@
 #ifndef TSF_H
 #define TSF_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
 #include "TSFVectorSpaceBase.h"
 #include "TSFVectorBase.h"
@@ -12,7 +12,6 @@
 #include "TSFLinearProblem.h"
 #include "TSFMPI.h"
 #include "TSFOut.h"
-#include "BVP1D.h"
 #include "ILUKPreconditionerFactory.h"
 #include "TSFPreconditionerFactory.h"
 #include "TSFVectorType.h"
@@ -37,11 +36,11 @@ using namespace TSF;
 
 namespace TSF
 {
-	void init(int* argc, void*** argv);
+  void init(int* argc, void*** argv);
 
-	void finalize();
+  void finalize();
 
-	void handleError(exception& e, const string& filename);
+  void handleError(exception& e, const string& filename);
 }
 
 

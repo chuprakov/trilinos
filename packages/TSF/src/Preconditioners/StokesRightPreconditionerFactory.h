@@ -1,7 +1,7 @@
 #ifndef STOKESRIGHTPRECONDITIONERFACTORY_H
 #define STOKESRIGHTPRECONDITIONERFACTORY_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFSmartPtr.h"
 #include "TSFPreconditionerFactoryBase.h"
 #include "TSFLinearSolver.h"
@@ -11,32 +11,32 @@
 
 namespace TSF
 {
-	
-	using std::string;
-	using std::ostream;
-	
 
-	/** \ingroup Preconditioner 
-	 * 
-	 */
+  using std::string;
+  using std::ostream;
 
-	class StokesRightPreconditionerFactory : public TSFPreconditionerFactoryBase
-		{
-		public: 
-			/** */
-			StokesRightPreconditionerFactory(const TSFLinearSolver& innerSolver);
-			/** TUVD */
-			virtual ~StokesRightPreconditionerFactory(){;}
 
-			/** create a concrete preconditioner */
-			virtual TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
+  /** \ingroup Preconditioner
+   *
+   */
 
-			/** write to a string */
-			virtual string toString() const;
+  class StokesRightPreconditionerFactory : public TSFPreconditionerFactoryBase
+    {
+    public:
+      /** */
+      StokesRightPreconditionerFactory(const TSFLinearSolver& innerSolver);
+      /** TUVD */
+      virtual ~StokesRightPreconditionerFactory(){;}
 
-		private:
-			TSFLinearSolver innerSolver_;
-		};
+      /** create a concrete preconditioner */
+      virtual TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
+
+      /** write to a string */
+      virtual string toString() const;
+
+    private:
+      TSFLinearSolver innerSolver_;
+    };
 
 }
 

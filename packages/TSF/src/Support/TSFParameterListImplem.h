@@ -1,7 +1,7 @@
 #ifndef TSFPARAMETERLISTIMPLEM_H
 #define TSFPARAMETERLISTIMPLEM_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFParameterList.h"
 #include <string>
 #include "TSFArray.h"

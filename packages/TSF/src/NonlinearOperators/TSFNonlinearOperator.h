@@ -1,112 +1,112 @@
 #ifndef TSFNONLINEAROPERATOR_H
 #define TSFNONLINEAROPERATOR_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearOperator.h"
 #include "TSFDeferredLinearCombination.h"
 #include "TSFNonlinearOperatorBase.h"
 
 namespace TSF
 {
-		
-	
 
 
 
-	
-	/** \ingroup NonlinearOperator 
-	 * User-level handle for nonlinear operator objects.
-	 * 
-	 */
-	
-	class TSFNonlinearOperator
-		{
-		public:
-			/** empty ctor constructs a null nonlinear operator. 
-			 * This is primarily for
-			 * use with templated container classes. */
-			TSFNonlinearOperator();
-			/** create a TSFNonlinearOperator from a pointer to a subtype. */
-			TSFNonlinearOperator(TSFNonlinearOperatorBase* ptr);
-			/** create a TSFNonlinearOperator from a TSFLinearOperator. */
-			TSFNonlinearOperator(const TSFLinearOperator& linOp);
 
-			/** return domain space */
-			const TSFVectorSpace& domain() const ;
-			/** return range space */
-			const TSFVectorSpace& range() const ;
 
-			/** apply the operator to a vector. The input vector is tested to ensure 
-			 * that it is in the domain of the operator */
-			void apply(const TSFVector& arg, TSFVector& out) const ;
 
-			/** get a linear operator representing the derivative */
-			TSFLinearOperator derivative(const TSFVector& evalPt) const ;
+  /** \ingroup NonlinearOperator
+   * User-level handle for nonlinear operator objects.
+   *
+   */
 
-			/** scale by a constant */
-			TSFNonlinearOperator operator*(const TSFReal& scale) const ;
+  class TSFNonlinearOperator
+    {
+    public:
+      /** empty ctor constructs a null nonlinear operator.
+       * This is primarily for
+       * use with templated container classes. */
+      TSFNonlinearOperator();
+      /** create a TSFNonlinearOperator from a pointer to a subtype. */
+      TSFNonlinearOperator(TSFNonlinearOperatorBase* ptr);
+      /** create a TSFNonlinearOperator from a TSFLinearOperator. */
+      TSFNonlinearOperator(const TSFLinearOperator& linOp);
 
-			/** addition of two operators */
-			TSFNonlinearOperator operator+(const TSFNonlinearOperator& op) const ;
+      /** return domain space */
+      const TSFVectorSpace& domain() const ;
+      /** return range space */
+      const TSFVectorSpace& range() const ;
 
-			/** subtraction of two operators */
-			TSFNonlinearOperator operator-(const TSFNonlinearOperator& op) const ;
+      /** apply the operator to a vector. The input vector is tested to ensure
+       * that it is in the domain of the operator */
+      void apply(const TSFVector& arg, TSFVector& out) const ;
 
-			/** negation of an operator */
-			TSFNonlinearOperator operator-() const ;
-			
-			/** sum of an operator and a constant-valued operator  */
-			TSFNonlinearOperator operator+(const TSFVector& v) const ;
+      /** get a linear operator representing the derivative */
+      TSFLinearOperator derivative(const TSFVector& evalPt) const ;
 
-			/** difference of an operator and a constant-valued operator  */
-			TSFNonlinearOperator operator-(const TSFVector& v) const ;
-			
-			/** composition of two operators */
-			TSFNonlinearOperator compose(const TSFNonlinearOperator& op) const ;
-			
-			/** access to the pointer to the linear operator implementation. 
-			 *  For developer use only. */
-			TSFSmartPtr<TSFNonlinearOperatorBase>& getPtr() {return ptr_;}
+      /** scale by a constant */
+      TSFNonlinearOperator operator*(const TSFReal& scale) const ;
 
-			/** access to the pointer to the linear operator implementation. 
-			 *  For developer use only. */
-			const TSFSmartPtr<TSFNonlinearOperatorBase>& getPtr() const {return ptr_;}
+      /** addition of two operators */
+      TSFNonlinearOperator operator+(const TSFNonlinearOperator& op) const ;
 
-			/** write to a stream */
-			void print(ostream& os) const ;
-		private:
+      /** subtraction of two operators */
+      TSFNonlinearOperator operator-(const TSFNonlinearOperator& op) const ;
 
-			/* pointer to a concrete type */
-			TSFSmartPtr<TSFNonlinearOperatorBase> ptr_;
-		};
+      /** negation of an operator */
+      TSFNonlinearOperator operator-() const ;
 
-	/** \relates TSFNonlinearOperator left-multiplication by a scalar */
-	inline TSFNonlinearOperator operator*(const TSFReal& a, 
-																				const TSFNonlinearOperator& op)
-		{
-			return op*a;
-		}
+      /** sum of an operator and a constant-valued operator  */
+      TSFNonlinearOperator operator+(const TSFVector& v) const ;
 
-	/** \relates TSFNonlinearOperator addition with a vector */
-	inline TSFNonlinearOperator operator+(const TSFVector& v, 
-																				const TSFNonlinearOperator& op)
-		{
-			return op+v;
-		}
+      /** difference of an operator and a constant-valued operator  */
+      TSFNonlinearOperator operator-(const TSFVector& v) const ;
 
-	/** \relates TSFNonlinearOperator subtraction from a vector */
-	inline TSFNonlinearOperator operator-(const TSFVector& v, 
-																				const TSFNonlinearOperator& op)
-		{
-			return -op+v;
-		}
+      /** composition of two operators */
+      TSFNonlinearOperator compose(const TSFNonlinearOperator& op) const ;
 
-	/** \relates TSFNonlinearOperator write to a stream */
-	inline ostream& operator<<(ostream& os, const  TSFNonlinearOperator& op)
-		{
-			op.print(os);
-			return os;
-		}
+      /** access to the pointer to the linear operator implementation.
+       *  For developer use only. */
+      TSFSmartPtr<TSFNonlinearOperatorBase>& getPtr() {return ptr_;}
+
+      /** access to the pointer to the linear operator implementation.
+       *  For developer use only. */
+      const TSFSmartPtr<TSFNonlinearOperatorBase>& getPtr() const {return ptr_;}
+
+      /** write to a stream */
+      void print(ostream& os) const ;
+    private:
+
+      /* pointer to a concrete type */
+      TSFSmartPtr<TSFNonlinearOperatorBase> ptr_;
+    };
+
+  /** \relates TSFNonlinearOperator left-multiplication by a scalar */
+  inline TSFNonlinearOperator operator*(const TSFReal& a,
+                                        const TSFNonlinearOperator& op)
+    {
+      return op*a;
+    }
+
+  /** \relates TSFNonlinearOperator addition with a vector */
+  inline TSFNonlinearOperator operator+(const TSFVector& v,
+                                        const TSFNonlinearOperator& op)
+    {
+      return op+v;
+    }
+
+  /** \relates TSFNonlinearOperator subtraction from a vector */
+  inline TSFNonlinearOperator operator-(const TSFVector& v,
+                                        const TSFNonlinearOperator& op)
+    {
+      return -op+v;
+    }
+
+  /** \relates TSFNonlinearOperator write to a stream */
+  inline ostream& operator<<(ostream& os, const  TSFNonlinearOperator& op)
+    {
+      op.print(os);
+      return os;
+    }
 
 }
 

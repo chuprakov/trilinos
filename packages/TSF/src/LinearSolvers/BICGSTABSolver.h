@@ -1,7 +1,7 @@
 #ifndef BICGSTABSOLVER_H
 #define BICGSTABSOLVER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearSolverBase.h"
 #include "TSFPreconditionerFactory.h"
 #include "TSFTimeMonitor.h"

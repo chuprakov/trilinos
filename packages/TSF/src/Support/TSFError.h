@@ -1,7 +1,7 @@
 #ifndef TSFERROR_H
 #define TSFERROR_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 #include <stdexcept>
 #include "TSFRaiseHandlerBase.h"
@@ -9,28 +9,28 @@
 
 namespace TSF
 {
-	using std::exception;
-	using std::string;
+  using std::exception;
+  using std::string;
 
-	/** \ingroup ErrorHandling
-	 *
-	 */
-	class TSFError
-		{
-		public:
-			
-			/** raise() is to be called when an error is detected. */
-			static void raise(const string& msg);
+  /** \ingroup ErrorHandling
+   *
+   */
+  class TSFError
+    {
+    public:
 
-			/** */
-			static void trace(const exception& what, const string& where);
+      /** raise() is to be called when an error is detected. */
+      static void raise(const string& msg);
 
-			/** setRaiseHandler() is a hook for installation of a custom raise 
-			 * handler*/
-			static void setRaiseHandler(TSFRaiseHandlerBase* handler);
+      /** */
+      static void trace(const exception& what, const string& where);
 
-		private:
-			static TSFSmartPtr<TSFRaiseHandlerBase> handler_;
-		};
+      /** setRaiseHandler() is a hook for installation of a custom raise
+       * handler*/
+      static void setRaiseHandler(TSFRaiseHandlerBase* handler);
+
+    private:
+      static TSFSmartPtr<TSFRaiseHandlerBase> handler_;
+    };
 }
 #endif

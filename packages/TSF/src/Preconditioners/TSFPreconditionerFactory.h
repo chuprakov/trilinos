@@ -1,7 +1,7 @@
 #ifndef TSFPRECONDITIONERFACTORY_H
 #define TSFPRECONDITIONERFACTORY_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFSmartPtr.h"
 #include "TSFLinearOperator.h"
 #include "TSFPreconditioner.h"
@@ -13,44 +13,44 @@
 
 namespace TSF
 {
-	
-	using std::string;
-	using std::ostream;
-	
 
-	/** \ingroup Preconditioner 
-	 * TSFPreconditionerFactory builds an implementation-specific preconditioner
-	 * from an abstract specification.
-	 *
-	 */
+  using std::string;
+  using std::ostream;
 
-	class TSFPreconditionerFactory
-		{
-		public:
-			/** empty ctor. Constructs a null vector */
-			TSFPreconditionerFactory();
-			/** assume control of a pointer */
-			TSFPreconditionerFactory(TSFPreconditionerFactoryBase* ptr);
 
-			/** create a concrete preconditioner */
-			TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
+  /** \ingroup Preconditioner
+   * TSFPreconditionerFactory builds an implementation-specific preconditioner
+   * from an abstract specification.
+   *
+   */
 
-			/** write to a string */
-			string toString() const ;
+  class TSFPreconditionerFactory
+    {
+    public:
+      /** empty ctor. Constructs a null vector */
+      TSFPreconditionerFactory();
+      /** assume control of a pointer */
+      TSFPreconditionerFactory(TSFPreconditionerFactoryBase* ptr);
 
-		private:
-			TSFSmartPtr<TSFPreconditionerFactoryBase> ptr_;
-		};
+      /** create a concrete preconditioner */
+      TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
 
-	/** \relates TSFPreconditionerFactory
-	 * write to an output stream
-	 */
-	ostream& operator<<(ostream& os, const TSFPreconditionerFactory& x);
+      /** write to a string */
+      string toString() const ;
 
-	/** \relates TSFPreconditionerFactory
-	 * write to a string
-	 */
-	string toString(const TSFPreconditionerFactory& x);
+    private:
+      TSFSmartPtr<TSFPreconditionerFactoryBase> ptr_;
+    };
+
+  /** \relates TSFPreconditionerFactory
+   * write to an output stream
+   */
+  ostream& operator<<(ostream& os, const TSFPreconditionerFactory& x);
+
+  /** \relates TSFPreconditionerFactory
+   * write to a string
+   */
+  string toString(const TSFPreconditionerFactory& x);
 
 }
 

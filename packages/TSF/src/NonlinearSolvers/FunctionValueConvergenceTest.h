@@ -1,31 +1,31 @@
 #ifndef FUNCTIONVALUECONVERGENCETEST_H
 #define FUNCTIONVALUECONVERGENCETEST_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVector.h"
 #include "TSFConvergenceTestBase.h"
 
 namespace TSF
 {
-	using std::ostream;
-	
-	/** \ingroup NonlinearSolvers
-	 * 
-	 */
+  using std::ostream;
 
-	class FunctionValueConvergenceTest : public TSFConvergenceTestBase
-		{
-		public:
-			/** */
-			FunctionValueConvergenceTest(const TSFReal& fTol);
+  /** \ingroup NonlinearSolvers
+   *
+   */
 
-			/** */
-			virtual ~FunctionValueConvergenceTest(){;}
-			
-			/** */
-			virtual bool testFunctionValue(const TSFVector& f) const ;
-		private:
-			TSFReal fTol_;
-		};
+  class FunctionValueConvergenceTest : public TSFConvergenceTestBase
+    {
+    public:
+      /** */
+      FunctionValueConvergenceTest(const TSFReal& fTol);
+
+      /** */
+      virtual ~FunctionValueConvergenceTest(){;}
+
+      /** */
+      virtual bool testFunctionValue(const TSFVector& f) const ;
+    private:
+      TSFReal fTol_;
+    };
 }
 #endif

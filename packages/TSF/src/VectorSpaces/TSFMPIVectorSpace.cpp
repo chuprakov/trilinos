@@ -4,12 +4,12 @@ using namespace TSF;
 
 TSFMPIVectorSpace::TSFMPIVectorSpace()
 	: TSFVectorSpaceBase()
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	, comm_(MPI_COMM_WORLD)
 #endif
 {}
 
-#if HAVE_MPI
+#ifdef HAVE_MPI
 TSFMPIVectorSpace::TSFMPIVectorSpace(const MPI_Comm& comm)
 	: TSFVectorSpaceBase(), comm_(comm)
 {}

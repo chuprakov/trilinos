@@ -25,7 +25,7 @@ TSFDefaultWriter::TSFDefaultWriter(const TSFSmartPtr<ostream>& os_ptr)
 
 void TSFDefaultWriter::print(const std::string& msg)
 {
-	ostringstream ss;
+	TSFOStringStream ss;
 	string head = header() + TSFUtils::toString(TSFMPI::getRank()) + "> ";
 	unsigned int maxLineSize = 78 - head.length();
 

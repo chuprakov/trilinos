@@ -16,7 +16,7 @@
 
 using namespace TSF;
 
-#if HAVE_PETRA
+
 
 AZTECSolver::AZTECSolver()
 	: TSFLinearSolverBase(),
@@ -89,7 +89,7 @@ bool AZTECSolver::solve(const TSFLinearOperator& op,
 	return true;
 }
 
-#endif
+
 
 
 

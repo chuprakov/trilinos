@@ -1,34 +1,34 @@
 #ifndef TSFCONVERGENCETESTBASE_H
 #define TSFCONVERGENCETESTBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVector.h"
 
 namespace TSF
 {
-	using std::ostream;
-	
-	/** \ingroup NonlinearSolvers
-	 * 
-	 */
+  using std::ostream;
 
-	class TSFConvergenceTestBase
-		{
-		public:
-			/** */
-			TSFConvergenceTestBase(){;}
+  /** \ingroup NonlinearSolvers
+   *
+   */
 
-			/** */
-			virtual ~TSFConvergenceTestBase(){;}
-			
-			/** */
-			virtual bool testFunctionValue(const TSFVector& /* f */) const 
-				{return false;}
+  class TSFConvergenceTestBase
+    {
+    public:
+      /** */
+      TSFConvergenceTestBase(){;}
 
-			/** */
-			virtual bool testStep(const TSFVector& /* deltaX */) 
-				const {return false;}
-		private:
-		};
+      /** */
+      virtual ~TSFConvergenceTestBase(){;}
+
+      /** */
+      virtual bool testFunctionValue(const TSFVector& /* f */) const
+        {return false;}
+
+      /** */
+      virtual bool testStep(const TSFVector& /* deltaX */)
+        const {return false;}
+    private:
+    };
 }
 #endif

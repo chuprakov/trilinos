@@ -1,47 +1,48 @@
 #ifndef TSFOUT_H
 #define TSFOUT_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
+#include <cstdarg>
 #include <stdexcept>
 #include "TSFWriterBase.h"
 #include "TSFSmartPtr.h"
 
 namespace TSF
 {
-	
-	using std::string;
-	
-	/** \ingroup IO
-	 *
-	 */
-	class TSFOut
-		{
-		public:
-			/** */
-			static void print(const string& msg);
 
-			/** */
-			static void println(const string& msg);
+  using std::string;
 
-			/** */
-			static void rootPrintln(const string& msg);
+  /** \ingroup IO
+   *
+   */
+  class TSFOut
+    {
+    public:
+      /** */
+      static void print(const string& msg);
 
-			/** */
-			static void printf(const char* format, ...);
+      /** */
+      static void println(const string& msg);
 
-			/** */
-			static void rootPrintf(const char* format, ...);
+      /** */
+      static void rootPrintln(const string& msg);
 
-			/** */
-			static void setWriter(const TSFSmartPtr<TSFWriterBase>& writer );
+      /** */
+      static void printf(const char* format, ...);
 
-		private:
-			static TSFSmartPtr<TSFWriterBase> writer_;
+      /** */
+      static void rootPrintf(const char* format, ...);
 
-			/** */
-			static void vprintf(const char* format, va_list args);
-		};
+      /** */
+      static void setWriter(const TSFSmartPtr<TSFWriterBase>& writer );
+
+    private:
+      static TSFSmartPtr<TSFWriterBase> writer_;
+
+      /** */
+      static void vprintf(const char* format, va_list args);
+    };
 }
 
 #endif

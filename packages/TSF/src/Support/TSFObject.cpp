@@ -1,5 +1,6 @@
 #include "TSFObject.h"
 #include "TSFArray.h"
+#include <typeinfo>
 
 using namespace TSF;
 using std::string;
@@ -52,7 +53,7 @@ void TSFObject::printIndented(ostream& os, int indentDepth) const
 
 string TSFObject::toString() const 
 {
-  std::ostringstream oss;
+  TSFOStringStream oss;
   
   print(oss);
 

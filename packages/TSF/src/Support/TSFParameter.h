@@ -1,7 +1,7 @@
 #ifndef TSFPARAMETER_H
 #define TSFPARAMETER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFObject.h"
 #include "TSFParameterBase.h"
 #include "TSFUnsharedPtr.h"

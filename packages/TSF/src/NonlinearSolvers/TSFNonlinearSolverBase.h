@@ -1,7 +1,7 @@
 #ifndef TSFNONLINEARSOLVERBASE_H
 #define TSFNONLINEARSOLVERBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearSolver.h"
 #include "TSFNonlinearOperator.h"
 #include "TSFVector.h"
@@ -9,33 +9,33 @@
 
 namespace TSF
 {
-	using std::ostream;
+  using std::ostream;
 
-	/** \ingroup NonlinearSolverSubtypes
-	 *
-	 */
-	
-	class TSFNonlinearSolverBase
-		{
-		public:
-			/** construct with a maximum number of iterations */
-			TSFNonlinearSolverBase(int maxIters);
+  /** \ingroup NonlinearSolverSubtypes
+   *
+   */
 
-			/** TUVD */
-			virtual ~TSFNonlinearSolverBase(){;}
+  class TSFNonlinearSolverBase
+    {
+    public:
+      /** construct with a maximum number of iterations */
+      TSFNonlinearSolverBase(int maxIters);
 
-			/** 
- 			 * Solve the system F(x)==0 for x, returning the solution 
-			 * by reference
-			 * argument. The return value is true if the solve succeeded, false
-			 * if it failed. 
-			 */ 
-			virtual bool solve(const TSFNonlinearOperator& op, 
-												 TSFVector& soln) const = 0 ;	
+      /** TUVD */
+      virtual ~TSFNonlinearSolverBase(){;}
 
-		protected:
-			int maxIters_;
-		};
+      /**
+       * Solve the system F(x)==0 for x, returning the solution
+       * by reference
+       * argument. The return value is true if the solve succeeded, false
+       * if it failed.
+       */
+      virtual bool solve(const TSFNonlinearOperator& op,
+                         TSFVector& soln) const = 0 ;
+
+    protected:
+      int maxIters_;
+    };
 
 }
 

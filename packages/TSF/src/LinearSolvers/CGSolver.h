@@ -1,7 +1,7 @@
 #ifndef CGSOLVER_H
 #define CGSOLVER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearSolverBase.h"
 
 namespace TSF

@@ -28,7 +28,7 @@ void TSFTimer::summarize()
 
 	int np=1;
 	int rank=0;
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	MPI_Comm_size(MPI_COMM_WORLD, &np);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
@@ -62,7 +62,7 @@ void TSFTimer::gatherTimings(const TSFArray<double>& timings,
 														 TSFArray<double>& avgTime,
 														 TSFArray<double>& maxTime)
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	int np;
 	MPI_Comm_size(MPI_COMM_WORLD, &np);
 

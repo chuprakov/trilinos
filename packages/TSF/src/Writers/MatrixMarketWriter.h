@@ -1,7 +1,7 @@
 #ifndef MATRIXMARKETWRITER_H
 #define MATRIXMARKETWRITER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFMatrixWriterBase.h"
 #include "mmio.h"
 #include <string>
@@ -30,7 +30,7 @@ namespace TSF
 
       /** write a matrix */
       void write(const string& name, const TSFLinearOperator& A) const;
-      
+
     };
 };
 

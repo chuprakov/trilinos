@@ -1,5 +1,5 @@
 #include "TSFUtils.h"
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearOperator.h"
 #include "TSFLinearOperatorBase.h"
 #include "TSFVectorSpaceBase.h"
@@ -385,12 +385,7 @@ const TSFSmartPtr<const TSFMatrixOperator> TSFLinearOperator::getMatrix() const
 
 string TSFLinearOperator::toString() const 
 {
-	/* BVBW changed from strstream to std::ostringstream */
-#if HAVE_SSTREAM
-			std::ostringstream ost;
-#else
-			std::ostrstream ost;
-#endif
+  TSFOStringStream ost;
             ost.clear();
 	ptr_->print(ost);
     ost << ends;

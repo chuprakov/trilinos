@@ -7,11 +7,11 @@ using namespace TSF;
 
 TSFMPIVector::TSFMPIVector(const TSFVectorSpace& space)
 	: TSFInCoreVector(space)
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	, comm_()
 #endif
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	const TSFMPIVectorSpace* mpiSpace 
 		= dynamic_cast<const TSFMPIVectorSpace*>(space.ptr());
 	if (mpiSpace==0) 
@@ -25,7 +25,7 @@ TSFMPIVector::TSFMPIVector(const TSFVectorSpace& space)
 
 TSFReal TSFMPIVector::reduce(const TSFReal& localValue, TSFReductionOp op) const
 {
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	TSFTimeMonitor timer(commTimer());
 
 	MPI_Op mpiop =  MPI_SUM;

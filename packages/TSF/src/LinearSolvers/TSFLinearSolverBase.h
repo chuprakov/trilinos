@@ -1,7 +1,7 @@
 #ifndef TSFLINEARSOLVERBASE_H
 #define TSFLINEARSOLVERBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFLinearOperator.h"
 #include "TSFVector.h"
 #include "TSFVectorSpace.h"

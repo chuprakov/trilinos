@@ -1,6 +1,5 @@
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
-#if HAVE_PETRA
 
 #include "PetraVectorType.h"
 
@@ -11,20 +10,20 @@
 #include "ILUKPreconditionerFactory.h"
 #include "BICGSTABSolver.h"
 
-#if HAVE_PETRA_MPI
-#include <mpi.h>
-#endif
 
 #include "Epetra_Comm.h"
 #include "Epetra_SerialComm.h"
+
+#ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
+#endif
 
 using namespace TSF;
 
 
 Epetra_Comm& PetraVectorType::comm()
 {
-#if HAVE_PETRA_MPI
+#ifdef HAVE_MPI
 	static TSFSmartPtr<Epetra_Comm> rtn = new Epetra_MpiComm(MPI_COMM_WORLD);
 #else
 	static TSFSmartPtr<Epetra_Comm> rtn = new Epetra_SerialComm();
@@ -104,4 +103,4 @@ TSFLinearSolver PetraVectorType::defaultSolver() const
 	return solver;
 }
 
-#endif
+

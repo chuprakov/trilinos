@@ -1,7 +1,7 @@
 #ifndef TSFPARAMETERBASE_H
 #define TSFPARAMETERBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 #include "TSFArray.h"
 

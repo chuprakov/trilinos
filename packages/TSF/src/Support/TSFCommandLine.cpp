@@ -5,7 +5,7 @@
 #include "TSFError.h"
 #include "TSFOut.h"
 
-#if HAVE_MPI
+#ifdef HAVE_MPI
 #include "mpi.h"
 #endif
 
@@ -25,7 +25,7 @@ void TSFCommandLine::init(int argc, void** argv)
 {
 	if (frozen_) return;
 	
-#if HAVE_MPI
+#ifdef HAVE_MPI
 	MPI_Bcast(&argc, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	int rank  = 0;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);

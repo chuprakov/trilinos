@@ -1,7 +1,7 @@
 #ifndef TSFPARAMETERLIST_H
 #define TSFPARAMETERLIST_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFSmartPtr.h"
 #include "TSFParameter.h"
 #include <string>

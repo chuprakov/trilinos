@@ -1,153 +1,153 @@
 #ifndef TSFPARAMETERIMPLEM_H
 #define TSFPARAMETERIMPLEM_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 #include "TSFArray.h"
 
-namespace TSF 
+namespace TSF
 {
 
-	using namespace std;
-	/** 
-	 *	TSFParameterImplem:  low-level implementation of TSF parameter class.
-	 */
-	class TSFParameterImplem 
-		{
-		public:
-			/* Default copy ctor and dtor are used. This is safe because we use
-			 * well-behaved containers (string and vector) internally. */
+  using namespace std;
+  /**
+   *  TSFParameterImplem:  low-level implementation of TSF parameter class.
+   */
+  class TSFParameterImplem
+    {
+    public:
+      /* Default copy ctor and dtor are used. This is safe because we use
+       * well-behaved containers (string and vector) internally. */
 
-			/** construct with a label */
-			TSFParameterImplem(const string& label);
-			
-			/** TSFParameterImplem character constructor. */
-			TSFParameterImplem(const string& label, char parameter);
-			
-			/** TSFParameterImplem character string constructor. */
-			TSFParameterImplem(const string& label, const string& parameter);
-			
-			/** TSFParameterImplem int constructor. */
-			TSFParameterImplem(const string& label, int parameter);
-			
-			/** TSFParameterImplem int array constructor. */
-			TSFParameterImplem(const string& label, const TSFArray<int>& parameter);
-			
-			/** TSFParameterImplem double constructor. */
-			TSFParameterImplem(const string& label, double parameter);
-			
-			/** TSFParameterImplem double array constructor. */
-			TSFParameterImplem(const string& label, const TSFArray<double>& parameter);
-			
-			/** set character value */
-			void set(char parameter);
+      /** construct with a label */
+      TSFParameterImplem(const string& label);
 
-			/** set string value */
-			void set(const string& parameter);
+      /** TSFParameterImplem character constructor. */
+      TSFParameterImplem(const string& label, char parameter);
 
-			/** set integer value */
-			void set(int parameterImplem);
+      /** TSFParameterImplem character string constructor. */
+      TSFParameterImplem(const string& label, const string& parameter);
 
-			/** set int array value */
-			void set(const TSFArray<int>& parameter);
+      /** TSFParameterImplem int constructor. */
+      TSFParameterImplem(const string& label, int parameter);
 
-			/** set double value */
-			void set(double parameter);
+      /** TSFParameterImplem int array constructor. */
+      TSFParameterImplem(const string& label, const TSFArray<int>& parameter);
 
-			/** set double array value */
-			void set(const TSFArray<double>& parameter);
+      /** TSFParameterImplem double constructor. */
+      TSFParameterImplem(const string& label, double parameter);
 
-			/** True if parameter is character */
-			bool isChar() const { return(isChar_);};
-			/** True if parameter is character string */
-			bool isCharString() const { return(isCharString_);};
-			/** True if parameter is integer */
-			bool isInt() const { return(isInt_);};
-			/** True if parameter is integer array */
-			bool isIntArray() const { return(isIntArray_);};
-			/** True if parameter is double */
-			bool isDouble() const { return(isDouble_);};
-			/** True if parameter is double array */
-			bool isDoubleArray() const { return(isDoubleArray_);};
+      /** TSFParameterImplem double array constructor. */
+      TSFParameterImplem(const string& label, const TSFArray<double>& parameter);
 
-			/** Return character parameter. */
-			char getChar() const {mustBeChar(); return(charValue_);};
+      /** set character value */
+      void set(char parameter);
 
-			/** Return character string parameter. */
-			const string& getCharString() const {mustBeCharString(); return charStringValue_;}
+      /** set string value */
+      void set(const string& parameter);
 
-			/** Return integer parameter. */
-			int  getInt() const {mustBeInt(); return intValue_;}
+      /** set integer value */
+      void set(int parameterImplem);
 
-			/** Return integer array parameter. */
-			const TSFArray<int>&  getIntArray() const {mustBeIntArray(); return intArrayValue_;}
+      /** set int array value */
+      void set(const TSFArray<int>& parameter);
 
-			/** Return double parameter. */
-			double getDouble() const {mustBeDouble(); return doubleValue_;}
+      /** set double value */
+      void set(double parameter);
 
-			/** Return double array parameter. */
-			const TSFArray<double>& getDoubleArray() const 
-				{mustBeDoubleArray(); return doubleArrayValue_;}
+      /** set double array value */
+      void set(const TSFArray<double>& parameter);
 
-			//@}
+      /** True if parameter is character */
+      bool isChar() const { return(isChar_);};
+      /** True if parameter is character string */
+      bool isCharString() const { return(isCharString_);};
+      /** True if parameter is integer */
+      bool isInt() const { return(isInt_);};
+      /** True if parameter is integer array */
+      bool isIntArray() const { return(isIntArray_);};
+      /** True if parameter is double */
+      bool isDouble() const { return(isDouble_);};
+      /** True if parameter is double array */
+      bool isDoubleArray() const { return(isDoubleArray_);};
 
-			/** Returns the label associated with this parameterImplem.  A label is 
-			 * a description of the parameterImplem, used
-			 * both to describe the variable and identify it to any 
-			 * prospective Trilinos solver component.
-			 */
-			const string& getLabel() const {return label_;}
+      /** Return character parameter. */
+      char getChar() const {mustBeChar(); return(charValue_);};
 
-			/** return a string indicating the type */
-			string type() const ;
+      /** Return character string parameter. */
+      const string& getCharString() const {mustBeCharString(); return charStringValue_;}
 
-		private:
+      /** Return integer parameter. */
+      int  getInt() const {mustBeInt(); return intValue_;}
 
-			/** set default values */
-			void setDefaults(const string& label);
+      /** Return integer array parameter. */
+      const TSFArray<int>&  getIntArray() const {mustBeIntArray(); return intArrayValue_;}
 
-			/** report a call with a mismatched type */
-			void wrongType(const string& wrongType) const ;
+      /** Return double parameter. */
+      double getDouble() const {mustBeDouble(); return doubleValue_;}
 
-			/** report an attempt to change type */
-			void typeChangeError(const string& attemptedType) const ;
+      /** Return double array parameter. */
+      const TSFArray<double>& getDoubleArray() const
+        {mustBeDoubleArray(); return doubleArrayValue_;}
 
-			/* methods to check that a getType() method has been called on the
-			 * correct type of parameterImplem */
-			inline void mustBeChar() const {if (!isChar()) wrongType("char");}
-			inline void mustBeCharString() const {if (!isCharString()) wrongType("string");}
-			inline void mustBeInt() const {if (!isInt()) wrongType("int");}
-			inline void mustBeDouble() const {if (!isDouble()) wrongType("double");}
-			inline void mustBeIntArray() const {if (!isIntArray()) wrongType("int array");}
-			inline void mustBeDoubleArray() const 
-				{if (!isDoubleArray()) wrongType("double array");}
-	
+      //@}
 
-			/* the label */
-			string label_;
+      /** Returns the label associated with this parameterImplem.  A label is
+       * a description of the parameterImplem, used
+       * both to describe the variable and identify it to any
+       * prospective Trilinos solver component.
+       */
+      const string& getLabel() const {return label_;}
 
-			/* values. Only one of these will be valid. */
-			char charValue_;
-			string charStringValue_;
-			int intValue_;
-			TSFArray<int> intArrayValue_;
-			double doubleValue_;
-			TSFArray<double> doubleArrayValue_;
+      /** return a string indicating the type */
+      string type() const ;
 
-			/* flag indicating whether the type is defined. This is in the logic that prevents
-			 * changing the type of a parameter after its type has been set 
-			 */
-			bool typeIsDefined_;
+    private:
 
-			/* flags that tell us the type */
-			bool isChar_;
-			bool isCharString_;
-			bool isInt_; 
-			bool isIntArray_;
-			bool isDouble_;
-			bool isDoubleArray_;
-		};
+      /** set default values */
+      void setDefaults(const string& label);
 
-} 
+      /** report a call with a mismatched type */
+      void wrongType(const string& wrongType) const ;
+
+      /** report an attempt to change type */
+      void typeChangeError(const string& attemptedType) const ;
+
+      /* methods to check that a getType() method has been called on the
+       * correct type of parameterImplem */
+      inline void mustBeChar() const {if (!isChar()) wrongType("char");}
+      inline void mustBeCharString() const {if (!isCharString()) wrongType("string");}
+      inline void mustBeInt() const {if (!isInt()) wrongType("int");}
+      inline void mustBeDouble() const {if (!isDouble()) wrongType("double");}
+      inline void mustBeIntArray() const {if (!isIntArray()) wrongType("int array");}
+      inline void mustBeDoubleArray() const
+        {if (!isDoubleArray()) wrongType("double array");}
+
+
+      /* the label */
+      string label_;
+
+      /* values. Only one of these will be valid. */
+      char charValue_;
+      string charStringValue_;
+      int intValue_;
+      TSFArray<int> intArrayValue_;
+      double doubleValue_;
+      TSFArray<double> doubleArrayValue_;
+
+      /* flag indicating whether the type is defined. This is in the logic that prevents
+       * changing the type of a parameter after its type has been set
+       */
+      bool typeIsDefined_;
+
+      /* flags that tell us the type */
+      bool isChar_;
+      bool isCharString_;
+      bool isInt_;
+      bool isIntArray_;
+      bool isDouble_;
+      bool isDoubleArray_;
+    };
+
+}
 
 #endif /* _TSF_PARAMETERIMPLEM_H_ */

@@ -1,45 +1,45 @@
 #ifndef TSFTWOSIDEDPRECONDITIONER_H
 #define TSFTWOSIDEDPRECONDITIONER_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFVector.h"
 #include "TSFPreconditionerBase.h"
 
 namespace TSF
 {
-	using std::string;
-	
-	/** \ingroup Preconditioner
-	 * Stores two linear operators, used for the left and right preconditioners.
-	 */
-	
-	class TSFTwoSidedPreconditioner : public TSFPreconditionerBase
-		{
-		public:
-			/** empty ctor */
-			TSFTwoSidedPreconditioner(const TSFLinearOperator& leftOp,
-																const TSFLinearOperator& rightOp);
-			/** TUVD */
-			virtual ~TSFTwoSidedPreconditioner(){;}
+  using std::string;
 
-			/** Left preconditioner */
-			virtual TSFLinearOperator left() const {return leftOp_;}
+  /** \ingroup Preconditioner
+   * Stores two linear operators, used for the left and right preconditioners.
+   */
 
-			/** Right preconditioner */
-			virtual TSFLinearOperator right() const {return rightOp_;}
+  class TSFTwoSidedPreconditioner : public TSFPreconditionerBase
+    {
+    public:
+      /** empty ctor */
+      TSFTwoSidedPreconditioner(const TSFLinearOperator& leftOp,
+                                const TSFLinearOperator& rightOp);
+      /** TUVD */
+      virtual ~TSFTwoSidedPreconditioner(){;}
 
-			/** inform the world that we have a nontrivial left precond */
-			virtual bool hasLeft() const {return true;}
+      /** Left preconditioner */
+      virtual TSFLinearOperator left() const {return leftOp_;}
 
-			/** inform the world that we have a nontrivial right precond */
-			virtual bool hasRight() const {return true;}
+      /** Right preconditioner */
+      virtual TSFLinearOperator right() const {return rightOp_;}
 
-			/** print to a string */
-			virtual string toString() const ;
-		private:
-			TSFLinearOperator leftOp_;
-			TSFLinearOperator rightOp_;
-		};
+      /** inform the world that we have a nontrivial left precond */
+      virtual bool hasLeft() const {return true;}
+
+      /** inform the world that we have a nontrivial right precond */
+      virtual bool hasRight() const {return true;}
+
+      /** print to a string */
+      virtual string toString() const ;
+    private:
+      TSFLinearOperator leftOp_;
+      TSFLinearOperator rightOp_;
+    };
 }
 
 #endif

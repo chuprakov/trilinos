@@ -1,7 +1,7 @@
 #ifndef TSFVECTORSPACEBASE_H
 #define TSFVECTORSPACEBASE_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 
 namespace TSF

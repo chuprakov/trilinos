@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <string>
 
 namespace TSF
@@ -35,7 +35,7 @@ namespace TSF
   template <class T, class C = TSFCopier<T> >
     class TSFUnsharedPtr
     {
-    public:
+      public:
       /** Construct from a shared ptr */
       TSFUnsharedPtr(T* ptr = 0);
 
@@ -67,7 +67,7 @@ namespace TSF
        * on smart pointers */
       void error(const string& msg) const ;
 
-    protected:
+      protected:
 
       T *ptr_;
     };
@@ -98,18 +98,18 @@ namespace TSF
 
   template <class T, class C>
     const TSFUnsharedPtr<T, C>& TSFUnsharedPtr<T, C>::operator =(const TSFUnsharedPtr<T, C>& other)
-  {
-    if (ptr_ != other.ptr_)
-      {
-        if (ptr_ != 0) delete ptr_;
-        if (other.ptr_!=0)
+    {
+      if (ptr_ != other.ptr_)
         {
-          ptr_ = C::copy(*(other.ptr_));
-          if (ptr_==0) error("TSFUnsharedPtr<T, C>::TSFUnsharedPtr copy ctor failed");
+          if (ptr_ != 0) delete ptr_;
+          if (other.ptr_!=0)
+            {
+              ptr_ = C::copy(*(other.ptr_));
+              if (ptr_==0) error("TSFUnsharedPtr<T, C>::TSFUnsharedPtr copy ctor failed");
+            }
         }
-      }
-    return *this;
-  }
+      return *this;
+    }
 
   template <class T, class C>
     bool TSFUnsharedPtr<T, C>::isNull() const {

@@ -3,7 +3,7 @@
 #include <sstream>
 #endif
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "PetraVector.h"
 #include "PetraVectorSpace.h"
 
@@ -12,7 +12,6 @@
 #include "TSFTimeMonitor.h"
 
 
-#if HAVE_PETRA
 
 using namespace TSF;
 
@@ -233,7 +232,7 @@ const PetraVector& PetraVector::getConcrete(const TSFVector& x)
 	const PetraVector* v = dynamic_cast<const PetraVector*>(x.ptr());
 	if (v==0) {
 #ifdef EPETRA_ANSI_CPP
-	std::ostringstream omsg;
+	TSFOStringStream omsg;
 	omsg << "PetraVector::getConcrete(x): Error, bad cast!"
 		 << "  The concrete object of type \'" << typeid(*x.ptr()).name()
 		 << "\' does not support the type \'PetraVector\'."
@@ -270,7 +269,7 @@ void PetraVector::synchronizeGhostValues() const
 
 
 
-#endif /* HAVE_PETRA */
+
 
 
 

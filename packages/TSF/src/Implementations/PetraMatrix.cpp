@@ -1,6 +1,6 @@
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
-#if HAVE_PETRA
+
 
 #define PETRA_BOOL_SUPPORTED
 
@@ -457,7 +457,7 @@ void PetraMatrix::getRow(int row, TSFArray<int>& indices,
 }
 
 
-#endif // USE_PETRA
+
 
 
 

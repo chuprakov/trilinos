@@ -1,47 +1,47 @@
 #ifndef TSFMPIVECTOR_H
 #define TSFMPIVECTOR_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFInCoreVector.h"
 #include <typeinfo>
 
-#if HAVE_MPI
+#ifdef HAVE_MPI
 #include "mpi.h"
 #endif
 
 namespace TSF
 {
-	
-	using std::string;
 
-	/** \ingroup VectorSubtypes
-	 *  TSFMPIVector is a base class for vectors that use MPI to do 
-	 * reduction operations */
+  using std::string;
 
-	class TSFMPIVector : public TSFInCoreVector
-		{
-		public: 
-			/** \name Constructor and Destructors */
-			//@{
-			/** construct with a given space */
-			TSFMPIVector(const TSFVectorSpace& space);
+  /** \ingroup VectorSubtypes
+   *  TSFMPIVector is a base class for vectors that use MPI to do
+   * reduction operations */
 
-			/** the usual virtual dtor */
-			virtual ~TSFMPIVector(){;}
-			//@}
+  class TSFMPIVector : public TSFInCoreVector
+    {
+    public:
+      /** \name Constructor and Destructors */
+      //@{
+      /** construct with a given space */
+      TSFMPIVector(const TSFVectorSpace& space);
 
-		protected:
-			/** Reduce a calculation across processors */
-			TSFReal reduce(const TSFReal& localValue, TSFReductionOp op) const ;
+      /** the usual virtual dtor */
+      virtual ~TSFMPIVector(){;}
+      //@}
 
-#if HAVE_MPI
-			/** communicator */
-			MPI_Comm comm_;
+    protected:
+      /** Reduce a calculation across processors */
+      TSFReal reduce(const TSFReal& localValue, TSFReductionOp op) const ;
+
+#ifdef HAVE_MPI
+      /** communicator */
+      MPI_Comm comm_;
 #endif
 
-			/** */
-			static TSFTimer& commTimer();
-		};
+      /** */
+      static TSFTimer& commTimer();
+    };
 };
 
 #endif

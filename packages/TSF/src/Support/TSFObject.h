@@ -1,7 +1,7 @@
 #ifndef TSFOBJECT_H
 #define TSFOBJECT_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 
 namespace TSF
 {

@@ -1,7 +1,7 @@
 #ifndef TSFUTILS_H
 #define TSFUTILS_H
 
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include <math.h>
 #include <string>
 

@@ -1,7 +1,7 @@
-#include "TSFConfig.h"
+#include "TSFDefs.h"
 #include "TSFOut.h"
 
-#if HAVE_PETRA
+
 
 #define PETRA_BOOL_SUPPORTED
 
@@ -94,4 +94,4 @@ TSFTimer& IfpackOperator::opTimer()
 }
 
 
-#endif /* HAVE_PETRA */
+
