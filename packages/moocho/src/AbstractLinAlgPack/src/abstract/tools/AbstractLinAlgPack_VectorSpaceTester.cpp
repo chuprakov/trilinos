@@ -69,7 +69,7 @@ bool VectorSpaceTester::check_vector_space(
 	{for(int k = 0; k < 3; ++k) {
 		vec_mut_ptr_t  r = space.create_member();
 		random_vector( rand_l, rand_u, r.get() );
-		v_array[k] = rcp::rcp_implicit_cast<vec_ptr_t::element_type>(r);
+		v_array[k] = r;
 		v[k] = v_array[k].get();
 	}}
 

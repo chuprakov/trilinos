@@ -214,9 +214,7 @@ VectorWithOp::vec_ptr_t
 VectorWithOpMutable::sub_view( const Range1D& rng ) const
 {
 	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		const_cast<VectorWithOpMutable*>(this)->sub_view(rng)
-		);
+	return const_cast<VectorWithOpMutable*>(this)->sub_view(rng);
 }
 
 // Overridden from VectorBaseMutable

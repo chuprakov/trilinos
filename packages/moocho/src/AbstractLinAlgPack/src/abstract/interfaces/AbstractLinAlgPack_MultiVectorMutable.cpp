@@ -94,23 +94,17 @@ void MultiVectorMutable::apply_transformation(
 
 MultiVectorMutable::vec_ptr_t MultiVectorMutable::row(index_type i) const
 {
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		const_cast<MultiVectorMutable*>(this)->row(i));
+	return const_cast<MultiVectorMutable*>(this)->row(i);
 }
 
 MultiVectorMutable::vec_ptr_t MultiVectorMutable::col(index_type j) const
 {
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		const_cast<MultiVectorMutable*>(this)->col(j));
+	return const_cast<MultiVectorMutable*>(this)->col(j);
 }
 
 MultiVectorMutable::vec_ptr_t MultiVectorMutable::diag(int k) const
 {
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		const_cast<MultiVectorMutable*>(this)->diag(k));
+	return const_cast<MultiVectorMutable*>(this)->diag(k);
 }
 
 MultiVectorMutable::multi_vec_ptr_t

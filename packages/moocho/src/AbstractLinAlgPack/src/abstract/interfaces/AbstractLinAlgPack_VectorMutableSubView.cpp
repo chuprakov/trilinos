@@ -27,9 +27,7 @@ VectorWithOpMutableSubView::VectorWithOpMutableSubView( const vec_mut_ptr_t& vec
 void VectorWithOpMutableSubView::initialize( const vec_mut_ptr_t& vec, const Range1D& rng )
 {
 	namespace rcp = ReferenceCountingPack;
-	VectorWithOpSubView::initialize(
-		rcp::rcp_implicit_cast<vec_ptr_t::element_type>(vec)
-		,rng );
+	VectorWithOpSubView::initialize(vec,rng);
 	full_vec_ = vec;
 	this->has_changed();
 }
