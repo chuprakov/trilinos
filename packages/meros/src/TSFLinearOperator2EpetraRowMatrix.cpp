@@ -51,7 +51,7 @@
 TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOperator A_tsf, const Epetra_Comm *Comm_pet,
 	     Epetra_Map *Map_pet, int *map, int matrix_type) {
 
-    OwnMap_      = true;
+  OwnMap_      = true;
 
     // This is some garbage code to prevent both the matrix and its inverse
     // delete the map. Ugh. It might be better to use a smart pointer for
@@ -225,14 +225,20 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
     int VelocityCount = 0;
     int PressureCount = 0;
     double *DataVelocity, *DataPressure, *Data;
+    int errcode;
 
-    in_Epet->ExtractView(&Data);
-    in_EpetVelocity.get()->ExtractView(&DataVelocity);
-    in_EpetPressure.get()->ExtractView(&DataPressure);
+    errcode = in_Epet->ExtractView(&Data);
+    errcode = in_EpetVelocity.get()->ExtractView(&DataVelocity);
+    errcode = in_EpetPressure.get()->ExtractView(&DataPressure);
 
     for (int i= 0 ; i < in_Epet->MyLength(); i++) {
-      if (map_[i] == 1) DataPressure[PressureCount++] = Data[i];
-      else              DataVelocity[VelocityCount++] = Data[i];
+
+      if (map_[i] == 1) {
+	DataPressure[PressureCount++] = Data[i];
+      }
+      else {              
+	DataVelocity[VelocityCount++] = Data[i];
+      }
     }
 
 
@@ -263,6 +269,8 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
 
 
   int TSFLinearOperator2EpetraRowMatrix::initialize(TSFLinearOperator A_tsf,  Epetra_Map *Map_pet, int *map) {
+
+
 
     OwnMap_      = false;
     map_         = map;
