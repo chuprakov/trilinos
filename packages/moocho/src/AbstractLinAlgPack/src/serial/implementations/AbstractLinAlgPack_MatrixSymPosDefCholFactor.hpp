@@ -22,9 +22,9 @@
 #include "MatrixSymWithOpNonsingularSerial.h"
 #include "MatrixSymDenseInitialize.h"
 #include "MatrixSymWithOpGetGMSSymMutable.h"
-#include "AbstractLinAlgPack/include/MatrixSymSecantUpdateable.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
 #include "ref_count_ptr.h"
 #include "ReleaseResource.h"
 

@@ -27,8 +27,8 @@
 #include <iomanip>
 
 #include "ExampleNLPFirstOrderDirectRun.h"
-#include "ExampleVectorLib/include/MPIDenseVector.h"
-#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
+#include "ExampleVectorLib/src/MPIDenseVector.h"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
 #include "OptionsFromStream.h"
 #include "WorkspacePack.h"
 #include "oblackholestream.h"

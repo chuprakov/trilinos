@@ -17,8 +17,8 @@
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STD_SET_OPTIONS_H
 
 #include "EvalNewPointTailoredApproach_Step.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

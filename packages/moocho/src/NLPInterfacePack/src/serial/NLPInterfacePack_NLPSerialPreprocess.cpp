@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include <iostream> // Debug only
-#include "LinAlgPack/include/PermOut.h"
+#include "LinAlgPack/src/PermOut.h"
 
 #include <algorithm>
 #include <sstream>
@@ -24,16 +24,16 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "NLPInterfacePack/include/NLPSerialPreprocess.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/PermutationSerial.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/IVector.h"
-#include "LinAlgPack/include/PermVecMat.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "NLPInterfacePack/src/NLPSerialPreprocess.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "SparseLinAlgPack/src/PermutationSerial.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/IVector.h"
+#include "LinAlgPack/src/PermVecMat.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"

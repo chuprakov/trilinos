@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/include/MatrixZero.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/MatrixZero.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {

@@ -17,8 +17,8 @@
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
 #include "dynamic_cast_verbose.h"
 
 namespace SparseLinAlgPack {

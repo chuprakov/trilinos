@@ -18,14 +18,14 @@
 #include <iostream>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/include/std/UpdateBarrierParameter_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ReducedSpaceSQPPack/src/std/UpdateBarrierParameter_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
 #include "dynamic_cast_verbose.h"
-#include "ReducedSpaceSQPPack/include/ipState.h"
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
+#include "ReducedSpaceSQPPack/src/ipState.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
 #include "ThrowException.h"
 
 #include "StringToBool.h"

@@ -15,7 +15,7 @@
 
 #include <algorithm>
 
-#include "GeneralIterationPack/include/AlgorithmTrackComposite.h"
+#include "GeneralIterationPack/src/AlgorithmTrackComposite.h"
 
 namespace GeneralIterationPack {
 

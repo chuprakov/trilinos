@@ -18,7 +18,7 @@
 
 #include "MeritFuncCalc.h"
 #include "MeritFuncNLE.h"
-#include "Misc/include/StandardAggregationMacros.h"
+#include "MiStandardAggregationMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

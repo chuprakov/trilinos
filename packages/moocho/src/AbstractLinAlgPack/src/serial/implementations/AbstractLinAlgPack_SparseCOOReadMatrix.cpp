@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-#include "../include/SparseCOOReadMatrix.h"
+#include "SparseCOOReadMatrix.h"
 
 // Throw an exception if the char is not ':'
 namespace {

@@ -17,20 +17,20 @@
 #include <typeinfo>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "SparseLinAlgPack/include/MatrixSymDenseInitialize.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "SparseLinAlgPack/src/MatrixSymDenseInitialize.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "NLPInterfacePack/src/NLPSecondOrderInfo.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/VectorOut.h"
+#include "Midynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 

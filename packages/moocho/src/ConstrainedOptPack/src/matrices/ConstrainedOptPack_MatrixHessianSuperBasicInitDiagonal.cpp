@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "Midynamic_cast_verbose.h"
 
 namespace ConstrainedOptimizationPack {
 

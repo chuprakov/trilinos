@@ -17,8 +17,8 @@
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_SET_OPTIONS_H
 
 #include "MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

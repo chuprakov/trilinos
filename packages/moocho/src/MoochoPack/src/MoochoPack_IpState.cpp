@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-#include "ReducedSpaceSQPPack/include/ipState.h"
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
+#include "ReducedSpaceSQPPack/src/ipState.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
 
 // Iteration Quantity Strings
 extern const std::string ReducedSpaceSQPPack::barrier_parameter_name = "barrier_parameter";

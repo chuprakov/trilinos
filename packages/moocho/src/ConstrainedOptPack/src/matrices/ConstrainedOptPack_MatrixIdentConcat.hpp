@@ -17,7 +17,7 @@
 #define MATRIX_IDENT_CONCAT_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
 
 namespace ConstrainedOptimizationPack {
 

@@ -17,8 +17,8 @@
 #define VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 
 #include "VariableBoundsTester.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ConstrainedOptimizationPack {
 

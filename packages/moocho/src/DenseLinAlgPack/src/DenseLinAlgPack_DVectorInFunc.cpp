@@ -15,9 +15,9 @@
 
 #include <sstream>
 
-#include "../include/VectorInFunc.h"
-#include "../include/VectorClass.h"
-#include "../include/LinAlgPackAssertOp.h"
+#include "VectorInFunc.h"
+#include "VectorClass.h"
+#include "LinAlgPackAssertOp.h"
 
 namespace {	// Local implementation
 std::istream& input_vs(std::istream& is, LinAlgPack::VectorSlice* vs, const char func[]);

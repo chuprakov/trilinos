@@ -17,8 +17,8 @@
 
 #include <assert.h>
 
-#include "../include/DirectSparseSolverMA28SetOptions.h"
-#include "Misc/include/StringToBool.h"
+#include "DirectSparseSolverMA28SetOptions.h"
+#include "StringToBool.h"
 
 // Define the options
 namespace {

@@ -16,7 +16,7 @@
 #ifndef QUASI_NEWTON_STATS_H
 #define QUASI_NEWTON_STATS_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

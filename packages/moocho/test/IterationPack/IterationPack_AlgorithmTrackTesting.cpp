@@ -16,7 +16,7 @@
 #include <iomanip>
 
 #include "../test/AlgorithmTrackTesting.h"
-#include "../include/Algorithm.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 
 namespace GeneralIterationPack {
 

@@ -16,11 +16,11 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ReducedSpaceSQPPack/src/std/QPFailureReinitReducedHessian_Step.h"
+#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
 
 namespace ReducedSpaceSQPPack {
 

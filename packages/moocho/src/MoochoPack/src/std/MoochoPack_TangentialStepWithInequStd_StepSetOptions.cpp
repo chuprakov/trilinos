@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.h"
 #include "StringToBool.h"
 #include "ThrowException.h"
 

@@ -17,7 +17,7 @@
 #define SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 
 #include "MatrixNonsingularSerial.h"
-#include "AbstractLinAlgPack/include/MatrixSymNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixSymNonsingular.h"
 
 namespace SparseLinAlgPack {
 

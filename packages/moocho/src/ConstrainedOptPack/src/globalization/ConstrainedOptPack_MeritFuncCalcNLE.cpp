@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/MeritFuncCalcNLE.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "MeritFuncCalcNLE.h"
+#include "LinAlgPack/src/VectorClass.h"
 
 namespace ConstrainedOptimizationPack {
 

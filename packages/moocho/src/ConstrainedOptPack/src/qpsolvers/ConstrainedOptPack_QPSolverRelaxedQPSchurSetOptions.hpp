@@ -17,8 +17,8 @@
 #define QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 
 #include "QPSolverRelaxedQPSchur.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ConstrainedOptimizationPack {
 

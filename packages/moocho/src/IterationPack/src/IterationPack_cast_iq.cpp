@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "GeneralIterationPack/include/cast_iq.h"
+#include "GeneralIterationPack/src/cast_iq.h"
 #include "ThrowException.h"
 
 void GeneralIterationPack::imp_cast_iq_throw_error(

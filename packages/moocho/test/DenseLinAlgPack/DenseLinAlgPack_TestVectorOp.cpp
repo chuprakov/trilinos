@@ -20,11 +20,11 @@
 
 #include <math.h>
 
-#include "../test/TestLinAlgPack.h"
-#include "../include/VectorClass.h"
-#include "../include/VectorOp.h"
-#include "../include/VectorOut.h"
-#include "../include/MatVecCompare.h"
+#include "TestLinAlgPack.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/VectorOut.h"
+#include "LinAlgPack/src/MatVecCompare.h"
 
 namespace {
 

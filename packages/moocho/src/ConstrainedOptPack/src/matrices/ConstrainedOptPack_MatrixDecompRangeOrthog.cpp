@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/MatrixDecompRangeOrthog.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {

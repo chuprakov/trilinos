@@ -17,9 +17,9 @@
 #define MATRIX_KKT_FULL_SPACE_RELAXED_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixWithOpFactorized.h"
-#include "SparseLinAlgPack/include/MatrixConvertToSparseFortranCompatible.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "SparseLinAlgPack/src/MatrixWithOpFactorized.h"
+#include "SparseLinAlgPack/src/MatrixConvertToSparseFortranCompatible.h"
+#include "StandardCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

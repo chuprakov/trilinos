@@ -15,12 +15,12 @@
 
 #include <iostream> // Debuggin only
 
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {

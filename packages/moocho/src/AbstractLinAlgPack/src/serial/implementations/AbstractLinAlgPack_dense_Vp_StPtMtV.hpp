@@ -16,16 +16,16 @@
 #ifndef DENSE_V_P_S_T_P_T_M_T_V_H
 #define DENSE_V_P_S_T_P_T_M_T_V_H
 
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/EtaVector.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
-#include "Misc/include/WorkspacePack.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "SparseLinAlgPack/src/EtaVector.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "MiWorkspacePack.h"
 
 namespace SparseLinAlgPack {
 

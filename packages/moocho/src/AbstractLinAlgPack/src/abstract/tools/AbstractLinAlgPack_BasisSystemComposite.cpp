@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ReleaseResource_ref_count_ptr.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"

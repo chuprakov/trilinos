@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/MatrixVarReductImplicit.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-//#include "SparseLinAlgPack/include/dense_Vp_StPtMtV.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+//#include "SparseLinAlgPack/src/dense_Vp_StPtMtV.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 

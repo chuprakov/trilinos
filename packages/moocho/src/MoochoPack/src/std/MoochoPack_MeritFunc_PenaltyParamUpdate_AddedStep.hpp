@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H
 #define MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -16,13 +16,13 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
-#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasic.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

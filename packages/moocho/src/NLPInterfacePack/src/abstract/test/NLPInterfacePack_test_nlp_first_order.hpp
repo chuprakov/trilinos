@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

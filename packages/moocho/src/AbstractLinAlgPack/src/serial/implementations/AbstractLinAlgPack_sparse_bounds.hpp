@@ -16,7 +16,7 @@
 #ifndef SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 #define SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 
-#include "LinAlgPack/include/VectorClass.h"
+#include "LinAlgPack/src/VectorClass.h"
 
 namespace SparseLinAlgPack {
 

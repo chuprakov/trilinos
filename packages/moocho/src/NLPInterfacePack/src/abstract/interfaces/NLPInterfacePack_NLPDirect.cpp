@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 #include "Range1D.h"
 #include "ThrowException.h"
 

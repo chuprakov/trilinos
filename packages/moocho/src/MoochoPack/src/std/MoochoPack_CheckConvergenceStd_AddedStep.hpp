@@ -16,8 +16,8 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
 #include "CheckConvergence_Strategy.h"
 

@@ -16,7 +16,7 @@
 #ifndef SLAP_LIN_ALG_OP_PACK_H
 #define SLAP_LIN_ALG_OP_PACK_H
 
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 #include "MatrixSymWithOpNonsingularSerial.h"
 
 namespace LinAlgOpPack {

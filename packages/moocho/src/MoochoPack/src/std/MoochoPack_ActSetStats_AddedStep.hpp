@@ -16,8 +16,8 @@
 #ifndef ACT_SET_STATS_ADDED_STEP_H
 #define ACT_SET_STATS_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_Step.h"
-#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_Step.h"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
 
 namespace ReducedSpaceSQPPack {
 

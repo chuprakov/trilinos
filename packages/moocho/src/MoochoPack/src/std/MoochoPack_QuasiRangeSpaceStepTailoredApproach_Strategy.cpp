@@ -13,17 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproach.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_Step.h"
-#include "ConstrainedOptimizationPack/include/DenseIdentVertConcatMatrixSubclass.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/WorkspacePack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.h"
+#include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "MiWorkspacePack.h"
+#include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

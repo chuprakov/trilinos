@@ -22,13 +22,12 @@
 #include <vector>
 #include <typeinfo>
 
-#include "../test/TestLinAlgPack.h"
-#include "../include/GenMatrixClass.h"
-#include "../include/GenMatrixOp.h"
-#include "../include/VectorOut.h"
-#include "../include/GenMatrixOut.h"
-#include "../include/MatVecCompare.h"
-//#include "../include/LinAlgOpPack.h"
+#include "TestLinAlgPack.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixOp.h"
+#include "LinAlgPack/src/VectorOut.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
+#include "LinAlgPack/src/MatVecCompare.h"
 
 namespace {
 

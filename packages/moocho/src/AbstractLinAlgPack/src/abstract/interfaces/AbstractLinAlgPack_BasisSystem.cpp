@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/include/BasisSystem.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/BasisSystem.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
 #include "Range1D.h"
 
 namespace AbstractLinAlgPack {

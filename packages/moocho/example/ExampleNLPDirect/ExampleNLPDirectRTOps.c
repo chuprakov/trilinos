@@ -17,8 +17,8 @@
 #include <malloc.h>
 
 #include "ExampleNLPFirstOrderDirectRTOps.h"
-#include "RTOpPack/include/RTOp_obj_null_vtbl.h"
-#include "RTOpPack/include/RTOp_obj_index_vtbl.h"
+#include "RTOpPack/src/RTOp_obj_null_vtbl.h"
+#include "RTOpPack/src/RTOp_obj_index_vtbl.h"
 
 // Implementation for RTOp_TOp_explnlp2_c_eval
 

@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
+#include "NLPInterfacePack/src/NLPSecondOrderInfo.h"
 #include "ThrowException.h"
 
 namespace {

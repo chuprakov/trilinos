@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_FULL_STEP_STEP_H
 #define LINE_SEARCH_FULL_STEP_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTester.h"
 #include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {

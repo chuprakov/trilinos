@@ -17,7 +17,7 @@
 #define DAMPEN_CROSS_TERM_STD_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

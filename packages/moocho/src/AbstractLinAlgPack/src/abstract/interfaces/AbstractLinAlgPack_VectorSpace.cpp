@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorSpaceSubSpace.h"
-#include "AbstractLinAlgPack/include/VectorSpaceFactory.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/InnerProductDot.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpaceSubSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpaceFactory.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/InnerProductDot.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {

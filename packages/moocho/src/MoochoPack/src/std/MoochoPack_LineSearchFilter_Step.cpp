@@ -19,14 +19,14 @@
 #include <fstream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutableSubView.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 

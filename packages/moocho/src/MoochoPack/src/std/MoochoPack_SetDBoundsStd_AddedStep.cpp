@@ -15,11 +15,11 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "ReducedSpaceSQPPack/src/std/SetDBoundsStd_AddedStep.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
 
 namespace ReducedSpaceSQPPack {
 

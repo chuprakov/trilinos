@@ -17,7 +17,7 @@
 #define RSQP_ALGO_CONVERSION_H
 
 #include "rSQPAlgo.h"
-#include "GeneralIterationPack/include/Algorithm.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 
 namespace ReducedSpaceSQPPack {
 

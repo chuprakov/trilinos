@@ -17,8 +17,8 @@
 #define EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H
 
 #include "EvalNewPointStd_Step.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

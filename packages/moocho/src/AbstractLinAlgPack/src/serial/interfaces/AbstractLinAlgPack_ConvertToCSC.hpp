@@ -17,7 +17,7 @@
 #define CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "LinAlgPack/include/IVector.h"
+#include "LinAlgPack/src/IVector.h"
 
 /** @name Conversion utilites / interfaces for a Fortran compatable sparse compressed column matrix format.
   *

@@ -17,8 +17,8 @@
 #define LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H
 
 #include "LineSearchWatchDog_Step.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

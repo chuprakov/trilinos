@@ -16,7 +16,7 @@
 #ifndef MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 #define MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 
-#include "AbstractLinAlgPack/include/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.h"
 
 namespace SparseLinAlgPack {
 

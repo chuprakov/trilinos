@@ -17,7 +17,7 @@
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
 #include "ReducedSpaceSQPPackTypes.h"
-#include "ConstrainedOptimizationPack/include/QPSolverStats.h"
+#include "ConstrainedOptimizationPack/src/QPSolverStats.h"
 
 namespace ReducedSpaceSQPPack {
 

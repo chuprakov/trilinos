@@ -17,8 +17,8 @@
 #define MATRIX_WITH_OP_GET_GMS_TRI_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
 #include "dynamic_cast_verbose.h"
 
 namespace SparseLinAlgPack {

@@ -17,7 +17,7 @@
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.h"
 
 namespace SparseLinAlgPack {
 

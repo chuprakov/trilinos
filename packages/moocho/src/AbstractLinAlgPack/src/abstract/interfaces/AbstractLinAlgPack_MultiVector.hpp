@@ -17,7 +17,7 @@
 #define ALAP_MULTI_VECTOR_H
 
 #include "MatrixWithOp.h"
-#include "RTOpPack/include/RTOpCpp.h"
+#include "RTOpPack/src/RTOpCpp.h"
 #include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {

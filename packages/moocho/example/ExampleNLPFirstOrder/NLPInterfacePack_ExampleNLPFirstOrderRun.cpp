@@ -30,9 +30,9 @@
 #include "ExampleNLPFirstOrderInfo.h"
 #include "ExampleBasisSystem.h"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
-#include "GeneralIterationPack/include/AlgorithmTrack.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "GeneralIterationPack/src/AlgorithmTrack.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/BasisSystem.h"
 #include "OptionsFromStream.h"
 
 ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus

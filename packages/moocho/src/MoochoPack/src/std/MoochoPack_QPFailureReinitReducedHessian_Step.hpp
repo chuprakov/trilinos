@@ -16,8 +16,8 @@
 #ifndef QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 #define QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {

@@ -17,17 +17,17 @@
 #include <ostream>
 #include <iostream>
 
-#include "ReducedSpaceSQPPack/include/std/CalcD_vStep_Step.h"
-#include "ReducedSpaceSQPPack/include/ipState.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-//#include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/CalcD_vStep_Step.h"
+#include "ReducedSpaceSQPPack/src/ipState.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+//#include "ConstrainedOptimizationPack/src/print_vector_change_stats.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 
 

@@ -17,10 +17,10 @@
 #define MATRIX_GEN_BANDED_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "Misc/include/ref_count_ptr.h"
-#include "Misc/include/ReleaseResource.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "Miref_count_ptr.h"
+#include "MiReleaseResource.h"
 
 namespace ConstrainedOptimizationPack {
 ///

@@ -19,9 +19,9 @@
 #include <limits>
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/include/DirectLineSearch_Strategy.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardAggregationMacros.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
+#include "StandardCompositionMacros.h"
+#include "MiStandardAggregationMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

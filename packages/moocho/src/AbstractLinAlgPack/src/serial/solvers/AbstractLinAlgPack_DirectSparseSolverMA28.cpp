@@ -20,10 +20,10 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
-#include "SparseSolverPack/include/MatrixScaling_Strategy.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "LinAlgPack/include/PermVecMat.h"
+#include "SparseSolverPack/src/DirectSparseSolverMA28.h"
+#include "SparseSolverPack/src/MatrixScaling_Strategy.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "LinAlgPack/src/PermVecMat.h"
 #include "AbstractFactoryStd.h"
 #include "ThrowException.h"
 #include "WorkspacePack.h"

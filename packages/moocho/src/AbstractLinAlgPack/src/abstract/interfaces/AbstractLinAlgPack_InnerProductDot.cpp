@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/include/InnerProductDot.h"
-#include "AbstractLinAlgPack/include/VectorWithOp.h"
-#include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
-#include "RTOpPack/include/RTOpCppC.h"
+#include "AbstractLinAlgPack/src/InnerProductDot.h"
+#include "AbstractLinAlgPack/src/VectorWithOp.h"
+#include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
+#include "RTOpPack/src/RTOpCppC.h"
 
 namespace AbstractLinAlgPack {
 

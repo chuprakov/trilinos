@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/include/VectorWithOpMutableSubView.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"

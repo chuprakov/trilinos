@@ -17,8 +17,8 @@
 #define COP_MATRIX_SYM_IDENTITY_SERIAL_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
+#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpNonsingularSerial.h"
 
 namespace ConstrainedOptimizationPack {
 

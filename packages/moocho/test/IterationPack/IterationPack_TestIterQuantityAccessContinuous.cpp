@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "GeneralIterationPack/test/TestGeneralIterationPack.h"
-#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
+#include "GeneralIterationPack/src/IterQuantityAccessContiguous.h"
 #include "update_success.h"
 
 bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)

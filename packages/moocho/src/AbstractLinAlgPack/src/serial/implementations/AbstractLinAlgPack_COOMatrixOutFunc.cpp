@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/COOMatrixOutFunc.h"
-#include "../include/COOMatrixClass.h"
+#include "COOMatrixOutFunc.h"
+#include "COOMatrixClass.h"
 
 std::ostream& SparseLinAlgPack::output(std::ostream& o, const COOMatrix& coom) {
 

@@ -19,7 +19,7 @@
 #ifndef SPARSE_VECTOR_OP_DECL_H
 #define SPARSE_VECTOR_OP_DECL_H
 
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
 
 namespace SparseLinAlgPack {
 

@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.h"
 #include "StringToBool.h"
 #include "ThrowException.h"
 

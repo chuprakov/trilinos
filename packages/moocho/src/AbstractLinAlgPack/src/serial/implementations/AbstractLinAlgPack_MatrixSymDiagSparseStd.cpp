@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/include/MatrixSymDiagonalSparseStd.h"
-#include "AbstractLinAlgPack/include/SpVectorOut.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/MatrixSymDiagonalSparseStd.h"
+#include "AbstractLinAlgPack/src/SpVectorOut.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 #include "ThrowException.h"
 
 namespace SparseLinAlgPack {

@@ -18,14 +18,14 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/SpVectorView.h"
-#include "AbstractLinAlgPack/include/EtaVector.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/SpVectorView.h"
+#include "AbstractLinAlgPack/src/EtaVector.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ref_count_ptr.h"
 #include "ThrowException.h"
 

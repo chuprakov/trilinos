@@ -17,11 +17,11 @@
 
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/include/std/rSQPTrackConsoleStd.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "ReducedSpaceSQPPack/src/std/rSQPTrackConsoleStd.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
+#include "AbstractLinAlgPack/src/VectorWithOp.h"
 #include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {

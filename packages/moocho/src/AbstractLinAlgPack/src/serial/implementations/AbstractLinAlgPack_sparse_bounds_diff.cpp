@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/include/sparse_bounds_diff.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/sparse_bounds_diff.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 
 void SparseLinAlgPack::imp_sparse_bnd_diff(
 	  int						sign

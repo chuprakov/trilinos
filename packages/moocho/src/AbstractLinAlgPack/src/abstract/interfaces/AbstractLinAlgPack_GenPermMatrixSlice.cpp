@@ -19,7 +19,7 @@
 #include <functional>
 #include <algorithm>
 
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
 #include "Range1D.h"
 #include "ThrowException.h"
 

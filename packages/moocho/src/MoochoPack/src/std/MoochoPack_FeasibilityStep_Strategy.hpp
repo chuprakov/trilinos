@@ -16,7 +16,7 @@
 #ifndef FEASIBILITY_STEP_STRATEGY_H
 #define FEASIBILITY_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -15,9 +15,9 @@
 
 #include <iomanip>
 
-#include "../test/AlgorithmStepTesting.h"
-#include "../include/Algorithm.h"
-#include "../include/print_algorithm_step.h"
+#include "AlgorithmStepTesting.h"
+#include "GeneralIterationPack/src/Algorithm.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
 
 namespace GeneralIterationPack {
 

@@ -17,11 +17,11 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/include/VectorSpaceTester.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorSpaceTester.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
 #include "update_success.h"
 #include "ThrowException.h"
 

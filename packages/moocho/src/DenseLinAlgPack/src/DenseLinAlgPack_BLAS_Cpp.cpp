@@ -25,7 +25,7 @@
 
 #include <stdexcept>
 
-#include "LinAlgPack/include/BLAS_Cpp.h"
+#include "LinAlgPack/src/BLAS_Cpp.h"
 
 // /////////////////////////////////////
 // Fortran function declarations.

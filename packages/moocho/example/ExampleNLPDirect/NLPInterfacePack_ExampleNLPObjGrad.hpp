@@ -16,10 +16,10 @@
 #ifndef EXAMPLE_NLP_OBJ_GRADIENT_H
 #define EXAMPLE_NLP_OBJ_GRADIENT_H
 
-#include "NLPInterfacePack/include/NLPObjGradient.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
+#include "NLPInterfacePack/src/NLPObjGradient.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
 
 namespace NLPInterfacePack {
 

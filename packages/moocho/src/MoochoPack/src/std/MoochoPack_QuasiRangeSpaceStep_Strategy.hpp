@@ -16,7 +16,7 @@
 #ifndef QUASI_RANGE_SPACE_STEP_STRATEGY_H
 #define QUASI_RANGE_SPACE_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

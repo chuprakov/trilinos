@@ -17,8 +17,8 @@
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_SET_OPTIONS_H
 
 #include "CheckSkipBFGSUpdateStd_Step.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

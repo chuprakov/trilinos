@@ -18,8 +18,8 @@
 #define SPARSE_VECTOR_SLICE_OP_H
 
 #include "SparseVectorOp.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
-#include "LinAlgPack/include/VectorOp.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "LinAlgPack/src/VectorOp.h"
 
 namespace SparseLinAlgPack {
 

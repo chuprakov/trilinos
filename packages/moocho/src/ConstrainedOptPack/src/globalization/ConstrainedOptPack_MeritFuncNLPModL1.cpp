@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
 #include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {

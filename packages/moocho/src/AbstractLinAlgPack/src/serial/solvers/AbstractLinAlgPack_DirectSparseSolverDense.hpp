@@ -21,8 +21,8 @@
 #include <string>
 
 #include "DirectSparseSolverImp.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/IVector.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/IVector.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace SparseSolverPack {

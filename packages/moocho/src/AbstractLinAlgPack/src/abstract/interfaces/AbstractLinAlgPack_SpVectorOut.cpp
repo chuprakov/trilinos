@@ -16,8 +16,8 @@
 #include <iomanip>
 #include <ostream>
 
-#include "AbstractLinAlgPack/include/SpVectorOut.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/SpVectorOut.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
 
 std::ostream&
 AbstractLinAlgPack::operator<<(std::ostream& os, const SpVectorSlice& svs)

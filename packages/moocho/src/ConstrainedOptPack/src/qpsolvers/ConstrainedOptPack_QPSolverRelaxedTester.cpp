@@ -15,13 +15,13 @@
 
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
 
 namespace {
 

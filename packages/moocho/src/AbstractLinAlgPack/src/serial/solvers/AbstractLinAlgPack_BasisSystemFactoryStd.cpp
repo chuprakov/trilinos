@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseSolverPack/include/BasisSystemFactoryStd.h"
-#include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
-#include "SparseSolverPack/include/DirectSparseSolverDense.h"
-#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
-#include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
-#include "SparseSolverPack/include/DirectSparseSolverSuperLU.h"
+#include "SparseSolverPack/src/BasisSystemFactoryStd.h"
+#include "SparseSolverPack/src/BasisSystemPermDirectSparse.h"
+#include "SparseSolverPack/src/DirectSparseSolverDense.h"
+#include "SparseSolverPack/src/DirectSparseSolverMA28.h"
+#include "SparseSolverPack/src/DirectSparseSolverMA28SetOptions.h"
+#include "SparseSolverPack/src/DirectSparseSolverSuperLU.h"
 #include "ThrowException.h"
 #include "OptionsFromStream.h"
 #include "StringToIntMap.h"

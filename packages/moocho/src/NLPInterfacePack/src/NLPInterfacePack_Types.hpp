@@ -16,12 +16,12 @@
 #ifndef NLP_INTERFACE_PACK_TYPES_H
 #define NLP_INTERFACE_PACK_TYPES_H
 
-#include "SparseSolverPack/include/SparseSolverPackTypes.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h" // Needed for doxygen?
+#include "SparseSolverPack/src/SparseSolverPackTypes.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h" // Needed for doxygen?
 
 namespace NLPInterfacePack {
 
-#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
+#include "SparseSolverPack/src/SparseSolverPackPublicTypes.ud"
 
 // NLP interface classes
 

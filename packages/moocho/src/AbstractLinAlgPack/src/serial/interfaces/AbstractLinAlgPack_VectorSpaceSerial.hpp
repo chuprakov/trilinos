@@ -16,8 +16,8 @@
 #ifndef VECTOR_SPACE_SERIAL_H
 #define VECTOR_SPACE_SERIAL_H
 
-#include "SparseLinAlgPack/include/SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "SparseLinAlgPack/src/SparseLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 
 namespace SparseLinAlgPack {
 

@@ -20,8 +20,8 @@
 
 #include "NLPSerialPreprocess.h"
 #include "NLPFirstOrderInfo.h"
-#include "SparseSolverPack/include/BasisSystemFactoryStd.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "SparseSolverPack/src/BasisSystemFactoryStd.h"
+#include "LinAlgPack/src/VectorClass.h"
 #include "AbstractFactory.h"
 #include "StandardCompositionMacros.h"
 

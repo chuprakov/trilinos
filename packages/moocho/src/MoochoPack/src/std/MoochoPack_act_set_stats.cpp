@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../../include/std/act_set_stats.h"
+#include "../std/act_set_stats.h"
 
 extern const std::string
 	ReducedSpaceSQPPack::act_set_stats_name = "act_set_stats";

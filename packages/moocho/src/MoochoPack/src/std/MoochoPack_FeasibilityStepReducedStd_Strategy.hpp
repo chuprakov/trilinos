@@ -19,14 +19,14 @@
 #include "FeasibilityStep_Strategy.h"
 #include "QuasiRangeSpaceStep_Strategy.h"
 #include "d_bounds_iter_quant.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxed.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

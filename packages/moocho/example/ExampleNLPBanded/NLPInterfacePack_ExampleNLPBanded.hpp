@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_BANDED_H
 #define EXAMPLE_NLP_BANDED_H
 
-#include "NLPInterfacePack/include/NLPSerialPreprocessExplJac.h"
+#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.h"
 
 namespace NLPInterfacePack {
 

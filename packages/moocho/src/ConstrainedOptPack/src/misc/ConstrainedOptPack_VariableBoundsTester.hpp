@@ -17,7 +17,7 @@
 #define VARIABLE_BOUNDS_TESTER_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

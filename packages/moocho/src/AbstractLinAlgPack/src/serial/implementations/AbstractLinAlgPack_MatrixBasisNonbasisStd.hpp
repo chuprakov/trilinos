@@ -17,7 +17,7 @@
 #define MATRIX_BASIS_NON_BASIS_STD_H
 
 #include "MatrixBasisNonbasis.h"
-#include "Misc/include/ref_count_ptr.h"
+#include "Miref_count_ptr.h"
 
 namespace SparseLinAlgPack {
 

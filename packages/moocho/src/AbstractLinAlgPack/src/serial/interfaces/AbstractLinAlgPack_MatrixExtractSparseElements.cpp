@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/include/MatrixExtractSparseElements.h"
+#include "SparseLinAlgPack/src/MatrixExtractSparseElements.h"
 #include "Range1D.h"
 
 namespace SparseLinAlgPack {

@@ -19,9 +19,9 @@
 #include <vector>
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
 
 namespace SparseLinAlgPack {
 

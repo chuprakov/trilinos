@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/QPKWIK_Output.h"
-#include "Misc/include/fortran_types.h"
+#include "QPKWIK_Output.h"
+#include "fortran_types.h"
 
 namespace QPKWIK_Output {
 	std::ostream* out = 0;

@@ -17,7 +17,7 @@
 #define MATRIX_IDENT_CONCAT_STD_H
 
 #include "MatrixIdentConcat.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 #include "Range1D.h"
 #include "ref_count_ptr.h"
 

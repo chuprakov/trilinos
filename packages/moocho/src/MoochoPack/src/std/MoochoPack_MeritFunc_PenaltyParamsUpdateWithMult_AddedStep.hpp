@@ -17,8 +17,8 @@
 #define MERIT_FUNC_PENALTY_PARAMS_UPDATE_WITH_MULT_ADDED_STEP_H
 
 #include "MeritFunc_PenaltyParamUpdate_AddedStep.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -17,7 +17,7 @@
 #define MATRIX_HESSIAN_RELAXED_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOp.h"
 
 namespace ConstrainedOptimizationPack {
 

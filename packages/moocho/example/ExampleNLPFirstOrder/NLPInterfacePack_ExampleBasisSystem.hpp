@@ -16,8 +16,8 @@
 #ifndef EXAMPLE_BASIS_SYSTEM_H
 #define EXAMPLE_BASIS_SYSTEM_H
 
-#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
 
 namespace NLPInterfacePack {
 

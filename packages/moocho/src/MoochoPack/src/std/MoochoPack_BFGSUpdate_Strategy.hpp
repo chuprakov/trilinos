@@ -16,9 +16,9 @@
 #ifndef BFGS_UPDATE_STRATEGY_H
 #define BFGS_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/include/std/QuasiNewtonStats.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/std/QuasiNewtonStats.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -17,7 +17,7 @@
 #define MATRIX_DECOMP_RANGE_ORTHOG_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
 
 namespace ConstrainedOptimizationPack {
 

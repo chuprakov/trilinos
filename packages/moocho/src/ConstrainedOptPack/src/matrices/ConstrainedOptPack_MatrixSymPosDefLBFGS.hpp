@@ -19,11 +19,11 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixSymSecantUpdateable.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {

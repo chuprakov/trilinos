@@ -17,7 +17,7 @@
 #define MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
 #include "ref_count_ptr.h"
 
 namespace ConstrainedOptimizationPack {

@@ -17,12 +17,12 @@
 #define LINE_SEARCH_WATCH_DOG_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/include/DirectLineSearch_Strategy.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardAggregationMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "StandardCompositionMacros.h"
+#include "MiStandardAggregationMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

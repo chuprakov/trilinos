@@ -16,8 +16,8 @@
 #ifndef REDUCED_GRADIENT_STD_STEP_H
 #define REDUCED_GRADIENT_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 
 namespace ReducedSpaceSQPPack {
 

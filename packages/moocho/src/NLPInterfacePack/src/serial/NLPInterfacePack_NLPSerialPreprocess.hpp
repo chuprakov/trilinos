@@ -20,10 +20,10 @@
 
 #include "NLPFirstOrderInfo.h"
 #include "NLPVarReductPerm.h"
-#include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/IVector.h"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/IVector.h"
 
 namespace NLPInterfacePack {
 

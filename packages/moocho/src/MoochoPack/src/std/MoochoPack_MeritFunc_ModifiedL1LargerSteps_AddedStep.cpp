@@ -16,15 +16,15 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../../include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncPenaltyParams.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLPDirecDeriv.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOut.h"
+#include "../std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
+#include "../rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParams.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.h"
+#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorOut.h"
 
 namespace {
 

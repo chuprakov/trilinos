@@ -17,12 +17,12 @@
 
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefBandedChol.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/BLAS_Cpp.h"
-#include "Misc/include/ReleaseResource_ref_count_ptr.h"
-#include "Misc/include/WorkspacePack.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymPosDefBandedChol.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/BLAS_Cpp.h"
+#include "MiReleaseResource_ref_count_ptr.h"
+#include "MiWorkspacePack.h"
 
 // LAPACK functions
 

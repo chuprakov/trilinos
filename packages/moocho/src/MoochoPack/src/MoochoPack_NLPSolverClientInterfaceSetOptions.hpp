@@ -17,8 +17,8 @@
 #define RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 
 #include "rSQPSolverClientInterface.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

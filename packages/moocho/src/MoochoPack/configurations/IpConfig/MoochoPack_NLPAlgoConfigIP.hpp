@@ -16,8 +16,8 @@
 #ifndef ALGO_CONFIG_IP_H
 #define ALGO_CONFIG_IP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
 #include "OptionsFromStream.h"
 

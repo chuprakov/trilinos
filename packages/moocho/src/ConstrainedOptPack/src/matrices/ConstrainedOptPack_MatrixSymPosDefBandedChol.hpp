@@ -17,10 +17,10 @@
 #define MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "Misc/include/ref_count_ptr.h"
-#include "Misc/include/ReleaseResource.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "Miref_count_ptr.h"
+#include "MiReleaseResource.h"
 
 namespace ConstrainedOptimizationPack {
 ///

@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H
 
-#include "RTOpPack/include/RTOp.h"
+#include "RTOpPack/src/RTOp.h"
 
 #ifdef __cplusplus
 extern "C" {

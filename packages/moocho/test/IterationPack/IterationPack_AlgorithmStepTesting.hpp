@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_STEP_TESTING_H
 #define ALGORITHM_STEP_TESTING_H
 
-#include "../include/AlgorithmStep.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 
 namespace GeneralIterationPack {
 

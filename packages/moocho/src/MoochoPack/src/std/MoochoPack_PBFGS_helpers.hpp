@@ -16,8 +16,8 @@
 #ifndef PBFGS_HELPERS
 #define PBFGS_HELPERS
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/include/std/ActSetStats.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/std/ActSetStats.h"
 
 namespace ReducedSpaceSQPPack {
 namespace PBFGSPack {

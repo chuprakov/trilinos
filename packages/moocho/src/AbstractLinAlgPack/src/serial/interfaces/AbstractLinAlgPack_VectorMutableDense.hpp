@@ -17,8 +17,8 @@
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
 #include "VectorSpaceSerial.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "LinAlgPack/src/VectorClass.h"
 #include "ref_count_ptr.h"
 #include "ReleaseResource.h"
 

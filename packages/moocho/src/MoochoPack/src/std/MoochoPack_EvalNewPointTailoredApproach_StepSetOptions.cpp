@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
-#include "Misc/include/StringToBool.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.h"
+#include "StringToBool.h"
 
 // Define the options
 namespace {

@@ -16,7 +16,7 @@
 #ifndef TEST_BASIS_SYSTEM_H
 #define TEST_BASIS_SYSTEM_H
 
-#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

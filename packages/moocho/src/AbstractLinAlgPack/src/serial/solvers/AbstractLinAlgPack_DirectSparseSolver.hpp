@@ -17,8 +17,8 @@
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 
 #include "SparseSolverPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixConvertToSparse.h"
-#include "AbstractLinAlgPack/include/MatrixNonsingular.h"
+#include "SparseLinAlgPack/src/MatrixConvertToSparse.h"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
 #include "ref_count_ptr.h"
 #include "AbstractFactory.h"
 

@@ -17,48 +17,48 @@
 
 // NLP Stuff
 
-#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
-#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "NLPInterfacePack/include/NLPVarReductPerm.h"
+#include "NLPInterfacePack/src/NLPSecondOrderInfo.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "NLPInterfacePack/src/NLPVarReductPerm.h"
 #include "NLPInterfacePack/test/NLPFirstOrderDirectTester.h"
 #include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.h"
 
 // Basis system and direct sparse solvers
 
-#include "AbstractLinAlgPack/include/BasisSystemTester.h"
-#include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
+#include "AbstractLinAlgPack/src/BasisSystemTester.h"
+#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.h"
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.h"
 #endif
 
 // Range/null decomposition
 
-#include "AbstractLinAlgPack/include/MatrixSymIdentity.h"
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerStd_Strategy.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
+#include "AbstractLinAlgPack/src/MatrixSymIdentity.h"
+#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.h"
 
 // Iteration quantities
 
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"               // Y, Z
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"               // Y, Z
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
 
 // Eval new point
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
 
 // Other classes
 
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
-#include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
-#include "NLPInterfacePack/include/CalcFiniteDiffProdSetOptions.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.h"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.h"
+#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
 

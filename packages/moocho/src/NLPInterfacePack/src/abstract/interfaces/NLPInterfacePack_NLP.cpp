@@ -15,9 +15,9 @@
 
 #include <limits>
 
-#include "NLPInterfacePack/include/NLP.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "NLPInterfacePack/src/NLP.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 #include "ThrowException.h"
 
 namespace {

@@ -18,10 +18,10 @@
 #include <math.h> // VC++ 5.0 <cmath> is not CD2 complient yet
 	// ToDo: Update math function calls to cmath once you get a compiler that meets the standard.
 
-#include "../include/VectorClass.h"
-#include "../include/VectorOp.h"
-#include "../include/BLAS_Cpp.h"
-#include "../include/LinAlgPackAssertOp.h"
+#include "VectorClass.h"
+#include "VectorOp.h"
+#include "BLAS_Cpp.h"
+#include "LinAlgPackAssertOp.h"
 
 // ToDo: Check into the aliasing problem more completely and take care of partial overlap as
 // this is not concidered yet.

@@ -16,8 +16,8 @@
 #include <ostream>
 #include <iomanip>
 
-#include "../include/VectorOutFunc.h"
-#include "../include/VectorClass.h"
+#include "VectorOutFunc.h"
+#include "VectorClass.h"
 
 std::ostream& LinAlgPack::output(std::ostream& os, const VectorSlice& vs
 	, LinAlgPackIO::fmtflags extra_flags)

@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasic.h"
-#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.h"
+#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.h"
 
 namespace ConstrainedOptimizationPack {
 

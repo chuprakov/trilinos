@@ -16,10 +16,10 @@
 #ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
 #define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
-#include "ReducedSpaceSQPPack/include/std/d_bounds_iter_quant.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
+#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.h"
 
 namespace ReducedSpaceSQPPack {
 

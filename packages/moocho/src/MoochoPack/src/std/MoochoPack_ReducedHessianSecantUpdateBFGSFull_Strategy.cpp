@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -15,7 +15,7 @@
 
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 
-#include "../include/MA28CommonBlockEncap.h"
+#include "MA28CommonBlockEncap.h"
 
 using std::cout;
 using std::endl;

@@ -47,15 +47,15 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"
-#include "SparseLinAlgPack/include/BFGS_helpers.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgLAPack/include/LinAlgLAPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.h"
+#include "SparseLinAlgPack/src/BFGS_helpers.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
+#include "LinAlgLAPack/src/LinAlgLAPack.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 

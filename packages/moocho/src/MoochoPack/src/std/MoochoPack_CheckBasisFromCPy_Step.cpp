@@ -15,17 +15,17 @@
 
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReduct.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
-#include "Misc/include/WorkspacePack.h"
+#include "ReducedSpaceSQPPack/src/std/CheckBasisFromCPy_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.h"
+#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "Midynamic_cast_verbose.h"
+#include "MiWorkspacePack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

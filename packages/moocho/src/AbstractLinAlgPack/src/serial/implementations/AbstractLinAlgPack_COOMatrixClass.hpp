@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "SparseLinAlgPackTypes.h"
-#include "Misc/include/RefCount.h"
+#include "MiRefCount.h"
 
 namespace SparseLinAlgPack {
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/include/rSQPSolverClientInterfaceSetOptions.h"
+#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterfaceSetOptions.h"
 #include "StringToBool.h"
 
 // Define the options

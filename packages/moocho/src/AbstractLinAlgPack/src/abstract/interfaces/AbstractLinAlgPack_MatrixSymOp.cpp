@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/include/EtaVector.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/EtaVector.h"
 
 namespace AbstractLinAlgPack {
 

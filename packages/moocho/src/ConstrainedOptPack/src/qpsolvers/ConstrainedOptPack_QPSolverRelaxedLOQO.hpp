@@ -21,10 +21,10 @@
 #include <vector>
 
 #include "QPSolverRelaxed.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
-#include "Misc/include/StandardCompositionMacros.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "StandardMemberCompositionMacros.h"
+#include "StandardCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

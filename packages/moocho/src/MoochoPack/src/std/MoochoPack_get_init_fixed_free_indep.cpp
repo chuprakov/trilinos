@@ -16,9 +16,9 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/include/std/get_init_fixed_free_indep.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
+#include "ReducedSpaceSQPPack/src/std/get_init_fixed_free_indep.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
 
 void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 	const size_type                        n

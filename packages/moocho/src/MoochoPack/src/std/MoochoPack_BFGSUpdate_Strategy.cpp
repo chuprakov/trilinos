@@ -13,17 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "AbstractLinAlgPack/include/TestMatrixSymSecantUpdate.h"
-#include "AbstractLinAlgPack/include/MatrixSymSecantUpdateable.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
+#include "AbstractLinAlgPack/src/TestMatrixSymSecantUpdate.h"
+#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 

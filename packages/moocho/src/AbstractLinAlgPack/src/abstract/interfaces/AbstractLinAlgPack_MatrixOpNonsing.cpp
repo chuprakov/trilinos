@@ -15,9 +15,9 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {

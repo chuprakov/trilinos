@@ -19,7 +19,7 @@
 #define QP_SOLVER_RELAXED_QPOPT_H
 
 #include "QPSolverRelaxedQPOPTSOL.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

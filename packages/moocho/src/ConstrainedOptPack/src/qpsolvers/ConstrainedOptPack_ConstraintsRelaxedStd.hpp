@@ -19,8 +19,8 @@
 #include <list>
 
 #include "QPSchur.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {

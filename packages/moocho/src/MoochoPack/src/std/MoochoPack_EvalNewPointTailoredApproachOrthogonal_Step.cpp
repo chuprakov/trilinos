@@ -13,17 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
-#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 

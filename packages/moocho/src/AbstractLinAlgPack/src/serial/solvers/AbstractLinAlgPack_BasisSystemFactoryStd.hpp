@@ -17,7 +17,7 @@
 #define SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 
 #include "SparseSolverPackTypes.h"
-#include "AbstractLinAlgPack/include/BasisSystemFactory.h"
+#include "AbstractLinAlgPack/src/BasisSystemFactory.h"
 #include "AbstractFactory.h"
 
 namespace SparseSolverPack {

@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "GeneralIterationPack/include/AlgorithmState.h"
+#include "GeneralIterationPack/src/AlgorithmState.h"
 #include "ThrowException.h"
 
 namespace {

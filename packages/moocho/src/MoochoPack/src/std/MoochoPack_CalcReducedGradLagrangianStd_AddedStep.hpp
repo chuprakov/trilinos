@@ -16,8 +16,8 @@
 #ifndef CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 
 namespace ReducedSpaceSQPPack {
 

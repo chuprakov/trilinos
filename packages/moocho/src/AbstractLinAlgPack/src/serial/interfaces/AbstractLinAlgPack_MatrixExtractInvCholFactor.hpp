@@ -17,7 +17,7 @@
 #define MATRIX_EXTRACT_INV_CHOL_FACTOR_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.h"
 
 namespace SparseLinAlgPack {
 

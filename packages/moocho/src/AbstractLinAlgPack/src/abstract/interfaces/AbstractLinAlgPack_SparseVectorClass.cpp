@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/include/SparseVectorClassDecl.h"
+#include "AbstractLinAlgPack/src/SparseVectorClassDecl.h"
 
 void AbstractLinAlgPack::SparseVectorUtilityPack::assert_is_sorted(bool is_sorted)
 {

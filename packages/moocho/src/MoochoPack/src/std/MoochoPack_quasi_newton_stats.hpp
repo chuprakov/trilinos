@@ -17,7 +17,7 @@
 #define QUASI_NEWTON_STATS_HH
 
 #include "QuasiNewtonStats.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
 
 namespace ReducedSpaceSQPPack {
 

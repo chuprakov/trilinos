@@ -17,8 +17,8 @@
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 
 #include "DecompositionSystemVarReduct.h"
-#include "AbstractLinAlgPack/include/BasisSystemTester.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/src/BasisSystemTester.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 

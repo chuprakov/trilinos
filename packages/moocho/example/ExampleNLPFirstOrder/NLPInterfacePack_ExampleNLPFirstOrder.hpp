@@ -17,7 +17,7 @@
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
 #include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
 
 namespace NLPInterfacePack {
 

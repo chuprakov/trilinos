@@ -16,7 +16,7 @@
 #ifndef GET_INIT_FIXED_FREE_INDEP_H
 #define GET_INIT_FIXED_FREE_INDEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

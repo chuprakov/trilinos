@@ -19,13 +19,13 @@
 //#include <limits>
 //#include <sstream>
 
-#include "ReducedSpaceSQPPack/include/std/CheckConvergenceIP_Strategy.h"
-#include "ReducedSpaceSQPPack/include/ipState.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.h"
+#include "ReducedSpaceSQPPack/src/ipState.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
 #include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {

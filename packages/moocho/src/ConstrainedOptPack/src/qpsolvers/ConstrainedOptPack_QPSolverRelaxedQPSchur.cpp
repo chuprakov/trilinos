@@ -17,14 +17,14 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
-#include "SparseLinAlgPack/include/sparse_bounds.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
+#include "SparseLinAlgPack/src/sparse_bounds.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 #include "profile_hack.h"
 

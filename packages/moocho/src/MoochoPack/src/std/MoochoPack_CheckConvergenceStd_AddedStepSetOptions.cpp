@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "../../include/std/CheckConvergenceStd_AddedStepSetOptions.h"
-#include "Misc/include/StringToBool.h"
+#include "../std/CheckConvergenceStd_AddedStepSetOptions.h"
+#include "StringToBool.h"
 
 // Define the options
 namespace {

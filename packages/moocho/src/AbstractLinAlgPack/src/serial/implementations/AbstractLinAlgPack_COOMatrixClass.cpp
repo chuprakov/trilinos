@@ -15,10 +15,10 @@
 
 #include <sstream>
 
-#include "../include/COOMatrixClass.h"
-#include "../include/SparseCOOReadMatrix.h"
-#include "LinAlgPack/include/IVector.h"
-#include "LinAlgPack/include/Range1D.h"
+#include "COOMatrixClass.h"
+#include "SparseCOOReadMatrix.h"
+#include "LinAlgPack/src/IVector.h"
+#include "LinAlgPack/src/Range1D.h"
 
 // Junk, test compilation
 //#include "MemMngPackDef.h"

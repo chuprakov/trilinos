@@ -17,10 +17,10 @@
 #include <string>
 #include <typeinfo>
 
-#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
 #include "ThrowException.h"
 
 // boilerplate code

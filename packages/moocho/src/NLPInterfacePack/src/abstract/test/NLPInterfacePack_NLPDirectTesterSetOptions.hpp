@@ -17,8 +17,8 @@
 #define NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 
 #include "NLPFirstOrderDirectTester.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace NLPInterfacePack {
 

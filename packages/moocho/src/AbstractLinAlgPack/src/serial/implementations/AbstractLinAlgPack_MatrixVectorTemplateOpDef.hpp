@@ -19,7 +19,7 @@
 #define MATRIX_VECTOR_TEMPLATE_OP_DEF_H
 
 #include "MatrixVectorTemplateOp.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
 
 // ///////////////////////////////////
 // Matrix assignment

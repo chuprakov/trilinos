@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
 #include "Range1D.h"
 #include "ThrowException.h"
 

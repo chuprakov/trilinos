@@ -17,7 +17,7 @@
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
 
 #include "DirectSparseSolver.h"
-#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
 
 namespace SparseSolverPack {
 

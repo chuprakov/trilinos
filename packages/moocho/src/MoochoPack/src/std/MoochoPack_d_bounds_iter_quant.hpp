@@ -16,7 +16,7 @@
 #ifndef D_BOUNDS_ITE_QUANT_HH
 #define D_BOUNDS_ITE_QUANT_HH
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

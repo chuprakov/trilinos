@@ -19,10 +19,10 @@
 
 #include <iostream>	// used for debugging the Release version.
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgoInterface.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "NLPInterfacePack/include/NLP.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoInterface.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "NLPInterfacePack/src/NLP.h"
 #include "ThrowException.h"
 
 namespace {

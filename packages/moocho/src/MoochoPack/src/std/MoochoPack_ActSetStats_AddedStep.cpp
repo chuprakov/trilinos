@@ -15,11 +15,11 @@
 
 #include <ostream>
 
-#include "../../include/std/ActSetStats_AddedStep.h"
-#include "../../include/std/active_set_change.h"
-#include "../../include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
+#include "../std/ActSetStats_AddedStep.h"
+#include "../std/active_set_change.h"
+#include "../rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
 
 bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)

@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 

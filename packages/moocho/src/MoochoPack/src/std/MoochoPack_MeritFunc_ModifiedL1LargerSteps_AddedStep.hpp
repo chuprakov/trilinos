@@ -17,9 +17,9 @@
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

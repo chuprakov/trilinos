@@ -18,14 +18,14 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

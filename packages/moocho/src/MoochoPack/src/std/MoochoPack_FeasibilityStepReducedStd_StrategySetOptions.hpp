@@ -17,8 +17,8 @@
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 
 #include "FeasibilityStepReducedStd_Strategy.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTesterSetOptions.h"
 
 // Define the options
 namespace {

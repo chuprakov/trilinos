@@ -18,8 +18,8 @@
 #include <typeinfo>
 
 #include "GeneralIterationPack/test/TestGeneralIterationPack.h"
-#include "GeneralIterationPack/include/AlgorithmState.h"
-#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
+#include "GeneralIterationPack/src/AlgorithmState.h"
+#include "GeneralIterationPack/src/IterQuantityAccessContiguous.h"
 #include "AbstractFactoryStd.h"
 #include "update_success.h"
 #include "ThrowException.h"

@@ -16,8 +16,8 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
-#include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {

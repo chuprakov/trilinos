@@ -18,8 +18,8 @@
 
 #include "MatrixWithOpSerial.h"
 #include "MatrixWithOpGetGMSMutable.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
 #include "ReleaseResource.h"
 
 namespace SparseLinAlgPack {

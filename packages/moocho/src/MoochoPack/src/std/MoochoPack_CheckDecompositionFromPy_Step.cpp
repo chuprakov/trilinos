@@ -16,11 +16,11 @@
 #include <typeinfo>
 #include <limits>
 
-#include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromPy_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "AbstractLinAlgPack/include/VectorWithOp.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromPy_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "AbstractLinAlgPack/src/VectorWithOp.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 
 namespace ReducedSpaceSQPPack {
 

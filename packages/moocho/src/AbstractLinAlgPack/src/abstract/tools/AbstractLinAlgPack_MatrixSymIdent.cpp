@@ -17,9 +17,9 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/include/MatrixSymIdentity.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/MatrixSymIdentity.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 
 namespace AbstractLinAlgPack {
 

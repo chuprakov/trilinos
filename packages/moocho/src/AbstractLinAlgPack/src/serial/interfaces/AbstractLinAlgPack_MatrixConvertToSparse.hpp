@@ -17,7 +17,7 @@
 #define MATRIX_CONVERT_TO_SPARSE_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.h"
 
 namespace SparseLinAlgPack {
 

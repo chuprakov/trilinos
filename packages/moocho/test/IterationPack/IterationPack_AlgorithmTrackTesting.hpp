@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_TRACK_TESTING_H
 #define ALGORITHM_TRACK_TESTING_H
 
-#include "GeneralIterationPack/include/AlgorithmTrack.h"
+#include "GeneralIterationPack/src/AlgorithmTrack.h"
 
 namespace GeneralIterationPack {
 

@@ -15,16 +15,16 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFullStep_Step.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
 #include "ThrowException.h"
 
 namespace ReducedSpaceSQPPack {

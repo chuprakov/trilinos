@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/include/MatrixSymHessianRelaxNonSing.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymHessianRelaxNonSing.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "profile_hack.h"
 #include "ThrowException.h"
 

@@ -17,14 +17,14 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
-#include "ConstrainedOptimizationPack/include/MatrixDecompRangeOrthog.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
+#include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"

@@ -6,11 +6,11 @@
 // names should use:
 //
 // namespace MyNamespace {
-//     #include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackPublicTypes.ud"
+//     #include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackPublicTypes.ud"
 // }
 
-#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
-#include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
+#include "SparseSolverPack/src/SparseSolverPackPublicTypes.ud"
+#include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
 
 using ConstrainedOptimizationPack::VariableBoundsTester;
 

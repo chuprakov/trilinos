@@ -16,11 +16,11 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/include/std/PBFGS_helpers.h"
-#include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "Misc/include/WorkspacePack.h"
+#include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.h"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "MiWorkspacePack.h"
 
 namespace ReducedSpaceSQPPack {
 

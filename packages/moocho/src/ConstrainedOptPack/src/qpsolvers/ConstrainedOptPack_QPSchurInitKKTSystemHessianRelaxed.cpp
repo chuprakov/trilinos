@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianRelaxed.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymHessianRelaxNonSing.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianRelaxed.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymHessianRelaxNonSing.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;

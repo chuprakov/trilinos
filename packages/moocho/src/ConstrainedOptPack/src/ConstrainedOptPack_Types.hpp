@@ -17,14 +17,14 @@
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
 #include "ConstrainedOptimizationPackDebugAcronyms.h"
-#include "SparseSolverPack/include/SparseSolverPackTypes.h"
-#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "NLPInterfacePack/include/NLP.h"
+#include "SparseSolverPack/src/SparseSolverPackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLP.h"
 
 namespace ConstrainedOptimizationPack {
 
-#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
-#include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
+#include "SparseSolverPack/src/SparseSolverPackPublicTypes.ud"
+#include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
 
 /// Bounds type
 enum EBounds { FREE, UPPER, LOWER, EQUALITY };

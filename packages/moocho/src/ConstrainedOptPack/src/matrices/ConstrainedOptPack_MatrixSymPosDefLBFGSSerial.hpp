@@ -20,9 +20,9 @@
 
 #include "MatrixSymSecantUpdateable.h"
 #include "MatrixSymAddDelUpdateable.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 

@@ -19,8 +19,8 @@
 #define DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 
 #include "DirectSparseSolverMA28.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace SparseSolverPack {
 

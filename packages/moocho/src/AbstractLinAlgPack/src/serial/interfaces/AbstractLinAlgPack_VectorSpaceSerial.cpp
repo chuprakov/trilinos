@@ -15,13 +15,13 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
-#include "SparseLinAlgPack/include/VectorSpaceFactorySerial.h"
-#include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
-#include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
+#include "SparseLinAlgPack/src/VectorSpaceFactorySerial.h"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/src/MultiVectorMutableDense.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
+#include "LinAlgPack/src/VectorClass.h"
 #include "ThrowException.h"
 
 #ifdef _DEBUG

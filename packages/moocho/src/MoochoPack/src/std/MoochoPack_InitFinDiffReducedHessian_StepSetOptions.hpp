@@ -17,8 +17,8 @@
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H
 
 #include "InitFinDiffReducedHessian_Step.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

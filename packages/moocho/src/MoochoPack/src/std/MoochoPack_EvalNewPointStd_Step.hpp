@@ -17,9 +17,9 @@
 #define EVAL_NEW_POINT_STD_STEP_H
 
 #include "DecompositionSystemHandler_Strategy.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
-#include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.h"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"

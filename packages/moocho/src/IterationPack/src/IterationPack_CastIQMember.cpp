@@ -16,7 +16,7 @@
 #include <string>
 #include <sstream>
  
-#include "GeneralIterationPack/include/CastIQMember.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
 #include "ThrowException.h"
 
 namespace GeneralIterationPack {

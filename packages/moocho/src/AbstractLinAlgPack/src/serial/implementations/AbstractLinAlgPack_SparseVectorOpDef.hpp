@@ -31,11 +31,11 @@
 #define SPARSE_VECTOR_OP_DEF_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/SparseVectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"	// also included in SparseVectorOpDef.h
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/SparseVectorClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"	// also included in SparseVectorOpDef.h
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 
 namespace {
 template< class T >

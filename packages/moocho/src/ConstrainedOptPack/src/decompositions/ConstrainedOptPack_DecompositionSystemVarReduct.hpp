@@ -18,7 +18,7 @@
 
 #include "DecompositionSystem.h"
 #include "StandardMemberCompositionMacros.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "AbstractLinAlgPack/src/BasisSystem.h"
 
 namespace ConstrainedOptimizationPack {
 

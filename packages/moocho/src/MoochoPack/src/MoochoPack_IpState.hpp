@@ -17,7 +17,7 @@
 #if !defined IP_STATE_H
 #define IP_STATE_H
 
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
 
 namespace ReducedSpaceSQPPack {
 

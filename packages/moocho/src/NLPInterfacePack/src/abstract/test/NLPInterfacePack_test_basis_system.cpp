@@ -14,11 +14,11 @@
 // above mentioned "Artistic License" for more details.
 
 #include "test_basis_system.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
-#include "AbstractLinAlgPack/include/BasisSystemTester.h"
-#include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
+#include "AbstractLinAlgPack/src/BasisSystem.h"
+#include "AbstractLinAlgPack/src/BasisSystemTester.h"
+#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
 
 bool NLPInterfacePack::test_basis_system(
  	NLPFirstOrderInfo*                             nlp

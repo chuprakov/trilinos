@@ -16,7 +16,7 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 

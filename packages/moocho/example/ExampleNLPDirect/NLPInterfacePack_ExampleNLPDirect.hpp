@@ -17,10 +17,10 @@
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 
 #include "ExampleNLPObjGradient.h"
-#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
 
 namespace NLPInterfacePack {
 

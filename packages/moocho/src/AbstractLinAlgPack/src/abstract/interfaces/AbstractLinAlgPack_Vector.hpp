@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPackTypes.h"
-#include "RTOpPack/include/RTOpCpp.h"
+#include "RTOpPack/src/RTOpCpp.h"
 #include "Range1D.h"
 
 namespace AbstractLinAlgPack {

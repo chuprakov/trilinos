@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "SparseSolverPack/include/DirectSparseSolverImp.h"
+#include "SparseSolverPack/src/DirectSparseSolverImp.h"
 #include "AbstractFactoryStd.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"

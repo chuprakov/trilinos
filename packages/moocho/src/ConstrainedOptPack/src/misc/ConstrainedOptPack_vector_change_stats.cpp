@@ -15,9 +15,9 @@
 
 #include <limits>
 
-#include "../include/vector_change_stats.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "vector_change_stats.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 
 void ConstrainedOptimizationPack::vector_change_stats(
 	  const VectorSlice& x, const VectorSlice& d

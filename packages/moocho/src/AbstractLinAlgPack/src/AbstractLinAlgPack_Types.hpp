@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#include "RTOpPack/include/RTOp.h"
+#include "RTOpPack/src/RTOp.h"
 #include "BLAS_CppTypes.h"
 #include "Range1D.h"
 

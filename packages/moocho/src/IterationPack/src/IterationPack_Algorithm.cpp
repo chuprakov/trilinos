@@ -19,7 +19,7 @@
 #include <numeric>
 #include <typeinfo>
 
-#include "GeneralIterationPack/include/Algorithm.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 #include "stpwatch.h"
 #include "ThrowException.h"
 

@@ -16,7 +16,7 @@
 #ifndef BARRIER_NLP_H
 #define BARRIER_NLP_H
 
-#include "NLPInterfacePack/include/NLPObjGradient.h"
+#include "NLPInterfacePack/src/NLPObjGradient.h"
 
 namespace NLPInterfacePack {
 

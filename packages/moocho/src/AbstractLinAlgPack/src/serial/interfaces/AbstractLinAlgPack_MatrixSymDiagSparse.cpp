@@ -17,17 +17,17 @@
 
 #include <fstream>		// For debugging only
 
-#include "SparseLinAlgPack/include/MatrixSymDiagonalSparse.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/EtaVector.h"
-#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/include/SpVectorOut.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/GenMatrixAssign.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
-#include "LinAlgPack/include/assert_print_nan_inf.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/MatrixSymDiagonalSparse.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/EtaVector.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/src/SpVectorOut.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/GenMatrixAssign.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixOp.h"
+#include "LinAlgPack/src/assert_print_nan_inf.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace {

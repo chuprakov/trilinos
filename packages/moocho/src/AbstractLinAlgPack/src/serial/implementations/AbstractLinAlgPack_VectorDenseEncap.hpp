@@ -5,8 +5,8 @@
 #define SLAP_VECTOR_DENSE_ENCAP_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "LinAlgPack/include/VectorClass.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "LinAlgPack/src/VectorClass.h"
 
 namespace SparseLinAlgPack {
 

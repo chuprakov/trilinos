@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace NLPInterfacePack {

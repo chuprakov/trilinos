@@ -14,17 +14,17 @@
 // above mentioned "Artistic License" for more details.
 //
 
-#include "SparseLinAlgPack/include/LinAlgOpPackHack.h"
-#include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "SparseLinAlgPack/include/MatrixWithOpGetGMS.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
+#include "SparseLinAlgPack/src/LinAlgOpPackHack.h"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMS.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixOp.h"
 
 void LinAlgOpPack::Mp_StM(
 	GenMatrixSlice* C, value_type a

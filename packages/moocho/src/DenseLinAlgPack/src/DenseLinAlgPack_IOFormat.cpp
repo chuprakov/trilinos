@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/LinAlgPackIOFormat.h"
+#include "LinAlgPackIOFormat.h"
 
 // //////////////////
 //  ios_format_memento

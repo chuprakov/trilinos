@@ -16,8 +16,8 @@
 #include <math.h>
 
 #include "ExampleNLPBanded.h"
-#include "LinAlgPack/include/PermVecMat.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "LinAlgPack/src/PermVecMat.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace NLPInterfacePack {

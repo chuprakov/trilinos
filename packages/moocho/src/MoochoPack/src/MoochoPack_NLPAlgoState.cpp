@@ -16,15 +16,15 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
 #include "dynamic_cast_verbose.h"
 
-#include "GeneralIterationPack/include/IterQuantityAccess.h"
-#include "GeneralIterationPack/include/cast_iq.h"
-#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
+#include "GeneralIterationPack/src/IterQuantityAccess.h"
+#include "GeneralIterationPack/src/cast_iq.h"
+#include "GeneralIterationPack/src/IterQuantityAccessContiguous.h"
 
 // rSQPState iteration quantities names
 

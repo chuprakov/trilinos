@@ -18,7 +18,7 @@
 
 #include "SparseCOOPtrElement.h"
 #include "TransSparseCOOElementViewIter.h"
-#include "Misc/include/RefCount.h"
+#include "MiRefCount.h"
 
 namespace SparseLinAlgPack {
 

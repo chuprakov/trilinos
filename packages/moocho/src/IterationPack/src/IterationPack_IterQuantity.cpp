@@ -1,7 +1,7 @@
 // /////////////////////////////////////////////////////
 // IterQuantity.cpp
 
-#include "GeneralIterationPack/include/IterQuantity.h"
+#include "GeneralIterationPack/src/IterQuantity.h"
 #include "ThrowException.h"
 
 namespace GeneralIterationPack {

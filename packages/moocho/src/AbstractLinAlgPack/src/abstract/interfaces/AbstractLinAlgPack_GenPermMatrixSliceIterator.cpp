@@ -15,7 +15,7 @@
 
 #include <string>
 
-#include "AbstractLinAlgPack/include/GenPermMatrixSliceIterator.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSliceIterator.h"
 #include "ThrowException.h"
 
 void AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::GPMS_row_col_iterator_assert_not_null(

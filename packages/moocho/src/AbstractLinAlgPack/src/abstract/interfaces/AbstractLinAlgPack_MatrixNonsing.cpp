@@ -18,13 +18,13 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/include/MatrixNonsingular.h"
-#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "AbstractLinAlgPack/include/SpVectorView.h"
-#include "AbstractLinAlgPack/include/EtaVector.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/SpVectorView.h"
+#include "AbstractLinAlgPack/src/EtaVector.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"
 

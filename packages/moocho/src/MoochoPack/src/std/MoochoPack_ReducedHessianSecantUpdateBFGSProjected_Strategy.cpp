@@ -13,22 +13,22 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/PBFGS_helpers.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
-#include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/MatrixWithOpOut.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSliceOut.h"
-#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
-#include "Misc/include/WorkspacePack.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymAddDelUpdateable.h"
+#include "ConstrainedOptimizationPack/src/BFGS_helpers.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "SparseLinAlgPack/src/MatrixWithOpOut.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOut.h"
+#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "Midynamic_cast_verbose.h"
+#include "MiWorkspacePack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

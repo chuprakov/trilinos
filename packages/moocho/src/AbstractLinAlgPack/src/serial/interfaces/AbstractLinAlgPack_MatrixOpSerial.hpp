@@ -20,7 +20,7 @@
 
 #include "SparseLinAlgPackTypes.h"
 #include "VectorSpaceSerial.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
 
 namespace SparseLinAlgPack {
 

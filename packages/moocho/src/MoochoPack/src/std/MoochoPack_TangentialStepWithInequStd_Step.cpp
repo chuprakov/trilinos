@@ -18,15 +18,15 @@
 #include <ostream>
 #include <sstream>
 
-#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcat.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 
 namespace {

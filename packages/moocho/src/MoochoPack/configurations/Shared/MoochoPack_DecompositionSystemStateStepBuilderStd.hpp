@@ -16,11 +16,11 @@
 #ifndef DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 #define DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "AbstractLinAlgPack/include/BasisSystemPerm.h"
+#include "AbstractLinAlgPack/src/BasisSystemPerm.h"
 #endif
-#include "ReducedSpaceSQPPack/include/std/NewDecompositionSelection_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelection_Strategy.h"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

@@ -16,8 +16,8 @@
 #ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
 #define RSQP_ALGO_CONFIG_MAMA_JAMA_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
 #include "OptionsFromStream.h"
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.h"
 #include "StringToBool.h"
 #include "ThrowException.h"
 

@@ -17,7 +17,7 @@
 #define CHECK_DECOMPOSITION_FROM_R_PY_STEP_H
 
 #include "NewDecompositionSelection_Strategy.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 

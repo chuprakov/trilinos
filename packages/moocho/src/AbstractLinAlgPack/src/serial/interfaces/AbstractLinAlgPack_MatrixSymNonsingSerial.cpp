@@ -15,15 +15,15 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/include/MatrixSymNonsingularSerial.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpGetGMSSymMutable.h"
-#include "SparseLinAlgPack/include/MatrixWithOpSerial.h"
-#include "AbstractLinAlgPack/include/EtaVector.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
-#include "LinAlgPack/include/GenMatrixAsTriSym.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/MatrixSymNonsingularSerial.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
+#include "SparseLinAlgPack/src/MatrixWithOpSerial.h"
+#include "AbstractLinAlgPack/src/EtaVector.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/GenMatrixOp.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 #include "dynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {

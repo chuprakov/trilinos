@@ -17,7 +17,7 @@
 #define SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 
 #include "MatrixWithOpSerial.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
 
 namespace SparseLinAlgPack {
 

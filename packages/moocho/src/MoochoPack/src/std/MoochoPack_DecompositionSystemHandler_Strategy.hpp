@@ -16,8 +16,8 @@
 #ifndef DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 #define DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/Algorithm.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 
 namespace ReducedSpaceSQPPack {
 

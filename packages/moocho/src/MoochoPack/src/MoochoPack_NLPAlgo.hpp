@@ -19,7 +19,7 @@
 #include "rSQPAlgoInterface.h"
 #include "rSQPAlgoContainer.h"
 #include "rSQPState.h"
-#include "GeneralIterationPack/include/Algorithm.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 #include "StandardAggregationMacros.h"
 
 namespace ReducedSpaceSQPPack {

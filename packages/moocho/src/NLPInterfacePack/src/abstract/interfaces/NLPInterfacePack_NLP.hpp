@@ -20,7 +20,7 @@
 #include <string>
 
 #include "NLPInterfacePackTypes.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
 #include "StandardCompositionRelationshipsPack.h"
 #include "ref_count_ptr.h"
 

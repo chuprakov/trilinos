@@ -24,8 +24,8 @@
 
 #include "DirectSparseSolverImp.h"
 #include "MA28Solver.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/IVector.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/IVector.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace SparseSolverPack {

@@ -23,7 +23,7 @@
 #ifndef MA28_CPPDECL_H
 #define MA28_CPPDECL_H
 
-#include "Misc/include/fortran_types.h"
+#include "fortran_types.h"
 
 namespace MA28_CppDecl {
 

@@ -17,10 +17,10 @@
 #include <sstream>
 #include <iomanip>
 
-#include "LinAlgPack/include/assert_print_nan_inf.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "RTOpPack/include/check_nan_inf.h"
+#include "LinAlgPack/src/assert_print_nan_inf.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "RTOpPack/src/check_nan_inf.h"
 
 bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out )

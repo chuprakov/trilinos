@@ -17,7 +17,7 @@
 #define GEN_PERM_MATRIX_SLICE_OP_H
 
 #include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
 
 namespace SparseLinAlgPack {
 

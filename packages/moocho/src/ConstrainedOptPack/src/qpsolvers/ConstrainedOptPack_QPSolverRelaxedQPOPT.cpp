@@ -21,15 +21,15 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
-#include "ConstrainedOptimizationPack/include/QPOPT_CppDecl.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/EtaVector.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "Misc/include/debug.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.h"
+#include "ConstrainedOptimizationPack/src/QPOPT_CppDecl.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/EtaVector.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
+#include "LinAlgPack/src/VectorOut.h"
+#include "debug.h"
 
 
 // //////////////////////////////////////////////////////////

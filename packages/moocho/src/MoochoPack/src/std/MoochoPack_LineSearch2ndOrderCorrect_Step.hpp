@@ -16,13 +16,13 @@
 #ifndef LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 
-#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_StepBaseClasses.h"
 #include "FeasibilityStep_Strategy.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/include/DirectLineSearch_Strategy.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardAggregationMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
+#include "StandardCompositionMacros.h"
+#include "MiStandardAggregationMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 

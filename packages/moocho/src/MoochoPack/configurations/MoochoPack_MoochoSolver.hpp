@@ -16,8 +16,8 @@
 #ifndef RSSQPP_RSQPPP_SOLVER_H
 #define RSSQPP_RSQPPP_SOLVER_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
 #include "ref_count_ptr.h"
 
 namespace OptionsFromStreamPack {

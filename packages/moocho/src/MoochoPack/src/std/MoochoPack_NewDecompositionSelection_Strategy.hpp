@@ -16,8 +16,8 @@
 #ifndef NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 #define NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/Algorithm.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/Algorithm.h"
 
 namespace ReducedSpaceSQPPack {
 

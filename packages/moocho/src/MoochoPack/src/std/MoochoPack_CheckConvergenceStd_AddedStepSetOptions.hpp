@@ -17,8 +17,8 @@
 #define CHECK_CONVERGENCE_STD_ADDED_STEP_SET_OPTIONS_H
 
 #include "CheckConvergenceStd_AddedStep.h"
-#include "Misc/include/SetOptionsFromStreamNode.h"
-#include "Misc/include/SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.h"
+#include "SetOptionsToTargetBase.h"
 
 namespace ReducedSpaceSQPPack {
 

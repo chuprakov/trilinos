@@ -15,7 +15,7 @@
 
 #include <iomanip>
 
-#include "LinAlgPack/include/VectorClassTmpl.h"
+#include "LinAlgPack/src/VectorClassTmpl.h"
 #include "ThrowException.h"
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP

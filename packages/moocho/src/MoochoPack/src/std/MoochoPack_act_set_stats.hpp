@@ -17,7 +17,7 @@
 #define ACT_SET_STATS_HH
 
 #include "ActSetStats.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
 
 namespace ReducedSpaceSQPPack {
 

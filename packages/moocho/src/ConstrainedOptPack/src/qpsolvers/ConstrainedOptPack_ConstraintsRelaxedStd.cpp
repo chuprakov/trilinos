@@ -24,15 +24,15 @@
 
 #include <limits>
 
-#include "ConstrainedOptimizationPack/include/ConstraintsRelaxedStd.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/ConstraintsRelaxedStd.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace {

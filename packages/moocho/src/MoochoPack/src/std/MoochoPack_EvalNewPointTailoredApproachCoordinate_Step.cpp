@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
-#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/MatrixZero.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "AbstractLinAlgPack/src/MatrixZero.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
 #include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {

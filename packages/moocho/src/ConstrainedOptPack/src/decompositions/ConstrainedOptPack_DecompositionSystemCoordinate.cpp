@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/include/MatrixZero.h"
-#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
+#include "AbstractLinAlgPack/src/MatrixZero.h"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"

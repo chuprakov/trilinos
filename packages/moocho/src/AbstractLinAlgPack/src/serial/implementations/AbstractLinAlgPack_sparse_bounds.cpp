@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/sparse_bounds.h"
+#include "sparse_bounds.h"
 
 ///
 /** Count the number of sparse bounds where at least one bound is

@@ -17,7 +17,7 @@
 #define SLAP_MATRIX_WITH_OP_NONSINGULAR_SERIAL_H
 
 #include "MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/MatrixNonsingular.h"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
 
 namespace SparseLinAlgPack {
 

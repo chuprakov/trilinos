@@ -16,7 +16,7 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.h"
 
 namespace ReducedSpaceSQPPack {
 

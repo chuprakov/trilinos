@@ -19,7 +19,7 @@
 #include <stdexcept>
 
 #include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
 
 namespace ConstrainedOptimizationPack {
 

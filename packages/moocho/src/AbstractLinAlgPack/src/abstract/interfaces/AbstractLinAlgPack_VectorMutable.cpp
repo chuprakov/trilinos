@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutableSubView.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "RTOpStdOpsLib/include/RTOp_TOp_assign_scalar.h"
-#include "RTOpStdOpsLib/include/RTOp_TOp_assign_vectors.h"
-#include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
-#include "RTOpStdOpsLib/include/RTOp_TOp_set_ele.h"
-#include "RTOpStdOpsLib/include/RTOp_TOp_set_sub_vector.h"
-#include "RTOpPack/include/RTOpCppC.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.h"
+#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "RTOpStdOpsLib/src/RTOp_TOp_assign_scalar.h"
+#include "RTOpStdOpsLib/src/RTOp_TOp_assign_vectors.h"
+#include "RTOpStdOpsLib/src/RTOp_TOp_axpy.h"
+#include "RTOpStdOpsLib/src/RTOp_TOp_set_ele.h"
+#include "RTOpStdOpsLib/src/RTOp_TOp_set_sub_vector.h"
+#include "RTOpPack/src/RTOpCppC.h"
 #include "Range1D.h"
 #include "ThrowException.h"
 

@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_STATS_HH
 #define QP_SOLVER_STATS_HH
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "ConstrainedOptimizationPack/include/QPSolverStats.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ConstrainedOptimizationPack/src/QPSolverStats.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
 
 namespace ReducedSpaceSQPPack {
 

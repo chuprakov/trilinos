@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "../include/COOMatrixPartitionViewSubclass.h"
-#include "../include/SparseVectorSliceOp.h"
-#include "../include/SparseElement.h"
-#include "../include/COOMPartitionOp.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "COOMatrixPartitionViewSubclass.h"
+#include "SparseVectorSliceOp.h"
+#include "SparseElement.h"
+#include "COOMPartitionOp.h"
+#include "LinAlgPack/src/GenMatrixOp.h"
 
 namespace LinAlgOpPack {
 

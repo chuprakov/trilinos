@@ -15,9 +15,9 @@
 
 #include <math.h>
 
-#include "../include/InvCholUpdate.h"
-#include "../include/GenMatrixClass.h"
-#include "../include/VectorOp.h"
+#include "InvCholUpdate.h"
+#include "GenMatrixClass.h"
+#include "VectorOp.h"
 
 namespace {
 // sign function

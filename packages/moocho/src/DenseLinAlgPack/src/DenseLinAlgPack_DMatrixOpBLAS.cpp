@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/GenMatrixOp.h"
-#include "../include/BLAS_Cpp.h"
+#include "GenMatrixOp.h"
+#include "BLAS_Cpp.h"
 
 namespace {
 

@@ -16,22 +16,22 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncCalcNLP.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncCalcNLE.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLESqrResid.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/max_near_feas_step.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/src/print_vector_change_stats.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.h"
+#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.h"
+#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "SparseLinAlgPack/src/max_near_feas_step.h"
+#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/VectorOut.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
-#include "Misc/include/StringToBool.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
+#include "StringToBool.h"
 
 // Define the options
 namespace {

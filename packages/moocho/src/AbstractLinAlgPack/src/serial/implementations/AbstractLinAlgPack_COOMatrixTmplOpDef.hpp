@@ -18,9 +18,9 @@
 
 #include "COOMatrixTmplOpDecl.h"
 
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/LinAlgPackAssertOp.h"
+#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/VectorOp.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.h"
 
 namespace SparseLinAlgPack {
 

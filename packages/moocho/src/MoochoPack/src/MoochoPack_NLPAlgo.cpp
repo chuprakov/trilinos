@@ -18,7 +18,7 @@
 #include <iostream> // for debugging Release version.
 #include <typeinfo>
 
-#include "../include/rSQPAlgo.h"
+#include "rSQPAlgo.h"
 
 namespace ReducedSpaceSQPPack {
 

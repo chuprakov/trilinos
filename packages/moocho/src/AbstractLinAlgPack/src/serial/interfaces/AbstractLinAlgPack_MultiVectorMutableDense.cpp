@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
-#include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpGetGMSSymMutable.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/GenMatrixOut.h"
+#include "SparseLinAlgPack/src/MultiVectorMutableDense.h"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
+#include "SparseLinAlgPack/src/SpVectorOp.h"
+#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "LinAlgPack/src/GenMatrixOut.h"
 #include "ReleaseResource_ref_count_ptr.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"

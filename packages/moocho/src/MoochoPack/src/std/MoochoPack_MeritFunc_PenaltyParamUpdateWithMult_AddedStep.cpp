@@ -16,9 +16,9 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/rSQPState.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 
 namespace ReducedSpaceSQPPack {
 

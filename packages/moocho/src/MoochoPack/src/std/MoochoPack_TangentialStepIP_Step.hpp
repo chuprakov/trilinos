@@ -16,8 +16,8 @@
 #ifndef NullSpaceStepIP_Step_H
 #define NullSpaceStepIP_Step_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
 
 namespace ReducedSpaceSQPPack {
 

@@ -17,8 +17,8 @@
 #include <iomanip>
 #include <ostream>
 
-#include "../include/MatlabPack.h"
-#include "../include/GenMatrixClass.h"
+#include "MatlabPack.h"
+#include "GenMatrixClass.h"
 
 namespace LinAlgPack {
 

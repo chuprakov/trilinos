@@ -16,13 +16,13 @@
 #include <limits>
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_DummyUpdate_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncNLPDirecDeriv.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_DummyUpdate_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
 #include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {

@@ -17,16 +17,16 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
-#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ReducedSpaceSQPPack/include/ipState.h"
-#include "ReducedSpaceSQPPack/include/std/PreEvalNewPointBarrier_Step.h"
-#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
+#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ReducedSpaceSQPPack/src/ipState.h"
+#include "ReducedSpaceSQPPack/src/std/PreEvalNewPointBarrier_Step.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
 
 #include "StringToBool.h"
 

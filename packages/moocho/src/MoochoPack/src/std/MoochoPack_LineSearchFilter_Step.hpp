@@ -18,13 +18,13 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/include/AlgorithmStep.h"
-#include "GeneralIterationPack/include/CastIQMember.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "GeneralIterationPack/src/CastIQMember.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 
-#include "GeneralIterationPack/include/AlgorithmState.h"
+#include "GeneralIterationPack/src/AlgorithmState.h"
 
 namespace ReducedSpaceSQPPack {
  

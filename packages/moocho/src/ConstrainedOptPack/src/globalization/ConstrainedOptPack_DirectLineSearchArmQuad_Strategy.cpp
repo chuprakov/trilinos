@@ -17,9 +17,9 @@
 #include <iomanip>
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
-#include "ConstrainedOptimizationPack/include/MeritFuncCalc1D.h"
-#include "RTOpPack/include/check_nan_inf.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1D.h"
+#include "RTOpPack/src/check_nan_inf.h"
 
 namespace ConstrainedOptimizationPack {
 inline value_type min(value_type v1, value_type v2) {

@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "Misc/include/ref_count_ptr.h"
+#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
+#include "Miref_count_ptr.h"
 
 namespace ConstrainedOptimizationPack {
 

@@ -20,9 +20,9 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/include/DirectSparseSolverSuperLU.h"
-#include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "LinAlgPack/include/PermVecMat.h"
+#include "SparseSolverPack/src/DirectSparseSolverSuperLU.h"
+#include "SparseLinAlgPack/src/VectorDenseEncap.h"
+#include "LinAlgPack/src/PermVecMat.h"
 #include "AbstractFactoryStd.h"
 #include "ThrowException.h"
 #include "WorkspacePack.h"

@@ -16,16 +16,16 @@
 #ifndef REDUCED_SPACE_SQP_PACK_TYPES_H
 #define REDUCED_SPACE_SQP_PACK_TYPES_H
 
-#include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackTypes.h"
-#include "GeneralIterationPack/include/GeneralIterationPackTypes.h"
+#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.h"
+#include "GeneralIterationPack/src/GeneralIterationPackTypes.h"
 
 namespace ReducedSpaceSQPPack {
 
 // using types from ConstrainedOptimizationPack
-#include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackPublicTypes.ud"
+#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackPublicTypes.ud"
 
 // using types from GeneralIterationPack
-#include "GeneralIterationPack/include/GeneralIterationPackPublicTypes.ud"
+#include "GeneralIterationPack/src/GeneralIterationPackPublicTypes.ud"
 
 // enum for rSQP output.
 enum EJournalOutputLevel {

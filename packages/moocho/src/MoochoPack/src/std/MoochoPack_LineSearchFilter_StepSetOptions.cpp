@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/include/std/LineSearchFilter_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_StepSetOptions.h"
 #include "StringToBool.h"
 #include "ThrowException.h"
 

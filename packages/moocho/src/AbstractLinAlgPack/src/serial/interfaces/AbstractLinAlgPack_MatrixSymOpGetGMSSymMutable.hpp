@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 
-#include "SparseLinAlgPack/include/MatrixSymWithOpGetGMSSym.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSym.h"
 
 namespace SparseLinAlgPack {
 

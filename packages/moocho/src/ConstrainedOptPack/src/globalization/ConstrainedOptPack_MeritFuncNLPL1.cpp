@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
-#include "AbstractLinAlgPack/include/VectorWithOp.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.h"
+#include "AbstractLinAlgPack/src/VectorWithOp.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"
 
