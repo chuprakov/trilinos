@@ -40,13 +40,16 @@
 #include "RTOpPack_ROpNorm2.hpp"
 #include "RTOpPack_ROpNormInf.hpp"
 #include "RTOpPack_ROpSum.hpp"
+#include "RTOpPack_TOpAbs.hpp"
 #include "RTOpPack_TOpAddScalar.hpp"
 #include "RTOpPack_TOpAssignScalar.hpp"
 #include "RTOpPack_TOpAssignVectors.hpp"
 #include "RTOpPack_TOpAXPY.hpp"
 #include "RTOpPack_TOpEleWiseDivide.hpp"
 #include "RTOpPack_TOpEleWiseProd.hpp"
+#include "RTOpPack_TOpLinearCombination.hpp"
 #include "RTOpPack_TOpScaleVector.hpp"
+#include "RTOpPack_TOpReciprocal.hpp"
 #include "RTOpPack_TOpRandomize.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -188,6 +191,31 @@ void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<S
 	applyOp<Scalar>(axpy_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
+
+template<class Scalar>
+void TSFCore::abs( Vector<Scalar>* y, const Vector<Scalar>& x )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");
+#endif
+  RTOpPack::TOpAbs<Scalar> abs_op;
+	const Vector<Scalar>* vecs[]      = { &x };
+	Vector<Scalar>*       targ_vecs[] = { y  };
+	applyOp<Scalar>(abs_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
+}
+
+template<class Scalar>
+void TSFCore::reciprocal( Vector<Scalar>* y, const Vector<Scalar>& x )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");
+#endif
+  RTOpPack::TOpReciprocal<Scalar> recip_op;
+	const Vector<Scalar>* vecs[]      = { &x };
+	Vector<Scalar>*       targ_vecs[] = { y  };
+	applyOp<Scalar>(recip_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
+}
+
 template<class Scalar>
 void TSFCore::ele_wise_prod(
 	const Scalar& alpha, const Vector<Scalar>& v_rhs1, const Vector<Scalar>& v_rhs2
@@ -216,6 +244,31 @@ void TSFCore::ele_wise_divide(
 	const Vector<Scalar>* vecs[]      = { &v_rhs1, &v_rhs2 };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs };
 	applyOp<Scalar>(ele_wise_divide_op,2,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
+}
+
+template<class Scalar>
+void TSFCore::linear_combination(
+	const int                m
+	,const Scalar            alpha[]
+	,const Vector<Scalar>*   x[]
+	,const Scalar            &beta
+	,Vector<Scalar>          *y
+	)
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"linear_combination(...), Error!");
+#endif
+	if( beta == Teuchos::ScalarTraits<Scalar>::one() && m == 1 ) {
+		Vp_StV( y, alpha[0], *x[0] );
+		return;
+	}
+	else if( m == 0 ) {
+		Vt_S( y, beta );
+		return;
+	}
+  RTOpPack::TOpLinearCombination<Scalar> lin_comb_op(m,alpha,beta);
+	Vector<Scalar>* targ_vecs[] = { y };
+	applyOp<Scalar>(lin_comb_op,m,x,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>

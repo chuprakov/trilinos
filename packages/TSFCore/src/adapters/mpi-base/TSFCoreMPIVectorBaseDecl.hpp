@@ -43,15 +43,15 @@ namespace TSFCore {
  * By inheriting from this base class, vector implementations allow
  * their vector objects to be seamlessly combined with other MPI-based
  * vector objects (of different concrete types) in <tt>applyOp()</tt>.
- * A big part of this protocal is that every vector object can expose
- * an <tt>MPIVectorSpaceBase</tt> object through the virtual
- * <tt>mpiSpace()</tt> method.
+ * A big part of this protocol is that every vector object can expose
+ * an <tt>MPIVectorSpaceBase</tt> object through the virtual function
+ * <tt>mpiSpace()</tt>.
  *
  * This node subclass contains an implementation of <tt>applyOp()</tt>
  * that relies on implementations of the methods (<tt>const</tt>)
  * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
  * (non-<tt>const</tt>) <tt>getSubVector()</tt> and
- * <tt>commitSubVector()</tt> (which also have default implementations
+ * <tt>commitSubVector()</tt> (which all have default implementations
  * in this subclass).  In essense, this implemenation will only call
  * the <tt>getSubVector()</tt> methods using a range of (global)
  * indexes for elements that exist on the local processor.  As long as
@@ -63,7 +63,7 @@ namespace TSFCore {
  * implement a fully-functional vector subclass of which who's vector
  * objects can be seemlessly used with any other MPI-based vector
  * object are the methods <tt>getLocalData()</tt> and
- * <tt>mpiSpace</tt>.  All of the other methods have good default
+ * <tt>mpiSpace()</tt>.  All of the other methods have good default
  * implementations.  Providing an implementation for <tt>mpiSpace</tt>
  * of course means having the define a <tt>MPIVectorSpaceBase</tt>
  * subclass appropriately.
@@ -78,16 +78,17 @@ namespace TSFCore {
  * methods (for more efficient gather/scatter operations) if desired
  * but this should not be needed for most use cases.
  *
- * It is interesting to note that is case the explicit subvector
- * access methods call on its default implementation defined in
- * <tt>Vector</tt> (which calls on <tt>applyOp()</tt>), the operator
- * will be properly applied since the version of <tt>applyOp()</tt>
- * implemented in this class will only request local vector data and
- * hence there will only be two levels of recussion for any call to an
- * explicit subvector access method.  This is a truly elegat result.
+ * It is interesting to note that in the above use case, the explicit
+ * subvector access methods call on its default implementation defined
+ * in <tt>Vector</tt> (which calls on <tt>applyOp()</tt>), the
+ * operator will be properly applied since the version of
+ * <tt>applyOp()</tt> implemented in this class will only request
+ * local vector data and hence there will only be two levels of
+ * recussion for any call to an explicit subvector access method.
+ * This is a truly elegant result.
  *
- * As described in the documentation for <tt>MPIVectorSpaceBase</tt>
- * it is possible that at runtime that it may be discovered that
+ * As described in the documentation for <tt>MPIVectorSpaceBase</tt>,
+ * it is possible that at runtime it may be discovered that the
  * mapping of vector data to processors does not fall under this
  * design in which case the method <tt>applyOp()</tt> should be
  * overridden to handle this which will of course remove the
@@ -96,10 +97,6 @@ namespace TSFCore {
  *
  * Note that vector subclass derived from this node interface class
  * must only be directly used in SPMD mode for this to work properly.
- *
- * 2003/11/21: It may be good to address the issue of ghost elements
- * with transformation operators so that this can be handled better
- * also but this is future work.
  */
 template<class Scalar>
 class MPIVectorBase : virtual public Vector<Scalar> {
@@ -117,7 +114,8 @@ public:
 	virtual Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
 
 	///
-	/** Returns a pointer to the beginning of the local vector data (and its stride).
+	/** Returns a non-<tt>const</tt> pointer to the beginning of the
+	 * local vector data (and its stride).
 	 *
 	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the local values.
 	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
@@ -130,7 +128,8 @@ public:
 	//@{
 
 	///
-	/** Returns a <tt>const</tt> pointer to the beginning of the local vector data.
+	/** Returns a <tt>const</tt> pointer to the beginning of the local
+	 * vector data.
 	 *
 	 * The default implementation performs a <tt>const_cast</tt> of <tt>this</tt> and
 	 * then calls the non-<tt>const</tt> version.

@@ -125,6 +125,18 @@ template<class Scalar>
 void Vp_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar>& x );
 
 ///
+/** <tt>y(i) = abs(x(i)), i = 1...y->space()->dim()</tt>
+ */
+template<class Scalar>
+void abs( Vector<Scalar>* y, const Vector<Scalar>& x );
+
+///
+/** <tt>y(i) = 1/x(i), i = 1...y->space()->dim()</tt>
+ */
+template<class Scalar>
+void reciprocal( Vector<Scalar>* y, const Vector<Scalar>& x );
+
+///
 /** <tt>y(i) += alpha * x(i) * v(i), i = 1...y->space()->dim()</tt>
  */
 template<class Scalar>
@@ -135,6 +147,30 @@ void ele_wise_prod( const Scalar& alpha, const Vector<Scalar>& x, const Vector<S
  */
 template<class Scalar>
 void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
+
+///
+/** <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...num_vecs-1 ), i = 1...y->space()->dim()</tt>.
+ *
+ * @param  m          [in] Number of vectors x[]
+ * @param  alpha      [in] Array (length <tt>m</tt>) of input scalars.
+ * @param  x          [in] Array (length <tt>m</tt>) of input vectors.
+ * @param  beta       [in] Scalar multiplier for y
+ * @param  y          [in/out] Target vector that is the result of the linear combination.
+ *
+ * This function implements a general linear combination:
+ \verbatim
+ y(i) = beta*y(i) + alpha[0]*x[0](i) + alpha[1]*x[1](i) + ... + alpha[m-1]*x[m-1](i), i = 1...y->space()->dim()
+
+ \endverbatim
+ */
+template<class Scalar>
+void linear_combination(
+	const int                m
+	,const Scalar            alpha[]
+	,const Vector<Scalar>*   x[]
+	,const Scalar            &beta
+	,Vector<Scalar>          *y
+	);
 
 ///
 /** Seed the random number generator used in <tt>random_vector</tt>

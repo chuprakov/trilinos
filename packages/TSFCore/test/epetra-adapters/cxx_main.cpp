@@ -58,34 +58,6 @@
 
 namespace {
 
-double relErr( const double& v1, const double& v2 )
-{
-	return std::fabs(v1 - v2) / ( 1.0 + std::fabs(v1) + std::fabs(v2) );
-}
-
-bool testRelErr(
-	const std::string    &v1_name
-	,const double        &v1
-	,const std::string   &v2_name
-	,const double        &v2
-	,const std::string   &maxRelErr_name
-	,const double        &maxRelErr
-	,bool                verbose
-	,std::ostream        &out
-	)
-{
-	const double rel_err = relErr( v1, v2 );
-	const bool success = ( rel_err <= maxRelErr );
-	if(verbose) {
-		out << "\nCheck: rel_err(" << v1_name << "," << v2_name << ")\n"
-			<< "       = rel_err(" << v1 << "," << v2 << ") "
-			<< "= " << rel_err
-			<< " <= " << maxRelErr_name << " = " << maxRelErr << " : "
-			<<  (success ? "passed!" : "failed!") << std::endl;
-	}
-	return success;
-}
-
 void print_performance_stats(
 	const int        num_time_samples
 	,const double    raw_epetra_time
@@ -95,7 +67,8 @@ void print_performance_stats(
 	)
 {
 	if(verbose)
-		out << "\nAverage times (out of " << num_time_samples << " samples):\n"
+		out
+			<< "\nAverage times (out of " << num_time_samples << " samples):\n"
 			<< "  Raw Epetra              = " << (raw_epetra_time/num_time_samples) << std::endl
 			<< "  TSFCore Wrapped Epetra  = " << (tsfcore_wrapped_time/num_time_samples) << std::endl
 			<< "\nRelative performance of TSFCore wrapped verses raw Epetra:\n"
@@ -131,6 +104,8 @@ int main_body( int argc, char* argv[] ) {
 	using Teuchos::rcp;
 	using Teuchos::rcp_static_cast;
 	using Teuchos::rcp_const_cast;
+
+	using TSFCore::testRelErr;
 	
 	bool verbose = true;
 	bool dumpAll = false;
@@ -319,26 +294,26 @@ int main_body( int argc, char* argv[] ) {
 #endif
 
 		const std::string s1_n = "fabs(scalar)*global_dim";
-		const double s1 = fabs(scalar)*global_dim;
+		const Scalar s1 = fabs(scalar)*global_dim;
 		
-		testRelErr("norm_1(ev1)",ev1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ev1)",ev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
-		testRelErr("norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev2 =\n" << *ev2;
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		testRelErr("norm_1(nev1)",nev1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(nev1)",nev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *ev1;
-		testRelErr("norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *nev2;
 #endif
-		testRelErr("norm_1(eV1)",eV1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV1)",eV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
-		testRelErr("norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV2 =\n" << *eV2;
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		testRelErr("norm_1(neV1)",neV1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV1)",neV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
-		testRelErr("norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV2 =\n" << *neV2;
 #endif
 
@@ -351,7 +326,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*ev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming eV1 = eV2 ...\n";
@@ -359,7 +334,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*eV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
@@ -369,7 +344,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*ev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming nev1 = ev2 ...\n";
@@ -377,7 +352,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*nev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming nev1 = nev2 ...\n";
@@ -385,7 +360,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*nev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming eV1 = neV2 ...\n";
@@ -393,7 +368,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*eV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 		if(verbose) out << "\nPerforming neV1 = eV2 ...\n";
@@ -401,7 +376,7 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*neV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 		if(verbose) out << "\nPerforming neV1 = neV2 ...\n";
@@ -409,13 +384,13 @@ int main_body( int argc, char* argv[] ) {
  		assign( &*neV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 #endif
 
 		const std::string s2_n = "scalar^2*global_dim*num_mv_cols";
-		const double s2 = scalar*scalar*global_dim*num_mv_cols;
+		const Scalar s2 = scalar*scalar*global_dim*num_mv_cols;
 
 		RefCountPtr<MultiVector<Scalar> >
 			T = eV1->domain()->createMembers(num_mv_cols);
@@ -429,7 +404,7 @@ int main_body( int argc, char* argv[] ) {
 		eV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1'*eV2 =\n" << *T;
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
@@ -439,7 +414,7 @@ int main_body( int argc, char* argv[] ) {
 		neV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1'*eV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming eV1'*neV2 ...\n";
@@ -447,7 +422,7 @@ int main_body( int argc, char* argv[] ) {
 		eV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1'*neV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming neV1'*neV2 ...\n";
@@ -455,7 +430,7 @@ int main_body( int argc, char* argv[] ) {
 		neV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1'*neV2 =\n" << *T;
 
 #endif
@@ -472,7 +447,7 @@ int main_body( int argc, char* argv[] ) {
 			// Create a diagonal matrix with scalar on the diagonal
 			RefCountPtr<Epetra_CrsMatrix>
 				epetra_mat = rcp(new Epetra_CrsMatrix(::Copy,*epetra_map,1));
-			double values[1] = { scalar };
+			Scalar values[1] = { scalar };
 			int indices[1];
 			const int IB = epetra_map->IndexBase(), offset = procRank*local_dim;
 			for( int k = 0; k < local_dim; ++k ) {
@@ -508,21 +483,21 @@ int main_body( int argc, char* argv[] ) {
 				<< "\n*** (B.5) Mix and match vector and Multi-vectors with Epetra opeator\n";
 
 		const std::string s3_n = "2*scalar^2*global_dim";
-		const double s3 = 2*scalar*scalar*global_dim;
+		const Scalar s3 = 2*scalar*scalar*global_dim;
 		
 		if(verbose) out << "\nPerforming ey = 2*Op*ev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *ev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
@@ -531,42 +506,42 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *ev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ey = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 #endif
 
@@ -592,14 +567,14 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *eV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
@@ -608,28 +583,28 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *eV1_v1, &*neY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neY_v1)",norm_1(*neY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neY_v1)",norm_1(*neY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*neV1_v1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*neY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(neY_v2)",norm_1(*neY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(neY_v2)",norm_1(*neY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*neV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 #endif
 

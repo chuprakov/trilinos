@@ -34,19 +34,6 @@
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
-namespace {
-
-template <class Scalar>
-Scalar rel_err( const Scalar &s1, const Scalar &s2 )
-{
-	return
-		Teuchos::ScalarTraits<Scalar>::magnitude( s1 - s2 )
-		/
-		std::max( Teuchos::ScalarTraits<Scalar>::magnitude(s1), Teuchos::ScalarTraits<Scalar>::magnitude(s1) );
-}
-
-}
-
 namespace TSFCore {
 
 ///
@@ -55,6 +42,8 @@ namespace TSFCore {
 template <class Scalar>
 bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostream* out )
 {
+
+	using TSFCore::relErr;
 
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 
@@ -113,7 +102,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	if(out) *out << "\nsum(pv1)=";
 	sresult1 = sum(*pv1);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( rel_err( sresult1, sresult2 ) )
+	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( Scalar(10)*ST::eps() ) );
 	if(!result) success = false;
 	if(out) *out
@@ -129,7 +118,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	if(out) *out << "\nsum(pv2)=";
 	sresult1 = sum(*pv2);
 	sresult2 = three*Scalar(ps.dim());
-	result = ( ST::magnitude( rel_err( sresult1, sresult2 ) )
+	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( Scalar(10)*ST::eps() ) );
 	if(!result) success = false;
 	if(out) *out
@@ -141,13 +130,13 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 
 	if(out) *out << "\nps.scalarProd(*pv1,*pv2)=";
 	const Scalar
-		scalarProdTarget  = two*three*Scalar(ps.dim()),
+		scalarProdTarget  = two*three*Scalar(numBlocks),
 		scalarProd        = ps.scalarProd(*pv1,*pv2);
-	result = ( ST::magnitude( rel_err( scalarProd, scalarProdTarget ) )
+	result = ( ST::magnitude( relErr( scalarProd, scalarProdTarget ) )
 						 < ST::magnitude( Scalar(10)*ST::eps() ) );
 	if(!result) success = false;
 	if(out) *out
-		<< scalarProd << " == 2*3*ps.dim()=" << scalarProdTarget
+		<< scalarProd << " == 2*3*numBlocks=" << scalarProdTarget
 		<< " : " << ( result ? "passed" : "failed" ) << std::endl;
 
 	if(out) *out
@@ -170,7 +159,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	if(out) *out << "\nsum(sv1)=";
 	sresult1 = sum(*sv1);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( rel_err( sresult1, sresult2 ) )
+	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( Scalar(10)*ST::eps() ) );
 	if(!result) success = false;
 	if(out) *out
@@ -186,7 +175,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	if(out) *out << "\nsum(pv2)=";
 	sresult1 = sum(*pv2);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( rel_err( sresult1, sresult2 ) )
+	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( Scalar(10)*ST::eps() ) );
 	if(!result) success = false;
 	if(out) *out

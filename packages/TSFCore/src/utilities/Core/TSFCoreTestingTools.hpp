@@ -37,6 +37,43 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreLinearOp.hpp"
 
+template <class Scalar>
+Scalar TSFCore::relErr( const Scalar &s1, const Scalar &s2 )
+{
+	return
+		Teuchos::ScalarTraits<Scalar>::magnitude( s1 - s2 )
+		/
+		(
+			Teuchos::ScalarTraits<Scalar>::eps()
+			+ std::max( Teuchos::ScalarTraits<Scalar>::magnitude(s1), Teuchos::ScalarTraits<Scalar>::magnitude(s1) )
+			);
+}
+
+template<class Scalar>
+bool TSFCore::testRelErr(
+	const std::string    &v1_name
+	,const Scalar        &v1
+	,const std::string   &v2_name
+	,const Scalar        &v2
+	,const std::string   &maxRelErr_name
+	,const Scalar        &maxRelErr
+	,std::ostream        *out
+	)
+{
+	typedef Teuchos::ScalarTraits<Scalar> ST;
+	const Scalar rel_err = relErr( v1, v2 );
+	const bool success = ( ST::magnitude(rel_err) <= ST::magnitude(maxRelErr) );
+	if(out) {
+		*out
+			<< "\nCheck: rel_err(" << v1_name << "," << v2_name << ")\n"
+			<< "       = rel_err(" << v1 << "," << v2 << ") "
+			<< "= " << rel_err
+			<< " <= " << maxRelErr_name << " = " << maxRelErr << " : "
+			<<  passfail(success) << std::endl;
+	}
+	return success;
+}
+
 template<class Scalar>
 std::ostream& TSFCore::operator<<( std::ostream& o, const Vector<Scalar>& v )
 {

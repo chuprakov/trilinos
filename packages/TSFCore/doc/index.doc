@@ -1,34 +1,51 @@
 /*! \mainpage TSFCore : Interfaces for the development of Abstract Numerical Algorithms
 
-The namespace C++ <tt>TSFCore</tt> contains abstract interfaces to
-linear objects such as vectors and linear operators.  This interfaces
-are designed to provide only the very basic functionality needed to
-implement advanced abstract numerical algorithms (ANAs).  For example,
-a numerical optimization or equation solver algorithm can be written
-in such a way that it can be used with serial, parallel and other
-specialized conditioins with different linear algebra libraries and
-computing environments.  All of the interfaces are templated on the
-scalar type <tt>Scalar</tt>.  The code in <tt>TSFCore</tt> is
-logically broken up into seperate pieces (by namespace) and compiled
-into a single library called <tt>libTSFCore</tt>.
+<b>Warning!</b> Clicking on the above links (i.e. "Class List", "File
+List" etc.)  can be a bit overwhelming and not recommended as a way to
+"browse" what is in the Trilinos "package" %TSFCore.  Instead, it is
+recommended that one uses the below outline to browse the classes and
+various functions in %TSFCore.  The below presentation is designed to
+expose developers to %TSFCore in manageable chunks as to not
+overwhelm.
+
+The base namespace C++ <tt>TSFCore</tt> contains abstract interfaces
+to linear objects such as vectors and linear operators.  This
+namespace as well as subnamespaces also contain a host of other
+related software.  This interfaces are designed to provide only the
+very basic functionality needed to implement advanced abstract
+numerical algorithms (ANAs).  For example, a numerical optimization or
+equation solver algorithm can be written in such a way that it can be
+used with serial, parallel and other specialized conditioins with
+different linear algebra libraries and computing environments.  All of
+the interfaces are templated on the scalar type <tt>Scalar</tt>.  The
+code in <tt>TSFCore</tt> is logically broken up into seperate pieces
+(by namespace) and compiled into a single library called
+<tt>libTSFCore</tt>.
 
 <ol>
 
 <li> Basic interfaces
 
+These are interfaces that are designed to be standardized upon to
+provide "glue" for different types of ANA software.
+
 <ol>
 
 <li> \ref TSFCore_Interfaces_Core_grp "Fundamental vector and linear operator interfaces" (in namespace <tt>TSFCore</tt>)
 
+These are the bread and butter interfaces for <tt>%TSFCore</tt>.
 Included are vector and linear operator interfaces and bare minimum
 support software needed for default method implementations.  The
-vector interface is <tt>TSFCore::Vector</tt>.  The basic
-interface for linear operators is <tt>TSFCore::LinearOp</tt>.
+vector interface is <tt>TSFCore::Vector</tt>.  The basic interface for
+linear operators is <tt>TSFCore::LinearOp</tt>.  These interfaces are
+described in detail in <a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this</a>
+SAND report.
 
 <li> \ref TSFCore_Interfaces_Solvers_grp "Interfaces to (iterative) linear solvers" (in namespace <tt>TSFCore::Solvers</tt>)
 
-This library contains interfaces and classes assoicated with iterative
-linear solvers.
+These are interfaces and classes assoicated with iterative linear
+solvers.
 
 <li> \ref TSFCore_Interfaces_Nonlin_grp "Interfaces to nonlinear problems" (in namespace <tt>TSFCore::Nonlin</tt>)
 
@@ -43,21 +60,29 @@ interfaces to nonlinear problems.
 <li> Adapters
 
 There are adapter subclasses that implement the basic and extended
-TSFCore interfaces.
+TSFCore interfaces.  These provide hooks to actual implementations of
+the interfaces described above.
 
 <ol>
 
 <li> \ref TSFCore_Adapters_MPI_Base_grp "Base classes for MPI-based vectors, multi-vectors and vector spaces" (in namespace <tt>TSFCore</tt>)
+
+<li> \ref TSFCore_Adapters_Epetra_grp "Concrete subclasses that adapt Epetra objects" (in namespace <tt>TSFCore</tt>)
 
 </ol>
 
 
 <li> Utilities
 
+The software described here is a mixed collection of different types
+of software.  Included are some abstract intefaces, concrete classes
+and helper functions that are ment to make the use of TSFCore somehow
+easier.  For the most part what interfaces are included here are not
+central to interoperability.
 
 <ol>
 
-<li> \ref TSFCore_Utilities_Core_grp "Utilities based on basic TSFCore interfaces" (in namespace <tt>TSFCore</tt>)
+<li> \ref TSFCore_Utilities_Core_grp "Utilities based on TSFCore interfaces" (in namespace <tt>TSFCore</tt>)
 
 <li> \ref TSFCore_Utilities_Solvers_grp "Utilities based on TSFCore::Solvers interfaces" (in namespace <tt>TSFCore::Solvers</tt>)
 
@@ -67,6 +92,8 @@ TSFCore interfaces.
 
 <li> Examples
 
+These are examples and test programs for some or all of the software
+categories described above.
 
 </ol>
 
@@ -74,6 +101,10 @@ TSFCore interfaces.
 //@{
 
 /** \defgroup TSFCore_Interfaces_Core_grp Fundamental Vector and Linear Operator Interfaces.
+
+These interfaces are described in detail in <a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this</a>
+SAND report.
 
 <ul>
 
@@ -103,11 +134,14 @@ TSFCore interfaces.
     <li><tt>TSFCore::SerialVectorSpaceBase</tt>
     <li><tt>TSFCore::SerialVectorBase</tt>
     </ul>
-  <li> Basic concrete support subclasses
+  <li> Concrete serial subclasses
     <ul>
     <li><tt>TSFCore::SerialVectorSpaceFactory</tt>
     <li><tt>TSFCore::SerialVectorSpace</tt>
     <li><tt>TSFCore::SerialVector</tt>
+    </ul>
+  <li> Other basic concrete support subclasses
+    <ul>
     <li><tt>TSFCore::MultiVectorCols</tt>
     </ul>
   </ul>
@@ -265,7 +299,55 @@ between various
 
 */
 
-/** \defgroup TSFCore_Utilities_Core_grp Utility software based on the basic TSFCore interfaces.
+
+/** \defgroup TSFCore_Adapters_Epetra_grp Generic concrete adapter subclasses for Epetra objects
+
+<ul>
+
+<li> Node Base Classes:
+
+  <table>
+  <tr>
+    <td><tt>TSFCore::EpetraVectorSpace</tt></td>
+    <td>Adapts an <tt>Epetra_Map</tt> object to form a <tt>TSFCore::VectorSpace</tt> object.</td>
+  </tr>
+  <tr>
+    <td><tt>TSFCore::EpetraVectorSpaceFactory</tt></td>
+    <td>Adapts an <tt>Epetra_Comm</tt> object to form a <tt>TSFCore::VectorSpaceFactory</tt> object.</td>
+  </tr>
+  <tr>
+    <td><tt>TSFCore::EpetraVector</tt></td>
+    <td>Adapts an <tt>Epetra_Vector</tt> object to form a <tt>TSFCore::Vector</tt> object.</td>
+  </tr>
+  <tr>
+    <td><tt>TSFCore::EpetraMultiVector</tt></td>
+    <td>Adapts an <tt>Epetra_MultiVector</tt> object to form a <tt>TSFCore::MultiVector</tt> object.</td>
+  </tr>
+  <tr>
+    <td><tt>TSFCore::EpetraLinearOp</tt></td>
+    <td>Adapts an <tt>Epetra_Object</tt> object to form a <tt>TSFCore::LinearOp</tt> object.</td>
+  </tr>
+  </table>
+
+.
+
+<li> Basic support software
+
+  <table>
+  <tr>
+    <td><tt>TSFCore::get_Epetra_MultiVector()</tt></td>
+    <td>Gets <tt>Epetra_MultiVector</tt> views of <tt>TSFCore::MultiVector</tt> objects if possible</td>
+  </tr>
+  </table>
+
+</ul>
+
+These are completely general-purpose subclasses that adapt Epetra
+objects to form <tt>%TSFCore</tt> objects.
+
+*/
+
+/** \defgroup TSFCore_Utilities_Core_grp Utility software based on TSFCore interfaces.
 
 <ul>
 

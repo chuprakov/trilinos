@@ -358,6 +358,7 @@ AC_CONFIG_FILES([
 		test/Makefile
 		test/epetra-adapters/Makefile
 		test/product-space/Makefile
+		test/std-ops/Makefile
 		test/scripts/Makefile
 		test/scripts/daily/Makefile
 		test/scripts/daily/mpi/Makefile

@@ -319,7 +319,7 @@ void BiCGSolver<Scalar>::doIteration(
 		*get_out() << "\nZ =\n" << *Z_;
 		*get_out() << "\nZ_tilde =\n" << *Z_tilde_;
 	}
-	dot( *Z_, *R_tilde_, &rho_[0] );                       // rho_{i-1}[j] = Z^{i-1}[j]' * R_tilde^{i-1}[j]
+	dots( *Z_, *R_tilde_, &rho_[0] );                        // rho_{i-1}[j] = Z^{i-1}[j]' * R_tilde^{i-1}[j]
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nrho =\n"; for(j=0;j<m;++j) *get_out() << " " << rho_[j]; *get_out() << std::endl;
 	}
@@ -330,26 +330,26 @@ void BiCGSolver<Scalar>::doIteration(
 			);
 	}
 	if( currIteration_ == 1 ) {
-		assign( P_.get(),       *Z_       );                   // Z^{i-1}                                         -> P^{i}
-		assign( P_tilde_.get(), *Z_tilde_ );                   // Z_tilde^{i-1}                                   -> P_tilde^{i}
+		assign( P_.get(),       *Z_       );                  // Z^{i-1}                                         -> P^{i}
+		assign( P_tilde_.get(), *Z_tilde_ );                  // Z_tilde^{i-1}                                   -> P_tilde^{i}
 	}
 	else {
-		for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];       // rho_{i-1}[j]/rho_{i-2}[j]                        -> beta_{i-1}[j]
-		update( *Z_,       &beta_[0], 1.0, P_.get()       );   // Z^{i-1}[j]       + beta_{i-1} * P^{i-1}[j]       -> P^{i}[j]
-		update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() );   // Z_tilde^{i-1}[j] + beta_{i-1} * P_tilde^{i-1}[j] -> P_tilde^{i}[j]
+		for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];      // rho_{i-1}[j]/rho_{i-2}[j]                        -> beta_{i-1}[j]
+		update( *Z_,       &beta_[0], 1.0, P_.get()       );  // Z^{i-1}[j]       + beta_{i-1} * P^{i-1}[j]       -> P^{i}[j]
+		update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() );  // Z_tilde^{i-1}[j] + beta_{i-1} * P_tilde^{i-1}[j] -> P_tilde^{i}[j]
 	}
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nP =\n" << *P_;
 		*get_out() << "\nP_tilde =\n" << *P_tilde_;
 	}
-	M.apply(opM_notrans, *P_,       Q_.get()       );      // op(M)*P^{1}                                    -> Q^{i}
-	M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );      // op(M)'*P_tilde^{1}                             -> Q_tilde^{i}
+	M.apply(opM_notrans, *P_,       Q_.get()       );       // op(M)*P^{1}                                    -> Q^{i}
+	M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );       // op(M)'*P_tilde^{1}                             -> Q_tilde^{i}
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nQ =\n" << *Q_;
 		*get_out() << "\nQ_tilde =\n" << *Q_tilde_;
 	}
-	dot( *P_tilde_, *Q_, &gamma_[0] );                     // P_tilde^{i}[j]' * Q^{i}[j]                     -> gamma_{i-1}[j]
-	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];        // rho_{i-1}[j] / gamma_{i-1}[j]                  -> alpha_{i}[j]
+	dots( *P_tilde_, *Q_, &gamma_[0] );                     // P_tilde^{i}[j]' * Q^{i}[j]                     -> gamma_{i-1}[j]
+	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];         // rho_{i-1}[j] / gamma_{i-1}[j]                  -> alpha_{i}[j]
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\ngamma =\n"; for(j=0;j<m;++j) *get_out() << " " << gamma_[j]; *get_out() << std::endl;
 		*get_out() << "\nalpha =\n"; for(j=0;j<m;++j) *get_out() << " " << alpha_[j]; *get_out() << std::endl;

@@ -246,13 +246,14 @@ public:
 	/** Set a pointer to a <tt>LinearOp</tt> object to be
 	 * updated when <tt>this->calc_DcDu()</tt> is called.
 	 *
+	 * @param  l       [in] Index to select the set of auxiliary variables <tt>u(l)</tt>.
 	 * @param  DcDu_l  [in] Pointer to state constraint jacobian <tt>D(c)/D(y)</tt>.
-	 *                May be <tt>NULL</tt>.
+	 *                 May be <tt>NULL</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li><tt>this->isInitialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li><tt>this->Nu() > 0</tt> (throw <tt>std::logic_error</tt>)
-	 * <li><tt>1 <= u <= this->Nu()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li><tt>1 <= l <= this->Nu()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> [<tt>DcDu_l!=NULL</tt>] Blah blah blah ...
 	 *      (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
 	 * </ul>
@@ -340,13 +341,14 @@ public:
 	/** Set a pointer to a <tt>LinearOp</tt> object to be
 	 * updated when <tt>this->calc_DgDu()</tt> is called.
 	 *
-	 * @param  DgDu_l  [in] Pointer to state constraint jacobian <tt>D(c)/D(y)</tt>.
+	 * @param  l      [in] Index to select the set of auxiliary variables <tt>u(l)</tt>.
+	 * @param  DgDu_l [in] Pointer to state constraint jacobian <tt>D(c)/D(y)</tt>.
 	 *                May be <tt>NULL</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li><tt>this->isInitialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li><tt>this->Nu() > 0</tt> (throw <tt>std::logic_error</tt>)
-	 * <li><tt>1 <= u <= this->Nu()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li><tt>1 <= l <= this->Nu()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> [<tt>DgDu_l!=NULL</tt>] Blah blah blah ...
 	 *      (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
 	 * </ul>

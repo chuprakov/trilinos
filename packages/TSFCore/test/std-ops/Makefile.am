@@ -26,4 +26,37 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = scripts epetra-adapters product-space std-ops
+EXEEXT = .exe
+
+if BUILD_TEUCHOS
+STD_OPS_TEST = std_ops
+endif
+
+noinst_PROGRAMS = $(STD_OPS_TEST)
+
+std_ops_SOURCES = $(srcdir)/cxx_main.cpp
+
+std_ops_DEPENDENCIES = \
+  $(top_builddir)/src/libTSFCore.a
+
+std_ops_LDFLAGS =
+
+std_ops_CXXFLAGS = \
+  -I$(top_builddir)/src \
+  -I$(top_srcdir)/src \
+  -I$(top_srcdir)/src/interfaces/Core \
+  -I$(top_srcdir)/src/utilities/Core \
+  -I$(top_srcdir)/example/Core \
+  -I$(top_builddir)/../TSFCoreUtils/src \
+  -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+  -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+  -I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
+  -I$(top_srcdir)/../TSFCoreUtils/src \
+  -I$(top_builddir)/../teuchos/src \
+  -I$(top_srcdir)/../teuchos/src
+
+std_ops_LDADD = \
+  $(top_builddir)/src/libTSFCore.a \
+  $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
+  $(top_builddir)/../teuchos/src/libteuchos.a \
+  $(BLAS_LIBS) $(FLIBS)

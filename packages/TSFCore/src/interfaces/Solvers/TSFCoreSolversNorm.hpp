@@ -36,6 +36,7 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
+#include "TSFCoreMultiVectorStdOps.hpp"
 
 namespace TSFCore {
 namespace Solvers {
@@ -52,10 +53,7 @@ Scalar Norm<Scalar>::norm(const Vector<Scalar>& x) const
 template<class Scalar>
 void Norm<Scalar>::norms( const MultiVector<Scalar>& X, Scalar norms[] ) const
 {
-	const int m = X.domain()->dim();
-	X.range()->scalarProds(X,X,norms);
-	for( int j = 0; j < m; ++j )
-		norms[j] = sqrt(norms[j]);
+	TSFCore::norms(X,norms);
 }
 
 } // namespace Solvers

@@ -45,7 +45,16 @@
 #include "Teuchos_TestForException.hpp"
 
 template<class Scalar>
-void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] )
+void TSFCore::norms( const MultiVector<Scalar>& V, Scalar norms[] )
+{
+	const int m = V.domain()->dim();
+	V.range()->scalarProds(V,V,norms);
+	for( int j = 0; j < m; ++j )
+		norms[j] = Teuchos::ScalarTraits<Scalar>::squareroot(norms[j]);
+}
+
+template<class Scalar>
+void TSFCore::dots( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dots[] )
 {
 	int kc;
   const int m = V1.domain()->dim();
@@ -59,7 +68,7 @@ void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2,
   const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };
   applyOp<Scalar>(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);
   for( kc = 0; kc < m; ++kc ) {
-    dot[kc] = dot_op(*dot_targs[kc]);
+    dots[kc] = dot_op(*dot_targs[kc]);
   }
 }
 

@@ -88,12 +88,12 @@ namespace TSFCore {
  * present, the actual indexes used by the application with these
  * vectors is immaterial.  These indexes are only meaningful to
  * abstract numerial algorithms and provide an arbitrary label for
- * certain types of coordinate-dependent types of operations (like in
- * an active-set method).  Therefore, as long a the underlying vector
- * represents a unique partitioning of elements, the these classes can
- * be used.  There is a default implementation of
- * <tt>localOffset()</tt> that automatically assumes this contiguous
- * mapping of elements to processors.
+ * certain types of coordinate-dependent operations (like in an
+ * active-set method).  Therefore, as long a the underlying vector
+ * represents a unique partitioning of elements, these classes can be
+ * used.  There is a default implementation of <tt>localOffset()</tt>
+ * that automatically assumes this contiguous mapping of elements to
+ * processors.
  *
  * <b>Notes to subclass developers:</b>
  *
@@ -108,11 +108,21 @@ namespace TSFCore {
  * If it is possible that the mapping of vector elements to processors
  * is not as described above, then the subclass should override the
  * <tt>mapCode()</tt> and <tt>isCompatible()</tt> methods as described
- * above and below but this should never be necessary or desired to do
- * so.
+ * above and below but this should never be necessary or desirable to
+ * do.
  *
  * If optimized implementations of multi-vectors can be supported,
  * then the <tt>createMembers()</tt> method should also be overridden.
+ *
+ * <b>Note:</b> It is very important that subclasses call the
+ * <tt>updateState()</tt> function whenever the state of
+ * <tt>*this</tt> changes that might affect the behavior of any of the
+ * public member functions.  For example, if a different value of
+ * <tt>localSubDim()</tt> will be returned the next time it is called
+ * by a client, then <tt>%updateState()</tt> needs to be called by the
+ * subclass.  Clients should never need to worry about this function
+ * and that is why <tt>%updateState()</tt> is declared private.
+ * 
  */
 template<class Scalar>
 class MPIVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
@@ -204,7 +214,7 @@ public:
 	 */
  	bool isInCore() const;
 	///
-	/** Checks to general compatibility of parallel (or serial on one
+	/** Checks the general compatibility of parallel (or serial on one
 	 * processor) MPI-based vector spaces.
 	 *
 	 * @return Returns true if <tt>*this</tt> and <tt>vecSpace</tt>

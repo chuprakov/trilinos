@@ -45,6 +45,22 @@ inline
 const char* passfail(bool pass) { return pass ? "passed" : "failed"; }
 
 ///
+template <class Scalar>
+Scalar relErr( const Scalar &s1, const Scalar &s2 );
+
+///
+template<class Scalar>
+bool testRelErr(
+	const std::string    &v1_name
+	,const Scalar        &v1
+	,const std::string   &v2_name
+	,const Scalar        &v2
+	,const std::string   &maxRelErr_name
+	,const Scalar        &maxRelErr
+	,std::ostream        *out
+	);
+
+///
 template<class Scalar>
 std::ostream& operator<<( std::ostream& o, const Vector<Scalar>& v );
 

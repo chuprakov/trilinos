@@ -79,7 +79,7 @@ public:
 	 * </ul>
 	 *
 	 * The default implementation computes:
-	 * <tt>norms[j-1] = sqrt(scalar_prod[j-1]),</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>.
+	 * <tt>norms[j-1] = sqrt(scalar_prod[j-1]),</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>
 	 * where <tt>scalar_prod</tt> is a array computed by:
 	 * <tt>X.range()->scalarProd(X,X,scalar_prod)</tt>.
 	 */

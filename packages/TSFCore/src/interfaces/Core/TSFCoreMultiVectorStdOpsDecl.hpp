@@ -41,16 +41,27 @@ namespace TSFCore {
 //@{
 
 ///
+/** Multi-vector natural norm.
+ *
+ * @param  V     [in]
+ * @param  norms  [out] Array (size <tt>V1->domain()->dim()</tt>) of the natrual norms
+ *                <tt>dot[j-1] = sqrt(scalarProd(*V.col(j),*V.col(j)))</tt> computed using
+ *                a single reduction.
+ */
+template<class Scalar>
+void norms( const MultiVector<Scalar>& V, Scalar norms[] );
+
+///
 /** Multi-vector dot product.
  *
  * @param  V1   [in]
  * @param  V2   [in]
- * @param  dot  [out] Array (size <tt>V1->domain()->dim()</tt>) of the dot products
+ * @param  dots [out] Array (size <tt>V1->domain()->dim()</tt>) of the dot products
  *              <tt>dot[j-1] = dot(*V1.col(j),*V2.col(j))</tt> computed using
  *              a single reduction.
  */
 template<class Scalar>
-void dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] );
+void dots( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dots[] );
 
 ///
 /** Take the one norm of a multi-vector.
