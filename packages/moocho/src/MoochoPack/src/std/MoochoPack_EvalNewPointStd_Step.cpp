@@ -328,12 +328,17 @@ bool EvalNewPointStd_Step::do_step(
 						// If decomp_sys_per->has_basis() == false, the first execution of the while()
 						// statement will not execute get_next_basis(...).		
 						nlp_selected_basis = false;
-						while( !decomp_sys_perm->has_basis()
+						bool very_first_basis = !decomp_sys_perm->has_basis();
+						if(very_first_basis)
+							nlp_vrp->get_basis(
+								P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
+						while( very_first_basis
 							   || nlp_vrp->get_next_basis(
 								   P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL )
 							)
 						{
 							try {
+								very_first_basis = false;
 								decomp_sys_perm->set_decomp(
 									&out                               // out
 									,ds_olevel                         // olevel
