@@ -84,7 +84,7 @@ TSFCore::get_Epetra_MultiVector(
 	// commit the changes to the elements in the input mv
 	// MultiVector object (reguardless of its implementation).
 	// This is truly an elegant result!
-	Teuchos::set_extra_data( emmvv, &epetra_mv );
+	Teuchos::set_extra_data( emmvv, "emmvv", &epetra_mv );
 	return epetra_mv;
 }
 
@@ -143,6 +143,6 @@ TSFCore::get_Epetra_MultiVector(
 	// freeSubMultiVector(...)  and not a commit will be called.  This
 	// is the whole reason there is a seperate implementation for the
 	// const and non-const cases.
-	Teuchos::set_extra_data( emvv, &epetra_mv );
+	Teuchos::set_extra_data( emvv, "emvv", &epetra_mv );
 	return epetra_mv;
 }

@@ -13,6 +13,10 @@
 // InitValues(...) and Factor(...)  which is unfortunate!
 #define IFPACK_PRECGENERATOR_CREATE_PREC_EVERY_TIME  1
 
+namespace {
+const std::string Op_iluk_graph_name = "Op_iluk_graph";
+}
+
 namespace Ifpack {
 
 PrecGenerator::PrecGenerator(
@@ -91,7 +95,7 @@ void PrecGenerator::setupPrec(
 					// Get the precreated graph
 					if(out)
 						*out << "\nGrabing a preexisting Ifpack_IlukGraph object out of preconditioner ...\n";
-					Op_iluk_graph = get_extra_data<RefCountPtr<Ifpack_IlukGraph> >(Prec,0);
+					Op_iluk_graph = get_extra_data<RefCountPtr<Ifpack_IlukGraph> >(Prec,Op_iluk_graph_name);
 				}
 				else {
 #endif
@@ -130,7 +134,7 @@ void PrecGenerator::setupPrec(
         // preconditioner objects are reused over and over again then
         // this approach should not be a performance problem and this
         // greatly simplifies how this class is used.
-        set_extra_data( Op_iluk_graph, &Prec );
+        set_extra_data( Op_iluk_graph, Op_iluk_graph_name, &Prec );
 			}
       // Get a Ifpack_CrsRiluk subclass pointer for prec
       Ifpack_CrsRiluk *Prec_crs_riluk = &dyn_cast<Ifpack_CrsRiluk>(*Prec);

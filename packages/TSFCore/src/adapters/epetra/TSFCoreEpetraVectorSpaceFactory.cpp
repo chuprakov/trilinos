@@ -42,7 +42,7 @@ EpetraVectorSpaceFactory::createVecSpc(int dim) const
 {
 	Teuchos::RefCountPtr<const Epetra_LocalMap>
 		epetra_map = Teuchos::rcp(new Epetra_LocalMap(dim,0,*epetra_comm_));
-	Teuchos::set_extra_data( epetra_comm_, &epetra_map );
+	Teuchos::set_extra_data( epetra_comm_, "epetra_comm", &epetra_map );
 	return Teuchos::rcp(new EpetraVectorSpace(epetra_map));
 }
 

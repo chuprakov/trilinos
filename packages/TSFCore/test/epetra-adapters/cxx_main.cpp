@@ -103,7 +103,6 @@ int main_body( int argc, char* argv[] ) {
 	using Teuchos::rcp;
 	using Teuchos::rcp_static_cast;
 	using Teuchos::rcp_const_cast;
-	using Teuchos::set_extra_data;
 	
 	bool verbose = true;
 	bool dumpAll = false;

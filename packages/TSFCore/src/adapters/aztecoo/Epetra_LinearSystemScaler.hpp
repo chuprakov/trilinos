@@ -283,10 +283,6 @@ public:
 
 	//@}
 
-private:
-
-	mutable int get_extra_data_ctx_; // This is very bad!  We need to find something better!
-
 };
 
 } // namespace Epetra

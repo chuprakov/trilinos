@@ -15,10 +15,8 @@ enum EOpType { PLAIN_OP, LEFT_PREC_OP, RIGHT_PREC_OP, LEFT_RIGHT_PREC_OP };
 inline
 Teuchos::ETransp trans_trans( Teuchos::ETransp trans1, Teuchos::ETransp trans2 )
 {
-	if( trans1 == trans2 )
-		return Teuchos::NO_TRANS;
-	else
-		return Teuchos::TRANS;
+	if( trans1 == trans2 ) return Teuchos::NO_TRANS;
+	return Teuchos::TRANS;
 }
 
 typedef Epetra::LinearSystemScaler ELSS;
@@ -47,6 +45,9 @@ inline
 const char* toString( ELSS::EAdjSolvePrec o )
 { return ( o==ELSS::ADJ_SOLVE_PREC_DEFAULT ? "ADJ_SOLVE_PREC_DEFAULT" : ( o==ELSS::ADJ_SOLVE_PREC_LEFT ? "ADJ_SOLVE_PREC_LEFT" : "ADJ_SOLVE_PREC_RIGHT" ) ); }
 
+const std::string fwd_op_type_name = "fwd_op_type";
+const std::string adj_op_type_name = "adj_op_type";
+
 } // namespace
 
 namespace Epetra {
@@ -65,7 +66,6 @@ LinearSystemScaler::LinearSystemScaler (
 	,adjSolveRightScaling_(adjSolveRightScaling)
 	,fwdSolvePrec_(fwdSolvePrec)
 	,adjSolvePrec_(adjSolvePrec)
-	,get_extra_data_ctx_(0)
 {}
 
 // Scaling methods
@@ -157,6 +157,7 @@ void LinearSystemScaler::generateSolveOps(
 	// Add the aggregate left preconditioner and/or scaling operator
 	//
 	bool hasLeftPrec = false;
+	Teuchos::RefCountPtr<Epetra_Operator> leftScalingOp;
 	if(
 		( Solve_trans==Teuchos::NO_TRANS
 			&& fwdSolveLeftScaling()!=FWD_SOLVE_LEFT_SCALING_NONE
@@ -171,13 +172,14 @@ void LinearSystemScaler::generateSolveOps(
 	{
 		if(out)
 			*out << "\nGenerating a simple scaling operator on the left ...\n";
-		Op_array[ops_added]
+		leftScalingOp
 			= Teuchos::rcp(
-			new DiagonalOperator(
-				Teuchos::rcp(	Solve_trans==Teuchos::NO_TRANS ? &Op->OperatorRangeMap() : &Op->OperatorDomainMap(), false )
-				,(Solve_trans==Teuchos::NO_TRANS)==(scaling_trans) ? scaling.leftScaling() : scaling.rightScaling()
-				)
+				new DiagonalOperator(
+					Teuchos::rcp(	Solve_trans==Teuchos::NO_TRANS ? &Op->OperatorRangeMap() : &Op->OperatorDomainMap(), false )
+					,(Solve_trans==Teuchos::NO_TRANS)==(scaling_trans) ? scaling.leftScaling() : scaling.rightScaling()
+					)
 				);
+		Op_array[ops_added] = leftScalingOp;
 		Op_trans_array[ops_added] = Teuchos::NO_TRANS;
 		Op_inverse_array[ops_added] =  ProductOperator::APPLY_MODE_APPLY;
 		++ops_added;
@@ -219,6 +221,7 @@ void LinearSystemScaler::generateSolveOps(
 	// Add the aggregate right preconditioner and/or scaling
 	//
 	bool hasRightPrec = false;
+	Teuchos::RefCountPtr<Epetra_Operator> rightScalingOp;
 	if(
 		( Solve_trans==Teuchos::NO_TRANS
 			&& fwdSolveRightScaling()!=FWD_SOLVE_RIGHT_SCALING_NONE
@@ -233,13 +236,14 @@ void LinearSystemScaler::generateSolveOps(
 	{
 		if(out)
 			*out << "\nGenerating a simple scaling operator on the right ...\n";
-		Op_array[ops_added]
+		rightScalingOp 
 			= Teuchos::rcp(
 				new DiagonalOperator(
 					Teuchos::rcp(	Solve_trans==Teuchos::NO_TRANS ? &Op->OperatorDomainMap() : &Op->OperatorRangeMap(), false )
 					,(Solve_trans==Teuchos::NO_TRANS)==(scaling_trans) ? scaling.rightScaling() : scaling.leftScaling()
 					)
 				);
+		Op_array[ops_added] = rightScalingOp;
 		Op_trans_array[ops_added] = Teuchos::NO_TRANS;
 		Op_inverse_array[ops_added] = ProductOperator::APPLY_MODE_APPLY;
 		++ops_added;
@@ -287,7 +291,9 @@ void LinearSystemScaler::generateSolveOps(
 	else {
 		opType = PLAIN_OP;
 	}
-	get_extra_data_ctx_ = Teuchos::set_extra_data<EOpType>( opType, &Op_array[0] ); // ToDo: Use a string for context!
+	Teuchos::set_extra_data<EOpType>(
+		opType,Solve_trans==Teuchos::NO_TRANS ? fwd_op_type_name : adj_op_type_name, &Op_array[0],false
+		);
 	// Create the aggregate preconditioner and/or scaled operator
 	*Op_solve = Teuchos::rcp(
 		new Epetra::ProductOperator( ops_added, Op_array, Op_trans_array, Op_inverse_array )
@@ -311,48 +317,51 @@ void LinearSystemScaler::generateSolveOps(
 		Teuchos::ETransp Op_trans_array[3];
 		ProductOperator::EApplyMode Op_inverse_array[3];
 		int ops_added = 0;
-		// Add the preconditioner itself
-		if(1) {
-			Op_array[ops_added] = Prec;
-			Op_trans_array[ops_added] = trans_trans(Prec_trans,Solve_trans);
-			Op_inverse_array[ops_added]
-				= ( Prec_inverse==Prec_solve_inverse
-						? ProductOperator::APPLY_MODE_APPLY
-						: ProductOperator::APPLY_MODE_APPLY_INVERSE
-					);
-			++ops_added;
-		}
-		// Next comes left scaling (on the right here)
-		if(
-			( Solve_trans==Teuchos::NO_TRANS
-				&& fwdSolveLeftScaling()!=FWD_SOLVE_LEFT_SCALING_NONE
+		if( Prec_solve_inverse == ProductOperator::APPLY_MODE_APPLY_INVERSE ) {
+			//
+			// Here the aggregate preconditioner will be applied as its its
+			// inverse.  Therefore, we must scale the precondtioner just
+			// like we scaled the operator.
+			//
+			// Add left scaling
+			if(
+				( Solve_trans==Teuchos::NO_TRANS
+					&& fwdSolveLeftScaling()!=FWD_SOLVE_LEFT_SCALING_NONE
+					)
+				||
+				( Solve_trans!=Teuchos::NO_TRANS
+					&& adjSolveLeftScaling()!=ADJ_SOLVE_LEFT_SCALING_NONE
+					)
 				)
-			||
-			( Solve_trans!=Teuchos::NO_TRANS
-				&& adjSolveLeftScaling()!=ADJ_SOLVE_LEFT_SCALING_NONE
-				)
-			)
-		{
-			// We scaled the operator by the left so we need to scale the
-			// external preconditioner by the inverse scaling on the right
-			const Epetra_Vector &scalingVec
-				= (Solve_trans==Teuchos::NO_TRANS)==(scaling_trans) ? *scaling.leftScaling() : *scaling.rightScaling();
-			Teuchos::RefCountPtr<Epetra_Vector> invScaling = Teuchos::rcp(new Epetra_Vector(scalingVec.Map()));
-			invScaling->Reciprocal(scalingVec);
-			Op_array[ops_added]
-				= Teuchos::rcp(
-					new DiagonalOperator(
-						Teuchos::rcp(	Solve_trans==Teuchos::NO_TRANS ? &Op->OperatorDomainMap() : &Op->OperatorRangeMap(), false )
-						,invScaling
-						)
-					);
-			Op_trans_array[ops_added] = Teuchos::NO_TRANS;
-			Op_inverse_array[ops_added] = ProductOperator::APPLY_MODE_APPLY;
-			++ops_added;
+			{
+				// We scaled the operator by the left so we need to scale the
+				// external preconditioner by the inverse scaling on the right
+				Op_array[ops_added] = leftScalingOp;
+				Op_trans_array[ops_added] = Teuchos::NO_TRANS;
+				Op_inverse_array[ops_added] = ProductOperator::APPLY_MODE_APPLY;
+				++ops_added;
+			}
+			// Add the preconditioner itself
+			if(1) {
+				Op_array[ops_added] = Prec;
+				Op_trans_array[ops_added] = trans_trans(Prec_trans,Solve_trans);
+				Op_inverse_array[ops_added]
+					= (
+						Prec_inverse==ProductOperator::APPLY_MODE_APPLY
+						?ProductOperator::APPLY_MODE_APPLY_INVERSE
+						:ProductOperator::APPLY_MODE_APPLY
+						);
+				++ops_added;
+			}
+			*Prec_solve = Teuchos::rcp(
+				new Epetra::ProductOperator( ops_added, Op_array, Op_trans_array, Op_inverse_array )
+				);
+			// Add right scaling
+			// ToDo: Implement!
 		}
-		*Prec_solve = Teuchos::rcp(
-			new Epetra::ProductOperator( ops_added, Op_array, Op_trans_array, Op_inverse_array )
-			);
+		else {
+			assert(0); // ToDo: Implement this case if every needed!
+		}
 	}
 	if(out)
 		*out << "\n*** Leaving Epetra::LinearSystemScaler::generateSolveOps(...)\n";
@@ -370,10 +379,12 @@ void LinearSystemScaler::preSolveTransformRhs(
 		// There is only the original operator so no transformation is needed!
 	}
 	else {
-		const EOpType opType = Teuchos::get_extra_data<EOpType>(prod_Op.Op(0),get_extra_data_ctx_);
+		const EOpType opType
+			= Teuchos::get_extra_data<EOpType>(
+				prod_Op.Op(0), Solve_trans==Teuchos::NO_TRANS ? fwd_op_type_name : adj_op_type_name
+				);
 		if( opType==LEFT_PREC_OP || opType==LEFT_RIGHT_PREC_OP ) {
 			Epetra_MultiVector  scaledRhs(Rhs->Map(),Rhs->NumVectors());  // ToDo: Make cache data member
-			//prod_Op.Op(0)->Apply(*Rhs,scaledRhs);
 			prod_Op.applyConstituent(0,Teuchos::NO_TRANS,ProductOperator::APPLY_MODE_APPLY,*Rhs,&scaledRhs);
 			*Rhs = scaledRhs;
 		}
@@ -393,10 +404,12 @@ void LinearSystemScaler::postSolveTransformSolu(
 		// There is only the original operator so no transformation is needed!
 	}
 	else {
-		const EOpType opType = Teuchos::get_extra_data<EOpType>(prod_Op.Op(0),get_extra_data_ctx_);
+		const EOpType opType
+			= Teuchos::get_extra_data<EOpType>(
+				prod_Op.Op(0), Solve_trans==Teuchos::NO_TRANS ? fwd_op_type_name : adj_op_type_name
+				);
 		if( opType==RIGHT_PREC_OP || opType==LEFT_RIGHT_PREC_OP ) {
 			Epetra_MultiVector  scaledSolu(Solu->Map(),Solu->NumVectors());  // ToDo: Make cache data member
-			//prod_Op.Op(opType==RIGHT_PREC_OP?1:2)->Apply(*Solu,scaledSolu);
 			prod_Op.applyConstituent(
 				opType==RIGHT_PREC_OP?1:2
 				,Teuchos::NO_TRANS,ProductOperator::APPLY_MODE_APPLY,*Solu,&scaledSolu
