@@ -19,6 +19,10 @@
 #include "BLAS_CppTypes.h"
 #include "LinAlgPackOptions.h"
 
+namespace RangePack {
+	class Range1D;
+}
+
 namespace LinAlgPack {
 
 /** @name {\bf LinAlgPack Type Declarations}.
@@ -30,6 +34,9 @@ namespace LinAlgPack {
   */
 
 //@{
+
+///
+using RangePack::Range1D;
 
 ///
 using BLAS_Cpp::rows;

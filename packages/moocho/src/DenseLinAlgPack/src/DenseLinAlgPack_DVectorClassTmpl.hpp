@@ -18,7 +18,8 @@
 
 #include <vector>
 
-#include "Range1D.h"
+#include "LinAlgPack/include/LinAlgPackTypes.h"
+#include "Misc/include/Range1D.h"
 #include "Misc/include/StrideIter.h"
 
 namespace LinAlgPack{
