@@ -275,8 +275,20 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		var_dep   = Zvr ? Zvr->D_rng() : Range1D(),
 		var_indep = Zvr ? Zvr->I_rng() : Range1D();
 
+	const value_type Ypy_indep_norm_inf = Ypy_k.sub_view(var_indep)->norm_inf();
+
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		out
+			<< "\nDetermine if we can use simple bounds on pz ...\n"
+			<< "    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = " << Zvr << std::endl
+			<< "    ||Ypy_k(var_indep)||inf = " << Ypy_indep_norm_inf << std::endl;
+
 	const bool
-		use_simple_pz_bounds = ( Zvr != NULL && Ypy_k.sub_view(var_indep)->norm_inf() == 0.0 );
+		use_simple_pz_bounds = ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 );
+
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		out
+			<< (use_simple_pz_bounds ? "\nUsing simple bounds on pz ...\n" : "\nUsing bounds on full Z*pz ...\n");
 
 	if( mI && use_simple_pz_bounds ) {
 		assert(0); // ToDo: Implement general inequalities!
