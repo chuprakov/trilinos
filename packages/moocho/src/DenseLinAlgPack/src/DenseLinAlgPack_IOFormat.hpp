@@ -403,7 +403,7 @@ private:
   * #Vector v(1.0,5);#\\
   * #format f; f.copy_format(cout);#\\
   * #f.width(10).fixed().ignore_dim();#\\
-  * #cout << bind(f,v);#\\
+  * #cout << bind(f,v);#\\1
   */
 template<class T>
 inline bound_format<T> bind(const format& f, T& obj) {

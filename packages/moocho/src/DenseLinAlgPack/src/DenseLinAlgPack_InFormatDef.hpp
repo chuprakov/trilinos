@@ -11,14 +11,15 @@
 namespace LinAlgPack {
 
 template<class T>
-std::istream& operator>>(std::istream& is, LinAlgPackIO::bound_format<T>& bf) {
+std::istream& operator>>(std::istream& is, const LinAlgPackIO::bound_format<T>& bf) {
 	using LinAlgPackIO::ios_format_memento;
 
 	ios_format_memento old_format = ios_format_memento::save_format(is);
 
 	try {
 		bf.f().set_format(is);
-		input( is, &bf.obj(), bf.f().extra_flags().flags() );
+		input( is, &const_cast< LinAlgPackIO::bound_format<T>&>(bf).obj()
+			   , bf.f().extra_flags().flags() );
 	}
 	catch(...) {
 		old_format.set_format(is);
