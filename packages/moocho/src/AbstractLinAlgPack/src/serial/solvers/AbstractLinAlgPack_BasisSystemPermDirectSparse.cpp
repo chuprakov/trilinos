@@ -94,6 +94,16 @@ Range1D BasisSystemPermDirectSparse::var_indep() const
 	return var_indep_;
 }
 
+Range1D BasisSystemPermDirectSparse::equ_decomp() const
+{
+	return equ_decomp_;
+}
+
+Range1D BasisSystemPermDirectSparse::equ_undecomp() const
+{
+	return equ_undecomp_;
+}
+
 void BasisSystemPermDirectSparse::update_basis(
 	const MatrixWithOp*         Gc
 	,const MatrixWithOp*        Gh

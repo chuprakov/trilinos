@@ -74,6 +74,10 @@ public:
 	///
 	Range1D var_indep() const;
 	///
+	Range1D equ_decomp() const;
+	///
+	Range1D equ_undecomp() const;
+	///
 	void update_basis(
 		const MatrixWithOp*         Gc
 		,const MatrixWithOp*        Gh
