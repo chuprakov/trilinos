@@ -72,9 +72,9 @@ NP4DOpt<Scalar>::NP4DOpt(
 	typedef LinearOp<Scalar>                LO;
 	typedef MultiVector<Scalar>             MV;
 	typedef MultiVectorAllocator<Scalar>    MVA;
-	typedef MemMngPack::PostModNothing<MV>  PMN;
+	typedef Teuchos::PostModNothing<MV>  PMN;
 	space_g_      = np2dsim_.space_y()->smallVecSpcFcty()->createVecSpc(NUM_RESPONSE_FUNCTIONS);
-	factory_DcDu_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LO,MV,PMN,MVA>(PMN(),MVA(np2dsim_.space_c(),2)));
+	factory_DcDu_ = Teuchos::rcp(new Teuchos::AbstractFactoryStd<LO,MV,PMN,MVA>(PMN(),MVA(np2dsim_.space_c(),2)));
 }
 
 template<class Scalar>
@@ -275,14 +275,14 @@ void NP4DOpt<Scalar>::calc_g(
 // Overridden from NonlinearProblemFirstOrder
 
 template<class Scalar>
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > >
 NP4DOpt<Scalar>::factory_DcDy() const
 {
 	return np2dsim_.factory_DcDy();
 }
 
 template<class Scalar>
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar > > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar > > >
 NP4DOpt<Scalar>::factory_DcDu(int l) const
 {
 	NP4DOPT_VALIDATE_L_IN_RANGE(l);

@@ -38,7 +38,7 @@
 namespace TSFCore {
 
 ///
-/** Allocator class to be used with <tt>MemMngPack::AbstractFactoryStd</tt> to create
+/** Allocator class to be used with <tt>Teuchos::AbstractFactoryStd</tt> to create
  * <tt>MultiVector</tt> objects of a given size.
  */
 template<class Scalar>

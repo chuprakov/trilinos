@@ -41,7 +41,7 @@
 #include "Ifpack_PrecGenerator.hpp"
 #include "TSFCoreLinearOpTester.hpp"
 #include "AztecOO.h"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -249,9 +249,9 @@ public:
 	//@{
 
 	///
-	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
+	Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
 	///
-	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
+	Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
 	///
 	ETransp opDcDy() const;
 	///
@@ -372,8 +372,8 @@ private:
 	Teuchos::RefCountPtr<EpetraVector>                           gL_;
  	Teuchos::RefCountPtr<EpetraVector>                           gU_;
 
-	Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >       factory_DcDy_;
-  std::vector<Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOp<Scalar> > > >  factory_DcDu_;
+	Teuchos::RefCountPtr<const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > >       factory_DcDy_;
+  std::vector<Teuchos::RefCountPtr<const Teuchos::AbstractFactory<LinearOp<Scalar> > > >  factory_DcDu_;
 
 	Teuchos::RefCountPtr<EpetraVector>        y_scaling_inv_;
 

@@ -47,7 +47,7 @@ bool NonlinearProblemFirstOrder<Scalar>::adjointSupported() const
 // Factories for linear operators
 
 template<class Scalar>
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar> > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar> > >
 NonlinearProblemFirstOrder<Scalar>::factory_DcDu(int l) const
 {
 	TEST_FOR_EXCEPTION(

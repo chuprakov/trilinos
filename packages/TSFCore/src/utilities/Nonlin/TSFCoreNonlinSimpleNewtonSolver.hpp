@@ -40,7 +40,7 @@
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace TSFCore {
 namespace Nonlin {

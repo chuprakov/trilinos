@@ -39,7 +39,7 @@
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -69,8 +69,8 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 
 	// Factories
 
-	typedef Teuchos::RefCountPtr< const mmp::AbstractFactory<LinearOpWithSolve<Scalar> > >   DcDy_fcty_ptr_t;
-	typedef Teuchos::RefCountPtr< const mmp::AbstractFactory<LinearOp<Scalar > > >           DcDu_fcty_ptr_t;
+	typedef Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > >   DcDy_fcty_ptr_t;
+	typedef Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar > > >           DcDu_fcty_ptr_t;
 
 	if(o) *o << "prob->factory_DcDy().get() -> ";       const DcDy_fcty_ptr_t DcDy_fcty = prob->factory_DcDy(); if(o) *o << DcDy_fcty.get() << endl;
 	if(o) *o << "prob->factory_DcDy().get()!=NULL -> "; if(!(result=(DcDy_fcty.get()!=NULL))) success=false;    if(o) *o << passfail(result) << endl;

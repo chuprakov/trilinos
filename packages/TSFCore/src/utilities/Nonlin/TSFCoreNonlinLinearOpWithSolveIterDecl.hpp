@@ -33,7 +33,7 @@
 #define TSFCORE_NONLIN_LINEAR_OP_WITH_SOLVE_ITER_DECL_HPP
 
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {

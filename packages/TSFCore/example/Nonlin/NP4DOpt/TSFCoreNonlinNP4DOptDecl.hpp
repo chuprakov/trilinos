@@ -195,9 +195,9 @@ public:
 	//@{
 
 	///
-	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
+	Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
 	///
-	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
+	Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
 	///
 	ETransp opDcDy() const;
 	///
@@ -266,7 +266,7 @@ private:
  	Teuchos::RefCountPtr<Vector<Scalar> >                           gU_;
 	Teuchos::RefCountPtr<Vector<Scalar> >                           u0_;
 	Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<LinearOp<Scalar> > >           factory_DcDu_;
+		const Teuchos::AbstractFactory<LinearOp<Scalar> > >           factory_DcDu_;
 
 	Vector<Scalar>                                                       *g_;
     MultiVector<Scalar>                                                  *DcDu_;

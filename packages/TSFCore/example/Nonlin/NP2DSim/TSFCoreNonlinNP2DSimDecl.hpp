@@ -35,7 +35,7 @@
 #include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
 #include "TSFCoreNonlinLinearOpWithSolveIter.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -164,7 +164,7 @@ public:
 	//@{
 	
 	///
-	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
+	Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
 	///
 	ETransp opDcDy() const;
 	///
@@ -192,7 +192,7 @@ private:
 	Teuchos::RefCountPtr<Vector<Scalar> >                           yU_;
 	Teuchos::RefCountPtr<Vector<Scalar> >                           y0_;
 	Teuchos::RefCountPtr<
-		const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >  factory_DcDy_;
+		const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > >  factory_DcDy_;
 	Vector<Scalar>                                                  *c_;
 	LinearOpWithSolveIter<Scalar>                                   *DcDy_;
 

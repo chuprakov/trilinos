@@ -1,7 +1,7 @@
 // @HEADER
 // ***********************************************************************
 // 
-//      TSFCoreUtils: Trilinos Solver Framework Utilities Package 
+//                    Teuchos: Common Tools Package
 //                 Copyright (2004) Sandia Corporation
 // 
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -26,16 +26,23 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef ABSTRACT_FACTORY_PACK_ABSTRACT_FACTORY_H
-#define ABSTRACT_FACTORY_PACK_ABSTRACT_FACTORY_H
+#ifndef TEUCHOS_ABSTRACT_FACTORY_HPP
+#define TEUCHOS_ABSTRACT_FACTORY_HPP
 
 #include "Teuchos_RefCountPtr.hpp"
 
-namespace MemMngPack {
+namespace Teuchos {
 
-///
-/** Simple, universal "Abstract Factory" interface for the dynamic
- * creation of objects.
+/** \brief Simple, universal "Abstract Factory" interface for the
+ * dynamic creation of objects.
+ *
+ * While <tt>RefCountPtr</tt> provides for specialized deallocation
+ * policies it does not abstract, in any way, how an object is first
+ * allocated.  The most general way to abstract how an object is
+ * allocated is to use an "Abstract Factory".  This base class defines
+ * the most basic "Abstract Factory" interface and defines only one
+ * virtual function, <tt>create()</tt> that returns a
+ * <tt>RefCountPtr</tt>-wrapped object.
  */
 template<class T>
 class AbstractFactory {
@@ -57,6 +64,6 @@ public:
 
 }; // class AbstractFactory
 
-} // end MemMngPack
+} // end Teuchos
 
-#endif // ABSTRACT_FACTORY_PACK_ABSTRACT_FACTORY_H
+#endif // TEUCHOS_ABSTRACT_FACTORY_HPP

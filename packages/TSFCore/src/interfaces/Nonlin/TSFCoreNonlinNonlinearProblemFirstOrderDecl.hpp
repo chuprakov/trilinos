@@ -33,7 +33,7 @@
 #define TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_DECL_HPP
 
 #include "TSFCoreNonlinNonlinearProblem.hpp"
-#include "AbstractFactory.hpp"
+#include "Teuchos_AbstractFactory.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -151,7 +151,7 @@ public:
 	 * <li> <tt>return.get()!=NULL</tt>
 	 * </ul>
 	 */
-	virtual Teuchos::RefCountPtr< const MemMngPack::AbstractFactory< LinearOpWithSolve<Scalar> > > factory_DcDy() const = 0;
+	virtual Teuchos::RefCountPtr< const Teuchos::AbstractFactory< LinearOpWithSolve<Scalar> > > factory_DcDy() const = 0;
 
 	///
 	/** Return a factory object for creating objects for <tt>DcDu(l)</tt>.
@@ -169,7 +169,7 @@ public:
 	 * The default implementation throws an exception since by default
 	 * <tt>this->Nu()==0</tt>.
 	 */
-	virtual Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
+	virtual Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<Scalar > > > factory_DcDu(int l) const;
 
 	//@}
 

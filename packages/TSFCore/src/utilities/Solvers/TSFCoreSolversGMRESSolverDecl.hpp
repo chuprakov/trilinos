@@ -36,7 +36,7 @@
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_ScalarTraits.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Solvers {

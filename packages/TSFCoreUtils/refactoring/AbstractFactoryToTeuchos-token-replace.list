@@ -1,0 +1,7 @@
+MemMngPack::AbstractFactory Teuchos::AbstractFactory
+mmp::AbstractFactory Teuchos::AbstractFactory
+MemMngPack::PostModNothing Teuchos::PostModNothing
+MemMngPack::AllocatorNew Teuchos::AllocatorNew
+mmp::AllocatorNew Teuchos::AllocatorNew
+MemMngPack::AbstractFactoryStd Teuchos::AbstractFactoryStd
+mmp::AbstractFactoryStd Teuchos::AbstractFactoryStd

@@ -31,7 +31,7 @@
 
 #include "initRTOpStdOpsLibCpp.hpp"
 #include "RTOpPack_RTOpCPostMod.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "RTOp_ROp_combined_nu_comp_err.h"
 #include "RTOp_ROp_max_rel_step.h"
 #include "RTOp_TOp_ele_wise_sqrt.h"
@@ -77,12 +77,12 @@ void add_op_factory(RTOpPack::RTOpServer<RTOp_value_type> *op_server, const RTOp
 {
 	namespace mmp = MemMngPack;
 	namespace rtop = RTOpPack;
-	typedef mmp::AbstractFactoryStd<rtop::RTOp,rtop::RTOpC,rtop::RTOpCPostMod>  OpFactory_t;
+	typedef Teuchos::AbstractFactoryStd<rtop::RTOp,rtop::RTOpC,rtop::RTOpCPostMod>  OpFactory_t;
 	op_server->add_op_factory(
 		Teuchos::rcp(
 			new OpFactory_t(
 				rtop::RTOpCPostMod(&op_vtbl)
-				,mmp::AllocatorNew<rtop::RTOpC>() // RAB: 2003/10/03: MipsPro needs this *$&%^#&!!!
+				,Teuchos::AllocatorNew<rtop::RTOpC>() // RAB: 2003/10/03: MipsPro needs this *$&%^#&!!!
 				)
 			)
 		);
@@ -93,7 +93,7 @@ void add_op_factory(RTOpPack::RTOpServer<RTOp_value_type> *op_server, const RTOp
 void RTOpPack::initRTOpStdOpsLibCpp( RTOpPack::RTOpServer<RTOp_value_type> *op_server )
 {
 	namespace mmp = MemMngPack;
-	typedef mmp::AbstractFactoryStd<RTOp,RTOpC,RTOpCPostMod>  OpFactory_t;
+	typedef Teuchos::AbstractFactoryStd<RTOp,RTOpC,RTOpCPostMod>  OpFactory_t;
 	
 	add_op_factory(op_server,RTOp_ROp_combined_nu_comp_err_vtbl);
 	add_op_factory(op_server,RTOp_ROp_combined_nu_comp_err_one_only_vtbl);

@@ -36,7 +36,7 @@
 #include "Epetra_LinearSystemScaler.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 #include "AztecOO.h"
 
 namespace TSFCore {

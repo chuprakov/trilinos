@@ -34,7 +34,7 @@
 
 #include "TSFCoreSolversIterativeLinearSolver.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "StandardCompositionMacros.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Solvers {

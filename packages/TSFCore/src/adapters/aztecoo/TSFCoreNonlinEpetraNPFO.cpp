@@ -34,7 +34,7 @@
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_VbrMatrix.h"
 #include "Epetra_Comm.h"
@@ -179,12 +179,12 @@ void EpetraNPFO::initialize(
 	// ToDo: Most modify yL and yU for scaling and maintain constants for unbounded values!
 
   // Setup factories
-	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveAztecOO>());
+	factory_DcDy_ = Teuchos::rcp(new Teuchos::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveAztecOO>());
   factory_DcDu_.resize(Nu);
   for(int l=1;l<=Nu;++l) {
     typedef LinearOp<Scalar> T_itfc;
-    typedef MemMngPack::PostModNothing<T_itfc> pm_t;
-    typedef MemMngPack::AbstractFactoryStd<T_itfc,T_itfc,pm_t,DcDu_Allocator>  af_t;
+    typedef Teuchos::PostModNothing<T_itfc> pm_t;
+    typedef Teuchos::AbstractFactoryStd<T_itfc,T_itfc,pm_t,DcDu_Allocator>  af_t;
     factory_DcDu_[l-1] = Teuchos::rcp( new af_t( pm_t(), DcDu_Allocator( epetra_np_->use_DcDu_op(l) ) ) );
   }
 
@@ -367,13 +367,13 @@ void EpetraNPFO::reportFinalSolution(
 
 // Overridden from NonlinearProblemFirstOrder
 
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<EpetraNPFO::Scalar> > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<EpetraNPFO::Scalar> > >
 EpetraNPFO::factory_DcDy() const
 {
   return factory_DcDy_;
 }
 
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOp<EpetraNPFO::Scalar > > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOp<EpetraNPFO::Scalar > > >
 EpetraNPFO::factory_DcDu(int l) const
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);

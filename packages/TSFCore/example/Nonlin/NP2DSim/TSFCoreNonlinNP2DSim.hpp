@@ -44,7 +44,7 @@
 #include "TSFCoreSolversNormedConvergenceTester.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "AbstractFactoryStd.hpp"
+#include "Teuchos_AbstractFactoryStd.hpp"
 
 #ifdef TSFCORE_NONLIN_NP_2D_SIM_USE_SIMPLE_GMRES_SOLVER
 #include "TSFCoreSolversSimpleGMRESSolver.hpp"
@@ -77,7 +77,7 @@ NP2DSim<Scalar>::NP2DSim(
 	else {
 		space_y_c_ = Teuchos::rcp(new SerialVectorSpaceStd<Scalar>(2));
 	}
-	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveIter<Scalar> >());
+	factory_DcDy_ = Teuchos::rcp(new Teuchos::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveIter<Scalar> >());
 }
 
 template<class Scalar>
@@ -193,7 +193,7 @@ void NP2DSim<Scalar>::calc_c(
 // Overridden from NonlinearProblemFirstOrder
 
 template<class Scalar>
-Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >
+Teuchos::RefCountPtr< const Teuchos::AbstractFactory<LinearOpWithSolve<Scalar> > >
 NP2DSim<Scalar>::factory_DcDy() const
 {
 	return factory_DcDy_;

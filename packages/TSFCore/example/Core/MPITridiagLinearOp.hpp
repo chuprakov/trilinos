@@ -33,10 +33,9 @@
 #include "Teuchos_PrimitiveTypeTraits.hpp"
 #include "Teuchos_RawMPITraits.hpp"
 
-///
 /** \brief Simple example subclass for MPI tridiagonal matrices.
  *
- * This subclass form a linear operator for tridiagonal matrices
+ * This subclass represents a linear operator for tridiagonal matrices
  * of the global form:
  *
  \f[

@@ -27,11 +27,8 @@
 # @HEADER
 
 MoochoUtilities_SOURCES_H=\
-$(srcdir)/MoochoUtilities/AbstractFactory.hpp\
-$(srcdir)/MoochoUtilities/AbstractFactoryStd.hpp\
 $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
-$(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
