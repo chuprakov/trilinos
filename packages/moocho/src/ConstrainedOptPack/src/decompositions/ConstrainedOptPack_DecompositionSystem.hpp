@@ -243,38 +243,6 @@ public:
 	 * the concrete implementation of \c this or an <tt>InvalidMatrixType</tt> exeption
 	 * will be thrown..
 	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>Gc.rows() == this->n()</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>Gc.cols() == this->m()</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uz == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uy == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Gh->space_cols().is_compatible(Gc.space_cols()) == true</tt> (throw \c ???)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Vz == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> [<tt>Gh == NULL</tt>] <tt>Vy == NULL</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>Z!=NULL || Y!=NULL || R!=NULL || Uz!=NULL || Uy!=NULL || Vz!=NULL | Vy!=NULL</tt>
-	 *      (throw \c std::invalid_argument)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>Gc(:,con_decomp())' * Z = 0</tt>
-	 * <li> <tt>[ Y  Z ]</tt> nonsingular
-	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
-	 * <li> [<tt>Z != NULL</tt>] <tt>Z.cols() == this->n() - this->r()</tt>
-	 * <li> [<tt>Y != NULL</tt>] <tt>Y.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
-	 * <li> [<tt>Y != NULL</tt>] <tt>Y.cols() == this->r()</tt>
-	 * <li> [<tt>R != NULL</tt>] <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(con_decomp())) == true</tt>
-	 * <li> [<tt>R != NULL</tt>] <tt>R->space_rows().is_compatible(Y->space_rows()) == true</tt>
-	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
-	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_rows().is_compatible(Z.space_rows()) == true</tt>
-	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
-	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_rows().is_compatible(Y.space_rows()) == true</tt>
-	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_cols().is_compatible(*Gh->space_rows()) == true</tt>
-	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_rows().is_compatible(Z.space_rows())</tt>
-	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_cols().is_compatible(*Gh->space_rows()) == true</tt>
-	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_rows().is_compatible(Y.space_rows())</tt>
-	 * <li> The behaviors of all of the participating matrices must not be altered by changes to the other matrices.
-	 * </ul>
-	 *
 	 * @param  out [out] If <tt>out!=NULL</tt> then output is printed to this stream
 	 *             depending on the value of \c olevel.
 	 * @param olevel
@@ -342,6 +310,52 @@ public:
 	 *             If <tt>Gh == NULL</tt> then <tt>Vy == NULL</tt> must be true.
 	 *             If <tt>Vy!=NULL</tt>, then this matrix object must have been created by
 	 *             <tt>this->factory_Vy()->create()</tt>.
+	 * @param mat_rel
+	 *             [in] Determines if the ouput matrix objects must be completely independent or not.
+	 *             <ul>
+	 *             <li> MATRICES_INDEP_IMPS: The matrix objects must have independent implementations (default).
+	 *             <li> MATRICES_ALLOW_DEP_IMPS: The matrix objects can have implementation dependencies.
+	 *             </ul>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>Gc.rows() == this->n()</tt> (throw \c std::invalid_argument)
+	 * <li> <tt>Gc.cols() == this->m()</tt> (throw \c std::invalid_argument)
+	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uz == NULL</tt> (throw \c std::invalid_argument)
+	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uy == NULL</tt> (throw \c std::invalid_argument)
+	 * <li> [<tt>Gh == NULL</tt>] <tt>Gh->space_cols().is_compatible(Gc.space_cols()) == true</tt> (throw \c ???)
+	 * <li> [<tt>Gh == NULL</tt>] <tt>Vz == NULL</tt> (throw \c std::invalid_argument)
+	 * <li> [<tt>Gh == NULL</tt>] <tt>Vy == NULL</tt> (throw \c std::invalid_argument)
+	 * <li> <tt>Z!=NULL || Y!=NULL || R!=NULL || Uz!=NULL || Uy!=NULL || Vz!=NULL | Vy!=NULL</tt>
+	 *      (throw \c std::invalid_argument)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_rows().is_compatible(*space_null()) == true</tt>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Gc(:,con_decomp())' * Z == 0</tt>
+	 * <li> [<tt>Y != NULL</tt>] <tt>Y.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
+	 * <li> [<tt>Y != NULL</tt>] <tt>Y.cols() == this->r()</tt>
+	 * <li> [<tt>Y != NULL</tt>] <tt>[ Y  Z ]</tt> is nonsingular
+	 * <li> [<tt>R != NULL</tt>] <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(con_decomp())) == true</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R->space_rows().is_compatible(*space_range()) == true</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R == Gc(:,con_decomp())'*Y</tt>
+	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
+	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_rows().is_compatible(*space_null()) == true</tt>
+	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz == Gc(:,con_undecomp())'*Z</tt>
+	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
+	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_rows().is_compatible(*space_range()) == true</tt>
+	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy == Gc(:,con_undecomp())'*Y</tt>
+	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_cols().is_compatible(Gh->space_rows()) == true</tt>
+	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz.space_rows().is_compatible(*space_null())</tt>
+	 * <li> [<tt>Vz != NULL</tt>] <tt>Vz == Gh'*Z</tt>
+	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_cols().is_compatible(Gh->space_rows()) == true</tt>
+	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy.space_rows().is_compatible(*space_range())</tt>
+	 * <li> [<tt>Vy != NULL</tt>] <tt>Vy == Gh'*Y</tt>
+	 * <li> [<tt>mat_rel == MATRICES_INDEP_IMPS</tt>] The behaviors of all of the participating output matrix
+	 *      objects must not be altered by changes to other matrix objects.
+	 * <li> [<tt>mat_rel == MATRICES_ALLOW_DEP_IMPS</tt>] The behaviors of all of the participating output matrix
+	 *      objects may change when other matrix objects or \c this is altered.
+	 * </ul>
 	 *
 	 * Note that this method requires that all of the output matrix objects \c Z, \c Y, \c R,
 	 * \c Uz, \c Uy, \c Vz and \c Vy must be independent of \c this and of each other.
