@@ -15,8 +15,8 @@
 
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
-#include "ConstrainedOptimizationPack/test/TestMatrixSymSecantUpdate.h"
+#include "AbstractLinAlgPack/include/TestMatrixSymSecantUpdate.h"
+#include "AbstractLinAlgPack/include/MatrixSymSecantUpdateable.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
@@ -26,10 +26,6 @@
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
-
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StMtV;
-}
 
 namespace ReducedSpaceSQPPack {
 
@@ -214,7 +210,7 @@ void BFGSUpdate_Strategy::perform_update(
 		|| secant_testing() == SECANT_TEST_ALWAYS )
 	{
 		const bool result =
-			ConstrainedOptimizationPack::TestMatrixSymSecantUpdate(
+			AbstractLinAlgPack::TestMatrixSymSecantUpdate(
 				*B, *s_bfgs_save, *y_bfgs_save
 				, secant_warning_tol(), secant_error_tol()
 				, (int)olevel >= (int)PRINT_VECTORS
