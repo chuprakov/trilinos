@@ -28,9 +28,6 @@ namespace NLPInterfacePack {
 class BarrierNLP
 	: public NLPObjGradient
 	{
-	private:
-		MemMngPack::ref_count_ptr<NLPObjGradient> nlp_;
-		
 	public:
 		
 		/** @name Public Methods */
@@ -81,26 +78,26 @@ class BarrierNLP
 		{ nlp_->initialize(test_setup); }
 	
 		///
-		virtual void set_Gf(VectorWithOpMutable* Gf)
+		void set_Gf(VectorWithOpMutable* Gf)
 		{ nlp_->set_Gf(Gf); }
 
 		///
-		virtual VectorWithOpMutable* get_Gf()
+		VectorWithOpMutable* get_Gf()
 		{ return nlp_->get_Gf(); }
 
 		///
-		virtual VectorWithOpMutable& Gf()
+		VectorWithOpMutable& Gf()
 		{ return nlp_->Gf(); }
 
 		///
-		virtual const VectorWithOp& Gf() const
+		const VectorWithOp& Gf() const
 		{ return nlp_->Gf(); }
 
 		/// Overloaded to include barrier term
-		virtual void calc_Gf(const VectorWithOp& x, bool newx = true) const;
+		void calc_Gf(const VectorWithOp& x, bool newx = true) const;
 
 		///
-		virtual size_type num_Gf_evals() const
+		size_type num_Gf_evals() const
 		{ return nlp_->num_Gf_evals(); }
 
 		//@}
@@ -112,71 +109,71 @@ class BarrierNLP
 		//static value_type infinite_bound()
 
 		///
-		virtual void force_xinit_in_bounds(bool force_xinit_in_bounds)
+		void force_xinit_in_bounds(bool force_xinit_in_bounds)
 		{ nlp_->force_xinit_in_bounds(force_xinit_in_bounds); }
 
 		///
-		virtual bool force_xinit_in_bounds() const
+		bool force_xinit_in_bounds() const
 		{ return nlp_->force_xinit_in_bounds(); }
 
 		///
-		virtual bool is_initialized() const
+		bool is_initialized() const
 		{ return nlp_->is_initialized(); }
 
 		///
-		virtual size_type n() const
+		size_type n() const
 		{ return nlp_->n(); }
 
 		///
-		virtual size_type m() const
+		size_type m() const
 		{ return nlp_->m(); }
 
 		///
-		virtual size_type mI() const
+		size_type mI() const
 		{ return nlp_->mI(); }
 	
 		///
-		virtual vec_space_ptr_t space_x() const
+		vec_space_ptr_t space_x() const
 		{ return nlp_->space_x(); }
 
 		///
-		virtual vec_space_ptr_t space_c() const
+		vec_space_ptr_t space_c() const
 		{ return nlp_->space_c(); }
 
 		///
-		virtual vec_space_ptr_t space_h() const
+		vec_space_ptr_t space_h() const
 		{ return nlp_->space_h(); }
 
 		///
-		virtual size_type num_bounded_x() const
+		size_type num_bounded_x() const
 		{ return nlp_->num_bounded_x(); }
 
 		///
-		virtual const VectorWithOp& xl() const
+		const VectorWithOp& xl() const
 		{ return nlp_->xl(); }
 
 		///
-		virtual const VectorWithOp& xu() const 
+		const VectorWithOp& xu() const 
 		{ return nlp_->xu(); }
 
 		///
-		virtual value_type max_var_bounds_viol() const
+		value_type max_var_bounds_viol() const
 		{ return nlp_->max_var_bounds_viol(); }
 
 		///
-		virtual const VectorWithOp& hl() const
+		const VectorWithOp& hl() const
 		{ return nlp_->hl(); }
 
 		///
-		virtual const VectorWithOp& hu() const
+		const VectorWithOp& hu() const
 		{ return nlp_->hu(); }
 
 		///
-		virtual const VectorWithOp& xinit() const
+		const VectorWithOp& xinit() const
 		{ return nlp_->xinit(); }
 
 		///
-		virtual void get_init_lagrange_mult(
+		void get_init_lagrange_mult(
 		  VectorWithOpMutable*   lambda
 		  ,VectorWithOpMutable*  lambdaI
 		  ,VectorWithOpMutable*  nu
@@ -184,82 +181,82 @@ class BarrierNLP
 		{ nlp_->get_init_lagrange_mult(lambda, lambdaI, nu); }
 
 		///
-		virtual void set_f(value_type* f)
+		void set_f(value_type* f)
 		{ nlp_->set_f(f); }
 
 		///
-		virtual value_type* get_f()
+		value_type* get_f()
 		{ return nlp_->get_f(); }
 
 		///
-		virtual value_type& f()
+		value_type& f()
 		{ return nlp_->f(); }
 
 		///
-		virtual const value_type& f() const
+		const value_type& f() const
 		{ return nlp_->f(); }
 
 		///
-		virtual void set_c(VectorWithOpMutable* c)
+		void set_c(VectorWithOpMutable* c)
 		{ nlp_->set_c(c); }
 
 		///
-		virtual VectorWithOpMutable* get_c()
+		VectorWithOpMutable* get_c()
 		{ return nlp_->get_c(); }
 
 		///
-		virtual VectorWithOpMutable& c()
+		VectorWithOpMutable& c()
 		{ return nlp_->c(); }
 
 		///
-		virtual const VectorWithOp& c() const
+		const VectorWithOp& c() const
 		{ return nlp_->c(); }
 
 		///
-		virtual void set_h(VectorWithOpMutable* h)
+		void set_h(VectorWithOpMutable* h)
 		{ nlp_->set_h(h); }
 
 		///
-		virtual VectorWithOpMutable* get_h()
+		VectorWithOpMutable* get_h()
 		{ return nlp_->get_h(); }
 
 		///
-		virtual VectorWithOpMutable& h()
+		VectorWithOpMutable& h()
 		{ return nlp_->h(); }
 
 		///
-		virtual const VectorWithOp& h() const
+		const VectorWithOp& h() const
 		{ return nlp_->h(); }
 
 		///
-		virtual void set_multi_calc(bool multi_calc) const
+		void set_multi_calc(bool multi_calc) const
 		{ nlp_->set_multi_calc(multi_calc); }
 
 		///
-		virtual bool multi_calc() const
+		bool multi_calc() const
 		{ return nlp_->multi_calc(); }
 
 		///
-		virtual void scale_f( value_type scale_f )
+		void scale_f( value_type scale_f )
 		{ nlp_->scale_f(); }
 
 		///
-		virtual value_type scale_f() const
+		value_type scale_f() const
 		{ return nlp_->scale_f(); }
 
 		/// Overloaded to include barrier term
-		virtual void calc_f(const VectorWithOp& x, bool newx =  true) const;
+		void calc_f(const VectorWithOp& x, bool newx =  true) const;
 
 		///
-		virtual void calc_c(const VectorWithOp& x, bool newx = true) const
+		void calc_c(const VectorWithOp& x, bool newx = true) const
 		{ nlp_->calc_c(x, newx); }
 
 		///
-		virtual void calc_h(const VectorWithOp& x, bool newx = true) const
+		void calc_h(const VectorWithOp& x, bool newx = true) const
 		{ nlp_->calc_h(x, newx); }
 
 		///
-		virtual void report_final_solution(
+		void report_final_solution(
 		  const VectorWithOp&    x
 		  ,const VectorWithOp*   lambda
 		  ,const VectorWithOp*   lambdaI
@@ -272,15 +269,15 @@ class BarrierNLP
 		}
 
 		///
-		virtual size_type num_f_evals() const
+		size_type num_f_evals() const
 		{ return nlp_->num_f_evals(); }
 
 		///
-		virtual size_type num_c_evals() const
+		size_type num_c_evals() const
 		{ return nlp_->num_c_evals(); }
 
 		///
-		virtual size_type num_h_evals() const
+		size_type num_h_evals() const
 		{ return nlp_->num_h_evals(); }
 
 		///
@@ -293,21 +290,21 @@ class BarrierNLP
 		/* protected members Overridden from NLP */
 		//@{
 		///
-		virtual void imp_calc_f(
+		void imp_calc_f(
 		  const VectorWithOp& x, 
 		  bool newx, 
 		  const ZeroOrderInfo& zero_order_info
 		  ) const;
 
 		///
-		virtual void imp_calc_c(
+		void imp_calc_c(
 		  const VectorWithOp& x, 
 		  bool newx, 
 		  const ZeroOrderInfo& zero_order_info
 		  ) const;
 
 		///
-		virtual void imp_calc_h(
+		void imp_calc_h(
 		  const VectorWithOp& x, 
 		  bool newx, 
 		  const ZeroOrderInfo& zero_order_info
@@ -320,7 +317,7 @@ class BarrierNLP
 		//@{
 
 		///
-		virtual void imp_calc_Gf(
+		void imp_calc_Gf(
 		  const VectorWithOp& x,
 		  bool newx, 
 		  const ObjGradInfo& obj_grad_info
@@ -328,6 +325,9 @@ class BarrierNLP
 
 		//@}
 	private:
+
+		///
+		MemMngPack::ref_count_ptr<NLPObjGradient> nlp_;
 
 		///
 		value_type mu_;
