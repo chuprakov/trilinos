@@ -25,6 +25,11 @@ size_type MatrixSymWithOp::cols() const
 	return this->rows();
 }
 
+const VectorSpace& MatrixSymWithOp::space_rows() const
+{
+	return this->space_cols();
+}
+
 void MatrixSymWithOp::Mp_StPtMtP(
 	MatrixSymWithOp* sym_lhs, value_type alpha
 	, EMatRhsPlaceHolder dummy_place_holder
