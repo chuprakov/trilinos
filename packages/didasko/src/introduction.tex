@@ -99,7 +99,7 @@ We will describe the following subset of the Trilinos packages.
   be easily integrated into an application and used with many different
   linear solvers.
 \item {\bf Didasko}. This package contains all the examples reported in this
-tutorial. The sources of the examples can be found in the subdirectory
+tutorial. The sources of the examples can be found in the subdirectory\\
 \verb!<your-trilinos-home>/packages/didasko/examples!.
 \end{itemize}
 
@@ -261,16 +261,17 @@ $ mkdir LINUX_MPI
 $ cd LINUX_MPI
 $ ../configure --prefix=<your-trilinos-directory>/LINUX_MPI \
   --enable-mpi --with-mpi-compilers \
-  --disable-default-packages \
-  --enable-teuchos  \
-  --enable-epetra   \
-  --enable-aztecoo  \
-  --enable-triutils \
-  --enable-amesos   \
-  --enable-ifpack   \
-  --enable-ml       \
-  --enable-nox      \
-  --enable-nox-epetra | tee configure_LINUX_MPI.log
+  --disable-default-packages        \
+  --enable-teuchos    \
+  --enable-epetra     \
+  --enable-aztecoo    \
+  --enable-triutils   \
+  --enable-amesos     \
+  --enable-ifpack     \
+  --enable-ml         \
+  --enable-nox        \
+  --enable-nox-epetra \
+  --enable-didasko    | tee configure_LINUX_MPI.log
 $ make | tee make_LINUX_MPI.log
 $ make install | tee make_install_LINUX_MPI.log
 \end{verbatim}
@@ -279,7 +280,7 @@ For more details, simply type
 $ <your-trilinos-directory>/configure --help
 \end{verbatim}
 For serial configuration, simply
-and delete the \verb!--enable-mpi --with-mpi-compilers! options
+delete the \verb!--enable-mpi --with-mpi-compilers! options
 (and possibly change the name of the installation directory from
  {\tt LINUX\_MPI} to something like {\tt LINUX\_SERIAL}).
 
@@ -292,7 +293,7 @@ and delete the \verb!--enable-mpi --with-mpi-compilers! options
 \end{remark}
 
 \begin{remark}
-  Compiling Trilinos may require some time! For instance, on a Pentium 4, 1.7
+  Compiling Trilinos may require a little bit of time! For instance, on a Pentium 4, 1.7
   GHz with Intel compilers, to configure Trilinos with LOCA, NOX,
   AztecOO, Anasazi, IFPACK, Triutils, EpetraExt, Teuchos, ML and Epetra,
   required 2 minutes and 11 seconds. The compilation (without the
@@ -396,7 +397,7 @@ number = "SAND2003-2952",
 year = 2003}
 
 @techreport{Trilinos-Tutorial-5.0,
-title = "{Trilinos 5.0 Tutorial}",
+title = "{Trilinos Tutorial}",
 author = "Marzio Sala and Michael A. Heroux and David D. Day",
 institution = "Sandia National Laboratories",
 number = "SAND2004-2189",
