@@ -301,4 +301,3 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 
 }	// end namesapce TestingPack
 }	// end namespace NLPInterfacePack
-

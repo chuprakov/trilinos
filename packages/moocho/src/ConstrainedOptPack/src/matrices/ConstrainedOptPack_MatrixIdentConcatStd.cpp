@@ -1,6 +1,8 @@
 // ////////////////////////////////////////////////////////////////////////
 // MatrixIdentConcatStd.cpp
 
+#include <assert.h>
+
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
 
 namespace ConstrainedOptimizationPack {

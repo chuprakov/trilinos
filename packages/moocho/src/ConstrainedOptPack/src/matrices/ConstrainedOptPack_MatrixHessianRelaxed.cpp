@@ -295,7 +295,7 @@ value_type MatrixHessianRelaxed::transVtMtV(
 		// x1 and x2 could be different sparse vectors
 		assert(0); // ToDo: Implement this!
 	}
+	return 0.0; // Will never be executed!
 }
-
 
 }	// end namespace ConstrainedOptimizationPack

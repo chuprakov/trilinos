@@ -1257,7 +1257,6 @@ void QPSchur::ActiveSet::initialize(
 		q_hat_max = n_X + n,	// If all the initially fixed variables where freed
 								// Then all the degrees of freedom where used up with other constraints.
 		q_F_hat_max = n_X,
-		q_C_hat_max = n_X,
 		q_plus_hat_max = n;
 		
 	ij_map_.resize(q_hat_max);
@@ -1376,7 +1375,7 @@ void QPSchur::ActiveSet::initialize(
 		throw std::logic_error(
 			error_msg(__FILE__,__LINE__,"QPSchur::ActiveSet::initialize(...) : "
 					  "Error, q_C_hat != 0, now supported yet!"));  
-		assert(0);	// ToDo: We should implement this but it is unlikely to be needed
+		// ToDo: We should implement this but it is unlikely to be needed
 	}
 	P_FC_hat_.initialize_and_sort(
 		q_hat,q_hat,q_C_hat,0,0,GPMSTP::BY_ROW
@@ -1499,7 +1498,7 @@ void QPSchur::ActiveSet::initialize(
 			throw std::logic_error(
 				error_msg(__FILE__,__LINE__,"QPSchur::ActiveSet::initialize(...) : "
 						  "Error, q_C_hat != 0, now supported yet!"));  
-			assert(0);	// ToDo: We should implement this but it is unlikely to be needed
+			// ToDo: We should implement this but it is unlikely to be needed
 		}
 
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
@@ -3314,7 +3313,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							summary_lines_counter = 0;
 							next_step = PICK_VIOLATED_CONSTRAINT;
 							continue;
-							break;
 						case ITER_REFINE_NOT_PERFORMED:
 						case ITER_REFINE_NOT_NEEDED:
 						case ITER_REFINE_NOT_IMPROVED:
@@ -5021,7 +5019,7 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 		throw std::logic_error(
 			error_msg(__FILE__,__LINE__,"QPSchurPack::QP::dump_qp(...) : Error, "
 					  "m != not supported yet!"));  
-		assert(0);	// ToDo: Implement this!
+		// ToDo: Implement this when needed!
 	}
 	out	<< "\nA_bar =\n" << constraints.A_bar();
 	// Get c_L_bar and c_U_bar

@@ -113,6 +113,7 @@ std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 	}
 	out << "\nalpha = " << this->alpha();
 	out << "\nD =\n" << D();
+	return out;
 }
 
 void MatrixIdentConcat::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans

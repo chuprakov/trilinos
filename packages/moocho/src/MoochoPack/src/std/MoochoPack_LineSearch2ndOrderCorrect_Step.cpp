@@ -305,7 +305,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 			
 			// Print header for summary information
 			const int dbl_min_w = 21;
-			const int dbl_w = std::_MAX(dbl_min_w,out.precision()+8);
+			const int dbl_w = std::_MAX(dbl_min_w,int(out.precision()+8));
 			if( use_newton_olevel == PRINT_NEWTON_SUMMARY_INFO ) {
 				out	<< "\nStarting Newton iterations ...\n"
 					<< "\nphi_c_x   = "	<< phi_c_x 

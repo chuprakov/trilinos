@@ -152,7 +152,7 @@
 #include "ReducedSpaceSQPPack/include/std/CorrectBadInitGuessStd_AddedStepSetOptions.h"
 
 namespace {
-	const int INF_BASIS_COND_CHANGE_FRAC         = 1e+20;
+	const double INF_BASIS_COND_CHANGE_FRAC      = 1e+20;
 	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
 }
 
@@ -1351,8 +1351,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						
 						// If we are going to dump all of the iteration quantites we might as
 						// well just print out the mappings to QPOPT and QPSOL.
-						if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
+						if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES) {
+#ifdef _PG_CXX
+							// What a dumb hack!
+							mapped_qp_file_ptr_t mapped_qp_file_tmp(new std::ofstream("mapped_qp.txt"));
+							mapped_qp_file_ = mapped_qp_file_tmp;
+#else
 							mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
+#endif
+						}
 						_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
 						qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
 						break;

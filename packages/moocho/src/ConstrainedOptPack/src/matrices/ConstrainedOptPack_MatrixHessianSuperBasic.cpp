@@ -441,6 +441,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
 			assert(0); // ToDo: Implement this!
 		}
 	}
+	return 0.0; // Will never be executed!
 }
 
 // Private
