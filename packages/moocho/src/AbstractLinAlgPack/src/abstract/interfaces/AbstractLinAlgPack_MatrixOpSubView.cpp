@@ -113,51 +113,62 @@ size_type MatrixWithOpSubView::nz() const
 			 : 0 );
 }
 
+// Overridden form MatrixWithOp
+
 const VectorSpace& MatrixWithOpSubView::space_cols() const
 {
-	assert_initialize();
+	assert_initialized();
 	return *space_cols_;
 }
 
 const VectorSpace& MatrixWithOpSubView::space_rows() const
 {
-	assert_initialize();
+	assert_initialized();
 	return *space_rows_;
 }
-
-// Overridden form MatrixWithOp
 
 MatrixWithOp::mat_ptr_t
 MatrixWithOpSubView::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
-	assert_initialize();
+	assert_initialized();
 	assert(0); // ToDo: Implement!
 	return NULL;
 }
 
-MatrixWithOp& MatrixWithOpSubView::zero_out()
+void MatrixWithOpSubView::zero_out()
 {
-	assert_initialize();
+	assert_initialized();
 	if( rng_rows_.full_range() && rng_cols_.full_range() ) {
 		M_full_->zero_out();
-		return *this;
+		return;
 	}
 	THROW_EXCEPTION(
 		true, std::logic_error, "MatrixWithOpSubView::zero_out(): "
 		"Error, this method can not be implemented with a sub-view" );
-	return *this; // Never be called
+}
+
+void MatrixWithOpSubView::Mt_S( value_type alpha )
+{
+	assert_initialized();
+	if( rng_rows_.full_range() && rng_cols_.full_range() ) {
+		M_full_->Mt_S(alpha);
+		return;
+	}
+	THROW_EXCEPTION(
+		true, std::logic_error, "MatrixWithOpSubView::Mt_S(alpha): "
+		"Error, this method can not be implemented with a sub-view" );
 }
 
 MatrixWithOp& MatrixWithOpSubView::operator=(const MatrixWithOp& M)
 {
-	assert_initialize();
+	assert_initialized();
 	assert(0); // ToDo: Implement!
 	return *this;
 }
 
 std::ostream& MatrixWithOpSubView::output(std::ostream& out) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::output(out); // ToDo: Specialize if needed?
 }
 
@@ -169,7 +180,7 @@ bool MatrixWithOpSubView::Mp_StM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StM(m_lhs,alpha,trans_rhs); // ToDo: Specialize?
 }
 
@@ -179,7 +190,7 @@ bool MatrixWithOpSubView::Mp_StMtP(
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StMtP(m_lhs,alpha,M_trans,P_rhs,P_rhs_trans); // ToDo: Specialize?
 }
 
@@ -189,7 +200,7 @@ bool MatrixWithOpSubView::Mp_StPtM(
 	, BLAS_Cpp::Transp M_trans
 	) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StPtM(m_lhs,alpha,P_rhs,P_rhs_trans,M_trans); // ToDo: Specialize?
 }
 
@@ -200,7 +211,7 @@ bool MatrixWithOpSubView::Mp_StPtMtP(
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StPtMtP(
 		m_lhs,alpha,P_rhs1,P_rhs1_trans,M_trans,P_rhs2,P_rhs2_trans); // ToDo: Specialize?
 }
@@ -210,7 +221,7 @@ bool MatrixWithOpSubView::Mp_StPtMtP(
 bool MatrixWithOpSubView::Mp_StM(
 	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StM(alpha,M_rhs,trans_rhs); // ToDo: Specialize?
 }
 
@@ -220,7 +231,7 @@ bool MatrixWithOpSubView::Mp_StMtP(
 	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	)
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StMtP(alpha,M_rhs,M_trans,P_rhs,P_rhs_trans); // ToDo: Specialize?
 }
 
@@ -230,7 +241,7 @@ bool MatrixWithOpSubView::Mp_StPtM(
 	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
 	)
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StPtM(
 		alpha,P_rhs,P_rhs_trans,M_rhs,M_trans); // ToDo: Specialize?
 }
@@ -242,7 +253,7 @@ bool MatrixWithOpSubView::Mp_StPtMtP(
 	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	)
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StPtMtP(
 		alpha,P_rhs1,P_rhs1_trans,M_rhs,M_trans,P_rhs2,P_rhs2_trans); // ToDo: Specialize?
 }
@@ -257,7 +268,7 @@ void MatrixWithOpSubView::Vp_StMtV(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 
-	assert_initialize();
+	assert_initialized();
 
 	BLAS_Cpp::Transp
 		M_trans_trans = ( M_trans_==no_trans ? M_trans_in : BLAS_Cpp::trans_not(M_trans_in) );
@@ -300,7 +311,7 @@ void MatrixWithOpSubView::Vp_StMtV(
 	VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	assert_initialize();
+	assert_initialized();
 	MatrixWithOp::Vp_StMtV(v_lhs,alpha,trans_rhs1,sv_rhs2,beta); // ToDo: Specialize?
 }
 
@@ -310,7 +321,7 @@ void MatrixWithOpSubView::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const VectorWithOp& v_rhs3, value_type beta) const
 {
-	assert_initialize();
+	assert_initialized();
 	MatrixWithOp::Vp_StPtMtV(
 		v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,v_rhs3,beta); // ToDo: Specialize?
 }
@@ -321,7 +332,7 @@ void MatrixWithOpSubView::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& sv_rhs3, value_type beta) const
 {
-	assert_initialize();
+	assert_initialized();
 	MatrixWithOp::Vp_StPtMtV(
 		v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,sv_rhs3,beta); // ToDo: Specialize?
 }
@@ -330,7 +341,7 @@ value_type MatrixWithOpSubView::transVtMtV(
 	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const VectorWithOp& v_rhs3) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::transVtMtV(v_rhs1,trans_rhs2,v_rhs3); // ToDo: Specialize?
 }
 
@@ -338,7 +349,7 @@ value_type MatrixWithOpSubView::transVtMtV(
 	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const SpVectorSlice& sv_rhs3) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::transVtMtV(sv_rhs1,trans_rhs2,sv_rhs3); // ToDo: Specialize?
 }
 
@@ -348,7 +359,7 @@ void MatrixWithOpSubView::syr2k(
 	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
-	assert_initialize();
+	assert_initialized();
 	MatrixWithOp::syr2k(
 		M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,sym_lhs); // ToDo: Specialize?
 }
@@ -360,7 +371,7 @@ bool MatrixWithOpSubView::Mp_StMtM(
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StMtM(
 		m_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta); // ToDo: Specialize?
 }
@@ -380,7 +391,7 @@ bool MatrixWithOpSubView::Mp_StMtM(
 	,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta )
 {
-	assert_initialize();
+	assert_initialized();
 	return MatrixWithOp::Mp_StMtM(
 		alpha,mvw_rhs1,trans_rhs1,mwo_rhs2,trans_rhs2,beta); // ToDo: Specialize?
 }
@@ -389,13 +400,13 @@ void MatrixWithOpSubView::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
-	assert_initialize();
+	assert_initialized();
 	MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // ToDo: Specialize?
 }
 
 // private
 
-void MatrixWithOpSubView::assert_initialize() const {
+void MatrixWithOpSubView::assert_initialized() const {
 	THROW_EXCEPTION(
 		M_full_.get() == NULL, std::logic_error
 		,"Error, the MatrixWithOpSubView object has not been initialize!" );

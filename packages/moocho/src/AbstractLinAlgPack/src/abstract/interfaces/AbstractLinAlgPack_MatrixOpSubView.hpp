@@ -128,6 +128,7 @@ public:
 	//@}
 
 	/** @name Overridden from MatrixWithOp */
+	//@{
 
 	///
 	const VectorSpace& space_cols() const;
@@ -136,7 +137,9 @@ public:
 	///
 	MatrixWithOp::mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 	///
-	MatrixWithOp& zero_out();
+	void zero_out();
+	///
+	void Mt_S( value_type alpha );
 	///
 	MatrixWithOp& operator=(const MatrixWithOp& M);
 	///
@@ -240,6 +243,8 @@ public:
 	void syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		, value_type beta, MatrixSymWithOp* sym_lhs ) const;
+	
+	//@}
 
 private:
 	
@@ -251,7 +256,7 @@ private:
 	VectorSpace::space_ptr_t  space_rows_;
 
 	//
-	void assert_initialize() const;
+	void assert_initialized() const;
 	
 };	// end class MatrixWithOpSubView
 
