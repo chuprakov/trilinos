@@ -220,6 +220,11 @@ namespace TSFExtended
       Scalar norm2() const ;
 
       /**
+       * Compute the weighted 2-norm of this vector
+       */
+      Scalar norm2(const Vector<Scalar>& weights) const ;      
+
+      /**
        * Compute the infinity-norm of this vector
        */
       Scalar normInf() const ;
@@ -490,6 +495,16 @@ namespace TSFExtended
     
     return TSFCore::norm_2(*ptr());
   }
+
+
+  template <class Scalar> inline 
+  Scalar Vector<Scalar>::norm2(const Vector<Scalar>& weights) const 
+  {
+    TimeMonitor t(*opTimer());
+    
+    return TSFCore::norm_2(*(weights.ptr()) ,*ptr());
+  }
+
 
   template <class Scalar> inline 
   Scalar Vector<Scalar>::normInf() const 
