@@ -357,6 +357,7 @@ AC_CONFIG_FILES([
 		example/Solvers/Makefile
 		test/Makefile
 		test/epetra-adapters/Makefile
+		test/product-space/Makefile
 		test/scripts/Makefile
 		test/scripts/daily/Makefile
 		test/scripts/daily/mpi/Makefile

@@ -26,4 +26,4 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = scripts epetra-adapters
+SUBDIRS = scripts epetra-adapters product-space

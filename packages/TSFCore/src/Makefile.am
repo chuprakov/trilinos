@@ -89,6 +89,11 @@ UTILITIES_CORE_H = \
 	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTesterDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTester.hpp\
+	$(srcdir)/utilities/Core/TSFCoreProductVectorSpace.hpp\
+	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceDecl.hpp\
+	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceBase.hpp\
+	$(srcdir)/utilities/Core/TSFCoreProductVectorBase.hpp\
+	$(srcdir)/utilities/Core/TSFCoreProductMultiVectorBase.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingToolsDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingTools.hpp
 
