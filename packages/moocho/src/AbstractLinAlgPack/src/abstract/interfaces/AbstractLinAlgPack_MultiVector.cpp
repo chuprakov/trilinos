@@ -150,8 +150,8 @@ void MultiVector::apply_op(
 		sec_dim      = ( apply_by == APPLY_BY_ROW ? cols()          : rows()   ),
 		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim ),
 		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  );
-	assert(0 < prim_sub_dim && prim_sub_dim < prim_dim );
-	assert(0 < sec_sub_dim && sec_sub_dim < sec_dim );
+	assert(0 < prim_sub_dim && prim_sub_dim <= prim_dim );
+	assert(0 < sec_sub_dim  && sec_sub_dim  <= sec_dim );
 
 	//
 	// Apply the reduction/transformation operator and trnasform the target
@@ -161,7 +161,7 @@ void MultiVector::apply_op(
 	wsp::Workspace<MultiVector::vec_ptr_t>             vecs_s(wss,num_multi_vecs);
 	wsp::Workspace<const Vector*>                      vecs(wss,num_multi_vecs);
 	wsp::Workspace<MultiVectorMutable::vec_mut_ptr_t>  targ_vecs_s(wss,num_targ_multi_vecs);
-	wsp::Workspace<VectorMutable*>                     targ_vecs(wss,num_multi_vecs);
+	wsp::Workspace<VectorMutable*>                     targ_vecs(wss,num_targ_multi_vecs);
 
 	{for(size_type j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments 
@@ -176,8 +176,8 @@ void MultiVector::apply_op(
 		// Apply the reduction/transformation operator
 		AbstractLinAlgPack::apply_op(
 			prim_op
-			,num_multi_vecs, &vecs[0]
-			,num_targ_multi_vecs, &targ_vecs[0]
+			,num_multi_vecs,      num_multi_vecs      ? &vecs[0]      : NULL
+			,num_targ_multi_vecs, num_targ_multi_vecs ? &targ_vecs[0] : NULL
 			,reduct_objs ? reduct_objs[j-1] : RTOp_REDUCT_OBJ_NULL
 			,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 			);
@@ -208,7 +208,7 @@ void MultiVector::apply_op(
 		prim_dim    = ( apply_by == APPLY_BY_ROW ? rows()         : cols()  ),
 		sec_dim     = ( apply_by == APPLY_BY_ROW ? cols()         : rows()  ),
 		sec_sub_dim = ( sec_sub_dim_in != 0      ? sec_sub_dim_in : sec_dim );
-	assert(0 < sec_sub_dim && sec_sub_dim < sec_dim );
+	assert(0 < sec_sub_dim && sec_sub_dim <= sec_dim );
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
 	// so that we can call the companion version of this method.

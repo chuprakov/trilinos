@@ -227,7 +227,6 @@ bool MultiVectorMutableDense::syrk(
 	,value_type beta, MatrixSymOp* sym_lhs
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		sym_lhs == NULL, std::invalid_argument

@@ -87,7 +87,7 @@ bool MatrixOpNonsingTester::test_matrix(
 
 	if(out && print_tests() >= PRINT_BASIC)
 		*out
-			<< "\nCheck: alpha*op(op("<<M_name<<")*op("<<M_name<<"))*v == alpha*v ...";
+			<< "\nCheck: alpha*op(op(inv("<<M_name<<"))*op("<<M_name<<"))*v == alpha*v ...";
 	if(out && print_tests() > PRINT_BASIC)
 		*out << std::endl;
 

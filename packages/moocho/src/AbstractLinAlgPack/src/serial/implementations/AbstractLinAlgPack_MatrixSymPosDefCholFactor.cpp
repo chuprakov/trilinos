@@ -24,11 +24,15 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMS.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymDiag.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -295,6 +299,45 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 				this->M().gms().diag(), MemMngPack::null ) );
 		else
 			initialize( this->M() );
+		return true;
+	}
+	return false;
+}
+
+bool MatrixSymPosDefCholFactor::syrk(
+	const MatrixOp      &mwo_rhs
+	,BLAS_Cpp::Transp   M_trans
+	,value_type         alpha
+	,value_type         beta
+	)
+{
+	MatrixDenseSymMutableEncap  sym_gms_lhs(this);
+	const MatrixOpGetGMS *mwo_rhs_gms = dynamic_cast<const MatrixOpGetGMS*>(&mwo_rhs);
+	if(mwo_rhs_gms) {
+		assert(0); // ToDo: Implement
+		return true;
+	}
+	else {
+		// Here we will give up on symmetry and just compute the whole product S = op(mwo_rhs)*op(mwo_rhs')
+		DenseLinAlgPack::DMatrixSliceTriEle tri_ele_gms_lhs = DenseLinAlgPack::tri_ele(sym_gms_lhs().gms(),sym_gms_lhs().uplo());
+		if(beta==0.0)        DenseLinAlgPack::assign( &tri_ele_gms_lhs, 0.0 );
+		else if(beta!=1.0)   DenseLinAlgPack::Mt_S( &tri_ele_gms_lhs, beta );
+		const VectorSpace                 &spc = mwo_rhs.space_rows();
+		const index_type                  m    = spc.dim();
+		VectorSpace::multi_vec_mut_ptr_t  S    = spc.create_members(m);
+		S->zero_out();
+		LinAlgOpPack::M_MtM( S.get(), mwo_rhs, M_trans, mwo_rhs, BLAS_Cpp::trans_not(M_trans) );
+		// Copy S into sym_ghs_lhs
+		if( sym_gms_lhs().uplo() == BLAS_Cpp::lower ) {
+			for( index_type j = 1; j <= m; ++j ) {
+				LinAlgOpPack::Vp_StV( &sym_gms_lhs().gms().col(j)(j,m), alpha, VectorDenseEncap(*S->col(j)->sub_view(j,m))() );
+			}
+		}
+		else {
+			for( index_type j = 1; j <= m; ++j ) {
+				LinAlgOpPack::Vp_StV( &sym_gms_lhs().gms().col(j)(1,j), alpha, VectorDenseEncap(*S->col(j)->sub_view(1,j))() );
+			}
+		}
 		return true;
 	}
 	return false;

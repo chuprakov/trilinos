@@ -359,6 +359,13 @@ public:
 	bool Mp_StM(
 		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 		);
+	///
+	bool syrk(
+		const MatrixOp      &mwo_rhs
+		,BLAS_Cpp::Transp   M_trans
+		,value_type         alpha
+		,value_type         beta
+		);
 
 	//@}
 
