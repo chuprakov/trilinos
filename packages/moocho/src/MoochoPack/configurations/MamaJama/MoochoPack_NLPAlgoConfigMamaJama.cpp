@@ -42,6 +42,7 @@
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
 
+#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "NLPInterfacePack/include/NLPReduced.h"
 #include "SparseSolverPack/include/COOBasisSystem.h"
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
@@ -276,7 +277,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		dof = nlp.n() - nlp.r(),
 		nb = nlp.has_bounds() ? num_bounds( nlp.xl(), nlp.xu() ) : 0;
 
-	// 7/28/00: Determine if this is a standard NLPReduced nlp or a tailored approach nlp.
+	// 7/28/00: Determine if this is a standard NLPFirstOrderInfo nlp or a tailored approach nlp.
 	bool tailored_approach
 		= (NULL != dynamic_cast<NLPrSQPTailoredApproach*>(algo->get_nlp()));
 	if( tailored_approach ) {
@@ -295,14 +296,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	}
 	else {
 		// If it is not a tailored approach NLP then it better
-		// support the NLPReduced interface!
-		if( NULL == dynamic_cast<NLPReduced*>(algo->get_nlp()) ) {
+		// support at least the NLPFirstOrder interface (and perhaps
+		// the NLPReduced interface also)!
+		if( NULL == dynamic_cast<NLPFirstOrderInfo*>(algo->get_nlp()) ) {
 			std::ostringstream omsg;
 			omsg
 				<< "rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : "
 				<< "Error, type nlp object with the concrete type "
 				<< typeid(algo->nlp()).name()
-				<< " does not support the NLPReduced interface.";
+				<< " does not support the NLPFirstOrderInfo interface.";
 			if(trase_out)
 				*trase_out << std::endl << omsg.str() << std::endl;
 			throw std::logic_error( omsg.str() );
@@ -1685,7 +1687,7 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 		size_type rank;
 		red_nlp->get_basis( &state.var_perm_new(), &state.con_perm_new(), &rank );
 	}
-	else if ( dynamic_cast<NLPrSQPTailoredApproach*>(algo.get_nlp()) ){
+	else {
 		// Just set to original order (identity).
 		using LinAlgPack::identity_perm;
 		state.var_perm_new().resize(n);

@@ -87,7 +87,7 @@ void ReducedSpaceSQPPack::rSQPAlgoContainer::print_algorithm_times(
 void ReducedSpaceSQPPack::rSQPAlgoContainer::assert_valid_setup() const {
 	if( !get_nlp().get() )
 		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
-				"The NLPReduced object has not been set" );
+				"The NLP object has not been set" );
 	if( !get_track().get() )
 		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
 				"The rSQPTrack object has not been set" );

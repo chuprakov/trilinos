@@ -10,7 +10,7 @@
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "NLPInterfacePack/include/NLPObjGradient.h"
 #include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
@@ -45,16 +45,16 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 	using LinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::max_near_feas_step;
-	using NLPInterfacePack::NLPFirstOrderInfo;
+	using NLPInterfacePack::NLPObjGradient;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 #ifdef _WINDOWS
-	NLPFirstOrderInfo
-		&nlp = dynamic_cast<NLPFirstOrderInfo&>(algo.nlp());
+	NLPObjGradient
+		&nlp = dynamic_cast<NLPObjGradient&>(algo.nlp());
 #else
-	NLPFirstOrderInfo
-		&nlp = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+	NLPObjGradient
+		&nlp = dyn_cast<NLPObjGradient>(algo.nlp());
 #endif
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -262,7 +262,7 @@ void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algo
 {
 	out
 		<< L << "*** Initialize the reduced Hessian using a single finite difference.\n"
-		<< L << "*** Where the nlp must support the NLPFirstOrderInfo interface and\n"
+		<< L << "*** Where the nlp must support the NLPObjGradient interface and\n"
 		<< L << "*** rHL_k must support the MatrixSymInitDiagonal interface or exceptions\n"
 		<< L << "*** will be thrown.\n"
 		<< L << "default: num_basis_remembered = NO_BASIS_UPDATED_YET\n"

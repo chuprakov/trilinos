@@ -160,12 +160,14 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 
 	const rSQPAlgo			&algo = rsqp_algo(p_algo);
 	const rSQPState			&s =algo.rsqp_state();
-	const NLPFirstOrderInfo
+	const NLPObjGradient
 #ifdef _WINDOWS
-		&nlp = dynamic_cast<const NLPFirstOrderInfo&>(algo.nlp()); 
+		&nlp = dynamic_cast<const NLPObjGradient&>(algo.nlp()); 
 #else
-		&nlp = const_dyn_cast<NLPFirstOrderInfo>(algo.nlp()); 
+		&nlp = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
 #endif
+	const NLPFirstOrderInfo
+		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
@@ -284,7 +286,12 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 		<< "f(x)  : " << nlp.num_f_evals() << endl
 		<< "c(x)  : " << nlp.num_c_evals() << endl
 		<< "Gf(x) : " << nlp.num_Gf_evals() << endl
-		<< "Gc(x) : " << nlp.num_Gc_evals() << endl;
+		<< "Gc(x) : ";
+	if( nlp_foi )
+		o() << nlp_foi->num_Gc_evals();
+	else
+		o() << "?";
+	o() << endl;
 }
 
 void rSQPTrackConsoleStd::print_top_header(const rSQPState &s

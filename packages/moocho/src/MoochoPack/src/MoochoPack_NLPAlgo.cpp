@@ -61,7 +61,7 @@ void rSQPAlgo::interface_print_algorithm_times( std::ostream& out ) const {
 
 void rSQPAlgo::print_algorithm(std::ostream& out) const {
 	out
-		<< "\n*** NLPReduced ***\n"
+		<< "\n*** NLP ***\n"
 		<< typeid(*get_nlp()).name() << "\n";
 
 	Algorithm::print_algorithm(out);

@@ -67,12 +67,14 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	const rSQPAlgo			&algo = rsqp_algo(p_algo);
 	const rSQPState			&s =algo.rsqp_state();
 #ifdef _WINDOWS
-	const NLPFirstOrderInfo
-		&nlp = dynamic_cast<const NLPFirstOrderInfo&>(algo.nlp()); 
+	const NLPObjGradient
+		&nlp = dynamic_cast<const NLPObjGradient&>(algo.nlp()); 
 #else
-	const NLPFirstOrderInfo
+	const NLPObjGradient
 		&nlp = const_dyn_cast<NLPFirstOrderInfo>(algo.nlp()); 
 #endif
+	const NLPFirstOrderInfo
+		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
 	// Stop the timer
 	timer_.stop();
@@ -122,7 +124,7 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< "; # max( number f(x) evals, number c(x) evals )\n";
 	// ngrad
 	o() << left << setw(stat_w) << "ngrad" << "= "
-		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),nlp.num_Gc_evals())
+		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1))
 		<< "; # max( number Gf(x) evals, number Gc(x) evals )\n";
 	// CPU
 	o() << left << setw(stat_w) << "CPU" << "= "

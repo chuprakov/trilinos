@@ -12,7 +12,7 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "NLPInterfacePack/include/NLPReduced.h"
+#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
@@ -40,15 +40,15 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::assert_print_nan_inf;
 	using GeneralIterationPack::print_algorithm_step;
-	using NLPInterfacePack::NLPReduced;
+	using NLPInterfacePack::NLPFirstOrderInfo;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPReduced
+	NLPFirstOrderInfo
 #ifdef _WINDOWS
-		&nlp	= dynamic_cast<NLPReduced&>(algo.nlp());
+		&nlp	= dynamic_cast<NLPFirstOrderInfo&>(algo.nlp());
 #else
-		&nlp	= dyn_cast<NLPReduced>(algo.nlp());
+		&nlp	= dyn_cast<NLPFirstOrderInfo>(algo.nlp());
 #endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();

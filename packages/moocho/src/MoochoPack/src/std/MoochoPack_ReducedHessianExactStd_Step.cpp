@@ -44,6 +44,8 @@ bool ReducedHessianExactStd_Step::do_step(
 #else
 				&nlp	= dyn_cast<NLPSecondOrderInfo>(algo.nlp());
 #endif
+	MatrixSymWithOp
+		*HL_sym_op = dynamic_cast<MatrixSymWithOp*>(&s.HL().get_k(0));
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -65,7 +67,7 @@ bool ReducedHessianExactStd_Step::do_step(
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out << "Initializing lambda_km1 = nlp.get_lambda_init ... \n";
 		}
-		nlp.get_lambda_init( &s.lambda().set_k(-1).v() );
+		nlp.get_init_lagrange_mult( &s.lambda().set_k(-1).v(), NULL );
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out << "||lambda_km1||inf = " << s.lambda().get_k(-1).norm_inf() << std::endl;
 		}
@@ -74,7 +76,7 @@ bool ReducedHessianExactStd_Step::do_step(
 		}
 	}
 
-	nlp.set_HL(	&s.HL().set_k(0) );
+	nlp.set_HL(	HL_sym_op );
 	nlp.calc_HL( s.x().get_k(0)(), s.lambda().get_k(-1)(), false );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
@@ -84,8 +86,6 @@ bool ReducedHessianExactStd_Step::do_step(
 	// If rHL has already been updated for this iteration then just leave it.
 	if( !s.rHL().updated_k(0) ) {
 
-		const MatrixSymWithOp
-			*HL_sym_op = dynamic_cast<const MatrixSymWithOp*>(&s.HL().get_k(0));
 		if( !HL_sym_op ) {
 			std::ostringstream omsg;
 			omsg

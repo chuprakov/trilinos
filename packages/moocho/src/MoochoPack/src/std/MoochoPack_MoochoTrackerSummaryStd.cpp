@@ -182,12 +182,14 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 
 	const rSQPAlgo			&_algo = rsqp_algo(algo);
 	const rSQPState			&s =_algo.rsqp_state();
-	const NLPFirstOrderInfo
+	const NLPObjGradient
 #ifdef _WINDOWS
-		&nlp = dynamic_cast<const NLPFirstOrderInfo&>(_algo.nlp()); 
+		&nlp = dynamic_cast<const NLPObjGradient&>(_algo.nlp()); 
 #else
-		&nlp = const_dyn_cast<NLPFirstOrderInfo>(_algo.nlp()); 
+		&nlp = const_dyn_cast<NLPObjGradient>(_algo.nlp()); 
 #endif
+	const NLPFirstOrderInfo
+		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 	int w = 15;
 	int prec = 6;
 	o().precision(prec);
@@ -315,12 +317,17 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 	else
 		o() << setw(w) << "-";
 
-	o()	<< "\n\nnumber of function evaluations:\n"
+	o()	<< "\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"
 		<< "f(x)  : " << nlp.num_f_evals() << endl
 		<< "c(x)  : " << nlp.num_c_evals() << endl
 		<< "Gf(x) : " << nlp.num_Gf_evals() << endl
-		<< "Gc(x) : " << nlp.num_Gc_evals() << endl;
+		<< "Gc(x) : ";
+	if( nlp_foi )
+		o() << nlp_foi->num_Gc_evals();
+	else
+		o() << "?";
+	o() << endl;
 }
 
 void ReducedSpaceSQPPack::rSQPTrackSummaryStd::print_header(const rSQPState &s) const
