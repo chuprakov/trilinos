@@ -595,8 +595,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// Note, the switch based code for the above if statements would not
 		// compile under MipsPro 7.3.1.1m.
 
-		DecompositionSystemVarReductStd*
-			decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
+	   	decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
 
 		algo->rsqp_state().set_decomp_sys(decomp_sys);
 
