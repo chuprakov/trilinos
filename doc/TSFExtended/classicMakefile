@@ -2,7 +2,7 @@ TARGET=TSFExtendedSAND
 BIBFILES= references.bib
 FIGFILES =
 
-$(TARGET).dvi: $(TARGET).tex $(BIBFILES) $(FIGFILES) TSFExtendedBody.tex DesignOverview.tex
+$(TARGET).dvi: $(TARGET).tex $(BIBFILES) $(FIGFILES) TSFExtendedBody.tex DesignOverview.tex Introduction.tex
 	latex $(TARGET)
 	bibtex $(TARGET)
 	latex $(TARGET)
