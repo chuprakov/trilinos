@@ -31,7 +31,6 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFLinearOperatorDecl.hpp"
-#include "TSFRowAccessibleOp.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFVectorDecl.hpp"
 #include "TSFVectorSpaceDecl.hpp"
@@ -158,18 +157,17 @@ void LinearOperator<Scalar>::getRow(const int& row,
 				    Teuchos::Array<int>& indices, 
 				    Teuchos::Array<Scalar>& values) const
 {
-  RowAccessibleOp<Scalar>* val = 
-    dynamic_cast<RowAccessibleOp<Scalar>* >(ptr());
+  const RowAccessibleOp<Scalar>* val = 
+    dynamic_cast<const RowAccessibleOp<Scalar>* >(ptr().get());
   TEST_FOR_EXCEPTION(val == 0, runtime_error, 
 		     "Operator not row accessible; getRow() not defined.");
-  ptr()->getRow(row, indices, values);
+  val->getRow(row, indices, values);
 }
 
 //=============================================================================
 template <class Scalar>
 int LinearOperator<Scalar>::numBlockRows() const
 {
-  cerr << "getting numBlockRows\n";
   BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
   TEST_FOR_EXCEPTION(b == 0, runtime_error, 
 		     "LinearOperator<Scalar> not Block Operator.");
@@ -197,11 +195,6 @@ void LinearOperator<Scalar>::setBlock(int i, int j,
 		     "Can't call setBlock since operator not BlockOperator");
 
   
-  cerr << "     calling numBlockRows\n";
-  int n = numBlockRows();
-  cerr << "     numBlocks = " << n << endl;
-
-  cerr << "     Calling setBlock\n";
   b->setBlock(i, j, sub);
 } 
 
@@ -255,6 +248,11 @@ string LinearOperator<Scalar>::describe(int depth) const
     }
   return "Operator not describable";
 }
+
+
+
+
+
 
 
 

@@ -35,8 +35,9 @@
 
 
 #include "TSFConfigDefs.hpp"
- #include "TSFCoreLinearOp.hpp"
+#include "TSFCoreLinearOp.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
@@ -52,7 +53,8 @@ namespace TSFExtended
    */
   template <class Scalar> 
   class ZeroOperator : public OpDescribableByTypeID<Scalar>,
-		       public Handleable<TSFCore::LinearOp<Scalar> >
+		       public Handleable<TSFCore::LinearOp<Scalar> >,
+                       public RowAccessibleOp<Scalar>
   {
   public:
     GET_RCP(TSFCore::LinearOp<Scalar>);
@@ -104,6 +106,16 @@ namespace TSFExtended
 	{
 	  Vt_S(y, beta);
 	}
+    }
+
+
+    /** Return the kth row  */
+    void getRow(const int& k, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const
+    {
+      indices.resize(0);
+      values.resize(0);
     }
 
 

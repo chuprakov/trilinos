@@ -34,17 +34,21 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "TSFHandleable.hpp"
+#include "TSFRowAccessibleOp.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 
 namespace TSFExtended
 {
+  using namespace Teuchos;
   /** 
    * TSFIdentityOperator is the identity ("I") operator on a vector space.
    */
   template <class Scalar> 
   class IdentityOperator : public OpDescribableByTypeID<Scalar>,
-			   public Handleable<TSFCore::LinearOp<Scalar> >
+			   public Handleable<TSFCore::LinearOp<Scalar> >,
+                           public RowAccessibleOp<Scalar>
   {
   public:
     GET_RCP(TSFCore::LinearOp<Scalar>);
@@ -101,6 +105,17 @@ namespace TSFExtended
     /** Return the range of the operator */
     RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
     {return space_.ptr();}
+
+    /** Return the kth row  */
+    void getRow(const int& k, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const
+    {
+      indices.resize(1);
+      indices[0] = k;
+      values.resize(1);
+      values[0] = 1.0;
+    }
 
   private:
     /** The vector space on which this operator works. Note that the range and

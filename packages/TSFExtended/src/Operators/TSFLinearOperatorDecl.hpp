@@ -36,6 +36,7 @@
 #include "TSFLoadableMatrix.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_TimeMonitor.hpp"
+#include "TSFRowAccessibleOp.hpp"
 
 
 
@@ -169,6 +170,8 @@ namespace TSFExtended
     }
     /** Describe with proper indent  */
     string describe(int depth) const;
+
+
       
 
   private:

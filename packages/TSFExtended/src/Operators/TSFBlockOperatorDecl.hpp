@@ -33,6 +33,8 @@
 #include "Teuchos_Array.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "TSFExplicitlyTransposeableOp.hpp"
+#include "TSFRowAccessibleOp.hpp"
+#include "TSFHandleable.hpp"
 
 
 
@@ -56,7 +58,8 @@ namespace TSFExtended
   template <class Scalar>
   class BlockOperator : public OpDescribableByTypeID<Scalar>,
 			public Handleable<TSFCore::LinearOp<Scalar> >,
-                        public ExplicitlyTransposeableOp<Scalar>
+                        public ExplicitlyTransposeableOp<Scalar>,
+                        public RowAccessibleOp<Scalar>
   {
   public:
     GET_RCP(TSFCore::LinearOp<Scalar>);
@@ -144,7 +147,11 @@ namespace TSFExtended
 			    const Scalar beta) const ;
 
 
+    /** Get entire row of the block matrix  */
+    void getRow(const int& row, Teuchos::Array<int>& indices,
+		Teuchos::Array<Scalar>& values) const;
 
+    
     /**  Create the transpose */
     LinearOperator<Scalar> formTranspose() const;
 

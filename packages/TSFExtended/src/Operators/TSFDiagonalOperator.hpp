@@ -34,28 +34,39 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "TSFVectorSpaceDecl.hpp"
+#include "TSFLinearCombination.hpp"
 
 namespace TSFExtended
 {
+  using namespace TSFExtendedOps;
   /** 
    * A DiagonalOperator is a diagonal operator.
    */
   template <class Scalar> 
   class DiagonalOperator : public OpDescribableByTypeID<Scalar>,
-			   public Handleable<TSFCore::LinearOp<Scalar> >
+			   public Handleable<TSFCore::LinearOp<Scalar> >,
+                           public RowAccessibleOp<Scalar>
   {
   public:
     GET_RCP(TSFCore::LinearOp<Scalar>);
     /**
      * Construct a vector containing the entries on the diagonal.
      */
-    DiagonalOperator(const TSFCore::Vector<Scalar>& diagonalValues)
-      : diagonalValues_(diagonalValues.ptr()) {;}
+    DiagonalOperator(const Vector<Scalar>& vector)
+      : diagonalValues_(vector),
+	domain_(vector.space()),
+	range_(vector.space())
+    {;}
+
 
     /** Virtual dtor */
     virtual ~DiagonalOperator(){;}
+
+
 
     /** 
      * Apply does an element-by-element multiply between the input 
@@ -69,24 +80,49 @@ namespace TSFExtended
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
-      RefCountPtr<TSFCore::Vector<Scalar> > applyRes;
-      ele_wise_product(alpha, *diagonalValues_, x, applyRes);
-      Vp_StV(applyRes, beta, *y);
+      Vector<Scalar>  applyRes = range_.createMember();
+    
+      TSFCore::ele_wise_prod(alpha, *(diagonalValues_.ptr().get()), x, 
+			     applyRes.ptr().get());
+      TSFCore::Vp_StV(applyRes.ptr().get(), beta, *y);
     }
 
+
+
     /** Return the domain of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return diagonalValues_->space();}
+    RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    {return domain_.ptr();}
  
 
+
+
     /** Return the range of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return diagonalValues_->space();}
+    RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    {return range_.ptr();}
+
+
+
+    /** Return the kth row  */
+    void getRow(const int& k, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const
+    {
+      indices.resize(1);
+      indices[0] = k;
+      values.resize(1);
+      values[0] = diagonalValues_.getElement(k);
+    }
+
+
 
   private:
 
     /**
      * The vector of diagonal entries in the operator.
      */
-    RefCountPtr<const TSFCore::Vector<Scalar> > diagonalValues_;
+    Vector<Scalar>  diagonalValues_;
+    VectorSpace<Scalar> domain_;
+    VectorSpace<Scalar> range_;
     
   };
 }

@@ -258,6 +258,49 @@ LinearOperator<Scalar> BlockOperator<Scalar>::formTranspose() const
 
 
 
+
+/*==================================================================*/
+template <class Scalar>
+void BlockOperator<Scalar>::getRow(const int& row, 
+				   Teuchos::Array<int>& indices,
+				   Teuchos::Array<Scalar>& values) const
+{
+  /* find col block in which row exists and row within the block */
+  int K = 0;
+  int blockRow = 0;
+  int rowInBlock = 0;
+  for (int i = 0; i < nBlockRows_; i++)
+    {
+      int numR = getBlock(i, 0).range().dim();
+      K += numR;
+      if (row < K)
+	{
+	  blockRow = i;
+	  rowInBlock = row - (K - numR);
+	  break;
+	}
+    }
+
+  /* get the row elements for each block in the row.  */
+  int offset = 0;
+  Teuchos::Array<int> localInd;
+  Teuchos::Array<Scalar> localVal;
+  for (int i = 0; i < nBlockCols_; i++)
+    {
+      sub_[blockRow][i].getRow(rowInBlock,localInd, localVal);
+      for (int j = 0; j < localInd.size(); j++)
+	{
+	  indices.append(localInd[j] + offset);
+	  values.append(localVal[j]);
+	}
+      offset += sub_[blockRow][i].domain().dim();
+    }
+
+}
+
+
+
+
 /*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::print(ostream& os) const 

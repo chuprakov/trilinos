@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFSCALEDOPERATOR_HPP
 #define TSFSCALEDOPERATOR_HPP
@@ -35,6 +35,12 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "TSFExplicitlyTransposeableOp.hpp"
+#include "TSFRowAccessibleOp.hpp"
+#include "TSFHandleable.hpp"
+
+
+
 
 namespace TSFExtended
 {
@@ -43,14 +49,18 @@ namespace TSFExtended
    * another LinearOperator by a constant scaling factor.
    */
   template <class Scalar> 
-  class ScaledOperator : public OpDecribableByTypeID<Scalar>
+  class ScaledOperator : public OpDescribableByTypeID<Scalar>,
+			 public Handleable<TSFCore::LinearOp<Scalar> >,
+			 public RowAccessibleOp<Scalar>
   {
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
+
     /**
      * Construct the LinearOperator and the constant scaling factor.
      */
-    ScaledOperator(const LinearOperator& op, const Scalar& scale)
-      : op_(op.ptr()), scale_(scale) {;}
+    ScaledOperator(const LinearOperator<Scalar>& op, const Scalar& scale)
+      : op_(op), scale_(scale) {;}
 
     /** Virtual dtor */
     virtual ~ScaledOperator(){;}
@@ -60,27 +70,43 @@ namespace TSFExtended
      * vector in the domain space to the appropriate vector in the range space.
      */
     virtual void apply(
-                       const ETransp            M_trans
+                       TSFCore::ETransp            M_trans
                        ,const TSFCore::Vector<Scalar>    &x
                        ,TSFCore::Vector<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
-      op_->apply(M_trans, x, y, alpha, beta);
-      Vt_S(y, scale_);
+      op_.ptr()->apply(M_trans, x, y, alpha, beta);
+      TSFCore::Vt_S(y, scale_);
     }
 
     /** Return the domain of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return op_->domain();}
-    }
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    {return op_.domain().ptr();}
+    
 
     /** Return the range of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return op_->range();}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    {return op_.range().ptr();}
+
+
+    /** Return the kth row  */
+    void getRow(const int& k, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const
+    {
+      op_.getRow(k, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  values[i] *= scale_;
+	}
+    }
+
 
   private:
 
-    RefCountPtr<const LinearOperator> op_;
+    LinearOperator<Scalar> op_;
     Scalar scale_;
   };
 }
