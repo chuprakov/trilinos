@@ -250,6 +250,101 @@ public:
 		) const;
 
 	//@}
+	
+	/** @name Permuted views */
+	//@{
+
+	///
+	/** Create a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
+	 *
+	 * @param  P_row  [in] Row permutation.  If <tt>P_row == NULL</tt> then the
+	 *                indentity permutation is used.
+	 * @param row_part
+	 *                [in] Array (length <tt>num_row_part+1</tt>) storing the row indexes
+	 *                that may be passed to <tt>return->sub_view(r1,r2,...)</tt>.  If
+	 *                <tt>row_part == NULL</tt> then the assumed array is <tt>{ 1, this->rows() }</tt>. 
+	 * @param  num_row_part
+	 *                [in] Length of the array \c row_part.  If <tt>row_part == NULL</tt> then this
+	 *                argument is ignored.
+	 * @param  P_col  [in] Column permutation.  If <tt>P_col == NULL</tt> then the
+	 *                indentity permutation is used.
+	 * @param col_part
+	 *                [in] Array (length <tt>num_col_part+1</tt>) storing the column indexes
+	 *                that may be passed to <tt>return->sub_view(...,c1,c2)</tt>.  If
+	 *                <tt>col_part == NULL</tt> then the assumed array is <tt>{ 1, this->cols() }</tt>. 
+	 * @param  num_col_part
+	 *                [in] Length of the array \c col_part.  If <tt>col_part == NULL</tt> then this
+	 *                argument is ignored.
+	 *
+	 * Preconditions:<ul>
+	 * <li> [<tt>P_row != NULL</tt>] <tt>P_row->space().is_compatible(this->space_cols())</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> [<tt>P_col != NULL</tt>] <tt>P_col->space().is_compatible(this->space_rows())</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> [<tt>row_part != NULL</tt>] <tt>1 <= row_part[i-1] < row_part[i] <= this->rows(), for i = 1...num_row_part</tt>
+	 *      (throw ???)
+	 * <li> [<tt>col_part != NULL</tt>] <tt>1 <= col_part[i-1] < col_part[i] <= this->cols(), for i = 1...num_col_part</tt>
+	 *      (throw ???)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> The subviews <tt>return->sub_view(R,C)</tt> should be able to be created efficiently where
+	 *      <tt>R = [row_part[kr-1],row_part[kr]-1], for kr = 1...num_row_part</tt> and
+	 *      <tt>C = [col_part[kc-1],col_part[kc]-1], for kc = 1...num_col_part</tt>.
+	 * </ul>
+	 *
+	 * The default implementation returns a <tt>MatrixPermAggr</tt> object.
+	 */
+	virtual mat_ptr_t perm_view(
+		const Permutation          *P_row
+		,const index_type          row_part[]
+		,int                       num_row_part
+		,const Permutation         *P_col
+		,const index_type          col_part[]
+		,int                       num_col_part
+		) const;
+
+	///
+	/** Reinitialize a permuted view: <tt>M_perm = P_row' * M * P_col</tt>.
+	 *
+	 * @param  P_row  [in] Same as input to \c perm_view().
+	 * @param row_part
+	 *                [in] Same as input to \c perm_view().
+	 * @param  num_row_part
+	 *                [in] Same as input to \c perm_view().
+	 * @param  P_col  [in] Same as input to \c perm_view().
+	 * @param col_part
+	 *                [in] Same as input to \c perm_view().
+	 * @param  num_col_part
+	 *                [in] Same as input to \c perm_view().
+	 * @param  perm_view
+	 *                [in] Smart pointer to a permuted view
+	 *                returned from <tt>this->perm_view()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> [<tt>P_row != NULL</tt>] <tt>P_row->space().is_compatible(this->space_cols())</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> [<tt>P_col != NULL</tt>] <tt>P_col->space().is_compatible(this->space_rows())</tt>
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+	 * <li> [<tt>row_part != NULL</tt>] <tt>1 <= row_part[i-1] < row_part[i] <= this->rows(), for i = 1...num_row_part</tt>
+	 *      (throw ???)
+	 * <li> [<tt>col_part != NULL</tt>] <tt>1 <= col_part[i-1] < col_part[i] <= this->cols(), for i = 1...num_col_part</tt>
+	 *      (throw ???)
+	 * </ul>
+	 *
+	 * The default implementation simply returns <tt>this->perm_view()</tt>
+	 */
+	virtual mat_ptr_t perm_view_update(
+		const Permutation          *P_row
+		,const index_type          row_part[]
+		,int                       num_row_part
+		,const Permutation         *P_col
+		,const index_type          col_part[]
+		,int                       num_col_part
+		,const mat_ptr_t           &perm_view
+		) const;
+
+	//@}
 
 	/** @name Level-1 BLAS */
 	//@{

@@ -20,9 +20,11 @@
 
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
+#include "AbstractLinAlgPack/include/MatrixPermAggr.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/Permutation.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/SpVectorView.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
@@ -106,6 +108,44 @@ MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 		new MatrixWithOpSubView(
 			rcp::rcp(const_cast<MatrixWithOp*>(this),false) // don't clean up memory
 			,row_rng,col_rng ) );
+}
+
+// Permuted views
+
+MatrixWithOp::mat_ptr_t
+MatrixWithOp::perm_view(
+	const Permutation          *P_row
+	,const index_type          row_part[]
+	,int                       num_row_part
+	,const Permutation         *P_col
+	,const index_type          col_part[]
+	,int                       num_col_part
+	) const
+{
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(
+		new MatrixPermAggr(
+			rcp::rcp(this,false)
+			,rcp::rcp(P_row,false)
+			,rcp::rcp(P_col,false)
+			,rcp::null
+			) );
+}
+
+MatrixWithOp::mat_ptr_t
+MatrixWithOp::perm_view_update(
+	const Permutation          *P_row
+	,const index_type          row_part[]
+	,int                       num_row_part
+	,const Permutation         *P_col
+	,const index_type          col_part[]
+	,int                       num_col_part
+	,const mat_ptr_t           &perm_view
+	) const
+{
+	return this->perm_view(
+		P_row,row_part,num_row_part
+		,P_col,col_part,num_col_part );
 }
 
 // Level-1 BLAS
