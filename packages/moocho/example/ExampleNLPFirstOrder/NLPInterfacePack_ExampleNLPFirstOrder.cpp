@@ -20,7 +20,6 @@
 #include "ExampleNLPFirstOrderInfo.h"
 #include "ExampleBasisSystem.h"
 #include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
