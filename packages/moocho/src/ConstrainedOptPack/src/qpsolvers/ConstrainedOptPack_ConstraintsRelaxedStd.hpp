@@ -99,8 +99,7 @@ public:
 		 * since copies of data are not made!
 		 */
 		void initialize(
-			const VectorSpace::space_ptr_t   &space_d
-			,const VectorSpace::space_ptr_t  &space_eta
+			const VectorSpace::space_ptr_t   &space_d_eta
 			,const size_type                 m_in
 			,const size_type                 m_eq
 			,const MatrixWithOp              *E
@@ -195,8 +194,8 @@ public:
 		GenPermMatrixSlice  P_u_;
 		row_i_t             P_u_row_i_;
 		col_j_t             P_u_col_j_;
-		VectorSpaceCompositeStd   space_cols_;
-		VectorSpaceCompositeStd   space_rows_;
+		VectorSpace::space_ptr_t   space_cols_;
+		VectorSpaceCompositeStd    space_rows_;
 	};	// end class MatrixConstraints
 
 	///
@@ -277,8 +276,7 @@ public:
 	 *                  and the matrix P_u will be the identity matrix.
 	 */
 	void initialize(
-		const VectorSpace::space_ptr_t   &space_d
-		,const VectorSpace::space_ptr_t  &space_eta
+		const VectorSpace::space_ptr_t   &space_d_eta
 		,value_type                      etaL
 		,const VectorWithOp              *dL
 		,const VectorWithOp              *dU

@@ -135,6 +135,9 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	VectorDenseEncap  g(g_in);
 
+	VectorSpace::space_ptr_t
+		space_d_eta = mmp::rcp(new VectorSpaceSerial(nd+1));
+
 	// ///////////////////////////////
 	// Setup the initial KKT system
 
@@ -173,7 +176,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	// initialize constraints object
 	constraints_->initialize(
-		mmp::rcp(&d_inout->space(),false),mmp::rcp(new VectorSpaceSerial(1),false)
+		space_d_eta
 		,etaL,dL_in,dU_in,E,trans_E,b_in,eL_in,eU_in,F,trans_F,f_in
 		,m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
 		,Ed_inout
@@ -196,7 +199,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	G_relaxed_.initialize(
 		mmp::rcp(&dyn_cast<const MatrixSymWithOpNonsingular>(G),false)
 		,mmp::rcp(&bigM_vec_,false)
-		,mmp::rcp(new VectorSpaceSerial(nd+1))
+		,space_d_eta
 		);
 	
 	qp_.initialize(
@@ -495,9 +498,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// mu, lambda	
 	if( m_in || m_eq ) {
 		*eta = _x(nd+1);	// must be non-null
-		assert(0); // ToDo: Update the below code!
-/*
-		if(mu) mu->resize(m_in,_lambda_breve.nz());	// resize for storage for all inequalities active?
+		*mu_inout = 0.0;
 		const SpVector::difference_type o = _lambda_breve.offset();
 		if(_lambda_breve.nz()) {
 			for(SpVector::const_iterator itr = _lambda_breve.begin();
@@ -505,18 +506,14 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				++itr)
 			{
 				typedef SpVector::element_type ele_t;
-				if(itr->indice() <= m_in) {
-					assert(mu);	// Local error only (if validated properly)
-					mu->add_element(ele_t(itr->indice(),itr->value()));
+				if( itr->index() + o <= m_in ) {
+					mu_inout->set_ele( itr->index() + o, itr->value() );
 				}
 				else {
-					assert(lambda);	// Local error only (if validated properly)
-					(*lambda)(itr->indice() - m_in) = itr->value();
+					lambda_inout->set_ele( itr->index() + o - m_in, itr->value() );
 				}
 			}
 		}
-		mu->assume_sorted(true);
-*/
 	}
 	// obj_d (This could be updated within QPSchur in the future)
 	if(obj_d) {

@@ -27,48 +27,33 @@
 #include "ConstrainedOptimizationPack/include/ConstraintsRelaxedStd.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
-//#include "AbstractLinAlgPack/include/sparse_bounds_diff.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "ThrowException.h"
 
 namespace {
 
-/* ToDo: Update the below code!
-
-// Find the maxinum element of a dense vector
-// and its index.
-std::pair<LinAlgPack::size_type,LinAlgPack::value_type>
-imp_max_element( const LinAlgPack::VectorSlice &v )
+ConstrainedOptimizationPack::EBounds
+convert_bnd_type( int bnd_type )
 {
-	const LinAlgPack::VectorSlice::const_iterator
-		itr = std::max_element( v.begin(), v.end() );
-	typedef std::pair<LinAlgPack::size_type,LinAlgPack::value_type> ele_t;
-	return ele_t( itr - v.begin() + 1, *itr );
-}
-
-// Update a maxinum violation
-//
-// If max(v(i)) > max_viol then this function
-// sets max_viol = v(i) and max_viol_j = i and returns
-// true.  Otherwise it returns false.
-//
-bool imp_update_max_viol(
-	  const LinAlgPack::VectorSlice &v
-	, LinAlgPack::value_type		*max_viol
-	, LinAlgPack::size_type			*max_viol_j
-	)
-{
-	typedef std::pair<LinAlgPack::size_type,LinAlgPack::value_type> ele_t;
-	ele_t ele = imp_max_element(v);
-	if( ele.second > *max_viol ) {
-		*max_viol_j	= ele.first;
-		*max_viol 	= ele.second;
-		return true;
+	switch(bnd_type) {
+		case -1:
+			return ConstrainedOptimizationPack::LOWER;
+		case 0:
+			return ConstrainedOptimizationPack::EQUALITY;
+		case +1:
+			return ConstrainedOptimizationPack::UPPER;
+		default:
+			assert(0);
 	}
-	return false;
+	return ConstrainedOptimizationPack::LOWER; // Never be called
 }
+
+/*
 
 // Get an element from a sparse vector and return zero if it does not exist
 LinAlgPack::value_type get_sparse_element(
@@ -105,8 +90,7 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 {}
 
 void ConstraintsRelaxedStd::initialize(
-	const VectorSpace::space_ptr_t   &space_d
-	,const VectorSpace::space_ptr_t  &space_eta
+	const VectorSpace::space_ptr_t   &space_d_eta
 	,value_type                      etaL
 	,const VectorWithOp              *dL
 	,const VectorWithOp              *dU
@@ -128,71 +112,89 @@ void ConstraintsRelaxedStd::initialize(
 	)
 {
 	size_type
-		nd   = space_d->dim(),
+		nd   = space_d_eta->dim() - 1,
 		m_in = 0,
 		m_eq = 0;
 
 	assert( m_undecomp == (F ? f->dim() : 0) ); // ToDo: support decomposed equalities in future.
 
 	// Validate that the correct sets of constraints are selected
-	if( dL && !dU )
-		throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-			"If dL!=NULL then dU!=NULL must also be true." );
-	if( E && ( !b || !eL || !eU ) )
-		throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-			"If E!=NULL then b!=NULL, eL!=NULL and eU!=NULL must also be true." );
-	if( F && !f )
-		throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-			"If F!=NULL then f!=NULL must also be true." );
+	THROW_EXCEPTION(
+		dL && !dU, std::invalid_argument
+		,"ConstraintsRelaxedStd::initialize(...) : Error, "
+		"If dL!=NULL then dU!=NULL must also be true." );
+	THROW_EXCEPTION(
+		E && ( !b || !eL || !eU ), std::invalid_argument
+		,"ConstraintsRelaxedStd::initialize(...) : Error, "
+		"If E!=NULL then b!=NULL, eL!=NULL and eU!=NULL must also be true." );
+	THROW_EXCEPTION(
+		F && !f, std::invalid_argument
+		,"ConstraintsRelaxedStd::initialize(...) : Error, "
+		"If F!=NULL then f!=NULL must also be true." );
 
 	// Validate input argument sizes
 	if(dL) {
-		if( dL->dim() != nd )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"dL.dim() != d->dim()." );
-		if( dU->dim() != nd )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"dU.dim() != d->dim()." );
+		const size_type dL_dim = dL->dim(), dU_dim = dU->dim();
+		THROW_EXCEPTION(
+			dL_dim != nd, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"dL.dim() != d->dim()." );
+		THROW_EXCEPTION(
+			dU_dim != nd, std::invalid_argument 
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"dU.dim() != d->dim()." );
 	}
 	if(E) {
 		const size_type
 			E_rows = E->rows(),
-			E_cols = E->cols();
+			E_cols = E->cols(),
+			opE_cols = BLAS_Cpp::cols( E_rows, E_cols, trans_E ),
+			b_dim = b->dim(),
+			eL_dim = eL->dim(),
+			eU_dim = eU->dim(),
+			Ed_dim = Ed ? Ed->dim() : 0;
 		m_in = BLAS_Cpp::rows( E_rows, E_cols, trans_E );
-		if( BLAS_Cpp::cols( E_rows, E_cols, trans_E ) != nd )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"op(E).cols() != nd." );
-		if( b->dim() != m_in )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"b->dim() != op(E).rows()." );
-		if( eL->dim() != m_in )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"eL->dim() != op(E).rows()." );
-		if( eU->dim() != m_in )
-			throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-				"eU->dim() != op(E).rows()." );
-		if( Ed ) {
-			if( Ed->dim() != m_in )
-				throw std::invalid_argument( "ConstraintsRelaxedStd::initialize(...) : Error, "
-					"Ed->dim() != op(E).rows()." );
-		}
+		THROW_EXCEPTION(
+			opE_cols != nd, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"op(E).cols() != nd." );
+		THROW_EXCEPTION(
+			b_dim != m_in, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"b->dim() != op(E).rows()." );
+		THROW_EXCEPTION(
+			eL_dim != m_in, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"eL->dim() != op(E).rows()." );
+		THROW_EXCEPTION(
+			eU_dim != m_in, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"eU->dim() != op(E).rows()." );
+		THROW_EXCEPTION(
+			Ed && Ed_dim != m_in, std::invalid_argument
+			,"ConstraintsRelaxedStd::initialize(...) : Error, "
+			"Ed->dim() != op(E).rows()." );
 	}
 	if(F) {
 		const size_type
 			F_rows = F->rows(),
-			F_cols = F->cols();
+			F_cols = F->cols(),
+			opF_cols = BLAS_Cpp::cols( F_rows, F_cols, trans_F ),
+			f_dim = f->dim();
 		m_eq = BLAS_Cpp::rows( F_rows, F_cols, trans_F );
-		if( BLAS_Cpp::cols( F_rows, F_cols, trans_F ) != nd )
-			throw std::invalid_argument( "QPSolverRelaxed::solve_qp(...) : Error, "
-				"op(F).cols() != nd." );
-		if( f->dim() != m_eq )
-			throw std::invalid_argument( "QPSolverRelaxed::solve_qp(...) : Error, "
-				"f->dim() != op(F).rows()." );
+		THROW_EXCEPTION(
+			opF_cols != nd, std::invalid_argument
+			,"QPSolverRelaxed::solve_qp(...) : Error, "
+			"op(F).cols() != nd." );
+		THROW_EXCEPTION(
+			f_dim != m_eq, std::invalid_argument
+			,"QPSolverRelaxed::solve_qp(...) : Error, "
+			"f->dim() != op(F).rows()." );
 	}
 	
 	// Initialize other members
 	A_bar_.initialize(
-		space_d,space_eta,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
+		space_d_eta,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
 	etaL_				= etaL;
 	dL_					= dL;
 	dU_					= dU;
@@ -233,8 +235,6 @@ const MatrixWithOp& ConstraintsRelaxedStd::A_bar() const
 
 void ConstraintsRelaxedStd::pick_violated_policy( EPickPolicy pick_policy )
 {
-	assert(0); // ToDo: Update below code!
-/*
 	switch(pick_policy) {
 		case ANY_VIOLATED:
 			inequality_pick_policy_ = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY;
@@ -245,7 +245,6 @@ void ConstraintsRelaxedStd::pick_violated_policy( EPickPolicy pick_policy )
 		default:
 			assert(0);
 	}
-*/
 }
 
 Constraints::EPickPolicy
@@ -265,34 +264,38 @@ ConstraintsRelaxedStd::pick_violated_policy() const
 }
 
 void ConstraintsRelaxedStd::pick_violated(
-	const VectorSlice& x, size_type* j_viol, value_type* constr_val
+	const VectorSlice& x_in, size_type* j_viol, value_type* constr_val
 	,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
-	assert(0); // ToDo: Update below code!
-/*
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
-	using LinAlgPack::norm_inf;
-	using SparseLinAlgPack::imp_sparse_bnd_diff;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
+	using AbstractLinAlgPack::max_inequ_viol;
+	using LinAlgOpPack::V_VmV;
 
-	if( x.size() != A_bar_.nd()+1 ) {
-		throw std::length_error( "ConstraintsRelaxedStd::pick_violated(...) : Error, "
-			"x is the wrong length" );
-	}
+	THROW_EXCEPTION(
+		x_in.dim() != A_bar_.nd()+1, std::length_error
+		,"ConstraintsRelaxedStd::pick_violated(...) : Error, "
+		"x is the wrong length" );
 
 	const size_type
 		nd = A_bar_.nd();
-	const VectorSlice
-		d = x(1,nd);
-	const value_type
-		eta = x(nd+1);
 
-	Vector r;
+	// Get a version of x = [ d; eta ] in the correct vector object
+	VectorSpace::vec_mut_ptr_t
+		x = A_bar_.space_cols().create_member();
+	(VectorDenseMutableEncap(*x)()) = x_in;
+	VectorSpace::vec_mut_ptr_t
+		d = x->sub_view(1,nd);
+	const value_type
+		eta = x->get_ele(nd+1);
+
 	bool Ed_computed = false;
 
 	// //////////////////////////////////////////////
 	// Check the equality constraints first
 	if( check_F_ && A_bar_.F() ) {
+		assert(0); // ToDo: Update below code!
+/*
 		// The basic strategy here is to go through all of the equality
 		// constraints first and add all of the ones that are violated by
 		// more than the set tolerance.  Those that are not sufficiently
@@ -361,40 +364,31 @@ void ConstraintsRelaxedStd::pick_violated(
 			// then it is removed from this list.
 			assert(0); // ToDo: Implement!
 		}
+*/
 	}
 
 	// /////////////////////////////////////////////
 	// Find the most violated variable bound.
 
-	size_type   max_bound_viol_j        = 0;
-	value_type  max_bounds_viol         = 0.0;
-	bool        max_bound_viol_upper    = false;
+	size_type       max_bound_viol_j       = 0;
+	value_type      max_bound_viol         = 0.0;
+	value_type      max_bound_d_viol       = 0.0;
+	value_type      max_bound_dLU_viol     = 0.0;
+	int             max_bound_viol_type    = -2;
 	if( dL_ && ( dL_->nz() || dU_->nz() ) ) {
-		const value_type scale = 1.0 / (1.0 + norm_inf(d));
-		// r = dL - d
-		r.resize(nd);
-		imp_sparse_bnd_diff( +1, *dL_, BLAS_Cpp::lower, d, &r() );
-		imp_update_max_viol( r(), &max_bounds_viol, &max_bound_viol_j );
-		// r = d - dU
-		imp_sparse_bnd_diff( -1, *dU_, BLAS_Cpp::upper, d, &r() );
-		max_bound_viol_upper
-			= imp_update_max_viol( r(), &max_bounds_viol, &max_bound_viol_j );
-
-		if( scale * max_bounds_viol > bounds_tol_ )
-		{
-			// see if this bound is equality or not
-			const EBounds
-				this_bnd = max_bound_viol_upper ? UPPER : LOWER,
-				other_bnd = !max_bound_viol_upper ? UPPER : LOWER;
-			const value_type
-				this_bnd_val = get_bnd(max_bound_viol_j,this_bnd),
-				other_bnd_val = get_bnd(max_bound_viol_j,other_bnd);
+		// dL <= d <= dU
+		max_inequ_viol(
+			*d, *dL_, *dU_
+			,&max_bound_viol_j, &max_bound_viol
+			,&max_bound_d_viol, &max_bound_viol_type, &max_bound_dLU_viol 
+			);
+		if(  max_bound_viol > bounds_tol_ ) {
 			// Set the return values
 			*j_viol         = max_bound_viol_j;
-			*constr_val     = d(max_bound_viol_j);
-			*norm_2_constr  = 1.0;
-			*bnd            = this_bnd_val == other_bnd_val ? EQUALITY : this_bnd;
-			*viol_bnd_val   = this_bnd_val;
+			*constr_val     = max_bound_d_viol;
+			*norm_2_constr  = 1.0; // This is correct
+			*bnd            = convert_bnd_type(max_bound_viol_type);
+			*viol_bnd_val   = max_bound_dLU_viol;
 			*can_ignore     = false;
 		}
 		else {
@@ -417,44 +411,45 @@ void ConstraintsRelaxedStd::pick_violated(
 	// /////////////////////////////////////////////
 	// Check the general inequalities
 
-	size_type   max_inequality_viol_j       = 0;
-	value_type  max_inequality_viol         = 0.0;
-	bool        max_inequality_viol_upper   = false;
+	size_type       max_inequality_viol_j        = 0;
+	value_type      max_inequality_viol          = 0.0;
+	value_type      max_inequality_e_viol        = 0.0;
+	value_type      max_inequality_eLU_viol      = 0.0;
+	int             max_inequality_viol_type     = -2;
 
 	if( inequality_pick_policy_ == ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY ) {
 		// Find the first general inequality violated by more than
 		// the defined tolerance.
-		throw std::logic_error( "ConstraintsRelaxedStd::pick_violated(...) : Error,\n"
+		THROW_EXCEPTION(
+			true, std::logic_error
+			,"ConstraintsRelaxedStd::pick_violated(...) : Error,\n"
 			"The option ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY has not been implemented yet\n" );
 	}
 	else {
 		// Find the most violated inequality constraint
 		if( A_bar_.m_in() &&  ( eL_->nz() || eU_->nz() ) ) {
 			// e = op(E)*d - b*eta
-			Vector e;
-			LinAlgOpPack::V_MtV( &e, *A_bar_.E(), A_bar_.trans_E(), d );
+			VectorSpace::vec_mut_ptr_t e = eL_->space().create_member();
+			LinAlgOpPack::V_MtV( e.get(), *A_bar_.E(), A_bar_.trans_E(), *d );
 			if(Ed_) {
-				*Ed_        = e;
+				*Ed_        = *e;
 				Ed_computed = true;
 			}
-			const value_type scale = 1.0 / (1.0 + norm_inf(e));
-			LinAlgPack::Vp_StV( &e(), -eta, *A_bar_.b() );
-			// r = eL - e
-			r.resize(A_bar_.m_in());
-			imp_sparse_bnd_diff( +1, *eL_, BLAS_Cpp::lower, e(), &r() );
-			imp_update_max_viol( r(), &max_inequality_viol, &max_inequality_viol_j );
-			// r = e - eU
-			imp_sparse_bnd_diff( -1, *eU_, BLAS_Cpp::upper, e(), &r() );
-			max_inequality_viol_upper
-				= imp_update_max_viol( r(), &max_inequality_viol, &max_inequality_viol_j );
-			if( max_inequality_viol > max_bounds_viol
-				&& scale * max_inequality_viol > inequality_tol_ )
+			LinAlgOpPack::Vp_StV( e.get(), -eta, *A_bar_.b() );
+			// eL <= e <= eU
+			max_inequ_viol(
+				*e, *eL_, *eU_
+				,&max_inequality_viol_j, &max_inequality_viol
+				,&max_inequality_e_viol, &max_inequality_viol_type, &max_inequality_eLU_viol 
+				);
+			if( max_inequality_viol > max_bound_viol
+				&& max_inequality_viol > inequality_tol_ )
 			{
 				*j_viol         = max_inequality_viol_j + nd + 1; // offset into A_bar
-				*constr_val     = e(max_inequality_viol_j);
-				*norm_2_constr  = 1.0;  // ToDo: Compute it some how?
-				*bnd            = max_inequality_viol_upper ? UPPER : LOWER;
-				*viol_bnd_val   = get_bnd(*j_viol,*bnd);
+				*constr_val     = max_inequality_e_viol;
+				*norm_2_constr  = 1.0;  // This is not correct!
+				*bnd            = convert_bnd_type(max_inequality_viol_type);
+				*viol_bnd_val   = max_inequality_eLU_viol;
 				*can_ignore     = false;
 			}
 			else {
@@ -474,7 +469,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	// If we get here then no constraint was found that violated any of the tolerances.
 	if( Ed_ && !Ed_computed ) {
 		// Ed = op(E)*d
-		LinAlgOpPack::V_MtV( Ed_, *A_bar_.E(), A_bar_.trans_E(), d );
+		LinAlgOpPack::V_MtV( Ed_, *A_bar_.E(), A_bar_.trans_E(), *d );
 	}
 	*j_viol			= 0;
 	*constr_val		= 0.0;
@@ -482,12 +477,13 @@ void ConstraintsRelaxedStd::pick_violated(
 	*norm_2_constr	= 0.0;
 	*bnd			= FREE;	 // Meaningless
 	*can_ignore		= false; // Meaningless
-*/
 }
 
 void ConstraintsRelaxedStd::ignore( size_type j )
 {
-	throw std::logic_error(  "ConstraintsRelaxedStd::ignore(...) : Error, "
+	THROW_EXCEPTION(
+		true, std::logic_error
+		,"ConstraintsRelaxedStd::ignore(...) : Error, "
 		"This operation is not supported yet!" );
 }
 
@@ -581,8 +577,7 @@ ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
 {}
 
 void ConstraintsRelaxedStd::MatrixConstraints::initialize(
-	const VectorSpace::space_ptr_t   &space_d
-	,const VectorSpace::space_ptr_t  &space_eta  
+	const VectorSpace::space_ptr_t   &space_d_eta
 	,const size_type                 m_in
 	,const size_type                 m_eq
 	,const MatrixWithOp              *E
@@ -598,7 +593,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	namespace mmp = MemMngPack;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
-	const size_type nd = space_d->dim();
+	const size_type nd = space_d_eta->dim() - 1;
 
 	// Setup P_u
 	const bool test_setup = true; // Todo: Make this an argument!
@@ -624,14 +619,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	}
 
 	// space_cols_
-	VectorSpace::space_ptr_t  col_spaces[2] = { space_d, space_eta };
-	space_cols_.initialize( col_spaces, 2 );
+	space_cols_ = space_d_eta;
 
 	// space_rows_
-	VectorSpace::space_ptr_t  row_spaces[4];
-	int num_row_spaces = 2;
-	row_spaces[0] = space_d;
-	row_spaces[1] = space_eta;
+	VectorSpace::space_ptr_t  row_spaces[3];
+	int num_row_spaces = 1;
+	row_spaces[0] = space_d_eta;
 	if(m_in)
 		row_spaces[num_row_spaces++] = mmp::rcp(
 			trans_E == BLAS_Cpp::no_trans ? &E->space_cols() : &E->space_rows()
@@ -650,7 +643,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	space_rows_.initialize( row_spaces, num_row_spaces );
 
 	// Set the rest of the members
-	nd_       = space_d->dim();
+	nd_       = space_d_eta->dim() - 1;
 	m_in_     = m_in;
 	m_eq_     = m_eq;
 	E_        = E;
@@ -666,7 +659,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 
 const VectorSpace& ConstraintsRelaxedStd::MatrixConstraints::space_cols() const
 {
-	return space_cols_;
+	return *space_cols_;
 }
 
 const VectorSpace& ConstraintsRelaxedStd::MatrixConstraints::space_rows() const
@@ -675,7 +668,8 @@ const VectorSpace& ConstraintsRelaxedStd::MatrixConstraints::space_rows() const
 }
 
 MatrixWithOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
-	const MatrixWithOp& m)
+	const MatrixWithOp& M
+	)
 {
 	// ToDo: Finish me
 	assert(0);
@@ -874,7 +868,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	,const SpVectorSlice& x, value_type beta
 	) const
 {
-	assert(0); // ToDo: Update below code!
+	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta); // ToDo: Update below code!
 /*
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 

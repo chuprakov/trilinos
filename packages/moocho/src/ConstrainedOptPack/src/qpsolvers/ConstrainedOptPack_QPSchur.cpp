@@ -50,6 +50,7 @@
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "WorkspacePack.h"
+#include "ThrowException.h"
 
 namespace LinAlgOpPack {
 using SparseLinAlgPack::Vp_StV;
@@ -2981,21 +2982,28 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						}
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 							*out
-								<< "\nChecking mu_D_hat_calc == mu_D_hat:\n"
-								<< "u = mu_D_hat_calc, v = mu_D_hat ...\n";
+								<< "\nChecking mu_D_hat_calc == mu_D_hat\n";
 						}
-						assert(0); // Todo: Update below
-/*
-						if(!comp_v.comp(
-							mu_D_hat_calc, act_set->mu_D_hat()
-							, warning_tol(), error_tol()
-							, (int)output_level >= (int)OUTPUT_ACT_SET
-							, (int)output_level > (int)OUTPUT_ITER_SUMMARY ? out : NULL
-							))
-						{
-							throw TestFailed("QPSchur::qp_algo(...) : Error, check of mu_D_hat failed!" );
+						Vector mu_D_hat_diff(mu_D_hat_calc.dim());
+						LinAlgOpPack::V_VmV( &mu_D_hat_diff(), mu_D_hat_calc(), act_set->mu_D_hat() );
+						const value_type
+							mu_D_hat_err = norm_inf(mu_D_hat_diff()) / (1.0 + norm_inf(mu_D_hat_calc()));
+						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+							*out
+								<< "\n||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
+								<< mu_D_hat_err << std::endl;
 						}
-*/
+						THROW_EXCEPTION(
+							mu_D_hat_err >= error_tol(), TestFailed
+							,"QPSchur::qp_algo(...) : Error, "
+							"||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
+							<< mu_D_hat_err << " >= error_tol = " << error_tol()
+							);
+						if( mu_D_hat_err >= warning_tol() && (int)output_level >= (int)OUTPUT_ACT_SET ) {
+							*out
+								<< "\nWarning! ||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
+								<< mu_D_hat_err << " >= warning_tol = " << warning_tol() << std::endl;
+						}
 					}
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 						*out
