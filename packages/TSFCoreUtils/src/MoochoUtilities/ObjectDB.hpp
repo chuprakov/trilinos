@@ -118,12 +118,14 @@ public:
 	 */
 	void remove( size_t index );
 
+public:
+
+	typedef Teuchos::PrivateUtilityPack::RefCountPtr_node  rcp_node_t; // Must be public for object_entry_t to access!
+
 private:
 
 	// ////////////////////////////////
 	// Private types
-
-	typedef Teuchos::PrivateUtilityPack::RefCountPtr_node  rcp_node_t;
 
 	struct object_entry_t {
 		object_entry_t() : obj(NULL), type(NULL), rcp_node(NULL) {}
