@@ -58,29 +58,36 @@ public:
 	 *
 	 * @param  space_xD  [in/out] Vector space for the dependent variables.  On output
 	 *                   <tt>space_xD.count()</tt> will be incremented by 1.
-	 * @param  space_xI  [in/out] Vector space for the independent variables.  On output
+	 * @param  space_xI  [in/out] Vector space for the independent variables.  It is allowed
+	 *                   for <tt>space_xI.get()==NULL</tt> in which case there are no
+	 *                   independent variables.  If <tt>space_xI.get()!=NULL</tt> then on output
 	 *                   <tt>space_xI.count()</tt> will be incremented by 1.
 	 * @param  var_dep   [out] Range for dependent variables in output \c space_x
-	 * @param  var_indep [out] Range for independent variables in output \c space_x
-	 * @param  space_x   [out] Newly formed composite vector space <tt>space_x = [ space_xD; space_xI ]</tt>.
+	 * @param  var_indep [out] Range for independent variables in output \c space_x.  Only applicable
+	 *                   if <tt>space_xI.get()!=NULL</tt>.
+	 * @param  space_x   [out] If <tt>space_xI.get()!=NULL</tt> then on output this will be the newly
+	 *                   formed composite vector space <tt>space_x = [ space_xD; space_xI ]</tt>.
 	 *                   The object <tt>*space_x</tt> will be dependent on the objects <tt>*space_xD</tt>
 	 *                   <tt>*space_xI</tt>.  If the client wants <tt>*space_x</tt> to be independent from
 	 *                   these vector space objects then <tt>space_x->clone()</tt> can be used.
+	 *                   If <tt>space_xI.get()==NULL</tt> then on output <tt>*space_x=space_xD</tt> will
+	 *                   just be performed.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>space_xD.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>space_xI.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>var_dep != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>var_indep != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>space_xI.get() != NULL</tt>] <tt>var_indep != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>var_dep->size() == space_xD->dim()</tt> 
-	 * <li> <tt>var_indep->size() == space_xI->dim()</tt>
-	 * <li> \c var_dep and \c var_indep are non-overlapping ranges.
-	 * <li> <tt>space_x->dim() == var_dep->size() + var_indep->size()</tt>
-	 * <tt> <tt>space_x->sub_space(*var_dep).get() == space_xD.get()</tt>
-	 * <tt> <tt>space_x->sub_space(*var_indep).get() == space_xI.get()</tt>
+	 * <li> [<tt>space_xI.get()!=NULL</tt>] <tt>var_indep->size() == space_xI->dim()</tt>
+	 * <li> [<tt>space_xI.get()!=NULL</tt>] <tt>var_dep</tt> and <tt>var_indep</tt> are non-overlapping ranges.
+	 * <li> [<tt>space_xI.get()!=NULL</tt>] <tt>space_x->dim() == var_dep->size() + var_indep->size()</tt>
+	 * <tt> [<tt>space_xI.get()!=NULL</tt>] <tt>space_x->sub_space(*var_dep).get() == space_xD.get()</tt>
+	 * <tt> [<tt>space_xI.get()!=NULL</tt>] <tt>space_x->sub_space(*var_indep).get() == space_xI.get()</tt>
+	 * <li> [<tt>space_xI.get()==NULL</tt>] <tt>space_x->dim() == var_dep->size()</tt>
+	 * <tt> [<tt>space_xI.get()-=NULL</tt>] <tt>space_x->sub_space(*var_dep).get() == space_xD.get()</tt>
 	 * </ul>
 	 */
 	static void initialize_space_x(
@@ -93,6 +100,9 @@ public:
 
 	///
 	/** Return a matrix factory object for the composte \c Gc matrix object.
+	 *
+	 * Only call this if there are independent variables.  Otherwise,
+	 * supply your own version of this factory object.
 	 */
 	static const fcty_Gc_ptr_t factory_Gc();
 	
@@ -120,7 +130,8 @@ public:
 	 * <li> <tt>space_x.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>space_c.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>C.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>N.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>space_x->dim() >  space_c->dim()</tt>] <tt>N.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>space_x->dim() == space_c->dim()</tt>] <tt>N.get() == NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>Gc != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 * 
@@ -151,7 +162,8 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>Gc != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>C != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>N != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>Gc->rows() <  Gc->cols()</tt>] <tt>N != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>Gc->rows() == Gc->cols()</tt>] <tt>N == NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 */
 	static void get_C_N(
@@ -173,12 +185,8 @@ public:
 	 * <li> \c Gc is setup with non-null \c C and \c N matrix objects
 	 *      (throw <tt>std::logic_error</tt>).
 	 * <li> <tt>C != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>N != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>C != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>N != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>Gc->rows() <  Gc->cols()</tt>] <tt>N != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>Gc->rows() == Gc->cols()</tt>] <tt>N == NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 */
 	static void get_C_N(
@@ -228,25 +236,32 @@ public:
 	 * @param  factory_C  [in] Smart pointer to factory object for basis matrix \c C.
 	 * @param  factory_transDtD
 	 *                    [in] Smart point to the factory object for the matrix <tt>J = D'*D</tt>.
+	 *                    Only valid if <tt>var_dep.size() < space_x->dim()</tt>.
 	 * @param  factory_S  [in] Smart point to the factory object for the matrix <tt>S = I + D'*D</tt>.
+	 *                    Only valid if <tt>var_dep.size() < space_x->dim()</tt>.
 	 * @param  factory_D  [in] Smart pointer to factory object for direct sensitivity matrix
 	 *                    \c D.  If <tt>factory_D == NULL</tt> then an <tt>AbstractFactoryStd<></tt>
 	 *                    object will be used which calls <tt>space_xD->create_members(space_xI->dim())</tt>.
 	 *                    which in turn of course creates \c MultiVectorMutable objects.
+	 *                    Only valid if <tt>var_dep.size() < space_x->dim()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>space_xD.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>space_xI.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>factory_C.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>var_dep.size() <  space_x->dim()</tt>] <tt>factory_S.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->var_dep() == [1,space_xD->dim()]</tt>
-	 * <li> <tt>this->var_indep() == [space_xD->dim()+1,space_xD->dim()+space_xI->dim()</tt>
+	 * <li> [<tt>var_dep.size() < space_x->dim()</tt>] <tt>this->var_indep() == [space_xD->dim()+1,space_xD->dim()+space_xI->dim()</tt>
 	 * <li> <tt>this->equ_decomp() == [1,space_xD->dim()]</tt>
 	 * <li> <tt>this->equ_undecomp().size() == 0</tt>
 	 * <li> <tt>this->factory_C().get() != NULL</tt>
-	 * <li> <tt>this->factory_D().get() != NULL</tt>
+	 * <li> [<tt>var_dep.size() <  space_x->dim()</tt>] <tt>this->factory_S().get() == factory_S.get()</tt>
+	 * <li> [<tt>var_dep.size() == space_x->dim()</tt>] <tt>this->factory_S().get() == NULL</tt>
+	 * <li> [<tt>var_dep.size() <  space_x->dim()</tt>] <tt>this->factory_D().get() != NULL</tt>
+	 * <li> [<tt>var_dep.size() == space_x->dim()</tt>] <tt>this->factory_D().get() == NULL</tt>
 	 * </ul>
 	 */
 	void initialize(
