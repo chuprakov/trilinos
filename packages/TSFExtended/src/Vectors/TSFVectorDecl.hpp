@@ -241,6 +241,11 @@ namespace TSFExtended
       Scalar norm2() const ;
 
       /**
+       * Compute the weighted 2-norm of this vector
+       */
+      Scalar norm2(const Vector<Scalar>& weights) const ;      
+
+      /**
        * Compute the infinity-norm of this vector
        */
       Scalar normInf() const ;
@@ -284,6 +289,11 @@ namespace TSFExtended
       /** get the element at the given global index */
       const Scalar& getElement(Index globalIndex) const 
       {return castToAccessible()->getElement(globalIndex);}
+
+      /** Get a batch of elements */
+      void getElements(const Index* globalIndices, int numElems,
+                       vector<Scalar>& elems) const 
+      {castToAccessible()->getElements(globalIndices, numElems, elems);}
       //@}
       
       /** Get a stopwtach for timing vector operations */
