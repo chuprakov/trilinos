@@ -1,0 +1,83 @@
+\documentclass[10pt]{book}
+%
+\usepackage{html}
+\usepackage{heqn}
+\usepackage{makeidx}  % allows for index generation
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{moreverb}
+\usepackage{alltt}
+\usepackage{color}
+
+
+\setlength{\oddsidemargin}{0.0in}
+\setlength{\evensidemargin}{0.0in}
+\setlength{\textwidth}{7.0in}
+\setlength{\textheight}{9.0in}
+\setlength{\hoffset}{-0.25in}
+\setlength{\voffset}{-0.25in}
+\newcommand{\tsf}{{\bf TSF}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bverb}{\begin{verbatim}}
+\newcommand{\everb}{\end{verbatim}}
+\newcommand{\bd}{\begin{displaymath}}
+\newcommand{\ed}{\end{displaymath}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\beas}{\begin{eqnarray*}}
+\newcommand{\eeas}{\end{eqnarray*}}
+\newcommand{\del}{\nabla}
+
+\newcommand{\crossref}[1]{{\htmlref{#1}{#1Ref}}}
+
+
+\newenvironment{code}{\begin{alltt}}{\end{alltt}\noindent}
+
+\sloppy
+
+
+
+\makeindex
+
+\begin{document}
+%
+
+
+
+\title{The Trilinos Solver Framework}
+
+\author{Kevin Long\\Computational Science and Mathematics Research Department\\
+Sandia National Laboratories\\Livermore, California\\{\tt krlong@sandia.gov}}
+
+\maketitle
+
+
+\tableofcontents
+
+\input Introduction
+
+\input VectorSpaces
+
+\input Vectors
+
+\input LinearOperators
+
+\input LinearSolvers
+
+\input Eigensolvers
+
+\input NonlinearOperators
+
+\input NonlinearSolvers
+
+\input Functionals
+
+\input Optimization 
+
+\clearpage
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,34 @@
+/** \page OutputAndVisDoc Output and visualization
+
+<BODY>
+
+In the current version of Sundance, the only option for visualization
+of fields is the temporary matlabDump() method of Expr. This method
+can write a discrete scalar-valued function to a stream, in a format 
+that can be plotted by matlab. In the examples directory, there are
+several matlab scripts for plotting the output of matlabDump(). 
+
+For example,
+\code
+   // solve a problem and get the soln back as a discrete expression
+   problem.solve(soln);
+	 
+	 // write the solution to a matlab-readable file
+	 ofstream myFile("myFile.dat");
+	 soln.matlabDump(myFile);
+\endcode
+
+We plan to develop a FieldWriter class system that will support
+multiple output formats as well as vector-valued fields. 
+
+ 
+	
+ 
+</BODY> 
+*/
+
+
+
+
+
+

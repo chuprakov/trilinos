@@ -1,0 +1,211 @@
+/** \page ExprDoc Mathematical expressions in Sundance
+
+<BODY>
+<H1> Mathematical expressions in Sundance </H1>
+
+Class Expr represents a mathematical expression. An Expr 
+can be an atomic entity 
+such as a constant, a function, or a differential operator; or an expr
+can be a compound object such as a sum, project, or list of exprs.
+
+\section Contents
+
+<UL>
+<LI> \ref CreatingExprs
+<LI> \ref ViewingExprs
+<LI> \ref AssigningExprs
+<LI> \ref ListingExprs
+<LI> \ref ExprMath
+</UL>
+
+
+ \section CreatingExprs Creating expressions
+
+ The simplest type of Expr to create is a constant real-valued Expr, 
+ for example:
+
+ \code Expr solarMass = 2.0e33; \endcode
+ 
+ 
+ More generally, you can create an Expr by giving its constructor 
+ a pointer to an ExprBase 
+ subclass object.	For example, to construct an Expr that represents the 
+ coordinate on the zeroth (x) axis, create a new CoordExpr object and pass 
+ it to an Expr ctor as follows:
+
+ \code Expr x = new CoordExpr(0, "x"); \endcode
+
+ The expression types that can be created at the user level are
+ <ul>
+ <li> CoordExpr - represents a coordinate function
+ <li> Derivative - represents a differentiation operator
+ <li> DiscreteFEFunc - represents a function that has been discretized
+ on a finite-element space
+ <li> ParameterExpr - represents a design parameter
+ <li> UnknownFEFunc - represents an unknown in a finite-element problem
+ <li> UserFuncExpr - can be used to access a function defined by the user
+ <li> VariationalFEFunc - represents a test function in a finite-element 
+ problem
+ </ul>
+ 
+ \section ViewingExprs Viewing Exprs
+
+ You might want to do several types of output with Exprs:
+ <ul>
+ <li> human-readable,, math-like symbolic output for information and debugging.
+ This can be done with the stream insertion operator or the toString() method.
+ For example, 
+ \code
+ Expr f = 1.0 + 2.0*x;
+ cout << f << endl;  // writes 1 + 2*x;
+ // or
+ cout << f.toString() << endl;
+ \endcode
+ 
+ <li> machine-readable symbolic output for use in a later Sundance session.
+ Sundance uses XML for machine-readable representation of expressions. The
+ toXML() method of Expr creates an XML tree representing the structure
+ of the expression.
+ <li> full output of the numerical values of a discrete function for 
+ visualization. This is done with FieldWriter methods, described in a later
+ section.
+ </ul>
+
+ 
+ \section AssigningExprs Assignment and copying of expressions 
+
+It is important to understand the meaning of the assignment (=) operator
+for Sundance Exprs. Assignment and copy are by reference, so that 
+if you create an expression	
+\code
+f = a + b + c;
+\endcode
+and then assign something to \c c \c,
+\code
+c = sin(x);
+\endcode
+that change will instantly propagate to the copy of c in the sum f.
+\code
+cout << f << endl; // will print a + b + sin(x)
+\endcode
+
+This feature lets you automatically update expressions in timestepping
+or nonlinear solve loops, making the code for such problems more efficient
+and much easier to understand. 
+
+The case when the lhs of an assignment operator appears on the rhs is
+handled as follows: the sequence of operations
+\code
+x = 5;
+x = y + x;
+\endcode
+leaves x set to y + 5.
+
+
+ 
+
+ \section ListingExprs Listing expressions 
+
+ Exprs can be listed heterogeneously. Listing can be used to create
+ vector-valued or tensor-valued exprs. 
+
+ You can create a listed expr using
+ the List global method. For example, List(a, List(b, c)) produces
+ a list that is structured like {a, {b, c}}. Lists can be manipulated with
+ append(), join(), and flatten() methods, and elements (either scalar entries
+ or sublists) can be accessed
+ with the bracket ([]) operator. 
+
+ The List() methods can take at most four entries. If you want to build
+ a list with greater than four elements, create a list and then append
+ to it.
+
+
+ \subsection ExprAlgebra Algebraic operations
+
+ Operator overloading is used to represent operations on Exprs:
+ <UL>
+ <LI> addition: a+b, where a and b have identical list structures
+ <LI> subtraction: a-b, where a and b have identical list structures
+ <LI> multiplication: a*b, where a and b have list structures as follows:
+ <UL>
+ <LI> at least one of the two factors a and b is scalar-valued.
+ <LI> a and b have a list structure such that a*b can be interpreted as 
+ a dot product.
+ </UL>
+ <LI> division: a/b, where b is a scalar
+ </UL>
+
+ Sundance will simplify algebraic operations by grouping like terms and
+ cancelling where appropriate.
+
+ \code
+ Expr f = x + y + x; 
+ cout << f << endl;  // prints 2*x + y
+ \endcode
+
+ \code
+ Expr f = x + y - x; 
+ cout << f << endl;  // prints y
+ \endcode
+
+<B> Warning </B> <I> 
+ It is quite possible to create a meaningless expr, for example
+ dividing by a vector-valued expr, x/{y,z}. It is not possible to detect
+ such nonsensical exprs at compile-time, so all operations are
+ checked at runtime and if nonsense is detected an exception is thrown. </I>
+ 
+ \subsection ExprDiff Differentiation
+
+ Differentiation operators are represented by the Derivative class. 
+ Application of a Derivative is done with the overloaded multiplication 
+ operator:
+ 
+ \code
+ // create a differentiation operator
+ Expr dx = new Derivative(0,1);
+
+ // create some function f
+ Expr f = x*x;
+
+ // differentiate f
+ Expr df = dx*f;
+
+ cout << df << endl; // prints 2*x
+
+ \endcode
+
+ Sundance symbolic objects are programmed to obey the sum, product, quotient,
+ and chain rules. 
+
+ 
+
+ \subsection ExprElemFunc Elementary functions
+
+  Elementary functions have been overloaded to act on Sundance Exprs. 
+	The argument to an elementary function must be a scalar-valued Expr.
+	Example:
+
+	\code
+	Expr f = sin(x);
+	Expr df = dx*f;
+	cout << df << endl;  // prints cos(x)
+	\endcode
+
+	Currently, Sundance defines: sin, cos, exp, log, cosh, sinh, sqrt, and pow.
+	
+ 
+ 
+
+<H2>
+Next section: \ref GeomDoc	
+</h2> 
+
+</BODY> 
+*/
+
+
+
+
+
+

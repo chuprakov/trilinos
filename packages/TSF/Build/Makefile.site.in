@@ -1,0 +1,113 @@
+#########################################################################
+#
+# Example site makefile showing most site-dependent options. If your
+# site configuration is really strange, you might have to hack 
+# Build/Makefile.tsf. 
+#
+# All other options have been set to their default values and then commented
+# out. 
+# 
+#
+#########################################################################
+
+#########################################################################
+# Specify the root directory for your TSF build. This should be the
+# name of the directory that was created when you untarred or checked out
+# the distribution.  
+#########################################################################
+
+TSF_ROOT = @PROJECT_ROOT@
+
+
+#########################################################################
+# Specify the name of the platform on which you are building. This
+# name will be used to look up a platform-specific Makefile from those in 
+# Build/Platforms. Currently supported platforms are LINUX, sunWS50, 
+# and sunWS50-Purify.
+#########################################################################
+
+PLATFORM = @ARCH@
+
+
+#########################################################################
+# flags to indicate debug and optimization levels
+#########################################################################
+
+# do we compile with debugging information? Default is yes. To turn off
+# debugging, set DEBUG=no in the next line and uncomment.
+
+DEBUG = @DEBUG@
+
+# do we compile optimized? Set OPT=yes for optimal performance. Turning
+# optimization on will slow down compilation, so it's a good idea to
+# leave it off (with OPT=no) for day-to-day development. To turn on 
+# optimized compilation, set OPT=yes in the next line and uncomment.
+
+OPT = @OPT@
+
+ifeq ($(OPT), yes)
+	BUILD_OPT = $(OPTFLAG)
+endif
+
+ifeq ($(DEBUG), yes)
+	BUILD_DEBUG = $(DEBUGFLAG)
+endif
+
+
+#########################################################################
+# variables for configuration header 
+#########################################################################
+
+# do we have MPI for parallel communication? Set HAVE_MPI=1 to use MPI,
+# or HAVE_MPI=0 if we're not using MPI. The default is no MPI. Edit
+# and uncomment the next line to use MPI.
+
+HAVE_MPI = @HAVE_PKG_MPI@
+
+# do we have the Petra vector class library? Set HAVE_PETRA=1 to use Petra,
+# otherwise set HAVE_PETRA=0. Default is no petra; to enable Petra,
+# change to HAVE_PETRA=1 and uncomment the next line.
+
+HAVE_PETRA = @HAVE_PETRA@
+
+# are we using single precision? Set TSF_SINGLE=1 to use single precision,
+# or TSF_SINGLE = 0 to use double precision. NOTE: single precision
+# is only rarely tested, so it should be considered unsupported. 
+# Use at your own risk. If you really want to do it, edit and 
+# uncomment the next line to use single precision. 
+
+TSF_SINGLE = 0
+
+
+#########################################################################
+# Locations and library names for MPI
+#########################################################################
+
+HAVE_PKG_MPI = @HAVE_PKG_MPI@
+
+MPI_LIB_PATH = @MPI_LIBDIR@
+
+MPI_INCLUDE_PATH = @MPI_INC@
+
+MPI_LIB_NAME = @MPI_LIBS@
+
+#########################################################################
+# Locations and library names for math libraries (e.g., BLAS and LAPACK)
+#########################################################################
+
+MATH_LIB = @MATH_LIB@ @FLIBS@
+
+MATH_LIBDIR = @MATH_LIBDIR@
+
+
+#########################################################################
+# Location for Trilinos
+#########################################################################
+
+TRILINOS_LIB = @TRILINOS_LIBS@
+TRILINOS_INC = @TRILINOS_INC@
+TRILINOS_LIBDIR = @TRILINOS_LIBDIR@
+
+CXX = @CXX@
+
+include $(TSF_ROOT)/Build/Platforms/Makefile.$(PLATFORM)

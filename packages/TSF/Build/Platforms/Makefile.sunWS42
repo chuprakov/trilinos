@@ -1,0 +1,40 @@
+# Makefile changes for Solaris platform with Sun WorkShop 4.2 compilers:
+
+ARCH		= SOLARIS
+COMPILER_NAME = ws4.2
+
+LOCALSHELL	= /bin/csh
+RM		= - /usr/bin/rm -f
+CP = /usr/bin/cp
+MKDIR = /usr/bin/mkdir -p
+
+CC		= cc
+CXX		= CC
+F77		= f77
+AR		= ar
+ARFLAGS		= r
+RANLIB		= ranlib
+
+MISC_LIB       = -lF77 -lV77 -lM77 -lsunmath -lC -lm -lw -lc -lposix4 -lpthread
+
+ARCXX = CC
+ARCXXFLAGS = -xar -o
+
+# List architecture/compiler dependant flags (such as ARCHCXXFLAGS, ARCHCFLAGS,
+# ARCHDEPENDSFLAG, DEBUGFLAG, OPTFLAG, WARNINGFLAG) below:
+
+#ARCHCXXFLAGS	= -DNO_SYSTEM_BOOL -DUSEEXCEPTIONS -verbose=template 
+ARCHCXXFLAGS	= -DNO_SYSTEM_BOOL -DUSEEXCEPTIONS -DNO_NAMESPACES -features=castop,rtti
+
+ARCHCFLAGS	=
+ARCHDEPENDSFLAG	= -xM
+
+DEBUGFLAG	= -g0
+OPTFLAG		= -O
+CWARNINGFLAGS	= -w
+CXXWARNINGFLAGS	= +w
+
+CXXSHARED	= ld -G
+SHAREDFLAGS	=  -KPIC
+
+

@@ -1,0 +1,140 @@
+/** \page FEDoc Finite elements concepts in Sundance
+
+<BODY>
+<H1> Finite elements concepts in Sundance </H1>
+
+
+In the finite-element method, a PDE is
+written in weak form on an infinite-dimensional space 
+and then discretized onto
+a finite-dimensional space as specified by the choice of Mesh and
+by the choice of basis function. 
+
+There are many possible weak formulations for any given PDE, for instance
+Galerkin or first-order least squares. Furthermore, there is then
+some freedom in choice of basis function (often constrained by 
+stability considerations). Sundance is designed to allow great flexibility
+in choice of formulation and discretization method.   
+
+\section FunctionSpace Function spaces and basis families
+
+The unknown and variational (test) functions in a weak equation are 
+represented by UnknownFEFunc and VariationalFEFunc objects,
+respectively. The first constructor argument to an UnknownFEFunc
+or VariationalFEFunc object is the BasisFamily with which it
+will be discretized. For example,
+\code
+  Expr T = new UnknownFEFunc(Lagrange(1), "T");
+\endcode
+creates a function T that will be discretized with first-order Lagrange
+interpolation.
+
+A BasisFamily such as Lagrange
+is a geometry-independent specification of a basis function; the
+basis family object
+automatically hook to the low-level functions appropriate to
+the cell being integrated (e.g. \f$ x \f$ and \f$1-x\f$ for a line, and
+so on).
+
+
+
+\section VariationalForms Weak equations
+
+The continuous formulation of a finite-elements problem is as a
+weak equation, for example
+\f[ - \int_\Omega \nabla u \cdot \nabla v + \int_{\Gamma_1} v G
+- \int_\Omega v f = 0 \f]
+plus possible restrictions on the variations on specified
+boundary segments (see \ref BoundaryConditions below).
+
+To represent a weak equation, use the Sundance Integral object. Assuming
+that the boundary segment \f$\Gamma_1\f$ has been represented
+with a CellSet called gamma 
+the equation above would be written
+\code
+Integral myEqn = Integral(-(grad*v)*(grad*u)) 
+   + Integral(-v*f)
+   + Integral(gamma, v*G);
+\endcode
+Integrals with no domain specified are taken to be over all maximal cells.
+Notice that Integral objects can be added using the overloaded \c+\c operator.
+
+Since the integrals will be done with quadrature, you can give a specification
+of a quadrature family as an optional argument to Integral. For example,
+\code 
+Integral myEqn = Integral(someCellSet, v*sin(x), GaussLegendre(8));
+\endcode
+will cause 8th-order Gauss-Legendre quadrature to be used on whatever
+cells get integrated. You can use this feature on a term-by-term
+basis to assign high-order
+quadrature for complicated terms but low-order quadrature for
+all others, for example
+\code 
+Integral myEqn = Integral(v*sin(4*x), GaussLegendre(16))
+   + Integral(v*u, GaussLegendre(2));
+\endcode
+The default quadrature rule is 4th-order Gauss-Legendre.
+
+\warning 
+The Sundance Integral object is essentially just a bookkeeper that groups
+domains with expressions. It 
+doesn't know how to do integration by parts, so
+for problems in which integration by parts is necessary
+you must do that step by hand before putting your problem into an Integral
+object.
+
+
+\section BoundaryConditions Boundary conditions
+
+There are many ways to handle boundary conditions in finite-elements
+problems. 
+
+In Galerkin methods, Neumann BCs are easy: the BC 
+\f${\hat n} \cdot \nabla u = G \f$ along a CellSet top
+is incorporated by adding
+\code
+    Integral(top, v*G)
+\endcode
+to the weak equation, where v is the variation of u and G is the
+expression which represents the flux. Natural BCs, which are zero-flux
+Neumann BCs, are especially easy, since the integral is indentically
+zero. To do natural BCs, you do nothing at all.
+
+Dirichlet BCs can done by replacing the weak equation on the boundary
+nodes with another weak equation representing the BCs. In Sundance, this
+is done with the EssentialBC object. To apply the weak condition
+\f$u=sin(y)\f$ on the CellSet left, write
+\code
+   EssentialBC bc = EssentialBC(left, v*(u-sin(y)));
+\endcode
+EssentialBC objects can be combined using the "and" operator
+\&\&, for example
+\code
+   EssentialBC bc = EssentialBC(left, v*(u-sin(y))) 
+	     && EssentialBC(right, v*(u-cos(y)));
+\endcode
+
+In least-squares formulations, you can do dirichlet BCs in least-squares
+form (i.e., as just another Integral) or in essential form. Using
+the least-squares form has the advantage that your matrix remains SPD, but
+the BCs will not always be satisfied exactly.
+
+You can also
+do Dirichlet BCs by introducing lagrange multipliers along the boundary.
+In this case, the BC becomes just another integral to be added to
+the weak equation.
+This method is sometimes useful, but beware of indefinite matrices. 
+
+
+<H2>
+Next section: \ref LinearSolvers
+</h2> 
+ 
+</BODY> 
+*/
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+# ---------------------------------------------------------------------------
+#
+# Common rules, independent of site and platform.
+#
+# Kevin Long, 01/16/2001
+# 
+# ---------------------------------------------------------------------------
+
+
+SHELL = $(LOCALSHELL)
+
+# ---------------------------------------------------------------------------
+#                        suffix transformation rules
+# ---------------------------------------------------------------------------
+
+# rules to build an object file from C++, C, or fortran source
+
+OBJ = $(SOURCES:%.cpp=%.o)
+
+COBJ = $(CSOURCES:%.c=%.o)
+
+FOBJ = $(FSOURCES:%.f=%.o)
+
+# rule to build a dependency file from C++ or C source
+
+DEPENDS = $(SOURCES:%.cpp=%.d)
+
+CDEPENDS = $(CSOURCES:%.c=%.d)
+
+# rule to build an executable from an object file. 
+
+EXE = $(OBJ:%.o=%.e)
+
+# rule to run serial and parallel tests
+
+TESTS = $(SOURCES:%.cpp=Results/%.tst)
+
+PTESTS = $(PSOURCES:%.cpp=ParallelResults/%.ptst)
+
+
+
+# ---------------------------------------------------------------------------
+# compiler flags for C++ and C
+# ---------------------------------------------------------------------------
+
+
+CXXFLAGS = -D$(ARCH) $(BUILD_DEBUG) $(BUILD_OPT) $(SITECXXFLAGS) \
+$(CXXWARNINGFLAGS) $(CXXINCLUDE) $(ARCHCXXFLAGS)
+
+CFLAGS = -D$(ARCH) $(RAND) $(BUILD_DEBUG) $(BUILD_OPT) $(SITECFLAGS) \
+$(CWARNINGFLAGS) $(CINCLUDE) $(ARCHCFLAGS)
+
+
+# compiler dependency creation flag 
+
+DEPENDSFLAG = $(ARCHDEPENDSFLAG) 
+
+# listing of libraries for linking 
+
+LINKLIB = $(TARGETLIB) $(EXTERNAL_LIB_PATH) $(EXTERNAL_LIB) $(ARCH_LIB)
+
+# Compilation rules. 
+
+.SUFFIXES : .cpp .c .f .o .d .e .tst .ptst .class .sub .lib .spotless .clean
+
+.PRECIOUS : %.o %.e
+
+# default compilation rules for C++ and C files
+
+%.o : %.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+%.o : %.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+%.o : %.f
+	$(F77) -c $(FFLAGS) $(FFLAGS2) -o $@ $<
+
+# rules for automatic dependency creation 
+
+%.d : %.cpp
+	$(CXX) $(DEPENDSFLAG) $(CXXFLAGS) $< > $@
+
+
+%.d : %.c
+	$(CC) $(DEPENDSFLAG) $(CFLAGS) $< > $@
+
+
+# rule to build executable w/o build tag.
+
+%.e : %.o
+	$(CXX) -o $@ $(CXXFLAGS) $< $(LIBDIR) $(LINKLIB)
+
+# rules to run tests
+
+%.tst : %.e
+	$(SERIAL_RUN) ./$< $(SERIAL_ARGS) >& $@
+	echo "done" $@
+
+%.ptst : %.e
+	$(PARALLEL_RUN) $(NPROC) ./$< $(PARALLEL_ARGS) >& $@
+	echo "done" $@
+
+
+
+
+

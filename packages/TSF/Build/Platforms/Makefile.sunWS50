@@ -1,0 +1,41 @@
+# Makefile changes for Solaris platform with Sun WorkShop 5.0 compilers:
+
+ARCH           	= SOLARIS
+COMPILER_NAME = ws5.0
+
+LOCALSHELL     	= /bin/csh
+RM		= - /usr/bin/rm	-f
+CP = /usr/bin/cp
+MKDIR = /usr/bin/mkdir -p
+
+CC             	= cc
+CXX            	= CC
+F77            	= f77
+AR             	= ar
+ARFLAGS        	= r
+RANLIB         	= ranlib
+
+#MISC_LIB       	= -lsunmath -lsocket -lnsl -lrt -lF77 -lV77 -lM77
+MISC_LIB	= -lsocket -lnsl -lrt 
+ARCXX	 	= CC
+ARCXXFLAGS 	= -xar -o
+
+# List architecture/compiler dependant flags (such as ARCHCXXFLAGS, ARCHCFLAGS,
+# ARCHDEPENDSFLAG, DEBUGFLAG, OPTFLAG, WARNINGFLAG) below:
+
+#ARCHCXXFLAGS	= -verbose=template -features=except
+ARCHCXXFLAGS	= -DNO_NAMESPACES
+#template
+ARCHCFLAGS	=
+ARCHDEPENDSFLAG	= -xM
+
+DEBUGFLAG	= -g
+OPTFLAG	        = 
+#-O
+CWARNINGFLAGS	= -w
+CXXWARNINGFLAGS	= +w
+
+CXXSHARED	= ld -G
+SHAREDFLAGS	= -KPIC 
+
+DYNAMIC_LIB = -ldl

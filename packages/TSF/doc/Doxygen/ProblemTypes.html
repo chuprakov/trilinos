@@ -1,0 +1,114 @@
+/** \page ProblemTypes Types of problems
+
+
+
+<BODY>
+
+\section StaticLinearProblemDoc Static linear problems
+
+The core capability of Sundance is the discretization 
+of linear elliptic problems. Such problems are encapsulated in a user-level
+object called StaticLinearProblem, for which the constructors are:
+\code
+  StaticLinearProblem(const Mesh& mesh, const Integral& integral,
+                      const EssentialBC& bc, const Expr& variations,
+                      const Expr& unknowns, const LinearSolver& solver);
+\endcode
+or, for problems without replace-style boundary conditions,
+\code
+  StaticLinearProblem(const Mesh& mesh, const Integral& integral,
+                      const Expr& variations,
+                      const Expr& unknowns, const LinearSolver& solver);
+\endcode
+The problem is solved with a call to the solve() method.
+The solution is returned as an Expr object, allowing it to be used in
+subsequent Sundance calculations. 
+
+\section TimesteppingProblems Timestepping problems
+
+There are at present no high-level objects for timestepping; however,
+it is very easy to write Sundance code for timestepping problems.
+The key idea is to <em> do time discretization symbolically, then use
+Sundance's StaticLinearProblem object to do spatial discretization and
+solve for the step. </em>
+
+As an example, consider solving the time-dependent heat equation
+\f[\nabla^2 u = {{\partial u}\over {\partial t}}\f]
+using the Crank-Nicolson time discretization method. 
+The equation giving the step from \f$t_{n}\f$ to \f$t_{n+1}\f$ is
+\f[u_{n+1} - u_n=  \Delta t \cdot \nabla^2 \left[ {{u_n + u_{n+1}}\over 2}
+\right]. \f] 
+In Sundance Expr notation, the integrand of the weak form of the equation
+would be written as
+\code 
+   Expr cnStep = v*(u - u0) + 0.5*dt*(grad*v)*(grad*(u + u0));
+\endcode
+where u0 is an Expr representing u at the previous timestep.
+The above expression
+can be given to an Integral object and in turn to a StaticLinearProblem
+for u. For a complete example and further discussion
+of the subtleties of coding such a problem, see 
+<a href="timeStepHeat1D_cpp-example.html"> timeStepHeat1D.cpp </A>.
+
+\section NonlinearProblems Nonlinear problems
+
+As with timestepping problems, we can solve nonlinear problems
+by symbolically reducing them to something a StaticLinearProblem
+can handle: <em> do linearization symbolically, and then use
+StaticLinearProblem to do spatial discretization and solve the linear
+problem. </em>
+
+The steady-state radiation diffusion equation, \f[\nabla^2 T = 0 \f]
+can be linearized about a trial solution
+\f$T_0\f$, giving an equation for the Newton step \f$\delta T\f$ 
+\f[ \nabla^2 T_0^4 + 4 T_0^3 \nabla^2 \delta T = 0. \f]
+The Newton step thus obtained can be used in a nonlinear solver such as
+Newton's method or backtracking Newton's method. 
+For an example of using Sundance to solve the radiation diffusion
+equation with a backtracking Newton's method, see 
+<a href="inlineRadDiffusion1D_cpp-example.html"> inlineRadDiffusion1D.cpp </A>.
+
+
+
+
+
+
+
+\section Eigensystems Eigensystems
+
+At present there is no high-level support for eigensystems in Sundance.
+You could set up an eigensystem by creating expressions for the
+mass and stiffness terms and giving them each to a DistributedMatrixBuilder
+object, from which you can obtain mass and stiffness matrices. See the
+next section for how to get direct access to the matrices.
+
+
+\section MatrixAccess Matrix access
+
+For problem types not yet fully supported by Sundance, or for research,
+debugging, or plain curiosity one might want to work directly with
+the system matrix and vector in a Sundance problem.
+
+You can do this with methods of StaticLinearProblem:
+<ul>
+<li> void buildMatrixAndVector() - configures and builds a linear system 
+<li> MatrixBase* getMatrix() - returns a pointer to the system matrix A
+<li> DistributedVector* getRHS() - returns a pointer to the system RHS vector b
+<li> Expr formSolnExpr(const SmartPtr<DistributedVector>& x)) - packs 
+a solution vector x into a discretized Expr object.
+</ul>
+If you use these, please be careful to call getMatrix() and getVector()
+only after a call to buildMatrixAndVector(), otherwise the
+matrix and vector will be in an invalid state.
+
+
+
+ 
+</BODY> 
+*/
+
+
+
+
+
+

@@ -1,0 +1,256 @@
+/** \page GeomDoc Geometry in Sundance
+
+<BODY>
+
+There are two categories of geometric objects in Sundance: 
+those relating to discrete geometry (see \ref MeshDoc) and
+those relating to symbolic geometry (see \ref CellSetDoc). 
+
+You will need to work with the discrete geometry objects when you
+read meshes (see \ref MeshInputDoc), 
+and when you tag certain cells on which boundary conditions
+might be applied (see \ref LabelDoc). 
+
+Weak equations and boundary conditions will be associated with
+symbolic geometry objects called CellSets. A CellSet might refer
+to all cells given a certain label, for instance.
+
+\section MeshDoc Discrete geometry
+
+The user-level discrete geometry objects are Point, Cell, and Mesh. 
+<ul>
+
+<li> A Point represents the position vector of
+a point in space, parametrized by its cartesian coordinates. Operator
+overloading is used to define vector arithmetic operations on points; for
+example, a+b adds the position vectors of a and b.
+
+<li> A Cell is a topological cell in the mesh. Zero-cells are points, 
+one-cells are lines, two-cells are polygons, three-cells are polyhedra.
+Any given Cell can be tagged with a String label, so that it can be identified
+as part of a domain on which an equation is to be applied (see \ref CellSetDoc
+and \ref LabelDoc below).
+
+Cells store topological information (connectivity with their neighbors) and
+geometric information (positions of nodes) independently. You can reposition
+a node point, and all cells that contain it will automatically refer
+to the new nodal position.
+
+A Cell has accessors that let you look up its facet and cofacet Cells, and
+look up its vertex and node points. You will often use these in writing
+conditional functions to identify cells on a particular subdomain
+(see \ref LabelDoc).
+
+The data underlying a Cell object is stored by reference, so a change to 
+a Cell also changes all copies of that Cell.
+
+<li> A Mesh is a data structure that contains all Points
+and all Cells of dimension 0 through DMax. 
+Unless you are building meshes from scratch (see \ref MeshBuildingDoc)
+you will usually only need two methods of Mesh:
+
+<ul>
+<li> labelCells() for tagging groups of cells with a label (see \ref LabelDoc).
+<li> scatterMesh() for scattering a mesh to several processors 
+(see \ref PartitionDoc)
+</ul>
+
+A Mesh is a reference-counted handle to a lower-level mesh data structure.
+You can freely copy meshes without blowing out memory, but be aware
+that changes to a mesh will instantly propagate to all copies you have made.
+
+</ul>
+
+\warning There is a feature of Mesh and Cell memory management that
+can result in memory corruption, fortunately only in circumstances
+that are rare and easily avoidable. To avoid problems
+please follow the simple rule that
+<b> a Cell must never be used after its Mesh has been destroyed. </b>
+Here's a simple example: 
+\code
+  // never, ever do this
+  Cell myCell;
+  
+	{
+	   Mesh myMesh = someMeshReader.getMesh();
+		 myCell = myMesh.cell(0, 0);
+  }
+  // at end of scope, myMesh was destroyed and myCell is left
+  // with a reference to a nonexistent mesh. The next statement
+	// will segfault.
+
+  Point x = myCell.point(0);
+\endcode
+Follow the rule above, make sure your Meshes survive as long as
+their Cells do, and you will have no problem with memory management
+in Sundance geometry.
+
+\section MeshInputDoc Reading meshes from files
+
+In most problems you will read a mesh from an input file.
+There are many mesh file formats out there, so Sundance has an extensible
+inteface for reading meshes: the MeshReader system.
+
+To create a MeshReader, allocate one of the mesh reader subclasses
+and capture into a MeshReader handle. For example, if your mesh
+was created with Jonathan Shewchuk's 
+<A HREF="http://www.cs.cmu.edu/~quake/triangle.html"> triangle </A>
+mesher and stored in Shewchuk's file format in files "myMesh.node" and
+"myMesh.ele", you would create
+a ShewchukMeshReader object.
+\code
+  MeshReader reader = new ShewchukMeshReader("myMesh");
+\endcode
+To create a mesh, you would then invoke the getMesh() method of
+MeshReader:
+\code
+  Mesh myMesh = reader.getMesh();
+\endcode
+
+\section CellSetDoc Grouping Cells into subdomains (CellSets)
+
+Sundance lets you define subdomains, called CellSets, 
+on which you can apply 
+an equation; for example, you can define a boundary region on which
+a boundary condition is going to hold.
+
+There are several ways to create CellSets
+<ul>
+<li> defining a CellSet to include all cells having a given label (to see
+how to set labels on a group of cells, see \ref LabelDoc below.) 
+<li> doing a union operation on two or more existing CellSets
+<li> using the predefined BoundaryCellSet object, which includes all boundary cells
+of dimension \f$D_{max}-1\f$.
+<li> using the predefined MaximalCellSet object, which includes all cells
+od dimension \f$D_{max}\f$.
+ </ul>
+
+A CellSet is a symbolic geometry object, independent of any particular
+mesh. 
+
+\section LabelDoc Labeling cells
+
+Setting a label on a given Cell is simple enough: just call the setLabel()
+method on that Cell with the String label as an argument. However,
+usually your task won't be labeling Cells, it will be identifying the group
+of Cells that you want to label. For example, you might want to find
+all Cells that are positioned on the top of a wing, and give each of them the
+label "top".
+
+Mesh has a method called labelCells()
+for identifying and labeling Cells that satisfy
+a user-defined condition. The condition is specified through a 
+user-defined C++ function of type CellConditional. CellConditional takes
+a Cell as its sole argument, and returns a bool. For example,
+suppose you want to give the label "A" to all 1-cells that are on the
+line segment y=0.1 x + 0.5 with the additional stipulation that x be
+in the interval [0, 3]. You can write a CellConditional function
+that returns true if both of the cell's vertices are on that line,
+otherwise false:
+
+\code
+bool onLineA(const Cell& cell)
+{
+    
+	  // identify cells for which all vertices are on y = 0.1*x + 0.5 
+
+		for (int i=0; i<cell.numFacets(); i++)
+		{		
+		   const Point& pt = cell.facet(0,i).point(0);
+			 bool ptIsOnLine = fabs(0.1*pt[0] + 0.5 - pt[1]) < 1.0e-10;
+		   if (!ptIsOnLine) return false;
+    }
+
+		return true;
+}
+
+\endcode
+
+Having written such a conditional function, you can then label
+all cells for which the condition is true by making a call to
+labelCells(). 
+
+\code
+  /* read mesh from a file in Shewchuk format */
+  MeshReader reader = new ShewchukMeshReader("myMesh");
+	Mesh mesh = reader.getMesh();
+  
+	/* give label "A" to all cells on line y=0.1*x + 0.5 */
+	mesh.labelCells(1, "A", onLineA);
+\endcode
+
+		
+
+\section PartitionDoc Partitioning meshes for parallel solves
+
+The present version of 
+Sundance does mesh partitioning in serial, and then scatters the processor
+submeshes to files for use in a later parallel run. Currently, all
+partitioning is done with Chaco. 
+
+To partition a mesh, do the following:
+<ul>
+<li> create or read 
+a mesh in serial (presumably on a machine with lots of memory).
+<li> create a MeshWriter for writing the submeshes to files. 
+<li> decide the number of pieces into which the mesh will be partitioned.
+<li> call the scatterMesh() method of Mesh, which does the partitioning
+and writes the submeshes to files.
+</ul>
+
+Support for parallel mesh partitioning is a long-term goal.
+
+
+
+\section MeshBuildingDoc Assembling a mesh from scratch
+
+Normally, you will read a mesh from a file. However, in some cases
+you may want to assemble a mesh by hand (perhaps in order to write a 
+new MeshReader subclass to handle your favorite mesh file format).
+
+<ul>
+<li> First, create an empty Mesh, specifying the dimension of the mesh.
+<li> Next, use the addPoint() method of Mesh to put your nodal points into the mesh.
+<li> Finally, use the createMaximalCell() method of Mesh to put your maximal
+cells into the mesh. All lower-dimensional cells are automatically and
+transparently created
+in the process of inserting the maximal cells.
+<ul>
+<li> When creating the maximal cells, you don't work with the Cell constructors
+directly. Rather, You create a CellFactory object of the appropriate type;
+then when createMaximalCell() needs to construct a Cell, it makes
+a call to methods of CellFactory.
+The CellFactory constructor takes as its arguments information on the nodes
+of the cell you are about to create. 
+Currently there are CellFactory subtypes for points, affine lines, triangles,
+and tetrahedra:
+<ul>
+<li> PointCellFactory
+<li> AffineLineCellFactory
+<li> AffineTriangleCellFactory
+<li> AffineTetCellFactory
+</ul>
+To extend Sundance to use other types of cells, e.g. brick cells, one would
+have to write a new CellFactory describing those cells. Since the creation
+of cells in a Mesh is done entirely with the CellFactory interface,
+the methods of Mesh
+that build cells would need no modification to handle the new cell type.
+</ul>
+</ul>
+
+
+
+ 
+	<H2>
+Next section: \ref FEDoc	
+</h2> 
+
+ 
+</BODY> 
+*/
+
+
+
+
+
+

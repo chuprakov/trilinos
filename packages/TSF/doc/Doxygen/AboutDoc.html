@@ -1,0 +1,204 @@
+/** \page AboutDoc Read me first
+
+<BODY>
+
+Sundance is a moderately large and rather complex package. The good news
+for you is that only a small fraction of the classes and an
+even smaller fraction of the methods are needed for user-level code.
+In fact, for many "user-level" classes the only method you  
+ever call will be 
+the contructor.
+
+One of the main goals of this document is to distinguish those
+user-level classes and methods from developer-level classes and methods.
+The class reference manual has separate pages for 
+<A HREF="group_UserLevelClasses.html">  user-level classes </A>
+and for 
+<A HREF="group_LowLevelClasses.html">  low-level classes. </A>
+Furthermore, in the method listing for each user-level class, 
+there are subgroups for user-level and developer-only methods.
+
+Please read the following sections on 
+<ul>
+<li> \ref TypographicalConventions
+<li> \ref HandlePattern
+<li> \ref MemoryManagement
+<li> \ref Parallelism
+<li> \ref UsingSundanceEffectively
+</ul>
+
+
+
+\section TypographicalConventions Typographical conventions in the source code and examples.
+
+<ul>
+<li> Class names begin with capital letters, 
+and each word within the name also begins capitalized.
+For example: MeshReader, DiscreteFEFunc. 
+<li> method names and variables
+begin with lower-case letters, but subsequent words
+within the name are capitalized. For example: getCells() or numCells.
+<li> data member names end with an underscore. For example: myName_.
+</ul>
+
+\section HandlePattern Handles and polymorphism in Sundance
+
+Understanding <b> handle classes </b> and how they are used in Sundance
+is important for reading and writing Sundance code and browsing the source
+and class documentation. Handle classes are used in Sundance
+to simplify user-level polymorphism
+and provide transparent memory management.
+
+Polymorphism is a buzzword meaning the representation
+of different but related object types (derived classes, or subclasses) 
+through a common interface (the base class). In C++, you can't use a base-class
+object to represent a derived class; you have to use a <i> pointer </i>
+to the base class object to represent a <i> pointer </i> to the derived
+class. That leads to a rather awkward syntax and also requires attention
+to memory management. To simplify the interface and make memory
+management automatic, all user-level polymorphism is done with handle
+classes. A handle class is simply a class that contains a pointer
+to a base class, along with an interface providing user-callable methods, 
+and a (presumably) intelligent scheme for memory
+management.
+
+So if you want to work with a family of Sundance objects, for instance
+the different flavors of symbolic objects, you need only use:
+<ul>
+<li> the methods of the handle class for that family of classes
+<li> the <i> constructors </i> for the derived classes.
+</ul>
+You do not need to, and shouldn't, use any methods of the derived classes; 
+all work with the family should be done with methods of the handle class.
+
+For example, Sundance symbolic objects are represented with a handle class
+called Expr. The different symbolic types derive from ExprBase, but they are
+never used directly after construction; they are used only through the
+Expr handle class. The code fragment below shows some Exprs being constructed
+through subclass constructors and then being used in Expr operations. 
+\code
+Expr x = new CoordExpr(0, "x");
+Expr f = x + 3.0*sin(x);
+Expr dx = new Derivative(0);
+Expr df = dx*f;
+\endcode
+
+Notice that a pointer
+to a subclass object is created using the <b> new </b> operator,
+and then given to the handle. The handle object assumes responsibility
+for that pointer: it does all memory management, any copying that might occur,
+and will eventually delete it. <b> You, the user, should <em> never </em>
+delete a pointer that has been passed to a handle. Memory management is
+the responsibility of the handle. </b>
+(Code like this will seem familiar to Java programmers, who call new
+but never delete).
+
+Some important user-level handle classes in Sundance are
+<ul> 
+<li> Expr, which is a handle for the subclasses of ExprBase. 
+<li> CellSet, which is a handle for the subclasses of CellSetBase. 
+<li> BasisFamily, which is a handle for the subclasses of BasisFamilyBase.
+<li> LinearSolver, which is a handle for the subclasses of LinearSolverBase.
+<li> MeshReader, which is a handle for the subclasses of MeshReaderBase.
+<li> MeshWriter, which is a handle for the subclasses of MeshWriterBase.
+</ul>
+
+In all of those cases 
+<b> you should learn and use the methods of the handle classes.
+You should use only the <em> constructors </em>
+of the base class and its subclasses. </b>
+
+
+\section MemoryManagement Memory management
+
+Sundance has been designed so that memory management is transparent to 
+the user; that is, the user should never have to worry about deleting memory
+that has been allocated. With the exception of <b> new </b> pointers that are 
+immediately passed to handles, user-level code is entirely free of pointers.
+
+When writing Sundance code, you can assume that
+<ul>
+<li> User-level classes have well-defined behavior for copying and 
+assignment. 
+<li> User-level classes have well-defined destructors, and take
+care of their own memory management.
+</ul>
+
+Data structures in a finite-elements problem can become rather large; for 
+this reason, objects such as meshes, matrices, and degree-of-freedom
+maps are shallow-copied so
+that both the original and the copy refer to the same chunk of memory. A 
+reference counted "smart pointer" 
+is used to ensure that data is deleted only when necessary.
+It is important to understand that such a copying scheme leads to side
+effects: when a copy is modified, the original is modified as well. 
+
+Memory management of symbolic expressions is designed so that the contents
+of an expression can be modified after the fact. This lets you use the same
+expression with different data 
+at all steps in an iterative procedure, for instance. 
+Please see the section
+on \ref AssigningExprs for more information.
+
+
+\section Parallelism Parallelism
+
+Sundance can both <i> assemble </i> and <i> solve </i> linear systems 
+in parallel. 
+
+Parallel Sundance uses the SPMD paradigm, in which the same code 
+is run on all processors. Communication is done using the CSMR PMachine
+class, which is essentially an object wrapper for selected MPI features.
+To use Sundance's parallel capabilities, the CPPUtilities
+package supporting Sundance has to be built with
+MPI enabled and with a parallel solver. See the
+installation documentation for help in installing parallel Sundance.
+
+One of the design goals was to make parallel solves look 
+to the user as much as possible like serial solves.
+In particular, 
+the symbolic description of an equation set and boundary conditions
+is completely unchanged from serial to parallel runs.  
+To run a problem in parallel, you simply need to 
+<ul>
+<li> use a parallel solver (such as Aztec or Petra)
+<li> use a partitioned mesh (see \ref PartitionDoc)
+</ul>
+Operations such as norms and definite integrals on discrete functions
+are done such that the result is collected from all processors.
+
+\section UsingSundanceEffectively Using Sundance effectively
+
+Sundance is
+a <I> high-level </I> system, in which a finite-element problem is described
+with expressions, function spaces, and domains instead of low-level
+concepts such as matrix entries, 
+elements, and nodes. If you find yourself asking things such as
+"how can I modify the entries
+in row k" instead of "how can I modify my symbolic equation set," 
+you're probably thinking about the problem the wrong way.
+Of course, you <I> can </i> write Sundance code using it's low-level features
+directly, but such code will be harder to read and almost always 
+less efficient. 
+So please stick to the higher-level objects and operations.
+Matlab programmers
+who have learned to write their problems as high-level vector and 
+matrix operations instead of low-level loops will find this way of thinking
+natural. 
+
+<H2>
+Next section: \ref ExprDoc	
+</h2> 
+
+
+</BODY> 
+*/
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+\chapter{Introduction}
+
+The Trilinos Solver Framework (TSF) is a system for writing 
+high-performance
+solvers and optimizers with high-level, representation-independent objects. 
+A TSF user works with abstract objects such as vectors, operators, and vector spaces
+without concern about how those objects are implemented and without worrying about
+memory management. Many operations can be written using overloaded operators that are
+both intuitive and efficient. 
+
+Key user-level TSF objects include
+\begin{itemize} 
+\item {\bf TSFVector} - for vectors, with methods such as dot product, axpy, and 
+\item {\bf TSFVectorSpace} - for vector spaces, with methods to create member vectors
+and test equality with other spaces
+\item {\bf TSFVectorType} - for abstract specification of the concrete type of vector
+to be used in a given calculation. 
+\item {\bf TSFLinearOperator} - for linear operators, with methods for application of
+the operator, its inverse, transpose, and inverse transpose. The inverse operation can
+be directed to use a particular linear solver. Operators can be composed, added, 
+and grouped into blocks, allowing the construction of a rich set of operators.
+\item {\bf TSFMatrixView} - a view of a {\bf TSFLinearOperator} that provides
+methods for configuring matrix structure, loading elements, and factoring a matrix. 
+Only matrix-based linear operators may be viewed with a {\bf TSFMatrixView} object.
+\item {\bf TSFLinearSolver} - for linear solvers, applies a particular solver algorithm
+to solve an operator equation $A x = b$. Krylov solvers implemented in TSF can work
+with any matrix representation or matrix-free operator. 
+\item {\bf TSFNonlinearOperator} - for nonlinear operators, with methods for 
+application of the operator and computation of its gradient
+\item {\bf TSFNonlinearSolver} - for nonlinear solvers
+\end{itemize}
+All of the above objects are abstract interfaces, independent of the underlying
+object representations. Algorithms written in terms of these interface objects
+can be made independent of concrete representation, provided that the concrete
+representation actually implements all methods of the abstract interface. 
+
+
+
+
+
+

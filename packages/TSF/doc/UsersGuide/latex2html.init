@@ -1,0 +1,5 @@
+$BODYTEXT = 'BGCOLOR="#ddeeff"';
+$TRANSPARENT_FIGURES = 1;
+$ADDRESS="Kevin Long (krlong\@sandia.gov)";
+$IMAGE_TYPE = 'gif';
+

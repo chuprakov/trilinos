@@ -1,0 +1,37 @@
+#############################################################################
+#
+# Commands to build libraries and clean in a source subdirectory. 
+# 
+# This is to be included from the makefiles in the subdirectories of src.
+# Those makefiles should contain the following:
+# (1) definitions of macros SOURCES, CSOURCES, and FSOURCES listing the
+#     C++, C, and Fortran files to be built in that directory.
+# (2) a line setting the INLINES macro to *.inl if the directory 
+#     contains .inl template definition files. Otherwise, INLINES should
+#     be left undefined.
+# (3) A directive to include this file, Makefile.src.
+#
+# Kevin Long, 01/29/2001
+# 
+#############################################################################
+
+
+include ../../Build/Makefile.site
+include ../../Build/Makefile.tsf
+
+
+# --------------------- create objects  ------------------------------------
+#
+# Make object files, and archive them into a library. 
+#
+lib: $(OBJ) $(COBJ) $(FOBJ) $(DEPENDS)
+	$(SYMBOLIC_LINK) -f $(PWD)/*.h $(INLINES) $(TSF_ROOT)/include              
+	$(ARCXX) $(ARCXXFLAGS) $(TARGETLIB) $(OBJ)      
+	$(AR) $(ARFLAGS) $(TARGETLIB) $(COBJ)           
+	$(AR) $(ARFLAGS) $(TARGETLIB) $(FOBJ)           
+
+
+# include dependency files.
+include $(DEPENDS) $(CDEPENDS)
+
+

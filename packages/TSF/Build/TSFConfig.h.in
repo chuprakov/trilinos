@@ -1,0 +1,92 @@
+#ifndef TSFCONFIG_H
+#define TSFCONFIG_H
+
+/* define TSF_SINGLE=1 if we are building a single-precision library */
+
+#define TSF_SINGLE 0
+
+
+
+/* define HAVE_MPI=1 if we are linking with MPI */
+
+#define HAVE_MPI 1
+#define MPICH_SKIP_MPICXX
+
+
+/* define HAVE_PETRA=1 to link with the Petra vector/matrix classes */
+
+#define HAVE_PETRA 1
+
+
+/* figure out if we need to set the PETRA_MPI flag to tell petra to use MPI */
+
+#if HAVE_PETRA && HAVE_MPI
+#define HAVE_PETRA_MPI 1
+#define EPETRA_MPI
+#else
+#define HAVE_PETRA_MPI 0
+#endif
+
+/* typedef TSFReal to either float or double,
+ * depending on the value of TSF_SINGLE */
+
+#if TSF_SINGLE
+typedef float TSFReal;
+#else
+typedef double TSFReal;
+#endif
+
+/* define flags indicating debug and opt level */
+
+#define TSF_DEBUG_LEVEL 1
+
+#define TSF_OPT_LEVEL 0
+
+
+
+#define HAVE_DENSE_VECTOR_BOUNDSCHECK 1
+
+
+/* ------------ specification of header file flavor --------------- */
+
+
+#define USE_NEW_HEADERS 1
+
+/* can we use std::ostream ? */
+
+#define NO_USING_STD_OSTREAM 0
+
+/* do we use sstream, strstream, or strstream.h ? */
+
+#define HAVE_STRSTREAM 0
+
+
+#if HAVE_STRSTREAM
+#if USE_NEW_HEADERS
+#include <strstream>
+#else
+#include <strstream.h>
+#endif
+#else
+#include <sstream>
+#endif
+
+
+
+#if USE_NEW_HEADERS
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
+#else
+#include <iostream.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#endif
+
+
+
+#endif

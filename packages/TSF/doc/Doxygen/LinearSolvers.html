@@ -1,0 +1,76 @@
+/** \page LinearSolvers Linear solvers
+
+<BODY>
+
+Upon discretization through finite elements, a linear elliptic PDE
+becomes a discrete linear system \f$Ax=b\f$. The role of Sundance is 
+to assemble the matrix \f$A\f$ and the vector \f$b\f$.
+In most Sundance applications, matrices and vectors
+will never appear at the user level: they are hidden within the
+solver and their methods are called within the guts of Sundance.
+
+In the course of discretizing a StaticLinearProblem 
+(see \ref StaticLinearProblemDoc)
+the Sundance internals will configure and fill the matrix through a small
+set of callback functions
+in the matrix interface. Sundance can work with any matrix
+type that implements those callback functions, which means
+it is possible to add your own solver to Sundance (see \ref ExtendingSolvers).
+
+Currently Sundance supports two families of linear solvers:
+
+<ul>
+<li> Sandia's Aztec family of high-performance parallel solvers.
+
+An AztecSolver is created with one constructor argument: an AztecOptions
+object. For example,
+\code
+  AztecOptions azOpt;
+  azOpt.setParameter(AZ_tol, 1.0e-12);
+  azOpt.setOption(AZ_max_iter, 500);
+  azOpt.setOption(AZ_solver, AZ_bicgstab);
+  azOpt.setOption(AZ_output, AZ_last);
+  LinearSolver mySolver = new AztecSolver(azOpt);
+\endcode
+For documentation of the myriad Aztec options and parameters that can go into
+an AztecOptions object, see the Aztec user's guide.
+
+
+<li> Sundance's quick-n-dirty BICGSTAB solver. This is serial only,
+has no preconditioners, is not at all optimized,
+but is reasonably robust and idiot-proof. It's intended for use in in-house
+testing.
+
+A BICGSTABSolver object is created with two constructor arguments: a convergence
+tolerance and the maximum number of iterations allowed. For example,
+\code
+  LinearSolver mySolver = new BICGSTABSolver(1.0e-12, 200);
+\endcode
+</ul>
+
+\section ExtendingSolvers Adding your own solver
+
+It is possible for you to add your own solver code as a plugin. To do
+so, you will need to derive your solver from the Sundance class
+LinearSolverBase, and implement the LinearSolverBase interface.
+The LinearSolverBase interface works with objects called
+MatrixBase and DistributedVector, so you will need to 
+implement the MatrixBase interface for your matrix type 
+and VectorMapBase for your parallel vectors.
+
+
+<H2>
+Next section: \ref ProblemTypes	
+</h2> 
+
+ 
+	
+ 
+</BODY> 
+*/
+
+
+
+
+
+

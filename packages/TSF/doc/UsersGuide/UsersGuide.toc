@@ -1,0 +1,21 @@
+\contentsline {chapter}{\numberline {1}Introduction}{5}
+\contentsline {chapter}{\numberline {2}Vector Spaces and Vector Representations}{7}
+\contentsline {section}{\numberline {2.1}The TSFVectorSpace object}{7}
+\contentsline {subsection}{\numberline {2.1.1}Concrete vector space types}{7}
+\contentsline {section}{\numberline {2.2}Vector Representations}{7}
+\contentsline {chapter}{\numberline {3}Vectors}{9}
+\contentsline {section}{\numberline {3.1}Managing vectors}{9}
+\contentsline {subsection}{\numberline {3.1.1}Constructing a TSFVector}{9}
+\contentsline {subsection}{\numberline {3.1.2}Assignment and copying}{9}
+\contentsline {section}{\numberline {3.2}Element access}{10}
+\contentsline {section}{\numberline {3.3}Methods for mathematical operations}{10}
+\contentsline {subsection}{\numberline {3.3.1}Built-in methods}{10}
+\contentsline {subsection}{\numberline {3.3.2}Overloaded mathematical operations}{11}
+\contentsline {subsection}{\numberline {3.3.3}Reduction and Transformation Operations}{11}
+\contentsline {chapter}{\numberline {4}Linear Operators}{13}
+\contentsline {chapter}{\numberline {5}Linear Solvers}{15}
+\contentsline {chapter}{\numberline {6}Eigensolvers}{17}
+\contentsline {chapter}{\numberline {7}Nonlinear Operators}{19}
+\contentsline {chapter}{\numberline {8}Nonlinear Solvers}{21}
+\contentsline {chapter}{\numberline {9}Functionals}{23}
+\contentsline {chapter}{\numberline {10}Optimization}{25}

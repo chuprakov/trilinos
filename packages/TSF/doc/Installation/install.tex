@@ -1,0 +1,116 @@
+\documentclass[10pt]{article}
+%
+\usepackage{html}
+\usepackage{heqn}
+\usepackage{moreverb}
+\usepackage{alltt}
+\usepackage{color}
+
+\newcommand{\tsf}{{\bf TSF}}
+
+\sloppy
+
+
+
+\makeindex
+
+\begin{document}
+%
+
+
+
+\title{TSF Installation Guide}
+
+\author{Kevin Long\\Computational Science and Mathematics Research Department\\
+Sandia National Laboratories\\Livermore, California\\{\tt krlong@sandia.gov}}
+
+\maketitle
+
+
+\tableofcontents
+
+\section{Requirements}
+
+At a minimum, you will need 
+
+\begin{itemize}
+\item A C++ compiler with support for templates, exceptions, rtti, namespaces, and
+the {\tt mutable} keyword. 
+\item Gnu make (gmake). On Linux systems, make is gmake by default.
+\item The BLAS and LAPACK libraries. Reference fortran
+implementations of BLAS and LAPACK are freely available from netlib:
+\begin{itemize}
+\item http://www.netlib.org/blas/index.html
+\item http://www.netlib.org/lapack/index.html
+\end{itemize}
+Some vendors will have versions of BLAS tuned for a particular system. Alternatively,
+you can build an auto-tuned BLAS using ATLAS, avaliable from:
+\begin{itemize}
+\item http://math-atlas.sourceforge.net/
+\end{itemize}
+\end{itemize}
+
+\subsection{Optional third-party software}
+
+A minimal build of TSF will have only 
+dense, serial linear algebra implemented with LAPACK. Most likely you will want
+distributed, sparse linear algebra, for which you will need to download some additional
+software.
+
+\begin{itemize}
+\item TSF has extensive support for the lower-level components of the Trilinos Project, 
+such as EPetra and IFPack. To use these, obtain a Trilinos distribution from 
+\begin{itemize}
+\item http://www.cs.sandia.gov/~mheroux/Trilinos/TrilinosDetails.htm
+\end{itemize}
+Note that Trilinos in turn requires several other packages such as MPI. 
+\end{itemize}
+
+\section{Configuring TSF}
+
+TSF uses Gnu {\tt autoconf} to customize makefiles for your site. 
+
+\begin{itemize}
+\item {\tt --with-arch=}{\it arch}, where {\it arch} is one of {\tt LINUX}, 
+{\tt SunWS5.0}, or {\tt SunWS5.0-Purify}.
+\item {\tt --with-math=}{\it math libraries}. The default is {\tt -llapack -lblas -lm}.
+\item {\tt --enable-mpi=yes|no}. Default is no. 
+\item {\tt --disable-trilinos=yes|no}. Default is no. If Trilinos is used, its location
+is guessed from various Trilinos-specific environment variables.
+\item {\tt --enable-opt=yes|no} toggles compiler optimization flags. Default is
+no. 
+\item {\tt --enable-debug=yes|no} toggles generation of debugging information. 
+Default is yes. 
+\item {\tt --enable-boundscheck=yes|no} toggles bounds checking on dense vector 
+element access. Default is yes. 
+\item {\tt --with-mpi-cxx} specifies the C++ compiler to be used with MPI. Default is
+{\tt mpiCC}. 
+\item {\tt FLIBS} specifies flags and libraries for linking Fortran. By default,
+{\tt configure} will attempt to determine these automatically for your system; however,
+it may occasionally guess wrong, in which case you much supply this information
+manually. 
+\item {\tt --with-libs} specifies any additional libraries needed for your build. Default
+is none.
+\item {\tt --with-include} specifies any additional include directories
+needed for your build. Default is none.
+\item {\tt CXX=}{\it C++ compiler} specifies the C++ compiler. By default, common choices
+such as {\tt g++} and {\tt CC} are tried. 
+\end{itemize}
+
+\section{Building TSF}
+
+Once you have configured TSF, building it is simple. Just type
+{\tt make} at the command line in the TSF root directory, then get a cup of coffee. 
+
+\section{Building the documentation}
+
+To build the online documentation, you will need {\tt doxygen}. Once you have
+installed doxygen, simply run {\tt make manual} in the TSF root directory. 
+
+\section{Cleaning up}
+
+To destroy all objects, dependencies, libraries, and executable files, do
+{\tt make clean}. To destroy all that and more (such as the current configuration files
+and documentation) do {\tt make spotless}. 
+
+\end{document}

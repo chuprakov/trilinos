@@ -1,0 +1,56 @@
+#---------------------------------------------------------------------------
+#
+# Variable definitions that are specific to TSF
+#
+# Kevin Long, 04/30/2001
+# 
+#---------------------------------------------------------------------------
+
+SRCDIR = $(TSF_ROOT)/src
+
+# include path for C++ code
+
+
+
+SRC_SUBDIRS = Support Vectors VectorSpaces LinearOperators NonlinearOperators \
+Implementations LinearSolvers TestProblems Preconditioners NonlinearSolvers \
+LinearProblem Readers
+
+SRC_INCLUDE_PATH = $(foreach SUBDIR, $(SRC_SUBDIRS), -I$(SRCDIR)/$(SUBDIR))
+
+CXXINCLUDE = $(SRC_INCLUDE_PATH) -I$(TSF_ROOT)/include $(EXTERNAL_INCLUDE_PATH)
+
+# include path for C code
+
+CINCLUDE = $(EXTERNAL_INCLUDE_PATH)
+
+
+
+# name of library that we're building
+
+TARGETLIB = $(TSF_ROOT)/lib/libtsf.a
+
+
+##########################################################################################
+# set default values of config variables. The ?= assignment specifies that these
+# values will be used only if the variables have not yet been defined.
+##########################################################################################
+
+BLAS_LIB ?= -lblas
+
+LAPACK_LIB ?= -llapack
+
+EXTERNAL_LIB = $(TRILINOS_LIB) $(MPI_LIB) $(MATH_LIB) 
+
+EXTERNAL_INCLUDE_PATH =  $(TRILINOS_INC) $(MPI_INC) 
+
+EXTERNAL_LIB_PATH = $(TRILINOS_LIBDIR) $(MPI_LIBDIR) $(MATH_LIBDIR)
+
+
+
+# include common rules
+
+include $(TSF_ROOT)/Build/Makefile.common
+
+
+

@@ -1,0 +1,39 @@
+# The following system parameters are for a Linux host.
+
+ARCH = LINUX
+LOCALSHELL	= /bin/bash
+
+# Specify commands for removing, copying, and linking files.
+RM = /bin/rm -f
+CP = /bin/cp
+SYMBOLIC_LINK = /bin/ln -s
+
+# Specify the archiver command and flags
+AR = ar 
+ARFLAGS = ru
+RANLIB = true
+
+# Specify the archiver to be used for C++ code. Some platforms require a
+# special archiver for templated code.
+ARCXX = $(AR)
+ARCXXFLAGS = $(ARFLAGS) 
+
+# Specify any platform-specific libraries
+ARCH_LIB = -lpthread $(DYNAMIC_LIB)
+
+# List architecture/compiler dependent flags (such as ARCHCXXFLAGS, ARCHCFLAGS,
+# ARCHDEPENDSFLAG, DEBUGFLAG, OPTFLAG, WARNINGFLAG) below:
+
+ARCHCXXFLAGS =
+ARCHCFLAGS = 
+ARCHDEPENDSFLAG	= -M -c
+
+DEBUGFLAG	= -g 
+OPTFLAG		= -O3 -finline-functions -funroll-loops
+
+CWARNINGFLAGS	= -w
+CXXWARNINGFLAGS	= -Wall
+
+DYNAMIC_FLAG = -rdynamic
+DYNAMIC_LIB = -rdynamic -ldl
+

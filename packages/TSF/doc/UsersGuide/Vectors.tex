@@ -1,0 +1,163 @@
+\chapter{Vectors}
+%\newenvironment{code}{\begin{alltt}}{\end{alltt}\noindent}
+
+\section{Managing vectors}
+
+As with all user-level TSF objects, memory management of TSFVectors is done 
+with smart pointers, so there is no need to call delete. 
+
+\subsection{Constructing a TSFVector}
+
+Ordinarily, you will never construct a TSFVector directly from a derived type. 
+Rather, the createMember() method of TSFVectorSpace is used to build a vector
+of the appropriate type, for example,
+\begin{code}
+TSFVector x = mySpace.createMember();
+\end{code}%
+This hides from you all the representation-dependent, often ugly,
+details of creating a concrete vector type. When writing a representation-independent 
+solver, we can construct any temporary vectors on the fly once we have
+a vector space object. 
+
+You will frequently need to create an empty vector to be filled in later. This is done
+using the empty TSFVector constructor,
+\begin{code} 
+TSFVector y;
+\end{code}%
+Note that this vector isn't just empty, it's null. Not only does it have no
+values assigned, it does not have a concrete type. An attempt to set an element
+of or operate on a null vector will result in an error. What you can do is
+assign another vector to it,
+\begin{code}
+TSFVector y;
+y = x.deepCopy();
+\end{code}%
+or fill it by passing it as a return-by-reference argument to a mathematical
+operation,
+\begin{code}
+TSFVector y;
+x.scalarMult(3.14159, y);
+\end{code}
+
+\subsection{Assignment and copying}
+
+TSFVector objects are handles to an underlying representation using a reference-counted
+``smart pointer.''
+Doing an assignment such as
+\begin{code}
+TSFVector a = mySpace.createMember();
+TSFVector b = a;
+\end{code}
+copies the pointer, not the contents of {\tt a}. After the assignment, the two vectors
+{\tt a} and {\tt b} both point to the same underlying vector object. An operation
+on {\it either} {\tt a} or {\tt b} will modify {\it both}. 
+This may or may not be what you had in mind, so it is important to be careful to avoid
+unintended side effects after a copy.
+
+If what you intend is to copy the contents, use the {\tt deepCopy() }
+method 
+\begin{code}
+TSFVector a = mySpace.createMember();
+TSFVector b = a.deepCopy();
+\end{code}
+At the end of this operation, {\tt a} and {\tt b} are two independent vectors having
+the same values. We can modify either independently of the other. 
+
+Copy constructors work similarly. Constructing one vector as a copy of another
+creates a vector that points to the same vector as the original. To get an independent
+copy, use the {\tt deepCopy()} method.
+
+\begin{code}
+TSFVector b = a;                    // b and a point to same object
+TSFVector c = a.deepCopy();         // c and a are different vectors with same contents 
+\end{code}
+
+
+\section{Element access}
+
+There are a number of methods to get or set the value of an element or
+group of elements at a particular index or group of indices. In a
+distributed environment, there is a distinction between an element's
+{\it local} index and its {\it global} index. All the element access
+methods of TSFVector use global indices. Operations that require local indices,
+for example sparse matrix-vector multiplication, should be specialized on the concrete
+type rather than coded at the TSFVector level.
+
+Element access methods must make virtual function calls which are slow, so they
+should be used as sparingly as possible. In particular, you should
+{\bf never} do mathematical operations on the whole vector using the
+element access methods. Use one of the predefined operations (e.g.,
+eMult, update) or a custom reduction and transformation operator
+instead. If you are needing to set elements, such as when creating the
+load vector in a finite-element problem, it is more efficient to set
+groups of elements rather than single elements.
+
+\section{Methods for mathematical operations}
+
+TSFVector has a number of methods for
+unary and binary elementwise operations on vectors
+and scalars. Some common operations are built in, and some even 
+have convenient overloaded operators for
+a very readable user interface. Less common operations can be implemented efficiently
+using an extensible reduction and transformation operator interface. 
+
+Operations that are not elementwise, such as a matrix-vector multiply, usually
+need to be implemented at a lower level because an efficient implementation will depend
+on the details of the storage scheme for the matrix and vector. Such operations
+will be discussed in the chapters on linear and nonlinear operator objects.
+
+\subsection{Built-in methods}
+
+TSF has built-in function calls that support a number of common vector operations. 
+
+\begin{itemize}
+\item Setting all elements to a constant
+\item The ``axpy'' operation $x = \alpha x + y$
+\item Multiplication by a scalar
+\item Element-by-element multiplication
+\item Dot products
+\item 1, 2, and $\infty$ norms
+\end{itemize}
+
+Many, but by no means all calculations can be done in terms of these built-in operations.
+If your problem requires a non-standard operation that is difficult to write in terms
+of these built-in functions, do {\bf not} try to implement it using element access and
+your own loop. Instead, you should use TSF's extensible system of transformation
+and reduction operators which will do a low-level loop over elements in 
+an efficient way. 
+
+\subsection{Overloaded mathematical operations}
+
+TSFVector supports the full set of overloaded operators for vector and scalar-vector
+arithmetic. Overloaded operators are not often used in scientific computing
+because a naive implementation incurs a large performance penalty due to 
+the creation and copying of temporary vectors. TSFVector operators use a design
+which avoids the creation of such temporary vectors by flattening the expression
+tree. Small temporary objects are created in the process, so for small problems
+(under $N \approx 1000 $) there is still a noticeable performance penatly. 
+However, for larger problems the performance penalty is less than a few percent
+compared to FORTRAN BLAS, and decreases quickly with problem size. 
+
+\subsection{Reduction and Transformation Operations}
+
+Suppose for some reason you have to do an operation such as $y_i = e^{x_i}$. TSF
+provides no built-in method for doing this, and a naive loop using {\tt getElement()}
+would be prohibitively slow. The solution, originally proposed by Roscoe 
+Bartlett for the vector class in his rSQP++ optimization code, is to 
+represent arbitrary transformation and reduction operations (``RTOps'') 
+as objects that implement a RTOp interface. TSF knows how to loop over 
+elements and execute RTOps in an efficient way. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

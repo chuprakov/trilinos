@@ -1,0 +1,42 @@
+\chapter{Vector Spaces and Vector Representations}
+
+The notion of a vector space is central to the mathematics of equation solving,
+but does not often appear explicitly in solver codes. 
+In the design of HCL, Gockenbach and Symes~\cite{GockSymes} realized the practical 
+importance of 
+introducing explicit vector space objects. Far from being an unneccessary abstraction,
+vector space objects play important practical roles. The most important role
+is as a {\bf factory} for new vectors. We will often need to create new vectors while
+deep inside a calculation, and 
+a factory object lets us know what {\it type} of vector should be created at that time.  
+A secondary role for the vector space object is to check compatibility between operands.
+
+
+
+\section{The TSFVectorSpace object}
+
+Vector space objects can create new vectors, and also be compared for compatibility
+between operands. These two tasks imply two high-level methods of TSFVectorSpace
+\begin{verbatim}
+TSFVector TSFVectorSpace::createMember() const ;
+\end{verbatim}
+which returns a new vector, and
+\begin{verbatim}
+bool TSFVectorSpace::operator==(const TSFVectorSpace& other) const ;
+\end{verbatim}
+which tests equality between two spaces.
+
+\subsection{Concrete vector space types}
+
+To create a vector space object, you must choose a concrete type
+
+
+
+\section{Vector Representations}
+
+A vector representation is a user-level object that specifies the type of vector to 
+be used
+
+
+
+
