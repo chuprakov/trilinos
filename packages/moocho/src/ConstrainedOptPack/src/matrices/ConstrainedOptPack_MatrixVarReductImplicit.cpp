@@ -14,17 +14,20 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/include/MatrixVarReductImplicit.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
-#include "SparseLinAlgPack/include/dense_Vp_StPtMtV.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/WorkspacePack.h"
+//#include "SparseLinAlgPack/include/dense_Vp_StPtMtV.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "WorkspacePack.h"
 
 namespace {
 
+/*
+
 //
-// Implicit matrix vector multiplication:
+// Implicit matrix-vector multiplication:
 //
 // y = b*y + a*op(inv(C)*N)*x
 //
@@ -154,25 +157,19 @@ void imp_Vp_StPtMtV_by_row(
 	}
 }
 
-} // end namespace
+*/
 
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
-}
+} // end namespace
 
 namespace ConstrainedOptimizationPack {
 
-MatrixVarReductImplicit::MatrixVarReductImplicit()
-	: decomp_sys_(NULL), use_dense_mat_vec_(true)
-{} // Every other member will initialize themselfs
-
 void MatrixVarReductImplicit::initialize(
-	const DecompositionSystemVarReduct     *decomp_sys
-	,const GenMatrixSlice                  *D_dense
-	,const release_resource_ptr_t          &release_resource_ptr
+	const mat_nonsing_ptr_t          &C
+	,const mat_ptr_t                 &N
+	,const mat_ptr_t                 &D_direct
 	)
 {
+/*
 	// Validate the inputs
 	if( !decomp_sys )
 		throw std::invalid_argument(
@@ -195,55 +192,63 @@ void MatrixVarReductImplicit::initialize(
 			*itr = (value_type*)NULL;
 		}
 	}
+*/
+	assert(0); // ToDo: Initialize the above!
 }
 
 void MatrixVarReductImplicit::set_uninitialized()
 {
-	decomp_sys_            = NULL;
-	D_dense_               = GenMatrixSlice();
-	use_dense_mat_vec_     = true;
-	release_resource_ptr_  = NULL;
-	InvCtN_rows_.resize(0);
+	C_        = NULL;
+	N_        = NULL;
+	D_direct_ = NULL;
 }
 
-const DecompositionSystemVarReduct& MatrixVarReductImplicit::decomp_sys() const
-{
-	assert_initialized();
-	return *decomp_sys_;
-}
-
-const MatrixVarReductImplicit::release_resource_ptr_t&
-MatrixVarReductImplicit::release_resource_ptr() const
-{
-	assert_initialized();
-	return release_resource_ptr_;
-}
-
-// Overridden from Matrix
+// Overridden from MatrixBase
 
 size_type MatrixVarReductImplicit::rows() const
 {
-	return decomp_sys_ ? decomp_sys_->C().rows() : 0;
+	return C_.get() ? C_->rows() : 0;
 }
 
 size_type MatrixVarReductImplicit::cols() const
 {
-	return decomp_sys_ ? decomp_sys_->N().cols() : 0;
+	return N_.get() ? N_->cols() : 0;
 }
 
 // Overridden from MatrixWithOp
 
+const VectorSpace& MatrixVarReductImplicit::space_cols() const
+{
+	assert_initialized();
+	return C_->space_cols();
+}
+
+const VectorSpace& MatrixVarReductImplicit::space_rows() const
+{
+	assert_initialized();
+	return N_->space_rows();
+}
+
 MatrixWithOp& MatrixVarReductImplicit::operator=(const MatrixWithOp& M)
 {
-	assert(0); // Finish!
+	assert_initialized();
+	assert(0); // ToDo: Finish!
 	return *this;
 }
 
+std::ostream& MatrixVarReductImplicit::output(std::ostream& o)
+{
+	return MatrixWithOp::output(o); // ToDo: Specialize!
+}
+
 void MatrixVarReductImplicit::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp D_trans
-	, const VectorSlice& x, value_type b) const
+	VectorWithOpMutable* y, value_type a
+	,BLAS_Cpp::Transp D_trans
+	,const VectorWithOp& x, value_type b
+	) const
 {
 	assert_initialized();
+/*
 	LinAlgPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),D_trans,x.size());
 	if( use_dense_mat_vec_ && D_dense_.rows() > 0 ) {
 		LinAlgOpPack::Vp_StMtV( y, a, D_dense_, D_trans, x, b );
@@ -251,11 +256,15 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	else {
 		imp_Vp_StMtV_implicit( y, a, *decomp_sys_, D_trans, x, b );
 	}
+*/
+	assert(0); // ToDo: Update above!
 }
 
 void MatrixVarReductImplicit::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp D_trans
-	, const SpVectorSlice& x, value_type b) const
+	VectorWithOpMutable* y, value_type a
+	,BLAS_Cpp::Transp D_trans
+	,const SpVectorSlice& x, value_type b
+	) const
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
@@ -264,6 +273,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
+/*
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
@@ -303,17 +313,21 @@ void MatrixVarReductImplicit::Vp_StMtV(
 			imp_Vp_StMtV_implicit( y, -a, *decomp_sys_, D_trans, dx(), b );
 		}
 	}
+*/
+	assert(0); // ToDo: Update above!
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
-	VectorSlice* y, value_type a
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp D_trans
-	, const VectorSlice& x, value_type b) const
+	VectorWithOpMutable* y, value_type a
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp D_trans
+	,const VectorWithOp& x, value_type b
+	) const
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	assert_initialized();
+/*
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
@@ -329,17 +343,21 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	else {
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
+*/
+	assert(0); // ToDo: Update above!
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
-	VectorSlice* y, value_type a
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp D_trans
-	, const SpVectorSlice& x, value_type b) const
+	VectorWithOpMutable* y, value_type a
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp D_trans
+	,const SpVectorSlice& x, value_type b
+	) const
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	assert_initialized();
+/*
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
@@ -355,16 +373,18 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	else {
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
+*/
+	assert(0); // ToDo: Update above!
 }
 
 // Private member functions
 
 void MatrixVarReductImplicit::assert_initialized() const
 {
-	if( !decomp_sys_ )
-		throw std::logic_error(
-			"MatrixVarReductImplicit::assert_initialized(): Error, "
-			"initialize(...) not called" );
+	THROW_EXCEPTION(
+		C_.get() == NULL, std::logic_error
+		,"MatrixVarReductImplicit::assert_initialized(): Error, "
+		"initialize(...) has not been called yet!" );
 }
 
 }	// end namespace ConstrainedOptimizationPack 
