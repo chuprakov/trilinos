@@ -156,7 +156,7 @@ int RTOp_MPI_apply_op(
 				if (err) goto ERR_LABEL;
 			}
 		}
-		return 0; // Success!
+		return 0; /* Success! */
 	}
 
 	/* 
