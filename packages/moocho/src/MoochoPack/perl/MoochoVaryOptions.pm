@@ -859,11 +859,11 @@ sub _add_summary_line {
   my $stats_fh;
   ($stats_fh = FileHandle->new("<rSQPppStats.out"));
 	#|| die "Error, the file rSQPppStats.out could not be opened: $!";
-  if (!$stats_fh)
-    {
-	  ($stats_fh = FileHandle->new("</home/cdlaird/research/rsqpdev/rSQPppApplications/CUTErSQPpp/rSQPppStats_FailedCompile.out"))
-		|| die "Error, rSQPppStats.out & rSQPppStats_FailedCompile.out cannot be opened";
-	}
+#  if (!$stats_fh)
+#    {
+#	  ($stats_fh = FileHandle->new("</home/cdlaird/research/rsqpdev/rSQPppApplications/CUTErSQPpp/rSQPppStats_FailedCompile.out"))
+#		|| die "Error, rSQPppStats.out & rSQPppStats_FailedCompile.out cannot be opened";
+#	}
   while(<$stats_fh>) { # This may not read anything if an exception is thrown early!
 	my ($stat, $val) = read_stats_val($_);
 	if( $stat eq "status" ) {
