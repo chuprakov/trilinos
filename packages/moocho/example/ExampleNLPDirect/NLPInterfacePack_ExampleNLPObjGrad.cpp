@@ -16,6 +16,7 @@
 #include <assert.h>
 
 #include <stdexcept>
+#include <limits>
 
 #include "ExampleNLPObjGrad.hpp"
 #include "ExampleNLPDirectRTOps.h"
