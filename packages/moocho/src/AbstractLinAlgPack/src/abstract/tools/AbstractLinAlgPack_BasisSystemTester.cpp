@@ -414,6 +414,8 @@ bool BasisSystemTester::test_basis_system(
 				const value_type
 					sum_Bv  = sum(*v_chD),
 					sum_Av  = sum(*v_chD_tmp);
+				assert_print_nan_inf(sum_Bv, "sum(B*v_x)",true,out);
+				assert_print_nan_inf(sum_Av, "sum(A*v_x)",true,out);
 				const value_type
 					calc_err = ::fabs( ( sum_Av - sum_Bv )
 									   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + small_num ) );
@@ -492,6 +494,8 @@ bool BasisSystemTester::test_basis_system(
 				const value_type
 					sum_BTv  = sum(*v_x),
 					sum_ATv  = sum(*v_x_tmp);
+				assert_print_nan_inf(sum_BTv, "sum(B'*v_chD)",true,out);
+				assert_print_nan_inf(sum_ATv, "sum(A'*v_chD)",true,out);
 				const value_type
 					calc_err = ::fabs( ( sum_ATv - sum_BTv )
 									   /( ::fabs(sum_ATv) + ::fabs(sum_BTv) + small_num ) );
@@ -572,12 +576,14 @@ bool BasisSystemTester::test_basis_system(
 				const value_type
 					sum_aCICv  =         sum(*v_chD_tmp),
 					sum_av     = alpha * sum(*v_chD);
+				assert_print_nan_inf(sum_aCICv, "sum(alpha*C*(inv(C)*v)",true,out);
+				assert_print_nan_inf(sum_av, "sum(alpha*v)",true,out);
 				const value_type
 					calc_err = ::fabs( ( sum_aCICv - sum_av )
 									   /( ::fabs(sum_aCICv) + ::fabs(sum_av) + small_num ) );
 				if(out && print_tests() >= PRINT_ALL)
 					*out
-						<< "\nrel_err(sum(alpha*C*(inv(C)*v)),sum(alpha*v)) = "
+						<< "\nrel_err(sum(alpha*C*(inv(C)*v),sum(alpha*v)) = "
 						<< "rel_err(" << sum_aCICv << "," << sum_av << ") = "
 						<< calc_err << std::endl;
 				if( calc_err >= warning_tol() ) {
@@ -627,6 +633,8 @@ bool BasisSystemTester::test_basis_system(
 				const value_type
 					sum_aCICv  =         sum(*v_xD_tmp),
 					sum_av     = alpha * sum(*v_xD);
+				assert_print_nan_inf(sum_aCICv, "sum(alpha*C'*(inv(C')*v)",true,out);
+				assert_print_nan_inf(sum_av, "sum(alpha*v)",true,out);
 				const value_type
 					calc_err = ::fabs( ( sum_aCICv - sum_av )
 									   /( ::fabs(sum_aCICv) + ::fabs(sum_av) + small_num ) );
@@ -699,12 +707,14 @@ bool BasisSystemTester::test_basis_system(
 					const value_type
 						sum_ICaNv  = sum(*v_xD_tmp),
 						sum_aDv    = sum(*v_xD);
+					assert_print_nan_inf(sum_ICaNv, "sum(inv(C)*(-alpha*N*v))",true,out);
+					assert_print_nan_inf(sum_aDv, "sum(alpha*D*v)",true,out);
 					const value_type
 						calc_err = ::fabs( ( sum_ICaNv - sum_aDv )
 										   /( ::fabs(sum_ICaNv) + ::fabs(sum_aDv) + small_num ) );
 					if(out && print_tests() >= PRINT_ALL)
 						*out
-							<< "\nrel_err(sum(inv(C)*(-alpha*N*v))),sum(alpha*D*v)) = "
+							<< "\nrel_err(sum(inv(C)*(-alpha*N*v)),sum(alpha*D*v)) = "
 							<< "rel_err(" << sum_ICaNv << "," << sum_aDv << ") = "
 							<< calc_err << std::endl;
 					if( calc_err >= warning_tol() ) {
@@ -756,6 +766,8 @@ bool BasisSystemTester::test_basis_system(
 					const value_type
 						sum_aNTICTv  = sum(*v_xI_tmp),
 						sum_aDTv     = sum(*v_xI);
+					assert_print_nan_inf(sum_aNTICTv, "sum(-alpha*N'*(inv(C')*v))",true,out);
+					assert_print_nan_inf(sum_aDTv, "sum(alpha*D'*v)",true,out);
 					const value_type
 						calc_err = ::fabs( ( sum_aNTICTv - sum_aDTv )
 										   /( ::fabs(sum_aNTICTv) + ::fabs(sum_aDTv) + small_num ) );
