@@ -147,8 +147,7 @@ $(srcdir)/RTOpPack/RTOp_parallel_helpers.c\
 $(srcdir)/RTOpPack/RTOp_reduct_max_value.c\
 $(srcdir)/RTOpPack/RTOp_reduct_min_value.c\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c\
-$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c\
-$(srcdir)/RTOpPack/check_nan_inf.c
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
 
 
 RTOp_CXX_SOURCES_H = \
@@ -168,7 +167,8 @@ $(srcdir)/RTOpPack/RTOpCppC.cpp\
 $(srcdir)/RTOpPack/RTOpCppToC.cpp\
 $(srcdir)/RTOpPack/RTOpCppToMPI.cpp\
 $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp\
-$(srcdir)/RTOpPack/print_sub_vector.cpp
+$(srcdir)/RTOpPack/print_sub_vector.cpp\
+$(srcdir)/RTOpPack/check_nan_inf.cpp
 
 
 RTOp_STDOPS_SOURCES = \
@@ -341,10 +341,10 @@ am_libTSFCoreUtils_a_OBJECTS = Range1D.$(OBJEXT) \
 	RTOp_obj_value_vtbl.$(OBJEXT) RTOp_obj_values_vtbl.$(OBJEXT) \
 	RTOp_parallel_helpers.$(OBJEXT) RTOp_reduct_max_value.$(OBJEXT) \
 	RTOp_reduct_min_value.$(OBJEXT) RTOp_reduct_sum_value.$(OBJEXT) \
-	RTOp_reduct_sum_values.$(OBJEXT) check_nan_inf.$(OBJEXT) \
-	RTOpCppC.$(OBJEXT) RTOpCppToC.$(OBJEXT) RTOpCppToMPI.$(OBJEXT) \
+	RTOp_reduct_sum_values.$(OBJEXT) RTOpCppC.$(OBJEXT) \
+	RTOpCppToC.$(OBJEXT) RTOpCppToMPI.$(OBJEXT) \
 	RTOp_RTOp_C_Cpp.$(OBJEXT) print_sub_vector.$(OBJEXT) \
-	RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
+	check_nan_inf.$(OBJEXT) RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
 	RTOp_ROp_comp_err_with_mu.$(OBJEXT) RTOp_ROp_dot_prod.$(OBJEXT) \
 	RTOp_ROp_find_nan_inf.$(OBJEXT) \
 	RTOp_ROp_fraction_to_boundary.$(OBJEXT) \
@@ -534,12 +534,12 @@ RTOp_reduct_sum_value.$(OBJEXT): \
 	$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c
 RTOp_reduct_sum_values.$(OBJEXT): \
 	$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
-check_nan_inf.$(OBJEXT): $(srcdir)/RTOpPack/check_nan_inf.c
 RTOpCppC.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppC.cpp
 RTOpCppToC.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppToC.cpp
 RTOpCppToMPI.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
 RTOp_RTOp_C_Cpp.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
 print_sub_vector.$(OBJEXT): $(srcdir)/RTOpPack/print_sub_vector.cpp
+check_nan_inf.$(OBJEXT): $(srcdir)/RTOpPack/check_nan_inf.cpp
 RTOp_ROp_combined_nu_comp_err.$(OBJEXT): \
 	$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
 RTOp_ROp_comp_err_with_mu.$(OBJEXT): \
@@ -915,18 +915,6 @@ RTOp_reduct_sum_values.obj: $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_sum_values.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_values.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_values.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c`
-
-check_nan_inf.o: $(srcdir)/RTOpPack/check_nan_inf.c
-@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.c' object='check_nan_inf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o check_nan_inf.o `test -f $(srcdir)/RTOpPack/check_nan_inf.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/check_nan_inf.c
-
-check_nan_inf.obj: $(srcdir)/RTOpPack/check_nan_inf.c
-@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.c' object='check_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o check_nan_inf.obj `cygpath -w $(srcdir)/RTOpPack/check_nan_inf.c`
 
 RTOp_ROp_combined_nu_comp_err.o: $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
 @AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c' object='RTOp_ROp_combined_nu_comp_err.o' libtool=no @AMDEPBACKSLASH@
@@ -1516,6 +1504,18 @@ print_sub_vector.obj: $(srcdir)/RTOpPack/print_sub_vector.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/print_sub_vector.Po' tmpdepfile='$(DEPDIR)/print_sub_vector.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o print_sub_vector.obj `cygpath -w $(srcdir)/RTOpPack/print_sub_vector.cpp`
+
+check_nan_inf.o: $(srcdir)/RTOpPack/check_nan_inf.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.cpp' object='check_nan_inf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.o `test -f $(srcdir)/RTOpPack/check_nan_inf.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/check_nan_inf.cpp
+
+check_nan_inf.obj: $(srcdir)/RTOpPack/check_nan_inf.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.cpp' object='check_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.obj `cygpath -w $(srcdir)/RTOpPack/check_nan_inf.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 install-nodist_pkgexecincludeHEADERS: $(nodist_pkgexecinclude_HEADERS)
