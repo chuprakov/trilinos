@@ -57,7 +57,7 @@ echo "----------------------------------------"
 # preferably one that is unlikely to be removed or renamed.
 
 # #np# - file name below
-AC_CONFIG_SRCDIR(/src/TSFCoreVector.hpp)
+AC_CONFIG_SRCDIR(/src/interfaces/Core/TSFCoreVector.hpp)
 
 # Specify directory for auxillary build tools (e.g., install-sh,
 # config.sub, config.guess) and M4 files.
@@ -282,20 +282,19 @@ AC_SUBST(ac_aux_dir)
 # ------------------------------------------------------------------------
 # Output files
 # ------------------------------------------------------------------------
-##
-#  #np# - Most packages should have an example and a full suite 
-#  of tests.  New package comes only with src and example.
-#  You will need to change AC_CONFIG_FILES below and Makefile.am
-#  to add a new directory.
+
 AC_CONFIG_FILES([
 		Makefile 
 		src/Makefile
+		example/Makefile
+		example/Nonlin/Makefile
+		example/Nonlin/NP2DSim/Makefile
+		example/Nonlin/NP4DOpt/Makefile
 		])
 
 AC_OUTPUT()
 
 # Bye World!
-#  #np# change package name
 echo "----------------------------------------"
 echo "Finished Running TSFCore Configure Script"
 echo "----------------------------------------"
