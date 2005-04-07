@@ -121,14 +121,7 @@ TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, int *coordinate2, int
       //   delete [] val;
       //   delete [] ind;
 
-      cerr << "\n ppp is: " << ppp;
-
-      //      cerr << C1_tsf;
-
-      //      exit(1);
-
-      /*
-   for(int bb = 0; bb<ppp; bb++)
+  for(int bb = 0; bb<ppp; bb++)
     {
       int MyRowNum = colum[bb];
 
@@ -147,64 +140,8 @@ TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, int *coordinate2, int
 	    }
         }
     }
-     */
-      
   //   delete [] val1;
   //   delete [] ind1;
-  //  exit(1);
-
-      //      cerr << C1_tsf;
-
-  Epetra_CrsMatrix *Ct_crs = PetraMatrix::getConcrete(C1_tsf.getTranspose());
-  Epetra_CrsMatrix *C1t_crs = new Epetra_CrsMatrix(*Ct_crs);
-
-  PetraMatrix* C1t_petra = new PetraMatrix(C_tsf.getTranspose().domain(),C_tsf.getTranspose().range());
-  C1t_petra->setPetraMatrix(C1t_crs,true);
-  TSFLinearOperator C1t_tsf = C1_petra;
-
-  //  cerr << C1t_tsf;
-
-  //  exit(1);
-
-
-  for(int i=0; i<numcoor; i++)
-    {
-      int MyRowNum = coordinate2[i];
-      cerr << "\n coordinate to pin is: " << MyRowNum;
-
-      C1t_crs->ExtractMyRowView(MyRowNum, NumIndices, val, ind);
-
-      //Zero out rows and add a Dirichlet bc at diag Epetra_Vector x_ran(C1_crs->RowMap());
-
-      for(int kkk=0; kkk<NumIndices; kkk++)
-        {
-          if(ind[kkk]==MyRowNum) val[kkk] = 1.0;
-          else
-            {
-              tmp = 0;
-              val[kkk] = 0.0;
-              for(int ooo = 0; ooo<numcoor; ooo++)
-		{
-		  if(coordinate2[ooo] == ind[kkk])
-		    tmp = 1;
-		}
-
-              if(tmp == 0 )
-                {
-                  colum[ppp] = ind[kkk];
-		  //	                             cerr << "\n col is: " << colum[ppp] << "ind is: " << ind[kkk] << " val is: " << val[kkk];               
-		  ppp = ppp + 1;
-                }
-            }
-	  //                cerr << "\n ind is: " << ind[kkk] << " val is: " << val[kkk] << " with row " << MyRowNum;                                   
-        }
-    }
-      
-     
-
-     cerr << C1t_tsf;
-
-    exit(1);
 
   cerr << "About to return the matrix";
   return C1_tsf;
