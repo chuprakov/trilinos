@@ -109,6 +109,8 @@ int VbrMatrix2PetraMatrix(int blk_size,
 
   Epetra_CrsMatrix *BtBt = new Epetra_CrsMatrix(Copy, *F_map, 0);
   if (BtBt==0) EPETRA_CHK_ERR(-3); // Ran out of memory
+
+  cerr << "\about to insert!";
   
   int count = 0;
   int   C_empty = 1;
@@ -152,6 +154,7 @@ int VbrMatrix2PetraMatrix(int blk_size,
 	    therow = (blk_size-1)*(BlockRow)+kk;
 	    thecolumn = (blk_size-1)*(*BlockIndices)+jj;
 	    int ierr = FF->InsertGlobalValues(therow, 1, &(val[count]), &thecolumn);
+	    //	    if(ierr>0) cerr << "Insertglobal with positive error of: " << ierr;
 	  }
 	}
       }
@@ -162,23 +165,48 @@ int VbrMatrix2PetraMatrix(int blk_size,
     }
   }
 
+  cerr << "\n Insertion complete!";
+
+  cerr.flush();
+
   int ierr=BB->FillComplete(*F_map, *Brow_map);
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
-  ierr=FF->FillComplete();    
+         ierr= BB->OptimizeStorage();
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
-    ierr=BtBt->FillComplete(*Brow_map, *F_map);
+  ierr=FF->FillComplete();   
+   if (ierr!=0) {
+      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      EPETRA_CHK_ERR(ierr);
+    }
+          ierr=FF->OptimizeStorage();
+   //      ierr=FF->MergeRedundantEntries();
+  if (ierr!=0) {
+    cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+    EPETRA_CHK_ERR(ierr);
+  }
+     ierr=BtBt->FillComplete(*Brow_map, *F_map);
+     if (ierr!=0) {
+      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      EPETRA_CHK_ERR(ierr);
+    } 
+          ierr=BtBt->OptimizeStorage();
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
   if (!C_empty) {
     ierr=CC->FillComplete();        
+    if (ierr!=0) {
+      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      EPETRA_CHK_ERR(ierr);
+    }
+        ierr=CC->OptimizeStorage();
     if (ierr!=0) {
       cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
       EPETRA_CHK_ERR(ierr);

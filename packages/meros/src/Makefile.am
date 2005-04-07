@@ -145,6 +145,7 @@ COMP =
 AM_CPPFLAGS = -I$(srcdir) \
               -I$(srcdir)/EPW                             \
               -I$(top_builddir)/../meros/src/EPW          \
+              -I$(top_srcdir)/../epetra/src		  \
               -I$(top_builddir)/../epetra/src             \
               -I$(top_srcdir)/../TSF/src/LinearOperators  \
               -I$(top_srcdir)/../TSF/src/Implementations  \

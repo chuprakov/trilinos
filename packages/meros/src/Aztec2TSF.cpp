@@ -56,6 +56,160 @@
 #include "Epetra_FECrsMatrix.h"
 #include "Epetra_Map.h"
 
+TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, int *coordinate2, int numbc, Epetra_Comm *comm)
+{
+
+  Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C_tsf);
+  Epetra_CrsMatrix *C1_crs = new Epetra_CrsMatrix(*C_crs);
+
+  PetraMatrix* C1_petra = new PetraMatrix(C_tsf.domain(),C_tsf.range());
+  C1_petra->setPetraMatrix(C1_crs,true);
+  TSFLinearOperator C1_tsf = C1_petra;
+
+  Epetra_Vector x_ran(C1_crs->RowMap());
+
+  int numcoor = numbc;
+  int colum[8*numbc];
+
+  int ppp = 0;
+  cerr << "\n numcoor is: " << numcoor;
+
+      int tmp = 0;
+      int MyColNum = C1_crs->NumMyCols();
+      double *val = new double[MyColNum];
+      int *ind = new int[MyColNum];
+      int NumIndices;      
+
+  for(int i=0; i<numcoor; i++)
+    {
+      int MyRowNum = coordinate2[i];
+      cerr << "\n coordinate to pin is: " << MyRowNum;
+
+      C1_crs->ExtractMyRowView(MyRowNum, NumIndices, val, ind);
+
+      //Zero out rows and add a Dirichlet bc at diag Epetra_Vector x_ran(C1_crs->RowMap());
+
+      for(int kkk=0; kkk<NumIndices; kkk++)
+        {
+          if(ind[kkk]==MyRowNum) val[kkk] = 1.0;
+          else
+            {
+              tmp = 0;
+              val[kkk] = 0.0;
+              for(int ooo = 0; ooo<numcoor; ooo++)
+		{
+		  if(coordinate2[ooo] == ind[kkk])
+		    tmp = 1;
+		}
+
+              if(tmp == 0 )
+                {
+                  colum[ppp] = ind[kkk];
+		  //	                             cerr << "\n col is: " << colum[ppp] << "ind is: " << ind[kkk] << " val is: " << val[kkk];               
+		  ppp = ppp + 1;
+                }
+            }
+	  //                cerr << "\n ind is: " << ind[kkk] << " val is: " << val[kkk] << " with row " << MyRowNum;                                   
+        }
+    }
+
+      int MyColNum1 = C1_crs->NumMyCols();
+      double *val1 = new double[MyColNum1];
+      int *ind1 = new int[MyColNum1];
+      int NumIndices1;
+
+      //   delete [] val;
+      //   delete [] ind;
+
+      cerr << "\n ppp is: " << ppp;
+
+      //      cerr << C1_tsf;
+
+      //      exit(1);
+
+      /*
+   for(int bb = 0; bb<ppp; bb++)
+    {
+      int MyRowNum = colum[bb];
+
+      C1_crs->ExtractMyRowView(MyRowNum, NumIndices1, val1, ind1);
+
+      for(int mm=0; mm<numcoor;mm++)
+        {
+	  for(int nnn=0; nnn<NumIndices1; nnn++)
+	    {
+	      if(ind1[nnn]==coordinate2[mm])
+		{
+		  val1[nnn] = 0.0;
+		  // cerr << "\n ind (col) is: " << ind1[nnn] << " val is: " << val1[nnn];    
+		  //		  cerr << "\n bb is " << bb << " mm is " << mm << " while nnn is: " << nnn;
+		}
+	    }
+        }
+    }
+     */
+      
+  //   delete [] val1;
+  //   delete [] ind1;
+  //  exit(1);
+
+      //      cerr << C1_tsf;
+
+  Epetra_CrsMatrix *Ct_crs = PetraMatrix::getConcrete(C1_tsf.getTranspose());
+  Epetra_CrsMatrix *C1t_crs = new Epetra_CrsMatrix(*Ct_crs);
+
+  PetraMatrix* C1t_petra = new PetraMatrix(C_tsf.getTranspose().domain(),C_tsf.getTranspose().range());
+  C1t_petra->setPetraMatrix(C1t_crs,true);
+  TSFLinearOperator C1t_tsf = C1_petra;
+
+  //  cerr << C1t_tsf;
+
+  //  exit(1);
+
+
+  for(int i=0; i<numcoor; i++)
+    {
+      int MyRowNum = coordinate2[i];
+      cerr << "\n coordinate to pin is: " << MyRowNum;
+
+      C1t_crs->ExtractMyRowView(MyRowNum, NumIndices, val, ind);
+
+      //Zero out rows and add a Dirichlet bc at diag Epetra_Vector x_ran(C1_crs->RowMap());
+
+      for(int kkk=0; kkk<NumIndices; kkk++)
+        {
+          if(ind[kkk]==MyRowNum) val[kkk] = 1.0;
+          else
+            {
+              tmp = 0;
+              val[kkk] = 0.0;
+              for(int ooo = 0; ooo<numcoor; ooo++)
+		{
+		  if(coordinate2[ooo] == ind[kkk])
+		    tmp = 1;
+		}
+
+              if(tmp == 0 )
+                {
+                  colum[ppp] = ind[kkk];
+		  //	                             cerr << "\n col is: " << colum[ppp] << "ind is: " << ind[kkk] << " val is: " << val[kkk];               
+		  ppp = ppp + 1;
+                }
+            }
+	  //                cerr << "\n ind is: " << ind[kkk] << " val is: " << val[kkk] << " with row " << MyRowNum;                                   
+        }
+    }
+      
+     
+
+     cerr << C1t_tsf;
+
+    exit(1);
+
+  cerr << "About to return the matrix";
+  return C1_tsf;
+}
+
 Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat, 
 			Epetra_Comm * & junkcomm,
 			Epetra_BlockMap * & VbrMap,
@@ -102,6 +256,7 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
 //         	val[iblk_row] = 1.0; //Pinned Fp
 //         	else
 	val[iblk_row] = Fp->val[ival];
+	//	cerr << "\n Value is : " << val[iblk_row] << " " << Fp->val[ival] << " " << jblk;
       }
       else {
 	bindx[nz_ptr] = jblk;
@@ -109,6 +264,7 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
   //	val[nz_ptr++] = 0.0; //Pinned
   //	else
 	val[nz_ptr++] = Fp->val[ival];
+	//	cerr << "\n Value is : " << val[nz_ptr++] << " " << Fp->val[ival] << " " << jblk;
       }
       ival += 1;
     }
@@ -118,14 +274,40 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
   Fpmat = AZ_matrix_create(Fp->data_org[AZ_N_internal] +
 			   Fp->data_org[AZ_N_border]);
 
+
   int old_matrix_type = Fp->data_org[AZ_matrix_type];
   Fp->data_org[AZ_matrix_type] = AZ_MSR_MATRIX;
   AZ_set_MSR(Fpmat, bindx, val, Fp->data_org, 0, NULL, AZ_LOCAL);
 
+
   Epetra_Vector *tmpSolution = NULL, *residual = NULL;
+
 
   Aztec2Petra (proc_config, Fpmat, NULL, NULL, comm, *& junkmap, 
 	       Fp_row, *& tmpSolution, *& residual, junk_indices);
+
+  //  double *coordinate = new double[40000];  
+  //  double *coordinatetmp = new double[40000];
+
+  //  for (int i = 0; i<Nrows; i++)
+  //   {
+  //     coordinate[i] = 1.0;
+  //   }
+
+  // printf("the Norm (after maps) before %e\n", AZ_gdot(Fpmat->data_org[AZ_N_internal] +Fpmat->data_org[AZ_N_border], coordinate, coordinate, proc_config));
+
+  //  Fpmat->matvec(coordinate, coordinatetmp, Fpmat, proc_config);
+
+  //  printf("the Norm (after maps) after %e\n", AZ_gdot(Fpmat->data_org[AZ_N_internal] +Fpmat->data_org[AZ_N_border], coordinatetmp, coordinatetmp, proc_config));
+
+  //  double tmp = 0.0;
+
+  //  for(int ii=0; ii<Nrows; ii++)
+  //   {
+  //    tmp = tmp + coordinatetmp[ii];
+  //   }
+
+  // cerr << "\n The norm of Fp with Amat is: " << tmp;
 
   free( val);
   free( bindx);
@@ -139,6 +321,7 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
 
   return Fp_tsf;
 }
+
 
 TSFLinearOperator Aztec2TSFpin(TSFLinearOperator Fp_tsf, TSFLinearOperator C_tsf, Epetra_Comm *comm)
 {
@@ -237,6 +420,11 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
   int blk_size = 3;
 
   Epetra_Map *VbrMap;
+
+  cerr << "\about to convert vbr to petra";
+
+  cerr << "\n \n ";
+  cerr << "\n DDD";
 
   // 1) Make a series of petra matrices corresponding to blocks.
   VbrMatrix2PetraMatrix(blk_size, Amat, junkcomm, F_crs, B_crs, Bt, C,

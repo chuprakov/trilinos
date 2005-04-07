@@ -65,8 +65,18 @@ extern TSF::TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
                                                 TSF::TSFVectorSpace pressureSpace,
                                                 Epetra_Comm *comm, int proc_config[]);
 
- extern TSF::TSFLinearOperator Aztec2TSFpin(TSF::TSFLinearOperator Fp_tsf,
+//extern TSF::TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
+//                                                Epetra_CrsMatrix *C_crs,
+//                                                TSF::TSFVectorSpace pressureSpace,
+//                                                Epetra_Comm *comm, int proc_config[]);
+
+extern TSF::TSFLinearOperator Aztec2TSFpin(TSF::TSFLinearOperator Fp_tsf,
                                             TSF::TSFLinearOperator C_tsf,
+                                            Epetra_Comm *comm);
+
+extern TSF::TSFLinearOperator TSFDirichletpin(TSF::TSFLinearOperator C_tsf,
+					      int *coordinate2,
+					      int numbc,				    
                                             Epetra_Comm *comm);
 
 extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
