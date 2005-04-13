@@ -47,7 +47,7 @@ public:
   ///
   Scalar alpha() const { return this->scalarData(); }
   ///
-  TOpEleWiseProd( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
+  TOpEleWiseProd( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::one() )
     : RTOpT<Scalar>("TOpEleWiseProd"), ROpScalarTransformationBase<Scalar>(alpha) 
     {}
   /** @name Overridden from RTOpT */
