@@ -259,6 +259,11 @@ namespace TSFExtended
      */
     void zero();
 
+    /** 
+     * Count the number of elements that are NAN or INF.
+     */
+    bool hasNANINF() const ;
+
     //@}
 
     /** \name Element loading interface */

@@ -359,6 +359,16 @@ Scalar Vector<Scalar>::normInf() const
 
 
 
+//===========================================================================
+template <class Scalar> inline 
+bool Vector<Scalar>::hasNANINF() const 
+{
+  double x = TSFCore::sum(*ptr());
+  return finite(x);
+}
+
+
+
 
 //===========================================================================
 template <class Scalar> inline 
