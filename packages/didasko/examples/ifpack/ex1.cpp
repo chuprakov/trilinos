@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
   b.Export(*readb, exporter, Add);
   xexact.Export(*readxexact, exporter, Add);
 
-  A.TransformToLocal();
+  A.FillComplete();
   
   delete readA;
   delete readx;

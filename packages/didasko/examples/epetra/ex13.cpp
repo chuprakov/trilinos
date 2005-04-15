@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  A.TransformToLocal();
+  A.FillComplete();
 
   // - - - - - - - - - - - - - //
   // R H S  &  S O L U T I O N //

@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
   }
   
   // Finish up
-  A.TransformToLocal();
+  A.FillComplete();
 
   // E N D   O F   M A T R I X   C O N S T R U C T I O N
 

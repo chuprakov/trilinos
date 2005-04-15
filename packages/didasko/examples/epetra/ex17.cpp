@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
     A.EndSubmitEntries();
   }
 
-  A.TransformToLocal();
+  A.FillComplete();
 
   cout << A;
 

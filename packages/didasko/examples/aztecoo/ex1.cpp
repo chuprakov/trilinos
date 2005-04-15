@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
   }
   
   // Finish up
-  A.TransformToLocal();
+  A.FillComplete();
 
   // create x and b vectors
   Epetra_Vector x(Map);

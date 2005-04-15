@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
   
   // Finish up, trasforming the matrix entries into local numbering,
   // to optimize data transfert during matrix-vector products
-  A.TransformToLocal();
+  A.FillComplete();
 
   // build up two distributed vectors q and z, and compute
   // q = A * z

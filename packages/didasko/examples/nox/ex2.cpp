@@ -159,7 +159,7 @@ Epetra_CrsMatrix * CreateLaplacian( const int nx, const int ny,
   }
 
   // put matrix in local ordering
-  A->TransformToLocal();
+  A->FillComplete();
 
   return A;
   

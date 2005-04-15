@@ -92,7 +92,7 @@ public:
       InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
     }
 
-    TransformToLocal();
+    FillComplete();
   }
   
 };
@@ -129,7 +129,7 @@ bool CrsMatrix2MATLAB( const Epetra_CrsMatrix & A )
     if( MyPID == 0 ) { 
       cerr << "ERROR in "<< __FILE__ << ", line " << __LINE__ << endl;
       cerr << "Function CrsMatrix2MATLAB accepts\n";
-      cerr << "transformed matrices ONLY. Please call A.TransformToLoca()\n";
+      cerr << "transformed matrices ONLY. Please call A.FillComplete()\n";
       cerr << "on your matrix A to that purpose.\n";
       cerr << "Now returning...\n";
     }

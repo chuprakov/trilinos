@@ -95,7 +95,7 @@ public:
     }
 
     // Finish up
-    TransformToLocal();
+    FillComplete();
 
   }
   

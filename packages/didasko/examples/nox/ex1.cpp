@@ -243,7 +243,7 @@ int main( int argc, char **argv )
     }
   }
 
-  A.TransformToLocal();  
+  A.FillComplete();  
 
   NOX::Epetra::Group grp(printParams, lsParams, Interface, InitialGuess, 
                          dynamic_cast<Epetra_RowMatrix&>(A)); 

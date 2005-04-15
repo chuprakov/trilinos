@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   }
   
   // Finish up
-  A.TransformToLocal();
+  A.FillComplete();
 
   // ================ CONSTRUCTION OF VECTORS =======================
   
