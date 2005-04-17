@@ -73,6 +73,7 @@ const AccessibleVector<Scalar>* Vector<Scalar>::castToAccessible() const
   return av;
 }
 
+//===========================================================================
 template <class Scalar> inline 
 LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
 {
@@ -84,6 +85,9 @@ LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
   return lv;
 }
 
+
+
+//===========================================================================
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::scale(const Scalar& alpha)
 {
@@ -391,6 +395,72 @@ void Vector<Scalar>::setToConstant(const Scalar& alpha)
   TSFCore::assign(ptr().get(), alpha);
 }
   
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::max()const
+{
+  TimeMonitor t(*opTimer());
+  return TSFCore::max(*ptr());
+}
+
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::max(int& index)const
+{
+  TimeMonitor t(*opTimer());
+  double* maxElP;
+  int* indexP;
+  TSFCore::max(*ptr(), maxElP, indexP); 
+  return *maxElP;
+}
+
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::max(const double& bound, int& index)const
+{
+  TimeMonitor t(*opTimer());
+  double* maxElP;
+  int* indexP;
+  TSFCore::maxLessThanBound(*ptr(), bound, maxElP, indexP); 
+  return *maxElP;
+
+}
+
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::min()const
+{
+  TimeMonitor t(*opTimer());
+  return TSFCore::min(*ptr());
+}
+
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::min(int& index)const
+{
+  TimeMonitor t(*opTimer());
+  double* minElP;
+  int* indexP;
+  TSFCore::min(*ptr(), minElP, indexP); 
+  return *minElP;
+}
+
+
+//===========================================================================
+template <class Scalar> inline 
+double Vector<Scalar>::min(const double& bound, int& index)const
+{
+  TimeMonitor t(*opTimer());
+  double* minElP;
+  int* indexP;
+  TSFCore::minGreaterThanBound(*ptr(), bound, minElP, indexP); 
+  return *minElP;
+}
 
 
 #endif

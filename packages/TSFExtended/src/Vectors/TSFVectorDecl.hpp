@@ -259,10 +259,32 @@ namespace TSFExtended
      */
     void zero();
 
+
+    /** Retuen the max element */
+    double max() const;
+
+    /** Return the max element and the corresponding index */
+    double max(int& index)const;
+
+    /** Return the max element less than bound and the corresponding index */
+    double max(const double& bound, int& index)const;
+
+    /** Retuen the min element */
+    double min()const;
+
+    /** Return the min element and the corresponding index */
+    double min(int& index)const;
+
+    /** Return the min element greater than bound and the corresponding index */
+    double min(const double& bound, int& index)const;
+
+
+
     /** 
      * Count the number of elements that are NAN or INF.
      */
     bool hasNANINF() const ;
+
 
     //@}
 
