@@ -261,22 +261,22 @@ namespace TSFExtended
 
 
     /** Retuen the max element */
-    double max() const;
+    Scalar max() const;
 
     /** Return the max element and the corresponding index */
-    double max(int& index)const;
+    Scalar max(int& index)const;
 
     /** Return the max element less than bound and the corresponding index */
-    double max(const double& bound, int& index)const;
+    Scalar max(const Scalar& bound, int& index)const;
 
     /** Retuen the min element */
-    double min()const;
+    Scalar min()const;
 
     /** Return the min element and the corresponding index */
-    double min(int& index)const;
+    Scalar min(int& index)const;
 
     /** Return the min element greater than bound and the corresponding index */
-    double min(const double& bound, int& index)const;
+    Scalar min(const Scalar& bound, int& index)const;
 
 
 
