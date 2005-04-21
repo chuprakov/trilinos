@@ -205,7 +205,7 @@ int main(int argc, void** argv)
 //  double val = 1.0;
 //  for (int index = 0; index < pressureSpace.dim(); index++) 
 //    C->InsertGlobalValues(index,1,&val,&index);
-//  C->TransformToLocal();
+//  C->FillComplete();
 //  cout << "got here" << endl;
 //  Ap_petra->setPetraMatrix(C);    // insert the epetra matrix into our TSF 
 //  TSFLinearOperator Ap_tsf = Ap_petra; 

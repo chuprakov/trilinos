@@ -153,10 +153,10 @@ TSFLinearOperator BJBRightOperatorSource
           Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
         }
 
-      int ierr=Dinv_crs->TransformToLocal((Epetra_Map *) &(C_crs->OperatorDomainMap()),
-                                          (Epetra_Map *) &(C_crs->RowMatrixColMap()));
+      int ierr=Dinv_crs->FillComplete((Epetra_Map) (C_crs->OperatorDomainMap()),
+                                          (Epetra_Map) (C_crs->RowMatrixColMap()));
       if (ierr!=0) {
-        cerr <<"Error in Epetra_CrsMatrix TransformToLocal" << ierr << endl;
+        cerr <<"Error in Epetra_CrsMatrix FillComplete" << ierr << endl;
         // EPETRA_CHK_ERR(ierr);
       }
       

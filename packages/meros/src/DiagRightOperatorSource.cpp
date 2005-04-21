@@ -104,10 +104,10 @@ TSFLinearOperator DiagRightOperatorSource
           value = -1.0*FdiagsInv[j]; // get negative of diags
           Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
         }
-      int ierr=Dinv_crs->TransformToLocal((Epetra_Map *) &(F_crs->OperatorDomainMap()),
-                                          (Epetra_Map *) &(F_crs->RowMatrixColMap()));
+      int ierr=Dinv_crs->FillComplete((Epetra_Map) (F_crs->OperatorDomainMap()),
+                                          (Epetra_Map ) (F_crs->RowMatrixColMap()));
       if (ierr!=0) {
-        cerr <<"Error in Epetra_CrsMatrix TransformToLocal" << ierr << endl;
+        cerr <<"Error in Epetra_CrsMatrix FillComplete" << ierr << endl;
         // EPETRA_CHK_ERR(ierr);
       }
       

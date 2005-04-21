@@ -171,44 +171,44 @@ int VbrMatrix2PetraMatrix(int blk_size,
 
   int ierr=BB->FillComplete(*F_map, *Brow_map);
   if (ierr!=0) {
-    cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+    cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
          ierr= BB->OptimizeStorage();
   if (ierr!=0) {
-    cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+    cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
   ierr=FF->FillComplete();   
    if (ierr!=0) {
-      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
     }
           ierr=FF->OptimizeStorage();
    //      ierr=FF->MergeRedundantEntries();
   if (ierr!=0) {
-    cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+    cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
      ierr=BtBt->FillComplete(*Brow_map, *F_map);
      if (ierr!=0) {
-      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
     } 
           ierr=BtBt->OptimizeStorage();
   if (ierr!=0) {
-    cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+    cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
   if (!C_empty) {
     ierr=CC->FillComplete();        
     if (ierr!=0) {
-      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
     }
         ierr=CC->OptimizeStorage();
     if (ierr!=0) {
-      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
     }
   }

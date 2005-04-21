@@ -54,9 +54,9 @@ int ReadPetraMatrix(Epetra_Map *row_map, Epetra_Map *col_map,
     }
     fclose(fp);
 
-    int ierr=AA->TransformToLocal(col_map, row_map);
+    int ierr=AA->FillComplete(*col_map, *row_map);
     if (ierr!=0) {
-      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      cerr <<"Error in Epetra_VbrMatrix FillComplete" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
     }
     *A = AA;   
