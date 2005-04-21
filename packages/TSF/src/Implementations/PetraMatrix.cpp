@@ -302,11 +302,11 @@ void PetraMatrix::freezeValues()
 
 	if (!columnMap_.isNull())
 				{
-					ierr = matrix_->TransformToLocal(&(*columnMap_), &(*rowMap_));
+					ierr = matrix_->FillComplete(*columnMap_, *rowMap_);
 				}
 			else
 				{
-					ierr = matrix_->TransformToLocal();
+					ierr = matrix_->FillComplete();
 				}
 	if (ierr != 0)
 		{

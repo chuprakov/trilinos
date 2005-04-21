@@ -72,7 +72,7 @@ namespace TSF
       /** set the bandwith of all rows */
       virtual void setBandwidth(int nLocalRows, const int* bandwidth) ;
 
-      /** finalize values. This makes a call to Petra's TransformToLocal(). */
+      /** finalize values. This makes a call to Petra's FillComplete(). */
       virtual void freezeValues();
 
       /** finalize structure. The Petra matrix object is actually constructed
