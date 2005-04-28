@@ -41,7 +41,6 @@
 ############################################################################
 
 PROJECT_NAME           = TSF
-PROJECT_NUMBER         = Development
 
 INPUT                  = ../src
 

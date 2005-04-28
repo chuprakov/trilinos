@@ -88,9 +88,9 @@ INPUT                  = index.doc \
                          ../src/Vectors \  
                          ../src/Concrete \  
                          ../src/Operators \  
-                         ../LinearSolvers \  
-                         ../NonlinearSolvers \  
-                         ../Preconditioners  
+                         ../src/LinearSolvers \  
+                         ../src/NonlinearSolvers \  
+                         ../src/Preconditioners  
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 

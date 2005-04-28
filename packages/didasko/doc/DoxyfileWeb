@@ -41,7 +41,6 @@
 ############################################################################
 
 PROJECT_NAME           = Didasko
-PROJECT_NUMBER         = Development
 
 INPUT                  = ../src mainpage.doxygen
 
