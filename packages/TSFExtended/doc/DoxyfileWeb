@@ -124,7 +124,7 @@ EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITIO
 TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html \
                          ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html \
                         ../../../../Trilinos/packages/TSFCore/doc/TSFCore.tag=../../../../../Trilinos/packages/TSFCore/doc/html
-GENERATE_TAGFILE       = ../../common/tag_files/TSFExtended.tag TSFExtended.tag
+GENERATE_TAGFILE       = ../../common/tag_files/TSFExtended.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
 #

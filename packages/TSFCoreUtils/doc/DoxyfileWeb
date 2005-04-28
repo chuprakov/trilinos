@@ -84,7 +84,7 @@ EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITIO
 # Links to other packages
 #
 TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html
-GENERATE_TAGFILE       = ../../common/tag_files/TSFCoreUtils.tag TSFCoreUtils.tag
+GENERATE_TAGFILE       = ../../common/tag_files/TSFCoreUtils.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
 #
