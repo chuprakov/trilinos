@@ -71,8 +71,8 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
-INCLUDE_PATH           = ../../../../Trilinos/packages/teuchos/src \
-                         ../../../../Trilinos/packages/TSFCoreUtils/src/MoochoUtilities
+INCLUDE_PATH           = ../src \
+                         ../src/MoochoUtilities
 EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
                          STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
 #
@@ -93,33 +93,33 @@ OUTPUT_DIRECTORY       = .
 #
 # What and how documentation is extracted
 #
-#INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index.doc \
-#                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSerialTridiagLinearOp.hpp \
-#                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCore_sillyCgSolve.hpp \
-#                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCore_sillyPowerMethod.hpp
-INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index.doc \
-                         ../../../../Trilinos/packages/TSFCore/src/interfaces/Core \
-                         ../../../../Trilinos/packages/TSFCore/src/utilities/Core \
-                         ../../../../Trilinos/packages/TSFCore/src/adapters/serial \
-                         ../../../../Trilinos/packages/TSFCore/src/adapters/epetra \
-                         ../../../../Trilinos/packages/TSFCore/src/adapters/mpi-base \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpace.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorDecl.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVector.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/SerialTridiagLinearOp.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/MPITridiagLinearOp.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/createTridiagEpetraLinearOp.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/sillyCgSolve.hpp \
-                         ../../../../Trilinos/packages/TSFCore/example/Core/sillyPowerMethod.hpp
+#INPUT                  = index.doc \
+#                         ../example/Core/TSFCoreSerialTridiagLinearOp.hpp \
+#                         ../example/Core/TSFCore_sillyCgSolve.hpp \
+#                         ../example/Core/TSFCore_sillyPowerMethod.hpp
+INPUT                  = index.doc \
+                         ../src/interfaces/Core \
+                         ../src/utilities/Core \
+                         ../src/adapters/serial \
+                         ../src/adapters/epetra \
+                         ../src/adapters/mpi-base \
+                         ../example/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVectorSpace.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVectorDecl.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVector.hpp \
+                         ../example/Core/SerialTridiagLinearOp.hpp \
+                         ../example/Core/MPITridiagLinearOp.hpp \
+                         ../example/Core/createTridiagEpetraLinearOp.hpp \
+                         ../example/Core/sillyCgSolve.hpp \
+                         ../example/Core/sillyPowerMethod.hpp
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
-EXAMPLE_PATH           = ../../../../Trilinos/packages/TSFCore/example \
-                         ../../../../Trilinos/packages/TSFCore/test
+EXAMPLE_PATH           = ../example \
+                         ../test
 EXAMPLE_PATTERNS       = *.cpp *.hpp
-IMAGE_PATH             = ../../../../Trilinos/packages/TSFCore/doc/images 
+IMAGE_PATH             = images 
 INPUT_FILTER           = 
 ALPHABETICAL_INDEX     = YES
 IGNORE_PREFIX          = 
@@ -130,6 +130,6 @@ IGNORE_PREFIX          =
 TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html \
                          ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html \
                          ../../../../Trilinos/packages/epetra/doc/epetra.tag=../../../../../Trilinos/packages/epetra/doc/html
-GENERATE_TAGFILE       = TSFCore.tag
+GENERATE_TAGFILE       = ../../common/tag_files/TSFCore.tag TSFCore.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
