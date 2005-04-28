@@ -1,7 +1,7 @@
 #
 # Include the global look and feel options
 #
-@INCLUDE               = ../../../packages/common/Doxyfile
+@INCLUDE               = ../../common/Doxyfile
 #
 # Package options
 #
@@ -45,9 +45,9 @@ QUIET                  = NO
 WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_FORMAT            = "$file:$line: $text"
-INPUT                  = ../../../packages/TSFCoreUtils/doc/index.doc \
-                         ../../../packages/TSFCoreUtils/src \
-                         ../../../packages/TSFCoreUtils/test
+INPUT                  = index.doc \
+                         ../src \
+                         ../test
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
@@ -76,14 +76,16 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
-INCLUDE_PATH           = ../../../packages/TSFCoreUtils/src \
-                         ../../../packages/TSFCoreUtils/src/MoochoUtilities
+INCLUDE_PATH           = ../src \
+                         ../src/MoochoUtilities
 EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
                          STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
 #
 # Links to other packages
 #
-GENERATE_TAGFILE       = ../../../packages/common/tag_files/TSFCoreUtils.tag
+TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html
+TAGFILES              += ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html
+GENERATE_TAGFILE       = ../../common/tag_files/TSFCoreUtils.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
 #

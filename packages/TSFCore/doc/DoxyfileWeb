@@ -1,7 +1,7 @@
 #
 # Include the global look and feel options
 #
-@INCLUDE               = ../../../packages/common/Doxyfile
+@INCLUDE               = ../../common/Doxyfile
 #
 # Package options
 #
@@ -72,8 +72,8 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
-INCLUDE_PATH           = ../../../packages/TSFCore/src \
-                         ../../../packages/TSFCore/src/MoochoUtilities
+INCLUDE_PATH           = ../src \
+                         ../src/MoochoUtilities
 EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
                          STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
 #
@@ -95,32 +95,32 @@ OUTPUT_DIRECTORY       = .
 # What and how documentation is extracted
 #
 #INPUT                  = index.doc \
-#                         ../../../packages/TSFCore/example/Core/TSFCoreSerialTridiagLinearOp.hpp \
-#                         ../../../packages/TSFCore/example/Core/TSFCore_sillyCgSolve.hpp \
-#                         ../../../packages/TSFCore/example/Core/TSFCore_sillyPowerMethod.hpp
+#                         ../example/Core/TSFCoreSerialTridiagLinearOp.hpp \
+#                         ../example/Core/TSFCore_sillyCgSolve.hpp \
+#                         ../example/Core/TSFCore_sillyPowerMethod.hpp
 INPUT                  = index.doc \
-                         ../../../packages/TSFCore/src/interfaces/Core \
-                         ../../../packages/TSFCore/src/utilities/Core \
-                         ../../../packages/TSFCore/src/adapters/serial \
-                         ../../../packages/TSFCore/src/adapters/epetra \
-                         ../../../packages/TSFCore/src/adapters/mpi-base \
-                         ../../../packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
-                         ../../../packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpace.hpp \
-                         ../../../packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorDecl.hpp \
-                         ../../../packages/TSFCore/example/Core/TSFCoreSimpleMPIVector.hpp \
-                         ../../../packages/TSFCore/example/Core/SerialTridiagLinearOp.hpp \
-                         ../../../packages/TSFCore/example/Core/MPITridiagLinearOp.hpp \
-                         ../../../packages/TSFCore/example/Core/createTridiagEpetraLinearOp.hpp \
-                         ../../../packages/TSFCore/example/Core/sillyCgSolve.hpp \
-                         ../../../packages/TSFCore/example/Core/sillyPowerMethod.hpp
+                         ../src/interfaces/Core \
+                         ../src/utilities/Core \
+                         ../src/adapters/serial \
+                         ../src/adapters/epetra \
+                         ../src/adapters/mpi-base \
+                         ../example/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVectorSpace.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVectorDecl.hpp \
+                         ../example/Core/TSFCoreSimpleMPIVector.hpp \
+                         ../example/Core/SerialTridiagLinearOp.hpp \
+                         ../example/Core/MPITridiagLinearOp.hpp \
+                         ../example/Core/createTridiagEpetraLinearOp.hpp \
+                         ../example/Core/sillyCgSolve.hpp \
+                         ../example/Core/sillyPowerMethod.hpp
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
-EXAMPLE_PATH           = ../../../packages/TSFCore/example \
-                         ../../../packages/TSFCore/test
+EXAMPLE_PATH           = ../example \
+                         ../test
 EXAMPLE_PATTERNS       = *.cpp *.hpp
-IMAGE_PATH             = ../../../packages/TSFCore/doc/images 
+IMAGE_PATH             = images 
 INPUT_FILTER           = 
 ALPHABETICAL_INDEX     = YES
 IGNORE_PREFIX          = 
@@ -128,6 +128,8 @@ IGNORE_PREFIX          =
 #
 # Links to other packages
 #
-GENERATE_TAGFILE       = ../../../packages/common/tag_files/TSFCore.tag
+TAGFILES               = ../../common/tag_files/epetra.tag=../../../epetra/doc/html
+TAGFILES              += ../../common/tag_files/teuchos.tag=../../../teuchos/doc/html
+GENERATE_TAGFILE       = ../../common/tag_files/TSFCore.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
