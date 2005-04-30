@@ -1,0 +1,7 @@
+TSFCoreEpetraLinearOp.cpp                 Thyra_EpetraLinearOp.cpp
+TSFCoreEpetraLinearOp.hpp                 Thyra_EpetraLinearOp.hpp
+TSFCoreEpetraTypes.hpp                    Thyra_EpetraTypes.hpp
+TSFCore_get_Epetra_MultiVector.cpp        Thyra_get_Epetra_MultiVector.cpp
+TSFCore_get_Epetra_MultiVector.hpp        Thyra_get_Epetra_MultiVector.hpp
+TSFCore_get_Epetra_Operator.cpp           Thyra_get_Epetra_Operator.cpp
+TSFCore_get_Epetra_Operator.hpp           Thyra_get_Epetra_Operator.hpp

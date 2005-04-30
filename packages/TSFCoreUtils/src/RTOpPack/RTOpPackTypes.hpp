@@ -33,7 +33,6 @@
 #define RTOPPACK_TYPES_HPP
 
 #include "RTOp_config.h"
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace RTOpPack {

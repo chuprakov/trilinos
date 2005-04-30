@@ -1,0 +1,11 @@
+TSFCoreSimpleMPIVector.hpp              Thyra_SimpleMPIVector.hpp
+TSFCoreSimpleMPIVectorDecl.hpp          Thyra_SimpleMPIVectorDecl.hpp
+TSFCoreSimpleMPIVectorSpace.hpp         Thyra_SimpleMPIVectorSpace.hpp
+TSFCoreSimpleMPIVectorSpaceDecl.hpp     Thyra_SimpleMPIVectorSpaceDecl.hpp
+MPITridiagLinearOp.hpp                  MPITridiagLinearOp.hpp
+SerialTridiagLinearOp.hpp               SerialTridiagLinearOp.hpp
+sillyPowerMethod.hpp                    sillyPowerMethod.hpp
+sillyPowerMethod_serial.cpp             sillyPowerMethod_serial.cpp
+sillyCgSolve.hpp                        sillyCgSolve.hpp
+sillyCgSolve_serial.cpp                 sillyCgSolve_serial.cpp
+sillyCgSolve_mpi.cpp                    sillyCgSolve_mpi.cpp
