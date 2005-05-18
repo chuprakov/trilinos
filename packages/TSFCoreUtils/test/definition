@@ -1,0 +1,9 @@
+#
+# FRAMEWORK group
+#
+
+(FRAMEWORK) {
+    DIRS = RTOpT, unary_rtop;
+    ARGS = -v;
+    COMM = SERIAL, MPI;
+}

@@ -1,0 +1,10 @@
+#
+# FRAMEWORK group
+#
+
+(FRAMEWORK) {
+    DIRS = BlockTests, Double, Nonlinear, PoissonTest, RectMatrixTest, 
+           VectorTests;
+    ARGS = -v;
+    COMM = SERIAL, MPI;
+}

@@ -1,0 +1,9 @@
+#
+# FRAMEWORK group
+#
+
+(FRAMEWORK) {
+    DIRS = epetra-adapters, product-space, scalar-product, std-opts;
+    ARGS = -v;
+    COMM = SERIAL, MPI;
+}
