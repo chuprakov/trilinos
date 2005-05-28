@@ -136,9 +136,8 @@ int main(int argc, void *argv[])
 
       ParameterList params;
       params.set("Method", "GMRES");
-      params.set("Precond", "Domain Decomposition");
-      params.set("Subdomain Solver", "ILU");
-      params.set("Graph Fill", 1);
+      params.set("Precond", "ML");
+      params.set("ML Levels", 2);
       params.set("Max Iterations", 100);
       params.set("Tolerance", 1.0e-10);
 

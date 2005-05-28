@@ -19,7 +19,7 @@ AztecSolver::AztecSolver(const ParameterList& params)
 		options_(AZ_OPTIONS_SIZE),
 		parameters_(AZ_PARAMS_SIZE),
     useML_(false),
-    mlLevels_(0),
+    mlLevels_(2),
     mlSymmetric_(false),
     mlUseDamping_(false),
     mlDamping_(0.0),
@@ -45,6 +45,41 @@ AztecSolver::AztecSolver(const ParameterList& params)
 
       /* find the integer ID used by Aztec to identify this parameter */
       int aztecCode = paramMap()[name];
+
+      /* ML parameters aren't handled through the standard Aztec
+       * params system. Check for an ML option, and if found, handle
+       * it specially. */
+      if (aztecCode == AZ_precond && getValue<string>(entry)=="ML")
+        {
+          useML_ = true;
+          continue;
+        }
+      if (aztecCode == AZ_ml_levels)
+        {
+          mlLevels_ = getValue<int>(entry);
+          continue;
+        }
+      if (aztecCode == AZ_ml_sym)
+        {
+          mlSymmetric_ = getValue<bool>(entry);
+          continue;
+        }
+      if (aztecCode == AZ_ml_damping)
+        {
+          mlUseDamping_ = true;
+          mlDamping_ = getValue<double>(entry);
+          continue;
+        }
+      if (aztecCode == AZ_recursive_iterate)
+        {
+          aztec_recursive_iterate_ = getValue<bool>(entry);
+          continue;
+        }
+      
+      
+      
+
+      
 
       /* We now need to figure out what to do with the value of the
        * parameter. If it is a string, then it corresponds to a
@@ -110,6 +145,10 @@ AztecSolver::AztecSolver(const Teuchos::map<int, int>& aztecOptions,
   if (aztecOptions.find(AZ_ml_levels) != aztecOptions.end()) 
     {
       mlLevels_ = aztecOptions.find(AZ_ml_levels)->second;
+    }
+  else
+    {
+      mlLevels_ = 2;
     }
   
   if (aztecOptions.find(AZ_ml_sym) != aztecOptions.end()) 
@@ -300,6 +339,11 @@ void AztecSolver::initParamMap()
       paramMap()["Neumann Series"]=AZ_Neumann;
       paramMap()["Symmetric Gauss-Seidel"]=AZ_sym_GS;
       paramMap()["Least-Squares Polynomial"]=AZ_ls;
+      paramMap()["Algebraic Multigrid"]=AZ_ml;
+      paramMap()["ML Levels"]=AZ_ml_levels;
+      paramMap()["ML Damping"]=AZ_ml_damping;
+      paramMap()["Recursive Iterate"]=AZ_recursive_iterate;
+      paramMap()["ML Symmetric"]=AZ_ml_sym;
       paramMap()["Domain Decomposition"]=AZ_dom_decomp;
       paramMap()["Subdomain Solver"]=AZ_subdomain_solve;
       paramMap()["Approximate Sparse LU"]=AZ_lu;
