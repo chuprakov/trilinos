@@ -16,6 +16,9 @@
 @HAVE_DIDASKO_AZTECOO_TRUE@AZTECOO_INCLUDES= -I$(top_builddir)/../aztecoo/src -I$(top_srcdir)/../aztecoo/src
 @HAVE_DIDASKO_AZTECOO_TRUE@AZTECOO_LIB= $(top_builddir)/../aztecoo/src/libaztecoo.a
 
+@HAVE_DIDASKO_ANASAZI_TRUE@ANASAZI_INCLUDES= -I$(top_builddir)/../anasazi/src -I$(top_srcdir)/../anasazi/src
+@HAVE_DIDASKO_ANASAZI_TRUE@ANASAZI_LIB= $(top_builddir)/../anasazi/src/libanasazi.a
+
 @HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_INCLUDES= -I$(top_builddir)/../teuchos/src -I$(top_srcdir)/../teuchos/src
 @HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_LIB= $(top_builddir)/../teuchos/src/libteuchos.a
 
@@ -44,6 +47,7 @@ DIDASKO_INCLUDES=               \
 	-I$(top_srcdir)/src     \
 	$(NOX_INCLUDES)         \
 	$(ML_INCLUDES)          \
+	$(ANASAZI_INCLUDES)     \
 	$(IFPACK_INCLUDES)      \
 	$(AMESOS_INCLUDES)      \
 	$(AZTECOO_INCLUDES)     \
@@ -55,6 +59,7 @@ DIDASKO_INCLUDES=               \
 DIDASKO_LIBS=              \
 	$(NOX_LIB)         \
 	$(ML_LIB)          \
+	$(ANASAZI_LIB)      \
 	$(IFPACK_LIB)      \
 	$(AMESOS_LIB)      \
 	$(AZTECOO_LIB)     \
