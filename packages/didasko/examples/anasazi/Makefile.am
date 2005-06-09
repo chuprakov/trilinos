@@ -28,7 +28,7 @@
 
 include $(top_builddir)/Makefile.export
 
-EXAMPLE = ex1
+EXAMPLE = ex1 ex2 ex3
 EXEEXT = .exe
 
 noinst_PROGRAMS = $(EXAMPLE)
@@ -41,3 +41,18 @@ ex1_LDADD = $(DIDASKO_LIBS) \
             $(BLAS_LIBS)    \
             $(FLIBS)
 
+ex2_SOURCES = $(srcdir)/ex2.cpp
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
+
+ex3_SOURCES = $(srcdir)/ex3.cpp
+ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex3_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
