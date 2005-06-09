@@ -42,7 +42,7 @@
 # ************************************************************************
 #@HEADER
 
-SOURCES = $(ex1_SOURCES)
+SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -97,24 +97,33 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Didasko_config.h
 CONFIG_CLEAN_FILES =
-am__EXEEXT_1 = ex1$(EXEEXT)
+am__EXEEXT_1 = ex1$(EXEEXT) ex2$(EXEEXT) ex3$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
 am__DEPENDENCIES_1 =
-ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) 
+am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
+ex2_OBJECTS = $(am_ex2_OBJECTS)
+am__DEPENDENCIES_2 =
+ex2_DEPENDENCIES = $(am__DEPENDENCIES_2) 
+am_ex3_OBJECTS = ex3-ex3.$(OBJEXT)
+ex3_OBJECTS = $(am_ex3_OBJECTS)
+am__DEPENDENCIES_3 =
+ex3_DEPENDENCIES = $(am__DEPENDENCIES_3) 
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex1-ex1.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex2-ex2.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex3-ex3.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(ex1_SOURCES)
-DIST_SOURCES = $(ex1_SOURCES)
+SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES)
+DIST_SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -256,10 +265,26 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXAMPLE = ex1
+EXAMPLE = ex1  ex2  ex3
 ex1_SOURCES = $(srcdir)/ex1.cpp
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
 ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
+
+ex2_SOURCES = $(srcdir)/ex2.cpp
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
+
+ex3_SOURCES = $(srcdir)/ex3.cpp
+ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex3_LDADD = $(DIDASKO_LIBS) \
             $(LIBS)         \
             $(LAPACK_LIBS)  \
             $(BLAS_LIBS)    \
@@ -304,6 +329,12 @@ clean-noinstPROGRAMS:
 ex1$(EXEEXT): $(ex1_OBJECTS) $(ex1_DEPENDENCIES) 
 	@rm -f ex1$(EXEEXT)
 	$(CXXLINK) $(ex1_LDFLAGS) $(ex1_OBJECTS) $(ex1_LDADD) $(LIBS)
+ex2$(EXEEXT): $(ex2_OBJECTS) $(ex2_DEPENDENCIES) 
+	@rm -f ex2$(EXEEXT)
+	$(CXXLINK) $(ex2_LDFLAGS) $(ex2_OBJECTS) $(ex2_LDADD) $(LIBS)
+ex3$(EXEEXT): $(ex3_OBJECTS) $(ex3_DEPENDENCIES) 
+	@rm -f ex3$(EXEEXT)
+	$(CXXLINK) $(ex3_LDFLAGS) $(ex3_OBJECTS) $(ex3_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -312,6 +343,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex1-ex1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex2-ex2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex3-ex3.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -344,6 +377,39 @@ ex1-ex1.obj: $(srcdir)/ex1.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex1-ex1.Po' tmpdepfile='$(DEPDIR)/ex1-ex1.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex1_CXXFLAGS) $(CXXFLAGS) -c -o ex1-ex1.obj `if test -f '$(srcdir)/ex1.cpp'; then $(CYGPATH_W) '$(srcdir)/ex1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex1.cpp'; fi`
+
+ex2-ex2.o: $(srcdir)/ex2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex2_CXXFLAGS) $(CXXFLAGS) -MT ex2-ex2.o -MD -MP -MF "$(DEPDIR)/ex2-ex2.Tpo" -c -o ex2-ex2.o `test -f '$(srcdir)/ex2.cpp' || echo '$(srcdir)/'`$(srcdir)/ex2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex2-ex2.Tpo" "$(DEPDIR)/ex2-ex2.Po"; else rm -f "$(DEPDIR)/ex2-ex2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex2.cpp' object='ex2-ex2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex2-ex2.Po' tmpdepfile='$(DEPDIR)/ex2-ex2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex2_CXXFLAGS) $(CXXFLAGS) -c -o ex2-ex2.o `test -f '$(srcdir)/ex2.cpp' || echo '$(srcdir)/'`$(srcdir)/ex2.cpp
+
+ex2-ex2.obj: $(srcdir)/ex2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex2_CXXFLAGS) $(CXXFLAGS) -MT ex2-ex2.obj -MD -MP -MF "$(DEPDIR)/ex2-ex2.Tpo" -c -o ex2-ex2.obj `if test -f '$(srcdir)/ex2.cpp'; then $(CYGPATH_W) '$(srcdir)/ex2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex2-ex2.Tpo" "$(DEPDIR)/ex2-ex2.Po"; else rm -f "$(DEPDIR)/ex2-ex2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex2.cpp' object='ex2-ex2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex2-ex2.Po' tmpdepfile='$(DEPDIR)/ex2-ex2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex2_CXXFLAGS) $(CXXFLAGS) -c -o ex2-ex2.obj `if test -f '$(srcdir)/ex2.cpp'; then $(CYGPATH_W) '$(srcdir)/ex2.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex2.cpp'; fi`
+
+ex3-ex3.o: $(srcdir)/ex3.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex3_CXXFLAGS) $(CXXFLAGS) -MT ex3-ex3.o -MD -MP -MF "$(DEPDIR)/ex3-ex3.Tpo" -c -o ex3-ex3.o `test -f '$(srcdir)/ex3.cpp' || echo '$(srcdir)/'`$(srcdir)/ex3.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex3-ex3.Tpo" "$(DEPDIR)/ex3-ex3.Po"; else rm -f "$(DEPDIR)/ex3-ex3.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex3.cpp' object='ex3-ex3.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex3-ex3.Po' tmpdepfile='$(DEPDIR)/ex3-ex3.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex3_CXXFLAGS) $(CXXFLAGS) -c -o ex3-ex3.o `test -f '$(srcdir)/ex3.cpp' || echo '$(srcdir)/'`$(srcdir)/ex3.cpp
+
+ex3-ex3.obj: $(srcdir)/ex3.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex3_CXXFLAGS) $(CXXFLAGS) -MT ex3-ex3.obj -MD -MP -MF "$(DEPDIR)/ex3-ex3.Tpo" -c -o ex3-ex3.obj `if test -f '$(srcdir)/ex3.cpp'; then $(CYGPATH_W) '$(srcdir)/ex3.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex3.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex3-ex3.Tpo" "$(DEPDIR)/ex3-ex3.Po"; else rm -f "$(DEPDIR)/ex3-ex3.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex3.cpp' object='ex3-ex3.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex3-ex3.Po' tmpdepfile='$(DEPDIR)/ex3-ex3.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex3_CXXFLAGS) $(CXXFLAGS) -c -o ex3-ex3.obj `if test -f '$(srcdir)/ex3.cpp'; then $(CYGPATH_W) '$(srcdir)/ex3.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex3.cpp'; fi`
+
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
