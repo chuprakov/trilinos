@@ -66,9 +66,15 @@ int main(int argc, void *argv[])
       int lowRow = nLocalRows*rank;
 
       std::vector<int> localRows(nLocalRows);
+      std::vector<int> elemsPerRow(nLocalRows);
       for (int i=0; i<nLocalRows; i++)
         {
           localRows[i] = lowRow + i;
+          if ((rank==0 && i==0) || (rank==nProc-1 && i==nLocalRows-1))
+            {
+              elemsPerRow[i] = 1;
+            }
+          else elemsPerRow[i] = 3;
         }
 
       VectorSpace<double> space = type.createSpace(spaceDimension, 

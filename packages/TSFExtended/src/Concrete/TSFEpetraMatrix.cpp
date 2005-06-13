@@ -51,6 +51,19 @@ EpetraMatrix::EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
   initialize(A, TSFCore::NOTRANS);
 }
 
+EpetraMatrix::EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
+                           const RefCountPtr<const EpetraVectorSpace>& range,
+                           const int* numEntriesPerRow)
+  : TSFCore::EpetraLinearOp()
+{
+  /* initializing number of entries per row and static profile = true allows
+   * optimized fill */
+  RefCountPtr<Epetra_CrsMatrix> A 
+    = rcp(new Epetra_CrsMatrix(Copy, *(range->epetra_map()), (int*) numEntriesPerRow, true));
+
+  initialize(A, TSFCore::NOTRANS);
+}
+
 
 
 void EpetraMatrix::setGraph(int nLocalRows,
@@ -88,6 +101,15 @@ void EpetraMatrix::freezeValues()
   TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
                      "EpetraMatrix::freezeValues() failed during call "
                      "to FillComplete(). Error code was " << ierr);
+
+//   if (!crsMatrix()->StorageOptimized())
+//     {
+//       ierr = crsMatrix()->OptimizeStorage();
+      
+//       TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+//                          "EpetraMatrix::freezeValues() failed during call "
+//                          "to OptimizeStorage(). Error code was " << ierr);
+//     }
 }
 
 void EpetraMatrix::addToRow(int globalRowIndex,
@@ -171,9 +193,107 @@ void EpetraMatrix::configure(int lowestRow,
                          << colIndices.size() 
                          << ". Error code was " << ierr);
     }
+  
+  int ierr = crsMatrix()->FillComplete();
+
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                     "EpetraMatrix::configure() failed during call "
+                     "to FillComplete(). Error code was " << ierr);
+
+  if (!crsMatrix()->StorageOptimized())
+    {
+      ierr = crsMatrix()->OptimizeStorage();
+      
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::freezeValues() failed during call "
+                         "to OptimizeStorage(). Error code was " << ierr);
+    }
+}
+
+void EpetraMatrix::configure(int lowestRow,
+                             const std::vector<std::vector<int> >& nonzeros)
+{
+  Epetra_CrsMatrix* crs = crsMatrix();
+  std::vector<double> zeros;
+  int maxSize = 0;
+  
+  for (int i=0; i<nonzeros.size(); i++)
+    {
+      const std::vector<int>& cols = nonzeros[i];
+      if (cols.size() > maxSize) 
+        {
+          zeros.resize(cols.size());
+          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          maxSize = zeros.size();
+        }
+      int ierr = crs->InsertGlobalValues(lowestRow + i, cols.size(),
+                                         &(zeros[0]), (int*) &(cols[0]));
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "failed to add to row " << lowestRow+i
+                         << " in EpetraMatrix::setRowValues() with nnz="
+                         << cols.size() 
+                         << ". Error code was " << ierr);
+    }
+  
+  int ierr = crsMatrix()->FillComplete();
+
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                     "EpetraMatrix::configure() failed during call "
+                     "to FillComplete(). Error code was " << ierr);
+
+  if (!crsMatrix()->StorageOptimized())
+    {
+      ierr = crsMatrix()->OptimizeStorage();
+      
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::freezeValues() failed during call "
+                         "to OptimizeStorage(). Error code was " << ierr);
+    }
 }
 
 
+
+void EpetraMatrix::configure(int lowestRow,
+                             const std::vector<int>& rowPtrs,
+                             const std::vector<int>& nnzPerRow,
+                             const std::vector<int>& data)
+{
+  Epetra_CrsMatrix* crs = crsMatrix();
+  std::vector<double> zeros;
+  int maxSize = 0;
+  
+  for (int i=0; i<rowPtrs.size(); i++)
+    {
+      if (nnzPerRow[i] > maxSize) 
+        {
+          zeros.resize(nnzPerRow[i]);
+          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          maxSize = zeros.size();
+        }
+      int ierr = crs->InsertGlobalValues(lowestRow + i, nnzPerRow[i],
+                                         &(zeros[0]), (int*) &(data[rowPtrs[i]]));
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "failed to add to row " << lowestRow+i
+                         << " in EpetraMatrix::setRowValues() with nnz="
+                         << nnzPerRow[i]
+                         << ". Error code was " << ierr);
+    }
+  
+  int ierr = crsMatrix()->FillComplete();
+
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                     "EpetraMatrix::configure() failed during call "
+                     "to FillComplete(). Error code was " << ierr);
+
+  if (!crsMatrix()->StorageOptimized())
+    {
+      ierr = crsMatrix()->OptimizeStorage();
+      
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::freezeValues() failed during call "
+                         "to OptimizeStorage(). Error code was " << ierr);
+    }
+}
 
 void EpetraMatrix::setRowValues(int globalRowIndex,
                                 int nElemsToInsert,

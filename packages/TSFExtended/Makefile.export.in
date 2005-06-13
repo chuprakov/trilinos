@@ -46,6 +46,7 @@ TSF_EXPORT_LIBS = -L$(TSF_BUILD_DIRECTORY)/src -lTSFExtended \
                   -L$(ML_BUILD_DIRECTORY)/src $(ML_LIBS) \
                   -L$(AZTECOO_BUILD_DIRECTORY)/src  -laztecoo \
                   -L$(IFPACK_BUILD_DIRECTORY)/src  -lifpack \
+                  -L$(EPETRAEXT_BUILD_DIRECTORY)/src  -lepetraext \
                   -L$(EPETRA_BUILD_DIRECTORY)/src  -lepetra \
                   $(TEUCHOS_EXPORT_LIBS)
 
@@ -68,6 +69,8 @@ TSF_BUILD_DIRECTORY = @TSF_BUILD_DIRECTORY@
 TEUCHOS_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../teuchos
 
 EPETRA_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../epetra
+
+EPETRAEXT_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../epetraext
 
 IFPACK_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../ifpack
 

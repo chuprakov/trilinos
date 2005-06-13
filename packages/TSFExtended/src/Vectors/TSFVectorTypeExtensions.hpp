@@ -99,6 +99,16 @@ namespace TSFExtended
     virtual LinearOperator<Scalar>
     createMatrix(const VectorSpace<Scalar>& domain,
                  const VectorSpace<Scalar>& range) const = 0 ;
+
+    
+    /**
+     * Create an empty matrix of type compatible with this vector type,
+     * sized according to the given domain and range spaces.
+     */
+    virtual LinearOperator<Scalar>
+    createMatrix(const VectorSpace<Scalar>& domain,
+                 const VectorSpace<Scalar>& range,
+                 const int* numEntriesPerRow) const = 0 ;
   };
   
 }

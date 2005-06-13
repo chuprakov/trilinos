@@ -103,5 +103,32 @@ EpetraVectorType::createMatrix(const VectorSpace<double>& domain,
 }
 
 
+LinearOperator<double>
+EpetraVectorType::createMatrix(const VectorSpace<double>& domain,
+                               const VectorSpace<double>& range,
+                               const int* numEntriesPerRow) const
+{
+  RefCountPtr<const EpetraVectorSpace> pd 
+    = rcp_dynamic_cast<const EpetraVectorSpace>(domain.ptr());
+
+  RefCountPtr<const EpetraVectorSpace> pr 
+    = rcp_dynamic_cast<const EpetraVectorSpace>(range.ptr());
+
+
+  TEST_FOR_EXCEPTION(pd.get()==0, runtime_error, 
+                     "incompatible domain space given to "
+                     "EpetraVectorType::createMatrix()");
+
+  TEST_FOR_EXCEPTION(pr.get()==0, runtime_error, 
+                     "incompatible range space given to "
+                     "EpetraVectorType::createMatrix()");
+
+  RefCountPtr<TSFCore::LinearOp<double> > A 
+    = rcp(new EpetraMatrix(pd, pr, numEntriesPerRow));
+
+  return A;
+}
+
+
 
 

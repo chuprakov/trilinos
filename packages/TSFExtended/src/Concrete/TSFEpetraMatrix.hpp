@@ -60,12 +60,28 @@ namespace TSFExtended
     EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
                  const RefCountPtr<const EpetraVectorSpace>& range);
 
+    /** Construct an uninitialized EpetraMatrix */
+    EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
+                 const RefCountPtr<const EpetraVectorSpace>& range,
+                 const int* numEntriesPerRow);
+
     /** Virtual dtor */
     virtual ~EpetraMatrix(){;}
 
     /** */
     virtual void configure(int lowestRow,
                            const std::vector<std::set<int> >& nonzeros);
+
+
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<std::vector<int> >& nonzeros);
+
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<int>& rowPtrs,
+                           const std::vector<int>& nnzPerRow,
+                           const std::vector<int>& data);
 
     /** 
      * Set the locations of all my nonzero elements. 

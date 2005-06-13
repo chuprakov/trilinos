@@ -76,6 +76,15 @@ namespace TSFExtended
     LinearOperator<Scalar>
     createMatrix(const VectorSpace<Scalar>& domain,
                  const VectorSpace<Scalar>& range) const ;
+
+    /**
+     * Create an empty matrix of type compatible with this vector type,
+     * sized according to the given domain and range spaces.
+     */
+    LinearOperator<Scalar>
+    createMatrix(const VectorSpace<Scalar>& domain,
+                 const VectorSpace<Scalar>& range,
+                 const int* numEntriesPerRow) const ;
                                                       
     
   };
@@ -118,6 +127,15 @@ namespace TSFExtended
                                    const VectorSpace<Scalar>& range) const
   {
     return ptr()->createMatrix(domain, range);
+  }
+
+  template <class Scalar> inline
+  LinearOperator<Scalar>
+  VectorType<Scalar>::createMatrix(const VectorSpace<Scalar>& domain,
+                                   const VectorSpace<Scalar>& range,
+                                   const int* numEntriesPerRow) const
+  {
+    return ptr()->createMatrix(domain, range, numEntriesPerRow);
   }
 }
 

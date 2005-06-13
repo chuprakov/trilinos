@@ -49,6 +49,16 @@ namespace TSFExtended
     virtual void configure(int lowestRow,
                            const std::vector<std::set<int> >& nonzeros);
 
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<std::vector<int> >& nonzeros);
+
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<int>& rowPtrs,
+                           const std::vector<int>& nnzPerRow,
+                           const std::vector<int>& data);
+
     /** 
      * Set the locations of all my nonzero elements. 
      * @param nLocalRows number of locally-owned rows
@@ -175,6 +185,52 @@ namespace TSFExtended
           }
         setRowValues(lowestRow + i, colIndices.size(),
                      &(colIndices[0]), &(zeros[0]));
+      }
+  }
+
+
+  /* Default implementation of configure */
+  template <class Scalar>
+  void LoadableMatrix<Scalar>::configure(int lowestRow,
+                                         const std::vector<std::vector<int> >& nonzeroCols)
+  {
+    std::vector<double> zeros;
+    int maxSize = 0;
+
+    for (int i=0; i<nonzeroCols.size(); i++)
+      {
+        const std::vector<int>& cols = nonzeroCols[i];
+        if (cols.size() > maxSize) 
+          {
+            zeros.resize(cols.size());
+            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            maxSize = zeros.size();
+          }
+        setRowValues(lowestRow + i, cols.size(),
+                     &(cols[0]), &(zeros[0]));
+      }
+  }
+
+
+  /* Default implementation of configure */
+  template <class Scalar>
+  void LoadableMatrix<Scalar>::configure(int lowestRow,
+                                         const std::vector<int>& rowPtrs,
+                                         const std::vector<int>& nnzPerRow,
+                                         const std::vector<int>& data)
+  {
+    int maxSize = 0;
+    std::vector<double> zeros;
+    for (int i=0; i<rowPtrs.size(); i++)
+      {
+        if (nnzPerRow[i] > maxSize) 
+          {
+            zeros.resize(nnzPerRow[i]);
+            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            maxSize = zeros.size();
+          }
+        setRowValues(lowestRow + i, nnzPerRow[i],
+                     &(data[rowPtrs[i]]), &(zeros[0]));
       }
   }
 }

@@ -88,6 +88,9 @@ ML_INCLUDES = \
 EPETRA_INCLUDES = \
 -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src
 
+EPETRAEXT_INCLUDES = \
+-I$(top_srcdir)/../epetraext/src -I$(top_builddir)/../epetraext/src
+
 AZTECOO_INCLUDES = \
 -I$(top_srcdir)/../aztecoo/src -I$(top_builddir)/../aztecoo/src
 
@@ -110,6 +113,9 @@ TEUCHOS_LIBS = \
 EPETRA_LIBS = \
 	$(top_builddir)/../epetra/src/libepetra.a
 
+EPETRAEXT_LIBS = \
+	$(top_builddir)/../epetraext/src/libepetraext.a
+
 IFPACK_LIBS = \
 	$(top_builddir)/../ifpack/src/libifpack.a
 
@@ -130,6 +136,7 @@ $(TSF_CORE_LIBS) \
 $(ML_LIBS) \
 $(AZTECOO_LIBS) \
 $(IFPACK_LIBS) \
+$(EPETRAEXT_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) 
 
@@ -139,6 +146,7 @@ $(TSF_CORE_LIBS) \
 $(ML_LIBS) \
 $(AZTECOO_LIBS) \
 $(IFPACK_LIBS) \
+$(EPETRAEXT_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) \
 $(TEUCHOS_XML_LIBS) \
@@ -151,6 +159,7 @@ $(TSFCORE_INCLUDES)\
 $(AZTECOO_INCLUDES)\
 $(IFPACK_INCLUDES)\
 $(EPETRA_INCLUDES)\
+$(EPETRAEXT_INCLUDES)\
 $(ML_INCLUDES)\
 $(TEUCHOS_INCLUDES)\
 $(TEUCHOS_XML_INC)\
