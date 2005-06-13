@@ -29,163 +29,387 @@
 \section{Eigenvalue and Eigenvector Computations with Anasazi}
 \label{chap:anasazi}
 
-The Anasazi package has been desigend as an extensible and interoperable
-framework for large-scale eigenvalue algorithms. Anasazi provides a
-generic interface to a collection of algorithms for solving large-scale
-eigenvalue problems. Anasazi requires matrices and vectors to be derived
-from abstract classes, and therefore it can be used with any matrix and
-vector classes that implemenents this interface. In this section, we
-present how to use Anasazi with Epetra vectors and matrices.
-
-The algorithm that is currently available through Anasazi is block
-implicitly restarted Arnoldi, for symmetric and non-symmetric problems.
+The Anasazi package has been designed as an extensible and
+interoperable framework for large-scale eigenvalue algorithms. Anasazi
+provides a generic interface to a collection of algorithms for solving
+large-scale eigenvalue problems. Anasazi requires matrices and vectors
+to be derived from abstract classes, and therefore it can be used with
+any matrix and vector classes that implement these interfaces. The
+algorithms currently available through Anasazi are a block Krylov
+Schur method and a block Davidson method.
 
 In this Chapter we present:
 \begin{itemize}
-\item the Epetra interface to Anasazi objects (in
-  Section~\ref{sec:anasazi_interface});
-\item the use of Anasazi for the solution of an eigenvalue problem (in
-  Section~\ref{sec:anasazi_solver}).
+\item a description of the Anasazi framework (Section~\ref{sec:anasazi:framework});
+\item the interface to the Epetra linear algebra package (Section~\ref{sec:anasazi:interface});
+\item and an example using Anasazi for the solution of an eigenvalue problem (in
+ Section~\ref{sec:anasazi:example}).
 \end{itemize}
 
 %%%
 %%%
 %%%
+\subsection{Anasazi Framework}
+\label{sec:anasazi:framework}
 
-\subsection{Epetra interface to Anasazi Objects}
-\label{sec:anasazi_interface}
+
+The two most important classes in Anasazi are \verb!Eigenproblem! and
+\verb!Eigensolver!. The \verb!Anasazi::Eigenproblem!  defines an
+interface which contains all of the information necessary to compute
+the solutions to an eigenproblem. The \verb!Anasazi::Eigensolver!
+class defines the basic the minimum interface required of eigensolvers
+in Anasazi.  Eigensolvers are implemented by subclassing the
+\verb!Anasazi::Eigensolver!  abstract class. The solvers available in
+the current version of Anasazi are listed in
+Table~\ref{tab:anasazi:solvers}.
+
+
+\begin{table}[htp]
+\begin{center}
+\begin{tabular}{| p{4cm} p{8cm} |}
+\hline
+Solver & Description \\
+\hline
+{\tt BlockDavidson}    & A block Davidson solver for symmetric
+                         eigenvalue problems.\\
+{\tt BlockKrylovSchur} & A block Krylov Schur solver for symmetric or
+                         nonsymmetric problems.\\
+\hline
+\end{tabular}
+\caption{Current eigensolvers implemented in Anasazi.}
+\label{tab:anasazi:solvers}
+\end{center}
+\end{table}
+
+
+Both the eigenproblem and the eigensolver in Anasazi are templated
+according to the scalar type, the multivector type, and the operator
+type. The scalar type must satisfy the interface defined the
+\verb!Teuchos::ScalarTraits! (see
+Section~\ref{sec:teuchos:ScalarTraits}). 
+
+Both the operators and the vectors are considered to be opaque
+objects. That is, only knowledge of the matrix and vectors via
+elementary operations is necessary. The required operations are
+defined by the interfaces \verb!MultiVecTraits! and
+\verb!OperatorTraits!. An implementation of Anasazi is accomplished
+via use of these interfaces. 
+
+This flexibility allows Anasazi to utilize existing linear algebra
+codes. For example, with regard to a multivector class, there are
+three choices for implementing Anasazi:
+\begin{itemize}
+\item define a specialization of an existing class which satisfies the
+\verb!MultiVecTraits! class,
+\item create a subclass of \verb!Anasazi::MultiVec!, for which a
+\verb!MultiVecTraits! specialization is already defined by Anasazi, or
+\item use the Epetra class \verb!Epetra_MultiVector!, for which a
+\verb!MultiVecTraits! specialization is already defined.
+\end{itemize}
+
+Similar to the multivector class, there are three approaches for
+implementing Anasazi with regard to the linear operators:
+\begin{itemize}
+\item define a specialization satisfying \verb!OperatorTraits!,
+\item subclass the \verb!Anasazi::Operator! abstract class, for which a
+\verb!OperatorTraits! specialization already exists, or
+\item use the Epetra class \verb!Epetra_Operator!, 
+for which a \verb!OperatorTraits! specialization is already defined.
+\end{itemize}
+
+The first and second approaches are outside the scope of this
+tutorial. The third of these is the simplest and allows the usage of
+any other Trilinos packages which recognize the Epetra multivector
+class. The usage of the Epetra interfaces is discussed in the next
+section.
+
+Having chosen classes for the multivector and the operator, it remains
+to specify the operators and initial vectors to define the eigenvalue
+problem, to specify the options for the eigensolver, and to solve the
+problem. Specifying the eigenvalue problem consists mainly of setting
+the operators associated with the specific problem and specifying the
+symmetry of the problem. 
+
+For the eigensolver, we must first choose which eigensolver to use.
+Then any options for the eigensolver must be put into a
+\verb!Teuchos::ParameterList! class (see
+Section~\ref{sec:teuchos:ParameterList}) and passed to the
+eigensolver, along with the eigenproblem. Anasazi also makes use of
+the \verb!Teuchos::RefCountPtr! smart-pointers
+(Section~\ref{sec:teuchos:RefCountPtr}). Finally, the eigensolver may
+also take as an argument an instance of \verb!Anasazi::SortManager!,
+to determine which eigenvalues are targeted by the solver. These
+classes are illustrated in Section~\ref{sec:anasazi:example}.
+
+
+%%%
+%%%
+%%%
+\subsection{Using the Epetra interface to Anasazi}
+\label{sec:anasazi:interface}
 
 In order to use the Epetra interface to Anasazi, the user must include
 the following files:
 \begin{verbatim}
-#include "AnasaziPetraInterface.hpp"
-#include "AnasaziBlockArnoldi.hpp"
-#include "AnasaziConfigDefs.hpp"
-#include "AnasaziReturnType.hpp"
-#include "AnasaziMultiVec.hpp"
+#include "AnasaziEpetraAdapter.hpp"
+#include "AnasaziBasicEigenproblem.hpp"
 \end{verbatim}
-Let \verb!Problem! be an Epetra\_LinearProblem, and \verb!Map! an
-Epetra\_BlockMap, \verb!A! an Epetra\_RowMatrix, and \verb!X! an
-Epetra\_MultiVector. Anasazi vectors and matrices are defined as
+In addition, the user will need one of the following, depending on
+whether MPI is used or not:
+\begin{verbatim}
+#include "Epetra_MpiComm.h"
+#include "Epetra_SerialComm.h"
+\end{verbatim}
+For more information about \verb!Epetra_Map!, see the tutorial section
+covering Epetra (Section~\ref{sec:map}).
+
+Because Epetra makes exclusive use of double precision arithmetic,
+choosing \verb!Epetra_Operator!  and \verb!Epetra_MultiVector!  makes
+sense when the scalar type for the eigenproblem/solver is
+\verb!double!. For brevity, we will declare type definitions for the
+multivector type and operator type:
+\begin{verbatim}
+typedef Epetra_MultiVector MV;
+typedef Epetra_Operator OP;
+\end{verbatim}
+
+We can now declare an eigenvalue problem and a solver, subclasses of
+the following abstract classes:
+\begin{verbatim}
+Anasazi::Eigenproblem<double,MV,OP>
+Anasazi::Eigensolver<double,MV,OP>
+\end{verbatim}
+
+An example defining an eigenvalue problem and solving the problem
+using an Anasazi eigensolver is given in the next section.
+
+%%%
+%%%
+%%%
+\subsection{Solving and Defining an Eigenvalue Problems}
+\label{sec:anasazi:example}
+
+The first step in solving an eigenvalue problem is to define the
+eigenvalue problem. Assume we have chosen classes to represent our
+scalars, multivectors and operators, as \verb!ST!, \verb!MV! and
+\verb!OP!, respectively. Given an operator \verb!A! and a multivector
+\verb!X! to initialize the problem, both wrapped in
+\verb!Teuchos::RefCountPtr!s we might define the eigenproblem as
 follows:
 \begin{verbatim}
-Anasazi::PetraVec<double> Vector(X);
-Anasazi::PetraMat<double> Mat(A);
+Teuchos::RefCountPtr< BasicEigenproblem<ST,MV,OP> > MyProblem 
+  = Teuchos::rcp( new BasicEigenproblem<ST,MV,OP>(A,X) );
+MyProblem->SetSymmetric( true );
+MyProblem->SetNEV( 5 );
+MyProblem->SetProblem();
 \end{verbatim}
-The user can also create Anasazi vectors that do no rely on any
-Epetra\_MultiVector's, as
+
+The first line creates an \verb!BasicEigenproblem! object and wraps it
+in a Teuchos smart-pointer. The second line indicates the symmetric of
+the eigenproblem, information which may be utilized by the eigensolver
+for extra efficiency. The third line specifies the desired number of
+eigenvalues and eigenvectors. Lastly, the fourth signals that we have
+finished setting up the eigenproblem. This step must be completed
+before attempting to solve the problem.
+
+Let us, for example, attempt to solve this eigenvalue problem with a
+Block Davidson solver. First, we declare a sort manager to specify the
+targeted eigenvalues:
 \begin{verbatim}
-Anasazi::PetraVec<double> ivec(Map, block);
+std::string which("SM");
+Teuchos::RefCountPtr<Anasazi::BasicSort<ST,MV,OP> > MySM =
+  Teuchos::rcp( new Anasazi::BasicSort<ST,MV,OP>(which) );
 \end{verbatim}
-
-%%%
-%%%
-%%%
-
-\subsection{Solving Eigenvalue Problems}
-\label{sec:anasazi_solver}
-
-Anasazi requires the definition of an Eigenproblem object, that
-specifies the linear system matrix and the right-hand side, as
-\begin{verbatim}
-Anasazi::Eigenproblem<double> MyProblem(&Amat, &ivec);
-Anasazi::BlockArnoldi<double> MyBlockArnoldi(Problem, tol, nev, 
-                                             length, block, 
-                                             which, step, restarts);
-\end{verbatim}
-Before solving the eigenproblem, the user must define a set of
-parameters. For instance, one might have:
-\begin{verbatim}
-int block = 1;
-int length = 20;
-int nev = 4;
-double tol = 1.0e-14;
-string which="SM";
-int restarts = 300;
-int step = restarts*length*block;
-MyBlockArnoldi.setSymmetric(true);
-MyBlockArnoldi.setDebugLevel(0);
-\end{verbatim}
-Here, \verb!SM! means that we are interested in the \verb!nev!
-eigenvalues with smallest magniture. Other choices are reported in
-Table~\ref{tab:anasazi}. (Please refer to the Anasazi user's guide more
-a comprehensive list.)
-
+The option chosen was \verb!"SM"!, signaling that we want to compute
+the eigenvalues with the smallest magnitude. Other options for the
+\verb!Anasazi::BasicSort! sort manager are listed in
+Table~\ref{tab:anasazi:sm}.
 
 \begin{table}
 \begin{center}
 \begin{tabular}{| p{2cm} l |}
 \hline
-option & action \\
+Option & Action \\
 \hline
-
 {\tt SM} & Sort eigenvalues in increasing order of magnitude \\
-
 {\tt SR} & Sort eigenvalues in increasing order of real part \\
-
 {\tt SI} & Sort eigenvalues in increasing order of imaginary part \\
-
 {\tt LM} & Sort eigenvalues in decreasing order of magnitude \\
-
 {\tt LR} & Sort eigenvalues in decreasing order of real part \\
-
 {\tt LI} & Sort eigenvalues in decreasing order of imaginary part \\
 \hline
 \end{tabular}
-\caption{Options for Anasazi.}
-\label{tab:anasazi}
+\caption{Options for Anasazi::BasicSort.}
+\label{tab:anasazi:sm}
+\end{center}
+\end{table}
+
+Next we create an output manager, specifying the verbosity of the
+solver:
+\begin{verbatim}
+Teuchos::RefCountPtr<Anasazi::OutputManager<ST> > MyOM = 
+  Teuchos::rcp(  new Anasazi::OutputManager<ST>( MyPID ) );
+MyOM->SetVerbosity( Anasazi::Error+Anasazi::Warning );
+\end{verbatim}
+Here, we have asked for information regarding errors and warnings from
+the eigensolver. Other available information is listed in
+Table~\ref{tab:anasazi:om}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{7cm} l |}
+\hline
+Option & Action \\
+\hline
+{\tt Anasazi::Error} & 
+  This option is always set \\
+{\tt Anasazi::Warning} & 
+  Warnings \\
+{\tt Anasazi::IterationDetails} & 
+  Details at each iteration \\
+{\tt Anasazi::OrthoDetails} & 
+  Details about orthogonality \\
+{\tt Anasazi::FinalSummary} & 
+  A final summary \\
+{\tt Anasazi::Debug} & 
+  Debugging information \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::OutputManager.}
+\label{tab:anasazi:om}
+\end{center}
+\end{table}
+
+We also will specify the parameters for the eigensolver:
+\begin{verbatim}
+Teuchos::ParameterList MyPL;
+MyPL.set( "Block Size", 5 );
+MyPL.set( "Max Blocks", 5 );
+MyPL.set( "Max Restarts", 100 );
+MyPL.set( "Tol", 1.0e-8 );
+\end{verbatim}
+Different eigensolvers allow different parameters.
+Tables~\ref{tab:anasazi:bksparams} and \ref{tab:anasazi:bdparams} list
+the settings for the block Krylov Schur and block Davidson solvers.
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Default \\
+\hline
+{\tt Block Size}   & 1      \\
+{\tt Max Blocks}   & 25     \\
+{\tt Max Restarts} & 0      \\
+{\tt Step Size}    & Block\_Size*Max\_Blocks*(Max\_Restarts+1) \\
+{\tt Tol}          & 1.0e-6 \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::BlockKrylovSchur}
+\label{tab:anasazi:bksparams}
 \end{center}
 \end{table}
 
 
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Default \\
+\hline
+{\tt Block Size} & 1      \\
+{\tt Max Blocks} & 25     \\
+{\tt Max Iters}  & 300    \\
+{\tt Tol}        & 1.0e-6 \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::BlockDavidson}
+\label{tab:anasazi:bdparams}
+\end{center}
+\end{table}
+
+We now have all of the information needed to declare the eigensolver
+and solve the problem. In this example, we will use a block Davidson
+solver:
+\begin{verbatim}
+Anasazi::BlockKrylovSchur<ST,MV,OP> 
+  MySolver( MyProblem, MySM, MyOM, MyPL );
+\end{verbatim}
+
 The eigenproblem is solved with the instruction
 \begin{verbatim}
-MyBlockArnoldi.solve();
+Anasazi::ReturnType sret = MySolver.solve();
 \end{verbatim}
+The return value of the solver indicates whether the algorithm
+succeeded or not. Potential values are listed in
+Table~\ref{tab:anasazi:rt}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Default \\
+\hline
+Anasazi::Ok          & Success. \\
+Anasazi::Unconverged & Solver did not converge to specified accuracy. \\
+Anasazi::Failed      & An error with the input or in the solver. \\
+\hline
+\end{tabular}
+\caption{Anasazi::ReturnType values.}
+\label{tab:anasazi:rt}
+\end{center}
+\end{table}
+
 A summary of results can be printed on the screen, simply typing
 \begin{verbatim}
-MyBlockArnoldi.currentStatus();
+MySolver.currentStatus();
 \end{verbatim}
-Eigenvectors and eigenvalues can be retrived using
+Eigenvectors and eigenvalues can be retrieved using
 \begin{verbatim}
-double * resids = MyBlockArnoldi.getResiduals();
-double * evalr = MyBlockArnoldi.getEvals(); 
-double * evali = MyBlockArnoldi.getiEvals();
-
-Anasazi::PetraVec<double> evecr(Map, nev);
-MyBlockArnoldi.getEvecs( evecr );
-Anasazi::PetraVec<double> eveci(Map, nev);
-MyBlockArnoldi.getiEvecs( eveci )
+Teuchos::RefCountPtr<Epetra_MultiVector >  evecs 
+   = MyProblem->GetEvecs();
+Teuchos::RefCountPtr<std::vector<double> > evals 
+   = MyProblem->GetEvals();
 \end{verbatim}
+For a nonsymmetric problem with potentially complex eigenvalues and
+eigenvectors, \verb!evecs! and \verb!evals! contains both the real and
+complex parts of these, as described in the comments of
+\TriExe{anasazi/ex1.cpp}.
 
 Example \TriExe{anasazi/ex1.cpp} shows how to compute the eigenvectors
-correspoding to the lowest eigenvalues for a 1D Laplace problem. The
-results are shows in Figure~\ref{fig:anasazi:1D}.
-Table~\ref{tab:anasazi:Lapl} reports the lower eigenvalue for 1D, 2D and
-3D Laplace problems.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[height=6cm]{anasazi_Laplace_1D.ps}
-  \caption{Lowest eigenvalues of a 1D Laplace problem, with $h=1/33$.}
-  \label{fig:anasazi:1D}
-\end{figure}
+corresponding to the lowest eigenvalues for a 2D Laplace problem using
+the block Krylov Schur solver.  Example \TriExe{anasazi/ex2.cpp}
+solves this example, using instead the block Davidson eigensolver.
+Finally, the block Krylov Schur solver is used to solve a nonsymmetric
+convection-diffusion problem in Example \TriExe{anasazi/ex3.cpp}.
 
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{| l | c c c |}    
-    \hline
-& {\tt laplace\_1d} & {\tt laplace\_2d} &{\tt laplace\_3d} \\
-     \hline
-     $h = 1/33$ & 0.00905 & 0.0181 & 0.02716 \\
-     $h = 1/65$ & 0.00235  & 0.00467 & 0.007006 \\
-     $h = 1/129$ & 0.0005936 & 0.0011861 & - \\
-     $h = 1/257$ & 0.000149 & 0.0002983 & - \\
-     $h = 1/513$ & 3.75e-5 & - & - \\
-     \hline
-  \end{tabular}
-  \caption{$\lambda_{min}$ for 1D, 2D and 3D Laplace problem on a Cartesian mesh.}
-  \label{tab:anasazi:Lapl}
-\end{table}
+%Table~\ref{tab:anasazi:exLapl} reports the lower
+%eigenvalues. 
+
+%\begin{figure}[htbp]
+%  \centering
+%  \includegraphics[height=6cm]{anasazi_Laplace_1D.ps}
+%  \caption{Lowest eigenvalues of a 1D Laplace problem, with $h=1/33$.}
+%  \label{fig:anasazi:1D}
+%\end{figure}
+
+%\begin{table}[htbp]
+%  \centering
+%  \begin{tabular}{| l | c |}    
+%    \hline
+%& {\tt laplace\_2d} \\
+%     \hline
+%     $h = 1/33$  & 0.00905   & 0.0181    & 0.02716  \\
+%     $h = 1/65$  & 0.00235   & 0.00467   & 0.007006 \\
+%     $h = 1/129$ & 0.0005936 & 0.0011861 & -        \\
+%     $h = 1/257$ & 0.000149  & 0.0002983 & -        \\
+%     $h = 1/513$ & 3.75e-5   & -         & -        \\
+%     \hline
+%  \end{tabular}
+%  \caption{$\lambda_{min}$ for 1D, 2D and 3D Laplace problem on a Cartesian mesh.}
+%  \label{tab:anasazi:exLapl}
+%\end{table}
 %%%
 %%%
 %%%
