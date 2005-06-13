@@ -45,7 +45,6 @@
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "AnasaziBlockDavidson.hpp"
-#include "AnasaziBasicSort.hpp"
 
 int main(int argc, char *argv[]) {
     
