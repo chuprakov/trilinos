@@ -40,10 +40,10 @@ Schur method and a block Davidson method.
 
 In this Chapter we present:
 \begin{itemize}
-\item a description of the Anasazi framework (Section~\ref{sec:anasazi:framework});
-\item the interface to the Epetra linear algebra package (Section~\ref{sec:anasazi:interface});
-\item and an example using Anasazi for the solution of an eigenvalue problem (in
- Section~\ref{sec:anasazi:example}).
+\item a description of the Anasazi framework (Section~\ref{sec:anasazi:framework}),
+\item the interface to the Epetra linear algebra package (Section~\ref{sec:anasazi:interface}), and
+\item an example using Anasazi for the solution of an eigenvalue problem 
+(Section~\ref{sec:anasazi:example}).
 \end{itemize}
 
 %%%
@@ -54,13 +54,12 @@ In this Chapter we present:
 
 
 The two most important classes in Anasazi are \verb!Eigenproblem! and
-\verb!Eigensolver!. The \verb!Anasazi::Eigenproblem!  defines an
-interface which contains all of the information necessary to compute
-the solutions to an eigenproblem. The \verb!Anasazi::Eigensolver!
-class defines the basic the minimum interface required of eigensolvers
-in Anasazi.  Eigensolvers are implemented by subclassing the
-\verb!Anasazi::Eigensolver!  abstract class. The solvers available in
-the current version of Anasazi are listed in
+\verb!Eigensolver!. The \verb!Anasazi::Eigenproblem! class defines an interface
+to provide all of the information necessary to compute the solution to an
+eigenproblem. The \verb!Anasazi::Eigensolver! class defines the minimum
+interface required of eigensolvers in Anasazi. Eigensolvers are implemented by
+subclassing the \verb!Anasazi::Eigensolver! abstract class. The solvers
+available in the current version of Anasazi are listed in
 Table~\ref{tab:anasazi:solvers}.
 
 
@@ -82,18 +81,15 @@ Solver & Description \\
 \end{table}
 
 
-Both the eigenproblem and the eigensolver in Anasazi are templated
-according to the scalar type, the multivector type, and the operator
-type. The scalar type must satisfy the interface defined the
-\verb!Teuchos::ScalarTraits! (see
-Section~\ref{sec:teuchos:ScalarTraits}). 
-
-Both the operators and the vectors are considered to be opaque
-objects. That is, only knowledge of the matrix and vectors via
-elementary operations is necessary. The required operations are
-defined by the interfaces \verb!MultiVecTraits! and
-\verb!OperatorTraits!. An implementation of Anasazi is accomplished
-via use of these interfaces. 
+Both the eigenproblem and the eigensolver in Anasazi are templated according to
+the scalar type, the multivector type, and the operator type. The scalar type
+must satisfy the interface defined by \verb!Teuchos::ScalarTraits! (see
+Section~\ref{sec:teuchos:ScalarTraits}). Both the operators and the
+multivectors are considered to be opaque objects. That is, only knowledge of
+the matrix and vectors via elementary operations is necessary. The required
+operations are specified by the interfaces \verb!MultiVecTraits! and
+\verb!OperatorTraits!. An implementation of Anasazi is accomplished via use of
+these interfaces. 
 
 This flexibility allows Anasazi to utilize existing linear algebra
 codes. For example, with regard to a multivector class, there are
@@ -113,7 +109,7 @@ implementing Anasazi with regard to the linear operators:
 \item define a specialization satisfying \verb!OperatorTraits!,
 \item subclass the \verb!Anasazi::Operator! abstract class, for which a
 \verb!OperatorTraits! specialization already exists, or
-\item use the Epetra class \verb!Epetra_Operator!, 
+\item use a subclass of \verb!Epetra_Operator!, 
 for which a \verb!OperatorTraits! specialization is already defined.
 \end{itemize}
 
@@ -130,16 +126,16 @@ problem. Specifying the eigenvalue problem consists mainly of setting
 the operators associated with the specific problem and specifying the
 symmetry of the problem. 
 
-For the eigensolver, we must first choose which eigensolver to use.
-Then any options for the eigensolver must be put into a
-\verb!Teuchos::ParameterList! class (see
-Section~\ref{sec:teuchos:ParameterList}) and passed to the
-eigensolver, along with the eigenproblem. Anasazi also makes use of
-the \verb!Teuchos::RefCountPtr! smart-pointers
-(Section~\ref{sec:teuchos:RefCountPtr}). Finally, the eigensolver may
-also take as an argument an instance of \verb!Anasazi::SortManager!,
-to determine which eigenvalues are targeted by the solver. These
-classes are illustrated in Section~\ref{sec:anasazi:example}.
+For the eigensolver, we must first choose which eigensolver to use.  Then any
+options for the eigensolver must be put into a \verb!Teuchos::ParameterList!
+class (see Section~\ref{sec:teuchos:ParameterList}) and passed to the
+eigensolver, along with the eigenproblem. Anasazi also makes use of the
+\verb!Teuchos::RefCountPtr! smart-pointers
+(Section~\ref{sec:teuchos:RefCountPtr}). Familiarity with these utility classes
+will be helpful when using Anasazi. Finally, the eigensolver may also take as
+an argument an instance of \verb!Anasazi::SortManager!, to determine which
+eigenvalues are targeted by the solver. Usage of these classes are illustrated
+in Section~\ref{sec:anasazi:example}.
 
 
 %%%
@@ -160,8 +156,9 @@ whether MPI is used or not:
 #include "Epetra_MpiComm.h"
 #include "Epetra_SerialComm.h"
 \end{verbatim}
-For more information about \verb!Epetra_Map!, see the tutorial section
-covering Epetra (Section~\ref{sec:map}).
+For more information about the \verb!Epetra_Map! and \verb!Epetra_Comm!
+classes, see the tutorial section covering Epetra (Sections~\ref{sec:comm} and
+\ref{sec:map}).
 
 Because Epetra makes exclusive use of double precision arithmetic,
 choosing \verb!Epetra_Operator!  and \verb!Epetra_MultiVector!  makes
@@ -186,15 +183,14 @@ using an Anasazi eigensolver is given in the next section.
 %%%
 %%%
 %%%
-\subsection{Solving and Defining an Eigenvalue Problems}
+\subsection{Defining and Solving an Eigenvalue Problem}
 \label{sec:anasazi:example}
 
-The first step in solving an eigenvalue problem is to define the
-eigenvalue problem. Assume we have chosen classes to represent our
-scalars, multivectors and operators, as \verb!ST!, \verb!MV! and
-\verb!OP!, respectively. Given an operator \verb!A! and a multivector
-\verb!X! to initialize the problem, both wrapped in
-\verb!Teuchos::RefCountPtr!s we might define the eigenproblem as
+The first step in solving an eigenvalue problem is to define the eigenvalue
+problem. Assume we have chosen classes to represent our scalars, multivectors
+and operators, as \verb!ST!, \verb!MV! and \verb!OP!, respectively. Given an
+operator \verb!A! and a multivector \verb!X! to initialize the problem, both
+wrapped in \verb!Teuchos::RefCountPtr!s, we might define the eigenproblem as
 follows:
 \begin{verbatim}
 Teuchos::RefCountPtr< BasicEigenproblem<ST,MV,OP> > MyProblem 
@@ -204,8 +200,8 @@ MyProblem->SetNEV( 5 );
 MyProblem->SetProblem();
 \end{verbatim}
 
-The first line creates an \verb!BasicEigenproblem! object and wraps it
-in a Teuchos smart-pointer. The second line indicates the symmetric of
+The first line creates a \verb!BasicEigenproblem! object and wraps it
+in a Teuchos smart-pointer. The second line specifies the symmetry of
 the eigenproblem, information which may be utilized by the eigensolver
 for extra efficiency. The third line specifies the desired number of
 eigenvalues and eigenvectors. Lastly, the fourth signals that we have
@@ -213,7 +209,7 @@ finished setting up the eigenproblem. This step must be completed
 before attempting to solve the problem.
 
 Let us, for example, attempt to solve this eigenvalue problem with a
-Block Davidson solver. First, we declare a sort manager to specify the
+block Krylov Schur solver. First, we declare a sort manager to specify the
 targeted eigenvalues:
 \begin{verbatim}
 std::string which("SM");
@@ -330,13 +326,11 @@ Parameter & Default \\
 \end{table}
 
 We now have all of the information needed to declare the eigensolver
-and solve the problem. In this example, we will use a block Davidson
-solver:
+and solve the problem.
 \begin{verbatim}
 Anasazi::BlockKrylovSchur<ST,MV,OP> 
   MySolver( MyProblem, MySM, MyOM, MyPL );
 \end{verbatim}
-
 The eigenproblem is solved with the instruction
 \begin{verbatim}
 Anasazi::ReturnType sret = MySolver.solve();
@@ -361,7 +355,7 @@ Anasazi::Failed      & An error with the input or in the solver. \\
 \end{center}
 \end{table}
 
-A summary of results can be printed on the screen, simply typing
+A summary of results can be printed on the screen:
 \begin{verbatim}
 MySolver.currentStatus();
 \end{verbatim}
@@ -373,7 +367,7 @@ Teuchos::RefCountPtr<std::vector<double> > evals
    = MyProblem->GetEvals();
 \end{verbatim}
 For a nonsymmetric problem with potentially complex eigenvalues and
-eigenvectors, \verb!evecs! and \verb!evals! contains both the real and
+eigenvectors, \verb!evecs! and \verb!evals! contain both the real and
 complex parts of these, as described in the comments of
 \TriExe{anasazi/ex1.cpp}.
 
