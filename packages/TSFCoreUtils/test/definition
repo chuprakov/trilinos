@@ -4,6 +4,6 @@
 
 (FRAMEWORK) {
     DIRS = RTOpT, unary_rtop;
-    ARGS = -v;
+    ARGS = --verbose;
     COMM = SERIAL, MPI;
 }

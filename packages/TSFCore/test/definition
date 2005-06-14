@@ -3,7 +3,7 @@
 #
 
 (FRAMEWORK) {
-    DIRS = epetra-adapters, product-space, scalar-product, std-opts;
-    ARGS = -v;
+    DIRS = epetra-adapters, product-space, std-opts;
+    ARGS = --verbose;
     COMM = SERIAL, MPI;
 }
