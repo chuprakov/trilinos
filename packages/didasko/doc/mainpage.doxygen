@@ -59,8 +59,12 @@ Packages are reported in alphabetical order.
 - Basic usage of Amesos: \ref amesos_ex1
 
 \section anasazi Anasazi Examples
-- Computation of the lowest eigenvalue and the corresponding 
-  eigenvector of a linear system: \ref anasazi_ex1
+- Computation of the lowest eigenvalues and the corresponding 
+  eigenvectors of a symmetric matrix using a Block Krylov Schur solver: \ref anasazi_ex1
+- Computation of the lowest eigenvalues and the corresponding 
+  eigenvectors of a symmetric matrix using a Block Davidson solver: \ref anasazi_ex2
+- Computation of the lowest eigenvalues and the corresponding 
+  eigenvectors of a nonsymmetric matrix using a Block Krylov Schur solver: \ref anasazi_ex3
 
 \section epetra Epetra Examples
 - Basic usage of communicators: \ref epetra_ex1
@@ -141,6 +145,18 @@ Packages are reported in alphabetical order.
 \page anasazi_ex1
 
 \include anasazi/ex1.cpp
+*/
+
+/*!
+\page anasazi_ex2
+
+\include anasazi/ex2.cpp
+*/
+
+/*!
+\page anasazi_ex3
+
+\include anasazi/ex3.cpp
 */
 
 /*!
