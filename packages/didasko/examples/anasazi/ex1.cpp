@@ -27,7 +27,7 @@
 // ***********************************************************************
 // @HEADER
 
-// Compute the lowest eigenvalues and corresponding eigenvectors using
+// Compute the smallest magnitude eigenvalues and corresponding eigenvectors using
 // Anasazi::BlockKrylovSchur
 
 #include "Didasko_ConfigDefs.h"
