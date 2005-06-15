@@ -27,7 +27,7 @@
 // ***********************************************************************
 // @HEADER
 
-// Compute the lowest eigenvalues and the corresponding eigenvectors using
+// Compute the smallest magnitude eigenvalues and the corresponding eigenvectors using
 // Anasazi::BlockDavidson
 
 #include "Didasko_ConfigDefs.h"
@@ -45,6 +45,7 @@
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "AnasaziBlockDavidson.hpp"
+#include "AnasaziBasicSort.hpp"
 
 int main(int argc, char *argv[]) {
     
@@ -155,10 +156,22 @@ int main(int argc, char *argv[]) {
   MyPL.set( "Max Iters" , 1000    );
   MyPL.set( "Tol"       , 1.0e-14 );
 
+  // Create the sort manager
+  // Choices are:
+  // LM - target the largest magnitude  [default]
+  // SM - target the smallest magnitude 
+  // LR - target the largest real 
+  // SR - target the smallest real 
+  // LI - target the largest imaginary
+  // SI - target the smallest imaginary
+  std::string which("SM");
+  Teuchos::RefCountPtr< Anasazi::BasicSort<double,MV,OP> > MySM = 
+    Teuchos::rcp( new Anasazi::BasicSort<double,MV,OP>(which) );
+
   // Create the Block Davidson solver
   // This takes as inputs the eigenvalue problem that we constructed, 
   // the output manager, and the solver parameters
-  Anasazi::BlockDavidson<double,MV,OP> MyBlockDavidson(MyProblem, MyOM, MyPL );
+  Anasazi::BlockDavidson<double,MV,OP> MyBlockDavidson(MyProblem, MySM, MyOM, MyPL );
 
   // Solve the eigenvalue problem, and save the return code
   Anasazi::ReturnType solverreturn = MyBlockDavidson.solve();
