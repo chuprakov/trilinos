@@ -5,6 +5,7 @@
 #if defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Teuchos_ParameterList.hpp"
+#include "Teuchos_ConfigDefs.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -41,8 +42,10 @@ int main(int argc, char* argv[])
   bool solver_defined = My_List.isParameter("Solver");
   // Has a preconditioner been chosen?
   bool prec_defined = My_List.isSublist("Preconditioner"); 
+#ifdef HAVE_TEMPLATE_QUALIFIER
   // Has a tolerance been chosen and is it a double-precision number?
   bool tol_double = My_List.template isType<double>("Tolerance");
+#endif
   // Has a drop tolerance been chosen and is it a double-precision number?
   bool dtol_double = Teuchos::isParameterType<double>(Prec_List, "Drop Tolerance"); 
 
@@ -55,7 +58,9 @@ int main(int argc, char* argv[])
   // Get method that creates and sets the parameter if it doesn't exist.
   int its = My_List.get("Max Iters", 1200);
   // Get method that retrieves a parameter of a particular type.
-  float tol = My_List.template get<float>("Tolerance");
+  float tol;
+#ifdef HAVE_TEMPLATE_QUALIFIER
+  tol = My_List.template get<float>("Tolerance");
 
   /* In the above example, the first ``get'' method is a safe way of
      obtaining a parameter when its existence is indefinite but required.
@@ -70,6 +75,7 @@ int main(int argc, char* argv[])
   catch (std::exception& e) {
     tol = 1e-6;
   }
+#endif
 
   /* The second ``get'' method uses a syntax that may not be
      acceptable to older compilers.  Optionally, there is another portable templated 
