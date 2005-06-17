@@ -29,21 +29,31 @@
 \section{Eigenvalue and Eigenvector Computations with Anasazi}
 \label{chap:anasazi}
 
-The Anasazi package has been designed as an extensible and
-interoperable framework for large-scale eigenvalue algorithms. Anasazi
-provides a generic interface to a collection of algorithms for solving
-large-scale eigenvalue problems. Anasazi requires matrices and vectors
-to be derived from abstract classes, and therefore it can be used with
-any matrix and vector classes that implement these interfaces. The
-algorithms currently available through Anasazi are a block Krylov
-Schur method and a block Davidson method.
+The Anasazi package was designed as an extensible and interoperable framework
+for large-scale eigenvalue algorithms. Anasazi provides a generic interface to a
+collection of algorithms for solving large-scale eigenvalue problems. It
+utilizes interfaces for operators and multivectors, and therefore it can be used
+with any operator or multivector class that implements these interfaces. The
+algorithms currently available through Anasazi are a block Krylov Schur method,
+a block Davidson method and the locally optimal block preconditioned conjugate
+gradient (LOBPCG) method.
 
 In this Chapter we present:
 \begin{itemize}
 \item a description of the Anasazi framework (Section~\ref{sec:anasazi:framework}),
-\item the interface to the Epetra linear algebra package (Section~\ref{sec:anasazi:interface}), and
+\item the interface to the Epetra linear algebra package
+(Section~\ref{sec:anasazi:epetra}), and
 \item an example using Anasazi for the solution of an eigenvalue problem 
 (Section~\ref{sec:anasazi:example}).
+\end{itemize}
+
+
+Throughout this chapter, the following abbreviations may be used for the sake of
+brevity:
+\begin{itemize}
+\item ST - scalar type class
+\item MV - multivector type class
+\item OP - operator type class
 \end{itemize}
 
 %%%
@@ -52,16 +62,103 @@ In this Chapter we present:
 \subsection{Anasazi Framework}
 \label{sec:anasazi:framework}
 
+Solving an eigenproblem in Anasazi requires the use of four main entities: an
+eigenvalue problem, an eigenvalue solver, linear operators and multivectors. The
+representations of these objects are described by the following four Anasazi
+classes:
+\begin{itemize}
+\item \verb!Eigenproblem! (Section~\ref{sec:anasazi:eigenproblem}) - this class defines the interface required by an
+eigensolver to solve an eigenvalue problem.
+\item \verb!Eigensolver! (Section~\ref{sec:anasazi:eigensolver}) - this class defines the basic interface that any
+eigensolver must support.
+\item \verb!MultiVecTraits! (Section~\ref{sec:anasazi:mvt}) - this class defines the interface Anasazi uses to 
+perform operations on and with multivectors.
+\item \verb!OperatorTraits! (Section~\ref{sec:anasazi:opt}) - this class defines the interface by which Anasazi
+applies operators to multivectors.
+\end{itemize}
 
-The two most important classes in Anasazi are \verb!Eigenproblem! and
-\verb!Eigensolver!. The \verb!Anasazi::Eigenproblem! class defines an interface
-to provide all of the information necessary to compute the solution to an
-eigenproblem. The \verb!Anasazi::Eigensolver! class defines the minimum
-interface required of eigensolvers in Anasazi. Eigensolvers are implemented by
-subclassing the \verb!Anasazi::Eigensolver! abstract class. The solvers
-available in the current version of Anasazi are listed in
-Table~\ref{tab:anasazi:solvers}.
+While the four classes listed above are the most important, there are other
+classes that are necessary when using Anasazi. These include the
+\verb!SortManager!, \verb!OutputManager! and \verb!ModalSolverUtils! classes.
+These classes, along with the four classes introduced above, are described in
+more detail in the following subsections.
 
+%%%
+%%%
+\subsubsection{Anasazi::Eigenproblem}
+\label{sec:anasazi:eigenproblem}
+
+One of the goals of Anasazi is to provide a framework for eigenvalue
+computations that leaves as much flexibility to the user as possible. It is
+towards this goal that the \verb!Anasazi::Eigenproblem! abstract base class was
+defined. By providing a base class for an eigenvalue problem which the user can
+extend, Anasazi allows the user to specify properties of the eigenvalue problem,
+such as the inner product and the vector norm. However, by requiring
+eigenproblems to derive from \verb!Anasazi::Eigenproblem!, Anasazi defines a
+minimum interface that can be expected of all eigenvalue problems by the classes
+that will work with the problems (i.e., eigensolvers and status testers).
+
+Both the eigenproblem and the eigensolver in Anasazi are templated according
+to the scalar type, the multivector type and the operator type. Before
+declaring an eigenproblem, the user must choose classes to represent these
+entities. Having done so, the user can begin to specify the parameters of the
+eigenvalue problem. The \verb!Anasazi::Eigenproblem! defines \textbf{set} methods for
+the parameters of the eigenproblem. These methods are:
+\begin{itemize}
+\item \verb!SetOperator! - set the operator for which the eigenvalues will be computed
+\item \verb!SetA! - set the $A$ operator for the eigenvalue problem $Ax=\lambda M x$
+\item \verb!SetM! - set the $M$ operator for the eigenvalue problem $Ax=\lambda M x$
+\item \verb!SetPrec! - set the preconditioner for the eigenvalue problem
+\item \verb!SetInitVec! - set the initial guess
+\item \verb!SetAuxVec! - set the auxilliary vectors
+\item \verb!SetNEV! - set the number of eigenvalues to be computed
+\item \verb!SetSymmetric! - set the symmetry of the problem
+\end{itemize}
+In addition to these \textbf{set} methods, \verb!Anasazi::Eigenproblem! defines
+a method \verb!SetProblem()! which gives the class the opportunity to perform any
+initialization that may be necessary before the problem is handed off to an
+eigensolver.
+
+For each of the \textbf{set} methods listed above, there is a corresponding
+\textbf{get} function. These are the functions used by the eigensolver to get
+the necessary information from the eigenvalue problem. In addition, there are
+two methods for returning the results of the eigenvalue computation:
+\begin{verbatim}
+Teuchos::RefCountPtr< MV > GetEvals()
+Teuchos::RefCountPtr< std::vector< ScalarType > > GetEvecs()
+\end{verbatim}
+
+In this regard, the eigenproblem acts as a repository for information about the
+eigenvalue problem. However, this is not the only function of the
+\verb!Anasazi::Eigenproblem! class. The class also provides two functions,
+\verb!InnerProd! and \verb!MvNorm!, which specify the inner product and the
+vector norm to be used when computing the solution of the eigenvalue problem.
+When creating a concrete derived class of \verb!Anasazi::Eigenproblem!, the
+developer can choose to implement these methods as she prefers.
+
+Anasazi provides users with an implementation of \verb!Anasazi::Eigenproblem!,
+called \verb!Anasazi::BasicEigenproblem!.  The inner product implemented by this
+class is the $M$-inner product or the standard Euclidean inner product if $M$ is
+not specified. The vector norm implemented by this class is the norm induced by
+the inner product.  This formulation provides all the functionality necessary to
+describe both generalized and standard linear eigenvalue problems. The user may
+wish to create her own derivation of \verb!Anasazi::Eigenproblem! if she desires
+a different inner product or is solving an eigenvalue problem not described by
+\verb!Anasazi::BasicEigenproblem! (e.g. a quadratic eigenvalue problem).
+
+An example for declaring an eigenvalue problem using
+\verb!Anasazi::BasicEigenproblem! is given in Section~\ref{sec:anasazi:example}.
+
+%%%
+%%%
+\subsubsection{Anasazi::Eigensolver}
+\label{sec:anasazi:eigensolver}
+
+The \verb!Anasazi::Eigensolver! class defines the basic interface that must be
+met by an eigensolver class in Anasazi. The specific eigensolvers are impelented
+as derived classes of \verb!Anasazi::Eigensolver!.
+Table~\ref{tab:anasazi:solvers} lists the eigensolver currently implemented in
+Anasazi.
 
 \begin{table}[htp]
 \begin{center}
@@ -73,83 +170,403 @@ Solver & Description \\
                          eigenvalue problems.\\
 {\tt BlockKrylovSchur} & A block Krylov Schur solver for symmetric or
                          nonsymmetric problems.\\
+{\tt LOBPCG} & The locally optimal block preconditioned conjugate gradient
+method.\\
 \hline
 \end{tabular}
-\caption{Current eigensolvers implemented in Anasazi.}
+\caption{Eigensolvers currently implemented in Anasazi.}
 \label{tab:anasazi:solvers}
 \end{center}
 \end{table}
 
+The class \verb!Anasazi::Eigensolver!, like \verb!Anasazi:Eigenproblem!, is
+templated according the scalar type, the multivector type and the operator
+type. The procedure for using an Anasazi eigensolver is as follows:
+\begin{enumerate}
+\item Choose scalar, multivector and operator classes.
+\item Create the eigenproblem.
+\item Create an instance of the desired eigensolver and pass it the necessary
+options.
+\item Ask the eigensolver to solve the eigenproblem.
+\end{enumerate}
 
-Both the eigenproblem and the eigensolver in Anasazi are templated according to
-the scalar type, the multivector type, and the operator type. The scalar type
-must satisfy the interface defined by \verb!Teuchos::ScalarTraits! (see
-Section~\ref{sec:teuchos:ScalarTraits}). Both the operators and the
-multivectors are considered to be opaque objects. That is, only knowledge of
-the matrix and vectors via elementary operations is necessary. The required
-operations are specified by the interfaces \verb!MultiVecTraits! and
-\verb!OperatorTraits!. An implementation of Anasazi is accomplished via use of
-these interfaces. 
+The options for the eigensolver are passed through the constructor, defined by
+\verb!Anasazi::Eigensolver! to have the following form:
+\begin{verbatim}
+Eigensolver( 
+   const Teuchos::RefCountPtr<Eigenproblem<ScalarType,MV,OP> > &problem, 
+   const Teuchos::RefCountPtr<SortManager<ScalarType,MV,OP> > &sm,
+   const Teuchos::RefCountPtr<OutputManager<ScalarType> > &om,
+   Teuchos::ParameterList &pl );
+\end{verbatim}
 
-This flexibility allows Anasazi to utilize existing linear algebra
-codes. For example, with regard to a multivector class, there are
-three choices for implementing Anasazi:
+The first argument is the eigenvalue problem that is to be solved. The second
+option is an instance of \verb!Anasazi::SortManager!. The goal of this class is
+to specify the eigenvalues targeted by the solver and to provide sorting
+functionality (Section~\ref{sec:anasazi:sm}). The third parameter is an instance
+of \verb!Anasazi::OutputManager!. This class specifies the verbosity of the
+eigensolver and other printing options (Section~\ref{sec:anasazi:om}). The last
+parameter is an instance of the class \verb!Teuchos::ParameterList!. This is the
+mechanism by which solver-specific options are passed to the eigensolver (e.g.,
+block size, number of restarts).  A list of valid parameters for each
+eigensolver is given in Tables~\ref{tab:anasazi:bks_params},
+\ref{tab:anasazi:bd_params}, and \ref{tab:anasazi:lobpcg_params}.
+
+\begin{remark}
+Anasazi makes extensive use of the Teuchos utility classes, especially
+\verb!RefCountPtr! (Section~\ref{sec:teuchos:RefCountPtr}) and
+\verb!ParameterList! (Section~\ref{sec:teuchos:ParameterList}). The
+user is encouraged to become familiar with these classes and their correct
+usage.
+\end{remark}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Description \\
+\hline
+{\tt Block Size}   & The number of vectors added to the basis at each iteration \\
+{\tt Max Blocks}   & The maximum number of blocks in the Krylov basis \\
+{\tt Max Restarts} & Stopping criterion on the number of restarts \\
+{\tt Step Size}    & Controls the frequency of projected Schur computations \\
+{\tt Tol}          & Stopping criterion on relative residual norm \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::BlockKrylovSchur}
+\label{tab:anasazi:bks_params}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Description \\
+\hline
+{\tt Block Size} & The number of vectors added to the basis at each iteration \\
+{\tt Max Blocks} & The maximum number of blocks in the Krylov basis \\
+{\tt Max Iters}  & Stopping criterion on the number of iterations \\
+{\tt Tol}        & Stopping criterion on relative residual norm \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::BlockDavidson}
+\label{tab:anasazi:bd_params}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Description \\
+\hline
+{\tt Block Size} & The number of vectors added to the basis at each iteration \\
+{\tt Max Iters}  & Stopping criterion on the number of iterations \\
+{\tt Tol}        & Stopping criterion on relative residual norm \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::LOBPCG}
+\label{tab:anasazi:lobpcg_params}
+\end{center}
+\end{table}
+
+After passing all of the options to the eigensolver, all that remains is to ask
+it to solve the eigenproblem. This is done by calling the solve routine 
+defined by \verb!Anasazi::Eigensolver!:
+\begin{verbatim}
+Anasazi::ReturnType solve()
+\end{verbatim}
+This function returns the status of the solver. Possible return values are
+listed in Table~\ref{tab:anasazi:rt}. After calling \verb!solve()!, the
+eigensolver class defines some \textbf{get} functions to retrieve information
+relevant to many eigensolvers. These are:
+\begin{verbatim}
+int GetNumIters() const
+int GetNumRestarts() const
+int GetBlockSize() const 
+\end{verbatim}
+The class also defines a \verb!GetEigenproblem()! function, which returns a
+reference to the eigenproblem the solver was working on.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} l |}
+\hline
+Parameter & Default \\
+\hline
+Anasazi::Ok          & Success. \\
+Anasazi::Unconverged & Solver did not converge to specified accuracy. \\
+Anasazi::Failed      & An error with the input or in the solver. \\
+\hline
+\end{tabular}
+\caption{Anasazi::ReturnType values.}
+\label{tab:anasazi:rt}
+\end{center}
+\end{table}
+
+%%%
+%%%
+\subsubsection{Anasazi::MultiVecTraits}
+\label{sec:anasazi:mvt}
+
+As mentioned above, the eigenproblem and eigensolver classes are templated
+classes, allowing the user to specify desired classes for scalars, multivectors
+and linear operators. The choice of scalar type allows Anasazi to be implemented
+with arbitrary numerical precision, while the choice of multivector and operator
+classes allows Anasazi to leverage the power of any existing linear algebra
+libraries available to the user. This flexibility is accomplished the usage of
+the \verb!Anasazi::MultiVecTraits! class. This class defines an opaque
+interface, specifying the operations that the chosen multivector class must
+support in order to be used by Anasazi. These methods are listed in
+Table~\ref{tab:anasazi:mvt}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{4cm} || p{8cm} |}
+\hline
+Method name & Description \\
+\hline\hline
+Clone           & Creates a new empty multivector containing a specified number
+of columns.  \\\hline
+CloneCopy       & Creates a new MV with a copy of the contents of an existing
+multivector (deep copy). \\\hline
+CloneCopy       & Creates a new multivector with a copy of the selected contents of
+an existing multivector (deep copy).  \\\hline
+CloneView       & Creates a new multivector that shares the selected contents of
+an existing multivector (shallow copy).  \\\hline
+CloneView       & Creates a new const multivector that shares the selected
+contents of an existing multivector (shallow copy).  \\\hline
+GetVecLength    & Obtain the vector length of a multivector.  \\\hline
+GetNumberVecs   & Obtain the number of vectors in a multivector.  \\\hline
+MvTimesMatAddMv & Perform $mv \leftarrow \alpha AB + \beta mv$.  \\\hline
+MvAddMv         & Perform $mv \leftarrow \alpha A + \beta B$.  \\\hline
+MvTransMv       & Compute the matrix $C \leftarrow \alpha A^H B$.  \\\hline
+MvDot           & Compute the vector $b$ where the components are the individual
+dot-products of the $i$-th columns of $A$ and $B$, i.e. $b[i] = A[i]^H B[i]$.
+\\\hline
+MvNorm          & Compute the 2-norm of each individual vector of $A$.  \\\hline
+SetBlock        & Copy the vectors in $A$ to a subset of vectors in $B$. \\\hline
+MvRandom        & Replace the vectors in $A$ with random vectors.  \\\hline
+MvInit          & Replace each element of the vectors in $A$ with $\alpha$.  \\\hline
+MvPrint         & Print the multi-vector to an output stream.  \\\hline
+\hline
+\end{tabular}
+\caption{Methods required by MultiVecTraits interface.}
+\label{tab:anasazi:mvt}
+\end{center}
+\end{table}
+
+For example, a user might declare an Anasazi eigensolver templated with a
+multivector class \verb!MyMVClass!. In solving the eigenproblem, the solver will
+manipulate multivectors using a specialization of the traits class, like
+follows:
+\begin{verbatim}
+Anasazi::MultiVecTraits<MyMVClass>::MvRandom( A )
+\end{verbatim}
+If a specialization of \verb!Anasazi::MultiVecTraits! for \verb!MyMVClass! does
+not exist or is not complete, then a program using this class will not compile.
+
+In order to use Anasazi with a specific multivector class, the sole requirement
+is that there is a \verb!Anasazi::MultiVecTraits! specialization for the chosen
+class. There are multiple ways to satisfy this. The first approach is
+to derive from a class for which a \verb!Anasazi::MultiVecTraits! specialization
+already exists. Anasazi provides an abstract class for this purpose, called
+\verb!Anasazi::MultiVector!. The user would define a new class which implements
+all of the methods specified by \verb!Anasazi::MultiVector!. This approach is
+appropriate for the user looking to develop a linear algebra code from scratch.
+
+A second approach is to declare a specialization of
+\verb!Anasazi::MultiVecTraits! for the desired multivector class. This is the
+most appropriate approach for a user who already has a multivector class that
+she would like to use. The user would use the \verb!Anasazi::MultiVecTraits!
+interface as a wrapper around the functionality of the existing class.
+
+Finally, for the user who does not have an existing linear algebra codes and
+does not wish to implement her own multivector class, Anasazi provides an
+interface to the Epetra linear algebra library. In addition to providing the
+user with a parallel linear algebra class, this allows the user to utilize any
+other Trilinos software that recognizes the Epetra multivector class.
+
+\begin{remark} 
+An Anasazi eigenproblem and eigensolver are templated based on a scalar type, a
+multivector type, and an operator type. The scalar type have a
+\verb!Teuchos::ScalarTraits! specialization, and the multivector and operator
+types must have \verb!Anasazi::MultiVecTraits! and
+\verb!Anasazi::OperatorTraits! specializations, respectively. This allows
+Anasazi to locally specify the requirements necessary of multivector and
+operator classes, without requiring the user to rewrite their classes to derive
+from Anasazi base classes.
+\end{remark}
+
+
+
+%%%
+%%%
+\subsubsection{Anasazi::OperatorTraits}
+\label{sec:anasazi:opt}
+
+Just as \verb!Anasazi::MultiVecTraits! defined the interface required to use a
+multivector class with Anasazi, \verb!Anasazi::OperatorTraits! defines the
+interface required to use the combination of a specific operator class with a
+specific multivector class. This interface defines a single method:
+\begin{verbatim}
+ReturnType Apply (const OP &Op, const MV &x, MV &y)
+\end{verbatim}
+This method performs the operation $y = Op*x$, where $Op$ is an operator of type
+\verb!OP! and $x$ and $y$ are multivectors of type $VM$. In order to use the
+combination of \verb!OP! and \verb!MV!, there must be a specialization of
+\verb!Anasazi::OperatorTraits! for \verb!OP! and \verb!MV!. This can be
+accomplished in a few different ways, just as described for the multivector in
+the previous section:
 \begin{itemize}
-\item define a specialization of an existing class which satisfies the
-\verb!MultiVecTraits! class,
-\item create a subclass of \verb!Anasazi::MultiVec!, for which a
-\verb!MultiVecTraits! specialization is already defined by Anasazi, or
-\item use the Epetra class \verb!Epetra_MultiVector!, for which a
-\verb!MultiVecTraits! specialization is already defined.
-\end{itemize}
-
-Similar to the multivector class, there are three approaches for
-implementing Anasazi with regard to the linear operators:
-\begin{itemize}
-\item define a specialization satisfying \verb!OperatorTraits!,
-\item subclass the \verb!Anasazi::Operator! abstract class, for which a
-\verb!OperatorTraits! specialization already exists, or
-\item use a subclass of \verb!Epetra_Operator!, 
+\item subclass the \verb!Anasazi::Operator! abstract class (templated with
+\verb!MV!), for which a \verb!OperatorTraits! specialization already exists,
+\item define a specialization satisfying \verb!OperatorTraits! for multivector
+class \verb!MV! and operator class \verb!OP!,
+\item use a \verb!Epetra_Operator!, or
 for which a \verb!OperatorTraits! specialization is already defined.
 \end{itemize}
 
-The first and second approaches are outside the scope of this
-tutorial. The third of these is the simplest and allows the usage of
-any other Trilinos packages which recognize the Epetra multivector
-class. The usage of the Epetra interfaces is discussed in the next
-section.
+The first makes sense in situations where the user is planning on writing an
+operator class from scratch. The second is most appropriate when the user has an
+existing operator class. The third is appropriate for a user who does not have
+an existing linear algebra suite. Section~\ref{sec:anasazi:epetra} gives an
+example of using the Anasazi interface to Epetra to use Epetra's multivector and
+oerator classes.
 
-Having chosen classes for the multivector and the operator, it remains
-to specify the operators and initial vectors to define the eigenvalue
-problem, to specify the options for the eigensolver, and to solve the
-problem. Specifying the eigenvalue problem consists mainly of setting
-the operators associated with the specific problem and specifying the
-symmetry of the problem. 
+%%%
+%%%
+\subsubsection{Anasazi::SortManager}
+\label{sec:anasazi:sm}
 
-For the eigensolver, we must first choose which eigensolver to use.  Then any
-options for the eigensolver must be put into a \verb!Teuchos::ParameterList!
-class (see Section~\ref{sec:teuchos:ParameterList}) and passed to the
-eigensolver, along with the eigenproblem. Anasazi also makes use of the
-\verb!Teuchos::RefCountPtr! smart-pointers
-(Section~\ref{sec:teuchos:RefCountPtr}). Familiarity with these utility classes
-will be helpful when using Anasazi. Finally, the eigensolver may also take as
-an argument an instance of \verb!Anasazi::SortManager!, to determine which
-eigenvalues are targeted by the solver. Usage of these classes are illustrated
-in Section~\ref{sec:anasazi:example}.
+The purpose of a sort manager is to separate the eigensolver classes from the
+sorting functionality required by those classes. This satisfies the principal of
+flexibility sought by Anasazi, by giving the user the opportunity to perform the
+sorting in whichever manner is deemed to be most appropriate. Anasazi defines
+an abstract class \verb!Anasazi::SortManager! with only two methods: one for
+real and one for complex:
+\begin{verbatim}
+ReturnType  
+   sort (..., ST *evals, std::vector<int> *perm) 
+ReturnType 
+   sort (..., ST *r_evals, ST *i_evals, std::vector<int> *perm)
+\end{verbatim}
+Each of these sort routines will sort the eigenvalues according to some
+implementation, and optionally return the perumtation vector as well (useful for
+sorting associated vectors).
+
+Anasazi provides a derived class \verb!Anasazi::BasicSort! which implements
+\verb!Anasazi::SortManager!. This class provides basic sorting functionality,
+described in Table~\ref{tab:anasazi:sm}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{2cm} l |}
+\hline
+Option & Action \\
+\hline
+{\tt SM} & Sort eigenvalues in increasing order of magnitude \\
+{\tt SR} & Sort eigenvalues in increasing order of real part \\
+{\tt SI} & Sort eigenvalues in increasing order of imaginary part \\
+{\tt LM} & Sort eigenvalues in decreasing order of magnitude \\
+{\tt LR} & Sort eigenvalues in decreasing order of real part \\
+{\tt LI} & Sort eigenvalues in decreasing order of imaginary part \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::BasicSort.}
+\label{tab:anasazi:sm}
+\end{center}
+\end{table}
 
 
 %%%
 %%%
+\subsubsection{Anasazi::OutputManager}
+\label{sec:anasazi:om}
+
+As with the sort manager, the output manager in Anasazi exists to provide
+flexibility with regard to the verbosity of the eigensolver. An instance of
+\verb!Anasazi::OutputManager! is declared as followed:
+\begin{verbatim}
+Anasazi::OutputManager<ST> MyOM(myID, verblevel, printID, ostream);
+\end{verbatim}
+The parameter \verb!myID! is the ID of the current process and \verb!printID! is
+designates which process should print. Parameter \verb!verbLevel! is a bitmask
+specifying the desired verbosity level of the eigensolver (see
+Table~\ref{tab:anasazi:om}). Lastly, \verb!ostream! is the output stream that
+should be used when printing from the eigensolver.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{| p{7cm} l |}
+\hline
+Option & Action \\
+\hline
+{\tt Anasazi::Error} & 
+  This option is always set \\
+{\tt Anasazi::Warning} & 
+  Warnings \\
+{\tt Anasazi::IterationDetails} & 
+  Details at each iteration \\
+{\tt Anasazi::OrthoDetails} & 
+  Details about orthogonality \\
+{\tt Anasazi::FinalSummary} & 
+  A final summary \\
+{\tt Anasazi::Debug} & 
+  Debugging information \\
+\hline
+\end{tabular}
+\caption{Options for Anasazi::OutputManager.}
+\label{tab:anasazi:om}
+\end{center}
+\end{table}
+
+Inside an eigensolver, the output manager is accessed via the following
+routines:
+\begin{itemize}
+\item \verb!GetOstream()! - returns the output stream to which messages should
+be redirected.
+\item \verb!isVerbosityAndPrint(type)! - decides whether messages of class
+\verb!type! should be printed by this process.
+\item \verb!isVerbosity(type)! - decides whether messages of class \verb!type!
+should be printed at all, and therefore, whether joint computation may be
+necessary.
+\item \verb!doPrint()! - whether messages can be printed through the output
+stream by this process.
+\end{itemize}
+
 %%%
-\subsection{Using the Epetra interface to Anasazi}
-\label{sec:anasazi:interface}
+%%%
+\subsubsection{Anasazi::ModalSolverUtils}
+\label{sec:anasazi:msu}
+
+This class is the Anasazi utility class. It contains methods for
+sorting/permuting vectors in a multivector, for performing orthogonalization,
+for solving projected eigenvalue problems, and for doing sanity checks. A
+complete description of this class is available in the Anasazi documentation.
+
+%%%
+%%%
+%%%
+\subsection{Using the Anasazi interface to Epetra}
+\label{sec:anasazi:epetra}
+
+The Epetra package provides the underlying foundation for all Trilinos solvers.
+By using the Anasazi interface to Epetra, the user not only avoids the trouble
+of designing her own multivector and operator classes, but also gains the
+ability to utilize any other Trilinos package which recognizes Epetra classes
+(such as AztecOO, IFPACK, and others).
 
 In order to use the Epetra interface to Anasazi, the user must include
-the following files:
+the following file:
 \begin{verbatim}
 #include "AnasaziEpetraAdapter.hpp"
-#include "AnasaziBasicEigenproblem.hpp"
 \end{verbatim}
+This file simply defines specializations of the \verb!Anasazi::MultiVecTraits!
+and \verb!Anasazi::OperatorTraits! classes, while also including the Epetra
+header files defining the multivector and operator classes.
+
 In addition, the user will need one of the following, depending on
 whether MPI is used or not:
 \begin{verbatim}
@@ -160,25 +577,32 @@ For more information about the \verb!Epetra_Map! and \verb!Epetra_Comm!
 classes, see the tutorial section covering Epetra (Sections~\ref{sec:comm} and
 \ref{sec:map}).
 
-Because Epetra makes exclusive use of double precision arithmetic,
-choosing \verb!Epetra_Operator!  and \verb!Epetra_MultiVector!  makes
-sense when the scalar type for the eigenproblem/solver is
-\verb!double!. For brevity, we will declare type definitions for the
-multivector type and operator type:
+Because Epetra makes exclusive use of double precision arithmetic, choosing
+\verb!Epetra_Operator! and \verb!Epetra_MultiVector! makes sense only for the
+scalar type \verb!double!. For brevity, it is useful to declare type definitions
+for these classes:
 \begin{verbatim}
 typedef Epetra_MultiVector MV;
 typedef Epetra_Operator OP;
 \end{verbatim}
 
-We can now declare an eigenvalue problem and a solver, subclasses of
-the following abstract classes:
+Multivectors will be of type \verb!MV!:
 \begin{verbatim}
-Anasazi::Eigenproblem<double,MV,OP>
-Anasazi::Eigensolver<double,MV,OP>
+Teuchos::RefCountPtr<MV> X = Teuchos::rcp( new MV(...) );
 \end{verbatim}
 
-An example defining an eigenvalue problem and solving the problem
-using an Anasazi eigensolver is given in the next section.
+Operators can be any subclass of \verb!OP!, for example, a \verb!Epetra_CsrMatrix!:
+\begin{verbatim}
+Teuchos::RefCountPtr<OP> A = Teuchos::rcp( new Epetra_CrsMatrix(...)  );
+\end{verbatim}
+
+The Anasazi interface to Epetra defines a specialization of
+\verb!Anasazi::MultiVecTraits! for \verb!Epetra_MultiVector! and a
+specialization of \verb!Anasazi::OperatorTraits! for \verb!Epetra_Operator!
+applied to \verb!Epetra_MultiVector!. Therefore, we can now specify an
+eigenproblem and eigensolver utilizing these computational classes. An example
+defining an eigenvalue problem and solving the problem using an Anasazi
+eigensolver is given in the next section.
 
 %%%
 %%%
@@ -189,7 +613,7 @@ using an Anasazi eigensolver is given in the next section.
 The first step in solving an eigenvalue problem is to define the eigenvalue
 problem. Assume we have chosen classes to represent our scalars, multivectors
 and operators, as \verb!ST!, \verb!MV! and \verb!OP!, respectively. Given an
-operator \verb!A! and a multivector \verb!X! to initialize the problem, both
+operator \verb!A! and a multivector \verb!X! containing initial vectors, both
 wrapped in \verb!Teuchos::RefCountPtr!s, we might define the eigenproblem as
 follows:
 \begin{verbatim}
@@ -217,28 +641,7 @@ Teuchos::RefCountPtr<Anasazi::BasicSort<ST,MV,OP> > MySM =
   Teuchos::rcp( new Anasazi::BasicSort<ST,MV,OP>(which) );
 \end{verbatim}
 The option chosen was \verb!"SM"!, signaling that we want to compute
-the eigenvalues with the smallest magnitude. Other options for the
-\verb!Anasazi::BasicSort! sort manager are listed in
-Table~\ref{tab:anasazi:sm}.
-
-\begin{table}
-\begin{center}
-\begin{tabular}{| p{2cm} l |}
-\hline
-Option & Action \\
-\hline
-{\tt SM} & Sort eigenvalues in increasing order of magnitude \\
-{\tt SR} & Sort eigenvalues in increasing order of real part \\
-{\tt SI} & Sort eigenvalues in increasing order of imaginary part \\
-{\tt LM} & Sort eigenvalues in decreasing order of magnitude \\
-{\tt LR} & Sort eigenvalues in decreasing order of real part \\
-{\tt LI} & Sort eigenvalues in decreasing order of imaginary part \\
-\hline
-\end{tabular}
-\caption{Options for Anasazi::BasicSort.}
-\label{tab:anasazi:sm}
-\end{center}
-\end{table}
+the eigenvalues with the smallest magnitude. 
 
 Next we create an output manager, specifying the verbosity of the
 solver:
@@ -248,33 +651,7 @@ Teuchos::RefCountPtr<Anasazi::OutputManager<ST> > MyOM =
 MyOM->SetVerbosity( Anasazi::Error+Anasazi::Warning );
 \end{verbatim}
 Here, we have asked for information regarding errors and warnings from
-the eigensolver. Other available information is listed in
-Table~\ref{tab:anasazi:om}.
-
-\begin{table}
-\begin{center}
-\begin{tabular}{| p{7cm} l |}
-\hline
-Option & Action \\
-\hline
-{\tt Anasazi::Error} & 
-  This option is always set \\
-{\tt Anasazi::Warning} & 
-  Warnings \\
-{\tt Anasazi::IterationDetails} & 
-  Details at each iteration \\
-{\tt Anasazi::OrthoDetails} & 
-  Details about orthogonality \\
-{\tt Anasazi::FinalSummary} & 
-  A final summary \\
-{\tt Anasazi::Debug} & 
-  Debugging information \\
-\hline
-\end{tabular}
-\caption{Options for Anasazi::OutputManager.}
-\label{tab:anasazi:om}
-\end{center}
-\end{table}
+the eigensolver.
 
 We also will specify the parameters for the eigensolver:
 \begin{verbatim}
@@ -284,49 +661,9 @@ MyPL.set( "Max Blocks", 5 );
 MyPL.set( "Max Restarts", 100 );
 MyPL.set( "Tol", 1.0e-8 );
 \end{verbatim}
-Different eigensolvers allow different parameters.
-Tables~\ref{tab:anasazi:bksparams} and \ref{tab:anasazi:bdparams} list
-the settings for the block Krylov Schur and block Davidson solvers.
-
-
-\begin{table}
-\begin{center}
-\begin{tabular}{| p{4cm} l |}
-\hline
-Parameter & Default \\
-\hline
-{\tt Block Size}   & 1      \\
-{\tt Max Blocks}   & 25     \\
-{\tt Max Restarts} & 0      \\
-{\tt Step Size}    & Block\_Size*Max\_Blocks*(Max\_Restarts+1) \\
-{\tt Tol}          & 1.0e-6 \\
-\hline
-\end{tabular}
-\caption{Options for Anasazi::BlockKrylovSchur}
-\label{tab:anasazi:bksparams}
-\end{center}
-\end{table}
-
-
-\begin{table}
-\begin{center}
-\begin{tabular}{| p{4cm} l |}
-\hline
-Parameter & Default \\
-\hline
-{\tt Block Size} & 1      \\
-{\tt Max Blocks} & 25     \\
-{\tt Max Iters}  & 300    \\
-{\tt Tol}        & 1.0e-6 \\
-\hline
-\end{tabular}
-\caption{Options for Anasazi::BlockDavidson}
-\label{tab:anasazi:bdparams}
-\end{center}
-\end{table}
 
 We now have all of the information needed to declare the eigensolver
-and solve the problem.
+and solve the problem:
 \begin{verbatim}
 Anasazi::BlockKrylovSchur<ST,MV,OP> 
   MySolver( MyProblem, MySM, MyOM, MyPL );
@@ -336,29 +673,8 @@ The eigenproblem is solved with the instruction
 Anasazi::ReturnType sret = MySolver.solve();
 \end{verbatim}
 The return value of the solver indicates whether the algorithm
-succeeded or not. Potential values are listed in
-Table~\ref{tab:anasazi:rt}.
+succeeded or not. 
 
-\begin{table}
-\begin{center}
-\begin{tabular}{| p{4cm} l |}
-\hline
-Parameter & Default \\
-\hline
-Anasazi::Ok          & Success. \\
-Anasazi::Unconverged & Solver did not converge to specified accuracy. \\
-Anasazi::Failed      & An error with the input or in the solver. \\
-\hline
-\end{tabular}
-\caption{Anasazi::ReturnType values.}
-\label{tab:anasazi:rt}
-\end{center}
-\end{table}
-
-A summary of results can be printed on the screen:
-\begin{verbatim}
-MySolver.currentStatus();
-\end{verbatim}
 Eigenvectors and eigenvalues can be retrieved using
 \begin{verbatim}
 Teuchos::RefCountPtr<Epetra_MultiVector >  evecs 
@@ -372,11 +688,11 @@ complex parts of these, as described in the comments of
 \TriExe{anasazi/ex1.cpp}.
 
 Example \TriExe{anasazi/ex1.cpp} shows how to compute the eigenvectors
-corresponding to the lowest eigenvalues for a 2D Laplace problem using
-the block Krylov Schur solver.  Example \TriExe{anasazi/ex2.cpp}
-solves this example, using instead the block Davidson eigensolver.
-Finally, the block Krylov Schur solver is used to solve a nonsymmetric
-convection-diffusion problem in Example \TriExe{anasazi/ex3.cpp}.
+corresponding to the lowest eigenvalues for a 2D Laplace problem using the block
+Krylov Schur solver.  Example \TriExe{anasazi/ex2.cpp} solves this example,
+using instead the block Davidson eigensolver.  Finally, the block Krylov Schur
+solver is used to solve a nonsymmetric convection-diffusion problem in Example
+\TriExe{anasazi/ex3.cpp}.
 
 %Table~\ref{tab:anasazi:exLapl} reports the lower
 %eigenvalues. 
