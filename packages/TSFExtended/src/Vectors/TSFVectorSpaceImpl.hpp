@@ -138,7 +138,7 @@ void VectorSpace<Scalar>::setBlock(int i,
 
 //========================================================================
 template <class Scalar>
-string VectorSpace<Scalar>::describe() const
+string VectorSpace<Scalar>::description() const
 {
   return describe(0);
 }

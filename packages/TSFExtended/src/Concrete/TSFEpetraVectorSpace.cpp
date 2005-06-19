@@ -51,7 +51,7 @@ RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
   return rcp(new EpetraVector(vec, me));
 }
 
-// string EpetraVectorSpace::describe() const 
+// string EpetraVectorSpace::description() const 
 // {
 //   return describe(0);
 // }

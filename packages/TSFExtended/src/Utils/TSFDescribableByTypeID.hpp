@@ -45,7 +45,7 @@ namespace TSFExtended
    *
    * @author Paul T. Boggs (ptboggs@sandia.gov)
    */
-  class DescribableByTypeID : public Describable
+  class DescribableByTypeID : public Teuchos::Describable
     {
     public:
       /** Function to get type name using typeid */
@@ -57,7 +57,7 @@ namespace TSFExtended
       /** Return a brief descriptive string using describe with indent
        *  parameter
        */
-      virtual string describe() const
+      virtual string description() const
       {
 	return describe(0);
       }

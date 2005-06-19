@@ -100,7 +100,7 @@ namespace TSFExtended
                          "ILUKPreconditionerFactory attempted to "
                          "create an ILU preconditioner for an operator type "
                          "that does not implement the ILUFactorizableOp "
-                         "interface. The op is " << A.describe());
+                         "interface. The op is " << A.description());
 
       
       /* Now we can delegate the construction of the ILU factors to 

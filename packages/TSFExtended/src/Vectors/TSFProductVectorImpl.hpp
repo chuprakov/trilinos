@@ -95,8 +95,8 @@ void ProductVector<Scalar>::setBlock(int k, const Vector<Scalar> &vec)
   TEST_FOR_EXCEPTION(vec.space() != space_.getBlock(k), runtime_error,
 		     "for k = " << k << 
 		     " vec is not a member of the underlying space" << endl << 
-		     "   vec.space = " << vec.space().describe() << endl <<
-		     "   spcae_.getBlock(k) = " << space_.getBlock(k).describe() 
+		     "   vec.space = " << vec.space().description() << endl <<
+		     "   spcae_.getBlock(k) = " << space_.getBlock(k).description() 
 		     << endl);
 
   vecsE_[k] = vec;

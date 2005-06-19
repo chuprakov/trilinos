@@ -105,7 +105,7 @@ int main(int argc, void *argv[])
       VectorSpace<double> space = type.createSpace(spaceDimension, 
                                                    nLocalRows, 
                                                    &(localRows[0]));
-      cerr << "Created space" << endl << space.describe() << endl;
+      cerr << "Created space" << endl << space.description() << endl;
       VectorSpace<double> space2 = 
 	type.createSpace(spaceDimension2,nLocalRows2, 
 			 &(localRows2[0]));
@@ -116,27 +116,27 @@ int main(int argc, void *argv[])
 
       LinearOperator<double> A = type.createMatrix(space, space2);
       cerr << "Created Epetra Operator using new\n";
-      cerr << A.describe() << endl;
+      cerr << A.description() << endl;
       
 
 
 
       LinearOperator<double> AZZ = new ZeroOperator<double>(space, space2);
       cerr << "Created ZeroOperator using new\n";
-      cerr << AZZ.describe() << endl;
+      cerr << AZZ.description() << endl;
       
       
 
       LinearOperator<double> I = new IdentityOperator<double>(space);
       cerr << "Created IdentityOperator" << endl; 
-      cerr << I.describe() << endl;
+      cerr << I.description() << endl;
       
       
       LinearOperator<double> AT = A.transpose();
       LinearOperator<double> ATT = new TransposeOperator<double>(AT);
 
       cerr << "Created TransposeOperator both ways" << endl;
-      cerr << AT.describe() << endl;
+      cerr << AT.description() << endl;
 
       
 
@@ -144,7 +144,7 @@ int main(int argc, void *argv[])
       Vector<double> vec = space.createMember();
       Vector<double> vec2 = space2.createMember();
       cerr << "Created two vectors\n";
-      cerr << vec.describe() << endl;
+      cerr << vec.description() << endl;
       
 
       /* trivial to debug*/
@@ -154,21 +154,21 @@ int main(int argc, void *argv[])
       VectorSpace<double> pvs = 
 	new ProductVectorSpace<double>(space, space2);
       cerr << "Created a product vector space\n";
-      cerr << pvs.describe() << endl;
+      cerr << pvs.description() << endl;
 
       cerr << "Creating ProductVector" << endl;
       Vector<double> pv = pvs.createMember();
-      cerr << pv.describe() << endl;
+      cerr << pv.description() << endl;
       
       pv.setBlock(0, vec);
       pv.setBlock(1, vec2);
       cerr << "Set the blocks of the pv\n";
-      cerr << pv.describe() << endl;
+      cerr << pv.description() << endl;
 
 
       cerr << "Setting up block Operator" << endl;
       LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
-      cerr << "B = " << B.describe() << endl;
+      cerr << "B = " << B.description() << endl;
 
       cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
 
@@ -182,7 +182,7 @@ int main(int argc, void *argv[])
      
       B.finalize(true);
       cerr << "B set up and finalized" << endl;
-      cerr << B.describe() << endl;
+      cerr << B.description() << endl;
 
 
       vec.setToConstant(1.0);
@@ -205,7 +205,7 @@ int main(int argc, void *argv[])
       cerr << endl << "Setting up a diagonal matrix and calling getRow" 
 	   << endl;
       LinearOperator<double> D = new DiagonalOperator<double>(vec);
-      cerr << "   " << vec.describe() << endl;
+      cerr << "   " << vec.description() << endl;
 
       D.getRow(5, indices, values);
       for (int i = 0; i < indices.size(); i++)
@@ -269,7 +269,7 @@ int main(int argc, void *argv[])
 
 //       LinearOperator<double> Empty = new BlockOperator<double>();
 //       cerr << "set up empty block Operator" << endl << "Empty = " << 
-// 	Empty.describe() << endl << endl;
+// 	Empty.description() << endl << endl;
 
 
 //       // set some blocks

@@ -31,26 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
+#include "Teuchos_Describable.hpp"
 
-
-
-#ifndef DOXYGEN_DEVELOPER_ONLY
-
-namespace TSFExtended
-{
-  /**
-   * Describable defines an interface for writing short descriptive strings
-   *
-   * @author Kevin Long (krlong@sandia.gov)
-   */
-  class Describable
-    {
-    public:
-      /** Return a brief descriptive string */
-      virtual string describe() const = 0 ;
-    };
-}
-
-#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 #endif

@@ -116,13 +116,13 @@ namespace TSFExtended
     /** \name Describable interface */
     //@{
     /** Return a short description  */
-    string describe() const {return "EpetraVectorType";}
+    string description() const {return "EpetraVectorType";}
     //@}
 
     /** \name Printable interface */
     //@{
     /** Print to stream */
-    void print(ostream& os) const {os << describe();}
+    void print(ostream& os) const {os << description();}
     //@}
 
     GET_RCP(VectorTypeExtensions<double>);

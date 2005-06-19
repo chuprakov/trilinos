@@ -70,7 +70,7 @@ namespace TSFExtended
       /** \name Describable interface */
       //@{
       /** Return a short description  */
-//       string describe() const 
+//       string description() const 
 //       {
 // 	return describe(0);
 //       }

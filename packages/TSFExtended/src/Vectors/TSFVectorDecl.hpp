@@ -340,7 +340,7 @@ namespace TSFExtended
 
 
     /** Describe the vector  */
-    string describe() const
+    string description() const
     {
       return describe(0);
     }

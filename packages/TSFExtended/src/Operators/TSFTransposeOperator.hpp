@@ -114,7 +114,7 @@ namespace TSFExtended
 //                          "TransposeOperator<Scalar>::form() called where "
 //                          << "the operator is unable to form an explicit "
 //                          << "transpose. The operator is " 
-// 			 << op_.describe());
+// 			 << op_.description());
 
 //       return et->formTranspose();
 //     }

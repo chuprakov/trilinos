@@ -116,7 +116,7 @@ namespace TSFExtended
       /** \name Describable interface */
       //@{
       /** Write a brief description */
-//       string describe() const 
+//       string description() const 
 //       {
 //         return "EpetraVector";
 //       }b

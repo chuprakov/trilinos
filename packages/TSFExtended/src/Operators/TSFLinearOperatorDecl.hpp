@@ -166,7 +166,7 @@ namespace TSFExtended
     //@}
 
     /** Describe function */
-    string describe() const
+    string description() const
     {
       return describe(0);
     }

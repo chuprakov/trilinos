@@ -169,7 +169,7 @@ namespace TSFExtended
                                        Preconditioner<double>& rtn) const ;
 
     /** Describable interface */
-    virtual string describe() const ;
+    virtual string description() const ;
 
     /** Printable interface */
     virtual void print(ostream& os) const ;

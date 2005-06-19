@@ -99,7 +99,7 @@ VectorSpace<Scalar> VectorSpace<Scalar>::getBlock(const int i)
 
 //========================================================================
 template <class Scalar>
-string VectorSpace<Scalar>::describe()
+string VectorSpace<Scalar>::description()
 {
   return describe(0);
 }

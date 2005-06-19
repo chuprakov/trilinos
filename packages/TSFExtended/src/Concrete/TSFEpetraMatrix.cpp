@@ -356,7 +356,7 @@ void EpetraMatrix::print(ostream& os) const
     }
 }
 
-string EpetraMatrix::describe() const 
+string EpetraMatrix::description() const 
 {
   string rtn = "EpetraMatrix[nRow=" 
     + Teuchos::toString(crsMatrix()->NumGlobalRows())

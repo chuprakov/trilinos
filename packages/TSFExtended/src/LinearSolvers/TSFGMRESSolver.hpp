@@ -61,7 +61,7 @@ namespace TSFExtended
     /** Write to a stream  */
     void print(ostream& os) const 
     {
-      os << describe() << "[" << endl;
+      os << description() << "[" << endl;
       os << parameters() << endl;
       os << "]" << endl;
     }
@@ -73,7 +73,7 @@ namespace TSFExtended
     /** \name Describable interface */
     //@{
     /** Write a brief description */
-    string describe() const {return "GMRESSolver";}
+    string description() const {return "GMRESSolver";}
     //@}
 
     /** \name Handleable interface */

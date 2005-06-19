@@ -102,7 +102,7 @@ namespace TSFExtended
      * downcasted or crosscasted to a Describable*, an exception
      * will be thrown. 
      */
-    std::string describe() const ;
+    std::string description() const ;
 
     /** 
      * Return the verbosity setting using the ObjectWithVerbosity
@@ -161,16 +161,16 @@ namespace TSFExtended
       p->print(os);
   }
 
-  /* implementation of describe() */
+  /* implementation of description() */
   template <class PointerType> inline
-  std::string Handle<PointerType>::describe() const 
+  std::string Handle<PointerType>::description() const 
   {
     const Describable* p = dynamic_cast<const Describable*>(ptr_.get());
     
     TEST_FOR_EXCEPTION(p==0, std::runtime_error,
                        "Attempted to cast non-describable "
                        "pointer to a Describable");
-    return p->describe();
+    return p->description();
   }
 }
 

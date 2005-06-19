@@ -137,8 +137,8 @@ void ProductVectorSpace<Scalar>::setBlock(const int i,
   {
     TEST_FOR_EXCEPTION(vecSpace_[i] != subSp, runtime_error,
 		       "subspace not compatible with existing space: "
-		       << "subSp is " << subSp.describe() 
-		       << " vecSpace_{i} is" << vecSpace_[i].describe() 
+		       << "subSp is " << subSp.description() 
+		       << " vecSpace_{i} is" << vecSpace_[i].description() 
 		       << endl);
     vecSpace_[i] = subSp;
   }

@@ -76,14 +76,14 @@ namespace TSFExtended
     /** Write to a stream  */
     void print(ostream& os) const 
     {
-      os << describe() << endl;
+      os << description() << endl;
     }
     //@}
     
     /** \name Describable interface */
     //@{
     /** Write a brief description */
-    string describe() const {return "AztecSolver";}
+    string description() const {return "AztecSolver";}
     //@}
 
     

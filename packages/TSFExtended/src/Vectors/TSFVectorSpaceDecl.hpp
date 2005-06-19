@@ -103,7 +103,7 @@ namespace TSFExtended
 	elements, if the vector is a simple vector.  It gives
 	the block structure if the vector is a TSFBlockVector
 	if the vector is a block vector.  */
-    string describe() const;
+    string description() const;
 
     /** The companion to describe that indents for readability  */
     string describe(int depth) const;
