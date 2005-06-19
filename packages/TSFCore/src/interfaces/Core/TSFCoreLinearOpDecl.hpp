@@ -127,7 +127,7 @@ class LinearOp : virtual public OpBase<Scalar> {
 public:
 
 	///
-	using Teuchos::Describable::describe;
+  //	using Teuchos::Describable::describe;
 
 	/** @name Pure virtual functions (must be overridden by subclass) */
 	//@{
@@ -262,7 +262,7 @@ public:
 	 *
 	 \verbatim
 
-   type = 'this->describe()', rangeDim = m, domainDim = n
+   type = 'this->description()', rangeDim = m, domainDim = n
      1:1:a11 1:2:a12 ... 1:n:a1n
      2:1:a21 2:2:a22 ... 1:n:a2n
      .       .           .
@@ -271,7 +271,7 @@ public:
      m:1:am1 m:2:am2 ... m:n:amn
 	 \endverbatim
 	 *
-	 * Before <tt>type = 'this->describe()'</tt> is printed and after
+	 * Before <tt>type = 'this->description()'</tt> is printed and after
 	 * each newline, <tt>leadingIndent</tt> is output.  The
 	 * <tt>index:value</tt> lines are offset an additional
 	 * <tt>indentSpacer</tt> amount.  A newline is printed after the

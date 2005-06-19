@@ -76,7 +76,7 @@ std::ostream& LinearOp<Scalar>::describe(
 {
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 	const Index dimDomain = this->domain()->dim(), dimRange = this->range()->dim();
-	out << leadingIndent << indentSpacer << "type = \'" << this->describe()
+	out << leadingIndent << indentSpacer << "type = \'" << this->description()
 			<< "\', rangeDim = " << dimRange
 			<< ", domainDim = " << dimDomain << "\n";
 	if(verbLevel >= Teuchos::VERB_EXTREME) {

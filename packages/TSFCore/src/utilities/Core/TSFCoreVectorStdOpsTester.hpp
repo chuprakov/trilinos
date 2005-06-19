@@ -197,7 +197,7 @@ bool VectorStdOpsTester<Scalar>::checkStdOps(
 
 	if(out)
 		*out << "\n*** Entering VectorStdOpsTester<"<<ST::name()<<">::checkStdOps(...) ...\n"
-				 << "using a \'" << vecSpc.describe() << "\' object ...\n";
+				 << "using a \'" << vecSpc.description() << "\' object ...\n";
 
 	bool success = true;
 	//bool result;

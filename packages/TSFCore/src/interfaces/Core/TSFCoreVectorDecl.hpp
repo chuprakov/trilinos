@@ -125,7 +125,7 @@ class Vector : virtual public MultiVector<Scalar> {
 public:
 
 	///
-	using Teuchos::Describable::describe;
+  //	using Teuchos::Describable::describe;
 	///
 	using MultiVector<Scalar>::applyOp;
 	///
@@ -419,7 +419,7 @@ public:
 	 *
 	 \verbatim
 
-   type = 'this->describe()', size = n
+   type = 'this->description()', size = n
      1:x1
      2:x2
      .
@@ -428,7 +428,7 @@ public:
      n:xn
 	 \endverbatim
 	 *
-	 * Before <tt>type = 'this->describe()'</tt> is printed and after
+	 * Before <tt>type = 'this->description()'</tt> is printed and after
 	 * each newline, <tt>leadingIndent</tt> is output.  The
 	 * <tt>index:value</tt> lines are offset an additional
 	 * <tt>indentSpacer</tt> amount.  A newline is printed after the

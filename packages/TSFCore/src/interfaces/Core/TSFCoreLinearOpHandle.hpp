@@ -158,9 +158,9 @@ public:
 	/** @name Teuchos::Describable wrappers */
 	//@{
 																								
-	/** \brief Calls <tt>this->op()->describe()</tt>.
+	/** \brief Calls <tt>this->op()->description()</tt>.
 	 */
-	std::string describe() const;
+	std::string description() const;
 
 	/** \breif Modifies output for a <tt>LinearOp</tt> object by
 	 * printing transpose and scaling info.
@@ -357,9 +357,9 @@ LinearOpHandle<Scalar> LinearOpHandle<Scalar>::transpose() const
 
 template<class Scalar>
 inline
-std::string LinearOpHandle<Scalar>::describe() const
+std::string LinearOpHandle<Scalar>::description() const
 {
-	return op()->describe();
+	return op()->description();
 }
 
 template<class Scalar>
