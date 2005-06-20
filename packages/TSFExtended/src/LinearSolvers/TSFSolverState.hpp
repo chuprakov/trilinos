@@ -84,6 +84,7 @@ namespace TSFExtended
         case SolveConverged:
           return "Converged";
         }
+      return "Crashed";
     }
 
   private:

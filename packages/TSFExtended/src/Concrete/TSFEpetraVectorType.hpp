@@ -31,7 +31,7 @@
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFDescribable.hpp"
+#include "Teuchos_Describable.hpp"
 #include "TSFVectorTypeExtensions.hpp"
  //#include "TSFLinearOperator.hpp"
 
@@ -58,8 +58,7 @@ namespace TSFExtended
   class EpetraVectorType : public VectorTypeExtensions<double>,
                            public TSFCore::EpetraVectorSpaceFactory,
                            public Handleable<VectorTypeExtensions<double> >,
-                           public Printable,
-                           public Describable
+                           public Printable
   {
   public:
     /** Ctor needs no arguments */
@@ -113,11 +112,7 @@ namespace TSFExtended
       
     
 
-    /** \name Describable interface */
-    //@{
-    /** Return a short description  */
-    string description() const {return "EpetraVectorType";}
-    //@}
+    
 
     /** \name Printable interface */
     //@{
