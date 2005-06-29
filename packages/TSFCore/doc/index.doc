@@ -230,7 +230,7 @@ installation of Trilinos.
 <li><b><tt>--enable-tsfcore-epetra</tt></b>: Causes the \ref
 TSFCore_adapters_Epetra_grp, example code and testing code to build or
 not.  Not selecting this option means that the %TSFCore package can be
-built without a dependency on the %Epetra pacakge.
+built without a dependency on the %Epetra package.
 </ul>
 
 See the output from <tt>./configure --help</tt> (where <tt>./</tt> is
