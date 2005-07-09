@@ -134,8 +134,8 @@ public:
 		const ReductTarget& in_reduct_obj, ReductTarget* inout_reduct_obj
 		) const
     {
-			const Scalar in_val    = getRawVal(in_reduct_obj);
-			const Scalar inout_val = getRawVal(*inout_reduct_obj);
+			const Scalar in_val    = this->getRawVal(in_reduct_obj);
+			const Scalar inout_val = this->getRawVal(*inout_reduct_obj);
 			setRawVal( in_val + inout_val, inout_reduct_obj );
     }
 	///
@@ -267,7 +267,7 @@ public:
         ,std::invalid_argument, "Error!"
         );
 #endif
-			const ScalarIndex<Scalar> &scalarIndex = getRawVal(reduct_obj);
+			const ScalarIndex<Scalar> &scalarIndex = this->getRawVal(reduct_obj);
       Teuchos::PrimitiveTypeTraits<Scalar>::extractPrimitiveObjs( scalarIndex.scalar, num_values, value_data );
 			index_data[0] = scalarIndex.index;
     }
@@ -379,7 +379,7 @@ public:
         ,std::invalid_argument, "Error!"
         );
 #endif
-			index_data[0] = getRawVal(reduct_obj);
+			index_data[0] = this->getRawVal(reduct_obj);
     }
 	///
 	void load_reduct_obj_state(

@@ -52,8 +52,8 @@ public:
 		const ReductTarget& in_reduct_obj, ReductTarget* inout_reduct_obj
 		) const
     {
-			const Scalar in_max_ele    = getRawVal(in_reduct_obj);
-			const Scalar inout_max_ele = getRawVal(*inout_reduct_obj);
+			const Scalar in_max_ele    = this->getRawVal(in_reduct_obj);
+			const Scalar inout_max_ele = this->getRawVal(*inout_reduct_obj);
 			setRawVal( in_max_ele > inout_max_ele ? in_max_ele : inout_max_ele, inout_reduct_obj );
     }
   ///
@@ -64,7 +64,7 @@ public:
 		) const
     {
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      Scalar max_ele = getRawVal(*reduct_obj);
+      Scalar max_ele = this->getRawVal(*reduct_obj);
       if( v0_s == 1 ) {
         for( RTOp_index_type i = 0; i < subDim; ++i ) {
 					const Scalar &v0_i = *v0_val++;
