@@ -41,7 +41,7 @@ template<class Scalar>
 SimpleMPIVector<Scalar>::SimpleMPIVector( const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > &mpiSpace )
 	: mpiSpace_(mpiSpace), localValues_(mpiSpace->localSubDim())
 {
-	updateMpiSpace();
+	this->updateMpiSpace();
 }
 
 // Overridden from MPIVectorBase

@@ -41,7 +41,7 @@ template<class Scalar>
 SimpleMPIVectorSpace<Scalar>::SimpleMPIVectorSpace( MPI_Comm mpiComm, const Index localSubDim )
 	:mpiComm_(mpiComm), localSubDim_(localSubDim)
 {
-	updateState(-1);
+	this->updateState(-1);
 }
 
 // Overridden from VectorSpece
