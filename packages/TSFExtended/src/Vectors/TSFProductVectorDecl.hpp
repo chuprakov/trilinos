@@ -203,6 +203,9 @@ namespace TSFExtended
     /** Empty constructor not to be used.  */
     ProductVector();
 
+    /** bool to denote if all spaces are final  */
+    bool isFinal_;
+
 
     VectorSpace<Scalar> space_;
     

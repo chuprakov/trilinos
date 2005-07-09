@@ -94,7 +94,7 @@ namespace TSFExtended
                          "InverseOperator<Scalar>::apply() called on a non-square operator.");
       SolverState<Scalar> haveSoln;
       LinearOperator<Scalar> applyOp;      
-      if (M_trans == NOTRANS)
+      if (M_trans == TSFCore::NOTRANS)
 	{
 	  applyOp = op_;
 	}
@@ -109,14 +109,14 @@ namespace TSFExtended
 	}
       else
 	{
-	  applyOp.ptr()->apply(NOTRANS, *y, &x, beta, alpha);
+	  applyOp.ptr()->apply(TSFCore::NOTRANS, *y, &x, beta, alpha);
 	}
       
       DiagonalOperator<Scalar>* val1 = dynamic_cast<DiagonalOperator<Scalar>* >(op_);
       IdentityOperator<Scalar>* val2 = dynamic_cast<IdentityOperator<Scalar>* >(op_);
       if (val1 != 0 or val2 != 0)
 	{
-	  haveSoln = applyOp_.ptr()->applyInverse(x, y);
+	  haveSoln = applyOp.ptr()->applyInverse(x, y);
 	}      
       else
 	{

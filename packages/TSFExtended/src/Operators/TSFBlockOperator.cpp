@@ -167,7 +167,7 @@ void BlockOperator<Scalar>::apply(const Vector<Scalar>& arg,
   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
   for (int i=0; i<nBlockRows_; i++)
     {
-      Vector<Scalar> tmp = range().getBlock(i).createMember();
+      Vector<Scalar> tmp = this->range().getBlock(i).createMember();
       tmpRow.zero();
       for (int j=0; j<nBlockCols_; j++)
 	{
@@ -196,10 +196,10 @@ void BlockOperator<Scalar>::applyTranspose(const Vector<Scalar>& arg,
   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
   for (int i=0; i<nBlockCols_; i++)
     {
-      Vector<Scalar> tmpRow = domain().getBlock(i).createMember();
+      Vector<Scalar> tmpRow = this->domain().getBlock(i).createMember();
       for (int j=0; j<nBlockRows_; j++)
 	{
-	  Vector<Scalar> tmp = domain().getBlock(i).createMember();
+	  Vector<Scalar> tmp = this->domain().getBlock(i).createMember();
 	  tmp.zero();
 	  tmp = tmp + sub_[j][i] * arg.getBlock(j);
 	}
@@ -222,7 +222,7 @@ template <class Scalar>
 LinearOperator<Scalar>* BlockOperator<Scalar>::formTranspose()
 {
   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
-  opTrp_ = new BlockOperator(range(), domain());
+  opTrp_ = new BlockOperator(this->range(), this->domain());
   for (int i = 0; i < numBlockRows(); i++)
     {
       for (int j = 0; j < numBlockCols(); j++)
@@ -318,7 +318,7 @@ bool BlockOperator<Scalar>::buildSpaces(const int &i, const int &j,
 {
   try
     {
-      domain_.setBlock(j, sub.domain());  //errors here caught in ProdSpace
+      domain_.setBlock(j, sub.this->domain());  //errors here caught in ProdSpace
     }
   catch(runtime_error)
     {

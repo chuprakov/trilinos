@@ -96,7 +96,7 @@ namespace TSFExtended
   VectorSpace<Scalar> VectorType<Scalar>::createReplicatedSpace(int dimension) const
   {
     const TSFCore::VectorSpaceFactory<Scalar>* f
-      = dynamic_cast<const TSFCore::VectorSpaceFactory<Scalar>*>(ptr().get());
+      = dynamic_cast<const TSFCore::VectorSpaceFactory<Scalar>*>(this->ptr().get());
     
     TEST_FOR_EXCEPTION(f==0, runtime_error, 
                        "failed cast to TSFCore::VectorSpaceFactory in "
@@ -109,7 +109,7 @@ namespace TSFExtended
                                                       int nLocal,
                                                       const int* locallyOwnedIndices) const
   {
-    return ptr()->createSpace(dimension, nLocal, locallyOwnedIndices);
+    return this->ptr()->createSpace(dimension, nLocal, locallyOwnedIndices);
   }
 
   template <class Scalar> inline 
@@ -118,7 +118,7 @@ namespace TSFExtended
                                          int nGhost,
                                          const int* ghostIndices) const
   {
-    return ptr()->createGhostImporter(space, nGhost, ghostIndices);
+    return this->ptr()->createGhostImporter(space, nGhost, ghostIndices);
   }
 
   template <class Scalar> inline
@@ -126,7 +126,7 @@ namespace TSFExtended
   VectorType<Scalar>::createMatrix(const VectorSpace<Scalar>& domain,
                                    const VectorSpace<Scalar>& range) const
   {
-    return ptr()->createMatrix(domain, range);
+    return this->ptr()->createMatrix(domain, range);
   }
 
   template <class Scalar> inline
@@ -135,7 +135,7 @@ namespace TSFExtended
                                    const VectorSpace<Scalar>& range,
                                    const int* numEntriesPerRow) const
   {
-    return ptr()->createMatrix(domain, range, numEntriesPerRow);
+    return this->ptr()->createMatrix(domain, range, numEntriesPerRow);
   }
 }
 

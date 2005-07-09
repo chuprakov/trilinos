@@ -68,8 +68,8 @@ namespace TSFExtended
       ret.append(typeName());
       /* The Teuchos namespace qualifier for toString()
        * seems to be required on the Intel compiler */
-      ret.append(" of dimension " + Teuchos::toString(range()->dim()) + " by "
-		 + Teuchos::toString(domain()->dim()));
+      ret.append(" of dimension " + toString(this->range()->dim()) + " by "
+		 + toString(this->domain()->dim()));
       return ret;
     }
     

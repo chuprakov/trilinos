@@ -424,11 +424,11 @@ namespace TSFExtended
   template <class Scalar> inline
   Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LC1<Scalar>& x)
   {
-    if (ptr().get()==0)
+    if (this->ptr().get()==0)
       {
         *this = x.eval();
       }
-    else if (x.containsVector(ptr().get()))
+    else if (x.containsVector(this->ptr().get()))
       {
         Vector<Scalar> rtn = x.eval();
         acceptCopyOf(rtn);
@@ -446,11 +446,11 @@ namespace TSFExtended
   template <class Node1, class Node2> inline
   Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x)
   {
-    if (ptr().get()==0)
+    if (this->ptr().get()==0)
       {
         *this = x.eval();
       }
-    else if (x.containsVector(ptr().get()))
+    else if (x.containsVector(this->ptr().get()))
       {
         Vector<Scalar> rtn = x.eval();
         acceptCopyOf(rtn);

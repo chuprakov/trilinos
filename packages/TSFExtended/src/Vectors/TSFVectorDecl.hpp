@@ -120,12 +120,12 @@ namespace TSFExtended
 
     /** */
     VectorSpace<Scalar> space() const 
-    {return ptr()->space();}
+    {return this->ptr()->space();}
 
     /** Return the dimension of the vector  */
     int dim() const
     {
-      return ptr()->space().dim();
+      return this->ptr()->space().dim();
     }
       
 
@@ -350,7 +350,7 @@ namespace TSFExtended
       // 	const OpDescribableByTypeID<Scalar>* p = 
       // 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
       const DescribableByTypeID* p = 
-	dynamic_cast<const DescribableByTypeID* >(ptr().get());
+	dynamic_cast<const DescribableByTypeID* >(this->ptr().get());
       if (p != 0)
 	{
 	  return p -> describe(depth);

@@ -86,8 +86,8 @@ namespace TSFExtended
 // 	  ret.append("   ");
 // 	}
 //       ret.append(typeName());
-//       //      ret.append(" of dimension " + toString(dim()));
-//       ret.append(" of dimension " + toString(dim()));
+//       //      ret.append(" of dimension " + toString(this->dim()));
+//       ret.append(" of dimension " + toString(this->dim()));
 //       return ret;
 //     }
 	

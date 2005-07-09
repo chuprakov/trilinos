@@ -51,28 +51,28 @@ namespace TSFExtended
 
       /** */
       VectorSpace<Scalar> domain() const 
-      {return ptr()->domain();}
+      {return this->ptr()->domain();}
 
       /** */
       VectorSpace<Scalar>  range() const 
-      {return ptr()->range();}
+      {return this->ptr()->range();}
 
       /** */
       void setEvalPt(const Vector<double>& evalPt)
       {
-        ptr()->setEvalPt(evalPt);
+        this->ptr()->setEvalPt(evalPt);
       }
       
       /** */
       LinearOperator<Scalar> getJacobian() const 
       {
-        return ptr()->getJacobian();
+        return this->ptr()->getJacobian();
       }
 
       /** */
       Vector<double> getFunctionValue() const 
       {
-        return ptr()->getFunctionValue();
+        return this->ptr()->getFunctionValue();
       }
 
       
@@ -80,13 +80,13 @@ namespace TSFExtended
       /** */
       Vector<double> getInitialGuess() const 
       {
-        return ptr()->getInitialGuess();
+        return this->ptr()->getInitialGuess();
       }
 
       /** */
       Vector<double> currentEvalPt() const 
       {
-        return ptr()->currentEvalPt();
+        return this->ptr()->currentEvalPt();
       }
 
     private:

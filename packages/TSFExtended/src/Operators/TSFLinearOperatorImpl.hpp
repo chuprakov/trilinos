@@ -78,9 +78,9 @@ void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
    * create a new vector in the range space */
   if (out.ptr().get()==0)
     {
-      out = range().createMember();
+      out = this->range().createMember();
     }
-  ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
+  this->ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
 	       out.ptr().get(), alpha, beta);
 }
 
@@ -99,9 +99,9 @@ void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
    * of the transpose operator */
   if (out.ptr().get()==0)
     {
-      out = domain().createMember();
+      out = this->domain().createMember();
     }
-  ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
+  this->ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
 	       out.ptr().get(), alpha, beta);
 }
 
@@ -148,7 +148,7 @@ template <class Scalar>
 RefCountPtr<LoadableMatrix<Scalar> > LinearOperator<Scalar>::matrix()
 {
   RefCountPtr<LoadableMatrix<Scalar> > rtn 
-    = rcp_dynamic_cast<LoadableMatrix<Scalar> >(ptr());
+    = rcp_dynamic_cast<LoadableMatrix<Scalar> >(this->ptr());
   return rtn;
 }
 
@@ -159,7 +159,7 @@ void LinearOperator<Scalar>::getRow(const int& row,
 				    Teuchos::Array<Scalar>& values) const
 {
   const RowAccessibleOp<Scalar>* val = 
-    dynamic_cast<const RowAccessibleOp<Scalar>* >(ptr().get());
+    dynamic_cast<const RowAccessibleOp<Scalar>* >(this->ptr().get());
   TEST_FOR_EXCEPTION(val == 0, runtime_error, 
 		     "Operator not row accessible; getRow() not defined.");
   val->getRow(row, indices, values);
@@ -169,7 +169,7 @@ void LinearOperator<Scalar>::getRow(const int& row,
 template <class Scalar>
 int LinearOperator<Scalar>::numBlockRows() const
 {
-  BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+  BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(this->ptr().get());
   TEST_FOR_EXCEPTION(b == 0, runtime_error, 
 		     "LinearOperator<Scalar> not Block Operator.");
   
@@ -181,7 +181,7 @@ int LinearOperator<Scalar>::numBlockRows() const
 template <class Scalar>
 const VectorSpace<Scalar> 
 LinearOperator<Scalar>::range() const
-{return ptr()->range();}
+{return this->ptr()->range();}
   
 
 //=============================================================================
@@ -190,7 +190,7 @@ void LinearOperator<Scalar>::setBlock(int i, int j,
 				      const LinearOperator<Scalar>& sub) 
 {
   BlockOperator<Scalar>* b = 
-    dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+    dynamic_cast<BlockOperator<Scalar>* >(this->ptr().get());
   
   TEST_FOR_EXCEPTION(b == 0, runtime_error, 
 		     "Can't call setBlock since operator not BlockOperator");
@@ -204,7 +204,7 @@ template <class Scalar>
 void LinearOperator<Scalar>::finalize(bool zerofill)
 {
   BlockOperator<Scalar>* b = 
-    dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+    dynamic_cast<BlockOperator<Scalar>* >(this->ptr().get());
   
   TEST_FOR_EXCEPTION(b == 0, runtime_error, 
 		     "Can't call finalize since operator not BlockOperator");
@@ -217,7 +217,7 @@ void LinearOperator<Scalar>::finalize(bool zerofill)
 template <class Scalar>
 const  VectorSpace<Scalar> 
 LinearOperator<Scalar>::domain() const 
-{return ptr()->domain();}
+{return this->ptr()->domain();}
 
 
 
@@ -227,11 +227,11 @@ LinearOperator<Scalar> LinearOperator<Scalar>::getBlock(const int &i,
 							const int &j) const 
 {
   BlockOperator<Scalar>* b = 
-    dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+    dynamic_cast<BlockOperator<Scalar>* >(this->ptr().get());
   
   TEST_FOR_EXCEPTION(b == 0, runtime_error, 
 		     "Can't call getblock since operator not BlockOperator");
-  return ptr()->getBlock(i, j);
+  return this->ptr()->getBlock(i, j);
 }
 
 
@@ -242,7 +242,7 @@ template <class Scalar>
 string LinearOperator<Scalar>::describe(int depth) const
 {
   const DescribableByTypeID* p = 
-    dynamic_cast<const DescribableByTypeID* >(ptr().get());
+    dynamic_cast<const DescribableByTypeID* >(this->ptr().get());
   if (p != 0)
     {
       return p -> describe(depth);
@@ -257,13 +257,13 @@ template <class Scalar>
 LinearOperator<Scalar> LinearOperator<Scalar>::form(const VectorType<Scalar>& type)
 {
   const RowAccessibleOp<Scalar>* me =
-    dynamic_cast<const RowAccessibleOp<Scalar>* >(ptr().get());
+    dynamic_cast<const RowAccessibleOp<Scalar>* >(this->ptr().get());
 
   TEST_FOR_EXCEPTION(me == 0, runtime_error,
 		     "Given operator is not row accessible.");
 
 
-  int domDimension = domain().dim();
+  int domDimension = this->domain().dim();
   std::vector<int> rowsDom(domDimension);
   for (int i = 0; i < domDimension; i++)
     {
@@ -271,7 +271,7 @@ LinearOperator<Scalar> LinearOperator<Scalar>::form(const VectorType<Scalar>& ty
     }
   VectorSpace<Scalar> domainRet = type.createSpace(domDimension, domDimension, &(rowsDom[0])); 
 
-  int ranDimension = range().dim();
+  int ranDimension = this->range().dim();
   std::vector<int> rowsRan(ranDimension);
   for (int i = 0; i < ranDimension; i++)
     {

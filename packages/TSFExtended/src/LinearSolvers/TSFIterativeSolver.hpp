@@ -51,11 +51,11 @@ namespace TSFExtended
     
     /** */
     int getMaxiters() const 
-    {return parameters().template get<int>(maxitersParam());}
+    {return this->parameters().template get<int>(maxitersParam());}
 
     /** */
     Scalar getTol() const 
-    {return parameters().template get<double>(tolParam());}
+    {return this->parameters().template get<double>(tolParam());}
 
     /** */
     static string maxitersParam() {return "Max Iterations";}

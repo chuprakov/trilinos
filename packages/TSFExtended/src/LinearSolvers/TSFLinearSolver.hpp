@@ -82,7 +82,7 @@ namespace TSFExtended
           const Vector<Scalar>& rhs,
           Vector<Scalar>& soln) const
   {
-    TEST_FOR_EXCEPTION(ptr().get()==0, std::runtime_error,
+    TEST_FOR_EXCEPTION(this->ptr().get()==0, std::runtime_error,
                        "null pointer in LinearSolver<Scalar>::solve()");
 
     TEST_FOR_EXCEPTION(rhs.ptr().get()==0, std::runtime_error,
@@ -91,23 +91,23 @@ namespace TSFExtended
     TEST_FOR_EXCEPTION(op.ptr().get()==0, std::runtime_error,
                         "null op pointer in LinearSolver<Scalar>::solve()");
     TimeMonitor timer(solveTimer());
-    return ptr()->solve(op, rhs, soln);
+    return this->ptr()->solve(op, rhs, soln);
   }
 
   template <class Scalar> inline 
   const ParameterList& LinearSolver<Scalar>::parameters() const 
   {
-    TEST_FOR_EXCEPTION(ptr().get()==0, std::runtime_error,
+    TEST_FOR_EXCEPTION(this->ptr().get()==0, std::runtime_error,
                        "null pointer in LinearSolver<Scalar>::parameters()");
-    return ptr()->parameters();
+    return this->ptr()->parameters();
   }
 
   template <class Scalar> inline 
   ParameterList& LinearSolver<Scalar>::parameters() 
   {
-    TEST_FOR_EXCEPTION(ptr().get()==0, std::runtime_error,
+    TEST_FOR_EXCEPTION(this->ptr().get()==0, std::runtime_error,
                        "null pointer in LinearSolver<Scalar>::parameters()");
-    return ptr()->parameters();
+    return this->ptr()->parameters();
   }
 
   

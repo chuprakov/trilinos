@@ -39,7 +39,7 @@ template <class Scalar>
 void Vector<Scalar>::setBlock(int i, const Vector<Scalar>& v)
 {
   ProductVector<Scalar>* pv = 
-    dynamic_cast<ProductVector<Scalar>* >(ptr().get());
+    dynamic_cast<ProductVector<Scalar>* >(this->ptr().get());
   TEST_FOR_EXCEPTION(pv == 0, runtime_error,
 		     "vector not product vector");
   pv->setBlock(i, v);
@@ -52,7 +52,7 @@ template <class Scalar>
 Vector<Scalar> Vector<Scalar>::getBlock(int i) const
 {
   ProductVector<Scalar>* pv = 
-    dynamic_cast <ProductVector<Scalar>* >(ptr().get());
+    dynamic_cast <ProductVector<Scalar>* >(this->ptr().get());
   TEST_FOR_EXCEPTION(pv == 0, runtime_error,
 		     "vector not product vector");
   return pv->getBlock(i);
@@ -66,7 +66,7 @@ template <class Scalar> inline
 const AccessibleVector<Scalar>* Vector<Scalar>::castToAccessible() const
 {
   const AccessibleVector<Scalar>* av 
-    = dynamic_cast<const AccessibleVector<Scalar>*>(ptr().get());
+    = dynamic_cast<const AccessibleVector<Scalar>*>(this->ptr().get());
   TEST_FOR_EXCEPTION(av==0, std::runtime_error,
 		     "Attempted to cast non-accessible vector "
 		     << *this << " to an AccessibleVector");
@@ -78,7 +78,7 @@ template <class Scalar> inline
 LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
 {
   LoadableVector<Scalar>* lv 
-    = dynamic_cast<LoadableVector<Scalar>*>(ptr().get());
+    = dynamic_cast<LoadableVector<Scalar>*>(this->ptr().get());
   TEST_FOR_EXCEPTION(lv==0, std::runtime_error,
 		     "Attempted to cast non-loadable vector "
 		     << *this << " to a LoadableVector");
@@ -91,7 +91,7 @@ LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::scale(const Scalar& alpha)
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
     TSFCore::Vt_S(p, alpha);
@@ -108,7 +108,7 @@ template <class Scalar> inline
 Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha, 
 				       const Vector<Scalar>& x)
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
   const TSFCore::Vector<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
@@ -125,14 +125,14 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
   const TSFCore::Vector<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
     if (p==0) 
       {
 	Vector<Scalar> me = space().createMember();
-	ptr() = me.ptr();
+	this->ptr() = me.ptr();
       }
     TSFCore::assign(p, *px);
   }
@@ -159,7 +159,7 @@ Vector<Scalar> Vector<Scalar>::dotStar(const Vector<Scalar>& other) const
   Vector<Scalar> rtn = space().createMember();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::ele_wise_prod(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
+    TSFCore::ele_wise_prod(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
   }
   return rtn;
 }
@@ -175,7 +175,7 @@ Vector<Scalar> Vector<Scalar>::dotSlash(const Vector<Scalar>& other) const
   Vector<Scalar> rtn = space().createMember();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::ele_wise_divide(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
+    TSFCore::ele_wise_divide(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
   }
   return rtn;
 }
@@ -222,8 +222,8 @@ Vector<Scalar> Vector<Scalar>::reciprocal() const
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::abs()
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
-  const TSFCore::Vector<Scalar>* px = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
+  const TSFCore::Vector<Scalar>* px = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
     TSFCore::abs(p, *px);
@@ -239,8 +239,8 @@ Vector<Scalar>& Vector<Scalar>::abs()
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::reciprocal()
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
-  const TSFCore::Vector<Scalar>* px = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
+  const TSFCore::Vector<Scalar>* px = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
     TSFCore::reciprocal(p, *px);
@@ -256,7 +256,7 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 				       const Vector<Scalar>& x, 
 				       const Scalar& gamma)
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
   const TSFCore::Vector<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
@@ -276,7 +276,7 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 				       const Vector<Scalar>& y, 
 				       const Scalar& gamma)
 {
-  TSFCore::Vector<Scalar>* p = ptr().get();
+  TSFCore::Vector<Scalar>* p = this->ptr().get();
   const TSFCore::Vector<Scalar>* px = x.ptr().get();
   const TSFCore::Vector<Scalar>* py = y.ptr().get();
   {
@@ -301,7 +301,7 @@ Scalar Vector<Scalar>::dot(const Vector<Scalar>& other) const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::dot(*ptr(), *(other.ptr()));
+  return TSFCore::dot(*(this->ptr)(), *(other.ptr()));
 }
 
 
@@ -321,7 +321,7 @@ Scalar Vector<Scalar>::norm1() const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_1(*ptr());
+  return TSFCore::norm_1(*(this->ptr)());
 }
 
 
@@ -333,7 +333,7 @@ Scalar Vector<Scalar>::norm2() const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_2(*ptr());
+  return TSFCore::norm_2(*(this->ptr)());
 }
 
 
@@ -345,7 +345,7 @@ Scalar Vector<Scalar>::norm2(const Vector<Scalar>& weights) const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_2(*(weights.ptr()) ,*ptr());
+  return TSFCore::norm_2(*(weights.ptr()) ,*(this->ptr)());
 }
 
 
@@ -358,7 +358,7 @@ Scalar Vector<Scalar>::normInf() const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_inf(*ptr());
+  return TSFCore::norm_inf(*(this->ptr)());
 }
 
 
@@ -367,7 +367,7 @@ Scalar Vector<Scalar>::normInf() const
 template <class Scalar> inline 
 bool Vector<Scalar>::hasNANINF() const 
 {
-  double x = TSFCore::sum(*ptr());
+  double x = TSFCore::sum(*(this->ptr)());
   return finite(x);
 }
 
@@ -380,7 +380,7 @@ void Vector<Scalar>::zero()
 {
   TimeMonitor t(*opTimer());
     
-  TSFCore::assign(ptr().get(), 0.0);
+  TSFCore::assign(this->ptr().get(), 0.0);
 }
 
 
@@ -392,7 +392,7 @@ void Vector<Scalar>::setToConstant(const Scalar& alpha)
 {
   TimeMonitor t(*opTimer());
     
-  TSFCore::assign(ptr().get(), alpha);
+  TSFCore::assign(this->ptr().get(), alpha);
 }
   
 
@@ -401,7 +401,7 @@ template <class Scalar> inline
 Scalar Vector<Scalar>::max()const
 {
   TimeMonitor t(*opTimer());
-  return TSFCore::max(*ptr());
+  return TSFCore::max(*(this->ptr)());
 }
 
 
@@ -413,7 +413,7 @@ Scalar Vector<Scalar>::max(int& index)const
   Scalar maxEl;
   Scalar* maxElP = &maxEl;
   int* indexP = &index;
-  TSFCore::max(*ptr(), maxElP, indexP); 
+  TSFCore::max(*(this->ptr)(), maxElP, indexP); 
   return maxEl;
 }
 
@@ -426,7 +426,7 @@ Scalar Vector<Scalar>::max(const Scalar& bound, int& index)const
   Scalar maxEl;
   Scalar* maxElP = &maxEl;
   int* indexP = &index;
-  TSFCore::maxLessThanBound(*ptr(), bound, maxElP, indexP); 
+  TSFCore::maxLessThanBound(*(this->ptr)(), bound, maxElP, indexP); 
   return maxEl;
 
 }
@@ -437,7 +437,7 @@ template <class Scalar> inline
 Scalar Vector<Scalar>::min()const
 {
   TimeMonitor t(*opTimer());
-  return TSFCore::min(*ptr());
+  return TSFCore::min(*(this->ptr)());
 }
 
 
@@ -449,7 +449,7 @@ Scalar Vector<Scalar>::min(int& index)const
   Scalar minEl;
   Scalar* minElP = &minEl;
   int* indexP = &index;
-  TSFCore::min(*ptr(), minElP, indexP); 
+  TSFCore::min(*(this->ptr)(), minElP, indexP); 
   return minEl;
 }
 
@@ -462,7 +462,7 @@ Scalar Vector<Scalar>::min(const Scalar& bound, int& index)const
   Scalar minEl;
   Scalar* minElP = &minEl;
   int* indexP = &index;
-  TSFCore::minGreaterThanBound(*ptr(), bound, minElP, indexP); 
+  TSFCore::minGreaterThanBound(*(this->ptr)(), bound, minElP, indexP); 
   return minEl;
 }
 

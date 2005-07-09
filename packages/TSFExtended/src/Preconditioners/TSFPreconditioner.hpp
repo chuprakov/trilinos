@@ -80,29 +80,29 @@ namespace TSFExtended
   template <class Scalar> inline 
   LinearOperator<Scalar> Preconditioner<Scalar>::left() const 
   {
-    TEST_FOR_EXCEPTION(ptr().get()==0, std::runtime_error,
+    TEST_FOR_EXCEPTION(this->ptr().get()==0, std::runtime_error,
                        "null pointer in Preconditioner<Scalar>::left()");
-    return ptr()->left();
+    return this->ptr()->left();
   }
 
   template <class Scalar> inline 
   LinearOperator<Scalar> Preconditioner<Scalar>::right() const 
   {
-    TEST_FOR_EXCEPTION(ptr().get()==0, std::runtime_error,
+    TEST_FOR_EXCEPTION(this->ptr().get()==0, std::runtime_error,
                        "null pointer in Preconditioner<Scalar>::right()");
-    return ptr()->right();
+    return this->ptr()->right();
   }
 
   template <class Scalar> inline
   bool Preconditioner<Scalar>::hasLeft() const 
   {
-    return (ptr().get()!=0 && ptr()->hasLeft());
+    return (this->ptr().get()!=0 && this->ptr()->hasLeft());
   }
 
   template <class Scalar> inline
   bool Preconditioner<Scalar>::hasRight() const 
   {
-    return (ptr().get()!=0 && ptr()->hasRight());
+    return (this->ptr().get()!=0 && this->ptr()->hasRight());
   }
 
   

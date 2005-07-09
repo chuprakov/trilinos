@@ -81,10 +81,10 @@ namespace TSFExtended
       /** Set the evaluation point */
       void setEvalPt(const Vector<Scalar>& x)
       {
-        if (verbosity() > VerbLow)
+        if (this->verbosity() > VerbLow)
           {
             cerr << "NonlinearOperatorBase Setting new eval pt";
-            if (verbosity() > VerbHigh)
+            if (this->verbosity() > VerbHigh)
               {
                 cerr << " to " << endl ;
                 x.print(cerr);
@@ -110,13 +110,13 @@ namespace TSFExtended
       /** Return the Jacobian at the current evaluation point */
        LinearOperator<double> getJacobian() const 
       {
-        if (verbosity() > VerbLow)
+        if (this->verbosity() > VerbLow)
           {
             cerr << "NonlinearOperatorBase getting Jacobian" << endl;
           }
         if (!jacobianIsValid_)
           {
-            if (verbosity() > VerbLow)
+            if (this->verbosity() > VerbLow)
               {
                 cerr << "...computing new J and F" << endl;
               }
@@ -127,12 +127,12 @@ namespace TSFExtended
           }
         else
           {
-            if (verbosity() > VerbLow)
+            if (this->verbosity() > VerbLow)
               {
                 cerr << "...reusing valid J" << endl;
               }
           }
-        if (verbosity() > VerbHigh)
+        if (this->verbosity() > VerbHigh)
           {
             cerr << "J is " << endl;
             currentJ_.print(cerr);
@@ -146,13 +146,13 @@ namespace TSFExtended
       /** Return the function value at the current evaluation point */
       Vector<double> getFunctionValue() const 
       {
-        if (verbosity() > VerbLow)
+        if (this->verbosity() > VerbLow)
           {
             cerr << "NonlinearOperatorBase getting function value" << endl;
           }
         if (!residualIsValid_)
           {
-            if (verbosity() > VerbLow)
+            if (this->verbosity() > VerbLow)
               {
                 cerr << "...computing new F" << endl;
               }
@@ -161,13 +161,13 @@ namespace TSFExtended
           }
         else
           {
-            if (verbosity() > VerbLow)
+            if (this->verbosity() > VerbLow)
               {
                 cerr << "...reusing valid F" << endl;
               }
           }
 
-        if (verbosity() > VerbHigh)
+        if (this->verbosity() > VerbHigh)
           {
             cerr << "F is " << endl;
             currentFunctionValue_.print(cerr);

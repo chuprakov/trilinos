@@ -62,7 +62,7 @@ namespace TSFExtended
     void print(ostream& os) const 
     {
       os << description() << "[" << endl;
-      os << parameters() << endl;
+      os << this->parameters() << endl;
       os << "]" << endl;
     }
     //@}
@@ -96,9 +96,9 @@ namespace TSFExtended
                 const Vector<Scalar>& b,
                 Vector<Scalar>& soln) const
   {
-    int maxiters = getMaxiters();
-    Scalar tol = getTol();
-    int verbosity = getVerbosity();
+    int maxiters = this->getMaxiters();
+    Scalar tol = this->getTol();
+    int verbosity = this->getVerbosity();
 
     Scalar normOfB = sqrt(b.dot(b));
 

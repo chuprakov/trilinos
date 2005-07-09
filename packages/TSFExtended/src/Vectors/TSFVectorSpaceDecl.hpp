@@ -52,10 +52,10 @@ namespace TSFExtended
     
     /** Create a new element of this vector space */
     Vector<Scalar>  createMember() const 
-    {return ptr()->createMember();}
+    {return this->ptr()->createMember();}
 
     /** Return the dimension of the space */
-    int dim() const {return ptr()->dim();}
+    int dim() const {return this->ptr()->dim();}
 
     /** Check compatibility with another space. Implementation note: 
      * we don't know if the argument vec space is a handle to another
@@ -72,7 +72,7 @@ namespace TSFExtended
 
 
     /** Tell if vectors of this space are in core  */
-    bool isInCore() const {return ptr()->isInCore();}
+    bool isInCore() const {return this->ptr()->isInCore();}
 
    
 

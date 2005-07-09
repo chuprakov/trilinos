@@ -62,13 +62,13 @@ namespace TSFExtended
     void print(ostream& os) const 
     {
       os << description() << "[" << endl;
-      os << parameters() << endl;
+      os << this->parameters() << endl;
       os << "]" << endl;
     }
     //@}
 
     /** */
-    int getKSpace() const {return parameters().template get<int>("Restart");}
+    int getKSpace() const {return this->parameters().template get<int>("Restart");}
     
     /** \name Describable interface */
     //@{
@@ -101,10 +101,10 @@ namespace TSFExtended
   {
     int myRank = MPIComm::world().getRank();
 
-    int maxiters = getMaxiters();
+    int maxiters = this->getMaxiters();
     int kSpace = getKSpace();
-    Scalar tol = getTol();
-    int verbosity = getVerbosity();
+    Scalar tol = this->getTol();
+    int verbosity = this->getVerbosity();
 
     if (verbosity > 1)
       {

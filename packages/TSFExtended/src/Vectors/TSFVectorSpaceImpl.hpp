@@ -65,13 +65,13 @@ bool VectorSpace<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc) const
   const DescribableByTypeID *descrOther = 
     dynamic_cast<const DescribableByTypeID* > (vecSpc.ptr().get());
   const DescribableByTypeID *descrThis = 
-    dynamic_cast<const DescribableByTypeID* > (ptr().get());
+    dynamic_cast<const DescribableByTypeID* > (this->ptr().get());
 
   TEST_FOR_EXCEPTION(descrOther == 0, runtime_error,
 		     "Operator not describable; "
 		     << "hence not testable for equality" << endl);
   if (descrOther->typeName() != descrThis->typeName() 
-      || vecSpc.dim() != dim()
+      || vecSpc.dim() != this->dim()
       || vecSpc.isInCore() != isInCore())
     {
       return false;
@@ -96,7 +96,7 @@ template <class Scalar>
 int VectorSpace<Scalar>::numBlocks() const
 {
   const ProductVectorSpace<Scalar>* pvs = 
-    dynamic_cast<const ProductVectorSpace<Scalar>* > (ptr().get());
+    dynamic_cast<const ProductVectorSpace<Scalar>* > (this->ptr().get());
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Space not a ProductVectorSpace" << endl);
   return pvs->numBlocks();
@@ -109,7 +109,7 @@ template <class Scalar>
 VectorSpace<Scalar> VectorSpace<Scalar>::getBlock(const int i) const
 {
   const ProductVectorSpace<Scalar>* pvs = 
-    dynamic_cast<const ProductVectorSpace<Scalar>* > (ptr().get());
+    dynamic_cast<const ProductVectorSpace<Scalar>* > (this->ptr().get());
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Space not a ProductVectorSpace" << endl);
   return pvs->getBlock(i);
@@ -122,7 +122,7 @@ void VectorSpace<Scalar>::setBlock(int i,
 				   const VectorSpace<Scalar>& space)
 {
   const ProductVectorSpace<Scalar>*  pvs = 
-    dynamic_cast<const ProductVectorSpace<Scalar>* >  (ptr().get());
+    dynamic_cast<const ProductVectorSpace<Scalar>* >  (this->ptr().get());
 
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Can't set block of vector space that is " <<
@@ -149,7 +149,7 @@ template <class Scalar>
 string VectorSpace<Scalar>::describe(int depth) const
 {
   const DescribableByTypeID* descr = 
-    dynamic_cast<const DescribableByTypeID* > (ptr().get());
+    dynamic_cast<const DescribableByTypeID* > (this->ptr().get());
   if (descr != 0)
     {
       return descr->describe(depth);

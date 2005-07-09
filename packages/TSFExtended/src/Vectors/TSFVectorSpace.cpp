@@ -43,8 +43,8 @@ bool VectorSpace<Scalar>::operator==(const VectorSpace<Scalar>& other) const
   TEST_FOR_EXCEPTION(descOther == 0, runtime_error,
 		     "Operator not describable; "
 		     << "hence not testable for equality" << endl);
-  if (descOther->typeName() != ptr()->typeName() || other.dim() != dim()
-      || other.isInCore() != ptr()->isIncore())
+  if (descOther->typeName() != this->ptr()->typeName() || other.dim() != this->dim()
+      || other.isInCore() != this->ptr()->isIncore())
     {
       return false;
     }
@@ -76,7 +76,7 @@ template <class Scalar>
 int VectorSpace<Scalar>::numBlocks() const
 {
   ProductVectorSpacs<Scalar> pvs = 
-    dynamic_cast<ProductVectorSpacs<Scalar> > *ptr();
+    dynamic_cast<ProductVectorSpacs<Scalar> > *(this->ptr)();
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Space not a ProductVectorSpace" << endl);
   return pvs.numBlocks();
@@ -89,7 +89,7 @@ template <class Scalar>
 VectorSpace<Scalar> VectorSpace<Scalar>::getBlock(const int i)
 {
   ProductVectorSpacs<Scalar> pvs = 
-    dynamic_cast<ProductVectorSpacs<Scalar> > *ptr();
+    dynamic_cast<ProductVectorSpacs<Scalar> > *(this->ptr)();
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Space not a ProductVectorSpace" << endl);
   return pvs.getBlock(i);
@@ -110,10 +110,10 @@ template <class Scalar>
 string VectorSpace<Scalar>::describe(const int depth)
 {
   DescribableByTypeID<Scalar> descr = 
-    dynamic_cast<DescribableByTypeID<Scalar> > *ptr();
+    dynamic_cast<DescribableByTypeID<Scalar> > *(this->ptr)();
   if (descr != 0)
     {
-      return ptr()->describe(depth);
+      return this->ptr()->describe(depth);
     }
   return "Space not describable \n";
 }

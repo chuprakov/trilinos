@@ -185,8 +185,8 @@ namespace TSFExtended
 	  ret.append("   ");
 	}
       ret.append(typeName());
-      ret.append(" of dimension " + toString(range()->dim()) + " by "
-		 + toString(domain()->dim()));
+      ret.append(" of dimension " + toString(this->range()->dim()) + " by "
+		 + toString(this->domain()->dim()));
       return ret;
     }
 

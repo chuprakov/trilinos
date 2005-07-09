@@ -162,7 +162,7 @@ string ProductVectorSpace<Scalar>::describe(int depth) const
     {
       ret.append("   ");
     }
-  ret.append("ProductVectorSpace of dimension " + toString(dim()) + "\n");
+  ret.append("ProductVectorSpace of dimension " + toString(this->dim()) + "\n");
   for (int i = 0; i < numBlocks_; i++)
     {
       ret.append(vecSpaces_[i].describe(depth+1) + "\n");

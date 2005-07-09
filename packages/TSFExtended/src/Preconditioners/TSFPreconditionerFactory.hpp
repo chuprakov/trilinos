@@ -58,7 +58,7 @@ namespace TSFExtended
 
     /** create a concrete preconditioner */
     Preconditioner<Scalar> createPreconditioner(const LinearOperator<Scalar>& A) const
-    {return ptr()->createPreconditioner(A);}
+    {return this->ptr()->createPreconditioner(A);}
     
   };
 }

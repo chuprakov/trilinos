@@ -64,7 +64,8 @@ LinearSolver<double> LinearSolverBuilder::createSolver(const XMLObject& xml)
     {
       XMLParameterListReader reader;
       ParameterList params = reader.toParameterList(xml);
-      string method = params.template get<string>("Method");
+      //      string method = params.template get<string>("Method");
+      string method = params.get<string>("Method");
       if (method=="BICGSTAB") 
         {
           return new BICGSTABSolver<double>(params);

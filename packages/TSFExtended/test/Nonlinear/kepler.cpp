@@ -65,7 +65,7 @@ namespace TSFExtended
     LinearOperator<double> computeJacobianAndFunction(Vector<double>& f) const 
     {
       /* create a new operator */
-      LinearOperator<double> J = type_.createMatrix(domain(), range());
+      LinearOperator<double> J = type_.createMatrix(this->domain(), this->range());
       /* get a "view" of a loadable matrix underneath the operator */
       RefCountPtr<LoadableMatrix<double> > matview = J.matrix();
 
@@ -73,7 +73,7 @@ namespace TSFExtended
       const double& xIn = currentEvalPt().getElement(0);
 
       /* compute the residual */
-      f = range()->createMember();
+      f = this->range()->createMember();
       f.setElement(0,  xIn + e_ * ::sin(xIn) - m_);
       /* compute the derivative of the residual */
       double jVal = 1 + e_*::cos(xIn);
@@ -92,7 +92,7 @@ namespace TSFExtended
     /** */
     Vector<double> getInitialGuess() const 
     {
-      Vector<double> rtn = domain()->createMember();
+      Vector<double> rtn = this->domain()->createMember();
       rtn.setElement(0, m_);
       return rtn;
     }

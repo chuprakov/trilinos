@@ -70,7 +70,7 @@ namespace TSFExtended
 	  ret.append("   ");
 	}
       ret.append(typeName());
-      ret.append(" of dimension " + toString(dim()));
+      ret.append(" of dimension " + Teuchos::Utils::toString(this->dim()));
       return ret;
     }
     

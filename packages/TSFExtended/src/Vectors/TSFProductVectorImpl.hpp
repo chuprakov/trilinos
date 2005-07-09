@@ -64,6 +64,7 @@ ProductVector<Scalar>::ProductVector(const VectorSpace<Scalar> &space)
       vecsCore_[i] = vecsE_[i].ptr();
     }
   setCore();
+  isFinal_ = false;
 }
 
 
@@ -72,7 +73,7 @@ ProductVector<Scalar>::ProductVector(const VectorSpace<Scalar> &space)
 template <class Scalar>
 void ProductVector<Scalar>::setCore()
 {
-  uninitialize();
+  this->uninitialize();
   Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > vs = space_.ptr();
   const Teuchos::RefCountPtr<const TSFCore::ProductVectorSpace<Scalar> > pvs
     = Teuchos::rcp_dynamic_cast<const TSFCore::ProductVectorSpace<Scalar> >(vs);
@@ -129,7 +130,7 @@ void ProductVector<Scalar>::testSpace(const VectorSpace<Scalar> &space,
 				      const string &method)
 {
   const ProductVectorSpace<Scalar>* pvs =
-    dynamic_cast<const ProductVectorSpace<Scalar>* > (x.space().ptr());
+    dynamic_cast<const ProductVectorSpace<Scalar>* > (space.ptr());
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "In " << method << "space is not ProductVectorSpace"
 		     << endl);

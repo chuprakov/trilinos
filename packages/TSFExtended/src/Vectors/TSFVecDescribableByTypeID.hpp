@@ -35,6 +35,7 @@
 
 namespace TSFExtended
 {
+  using namespace Teuchos;
   /**
    * Class that extends DescribableByTypeID that is specific for
    * Vectors.  It gives the type and dimenstions of the operator.
@@ -71,7 +72,7 @@ namespace TSFExtended
 	dynamic_cast<const TSFCore::VectorSpace<Scalar>* >(this);
       if (cvs != 0)
 	{
-	  ret.append(" of dimension " + Teuchos::toString(cvs->dim()));
+	  ret.append(" of dimension " + toString(cvs->dim()));
 	  return ret;
 	}
 
@@ -79,7 +80,7 @@ namespace TSFExtended
 	dynamic_cast<const TSFCore::Vector<Scalar>* >(this);
       if (cv != 0)
 	{
-	  ret.append(" of dimension " + Teuchos::toString((cv->space())->dim()));
+	  ret.append(" of dimension " + toString((cv->space())->dim()));
 	}
       else
 	{

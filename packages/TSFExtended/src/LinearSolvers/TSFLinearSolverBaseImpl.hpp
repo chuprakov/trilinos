@@ -51,7 +51,7 @@ ParameterList& LinearSolverBase<Scalar>::parameters() {return params_;}
 
 template <class Scalar>
 int LinearSolverBase<Scalar>::getVerbosity() const 
-{return parameters().template get<int>(verbosityParam());}
+{return this->parameters().template get<int>(verbosityParam());}
 
 template <class Scalar>
 string LinearSolverBase<Scalar>::verbosityParam() {return "Verbosity";}
