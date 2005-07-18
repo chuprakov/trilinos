@@ -1,0 +1,7 @@
+TSFCore::ScalarProd                       Thyra::ScalarProdBase
+TSFCore::Vector                           Thyra::VectorBase
+TSFCore::LinearOp                         Thyra::LinearOpBase
+TSFCore::VectorSpace                      Thyra::VectorSpaceBase
+TSFCore::VectorSpaceFactory               Thyra::VectorSpaceFactoryBase
+TSFCore::MultiVector                      Thyra::MultiVectorBase
+TSFCore                                   Thyra
