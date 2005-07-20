@@ -176,6 +176,17 @@ int main(int argc, char *argv[])
   int * bindx = NULL;
   double * x = NULL, * b = NULL, * xexact = NULL;
   
+  FILE* fp = fopen("../HBMatrices/fidap005.rua", "r");
+  if (fp == 0)
+  {
+    cerr << "Matrix file not available" << endl;
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif
+    exit(EXIT_SUCCESS);
+  }
+  fclose(fp);
+  
   Trilinos_Util_read_hb("../HBMatrices/fidap005.rua", 0,
 			&N_global, &N_nonzeros, 
 			&val, &bindx,
@@ -201,7 +212,7 @@ int main(int argc, char *argv[])
   double norm2;
   yyy.Norm2(&norm2);
 
-  cout << norm2;
+  cout << norm2 << endl;
 
   // free memory allocated by Trilinos_Util_read_hb
   if (val != NULL) free((void*)val);
