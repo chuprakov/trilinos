@@ -102,21 +102,21 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
 am__DEPENDENCIES_1 =
-ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) 
+ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
 ex2_OBJECTS = $(am_ex2_OBJECTS)
-am__DEPENDENCIES_2 =
-ex2_DEPENDENCIES = $(am__DEPENDENCIES_2) 
+ex2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex3_OBJECTS = ex3-ex3.$(OBJEXT)
 ex3_OBJECTS = $(am_ex3_OBJECTS)
-am__DEPENDENCIES_3 =
-ex3_DEPENDENCIES = $(am__DEPENDENCIES_3) 
+ex3_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex1-ex1.Po
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex2-ex2.Po
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex3-ex3.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex1-ex1.Po ./$(DEPDIR)/ex2-ex2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ex3-ex3.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -265,7 +265,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXAMPLE = ex1  ex2  ex3
+EXAMPLE = ex1 ex2 ex3
 ex1_SOURCES = $(srcdir)/ex1.cpp
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
 ex1_LDADD = $(DIDASKO_LIBS) \
@@ -409,7 +409,6 @@ ex3-ex3.obj: $(srcdir)/ex3.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex3-ex3.Po' tmpdepfile='$(DEPDIR)/ex3-ex3.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex3_CXXFLAGS) $(CXXFLAGS) -c -o ex3-ex3.obj `if test -f '$(srcdir)/ex3.cpp'; then $(CYGPATH_W) '$(srcdir)/ex3.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex3.cpp'; fi`
-
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

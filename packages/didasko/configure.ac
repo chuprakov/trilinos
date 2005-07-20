@@ -444,10 +444,6 @@ AC_CONFIG_FILES([
 		examples/triutils/Makefile
 		examples/HBMatrices/Makefile
 		test/Makefile
-		test/scripts/Makefile
-		test/scripts/daily/Makefile
-		test/scripts/daily/mpi/Makefile
-		test/scripts/daily/serial/Makefile
 		])
 
 AC_OUTPUT()
