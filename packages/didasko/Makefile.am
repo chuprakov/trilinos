@@ -73,3 +73,45 @@ EXAMPLE_SUBDIR=examples
 endif
                                                                                 
 SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
+
+
+## #######################################################################
+## The below targets allow you to use the new
+## testharness to run the test suite as make targets
+## #######################################################################
+
+TRILINOS_HOME_DIR=@abs_top_srcdir@/../..
+TRILINOS_BUILD_DIR=@abs_top_builddir@/../..
+
+if HAVE_MPI
+ML_CHECK_COMM=mpi
+else
+ML_CHECK_COMM=serial
+endif
+
+check-local:
+	@cd examples; make
+	@echo
+	@echo "=============================="
+	@echo "Testing the Didasko package..."
+	@echo "=============================="
+	@echo
+	@echo "You are now running (most of) the executables in the"
+	@echo "examples subdirectory."
+	@echo
+if HAVE_MPI
+	@echo "By default, the MPI command is set to \"mpirun -np \"."
+	@echo "You can change it by setting the environmental variable"
+	@echo "TRILINOS_MPI_GO, for example in bash you might need"
+	@echo "> export TRILINOS_MPI_GO=\"prun -n \""
+	@echo
+endif
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(ML_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=DidaskoExamples \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko

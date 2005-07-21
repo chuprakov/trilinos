@@ -271,6 +271,10 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 @BUILD_TESTS_TRUE@TEST_SUBDIR = test
 @BUILD_EXAMPLES_TRUE@EXAMPLE_SUBDIR = examples
 SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
+TRILINOS_HOME_DIR = @abs_top_srcdir@/../..
+TRILINOS_BUILD_DIR = @abs_top_builddir@/../..
+@HAVE_MPI_FALSE@ML_CHECK_COMM = serial
+@HAVE_MPI_TRUE@ML_CHECK_COMM = mpi
 all: all-recursive
 
 .SUFFIXES:
@@ -585,6 +589,7 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
 all-am: Makefile all-local
 installdirs: installdirs-recursive
@@ -666,9 +671,9 @@ uninstall-am: uninstall-info-am
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am all-local \
-	am--refresh check check-am clean clean-generic clean-recursive \
-	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
-	dist-shar dist-tarZ dist-zip distcheck distclean \
+	am--refresh check check-am check-local clean clean-generic \
+	clean-recursive ctags ctags-recursive dist dist-all dist-bzip2 \
+	dist-gzip dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-hdr distclean-recursive \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
@@ -685,6 +690,27 @@ uninstall-info: uninstall-info-recursive
 
 all-local:
 	@echo "Trilinos package didasko built successfully"
+
+check-local:
+	@echo
+	@echo "=============================="
+	@echo "Testing the Didasko package..."
+	@echo "=============================="
+@HAVE_MPI_TRUE@	@echo
+@HAVE_MPI_TRUE@	@echo "The MPI command is defaulted to \"mpirun -np \""
+@HAVE_MPI_TRUE@	@echo "You can change it by setting the environmental variable"
+@HAVE_MPI_TRUE@	@echo "TRILINOS_MPI_GO, for example in bash you might need"
+@HAVE_MPI_TRUE@	@echo "\$ export TRILINOS_MPI_GO=\"prun -n \""
+@HAVE_MPI_TRUE@	@echo
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(ML_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=DidaskoExamples \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
