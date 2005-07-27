@@ -40,7 +40,7 @@ ACLOCAL	= aclocal -I config
 ## #######################################################################
 ## Additional files to be included in distribution for 'make dist'
 ## #######################################################################
-EXTRA_DIST = src/Didasko_ConfigDefs.h
+EXTRA_DIST = src/Didasko_ConfigDefs.h README
 
 ## #######################################################################
 ## Tools in the auxillary directory 
@@ -74,7 +74,6 @@ endif
                                                                                 
 SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
 
-
 ## #######################################################################
 ## The below targets allow you to use the new
 ## testharness to run the test suite as make targets
@@ -84,34 +83,61 @@ TRILINOS_HOME_DIR=@abs_top_srcdir@/../..
 TRILINOS_BUILD_DIR=@abs_top_builddir@/../..
 
 if HAVE_MPI
-ML_CHECK_COMM=mpi
+DIDASKO_CHECK_COMM=mpi
 else
-ML_CHECK_COMM=serial
+DIDASKO_CHECK_COMM=serial
 endif
 
-check-local:
-	@cd examples; make
+run-examples:
 	@echo
-	@echo "=============================="
-	@echo "Testing the Didasko package..."
-	@echo "=============================="
+	@echo "==============================="
+	@echo "Running the Didasko examples..."
+	@echo "==============================="
 	@echo
-	@echo "You are now running (most of) the executables in the"
-	@echo "examples subdirectory."
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
 	@echo
-if HAVE_MPI
-	@echo "By default, the MPI command is set to \"mpirun -np \"."
-	@echo "You can change it by setting the environmental variable"
-	@echo "TRILINOS_MPI_GO, for example in bash you might need"
-	@echo "> export TRILINOS_MPI_GO=\"prun -n \""
-	@echo
-endif
 	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
   	--trilinos-dir=$(TRILINOS_HOME_DIR) \
-	--comm=$(ML_CHECK_COMM) \
+	--comm=$(DIDASKO_CHECK_COMM) \
 	--mpi-go="$(TRILINOS_MPI_GO)" \
 	--build-dir=$(TRILINOS_BUILD_DIR) \
 	--category=DidaskoExamples \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko
+
+run-tests:
+	@echo
+	@echo "============================"
+	@echo "Running the Didasko tests..."
+	@echo "============================"
+	@echo
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
+	@echo
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(DIDASKO_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=FRAMEWORK \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko
+
+run-pyexamples:
+	@echo
+	@echo "======================================"
+	@echo "Running the Python/Didasko examples..."
+	@echo "======================================"
+	@echo
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
+	@echo
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(DIDASKO_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=DidaskoPyExamples \
 	--output-dir=@abs_top_builddir@/test/runtests-results \
 	--verbosity=1 \
 	--packages=didasko

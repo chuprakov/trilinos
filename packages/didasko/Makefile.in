@@ -261,7 +261,7 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 AUTOMAKE_OPTIONS = foreign
-EXTRA_DIST = src/Didasko_ConfigDefs.h
+EXTRA_DIST = src/Didasko_ConfigDefs.h README
 AUX_DIST = config/install-sh config/missing config/mkinstalldirs 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 	configure config.status config.log \
@@ -273,8 +273,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
 TRILINOS_HOME_DIR = @abs_top_srcdir@/../..
 TRILINOS_BUILD_DIR = @abs_top_builddir@/../..
-@HAVE_MPI_FALSE@ML_CHECK_COMM = serial
-@HAVE_MPI_TRUE@ML_CHECK_COMM = mpi
+@HAVE_MPI_FALSE@DIDASKO_CHECK_COMM = serial
+@HAVE_MPI_TRUE@DIDASKO_CHECK_COMM = mpi
 all: all-recursive
 
 .SUFFIXES:
@@ -589,7 +589,6 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
 all-am: Makefile all-local
 installdirs: installdirs-recursive
@@ -671,9 +670,9 @@ uninstall-am: uninstall-info-am
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am all-local \
-	am--refresh check check-am check-local clean clean-generic \
-	clean-recursive ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-shar dist-tarZ dist-zip distcheck distclean \
+	am--refresh check check-am clean clean-generic clean-recursive \
+	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
+	dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-hdr distclean-recursive \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
@@ -691,23 +690,56 @@ uninstall-info: uninstall-info-recursive
 all-local:
 	@echo "Trilinos package didasko built successfully"
 
-check-local:
+run-examples:
 	@echo
-	@echo "=============================="
-	@echo "Testing the Didasko package..."
-	@echo "=============================="
-@HAVE_MPI_TRUE@	@echo
-@HAVE_MPI_TRUE@	@echo "The MPI command is defaulted to \"mpirun -np \""
-@HAVE_MPI_TRUE@	@echo "You can change it by setting the environmental variable"
-@HAVE_MPI_TRUE@	@echo "TRILINOS_MPI_GO, for example in bash you might need"
-@HAVE_MPI_TRUE@	@echo "\$ export TRILINOS_MPI_GO=\"prun -n \""
-@HAVE_MPI_TRUE@	@echo
+	@echo "==============================="
+	@echo "Running the Didasko examples..."
+	@echo "==============================="
+	@echo
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
+	@echo
 	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
   	--trilinos-dir=$(TRILINOS_HOME_DIR) \
-	--comm=$(ML_CHECK_COMM) \
+	--comm=$(DIDASKO_CHECK_COMM) \
 	--mpi-go="$(TRILINOS_MPI_GO)" \
 	--build-dir=$(TRILINOS_BUILD_DIR) \
 	--category=DidaskoExamples \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko
+
+run-tests:
+	@echo
+	@echo "============================"
+	@echo "Running the Didasko tests..."
+	@echo "============================"
+	@echo
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
+	@echo
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(DIDASKO_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=FRAMEWORK \
+	--output-dir=@abs_top_builddir@/test/runtests-results \
+	--verbosity=1 \
+	--packages=didasko
+
+run-pyexamples:
+	@echo
+	@echo "======================================"
+	@echo "Running the Python/Didasko examples..."
+	@echo "======================================"
+	@echo
+	@echo "For more details, please refer to Trilinos/doc/check_installation.txt"
+	@echo
+	@$(PERL_EXE) $(TRILINOS_HOME_DIR)/commonTools/test/utilities/runtests \
+  	--trilinos-dir=$(TRILINOS_HOME_DIR) \
+	--comm=$(DIDASKO_CHECK_COMM) \
+	--mpi-go="$(TRILINOS_MPI_GO)" \
+	--build-dir=$(TRILINOS_BUILD_DIR) \
+	--category=DidaskoPyExamples \
 	--output-dir=@abs_top_builddir@/test/runtests-results \
 	--verbosity=1 \
 	--packages=didasko
