@@ -40,6 +40,11 @@
 #include "BlockForwardsolver.h"
 #include "TSFZeroOperator.h"
 #include "Aztec2TSF.h"
+#include "Aztec2Petra.h"
+#include "EpetraExt_MatrixMatrix.h"
+#include "Epetra2TSFutils.h"
+
+#include "Epetra_CrsMatrix.h"
 
 using namespace Meros;
 using namespace TSF;
@@ -86,9 +91,14 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   TSFLinearOperator C = S.getBlock(1,1);
   TSFLinearOperator X, T, W;
   TSFLinearOperator FinvBt = Finv*Bt;
+
+  F.describe();
+  Bt.describe();
+  B.describe();
+  C.describe();
   
   //  TSF_MatrixMult(Finv,Bt,FinvBt);
-  FinvBt.describe();
+  //  FinvBt.describe();
   double scal = 1.0;
   if (C.isZeroOperator()) X = B*FinvBt; //TSF_MatrixMult(B,FinvBt,X);  //DO WE WANT A MINUS C?
   else
@@ -96,7 +106,25 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   cerr << "Using C stabilizer" << endl;
   //TSF_MatrixMult(B, FinvBt,T);
   //TSF_MatrixAdd(C,T,scal,X);
-    X = C + B*FinvBt; 
+  //    X = C + B*FinvBt; 
+
+  Epetra_CrsMatrix *Finv_crs = PetraMatrix::getConcrete(Finv);
+  Epetra_CrsMatrix *Bt_crs = PetraMatrix::getConcrete(Bt);
+  Epetra_CrsMatrix *B_crs = PetraMatrix::getConcrete(B);
+  Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C);
+
+  Epetra_CrsMatrix *BFinv_crs = new Epetra_CrsMatrix(*B_crs);
+  Epetra_CrsMatrix *BFinvBt_crs = new Epetra_CrsMatrix(*C_crs);
+
+  EpetraExt::MatrixMatrix::Multiply(*B_crs, false, *Finv_crs, false, *BFinv_crs);
+  EpetraExt::MatrixMatrix::Multiply(*BFinv_crs, false, *Bt_crs, false, *BFinvBt_crs);
+
+  EpetraExt::MatrixMatrix::Add(*C_crs, false, 1.0, *BFinvBt_crs, 1.0);
+
+  PetraMatrix* X_petra = new PetraMatrix(C.domain(), C.range());
+  X_petra->setPetraMatrix(BFinvBt_crs,true);
+  X = X_petra;
+
   }
 
   // Make identity matrices on the right spaces

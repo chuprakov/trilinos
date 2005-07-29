@@ -147,6 +147,8 @@ AM_CPPFLAGS = -I$(srcdir) \
               -I$(top_builddir)/../meros/src/EPW          \
               -I$(top_srcdir)/../epetra/src		  \
               -I$(top_builddir)/../epetra/src             \
+              -I$(top_srcdir)/../epetraext/src		  \
+              -I$(top_builddir)/../epetraext/src             \
               -I$(top_srcdir)/../TSF/src/LinearOperators  \
               -I$(top_srcdir)/../TSF/src/Implementations  \
               -I$(top_srcdir)/../TSF/src/LinearProblem    \

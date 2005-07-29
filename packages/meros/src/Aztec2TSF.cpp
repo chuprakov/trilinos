@@ -54,13 +54,89 @@
 #include "Epetra_Import.h"
 #include "Epetra_Time.h"
 #include "Epetra_FECrsMatrix.h"
+#include "Epetra_CrsMatrix.h"
 #include "Epetra_Map.h"
+#include <set>
+
+#include "TSFTimer.h"
+
+TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, const Epetra_IntVector & Locations, Epetra_Comm *comm)
+{
+  Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C_tsf);
+  Epetra_CrsMatrix *Matrix = new Epetra_CrsMatrix(*C_crs);
+
+  cerr << "\n Cnverted matrix ";
+
+ PetraMatrix* Matrix_petra = new PetraMatrix(C_tsf.domain(),C_tsf.range());
+  Matrix_petra->setPetraMatrix(Matrix,true);
+  TSFLinearOperator Matrix_tsf = Matrix_petra;
+
+  const Epetra_Map & RowMap = Matrix->RowMap();
+  const Epetra_Map & ColMap = Matrix->ColMap();
+
+  bool symmetric_ = true;
+
+  int NumMyElements = RowMap.NumMyElements();
+  int NumMyColElements = ColMap.NumMyElements();
+
+  std::set<int> colSet_;
+
+  cerr << "\n About to build col ";
+
+  if( Matrix->IndicesAreGlobal() )
+    {
+      Epetra_Import Importer( ColMap, RowMap );
+      Epetra_IntVector colLocations( ColMap );
+      colLocations.Import( Locations, Importer, Insert );
+      for( int i = 0; i < NumMyColElements; ++ i )
+        if( colLocations[i] ) colSet_.insert(i);
+    }
+  else
+    {
+      for( int i = 0; i < NumMyElements; ++i )
+        if( Locations[i] ) colSet_.insert(i);
+    }
+
+  cerr << "\n about to extract " << NumMyElements;
+  for( int i = 0; i < NumMyElements; ++i )
+    {
+      int * Indices;
+      double * Vals;
+      int NumIndices;
+      if( Locations[i] ) //this is a Dirichlet BC location           	
+	{
+	  Matrix->ExtractMyRowView( i, NumIndices, Vals, Indices );
+	  for( int j = 0; j < NumIndices; ++j )
+	    {
+	      //            cerr << "\n i " << i << " j " << j << " Indices[j] " << Indices[j];                                                             
+	      if( Indices[j] == i ) Vals[j] = 1.0;
+	      else                  Vals[j] = 0.0;
+	    }
+	}
+      else if( symmetric_ )
+	{
+
+	  Matrix->ExtractMyRowView( i, NumIndices, Vals, Indices );
+	  for( int j = 0; j < NumIndices; ++j )
+	    if( colSet_.count( Indices[j] ))
+	      {
+		Vals[j] = 0.0;
+	      }
+	}
+
+    }
+  //  cerr << " matrix is " << Matrix_tsf;
+  return Matrix_tsf;
+}
 
 TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, int *coordinate2, int numbc, Epetra_Comm *comm)
 {
+   TSFTimer(DIRICHLETPIN);
+   DIRICHLETPIN.start();
 
   Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C_tsf);
   Epetra_CrsMatrix *C1_crs = new Epetra_CrsMatrix(*C_crs);
+
 
   PetraMatrix* C1_petra = new PetraMatrix(C_tsf.domain(),C_tsf.range());
   C1_petra->setPetraMatrix(C1_crs,true);
@@ -143,6 +219,8 @@ TSFLinearOperator TSFDirichletpin(TSFLinearOperator C_tsf, int *coordinate2, int
   //   delete [] val1;
   //   delete [] ind1;
 
+ DIRICHLETPIN.stop();
+ cerr << "\n Time to pin preco is: " << DIRICHLETPIN.getTime();
   cerr << "About to return the matrix";
   return C1_tsf;
 }
@@ -325,10 +403,11 @@ cerr << "\n WARNING! Number of pinned are: " << nzeros;
 
       for(int kkk=0; kkk<NumIndices; kkk++)
         {
-          if(kkk==MyRowNum) val[MyRowNum] = 1.0;
+	  cerr << "\n Entry is: " << ind[kkk] << " val is " << val[kkk];
+          if(ind[kkk]==MyRowNum) val[kkk] = 1.0;
           else         val[kkk] = 0.0;
 
-          ind[kkk] = kkk;
+	  //          ind[kkk] = kkk;
           cerr << "\n ind is: " << ind[kkk] << " val is: " << val[kkk]; 
         }
       cerr << "\n About to insert ";
@@ -360,8 +439,6 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
 
   cerr << "\about to convert vbr to petra";
 
-  cerr << "\n \n ";
-  cerr << "\n DDD";
 
   // 1) Make a series of petra matrices corresponding to blocks.
   VbrMatrix2PetraMatrix(blk_size, Amat, junkcomm, F_crs, B_crs, Bt, C,

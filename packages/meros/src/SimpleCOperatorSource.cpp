@@ -87,7 +87,7 @@
     TSFReal sum  = vec.abs().sumElements();
     finalvec[i] = sum;
     }
-  cerr << "\nfinalvec is:" << finalvec;
+  //  cerr << "\nfinalvec is:" << finalvec;
    Epetra_CrsMatrix *Dinv_crs = 
         new Epetra_CrsMatrix(Copy, 
                              F_crs->RowMatrixColMap(),
@@ -117,8 +117,8 @@
            << "\n\n"
            << endl;
 
-      cerr << "\n The matrix is:";
-        cerr << Dinv_;
+      //      cerr << "\n The matrix is:";
+      //        cerr << Dinv_;
       hasDinv_ = true;
       return(Dinv_);
       

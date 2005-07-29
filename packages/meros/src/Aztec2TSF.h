@@ -45,6 +45,7 @@
 #include "Epetra_SerialComm.h"
 #endif
 #include "Epetra_Map.h"
+#include "Epetra_IntVector.h"
 #include "Epetra_Vector.h"
 #include "Epetra_VbrMatrix.h"
 #include "Epetra_CrsMatrix.h"
@@ -78,6 +79,9 @@ extern TSF::TSFLinearOperator TSFDirichletpin(TSF::TSFLinearOperator C_tsf,
 					      int *coordinate2,
 					      int numbc,				    
                                             Epetra_Comm *comm);
+
+extern TSF::TSFLinearOperator TSFDirichletpin(TSF::TSFLinearOperator C_tsf,
+					      const Epetra_IntVector & Locations,			                                             Epetra_Comm *comm);
 
 extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
                                       Epetra_Comm * & junkcomm,

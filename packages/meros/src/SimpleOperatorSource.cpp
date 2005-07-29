@@ -75,10 +75,6 @@
       Epetra_Vector FdiagsInv(F_crs->Map());
       FdiagsInv.Reciprocal(Fdiags);
       
-      // cerr << "F diags" << endl;
-      // cerr << FdiagsInv << endl;
-      // cerr << Fdiags << endl;
-
       // make an epetra matrix for the diagonal matrix
       Epetra_CrsMatrix *Dinv_crs = 
         new Epetra_CrsMatrix(Copy, 
@@ -88,12 +84,13 @@
 
       // Dinv_crs->ReplaceDiagonalValues(FdiagsInv);
       // Note: this is building -Dinv
-      int diagSize = FdiagsInv.GlobalLength();
+      int diagSize = FdiagsInv.MyLength();
+      cerr << "\n diagsize is: " << diagSize;
       double value;
       for (int j = 0; j < diagSize; j++)
         {
           value = -1.0*FdiagsInv[j]; // get negative of diags
-          Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
+          Dinv_crs->InsertMyValues(j, 1, &value, &j);
         }
 
       int ierr=Dinv_crs->FillComplete((Epetra_Map) (F_crs->OperatorDomainMap()),
@@ -113,8 +110,8 @@
            << "\n\n"
            << endl;
 
-      cerr << "\n The matrix is:";
-        cerr << Dinv_;
+      //      cerr << "\n The matrix is:";
+      // cerr << Dinv_;
       hasDinv_ = true;
       return(Dinv_);
       

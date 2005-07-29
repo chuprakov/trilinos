@@ -97,12 +97,12 @@ TSFLinearOperator DiagRightOperatorSource
 
       // Dinv_crs->ReplaceDiagonalValues(FdiagsInv);
       // Note: this is building -Dinv
-      int diagSize = FdiagsInv.GlobalLength();
+      int diagSize = FdiagsInv.MyLength();
       double value;
       for (int j = 0; j < diagSize; j++)
         {
           value = -1.0*FdiagsInv[j]; // get negative of diags
-          Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
+          Dinv_crs->InsertMyValues(j, 1, &value, &j);
         }
       int ierr=Dinv_crs->FillComplete((Epetra_Map) (F_crs->OperatorDomainMap()),
                                           (Epetra_Map ) (F_crs->RowMatrixColMap()));
