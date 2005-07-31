@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
   Epetra_SerialComm Comm;
 #endif
   
+  bool verbose = (Comm.MyPID() == 0);
+
   // set global dimension to 5, could be any number
   int NumGlobalElements = 5;
   // create a map
@@ -115,23 +117,32 @@ int main(int argc, char *argv[])
 
   double elapsed_time = timer.ElapsedTime();
   double total_flops =counter.Flops();
-  cout << "Total ops: " << total_flops << endl;
+  if (verbose)
+    cout << "Total ops: " << total_flops << endl;
   double MFLOPs = total_flops/elapsed_time/1000000.0;
-  cout << "Total MFLOPs  for mat-vec = " << MFLOPs << endl<< endl;
+  if (verbose)
+    cout << "Total MFLOPs  for mat-vec = " << MFLOPs << endl<< endl;
 
   double dotProduct;
   z.SetFlopCounter(counter);
   timer.ResetStartTime();
-  z.Dot( q, &dotProduct );
+  z.Dot(q, &dotProduct);
 
   total_flops =counter.Flops();
-  cout << "Total ops: " << total_flops << endl;
+  if (verbose)
+    cout << "Total ops: " << total_flops << endl;
 
   elapsed_time = timer.ElapsedTime();
-  MFLOPs = total_flops/elapsed_time/1000000.0;
-  cout << "Total MFLOPs for vec-vec = " << MFLOPs << endl<< endl;
+  if (elapsed_time != 0.0)
+    MFLOPs = (total_flops / elapsed_time) / 1000000.0;
+  else
+    MFLOPs = 0;
 
-  cout << "q dot z = " << dotProduct << endl;
+  if (verbose)
+  {
+    cout << "Total MFLOPs for vec-vec = " << MFLOPs << endl<< endl;
+    cout << "q dot z = " << dotProduct << endl;
+  }
 
 #ifdef HAVE_MPI
   MPI_Finalize();
