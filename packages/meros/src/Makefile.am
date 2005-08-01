@@ -48,12 +48,14 @@ CORE_H = \
           $(srcdir)/KayLoghinRightOperatorSource.h      \
           $(srcdir)/DiagRightOperatorSource.h           \
           $(srcdir)/BJBRightOperatorSource.h            \
+          $(srcdir)/LSCRightOperatorSource.h            \
           $(srcdir)/RightBlockNSOperatorSource.h        \
           $(srcdir)/Vbr2Petra.h                         \
           $(srcdir)/KayLoghinSchurFactory.h             \
 	  $(srcdir)/Epetra2TSFutils.h                   \
           $(srcdir)/DiagSchurFactory.h                  \
           $(srcdir)/BJBSchurFactory.h                   \
+          $(srcdir)/LSCSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
 	  $(srcdir)/SimpleOperatorSource.h               \
 	  $(srcdir)/SimpleCOperatorSource.h               \
@@ -72,11 +74,13 @@ CORE = \
 	  $(srcdir)/Epetra2TSFutils.cpp     	          \
           $(srcdir)/DiagRightOperatorSource.cpp           \
           $(srcdir)/BJBRightOperatorSource.cpp            \
+          $(srcdir)/LSCRightOperatorSource.cpp            \
           $(srcdir)/RightBlockNSOperatorSource.cpp        \
           $(srcdir)/Vbr2Petra.cpp                         \
           $(srcdir)/KayLoghinSchurFactory.cpp             \
           $(srcdir)/DiagSchurFactory.cpp                  \
           $(srcdir)/BJBSchurFactory.cpp                   \
+          $(srcdir)/LSCSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
 	  $(srcdir)/SimpleCBlockPreconditionerFactory.cpp   \

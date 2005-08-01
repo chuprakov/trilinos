@@ -113,6 +113,12 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   Epetra_CrsMatrix *B_crs = PetraMatrix::getConcrete(B);
   Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C);
 
+
+  cerr << "\n size of F " << Finv_crs->NumMyRows() << " "  << Finv_crs->NumMyCols();
+  cerr << "\n size of Bt " << Bt_crs->NumMyRows() << " " << Bt_crs->NumMyCols();
+ cerr << "\n size of B " << B_crs->NumMyRows() << " " << B_crs->NumMyCols();
+ cerr << "\n size of C " << C_crs->NumMyRows() << " " << C_crs->NumMyCols();
+
   Epetra_CrsMatrix *BFinv_crs = new Epetra_CrsMatrix(*B_crs);
   Epetra_CrsMatrix *BFinvBt_crs = new Epetra_CrsMatrix(*C_crs);
 
@@ -124,7 +130,7 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   PetraMatrix* X_petra = new PetraMatrix(C.domain(), C.range());
   X_petra->setPetraMatrix(BFinvBt_crs,true);
   X = X_petra;
-
+  // exit(1);
   }
 
   // Make identity matrices on the right spaces

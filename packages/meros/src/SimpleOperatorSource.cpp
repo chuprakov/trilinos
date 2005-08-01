@@ -63,23 +63,25 @@
       TSFLinearOperator F = S_.getBlock(0,0);
       Epetra_CrsMatrix  *F_crs = PetraMatrix::getConcrete(F);
 
+      cerr<< "\n Sizeof F: " << F_crs->NumMyRows() << " " << F_crs->NumMyCols();
+
       cerr << "number of diags in F_crs " << F_crs->NumGlobalDiagonals() << endl;
 
       // get an appropriate vector (with the right map)
       // to hold the extracted diagonals
       // and extract the diagonal from F
-      Epetra_Vector Fdiags(F_crs->Map());
+      Epetra_Vector Fdiags(F_crs->RowMap());
       F_crs->ExtractDiagonalCopy(Fdiags);
 
       // get the reciprocals of the diag values
-      Epetra_Vector FdiagsInv(F_crs->Map());
+      Epetra_Vector FdiagsInv(F_crs->RowMap());
       FdiagsInv.Reciprocal(Fdiags);
       
       // make an epetra matrix for the diagonal matrix
       Epetra_CrsMatrix *Dinv_crs = 
         new Epetra_CrsMatrix(Copy, 
-                             F_crs->RowMatrixColMap(),
-                             F_crs->OperatorDomainMap(),
+                             F_crs->RowMap(),
+                             F_crs->RangeMap(),
                              0);
 
       // Dinv_crs->ReplaceDiagonalValues(FdiagsInv);
@@ -93,8 +95,8 @@
           Dinv_crs->InsertMyValues(j, 1, &value, &j);
         }
 
-      int ierr=Dinv_crs->FillComplete((Epetra_Map) (F_crs->OperatorDomainMap()),
-                                          (Epetra_Map) (F_crs->RowMatrixColMap()));
+      int ierr=Dinv_crs->FillComplete();
+      Dinv_crs->OptimizeStorage();
       if (ierr!=0) {
         cerr <<"Error in Epetra_CrsMatrix FillComplete" << ierr << endl;
         // EPETRA_CHK_ERR(ierr);
@@ -109,6 +111,11 @@
            << Dinv_crs->NumGlobalDiagonals() 
            << "\n\n"
            << endl;
+
+      cerr << "number of rows of Dinv " 
+           << Dinv_crs->NumMyRows() 
+           << " " 
+	   << Dinv_crs->NumMyCols();
 
       //      cerr << "\n The matrix is:";
       // cerr << Dinv_;

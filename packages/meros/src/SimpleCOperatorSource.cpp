@@ -90,8 +90,8 @@
   //  cerr << "\nfinalvec is:" << finalvec;
    Epetra_CrsMatrix *Dinv_crs = 
         new Epetra_CrsMatrix(Copy, 
-                             F_crs->RowMatrixColMap(),
-                             F_crs->OperatorDomainMap(),
+                             F_crs->RowMap(),
+                             F_crs->OperatorRangeMap(),
                              0);
 
  for (int j = 0; j < numRows; j++)
@@ -100,8 +100,9 @@
           Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
         }
 
-      int ierr=Dinv_crs->FillComplete((Epetra_Map) (F_crs->OperatorDomainMap()),
-                                          (Epetra_Map) (F_crs->RowMatrixColMap()));
+      int ierr=Dinv_crs->FillComplete();
+      Dinv_crs->OptimizeStorage();
+
       if (ierr!=0) {
         cerr <<"Error in Epetra_CrsMatrix FillComplete" << ierr << endl;
         // EPETRA_CHK_ERR(ierr);
