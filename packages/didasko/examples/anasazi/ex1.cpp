@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
   MyPL.set( "Block Size", blocksize);
   MyPL.set( "Max Blocks", 20 );
   MyPL.set( "Max Restarts", 100 );
-  MyPL.set( "Tol", 1.0e-14 );
+  MyPL.set( "Tol", 1.0e-8 );
 
   // Create the sort manager
   // Choices are:
@@ -176,6 +176,9 @@ int main(int argc, char *argv[]) {
   // Solve the eigenvalue problem, and save the return code
   Anasazi::ReturnType solverreturn = MyBlockKrylovSchur.solve();
 
+  // Print results from eigensolver
+  MyBlockKrylovSchur.currentStatus();
+  
   // Check return code of the solver: Unconverged, Failed, or OK
   switch (solverreturn) {
 
@@ -209,9 +212,6 @@ int main(int argc, char *argv[]) {
     break;
   }
 
-  // Print results from eigensolver
-  MyBlockKrylovSchur.currentStatus();
-  
   // Get eigenvectors
   Teuchos::RefCountPtr<Epetra_MultiVector >  evecs = MyProblem->GetEvecs();
 

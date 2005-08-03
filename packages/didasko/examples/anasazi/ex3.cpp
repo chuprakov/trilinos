@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
   MyPL.set( "Block Size", blocksize);
   MyPL.set( "Max Blocks", 5 );
   MyPL.set( "Max Restarts", 300 );
-  MyPL.set( "Tol", 1.0e-10 );
+  MyPL.set( "Tol", 1.0e-8 );
 
   // Create the sort manager
   // Choices are:

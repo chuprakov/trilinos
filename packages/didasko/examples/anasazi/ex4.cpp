@@ -28,7 +28,7 @@
 // @HEADER
 
 // Compute the smallest magnitude eigenvalues and the corresponding eigenvectors using
-// Anasazi::BlockDavidson
+// Anasazi::LOBPCG
 
 #include "Didasko_ConfigDefs.h"
 #if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ANASAZI) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS) 
@@ -44,7 +44,7 @@
 #include "Trilinos_Util_CrsMatrixGallery.h"
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"
-#include "AnasaziBlockDavidson.hpp"
+#include "AnasaziLOBPCG.hpp"
 #include "AnasaziBasicSort.hpp"
 
 int main(int argc, char *argv[]) {
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 
   // Say hello and print some information about the gallery matrix
   if (verbose) {
-    cout << "Anasazi Example: Block Davidson" << endl;
+    cout << "Anasazi Example: LOBPCG" << endl;
     cout << "Problem info:" << endl;
     cout << Gallery;
     cout << endl;
@@ -152,8 +152,7 @@ int main(int argc, char *argv[]) {
   // Create the parameter list for the eigensolver
   Teuchos::ParameterList MyPL;
   MyPL.set( "Block Size", blocksize);
-  MyPL.set( "Max Blocks", 4       );
-  MyPL.set( "Max Iters" , 1000    );
+  MyPL.set( "Max Iters" , 500    );
   MyPL.set( "Tol"       , 1.0e-8 );
 
   // Create the sort manager
@@ -168,24 +167,24 @@ int main(int argc, char *argv[]) {
   Teuchos::RefCountPtr< Anasazi::BasicSort<double,MV,OP> > MySM = 
     Teuchos::rcp( new Anasazi::BasicSort<double,MV,OP>(which) );
 
-  // Create the Block Davidson solver
+  // Create the LOBPCG solver
   // This takes as inputs the eigenvalue problem that we constructed, 
   // the output manager, and the solver parameters
-  Anasazi::BlockDavidson<double,MV,OP> MyBlockDavidson(MyProblem, MySM, MyOM, MyPL );
+  Anasazi::LOBPCG<double,MV,OP> MyLOBPCG(MyProblem, MySM, MyOM, MyPL );
 
   // Solve the eigenvalue problem, and save the return code
-  Anasazi::ReturnType solverreturn = MyBlockDavidson.solve();
+  Anasazi::ReturnType solverreturn = MyLOBPCG.solve();
 
   // Print results from eigensolver
-  MyBlockDavidson.currentStatus();
-  
+  MyLOBPCG.currentStatus();
+
   // Check return code of the solver: Unconverged, Failed, or OK
   switch (solverreturn) {
 
   // UNCONVERGED
   case Anasazi::Unconverged:
     if (verbose) 
-      cout << "Anasazi::BlockDavidson::solve() did not converge!" << endl;
+      cout << "Anasazi::LOBPCG::solve() did not converge!" << endl;
 #ifdef HAVE_MPI
     MPI_Finalize();
 #endif
@@ -195,7 +194,7 @@ int main(int argc, char *argv[]) {
   // FAILED
   case Anasazi::Failed:
     if (verbose) 
-      cout << "Anasazi::BlockDavidson::solve() failed!" << endl;
+      cout << "Anasazi::LOBPCG::solve() failed!" << endl;
 #ifdef HAVE_MPI
     MPI_Finalize();
 #endif
@@ -205,9 +204,9 @@ int main(int argc, char *argv[]) {
   // OK
   case Anasazi::Ok:
     if (verbose) 
-      cout << "Anasazi::BlockDavidson::solve()\n" 
-           << "        converged in " << MyBlockDavidson.GetNumIters() 
-           << " iterations with " << MyBlockDavidson.GetNumRestarts() 
+      cout << "Anasazi::LOBPCG::solve()\n" 
+           << "        converged in " << MyLOBPCG.GetNumIters() 
+           << " iterations with " << MyLOBPCG.GetNumRestarts() 
            << " restarts." << endl;
     break;
   }
