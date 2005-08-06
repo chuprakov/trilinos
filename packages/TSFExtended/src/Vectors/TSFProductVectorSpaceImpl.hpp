@@ -59,7 +59,7 @@ ProductVectorSpace(const Teuchos::Array<const VectorSpace<Scalar> >
 template <class Scalar>
 void ProductVectorSpace<Scalar>::setUpCore()
 {
-  std::vector<Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > >
+  std::vector<Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > >
     coreVecSpaces(numBlocks_);
   for (int i = 0; i < numBlocks_; i++)
     {
@@ -143,7 +143,7 @@ bool ProductVectorSpace<Scalar>::operator!=(const VectorSpace<Scalar>& other)
 
 //========================================================================
 template <class Scalar>
-RefCountPtr<TSFCore::Vector<Scalar> >ProductVectorSpace<Scalar>::createMember() const
+RefCountPtr<Thyra::VectorBase<Scalar> >ProductVectorSpace<Scalar>::createMember() const
 {
   RefCountPtr<const ProductVectorSpace<Scalar> > me = rcp(this, false);
   VectorSpace<Scalar> vs(me);

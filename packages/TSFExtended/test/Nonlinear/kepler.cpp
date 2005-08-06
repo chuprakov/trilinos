@@ -73,7 +73,7 @@ namespace TSFExtended
       const double& xIn = currentEvalPt().getElement(0);
 
       /* compute the residual */
-      f = this->range()->createMember();
+      f = createMember(this->range());
       f.setElement(0,  xIn + e_ * ::sin(xIn) - m_);
       /* compute the derivative of the residual */
       double jVal = 1 + e_*::cos(xIn);
@@ -92,7 +92,7 @@ namespace TSFExtended
     /** */
     Vector<double> getInitialGuess() const 
     {
-      Vector<double> rtn = this->domain()->createMember();
+      Vector<double> rtn = createMember(this->domain());
       rtn.setElement(0, m_);
       return rtn;
     }

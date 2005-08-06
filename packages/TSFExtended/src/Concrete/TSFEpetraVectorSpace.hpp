@@ -29,71 +29,72 @@
 
 #include "TSFConfigDefs.hpp"
 #include "Epetra_Map.h"
-#include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
-#include "TSFVecDescribableByTypeID.hpp"
-#include "TSFCoreVector.hpp"
-#include "Teuchos_Utils.hpp"
-
+#include "Thyra_ScalarProdVectorSpaceBase.hpp"
+#include "Thyra_MPIVectorSpaceBase.hpp"
 
 
 namespace TSFExtended
 {
   using namespace Teuchos;
+  using namespace Thyra;
 
 
   /**
-   * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
-   * This class derives
-   * from TSFCore::EpetraVectorSpace, so it can be used seamlessly in any 
-   * TSFCore-based code.
+   * Adaptor wrapping Epetra in the Thyra vector space system.
+   * We derive from Thyra::ScalarProdVectorSpaceBase in order to
+   * inherit defaults for scalar products and view creation.
    */
-  class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
-                            public Handleable<const TSFCore::VectorSpace<double> >,
-                            public VecDescribableByTypeID<double>
-    {
-    public:
-      GET_RCP(const TSFCore::VectorSpace<double>);
-      /** */
-      EpetraVectorSpace();
+  class EpetraVectorSpace : virtual public MPIVectorSpaceBase<double>,
+                            public Handleable<const VectorSpaceBase<double> >
+  {
+  public:
+    GET_RCP(const Thyra::VectorSpaceBase<double>);
 
-      /** */
-      EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
+    /** */
+    EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& map);
+    
 
-      /** virtual dtor */
-      virtual ~EpetraVectorSpace() {;}
+    /** @name Overridden form Teuchos::Describable */
+    //@{
+    /** \brief . */
+    std::string description() const;
+    //@}
 
-      /** */
-      virtual RefCountPtr<TSFCore::Vector<double> > createMember() const ;
-//       virtual Vector<double> createMember() const ;
+    /** @name Public overridden from VectorSpace */
+    //@{
+    /** \brief clone the space */
+    Teuchos::RefCountPtr< const VectorSpaceBase<double> > clone() const;
 
-      /** \name Describable interface */
-      //@{
-      /** Return a short description  */
-//       string description() const 
-//       {
-// 	return describe(0);
-//       }
-//       //@}
+    
 
-//       GET_RCP(const TSFCore::VectorSpace<double>);
+    /** */
+    const RefCountPtr<const Epetra_Map>& epetraMap() const 
+    {return epetraMap_;}
 
-//     virtual string describe(int depth) const
-//     {
-//       string ret = "";
-//       for (int i = 0; i < depth; i++)
-// 	{
-// 	  ret.append("   ");
-// 	}
-//       ret.append(typeName());
-//       //      ret.append(" of dimension " + toString(this->dim()));
-//       ret.append(" of dimension " + toString(this->dim()));
-//       return ret;
-//     }
-	
+    /** */
+    MPI_Comm mpiComm() const {return mpiComm_;}
 
+    /** */
+    Index localSubDim() const {return localSubDim_;}
+
+  protected:
+
+    /** @name Protected overridden from VectorSpace */
+    //@{
+    /** \brief create a vector */
+    RefCountPtr<VectorBase<double> > createMember() const;
+
+    //@}
+  private:
+    /** */
+    RefCountPtr<const Epetra_Map> epetraMap_;
+
+    MPI_Comm mpiComm_;
+
+    Index localSubDim_;
       
-    };
+  };
   
 }
 

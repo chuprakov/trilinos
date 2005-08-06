@@ -30,7 +30,7 @@
 #define TSFTRANSPOSEOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
- #include "TSFCoreVectorSpace.hpp"
+ #include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "TSFLinearOperatorDecl.hpp"
 //#include "TSFLoadableMatrix.hpp"
@@ -51,14 +51,14 @@ namespace TSFExtended
    */
   template <class Scalar>
   class TransposeOperator : public OpDescribableByTypeID<Scalar>, 
-			    public Handleable<TSFCore::LinearOp<Scalar> >
+			    public Handleable<Thyra::LinearOpBase<Scalar> >
     //public LoadableMatrix<Scalar>
     //public ExplicitlyTransposeableOp<Scalar>
     //public Formable<Scalar>,
   {
    
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(Thyra::LinearOpBase<Scalar>);
 //     virtual RefCountPtr<TransposeOperator<Scalar> > getRcp() 
 //     {return rcp(this);}
 
@@ -74,7 +74,7 @@ namespace TSFExtended
 
     /** Return the domain, which is the range of the operator being
      * transposed. */
-    Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  domain() const 
+    Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  domain() const 
     {
       VectorSpace<Scalar> vs = op_.range();
       return vs.ptr();
@@ -83,7 +83,7 @@ namespace TSFExtended
 
     /** Return the range, which is the domain of the operator being
      * transposed. */
-    Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  range() const 
+    Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  range() const 
     {
       VectorSpace<Scalar> vs = op_.domain();
       return vs.ptr();
@@ -92,9 +92,9 @@ namespace TSFExtended
 
     /** Apply the transpose of the underlying operator */
     void apply(
-               const TSFCore::ETransp            M_trans
-               ,const TSFCore::Vector<Scalar>    &x
-               ,TSFCore::Vector<Scalar>          *y
+               const Thyra::ETransp            M_trans
+               ,const Thyra::VectorBase<Scalar>    &x
+               ,Thyra::VectorBase<Scalar>          *y
                ,const Scalar            alpha = 1.0
                ,const Scalar            beta = 0.0
                ) const 

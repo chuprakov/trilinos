@@ -29,7 +29,7 @@
 #include "TSFBlockOperator.hpp"
 // #include "TSFProductVectorSpace.hpp"
 // #include "TSFVectorSpace.hpp"
-// //#include "TSFCoreVectorSpace.hpp"
+// //#include "Thyra_VectorSpaceBase.hpp"
 // #include "TSFOpDescribableByTypeID.hpp"
  
 #include "TSFZeroOperator.hpp"
@@ -130,18 +130,18 @@ void BlockOperator<Scalar>::setBlock(const int &i, const int &j,
 /*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::apply(
-				  const TSFCore::ETransp            M_trans
-				  ,const TSFCore::Vector<Scalar>    &x
-				  ,TSFCore::Vector<Scalar>          *y
+				  const Thyra::ETransp            M_trans
+				  ,const Thyra::VectorBase<Scalar>    &x
+				  ,Thyra::VectorBase<Scalar>          *y
 				  ,const Scalar                     alpha
 				  ,const Scalar                     beta
 				  ) const 
 {
   /* make TSFExtended vectors  */
-  RefCountPtr<TSFCore::Vector<Scalar> > xp = rcp(x);
+  RefCountPtr<Thyra::VectorBase<Scalar> > xp = rcp(x);
   Vector<Scalar> xExt = xp;
 
-  RefCountPtr<TSFCore::Vector<Scalar> > yp = y;
+  RefCountPtr<Thyra::VectorBase<Scalar> > yp = y;
   Vector<Scalar> yExt = yp;
   
   if (M_trans == NOTRANS)

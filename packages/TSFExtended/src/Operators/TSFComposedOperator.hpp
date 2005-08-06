@@ -30,9 +30,10 @@
 #define TSFCOMPOSEDOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
-#include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFRowAccessibleOp.hpp"
@@ -47,12 +48,12 @@ namespace TSFExtended
    * ComposedOperator is a composition of two linear operators.
    */
   template <class Scalar> 
-  class ComposedOperator : public OpDescribableByTypeID<Scalar>,
-                           public Handleable<TSFCore::LinearOp<Scalar> >,
+  class ComposedOperator : public SingleScalarTypeOp<Scalar>,
+                           public Handleable<SingleScalarTypeOp<Scalar> >,
                            public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
     /** 
      * Construct from a pair of linear operators.  Note: need to fix
      * the test_for_exception
@@ -76,37 +77,37 @@ namespace TSFExtended
      * Apply operator to a vector in the domain space and return a vector
      * in the range space.
      */
-    virtual void apply(
-                       TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+    virtual void generalApply(
+                       Thyra::ETransp            M_trans
+                        ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
       Vector<Scalar> v;
-      if (M_trans == TSFCore::NOTRANS)
+      if (M_trans == Thyra::NOTRANS)
         {
           v = right_.range().createMember();
           v.zero();
-          right_.ptr()->apply(M_trans, x, v.ptr().get(), 1.0, 0.0);
-          left_.ptr()->apply(M_trans, *(v.ptr()), y, alpha, beta);
+          right_.generalApply(M_trans, x, v.ptr().get(), 1.0, 0.0);
+          left_.generalApply(M_trans, *(v.ptr()), y, alpha, beta);
         }
       else
         {
           v = left_.range().createMember();
           v.zero();
-          left_.ptr()->apply(M_trans, x, v.ptr().get(), 1.0, 0.0);
-          right_.ptr()->apply(M_trans, *(v.ptr()), y, alpha, beta);
+          left_.generalApply(M_trans, x, v.ptr().get(), 1.0, 0.0);
+          right_.generalApply(M_trans, *(v.ptr()), y, alpha, beta);
         }
     }
 
     /** Return the domain of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > domain() const 
     {return right_.domain().ptr();}
 
     /** Return the range of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > range() const 
     {return left_.range().ptr();}
 
 

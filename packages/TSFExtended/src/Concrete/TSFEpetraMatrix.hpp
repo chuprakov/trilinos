@@ -29,7 +29,6 @@
 #ifndef TSFEPETRAMATRIX_HPP
 #define TSFEPETRAMATRIX_HPP
 
-#include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFLoadableMatrix.hpp"
 #include "TSFLinearOperatorDecl.hpp"
@@ -44,18 +43,20 @@
 namespace TSFExtended
 {
   using namespace Teuchos;
+  using namespace Thyra;
 
   /** */
-  class EpetraMatrix : public TSFCore::EpetraLinearOp,
+  class EpetraMatrix : public SingleScalarTypeOp<double>,
+                       public Handleable<SingleScalarTypeOp<double> >,
                        public LoadableMatrix<double>,
-		       public RowAccessibleOp<double>,
+                       public RowAccessibleOp<double>,
                        // public ExplicitlyTransposeableOp<double>,
                        public Printable,
-                       public DescribableByTypeID,
-                       public ILUFactorizableOp<double>,
-                       public Handleable<TSFCore::LinearOp<double> >
+                       public ILUFactorizableOp<double>
   {
   public:
+    GET_RCP(SingleScalarTypeOp<double>);
+
     /** Construct an uninitialized EpetraMatrix */
     EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
                  const RefCountPtr<const EpetraVectorSpace>& range);
@@ -65,9 +66,20 @@ namespace TSFExtended
                  const RefCountPtr<const EpetraVectorSpace>& range,
                  const int* numEntriesPerRow);
 
-    /** Virtual dtor */
-    virtual ~EpetraMatrix(){;}
+    /** */
+    RefCountPtr< const VectorSpaceBase<double> > domain() const {return domain_;}
 
+    
+    /** */
+    RefCountPtr< const VectorSpaceBase<double> > range() const {return range_;}
+
+    /** */
+    virtual void generalApply(const Thyra::ETransp M_trans,
+                              const Thyra::VectorBase<double>    &x,
+                              Thyra::VectorBase<double>          *y,
+                              const double            alpha,
+                              const double            beta) const ;
+    
     /** */
     virtual void configure(int lowestRow,
                            const std::vector<std::set<int> >& nonzeros);
@@ -136,7 +148,7 @@ namespace TSFExtended
                                  const int* globalRowIndices,
                                  int numColumnsPerRow,
                                  const int* globalColumnIndices,
-                                 const Scalar* values,
+                                 const double* values,
                                  const int* skipRow);
 
     /** Set all elements to zero, preserving the existing structure */
@@ -168,27 +180,13 @@ namespace TSFExtended
                                        LeftOrRight leftOrRight,
                                        Preconditioner<double>& rtn) const ;
 
-    /** Describable interface */
-    virtual string description() const ;
-
     /** Printable interface */
     virtual void print(ostream& os) const ;
 
-    GET_RCP(TSFCore::LinearOp<double>);
 
 
-    string describe(int depth) const
-    {
-      string ret = "";
-      for (int i = 0; i < depth; i++)
-	{
-	  ret.append("   ");
-	}
-      ret.append(typeName());
-      ret.append(" of dimension " + toString(this->range()->dim()) + " by "
-		 + toString(this->domain()->dim()));
-      return ret;
-    }
+    /** */
+    string description() const ;
 
 
 
@@ -200,48 +198,23 @@ namespace TSFExtended
      */
     const Epetra_CrsMatrix* crsMatrix() const ;
   protected:
-     /** \name Allocators for domain and range spaces */
-  //@{
-  /** Allocate the domain space of the operator. Purpose: In
-   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
-   * extended from the TSFCore versions by inheritance, and the
-   * TSFExtended operator subclasses expect to work with an extended
-   * vector space subclass. Thus, it is necessary for the base
-   * operator class to never directly allocate vector space objects,
-   * and allocation is delegated to a virtual allocator function. 
-   * KRL and RAB, 2/18/04. */
-  virtual RefCountPtr<const TSFCore::EpetraVectorSpace> 
-  allocateDomain(const RefCountPtr<Epetra_Operator>  &op 
-                 ,TSFCore::ETransp  op_trans 
-                 )  const ; 
-  
-  /** Allocate the range space of the operator. Purpose: In
-   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
-   * extended from the TSFCore versions by inheritance, and the
-   * TSFExtended operator subclasses expect to work with an extended
-   * vector space subclass. Thus, it is necessary for the base
-   * operator class to never directly allocate vector space objects,
-   * and allocation is delegated to a virtual allocator function. 
-   * KRL and RAB, 2/18/04. */
-  virtual RefCountPtr<const TSFCore::EpetraVectorSpace> allocateRange( 
-    const RefCountPtr<Epetra_Operator>  &op 
-    ,TSFCore::ETransp  op_trans 
-    )  const ; 
-
-
 
 
     /** Get the specified row as defined by RowAccessible  */
     void getRow(const int& row, 
 		Teuchos::Array<int>& indices, 
-		Teuchos::Array<Scalar>& values) const;
+		Teuchos::Array<double>& values) const;
     
 
 
   private:
     Epetra_CrsMatrix* crsMatrix();
 
-    
+    RefCountPtr<Epetra_CrsMatrix> matrix_;
+
+    RefCountPtr<const VectorSpaceBase<double> > range_;
+
+    RefCountPtr<const VectorSpaceBase<double> > domain_;
   };
 }
 

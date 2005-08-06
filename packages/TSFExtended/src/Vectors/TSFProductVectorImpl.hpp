@@ -1,7 +1,7 @@
 // @HEADER
 // ***********************************************************************
 // 
-//               TSFCore: Trilinos Solver Framework Core
+//               Thyra: Trilinos Solver Framework Core
 //                 Copyright (2004) Sandia Corporation
 // 
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -74,9 +74,9 @@ template <class Scalar>
 void ProductVector<Scalar>::setCore()
 {
   this->uninitialize();
-  Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > vs = space_.ptr();
-  const Teuchos::RefCountPtr<const TSFCore::ProductVectorSpace<Scalar> > pvs
-    = Teuchos::rcp_dynamic_cast<const TSFCore::ProductVectorSpace<Scalar> >(vs);
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > vs = space_.ptr();
+  const Teuchos::RefCountPtr<const Thyra::ProductVectorSpace<Scalar> > pvs
+    = Teuchos::rcp_dynamic_cast<const Thyra::ProductVectorSpace<Scalar> >(vs);
   initialize(pvs, &(vecsCore_[0]));
 }
 

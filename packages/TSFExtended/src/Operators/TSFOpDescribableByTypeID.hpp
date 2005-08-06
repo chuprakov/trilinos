@@ -31,7 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFDescribableByTypeID.hpp"
-#include "TSFCoreLinearOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
 
 namespace TSFExtended
 {
@@ -44,7 +44,7 @@ namespace TSFExtended
 
   template <class Scalar> 
   class OpDescribableByTypeID : public DescribableByTypeID,
-				public TSFCore::LinearOp<Scalar>
+				public Thyra::LinearOpBase<Scalar>
   {
   public:
     /** Virtual dtor */

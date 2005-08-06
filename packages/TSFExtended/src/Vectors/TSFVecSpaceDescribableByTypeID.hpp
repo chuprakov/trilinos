@@ -31,13 +31,13 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFDescribableByTypeID.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 
 namespace TSFExtended
 {
   /**
    * This cannot be used with a vector space that already derives from
-   * a TSFCore::VectorSpace since it then have the diamond pattern of
+   * a Thyra::VectorSpaceBase since it then have the diamond pattern of
    * multiple inheritance
    *
    * Class that extends DescribableByTypeID that is specific for
@@ -48,7 +48,7 @@ namespace TSFExtended
 
   template <class Scalar> 
   class VecSpaceDescribableByTypeID : public DescribableByTypeID,
-                                      public TSFCore::VectorSpace<Scalar>
+                                      public Thyra::VectorSpaceBase<Scalar>
   {
   public:
     /** Virtual dtor */

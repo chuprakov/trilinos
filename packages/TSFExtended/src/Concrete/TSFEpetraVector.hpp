@@ -29,8 +29,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFVecDescribableByTypeID.hpp"
-#include "TSFCoreEpetraVector.hpp"
+#include "Thyra_MPIVectorStdDecl.hpp"
 #include "TSFIndexableVector.hpp"
 #include "TSFVectorDecl.hpp"
 #include "Epetra_FEVector.h"
@@ -39,97 +38,104 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
   using namespace Teuchos;
+  using namespace Thyra;
   /**
-   * TSF extension of TSFCore::EpetraVector, implementing the LoadableVector
+   * TSF extension of Thyra::EpetraVector, implementing the LoadableVector
    * interface allowing an application to access elements. This class derives
-   * from TSFCore::EpetraVector, so it can be used seamlessly in any 
-   * TSFCore-based code.
+   * from Thyra::EpetraVector, so it can be used seamlessly in any 
+   * Thyra-based code.
    */
-  class EpetraVector : public TSFCore::EpetraVector, 
-                       public Handleable<TSFCore::Vector<double> >,
+  class EpetraVector : public MPIVectorStd<double>,
+                       public Handleable<VectorBase<double> >,
                        public IndexableVector<double>,
-                       public VecDescribableByTypeID<double>,
                        public Printable
-    {
-    public:
-      GET_RCP(TSFCore::Vector<double>);
-      /** Construct with a smart pointer to an Epetra FE vector. */
-      EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
-                   const RefCountPtr<const TSFCore::EpetraVectorSpace>& map);
+  {
+  public:
+    GET_RCP(VectorBase<double>);
 
-      /** virtual dtor */
-      virtual ~EpetraVector() {;}
+    /** Construct with a smart pointer to an Epetra vector space. */
+    EpetraVector(const RefCountPtr<const VectorSpaceBase<double> >& vs);
 
-      /** \name IndexableVector interface */
-      //@{
-      /** read the element at the given global index */
-      virtual const double& operator[](Index globalIndex) const 
-      {return getElement(globalIndex);}
+    /** \name IndexableVector interface */
+    //@{
+    /** read the element at the given global index */
+    virtual const double& operator[](Index globalIndex) const 
+    {return getElement(globalIndex);}
 
-      /** writable access to the element at the given global index */
-      virtual double& operator[](Index globalIndex) ;
-      //@}
+    /** writable access to the element at the given global index */
+    virtual double& operator[](Index globalIndex) ;
+    //@}
 
-      /** \name LoadableVector interface */
-      //@{
-      /** set a single element */
-      void setElement(Index globalIndex, const double& value);
+    /** \name LoadableVector interface */
+    //@{
+    /** set a single element */
+    void setElement(Index globalIndex, const double& value);
 
-      /** add to a single element */
-      void addToElement(Index globalIndex, const double& value);
+    /** add to a single element */
+    void addToElement(Index globalIndex, const double& value);
 
-      /** set a group of elements */
-      void setElements(size_t numElems, const Index* globalIndices, 
+    /** set a group of elements */
+    void setElements(size_t numElems, const Index* globalIndices, 
+                     const double* values);
+
+
+    /** add to a group of elements */
+    void addToElements(size_t numElems, const Index* globalIndices, 
                        const double* values);
 
+    /** */
+    void finalizeAssembly();
+    //@}
 
-      /** add to a group of elements */
-      void addToElements(size_t numElems, const Index* globalIndices, 
-                         const double* values);
+    /** \name AccessibleVector interface */
+    //@{
+    /** */
+    const double& getElement(Index globalIndex) const ;
 
-      /** */
-      void finalizeAssembly();
-      //@}
-
-      /** \name AccessibleVector interface */
-      //@{
-      /** */
-      const double& getElement(Index globalIndex) const ;
-
-      /** */
-      void getElements(const Index* globalIndices, int numElems,
-                       vector<Scalar>& elems) const ;
-      //@}
+    /** */
+    void getElements(const Index* globalIndices, int numElems,
+                     vector<double>& elems) const ;
+    //@}
       
 
-      /** \name Printable interface */
-      //@{
-      /** Write to a stream  */
-      void print(ostream& os) const 
-      {
-        epetra_vec()->Print(os);
-      }
-      //@}
+    /** \name Printable interface */
+    //@{
+    /** Write to a stream  */
+    void print(ostream& os) const 
+    {
+      epetraVec()->Print(os);
+    }
+    //@}
 
-      /** \name Describable interface */
-      //@{
-      /** Write a brief description */
-//       string description() const 
-//       {
-//         return "EpetraVector";
-//       }b
-      //@}
+    /** Get a read-only Epetra_Vector */
+    static const Epetra_Vector& getConcrete(const TSFExtended::Vector<double>& tsfVec);
+    /** Get a read-write Epetra_Vector */
+    static Epetra_Vector& getConcrete(TSFExtended::Vector<double>& tsfVec);
+    /** Get a read-write Epetra_Vector pointer */
+    static Epetra_Vector* getConcretePtr(TSFExtended::Vector<double>& tsfVec);
 
 
-      /** Get a read-only Epetra_Vector */
-      static const Epetra_Vector& getConcrete(const TSFExtended::Vector<double>& tsfVec);
-      /** Get a read-write Epetra_Vector */
-      static Epetra_Vector& getConcrete(TSFExtended::Vector<double>& tsfVec);
-      /** Get a read-write Epetra_Vector pointer */
-      static Epetra_Vector* getConcretePtr(TSFExtended::Vector<double>& tsfVec);
-    };
+
+    
+    /** */
+    const RefCountPtr<Epetra_Vector>& epetraVec() const {return epetraVec_;}
+    
+    /** */
+    RefCountPtr<Epetra_Vector>& epetraVec() {return epetraVec_;}
+
+  protected:    
+    /** */
+    const RefCountPtr<const Epetra_Map>& epetraMap() const {return epetraMap_;}
+
+  private:
+
+    RefCountPtr<Epetra_Vector> epetraVec_;
+
+    RefCountPtr<const MPIVectorSpaceBase<double> > mpiVecSpace_;
+
+    RefCountPtr<const Epetra_Map> epetraMap_;
+  };
   
 }
 

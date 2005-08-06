@@ -39,8 +39,8 @@ namespace TSFExtended
   /**
    *
    */
-  class IfpackOperator : public OpDescribableByTypeID<double>,
-                         public Handleable<TSFCore::LinearOp<double> >
+  class IfpackOperator : public SingleScalarTypeOp<double>,
+                       public Handleable<SingleScalarTypeOp<double> >
   {
   public:
     /** */
@@ -55,32 +55,30 @@ namespace TSFExtended
      * Apply operator to a vector in the domain space and return a vector
      * in the range space.
      */
-    virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<double>    &x
-                       ,TSFCore::Vector<double>          *y
-                       ,const double            alpha = 1.0
-                       ,const double            beta  = 0.0
-                       ) const ;
+    virtual void generalApply(const Thyra::ETransp M_trans,
+                              const Thyra::VectorBase<double>    &x,
+                              Thyra::VectorBase<double>          *y,
+                              const double            alpha,
+                              const double            beta) const ;
 
 
     /** Return the domain of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<double> > domain() const {return domain_;}
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<double> > domain() const {return domain_;}
 
     /** Return the range of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<double> > range() const {return range_;}
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<double> > range() const {return range_;}
 
     /* Handleable boilerplate */
-    GET_RCP(TSFCore::LinearOp<double>);
+    GET_RCP(SingleScalarTypeOp<double>);
 
   private:
     RefCountPtr<Ifpack_IlukGraph> precondGraph_;
 
     RefCountPtr<Ifpack_CrsRiluk> precond_;
 
-    RefCountPtr<const TSFCore::VectorSpace<double> > domain_;
+    RefCountPtr<const Thyra::VectorSpaceBase<double> > domain_;
 
-    RefCountPtr<const TSFCore::VectorSpace<double> > range_;
+    RefCountPtr<const Thyra::VectorSpaceBase<double> > range_;
   };
 }
 

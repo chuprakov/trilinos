@@ -45,7 +45,7 @@ namespace TSFExtended
 
   template <class Scalar> 
   class VecDescribableByTypeID : public DescribableByTypeID //,
-				 //public TSFCore::Vector<Scalar>
+				 //public Thyra::VectorBase<Scalar>
   {
   public:
     /** Virtual dtor */
@@ -68,16 +68,16 @@ namespace TSFExtended
 	}
       ret.append(typeName());
 
-      const TSFCore::VectorSpace<Scalar>* cvs = 
-	dynamic_cast<const TSFCore::VectorSpace<Scalar>* >(this);
+      const Thyra::VectorSpaceBase<Scalar>* cvs = 
+	dynamic_cast<const Thyra::VectorSpaceBase<Scalar>* >(this);
       if (cvs != 0)
 	{
 	  ret.append(" of dimension " + toString(cvs->dim()));
 	  return ret;
 	}
 
-      const TSFCore::Vector<Scalar>* cv = 
-	dynamic_cast<const TSFCore::Vector<Scalar>* >(this);
+      const Thyra::VectorBase<Scalar>* cv = 
+	dynamic_cast<const Thyra::VectorBase<Scalar>* >(this);
       if (cv != 0)
 	{
 	  ret.append(" of dimension " + toString((cv->space())->dim()));

@@ -30,7 +30,7 @@
 #define TSFACCESSIBLEVECTOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
+
 
 
 
@@ -38,14 +38,14 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
 
   /**
    * TSFExtended::AccessibleVector defines an interface through which
    * elements for a vector can be accessed. Element access is occasionally
    * used by application codes in probing results vectors, 
    * but should rarely be used by high-performance solver codes; this 
-   * capability is therefore in TSFExtended rather than TSFCore.
+   * capability is therefore in TSFExtended rather than Thyra.
    *
    * @author Kevin Long (krlong@sandia.gov)
    */

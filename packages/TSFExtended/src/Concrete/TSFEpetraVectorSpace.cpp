@@ -27,44 +27,62 @@
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFEpetraVector.hpp"
 #include "Teuchos_Utils.hpp"
+#include "Epetra_MpiComm.h"
 
 using namespace TSFExtended;
 using namespace Teuchos;
+using namespace Thyra;
 
-
-EpetraVectorSpace::EpetraVectorSpace()
-	: TSFCore::EpetraVectorSpace()
-{}
-
-EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& localMap)
-	: TSFCore::EpetraVectorSpace(localMap)
-{}
-
-RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
-// Vector<double>  EpetraVectorSpace::createMember() const
+EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& m)
+  : MPIVectorSpaceBase<double>(),
+    Handleable<const VectorSpaceBase<double> >(), 
+    epetraMap_(m),
+    mpiComm_(MPI_COMM_NULL),
+    localSubDim_(epetraMap_->NumMyElements())
 {
-  Epetra_Vector* v = new Epetra_Vector(*epetra_map(), false);
+  const Epetra_Comm& comm = epetraMap_->Comm();
+  const Epetra_MpiComm* epMPIComm = dynamic_cast<const Epetra_MpiComm*>(&comm);
+  if (epMPIComm != 0) 
+    {
+#ifdef HAVE_MPI
+      mpiComm_ = epMPIComm->GetMpiComm();
+#else
+      TEST_FOR_EXCEPTION(true, runtime_error,
+                         "Epetra communicator is MPI_Comm, but MPI is not "
+                         "enabled?!?!?");
+#endif
+    }
+  else
+    {
+      mpiComm_ = MPI_COMM_NULL;
+    }
 
-  RefCountPtr<Epetra_Vector> vec = rcp(v);
-  //  RefCountPtr<const TSFCore::EpetraVectorSpace> me = rcp(this, false);
-  RefCountPtr<const EpetraVectorSpace> me = rcp(this, false);
-  return rcp(new EpetraVector(vec, me));
+  updateState(epetraMap_->NumGlobalElements());
 }
 
-// string EpetraVectorSpace::description() const 
-// {
-//   return describe(0);
-// }
+// Overridden from VectorSpace
 
-// 	string rtn = "EpetraVectorSpace[";
-//   rtn += "nLocal=" 
-//     + Teuchos::toString(epetra_map()->NumMyElements())
-//     + " nGlobal=" 
-//     + Teuchos::toString(epetra_map()->NumGlobalElements()) 
-//     + "]";
+Teuchos::RefCountPtr<VectorBase<double> >
+EpetraVectorSpace::createMember() const
+{
+  return rcp(new EpetraVector(rcp(this, false)));
+}
+
+Teuchos::RefCountPtr< const VectorSpaceBase<double> >
+EpetraVectorSpace::clone() const
+{
+  return Teuchos::rcp(new EpetraVectorSpace(epetraMap_));
+}
 
 
-//   return rtn;
-// }
+
+string EpetraVectorSpace::description() const
+{
+  return "EpetraVectorSpace[dim=" + Teuchos::toString(dim()) + ", local="
+    + Teuchos::toString(localSubDim()) + "]";
+}
+
+
+
 
 

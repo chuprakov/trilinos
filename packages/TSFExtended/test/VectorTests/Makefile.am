@@ -26,7 +26,7 @@
 # ************************************************************************
 #@HEADER
 
-include $(top_srcdir)/Makefile.common
+include $(top_builddir)/Makefile.export.TSFExtended
 
 EXEEXT = .exe
 
@@ -36,9 +36,9 @@ Vector_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 
 
-Vector_test_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+Vector_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Vector_test_CXXFLAGS = $(COMMON_CXXFLAGS)
+Vector_test_CXXFLAGS = $(CXXFLAGS)
 
-Vector_test_LDADD = $(COMMON_LDADD)
+Vector_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
 

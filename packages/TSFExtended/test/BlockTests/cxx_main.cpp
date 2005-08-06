@@ -26,6 +26,9 @@
 // ***********************************************************************
 //@HEADER
 
+#ifdef BLARF
+
+#include <cstdlib>
 #include "Teuchos_MPISession.hpp"
 #include "TSFVector.hpp"
 #include "TSFLinearCombination.hpp"
@@ -45,7 +48,7 @@
 //#include "TSFInverseOperator.hpp"
 #include "TSFLinearOperator.hpp"
 #include "TSFEpetraMatrix.hpp"
-//#include "TSFCoreLinearOp.hpp"
+//#include "Thyra_LinearOpBase.hpp"
 #include "TSFIdentityOperator.hpp"
 #include "TSFZeroOperator.hpp"
 #include "TSFBlockOperator.hpp"
@@ -55,13 +58,16 @@
 #include "TSFComposedOperator.hpp"
 
 
+
 //using namespace Teuchos;
 using namespace TSFExtended;
 using namespace TSFExtendedOps;
 
+#endif
 
 int main(int argc, void *argv[]) 
 {
+#ifdef BLARF
   try
     {
       int verbosity = 1;
@@ -350,6 +356,9 @@ int main(int argc, void *argv[])
     }
   cerr << "About to finalize MPISession\n";
   MPISession::finalize();
-  exit(0);
+#endif
+  
 }
+
+
 

@@ -140,6 +140,7 @@ TAC_ARG_CONFIG_MPI
 AC_PROG_CC(cc gcc)
 AC_PROG_CXX(CC g++ gcc c++ cxx)
 AC_PROG_F77(f77 g77 f90 xlf90)
+AC_PROG_RANLIB
 
 
 
@@ -147,13 +148,8 @@ AC_PROG_F77(f77 g77 f90 xlf90)
 # Checks if ML is enabled
 # ------------------------------------------------------------------------
 
-TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
-if test "X$ac_cv_use_ml" != "Xno"; then
-  HAVE_ML=true
-else
-  HAVE_ML=false
-fi
-AM_CONDITIONAL(HAVE_ML, test "X$ac_cv_use_ml" != "Xno")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(TSFExtended, ml, ML, BUILD_ML, yes, [Enable the ML multilevel solvers and preconditioners in TSF], [Enable ML. Can be overridden with --disable-TSFExtended-ml.])
+
 
 
 
@@ -190,7 +186,7 @@ AC_SUBST(TSF_BUILD_DIRECTORY)
 #  to add a new directory.
 AC_CONFIG_FILES([
 		Makefile 
-		Makefile.export 
+		Makefile.export.TSFExtended 
 		src/Makefile
 		test/Makefile
 		test/VectorTests/Makefile

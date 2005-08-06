@@ -30,8 +30,31 @@
 #define TSFDESCRIBABLE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
 #include "Teuchos_Describable.hpp"
 
-
+namespace TSFExtended
+{
+  /**
+   * Adaptor for compatibility between the Teuchos Describable interface
+   * and Paul Boggs' earlier Describable.
+   */
+  class PTBDescribable : virtual public Teuchos::Describable
+  {
+  public:
+    /** Return a brief descriptive string that is indented by
+     *  depth*3 spaces 
+     *  @param depth int giving the number of 3 space tabs 
+     */
+    virtual string describe(int depth) const
+    {
+      string ret = "";
+      for (int i = 0; i < depth; i++)
+        {
+          ret.append("   ");
+        }
+      ret.append(description());
+      return ret;
+    }
+  };
+}
 #endif

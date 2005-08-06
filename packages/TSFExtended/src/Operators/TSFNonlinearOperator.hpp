@@ -36,7 +36,7 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
   using namespace Teuchos;
 
   /** 

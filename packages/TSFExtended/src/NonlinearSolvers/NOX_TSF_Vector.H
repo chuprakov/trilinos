@@ -84,12 +84,13 @@ namespace NOX
       //~Vector();
 
       /** Access to a writable reference to the underlying TSF vector*/
-      TSFExtended::Vector<double>& NOX::TSF::Vector::getTSFVector();
+      TSFExtended::Vector<double>& getTSFVector();
 
       /** Access to a read-only reference to the underlying TSF vector*/
-      const TSFExtended::Vector<double>& NOX::TSF::Vector::getTSFVector() const;
+      const TSFExtended::Vector<double>& getTSFVector() const;
+
       /** Access to the vector precision expected by user*/
-      int NOX::TSF::Vector::getPrecision() const;
+      int getPrecision() const;
 
       //@{ \name Initialization methods.
 

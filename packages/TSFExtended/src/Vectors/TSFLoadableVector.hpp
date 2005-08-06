@@ -30,23 +30,23 @@
 #define TSFLOADABLEVECTOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
+
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
   /**
    * LoadableVector defines an interface through which elements can 
    * be loaded into a vector. Element loading is used extensively
    * by application codes in creating vectors, 
    * but should never be used by high-performance solver codes; this 
-   * capability is therefore in TSFExtended rather than TSFCore.
+   * capability is therefore in TSFExtended rather than Thyra.
    *
    * A TSFExtended vector type that will be
    * used in a context where loading is required should multiply inherit
-   * from both TSFCore::Vector and TSFExtended::LoadableVector.
+   * from both Thyra::VectorBase and TSFExtended::LoadableVector.
    * 
    * Elements can by loaded one at a time
    * or in batches. The methods to load single elements arew pure virtual

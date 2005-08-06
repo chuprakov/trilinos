@@ -33,7 +33,6 @@
 #include "NOX_Common.H"
 #include "NOX_TSF_Vector.H"
 #include "NOX_Utils.H"
-#include "TSFCoreVectorStdOps.hpp"
 #include "NOX_Random.H" // for Random class
 
 

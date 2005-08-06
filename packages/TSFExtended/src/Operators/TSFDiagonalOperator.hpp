@@ -24,15 +24,16 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
- /* @HEADER@ */
+/* @HEADER@ */
 
 #ifndef TSFDIAGONALOPERATOR_HPP
 #define TSFDIAGONALOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
-#include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
@@ -47,19 +48,19 @@ namespace TSFExtended
    * A DiagonalOperator is a diagonal operator.
    */
   template <class Scalar> 
-  class DiagonalOperator : public OpDescribableByTypeID<Scalar>,
-			   public Handleable<TSFCore::LinearOp<Scalar> >,
+  class DiagonalOperator : public SingleScalarTypeOp<Scalar>,
+                           public Handleable<SingleScalarTypeOp<Scalar> >,
                            public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
     /**
      * Construct a vector containing the entries on the diagonal.
      */
     DiagonalOperator(const Vector<Scalar>& vector)
       : diagonalValues_(vector),
-	domain_(vector.space()),
-	range_(vector.space())
+        domain_(vector.space()),
+        range_(vector.space())
     {;}
 
 
@@ -72,40 +73,40 @@ namespace TSFExtended
      * Apply does an element-by-element multiply between the input 
      * vector, x, and the diagonal values.
      */
-    virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+    virtual void generalApply(
+                       const Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
       Vector<Scalar>  applyRes = range_.createMember();
     
-      TSFCore::ele_wise_prod(alpha, *(diagonalValues_.ptr().get()), x, 
-			     applyRes.ptr().get());
-      TSFCore::Vp_StV(applyRes.ptr().get(), beta, *y);
+      Thyra::ele_wise_prod(alpha, *(diagonalValues_.ptr().get()), x, 
+                           applyRes.ptr().get());
+      Thyra::Vp_StV(applyRes.ptr().get(), beta, *y);
     }
 
 
 
     /** Return the domain of the operator */
-    RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > domain() const 
     {return domain_.ptr();}
  
 
 
 
     /** Return the range of the operator */
-    RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > range() const 
     {return range_.ptr();}
 
 
 
     /** Return the kth row  */
     void getRow(const int& k, 
-		Teuchos::Array<int>& indices, 
-		Teuchos::Array<Scalar>& values) const
+                Teuchos::Array<int>& indices, 
+                Teuchos::Array<Scalar>& values) const
     {
       indices.resize(1);
       indices[0] = k;

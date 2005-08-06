@@ -136,27 +136,6 @@ void VectorSpace<Scalar>::setBlock(int i,
 
 
 
-//========================================================================
-template <class Scalar>
-string VectorSpace<Scalar>::description() const
-{
-  return describe(0);
-}
-
-
-//========================================================================
-template <class Scalar>
-string VectorSpace<Scalar>::describe(int depth) const
-{
-  const DescribableByTypeID* descr = 
-    dynamic_cast<const DescribableByTypeID* > (this->ptr().get());
-  if (descr != 0)
-    {
-      return descr->describe(depth);
-    }
-  return "Space not describable \n";
-}
-
 
 
 #endif

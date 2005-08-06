@@ -25,49 +25,72 @@
 // **********************************************************************/
 
 #include "TSFEpetraVector.hpp"
+#include "TSFEpetraVectorSpace.hpp"
 #include "TSFVectorImpl.hpp"
+#include "RTOp_parallel_helpers.h"
+#include "RTOpPack_MPI_apply_op.hpp"
+#include "Teuchos_Workspace.hpp"
+#include "Teuchos_TestForException.hpp"
+#include "Teuchos_dyn_cast.hpp"
+#include "Thyra_MPIVectorStd.hpp"
+
+
 
 using namespace Teuchos;
 using namespace TSFExtended;
-using TSFCore::Index;
+using namespace Thyra;
+using Thyra::Index;
 
 
-TSFExtended::EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
-                           const RefCountPtr<const TSFCore::EpetraVectorSpace>& vs)
-   : TSFCore::EpetraVector(vec, vs) 
-{;}
+EpetraVector::EpetraVector(const RefCountPtr<const VectorSpaceBase<double> >& vs)
+  : MPIVectorStd<double>(), epetraVec_(), mpiVecSpace_(), epetraMap_()
+{
+  const EpetraVectorSpace* epvs 
+    = dynamic_cast<const EpetraVectorSpace*>(vs.get());
+  TEST_FOR_EXCEPTION(epvs==0, runtime_error,
+                     "could not cast vector space to EpetraVectorSpace in "
+                     "EpetraVector ctor");
+
+  mpiVecSpace_ = rcp_dynamic_cast<const MPIVectorSpaceBase<double> >(vs);
+
+  epetraMap_ = epvs->epetraMap();
+  epetraVec_ = rcp(new Epetra_Vector(*epetraMap_, true));
+
+  RefCountPtr<double> data = rcp(&(epetraVec_->operator[](0)), false);
+  initialize(mpiVecSpace_, data, 1);
+}
 
 
 double& EpetraVector::operator[](Index globalIndex) 
 {
-  const Epetra_BlockMap& myMap = epetra_vec()->Map();
-  return (*epetra_vec())[myMap.LID(globalIndex)];
+  const Epetra_BlockMap& myMap = epetraVec()->Map();
+  return (*epetraVec())[myMap.LID(globalIndex)];
 }
 
 void EpetraVector::setElement(Index index, const double& value)
 {
-  epetra_vec()->ReplaceGlobalValues(1, const_cast<double*>(&value), 
+  epetraVec()->ReplaceGlobalValues(1, const_cast<double*>(&value), 
                                     const_cast<int*>(&index));
 }
 
 void EpetraVector::addToElement(Index index, const double& value)
 {
-  epetra_vec()->SumIntoGlobalValues(1, const_cast<double*>(&value), 
+  epetraVec()->SumIntoGlobalValues(1, const_cast<double*>(&value), 
                                     const_cast<int*>(&index));
 }
 
 const double& EpetraVector::getElement(Index index) const 
 {
-  const Epetra_BlockMap& myMap = epetra_vec()->Map();
-  return (*epetra_vec())[myMap.LID(index)];
+  const Epetra_BlockMap& myMap = epetraVec()->Map();
+  return (*epetraVec())[myMap.LID(index)];
 }
 
 void EpetraVector::getElements(const Index* globalIndices, int numElems,
                                vector<double>& elems) const
 {
   elems.resize(numElems);
-  const Epetra_BlockMap& myMap = epetra_vec()->Map();
-  RefCountPtr<const Epetra_Vector> epv = epetra_vec();
+  const Epetra_BlockMap& myMap = epetraVec()->Map();
+  RefCountPtr<const Epetra_Vector> epv = epetraVec();
 
   for (int i=0; i<numElems; i++)
     {
@@ -78,20 +101,20 @@ void EpetraVector::getElements(const Index* globalIndices, int numElems,
 void EpetraVector::setElements(size_t numElems, const Index* globalIndices,
                                const double* values)
 {
-  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
+  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetraVec().get());
   int ierr = vec->ReplaceGlobalValues(numElems, globalIndices, values);
 }
 
 void EpetraVector::addToElements(size_t numElems, const Index* globalIndices,
                                  const double* values)
 {
-  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
+  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetraVec().get());
   int ierr = vec->SumIntoGlobalValues(numElems, globalIndices, values);
 }
 
 void EpetraVector::finalizeAssembly()
 {
-  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetra_vec().get());
+  Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetraVec().get());
   vec->GlobalAssemble();
 }
 
@@ -102,7 +125,7 @@ const Epetra_Vector& EpetraVector::getConcrete(const TSFExtended::Vector<double>
   TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
                      "EpetraVector::getConcrete called on a vector that "
                      "could not be cast to an EpetraVector");
-  return *(epv->epetra_vec());
+  return *(epv->epetraVec());
 }
 
 Epetra_Vector& EpetraVector::getConcrete(TSFExtended::Vector<double>& tsfVec)
@@ -112,7 +135,7 @@ Epetra_Vector& EpetraVector::getConcrete(TSFExtended::Vector<double>& tsfVec)
   TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
                      "EpetraVector::getConcrete called on a vector that "
                      "could not be cast to an EpetraVector");
-  return *(epv->epetra_vec());
+  return *(epv->epetraVec());
 }
 
 
@@ -123,6 +146,7 @@ Epetra_Vector* EpetraVector::getConcretePtr(TSFExtended::Vector<double>& tsfVec)
   TEST_FOR_EXCEPTION(epv==0, std::runtime_error,
                      "EpetraVector::getConcrete called on a vector that "
                      "could not be cast to an EpetraVector");
-  return epv->epetra_vec().get();
+  return epv->epetraVec().get();
 }
+
 

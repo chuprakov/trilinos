@@ -43,6 +43,8 @@
 
 
 using namespace TSFExtended;
+using namespace Thyra;
+using namespace Teuchos;
 
 template <class Scalar>
 class InverseOperator;
@@ -50,19 +52,19 @@ class InverseOperator;
 
 //=======================================================================
 template <class Scalar>
-LinearOperator<Scalar>::LinearOperator() : Handle<TSFCore::LinearOp<Scalar> >() {;}
+LinearOperator<Scalar>::LinearOperator() : Handle<SingleScalarTypeOp<Scalar> >() {;}
 
 
 
 //=======================================================================
 template <class Scalar>
-LinearOperator<Scalar>::LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr) 
-  : Handle<TSFCore::LinearOp<Scalar> >(rawPtr) {;}
+LinearOperator<Scalar>::LinearOperator(Handleable<SingleScalarTypeOp<Scalar> >* rawPtr) 
+  : Handle<SingleScalarTypeOp<Scalar> >(rawPtr) {;}
 
 //=======================================================================
 template <class Scalar>
-LinearOperator<Scalar>::LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr) 
-  : Handle<TSFCore::LinearOp<Scalar> >(smartPtr) {;}
+LinearOperator<Scalar>::LinearOperator(const RefCountPtr<SingleScalarTypeOp<Scalar> >& smartPtr) 
+  : Handle<SingleScalarTypeOp<Scalar> >(smartPtr) {;}
 
 
 
@@ -80,8 +82,8 @@ void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
     {
       out = this->range().createMember();
     }
-  this->ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
-	       out.ptr().get(), alpha, beta);
+  this->ptr()->generalApply(Thyra::NOTRANS, *(in.ptr().get()),
+                            out.ptr().get(), alpha, beta);
 }
 
 
@@ -101,8 +103,23 @@ void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
     {
       out = this->domain().createMember();
     }
-  this->ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
-	       out.ptr().get(), alpha, beta);
+  this->ptr()->generalApply(Thyra::TRANS, *(in.ptr().get()),
+                            out.ptr().get(), alpha, beta);
+}
+
+
+//=======================================================================
+template <class Scalar> inline 
+void LinearOperator<Scalar>
+::generalApply(
+               const Thyra::ETransp            M_trans
+               ,const Thyra::VectorBase<Scalar>    &x
+               ,Thyra::VectorBase<Scalar>          *y
+               ,const Scalar            alpha
+               ,const Scalar            beta
+               ) const 
+{
+  this->ptr()->generalApply(M_trans, x, y, alpha, beta);
 }
 
 
@@ -237,18 +254,7 @@ LinearOperator<Scalar> LinearOperator<Scalar>::getBlock(const int &i,
 
 
 
-//=============================================================================
-template <class Scalar>
-string LinearOperator<Scalar>::describe(int depth) const
-{
-  const DescribableByTypeID* p = 
-    dynamic_cast<const DescribableByTypeID* >(this->ptr().get());
-  if (p != 0)
-    {
-      return p -> describe(depth);
-    }
-  return "Operator not describable";
-}
+
 
 
 

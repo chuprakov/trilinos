@@ -31,12 +31,12 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFHandle.hpp"
-#include "TSFCoreMultiVector.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_MultiVectorBase.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
-#include "TSFCoreVectorStdOps.hpp"
+#include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 #include "Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
@@ -46,18 +46,18 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
-  using TSFCore::Range1D;
-  using TSFCore::ETransp;
+  using Thyra::Index;
+  using Thyra::Range1D;
+  using Thyra::ETransp;
   using namespace Teuchos;
   
 
   template <class Scalar>
-  class MultiVector : public Handle<TSFCore::MultiVector<Scalar> >
+  class MultiVector : public Handle<Thyra::MultiVectorBase<Scalar> >
     {
     public:
 
-      HANDLE_CTORS(MultiVector<Scalar>, TSFCore::MultiVector<Scalar>);
+      HANDLE_CTORS(MultiVector<Scalar>, Thyra::MultiVectorBase<Scalar>);
       
       /** Provide access to the columns as <\tt> Vector<\tt> objects */
 

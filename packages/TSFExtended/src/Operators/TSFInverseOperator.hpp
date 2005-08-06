@@ -31,8 +31,9 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFLinearOperatorDecl.hpp"
-#include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFLinearSolver.hpp"
@@ -53,16 +54,17 @@ namespace TSFExtended
    * does solves by factoring and backsolves.
    */
   template <class Scalar> 
-  class InverseOperator : public OpDescribableByTypeID<Scalar>,
-			   public Handleable<TSFCore::LinearOp<Scalar> >
+  class InverseOperator : public SingleScalarTypeOp<Scalar>,
+                          public Handleable<SingleScalarTypeOp<Scalar> >
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
+
     /**
      * Ctor with a linear operator and a solver specified.
      */
     InverseOperator(const LinearOperator<Scalar>& op, 
-		    const LinearSolver<Scalar>& solver = new LinearSolver<Scalar>())
+                    const LinearSolver<Scalar>& solver = new LinearSolver<Scalar>())
       : op_(op), solver_(solver) {;}
 
 
@@ -81,9 +83,9 @@ namespace TSFExtended
      * @param beta    scalar multiplying y (default is 0.0)
      */
     virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+                       const Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
@@ -94,36 +96,36 @@ namespace TSFExtended
                          "InverseOperator<Scalar>::apply() called on a non-square operator.");
       SolverState<Scalar> haveSoln;
       LinearOperator<Scalar> applyOp;      
-      if (M_trans == TSFCore::NOTRANS)
-	{
-	  applyOp = op_;
-	}
+      if (M_trans == Thyra::NOTRANS)
+        {
+          applyOp = op_;
+        }
       else
-	{
-	  applyOp = op_.transpose();
-	}
+        {
+          applyOp = op_.transpose();
+        }
       
       if (beta == 0.0)
-	{
-	  Vt_S(&x, alpha);
-	}
+        {
+          Vt_S(&x, alpha);
+        }
       else
-	{
-	  applyOp.ptr()->apply(TSFCore::NOTRANS, *y, &x, beta, alpha);
-	}
+        {
+          applyOp.ptr()->generalApply(Thyra::NOTRANS, *y, &x, beta, alpha);
+        }
       
       DiagonalOperator<Scalar>* val1 = dynamic_cast<DiagonalOperator<Scalar>* >(op_);
       IdentityOperator<Scalar>* val2 = dynamic_cast<IdentityOperator<Scalar>* >(op_);
       if (val1 != 0 or val2 != 0)
-	{
-	  haveSoln = applyOp.ptr()->applyInverse(x, y);
-	}      
+        {
+          haveSoln = applyOp.ptr()->applyInverse(x, y);
+        }      
       else
-	{
-	  haveSoln = solver_.solve(applyOp, x, *y);
-	}
+        {
+          haveSoln = solver_.solve(applyOp, x, *y);
+        }
       TEST_FOR_EXCEPTION(haveSoln.finalState() != SolveConverged, runtime_error,
-			 "InverseOperator<Scalar>::apply() " << haveSoln.stateDescription());
+                         "InverseOperator<Scalar>::apply() " << haveSoln.stateDescription());
     }
 
 

@@ -43,21 +43,21 @@ using namespace Teuchos;
 
 EpetraVectorType::EpetraVectorType()
 #ifdef HAVE_MPI
-  : TSFCore::EpetraVectorSpaceFactory(rcp(new Epetra_MpiComm(MPI_COMM_WORLD)))
+  : epetraComm_(rcp(new Epetra_MpiComm(MPI_COMM_WORLD)))
 #else
-    : TSFCore::EpetraVectorSpaceFactory()
+    : epetraComm_(rcp(new Epetra_SerialComm()))
 #endif
 {;}
 
 
-RefCountPtr<const TSFCore::VectorSpace<double> > 
+RefCountPtr<const Thyra::VectorSpaceBase<double> > 
 EpetraVectorType::createSpace(int dimension,
                               int nLocal,
                               const int* localIndices) const
 {
 	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension, nLocal,
                                                    (int*) localIndices,
-                                                   0, *epetra_comm()));
+                                                   0, *epetraComm()));
 
 	return rcp(new EpetraVectorSpace(map));
 }
@@ -74,7 +74,7 @@ EpetraVectorType::createGhostImporter(const VectorSpace<double>& space,
                      "non-epetra vector space [" << space << "] given as "
                      "argument to EpetraVectorType::createGhostImporter()");
 
-  return rcp(new EpetraGhostImporter(p->epetra_map(), nGhost, ghostIndices));
+  return rcp(new EpetraGhostImporter(p->epetraMap(), nGhost, ghostIndices));
   
 }
 
@@ -97,7 +97,7 @@ EpetraVectorType::createMatrix(const VectorSpace<double>& domain,
                      "incompatible range space given to "
                      "EpetraVectorType::createMatrix()");
 
-  RefCountPtr<TSFCore::LinearOp<double> > A = rcp(new EpetraMatrix(pd, pr));
+  RefCountPtr<SingleScalarTypeOp<double> > A = rcp(new EpetraMatrix(pd, pr));
 
   return A;
 }
@@ -123,7 +123,7 @@ EpetraVectorType::createMatrix(const VectorSpace<double>& domain,
                      "incompatible range space given to "
                      "EpetraVectorType::createMatrix()");
 
-  RefCountPtr<TSFCore::LinearOp<double> > A 
+  RefCountPtr<SingleScalarTypeOp<double> > A 
     = rcp(new EpetraMatrix(pd, pr, numEntriesPerRow));
 
   return A;

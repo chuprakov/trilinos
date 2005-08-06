@@ -1,7 +1,7 @@
 // @HEADER
 // ***********************************************************************
 // 
-//               TSFCore: Trilinos Solver Framework Core
+//               Thyra: Trilinos Solver Framework Core
 //                 Copyright (2004) Sandia Corporation
 // 
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
@@ -34,7 +34,7 @@
 
 #include "Teuchos_Array.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "TSFCoreProductVectorSpaceDecl.hpp"
+#include "Thyra_ProductVectorSpaceDecl.hpp"
 #include "TSFVecSpaceDescribableByTypeID.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 
@@ -49,12 +49,12 @@ namespace TSFExtended
 
 
   template<class Scalar>
-  class ProductVectorSpace : public TSFCore::ProductVectorSpace<Scalar>, 
+  class ProductVectorSpace : public Thyra::ProductVectorSpace<Scalar>, 
                              public DescribableByTypeID,
-                             public Handleable<const TSFCore::VectorSpace<Scalar> >
+                             public Handleable<const Thyra::VectorSpaceBase<Scalar> >
   {
   public:
-    GET_RCP(const TSFCore::VectorSpace<Scalar>);
+    GET_RCP(const Thyra::VectorSpaceBase<Scalar>);
 
     /** Constructor that specifies the complete collection of spaces
      *  making up the product.  
@@ -109,7 +109,7 @@ namespace TSFExtended
 
 
 
-    RefCountPtr<TSFCore::Vector<Scalar> > createMember() const;
+    RefCountPtr<Thyra::VectorBase<Scalar> > createMember() const;
 
 
 

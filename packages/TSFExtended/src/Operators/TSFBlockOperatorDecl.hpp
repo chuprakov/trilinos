@@ -31,7 +31,6 @@
 
 #include "TSFConfigDefs.hpp"
 #include "Teuchos_Array.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
 #include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
@@ -56,13 +55,13 @@ namespace TSFExtended
    * @author Paul T Boggs (ptboggs@sandia.gov)
    */
   template <class Scalar>
-  class BlockOperator : public OpDescribableByTypeID<Scalar>,
-			public Handleable<TSFCore::LinearOp<Scalar> >,
+  class BlockOperator : public SingleScalarTypeOp<Scalar>,
+                        public Handleable<SingleScalarTypeOp<Scalar> >,
                         public ExplicitlyTransposeableOp<Scalar>,
                         public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
 
     /** ctor with domain and range specified.  The blocks must be
      *	specified later and all filled before use.
@@ -76,11 +75,11 @@ namespace TSFExtended
 
 
     /** Returns the domain  */
-    RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain() const;
+    RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > domain() const;
     
 
     /** Returns the range  */
-    RefCountPtr<const TSFCore::VectorSpace<Scalar> > range() const;
+    RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > range() const;
 
 
     /** Returns the number of block rows */
@@ -118,10 +117,10 @@ namespace TSFExtended
      * @param alpha   scalar multiplying M*x (default is 1.0)
      * @param beta    scalar multiplying y (default is 0.0)
      */
-    virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+    virtual void generalApply(
+                       const Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            //alpha = 1.0
                        ,const Scalar           // beta  = 0.0
                        ) const;
@@ -130,9 +129,9 @@ namespace TSFExtended
     /** Apply operator to a vector in the domain space, returning a vector
      * in the range space 
      */
-    void applyReg(const TSFCore::Vector<Scalar>& in, 
+    void applyReg(const Thyra::VectorBase<Scalar>& in, 
 		  const Scalar alpha, 
-		  TSFCore::Vector<Scalar>* out, 
+		  Thyra::VectorBase<Scalar>* out, 
 		  const Scalar beta) const ;
 
 
@@ -141,9 +140,9 @@ namespace TSFExtended
      * returning a vector in the range space. The default
      * implementation throws an exception 
      */
-    virtual void applyTrans(const TSFCore::Vector<Scalar>& in, 
+    virtual void applyTrans(const Thyra::VectorBase<Scalar>& in, 
 			    const Scalar alpha, 
-			    TSFCore::Vector<Scalar>* out, 
+			    Thyra::VectorBase<Scalar>* out, 
 			    const Scalar beta) const ;
 
 

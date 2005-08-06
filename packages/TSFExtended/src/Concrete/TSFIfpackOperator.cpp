@@ -83,12 +83,11 @@ IfpackOperator::IfpackOperator(const EpetraMatrix* A,
 }
 
 
-void IfpackOperator::apply(const TSFCore::ETransp            M_trans,
-                           const TSFCore::Vector<double>    &x,
-                           TSFCore::Vector<double>          *y,
-                           const double            alpha,
-                           const double            beta
-                           ) const
+void IfpackOperator::generalApply(const Thyra::ETransp M_trans,
+                                  const Thyra::VectorBase<double>& x,
+                                  Thyra::VectorBase<double>* y,
+                                  const double alpha,
+                                  const double beta) const
 {
   /* grab the epetra vector objects underlying the input and output vectors */
   const EpetraVector* epIn = dynamic_cast<const EpetraVector*>(&x);
@@ -96,25 +95,25 @@ void IfpackOperator::apply(const TSFCore::ETransp            M_trans,
                      "IfpackOperator apply: input vector is "
                      "not an EpetraVector");
 
-  const Epetra_Vector* in = epIn->epetra_vec().get();
+  const Epetra_Vector* in = epIn->epetraVec().get();
 
   EpetraVector* epy = dynamic_cast<EpetraVector*>(y);
   TEST_FOR_EXCEPTION(epy == 0, runtime_error,
                      "IfpackOperator apply: output vector is "
                      "not an EpetraVector");
 
-  Epetra_Vector* yy = epy->epetra_vec().get();
+  Epetra_Vector* yy = epy->epetraVec().get();
 
   /* if beta != 0, we have to create a temporary vector to hold the
    * intermediate result beta*y. */
-  RefCountPtr<TSFCore::Vector<double> > tsfOut;
+  RefCountPtr<Thyra::VectorBase<double> > tsfOut;
   Epetra_Vector* tmp;
 
   if (beta!=0.0) /* we need to have storage for the result of op*x */
     {
-      tsfOut = y->space()->createMember();
+      tsfOut = createMember(y->space());
       EpetraVector* ep = dynamic_cast<EpetraVector*>(tsfOut.get());
-      tmp = ep->epetra_vec().get();
+      tmp = ep->epetraVec().get();
     }
   else /* we overwrite y with the application of the op */
     {
@@ -128,13 +127,13 @@ void IfpackOperator::apply(const TSFCore::ETransp            M_trans,
   int ierr;
 
   /* do the solve (or transpose solve) */
-  if (M_trans == TSFCore::NOTRANS)
+  if (M_trans==NOTRANS)
     {
       ierr = p->Solve(false, *in, *tmp);
     }
   else
     {
-      ierr = p->Solve(true, *in, *tmp);
+      ierr = p->Solve(false, *in, *tmp);
     }
 
   /* if necessary, add beta*y */

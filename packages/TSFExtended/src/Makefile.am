@@ -122,6 +122,7 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFOpDescribableByTypeID.hpp \
 	$(srcdir)/Operators/TSFRowAccessibleOp.hpp \
 	$(srcdir)/Operators/TSFScaledOperator.hpp\
+	$(srcdir)/Operators/TSFSingleScalarTypeOp.hpp\
 	$(srcdir)/Operators/TSFSumOperator.hpp\
 	$(srcdir)/Operators/TSFTransposeOperator.hpp\
 	$(srcdir)/Operators/TSFZeroOperator.hpp 
@@ -145,6 +146,24 @@ LINEARSOLVERS = \
 	$(srcdir)/LinearSolvers/TSFAztecSolver.cpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBuilder.cpp 
 
+NONLINEARSOLVERS_H = \
+	$(srcdir)/NonlinearSolvers/NOX_StatusTest_SafeCombo.H \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_Group.H \
+	$(srcdir)/NonlinearSolvers/NOX_TSF.H \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_StatusTestBuilder.H \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_Vector.H \
+	$(srcdir)/NonlinearSolvers/TSFNOXSolver.H 
+
+NONLINEARSOLVERS = \
+	$(srcdir)/NonlinearSolvers/NOX_StatusTest_SafeCombo.C \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_Group.C \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_StatusTestBuilder.C \
+	$(srcdir)/NonlinearSolvers/NOX_TSF_Vector.C \
+	$(srcdir)/NonlinearSolvers/TSFNOXSolver.C 	
+
+
+
+
 
 PRECONDITIONERS_H = \
 	$(srcdir)/Preconditioners/TSFGenericLeftPreconditioner.hpp \
@@ -163,7 +182,7 @@ PRECONDITIONERS =
 # Read macros that are common to building source and tests. We define these
 # in Makefile.common to avoid maintaining the lists in multiple files.
 #
-include $(top_srcdir)/Makefile.common
+include $(top_builddir)/Makefile.export.TSFExtended
 
 
 
@@ -189,18 +208,21 @@ TSF_EXTENDED_H = \
 	$(UTILS_H) \
 	$(VECTORS_H) \
 	$(OPERATORS_H) \
+	$(CONCRETE_H) \
 	$(LINEARSOLVERS_H) \
-	$(PRECONDITIONERS_H) \
-	$(CONCRETE_H) 
+	$(NONLINEARSOLVERS_H) \
+	$(PRECONDITIONERS_H) 
 
 #np# replace new_package with the name of the package being autotool'ed here
 libTSFExtended_a_SOURCES = \
 	$(UTILS) \
 	$(VECTORS) \
 	$(OPERATORS) \
+	$(CONCRETE) \
 	$(LINEARSOLVERS) \
-	$(PRECONDITIONERS) \
-	$(CONCRETE) 
+	$(NONLINEARSOLVERS) \
+	$(PRECONDITIONERS) 
+
 
 
 #np# replace new_package with the name of the package being autotool'ed here

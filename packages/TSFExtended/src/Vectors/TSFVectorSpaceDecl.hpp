@@ -30,7 +30,7 @@
 #define TSFVECTORSPACEDECL_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFHandle.hpp"
 #include "TSFDescribableByTypeID.hpp"
 
@@ -45,14 +45,14 @@ namespace TSFExtended
    *  TSFCoreVector
    */
   template <class Scalar>
-  class VectorSpace : public Handle< const TSFCore::VectorSpace<Scalar> >
+  class VectorSpace : public Handle< const Thyra::VectorSpaceBase<Scalar> >
   {
   public:
-    HANDLE_CTORS(VectorSpace<Scalar>, const TSFCore::VectorSpace<Scalar>);
+    HANDLE_CTORS(VectorSpace<Scalar>, const Thyra::VectorSpaceBase<Scalar>);
     
     /** Create a new element of this vector space */
     Vector<Scalar>  createMember() const 
-    {return this->ptr()->createMember();}
+    {return Thyra::createMember(this->ptr());}
 
     /** Return the dimension of the space */
     int dim() const {return this->ptr()->dim();}
@@ -97,16 +97,6 @@ namespace TSFExtended
 
     /** set the i-th subblock */
     void setBlock(int i, const VectorSpace<Scalar>& space);
-
-
-    /** Describe the vectorSpace.  This gives just the number of
-	elements, if the vector is a simple vector.  It gives
-	the block structure if the vector is a TSFBlockVector
-	if the vector is a block vector.  */
-    string description() const;
-
-    /** The companion to describe that indents for readability  */
-    string describe(int depth) const;
 
   };
 

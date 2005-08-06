@@ -36,7 +36,7 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
   using namespace Teuchos;
 
   /** 
@@ -71,11 +71,11 @@ namespace TSFExtended
       {;}
                             
       /** Return the domain space */
-      const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& domain() const 
+      const RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >& domain() const 
       {return domain_;}
 
       /** Return the range space */
-      const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& range() const 
+      const RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >& range() const 
       {return range_;}
 
       /** Set the evaluation point */
@@ -206,10 +206,10 @@ namespace TSFExtended
 
     private:
       /** */
-      RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain_;
+      RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > domain_;
 
       /** */
-      RefCountPtr<const TSFCore::VectorSpace<Scalar> > range_;
+      RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > range_;
 
       /** */
       mutable bool jacobianIsValid_;

@@ -30,9 +30,10 @@
 #define TSFSCALEDOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
-#include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
  //#include "TSFExplicitlyTransposeableOp.hpp"
@@ -50,12 +51,12 @@ namespace TSFExtended
    * another LinearOperator by a constant scaling factor.
    */
   template <class Scalar> 
-  class ScaledOperator : public OpDescribableByTypeID<Scalar>,
-			 public Handleable<TSFCore::LinearOp<Scalar> >,
+  class ScaledOperator : public SingleScalarTypeOp<Scalar>,
+                         public Handleable<SingleScalarTypeOp<Scalar> >,
 			 public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
 
     /**
      * Construct the LinearOperator and the constant scaling factor.
@@ -70,25 +71,25 @@ namespace TSFExtended
      * ScaledOperator is a linear operator scaled by a scalar, which maps any 
      * vector in the domain space to the appropriate vector in the range space.
      */
-    virtual void apply(
-                       TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+    virtual void generalApply(
+                       Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
-      op_.ptr()->apply(M_trans, x, y, alpha, beta);
-      TSFCore::Vt_S(y, scale_);
+      op_.ptr()->generalApply(M_trans, x, y, alpha, beta);
+      Thyra::Vt_S(y, scale_);
     }
 
     /** Return the domain of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > domain() const 
     {return op_.domain().ptr();}
     
 
     /** Return the range of the operator. */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    virtual RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > range() const 
     {return op_.range().ptr();}
 
 

@@ -31,12 +31,12 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFHandle.hpp"
-#include "TSFCoreVector.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_VectorBase.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
-#include "TSFCoreVectorStdOps.hpp"
+#include "Thyra_VectorStdOps.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 #include "TSFProductVector.hpp"
 
@@ -48,7 +48,7 @@ namespace TSFExtendedOps
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
 
 
   /** 
@@ -92,12 +92,12 @@ namespace TSFExtended
    * \endcode
    */
   template <class Scalar>
-  class Vector : public Handle<TSFCore::Vector<Scalar> >
+  class Vector : public Handle<Thyra::VectorBase<Scalar> >
   {
   public:
     /** \name Constructors, Destructors, and Assignment Operators */
     //@{
-    HANDLE_CTORS(Vector<Scalar>, TSFCore::Vector<Scalar>);
+    HANDLE_CTORS(Vector<Scalar>, Thyra::VectorBase<Scalar>);
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
     /** Construct a vector from a 1-term LC */

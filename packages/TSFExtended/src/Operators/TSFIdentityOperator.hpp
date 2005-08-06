@@ -30,9 +30,10 @@
 #define TSFIDENTITYOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
-#include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "Thyra_VectorStdOps.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFRowAccessibleOp.hpp"
@@ -46,12 +47,12 @@ namespace TSFExtended
    * TSFIdentityOperator is the identity ("I") operator on a vector space.
    */
   template <class Scalar> 
-  class IdentityOperator : public OpDescribableByTypeID<Scalar>,
-			   public Handleable<TSFCore::LinearOp<Scalar> >,
+  class IdentityOperator : public SingleScalarTypeOp<Scalar>,
+                           public Handleable<SingleScalarTypeOp<Scalar> >,
                            public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
 
     /** The domain and range spaces for an identity operator
      * are equivalent, so the ctor needs only a single space
@@ -66,10 +67,10 @@ namespace TSFExtended
     /** 
      * apply returns the input vector
      */
-    virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+    virtual void generalApply(
+                       const Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 
@@ -90,20 +91,20 @@ namespace TSFExtended
 	}
       else
 	{
-	  //TSFCore::linear_combination(1, &alpha, &&x, beta, y);
-	  const TSFCore::Vector<Scalar>* px = &x;
-	  TSFCore::linear_combination(1, &alpha, &px, beta, y);
+	  //Thyra::linear_combination(1, &alpha, &&x, beta, y);
+	  const Thyra::VectorBase<Scalar>* px = &x;
+	  Thyra::linear_combination(1, &alpha, &px, beta, y);
 	  return;
 	}
     }
 
     /** Return the domain of the operator */
-    RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const 
+    RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > domain() const 
     {return space_.ptr();}
     
 
     /** Return the range of the operator */
-    RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const 
+    RefCountPtr< const Thyra::VectorSpaceBase<Scalar> > range() const 
     {return space_.ptr();}
 
     /** Return the kth row  */

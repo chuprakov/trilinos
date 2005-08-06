@@ -32,48 +32,42 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFHandle.hpp"
 #include "TSFHandleable.hpp"
-#include "TSFCoreLinearOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
+#include "TSFSingleScalarTypeOp.hpp"
 #include "TSFLoadableMatrix.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 #include "TSFRowAccessibleOp.hpp"
 
 
-
-
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
   using namespace Teuchos;
+  using namespace Thyra;
 
-  template <class Scalar>
-  class LinearSolver;
-  template <class Scalar>
-  class VectorSpace;
-  template <class Scalar>
-  class Vector;
-  template <class Scalar>
-  class VectorType;
+  template <class Scalar>  class LinearSolver;
+  template <class Scalar>  class VectorSpace;
+  template <class Scalar>  class Vector;
+  template <class Scalar>  class VectorType;
 
   /** 
    * User-level linear operator class
    */
   template <class Scalar>
-  class LinearOperator : public Handle<TSFCore::LinearOp<Scalar> >
+  class LinearOperator : public Handle<SingleScalarTypeOp<Scalar> >
   {
   public:
     /** \name Constructors, Destructors, and Assignment Operators */
     //@{
-    //      HANDLE_CTORS(LinearOperator<Scalar>, TSFCore::LinearOp<Scalar>);
     /** Empty constructor*/
     LinearOperator();
 
-    /** Constructor with raw pointer to a Handleable TSFCore::LinearOp*/
-    LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
+    /** Constructor with raw pointer */
+    LinearOperator(Handleable<SingleScalarTypeOp<Scalar> >* rawPtr);
 
 
-    /** Constructor with smart pointer to a TSFCore::LinearOp*/
-    LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr);
+    /** Constructor with smart pointer */
+    LinearOperator(const RefCountPtr<SingleScalarTypeOp<Scalar> >& smartPtr);
     //@}
 
     /** Return the domain */
@@ -105,6 +99,18 @@ namespace TSFExtended
 			const Scalar& alpha = 1.0,
 			const Scalar& beta = 0.0) const ;
 
+    /** 
+     * Apply method written in terms of Thyra objects. This simplifies
+     * the conversion from TSFCore
+     */
+    virtual void generalApply(
+                              const Thyra::ETransp            M_trans
+                              ,const Thyra::VectorBase<Scalar>    &x
+                              ,Thyra::VectorBase<Scalar>          *y
+                              ,const Scalar            alpha = 1.0
+                              ,const Scalar            beta  = 0.0
+                              ) const ;
+
 
     //       /** For the moment this does nothing*/
     LinearOperator<Scalar> form() const {return *this;}
@@ -131,9 +137,9 @@ namespace TSFExtended
 
     /** Get a row of the underlying matrix */     
     void getRow(const int& row, 
-		Teuchos::Array<int>& indices, 
-		Teuchos::Array<Scalar>& values) const ;
-
+                Teuchos::Array<int>& indices, 
+                Teuchos::Array<Scalar>& values) const ;
+    
 
     /** \name  Block operations  */
     //@{
@@ -164,14 +170,6 @@ namespace TSFExtended
     void finalize(bool zerofill);
 
     //@}
-
-    /** Describe function */
-    string description() const
-    {
-      return describe(0);
-    }
-    /** Describe with proper indent  */
-    string describe(int depth) const;
 
 
     /** Form a Linear operator in the specified type.  The source

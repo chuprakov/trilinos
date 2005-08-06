@@ -70,7 +70,7 @@ namespace TSFExtended
    * of the common features of reference-counted handles.
    */
   template <class PointerType>
-  class Handle
+  class Handle : public PTBDescribable
   {
   public:
     /** Empty ctor  */

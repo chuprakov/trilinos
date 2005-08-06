@@ -34,8 +34,8 @@ noinst_PROGRAMS = Block_tests
 
 Block_tests_SOURCES = $(srcdir)/cxx_main.cpp 
 
-Block_tests_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+Block_tests_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Block_tests_CXXFLAGS = $(COMMON_CXXFLAGS)
+Block_tests_CXXFLAGS = $(CXXFLAGS)
 
-Block_tests_LDADD = $(COMMON_LDADD)
+Block_tests_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)

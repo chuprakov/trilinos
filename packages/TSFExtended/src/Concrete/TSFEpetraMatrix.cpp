@@ -27,6 +27,7 @@
 /* @HEADER@ */
 
 #include "TSFEpetraMatrix.hpp"
+#include "TSFEpetraVector.hpp"
 #include "TSFVectorSpace.hpp"  // changed from Impl
  //#include "TSFVectorImpl.hpp"
 #include "TSFVector.hpp"
@@ -39,31 +40,72 @@
 
 using namespace TSFExtended;
 using namespace Teuchos;
+using namespace Thyra;
 
 EpetraMatrix::EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
                            const RefCountPtr<const EpetraVectorSpace>& range)
-  : TSFCore::EpetraLinearOp()
-{
-  /* initializing ncols to zero allows later fill */
-  RefCountPtr<Epetra_CrsMatrix> A 
-    = rcp(new Epetra_CrsMatrix(Copy, *(range->epetra_map()), 0));
-
-  initialize(A, TSFCore::NOTRANS);
-}
+  : matrix_(rcp(new Epetra_CrsMatrix(Copy, *(range->epetraMap()), 0))),
+    range_(range),
+    domain_(domain)
+{}
 
 EpetraMatrix::EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
                            const RefCountPtr<const EpetraVectorSpace>& range,
                            const int* numEntriesPerRow)
-  : TSFCore::EpetraLinearOp()
+  : matrix_(rcp(new Epetra_CrsMatrix(Copy, *(range->epetraMap()), (int*) numEntriesPerRow, true))),
+    range_(range),
+    domain_(domain)
+{}
+
+
+void EpetraMatrix::generalApply(const Thyra::ETransp M_trans,
+                                const Thyra::VectorBase<double>    &x,
+                                Thyra::VectorBase<double>          *y,
+                                const double            alpha,
+                                const double            beta) const
 {
-  /* initializing number of entries per row and static profile = true allows
-   * optimized fill */
-  RefCountPtr<Epetra_CrsMatrix> A 
-    = rcp(new Epetra_CrsMatrix(Copy, *(range->epetra_map()), (int*) numEntriesPerRow, true));
+  const EpetraVector* tx = dynamic_cast<const EpetraVector*>(&x);
+  TEST_FOR_EXCEPTION(tx==0, runtime_error, 
+                     "EpetraMatrix::generalApply() could not convert " 
+                     << x.description() << " to an EpetraVector");
 
-  initialize(A, TSFCore::NOTRANS);
+  EpetraVector* ty = dynamic_cast<EpetraVector*>(y);
+  TEST_FOR_EXCEPTION(ty==0, runtime_error, 
+                     "EpetraMatrix::generalApply() could not convert " 
+                     << y->description() << " to an EpetraVector");
+
+  const Epetra_Vector* epx = tx->epetraVec().get();
+  Epetra_Vector* epy = ty->epetraVec().get();
+
+  bool trans = M_trans==Thyra::TRANS;
+  int ierr=0;
+  if (beta==0.0)
+    {
+      ierr = matrix_->Multiply(trans, *epx, *epy);
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::generalApply() detected ierr="
+                         << ierr << " in matrix_->Multiply()");
+      if (alpha != 1.0)
+        {
+          Thyra::Vt_S(y, alpha);
+        }
+    }
+  else
+    {
+      Epetra_Vector tmp(M_trans == NOTRANS 
+                        ? matrix_->OperatorRangeMap() 
+                        : matrix_->OperatorDomainMap(), 
+                        false);
+      ierr = matrix_->Multiply(trans, *epx, tmp);
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::generalApply() detected ierr="
+                         << ierr << " in matrix_->Multiply()");
+      epy->Update(alpha, tmp, beta);
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "EpetraMatrix::generalApply() detected ierr="
+                         << ierr << " in epy->update()");
+    }
 }
-
 
 
 void EpetraMatrix::setGraph(int nLocalRows,
@@ -134,7 +176,7 @@ void EpetraMatrix::addElementBatch(int numRows,
                                    const int* globalRowIndices,
                                    int numColumnsPerRow,
                                    const int* globalColumnIndices,
-                                   const Scalar* values,
+                                   const double* values,
                                    const int* skipRow)
 {
   Epetra_CrsMatrix* crs = crsMatrix();
@@ -367,41 +409,15 @@ string EpetraMatrix::description() const
 
 Epetra_CrsMatrix* EpetraMatrix::crsMatrix()
 {
-  Epetra_CrsMatrix* crs 
-    = dynamic_cast<Epetra_CrsMatrix*>(epetra_op().get());
-
-  TEST_FOR_EXCEPTION(crs==0, runtime_error,
-                     "cast failed in EpetraMatrix::crsMatrix()");
-
-  return crs;
+  return matrix_.get();
 }
 
 const Epetra_CrsMatrix* EpetraMatrix::crsMatrix() const 
 {
-  const Epetra_CrsMatrix* crs 
-    = dynamic_cast<const Epetra_CrsMatrix*>(epetra_op().get());
-
-  TEST_FOR_EXCEPTION(crs==0, runtime_error,
-                     "cast failed in EpetraMatrix::crsMatrix()");
-
-  return crs;
+  return matrix_.get();
 }
 
-RefCountPtr<const TSFCore::EpetraVectorSpace> 
-EpetraMatrix::allocateDomain(const RefCountPtr<Epetra_Operator>  &op 
-                               ,TSFCore::ETransp  op_trans 
-                               )  const
-{
-  return rcp( new EpetraVectorSpace( rcp(&op->OperatorDomainMap(),false) ) );
-}
 
-RefCountPtr<const TSFCore::EpetraVectorSpace> 
-EpetraMatrix::allocateRange(const RefCountPtr<Epetra_Operator>  &op 
-                              ,TSFCore::ETransp  op_trans 
-                               )  const
-{
-  return rcp( new EpetraVectorSpace( rcp(&op->OperatorRangeMap(),false) ) );
-}
 
 Epetra_CrsMatrix& EpetraMatrix::getConcrete(const LinearOperator<double>& A)
 {
@@ -419,13 +435,9 @@ Epetra_CrsMatrix& EpetraMatrix::getConcrete(const LinearOperator<double>& A)
 
 void EpetraMatrix::getRow(const int& row, 
 			  Teuchos::Array<int>& indices, 
-			  Teuchos::Array<Scalar>& values) const
+			  Teuchos::Array<double>& values) const
 {
-  const Epetra_CrsMatrix* crs 
-    = dynamic_cast<const Epetra_CrsMatrix*>(epetra_op().get());
-
-  TEST_FOR_EXCEPTION(crs==0, runtime_error,
-                     "cast failed in EpetraMatrix::getRow()");
+  const Epetra_CrsMatrix* crs = crsMatrix();
 
   int numEntries;
   int* epIndices;

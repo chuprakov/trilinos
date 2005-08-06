@@ -95,11 +95,11 @@ namespace TSFExtended
   template <class Scalar> inline 
   VectorSpace<Scalar> VectorType<Scalar>::createReplicatedSpace(int dimension) const
   {
-    const TSFCore::VectorSpaceFactory<Scalar>* f
-      = dynamic_cast<const TSFCore::VectorSpaceFactory<Scalar>*>(this->ptr().get());
+    const Thyra::VectorSpaceFactoryBase<Scalar>* f
+      = dynamic_cast<const Thyra::VectorSpaceFactoryBase<Scalar>*>(this->ptr().get());
     
     TEST_FOR_EXCEPTION(f==0, runtime_error, 
-                       "failed cast to TSFCore::VectorSpaceFactory in "
+                       "failed cast to Thyra::VectorSpaceFactoryBase in "
                        "VectorType<Scalar>::createReplicatedSpace()");
     return f->createVecSpc(dimension);
   }

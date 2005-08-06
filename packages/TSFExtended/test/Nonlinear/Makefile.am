@@ -36,9 +36,9 @@ Kepler_test_SOURCES = $(srcdir)/kepler.cpp
 
 
 
-Kepler_test_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+Kepler_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Kepler_test_CXXFLAGS = $(COMMON_CXXFLAGS)
+Kepler_test_CXXFLAGS = $(CXXFLAGS)
 
-Kepler_test_LDADD = $(COMMON_LDADD)
+Kepler_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
 

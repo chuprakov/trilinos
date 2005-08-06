@@ -10,7 +10,7 @@ expose developers to %TSFExtended in manageable chunks as to not
 overwhelm.
 
 TSFExtended is, as the name implies, a set of extensions to the base 
-capabilities in TSFCore. TSFCore provides the objects and 
+capabilities in Thyra. Thyra provides the objects and 
 methods needed by designers of 
 abstract solver algorithms; TSFExtended provides, among other things, 
 interfaces through which compound objects can be constructed
@@ -25,12 +25,12 @@ overloading, allowing convenient "math-like" syntax.
 <li> Interfaces for printing brief or full diagnostic output, and for
 controlling the verbosity level of a process.
 </ul>
-As with TSFCore, TSFExtended objects are templated on scalar type where
+As with Thyra, TSFExtended objects are templated on scalar type where
 appropriate.
 
 <h4> Extension via multiple inheritance </h4>
 
-Many TSFExtended classes are ``extensions'' of existing TSFCore classes,
+Many TSFExtended classes are ``extensions'' of existing Thyra classes,
 providing additional capabilities through an extended interface. 
 The appropriate mechanism for extension of an interface in C++ is inheritance.
 We can further partition the extended interface as appropriate for clarity
@@ -59,7 +59,7 @@ in Java; thus, even a Java evangelist should feel comfortable with the present
 use of multiple inheritance.
 Second, it is worth mentioning that to access the extended interface for, 
 say, TSFExtended::LoadableVector it is necessary to cross-cast 
-a TSFCore::Vector to the TSFExtended::LoadableVector type. In standard C++
+a Thyra::VectorBase to the TSFExtended::LoadableVector type. In standard C++
 cross-casts can be safely done using the <tt>dynamic_cast</tt> mechanism; the
 return value of <tt>dynamic_cast</tt> can be tested for success. 
 For subtypes such as <tt>ProxyVector</tt> for which some extensions

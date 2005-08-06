@@ -91,10 +91,10 @@ LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::scale(const Scalar& alpha)
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::Vt_S(p, alpha);
+    Thyra::Vt_S(p, alpha);
   }
   return *this;
 }
@@ -108,11 +108,11 @@ template <class Scalar> inline
 Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha, 
 				       const Vector<Scalar>& x)
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = x.ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::Vp_StV(p, alpha, *px);
+    Thyra::Vp_StV(p, alpha, *px);
   }
   return *this;
 }
@@ -125,8 +125,8 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = x.ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
     if (p==0) 
@@ -134,7 +134,7 @@ Vector<Scalar>& Vector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
 	Vector<Scalar> me = space().createMember();
 	this->ptr() = me.ptr();
       }
-    TSFCore::assign(p, *px);
+    Thyra::assign(p, *px);
   }
   return *this;
 }
@@ -159,7 +159,7 @@ Vector<Scalar> Vector<Scalar>::dotStar(const Vector<Scalar>& other) const
   Vector<Scalar> rtn = space().createMember();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::ele_wise_prod(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
+    Thyra::ele_wise_prod(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
   }
   return rtn;
 }
@@ -175,7 +175,7 @@ Vector<Scalar> Vector<Scalar>::dotSlash(const Vector<Scalar>& other) const
   Vector<Scalar> rtn = space().createMember();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::ele_wise_divide(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
+    Thyra::ele_wise_divide(1.0, *(this->ptr)(), *(other.ptr()), rtn.ptr().get());
   }
   return rtn;
 }
@@ -222,11 +222,11 @@ Vector<Scalar> Vector<Scalar>::reciprocal() const
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::abs()
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = this->ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::abs(p, *px);
+    Thyra::abs(p, *px);
   }
   return *this;
 }
@@ -239,11 +239,11 @@ Vector<Scalar>& Vector<Scalar>::abs()
 template <class Scalar> inline 
 Vector<Scalar>& Vector<Scalar>::reciprocal()
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = this->ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = this->ptr().get();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::reciprocal(p, *px);
+    Thyra::reciprocal(p, *px);
   }
   return *this;
 }
@@ -256,11 +256,11 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 				       const Vector<Scalar>& x, 
 				       const Scalar& gamma)
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = x.ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = x.ptr().get();
   {
     TimeMonitor t(*opTimer());
-    TSFCore::linear_combination(1, &alpha, &px, gamma, p);
+    Thyra::linear_combination(1, &alpha, &px, gamma, p);
   }
   return *this;
 }
@@ -276,18 +276,18 @@ Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha,
 				       const Vector<Scalar>& y, 
 				       const Scalar& gamma)
 {
-  TSFCore::Vector<Scalar>* p = this->ptr().get();
-  const TSFCore::Vector<Scalar>* px = x.ptr().get();
-  const TSFCore::Vector<Scalar>* py = y.ptr().get();
+  Thyra::VectorBase<Scalar>* p = this->ptr().get();
+  const Thyra::VectorBase<Scalar>* px = x.ptr().get();
+  const Thyra::VectorBase<Scalar>* py = y.ptr().get();
   {
     TimeMonitor t(*opTimer());
     double a[2];
     a[0] = alpha;
     a[1] = beta;
-    const TSFCore::Vector<Scalar>* vecs[2];
+    const Thyra::VectorBase<Scalar>* vecs[2];
     vecs[0] = px;
     vecs[1] = py;
-    TSFCore::linear_combination(2, a, vecs, gamma, p);
+    Thyra::linear_combination(2, a, vecs, gamma, p);
   }
   return *this;
 }
@@ -301,7 +301,7 @@ Scalar Vector<Scalar>::dot(const Vector<Scalar>& other) const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::dot(*(this->ptr)(), *(other.ptr()));
+  return Thyra::dot(*(this->ptr)(), *(other.ptr()));
 }
 
 
@@ -321,7 +321,7 @@ Scalar Vector<Scalar>::norm1() const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_1(*(this->ptr)());
+  return Thyra::norm_1(*(this->ptr)());
 }
 
 
@@ -332,8 +332,7 @@ template <class Scalar> inline
 Scalar Vector<Scalar>::norm2() const 
 {
   TimeMonitor t(*opTimer());
-    
-  return TSFCore::norm_2(*(this->ptr)());
+  return Thyra::norm_2(*(this->ptr)());
 }
 
 
@@ -345,7 +344,7 @@ Scalar Vector<Scalar>::norm2(const Vector<Scalar>& weights) const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_2(*(weights.ptr()) ,*(this->ptr)());
+  return Thyra::norm_2(*(weights.ptr()) ,*(this->ptr)());
 }
 
 
@@ -358,7 +357,7 @@ Scalar Vector<Scalar>::normInf() const
 {
   TimeMonitor t(*opTimer());
     
-  return TSFCore::norm_inf(*(this->ptr)());
+  return Thyra::norm_inf(*(this->ptr)());
 }
 
 
@@ -367,7 +366,7 @@ Scalar Vector<Scalar>::normInf() const
 template <class Scalar> inline 
 bool Vector<Scalar>::hasNANINF() const 
 {
-  double x = TSFCore::sum(*(this->ptr)());
+  double x = Thyra::sum(*(this->ptr)());
   return finite(x);
 }
 
@@ -380,7 +379,7 @@ void Vector<Scalar>::zero()
 {
   TimeMonitor t(*opTimer());
     
-  TSFCore::assign(this->ptr().get(), 0.0);
+  Thyra::assign(this->ptr().get(), 0.0);
 }
 
 
@@ -392,7 +391,7 @@ void Vector<Scalar>::setToConstant(const Scalar& alpha)
 {
   TimeMonitor t(*opTimer());
     
-  TSFCore::assign(this->ptr().get(), alpha);
+  Thyra::assign(this->ptr().get(), alpha);
 }
   
 
@@ -401,7 +400,7 @@ template <class Scalar> inline
 Scalar Vector<Scalar>::max()const
 {
   TimeMonitor t(*opTimer());
-  return TSFCore::max(*(this->ptr)());
+  return Thyra::max(*(this->ptr)());
 }
 
 
@@ -413,7 +412,7 @@ Scalar Vector<Scalar>::max(int& index)const
   Scalar maxEl;
   Scalar* maxElP = &maxEl;
   int* indexP = &index;
-  TSFCore::max(*(this->ptr)(), maxElP, indexP); 
+  Thyra::max(*(this->ptr)(), maxElP, indexP); 
   return maxEl;
 }
 
@@ -426,7 +425,7 @@ Scalar Vector<Scalar>::max(const Scalar& bound, int& index)const
   Scalar maxEl;
   Scalar* maxElP = &maxEl;
   int* indexP = &index;
-  TSFCore::maxLessThanBound(*(this->ptr)(), bound, maxElP, indexP); 
+  Thyra::maxLessThanBound(*(this->ptr)(), bound, maxElP, indexP); 
   return maxEl;
 
 }
@@ -437,7 +436,7 @@ template <class Scalar> inline
 Scalar Vector<Scalar>::min()const
 {
   TimeMonitor t(*opTimer());
-  return TSFCore::min(*(this->ptr)());
+  return Thyra::min(*(this->ptr)());
 }
 
 
@@ -449,7 +448,7 @@ Scalar Vector<Scalar>::min(int& index)const
   Scalar minEl;
   Scalar* minElP = &minEl;
   int* indexP = &index;
-  TSFCore::min(*(this->ptr)(), minElP, indexP); 
+  Thyra::min(*(this->ptr)(), minElP, indexP); 
   return minEl;
 }
 
@@ -462,7 +461,7 @@ Scalar Vector<Scalar>::min(const Scalar& bound, int& index)const
   Scalar minEl;
   Scalar* minElP = &minEl;
   int* indexP = &index;
-  TSFCore::minGreaterThanBound(*(this->ptr)(), bound, minElP, indexP); 
+  Thyra::minGreaterThanBound(*(this->ptr)(), bound, minElP, indexP); 
   return minEl;
 }
 

@@ -28,7 +28,7 @@
 #define TSFVECTORTYPEEXTENSIONS_HPP
 
 #include "TSFHandle.hpp"
-#include "TSFCoreVectorSpaceFactory.hpp"
+#include "Thyra_VectorSpaceFactoryBase.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFLinearOperatorDecl.hpp" //Decl added by ptb
 #include "TSFGhostImporter.hpp"
@@ -39,16 +39,16 @@ namespace TSFExtended
 
   /**
    * VectorTypeExtensions provides extensions to 
-   * the TSFCore::VectorSpaceFactory
+   * the Thyra::VectorSpaceFactoryBase
    * object, appropriate to the interface with applications codes.
-   * TSFCore::VectorSpaceFactory has a method to create a small serial
+   * Thyra::VectorSpaceFactoryBase has a method to create a small serial
    * vector space for use in multivector operators, however, that is 
    * insufficient for the needs of applications.
    *
    * <h4> Notes for subclass developers </h4>
    *
    * Subclasses should also derive from some subclass of
-   * TSFCore::VectorSpaceFactory in order to use the createReplicatedSpace()
+   * Thyra::VectorSpaceFactoryBase in order to use the createReplicatedSpace()
    * method. 
    *
    * Because applications may use the clean syntax
@@ -72,7 +72,7 @@ namespace TSFExtended
      * @param nLocal number of indices owned by the local processor
      * @param locallyOwnedIndices array of indices owned by this processor  
      */
-    virtual RefCountPtr<const TSFCore::VectorSpace<Scalar> >
+    virtual RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >
     createSpace(int dimension, 
                 int nLocal,
                 const int* locallyOwnedIndices) const = 0 ;

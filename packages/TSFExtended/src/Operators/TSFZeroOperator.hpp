@@ -35,7 +35,7 @@
 
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
+#include "Thyra_LinearOpBase.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
@@ -53,11 +53,11 @@ namespace TSFExtended
    */
   template <class Scalar> 
   class ZeroOperator : public OpDescribableByTypeID<Scalar>,
-		       public Handleable<TSFCore::LinearOp<Scalar> >,
+		       public Handleable<Thyra::LinearOpBase<Scalar> >,
                        public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    GET_RCP(Thyra::LinearOpBase<Scalar>);
     /**
      * Construct given the domain and range spaces.
      */
@@ -74,14 +74,14 @@ namespace TSFExtended
  
 
     /** Return the domain  */
-     Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  domain() const 
+     Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  domain() const 
     {
       return domain_.ptr();
     }
 
 
     /** Return the range */
-     Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  range() const 
+     Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  range() const 
     {
      return range_.ptr();
     }
@@ -91,9 +91,9 @@ namespace TSFExtended
      * apply returns a zero vector in the range space
      */
     virtual void apply(
-                       const TSFCore::ETransp            M_trans
-                       ,const TSFCore::Vector<Scalar>    &x
-                       ,TSFCore::Vector<Scalar>          *y
+                       const Thyra::ETransp            M_trans
+                       ,const Thyra::VectorBase<Scalar>    &x
+                       ,Thyra::VectorBase<Scalar>          *y
                        ,const Scalar            alpha = 1.0
                        ,const Scalar            beta  = 0.0
                        ) const 

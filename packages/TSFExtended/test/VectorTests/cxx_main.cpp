@@ -66,7 +66,9 @@ int main(int argc, void *argv[])
       VectorSpace<double> space = type.createSpace(dimension, n, 
                                                    &(localRows[0]));
 
-            
+
+      cerr << "vector space: " << space.description() << endl;
+
       Vector<double> u = space.createMember();
       Vector<double> w = space.createMember();
       Vector<double> v = space.createMember();
@@ -93,6 +95,8 @@ int main(int argc, void *argv[])
           cerr << "x = " << endl << x << endl;
           cerr << "y = " << endl << y << endl;
           cerr << "z = " << endl << z << endl;
+
+          cerr << "|u|= " << u.norm2() << endl;
         }
 
       /* assign into an empty vector */
@@ -104,21 +108,36 @@ int main(int argc, void *argv[])
       Vector<double> c = space.createMember();
       Vector<double> cCheck = space.createMember();
 
+      Vector<double> d = space.createMember();
+      Vector<double> dCheck = space.createMember();
+
+      cerr << "adding... " ;
+
       a = x + y + z + u + v + w;
       
+      cerr << "done" << endl << "doing dotStar... ";
+
       b = x.dotStar(y);
 
+      cerr << "done" << endl << "doing dotSlash... ";
+
       c = b.dotSlash(x);
+
+      cerr << "done" << endl << "doing scale..." ;
+      d = x * 2.0;
       
       if (verbosity > 1)
         {
           cerr << "a = " << endl << a << endl;
           cerr << "b = " << endl << b << endl;
           cerr << "c = " << endl << c << endl;
+          cerr << "d = " << endl << d << endl;
         }
 
 
       /* check */
+
+      cerr << "checking..." << endl;
       double aErr = 0.0;
       double bErr = 0.0;
 

@@ -30,7 +30,7 @@
 #define TSFPRINTABLE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
+
 
 
 #ifndef DOXYGEN_DEVELOPER_ONLY

@@ -30,7 +30,7 @@
 #define TSFINDEXABLEVECTOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
+
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
 
@@ -38,7 +38,7 @@
 
 namespace TSFExtended
 {
-  using TSFCore::Index;
+  using Thyra::Index;
 
   /**
    * TSFExtended::IndexableVector defines an interface through which

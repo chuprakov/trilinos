@@ -27,8 +27,7 @@
 #ifndef TSFEPETRAVECTORTYPE_HPP
 #define TSFEPETRAVECTORTYPE_HPP
 
-#include "TSFCoreEpetraVectorSpaceFactory.hpp"
-#include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
 #include "Teuchos_Describable.hpp"
@@ -39,26 +38,22 @@
 namespace TSFExtended
 {
   using namespace Teuchos;
+  using namespace Thyra;
   /**
-   * TSF extension of TSFCore::EpetraVectorSpaceFactory, allowing 
+   * TSF extension of Thyra::EpetraVectorSpaceFactory, allowing 
    * use in handles and more extensive capability for creating
    * distributed spaces.
    * This class derives
-   * from TSFCore::EpetraVectorSpaceFactory, so it can be used 
+   * from Thyra::EpetraVectorSpaceFactory, so it can be used 
    * seamlessly in any 
-   * TSFCore-based code.
+   * Thyra-based code.
    */
-
-  template <class Scalar>
-  class LinearOperator;  // changed by ptb
-
-
 
 
   class EpetraVectorType : public VectorTypeExtensions<double>,
-                           public TSFCore::EpetraVectorSpaceFactory,
                            public Handleable<VectorTypeExtensions<double> >,
-                           public Printable
+                           public Printable,
+                           public Describable
   {
   public:
     /** Ctor needs no arguments */
@@ -72,7 +67,7 @@ namespace TSFExtended
      * @param nLocal number of indices owned by the local processor
      * @param locallyOwnedIndices array of indices owned by this processor  
      */
-    RefCountPtr<const TSFCore::VectorSpace<double> > 
+    RefCountPtr<const Thyra::VectorSpaceBase<double> > 
     createSpace(int dimension, 
                 int nLocal,
                 const int* locallyOwnedIndices) const ;
@@ -105,9 +100,9 @@ namespace TSFExtended
      * Create an empty matrix of type compatible with this vector type,
      * sized according to the given domain and range spaces.
      */
-    virtual LinearOperator<Scalar>
-    createMatrix(const VectorSpace<Scalar>& domain,
-                 const VectorSpace<Scalar>& range,
+    virtual LinearOperator<double>
+    createMatrix(const VectorSpace<double>& domain,
+                 const VectorSpace<double>& range,
                  const int* numEntriesPerRow) const ;
       
     
@@ -122,6 +117,14 @@ namespace TSFExtended
 
     GET_RCP(VectorTypeExtensions<double>);
 
+
+  protected:
+    /** */
+    const RefCountPtr<Epetra_Comm>& epetraComm() const {return epetraComm_;}
+    
+  private:
+    
+    RefCountPtr<Epetra_Comm> epetraComm_;
   };
   
 }

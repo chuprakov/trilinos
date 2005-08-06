@@ -19,11 +19,11 @@
 
 #include "Teuchos_Array.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 #include "TSFDescribableByTypeID.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFProductVectorSpaceDecl.hpp"
-#include "TSFCoreProductVector.hpp"
+#include "Thyra_ProductVectorBase.hpp"
 
 namespace TSFExtended
 {
@@ -40,13 +40,13 @@ namespace TSFExtended
    */
 
   template<class Scalar>
-  class ProductVector : public TSFCore::ProductVector<Scalar>, 
-			public DescribableByTypeID,
-                        public Handleable<TSFCore::Vector<Scalar> >
+  class ProductVector : public Thyra::ProductVectorBase<Scalar>, 
+                        public DescribableByTypeID,
+                        public Handleable<Thyra::VectorBase<Scalar> >
   {
   public:
 
-    GET_RCP(TSFCore::Vector<Scalar>);
+    GET_RCP(Thyra::VectorBase<Scalar>);
     
     /** Constructor for completed BlockVector, i.e., all the spaced
      * are set and the vector can be built.
@@ -211,10 +211,10 @@ namespace TSFExtended
     
     //Teuchos::RefCountPtr<VectorSpace<Scalar> > space_;
     Teuchos::Array<Vector<Scalar> > vecsE_;
-    Teuchos::Array<Teuchos::RefCountPtr<TSFCore::Vector<Scalar> > > vecsCore_;
+    Teuchos::Array<Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> > > vecsCore_;
     int numBlocks_;
 
-    /** Make sure that the underlying TSFCore::ProductVector is correct. */
+    /** Make sure that the underlying Thyra::ProductVector is correct. */
     void setCore();
     
   };

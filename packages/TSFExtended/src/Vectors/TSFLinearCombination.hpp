@@ -101,7 +101,7 @@ namespace TSFExtendedOps
     virtual TSFExtended::Vector<Scalar> eval() const ;
 
     /** Determine whether this term contains the given vector */
-    bool containsVector(const TSFCore::Vector<Scalar>* vec) const 
+    bool containsVector(const Thyra::VectorBase<Scalar>* vec) const 
     {return vec == x_.ptr().get();}
 
     /** */
@@ -140,7 +140,7 @@ namespace TSFExtendedOps
     virtual TSFExtended::Vector<Scalar> eval() const ;
 
     /** */
-    bool containsVector(const TSFCore::Vector<Scalar>* vec) const
+    bool containsVector(const Thyra::VectorBase<Scalar>* vec) const
     {return x1_.containsVector(vec) || x2_.containsVector(vec);}
     
     private:
@@ -465,12 +465,12 @@ namespace TSFExtended
   template <class Scalar>
   template <class Node1, class Node2> inline
   Vector<Scalar>::Vector(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x)
-    : Handle<TSFCore::Vector<Scalar> >(x.eval().ptr())
+    : Handle<Thyra::VectorBase<Scalar> >(x.eval().ptr())
   {;}
 
   template <class Scalar> inline
   Vector<Scalar>::Vector(const TSFExtendedOps::LC1<Scalar>& x)
-    : Handle<TSFCore::Vector<Scalar> >(x.eval().ptr())
+    : Handle<Thyra::VectorBase<Scalar> >(x.eval().ptr())
   {;}
 
 }
