@@ -26,7 +26,7 @@
 # ************************************************************************
 #@HEADER
 
-include $(top_srcdir)/Makefile.common
+include $(top_builddir)/Makefile.export.TSFExtended
 
 EXEEXT = .exe
 

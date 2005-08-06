@@ -30,7 +30,7 @@ TSFEXTENDED_INCLUDES = \
   $(NOX_INCLUDES) \
 	$(IFPACK_INCLUDES)
 
-TSFEXTENDED_LIBS = @LDFLAGS@ \
+TMP_TSFEXTENDED_LIBS = @LDFLAGS@ \
 -L@abs_top_builddir@/src \
 -lTSFExtended $(NOX_LIBS) $(ML_LIBS) $(AZTECOO_LIBS) $(IFPACK_LIBS) \
 $(EPETRAEXT_LIBS) \
@@ -38,6 +38,10 @@ $(EPETRA_LIBS) \
 $(TEUCHOS_LIBS) 
 
 EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(TSFEXTENDED_INCLUDES))
+
+TSFEXTENDED_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(TMP_TSFEXTENDED_LIBS))
+
+
 
 
 
