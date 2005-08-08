@@ -38,7 +38,7 @@ RectMatrix_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 RectMatrix_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-RectMatrix_test_CXXFLAGS = $(CXXFLAGS)
+RectMatrix_test_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 RectMatrix_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
 

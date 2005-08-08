@@ -56,8 +56,6 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFProductVector.hpp\
 	$(srcdir)/Vectors/TSFProductVectorDecl.hpp\
 	$(srcdir)/Vectors/TSFProductVectorImpl.hpp\
-	$(srcdir)/Vectors/TSFVecDescribableByTypeID.hpp\
-	$(srcdir)/Vectors/TSFVecSpaceDescribableByTypeID.hpp\
 	$(srcdir)/Vectors/TSFVector.hpp \
 	$(srcdir)/Vectors/TSFVectorDecl.hpp \
 	$(srcdir)/Vectors/TSFVectorImpl.hpp \
@@ -72,7 +70,6 @@ VECTORS =
 UTILS_H = \
 	$(srcdir)/Utils/TSFConfigDefs.hpp \
 	$(srcdir)/Utils/TSFDescribable.hpp \
-	$(srcdir)/Utils/TSFDescribableByTypeID.hpp \
 	$(srcdir)/Utils/TSFDouble.hpp \
 	$(srcdir)/Utils/TSFHandle.hpp \
 	$(srcdir)/Utils/TSFHandleable.hpp \
@@ -119,7 +116,6 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperator.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperatorBase.hpp\
-	$(srcdir)/Operators/TSFOpDescribableByTypeID.hpp \
 	$(srcdir)/Operators/TSFRowAccessibleOp.hpp \
 	$(srcdir)/Operators/TSFScaledOperator.hpp\
 	$(srcdir)/Operators/TSFSingleScalarTypeOp.hpp\
@@ -191,7 +187,7 @@ include $(top_builddir)/Makefile.export.TSFExtended
 #np# - Add packages that this package is dependent on
 #np#   Remove epetra if this package does not need it
 #  
-AM_CPPFLAGS = $(COMMON_CXXFLAGS)
+AM_CPPFLAGS = $(TEUCHOS_CXXFLAGS) $(EXPORT_INCLUDES)
 
 
 #np# The following section can be duplicated for building multiple libraries -

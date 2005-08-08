@@ -38,6 +38,6 @@ Double_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 Double_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Double_test_CXXFLAGS = $(CXXFLAGS)
+Double_test_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 Double_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)

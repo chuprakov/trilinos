@@ -31,7 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
  #include "Thyra_VectorSpaceBase.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
+
 #include "TSFLinearOperatorDecl.hpp"
 //#include "TSFLoadableMatrix.hpp"
 //#include "TSFExplicitlyTransposeableOp.hpp"
@@ -50,8 +50,7 @@ namespace TSFExtended
    * 
    */
   template <class Scalar>
-  class TransposeOperator : public OpDescribableByTypeID<Scalar>, 
-			    public Handleable<Thyra::LinearOpBase<Scalar> >
+  class TransposeOperator : public Handleable<Thyra::LinearOpBase<Scalar> >
     //public LoadableMatrix<Scalar>
     //public ExplicitlyTransposeableOp<Scalar>
     //public Formable<Scalar>,

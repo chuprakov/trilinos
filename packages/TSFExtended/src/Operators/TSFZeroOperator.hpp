@@ -36,7 +36,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "Thyra_LinearOpBase.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
+
 #include "TSFRowAccessibleOp.hpp"
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
@@ -52,8 +52,7 @@ namespace TSFExtended
    * domain space to the zero vector in the range space.
    */
   template <class Scalar> 
-  class ZeroOperator : public OpDescribableByTypeID<Scalar>,
-		       public Handleable<Thyra::LinearOpBase<Scalar> >,
+  class ZeroOperator : public Handleable<Thyra::LinearOpBase<Scalar> >,
                        public RowAccessibleOp<Scalar>
   {
   public:

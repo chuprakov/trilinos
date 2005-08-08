@@ -38,7 +38,7 @@ Vector_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 Vector_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Vector_test_CXXFLAGS = $(CXXFLAGS)
+Vector_test_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 Vector_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
 

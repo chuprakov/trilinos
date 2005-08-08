@@ -32,7 +32,7 @@
 
 #include "TSFProductVectorSpaceDecl.hpp"
 #include "TSFVectorSpaceDecl.hpp"
-#include "TSFDescribableByTypeID.hpp"
+#include "TSFDescribable.hpp"
 
 using namespace TSFExtended;
 using namespace Teuchos;
@@ -62,21 +62,9 @@ bool VectorSpace<Scalar>::operator!=(const VectorSpace<Scalar>& other) const
 template <class Scalar>
 bool VectorSpace<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc) const 
 {
-  const DescribableByTypeID *descrOther = 
-    dynamic_cast<const DescribableByTypeID* > (vecSpc.ptr().get());
-  const DescribableByTypeID *descrThis = 
-    dynamic_cast<const DescribableByTypeID* > (this->ptr().get());
-
-  TEST_FOR_EXCEPTION(descrOther == 0, runtime_error,
-		     "Operator not describable; "
-		     << "hence not testable for equality" << endl);
-  if (descrOther->typeName() != descrThis->typeName() 
-      || vecSpc.dim() != this->dim()
-      || vecSpc.isInCore() != isInCore())
-    {
-      return false;
-    }
-  return true;
+  TEST_FOR_EXCEPTION(vecSpc.ptr().get() == 0, runtime_error,
+                     "null argument in VectorSpace<Scalar>::isCompatible()");
+  return ptr().get()->isCompatible(*(vecSpc.ptr().get()));
 }
 
 

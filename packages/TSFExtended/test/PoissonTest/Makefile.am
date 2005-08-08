@@ -40,7 +40,7 @@ AztecPoisson_SOURCES = $(srcdir)/AztecPoisson.cpp
 
 AztecPoisson_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-AztecPoisson_CXXFLAGS = $(CXXFLAGS)
+AztecPoisson_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 
 AztecPoisson_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
@@ -54,7 +54,7 @@ ParameterListAztecPoisson_SOURCES = $(srcdir)/ParameterListAztecPoisson.cpp
 
 ParameterListAztecPoisson_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-ParameterListAztecPoisson_CXXFLAGS = $(CXXFLAGS)
+ParameterListAztecPoisson_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 ParameterListAztecPoisson_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)
 
@@ -66,6 +66,6 @@ Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 Poisson_test_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Poisson_test_CXXFLAGS = $(CXXFLAGS)
+Poisson_test_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 Poisson_test_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)

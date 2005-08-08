@@ -34,7 +34,7 @@
 #include "TSFSingleScalarTypeOp.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
+
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFLinearSolver.hpp"
 #include "TSFSolverState.hpp"

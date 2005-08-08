@@ -35,7 +35,7 @@
 #include "Teuchos_Array.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Thyra_ProductVectorSpaceDecl.hpp"
-#include "TSFVecSpaceDescribableByTypeID.hpp"
+
 #include "TSFVectorSpaceDecl.hpp"
 
 namespace TSFExtended
@@ -50,7 +50,6 @@ namespace TSFExtended
 
   template<class Scalar>
   class ProductVectorSpace : public Thyra::ProductVectorSpace<Scalar>, 
-                             public DescribableByTypeID,
                              public Handleable<const Thyra::VectorSpaceBase<Scalar> >
   {
   public:

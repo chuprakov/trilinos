@@ -36,6 +36,6 @@ Block_tests_SOURCES = $(srcdir)/cxx_main.cpp
 
 Block_tests_DEPENDENCIES = $(TSFEXTENDED_LIBS)
 
-Block_tests_CXXFLAGS = $(CXXFLAGS)
+Block_tests_CXXFLAGS = $(CXXFLAGS) $(EXPORT_INCLUDES)
 
 Block_tests_LDADD = $(LDFLAGS) $(TSFEXTENDED_LIBS)

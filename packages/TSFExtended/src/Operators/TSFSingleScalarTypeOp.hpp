@@ -69,9 +69,9 @@ namespace TSFExtended
 
     /** Thyra apply method */
     void apply(
-               const EConj                             conj
-               ,const MultiVectorBase<Scalar>    &X
-               ,MultiVectorBase<Scalar>           *Y
+               const Thyra::EConj                             conj
+               ,const Thyra::MultiVectorBase<Scalar>    &X
+               ,Thyra::MultiVectorBase<Scalar>           *Y
                ,const Scalar alpha
                ,const Scalar beta
                ) const 
@@ -93,9 +93,9 @@ namespace TSFExtended
 
     /** Thyra apply transpose method */
     virtual void applyTranspose(
-    const EConj                            conj
-    ,const MultiVectorBase<Scalar>    &X
-    ,MultiVectorBase<Scalar>         *Y
+                                const Thyra::EConj                            conj
+    ,const Thyra::MultiVectorBase<Scalar>    &X
+    ,Thyra::MultiVectorBase<Scalar>         *Y
     ,const Scalar                     alpha
     ,const Scalar                     beta
     ) const

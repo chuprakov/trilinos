@@ -32,7 +32,7 @@
 #include "TSFConfigDefs.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
 #include "TSFHandle.hpp"
-#include "TSFDescribableByTypeID.hpp"
+
 
 
 namespace TSFExtended

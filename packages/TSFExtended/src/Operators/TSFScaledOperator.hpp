@@ -34,7 +34,7 @@
 #include "Thyra_LinearOpBase.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
-#include "TSFOpDescribableByTypeID.hpp"
+
 #include "Teuchos_RefCountPtr.hpp"
  //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFRowAccessibleOp.hpp"

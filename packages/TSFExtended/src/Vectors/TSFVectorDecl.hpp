@@ -342,19 +342,17 @@ namespace TSFExtended
     /** Describe the vector  */
     string description() const
     {
-      return describe(0);
+      return indentedDescribe(0);
     }
 
-    string describe(int depth) const
+    string indentedDescribe(int depth) const
     {
-      // 	const OpDescribableByTypeID<Scalar>* p = 
-      // 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
-      const DescribableByTypeID* p = 
-	dynamic_cast<const DescribableByTypeID* >(this->ptr().get());
+      const PTBDescribable* p = 
+        dynamic_cast<const PTBDescribable* >(this->ptr().get());
       if (p != 0)
-	{
-	  return p -> describe(depth);
-	}
+        {
+          return p -> indentedDescribe(depth);
+        }
       return "Vector not describable";
     }
       

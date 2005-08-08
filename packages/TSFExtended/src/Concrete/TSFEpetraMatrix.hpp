@@ -36,7 +36,7 @@
 //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFDescribableByTypeID.hpp"
+
 #include "TSFILUFactorizableOp.hpp"
 #include "Epetra_CrsMatrix.h"
 

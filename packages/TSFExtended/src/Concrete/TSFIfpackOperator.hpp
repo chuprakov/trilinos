@@ -29,7 +29,7 @@
 #ifndef TSFIFPACKOPERATOR_HPP
 #define TSFIFPACKOPERATOR_HPP
 
-#include "TSFOpDescribableByTypeID.hpp"
+
 #include "TSFEpetraMatrix.hpp"
 #include "Ifpack_IlukGraph.h"
 #include "Ifpack_CrsRiluk.h"
