@@ -132,6 +132,9 @@ namespace TSFExtended
     /** Operator composition */
     LinearOperator<Scalar> operator*(const LinearOperator<Scalar>& other) const ;
 
+    /** Operator sum */
+    LinearOperator<Scalar> operator+(const LinearOperator<Scalar>& other) const ;
+
     /** Return a Loadable Matrix  */
     RefCountPtr<LoadableMatrix<Scalar> > matrix();
 

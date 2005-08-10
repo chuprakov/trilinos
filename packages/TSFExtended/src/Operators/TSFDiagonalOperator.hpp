@@ -39,11 +39,9 @@
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFVectorSpaceDecl.hpp"
-#include "TSFLinearCombination.hpp"
 
 namespace TSFExtended
 {
-  using namespace TSFExtendedOps;
   /** 
    * A DiagonalOperator is a diagonal operator.
    */
@@ -57,12 +55,11 @@ namespace TSFExtended
     /**
      * Construct a vector containing the entries on the diagonal.
      */
-    DiagonalOperator(const Vector<Scalar>& vector)
-      : diagonalValues_(vector),
-        domain_(vector.space()),
-        range_(vector.space())
+    DiagonalOperator(const Vector<Scalar>& diagonal)
+      : diagonalValues_(diagonal),
+	domain_(diagonal.space()),
+	range_(diagonal.space())
     {;}
-
 
     /** Virtual dtor */
     virtual ~DiagonalOperator(){;}
@@ -74,18 +71,23 @@ namespace TSFExtended
      * vector, x, and the diagonal values.
      */
     virtual void generalApply(
-                       const Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+			      const Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
-      Vector<Scalar>  applyRes = range_.createMember();
+      /* Create temporary vector */
+      Vector<Scalar>  temp = range_.createMember();
+      temp.zero();
     
+      /* Compute alpha * M * x and store in temp */
       Thyra::ele_wise_prod(alpha, *(diagonalValues_.ptr().get()), x, 
-                           applyRes.ptr().get());
-      Thyra::Vp_StV(applyRes.ptr().get(), beta, *y);
+			     temp.ptr().get());
+      
+      /* Update y = temp + beta * y */
+      Thyra::Vp_V(y, *(temp.ptr().get()), beta);
     }
 
 

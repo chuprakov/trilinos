@@ -30,7 +30,7 @@
 #define TSFTRANSPOSEOPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
- #include "Thyra_VectorSpaceBase.hpp"
+#include "Thyra_VectorSpaceBase.hpp"
 
 #include "TSFLinearOperatorDecl.hpp"
 //#include "TSFLoadableMatrix.hpp"
@@ -50,14 +50,15 @@ namespace TSFExtended
    * 
    */
   template <class Scalar>
-  class TransposeOperator : public Handleable<Thyra::LinearOpBase<Scalar> >
+  class TransposeOperator : public SingleScalarTypeOp<Scalar>,
+			    public Handleable<SingleScalarTypeOp<Scalar> >
     //public LoadableMatrix<Scalar>
     //public ExplicitlyTransposeableOp<Scalar>
     //public Formable<Scalar>,
   {
    
   public:
-    GET_RCP(Thyra::LinearOpBase<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
 //     virtual RefCountPtr<TransposeOperator<Scalar> > getRcp() 
 //     {return rcp(this);}
 
@@ -90,15 +91,15 @@ namespace TSFExtended
     }
 
     /** Apply the transpose of the underlying operator */
-    void apply(
-               const Thyra::ETransp            M_trans
-               ,const Thyra::VectorBase<Scalar>    &x
-               ,Thyra::VectorBase<Scalar>          *y
-               ,const Scalar            alpha = 1.0
-               ,const Scalar            beta = 0.0
-               ) const 
+    void generalApply(
+		      const Thyra::ETransp            M_trans
+		      ,const Thyra::VectorBase<Scalar>    &x
+		      ,Thyra::VectorBase<Scalar>          *y
+		      ,const Scalar            alpha = 1.0
+		      ,const Scalar            beta = 0.0
+		      ) const 
     {
-      op_.ptr()->apply(not_trans(M_trans), x, y, alpha, beta);
+      op_.ptr()->generalApply(not_trans(M_trans), x, y, alpha, beta);
     }
 
     /** Form an explicit representation if supported by the underlying

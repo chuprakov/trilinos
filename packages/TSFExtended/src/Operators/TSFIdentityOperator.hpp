@@ -68,12 +68,12 @@ namespace TSFExtended
      * apply returns the input vector
      */
     virtual void generalApply(
-                       const Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+			      const Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
       if (beta == 0.0)
 	{

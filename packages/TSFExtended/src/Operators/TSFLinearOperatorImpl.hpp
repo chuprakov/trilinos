@@ -37,6 +37,7 @@
 #include "TSFInverseOperator.hpp"
 #include "TSFTransposeOperator.hpp"
 #include "TSFComposedOperator.hpp"
+#include "TSFSumOperator.hpp"
 #include "TSFBlockOperatorDecl.hpp"
 #include "TSFVectorType.hpp"
 
@@ -155,6 +156,15 @@ LinearOperator<Scalar>
 LinearOperator<Scalar>::operator*(const LinearOperator<Scalar>& other) const
 {
   LinearOperator<Scalar> op = new ComposedOperator<Scalar>(*this, other);
+  return op;
+}
+
+//=======================================================================
+template <class Scalar>
+LinearOperator<Scalar> 
+LinearOperator<Scalar>::operator+(const LinearOperator<Scalar>& other) const
+{
+  LinearOperator<Scalar> op = new SumOperator<Scalar>(*this, other);
   return op;
 }
 

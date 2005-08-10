@@ -85,23 +85,24 @@ namespace TSFExtended
      * in the range space.
      */
     virtual void generalApply(
-                       Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+			      Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
       Vector<Scalar>  applyRight = range_.createMember();
       left_.ptr()->generalApply(M_trans, x, y, alpha, beta);
       if (!subtraction_)
         {
-          right_.ptr()->generalApply(M_trans, x, applyRight.ptr().get(), alpha, 0.0); 
+          right_.ptr()->generalApply(M_trans, x, applyRight.ptr().get(), 
+				     alpha, 0.0); 
         }
       else 
         {
           right_.ptr()->generalApply(M_trans, x, applyRight.ptr().get(), 
-                              -1.0*alpha, 0.0);
+				     -1.0*alpha, 0.0);
         }
       //Thyra::linear_combination(1, 1.0, &applyRight, 1.0, y);
       Thyra::Vp_StV(y, 1.0, *(applyRight.ptr().get()));

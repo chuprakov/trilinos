@@ -52,11 +52,13 @@ namespace TSFExtended
    * domain space to the zero vector in the range space.
    */
   template <class Scalar> 
-  class ZeroOperator : public Handleable<Thyra::LinearOpBase<Scalar> >,
+  class ZeroOperator : public SingleScalarTypeOp<Scalar>,
+		       public Handleable<SingleScalarTypeOp<Scalar> >,
                        public RowAccessibleOp<Scalar>
   {
   public:
-    GET_RCP(Thyra::LinearOpBase<Scalar>);
+    GET_RCP(SingleScalarTypeOp<Scalar>);
+
     /**
      * Construct given the domain and range spaces.
      */
@@ -89,13 +91,13 @@ namespace TSFExtended
    /** 
      * apply returns a zero vector in the range space
      */
-    virtual void apply(
-                       const Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+    virtual void generalApply(
+			      const Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
       if (beta == 0.0)
 	{

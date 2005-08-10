@@ -72,12 +72,12 @@ namespace TSFExtended
      * vector in the domain space to the appropriate vector in the range space.
      */
     virtual void generalApply(
-                       Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+			      Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
       op_.ptr()->generalApply(M_trans, x, y, alpha, beta);
       Thyra::Vt_S(y, scale_);

@@ -82,65 +82,79 @@ namespace TSFExtended
      * @param alpha   scalar multiplying M*x (default is 1.0)
      * @param beta    scalar multiplying y (default is 0.0)
      */
-    virtual void apply(
-                       const Thyra::ETransp            M_trans
-                       ,const Thyra::VectorBase<Scalar>    &x
-                       ,Thyra::VectorBase<Scalar>          *y
-                       ,const Scalar            alpha = 1.0
-                       ,const Scalar            beta  = 0.0
-                       ) const 
+    virtual void generalApply(
+			      const Thyra::ETransp            M_trans
+			      ,const Thyra::VectorBase<Scalar>    &x
+			      ,Thyra::VectorBase<Scalar>          *y
+			      ,const Scalar            alpha = 1.0
+			      ,const Scalar            beta  = 0.0
+			      ) const 
     {
-      TEST_FOR_EXCEPTION(dynamic_cast<ZeroOperator<Scalar>* >(op_) != 0, runtime_error,
-                         "InverseOperator<Scalar>::apply() called on a ZeroOperator.");
-      TEST_FOR_EXCEPTION(op_->domain().dim() != op_->range().dim(), runtime_error,
+      TEST_FOR_EXCEPTION(dynamic_cast<ZeroOperator<Scalar>* >(op_.ptr().get()) != 0, runtime_error,
+			 "InverseOperator<Scalar>::apply() called on a ZeroOperator.");
+      TEST_FOR_EXCEPTION(op_.domain().dim() != op_.range().dim(), runtime_error,
                          "InverseOperator<Scalar>::apply() called on a non-square operator.");
-      SolverState<Scalar> haveSoln;
       LinearOperator<Scalar> applyOp;      
       if (M_trans == Thyra::NOTRANS)
         {
           applyOp = op_;
         }
       else
-        {
-          applyOp = op_.transpose();
-        }
-      
+	{
+	  applyOp = op_.transpose();
+	}
+
+      Vector<Scalar> temp;
+
       if (beta == 0.0)
-        {
-          Vt_S(&x, alpha);
-        }
+	{
+	  assign(temp.ptr().get(), x);
+	  Vt_S(temp.ptr().get(), alpha);
+	}
       else
-        {
-          applyOp.ptr()->generalApply(Thyra::NOTRANS, *y, &x, beta, alpha);
-        }
+	{
+	  assign(temp.ptr().get(), x);
+	  applyOp.ptr()->generalApply(Thyra::NOTRANS, *y, temp.ptr().get(), beta, alpha);
+	}
       
-      DiagonalOperator<Scalar>* val1 = dynamic_cast<DiagonalOperator<Scalar>* >(op_);
-      IdentityOperator<Scalar>* val2 = dynamic_cast<IdentityOperator<Scalar>* >(op_);
-      if (val1 != 0 or val2 != 0)
-        {
-          haveSoln = applyOp.ptr()->applyInverse(x, y);
-        }      
+      /* Must cover other cases....later.
+	 right now this only does the identity */
+      DiagonalOperator<Scalar>* val2 = 
+	dynamic_cast<DiagonalOperator<Scalar>* >(op_.ptr().get());
+      IdentityOperator<Scalar>* val1 = 
+	dynamic_cast<IdentityOperator<Scalar>* >(op_.ptr().get());
+      Vector<Scalar>* yTSFExt = dynamic_cast<Vector<Scalar>* >(y);
+      TEST_FOR_EXCEPTION(yTSFExt != 0, runtime_error,
+			 "InverseOperator<Scalar>::apply():  Invalid cast to a TSFExtended::Vector<Scalar>.");
+      if (val1 != 0)
+	{
+	  applyOp.generalApply(temp, *yTSFExt, 
+			       Teuchos::ScalarTraits<Scalar>::one(), 
+			       Teuchos::ScalarTraits<Scalar>::zero());
+// 	  haveSoln = applyOp.ptr()->applyInverse(x, y);
+	}      
       else
-        {
-          haveSoln = solver_.solve(applyOp, x, *y);
-        }
-      TEST_FOR_EXCEPTION(haveSoln.finalState() != SolveConverged, runtime_error,
-                         "InverseOperator<Scalar>::apply() " << haveSoln.stateDescription());
+	{
+	  SolverState<Scalar> haveSoln = solver_.solve(applyOp, temp, *yTSFExt);
+	  TEST_FOR_EXCEPTION(haveSoln.finalState() != SolveConverged, runtime_error,
+			     "InverseOperator<Scalar>::apply() " 
+			     << haveSoln.stateDescription());
+	}
     }
 
 
     /** 
      * Return the domain of the operator. 
      */
-    virtual const VectorSpace<Scalar> domain() const 
-    {return op_.domain();}
+    virtual Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > domain() const 
+    {return op_.ptr()->domain();}
     
 
     /** 
      * Return the range of the operator. 
      */
-    virtual const VectorSpace<Scalar> range() const 
-    {return op_.range();}
+    virtual Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> > range() const 
+    {return op_.ptr()->range();}
 
   private:
     const LinearOperator<Scalar> op_;
