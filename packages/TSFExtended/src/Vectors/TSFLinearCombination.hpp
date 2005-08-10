@@ -31,7 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFVector.hpp"
-#include "TSFLinearOperator.hpp"
+#include "TSFLinearOperatorDecl.hpp"
 
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
