@@ -35,6 +35,7 @@
 #include "Thyra_VectorStdOps.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "TSFDescribable.hpp"
 
 
 namespace TSFExtended
