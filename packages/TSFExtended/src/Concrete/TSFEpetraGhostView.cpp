@@ -51,13 +51,17 @@ void EpetraGhostView::getElements(const int* globalIndices, int numElems,
 void  EpetraGhostView::import(const Epetra_Import& importer,
                               const Epetra_Vector& srcObject)
 {
+  //  cerr << "EPGV doing import" << endl;
   /* If my vector does not yet exist, create it using the target map of the
    * importer */
   if (ghostView_.get()==0)
     {
+      //  cerr << "creating target vector" << endl;
       ghostView_ = rcp(new Epetra_Vector(importer.TargetMap()));
     }
 
   /* do the import */
+  //  cerr << "calling Epetra Import" << endl;
   ghostView_->Import(srcObject, importer, Insert);
+  //  cerr << "done" << endl;
 }

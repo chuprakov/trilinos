@@ -71,7 +71,7 @@ EpetraVectorType::createGhostImporter(const VectorSpace<double>& space,
     = dynamic_cast<const EpetraVectorSpace*>(space.ptr().get());
 
   TEST_FOR_EXCEPTION(p==0, runtime_error,
-                     "non-epetra vector space [" << space << "] given as "
+                     "non-epetra vector space [" << space.description() << "] given as "
                      "argument to EpetraVectorType::createGhostImporter()");
 
   return rcp(new EpetraGhostImporter(p->epetraMap(), nGhost, ghostIndices));

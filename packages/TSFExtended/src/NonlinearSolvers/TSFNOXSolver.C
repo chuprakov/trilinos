@@ -47,8 +47,8 @@ NOXSolver::NOXSolver(const ParameterList& params,
     x0_(F_.getInitialGuess()),
     soln_(),
     grp_(),
-    statusTest_(),
     solver_(),
+    statusTest_(),
     params_(params),
     noxParams_()
 {

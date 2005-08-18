@@ -64,7 +64,7 @@ namespace TSFExtended
     private:
       RefCountPtr<const Epetra_Map> localMap_;
 
-      RefCountPtr<Epetra_Map> ghostMap_;
+      RefCountPtr<const Epetra_Map> ghostMap_;
 
       RefCountPtr<Epetra_Import> importer_;
     };

@@ -39,19 +39,28 @@ EpetraGhostImporter
     ghostMap_(),
     importer_()
 {
-  int nGlobal = localMap_->NumGlobalElements();
-  int nLocal = localMap_->NumMyElements();
-  int nGhostView = nLocal+nGhost;
-  vector<int> globalIndices(nGhostView);
-  for (int i=0; i<nLocal; i++) globalIndices[i] = localMap_->GID(i);
-  for (int i=0; i<nGhost; i++) globalIndices[i+nLocal] = ghostElements[i];
+  if (nGhost==0)
+    {
+      ghostMap_ = localMap_;
 
-  const Epetra_Comm& comm = localMap_->Comm();
+      importer_ = rcp(new Epetra_Import(*ghostMap_, *localMap_));
+    }
+  else
+    {
+      int nGlobal = localMap_->NumGlobalElements();
+      int nLocal = localMap_->NumMyElements();
+      int nGhostView = nLocal+nGhost;
+      vector<int> globalIndices(nGhostView);
+      for (int i=0; i<nLocal; i++) globalIndices[i] = localMap_->GID(i);
+      for (int i=0; i<nGhost; i++) globalIndices[i+nLocal] = ghostElements[i];
 
-  ghostMap_ = rcp(new Epetra_Map(-1, nGhostView, 
-                                 &(globalIndices[0]), 0, comm));
+      const Epetra_Comm& comm = localMap_->Comm();
 
-  importer_ = rcp(new Epetra_Import(*ghostMap_, *localMap_));
+      ghostMap_ = rcp(new Epetra_Map(nGlobal, nGhostView, 
+                                     &(globalIndices[0]), 0, comm));
+
+      importer_ = rcp(new Epetra_Import(*ghostMap_, *localMap_));
+    }
 }
 
 void EpetraGhostImporter
@@ -59,7 +68,10 @@ void EpetraGhostImporter
              RefCountPtr<GhostView<double> >& ghostView) const
 {
   /* If given an uninitialized ghost view, create a EpetraGhostView */
-  if (ghostView.get()==0) ghostView = rcp(new EpetraGhostView());
+  if (ghostView.get()==0) 
+    {
+      ghostView = rcp(new EpetraGhostView());
+    }
 
   /* Ensure that the ghost view contains an EpetraGhostView */
   EpetraGhostView* epgv 

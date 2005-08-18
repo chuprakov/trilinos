@@ -262,7 +262,6 @@ double NOX::TSF::Vector::norm(NOX::Abstract::Vector::NormType type) const
   if (this->length() == 0)
     return 0.0;
 
-  int i;			// counter
   double value;			// final answer
 
   switch (type) 

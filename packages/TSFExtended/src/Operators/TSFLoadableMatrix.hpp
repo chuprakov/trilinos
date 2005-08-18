@@ -166,9 +166,9 @@ namespace TSFExtended
   {
     std::vector<double> zeros;
     std::vector<int> colIndices;
-    int maxSize = 0;
+    unsigned int maxSize = 0;
 
-    for (int i=0; i<nonzeros.size(); i++)
+    for (unsigned int i=0; i<nonzeros.size(); i++)
       {
         std::set<int>::const_iterator iter;
         const std::set<int>& s = nonzeros[i];
@@ -180,7 +180,7 @@ namespace TSFExtended
         if (colIndices.size() > maxSize) 
           {
             zeros.resize(colIndices.size());
-            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
             maxSize = zeros.size();
           }
         setRowValues(lowestRow + i, colIndices.size(),
@@ -195,15 +195,15 @@ namespace TSFExtended
                                          const std::vector<std::vector<int> >& nonzeroCols)
   {
     std::vector<double> zeros;
-    int maxSize = 0;
+    unsigned int maxSize = 0;
 
-    for (int i=0; i<nonzeroCols.size(); i++)
+    for (unsigned int i=0; i<nonzeroCols.size(); i++)
       {
         const std::vector<int>& cols = nonzeroCols[i];
         if (cols.size() > maxSize) 
           {
             zeros.resize(cols.size());
-            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
             maxSize = zeros.size();
           }
         setRowValues(lowestRow + i, cols.size(),
@@ -221,12 +221,12 @@ namespace TSFExtended
   {
     int maxSize = 0;
     std::vector<double> zeros;
-    for (int i=0; i<rowPtrs.size(); i++)
+    for (unsigned int i=0; i<rowPtrs.size(); i++)
       {
         if (nnzPerRow[i] > maxSize) 
           {
             zeros.resize(nnzPerRow[i]);
-            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
             maxSize = zeros.size();
           }
         setRowValues(lowestRow + i, nnzPerRow[i],

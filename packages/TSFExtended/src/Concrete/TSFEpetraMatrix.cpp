@@ -210,9 +210,9 @@ void EpetraMatrix::configure(int lowestRow,
   Epetra_CrsMatrix* crs = crsMatrix();
   std::vector<double> zeros;
   std::vector<int> colIndices;
-  int maxSize = 0;
+  unsigned int maxSize = 0;
   
-  for (int i=0; i<nonzeros.size(); i++)
+  for (unsigned int i=0; i<nonzeros.size(); i++)
     {
       std::set<int>::const_iterator iter;
       const std::set<int>& s = nonzeros[i];
@@ -224,7 +224,7 @@ void EpetraMatrix::configure(int lowestRow,
       if (colIndices.size() > maxSize) 
         {
           zeros.resize(colIndices.size());
-          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
           maxSize = zeros.size();
         }
       int ierr = crs->InsertGlobalValues(lowestRow + i, colIndices.size(),
@@ -257,15 +257,15 @@ void EpetraMatrix::configure(int lowestRow,
 {
   Epetra_CrsMatrix* crs = crsMatrix();
   std::vector<double> zeros;
-  int maxSize = 0;
+  unsigned int maxSize = 0;
   
-  for (int i=0; i<nonzeros.size(); i++)
+  for (unsigned int i=0; i<nonzeros.size(); i++)
     {
       const std::vector<int>& cols = nonzeros[i];
       if (cols.size() > maxSize) 
         {
           zeros.resize(cols.size());
-          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
           maxSize = zeros.size();
         }
       int ierr = crs->InsertGlobalValues(lowestRow + i, cols.size(),
@@ -304,12 +304,12 @@ void EpetraMatrix::configure(int lowestRow,
   std::vector<double> zeros;
   int maxSize = 0;
   
-  for (int i=0; i<rowPtrs.size(); i++)
+  for (unsigned int i=0; i<rowPtrs.size(); i++)
     {
       if (nnzPerRow[i] > maxSize) 
         {
           zeros.resize(nnzPerRow[i]);
-          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          for (unsigned int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
           maxSize = zeros.size();
         }
       int ierr = crs->InsertGlobalValues(lowestRow + i, nnzPerRow[i],

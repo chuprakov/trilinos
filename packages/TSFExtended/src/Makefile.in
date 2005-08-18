@@ -261,6 +261,8 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFIndexableVector.hpp\
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
+	$(srcdir)/Vectors/TSFLinearCombinationDecl.hpp\
+	$(srcdir)/Vectors/TSFLinearCombinationImpl.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
 	$(srcdir)/Vectors/TSFProductVectorSpace.hpp\
 	$(srcdir)/Vectors/TSFProductVectorSpaceDecl.hpp\

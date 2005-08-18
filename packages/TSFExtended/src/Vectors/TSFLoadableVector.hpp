@@ -98,7 +98,7 @@ namespace TSFExtended
                                                   const Index* globalIndices, 
                                                   const Scalar* values)
   {
-    for (int i=0; i<numElems; i++)
+    for (unsigned int i=0; i<numElems; i++)
       {
         setElement(globalIndices[i], values[i]);
       }
@@ -112,7 +112,7 @@ namespace TSFExtended
                                                     const Index* globalIndices, 
                                                     const Scalar* values)
   {
-    for (int i=0; i<numElems; i++)
+    for (unsigned int i=0; i<numElems; i++)
       {
         addToElement(globalIndices[i], values[i]);
       }

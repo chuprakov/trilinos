@@ -19,12 +19,12 @@ AztecSolver::AztecSolver(const ParameterList& params)
 		options_(AZ_OPTIONS_SIZE),
 		parameters_(AZ_PARAMS_SIZE),
     useML_(false),
+    aztec_recursive_iterate_(false),
     mlLevels_(2),
     mlSymmetric_(false),
     mlUseDamping_(false),
     mlDamping_(0.0),
     prec_(),
-    aztec_recursive_iterate_(false),
     aztec_status(AZ_STATUS_SIZE),
     aztec_proc_config(AZ_PROC_SIZE)
 {
@@ -117,12 +117,12 @@ AztecSolver::AztecSolver(const Teuchos::map<int, int>& aztecOptions,
 		options_(AZ_OPTIONS_SIZE),
 		parameters_(AZ_PARAMS_SIZE),
     useML_(false),
+    aztec_recursive_iterate_(false),
     mlLevels_(0),
     mlSymmetric_(false),
     mlUseDamping_(false),
     mlDamping_(0.0),
     prec_(),
-    aztec_recursive_iterate_(false),
     aztec_status(AZ_STATUS_SIZE),
     aztec_proc_config(AZ_PROC_SIZE)
 {
@@ -285,7 +285,7 @@ SolverState<double> AztecSolver::solve(const LinearOperator<double>& op,
   soln = xCopy;
 
   const double* status = aztec.GetAztecStatus();
-  SolverStatusCode state;
+  SolverStatusCode state = SolveCrashed;
 
   string msg;
   switch((int) status[AZ_why])

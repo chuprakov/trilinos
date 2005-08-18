@@ -35,6 +35,7 @@
 #include "Teuchos_Time.hpp"
 
 using namespace Teuchos;
+using namespace Thyra;
 using namespace TSFExtended;
 using namespace TSFExtendedOps;
 

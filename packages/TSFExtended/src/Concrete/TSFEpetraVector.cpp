@@ -103,6 +103,8 @@ void EpetraVector::setElements(size_t numElems, const Index* globalIndices,
 {
   Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetraVec().get());
   int ierr = vec->ReplaceGlobalValues(numElems, globalIndices, values);
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error, "ReplaceGlobalValues returned "
+                     "ierr=" << ierr << " in EpetraVector::setElements()");
 }
 
 void EpetraVector::addToElements(size_t numElems, const Index* globalIndices,
@@ -110,6 +112,8 @@ void EpetraVector::addToElements(size_t numElems, const Index* globalIndices,
 {
   Epetra_FEVector* vec = dynamic_cast<Epetra_FEVector*>(epetraVec().get());
   int ierr = vec->SumIntoGlobalValues(numElems, globalIndices, values);
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error, "SumIntoGlobalValues returned "
+                     "ierr=" << ierr << " in EpetraVector::addToElements()");
 }
 
 void EpetraVector::finalizeAssembly()
