@@ -119,7 +119,7 @@ Packages are reported in alphabetical order.
 - Simple nonlinear problem: \ref nox_ex1
 - Simple nonlinear PDE problem: \ref nox_ex2
 
-\section teuchos TEUCHOS Examples
+\section teuchos Teuchos Examples
 - Teuchos dense matrices: \ref teuchos_ex1
 - Teuchos interface to BLAS: \ref teuchos_ex2
 - Teuchos interface to LAPACK: \ref teuchos_ex3
