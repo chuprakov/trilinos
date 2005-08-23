@@ -65,6 +65,8 @@ Packages are reported in alphabetical order.
   eigenvectors of a symmetric matrix using a Block Davidson solver: \ref anasazi_ex2
 - Computation of the lowest eigenvalues and the corresponding 
   eigenvectors of a nonsymmetric matrix using a Block Krylov Schur solver: \ref anasazi_ex3
+- Computation of the lowest eigenvalues and the corresponding 
+  eigenvectors of a symmetric matrix using an LOBPCG solver:  \ref anasazi_ex4
 
 \section epetra Epetra Examples
 - Basic usage of communicators: \ref epetra_ex1
@@ -157,6 +159,12 @@ Packages are reported in alphabetical order.
 \page anasazi_ex3
 
 \include anasazi/ex3.cpp
+*/
+
+/*!
+\page anasazi_ex4
+
+\include anasazi/ex4.cpp
 */
 
 /*!
