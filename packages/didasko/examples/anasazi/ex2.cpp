@@ -142,6 +142,8 @@ int main(int argc, char *argv[]) {
   //   Details at each iteration, such as the current eigenvalues
   // Anasazi::OrthoDetails 
   //   Details about orthogonality
+  // Anasazi::TimingDetails
+  //   A summary of the timing info for the solve() routine
   // Anasazi::FinalSummary 
   //   A final summary (we will call this manually below)
   // Anasazi::Debug 
