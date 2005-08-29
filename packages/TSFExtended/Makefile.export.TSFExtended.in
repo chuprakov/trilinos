@@ -58,14 +58,14 @@ include @abs_top_builddir@/../nox/Makefile.export.nox
 TSFEXTENDED_INCLUDES = \
 	-I@abs_top_srcdir@/src \
 	-I@abs_top_builddir@/src \
-  -I$(top_srcdir)/src \
-  -I$(top_srcdir)/src/Concrete \
-  -I$(top_srcdir)/src/LinearSolvers \
-  -I$(top_srcdir)/src/NonlinearSolvers \
-  -I$(top_srcdir)/src/Operators \
-  -I$(top_srcdir)/src/Preconditioners \
-  -I$(top_srcdir)/src/Utils \
-  -I$(top_srcdir)/src/Vectors \
+  -I@abs_top_srcdir@/src \
+  -I@abs_top_srcdir@/src/Concrete \
+  -I@abs_top_srcdir@/src/LinearSolvers \
+  -I@abs_top_srcdir@/src/NonlinearSolvers \
+  -I@abs_top_srcdir@/src/Operators \
+  -I@abs_top_srcdir@/src/Preconditioners \
+  -I@abs_top_srcdir@/src/Utils \
+  -I@abs_top_srcdir@/src/Vectors \
 	$(TEUCHOS_INCLUDES) \
   $(EPETRA_INCLUDES) \
   $(AZTECOO_INCLUDES) \
@@ -82,9 +82,9 @@ $(EPETRAEXT_LIBS) \
 $(EPETRA_LIBS) \
 $(TEUCHOS_LIBS) 
 
-EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(TSFEXTENDED_INCLUDES))
+EXPORT_INCLUDES = $(shell $(PERL_EXE) @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(TSFEXTENDED_INCLUDES))
 
-TSFEXTENDED_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(TMP_TSFEXTENDED_LIBS))
+TSFEXTENDED_LIBS = $(shell $(PERL_EXE) @abs_top_srcdir@/config/strip_dup_libs.pl $(TMP_TSFEXTENDED_LIBS))
 
 
 

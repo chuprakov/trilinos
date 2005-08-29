@@ -87,10 +87,15 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 	src/common/config-h.in src/common/stamp-h.in \
 	$(AUX_DIST) 
 
+
+bin_SCRIPTS = config/strip_dup_incl_paths.pl config/strip_dup_libs.pl
+
 #The following line helps the test harness recover from build errors.
 
 all-local:
 	@echo "Trilinos package TSFExtended built successfully"
+
+
 
 ## #######################################################################
 ## Subdirectories to be make'd recursively
@@ -104,6 +109,8 @@ TEST_SUBDIR=test
 endif
 
 SUBDIRS = src $(TEST_SUBDIR) doc
+
+
 
 ## #######################################################################
 ## Documentation

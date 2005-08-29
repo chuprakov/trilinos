@@ -27,7 +27,9 @@
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFEpetraVector.hpp"
 #include "Teuchos_Utils.hpp"
+#ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
+#endif
 
 using namespace TSFExtended;
 using namespace Teuchos;
@@ -40,22 +42,21 @@ EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& m)
     mpiComm_(MPI_COMM_NULL),
     localSubDim_(epetraMap_->NumMyElements())
 {
+#ifdef HAVE_MPI
   const Epetra_Comm& comm = epetraMap_->Comm();
   const Epetra_MpiComm* epMPIComm = dynamic_cast<const Epetra_MpiComm*>(&comm);
   if (epMPIComm != 0) 
     {
-#ifdef HAVE_MPI
       mpiComm_ = epMPIComm->GetMpiComm();
-#else
       TEST_FOR_EXCEPTION(true, runtime_error,
                          "Epetra communicator is MPI_Comm, but MPI is not "
                          "enabled?!?!?");
-#endif
     }
   else
     {
       mpiComm_ = MPI_COMM_NULL;
     }
+#endif
 
   updateState(epetraMap_->NumGlobalElements());
 }
