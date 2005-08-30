@@ -48,9 +48,6 @@ EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& m)
   if (epMPIComm != 0) 
     {
       mpiComm_ = epMPIComm->GetMpiComm();
-      TEST_FOR_EXCEPTION(true, runtime_error,
-                         "Epetra communicator is MPI_Comm, but MPI is not "
-                         "enabled?!?!?");
     }
   else
     {
