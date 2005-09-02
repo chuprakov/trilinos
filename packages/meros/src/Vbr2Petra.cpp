@@ -95,7 +95,7 @@ int VbrMatrix2PetraMatrix(int blk_size,
   Brow_map = petra_maps[1];
   if (Brow_map==0) EPETRA_CHK_ERR(-2); // Ran out of memory
 
-  *VBR_map = new Epetra_Map(NumGlobalBlocks*3, NumMyBlocks*3, 0, *comm);
+  *VBR_map = new Epetra_Map(NumGlobalBlocks*blk_size, NumMyBlocks*blk_size, 0, *comm);
   if (*VBR_map==0) EPETRA_CHK_ERR(-2); // Ran out of memory
 
   Epetra_CrsMatrix *CC   = new Epetra_CrsMatrix(Copy, *Brow_map, 0);
