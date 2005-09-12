@@ -52,7 +52,9 @@
 #include "Epetra_RowMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "NOX.H"
-#include "NOX_Epetra_Interface.H"
+#include "NOX_Epetra_Interface_Required.H"
+#include "NOX_Epetra_Interface_Jacobian.H"
+#include "NOX_Epetra_LinearSystemAztecOO.H"
 #include "NOX_Epetra_Group.H"
 
 // this is required to know the number of lower, upper, left and right
@@ -268,7 +270,9 @@ private:
 // crude: For instance, no PrecMatrix nor Preconditioner is specified.
 // ==========================================================================
 
-class SimpleProblemInterface : public NOX::Epetra::Interface {
+class SimpleProblemInterface : public NOX::Epetra::Interface::Required,
+                               public NOX::Epetra::Interface::Jacobian
+{
 
 public:
  
@@ -282,7 +286,7 @@ public:
   };
 
   bool computeF(const Epetra_Vector & x, Epetra_Vector & f,
-                NOX::Epetra::Interface::FillType F )
+                NOX::Epetra::Interface::Required::FillType F )
   {
     Problem_->ComputeF(x,f);
     return true;
@@ -382,8 +386,17 @@ int main( int argc, char **argv )
   lsParams.setParameter("Output Frequency", 50);    
   lsParams.setParameter("Aztec Preconditioner", "ilu"); 
 
-  NOX::Epetra::Group grp(printParams, lsParams, Interface, InitialGuess, 
-                         dynamic_cast<Epetra_RowMatrix&>(*(Problem.GetMatrix()))); 
+  NOX::Epetra::Interface::Required & iReq = Interface;
+  NOX::Epetra::Interface::Jacobian & iJac = Interface;
+  NOX::Epetra::LinearSystemAztecOO linSys(printParams, lsParams, iReq, iJac, 
+    dynamic_cast<Epetra_RowMatrix&>(*(Problem.GetMatrix())), InitialGuess);
+
+  // Need a NOX::Epetra::Vector for constructor
+  NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy, true);
+  NOX::Epetra::Group grp(printParams, iReq, noxInitGuess, linSys);
+
+  //NOX::Epetra::Group grp(printParams, lsParams, Interface, InitialGuess, 
+  //                       dynamic_cast<Epetra_RowMatrix&>(*(Problem.GetMatrix()))); 
 
   // Set up the status tests
   NOX::StatusTest::NormF statusTestA(grp, 1.0e-4);

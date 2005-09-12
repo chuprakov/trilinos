@@ -54,10 +54,14 @@
 #include "Epetra_RowMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "NOX.H"
-#include "NOX_Epetra_Interface.H"
+#include "NOX_Epetra_Interface_Required.H"
+#include "NOX_Epetra_Interface_Jacobian.H"
+#include "NOX_Epetra_LinearSystemAztecOO.H"
 #include "NOX_Epetra_Group.H"
 
-class SimpleProblemInterface : public NOX::Epetra::Interface {
+class SimpleProblemInterface : public NOX::Epetra::Interface::Required,
+                               public NOX::Epetra::Interface::Jacobian
+{
 
 public:
  
@@ -75,7 +79,7 @@ public:
   };
 
   bool computeF(const Epetra_Vector & x, Epetra_Vector & f,
-                NOX::Epetra::Interface::FillType F )
+                NOX::Epetra::Interface::Required::FillType F )
   {
     f[0] = x[0]*x[0] + x[1]*x[1] - 1.0;
     f[1] = x[1] - x[0]*x[0];
@@ -245,8 +249,14 @@ int main( int argc, char **argv )
 
   A.FillComplete();  
 
-  NOX::Epetra::Group grp(printParams, lsParams, Interface, InitialGuess, 
-                         dynamic_cast<Epetra_RowMatrix&>(A)); 
+  NOX::Epetra::Interface::Required & iReq = Interface;
+  NOX::Epetra::Interface::Jacobian & iJac = Interface;
+  NOX::Epetra::LinearSystemAztecOO linSys(printParams, lsParams,
+  	                              iReq, iJac, A, InitialGuess);
+
+  // Need a NOX::Epetra::Vector for constructor
+  NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy, true);
+  NOX::Epetra::Group grp(printParams, iReq, noxInitGuess, linSys);
 
   // Set up the status tests
   NOX::StatusTest::NormF statusTestA(grp, 1.0e-4);
