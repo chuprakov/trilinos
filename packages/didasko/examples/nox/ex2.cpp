@@ -348,7 +348,9 @@ int main( int argc, char **argv )
   SimpleProblemInterface Interface(&Problem);
   
   // Create the top level parameter list
-  NOX::Parameter::List nlParams;
+  Teuchos::RefCountPtr<NOX::Parameter::List> nlParamsPtr =
+    Teuchos::rcp(new NOX::Parameter::List);
+  NOX::Parameter::List& nlParams = *(nlParamsPtr.get());
 
   // Set the nonlinear solver method
   nlParams.setParameter("Nonlinear Solver", "Line Search Based");
@@ -369,7 +371,7 @@ int main( int argc, char **argv )
   // start definition of nonlinear solver parameters
   // Sublist for line search 
   NOX::Parameter::List& searchParams = nlParams.sublist("Line Search");
-  searchParams.setParameter("Method", "Full Step");
+  searchParams.setParameter("Method","More'-Thuente");
 
   // Sublist for direction
   NOX::Parameter::List& dirParams = nlParams.sublist("Direction");
@@ -393,35 +395,24 @@ int main( int argc, char **argv )
 
   // Need a NOX::Epetra::Vector for constructor
   NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy, true);
-  NOX::Epetra::Group grp(printParams, iReq, noxInitGuess, linSys);
-
-  //NOX::Epetra::Group grp(printParams, lsParams, Interface, InitialGuess, 
-  //                       dynamic_cast<Epetra_RowMatrix&>(*(Problem.GetMatrix()))); 
+  Teuchos::RefCountPtr<NOX::Epetra::Group> grpPtr = 
+    Teuchos::rcp(new NOX::Epetra::Group(printParams, 
+					iReq, 
+					noxInitGuess, 
+					linSys)); 
 
   // Set up the status tests
-  NOX::StatusTest::NormF statusTestA(grp, 1.0e-4);
-  NOX::StatusTest::MaxIters statusTestB(20);
+  Teuchos::RefCountPtr<NOX::StatusTest::NormF> testNormF = 
+    Teuchos::rcp(new NOX::StatusTest::NormF(1.0e-4));
+  Teuchos::RefCountPtr<NOX::StatusTest::MaxIters> testMaxIters = 
+    Teuchos::rcp(new NOX::StatusTest::MaxIters(20));
   // this will be the convergence test to be used
-  NOX::StatusTest::Combo statusTestsCombo(NOX::StatusTest::Combo::OR, statusTestA, statusTestB);
-
-  // Create the list of solver parameters
-  NOX::Parameter::List solverParameters;
-
-  // Set the level of output (this is the default)
-  solverParameters.sublist("Printing").setParameter("Output Information", 
-						    NOX::Utils::OuterIteration);
-
-  // Set the solver (this is the default)
-  solverParameters.setParameter("Nonlinear Solver", "Line Search Based");
-
-  // Create the line search parameters sublist
-  NOX::Parameter::List& lineSearchParameters = solverParameters.sublist("Line Search");
-
-  // Set the line search method
-  lineSearchParameters.setParameter("Method","More'-Thuente");
+  Teuchos::RefCountPtr<NOX::StatusTest::Combo> combo = 
+    Teuchos::rcp(new NOX::StatusTest::Combo(NOX::StatusTest::Combo::OR, 
+					    testNormF, testMaxIters));
 
   // Create the solver
-  NOX::Solver::Manager solver(grp, statusTestsCombo, solverParameters);
+  NOX::Solver::Manager solver(grpPtr, combo, nlParamsPtr);
 
   // Solve the nonlinesar system
   NOX::StatusTest::StatusType status = solver.solve();
