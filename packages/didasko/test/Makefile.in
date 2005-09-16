@@ -41,6 +41,8 @@
 # 
 # ************************************************************************
 #@HEADER
+
+#SUBDIRS = scripts 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -234,6 +236,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
+EXTRA_DIST = definition
 all: all-am
 
 .SUFFIXES:
@@ -384,8 +387,6 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
 	uninstall-info-am
 
-
-#SUBDIRS = scripts
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

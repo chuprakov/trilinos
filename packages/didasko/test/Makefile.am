@@ -26,4 +26,7 @@
 # ************************************************************************
 #@HEADER
 
-#SUBDIRS = scripts
+#SUBDIRS = scripts 
+
+EXTRA_DIST = definition
+
