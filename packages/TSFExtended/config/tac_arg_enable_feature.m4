@@ -36,6 +36,5 @@ if test "X$ac_cv_use_$1" != "Xno"; then
 else
   AC_MSG_RESULT(no)
 fi
-AM_CONDITIONAL(HAVE_$3, "X$ac_cv_use_$1" = "Xyes")
 ])
 
