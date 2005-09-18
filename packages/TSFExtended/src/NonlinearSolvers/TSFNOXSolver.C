@@ -89,7 +89,7 @@ void NOXSolver::reset() const
   NOX::Parameter::Teuchos2NOX converter;
   noxParams_ = converter.toNOX(params_);
 
-  solver_ = rcp(new NOX::Solver::Manager(*grp_, *statusTest_, noxParams_));
+  solver_ = rcp(new NOX::Solver::Manager(grp_, statusTest_, noxParams_));
 }
 
 

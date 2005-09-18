@@ -49,7 +49,11 @@ include @abs_top_builddir@/../thyra/Makefile.export.thyra
 include @abs_top_builddir@/../teuchos/Makefile.export.teuchos
 include @abs_top_builddir@/../aztecoo/Makefile.export.aztecoo
 include @abs_top_builddir@/../ifpack/Makefile.export.ifpack
+
+ifeq ($(ENABLE_EPETRAEXT),true)
 include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
+endif
+
 include @abs_top_builddir@/../nox/Makefile.export.nox
 
 # Optional dependence on ml
@@ -78,6 +82,7 @@ TSFEXTENDED_INCLUDES = \
 TMP_TSFEXTENDED_LIBS = @LDFLAGS@ \
 -L@abs_top_builddir@/src \
 -lTSFExtended $(NOX_LIBS) $(ML_LIBS) $(AZTECOO_LIBS) $(IFPACK_LIBS) \
+$(THYRA_LIBS) \
 $(EPETRAEXT_LIBS) \
 $(EPETRA_LIBS) \
 $(TEUCHOS_LIBS) 

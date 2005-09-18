@@ -151,8 +151,6 @@ AC_PROG_RANLIB
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(TSFExtended, ml, ML, BUILD_ML, yes, [Enable the ML multilevel solvers and preconditioners in TSF], [Enable ML. Can be overridden with --disable-TSFExtended-ml.])
 
 
-
-
 # ------------------------------------------------------------------------
 # Get the absolute path to the build directory.  
 # 
