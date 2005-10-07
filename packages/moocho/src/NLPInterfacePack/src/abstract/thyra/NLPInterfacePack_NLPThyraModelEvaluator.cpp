@@ -20,16 +20,14 @@
 #include "NLPThyraModelEvaluator.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-//#include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
-//#include "AbstractLinAlgPack/src/abstract/tsfcore/VectorMutableTSFCore.hpp"
-//#include "AbstractLinAlgPack/src/abstract/tsfcore/MatrixOpNonsingTSFCore.hpp"
+#include "AbstractLinAlgPack/src/abstract/thyra/VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack/src/abstract/thyra/VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack/src/abstract/thyra/MatrixOpNonsingThyra.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
-#include "TSFCoreNonlinLinearOpWithSolve.hpp"
-#include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
-#include "TSFCoreExplicitVectorView.hpp"
+#include "Thyra_ExplicitVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
@@ -54,20 +52,17 @@ NLPThyraModelEvaluator::NLPThyraModelEvaluator(
 	,const int                                                      obj_ind[]
 	,const value_type                                               obj_wgt[]
 	,const EObjPow                                                  obj_pow[]
-	,const Thyra::VectorBase<value_type>                            *yL
-	,const Thyra::VectorBase<value_type>                            *yU
-	,const Thyra::VectorBase<value_type>                            *y0
-	,const Thyra::VectorBase<value_type>*                           uL[]
-	,const Thyra::VectorBase<value_type>*                           uU[]
-	,const Thyra::VectorBase<value_type>*                           u0[]
+	,const Thyra::VectorBase<value_type>                            *np_xL
+	,const Thyra::VectorBase<value_type>                            *np_xU
+	,const Thyra::VectorBase<value_type>                            *np_x0
+	,const Thyra::VectorBase<value_type>*                           np_pL[]
+	,const Thyra::VectorBase<value_type>*                           np_pU[]
+	,const Thyra::VectorBase<value_type>*                           np_p0[]
 	)
 	:initialized_(false),obj_scale_(1.0),f_calc_new_last_(false)
 {
-	initialize(np,num_u_indep_sets,u_indep_ind,num_obj,obj_ind,obj_wgt,obj_pow,yL,yU,y0,uL,uU,u0);
+	initialize(np,num_u_indep_sets,u_indep_ind,num_obj,obj_ind,obj_wgt,obj_pow,np_xL,np_xU,np_x0,np_pL,np_pU,np_p0);
 }
-
-/**  If we have no dependent variables y, we set basis_sys_ = null;
- */
 
 void NLPThyraModelEvaluator::initialize(
 	const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
@@ -77,15 +72,188 @@ void NLPThyraModelEvaluator::initialize(
 	,const int                                                      obj_ind[]
 	,const value_type                                               obj_wgt[]
 	,const EObjPow                                                  obj_pow[]
-	,const Thyra::VectorBase<value_type>                            *yL
-	,const Thyra::VectorBase<value_type>                            *yU
-	,const Thyra::VectorBase<value_type>                            *y0
-	,const Thyra::VectorBase<value_type>*                           uL[]
-	,const Thyra::VectorBase<value_type>*                           uU[]
-	,const Thyra::VectorBase<value_type>*                           u0[]
+	,const Thyra::VectorBase<value_type>                            *np_xL
+	,const Thyra::VectorBase<value_type>                            *np_xU
+	,const Thyra::VectorBase<value_type>                            *np_x0
+	,const Thyra::VectorBase<value_type>*                           np_pL[]
+	,const Thyra::VectorBase<value_type>*                           np_pU[]
+	,const Thyra::VectorBase<value_type>*                           np_p0[]
 	)
 {
-  TEST_FOR_EXCEPT(0);
+
+	using Teuchos::dyn_cast;
+	using AbstractLinAlgPack::VectorSpaceThyra;
+	using AbstractLinAlgPack::VectorMutableThyra;
+	using AbstractLinAlgPack::MatrixOpNonsingThyra;
+  typedef ::Thyra::ModelEvaluatorBase MEB;
+	
+	initialized_     = false;
+	f_calc_new_last_ = false;
+	np_g_updated_ = np_c_updated_ = np_Dg_updated_ = np_Dc_updated_ = false;
+
+  ::Thyra::ModelEvaluatorBase::OutArgs<value_type> np_outArgs = np->createOutArgs();
+  ::Thyra::ModelEvaluatorBase::DerivativeProperties np_W_properties = np_outArgs.get_W_properties();
+	
+#ifdef _DEBUG
+	const char msg_err[] = "NLPThyraModelEvaluator::initialize(...): Errror!";
+	TEST_FOR_EXCEPTION( np.get() == NULL, std::invalid_argument, msg_err );
+	TEST_FOR_EXCEPTION( np_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
+	TEST_FOR_EXCEPTION( np_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
+#endif
+	//if(!np->isInitialized()) np->initialize();
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION( !(num_u_indep_sets <= np->Np()), std::invalid_argument, msg_err );
+#endif
+	TEST_FOR_EXCEPT( np->Ng() != 1 ); // ToDo: Handle the more general case later!
+	const int numResponseFunctions = np->get_g_space(1)->dim(); // ToDo: Handle the more general case later!
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION( !(num_obj <= numResponseFunctions), std::invalid_argument, msg_err );
+#endif
+	//
+	//np->initialize(true);
+	np_ = np;
+	num_u_indep_sets_ = num_u_indep_sets;
+	u_indep_ind_.resize(num_u_indep_sets); if(num_u_indep_sets) std::copy( u_indep_ind, u_indep_ind+num_u_indep_sets, u_indep_ind_.begin() );
+	num_obj_ = num_obj;
+	obj_ind_.resize(num_obj); if(num_obj) std::copy( obj_ind, obj_ind+num_obj, obj_ind_.begin() );
+	obj_wgt_.resize(num_obj); if(num_obj) std::copy( obj_wgt, obj_wgt+num_obj, obj_wgt_.begin() );
+	obj_pow_.resize(num_obj); if(num_obj) std::copy( obj_pow, obj_pow+num_obj, obj_pow_.begin() );
+	//
+	f_has_sqr_term_ = false; {for(int p=0; p<num_obj; ++p) if(obj_pow_[p]==OBJ_SQUARED) f_has_sqr_term_=true;}
+	
+	//
+	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > np_space_x(np_->get_x_space());
+	bool no_y = (np_space_x.get() == NULL);
+
+	//
+	std::vector<VectorSpace::space_ptr_t> space_u(num_u_indep_sets);
+	if(1){for( int k=0; k<num_u_indep_sets; ++k ) {
+		space_u[k] = Teuchos::rcp(new VectorSpaceThyra(np_->get_p_space(u_indep_ind[k])));
+	}}
+	VectorSpace::space_ptr_t space_xI;
+	if(num_u_indep_sets) {
+		if(num_u_indep_sets==1) space_xI = space_u[0];
+		else                    space_xI = Teuchos::rcp(new VectorSpaceBlocked(&space_u[0],num_u_indep_sets));
+	}
+	VectorSpace::space_ptr_t space_xD;
+	//
+	if(!no_y) {
+		space_xD = Teuchos::rcp(new VectorSpaceThyra(np_space_x));
+		if (num_u_indep_sets)  {
+			VectorSpace::space_ptr_t spaces_xD_xI[] = { space_xD, space_xI };
+			space_x_ = Teuchos::rcp(new VectorSpaceBlocked(spaces_xD_xI,2));
+		}
+		else {
+			space_x_ = space_xD;
+		}
+	}
+	else {
+		space_x_ = space_xI;
+	} 
+
+	assert(space_x_.get());
+
+	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > np_space_f(np_->get_f_space());
+	bool no_c = (np_space_f.get() == NULL);
+	//
+	if(!no_c)
+		space_c_ = Teuchos::rcp(new VectorSpaceThyra(np_space_f));
+	else
+		space_c_ = Teuchos::null;
+
+	//
+	var_indep_u_.resize(num_u_indep_sets);
+	if(1){
+		index_type p = 0;
+		for( int k=0; k<num_u_indep_sets; ++k ) {
+			const index_type space_u_k_dim = space_u[k]->dim();
+			var_indep_u_[k] = Range1D(p+1,p+space_u_k_dim);
+			p += space_u_k_dim;
+		}
+	}
+	//
+	xinit_ = space_x_->create_member();  *xinit_ = 0.0;
+	xl_    = space_x_->create_member();  *xl_    = -NLP::infinite_bound();
+	xu_    = space_x_->create_member();  *xu_    = +NLP::infinite_bound();
+
+	if(!no_c) {
+
+		factory_Gc_ = BasisSystemComposite::factory_Gc();
+
+		basis_sys_ = Teuchos::rcp(
+			new BasisSystemComposite(
+				space_x_
+				,space_c_
+				,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixOpNonsingThyra>())          // factory_C
+				,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())         // factory_transDtD
+				,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())  // factory_S
+				)
+			);
+
+		if(!no_y) {
+			VectorSpace::vec_mut_ptr_t xinit_D = xinit_->sub_view(basis_sys_->var_dep());
+			if(np_x0)  copy_from_y( np_x0, xinit_D.get() );
+			else       copy_from_y( np_->get_x_init().get(), &*xinit_D );
+			VectorSpace::vec_mut_ptr_t xl_D = xl_->sub_view(basis_sys_->var_dep());
+			if(np_xL)  copy_from_y( np_xL, xl_D.get() );
+			else       copy_from_y( np_->get_x_lower_bounds().get(), &*xl_D );
+			VectorSpace::vec_mut_ptr_t xu_D = xu_->sub_view(basis_sys_->var_dep());
+			if(np_xU)  copy_from_y( np_xU, xu_D.get() );
+			else       copy_from_y( np_->get_x_upper_bounds().get(), &*xu_D );
+		}
+
+		if(num_u_indep_sets) {
+			VectorSpace::vec_mut_ptr_t xinit_I = xinit_->sub_view(basis_sys_->var_indep());
+			if(np_p0) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_p0[k], var_indep_u_[k], &*xinit_I ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_init(u_indep_ind[k]).get(), var_indep_u_[k], &*xinit_I ); }
+			VectorSpace::vec_mut_ptr_t xl_I = xl_->sub_view(basis_sys_->var_indep());
+			if(np_pL) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_pL[k], var_indep_u_[k], xl_I.get() ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_lower_bounds(u_indep_ind[k]).get(), var_indep_u_[k], &*xl_I ); }
+			VectorSpace::vec_mut_ptr_t xu_I = xu_->sub_view(basis_sys_->var_indep());
+			if(np_pU) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_pU[k], var_indep_u_[k], xu_I.get() ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_upper_bounds(u_indep_ind[k]).get(), var_indep_u_[k], &*xu_I ); }
+		}
+	}
+  else {
+
+		factory_Gc_ = Teuchos::null;
+
+		basis_sys_ = Teuchos::null;
+
+		if(num_u_indep_sets) {
+			VectorSpace::vec_mut_ptr_t xinit_I = xinit_;
+			if(np_p0) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_p0[k], var_indep_u_[k], &*xinit_I ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_init(u_indep_ind[k]).get(), var_indep_u_[k], &*xinit_I ); }
+			VectorSpace::vec_mut_ptr_t xl_I = xl_;
+			if(np_pL) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_pL[k], var_indep_u_[k], xl_I.get() ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_lower_bounds(u_indep_ind[k]).get(), var_indep_u_[k], &*xl_I ); }
+			VectorSpace::vec_mut_ptr_t xu_I = xu_;
+			if(np_pU) { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_pU[k], var_indep_u_[k], xu_I.get() ); }
+			else      { for(int k=0; k<num_u_indep_sets; ++k) copy_from_u( np_->get_p_upper_bounds(u_indep_ind[k]).get(), var_indep_u_[k], &*xu_I ); }
+		}
+
+	}
+	const int Nu = np_->Np();
+	np_u_in_.resize(Nu);
+	if(1){for(int l=1; l<=Nu; ++l) np_u_in_[l-1] = np_->get_p_init(l);}
+	//
+	if(!no_c)
+		np_c_ = ::Thyra::createMember(np_space_f);
+	else
+		np_c_ = Teuchos::null;
+  
+	if(num_obj) {
+		np_g_ = ::Thyra::createMember(np_->get_g_space(1)); // ToDo: Make more general!
+		if(!no_y)
+			np_DgDy_ = ::Thyra::createMembers(np_space_x,numResponseFunctions);
+		else
+			np_DgDy_ = Teuchos::null;
+		np_DgDu_.resize(num_u_indep_sets_);
+		if(1){for(int k=0; k<num_u_indep_sets; ++k) np_DgDu_[k] = ::Thyra::createMembers(np_->get_p_space(u_indep_ind[k]),numResponseFunctions);}
+	}
+	//
+	np_DcDu_.resize(num_u_indep_sets_);
+
 }
 	
 // Overridden public members from NLP
@@ -252,12 +420,12 @@ void NLPThyraModelEvaluator::imp_calc_Gc(const Vector& x, bool newx, const First
 
 // private
 
-void NLPThyraModelEvaluator::copy_from_y( const Thyra::VectorBase<value_type>& y, VectorMutable* x_D )
+void NLPThyraModelEvaluator::copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D )
 {
   TEST_FOR_EXCEPT(0);
 }
 
-void NLPThyraModelEvaluator::copy_from_u( const Thyra::VectorBase<value_type> &u, const Range1D& var_indep_u, VectorMutable* x_I )
+void NLPThyraModelEvaluator::copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I )
 {
   TEST_FOR_EXCEPT(0);
 }

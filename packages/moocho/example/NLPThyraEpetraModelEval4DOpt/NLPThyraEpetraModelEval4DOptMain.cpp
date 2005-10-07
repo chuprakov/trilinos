@@ -5,7 +5,6 @@
 
 #include "NLPInterfacePack/src/abstract/thyra/NLPThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
-//#include "TSFCoreExplicitVectorView.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "MoochoPack/configurations/MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"

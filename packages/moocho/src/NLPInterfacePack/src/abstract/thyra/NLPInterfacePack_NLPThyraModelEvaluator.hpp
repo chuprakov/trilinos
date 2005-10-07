@@ -108,12 +108,12 @@ public:
 		,const int                                                      obj_ind[]
 		,const value_type                                               obj_wgt[]
 		,const EObjPow                                                  obj_pow[]
-		,const Thyra::VectorBase<value_type>                            *yL       = NULL
-		,const Thyra::VectorBase<value_type>                            *yU       = NULL
-		,const Thyra::VectorBase<value_type>                            *y0       = NULL
-		,const Thyra::VectorBase<value_type>*                           uL[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           uU[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           u0[]      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xL       = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xU       = NULL
+		,const Thyra::VectorBase<value_type>                            *np_x0       = NULL
+		,const Thyra::VectorBase<value_type>*                           np_pL[]      = NULL
+		,const Thyra::VectorBase<value_type>*                           np_pU[]      = NULL
+		,const Thyra::VectorBase<value_type>*                           np_p0[]      = NULL
 		);
 
 	///
@@ -139,21 +139,21 @@ public:
 	 *               [in] Array (of length num_obj) that gives the power to raise for the auxiliary
 	 *               response functions in <tt>g(y,{u(l)})</tt> that will be used as terms
 	 *               in the objective function (see above).
-	 * @param  yL    [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
-	 *               then the default supplied in <tt>np->yL()</tt> will be used.
-	 * @param  yU    [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
-	 *               then the default supplied in <tt>np->yL()</tt> will be used.
-	 * @param  y0    [in] Pointer to initial guess for the state variables <tt>y</tt>.  If NULL
-	 *               the the default supplied in <tt>np->y0()</tt> will be used.
-	 * @param  uL    [in] Array (length num_u_indep_sets) of pointers to lower bounds for the
+	 * @param  np_xL [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
+	 *               then the default supplied in <tt>np->get_x_lower_bounds()</tt> will be used.
+	 * @param  np_xU [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
+	 *               then the default supplied in <tt>np->get_x_upper_bounds()</tt> will be used.
+	 * @param  np_x0 [in] Pointer to initial guess for the state variables <tt>y</tt>.  If NULL
+	 *               the the default supplied in <tt>np->get_x_init()</tt> will be used.
+	 * @param  np_pL [in] Array (length num_u_indep_sets) of pointers to lower bounds for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->uL(u_indep_ind[k])</tt> will be used.
-	 * @param  uU    [in] Array (length num_u_indep_sets) of pointers to upper bounds for the
+	 *               <tt>np->get_p_lower_bounds(u_indep_ind[k])</tt> will be used.
+	 * @param  np_pU [in] Array (length num_u_indep_sets) of pointers to upper bounds for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->uU(u_indep_ind[k])</tt> will be used.
-	 * @param  u0    [in] Array (length num_u_indep_sets) of pointers to initial guesses for the
+	 *               <tt>np->get_p_upper_bounds(u_indep_ind[k])</tt> will be used.
+	 * @param  np_p0 [in] Array (length num_u_indep_sets) of pointers to initial guesses for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->u0(u_indep_ind[k])</tt> will be used.
+	 *               <tt>np->get_p_init(u_indep_ind[k])</tt> will be used.
 	 *
 	 * ToDo: Finish documentation!
 	 *
@@ -167,12 +167,12 @@ public:
 		,const int                                                      obj_ind[]
 		,const value_type                                               obj_wgt[]
 		,const EObjPow                                                  obj_pow[]
-		,const Thyra::VectorBase<value_type>                            *yL       = NULL
-		,const Thyra::VectorBase<value_type>                            *yU       = NULL
-		,const Thyra::VectorBase<value_type>                            *y0       = NULL
-		,const Thyra::VectorBase<value_type>*                           uL[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           uU[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           u0[]      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xL       = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xU       = NULL
+		,const Thyra::VectorBase<value_type>                            *np_x0       = NULL
+		,const Thyra::VectorBase<value_type>*                           np_pL[]      = NULL
+		,const Thyra::VectorBase<value_type>*                           np_pU[]      = NULL
+		,const Thyra::VectorBase<value_type>*                           np_p0[]      = NULL
 		);
 
 	/** @name Overridden public members from NLP */
@@ -302,7 +302,7 @@ private:
 	VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
 	VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
-	mutable std::vector<const Thyra::VectorBase<value_type>*>  np_u_in_;
+	mutable std::vector<Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > >  np_u_in_;
 
 	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     np_g_;
 	mutable bool                                                             np_g_updated_;
@@ -323,9 +323,9 @@ private:
 	///
 	void assert_is_initialized() const;
 	///
-	void copy_from_y( const Thyra::VectorBase<value_type>& y, VectorMutable* x_D );
+	void copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D );
 	///
-	void copy_from_u( const Thyra::VectorBase<value_type> &u, const Range1D& var_indep_u, VectorMutable* x_I );
+	void copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I );
 	///
 	void set_x(
 		const Vector& x, bool newx
