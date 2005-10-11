@@ -317,6 +317,9 @@ private:
 
 	mutable bool                                                             f_calc_new_last_;
 
+  mutable Thyra::ModelEvaluatorBase::InArgs<double>                        np_inArgs_;
+  mutable Thyra::ModelEvaluatorBase::OutArgs<double>                       np_outArgs_;
+
 	// /////////////////////////////////////////
 	// Private member functions
 

@@ -91,8 +91,9 @@ void NLPThyraModelEvaluator::initialize(
 	f_calc_new_last_ = false;
 	np_g_updated_ = np_c_updated_ = np_Dg_updated_ = np_Dc_updated_ = false;
 
-  ::Thyra::ModelEvaluatorBase::OutArgs<value_type> np_outArgs = np->createOutArgs();
-  ::Thyra::ModelEvaluatorBase::DerivativeProperties np_W_properties = np_outArgs.get_W_properties();
+  np_inArgs_ = np->createInArgs();
+  np_outArgs_ = np->createOutArgs();
+  ::Thyra::ModelEvaluatorBase::DerivativeProperties np_W_properties = np_outArgs_.get_W_properties();
 	
 #ifdef _DEBUG
 	const char msg_err[] = "NLPThyraModelEvaluator::initialize(...): Errror!";
@@ -324,17 +325,42 @@ value_type NLPThyraModelEvaluator::max_var_bounds_viol() const
 
 void NLPThyraModelEvaluator::set_f(value_type* f)
 {
-  TEST_FOR_EXCEPT(0);
+	NLP::set_f(f);
+	if(num_obj_) {
+		if(f) {
+      np_outArgs_.set_g(1,np_g_);
+		}
+		else if( !NLPObjGrad::get_Gf() || (NLPObjGrad::get_Gf() && !f_has_sqr_term_) ) {
+      np_outArgs_.set_g(1,Teuchos::null);
+		}
+		np_g_updated_ = false;
+	}
 }
 
 void NLPThyraModelEvaluator::set_c(VectorMutable* c)
 {
-  TEST_FOR_EXCEPT(0);
+	NLP::set_c(c);
+	if(c) {
+		np_outArgs_.set_f(np_c_);
+	}
+	else {
+		np_outArgs_.set_f(Teuchos::null);
+	}
+	np_c_updated_ = false;
 }
 
 void NLPThyraModelEvaluator::unset_quantities()
 {
-  TEST_FOR_EXCEPT(0);
+  using Teuchos::null;
+	np_outArgs_.set_f(null);
+	np_outArgs_.set_W(null);
+	if(num_obj_) np_outArgs_.set_g(1,null);
+  // ToDo: Put in derivative stuff for g!
+	//if(num_obj_) np_outArgs_.set_DgDy(NULL);
+	//for(int k=0; k<num_u_indep_sets_; ++k) {
+	//	np_->set_DgDu(u_indep_ind_[k],NULL);
+	//	np_->set_DcDu(u_indep_ind_[k],NULL);
+	//}
 }
 
 void NLPThyraModelEvaluator::scale_f( value_type scale_f )
@@ -354,21 +380,21 @@ void NLPThyraModelEvaluator::report_final_solution(
 	,bool            optimal
 	)
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // Overridden public members from NLPObjGrad
 
 void NLPThyraModelEvaluator::set_Gf(VectorMutable* Gf)
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // Overridden public members from NLPFirstOrder
 
 void NLPThyraModelEvaluator::set_Gc(MatrixOp* Gc)
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 const NLPFirstOrder::mat_fcty_ptr_t
@@ -390,7 +416,7 @@ void NLPThyraModelEvaluator::imp_calc_f(
 	,const ZeroOrderInfo& zero_order_info
   ) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 void NLPThyraModelEvaluator::imp_calc_c(
@@ -398,7 +424,7 @@ void NLPThyraModelEvaluator::imp_calc_c(
 	,const ZeroOrderInfo& zero_order_info
   ) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // Overridden protected members from NLPObjGrad
@@ -408,26 +434,28 @@ void NLPThyraModelEvaluator::imp_calc_Gf(
 	,const ObjGradInfo& obj_grad_info
   ) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // Overridden protected members from NLPFirstOrder
 
 void NLPThyraModelEvaluator::imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 // private
 
 void NLPThyraModelEvaluator::copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D )
 {
-  TEST_FOR_EXCEPT(0);
+  if(!y) return;
+	*x_D = AbstractLinAlgPack::VectorMutableThyra(Teuchos::rcp(const_cast<Thyra::VectorBase<value_type>*>(y),false));
 }
 
 void NLPThyraModelEvaluator::copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I )
 {
-  TEST_FOR_EXCEPT(0);
+  if(!u) return;
+	*x_I->sub_view(var_indep_u) = AbstractLinAlgPack::VectorMutableThyra(Teuchos::rcp(const_cast<Thyra::VectorBase<value_type>*>(u),false));
 }
 
 void NLPThyraModelEvaluator::set_x(
@@ -436,7 +464,7 @@ void NLPThyraModelEvaluator::set_x(
 	,const Thyra::VectorBase<value_type>*** u
 	) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 void NLPThyraModelEvaluator::calc_g(
@@ -445,7 +473,7 @@ void NLPThyraModelEvaluator::calc_g(
 	,bool newx 
 	) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 void NLPThyraModelEvaluator::calc_Dg(
@@ -454,7 +482,7 @@ void NLPThyraModelEvaluator::calc_Dg(
 	,bool newx 
 	) const
 {
-  TEST_FOR_EXCEPT(0);
+  TEST_FOR_EXCEPT(true);
 }
 
 }	// end namespace NLPInterfacePack
