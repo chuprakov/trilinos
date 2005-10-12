@@ -1,9 +1,0 @@
-To run this with the program 'vbr_test.c' in the utils directory,
-do the following:
-
-gunzip matrix.gz
-gunzip rand_guess.gz
-ln -s matrix K_reordered
-ln -s rand_guess guess_reordered
-
-

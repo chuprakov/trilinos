@@ -1,7 +1,0 @@
-/*! \mainpage Meros: Segregated Preconditioning Package
-
- Meros is a segregated preconditioning package. Provides scalable
-block preconditioning for problems that coupled simultaneous solution
-variables such as Navier-Strokes problems.
-
-*/

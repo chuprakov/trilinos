@@ -1,9 +1,0 @@
-#
-# FRAMEWORK group
-#
-
-(FRAMEWORK) {
-    DIRS = vector_random;
-    ARGS = 1000 2, 1000 1;
-    COMM = MPI , MPI;
-}

@@ -1,7 +1,0 @@
-/** \mainpage Simple example NLP for the Waechter & Biegler counter example.
-
-The class <tt>NLPInterfacePack::NLPWBCounterExample</tt> implements
-this simple %NLP and the file <tt>NLPWBCounterExampleMain.cpp</tt> includes
-a driver for solving this %NLP using MOOCHO.
-
-*/

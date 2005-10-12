@@ -1,9 +1,0 @@
-#
-# FRAMEWORK group
-#
-
-(FRAMEWORK) {
-    DIRS = RTOpT, unary_rtop;
-    ARGS = --verbose;
-    COMM = SERIAL, MPI;
-}
