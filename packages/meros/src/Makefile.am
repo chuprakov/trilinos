@@ -64,7 +64,9 @@ CORE_H = \
 	  $(srcdir)/SimpleCBlockPreconditionerFactory.h   \
           $(srcdir)/NSBlockPreconditionerFactory.h       \
 	  $(srcdir)/SchurFactory.h                       \
-	  $(srcdir)/EPW/EPWBlockPreconditionerFactory.h      
+	  $(srcdir)/EPWBlockPreconditionerFactory.h  \
+	  $(srcdir)/EPWContactBlockPreconditionerFactory.h  \
+	  $(srcdir)/kay.h      
 
 CORE = \
           $(srcdir)/Aztec2TSF.cpp                         \
@@ -89,7 +91,8 @@ CORE = \
 	  $(srcdir)/SimpleCOperatorSource.cpp		   \
 	  $(srcdir)/SimpleSchurFactory.cpp                 \
           $(srcdir)/SchurFactory.cpp                       \
-	  $(srcdir)/EPW/EPWBlockPreconditionerFactory.cpp      
+	  $(srcdir)/EPWBlockPreconditionerFactory.cpp      \
+	  $(srcdir)/EPWContactBlockPreconditionerFactory.cpp      
 
 UTIL_H = 
 
@@ -147,8 +150,7 @@ COMP =
 
 
 AM_CPPFLAGS = -I$(srcdir) \
-              -I$(srcdir)/EPW                             \
-              -I$(top_builddir)/../meros/src/EPW          \
+              -I$(top_builddir)/../meros/src/             \
               -I$(top_srcdir)/../epetra/src		  \
               -I$(top_builddir)/../epetra/src             \
               -I$(top_srcdir)/../epetraext/src		  \
