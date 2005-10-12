@@ -161,12 +161,10 @@ const Vector& NLP::c() const
 
 void NLP::unset_quantities()
 {
-	first_order_info_.f = NULL;
-	first_order_info_.c = NULL;
-	first_order_info_.h = NULL;
-	first_order_info_breve_.f = NULL;
-	first_order_info_breve_.c = NULL;
-	first_order_info_breve_.h = NULL;
+  set_f(NULL);
+  if(m()) set_c(NULL);
+  if(m()-ns()) set_c_breve(NULL);
+  if(m()-ns()) set_h_breve(NULL);
 }
 
 // calculations

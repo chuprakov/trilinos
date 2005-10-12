@@ -14,10 +14,10 @@ void AbstractLinAlgPack::get_thyra_vector(
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
-	const VectorMutableThyra *vmtsfc_vec = dynamic_cast<const VectorMutableThyra*>(&vec);
-	if(vmtsfc_vec) {
+	const VectorMutableThyra *vmthyra_vec = dynamic_cast<const VectorMutableThyra*>(&vec);
+	if(vmthyra_vec) {
 		// We can just grap the const smart pointer to the underlying object 
-		*thyra_vec = vmtsfc_vec->thyra_vec();
+		*thyra_vec = vmthyra_vec->thyra_vec();
 	}
 	else if(vec.space().is_in_core()) {
 		// We need to create a temporary copy and then copy the explicit elements
@@ -70,10 +70,10 @@ void AbstractLinAlgPack::get_thyra_vector(
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION( vec==NULL || thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
-	VectorMutableThyra *vmtsfc_vec = dynamic_cast<VectorMutableThyra*>(vec);
-	if(vmtsfc_vec) {
+	VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
+	if(vmthyra_vec) {
 		// We can just directly grap the Thyra vector
-		*thyra_vec = vmtsfc_vec->set_uninitialized();
+		*thyra_vec = vmthyra_vec->set_uninitialized();
 	}
 	else if(thyra_vec_spc.is_in_core()) {
 		// We need to create a temporary copy and then copy the explicit elements
@@ -115,10 +115,10 @@ void AbstractLinAlgPack::commit_thyra_vector(
 		TEST_FOR_EXCEPTION( vec==NULL || thyra_vec_in==NULL, std::invalid_argument, "Error!" );
 #endif
 	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >  &thyra_vec = *thyra_vec_in;
-	VectorMutableThyra *vmtsfc_vec = dynamic_cast<VectorMutableThyra*>(vec);
-	if(vmtsfc_vec) {
+	VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
+	if(vmthyra_vec) {
 		// We can just directly reset the Thyra vector
-		vmtsfc_vec->initialize(thyra_vec);
+		vmthyra_vec->initialize(thyra_vec);
 	}
 	else if(thyra_vec_spc.is_in_core()) {
 		// We need to copy back the temporary

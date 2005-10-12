@@ -24,6 +24,8 @@
 #include "Thyra_ModelEvaluator.hpp"
 #include "Teuchos_TestForException.hpp"
 
+namespace AbstractLinAlgPack { class VectorSpaceThyra; }
+
 namespace NLPInterfacePack {
 
 ///
@@ -32,7 +34,7 @@ namespace NLPInterfacePack {
  *
  * This subclass allows great flexibility in how a
  * <tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt> object
- * <tt>np</tt> can be used to implement an nonlinear program.
+ * <tt>model</tt> can be used to implement an nonlinear program.
  *
  * The nonlinear program is mapped as follows:
 
@@ -43,10 +45,10 @@ namespace NLPInterfacePack {
             xL <= x <= xu
 
     where:
-            [ np.y                                  ]
-        x = [ np.u(u_indep_ind[0])                  ]
+            [ np.x                                  ]
+        x = [ np.p(p_indep_ind[0])                  ]
             [ ...                                   ]
-            [ np.u(u_indep_ind[num_u_indep_sets-1]) ]
+            [ np.p(p_indep_ind[num_p_indep_sets-1]) ]
 
         f(x) = sum( q[k], k = 0...num_obj-1 )
         
@@ -57,7 +59,7 @@ namespace NLPInterfacePack {
         c(x) = np.c(y,{u(l)})
  \endverbatim
 
- * where <tt>num_u_indep_sets</tt>, <tt>u_indep_ind[]</tt>,
+ * where <tt>num_p_indep_sets</tt>, <tt>p_indep_ind[]</tt>,
  * <tt>num_obj</tt>, <tt>obj_ind[]</tt>, <tt>obj_wgt[]</tt> and
  * <tt>obj_pow[]</tt> are input, along with the object <tt>np</tt> to
  * the constructor <tt>NLPThyraModelEvaluator()</tt> or the initialization
@@ -67,8 +69,8 @@ namespace NLPInterfacePack {
  * auxiliary variables <tt>{u(l)}</tt> auxiliary response functions
  * <tt>np.g(y,{u(l})</tt> are used.  The client can select one or more of
  * the members in the set of auxiliary variables <tt>{u(l)}</tt> to be
- * used as design variables as specified by <tt>num_u_indep_sets</tt>
- * and <tt>u_indep_ind[]</tt>.  Also, the objective function can be
+ * used as design variables as specified by <tt>num_p_indep_sets</tt>
+ * and <tt>p_indep_ind[]</tt>.  Also, the objective function can be
  * built out of a composition of one or more of the auxiliary
  * functions <tt>np.g(y,{u(l)})</tt> as specified by <tt>num_obj</tt>,
  * <tt>obj_ind[]</tt>, <tt>obj_wgt[]</tt> and <tt>obj_pow[]</tt>.
@@ -102,8 +104,8 @@ public:
 	 */
 	NLPThyraModelEvaluator(
 		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
-		,const int                                                      num_u_indep_sets
-		,const int                                                      u_indep_ind[]
+		,const int                                                      num_p_indep_sets
+		,const int                                                      p_indep_ind[]
 		,const int                                                      num_obj
 		,const int                                                      obj_ind[]
 		,const value_type                                               obj_wgt[]
@@ -121,7 +123,7 @@ public:
 	 * a description of how to interpret it.
 	 *
 	 * @param  np    [in] NonlinearProblem that defines all of the functions.
-	 * @param  num_u_indep_sets
+	 * @param  num_p_indep_sets
 	 *               [in] Number of set of auxiliary variables u(l) to include in the set of
 	 *               independent variables xI (see above).
 	 * @param  num_obj
@@ -145,15 +147,15 @@ public:
 	 *               then the default supplied in <tt>np->get_x_upper_bounds()</tt> will be used.
 	 * @param  np_x0 [in] Pointer to initial guess for the state variables <tt>y</tt>.  If NULL
 	 *               the the default supplied in <tt>np->get_x_init()</tt> will be used.
-	 * @param  np_pL [in] Array (length num_u_indep_sets) of pointers to lower bounds for the
+	 * @param  np_pL [in] Array (length num_p_indep_sets) of pointers to lower bounds for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_lower_bounds(u_indep_ind[k])</tt> will be used.
-	 * @param  np_pU [in] Array (length num_u_indep_sets) of pointers to upper bounds for the
+	 *               <tt>np->get_p_lower_bounds(p_indep_ind[k])</tt> will be used.
+	 * @param  np_pU [in] Array (length num_p_indep_sets) of pointers to upper bounds for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_upper_bounds(u_indep_ind[k])</tt> will be used.
-	 * @param  np_p0 [in] Array (length num_u_indep_sets) of pointers to initial guesses for the
+	 *               <tt>np->get_p_upper_bounds(p_indep_ind[k])</tt> will be used.
+	 * @param  np_p0 [in] Array (length num_p_indep_sets) of pointers to initial guesses for the
 	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_init(u_indep_ind[k])</tt> will be used.
+	 *               <tt>np->get_p_init(p_indep_ind[k])</tt> will be used.
 	 *
 	 * ToDo: Finish documentation!
 	 *
@@ -161,8 +163,8 @@ public:
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
-		,const int                                                      num_u_indep_sets
-		,const int                                                      u_indep_ind[]
+		,const int                                                      num_p_indep_sets
+		,const int                                                      p_indep_ind[]
 		,const int                                                      num_obj
 		,const int                                                      obj_ind[]
 		,const value_type                                               obj_wgt[]
@@ -270,11 +272,18 @@ protected:
 	//@{
 
 	///
-	void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
+	void imp_calc_Gc(
+    const Vector& x, bool newx
+    ,const FirstOrderInfo& first_order_info) const;
 
 	//@}
 
 private:
+
+	// /////////////////////////////////////////
+	// Private types
+
+  typedef Teuchos::RefCountPtr<const AbstractLinAlgPack::VectorSpaceThyra> VectorSpaceThyra_ptr_t;
 
 	// /////////////////////////////////////////
 	// Private data members
@@ -286,8 +295,8 @@ private:
 	index_type                          num_bounded_x_;
 	Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
 	                                    np_;
-	int                                 num_u_indep_sets_;
-	std::vector<int>                    u_indep_ind_;
+	int                                 num_p_indep_sets_;
+	std::vector<int>                    p_indep_ind_;
 	int                                 num_obj_;
 	std::vector<int>                    obj_ind_;
 	std::vector<value_type>             obj_wgt_;
@@ -295,30 +304,26 @@ private:
 	std::vector<Range1D>                var_indep_u_;
 	bool                                f_has_sqr_term_;
 	VectorSpace::space_ptr_t            space_x_;      // Space for the variables
-	VectorSpace::space_ptr_t            space_c_;      // Space for the constraints
+	VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
 	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
 	NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
 	VectorSpace::vec_mut_ptr_t          xinit_;        // Initial guess.
 	VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
 	VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
-	mutable std::vector<Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > >  np_u_in_;
-
 	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     np_g_;
-	mutable bool                                                             np_g_updated_;
-	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     np_c_;
-	mutable bool                                                             np_c_updated_;
-	Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >                np_DgDy_;
-	std::vector<Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > >  np_DgDu_;
-	mutable bool                                                             np_Dg_updated_;
-	Teuchos::RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >          np_DcDy_;
-	std::vector<Teuchos::RefCountPtr<Thyra::LinearOpBase<value_type> > >     np_DcDu_;
-	mutable bool                                                             np_Dc_updated_;
+	Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >                np_DgDx_;
+	std::vector<Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > >  np_DgDp_;
 
-	mutable bool                                                             f_calc_new_last_;
-
-  mutable Thyra::ModelEvaluatorBase::InArgs<double>                        np_inArgs_;
   mutable Thyra::ModelEvaluatorBase::OutArgs<double>                       np_outArgs_;
+
+  mutable bool np_g_updated_;
+  mutable bool np_Dg_updated_;
+
+  mutable bool f_updated_;
+  mutable bool c_updated_;
+  mutable bool Gf_updated_;
+  mutable bool Gc_updated_;
 
 	// /////////////////////////////////////////
 	// Private member functions
@@ -326,34 +331,19 @@ private:
 	///
 	void assert_is_initialized() const;
 	///
-	void copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D );
+	void copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D ) const;
 	///
-	void copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I );
-	///
-	void set_x(
-		const Vector& x, bool newx
-		,const Thyra::VectorBase<value_type>**  y
-		,const Thyra::VectorBase<value_type>*** u
-		) const;
-	///
-	void calc_g( const Thyra::VectorBase<value_type> &y, const Thyra::VectorBase<value_type>* u[], bool newx  ) const;
-	///
-	void calc_Dg( const Thyra::VectorBase<value_type> &y, const Thyra::VectorBase<value_type>* u[], bool newx  ) const;
+	void copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I ) const;
+  ///
+  void evalModel( 
+		const Vector            &x
+    ,bool                   newx
+		,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
+    ,const ObjGradInfo      *obj_grad_info    // != NULL if obj-grad and below info
+    ,const FirstOrderInfo   *first_order_info // != NULL if first-order and below info
+    ) const;
 
 };	// end class NLPThyraModelEvaluator
-
-// ///////////////////////////////////////////////
-// Inline member functions
-
-inline
-void NLPThyraModelEvaluator::assert_is_initialized() const
-{
-	TEST_FOR_EXCEPTION(
-		!is_initialized(), NLP::UnInitialized
-		,"NLPThyraModelEvaluator::assert_is_initialized() : Error, "
-		"NLPThyraModelEvaluator::initialize() has not been called yet."
-		);
-}
 
 }	// end namespace NLPInterfacePack
 
