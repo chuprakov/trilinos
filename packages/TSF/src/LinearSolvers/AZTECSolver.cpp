@@ -43,6 +43,7 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
 		options_(AZ_OPTIONS_SIZE),
 		parameters_(AZ_PARAMS_SIZE),
     useML_(false),
+    mlSetupComplete_(false),
     mlLevels_(0),
     mlSymmetric_(false),
     mlUseDamping_(false),
@@ -154,6 +155,10 @@ void AZTECSolver::setupML(Epetra_RowMatrix* F) const
   ML_Aggregate_Set_MaxCoarseSize(agg_object,30);
   ML_Aggregate_Set_Threshold(agg_object,0.0);
 
+  // pde setting for solid mechanics?
+  // ML_Aggregate_Set_NullSpace(agg_object, 2, NULL, NULL, NULL);
+  // ML_Aggregate_Set_NullSpace(agg_object, 2, NULL, NULL, 2601);
+
   if (mlSymmetric_ != true) 
     {
       ML_Aggregate_Set_DampingFactor(agg_object,0.);
@@ -202,7 +207,10 @@ bool AZTECSolver::solve(const TSFLinearOperator& op,
 
 	Epetra_CrsMatrix* A = PetraMatrix::getConcrete(op);
 
-  if (useML_) setupML(A);
+  if (useML_ & !mlSetupComplete_) {
+    setupML(A);
+    mlSetupComplete_ = true;
+  }
 
   AztecOO aztec(A, x, b);
   

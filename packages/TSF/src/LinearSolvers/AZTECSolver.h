@@ -65,6 +65,10 @@ namespace TSF
        *  with aztec (i.e., using recursiveIterate) */
       bool aztec_recursive_iterate_;
 
+      /** Flag indicating whether we are doing a recursive solve
+       *  with aztec (i.e., using recursiveIterate) */
+      mutable bool mlSetupComplete_;
+
       /** Number of ML levels to use */
       mutable int mlLevels_;
 
