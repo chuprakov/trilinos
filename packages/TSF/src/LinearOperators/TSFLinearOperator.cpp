@@ -438,9 +438,9 @@ void TSFLinearOperator::describe(const int&depth) const
     {
       string typeNam = ptr_->typeName();
       //string typeNam = "junk";
-      TSFOut::println(spaces + "  " + typeNam + " of dimension " 
-           + TSFUtils::toString(domain().dim())  + " by  " 
-           + TSFUtils::toString(range().dim()));
+      TSFOut::println(spaces + "  " + typeNam + " of dimension (rows) " 
+           + TSFUtils::toString(range().dim())  + " by  (cols) " 
+           + TSFUtils::toString(domain().dim()));
 
 /*       cerr << spaces << typeNam <<" of dimension "  */
 /*            << domain().dim() << " by  "  */
