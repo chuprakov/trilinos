@@ -172,7 +172,7 @@ int main(int argc, void** argv)
  solver.SetPrecOperator(saddlePrec_epet);
  solver.SetAztecOption(AZ_solver,AZ_GMRESR);
  solver.SetAztecOption(AZ_output,1);
- solver.Iterate(30, 1.0E-6);
+ solver.Iterate(50, 1.0E-6);
  
  delete saddlePrec_epet;
  delete x_epet;
