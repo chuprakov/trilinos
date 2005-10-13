@@ -20,17 +20,10 @@ TSFComposedOperator::TSFComposedOperator(const TSFLinearOperator& left,
 void TSFComposedOperator::apply(const TSFVector& in, 
 																TSFVector& out) const
 {
-	try
-		{
-			/* apply operators in order from right to left */
-			TSFVector tmp = right_.range().createMember();
-			right_.apply(in, tmp);
-			left_.apply(tmp, out);
-		}
-	catch(exception& e)
-		{
-			TSFError::trace(e, "in TSFComposedOperator::apply()");
-		}
+  /* apply operators in order from right to left */
+  TSFVector tmp = right_.range().createMember();
+  right_.apply(in, tmp);
+  left_.apply(tmp, out);
 }
 
 void TSFComposedOperator::applyAdjoint(const TSFVector& in, 
