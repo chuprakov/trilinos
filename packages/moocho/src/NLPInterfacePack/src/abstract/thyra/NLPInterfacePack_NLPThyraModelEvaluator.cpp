@@ -90,28 +90,21 @@ void NLPThyraModelEvaluator::initialize(
 	using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef ::Thyra::ModelEvaluatorBase MEB;
 	
-	initialized_     = false;
+	initialized_ = false;
 	np_g_updated_ = np_Dg_updated_ = f_updated_ = c_updated_ = Gf_updated_ = Gc_updated_ = false;
 
-  //np_inArgs_ = np->createInArgs();
-  np_outArgs_ = np->createOutArgs();
-  ::Thyra::ModelEvaluatorBase::DerivativeProperties np_W_properties = np_outArgs_.get_W_properties();
-	
-#ifdef _DEBUG
 	const char msg_err[] = "NLPThyraModelEvaluator::initialize(...): Errror!";
 	TEST_FOR_EXCEPTION( np.get() == NULL, std::invalid_argument, msg_err );
+  np_outArgs_ = np->createOutArgs();
+	TEST_FOR_EXCEPTION(!np_outArgs_.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
+  MEB::DerivativeProperties np_W_properties = np_outArgs_.get_W_properties();
 	TEST_FOR_EXCEPTION( np_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
 	TEST_FOR_EXCEPTION( np_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
-#endif
 	//if(!np->isInitialized()) np->initialize();
-#ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !(num_p_indep_sets <= np->Np()), std::invalid_argument, msg_err );
-#endif
 	TEST_FOR_EXCEPT( np->Ng() != 1 ); // ToDo: Handle the more general case later!
 	const int numResponseFunctions = np->get_g_space(1)->dim(); // ToDo: Handle the more general case later!
-#ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !(num_obj <= numResponseFunctions), std::invalid_argument, msg_err );
-#endif
 	//
 	//np->initialize(true);
 	np_ = np;
@@ -446,7 +439,10 @@ void NLPThyraModelEvaluator::evalModel(
 {
   using Teuchos::RefCountPtr;
   using Teuchos::dyn_cast;
+  using Teuchos::rcp_const_cast;
   using AbstractLinAlgPack::VectorMutableThyra;
+  using AbstractLinAlgPack::MatrixOpThyra;
+  using AbstractLinAlgPack::MatrixOpNonsingThyra;
   //
 	if(newx) np_g_updated_ = np_Dg_updated_ = f_updated_ = c_updated_ = Gf_updated_ = Gc_updated_ = false;
   //
@@ -510,10 +506,27 @@ void NLPThyraModelEvaluator::evalModel(
     np_outArgs.set_f(thyra_c);
   }
   if( Gf && !Gf_updated_ ) {
-    TEST_FOR_EXCEPT(true);
+    if(num_obj_) {
+      TEST_FOR_EXCEPT(true);
+    }
   }
+  MatrixOpNonsing  *C_aggr = NULL;
+  MatrixOp         *N_aggr = NULL;
   if( Gc && !Gc_updated_ ) {
-    TEST_FOR_EXCEPT(true);
+		BasisSystemComposite::get_C_N( Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
+    if(C_aggr) {
+      np_outArgs.set_W(
+        rcp_const_cast<Thyra::LinearOpWithSolveBase<value_type> >(
+          dyn_cast<MatrixOpNonsingThyra>(*C_aggr).set_uninitialized()
+          )
+        );
+      // ToDo: Deal with N_aggr!
+    }
+    else {
+      np_outArgs.set_W(np_->create_W());
+    }
+    np_inArgs.set_alpha(0.0);
+    np_inArgs.set_beta(1.0);
   }
   //
   // Evaluate the model
@@ -540,10 +553,32 @@ void NLPThyraModelEvaluator::evalModel(
     c_updated_ = true;
   }
   if( Gf && !Gf_updated_ ) {
-    TEST_FOR_EXCEPT(true);
+    if(num_obj_) {
+      TEST_FOR_EXCEPT(true);
+    }
+    else {
+      *Gf = 0.0;
+    }
   }
   if( Gc && !Gc_updated_ ) {
-    TEST_FOR_EXCEPT(true);
+    Teuchos::RefCountPtr<MatrixOpNonsingThyra>  C_ptr;
+    Teuchos::RefCountPtr<MatrixOpThyra>         N_ptr;
+    if(!C_aggr) {
+      C_ptr  = Teuchos::rcp(new MatrixOpNonsingThyra());
+      C_aggr = C_ptr.get();
+      // ToDo: Deal with N_aggr!
+    }
+    dyn_cast<MatrixOpNonsingThyra>(*C_aggr).initialize(np_outArgs.get_W(),BLAS_Cpp::no_trans);
+    // ToDo: Initialize N_aggr!
+    if( C_ptr.get() ) {
+      BasisSystemComposite::initialize_Gc(
+        this->space_x(), basis_sys_->var_dep(), basis_sys_->var_indep()
+        ,this->space_c()
+        ,C_ptr, N_ptr
+        ,Gc
+        );
+    }
+    Gc_updated_ = true;
   }
 }
 

@@ -267,13 +267,17 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 		
 		if(test_nlp_) {
 			
-			const char msg1[] = "\ntest_nlp = true: Testing the NLP!\n";
+			const char msg1[] = "\ntest_nlp = true: Testing the NLP! ...\n";
+			if(do_console_outputting())
+				*console_out_used_ << msg1;
 			if(do_summary_outputting())
 				*summary_out_used_ << msg1;
 			if(do_journal_outputting())
 				*journal_out_used_ << msg1;
 			if(NLPFirstOrder* nlp_foi = dynamic_cast<NLPFirstOrder*>(nlp_.get())) {
 				const char msg[] = "\nTesting the supported NLPFirstOrder interface ...\n";
+        if(do_console_outputting())
+          *console_out_used_ << msg;
 				if(do_summary_outputting())
 					*summary_out_used_ << msg;
 				if(do_journal_outputting())
@@ -284,7 +288,9 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);
 				if(!result) {
-					const char msg[] = "\nNLP test failed (see journal file)!  exiting!\n";
+					const char msg[] = "\nNLPFirstOrder test failed (see journal file)!  exiting!\n";
+          if(do_console_outputting())
+            *console_out_used_ << msg;
 					if(do_summary_outputting())
 						*summary_out_used_ << msg;
 					if(do_journal_outputting())
@@ -295,6 +301,8 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 			}
 			else if(NLPDirect* nlp_fod = dynamic_cast<NLPDirect*>(nlp_.get())) {
 				const char msg[] = "\nTesting the supported NLPDirect interface ...\n";
+        if(do_console_outputting())
+          *console_out_used_ << msg;
 				if(do_summary_outputting())
 					*summary_out_used_ << msg;
 				if(do_journal_outputting())
@@ -305,7 +313,9 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);
 				if(!result) {
-					const char msg[] = "\nNLP test failed (see journal file)!  exiting!\n";
+					const char msg[] = "\nNLPDirect test failed (see journal file)!  exiting!\n";
+          if(do_console_outputting())
+            *console_out_used_ << msg;
 					if(do_summary_outputting())
 						*summary_out_used_ << msg;
 					if(do_journal_outputting())
@@ -314,7 +324,9 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 					return solve_return;
 				}
 			}
-			const char msg2[] = "\n... end testing of nlp\n";
+			const char msg2[] = "\nSuccessful end of testing of the nlp\n";
+      if(do_console_outputting())
+        *console_out_used_ << msg2;
 			if(do_summary_outputting())
 				*summary_out_used_ << msg2;
 			if(do_journal_outputting())

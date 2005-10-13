@@ -107,7 +107,7 @@ bool NLPTester::test_interface(
 			update_success( result, &success );
 			if(out)
 				*out << "\ncheck: nlp->space_c().get() = " << nlp->space_c().get()
-					 << " == NULL: " << result;
+             << " == NULL: " << result << std::endl;
 		}
 
 		// Validate the initial guess the bounds on the unknowns.

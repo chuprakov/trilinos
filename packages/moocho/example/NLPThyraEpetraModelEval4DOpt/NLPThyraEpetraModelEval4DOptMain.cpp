@@ -6,6 +6,7 @@
 #include "NLPInterfacePack/src/abstract/thyra/NLPThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
+#include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "MoochoPack/configurations/MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
@@ -71,13 +72,13 @@ int main( int argc, char* argv[] )
     EpetraModelEval4DOpt epetra_np(yt1,yt2,ut1,ut2,d,y01,y02,u01,u02);
 
     // Create the TSFCore::Nonlin::NonlinearProblemFirstOrder object
-
+    
     Thyra::EpetraModelEvaluator np; // Sets default options!
     np.initialize(
       Teuchos::rcp(&epetra_np,false)
-      ,Teuchos::null                // No W_factory yet
+      ,Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory())
       );
-
+    
     // Setup NLPTSFCoreNP for just one objective function
 
 		const int                              u_indep_ind[1]     = { 1 };
