@@ -1,0 +1,46 @@
+Meros is a segregated preconditioning package. It provides scalable
+block preconditioning for problems that coupled simultaneous solution
+variables such as Navier-Strokes problems.
+
+Because Meros is currently development only code, there are a number
+of restrictions and caveats. These should be fixed when we upgrade
+Meros for release (which we hope to do in FY06).
+
+  - all code and user level interfaces may change substantially as we
+    develop algorithms, convert to Thyra, and clean up code for release.
+
+  - Meros currently needs an older version of gcc to compile. 
+    We recommend gcc 3.2.x.
+
+  - Meros currently depends on the older TSF abstract layer. We will
+    convert to Thyra before releasing the code, but for now, you must
+    configure Trilinos with TSF.
+
+Below is a sample configure script for Trilinos with Meros. Note that
+you need to point to either a gcc 3.2.x or an mpi that was built with
+gcc 3.2.x.
+
+Sample build script:
+---------------------------------------
+#!/bin/sh
+
+BUILD_DIR=`pwd`
+
+../configure CXXFLAGS="-g"                    \
+--with-install="/usr/bin/install -c -p"       \
+--prefix=$BUILD_DIR                           \
+--enable-mpi                                  \
+--with-mpi-compilers="/usr/local/mpich-1.2.7_gcc3.2.1/bin" \
+--with-mpi-libs="-lmpich"                     \
+--cache-file=config.cache                     \
+--enable-tsf                                  \
+--enable-ifpack                               \
+--enable-ml                                   \
+--enable-teuchos                              \
+--disable-new_package                         \
+--enable-meros                                
+
+
+
+
+
