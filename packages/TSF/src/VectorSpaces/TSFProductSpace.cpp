@@ -31,6 +31,18 @@ TSFProductSpace::TSFProductSpace(const TSFVectorSpace& space0,
 	blocks_[2] = space2;
 }
 
+TSFProductSpace::TSFProductSpace(const TSFVectorSpace& space0,
+																 const TSFVectorSpace& space1,
+																 const TSFVectorSpace& space2,
+																 const TSFVectorSpace& space3)
+	: blocks_(4)
+{
+	blocks_[0] = space0;
+	blocks_[1] = space1;
+	blocks_[2] = space2;
+	blocks_[3] = space3;
+}
+
 TSFProductSpace::TSFProductSpace(const TSFArray<TSFVectorSpace>& blocks)
 	: blocks_(blocks)
 {}

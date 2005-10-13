@@ -31,6 +31,11 @@ namespace TSF
       TSFProductSpace(const TSFVectorSpace& space0,
                       const TSFVectorSpace& space1,
                       const TSFVectorSpace& space2);
+      /** */
+      TSFProductSpace(const TSFVectorSpace& space0,
+                      const TSFVectorSpace& space1,
+                      const TSFVectorSpace& space2,
+                      const TSFVectorSpace& space3);
 
       /** */
       TSFProductSpace(const TSFArray<TSFVectorSpace>& spaces);
