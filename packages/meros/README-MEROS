@@ -37,10 +37,10 @@ BUILD_DIR=`pwd`
 --enable-ifpack                               \
 --enable-ml                                   \
 --enable-teuchos                              \
---disable-new_package                         \
 --enable-meros                                
+---------------------------------------
 
-
-
-
-
+Meros Examples:
+The examples need data files from meros/example/data. The easiest way to run 
+the examples is to make a link in your meros/examples build directory to 
+this data directory.
