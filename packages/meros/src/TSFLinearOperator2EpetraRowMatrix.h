@@ -149,6 +149,7 @@ class TSFLinearOperator2EpetraRowMatrix : public virtual Epetra_RowMatrix  {
 
   TSFVectorSpace rangeBlockSpace_, domainBlockSpace_;
   int numRangeBlocks_, numDomainBlocks_, rangeLength_, domainLength_;
+  int nnz_;
   int matrix_type_;
 
   int *map_;

@@ -74,6 +74,9 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
     rangeLength_ = rangeBlockSpace_.dim();
     domainLength_ = domainBlockSpace_.dim();
 
+    if (!A_tsf.isZeroOperator())
+      nnz_ = 9999;
+    
 
     myname = (char *) malloc(sizeof(char)*(1+strlen("TSFLinearOperator2EpetraRowMatrix: '")));
     strcpy(myname,"TSFLinearOperator2EpetraRowMatrix: ");
@@ -107,6 +110,10 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
   const Epetra_Comm & TSFLinearOperator2EpetraRowMatrix::Comm()             const { return(*Comm_);             }
   int TSFLinearOperator2EpetraRowMatrix::SetUseTranspose(bool UseTranspose)       { return(-1); }
   char  *TSFLinearOperator2EpetraRowMatrix::Label()                         const { return("TSFLinearOperator2EpetraRowMatrix");}
+
+  // NumGlobalNonzeros is checked by AztecOO.cpp. I don't see a simple way to get nnz from the tsf operator, 
+  // so since they only seem to check that it is not < 1, if operator is not a ZeroOperator, we return 9999. VEH
+  int TSFLinearOperator2EpetraRowMatrix::NumGlobalNonzeros()  const {return(nnz_);}
 
   int TSFLinearOperator2EpetraRowMatrix::Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { 
     if (matrix_type_ == EPETRA_INVERSE) {
@@ -158,7 +165,7 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
                                   printf("%sInvColSums%s\n",myname,nop);        exit(1); return 0;}
   bool    TSFLinearOperator2EpetraRowMatrix::Filled()         const {printf("%sFilled%s\n",myname,nop);            exit(1); return 0;}
   double TSFLinearOperator2EpetraRowMatrix::NormOne()         const {printf("%sNormOne%s\n",myname,nop);           exit(1); return 0;}
-  int TSFLinearOperator2EpetraRowMatrix::NumGlobalNonzeros()  const {printf("%sNumGlobalNonzeros%s\n",myname,nop); exit(1); return 0;}
+// int TSFLinearOperator2EpetraRowMatrix::NumGlobalNonzeros()  const {printf("%sNumGlobalNonzeros%s\n",myname,nop); exit(1); return 0;}
   int TSFLinearOperator2EpetraRowMatrix::NumGlobalRows()      const {printf("%sNumGlobalRows%s\n",myname,nop);     exit(1); return 0;}
   int TSFLinearOperator2EpetraRowMatrix::NumGlobalCols()      const {printf("%sNumGlobalCols%s\n",myname,nop);     exit(1); return 0;}
   int TSFLinearOperator2EpetraRowMatrix::NumGlobalDiagonals() const {printf("%sNumGlobalDiagonals%s\n",myname,nop);exit(1); return 0;}
