@@ -24,27 +24,6 @@
 # 
 # ************************************************************************
 
-Source files needed in TSF for block preconditoners.
-All are in meros/src/.
-
-1. Put (or link) these files in TSF/src/LinearOperators.
-
-   TSFOperatorSourceBase.h
-   TSFOperatorSourceBase.cpp
-   TSFOperatorSource.h
-   TSFOperatorSourceBase.cpp
-
-   These files all add a TSFOperatorSource object to TSF. 
-   TSFOperatorSources have GetOp() methods that return operators
-   needed by our block preconditioners.
-
-2. Edit TSF/src/Makefile.am. Add the .h files to the list of
-   LinearOperators_SOURCES_H and the .cpp files to the list
-   of LinearOperators_SOURCES.
-
-3. Put (or link) these files in TSF/src/Preconditioners.
-   (Would they make more sense in LinearOperators with the
-   TSFOperatorSources?)
 
    /* basic block preconditioner code */
    NSBlockPreconditionerFactory.h
@@ -73,19 +52,6 @@ All are in meros/src/.
    KayLoghinSchurFactory.cpp
    KayLoghinSchurFactory.h
 
-4. Edit TSF/src/Makefile.am. Add the .h files to the list of
-   Preconditioners_SOURCES_H and the .cpp files to the list
-   of Preconditioners_SOURCES.
-
-5. Run TSF/bootstrap.
-6. Update configure by running TSF/config.status.
-7. Make TSF with TSF/make.
-
-
-
-
-
-
 
 
 
@@ -93,15 +59,15 @@ All are in meros/src/.
 /*****************/
 To run meros/examples/saddle_kayloghin.cpp:
 
-1. Make links in TSF/examples/Tests to
-   saddle_kayloghin.cpp
-   TSFLinearOperator2EpetraRowMatrix.h
-   VbrMatrixFile (K_reordered)
-   VbrRhsFile (rhs_reordered)
-   VbrVectorFile (guess_reordered)
+   From example directory in your build tree, make a link to the data
+   directory in the source tree: meros/example/data
+   cd to build tree meros/example/saddle_kayloghin
+   make
+   ./saddle_kayloghin.exe
 
-2. From TSF/examples/  
-   make Tests/saddle_kayloghin.e
-3. From TSF/examples/ run
-   Tests/saddle_kayloghin.e
+
+
+
+
+
 
