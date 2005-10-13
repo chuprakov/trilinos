@@ -92,6 +92,7 @@ $(srcdir)/LinearSolvers/BICGSTABSolver.h\
 $(srcdir)/LinearSolvers/BlockBacksolver.h\
 $(srcdir)/LinearSolvers/BlockForwardsolver.h\
 $(srcdir)/LinearSolvers/CGSolver.h\
+$(srcdir)/LinearSolvers/CGSolverVEH.h\
 $(srcdir)/LinearSolvers/DirectSolver.h\
 $(srcdir)/LinearSolvers/GMRESSolver.h\
 $(srcdir)/LinearSolvers/SchurComplementSolver.h\
@@ -107,6 +108,7 @@ $(srcdir)/LinearSolvers/BICGSTABSolver.cpp\
 $(srcdir)/LinearSolvers/BlockBacksolver.cpp\
 $(srcdir)/LinearSolvers/BlockForwardsolver.cpp\
 $(srcdir)/LinearSolvers/CGSolver.cpp\
+$(srcdir)/LinearSolvers/CGSolverVEH.cpp\
 $(srcdir)/LinearSolvers/DirectSolver.cpp\
 $(srcdir)/LinearSolvers/GMRESSolver.cpp\
 $(srcdir)/LinearSolvers/SchurComplementSolver.cpp\
