@@ -48,11 +48,5 @@ to run the examples is to make a link in your
 BUILD_DIR/packages/meros/examples directory to the data directory
 TRILINOS_SRC_DIR/packages/meros/examples/data.
 
-The example Makefiles assume that you have built Trilinos in a build
-directory, the Trilinos libraries are in BUILD_DIR/lib, and include
-files are in BUILD_DIR/include. (E.g., use the --prefix option as in
-the sample Trilinos configure script above, then make and make
-install).
-
-Some of the data has been gzipped. See the READMEs in the data
+Some of the example data has been gzipped. See the READMEs in the data
 subdirectories for specific instructions on running those tests.

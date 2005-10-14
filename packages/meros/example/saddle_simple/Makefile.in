@@ -229,18 +229,70 @@ target_vendor = @target_vendor@
 EXAMPLE = saddle_simple
 saddle_simple_SOURCES = $(srcdir)/saddle_simple.cpp
 saddle_simple_DEPENDENCIES = $(top_builddir)/../TSF/src/libTSF.a
-saddle_simple_CXXFLAGS = -I$(top_builddir)/../../include \
- -I$(srcdir)/../../src
+saddle_simple_CXXFLAGS = \
+-I$(top_builddir)/src                             \
+ -I$(top_srcdir)/src                              \
+ -I$(top_builddir)/../TSF/src/Support             \
+ -I$(top_srcdir)/../TSF/src/Support               \
+ -I$(top_srcdir)/../TSF/src/Vectors               \
+ -I$(top_srcdir)/../TSF/src/VectorSpaces          \
+ -I$(top_srcdir)/../TSF/src/LinearOperators       \
+ -I$(top_srcdir)/../TSF/src/Preconditioners       \
+ -I$(top_srcdir)/../TSF/src/NonlinearOperators    \
+ -I$(top_srcdir)/../TSF/src/LinearSolvers         \
+ -I$(top_srcdir)/../TSF/src/NonlinearSolvers      \
+ -I$(top_srcdir)/../TSF/src/LinearProblem         \
+ -I$(top_srcdir)/../TSF/src/Readers               \
+ -I$(top_srcdir)/../TSF/src/Writers               \
+ -I$(top_srcdir)/../TSF/src/XML                   \
+ -I$(top_srcdir)/../TSF/src/Implementations       \
+ -I$(top_builddir)/../ifpack/src                  \
+ -I$(top_srcdir)/../ifpack/src                    \
+ -I$(top_builddir)/../ml/src                      \
+ -I$(top_srcdir)/../ml/src/Coarsen                \
+ -I$(top_srcdir)/../ml/src/Comm                   \
+ -I$(top_srcdir)/../ml/src/FEGrid                 \
+ -I$(top_srcdir)/../ml/src/Include                \
+ -I$(top_srcdir)/../ml/src/Krylov                 \
+ -I$(top_srcdir)/../ml/src/Main                   \
+ -I$(top_srcdir)/../ml/src/MLAPI                  \
+ -I$(top_srcdir)/../ml/src/Mrtr                   \
+ -I$(top_srcdir)/../ml/src/NonlinML               \
+ -I$(top_srcdir)/../ml/src/Operator               \
+ -I$(top_srcdir)/../ml/src/Runtime                \
+ -I$(top_srcdir)/../ml/src/Smoother               \
+ -I$(top_srcdir)/../ml/src/Utils                  \
+ -I$(top_builddir)/../epetraext/src               \
+ -I$(top_srcdir)/../epetraext/src                 \
+ -I$(top_srcdir)/../epetraext/src/block           \
+ -I$(top_srcdir)/../epetraext/src/btf             \
+ -I$(top_srcdir)/../epetraext/src/coloring        \
+ -I$(top_srcdir)/../epetraext/src/distdir         \
+ -I$(top_srcdir)/../epetraext/src/inout           \
+ -I$(top_srcdir)/../epetraext/src/matlab          \
+ -I$(top_srcdir)/../epetraext/src/matlab          \
+ -I$(top_srcdir)/../epetraext/src/model_evaluator \
+ -I$(top_srcdir)/../epetraext/src/transform       \
+ -I$(top_srcdir)/../epetraext/src/zoltan          \
+ -I$(top_builddir)/../epetra/src                  \
+ -I$(top_srcdir)/../epetra/src                    \
+ -I$(top_builddir)/../aztecoo/src                 \
+ -I$(top_srcdir)/../aztecoo/src                   \
+ -I$(top_builddir)/../teuchos/src                 \
+ -I$(top_srcdir)/../teuchos/src                   \
+ -I$(top_builddir)/../triutils/src                \
+ -I$(top_srcdir)/../triutils/src  
 
-saddle_simple_LDADD = $(top_builddir)/../../lib/libmeros.a \
- $(top_builddir)/../../lib/libTSF.a 	     \
- $(top_builddir)/../../lib/libifpack.a  \
- $(top_builddir)/../../lib/libml.a         \
- $(top_builddir)/../../lib/libepetraext.a  \
- $(top_builddir)/../../lib/libepetra.a     \
- $(top_builddir)/../../lib/libaztecoo.a    \
- $(top_builddir)/../../lib/libteuchos.a    \
- $(top_builddir)/../../lib/libtriutils.a   \
+saddle_simple_LDADD = \
+ $(top_builddir)/../meros/src/libmeros.a          \
+ $(top_builddir)/../TSF/src/libTSF.a 	          \
+ $(top_builddir)/../ifpack/src/libifpack.a        \
+ $(top_builddir)/../ml/src/libml.a                \
+ $(top_builddir)/../epetraext/src/libepetraext.a  \
+ $(top_builddir)/../epetra/src/libepetra.a        \
+ $(top_builddir)/../aztecoo/src/libaztecoo.a      \
+ $(top_builddir)/../teuchos/src/libteuchos.a      \
+ $(top_builddir)/../triutils/src/libtriutils.a    \
  $(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 all: all-am
