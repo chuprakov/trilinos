@@ -54,7 +54,7 @@
 #include "NOX.H"
 #include "NOX_Epetra_Interface_Required.H"
 #include "NOX_Epetra_Interface_Jacobian.H"
-#include "NOX_Epetra_LinearSystemAztecOO.H"
+#include "NOX_Epetra_LinearSystem_AztecOO.H"
 #include "NOX_Epetra_Group.H"
 
 // this is required to know the number of lower, upper, left and right
@@ -162,6 +162,10 @@ Epetra_CrsMatrix * CreateLaplacian( const int nx, const int ny,
 
   // put matrix in local ordering
   A->FillComplete();
+
+  delete [] Indices;
+  delete [] Values;
+  delete    Map;
 
   return A;
   
@@ -345,7 +349,8 @@ int main( int argc, char **argv )
   InitialGuess.PutScalar(0.0);
 
   // Set up the problem interface
-  SimpleProblemInterface Interface(&Problem);
+  Teuchos::RefCountPtr<SimpleProblemInterface> interface = 
+    Teuchos::rcp(new SimpleProblemInterface(&Problem) );
   
   // Create the top level parameter list
   Teuchos::RefCountPtr<NOX::Parameter::List> nlParamsPtr =
@@ -388,13 +393,18 @@ int main( int argc, char **argv )
   lsParams.setParameter("Output Frequency", 50);    
   lsParams.setParameter("Aztec Preconditioner", "ilu"); 
 
-  NOX::Epetra::Interface::Required & iReq = Interface;
-  NOX::Epetra::Interface::Jacobian & iJac = Interface;
-  NOX::Epetra::LinearSystemAztecOO linSys(printParams, lsParams, iReq, iJac, 
-    dynamic_cast<Epetra_RowMatrix&>(*(Problem.GetMatrix())), InitialGuess);
+  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Problem.GetMatrix(), false );
+
+  Teuchos::RefCountPtr<NOX::Epetra::Interface::Required> iReq = interface;
+  Teuchos::RefCountPtr<NOX::Epetra::Interface::Jacobian> iJac = interface;
+  Teuchos::RefCountPtr<NOX::Epetra::LinearSystemAztecOO> linSys = 
+    Teuchos::rcp(new NOX::Epetra::LinearSystemAztecOO(printParams, lsParams,
+						      iReq,
+						      iJac, A, 
+						      InitialGuess));
 
   // Need a NOX::Epetra::Vector for constructor
-  NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy, true);
+  NOX::Epetra::Vector noxInitGuess(InitialGuess, NOX::DeepCopy);
   Teuchos::RefCountPtr<NOX::Epetra::Group> grpPtr = 
     Teuchos::rcp(new NOX::Epetra::Group(printParams, 
 					iReq, 
@@ -416,6 +426,11 @@ int main( int argc, char **argv )
 
   // Solve the nonlinesar system
   NOX::StatusTest::StatusType status = solver.solve();
+
+  if( NOX::StatusTest::Converged  != status )
+    cout << "\n" << "-- NOX solver converged --" << "\n";
+  else
+    cout << "\n" << "-- NOX solver did not converge --" << "\n";
 
   // Print the answer
   cout << "\n" << "-- Parameter List From Solver --" << "\n";
