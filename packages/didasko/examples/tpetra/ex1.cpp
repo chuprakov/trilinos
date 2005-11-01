@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
   OrdinalType size = 1;
   ScalarType V[size], W[size];
 
-  if (Comm.MyImageID() == 0)
+  if (Comm.getMyImageID() == 0)
   {
     V[0] = OrdinalOne * 10;
   }
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   
   // 2) sum/max/min
 
-  if (Comm.MyImageID() == 0)
+  if (Comm.getMyImageID() == 0)
   {
     V[0] = 10;
     V[1] = 11;
