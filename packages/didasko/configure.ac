@@ -309,6 +309,9 @@ TAC_ARG_ENABLE_FEATURE_SUB( epetraext, zoltan, [Enable EpetraExt interface
 						no)
 AM_CONDITIONAL(BUILD_ZOLTAN, [test "X$ac_cv_use_epetraext_zoltan" != "Xno"])
 
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(tpetra, [Enables TPETRA examples.], DIDASKO_TPETRA)
+AM_CONDITIONAL(HAVE_DIDASKO_TPETRA, test "X$ac_cv_use_tpetra" = "Xyes")
+#
 # ------------------------------------------------------------------------
 # Checks if tests and examples should be built
 # ------------------------------------------------------------------------
@@ -443,6 +446,7 @@ AC_CONFIG_FILES([
 		examples/teuchos/Makefile
 		examples/triutils/Makefile
 		examples/HBMatrices/Makefile
+		examples/tpetra/Makefile
 		test/Makefile
 		])
 

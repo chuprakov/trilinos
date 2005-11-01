@@ -71,6 +71,9 @@
 /* Define if want to build with teuchos enabled */
 #undef HAVE_DIDASKO_TEUCHOS
 
+/* Define if want to build with tpetra enabled */
+#undef HAVE_DIDASKO_TPETRA
+
 /* Define if want to build with triutils enabled */
 #undef HAVE_DIDASKO_TRIUTILS
 
