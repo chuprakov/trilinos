@@ -68,8 +68,13 @@ int main(int argc, char *argv[])
 
   // 1) Creation of a platform
   
+#ifdef HAVE_MPI
+  const Tpetra::MpiPlatform <OrdinalType, OrdinalType> platformE(MPI_COMM_WORLD);
+  const Tpetra::MpiPlatform <OrdinalType, ScalarType> platformV(MPI_COMM_WORLD);
+#else
   const Tpetra::SerialPlatform <OrdinalType, OrdinalType> platformE;
   const Tpetra::SerialPlatform <OrdinalType, ScalarType> platformV;
+#endif
 
   // 2) We can now create a space:
 
@@ -91,7 +96,9 @@ int main(int argc, char *argv[])
 
   // The easiest way is to set the elements using the [] operator
 
-  for (OrdinalType i = OrdinalZero ; i < length ; ++i)
+  OrdinalType MyLength = elementSpace.getNumMyElements();
+
+  for (OrdinalType i = OrdinalZero ; i < MyLength ; ++i)
     v1[i] = (ScalarType)(10 + i);
 
   cout << v1;
@@ -104,7 +111,7 @@ int main(int argc, char *argv[])
   vector<ScalarType*> data(NumMyEntries);
   v1.extractView(&data[0]);
 
-  for (OrdinalType i = OrdinalZero ; i < length ; ++i)
+  for (OrdinalType i = OrdinalZero ; i < MyLength ; ++i)
     *(data[i]) = (ScalarType)(100 + i);
 
   cout << v1 << endl;
@@ -125,7 +132,7 @@ int main(int argc, char *argv[])
     cout << "on proc 0, NumMyEntries = " << NumMyEntries << endl;
     cout << "NumGlobalEntries = " << NumGlobalEntries << endl;
     cout << "|| v ||_1 = " << Norm1 << endl;
-    cout << "|| v ||_2 = " << Norm1 << endl;
+    cout << "|| v ||_2 = " << Norm2 << endl;
     cout << "|| v ||_inf = " << NormInf << endl;
     cout << "min v_i = " << MinValue << endl;
     cout << "max_i v_i = " << MaxValue << endl;

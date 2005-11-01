@@ -26,7 +26,9 @@
 // ************************************************************************
 //@HEADER
 
-#ifdef TPETRA_MPI
+#include "Tpetra_ConfigDefs.hpp"
+#ifdef HAVE_MPI
+#include "mpi.h"
 #include "Tpetra_MpiPlatform.hpp"
 #include "Tpetra_MpiComm.hpp"
 #else
@@ -67,8 +69,13 @@ int main(int argc, char *argv[])
 
   // 1) Creation of a platform
   
+#ifdef HAVE_MPI
+  const Tpetra::MpiPlatform <OrdinalType, OrdinalType> platformE(MPI_COMM_WORLD);
+  const Tpetra::MpiPlatform <OrdinalType, ScalarType> platformV(MPI_COMM_WORLD);
+#else
   const Tpetra::SerialPlatform <OrdinalType, OrdinalType> platformE;
   const Tpetra::SerialPlatform <OrdinalType, ScalarType> platformV;
+#endif
 
   // 2) We can now create a space:
 
@@ -83,7 +90,7 @@ int main(int argc, char *argv[])
   OrdinalType NumMyElements = elementSpace.getNumMyElements();
   vector<OrdinalType> MyGlobalElements = elementSpace.getMyGlobalElements();
   
-  Tpetra::CisMatrix<int,double> matrix(vectorSpace);
+  Tpetra::CisMatrix<OrdinalType,ScalarType> matrix(vectorSpace);
 
   for (OrdinalType LID = OrdinalZero ; LID < NumMyElements ; ++LID)
   {
