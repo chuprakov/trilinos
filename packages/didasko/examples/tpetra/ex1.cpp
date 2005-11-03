@@ -26,7 +26,7 @@
 // ************************************************************************
 //@HEADER
 
-#include "Tpetra_ElementSpace.hpp"
+#include "Tpetra_ConfigDefs.hpp"
 #ifdef TPETRA_MPI
 #include "Tpetra_MpiPlatform.hpp"
 #include "Tpetra_MpiComm.hpp"
@@ -58,24 +58,39 @@ int main(int argc, char *argv[])
   ScalarType const ScalarZero = Teuchos::ScalarTraits<ScalarType>::zero();
   ScalarType const ScalarOne  = Teuchos::ScalarTraits<ScalarType>::one();
 
-  // 1) broadcast methods
+  // define working arrays
 
-  OrdinalType size = 1;
-  ScalarType V[size], W[size];
+  OrdinalType size = 2;
+  vector<ScalarType> V(size), W(size);
 
+  // define all elements on processor 0, then broadcast
+  
   if (Comm.getMyImageID() == 0)
   {
-    V[0] = OrdinalOne * 10;
+    for (OrdinalType i = OrdinalZero ; i < size ; ++i)
+      V[i] = i;
   }
 
-  Comm.broadcast(V, size, 0);
-  
-  // 2) sum/max/min
+  int RootImage = 0;
+  Comm.broadcast(&V[0], size, RootImage);
 
-  if (Comm.getMyImageID() == 0)
+  for (OrdinalType i = OrdinalZero ; i < size ; ++i)
   {
-    V[0] = 10;
-    V[1] = 11;
+    cout << "After broadcast(), on image " << Comm.getMyImageID();
+    cout << ", V[" << i << "] = " << V[i] << endl;
+  }
+  
+  // sum operations (equivalently, max/min)
+
+  for (OrdinalType i = OrdinalZero ; i < size ; ++i)
+    V[i] = i + Comm.getMyImageID() * 10;
+
+  Comm.maxAll(&V[0], &W[0], size);
+
+  for (OrdinalType i = OrdinalZero ; i < size ; ++i)
+  {
+    cout << "After sumAll(), on image " << Comm.getMyImageID();
+    cout << ", V[" << i << "] = " << V[i] << endl;
   }
 
 
