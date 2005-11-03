@@ -26,12 +26,13 @@
 % ***********************************************************************
 % @HEADER
 
-\documentclass[12pt,relax]{SANDreport}
+\documentclass[11pt,letter,relax]{SANDreport}
 \usepackage{graphicx}
 \usepackage{amsmath,amsfonts,amsthm}
 \usepackage{amssymb}
 
-\usepackage{times}
+\usepackage{newcent}
+%%%\usepackage{fancycha}
 
 \def\choicebox#1#2{\noindent$\hphantom{th}$\parbox[t]{1.8in}{\sf
 #1}\parbox[t]{4.5in}{#2}\\[0.8em]}
@@ -175,6 +176,10 @@ on partitioning and load balancing.
 \clearpage
 \newpage
 \include{zoltan}
+
+\clearpage
+\newpage
+\include{tpetra}
 
 \bibliographystyle{plain}
 \bibliography{tutorial_biblio,../../../doc/CommonFiles/TrilinosBibliography}

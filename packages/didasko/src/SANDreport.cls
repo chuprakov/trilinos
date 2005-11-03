@@ -111,7 +111,6 @@
     \ProcessOptions
     \LoadClass[letterpaper,twoside,final]{article}
 
-
     %
     % Setup for letter paper (This IS a SAND report!)
     %
@@ -597,9 +596,9 @@
         \setcounter{secnumdepth}{3}
     }
     \renewcommand\section{\@startsection {section}{1}{0mm}
-        {-3.5ex \@plus -1ex \@minus -.2ex}
-        {2.3ex \@plus.2ex}
-        {\normalfont\Large\bfseries\centering}}
+        {-.5ex \@plus -1ex \@minus -.2ex}
+        {5ex \@plus.2ex}
+        {\normalfont\huge\bfseries\bigskip}}
 
 
     % ------------------------------------------------------------------------ %
