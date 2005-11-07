@@ -44,6 +44,39 @@
 typedef int OrdinalType;
 typedef double ScalarType;
 
+// We want to solve the 1D finite element problem
+//
+//    - u'' = f   x \in \Omega
+//      u(0) = u_0
+//      u(1) = u_1
+//
+// on the following domain defined by 5 elements and 6 nodes:
+//
+//       e0    e1    e2    e3    e4  
+//     o --- o --- o --- o --- o --- o 
+//     ^                             ^
+//     n0    n1    n2    n3    n4    n5
+//
+//     |<--------->|     |<--------->|
+//        proc 0             proc 1
+//
+// The grid is subdivided as follows among the two processors:
+// (where (*) defines a locally owned node, and [*] a ghost node)
+//
+// proc 0:
+//
+//     e0     e1     e2
+// (0) -- (1) -- (2) -- [3] -- (X) -- (X)
+//
+// proc 1:
+//
+//                   e2     e0     e1
+// (X) -- (X) -- [3] -- (0) -- (1) -- (2)
+
+// =========== //
+// main driver //
+// =========== //
+
 int main(int argc, char *argv[]) 
 {
 #ifdef HAVE_MPI
@@ -60,7 +93,6 @@ int main(int argc, char *argv[])
     MPI_Finalize();
 #endif
     exit(EXIT_SUCCESS);
-#endif
   }
 
   // Get zero and one for the OrdinalType
@@ -89,71 +121,74 @@ int main(int argc, char *argv[])
 #endif
 
   // These are the `elements' assigned to this image
+  // NOTE: This element is NOT a finite element, instead it is
+  //       a component of the ElementSpace (that is, the distribution of
+  //       vertices). FiniteElements values are defined later on.
   
-  OrdinalType NumMyElements = OrdinalOne * 3;
-  vector<OrdinalType> MyGlobalElements(NumMyElements);
+  OrdinalType NumMyVertices = OrdinalOne * 3;
+  vector<OrdinalType> MyGlobalVertices(NumMyVertices);
 
   if (Comm.getMyImageID() == 0)
   {
-    for (OrdinalType i = OrdinalZero ; i < NumMyElements ; ++i)
-      MyGlobalElements[OrdinalZero + i] = OrdinalZero + i;
+    for (OrdinalType i = OrdinalZero ; i < NumMyVertices ; ++i)
+      MyGlobalVertices[OrdinalZero + i] = OrdinalZero + i;
   }
   else
   {
-    for (OrdinalType i = OrdinalZero ; i < NumMyElements ; ++i)
-      MyGlobalElements[OrdinalZero + i] = OrdinalZero + i + 3;
+    for (OrdinalType i = OrdinalZero ; i < NumMyVertices ; ++i)
+      MyGlobalVertices[OrdinalZero + i] = OrdinalZero + i + 3;
   }
 
-  Tpetra::ElementSpace<OrdinalType> 
-    elementSpace(-1, NumMyElements, MyGlobalElements, indexBase, platformE);
-  Tpetra::VectorSpace<OrdinalType, ScalarType> vectorSpace(elementSpace, platformV);
+  Tpetra::ElementSpace<OrdinalType> VertexSpace(-OrdinalOne, NumMyVertices, MyGlobalVertices, indexBase, platformE);
+  Tpetra::VectorSpace<OrdinalType, ScalarType> VectorVertexSpace(VertexSpace, platformV);
 
-  cout << elementSpace;
-
-  // These are the `elements' + ghost nodes
-
-  OrdinalType NumMyPaddedElements = OrdinalOne * 4;
-  vector<OrdinalType> MyGlobalPaddedElements(NumMyPaddedElements);
+  OrdinalType NumMyPaddedVertices = OrdinalOne * 4;
+  vector<OrdinalType> MyGlobalPaddedVertices(NumMyPaddedVertices);
+  vector<bool> BoundaryVertices(NumMyVertices);
 
   if (Comm.getMyImageID() == 0)
   {
-    MyGlobalPaddedElements[0] = 0;
-    MyGlobalPaddedElements[1] = 1;
-    MyGlobalPaddedElements[2] = 2;
-    MyGlobalPaddedElements[3] = 3;
+    MyGlobalPaddedVertices[0] = OrdinalZero;
+    MyGlobalPaddedVertices[1] = OrdinalOne;
+    MyGlobalPaddedVertices[2] = OrdinalOne * 2;
+    MyGlobalPaddedVertices[3] = OrdinalOne * 3; // ghost node
+
+    BoundaryVertices[0] = true;
+    BoundaryVertices[1] = false;
+    BoundaryVertices[2] = false;
   }
   else
   {
-    MyGlobalPaddedElements[0] = 3;
-    MyGlobalPaddedElements[1] = 4;
-    MyGlobalPaddedElements[2] = 5;
-    MyGlobalPaddedElements[3] = 2;
+    MyGlobalPaddedVertices[0] = OrdinalOne * 3;
+    MyGlobalPaddedVertices[1] = OrdinalOne * 4;
+    MyGlobalPaddedVertices[2] = OrdinalOne * 5;
+    MyGlobalPaddedVertices[3] = OrdinalOne * 2; // ghost node
+
+    BoundaryVertices[0] = false;
+    BoundaryVertices[1] = false;
+    BoundaryVertices[2] = true;
   }
 
-  Tpetra::ElementSpace<OrdinalType> 
-    elementPaddedSpace(-1, NumMyPaddedElements, MyGlobalPaddedElements, indexBase, platformE);
-  Tpetra::VectorSpace<OrdinalType, ScalarType> vectorPaddedSpace(elementPaddedSpace, platformV);
-
-  cout << elementPaddedSpace;
+  Tpetra::ElementSpace<OrdinalType> PaddedVertexSpace(-OrdinalOne, NumMyPaddedVertices, MyGlobalPaddedVertices, indexBase, platformE);
+  Tpetra::VectorSpace<OrdinalType, ScalarType> VectorPaddedVertexSpace(PaddedVertexSpace, platformV);
 
   // This is the connectivity, in local numbering
 
-  OrdinalType NumMyFiniteElements = OrdinalOne * 3;
-  OrdinalType Connectivity[NumMyFiniteElements][2];
-  ScalarType  Coord[NumMyPaddedElements][2];
+  int NumVerticesPerNode = 2;
+  int NumDimensions = 2;
+
+  OrdinalType NumMyElements = OrdinalOne * 3;
+  OrdinalType Connectivity[NumMyElements][NumVerticesPerNode];
+  ScalarType  Coord[NumMyPaddedVertices][NumDimensions];
 
   if (Comm.getMyImageID() == 0)
   {
-    //     e0     e1     e2
-    // (0) -- (1) -- (2) -- [3] -- (X) -- (X)
     Connectivity[0][0] = 0; Connectivity[0][1] = 1;
     Connectivity[1][0] = 1; Connectivity[1][1] = 2;
     Connectivity[2][0] = 2; Connectivity[2][1] = 3;
   }
   else
   {
-    //                   e2     e0     e1
-    // (X) -- (X) -- [3] -- (0) -- (1) -- (2)
     Connectivity[0][0] = 0; Connectivity[0][1] = 1;
     Connectivity[1][0] = 1; Connectivity[1][1] = 2;
     Connectivity[2][0] = 3; Connectivity[2][1] = 0;
@@ -161,33 +196,54 @@ int main(int argc, char *argv[])
 
   // Setup the matrix
   
-  Tpetra::CisMatrix<OrdinalType,ScalarType> matrix(vectorSpace);
+  Tpetra::CisMatrix<OrdinalType,ScalarType> matrix(VectorVertexSpace);
 
-  for (OrdinalType FEID = OrdinalZero ; FEID < NumMyFiniteElements ; ++FEID)
+  for (OrdinalType FEID = OrdinalZero ; FEID < NumMyElements ; ++FEID)
   {
-    cout << "element = " << FEID << endl;
-    // build the local matrix, in this case A_loc
-    ScalarType A_loc[2][2] = {ScalarOne, -ScalarOne, -ScalarOne, ScalarOne};
+    vector<OrdinalType> LIDs(NumVerticesPerNode), GIDs(NumVerticesPerNode);
 
-    vector<OrdinalType> GIDs(2);
-
-    // submit entries of A_loc into matrix
-    for (OrdinalType LRID = OrdinalZero ; LRID < 2 ; ++LRID)
+    // Get the local and global ID of this element's vertices
+    for (OrdinalType i = OrdinalZero ; i < NumVerticesPerNode ; ++i)
     {
-      cout << "-(" << Connectivity[FEID][LRID] << ")-";
-      GIDs[LRID] = elementPaddedSpace.getGID(Connectivity[FEID][LRID]);
-      cout << GIDs[LRID] << endl;
+      LIDs[i] = Connectivity[FEID][i];
+      GIDs[i] = PaddedVertexSpace.getGID(LIDs[i]);
     }
 
-    for (OrdinalType LRID = OrdinalZero ; LRID < 2 ; ++LRID)
+    // get the coordinates of all nodes in the element
+    vector<ScalarType> x(NumDimensions), y(NumDimensions);
+
+    for (int i = 0 ; i < NumDimensions ; ++i)
     {
-      if (Connectivity[FEID][LRID] < NumMyElements)
+      x[i] = Coord[LIDs[i]][0];
+      y[i] = Coord[LIDs[i]][1];
+    }
+    
+    // build the local matrix, in this case A_loc;
+    // this is specific to this 1D Laplace, and does not use
+    // coordinates
+    ScalarType A_loc[2][2] = {ScalarOne, -ScalarOne, -ScalarOne, ScalarOne};
+
+    // submit entries of A_loc into the matrix
+
+    for (OrdinalType LRID = OrdinalZero ; LRID < NumVerticesPerNode ; ++LRID)
+    {
+      OrdinalType LocalRow = Connectivity[FEID][LRID];
+
+      if (LocalRow < NumMyVertices)
       {
-        for (OrdinalType LCID = OrdinalZero ; LCID < 2 ; ++LCID)
+        for (OrdinalType LCID = OrdinalZero ; LCID < NumVerticesPerNode ; ++LCID)
         {
-          if (GIDs[LRID] != -OrdinalOne)
-            matrix.submitEntry(Tpetra::Add, GIDs[LRID], A_loc[LRID][LCID],
-                               GIDs[LCID]);
+          if (BoundaryVertices[LocalRow])
+          {
+            matrix.submitEntry(Tpetra::Add, GIDs[LRID], A_loc[LRID][LCID], GIDs[LCID]);
+          }
+          else
+          {
+            for (OrdinalType LCID = OrdinalZero ; LCID < NumVerticesPerNode ; ++LCID)
+            {
+              matrix.submitEntry(Tpetra::Add, GIDs[LRID], A_loc[LRID][LCID], GIDs[LCID]);
+            }
+          }
         }
       }
     }
