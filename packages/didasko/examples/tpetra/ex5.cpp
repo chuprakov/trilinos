@@ -102,12 +102,11 @@ int main(int argc, char *argv[])
 
   // Get zero and one for the ScalarType
   
-  ScalarType const ScalarZero = Teuchos::ScalarTraits<ScalarType>::zero();
   ScalarType const ScalarOne  = Teuchos::ScalarTraits<ScalarType>::one();
+  ScalarType const ScalarZero = Teuchos::ScalarTraits<ScalarType>::zero();
 
   // Creates a vector of size `length', then set the elements values.
   
-  OrdinalType length    = OrdinalOne * 10;
   OrdinalType indexBase = OrdinalZero;
 
   // Creation of a platform
@@ -125,7 +124,7 @@ int main(int argc, char *argv[])
   //       a component of the ElementSpace (that is, the distribution of
   //       vertices). FiniteElements values are defined later on.
   
-  OrdinalType NumMyVertices = OrdinalOne * 3;
+  const OrdinalType NumMyVertices = OrdinalOne * 3;
   vector<OrdinalType> MyGlobalVertices(NumMyVertices);
 
   if (Comm.getMyImageID() == 0)
@@ -142,7 +141,7 @@ int main(int argc, char *argv[])
   Tpetra::ElementSpace<OrdinalType> VertexSpace(-OrdinalOne, NumMyVertices, MyGlobalVertices, indexBase, platformE);
   Tpetra::VectorSpace<OrdinalType, ScalarType> VectorVertexSpace(VertexSpace, platformV);
 
-  OrdinalType NumMyPaddedVertices = OrdinalOne * 4;
+  const OrdinalType NumMyPaddedVertices = OrdinalOne * 4;
   vector<OrdinalType> MyGlobalPaddedVertices(NumMyPaddedVertices);
   vector<bool> BoundaryVertices(NumMyVertices);
 
@@ -174,10 +173,10 @@ int main(int argc, char *argv[])
 
   // This is the connectivity, in local numbering
 
-  int NumVerticesPerNode = 2;
-  int NumDimensions = 2;
+  const OrdinalType NumVerticesPerNode = 2;
+  const OrdinalType NumDimensions = 2;
 
-  OrdinalType NumMyElements = OrdinalOne * 3;
+  const OrdinalType NumMyElements = OrdinalOne * 3;
   OrdinalType Connectivity[NumMyElements][NumVerticesPerNode];
   ScalarType  Coord[NumMyPaddedVertices][NumDimensions];
 
@@ -212,7 +211,7 @@ int main(int argc, char *argv[])
     // get the coordinates of all nodes in the element
     vector<ScalarType> x(NumDimensions), y(NumDimensions);
 
-    for (int i = 0 ; i < NumDimensions ; ++i)
+    for (OrdinalType i = 0 ; i < NumDimensions ; ++i)
     {
       x[i] = Coord[LIDs[i]][0];
       y[i] = Coord[LIDs[i]][1];
