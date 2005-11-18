@@ -320,7 +320,7 @@ void LinearSystemScaler::generateSolveOps(
 		opType = PLAIN_OP;
 	}
 	Teuchos::set_extra_data<EOpType>(
-		opType,Solve_trans==Teuchos::NO_TRANS ? fwd_op_type_name : adj_op_type_name, &Op_array[0],false
+		opType,Solve_trans==Teuchos::NO_TRANS ? fwd_op_type_name : adj_op_type_name, &Op_array[0], Teuchos::POST_DESTROY, false
 		);
 	// Create the aggregate preconditioner and/or scaled operator
 	*Op_solve = Teuchos::rcp(
