@@ -28,7 +28,6 @@
 
 #include "Tpetra_ElementSpace.hpp"
 #include "Tpetra_VectorSpace.hpp"
-#include "Tpetra_CisMatrix.hpp"
 #include "Tpetra_Version.hpp"
 #ifdef TPETRA_MPI
 #include "Tpetra_MpiPlatform.hpp"

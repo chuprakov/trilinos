@@ -39,6 +39,7 @@
 #include "Tpetra_CisMatrix.hpp"
 #include "Tpetra_Vector.hpp"
 #include "Tpetra_Import.hpp"
+#include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_ScalarTraits.hpp"
 
 typedef int OrdinalType;
@@ -105,8 +106,6 @@ int main(int argc, char *argv[])
   ScalarType const ScalarOne  = Teuchos::ScalarTraits<ScalarType>::one();
   ScalarType const ScalarZero = Teuchos::ScalarTraits<ScalarType>::zero();
 
-  // Creates a vector of size `length', then set the elements values.
-  
   OrdinalType indexBase = OrdinalZero;
 
   // Creation of a platform
@@ -123,6 +122,11 @@ int main(int argc, char *argv[])
   // NOTE: This element is NOT a finite element, instead it is
   //       a component of the ElementSpace (that is, the distribution of
   //       vertices). FiniteElements values are defined later on.
+  // 
+  // NOTATION:
+  // - Element       -> an entity of the space
+  // - Vertex        -> finite element vertex
+  // - FiniteElement -> finite element, composed by two Vertices
   
   const OrdinalType NumMyVertices = OrdinalOne * 3;
   vector<OrdinalType> MyGlobalVertices(NumMyVertices);
@@ -143,8 +147,11 @@ int main(int argc, char *argv[])
 
   const OrdinalType NumMyPaddedVertices = OrdinalOne * 4;
   vector<OrdinalType> MyGlobalPaddedVertices(NumMyPaddedVertices);
+  // Vector BoundaryVertices contains a flag that specifies
+  // whether the node is a Dirichlet node or not
   vector<bool> BoundaryVertices(NumMyVertices);
 
+  // Setting the elements of the connectivity
   if (Comm.getMyImageID() == 0)
   {
     MyGlobalPaddedVertices[0] = OrdinalZero;
@@ -168,43 +175,59 @@ int main(int argc, char *argv[])
     BoundaryVertices[2] = true;
   }
 
+  // This space is needed to import the values of coordinates corresponding
+  // to ghost elements. 
   Tpetra::ElementSpace<OrdinalType> PaddedVertexSpace(-OrdinalOne, NumMyPaddedVertices, MyGlobalPaddedVertices, indexBase, platformE);
   Tpetra::VectorSpace<OrdinalType, ScalarType> VectorPaddedVertexSpace(PaddedVertexSpace, platformV);
 
   // This is the connectivity, in local numbering
 
-  const OrdinalType NumVerticesPerNode = 2;
+  const OrdinalType NumVerticesPerFiniteElement = 2;
   const OrdinalType NumDimensions = 2;
 
   const OrdinalType NumMyElements = OrdinalOne * 3;
-  OrdinalType Connectivity[NumMyElements][NumVerticesPerNode];
-  ScalarType  Coord[NumMyPaddedVertices][NumDimensions];
+  Teuchos::SerialDenseMatrix<OrdinalType, OrdinalType> Connectivity(NumMyElements, NumVerticesPerFiniteElement);
+
+  // this contains the coordinates
+  Tpetra::Vector<OrdinalType, ScalarType> Coord(VectorPaddedVertexSpace);
 
   if (Comm.getMyImageID() == 0)
   {
-    Connectivity[0][0] = 0; Connectivity[0][1] = 1;
-    Connectivity[1][0] = 1; Connectivity[1][1] = 2;
-    Connectivity[2][0] = 2; Connectivity[2][1] = 3;
+    Connectivity(0,0) = 0; Connectivity(0,1) = 1;
+    Connectivity(1,0) = 1; Connectivity(1,1) = 2;
+    Connectivity(2,0) = 2; Connectivity(2,1) = 3;
+    Coord[0] = ScalarZero;
+    Coord[1] = ScalarOne;
+    Coord[2] = ScalarOne * 2;
+    Coord[3] = ScalarOne * 3; // ghost node is last
   }
   else
   {
-    Connectivity[0][0] = 0; Connectivity[0][1] = 1;
-    Connectivity[1][0] = 1; Connectivity[1][1] = 2;
-    Connectivity[2][0] = 3; Connectivity[2][1] = 0;
+    Connectivity(0,0) = 0; Connectivity(0,1) = 1;
+    Connectivity(1,0) = 1; Connectivity(1,1) = 2;
+    Connectivity(2,0) = 3; Connectivity(2,1) = 0;
+    Coord[0] = ScalarOne * 3;
+    Coord[1] = ScalarOne * 4;
+    Coord[2] = ScalarOne * 5;
+    Coord[3] = ScalarOne * 2; // ghost node is last
   }
 
   // Setup the matrix
   
+  Teuchos::SerialDenseMatrix<OrdinalType, ScalarType> localMatrix(NumVerticesPerFiniteElement, NumVerticesPerFiniteElement);
+
   Tpetra::CisMatrix<OrdinalType,ScalarType> matrix(VectorVertexSpace);
 
+  // Loop over all the (locally owned) elements
+  
   for (OrdinalType FEID = OrdinalZero ; FEID < NumMyElements ; ++FEID)
   {
-    vector<OrdinalType> LIDs(NumVerticesPerNode), GIDs(NumVerticesPerNode);
+    vector<OrdinalType> LIDs(NumVerticesPerFiniteElement), GIDs(NumVerticesPerFiniteElement);
 
     // Get the local and global ID of this element's vertices
-    for (OrdinalType i = OrdinalZero ; i < NumVerticesPerNode ; ++i)
+    for (OrdinalType i = OrdinalZero ; i < NumVerticesPerFiniteElement ; ++i)
     {
-      LIDs[i] = Connectivity[FEID][i];
+      LIDs[i] = Connectivity(FEID, i);
       GIDs[i] = PaddedVertexSpace.getGID(LIDs[i]);
     }
 
@@ -213,35 +236,38 @@ int main(int argc, char *argv[])
 
     for (OrdinalType i = 0 ; i < NumDimensions ; ++i)
     {
-      x[i] = Coord[LIDs[i]][0];
-      y[i] = Coord[LIDs[i]][1];
+      x[i] = Coord[LIDs[i]];
+      y[i] = Coord[LIDs[i]];
     }
     
     // build the local matrix, in this case A_loc;
     // this is specific to this 1D Laplace, and does not use
-    // coordinates
-    ScalarType A_loc[2][2] = {ScalarOne, -ScalarOne, -ScalarOne, ScalarOne};
+    // coordinates. 
+    localMatrix(0, 0) = ScalarOne;
+    localMatrix(1, 0) = -ScalarOne;
+    localMatrix(0, 1) = -ScalarOne;
+    localMatrix(1, 1) = ScalarOne;
 
-    // submit entries of A_loc into the matrix
+    // submit entries of localMatrix into the matrix
 
-    for (OrdinalType LRID = OrdinalZero ; LRID < NumVerticesPerNode ; ++LRID)
+    for (OrdinalType LRID = OrdinalZero ; LRID < NumVerticesPerFiniteElement ; ++LRID)
     {
-      OrdinalType LocalRow = Connectivity[FEID][LRID];
+      OrdinalType LocalRow = LIDs[LRID];
 
+      // We skip non-locally owned vertices
       if (LocalRow < NumMyVertices)
       {
-        for (OrdinalType LCID = OrdinalZero ; LCID < NumVerticesPerNode ; ++LCID)
+        // If the node is a boundary node, then put 1 on the diagonal
+        if (BoundaryVertices[LocalRow])
         {
-          if (BoundaryVertices[LocalRow])
+          matrix.submitEntry(Tpetra::Insert, GIDs[LRID], ScalarOne, GIDs[LRID]);
+        }
+        else
+        {
+          // otherwise add the entire row
+          for (OrdinalType LCID = OrdinalZero ; LCID < NumVerticesPerFiniteElement ; ++LCID)
           {
-            matrix.submitEntry(Tpetra::Add, GIDs[LRID], A_loc[LRID][LCID], GIDs[LCID]);
-          }
-          else
-          {
-            for (OrdinalType LCID = OrdinalZero ; LCID < NumVerticesPerNode ; ++LCID)
-            {
-              matrix.submitEntry(Tpetra::Add, GIDs[LRID], A_loc[LRID][LCID], GIDs[LCID]);
-            }
+            matrix.submitEntry(Tpetra::Add, GIDs[LRID], localMatrix(LRID,LCID), GIDs[LCID]);
           }
         }
       }
