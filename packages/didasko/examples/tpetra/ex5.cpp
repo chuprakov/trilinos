@@ -73,6 +73,10 @@ typedef double ScalarType;
 //
 //                   e2     e0     e1
 // (X) -- (X) -- [3] -- (0) -- (1) -- (2)
+//
+// \author Marzio Sala, ETHZ/COLAB
+//
+// \date Last updated on 28-Nov-05
 
 // =========== //
 // main driver //
@@ -232,12 +236,11 @@ int main(int argc, char *argv[])
     }
 
     // get the coordinates of all nodes in the element
-    vector<ScalarType> x(NumDimensions), y(NumDimensions);
+    vector<ScalarType> x(NumVerticesPerFiniteElement);
 
     for (OrdinalType i = 0 ; i < NumDimensions ; ++i)
     {
       x[i] = Coord[LIDs[i]];
-      y[i] = Coord[LIDs[i]];
     }
     
     // build the local matrix, in this case A_loc;

@@ -36,6 +36,10 @@
 #endif
 #include "Teuchos_ScalarTraits.hpp"
 
+// \author Marzio Sala, ETHZ/COLAB
+//
+// \date Last updated on 28-Nov-05
+
 typedef int OrdinalType;
 typedef double ScalarType;
 
