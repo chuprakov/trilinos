@@ -94,10 +94,8 @@ int main(int argc, char *argv[])
   for (OrdinalType i = OrdinalZero ; i < size ; ++i)
   {
     cout << "After sumAll(), on image " << Comm.getMyImageID();
-    cout << ", V[" << i << "] = " << V[i] << endl;
+    cout << ", W[" << i << "] = " << W[i] << endl;
   }
-
-
 
 #ifdef HAVE_MPI
   MPI_Finalize() ;

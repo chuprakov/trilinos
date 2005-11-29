@@ -38,7 +38,6 @@
 #include "Tpetra_VectorSpace.hpp"
 #include "Tpetra_CisMatrix.hpp"
 #include "Tpetra_Vector.hpp"
-#include "Tpetra_Import.hpp"
 #include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_ScalarTraits.hpp"
 
