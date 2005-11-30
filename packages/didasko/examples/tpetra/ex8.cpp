@@ -42,7 +42,7 @@
 #include "Teuchos_ScalarTraits.hpp"
 #include "Teuchos_SerialDenseMatrix.hpp"
 
-/* A simple matlab script to convert pdetool-generate meshes to this format:
+/* A simple matlab script to convert pdetool-generated meshes to this format:
  
 [p,e,t] = initmesh('lshapeg');
 fid = fopen('mesh.dat', 'w');
@@ -149,6 +149,7 @@ namespace Teuchos {
 
 } // namespace Teuchos
 
+#ifdef HAVE_MPI
 namespace Tpetra 
 {
   template<>
@@ -206,6 +207,7 @@ namespace Tpetra
     };
   };
 } // namespace Tpetra
+#endif
 
 template<class OrdinalType, class ScalarType>
 class BaseGrid
@@ -230,6 +232,8 @@ class BaseGrid
     virtual double getCoord(const int dim, const int vertex) = 0;
 
     virtual int getNumUnknownsPerFiniteElement() = 0;
+
+    virtual void write(Tpetra::Vector<OrdinalType, ScalarType>& v) = 0;
 };
 
 template<class OrdinalType, class ScalarType>
@@ -240,7 +244,8 @@ class MATLABGrid
                const Tpetra::Comm<OrdinalType, ElementInfo>& CommEI,
                char* FileName) :
       CommST_(CommST),
-      CommEI_(CommEI)
+      CommEI_(CommEI),
+      FileName_(FileName)
     {
 #ifdef HAVE_MPI
       platformOT_ = new Tpetra::MpiPlatform <OrdinalType, OrdinalType>(MPI_COMM_WORLD);
@@ -363,6 +368,8 @@ class MATLABGrid
         MyGlobalOverlappingVertices[count++] = iter->first;
       }
 
+      cout << "NumMyOverlappingVertices = " << NumMyOverlappingVertices << endl;
+
       // now reads the coordinates
 
       // FIXME: the following is `double'
@@ -451,8 +458,131 @@ class MATLABGrid
       return(NumUnknownsPerFiniteElement_);
     }
 
-  private:
+    virtual void write(Tpetra::Vector<OrdinalType, ScalarType>& v)
+    {
+      if (v.vectorSpace() != *VectorOverlappingVertexSpace_)
+      {
+        cerr << "Input vector is not based on OverlappingVertexSpace" << endl;
+        return;
+      }
 
+      // define a space that contains all the elements on 
+      // processor 0, then gather the vector v on processor 0,
+      // and write it on file in the specified format.
+
+      int NumOutputElements = 0;
+      if (CommST_.getMyImageID() == 0)
+        NumOutputElements = VertexSpace_->getNumGlobalElements();
+
+      Tpetra::ElementSpace<OrdinalType> OutputSpace(-1, NumOutputElements, 0, *platformOT_);
+      Tpetra::VectorSpace<OrdinalType, ScalarType> VectorOutputSpace(OutputSpace, *platformST_);
+      Tpetra::Vector<OrdinalType, ScalarType> Output(VectorOutputSpace);
+
+      Tpetra::Import<OrdinalType> Importer(*OverlappingVertexSpace_, OutputSpace);
+
+      Output.doImport(v, Importer, Tpetra::Insert);
+
+      // at this point I have everything I need on processor 0,
+      // because I can read the mesh information from the input file.
+
+      if (CommST_.getMyImageID() == 0)
+      {
+        FILE* fp;
+        FILE* fp_output;
+
+        OrdinalType NumGlobalVertices;
+        OrdinalType NumGlobalFiniteElements;
+        OrdinalType NumDimensions;
+        char FiniteElementType[10];
+        char what[80];
+
+        if ((fp = fopen(FileName_.c_str(), "r")) == 0)
+        {
+          cerr << "Error opening file." << endl;
+#ifdef HAVE_MPI
+          MPI_Finalize();
+#endif
+          exit(EXIT_FAILURE);
+        }
+
+        if ((fp_output = fopen("medit.mesh", "w")) == 0)
+        {
+          cerr << "Error opening file." << endl;
+#ifdef HAVE_MPI
+          MPI_Finalize();
+#endif
+          exit(EXIT_FAILURE);
+        }
+
+        fscanf(fp, "%s %d", &what, &NumGlobalVertices);
+        fscanf(fp, "%s %d", &what, &NumGlobalFiniteElements);
+        fscanf(fp, "%s %d", &what, &NumUnknownsPerFiniteElement_);
+        fscanf(fp, "%s %d", &what, &NumDimensions);
+
+        fscanf(fp, "%s", what);
+
+        fprintf(fp_output, "MeshVersionFormatted 1\n");
+        fprintf(fp_output, "Dimension 3\n");
+        fprintf(fp_output, "# mesh from Tpetra/Trilinos\n");
+        fprintf(fp_output, "Triangles %d\n", NumGlobalFiniteElements);
+
+        int unk;
+        for (int i = 0 ; i < NumGlobalFiniteElements ; ++i)
+        {
+          for (int j = 0 ; j < NumUnknownsPerFiniteElement_ ; ++j)
+          {
+            fscanf(fp, "%d", &unk);
+            fprintf(fp_output, "%d ", unk + 1);
+          }
+          fprintf(fp_output, "0\n");
+        }
+
+        fscanf(fp, "%s", what); // EndElementData
+        fscanf(fp, "%s", what); // VertexData
+
+        fprintf(fp_output, "Vertices %d\n", NumGlobalVertices);
+
+        assert (NumDimensions == 2); // code to be changed is below
+        double coord;
+        for (int i = 0 ; i < NumGlobalVertices ; ++i)
+        {
+          for (int j = 0 ; j < NumDimensions ; ++j)
+          {
+            fscanf(fp, "%lf", &coord);
+            fprintf(fp_output, "%lf ", coord);
+          }
+          fprintf(fp_output, "0.0 1\n");
+        }
+
+        fscanf(fp, "%s", what); // VertexData
+        fclose(fp);
+
+        fprintf(fp_output, "End\n");
+        fclose(fp_output);
+
+        // ======== //
+        // .bb file //
+        // ======== //
+
+        fp_output = fopen("medit.bb", "w");
+
+        fprintf(fp_output, "3 1 %d 2\n", NumGlobalVertices);
+                
+        for (int i = 0 ; i < NumGlobalVertices ; ++i)
+        {
+          fprintf(fp_output, "%e\n", Output[i]);
+        }
+
+        fclose(fp_output);
+      }
+      
+      // synchronize the processors and return
+      CommST_.barrier();
+    }
+
+  private:
+    string FileName_;
+    
     const Tpetra::Comm<OrdinalType, ScalarType>& CommST_;
     const Tpetra::Comm<OrdinalType, ElementInfo>& CommEI_;
     Tpetra::Platform<OrdinalType, OrdinalType>* platformOT_;
@@ -512,7 +642,7 @@ int main(int argc, char *argv[])
 #else
   const Tpetra::SerialPlatform <OrdinalType, OrdinalType> platformOT;
   const Tpetra::SerialPlatform <OrdinalType, ScalarType> platformST;
-  const Tpetra::MpiPlatform <OrdinalType, ElementInfo> platformEI;
+  const Tpetra::SerialPlatform <OrdinalType, ElementInfo> platformEI;
 #endif
 
   if (argc == 1)
@@ -632,6 +762,20 @@ int main(int argc, char *argv[])
   if (Comm.getMyImageID() == 0)
     cout << "||A * 1||_2 = " << norm2 << endl;
 
+  // example of visualization
+  
+  for (OrdinalType i = OrdinalZero ; i < RowSpace.getNumMyElements() ; ++i)
+  {
+    X[i] = (ScalarType) Comm.getMyImageID();
+  }
+
+  Tpetra::Vector<OrdinalType, ScalarType> OverlappingX(LinearDistributedGrid.getVectorOverlappingVertexSpace());
+
+  Tpetra::Import<OrdinalType> Importer(RowSpace, LinearDistributedGrid.getOverlappingVertexSpace());
+  OverlappingX.doImport(X, Importer, Tpetra::Insert);
+
+  LinearDistributedGrid.write(OverlappingX);
+  
 #ifdef HAVE_MPI
   MPI_Finalize();
 #endif
