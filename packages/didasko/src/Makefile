@@ -1,6 +1,6 @@
 #
 
-TEX = latex
+TEX = pdflatex
 
 BTEX = bibtex
 
@@ -12,7 +12,7 @@ PARTS = tutorial.tex
 
 PICTURES =
 
-all: ${PAPER}.ps
+all: ${PAPER}.pdf
 
 ########################################################################
 #
@@ -34,8 +34,9 @@ ${PAPER}.aux: ${PAPER}.tex ${PARTS} force
 
 force:
 
-${PAPER}.ps:    ${PAPER}.dvi
-	dvips -o ${PAPER}.ps ${PAPER}
+${PAPER}.pdf:    ${PARTS}
+	${TEX} ${PAPER}
+	${TEX} ${PAPER}
 
 tarfile:
 	tar chvf ${PAPER}.tar Makefile ${PARTS} ${PICTURES} ${BIBFILE}
@@ -43,5 +44,3 @@ tarfile:
 
 clean:
 	/bin/rm -f *.pdf ${PAPER}.ps ${PAPER}.dj ${PAPER}.dvi *.aux *.bbl *.blg *.log *.lof *.lot *.toc *.tar *.tar.Z
-
-

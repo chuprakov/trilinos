@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Partitioning and Load Balancing using Zoltan}
+\chapter{Partitioning and Load Balancing using Zoltan}
 \label{chap:zoltan}
 
+\ChapterAuthors{Erik Boman}
+
+\begin{introchapter}
 In order to get good parallel performance, the data 
 distribution (layout) is important. Poor data distribution can both
 cause high communication between processes and also load imbalance,
@@ -42,8 +45,9 @@ an interface between Epetra and Zoltan, which is described in
 this chapter. Note that Zoltan may be used independently of Epetra
 or Trilinos. Zoltan contains a collection of load-balancing algorithms 
 with a single, data-structure neutral interface.
+\end{introchapter}
 
-\subsection{Background}
+\section{Background}
 In parallel linear algebra applications, the most critical part is to 
 distribute the matrices. The vectors are often distributed to conform
 with the appropriate matrices, though not always. Matrices can
@@ -80,7 +84,7 @@ Work is currently underway to provide such advanced partitioning capability
 in future versions of Zoltan and EpetraExt. Hypergraph partitioning
 also applies to rectangular matrices, not just square matrices.
 
-\subsection{Installing Zoltan and Configuration}
+\section{Installing Zoltan and Configuration}
 
 Zoltaan is not a Trilinos package and must be obtained separately.
 Zoltan is freely available under the LGPL license, and can
@@ -135,7 +139,7 @@ You do this with a command of the type
 
 Then type \verb!make! and \verb!make install! as usual.
 
-\subsection{Load-balancing with Zoltan via EpetraExt}
+\section{Load-balancing with Zoltan via EpetraExt}
 Sparse matrix computations can be load-balanced through
 the class \\
 \verb!EpetraExt::Zoltan_CrsGraph!. This is
@@ -176,7 +180,7 @@ by the EpetraExt is graph partitioning via ParMETIS. More
 options may be added in the future.
 % Also, there is no Epetraext/Zoltan transform for Epetra\_CrsMatrix yet.
 
-\subsection{Load-balancing with Zoltan in other ways}
+\section{Load-balancing with Zoltan in other ways}
 
 Many applications use Zoltan for load-balancing directly, without
 going through EpetraExt. This allows a full choice of algorithms

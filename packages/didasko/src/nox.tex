@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Solving Nonlinear Systems with NOX}
+\chapter{Solving Nonlinear Systems with NOX}
 \label{chap:nox}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 NOX is a suite of solution methods for the solution of nonlinear
 systems of type
 \begin{equation}
@@ -67,12 +70,13 @@ In this Chapter, we will
 \item Present Jacobian-free methods (in
   Section~\ref{sec:nox_jacobian_free}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Theoretical Background}
+\section{Theoretical Background}
 \label{sec:nox_theoretical}
 
 Aim of this Section is to briefly present some aspects of the solution
@@ -123,7 +127,7 @@ techniques and trust region strategies.
 %%%
 %%%
 
-\subsection{Creating NOX Vectors and Group}
+\section{Creating NOX Vectors and Group}
 \label{sec:nox_intro}
 
 NOX is not based on any particular linear algebra package. Users are
@@ -149,7 +153,7 @@ Section~\ref{sec:installing})\footnote{Other two concrete implementation
 %%%
 %%%
 
-\subsection{Introducing NOX in an Existing Code}
+\section{Introducing NOX in an Existing Code}
 \label{sec:nox_introduce}
 
 Two basic steps are required to implement a \verb!NOX::Epetra!
@@ -356,7 +360,7 @@ Epetra::Vector
 %%%
 %%%
 
-\subsection{A 2D Nonlinear PDE}
+\section{A 2D Nonlinear PDE}
 \label{sec:nox_2d}
 
 In this Section, we consider the solution of the following nonlinear PDE
@@ -404,7 +408,7 @@ almost identical to that of the previous Section.
 %%%
 %%%
 
-\subsection{Jacobian-free Methods}
+\section{Jacobian-free Methods}
 \label{sec:nox_jacobian_free}
 
 In Section \ref{sec:nox_2d}, the entries of the Jacobian matrix have
@@ -422,7 +426,7 @@ NOX, to reduce the number of function evaluations.
 %%%
 %%%
 
-\subsection{Concluding Remarks on NOX}
+\section{Concluding Remarks on NOX}
 \label{sec:local}
 
 The documentation of NOX can be found in \cite{NOX-home-page}.

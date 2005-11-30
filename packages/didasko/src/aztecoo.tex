@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Iterative Solution of Linear Systems with AztecOO}
+\chapter{Iterative Solution of Linear Systems with AztecOO}
 \label{chap:aztecoo}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 The AztecOO \cite{AztecOO-Users-Guide} package extends the Aztec library~\cite{Aztec2.1}.
 Aztec is the legacy iterative solver at the Sandia National
 Laboratories.  It has been extracted from the MPSalsa reacting flow
@@ -58,12 +61,13 @@ The Chapter reviews the following topics:
 \item Use of AztecOO problems as preconditioners to other AztecOO
   problems (in \S~\ref{sec:prec_aztecoo}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Theoretical Background}
+\section{Theoretical Background}
 \label{aztecoo:theoretical}
 
 Our aim is to briefly present the vocabulary and notation 
@@ -152,7 +156,7 @@ respectively.
 %%%
 %%%
 
-\subsection{Basic Usage}
+\section{Basic Usage}
 \label{sec:basic_aztecoo}
 
 First we delineate the steps required to apply 
@@ -227,7 +231,7 @@ iterations performed by the linear solver using
 %%%
 %%%
 %%%
-\subsection{Overlapping Domain Decomposition Preconditioners}
+\section{Overlapping Domain Decomposition Preconditioners}
 \label{sec:aztecoo_dd}
 A one level overlapping domain decomposition preconditioners $P$ takes the form
 \begin{equation}
@@ -329,7 +333,7 @@ mpirun -np 9 ex3.exe -problem_type=laplace_2d \
 %%%
 %%%
 
-\subsection{AztecOO Problems as Preconditioners}
+\section{AztecOO Problems as Preconditioners}
 \label{sec:prec_aztecoo}
 
 Preconditioners fall into two categories.
@@ -435,7 +439,7 @@ A_Solver.Iterate(Niters, 1.0E-12);
 %%%
 %%%
 
-\subsection{Concluding Remarks on AztecOO}
+\section{Concluding Remarks on AztecOO}
 
 The following methods are often used:
 \begin{itemize}

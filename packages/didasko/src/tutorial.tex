@@ -26,44 +26,158 @@
 % ***********************************************************************
 % @HEADER
 
-\documentclass[11pt,letter,relax]{SANDreport}
+\documentclass[final]{colabarticle}
+\usepackage{fancyhdr} %Declares the package fancyhdr
+\pagestyle{fancy} %Forces the page to use the fancy template
 \usepackage{graphicx}
+\usepackage{a4wide}
 \usepackage{amsmath,amsfonts,amsthm}
 \usepackage{amssymb}
+\usepackage{a4wide}
+\usepackage{eepic}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{here}
+\usepackage{latexsym}
+\usepackage{natbib}
+\usepackage{subfigure}
+\usepackage{tabularx}
+\usepackage{wrapfig}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{psboxit}
+\usepackage{color}
 
-\usepackage{newcent}
+%Postscript Font Name                   Name to use in
+%                                       \newfont command
+%                                       (dvips syntax)          
+%----------------------------------------------------------
+%AvanteGarde-Book                       rpagk
+%AvanteGarde-BookOblique                        rpagko
+%AvanteGarde-Demi                       rpagd
+%AvanteGarde-DemiOblique                        rpagdo
+%Bookman-Demi                           rpbkd
+%Bookman-Light                          rpbkl
+%Courier                                        rpcrr
+%Courier-Bold                           rpcrb
+%Courier-Oblique                                rpcrro
+%Courier-BoldOblique                    rpcrbo
+%Helvetica                              rphvr
+%Helvetica-Bold                         rphvb
+%Helvetic-Oblique                       rphvro
+%Helvetica-BoldOblique                  rphvbo
+%NewCenturySchlbk-Roman                 rpncr
+%NewCenturySchlbk-Italic                        rpncri
+%NewCenturySchlbk-Bold                  rpncb
+%NewCenturySchlbk-BoldItalic            rpncbi
+%Palatino                               rpplr
+%Palatino-Bold                          rpplb
+%Palatino-Italic                                rpplri
+%Palatino-Oblique                       rpplro
+%Times-Roman                            rptmr
+%Times-Bold                             rptmb
+%Times-Italic                           rptmri
+%Times-BoldItalic                       rptmbi
+%Zapf Chancery Medium Italic            rpzcmi
+
+%\newfont{\ridiculous}{rpagd scaled 10000}
+\newfont{\supergrand}{rpncb scaled 8000}
+\definecolor{mygray}{rgb}{0.8,0.8,0.8}
+
+\makeatletter
+\def\@makechapterhead#1{%
+  {
+    \vspace*{-1.5cm}
+    \begin{center}
+      \hfill
+      \begin{tabular}{c}
+        \includegraphics[width=3.2cm]{chapterbox}\\[-2.7cm]
+        \color{white}{\supergrand\thechapter}
+      \end{tabular}
+    \end{center}
+    \vspace*{0.5cm}
+    \begin{flushleft}
+      \Huge\sf\textbf{#1}
+    \end{flushleft}
+    \vspace*{1cm}
+  }}
+
+\def\imp#1{\textbf{#1}}
+
+%%%\usepackage{newcent}
 %%%\usepackage{fancycha}
 
 \def\choicebox#1#2{\noindent$\hphantom{th}$\parbox[t]{1.8in}{\sf
 #1}\parbox[t]{4.5in}{#2}\\[0.8em]}
 
 \newcommand{\TriExe}[1]{{\tt didasko/examples/#1}}
-\author{Marzio Sala, Michael Heroux, David Day, Christopher Baker, Heidi Thornquist \\
-Computational Mathematics and Algorithms Department \\
-Sandia National Laboratories \\
-P.O. Box 5800 \\
-Albuquerque, NM 87185-1110
-}
 
-\title{Trilinos Tutorial\footnote{Compatible with Trilinos Release 6.0.X}}
-\SANDnum{SAND2004-2189}
-\SANDauthor{
-Marzio Sala, Michael Heroux, David Day, Christopher Baker, Heidi Thornquist}
+\newcommand{\ChapterAuthors}[1]{{\vspace*{-0.8cm}{\sl #1 } \bigskip}}
 
-\SANDprintDate{September 2005}
-\SANDreleaseType{Unlimited Release}
+\newenvironment{introchapter}
+{ \begin{center} \begin{tabular}{|p{0.1cm} p{14cm} p{0.1cm}|} &
+  \fontfamily{cmss}\selectfont  }
+{  & \\ \end{tabular} \end{center} }
 
 \newcommand{\Trilinos}{Trilinos}
 \newcommand{\TrilinosTM}{Trilinos \copyright}
 
 \newtheorem{remark}{Remark}
 
+%-------------------------------------------------------------------------------
+%  title page
+%-------------------------------------------------------------------------------
+\title{\textbf{\resizebox{10cm}{!}{Trilinos Tutorial}}\vspace{5mm}}
+\subtitle{
+  \\
+  \vspace*{4mm}
+  \Large version 6.0.X \\
+  \vspace*{5mm}
+  \noindent
+  Sandia Report SAND2004-2189,
+  September 2004,
+  Unlimited Release \\
+  \vspace*{5mm}
+  \noindent
+  Last updated on December 2005 \\
+\vspace{6cm}\\
+\\ \vspace{0mm}
+\hspace*{1cm} Marzio Sala \\
+\\ \vspace{0mm}
+\hspace*{1cm} Michael A. Heroux\\
+\\ \vspace{0mm}
+\hspace*{1cm} David M. Day\\
+\\ \vspace{0mm}
+\hspace*{1cm} \normalsize (Editors) \\
+\vspace*{1cm}
+\vfill
+\includegraphics[height=1.5cm]{snllineblk}  \hfill
+\includegraphics[height=1.5cm]{DOEbwlogo}  \\
+Sandia is a multiprogram laboratory operated by Sandia Corporation, 
+a Lockheed Martin Company, for the United States Department of Energy's 
+National Nuclear Security Administration under Contract DE-AC04-94-AL85000. 
+Approved for public release; further dissemination unlimited. 
+}
+
+%\institute{http://www.colab.ethz.ch}
+ \correspondingauthor{ }
+ \http{www.sandia.gov}
+%\email{petros@inf.ethz.ch}
+
+\COLABreportdate{December 2005}
+
+\pagestyle{fancy}
+
+\fancyhf{} 
+\fancyhead[LE,RO]{\thepage} 
+\fancyhead[RE]{\sf \nouppercase{\leftmark}} 
+\fancyhead[LO]{\sf \nouppercase \rightmark} 
+\renewcommand{\headrulewidth}{0.5pt} 
 \begin{document}
 
 \maketitle
 
-\begin{abstract}
-
+\chapter*{Preface}
   The Trilinos Project is an effort to facilitate the design,
   development, integration and ongoing support of mathematical software
   libraries.  The goal of the Trilinos Project is to develop parallel
@@ -77,8 +191,8 @@ Marzio Sala, Michael Heroux, David Day, Christopher Baker, Heidi Thornquist}
 
   \medskip
 
-  This document introduces the use of \Trilinos{}, Release 6.0 and subsequent minor
-  releases 6.0.X.  The
+  This document introduces the use of \Trilinos{}, Release 6.0 and 
+  subsequent minor releases 6.0.X.  The
   presented material includes, among others, the definition of
   distributed matrices and vectors with Epetra, the iterative solution
   of linear systems with AztecOO, incomplete factorizations with IFPACK,
@@ -100,34 +214,35 @@ Marzio Sala, Michael Heroux, David Day, Christopher Baker, Heidi Thornquist}
   that the documentation included in each of the Trilinos' packages is
   of fundamental importance.
 
-\end{abstract}
+  \bigskip
+
+  The developers of each Trilinos' package are acknowledged for providing
+  excellent documentation and examples (and the code itself!), 
+  without which this document would have never been possible.  We also
+  acknowledge the support of the ASCI and LDRD programs that funded
+  development of Trilinos, and the support of D-INFK department of the ETH
+  Z\"urich.
+
+  \smallskip
+
+  Oscar Chinellato (ETHZ/ICoS) and Jens Walter (ETHZ/ICOS) are acknowledged
+  for the \LaTeX\ macros and styles used to format this document.
+
+  \vspace*{1cm}
+
+  \hfill Marzio Sala 
+
+  \hfill Micheal Heroux 
+
+  \hfill David Day
 
 \clearpage
-\section*{Acknowledgments}
-The authors would like to acknowledge the support of the ASCI and LDRD programs
-that funded development of Trilinos.
-
-\medskip
-
-The developers of each Trilinos' package are acknowledged for providing
-excellent documentation and examples, without which this document would
-have never been possible. In particular, we thank Heidi Thornquist for
-the contributions to the Teuchos chapter, and Erik Boman for the chapter
-on partitioning and load balancing.
-
-\clearpage
-
-\SANDmain
 
 \tableofcontents
 
 \clearpage
 
 \include{introduction}
-
-%\clearpage
-%\newpage
-%\include{getting_started}
 
 \clearpage
 \newpage
@@ -181,7 +296,7 @@ on partitioning and load balancing.
 \newpage
 \include{tpetra}
 
-\bibliographystyle{plain}
+\bibliographystyle{alpha}
 \bibliography{tutorial_biblio,../../../doc/CommonFiles/TrilinosBibliography}
 
 \end{document}

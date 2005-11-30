@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Working with Epetra Vectors}
+\chapter{Working with Epetra Vectors}
 \label{chap:epetra_vec}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, and David Day.}
+
+\begin{introchapter}
 A vector is a fundamental data structure required by almost all
 numerical methods. Within the Trilinos framework, vectors are usually
 constructed starting from Epetra classes.
@@ -63,12 +66,13 @@ During the Chapter, the user will be introduced to:
 \item A tool to redistributing vectors across processes (in
   Section~\ref{sec:import_export}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Epetra Communicator Objects}
+\section{Epetra Communicator Objects}
 \label{sec:comm}
 
 The Epetra\_Comm virtual class is an interface that encapsulates the
@@ -179,7 +183,7 @@ class.  \\
 %%%
 %%%
 
-\subsection{Defining a Map}
+\section{Defining a Map}
 \label{sec:map}
 
 The distribution of a set of integer labels (or elements) across the
@@ -310,7 +314,7 @@ better understand the potential of Epetra\_Maps.
 %%%
 %%%
 
-\subsection{Creating and Assembling Serial Vectors}
+\section{Creating and Assembling Serial Vectors}
 \label{sec:serial_vec}
 
 Within Epetra, it is possible to define {\em sequential} vectors for
@@ -364,7 +368,7 @@ vectors.
 %%%
 %%%
 
-\subsection{Creating and Assembling a Distributed Vector}
+\section{Creating and Assembling a Distributed Vector}
 \label{sec:distr_vec}
 
 A distributed object is an entity whose elements are partitioned across
@@ -523,7 +527,7 @@ multi-vector with constant value \\
 %%%
 %%%
 
-\subsection{Epetra\_Import and Epetra\_Export classes}
+\section{Epetra\_Import and Epetra\_Export classes}
 \label{sec:import_export}
 
 The Epetra\_Import and Epetra\_Export classes suites apply off-processor

@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Interfacing Direct Solvers with Amesos}
+\chapter{Interfacing Direct Solvers with Amesos}
 \label{chap:amesos}
 
+\ChapterAuthors{Marzio Sala}
+
+\begin{introchapter}
 The Amesos package provides an object-oriented interface to several
 direct sparse solvers. Amesos will solve (using a direct factorization
 method) the linear systems of equations (\ref{eq:linear_sys}) where $A$
@@ -42,6 +45,9 @@ input formats for the linear system matrix. Moreover, it is not uncommon
 that the interface changes between revisions. Amesos aims to solve those
 problems, furnishing a clean, consistent interface to many direct
 solvers.
+\end{introchapter}
+
+\section{Introduction to the Amesos Design}
 
 Using Amesos, users can interface their codes with a (large) variety of
 direct linear solvers, sequential or parallel, simply by a code
@@ -113,7 +119,7 @@ This Chapter, we will cover:
 %%%
 %%%
 
-\subsection{Amesos\_BaseSolver: A Generic Interface to Direct Solvers}
+\section{Amesos\_BaseSolver: A Generic Interface to Direct Solvers}
 \label{sec:amesos_generic}
 
 All Amesos objects are constructed from the function class

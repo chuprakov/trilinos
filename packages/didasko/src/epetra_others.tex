@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Other Epetra Classes}
+\chapter{Other Epetra Classes}
 \label{chap:epetra_others}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 Epetra includes classes that facilitate the development of parallel
 codes. In this Chapter we will recall the main usage of some of those
 classes:
@@ -38,12 +41,13 @@ classes:
 \item Epetra\_Operator and Epetra\_RowMatrix (in Section \ref{sec:operator});
 \item Epetra\_LinearProblem (in Section \ref{sec:linear_problem}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Epetra\_Time}
+\section{Epetra\_Time}
 \label{sec:time}
 
 Retrieving elapsed and wall-clock time is problematic due to
@@ -71,7 +75,7 @@ time from the creation of {\sl this} object or from the last call to
 %%%
 %%%
 
-\subsection{Epetra\_Flops}
+\section{Epetra\_Flops}
 \label{sec:flops}
 
 The Epetra\_Flops class provides basic support and consistent interfaces
@@ -154,7 +158,7 @@ q dot z = 2
 %%%
 
 
-\subsection{Epetra\_Operator and Epetra\_RowMatrix Classes}
+\section{Epetra\_Operator and Epetra\_RowMatrix Classes}
 \label{sec:operator}
 
 Matrix-free methods are introduced in the Epetra framework using either
@@ -306,7 +310,7 @@ an Epetra\_Map. The complete code is reported in \newline
 %%%
 %%%
 
-\subsection{Epetra\_LinearProblem}
+\section{Epetra\_LinearProblem}
 \label{sec:linear_problem}
 
 A linear system $A X = B$ is defined by an Epetra\_LinearProblem class.
@@ -395,7 +399,7 @@ Get operator symmetry bool. \\
 %%%
 
 
-\subsection{Concluding Remarks on Epetra}
+\section{Concluding Remarks on Epetra}
 \label{sec:epetra_concluding}
 
 More details about the Epetra project, and a technical description of

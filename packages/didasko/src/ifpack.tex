@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Incomplete Factorizations with IFPACK}
+\chapter{Incomplete Factorizations with IFPACK}
 \label{chap:ifpack}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 IFPACK provides a suite of object-oriented algebraic preconditioners for
 the solution of preconditioned iterative solvers. IFPACK offers a
 variety of overlapping (one-level) Schwarz preconditioners. The package
@@ -49,12 +52,13 @@ AztecOO solvers.  Specifically we present:
 \item IFPACK's RILU-type factorizations (in
   Section~\ref{sec:ifpack_rilu}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Theoretical Background}
+\section{Theoretical Background}
 \label{sec:ifpack_theoretical}
 
 The aim of this section is to define concepts associated with incomplete
@@ -113,7 +117,7 @@ typically much more effective because the pattern of ILU($k$) will also
 be the same for each linear system and the overhead of computing the
 pattern is amortized.
 
-\subsection{Parallel Incomplete Factorizations}
+\section{Parallel Incomplete Factorizations}
 \label{sec:ifpack_parallel}
 
 Parallel direct sparse solvers that compute the complete factorization $A=LU$
@@ -150,7 +154,7 @@ level-1 is often most effective.  Seldom more than 3 levels are needed.
 %%%
 %%%
 
-\subsection{Incomplete Cholesky Factorizations}
+\section{Incomplete Cholesky Factorizations}
 \label{sec:ifpack_chol}
 
 Recall that if a matrix is symmetric positive definite, it admits a Cholesky
@@ -202,7 +206,7 @@ incomplete Cholesky factorization.
 %%%
 %%%
 
-\subsection{RILUK  Factorizations}
+\section{RILUK  Factorizations}
 \label{sec:ifpack_rilu}
 
 IFPACK implements various incomplete factorization for non-symmetric
@@ -276,7 +280,7 @@ original matrix row distribution.
 %%%
 
 
-\subsection{Concluding Remarks on IFPACK}
+\section{Concluding Remarks on IFPACK}
 \label{sec:ifpack_concluding}
 
 More documentation on the IFPACK package can be found in

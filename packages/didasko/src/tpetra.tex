@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Templated Distributed Linear Algebra Objects with Tpetra}
+\chapter{Templated Distributed Linear Algebra Objects with Tpetra}
 \label{chap:tpetra}
 
+\ChapterAuthors{Marzio Sala}
+
+\begin{introchapter}
 Tpetra is a package of classes for the construction and use of serial and
 distributed templated linear algebra objects, such as vectors, multi-vectors,
 and matrices. 
@@ -49,9 +52,10 @@ templated programming (in Section~\ref{sec:tpetra_introduction});
 
 This chapter only gives a broad overview of the Tpetra project; more details
 can be found in~\cite{tpetra_overview} and on the Tpetra web page.
+\end{introchapter}
 
 % -------------------------------------------------------------------------- %
-\subsection{Introduction}
+\section{Introduction}
 \label{sec:tpetra_introduction}
 % -------------------------------------------------------------------------- %
 
@@ -106,7 +110,7 @@ type is not known, it is very important not to make assumptions like {\tt
     {\tt OrdinalType} or {\tt ScalarType}.
 
 % -------------------------------------------------------------------------- %
-\subsection{A Basic Tpetra Code}
+\section{A Basic Tpetra Code}
 \label{sec:tpetra_basic}
 % -------------------------------------------------------------------------- %
 
@@ -232,7 +236,7 @@ return(EXIT_SUCCESS);
 \end{verbatim}
 
 % -------------------------------------------------------------------------- %
-\subsection{Spaces}
+\section{Spaces}
 \label{sec:tpetra_spaces}
 % -------------------------------------------------------------------------- %
 
@@ -303,7 +307,7 @@ image, returns false if it doesn't.
 
 
 % -------------------------------------------------------------------------- %
-\subsection{Creating and Using Vectors}
+\section{Creating and Using Vectors}
 \label{sec:tpetra_vectors}
 % -------------------------------------------------------------------------- %
 
@@ -372,7 +376,7 @@ x.update(beta, y, gamma, y, alpha);
 Finally, vectors can be printed as \verb!cout << v1!.
 
 % -------------------------------------------------------------------------- %
-\subsection{Creating and Using Matrices}
+\section{Creating and Using Matrices}
 \label{sec:tpetra_matrices}
 % -------------------------------------------------------------------------- %
 
@@ -476,7 +480,7 @@ distribution of the vector to which the matrix will be applied; while the
 range distribution specifies the distribution of the result vector $y = A x$.
 
 % -------------------------------------------------------------------------- %
-\subsection{Conclusing Remarks}
+\section{Conclusing Remarks}
 \label{sec:tpetra_remarks}
 % -------------------------------------------------------------------------- %
 

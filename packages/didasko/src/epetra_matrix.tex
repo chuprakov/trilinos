@@ -26,9 +26,12 @@
 % ***********************************************************************
 % @HEADER
 
-\section{Working with Epetra Matrices}
+\chapter{Working with Epetra Matrices}
 \label{chap:epetra_mat}
 
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 Epetra contains several matrix classes.  Epetra matrices can be defined
 to be either {\em serial} or {\em distributed}. A serial matrix could be
 the matrix corresponding to a given element in a finite-element
@@ -60,12 +63,13 @@ different types of matrices as follows:
 \item The insertion of non-local elements using finite-element matrices
   (in Section~\ref{sec:fematrix}).
 \end{itemize}
+\end{introchapter}
 
 %%%
 %%%
 %%%
 
-\subsection{Serial Dense Matrices}
+\section{Serial Dense Matrices}
 \label{sec:dense_mat}
 
 Epetra supports sequential dense matrices with the class
@@ -166,7 +170,7 @@ Epetra\_SerialDenseSolver class.
 %%%
 %%%
 
-\subsection{Distributed Sparse Matrices}
+\section{Distributed Sparse Matrices}
 \label{sec:sparse_mat}
 
 Epetra provides an extensive set of classes to create and fill
@@ -568,7 +572,7 @@ A(5,5) = 2;
 %%%
 %%%
 
-\subsection{Creating Block Matrices}
+\section{Creating Block Matrices}
 \label{sec:sparse_vbr}
 
 This section reviews how to work with block matrices (where each block
@@ -663,7 +667,7 @@ Please refer to \TriExe{epetra/ex17.cpp} for the entire source.
 %%%
 %%%
 
-\subsection{Insert non-local Elements Using FE Matrices}
+\section{Insert non-local Elements Using FE Matrices}
 \label{sec:fematrix}
 
 The most important additional feature provided by the

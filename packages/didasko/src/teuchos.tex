@@ -26,9 +26,12 @@
 % ************************************************************************
 %@HEADER
 
-\section{The Teuchos Utility Classes}
+\chapter{The Teuchos Utility Classes}
 \label{chap:teuchos}
 
+\ChapterAuthors{Heidi Thornquist}
+
+\begin{introchapter}
 Teuchos (pronounced ``te-fos'') is a collection of portable C++ tools
 that facilitate the development of scientific codes.  Only a few of the many
 tools in Teuchos are mentioned in this section.
@@ -44,8 +47,9 @@ configure option \verb!--enable-teuchos!.
 The ``extended'' build contains more special purpose tools like 
 XML parsing and MPI communicators, which can be included in the Teuchos
 library by using the configure option \verb!--enable-teuchos-extended!.
+\end{introchapter}
 
-\medskip
+\section{Introduction}
 
 In this Chapter, we will present the following ``standard'' build classes:
 \begin{itemize}
@@ -89,7 +93,7 @@ In this Chapter, we will present the following ``standard'' build classes:
 %%%
 %%%
 
-\subsection{Teuchos::ScalarTraits}
+\section{Teuchos::ScalarTraits}
 \label{sec:teuchos:ScalarTraits}
 
 The ScalarTraits class provides a basic interface to scalar types (float, double, 
@@ -117,7 +121,7 @@ support in ScalarTraits or any dependent classes, configure Teuchos with {\tt --
 %%%
 %%%
 
-\subsection{Teuchos::SerialDenseMatrix}
+\section{Teuchos::SerialDenseMatrix}
 \label{sec:teuchos:SDM}
 
 \verb!Teuchos::SerialDenseMatrix! is a templated version of the SerialDenseMatrix class in \verb!Epetra!
@@ -225,7 +229,7 @@ arithmetic, and norm methods ({\tt Teuchos::SerialDenseVector}).
 %%%
 %%%
 
-\subsection{Teuchos::BLAS}
+\section{Teuchos::BLAS}
 \label{sec:teuchos:BLAS}
 
 The \verb!Teuchos::BLAS! class provides templated wrappers for the native BLAS library.
@@ -298,7 +302,7 @@ This example can be found in \TriExe{teuchos/ex2.cpp}.
 %%%
 %%%
 
-\subsection{Teuchos::LAPACK}
+\section{Teuchos::LAPACK}
 \label{sec:teuchos:LAPACK}
 
 The \verb!Teuchos::LAPACK! class provides templated wrappers for the native LAPACK library.
@@ -410,7 +414,7 @@ This example can be found in \TriExe{teuchos/ex3.cpp}.
 %%%
 %%%
 
-\subsection{Teuchos::ParameterList}
+\section{Teuchos::ParameterList}
 \label{sec:teuchos:ParameterList}
 
 The {\tt Teuchos::ParameterList} class is a C++ container of $<${\it key}, {\it value}$>$ pairs, 
@@ -554,7 +558,7 @@ This section presents examples of all the methods in the
 %%%
 %%%
 
-\subsection{Teuchos::RefCountPtr}
+\section{Teuchos::RefCountPtr}
 \label{sec:teuchos:RefCountPtr}
 
 The \verb!Teuchos::RefCountPtr! class is a templated class for implementing
@@ -672,7 +676,7 @@ to Teuchos users as soon as it is finished.  The examples presented in this sect
 %%%
 %%%
 
-\subsection{Teuchos::TimeMonitor}
+\section{Teuchos::TimeMonitor}
 \label{sec:teuchos:TimeMonitor}
 
 The \verb!Teuchos::TimeMonitor! class is a container that manages a
@@ -720,7 +724,7 @@ methods in the {\tt Teuchos::TimeMonitor} class and can be found in
 %%%
 %%%
 
-\subsection{Teuchos::CommandLineProcessor}
+\section{Teuchos::CommandLineProcessor}
 \label{sec:teuchos:CLP}
 
 \verb!Teuchos::CommandLineProcessor! is a class that helps to parse command

@@ -25,8 +25,12 @@
 % 
 % ***********************************************************************
 % @HEADER
-\section{Multilevel Preconditioners with ML}
+\chapter{Multilevel Preconditioners with ML}
 \label{chap:ml}
+
+\ChapterAuthors{Marzio Sala, Michael Heroux, David Day}
+
+\begin{introchapter}
 The ML package defines a class of preconditioners based on multilevel
 methods~\cite{Briggs2000,TuminaroTong:00a}. 
 While theoretically ML preconditioners apply to any linear system,
@@ -52,11 +56,13 @@ This Chapter will present:
 \item How to implement two level domain decomposition methods with
   aggregation based coarse matrix (in Section~\ref{sec:ml_DD}).
 \end{itemize}
+\end{introchapter}
+
 %%%
 %%%
 %%%
 %%%
-\subsection{A Multilevel Preconditioning Framework}
+\section{A Multilevel Preconditioning Framework}
 \label{ml:theoretical}
 For certain combinations of iterative methods and linear systems, the
 error at each iteration projected onto the eigenfunctions has components
@@ -136,7 +142,7 @@ in ML.
 %%%
 %%%
 %%%
-\subsection{ML Objects as AztecOO Preconditioners}
+\section{ML Objects as AztecOO Preconditioners}
 \label{sec:ml_prec}
 ML may be used as a ``black-box'' multilevel preconditioner, 
 using aggregation procedures to define the multilevel hierarchy. 
@@ -282,7 +288,7 @@ Residual    = 6.99704e-13
 %%%
 %%%
 %%%
-\subsection{The ML\_Epetra::MultiLevelOperator Class}
+\section{The ML\_Epetra::MultiLevelOperator Class}
 \label{sec:ml:operator}
 As with other Trilinos packages, ML can be compiled and run independently
 from Epetra. It accepts input matrix in formats different
@@ -365,7 +371,7 @@ Solver.Iterate(Niters, 1e-12);
 %%%
 %%%
 %%%
-\subsection{The ML\_Epetra::MultiLevelPreconditioner Class}
+\section{The ML\_Epetra::MultiLevelPreconditioner Class}
 \label{sec:ml:preconditioner}
 An alternative to the ML\_Epetra::MultiLevelOperator
 (that is also in the namespace {\tt ML\_Epetra}) 
@@ -374,17 +380,18 @@ is the \verb!MultiLevelPreconditioner! class.  Replace the header file
 by \verb!ml_MultiLevelPreconditioner.h!.
 
 Table~\ref{tab:ml:aggr} reports the aggregation schemes currently
-available in ML. A graphical comparison of Uncoupled and METIS is
-reported in Figure~\ref{fig:ml:comparison}, for a
-Laplacian operator over a square descretized with a a $9$ point stencil.
+available in ML. 
+%A graphical comparison of Uncoupled and METIS is
+%reported in Figure~\ref{fig:ml:comparison}, for a
+%Laplacian operator over a square descretized with a a $9$ point stencil.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[height=6cm]{ml_Uncoupled-16x16.ps} \hspace{0.5cm}
-  \includegraphics[height=6cm]{ml_METIS-16x16.ps}
-  \caption{Aggregates for Uncoupled (left) and METIS (right) for a 16x16 Cartesian grid.}
-  \label{fig:ml:comparison}
-\end{figure}
+%\begin{figure}[htbp]
+  %\centering
+  %\includegraphics[height=6cm]{ml_Uncoupled-16x16.ps} \hspace{0.5cm}
+  %\includegraphics[height=6cm]{ml_METIS-16x16.ps}
+  %\caption{Aggregates for Uncoupled (left) and METIS (right) for a 16x16 Cartesian grid.}
+  %\label{fig:ml:comparison}
+%\end{figure}
 
 \begin{table}
 \begin{center}
@@ -559,7 +566,7 @@ Tables~\ref{tab:ml:aggr}, \ref{tab:ml:smoother} and \ref{tab:ml:coarse}.
 %%%
 
 
-\subsection{Two-Level Domain Decomposition Preconditioners with ML}
+\section{Two-Level Domain Decomposition Preconditioners with ML}
 \label{sec:ml_DD}
 
 The idea of two level domain decomposition based on aggregation is to

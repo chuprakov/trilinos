@@ -26,9 +26,12 @@
 % ************************************************************************
 %@HEADER
 
-\section{Eigenvalue and Eigenvector Computations with Anasazi}
+\chapter{Eigenvalue and Eigenvector Computations with Anasazi}
 \label{chap:anasazi}
 
+\ChapterAuthors{Christopher Baker, Heidi Thornquist}
+
+\begin{introchapter}
 The Anasazi package was designed as an extensible and interoperable framework
 for large-scale eigenvalue algorithms. Anasazi provides a generic interface to a
 collection of algorithms for solving large-scale eigenvalue problems. It
@@ -59,12 +62,12 @@ In this chapter we present:
 \item an example using Anasazi for the solution of an eigenvalue problem 
 (Section~\ref{sec:anasazi:example}).
 \end{itemize}
+\end{introchapter}
 
-
 %%%
 %%%
 %%%
-\subsection{The Anasazi Framework}
+\section{The Anasazi Framework}
 \label{sec:anasazi:framework}
 
 Solving an eigenproblem in Anasazi requires the use of four main components: an
@@ -91,7 +94,7 @@ following subsections.
 
 %%%
 %%%
-\subsubsection{Anasazi::Eigenproblem}
+\subsection{Anasazi::Eigenproblem}
 \label{sec:anasazi:eigenproblem}
 
 One of the goals of Anasazi is to provide a framework for eigenvalue
@@ -160,7 +163,7 @@ eigenvalue problem).
 
 %%%
 %%%
-\subsubsection{Anasazi::Eigensolver}
+\subsection{Anasazi::Eigensolver}
 \label{sec:anasazi:eigensolver}
 
 The Anasazi::Eigensolver class defines the basic interface that must be
@@ -282,7 +285,7 @@ Parameter & Default \\
 
 %%%
 %%%
-\subsubsection{Anasazi::MultiVecTraits}
+\subsection{Anasazi::MultiVecTraits}
 \label{sec:anasazi:mvt}
 
 As mentioned above, the eigenproblem and eigensolver classes are templated
@@ -375,7 +378,7 @@ Anasazi abstract base classes.
 
 %%%
 %%%
-\subsubsection{Anasazi::OperatorTraits}
+\subsection{Anasazi::OperatorTraits}
 \label{sec:anasazi:opt}
 
 Just as Anasazi::MultiVecTraits defined the interface required to use a
@@ -409,7 +412,7 @@ example of using the Anasazi adapter to Epetra.
 
 %%%
 %%%
-\subsubsection{Anasazi::SortManager}
+\subsection{Anasazi::SortManager}
 \label{sec:anasazi:sm}
 
 The purpose of a sort manager is to separate the eigensolver classes from the
@@ -455,7 +458,7 @@ Option & Action \\
 
 %%%
 %%%
-\subsubsection{Anasazi::OutputManager}
+\subsection{Anasazi::OutputManager}
 \label{sec:anasazi:om}
 
 As with the sort manager, the output manager in Anasazi exists to provide
@@ -512,7 +515,7 @@ stream by this process.
 %%%
 %%%
 %%%
-\subsection{Using the Anasazi adapter to Epetra}
+\section{Using the Anasazi adapter to Epetra}
 \label{sec:anasazi:epetra}
 
 The Epetra package provides the underlying linear algebra foundation for many
@@ -563,7 +566,7 @@ eigensolver is given in the next section.
 %%%
 %%%
 %%%
-\subsection{Testing MultiVecTraits and OperatorTraits specializations}
+\section{Testing MultiVecTraits and OperatorTraits specializations}
 \label{sec:anasazi:MVOPtester}
 
 In order to facilitate the usage of different linear algebra packages, Anasazi
@@ -605,7 +608,7 @@ long way to automatically checking for common bugs.
 %%%
 %%%
 %%%
-\subsection{Defining and Solving an Eigenvalue Problem}
+\section{Defining and Solving an Eigenvalue Problem}
 \label{sec:anasazi:example}
 
 This section gives sample code for solving a symmetric eigenvalue problem using
