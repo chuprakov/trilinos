@@ -28,13 +28,8 @@ namespace AbstractLinAlgPack { class VectorSpaceThyra; }
 
 namespace NLPInterfacePack {
 
-///
-/** Implement the %NLPFirstOrder interface using a
- * <tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt> object.
- *
- * This subclass allows great flexibility in how a
- * <tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt> object
- * <tt>model</tt> can be used to implement an nonlinear program.
+/** \brief Implement the %NLPFirstOrder interface using a
+ * <tt>Thyra::ModelEvaluator</tt> object.
  *
  * The nonlinear program is mapped as follows:
 
@@ -45,48 +40,26 @@ namespace NLPInterfacePack {
             xL <= x <= xu
 
     where:
-            [ np.x                                  ]
-        x = [ np.p(p_indep_ind[0])                  ]
-            [ ...                                   ]
-            [ np.p(p_indep_ind[num_p_indep_sets-1]) ]
 
-        f(x) = sum( q[k], k = 0...num_obj-1 )
-        
-                                        / g(obj_ind[k])(y,{u(l)})    : if obj_pow[k] == OBJ_LINEAR
-            where: q[k] =  obj_wgt[k] * |
-                                        \ g(obj_ind[k])(y,{u(l)})^2  : if obj_pow[k] == OBJ_SQUARED
+        x = [ np.x        ]
+            [ np.p(p_idx) ]
 
-        c(x) = np.c(y,{u(l)})
+        f(x) = np.g(g_idx)
+
+        c(x) = np.f()
+
  \endverbatim
 
- * where <tt>num_p_indep_sets</tt>, <tt>p_indep_ind[]</tt>,
- * <tt>num_obj</tt>, <tt>obj_ind[]</tt>, <tt>obj_wgt[]</tt> and
- * <tt>obj_pow[]</tt> are input, along with the object <tt>np</tt> to
- * the constructor <tt>NLPThyraModelEvaluator()</tt> or the initialization
- * function <tt>initialize()</tt>.
+ * where <tt>p_idx > 0</tt> and <tt>g_idx > 0</tt> are some indexes that
+ * specificy the indepenent variables and the objective function.
  *
- * The transformation shown above allows great flexibility is how the
- * auxiliary variables <tt>{u(l)}</tt> auxiliary response functions
- * <tt>np.g(y,{u(l})</tt> are used.  The client can select one or more of
- * the members in the set of auxiliary variables <tt>{u(l)}</tt> to be
- * used as design variables as specified by <tt>num_p_indep_sets</tt>
- * and <tt>p_indep_ind[]</tt>.  Also, the objective function can be
- * built out of a composition of one or more of the auxiliary
- * functions <tt>np.g(y,{u(l)})</tt> as specified by <tt>num_obj</tt>,
- * <tt>obj_ind[]</tt>, <tt>obj_wgt[]</tt> and <tt>obj_pow[]</tt>.
- * This allows one to ignore certain response functions and to build
- * multi-term objective functions with various weights (i.e. as
- * specified <tt>obj_wgt[]</tt>) and perhaps least squares (i.e. as
- * specified by <tt>obj_pow[]</tt>).
+ * In addition, the client can also override the bounds on <tt>np.x</tt> and
+ * <tt>np.p(p_idx)</tt> defined in the object <tt>np</tt>.
  *
- * In addition, the client can also override the bounds on <tt>y</tt>
- * and <tt>{u(l)}</tt> defined in the object <tt>np</tt>.
- *
- * The current implementation of this class does not allow the use of
- * any of the auxiliary functions <tt>np.g(y,{u(l})</tt> as
- * undecomposed equality constraints or extra general inequality
- * constraints.  This type of functionality can be added when it
- * is needed (just ask for it).
+ * The current implementation of this class does not allow the use of any of
+ * the auxiliary functions <tt>np.g()</tt> as undecomposed equality
+ * constraints or extra general inequality constraints.  This type of
+ * functionality can be added when it is needed (just ask for it).
  *
  * ToDo: Finish documentation!
  */
@@ -104,58 +77,32 @@ public:
 	 */
 	NLPThyraModelEvaluator(
 		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
-		,const int                                                      num_p_indep_sets
-		,const int                                                      p_indep_ind[]
-		,const int                                                      num_obj
-		,const int                                                      obj_ind[]
-		,const value_type                                               obj_wgt[]
-		,const EObjPow                                                  obj_pow[]
-		,const Thyra::VectorBase<value_type>                            *np_xL       = NULL
-		,const Thyra::VectorBase<value_type>                            *np_xU       = NULL
-		,const Thyra::VectorBase<value_type>                            *np_x0       = NULL
-		,const Thyra::VectorBase<value_type>*                           np_pL[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           np_pU[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           np_p0[]      = NULL
+    ,const int                                                      p_idx
+    ,const int                                                      g_idx
+		,const Thyra::VectorBase<value_type>                            *np_xL      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xU      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_x0      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_pL      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_pU      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_p0      = NULL
 		);
 
 	///
 	/** Initialize given a <tt>Thyra::ModelEvaluator</tt> and
 	 * a description of how to interpret it.
 	 *
-	 * @param  np    [in] NonlinearProblem that defines all of the functions.
-	 * @param  num_p_indep_sets
-	 *               [in] Number of set of auxiliary variables u(l) to include in the set of
-	 *               independent variables xI (see above).
-	 * @param  num_obj
-	 *               [in] The number of auxiliary response functions to include as terms in the
-	 *               objective function (see above).
-	 * @param  obj_ind
-	 *               [in] Array (of length num_obj) that gives the indexes of the auxiliary
-	 *               response functions in <tt>g(y,{u(l)})</tt> that will be used as terms
-	 *               in the objective function (see above).
-	 * @param  obj_wgt
-	 *               [in] Array (of length num_obj) that gives the weights for the auxiliary
-	 *               response functions in <tt>g(y,{u(l)})</tt> that will be used as terms
-	 *               in the objective function (see above).
-	 * @param  obj_pow
-	 *               [in] Array (of length num_obj) that gives the power to raise for the auxiliary
-	 *               response functions in <tt>g(y,{u(l)})</tt> that will be used as terms
-	 *               in the objective function (see above).
-	 * @param  np_xL [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
+	 * @param  np    [in] NonlinearProblem that defines all of the functions and variables.
+   * @param  p_idx [in] Index of the subset of parameter vectors to use as the independent
+   *               variables.  If <tt>p_idx < 0</tt>, then no extra parameters are added.
+   * @param  g_idx [in] Index of the subset of auxiliary response functions to use as
+   *               the objective function.  Note, only the first element <tt>np.g(g_idx)(1)</tt>
+   *               will be used as the objective function value.
+	 * @param  np_xL [in] Pointer to upper bounds for the state variables <tt>np.x</tt>.  If NULL
 	 *               then the default supplied in <tt>np->get_x_lower_bounds()</tt> will be used.
-	 * @param  np_xU [in] Pointer to upper bounds for the state variables <tt>y</tt>.  If NULL
+	 * @param  np_xU [in] Pointer to upper bounds for the state variables <tt>x</tt>.  If NULL
 	 *               then the default supplied in <tt>np->get_x_upper_bounds()</tt> will be used.
-	 * @param  np_x0 [in] Pointer to initial guess for the state variables <tt>y</tt>.  If NULL
+	 * @param  np_x0 [in] Pointer to initial guess for the state variables <tt>x</tt>.  If NULL
 	 *               the the default supplied in <tt>np->get_x_init()</tt> will be used.
-	 * @param  np_pL [in] Array (length num_p_indep_sets) of pointers to lower bounds for the
-	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_lower_bounds(p_indep_ind[k])</tt> will be used.
-	 * @param  np_pU [in] Array (length num_p_indep_sets) of pointers to upper bounds for the
-	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_upper_bounds(p_indep_ind[k])</tt> will be used.
-	 * @param  np_p0 [in] Array (length num_p_indep_sets) of pointers to initial guesses for the
-	 *               auxiliary variables <tt>u(l)</tt>.  If NULL then the default supplied in
-	 *               <tt>np->get_p_init(p_indep_ind[k])</tt> will be used.
 	 *
 	 * ToDo: Finish documentation!
 	 *
@@ -163,18 +110,14 @@ public:
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
-		,const int                                                      num_p_indep_sets
-		,const int                                                      p_indep_ind[]
-		,const int                                                      num_obj
-		,const int                                                      obj_ind[]
-		,const value_type                                               obj_wgt[]
-		,const EObjPow                                                  obj_pow[]
-		,const Thyra::VectorBase<value_type>                            *np_xL       = NULL
-		,const Thyra::VectorBase<value_type>                            *np_xU       = NULL
-		,const Thyra::VectorBase<value_type>                            *np_x0       = NULL
-		,const Thyra::VectorBase<value_type>*                           np_pL[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           np_pU[]      = NULL
-		,const Thyra::VectorBase<value_type>*                           np_p0[]      = NULL
+    ,const int                                                      p_idx
+    ,const int                                                      g_idx
+		,const Thyra::VectorBase<value_type>                            *np_xL      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_xU      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_x0      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_pL      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_pU      = NULL
+		,const Thyra::VectorBase<value_type>                            *np_p0      = NULL
 		);
 
 	/** @name Overridden public members from NLP */
@@ -295,14 +238,8 @@ private:
 	index_type                          num_bounded_x_;
 	Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
 	                                    np_;
-	int                                 num_p_indep_sets_;
-	std::vector<int>                    p_indep_ind_;
-	int                                 num_obj_;
-	std::vector<int>                    obj_ind_;
-	std::vector<value_type>             obj_wgt_;
-	std::vector<EObjPow>                obj_pow_;
-	std::vector<Range1D>                var_indep_u_;
-	bool                                f_has_sqr_term_;
+  int                                 p_idx_;
+  int                                 g_idx_;
 	VectorSpace::space_ptr_t            space_x_;      // Space for the variables
 	VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
 	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
@@ -312,10 +249,6 @@ private:
 	VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
 	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     np_g_;
-	Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >                np_DgDx_;
-	std::vector<Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> > >  np_DgDp_;
-
-  mutable Thyra::ModelEvaluatorBase::OutArgs<double>                       np_outArgs_;
 
   mutable bool np_g_updated_;
   mutable bool np_Dg_updated_;
@@ -331,9 +264,9 @@ private:
 	///
 	void assert_is_initialized() const;
 	///
-	void copy_from_y( const Thyra::VectorBase<value_type>* y, VectorMutable* x_D ) const;
+	void copy_from_np_x( const Thyra::VectorBase<value_type>* np_x, VectorMutable* x_D ) const;
 	///
-	void copy_from_u( const Thyra::VectorBase<value_type> *u, const Range1D& var_indep_u, VectorMutable* x_I ) const;
+	void copy_from_np_p( const Thyra::VectorBase<value_type> *np_p, VectorMutable* x_I ) const;
   ///
   void evalModel( 
 		const Vector            &x

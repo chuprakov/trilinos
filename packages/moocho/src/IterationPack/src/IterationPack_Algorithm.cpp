@@ -462,7 +462,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		if(keep_on) {
 			// All the step objects returned true so increment the step and loop around
 
-			if( curr_step_poss_ == num_steps() ) {
+			if( curr_step_poss_ == static_cast<poss_type>(num_steps()) ) {
 				//
 				// This is the last step in the algorithm
 				//
@@ -691,7 +691,7 @@ void Algorithm::get_step_times_k( int offset, double step_times[] ) const
 	  );
 
 	const int n = num_steps();					// Total steps
-	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	//const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
 	const int mm = max_iter()+1;				// Total number of possible iterations
 	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
 	
@@ -708,8 +708,8 @@ void Algorithm::get_final_step_stats( size_t step, double* total, double* averag
 	// per iteration for each step and the (5) precentages for each step.
 	compute_final_time_stats();
 
-	const int n = num_steps();					// Total steps
-	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	//const int n = num_steps();					// Total steps
+	//const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
 	const int mm = max_iter()+1;				// Total number of possible iterations
 	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
 
@@ -906,7 +906,7 @@ void Algorithm::imp_inform_steps(inform_func_ptr_t inform_func_ptr)
 	steps_t::const_iterator         s_itr = steps_.begin();
 	assoc_steps_t::const_iterator   a_itr = assoc_steps_.begin();
 	poss_type step_i = 1;
-	for(; step_i <= num_steps(); ++step_i, ++s_itr, ++a_itr) {
+	for(; step_i <= static_cast<poss_type>(num_steps()); ++step_i, ++s_itr, ++a_itr) {
 		// pre_steps (e.q. 2.-3, 2.-2, 2.-1)
 		const assoc_steps_ele_list_t &pre_steps = (*a_itr)[PRE_STEP];
 		assoc_steps_ele_list_t::const_iterator pre_step_itr = pre_steps.begin();
@@ -920,7 +920,7 @@ void Algorithm::imp_inform_steps(inform_func_ptr_t inform_func_ptr)
 		// post_steps (e.q. 2.1, 2.2, 2.3)
 		const assoc_steps_ele_list_t &post_steps = (*a_itr)[POST_STEP];
 		assoc_steps_ele_list_t::const_iterator post_step_itr = post_steps.begin();
-		for(int post_step_i = 1; post_step_i <= post_steps.size(); ++post_step_i, ++post_step_itr) {
+		for(int post_step_i = 1; post_step_i <= static_cast<int>(post_steps.size()); ++post_step_i, ++post_step_itr) {
 			((&*(*post_step_itr).step_ptr)->*inform_func_ptr)(
 				*this, step_i, DO_POST_STEP, post_step_i
 				);
@@ -935,7 +935,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 	steps_t::const_iterator				s_itr = steps_.begin();
 	assoc_steps_t::const_iterator		a_itr = assoc_steps_.begin();
 	poss_type step_i = 1;
-	for(; step_i <= num_steps(); ++step_i, ++s_itr, ++a_itr) {
+	for(; step_i <= static_cast<poss_type>(num_steps()); ++step_i, ++s_itr, ++a_itr) {
 		// list pre_steps (e.q. 2.-3, 2.-2, 2.-1)
 		const assoc_steps_ele_list_t &pre_steps = (*a_itr)[PRE_STEP];
 		assoc_steps_ele_list_t::const_iterator pre_step_itr = pre_steps.begin();
@@ -960,7 +960,7 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		// list post_steps (e.q. 2.1, 2.2, 2.3)
 		const assoc_steps_ele_list_t &post_steps = (*a_itr)[POST_STEP];
 		assoc_steps_ele_list_t::const_iterator post_step_itr = post_steps.begin();
-		for(int post_step_i = 1; post_step_i <= post_steps.size(); ++post_step_i, ++post_step_itr) {
+		for(int post_step_i = 1; post_step_i <= static_cast<poss_type>(post_steps.size()); ++post_step_i, ++post_step_itr) {
 			out		<< step_i << "." << post_step_i << ". \""
 					<< (*post_step_itr).name << "\"\n"
 					<< leading_str << "(" << typeid(*(*post_step_itr).step_ptr).name() << ")\n";

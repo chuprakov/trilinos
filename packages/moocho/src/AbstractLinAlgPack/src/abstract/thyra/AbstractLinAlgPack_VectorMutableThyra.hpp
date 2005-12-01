@@ -121,7 +121,7 @@ private:
 #else
 	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >   thyra_vec_;
 #endif
-	VectorSpaceThyra                                   space_;
+	VectorSpaceThyra                                       space_;
 
 	// Not defined and not to be called!
 	VectorMutableThyra(const VectorMutableThyra&);

@@ -180,7 +180,7 @@ public:
 	 * The default is <tt>interrupt_file_name()==""</tt> which means
 	 * that this file will not be looked for.
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, interrupt_file_name );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, interrupt_file_name )
 
 	/** @name «std comp» members for state */
 	//@{

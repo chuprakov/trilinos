@@ -71,7 +71,7 @@ bool NLPFirstDerivTester::finite_diff_check(
 	using AbstractLinAlgPack::assert_print_nan_inf;
 
 	const size_type
-		n  = nlp->n(),
+		//n  = nlp->n(),
 		m  = nlp->m();
 
 	// ///////////////////////////////////
@@ -141,8 +141,8 @@ bool NLPFirstDerivTester::fd_check_all(
 	bool success = true;
 
 	const size_type
-		n  = nlp->n(),
-		m  = nlp->m();
+		n  = nlp->n();
+  //m  = nlp->m();
 
 	// //////////////////////////////////////////////
 	// Validate the input
@@ -155,7 +155,7 @@ bool NLPFirstDerivTester::fd_check_all(
 		&fd_deriv_prod = this->calc_fd_prod();
 
 	const value_type
-		rand_y_l = -1.0, rand_y_u = 1.0,
+		//rand_y_l = -1.0, rand_y_u = 1.0,
 		small_num = ::pow(std::numeric_limits<value_type>::epsilon(),0.25);
 
 	if(out)
@@ -223,7 +223,13 @@ bool NLPFirstDerivTester::fd_check_all(
 				*out
 					<< "\nError, exceeded Gf_error_tol = " << error_tol() << endl
 					<< "Stoping the tests!\n";
-			return false;
+      if(print_all_warnings)
+        *out
+          << "\ne_i =\n"     << *e_i
+          << "\nGf_i =\n"    << Gf_i << std::endl
+          << "\nFDGf_i =\n"  << FDGf_i << std::endl;
+      update_success( false, &success );
+      return false;
 		}
 		// Gc
 		if(Gc) {
@@ -319,9 +325,9 @@ bool NLPFirstDerivTester::fd_directional_check(
 
 	bool success = true;
 
-	const size_type
-		n  = nlp->n(),
-		m  = nlp->m();
+	//const size_type
+  //n  = nlp->n(),
+  //m  = nlp->m();
 
 	// //////////////////////////////////////////////
 	// Validate the input
