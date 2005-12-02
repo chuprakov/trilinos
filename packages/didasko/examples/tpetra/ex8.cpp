@@ -73,7 +73,7 @@ const int ElementInfoPackSize = ElementInfoSize * sizeof(int) / sizeof(char);
 class ElementInfo
 {
 public:
-  inline ElementInfo(const int value = 0.0)
+  inline ElementInfo(const int value = 0)
   {
     for (int i = 0 ; i < ElementInfoSize ; ++i)
       data[i] = value;
