@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////
-// profile_hack.hpp
+// ProfileHackPack_profile_hack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "stpwatch.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 
 namespace ProfileHackPack {
 

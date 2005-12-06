@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// SetOptionsFromStreamNode.hpp
+// OptionsFromStreamPack_SetOptionsFromStreamNode.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SET_OPTIONS_FROM_STREAM_NODE_H
 #define SET_OPTIONS_FROM_STREAM_NODE_H
 
-#include "SetOptionsFromStream.hpp"
-#include "StringToIntMap.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStream.hpp"
+#include "OptionsFromStreamPack_StringToIntMap.hpp"
 
 namespace OptionsFromStreamPack {
 

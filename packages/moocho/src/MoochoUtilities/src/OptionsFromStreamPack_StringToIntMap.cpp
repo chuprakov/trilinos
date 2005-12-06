@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// StringToIntMap.cpp
+// OptionsFromStreamPack_StringToIntMap.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "StringToIntMap.hpp"
+#include "OptionsFromStreamPack_StringToIntMap.hpp"
 
 namespace OptionsFromStreamPack {
 

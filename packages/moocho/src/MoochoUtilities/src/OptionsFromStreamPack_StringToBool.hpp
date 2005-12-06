@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// StringToBool.hpp
+// OptionsFromStreamPack_StringToBool.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

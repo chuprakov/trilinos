@@ -17,7 +17,7 @@
 // on each target platform.  For example, UNIX does not use
 // all 8 bits for characters.
 
-#include "CppFortranStrings.hpp"
+#include "FortranTypes_CppFortranStrings.hpp"
 
 int FortranTypes::convert_to_f_int_string( const char string[], f_int i_string[]
 	, f_int* string_len )

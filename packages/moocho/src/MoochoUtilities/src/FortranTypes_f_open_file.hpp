@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////
-// f_open_file.hpp
+// FortranTypes_f_open_file.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "fortran_types.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 namespace FortranTypes {
 

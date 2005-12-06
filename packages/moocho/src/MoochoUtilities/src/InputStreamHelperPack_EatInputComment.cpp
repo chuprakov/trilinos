@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// EatInputComment.cpp
+// InputStreamHelperPack_EatInputComment.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #include <istream>
 #include <iomanip>
 
-#include "EatInputComment.hpp"
+#include "InputStreamHelperPack_EatInputComment.hpp"
 
 std::istream& InputStreamHelperPack::eat_comment_lines(std::istream& is
 	, char comment_identifier)

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// update_success.cpp
+// TestingHelperPack_update_success.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "update_success.hpp"
+#include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
 bool TestingHelperPack::update_success(bool result_check, bool* success) {

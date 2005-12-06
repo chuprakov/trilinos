@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// CppFortranStrings.hpp
+// FortranTypes_CppFortranStrings.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef CPP_FORTRAN_STRINGS_H
 #define CPP_FORTRAN_STRINGS_H
 
-#include "fortran_types.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 namespace FortranTypes {
 

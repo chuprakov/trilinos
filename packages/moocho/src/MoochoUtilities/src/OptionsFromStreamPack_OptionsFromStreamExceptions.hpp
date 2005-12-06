@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// OptionsFromStreamExceptions.hpp
+// OptionsFromStreamPack_OptionsFromStreamExceptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

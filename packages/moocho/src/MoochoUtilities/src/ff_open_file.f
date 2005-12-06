@@ -13,7 +13,7 @@
 *** integer array.
 ***
 *** This interface is closly tied with the C++ function
-*** in f_open_file.cpp.
+*** in FortranTypes_f_open_file.cpp.
 ***
 *** Arguments:
 ***	IUNIT		[I] The unit number to give the opened file

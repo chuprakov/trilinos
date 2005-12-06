@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// SetOptionsFromStream.hpp
+// OptionsFromStreamPack_SetOptionsFromStream.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

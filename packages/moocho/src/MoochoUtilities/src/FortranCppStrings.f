@@ -1,6 +1,6 @@
 *** Utility functions for passing strings between C++ and Fortran.
 ***
-*** See CppFortranStrings.hpp for documentation
+*** See FortranTypes_CppFortranStrings.hpp for documentation
 ***
 
 *** ToDo: 8/9/99: Make sure that the ASCII conversions ar legal

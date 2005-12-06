@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// stpwatch.cpp
+// StopWatchPack_stopwatch.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 //#include <iostream>
 //#include <iosfwd>
 
-#include "stpwatch.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 
 #ifndef _INTEL_CXX
 

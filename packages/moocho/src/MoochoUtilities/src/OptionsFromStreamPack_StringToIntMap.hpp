@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////
-// StringToIntMap.hpp
+// OptionsFromStreamPack_StringToIntMap.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <sstream>
 
-#include "OptionsFromStreamExceptions.hpp"
+#include "OptionsFromStreamPack_OptionsFromStreamExceptions.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace OptionsFromStreamPack {

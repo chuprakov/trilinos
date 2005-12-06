@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// Serializable.hpp
+// SerializationPack_Serializable.hpp
 
 #ifndef SERIALIZATIONPACK_SERIALIZABLE_HPP
 #define SERIALIZATIONPACK_SERIALIZABLE_HPP

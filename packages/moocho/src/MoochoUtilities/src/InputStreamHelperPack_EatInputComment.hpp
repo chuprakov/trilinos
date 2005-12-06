@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// EatInputComment.hpp
+// InputStreamHelperPack_EatInputComment.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

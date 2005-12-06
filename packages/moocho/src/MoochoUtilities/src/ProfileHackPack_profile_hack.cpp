@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////
-// profile_hack.cpp
+// ProfileHackPack_profile_hack.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <iomanip>
 
-#include "profile_hack.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 
 namespace {
 

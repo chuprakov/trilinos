@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// stpwatch.hpp
+// StopWatchPack_stopwatch.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

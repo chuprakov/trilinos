@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////
-// f_open_file.cpp
+// FortranTypes_f_open_file.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "f_open_file.hpp"
-#include "CppFortranStrings.hpp"
+#include "FortranTypes_f_open_file.hpp"
+#include "FortranTypes_CppFortranStrings.hpp"
 #include "Teuchos_TestForException.hpp"
 
 typedef FortranTypes::f_int	f_int;

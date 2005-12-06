@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// SetOptionsFromStreamNode.cpp
+// OptionsFromStreamPack_SetOptionsFromStreamNode.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,8 +15,8 @@
 
 #include <sstream>
 
-#include "SetOptionsFromStreamNode.hpp"
-#include "OptionsFromStream.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace OptionsFromStreamPack {

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// StringToBool.cpp
+// OptionsFromStreamPack_StringToBool.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #include <string.h>
 #include <sstream>
 
-#include "StringToBool.hpp"
-#include "OptionsFromStreamExceptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
+#include "OptionsFromStreamPack_OptionsFromStreamExceptions.hpp"
 
 bool OptionsFromStreamPack ::StringToBool( const char* opt_name, const char* str ) {
 

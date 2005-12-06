@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// OptionsFromStream.cpp
+// OptionsFromStreamPack_OptionsFromStream.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,8 @@
 #include <ostream>
 #include <istream>
 
-#include "OptionsFromStream.hpp"
-#include "EatInputComment.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
+#include "InputStreamHelperPack_EatInputComment.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
