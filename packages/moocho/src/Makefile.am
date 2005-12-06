@@ -44,40 +44,40 @@
 #
 
 MOOCHO_UTILITIES_HPP = \
-  BLAS_Cpp_Types.hpp\
-  FortranTypes_CppFortranStrings.hpp\
-  FortranTypes_f_open_file.hpp\
-  InputStreamHelperPack_EatInputComment.hpp\
-  OptionsFromStreamPack_OptionsFromStreamExceptions.hpp\
-  OptionsFromStreamPack_OptionsFromStream.hpp\
-  OptionsFromStreamPack_SetOptionsFromStream.hpp\
-  OptionsFromStreamPack_SetOptionsFromStreamNode.hpp\
-  OptionsFromStreamPack_SetOptionsToTargetBase.hpp\
-  OptionsFromStreamPack_StringToBool.hpp\
-  OptionsFromStreamPack_StringToIntMap.hpp\
-  ProfileHackPack_profile_hack.hpp\
-  SerializationPack_Serializable.hpp\
-  SpecialASCII.hpp\
-  StopWatchPack_stopwatch.hpp\
-  StrideIterPack_StrideIter.hpp\
-  TestingHelperPack_update_success.hpp
+  $(srcdir)/MoochoUtilities/src/BLAS_Cpp_Types.hpp\
+  $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.hpp\
+  $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.hpp\
+  $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStreamExceptions.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStream.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsToTargetBase.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
+  $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
+  $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
+  $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
+  $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
+  $(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp\
+  $(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.hpp
 
 MOOCHO_UTILITIES_CPP = \
-  FortranTypes_CppFortranStrings.cpp\
-  FortranTypes_f_open_file.cpp\
-  InputStreamHelperPack_EatInputComment.cpp\
-  OptionsFromStreamPack_OptionsFromStream.cpp\
-  OptionsFromStreamPack_SetOptionsFromStreamNode.cpp\
-  OptionsFromStreamPack_StringToBool.cpp\
-  OptionsFromStreamPack_StringToIntMap.cpp\
-  ProfileHackPack_profile_hack.cpp\
-  StopWatchPack_stopwatch.cpp\
-  TestingHelperPack_update_success.cpp
+  $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.cpp\
+  $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.cpp\
+  $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.cpp\
+  $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp\
+  $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp\
+  $(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp
 
 MOOCHO_UTILITIES_F = \
-  ff_open_file.f\
-  FortranCppStrings.f\
-  FSeconds.f
+  $(srcdir)/MoochoUtilities/src/ff_open_file.f\
+  $(srcdir)/MoochoUtilities/src/FortranCppStrings.f\
+  $(srcdir)/MoochoUtilities/src/FSeconds.f
 
 #
 # Specify locations of include files within Trilinos

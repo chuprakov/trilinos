@@ -9,17 +9,17 @@
 /* Define if you are using gnumake - this will shorten your link lines. */
 #undef HAVE_GNUMAKE
 
-/* define if we want to use MPI */
-#undef HAVE_MPI
-
-/* Define if want to build tests */
-#undef HAVE_TESTS
-
 /* Define if want to build moocho-examples */
 #undef HAVE_MOOCHO_EXAMPLES
 
 /* Define if want to build moocho-tests */
 #undef HAVE_MOOCHO_TESTS
+
+/* define if we want to use MPI */
+#undef HAVE_MPI
+
+/* Define if want to build tests */
+#undef HAVE_TESTS
 
 /* Name of package */
 #undef PACKAGE
