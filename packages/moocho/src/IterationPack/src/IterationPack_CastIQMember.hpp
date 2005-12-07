@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// CastIQMember.hpp
+// IterationPack_CastIQMember.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,8 +20,8 @@
 
 #include <typeinfo>
 
-#include "AlgorithmState.hpp"
-#include "IterQuantityAccess.hpp"
+#include "IterationPack_AlgorithmState.hpp"
+#include "IterationPack_IterQuantityAccess.hpp"
 
 namespace IterationPack {
 
@@ -73,7 +73,7 @@ private:
     // /////////////////////////////////////////////////////////////////
     // x_step_iter_quantity.h
     
-    #include "CastIQMember.hpp"
+    #include "IterationPack_CastIQMember.hpp"
     
     class x_step_iq_member : public CastIQMember<double> {
     public:

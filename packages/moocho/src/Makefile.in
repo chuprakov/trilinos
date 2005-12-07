@@ -121,7 +121,17 @@ am__objects_1 = FortranTypes_CppFortranStrings.$(OBJEXT) \
 	TestingHelperPack_update_success.$(OBJEXT)
 am__objects_2 = ff_open_file.$(OBJEXT) FortranCppStrings.$(OBJEXT) \
 	FSeconds.$(OBJEXT)
-am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2)
+am__objects_3 = IterationPack_Algorithm.$(OBJEXT) \
+	IterationPack_AlgorithmSetOptions.$(OBJEXT) \
+	IterationPack_AlgorithmState.$(OBJEXT) \
+	IterationPack_AlgorithmTracker.$(OBJEXT) \
+	IterationPack_AlgorithmTrackerComposite.$(OBJEXT) \
+	IterationPack_CastIQMember.$(OBJEXT) \
+	IterationPack_IterQuantity.$(OBJEXT) \
+	IterationPack_cast_iq.$(OBJEXT) \
+	IterationPack_print_algorithm_step.$(OBJEXT)
+am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -129,6 +139,15 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/FortranTypes_CppFortranStrings.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FortranTypes_f_open_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/InputStreamHelperPack_EatInputComment.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_Algorithm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_AlgorithmState.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_AlgorithmTracker.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_CastIQMember.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_IterQuantity.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_cast_iq.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IterationPack_print_algorithm_step.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_OptionsFromStream.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_SetOptionsFromStreamNode.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po \
@@ -308,6 +327,34 @@ MOOCHO_UTILITIES_F = \
   $(srcdir)/MoochoUtilities/src/FortranCppStrings.f\
   $(srcdir)/MoochoUtilities/src/FSeconds.f
 
+ITERATION_PACK_HPP = \
+  $(srcdir)/IterationPack/src/IterationPack_Algorithm.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmStep.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_CastIQMember.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantity.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccess.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguous.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDecl.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDef.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_Types.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_cast_iq.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.hpp
+
+ITERATION_PACK_CPP = \
+  $(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
+
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
@@ -318,11 +365,13 @@ AM_CPPFLAGS = $(EXPORT_INCLUDES)
 MOOCHO_LIB = libmoocho.a
 MOOCHO_H = \
   $(srcdir)/Moocho_ConfigDefs.hpp \
-	$(MOOCHO_UTILITIES_HPP)
+	$(MOOCHO_UTILITIES_HPP) \
+  $(ITERATION_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
-  $(MOOCHO_UTILITIES_F)
+  $(MOOCHO_UTILITIES_F) \
+  $(ITERATION_PACK_CPP)
 
 @USE_ALTERNATE_AR_FALSE@libmoocho_a_AR = $(AR) cru
 
@@ -463,6 +512,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FortranTypes_CppFortranStrings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FortranTypes_f_open_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InputStreamHelperPack_EatInputComment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_Algorithm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_AlgorithmState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_AlgorithmTracker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_CastIQMember.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_IterQuantity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_cast_iq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IterationPack_print_algorithm_step.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_OptionsFromStream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_SetOptionsFromStreamNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po@am__quote@
@@ -647,6 +705,150 @@ TestingHelperPack_update_success.obj: $(srcdir)/MoochoUtilities/src/TestingHelpe
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestingHelperPack_update_success.obj `if test -f '$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp'; fi`
 
+IterationPack_Algorithm.o: $(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_Algorithm.o -MD -MP -MF "$(DEPDIR)/IterationPack_Algorithm.Tpo" -c -o IterationPack_Algorithm.o `test -f '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_Algorithm.Tpo" "$(DEPDIR)/IterationPack_Algorithm.Po"; else rm -f "$(DEPDIR)/IterationPack_Algorithm.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp' object='IterationPack_Algorithm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_Algorithm.Po' tmpdepfile='$(DEPDIR)/IterationPack_Algorithm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_Algorithm.o `test -f '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp
+
+IterationPack_Algorithm.obj: $(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_Algorithm.obj -MD -MP -MF "$(DEPDIR)/IterationPack_Algorithm.Tpo" -c -o IterationPack_Algorithm.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_Algorithm.Tpo" "$(DEPDIR)/IterationPack_Algorithm.Po"; else rm -f "$(DEPDIR)/IterationPack_Algorithm.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp' object='IterationPack_Algorithm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_Algorithm.Po' tmpdepfile='$(DEPDIR)/IterationPack_Algorithm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_Algorithm.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp'; fi`
+
+IterationPack_AlgorithmSetOptions.o: $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmSetOptions.o -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo" -c -o IterationPack_AlgorithmSetOptions.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo" "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp' object='IterationPack_AlgorithmSetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmSetOptions.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp
+
+IterationPack_AlgorithmSetOptions.obj: $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmSetOptions.obj -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo" -c -o IterationPack_AlgorithmSetOptions.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo" "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp' object='IterationPack_AlgorithmSetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmSetOptions.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmSetOptions.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp'; fi`
+
+IterationPack_AlgorithmState.o: $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmState.o -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmState.Tpo" -c -o IterationPack_AlgorithmState.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmState.Tpo" "$(DEPDIR)/IterationPack_AlgorithmState.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmState.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp' object='IterationPack_AlgorithmState.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmState.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmState.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmState.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp
+
+IterationPack_AlgorithmState.obj: $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmState.obj -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmState.Tpo" -c -o IterationPack_AlgorithmState.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmState.Tpo" "$(DEPDIR)/IterationPack_AlgorithmState.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmState.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp' object='IterationPack_AlgorithmState.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmState.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmState.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmState.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp'; fi`
+
+IterationPack_AlgorithmTracker.o: $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmTracker.o -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo" -c -o IterationPack_AlgorithmTracker.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo" "$(DEPDIR)/IterationPack_AlgorithmTracker.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp' object='IterationPack_AlgorithmTracker.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmTracker.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmTracker.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmTracker.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp
+
+IterationPack_AlgorithmTracker.obj: $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmTracker.obj -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo" -c -o IterationPack_AlgorithmTracker.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo" "$(DEPDIR)/IterationPack_AlgorithmTracker.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmTracker.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp' object='IterationPack_AlgorithmTracker.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmTracker.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmTracker.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmTracker.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp'; fi`
+
+IterationPack_AlgorithmTrackerComposite.o: $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmTrackerComposite.o -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo" -c -o IterationPack_AlgorithmTrackerComposite.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo" "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp' object='IterationPack_AlgorithmTrackerComposite.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmTrackerComposite.o `test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp
+
+IterationPack_AlgorithmTrackerComposite.obj: $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_AlgorithmTrackerComposite.obj -MD -MP -MF "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo" -c -o IterationPack_AlgorithmTrackerComposite.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo" "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po"; else rm -f "$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp' object='IterationPack_AlgorithmTrackerComposite.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.Po' tmpdepfile='$(DEPDIR)/IterationPack_AlgorithmTrackerComposite.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_AlgorithmTrackerComposite.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp'; fi`
+
+IterationPack_CastIQMember.o: $(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_CastIQMember.o -MD -MP -MF "$(DEPDIR)/IterationPack_CastIQMember.Tpo" -c -o IterationPack_CastIQMember.o `test -f '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_CastIQMember.Tpo" "$(DEPDIR)/IterationPack_CastIQMember.Po"; else rm -f "$(DEPDIR)/IterationPack_CastIQMember.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp' object='IterationPack_CastIQMember.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_CastIQMember.Po' tmpdepfile='$(DEPDIR)/IterationPack_CastIQMember.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_CastIQMember.o `test -f '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp
+
+IterationPack_CastIQMember.obj: $(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_CastIQMember.obj -MD -MP -MF "$(DEPDIR)/IterationPack_CastIQMember.Tpo" -c -o IterationPack_CastIQMember.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_CastIQMember.Tpo" "$(DEPDIR)/IterationPack_CastIQMember.Po"; else rm -f "$(DEPDIR)/IterationPack_CastIQMember.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp' object='IterationPack_CastIQMember.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_CastIQMember.Po' tmpdepfile='$(DEPDIR)/IterationPack_CastIQMember.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_CastIQMember.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp'; fi`
+
+IterationPack_IterQuantity.o: $(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_IterQuantity.o -MD -MP -MF "$(DEPDIR)/IterationPack_IterQuantity.Tpo" -c -o IterationPack_IterQuantity.o `test -f '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_IterQuantity.Tpo" "$(DEPDIR)/IterationPack_IterQuantity.Po"; else rm -f "$(DEPDIR)/IterationPack_IterQuantity.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp' object='IterationPack_IterQuantity.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_IterQuantity.Po' tmpdepfile='$(DEPDIR)/IterationPack_IterQuantity.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_IterQuantity.o `test -f '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp
+
+IterationPack_IterQuantity.obj: $(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_IterQuantity.obj -MD -MP -MF "$(DEPDIR)/IterationPack_IterQuantity.Tpo" -c -o IterationPack_IterQuantity.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_IterQuantity.Tpo" "$(DEPDIR)/IterationPack_IterQuantity.Po"; else rm -f "$(DEPDIR)/IterationPack_IterQuantity.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp' object='IterationPack_IterQuantity.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_IterQuantity.Po' tmpdepfile='$(DEPDIR)/IterationPack_IterQuantity.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_IterQuantity.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp'; fi`
+
+IterationPack_cast_iq.o: $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_cast_iq.o -MD -MP -MF "$(DEPDIR)/IterationPack_cast_iq.Tpo" -c -o IterationPack_cast_iq.o `test -f '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_cast_iq.Tpo" "$(DEPDIR)/IterationPack_cast_iq.Po"; else rm -f "$(DEPDIR)/IterationPack_cast_iq.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp' object='IterationPack_cast_iq.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_cast_iq.Po' tmpdepfile='$(DEPDIR)/IterationPack_cast_iq.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_cast_iq.o `test -f '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp
+
+IterationPack_cast_iq.obj: $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_cast_iq.obj -MD -MP -MF "$(DEPDIR)/IterationPack_cast_iq.Tpo" -c -o IterationPack_cast_iq.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_cast_iq.Tpo" "$(DEPDIR)/IterationPack_cast_iq.Po"; else rm -f "$(DEPDIR)/IterationPack_cast_iq.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp' object='IterationPack_cast_iq.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_cast_iq.Po' tmpdepfile='$(DEPDIR)/IterationPack_cast_iq.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_cast_iq.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp'; fi`
+
+IterationPack_print_algorithm_step.o: $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_print_algorithm_step.o -MD -MP -MF "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo" -c -o IterationPack_print_algorithm_step.o `test -f '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo" "$(DEPDIR)/IterationPack_print_algorithm_step.Po"; else rm -f "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp' object='IterationPack_print_algorithm_step.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_print_algorithm_step.Po' tmpdepfile='$(DEPDIR)/IterationPack_print_algorithm_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_print_algorithm_step.o `test -f '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp' || echo '$(srcdir)/'`$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
+
+IterationPack_print_algorithm_step.obj: $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IterationPack_print_algorithm_step.obj -MD -MP -MF "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo" -c -o IterationPack_print_algorithm_step.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo" "$(DEPDIR)/IterationPack_print_algorithm_step.Po"; else rm -f "$(DEPDIR)/IterationPack_print_algorithm_step.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp' object='IterationPack_print_algorithm_step.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/IterationPack_print_algorithm_step.Po' tmpdepfile='$(DEPDIR)/IterationPack_print_algorithm_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_print_algorithm_step.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; fi`
+
 .f.o:
 	$(F77COMPILE) -c -o $@ $<
 
@@ -753,7 +955,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/MoochoUtilities/src
+	$(mkdir_p) $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

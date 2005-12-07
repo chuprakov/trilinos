@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// cast_iq.hpp
+// IterationPack_cast_iq.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <typeinfo>
 
-#include "AlgorithmState.hpp"
-#include "IterQuantityAccess.hpp"
+#include "IterationPack_AlgorithmState.hpp"
+#include "IterationPack_IterQuantityAccess.hpp"
 
 namespace IterationPack {
 

@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "AlgorithmSetOptions.hpp"
+#include "IterationPack_AlgorithmSetOptions.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

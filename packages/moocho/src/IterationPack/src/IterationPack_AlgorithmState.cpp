@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "IterationPack/src/AlgorithmState.hpp"
+#include "IterationPack_AlgorithmState.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

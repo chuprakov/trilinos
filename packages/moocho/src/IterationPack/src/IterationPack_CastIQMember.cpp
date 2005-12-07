@@ -16,7 +16,7 @@
 #include <string>
 #include <sstream>
  
-#include "IterationPack/src/CastIQMember.hpp"
+#include "IterationPack_CastIQMember.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace IterationPack {

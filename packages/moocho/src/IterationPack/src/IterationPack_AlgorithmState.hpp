@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// AlgorithmState.hpp
+// IterationPack_AlgorithmState.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,7 +23,7 @@
 #include <sstream>
 #include <iosfwd>
 
-#include "IterQuantity.hpp"
+#include "IterationPack_IterQuantity.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {

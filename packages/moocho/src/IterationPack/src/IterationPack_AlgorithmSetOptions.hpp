@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// AlgorithmSetOptions.hpp
+// IterationPack_AlgorithmSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ITERATION_PACK_ALGORITHM_SET_OPTIONS_H
 #define ITERATION_PACK_ALGORITHM_SET_OPTIONS_H
 
-#include "Algorithm.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "IterationPack_Algorithm.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace IterationPack {
 

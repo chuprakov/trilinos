@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// print_algorithm_step.hpp
+// IterationPack_print_algorithm_step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "Algorithm.hpp"
+#include "IterationPack_Algorithm.hpp"
 
 namespace IterationPack {
 

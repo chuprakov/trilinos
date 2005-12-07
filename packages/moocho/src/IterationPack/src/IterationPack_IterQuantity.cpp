@@ -1,7 +1,7 @@
 // /////////////////////////////////////////////////////
 // IterQuantity.cpp
 
-#include "IterationPack/src/IterQuantity.hpp"
+#include "IterationPack_IterQuantity.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace IterationPack {

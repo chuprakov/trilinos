@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTracker.hpp
+// IterationPack_AlgorithmTracker.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "IterationPackTypes.hpp"
+#include "IterationPack_Types.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {

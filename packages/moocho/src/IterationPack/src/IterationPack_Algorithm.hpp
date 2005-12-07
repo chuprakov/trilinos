@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// Algorithm.hpp
+// IterationPack_Algorithm.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -24,9 +24,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "AlgorithmState.hpp"
-#include "AlgorithmTracker.hpp"
-#include "AlgorithmStep.hpp"
+#include "IterationPack_AlgorithmState.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"

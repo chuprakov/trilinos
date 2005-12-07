@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccessContiguousDef.hpp
+// IterationPack_IterQuantityAccessContiguousDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "IterQuantityAccessContiguousDecl.hpp"
+#include "IterationPack_IterQuantityAccessContiguousDecl.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace IterationPack {

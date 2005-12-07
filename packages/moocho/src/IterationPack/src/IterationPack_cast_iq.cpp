@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "IterationPack/src/cast_iq.hpp"
+#include "IterationPack_cast_iq.hpp"
 #include "Teuchos_TestForException.hpp"
 
 void IterationPack::imp_cast_iq_throw_error(

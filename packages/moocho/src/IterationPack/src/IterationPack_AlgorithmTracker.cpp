@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "IterationPack/src/AlgorithmTracker.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 
 namespace IterationPack {
 

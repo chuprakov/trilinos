@@ -15,7 +15,7 @@
 
 #include <algorithm>
 
-#include "IterationPack/src/AlgorithmTrackerComposite.hpp"
+#include "IterationPack_AlgorithmTrackerComposite.hpp"
 
 namespace IterationPack {
 

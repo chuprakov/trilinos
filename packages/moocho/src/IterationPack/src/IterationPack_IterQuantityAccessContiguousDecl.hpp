@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccessContiguousDecl.hpp
+// IterationPack_IterQuantityAccessContiguousDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -28,7 +28,7 @@
 #include <vector>
 #include <limits>
 
-#include "IterQuantityAccess.hpp"
+#include "IterationPack_IterQuantityAccess.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 
 namespace IterationPack {

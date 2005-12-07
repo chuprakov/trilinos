@@ -15,7 +15,7 @@
 
 #include <ostream>
 
-#include "print_algorithm_step.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 
 void IterationPack::print_algorithm_step( const Algorithm& algo
 	, Algorithm::poss_type step_poss, EDoStepType type

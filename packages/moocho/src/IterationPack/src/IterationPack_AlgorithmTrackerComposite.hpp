@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// AlgorithmTrackerComposite.hpp
+// IterationPack_AlgorithmTrackerComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <list>
 
-#include "AlgorithmTracker.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {

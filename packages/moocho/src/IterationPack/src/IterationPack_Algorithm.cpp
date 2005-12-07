@@ -20,8 +20,8 @@
 #include <numeric>
 #include <typeinfo>
 
-#include "IterationPack/src/Algorithm.hpp"
-#include "MoochoMoreUtilities/src/stpwatch.hpp"
+#include "IterationPack_Algorithm.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef HAVE_MPI

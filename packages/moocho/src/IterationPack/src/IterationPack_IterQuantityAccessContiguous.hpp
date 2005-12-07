@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccessContiguous.hpp
+// IterationPack_IterQuantityAccessContiguous.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define ITER_QUANITY_ACCESS_CONTINUOUS_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "IterQuantityAccessContiguousDecl.hpp"
+#include "IterationPack_IterQuantityAccessContiguousDecl.hpp"
 #else
-#include "IterQuantityAccessContiguousDef.hpp"
+#include "IterationPack_IterQuantityAccessContiguousDef.hpp"
 #endif
 
 #endif // ITER_QUANITY_ACCESS_CONTINUOUS_H

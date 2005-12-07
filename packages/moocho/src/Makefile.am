@@ -79,6 +79,34 @@ MOOCHO_UTILITIES_F = \
   $(srcdir)/MoochoUtilities/src/FortranCppStrings.f\
   $(srcdir)/MoochoUtilities/src/FSeconds.f
 
+ITERATION_PACK_HPP = \
+  $(srcdir)/IterationPack/src/IterationPack_Algorithm.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmStep.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_CastIQMember.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantity.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccess.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguous.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDecl.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDef.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_Types.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_cast_iq.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.hpp
+
+ITERATION_PACK_CPP = \
+  $(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp \
+  $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -101,11 +129,13 @@ MOOCHO_LIB = libmoocho.a
 
 MOOCHO_H = \
   $(srcdir)/Moocho_ConfigDefs.hpp \
-	$(MOOCHO_UTILITIES_HPP)
+	$(MOOCHO_UTILITIES_HPP) \
+  $(ITERATION_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
-  $(MOOCHO_UTILITIES_F)
+  $(MOOCHO_UTILITIES_F) \
+  $(ITERATION_PACK_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

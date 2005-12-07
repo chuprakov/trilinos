@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantity.hpp
+// IterationPack_IterQuantity.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -26,7 +26,7 @@
 #include <iomanip>
 #include <limits>
 
-#include "IterationPackTypes.hpp"
+#include "IterationPack_Types.hpp"
 
 namespace IterationPack {
 
