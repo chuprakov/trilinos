@@ -16,8 +16,6 @@
 #ifndef PROFILE_HACK_H
 #define PROFILE_HACK_H
 
-#include <iosfwd>
-
 #include "StopWatchPack_stopwatch.hpp"
 
 namespace ProfileHackPack {

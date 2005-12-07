@@ -16,6 +16,8 @@
 #ifndef SET_OPTIONS_FROM_STREAM_H
 #define SET_OPTIONS_FROM_STREAM_H
 
+#include "Moocho_ConfigDefs.hpp"
+
 namespace OptionsFromStreamPack {
 
 class OptionsFromStream;

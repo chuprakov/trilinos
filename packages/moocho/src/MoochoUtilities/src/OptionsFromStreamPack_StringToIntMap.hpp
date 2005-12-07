@@ -16,11 +16,6 @@
 #ifndef STRING_TO_INT_MAP_H
 #define STRING_TO_INT_MAP_H
 
-#include <map>
-#include <string>
-#include <stdexcept>
-#include <sstream>
-
 #include "OptionsFromStreamPack_OptionsFromStreamExceptions.hpp"
 #include "Teuchos_TestForException.hpp"
 

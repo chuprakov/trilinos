@@ -16,6 +16,8 @@
 #ifndef STPWATCH_H
 #define STPWATCH_H
 
+#include "Moocho_ConfigDefs.hpp"
+
 namespace StopWatchPack {
 
 /** @name namespace StopWatchPack

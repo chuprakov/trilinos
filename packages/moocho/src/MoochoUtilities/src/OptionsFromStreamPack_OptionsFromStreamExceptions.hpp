@@ -16,7 +16,7 @@
 #ifndef OPTIONS_FROM_STREAM_EXCEPTIONS_H
 #define OPTIONS_FROM_STREAM_EXCEPTIONS_H
 
-#include <stdexcept>
+#include "Moocho_ConfigDefs.hpp"
 
 namespace OptionsFromStreamPack {
 

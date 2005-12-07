@@ -1,0 +1,6 @@
+(FRAMEWORK, INSTALL) {
+    TESTS = ./MoochoUtilities/test_stop_watch.exe;
+    ARGS = --verbose;
+    COMM = SERIAL;
+}
+

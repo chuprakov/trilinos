@@ -16,10 +16,7 @@
 #ifndef OPTIONS_FROM_STREAM_H
 #define OPTIONS_FROM_STREAM_H
 
-#include <string>
-#include <map>
-#include <iosfwd>
-#include <stdexcept>
+#include "Moocho_ConfigDefs.hpp"
 
 // /////////////////////////////////////////////////
 // Forward declarations.

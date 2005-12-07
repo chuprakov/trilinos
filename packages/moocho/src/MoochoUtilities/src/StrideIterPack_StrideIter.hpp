@@ -16,7 +16,7 @@
 #ifndef STRIDE_ITER_H
 #define STRIDE_ITER_H
 
-#include <iterator>
+#include "Moocho_ConfigDefs.hpp"
 
 namespace StrideIterPack {
 

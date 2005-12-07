@@ -15,6 +15,8 @@
 #ifndef UPDATE_SUCCESS_H
 #define UPDATE_SUCCESS_H
 
+#include "Moocho_ConfigDefs.hpp"
+
 namespace TestingHelperPack {
 
 /** @name namespace TestingHelperPack

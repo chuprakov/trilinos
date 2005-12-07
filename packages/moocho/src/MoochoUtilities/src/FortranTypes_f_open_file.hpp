@@ -16,8 +16,7 @@
 #ifndef F_OPEN_FILE_H
 #define F_OPEN_FILE_H
 
-#include <stdexcept>
-
+#include "Moocho_ConfigDefs.hpp"
 #include "Teuchos_F77_wrappers.h"
 
 namespace FortranTypes {

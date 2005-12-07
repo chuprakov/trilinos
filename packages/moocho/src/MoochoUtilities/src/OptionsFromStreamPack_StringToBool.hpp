@@ -16,6 +16,8 @@
 #ifndef STRING_TO_BOOL_H
 #define STRING_TO_BOOL_H
 
+#include "Moocho_ConfigDefs.hpp"
+
 namespace OptionsFromStreamPack {
 
 ///

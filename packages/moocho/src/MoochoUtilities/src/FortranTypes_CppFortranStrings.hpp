@@ -16,6 +16,7 @@
 #ifndef CPP_FORTRAN_STRINGS_H
 #define CPP_FORTRAN_STRINGS_H
 
+#include "Moocho_ConfigDefs.hpp"
 #include "Teuchos_F77_wrappers.h"
 
 namespace FortranTypes {

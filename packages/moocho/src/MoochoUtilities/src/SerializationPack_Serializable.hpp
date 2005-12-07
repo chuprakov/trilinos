@@ -4,7 +4,7 @@
 #ifndef SERIALIZATIONPACK_SERIALIZABLE_HPP
 #define SERIALIZATIONPACK_SERIALIZABLE_HPP
 
-#include "Teuchos_ConfigDefs.hpp"
+#include "Moocho_ConfigDefs.hpp"
 
 namespace SerializationPack {
 

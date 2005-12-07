@@ -19,7 +19,7 @@
 #ifndef BLAS_CPP_TYPES_H
 #define BLAS_CPP_TYPES_H
 
-#include <stdlib.h>
+#include "Moocho_ConfigDefs.hpp"
 
 namespace BLAS_Cpp {
 

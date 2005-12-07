@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include "Moocho_ConfigDefs.hpp"
+
 namespace SpecialASCII {
 	const char
 		inf = (char)236;

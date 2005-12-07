@@ -16,7 +16,7 @@
 #ifndef EAT_INPUT_COMMENT_H
 #define EAT_INPUT_COMMENT_H
 
-#include <iosfwd>
+#include "Moocho_ConfigDefs.hpp"
 
 namespace InputStreamHelperPack {
 

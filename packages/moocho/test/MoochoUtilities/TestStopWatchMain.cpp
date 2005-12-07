@@ -13,10 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include <iostream>
-#include <iomanip>
-
-#include "MoochoMoreUtilities/src/stpwatch.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 
 int main() {
 	using std::cout;
