@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmStepTesting.hpp
+// IterationPack_AlgorithmStepTesting.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_STEP_TESTING_H
 #define ALGORITHM_STEP_TESTING_H
 
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace IterationPack {
 

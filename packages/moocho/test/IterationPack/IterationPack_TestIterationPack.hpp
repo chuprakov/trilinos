@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// TestIterationPack.hpp
+// IterationPack_TestIterationPack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

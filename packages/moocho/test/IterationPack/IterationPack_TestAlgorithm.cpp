@@ -16,11 +16,11 @@
 #include <ostream>
 #include <iomanip>
 
-#include "TestIterationPack.hpp"
-#include "AlgorithmStepTesting.hpp"
-#include "AlgorithmTrackTesting.hpp"
-#include "IterationPack/src/Algorithm.hpp"
-#include "IterationPack/src/AlgorithmState.hpp"
+#include "IterationPack_TestIterationPack.hpp"
+#include "IterationPack_AlgorithmStepTesting.hpp"
+#include "IterationPack_AlgorithmTrackTesting.hpp"
+#include "IterationPack_Algorithm.hpp"
+#include "IterationPack_AlgorithmState.hpp"
 
 namespace IterationPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTrackTesting.hpp
+// IterationPack_AlgorithmTrackTesting.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_TRACK_TESTING_H
 #define ALGORITHM_TRACK_TESTING_H
 
-#include "IterationPack/src/AlgorithmTracker.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 
 namespace IterationPack {
 

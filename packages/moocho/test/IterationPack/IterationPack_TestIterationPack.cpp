@@ -15,8 +15,8 @@
 
 #include <ostream>
 
-#include "TestIterationPack.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "IterationPack_TestIterationPack.hpp"
+#include "TestingHelperPack_update_success.hpp"
 
 bool IterationPack::TestingPack::TestIterationPack(std::ostream* out)
 {

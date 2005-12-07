@@ -17,9 +17,9 @@
 #include <iomanip>
 #include <vector>
 
-#include "IterationPack/test/TestIterationPack.hpp"
-#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "IterationPack_TestIterationPack.hpp"
+#include "IterationPack_IterQuantityAccessContiguous.hpp"
+#include "TestingHelperPack_update_success.hpp"
 
 bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
 {

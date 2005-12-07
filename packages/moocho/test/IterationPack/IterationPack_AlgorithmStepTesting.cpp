@@ -15,9 +15,9 @@
 
 #include <iomanip>
 
-#include "AlgorithmStepTesting.hpp"
-#include "IterationPack/src/Algorithm.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack_AlgorithmStepTesting.hpp"
+#include "IterationPack_Algorithm.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 
 namespace {
 char step_type_name[3][15] = { "DO_MAIN_STEP", "DO_PRE_STEP" , "DO_POST_STEP" };

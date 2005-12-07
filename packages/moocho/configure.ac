@@ -276,6 +276,9 @@ AC_CONFIG_FILES([
     Makefile 
     Makefile.export.moocho
     src/Makefile
+    test/Makefile
+    test/MoochoUtilities/Makefile
+    test/IterationPack/Makefile
     ])
 
 AC_OUTPUT()

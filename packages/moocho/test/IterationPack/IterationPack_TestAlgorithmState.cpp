@@ -17,11 +17,11 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "IterationPack/test/TestIterationPack.hpp"
-#include "IterationPack/src/AlgorithmState.hpp"
-#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack_TestIterationPack.hpp"
+#include "IterationPack_AlgorithmState.hpp"
+#include "IterationPack_IterQuantityAccessContiguous.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // explicit instantiation for testing compilation only

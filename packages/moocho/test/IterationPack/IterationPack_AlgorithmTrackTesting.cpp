@@ -15,8 +15,8 @@
 
 #include <iomanip>
 
-#include "../test/AlgorithmTrackTesting.hpp"
-#include "IterationPack/src/Algorithm.hpp"
+#include "IterationPack_AlgorithmTrackTesting.hpp"
+#include "IterationPack_Algorithm.hpp"
 
 namespace IterationPack {
 

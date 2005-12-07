@@ -90,7 +90,7 @@ all-local:
 #  of tests.
 
 if BUILD_TESTS
-#TEST_SUBDIR=test
+TEST_SUBDIR=test
 endif
 
 if BUILD_EXAMPLES 
