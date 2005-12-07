@@ -1,14 +1,16 @@
 
-include @abs_top_builddir@/../teuchos/Makefile.export.teuchos
+include @abs_top_builddir@/../thyra/Makefile.export.thyra
 
 _MOOCHO_INCLUDES = \
-  -I@abs_top_builddir@/src \
-  -I@abs_top_srcdir@/src \
+  -I@abs_top_srcdir@/src/RTOpPack/src/std_ops \
+  -I@abs_top_srcdir@/src/RTOpPack/src/base \
   -I@abs_top_srcdir@/src/MoochoUtilities/src \
   -I@abs_top_srcdir@/src/IterationPack/src \
-  $(TEUCHOS_INCLUDES)
+  -I@abs_top_srcdir@/src \
+  -I@abs_top_builddir@/src \
+  $(THYRA_INCLUDES)
 
-_MOOCHO_LIBS = @LDFLAGS@ -L@abs_top_builddir@/src -lmoocho $(TEUCHOS_LIBS) @LIBS@ @FLIBS@ 
+_MOOCHO_LIBS = @LDFLAGS@ -L@abs_top_builddir@/src -lmoocho $(THYRA_LIBS) @LIBS@ @FLIBS@ 
 
 @USING_GNUMAKE_TRUE@MOOCHO_INCLUDES  = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(_MOOCHO_INCLUDES))
 @USING_GNUMAKE_TRUE@MOOCHO_LIBS      = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_libs.pl $(_MOOCHO_LIBS))

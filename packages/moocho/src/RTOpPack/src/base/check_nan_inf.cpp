@@ -1,9 +1,6 @@
 // @HEADER
 // ***********************************************************************
 // 
-//      TSFCoreUtils: Trilinos Solver Framework Utilities Package 
-//                 Copyright (2004) Sandia Corporation
-// 
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
 // 
@@ -26,7 +23,7 @@
 // ***********************************************************************
 // @HEADER
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
+#include "Moocho_ConfigDefs.hpp"
 #include "check_nan_inf.h"
 
 // Computed values to compare to

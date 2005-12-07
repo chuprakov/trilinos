@@ -7,11 +7,10 @@
 # To run this script, you must have the variable $MOOCHO_BASE_DIR set
 # to the base MOOCHO directory so that
 #
-#    $MOOCHO_BASE_DIR/moocho/refactoring
+#    $MOOCHO_BASE_DIR/moocho/src/RTOpPack/refactoring
 #
 # is where this file is.  Trilinos/commonTools/refactoring must also
 # be added to your path.
 #
 
-$MOOCHO_BASE_DIR/moocho/src/MoochoUtilities/refactoring/from-old-to-trilinos.20051206.sh
-$MOOCHO_BASE_DIR/moocho/src/IterationPack/refactoring/from-old-to-trilinos.20051207.sh
+token-replace-list-r $MOOCHO_BASE_DIR/moocho/src/IterationPack/refactoring/new-header-includes.20051207.txt

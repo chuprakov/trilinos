@@ -130,8 +130,20 @@ am__objects_3 = IterationPack_Algorithm.$(OBJEXT) \
 	IterationPack_IterQuantity.$(OBJEXT) \
 	IterationPack_cast_iq.$(OBJEXT) \
 	IterationPack_print_algorithm_step.$(OBJEXT)
+am__objects_4 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
+	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
+	RTOp_apply_op_serial.$(OBJEXT) RTOp_obj_free_free.$(OBJEXT) \
+	RTOp_obj_index_vtbl.$(OBJEXT) RTOp_obj_null_vtbl.$(OBJEXT) \
+	RTOp_obj_value_index_vtbl.$(OBJEXT) \
+	RTOp_obj_value_value_vtbl.$(OBJEXT) \
+	RTOp_obj_value_vtbl.$(OBJEXT) RTOp_obj_values_vtbl.$(OBJEXT) \
+	RTOp_reduct_max_value.$(OBJEXT) \
+	RTOp_reduct_min_value.$(OBJEXT) \
+	RTOp_reduct_sum_value.$(OBJEXT) \
+	RTOp_reduct_sum_values.$(OBJEXT)
+am__objects_5 = RTOpPack_RTOpC.$(OBJEXT) check_nan_inf.$(OBJEXT)
 am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -153,8 +165,29 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_StringToIntMap.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ProfileHackPack_profile_hack.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp.Po ./$(DEPDIR)/RTOpPack_RTOpC.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOpToMPI.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_SparseSubVector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_apply_op_mpi.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_apply_op_serial.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_free_free.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_index_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_null_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_value_index_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_value_value_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_value_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_obj_values_vtbl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_max_value.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_min_value.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_value.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_values.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StopWatchPack_stopwatch.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TestingHelperPack_update_success.Po
+@AMDEP_TRUE@	./$(DEPDIR)/TestingHelperPack_update_success.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -355,6 +388,138 @@ ITERATION_PACK_CPP = \
   $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp \
   $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
 
+RTOP_PACK_BASE_H = \
+  $(srcdir)/RTOpPack/src/base/RTOp.h\
+  $(srcdir)/RTOpPack/src/base/RTOpToMPI.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.h\
+  $(srcdir)/RTOpPack/src/base/check_nan_inf.h
+
+RTOP_PACK_BASE_C = \
+  $(srcdir)/RTOpPack/src/base/RTOp.c\
+  $(srcdir)/RTOpPack/src/base/RTOpToMPI.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
+
+RTOP_PACK_BASE_HPP = \
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.hpp\
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpCPostMod.hpp\
+  $(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp
+
+RTOP_PACK_BASE_CPP = \
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp\
+  $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+
+RTOp_PACK_STD_OPS_H = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.h
+
+RTOp_PACK_STD_OPS_C = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.c
+
+RTOp_PACK_STD_OPS_HPP = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.hpp
+
+RTOp_PACK_STD_OPS_CPP = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
+
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
@@ -366,12 +531,20 @@ MOOCHO_LIB = libmoocho.a
 MOOCHO_H = \
   $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(MOOCHO_UTILITIES_HPP) \
-  $(ITERATION_PACK_HPP)
+  $(ITERATION_PACK_HPP) \
+  $(RTOP_PACK_BASE_H) \
+  $(RTOP_PACK_BASE_HPP) \
+  $(RTOP_PACK_STD_OPS_H) \
+  $(RTOP_PACK_STD_OPS_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
   $(MOOCHO_UTILITIES_F) \
-  $(ITERATION_PACK_CPP)
+  $(ITERATION_PACK_CPP) \
+  $(RTOP_PACK_BASE_C) \
+  $(RTOP_PACK_BASE_CPP) \
+  $(RTOP_PACK_STD_OPS_C) \
+  $(RTOP_PACK_STD_OPS_CPP)
 
 @USE_ALTERNATE_AR_FALSE@libmoocho_a_AR = $(AR) cru
 
@@ -422,7 +595,7 @@ all: Moocho_Config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .f .o .obj
+.SUFFIXES: .c .cpp .f .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -526,8 +699,298 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_StringToIntMap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProfileHackPack_profile_hack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpPack_RTOpC.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpToMPI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_SparseSubVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_apply_op_mpi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_apply_op_serial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_free_free.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_index_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_null_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_value_index_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_value_value_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_value_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_obj_values_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_max_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_min_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_values.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StopWatchPack_stopwatch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestingHelperPack_update_success.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+RTOp.o: $(srcdir)/RTOpPack/src/base/RTOp.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp.o -MD -MP -MF "$(DEPDIR)/RTOp.Tpo" -c -o RTOp.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp.Tpo" "$(DEPDIR)/RTOp.Po"; else rm -f "$(DEPDIR)/RTOp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp.c' object='RTOp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp.Po' tmpdepfile='$(DEPDIR)/RTOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp.c
+
+RTOp.obj: $(srcdir)/RTOpPack/src/base/RTOp.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp.obj -MD -MP -MF "$(DEPDIR)/RTOp.Tpo" -c -o RTOp.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp.Tpo" "$(DEPDIR)/RTOp.Po"; else rm -f "$(DEPDIR)/RTOp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp.c' object='RTOp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp.Po' tmpdepfile='$(DEPDIR)/RTOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp.c'; fi`
+
+RTOpToMPI.o: $(srcdir)/RTOpPack/src/base/RTOpToMPI.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOpToMPI.o -MD -MP -MF "$(DEPDIR)/RTOpToMPI.Tpo" -c -o RTOpToMPI.o `test -f '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOpToMPI.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOpToMPI.Tpo" "$(DEPDIR)/RTOpToMPI.Po"; else rm -f "$(DEPDIR)/RTOpToMPI.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOpToMPI.c' object='RTOpToMPI.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOpToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOpToMPI.o `test -f '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOpToMPI.c
+
+RTOpToMPI.obj: $(srcdir)/RTOpPack/src/base/RTOpToMPI.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOpToMPI.obj -MD -MP -MF "$(DEPDIR)/RTOpToMPI.Tpo" -c -o RTOpToMPI.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOpToMPI.Tpo" "$(DEPDIR)/RTOpToMPI.Po"; else rm -f "$(DEPDIR)/RTOpToMPI.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOpToMPI.c' object='RTOpToMPI.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOpToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOpToMPI.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOpToMPI.c'; fi`
+
+RTOp_SparseSubVector.o: $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_SparseSubVector.o -MD -MP -MF "$(DEPDIR)/RTOp_SparseSubVector.Tpo" -c -o RTOp_SparseSubVector.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_SparseSubVector.Tpo" "$(DEPDIR)/RTOp_SparseSubVector.Po"; else rm -f "$(DEPDIR)/RTOp_SparseSubVector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c' object='RTOp_SparseSubVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_SparseSubVector.Po' tmpdepfile='$(DEPDIR)/RTOp_SparseSubVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_SparseSubVector.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c
+
+RTOp_SparseSubVector.obj: $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_SparseSubVector.obj -MD -MP -MF "$(DEPDIR)/RTOp_SparseSubVector.Tpo" -c -o RTOp_SparseSubVector.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_SparseSubVector.Tpo" "$(DEPDIR)/RTOp_SparseSubVector.Po"; else rm -f "$(DEPDIR)/RTOp_SparseSubVector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c' object='RTOp_SparseSubVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_SparseSubVector.Po' tmpdepfile='$(DEPDIR)/RTOp_SparseSubVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_SparseSubVector.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c'; fi`
+
+RTOp_apply_op_mpi.o: $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_apply_op_mpi.o -MD -MP -MF "$(DEPDIR)/RTOp_apply_op_mpi.Tpo" -c -o RTOp_apply_op_mpi.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_apply_op_mpi.Tpo" "$(DEPDIR)/RTOp_apply_op_mpi.Po"; else rm -f "$(DEPDIR)/RTOp_apply_op_mpi.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c' object='RTOp_apply_op_mpi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_apply_op_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_mpi.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c
+
+RTOp_apply_op_mpi.obj: $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_apply_op_mpi.obj -MD -MP -MF "$(DEPDIR)/RTOp_apply_op_mpi.Tpo" -c -o RTOp_apply_op_mpi.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_apply_op_mpi.Tpo" "$(DEPDIR)/RTOp_apply_op_mpi.Po"; else rm -f "$(DEPDIR)/RTOp_apply_op_mpi.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c' object='RTOp_apply_op_mpi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_apply_op_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_mpi.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c'; fi`
+
+RTOp_apply_op_serial.o: $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_apply_op_serial.o -MD -MP -MF "$(DEPDIR)/RTOp_apply_op_serial.Tpo" -c -o RTOp_apply_op_serial.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_apply_op_serial.Tpo" "$(DEPDIR)/RTOp_apply_op_serial.Po"; else rm -f "$(DEPDIR)/RTOp_apply_op_serial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c' object='RTOp_apply_op_serial.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_apply_op_serial.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_serial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_serial.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c
+
+RTOp_apply_op_serial.obj: $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_apply_op_serial.obj -MD -MP -MF "$(DEPDIR)/RTOp_apply_op_serial.Tpo" -c -o RTOp_apply_op_serial.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_apply_op_serial.Tpo" "$(DEPDIR)/RTOp_apply_op_serial.Po"; else rm -f "$(DEPDIR)/RTOp_apply_op_serial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c' object='RTOp_apply_op_serial.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_apply_op_serial.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_serial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_serial.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c'; fi`
+
+RTOp_obj_free_free.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_free_free.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_free_free.Tpo" -c -o RTOp_obj_free_free.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_free_free.Tpo" "$(DEPDIR)/RTOp_obj_free_free.Po"; else rm -f "$(DEPDIR)/RTOp_obj_free_free.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c' object='RTOp_obj_free_free.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_free_free.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_free_free.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_free_free.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c
+
+RTOp_obj_free_free.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_free_free.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_free_free.Tpo" -c -o RTOp_obj_free_free.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_free_free.Tpo" "$(DEPDIR)/RTOp_obj_free_free.Po"; else rm -f "$(DEPDIR)/RTOp_obj_free_free.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c' object='RTOp_obj_free_free.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_free_free.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_free_free.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_free_free.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c'; fi`
+
+RTOp_obj_index_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_index_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo" -c -o RTOp_obj_index_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_index_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c' object='RTOp_obj_index_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_index_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c
+
+RTOp_obj_index_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_index_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo" -c -o RTOp_obj_index_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_index_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_index_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c' object='RTOp_obj_index_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_index_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c'; fi`
+
+RTOp_obj_null_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_null_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo" -c -o RTOp_obj_null_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_null_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c' object='RTOp_obj_null_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_null_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_null_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_null_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c
+
+RTOp_obj_null_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_null_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo" -c -o RTOp_obj_null_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_null_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_null_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c' object='RTOp_obj_null_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_null_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_null_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_null_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c'; fi`
+
+RTOp_obj_value_index_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_index_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo" -c -o RTOp_obj_value_index_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_index_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c' object='RTOp_obj_value_index_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_index_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c
+
+RTOp_obj_value_index_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_index_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo" -c -o RTOp_obj_value_index_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_index_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_index_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c' object='RTOp_obj_value_index_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_index_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c'; fi`
+
+RTOp_obj_value_value_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_value_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo" -c -o RTOp_obj_value_value_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_value_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c' object='RTOp_obj_value_value_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_value_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c
+
+RTOp_obj_value_value_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_value_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo" -c -o RTOp_obj_value_value_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_value_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_value_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c' object='RTOp_obj_value_value_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_value_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c'; fi`
+
+RTOp_obj_value_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo" -c -o RTOp_obj_value_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c' object='RTOp_obj_value_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c
+
+RTOp_obj_value_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_value_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo" -c -o RTOp_obj_value_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_value_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_value_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c' object='RTOp_obj_value_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c'; fi`
+
+RTOp_obj_values_vtbl.o: $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_values_vtbl.o -MD -MP -MF "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo" -c -o RTOp_obj_values_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_values_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c' object='RTOp_obj_values_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_values_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_values_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_values_vtbl.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c
+
+RTOp_obj_values_vtbl.obj: $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_obj_values_vtbl.obj -MD -MP -MF "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo" -c -o RTOp_obj_values_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo" "$(DEPDIR)/RTOp_obj_values_vtbl.Po"; else rm -f "$(DEPDIR)/RTOp_obj_values_vtbl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c' object='RTOp_obj_values_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_obj_values_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_values_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_values_vtbl.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c'; fi`
+
+RTOp_reduct_max_value.o: $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_max_value.o -MD -MP -MF "$(DEPDIR)/RTOp_reduct_max_value.Tpo" -c -o RTOp_reduct_max_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_max_value.Tpo" "$(DEPDIR)/RTOp_reduct_max_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_max_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c' object='RTOp_reduct_max_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_max_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_max_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_max_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c
+
+RTOp_reduct_max_value.obj: $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_max_value.obj -MD -MP -MF "$(DEPDIR)/RTOp_reduct_max_value.Tpo" -c -o RTOp_reduct_max_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_max_value.Tpo" "$(DEPDIR)/RTOp_reduct_max_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_max_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c' object='RTOp_reduct_max_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_max_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_max_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_max_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c'; fi`
+
+RTOp_reduct_min_value.o: $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_min_value.o -MD -MP -MF "$(DEPDIR)/RTOp_reduct_min_value.Tpo" -c -o RTOp_reduct_min_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_min_value.Tpo" "$(DEPDIR)/RTOp_reduct_min_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_min_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c' object='RTOp_reduct_min_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_min_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_min_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_min_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c
+
+RTOp_reduct_min_value.obj: $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_min_value.obj -MD -MP -MF "$(DEPDIR)/RTOp_reduct_min_value.Tpo" -c -o RTOp_reduct_min_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_min_value.Tpo" "$(DEPDIR)/RTOp_reduct_min_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_min_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c' object='RTOp_reduct_min_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_min_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_min_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_min_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c'; fi`
+
+RTOp_reduct_sum_value.o: $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_sum_value.o -MD -MP -MF "$(DEPDIR)/RTOp_reduct_sum_value.Tpo" -c -o RTOp_reduct_sum_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_sum_value.Tpo" "$(DEPDIR)/RTOp_reduct_sum_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_sum_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c' object='RTOp_reduct_sum_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_sum_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_value.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c
+
+RTOp_reduct_sum_value.obj: $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_sum_value.obj -MD -MP -MF "$(DEPDIR)/RTOp_reduct_sum_value.Tpo" -c -o RTOp_reduct_sum_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_sum_value.Tpo" "$(DEPDIR)/RTOp_reduct_sum_value.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_sum_value.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c' object='RTOp_reduct_sum_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_sum_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_value.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c'; fi`
+
+RTOp_reduct_sum_values.o: $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_sum_values.o -MD -MP -MF "$(DEPDIR)/RTOp_reduct_sum_values.Tpo" -c -o RTOp_reduct_sum_values.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_sum_values.Tpo" "$(DEPDIR)/RTOp_reduct_sum_values.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_sum_values.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c' object='RTOp_reduct_sum_values.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_sum_values.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_values.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_values.o `test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
+
+RTOp_reduct_sum_values.obj: $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT RTOp_reduct_sum_values.obj -MD -MP -MF "$(DEPDIR)/RTOp_reduct_sum_values.Tpo" -c -o RTOp_reduct_sum_values.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/RTOp_reduct_sum_values.Tpo" "$(DEPDIR)/RTOp_reduct_sum_values.Po"; else rm -f "$(DEPDIR)/RTOp_reduct_sum_values.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c' object='RTOp_reduct_sum_values.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_reduct_sum_values.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_values.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_values.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -849,6 +1312,38 @@ IterationPack_print_algorithm_step.obj: $(srcdir)/IterationPack/src/IterationPac
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IterationPack_print_algorithm_step.obj `if test -f '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; then $(CYGPATH_W) '$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp'; fi`
 
+RTOpPack_RTOpC.o: $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_RTOpC.o -MD -MP -MF "$(DEPDIR)/RTOpPack_RTOpC.Tpo" -c -o RTOpPack_RTOpC.o `test -f '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo" "$(DEPDIR)/RTOpPack_RTOpC.Po"; else rm -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp' object='RTOpPack_RTOpC.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_RTOpC.Po' tmpdepfile='$(DEPDIR)/RTOpPack_RTOpC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_RTOpC.o `test -f '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp
+
+RTOpPack_RTOpC.obj: $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_RTOpC.obj -MD -MP -MF "$(DEPDIR)/RTOpPack_RTOpC.Tpo" -c -o RTOpPack_RTOpC.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo" "$(DEPDIR)/RTOpPack_RTOpC.Po"; else rm -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp' object='RTOpPack_RTOpC.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_RTOpC.Po' tmpdepfile='$(DEPDIR)/RTOpPack_RTOpC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_RTOpC.obj `if test -f '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp'; fi`
+
+check_nan_inf.o: $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT check_nan_inf.o -MD -MP -MF "$(DEPDIR)/check_nan_inf.Tpo" -c -o check_nan_inf.o `test -f '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/check_nan_inf.Tpo" "$(DEPDIR)/check_nan_inf.Po"; else rm -f "$(DEPDIR)/check_nan_inf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp' object='check_nan_inf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.o `test -f '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+
+check_nan_inf.obj: $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT check_nan_inf.obj -MD -MP -MF "$(DEPDIR)/check_nan_inf.Tpo" -c -o check_nan_inf.obj `if test -f '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/check_nan_inf.Tpo" "$(DEPDIR)/check_nan_inf.Po"; else rm -f "$(DEPDIR)/check_nan_inf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp' object='check_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.obj `if test -f '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; fi`
+
 .f.o:
 	$(F77COMPILE) -c -o $@ $<
 
@@ -955,7 +1450,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src
+	$(mkdir_p) $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src $(distdir)/RTOpPack/src/base
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

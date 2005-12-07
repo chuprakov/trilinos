@@ -9,7 +9,8 @@
 #
 #    $MOOCHO_BASE_DIR/moocho/src/MoochoUtilities/refactoring
 #
-# Trilinos/commonTools/refactoring must be added to your path.
+# is where this file is.  Trilinos/commonTools/refactoring must also
+# be added to your path.
 #
 
 token-replace-list-r $MOOCHO_BASE_DIR/moocho/src/MoochoUtilities/refactoring/filename-change-list.txt.20051206

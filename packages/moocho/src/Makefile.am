@@ -107,6 +107,138 @@ ITERATION_PACK_CPP = \
   $(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp \
   $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp
 
+RTOP_PACK_BASE_H = \
+  $(srcdir)/RTOpPack/src/base/RTOp.h\
+  $(srcdir)/RTOpPack/src/base/RTOpToMPI.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.h\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.h\
+  $(srcdir)/RTOpPack/src/base/check_nan_inf.h
+
+RTOP_PACK_BASE_C = \
+  $(srcdir)/RTOpPack/src/base/RTOp.c\
+  $(srcdir)/RTOpPack/src/base/RTOpToMPI.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c\
+  $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
+
+RTOP_PACK_BASE_HPP = \
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.hpp\
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpCPostMod.hpp\
+  $(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp
+
+RTOP_PACK_BASE_CPP = \
+  $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp\
+  $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+
+RTOp_PACK_STD_OPS_H = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.h\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.h
+
+RTOp_PACK_STD_OPS_C = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.c\
+  $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.c
+
+RTOp_PACK_STD_OPS_HPP = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.hpp
+
+RTOp_PACK_STD_OPS_CPP = \
+  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -130,12 +262,20 @@ MOOCHO_LIB = libmoocho.a
 MOOCHO_H = \
   $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(MOOCHO_UTILITIES_HPP) \
-  $(ITERATION_PACK_HPP)
+  $(ITERATION_PACK_HPP) \
+  $(RTOP_PACK_BASE_H) \
+  $(RTOP_PACK_BASE_HPP) \
+  $(RTOP_PACK_STD_OPS_H) \
+  $(RTOP_PACK_STD_OPS_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
   $(MOOCHO_UTILITIES_F) \
-  $(ITERATION_PACK_CPP)
+  $(ITERATION_PACK_CPP) \
+  $(RTOP_PACK_BASE_C) \
+  $(RTOP_PACK_BASE_CPP) \
+  $(RTOP_PACK_STD_OPS_C) \
+  $(RTOP_PACK_STD_OPS_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver
