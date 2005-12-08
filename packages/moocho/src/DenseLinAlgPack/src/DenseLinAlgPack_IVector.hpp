@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// IVector.hpp
+// DenseLinAlgPack_IVector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <valarray>
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace DenseLinAlgPack {

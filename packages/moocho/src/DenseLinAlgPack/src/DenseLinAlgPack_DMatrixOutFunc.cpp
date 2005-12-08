@@ -16,9 +16,9 @@
 #include <ostream>
 #include <iomanip>
 
-#include "DMatrixOutFunc.hpp"
-#include "DVectorOutFunc.hpp"
-#include "DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixOutFunc.hpp"
+#include "DenseLinAlgPack_DVectorOutFunc.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 std::ostream& DenseLinAlgPack::output(std::ostream& os, const DMatrixSlice& gms
 	, LinAlgPackIO::fmtflags extra_flags )

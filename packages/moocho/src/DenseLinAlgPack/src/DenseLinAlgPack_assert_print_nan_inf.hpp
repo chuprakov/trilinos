@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// assert_print_nan_inf.hpp
+// DenseLinAlgPack_assert_print_nan_inf.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

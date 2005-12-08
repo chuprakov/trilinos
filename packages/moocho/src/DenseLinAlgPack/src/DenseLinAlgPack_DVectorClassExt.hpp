@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// DVectorClassExt.hpp
+// DenseLinAlgPack_DVectorClassExt.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <valarray>
 
-#include "DVectorClassTmpl.hpp"
+#include "DenseLinAlgPack_DVectorClassTmpl.hpp"
 
 namespace DenseLinAlgPack {
 

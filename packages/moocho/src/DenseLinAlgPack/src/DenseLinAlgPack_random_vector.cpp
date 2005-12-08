@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 
-#include "DenseLinAlgPack/src/random_vector.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack_random_vector.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 
 void DenseLinAlgPack::seed_random_vector_generator( unsigned int s )
 {

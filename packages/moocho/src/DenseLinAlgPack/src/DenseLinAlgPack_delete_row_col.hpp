@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// delete_row_col.hpp
+// DenseLinAlgPack_delete_row_col.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DELETE_ROW_COL_H
 #define DELETE_ROW_COL_H
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DVectorIn.hpp
+// DenseLinAlgPack_DVectorIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VECTORIN_H
 #define VECTORIN_H
 
-#include "DVectorInFunc.hpp"
+#include "DenseLinAlgPack_DVectorInFunc.hpp"
 
 namespace DenseLinAlgPack {
 

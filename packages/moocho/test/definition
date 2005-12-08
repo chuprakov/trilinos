@@ -7,3 +7,8 @@
     TESTS = ./IterationPack/TestIterationPack.exe;
     COMM = SERIAL;
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ./DenseLinAlgPack/TestDenseLinAlgPack.exe;
+    COMM = SERIAL;
+}

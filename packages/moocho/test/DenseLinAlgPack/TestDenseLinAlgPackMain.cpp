@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 #include <iostream>
 
-#include "TestDenseLinAlgPack.hpp"
+#include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
 
 int main() {
 

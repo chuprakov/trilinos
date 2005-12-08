@@ -23,50 +23,50 @@ that is BLAS compatable.
 
 */
 //@{
-  //@Include: DenseLinAlgPackOptions.hpp
+  //@Include: DenseLinAlgPack_Options.hpp
   /** @name Linear algebra vector, matrix and permutation types. */
   //@{
-    //@Include: IVector.hpp
-    //@Include: DVectorClass.hpp
-    //@Include: DVectorClassTmpl.hpp
-    //@Include: DMatrixClass.hpp
-    //@Include: DMatrixAsTriSym.hpp
+    //@Include: DenseLinAlgPack_IVector.hpp
+    //@Include: DenseLinAlgPack_DVectorClass.hpp
+    //@Include: DenseLinAlgPack_DVectorClassTmpl.hpp
+    //@Include: DenseLinAlgPack_DMatrixClass.hpp
+    //@Include: DenseLinAlgPack_DMatrixAsTriSym.hpp
   //@}
   /** @name Linear algebra operations */
   //@{
     /** @name Assignment */
     //@{
-      //@Include: DVectorAssign.hpp
-      //@Include: DMatrixAssign.hpp
+      //@Include: DenseLinAlgPack_DVectorAssign.hpp
+      //@Include: DenseLinAlgPack_DMatrixAssign.hpp
     //@}
     /** @name BLAS operations */
     //@{
-      //@Include: DVectorOp.hpp
-      //@Include: DMatrixOp.hpp
-      //@Include: DenseLinAlgPackAssertOp.hpp
+      //@Include: DenseLinAlgPack_DVectorOp.hpp
+      //@Include: DenseLinAlgPack_DMatrixOp.hpp
+      //@Include: DenseLinAlgPack_AssertOp.hpp
     //@}
-    //@Include: PermVecMat.hpp
+    //@Include: DenseLinAlgPack_PermVecMat.hpp
   //@}
   /** @name Input / Output */
   //@{
-    //@Include: PermIn.hpp
-    //@Include: PermOut.hpp
-    //@Include: DVectorIn.hpp
-    //@Include: DVectorOut.hpp
-    //@Include: DMatrixIn.hpp
-    //@Include: DMatrixOut.hpp
-    //@Include: DVectorInFunc.hpp
-    //@Include: DVectorOutFunc.hpp
-    //@Include: DMatrixInFunc.hpp
-    //@Include: DMatrixOutFunc.hpp
-    //@Include: DenseLinAlgPackInFormatDecl.hpp
-    //@Include: DenseLinAlgPackOutFormatDecl.hpp
+    //@Include: DenseLinAlgPack_PermIn.hpp
+    //@Include: DenseLinAlgPack_PermOut.hpp
+    //@Include: DenseLinAlgPack_DVectorIn.hpp
+    //@Include: DenseLinAlgPack_DVectorOut.hpp
+    //@Include: DenseLinAlgPack_DMatrixIn.hpp
+    //@Include: DenseLinAlgPack_DMatrixOut.hpp
+    //@Include: DenseLinAlgPack_DVectorInFunc.hpp
+    //@Include: DenseLinAlgPack_DVectorOutFunc.hpp
+    //@Include: DenseLinAlgPack_DMatrixInFunc.hpp
+    //@Include: DenseLinAlgPack_DMatrixOutFunc.hpp
+    //@Include: DenseLinAlgPack_InFormatDecl.hpp
+    //@Include: DenseLinAlgPack_OutFormatDecl.hpp
   //@}
   /** @name Utilities / Misc. */
   //@{
-    //@Include: ElementaryMatVec.hpp
-    //@Include: MatVecCompare.hpp
-    //@Include: InvCholUpdate.hpp
+    //@Include: DenseLinAlgPack_ElementaryMatVec.hpp
+    //@Include: DenseLinAlgPack_MatVecCompare.hpp
+    //@Include: DenseLinAlgPack_InvCholUpdate.hpp
 //@}
   //@Include: LinAlgPackIO.dxx
 //@}

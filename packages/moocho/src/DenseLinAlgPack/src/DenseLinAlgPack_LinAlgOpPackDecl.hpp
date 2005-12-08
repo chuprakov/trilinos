@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPackDecl.hpp
+// DenseLinAlgPack_LinAlgOpPackDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef LIN_ALG_OP_PACK_DECL_H
 #define LIN_ALG_OP_PACK_DECL_H
 
-#include "DVectorOp.hpp"
-#include "DMatrixOp.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
 
 namespace LinAlgOpPack {
 

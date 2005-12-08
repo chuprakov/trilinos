@@ -15,7 +15,7 @@
 
 #include <iomanip>
 
-#include "DenseLinAlgPack/src/DVectorClassTmpl.hpp"
+#include "DenseLinAlgPack_DVectorClassTmpl.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP

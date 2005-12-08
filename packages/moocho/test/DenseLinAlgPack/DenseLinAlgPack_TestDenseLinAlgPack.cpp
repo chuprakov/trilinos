@@ -15,8 +15,8 @@
 
 #include <ostream>
 
-#include "TestDenseLinAlgPack.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
+#include "TestingHelperPack_update_success.hpp"
 
 bool DenseLinAlgPack::TestingPack::TestDenseLinAlgPack(std::ostream* out)
 {
@@ -26,9 +26,10 @@ bool DenseLinAlgPack::TestingPack::TestDenseLinAlgPack(std::ostream* out)
 //	bool result;
 
 	if(out)
-		*out	<< "\n**************************"
-				<< "\n*** Testing DenseLinAlgPack ***"
-				<< "\n**************************\n";
+		*out
+      << "\n*******************************"
+      << "\n*** Testing DenseLinAlgPack ***"
+      << "\n*******************************\n";
 
 	update_success( TestVectorClass(out), &success );
 	update_success( TestVectorOp(out), &success );

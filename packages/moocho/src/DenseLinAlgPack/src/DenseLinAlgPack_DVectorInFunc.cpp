@@ -15,9 +15,9 @@
 
 #include <sstream>
 
-#include "DVectorInFunc.hpp"
-#include "DVectorClass.hpp"
-#include "DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack_DVectorInFunc.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace {	// Local implementation
 std::istream& input_vs(std::istream& is, DenseLinAlgPack::DVectorSlice* vs, const char func[]);

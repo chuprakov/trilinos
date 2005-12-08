@@ -16,7 +16,7 @@
 #ifndef LIN_ALG_LA_PACK_H
 #define LIN_ALG_LA_PACK_H
 
-#include "DenseLinAlgLAPackTypes.hpp"
+#include "DenseLinAlgLAPack_Types.hpp"
 
 namespace DenseLinAlgLAPack {
 

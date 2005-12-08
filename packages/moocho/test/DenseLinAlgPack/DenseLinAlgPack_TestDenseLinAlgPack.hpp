@@ -1,12 +1,12 @@
 // ///////////////////////////////////////////////////////////////////////////////////////////
-// TestDenseLinAlgPack.hpp
+// DenseLinAlgPack_TestDenseLinAlgPack.hpp
 
 #ifndef TEST_LIN_ALG_PACK_H
 #define TEST_LIN_ALG_PACK_H
 
 #include <iosfwd>
 
-#include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack{
 	namespace TestingPack {

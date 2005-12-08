@@ -17,9 +17,10 @@
 #include <istream>
 #include <iomanip>
 
-#include "TestDenseLinAlgPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackIO.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
+#include "DenseLinAlgPack_IO.hpp"
+#include "DenseLinAlgPack_OutFormat.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 
 // To use this function you must bind _in to the file TestDenseLinAlgPackIO.in
@@ -36,12 +37,13 @@ void DenseLinAlgPack::TestingPack::TestDenseLinAlgPackIO(std::istream& _in, std:
 	using LinAlgPackIO::cbind;
 	using LinAlgPackIO::format;
 	
-	_out	<< "\n***************************************************************\n"
-			<< "*** Testing input/output operators and functions for DVector ***\n"
-			<< "*** , DVectorSlice, DMatrix and DMatrixSlice.            ***\n"
-			<< "*** Must be run with TestDenseLinAlgPackIO.in as input           ***\n"
-			<< "***************************************************************\n";
-
+	_out
+    << "\n*****************************************************************"
+    << "\n*** Testing input/output operators and functions for DVector, ***"
+    << "\n*** DVectorSlice, DMatrix and DMatrixSlice.                   ***"
+    << "\n*** Must be run with TestDenseLinAlgPackIO.in as input        ***"
+    << "\n*****************************************************************\n";
+  
 	// Creating a formating object
 	_out	<< "\n  format f(_in);\n"
 			<< "  f.setw(15).showpoint().setprecision(6);\n";

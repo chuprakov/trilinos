@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackInFormatDef.hpp
+// DenseLinAlgPack_InFormatDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <istream>
 
-#include "DenseLinAlgPackInFormatDecl.hpp"
+#include "DenseLinAlgPack_InFormatDecl.hpp"
 
 namespace DenseLinAlgPack {
 

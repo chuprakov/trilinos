@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// ElementaryMatVec.hpp
+// DenseLinAlgPack_ElementaryMatVec.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ELEMENTARY_MAT_VEC_H
 #define ELEMENTARY_MAT_VEC_H
 
-#include "DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 namespace DenseLinAlgPack {
 

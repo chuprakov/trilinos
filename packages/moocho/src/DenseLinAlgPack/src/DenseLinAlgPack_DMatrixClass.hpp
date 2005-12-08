@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////
-// DMatrixClass.hpp
+// DenseLinAlgPack_DMatrixClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 #ifndef GEN_MATRIX_CLASS_H
 #define GEN_MATRIX_CLASS_H
 
-#include "DVectorClass.hpp"
-#include "DMatrixAssign.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DMatrixAssign.hpp"
 
 /* * @name {\bf Dense 2-D Rectangular Matrix Absractions}.
   *

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// DMatrixOp.hpp
+// DenseLinAlgPack_DMatrixOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -32,11 +32,11 @@
 #ifndef GEN_MATRIX_OP_H
 #define GEN_MATRIX_OP_H
 
-#include "DenseLinAlgPackTypes.hpp"
-#include "DenseLinAlgPackAssertOp.hpp"
-#include "DMatrixClass.hpp"
-#include "DMatrixAsTriSym.hpp"
-#include "DVectorOp.hpp"
+#include "DenseLinAlgPack_Types.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
 
 /* * @name {\bf Basic DMatrix Operation Functions (Level 2,3 BLAS)}.
   *

@@ -142,13 +142,58 @@ am__objects_4 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_reduct_sum_value.$(OBJEXT) \
 	RTOp_reduct_sum_values.$(OBJEXT)
 am__objects_5 = RTOpPack_RTOpC.$(OBJEXT) check_nan_inf.$(OBJEXT)
+am__objects_6 = DenseLinAlgPack_BLAS_Cpp.$(OBJEXT) \
+	DenseLinAlgPack_DMatrixClass.$(OBJEXT) \
+	DenseLinAlgPack_DMatrixInFunc.$(OBJEXT) \
+	DenseLinAlgPack_DMatrixOpBLAS.$(OBJEXT) \
+	DenseLinAlgPack_DMatrixOutFunc.$(OBJEXT) \
+	DenseLinAlgPack_InvCholUpdate.$(OBJEXT) \
+	DenseLinAlgPack_AssertOp.$(OBJEXT) \
+	DenseLinAlgPack_IOFormat.$(OBJEXT) \
+	DenseLinAlgPack_MatVecCompare.$(OBJEXT) \
+	DenseLinAlgPack_MatlabPack.$(OBJEXT) \
+	DenseLinAlgPack_PermIn.$(OBJEXT) \
+	DenseLinAlgPack_PermOut.$(OBJEXT) \
+	DenseLinAlgPack_PermVecMat.$(OBJEXT) \
+	DenseLinAlgPack_DVectorClassTmpl.$(OBJEXT) \
+	DenseLinAlgPack_DVectorInFunc.$(OBJEXT) \
+	DenseLinAlgPack_DVectorOpBLAS.$(OBJEXT) \
+	DenseLinAlgPack_DVectorOutFunc.$(OBJEXT) \
+	DenseLinAlgPack_random_vector.$(OBJEXT) \
+	DenseLinAlgPack_delete_row_col.$(OBJEXT) \
+	DenseLinAlgPack_assert_print_nan_inf.$(OBJEXT) \
+	DenseLinAlgPack_LAPACK_C_Decl.$(OBJEXT) \
+	DenseLinAlgLAPack.$(OBJEXT)
 am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/FortranTypes_CppFortranStrings.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/DenseLinAlgLAPack.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_AssertOp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_IOFormat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_PermIn.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_PermOut.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_random_vector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/FortranTypes_CppFortranStrings.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/FortranTypes_f_open_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/InputStreamHelperPack_EatInputComment.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IterationPack_Algorithm.Po \
@@ -520,6 +565,98 @@ RTOp_PACK_STD_OPS_HPP = \
 RTOp_PACK_STD_OPS_CPP = \
   $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
 
+DENSE_LIN_ALG_PACK_HPP = \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_ElementaryMatVec.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOBasic.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO_NameLookups.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IVector.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDecl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDef.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDecl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDef.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Options.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_OutFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_extended_value_type.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.hpp
+
+DENSE_LIN_ALG_PACK_CPP = \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
+
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
@@ -535,7 +672,8 @@ MOOCHO_H = \
   $(RTOP_PACK_BASE_H) \
   $(RTOP_PACK_BASE_HPP) \
   $(RTOP_PACK_STD_OPS_H) \
-  $(RTOP_PACK_STD_OPS_HPP)
+  $(RTOP_PACK_STD_OPS_HPP) \
+  $(DENSE_LIN_ALG_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -544,7 +682,8 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_BASE_C) \
   $(RTOP_PACK_BASE_CPP) \
   $(RTOP_PACK_STD_OPS_C) \
-  $(RTOP_PACK_STD_OPS_CPP)
+  $(RTOP_PACK_STD_OPS_CPP) \
+  $(DENSE_LIN_ALG_PACK_CPP)
 
 @USE_ALTERNATE_AR_FALSE@libmoocho_a_AR = $(AR) cru
 
@@ -682,6 +821,28 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgLAPack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_AssertOp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_IOFormat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_PermIn.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_PermOut.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_random_vector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FortranTypes_CppFortranStrings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FortranTypes_f_open_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InputStreamHelperPack_EatInputComment.Po@am__quote@
@@ -1344,6 +1505,358 @@ check_nan_inf.obj: $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.obj `if test -f '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp'; fi`
 
+DenseLinAlgPack_BLAS_Cpp.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_BLAS_Cpp.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo" -c -o DenseLinAlgPack_BLAS_Cpp.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo" "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp' object='DenseLinAlgPack_BLAS_Cpp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_BLAS_Cpp.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp
+
+DenseLinAlgPack_BLAS_Cpp.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_BLAS_Cpp.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo" -c -o DenseLinAlgPack_BLAS_Cpp.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo" "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp' object='DenseLinAlgPack_BLAS_Cpp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_BLAS_Cpp.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp'; fi`
+
+DenseLinAlgPack_DMatrixClass.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixClass.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo" -c -o DenseLinAlgPack_DMatrixClass.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp' object='DenseLinAlgPack_DMatrixClass.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixClass.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixClass.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp
+
+DenseLinAlgPack_DMatrixClass.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixClass.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo" -c -o DenseLinAlgPack_DMatrixClass.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp' object='DenseLinAlgPack_DMatrixClass.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixClass.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixClass.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixClass.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp'; fi`
+
+DenseLinAlgPack_DMatrixInFunc.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixInFunc.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo" -c -o DenseLinAlgPack_DMatrixInFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp' object='DenseLinAlgPack_DMatrixInFunc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixInFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp
+
+DenseLinAlgPack_DMatrixInFunc.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixInFunc.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo" -c -o DenseLinAlgPack_DMatrixInFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp' object='DenseLinAlgPack_DMatrixInFunc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixInFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixInFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp'; fi`
+
+DenseLinAlgPack_DMatrixOpBLAS.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixOpBLAS.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo" -c -o DenseLinAlgPack_DMatrixOpBLAS.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp' object='DenseLinAlgPack_DMatrixOpBLAS.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixOpBLAS.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp
+
+DenseLinAlgPack_DMatrixOpBLAS.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixOpBLAS.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo" -c -o DenseLinAlgPack_DMatrixOpBLAS.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp' object='DenseLinAlgPack_DMatrixOpBLAS.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOpBLAS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixOpBLAS.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp'; fi`
+
+DenseLinAlgPack_DMatrixOutFunc.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixOutFunc.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo" -c -o DenseLinAlgPack_DMatrixOutFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp' object='DenseLinAlgPack_DMatrixOutFunc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixOutFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp
+
+DenseLinAlgPack_DMatrixOutFunc.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DMatrixOutFunc.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo" -c -o DenseLinAlgPack_DMatrixOutFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp' object='DenseLinAlgPack_DMatrixOutFunc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DMatrixOutFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DMatrixOutFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp'; fi`
+
+DenseLinAlgPack_InvCholUpdate.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_InvCholUpdate.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo" -c -o DenseLinAlgPack_InvCholUpdate.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo" "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp' object='DenseLinAlgPack_InvCholUpdate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_InvCholUpdate.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp
+
+DenseLinAlgPack_InvCholUpdate.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_InvCholUpdate.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo" -c -o DenseLinAlgPack_InvCholUpdate.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo" "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp' object='DenseLinAlgPack_InvCholUpdate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_InvCholUpdate.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_InvCholUpdate.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp'; fi`
+
+DenseLinAlgPack_AssertOp.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_AssertOp.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo" -c -o DenseLinAlgPack_AssertOp.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo" "$(DEPDIR)/DenseLinAlgPack_AssertOp.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp' object='DenseLinAlgPack_AssertOp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_AssertOp.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_AssertOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_AssertOp.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp
+
+DenseLinAlgPack_AssertOp.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_AssertOp.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo" -c -o DenseLinAlgPack_AssertOp.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo" "$(DEPDIR)/DenseLinAlgPack_AssertOp.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_AssertOp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp' object='DenseLinAlgPack_AssertOp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_AssertOp.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_AssertOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_AssertOp.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp'; fi`
+
+DenseLinAlgPack_IOFormat.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_IOFormat.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo" -c -o DenseLinAlgPack_IOFormat.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo" "$(DEPDIR)/DenseLinAlgPack_IOFormat.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp' object='DenseLinAlgPack_IOFormat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_IOFormat.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_IOFormat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_IOFormat.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp
+
+DenseLinAlgPack_IOFormat.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_IOFormat.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo" -c -o DenseLinAlgPack_IOFormat.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo" "$(DEPDIR)/DenseLinAlgPack_IOFormat.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_IOFormat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp' object='DenseLinAlgPack_IOFormat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_IOFormat.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_IOFormat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_IOFormat.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp'; fi`
+
+DenseLinAlgPack_MatVecCompare.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_MatVecCompare.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo" -c -o DenseLinAlgPack_MatVecCompare.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo" "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp' object='DenseLinAlgPack_MatVecCompare.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_MatVecCompare.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_MatVecCompare.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp
+
+DenseLinAlgPack_MatVecCompare.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_MatVecCompare.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo" -c -o DenseLinAlgPack_MatVecCompare.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo" "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp' object='DenseLinAlgPack_MatVecCompare.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_MatVecCompare.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_MatVecCompare.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_MatVecCompare.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp'; fi`
+
+DenseLinAlgPack_MatlabPack.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_MatlabPack.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo" -c -o DenseLinAlgPack_MatlabPack.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo" "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp' object='DenseLinAlgPack_MatlabPack.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_MatlabPack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_MatlabPack.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp
+
+DenseLinAlgPack_MatlabPack.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_MatlabPack.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo" -c -o DenseLinAlgPack_MatlabPack.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo" "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_MatlabPack.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp' object='DenseLinAlgPack_MatlabPack.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_MatlabPack.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_MatlabPack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_MatlabPack.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp'; fi`
+
+DenseLinAlgPack_PermIn.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermIn.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo" -c -o DenseLinAlgPack_PermIn.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermIn.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp' object='DenseLinAlgPack_PermIn.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermIn.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermIn.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermIn.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp
+
+DenseLinAlgPack_PermIn.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermIn.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo" -c -o DenseLinAlgPack_PermIn.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermIn.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermIn.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp' object='DenseLinAlgPack_PermIn.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermIn.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermIn.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermIn.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp'; fi`
+
+DenseLinAlgPack_PermOut.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermOut.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo" -c -o DenseLinAlgPack_PermOut.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermOut.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp' object='DenseLinAlgPack_PermOut.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermOut.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermOut.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermOut.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp
+
+DenseLinAlgPack_PermOut.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermOut.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo" -c -o DenseLinAlgPack_PermOut.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermOut.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermOut.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp' object='DenseLinAlgPack_PermOut.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermOut.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermOut.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermOut.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp'; fi`
+
+DenseLinAlgPack_PermVecMat.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermVecMat.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo" -c -o DenseLinAlgPack_PermVecMat.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp' object='DenseLinAlgPack_PermVecMat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermVecMat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermVecMat.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp
+
+DenseLinAlgPack_PermVecMat.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_PermVecMat.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo" -c -o DenseLinAlgPack_PermVecMat.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo" "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_PermVecMat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp' object='DenseLinAlgPack_PermVecMat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_PermVecMat.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_PermVecMat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_PermVecMat.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp'; fi`
+
+DenseLinAlgPack_DVectorClassTmpl.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorClassTmpl.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo" -c -o DenseLinAlgPack_DVectorClassTmpl.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp' object='DenseLinAlgPack_DVectorClassTmpl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorClassTmpl.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp
+
+DenseLinAlgPack_DVectorClassTmpl.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorClassTmpl.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo" -c -o DenseLinAlgPack_DVectorClassTmpl.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp' object='DenseLinAlgPack_DVectorClassTmpl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorClassTmpl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorClassTmpl.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp'; fi`
+
+DenseLinAlgPack_DVectorInFunc.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorInFunc.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo" -c -o DenseLinAlgPack_DVectorInFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp' object='DenseLinAlgPack_DVectorInFunc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorInFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp
+
+DenseLinAlgPack_DVectorInFunc.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorInFunc.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo" -c -o DenseLinAlgPack_DVectorInFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp' object='DenseLinAlgPack_DVectorInFunc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorInFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorInFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp'; fi`
+
+DenseLinAlgPack_DVectorOpBLAS.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorOpBLAS.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo" -c -o DenseLinAlgPack_DVectorOpBLAS.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp' object='DenseLinAlgPack_DVectorOpBLAS.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorOpBLAS.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp
+
+DenseLinAlgPack_DVectorOpBLAS.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorOpBLAS.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo" -c -o DenseLinAlgPack_DVectorOpBLAS.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp' object='DenseLinAlgPack_DVectorOpBLAS.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorOpBLAS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorOpBLAS.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp'; fi`
+
+DenseLinAlgPack_DVectorOutFunc.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorOutFunc.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo" -c -o DenseLinAlgPack_DVectorOutFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp' object='DenseLinAlgPack_DVectorOutFunc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorOutFunc.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp
+
+DenseLinAlgPack_DVectorOutFunc.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_DVectorOutFunc.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo" -c -o DenseLinAlgPack_DVectorOutFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo" "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp' object='DenseLinAlgPack_DVectorOutFunc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_DVectorOutFunc.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_DVectorOutFunc.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp'; fi`
+
+DenseLinAlgPack_random_vector.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_random_vector.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo" -c -o DenseLinAlgPack_random_vector.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo" "$(DEPDIR)/DenseLinAlgPack_random_vector.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp' object='DenseLinAlgPack_random_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_random_vector.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_random_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_random_vector.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp
+
+DenseLinAlgPack_random_vector.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_random_vector.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo" -c -o DenseLinAlgPack_random_vector.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo" "$(DEPDIR)/DenseLinAlgPack_random_vector.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_random_vector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp' object='DenseLinAlgPack_random_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_random_vector.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_random_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_random_vector.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp'; fi`
+
+DenseLinAlgPack_delete_row_col.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_delete_row_col.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo" -c -o DenseLinAlgPack_delete_row_col.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo" "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp' object='DenseLinAlgPack_delete_row_col.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_delete_row_col.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_delete_row_col.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp
+
+DenseLinAlgPack_delete_row_col.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_delete_row_col.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo" -c -o DenseLinAlgPack_delete_row_col.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo" "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_delete_row_col.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp' object='DenseLinAlgPack_delete_row_col.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_delete_row_col.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_delete_row_col.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_delete_row_col.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp'; fi`
+
+DenseLinAlgPack_assert_print_nan_inf.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_assert_print_nan_inf.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo" -c -o DenseLinAlgPack_assert_print_nan_inf.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo" "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp' object='DenseLinAlgPack_assert_print_nan_inf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_assert_print_nan_inf.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp
+
+DenseLinAlgPack_assert_print_nan_inf.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_assert_print_nan_inf.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo" -c -o DenseLinAlgPack_assert_print_nan_inf.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo" "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp' object='DenseLinAlgPack_assert_print_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_assert_print_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_assert_print_nan_inf.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp'; fi`
+
+DenseLinAlgPack_LAPACK_C_Decl.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_LAPACK_C_Decl.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo" -c -o DenseLinAlgPack_LAPACK_C_Decl.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo" "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp' object='DenseLinAlgPack_LAPACK_C_Decl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_LAPACK_C_Decl.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp
+
+DenseLinAlgPack_LAPACK_C_Decl.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgPack_LAPACK_C_Decl.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo" -c -o DenseLinAlgPack_LAPACK_C_Decl.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo" "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po"; else rm -f "$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp' object='DenseLinAlgPack_LAPACK_C_Decl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgPack_LAPACK_C_Decl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgPack_LAPACK_C_Decl.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp'; fi`
+
+DenseLinAlgLAPack.o: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgLAPack.o -MD -MP -MF "$(DEPDIR)/DenseLinAlgLAPack.Tpo" -c -o DenseLinAlgLAPack.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgLAPack.Tpo" "$(DEPDIR)/DenseLinAlgLAPack.Po"; else rm -f "$(DEPDIR)/DenseLinAlgLAPack.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp' object='DenseLinAlgLAPack.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgLAPack.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgLAPack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgLAPack.o `test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp' || echo '$(srcdir)/'`$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
+
+DenseLinAlgLAPack.obj: $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT DenseLinAlgLAPack.obj -MD -MP -MF "$(DEPDIR)/DenseLinAlgLAPack.Tpo" -c -o DenseLinAlgLAPack.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/DenseLinAlgLAPack.Tpo" "$(DEPDIR)/DenseLinAlgLAPack.Po"; else rm -f "$(DEPDIR)/DenseLinAlgLAPack.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp' object='DenseLinAlgLAPack.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/DenseLinAlgLAPack.Po' tmpdepfile='$(DEPDIR)/DenseLinAlgLAPack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DenseLinAlgLAPack.obj `if test -f '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; then $(CYGPATH_W) '$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp'; fi`
+
 .f.o:
 	$(F77COMPILE) -c -o $@ $<
 
@@ -1450,7 +1963,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src $(distdir)/RTOpPack/src/base
+	$(mkdir_p) $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src $(distdir)/RTOpPack/src/base
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

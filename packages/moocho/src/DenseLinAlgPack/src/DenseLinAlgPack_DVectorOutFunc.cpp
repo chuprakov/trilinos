@@ -16,8 +16,8 @@
 #include <ostream>
 #include <iomanip>
 
-#include "DVectorOutFunc.hpp"
-#include "DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOutFunc.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 
 std::ostream& DenseLinAlgPack::output(std::ostream& os, const DVectorSlice& vs
 	, LinAlgPackIO::fmtflags extra_flags)

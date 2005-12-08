@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
-#include "DenseLinAlgPack/src/LAPACK_Cpp.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack_LAPACK_Cpp.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

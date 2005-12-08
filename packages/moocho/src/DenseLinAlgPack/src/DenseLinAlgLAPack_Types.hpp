@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// DenseLinAlgLAPackTypes.hpp
+// DenseLinAlgLAPack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,12 +18,12 @@
 
 #include <stdexcept>
 
-#include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgLAPack {
 
 // Include public types from DenseLinAlgPack
-#include "DenseLinAlgPack/src/DenseLinAlgPackPublicTypes.ud"
+#include "DenseLinAlgPack_PublicTypes.ud"
 
 /// Exception for factorization error
 class FactorizationException : public std::logic_error

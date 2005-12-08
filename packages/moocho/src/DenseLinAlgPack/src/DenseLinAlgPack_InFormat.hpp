@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackInFormat.hpp
+// DenseLinAlgPack_InFormat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define LINALGPACK_IN_FORMAT_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "DenseLinAlgPackInFormatDecl.hpp"
+#include "DenseLinAlgPack_InFormatDecl.hpp"
 #else
-#include "DenseLinAlgPackInFormatDef.hpp"
+#include "DenseLinAlgPack_InFormatDef.hpp"
 #endif
 
 #endif	// LINALGPACK_IN_FORMAT_H

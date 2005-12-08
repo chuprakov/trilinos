@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// DenseLinAlgPackTypes.hpp
+// DenseLinAlgPack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINALGPACK_TYPES_H
 #define LINALGPACK_TYPES_H
 
-#include "DenseLinAlgPackOptions.hpp"
-#include "Range1D.hpp"
-#include "MoochoMoreUtilities/src/BLAS_CppTypes.hpp"
+#include "DenseLinAlgPack_Options.hpp"
+#include "Thyra_Range1D.hpp"
+#include "BLAS_Cpp_Types.hpp"
 
 namespace DenseLinAlgPack {
 

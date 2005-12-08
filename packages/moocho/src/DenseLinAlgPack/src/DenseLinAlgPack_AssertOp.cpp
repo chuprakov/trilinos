@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef LINALGPACK_CHECK_RHS_SIZES

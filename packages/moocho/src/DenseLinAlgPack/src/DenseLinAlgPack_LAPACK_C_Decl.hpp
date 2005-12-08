@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// LAPACK_C_Decl.hpp
+// DenseLinAlgPack_LAPACK_C_Decl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef LAPACK_C_DECL_H
 #define LAPACK_C_DECL_H
 
-#include "MoochoMoreUtilities/src/fortran_types.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 // C Declarations for calling LAPACK functions.
 

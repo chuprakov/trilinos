@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////
-// MatlabPack.hpp
+// DenseLinAlgPack_MatlabPack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATLAB_PACK_H
 #define MATLAB_PACK_H
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 namespace MatlabPack {

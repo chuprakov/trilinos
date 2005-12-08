@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// DVectorOp.hpp
+// DenseLinAlgPack_DVectorOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -14,12 +14,12 @@
 // above mentioned "Artistic License" for more details.
 //
 
-// See DMatrixOp.hpp for description of naming convensions
+// See DenseLinAlgPack_DMatrixOp.hpp for description of naming convensions
 
 #ifndef VECTOROP_H
 #define VECTOROP_H
 
-#include "DVectorAssign.hpp"
+#include "DenseLinAlgPack_DVectorAssign.hpp"
 
 /* * @name {\bf Basic DVector Operation Functions (Level-1 BLAS)}.
   *

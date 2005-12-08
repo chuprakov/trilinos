@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPackIOFormat.hpp"
+#include "DenseLinAlgPack_IOFormat.hpp"
 
 // //////////////////
 //  ios_format_memento

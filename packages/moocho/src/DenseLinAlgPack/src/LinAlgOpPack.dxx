@@ -5,7 +5,7 @@ Package of template functions for specializing compatable linear algebra
 operations build using {\em DenseLinAlgPack}.
 */
 //@{
-  //@Include: LinAlgOpPackDecl.hpp
+  //@Include: DenseLinAlgPack_LinAlgOpPackDecl.hpp
 //@}
 
 

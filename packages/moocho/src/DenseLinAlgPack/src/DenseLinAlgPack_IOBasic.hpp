@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackIOBasic.hpp
+// DenseLinAlgPack_IOBasic.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,7 +21,7 @@
 #include <ios>
 #include <stdexcept>
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 namespace LinAlgPackIO {

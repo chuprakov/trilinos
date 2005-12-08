@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 
 // /////////////////////////////////////
 // Fortran function declarations.

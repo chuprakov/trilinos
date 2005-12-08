@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 
 #ifdef _DEBUG   // Debug only!
 bool DenseLinAlgPack::PermVecMat_print = false;
 #include <iostream>
-#include "DenseLinAlgPack/src/PermOut.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack_PermOut.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 #endif
 
 // Local assert function

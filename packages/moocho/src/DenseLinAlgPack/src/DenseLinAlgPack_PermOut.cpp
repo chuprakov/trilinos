@@ -15,8 +15,8 @@
 
 #include <iomanip>
 
-#include "PermOut.hpp"
-#include "IVector.hpp"
+#include "DenseLinAlgPack_PermOut.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 
 std::ostream& DenseLinAlgPack::operator<<(std::ostream& o, const IVector& perm) {
 	int w = o.width(0) - 1; // get the set width

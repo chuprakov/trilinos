@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// LAPACK_Cpp.hpp
+// DenseLinAlgPack_LAPACK_Cpp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef LAPACK_CPP_H
 #define LAPACK_CPP_H
 
-#include "LAPACK_C_Decl.hpp"
-#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_LAPACK_C_Decl.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 
 // Cpp Declarations for calling LAPACK functions that
 // use function overloading to remove the floating point

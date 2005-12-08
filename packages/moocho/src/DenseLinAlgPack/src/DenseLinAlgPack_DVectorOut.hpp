@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// DVectorOut.hpp
+// DenseLinAlgPack_DVectorOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef VECTOROUT_H
 #define VECTOROUT_H
 
-#include "DVectorOutFunc.hpp"
+#include "DenseLinAlgPack_DVectorOutFunc.hpp"
 
 namespace DenseLinAlgPack {
 

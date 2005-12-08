@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// DMatrixInFunc.hpp
+// DenseLinAlgPack_DMatrixInFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GENMATRIX_IN_FUNC_H
 #define GENMATRIX_IN_FUNC_H
 
-#include "DenseLinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPack_IOBasic.hpp"
 
 namespace DenseLinAlgPack {
 

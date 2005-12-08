@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// TestDenseLinAlgPackIO.hpp
+// DenseLinAlgPack_TestDenseLinAlgPackIO.hpp
 
 #ifndef TEST_LINALGPACK_IO_H
 #define TEST_LINALGPACK_IO_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// DVectorClassTmpl.hpp
+// DenseLinAlgPack_DVectorClassTmpl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <vector>
 
-#include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
-#include "Range1D.hpp"
-#include "MoochoMoreUtilities/src/StrideIter.hpp"
+#include "DenseLinAlgPack_Types.hpp"
+#include "Thyra_Range1D.hpp"
+#include "StrideIterPack_StrideIter.hpp"
 
 namespace DenseLinAlgPack{
 

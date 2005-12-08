@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// DMatrixAsTriSym.hpp
+// DenseLinAlgPack_DMatrixAsTriSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GEN_MATRIX_AS_TRI_SYM_H
 #define GEN_MATRIX_AS_TRI_SYM_H
 
-#include "DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 namespace DenseLinAlgPack {
 

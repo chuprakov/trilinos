@@ -1,7 +1,7 @@
 /** @name namespace LinAlgPackIO. */
 //@{
-  //@Include: DenseLinAlgPackIOBasic.hpp
-  //@Include: DenseLinAlgPackIOFormat.hpp
+  //@Include: DenseLinAlgPack_IOBasic.hpp
+  //@Include: DenseLinAlgPack_IOFormat.hpp
 //@}
 
 

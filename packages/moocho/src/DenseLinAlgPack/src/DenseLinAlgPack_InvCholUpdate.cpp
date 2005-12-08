@@ -15,9 +15,9 @@
 
 #include <math.h>
 
-#include "InvCholUpdate.hpp"
-#include "DMatrixClass.hpp"
-#include "DVectorOp.hpp"
+#include "DenseLinAlgPack_InvCholUpdate.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
 
 namespace {
 // sign function

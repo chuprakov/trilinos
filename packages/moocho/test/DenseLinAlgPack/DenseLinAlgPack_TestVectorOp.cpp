@@ -20,11 +20,11 @@
 
 #include <math.h>
 
-#include "TestDenseLinAlgPack.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
-#include "DenseLinAlgPack/src/MatVecCompare.hpp"
+#include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
+#include "DenseLinAlgPack_MatVecCompare.hpp"
 
 namespace {
 

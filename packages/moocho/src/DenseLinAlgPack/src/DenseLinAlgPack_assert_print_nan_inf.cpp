@@ -17,9 +17,9 @@
 #include <sstream>
 #include <iomanip>
 
-#include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack_assert_print_nan_inf.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "check_nan_inf.h"
 
 bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]

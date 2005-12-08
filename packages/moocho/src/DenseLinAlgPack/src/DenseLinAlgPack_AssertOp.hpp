@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackAssertOp.hpp
+// DenseLinAlgPack_AssertOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef LIN_ALG_PACK_ASSERT_OP_H
 #define LIN_ALG_PACK_ASSERT_OP_H
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

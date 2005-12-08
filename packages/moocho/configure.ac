@@ -279,6 +279,7 @@ AC_CONFIG_FILES([
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile
+    test/DenseLinAlgPack/Makefile
     ])
 
 AC_OUTPUT()

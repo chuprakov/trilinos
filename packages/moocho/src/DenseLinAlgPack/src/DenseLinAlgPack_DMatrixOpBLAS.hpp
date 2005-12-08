@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DMatrixOpBLAS.hpp
+// DenseLinAlgPack_DMatrixOpBLAS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GENMATRIX_OP_BLAS_H
 #define GENMATRIX_OP_BLAS_H
 
-#include "DMatrixClass.hpp"
-#include "BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 
 #endif // GENMATRIX_OP_BLAS_H

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackInFormatDecl.hpp
+// DenseLinAlgPack_InFormatDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef LINALGPACK_IN_FORMAT_DECL_H
 #define LINALGPACK_IN_FORMAT_DECL_H
 
-#include "DenseLinAlgPackIOFormat.hpp"
+#include "DenseLinAlgPack_IOFormat.hpp"
 
 namespace DenseLinAlgPack {
 

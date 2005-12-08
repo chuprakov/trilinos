@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackOptions.hpp
+// DenseLinAlgPack_Options.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,14 +19,14 @@
 #ifndef LINALGPACK_OPTIONS_H
 #define LINALGPACK_OPTIONS_H
 
-#include "extended_value_type.hpp"
-#include "MoochoMoreUtilities/src/fortran_types.hpp"
+#include "DenseLinAlgPack_extended_value_type.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 #if !defined(LINALGPACK_NO_CHECKS)
 
 /* * @name {\bf DenseLinAlgPack Options}.
   *
-  * The header file DenseLinAlgPackOptions.hpp contains the defines for several macros that
+  * The header file DenseLinAlgPack_Options.hpp contains the defines for several macros that
   * determine how the library is built.  The user should comment out any
   * macros that her or she does not want to be defined.  The definition of
   * these macros cause the library code to assert the preconditions documented

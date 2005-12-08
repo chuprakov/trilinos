@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "DenseLinAlgPack/src/delete_row_col.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_delete_row_col.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 
 void DenseLinAlgPack::delete_row_col( size_type kd, DMatrixSliceTriEle* tri_M )
 {

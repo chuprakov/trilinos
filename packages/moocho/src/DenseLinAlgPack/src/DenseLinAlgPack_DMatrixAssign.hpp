@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// DMatrixAssign.hpp
+// DenseLinAlgPack_DMatrixAssign.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #ifndef GEN_MATRIX_ASSIGN_H
 #define GEN_MATRIX_ASSIGN_H
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

@@ -239,6 +239,98 @@ RTOp_PACK_STD_OPS_HPP = \
 RTOp_PACK_STD_OPS_CPP = \
   $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
 
+DENSE_LIN_ALG_PACK_HPP = \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_ElementaryMatVec.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOBasic.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO_NameLookups.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IVector.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDecl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDef.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_Cpp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDecl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDef.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Options.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_OutFormat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Types.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_extended_value_type.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.hpp
+
+DENSE_LIN_ALG_PACK_CPP = \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp \
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -266,7 +358,8 @@ MOOCHO_H = \
   $(RTOP_PACK_BASE_H) \
   $(RTOP_PACK_BASE_HPP) \
   $(RTOP_PACK_STD_OPS_H) \
-  $(RTOP_PACK_STD_OPS_HPP)
+  $(RTOP_PACK_STD_OPS_HPP) \
+  $(DENSE_LIN_ALG_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -275,7 +368,8 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_BASE_C) \
   $(RTOP_PACK_BASE_CPP) \
   $(RTOP_PACK_STD_OPS_C) \
-  $(RTOP_PACK_STD_OPS_CPP)
+  $(RTOP_PACK_STD_OPS_CPP) \
+  $(DENSE_LIN_ALG_PACK_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

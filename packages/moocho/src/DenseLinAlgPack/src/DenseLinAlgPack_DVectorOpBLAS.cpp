@@ -18,10 +18,10 @@
 #include <math.h> // VC++ 5.0 <cmath> is not CD2 complient yet
 	// ToDo: Update math function calls to cmath once you get a compiler that meets the standard.
 
-#include "DVectorClass.hpp"
-#include "DVectorOp.hpp"
-#include "BLAS_Cpp.hpp"
-#include "DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace {
 

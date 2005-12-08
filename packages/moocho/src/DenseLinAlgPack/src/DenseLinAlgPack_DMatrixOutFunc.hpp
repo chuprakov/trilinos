@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// DMatrixOutFunc.hpp
+// DenseLinAlgPack_DMatrixOutFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GENMATRIX_OUT_FUNC_H
 #define GENMATRIX_OUT_FUNC_H
 
-#include "DenseLinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPack_IOBasic.hpp"
 
 namespace DenseLinAlgPack {
 

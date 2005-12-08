@@ -16,7 +16,7 @@
 
 #include <iomanip>
 
-#include "DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 namespace DenseLinAlgPack {
 

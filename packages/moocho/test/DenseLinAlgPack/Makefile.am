@@ -1,7 +1,10 @@
 #@HEADER
 # ************************************************************************
 # 
-# 
+# Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
+#
+#   Copyright (2003) Sandia Corporation
+#
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 # license for use of this work by or on behalf of the U.S. Government.
 # 
@@ -24,7 +27,17 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = MoochoUtilities IterationPack DenseLinAlgPack
+noinst_PROGRAMS = TestDenseLinAlgPack
 
-EXTRA_DIST = definition
+TestDenseLinAlgPack_SOURCES = \
+  $(srcdir)/DenseLinAlgPack_TestGenMatrixClass.cpp\
+  $(srcdir)/DenseLinAlgPack_TestGenMatrixOp.cpp\
+  $(srcdir)/DenseLinAlgPack_TestDenseLinAlgPack.cpp\
+  $(srcdir)/DenseLinAlgPack_TestVectorClass.cpp\
+  $(srcdir)/DenseLinAlgPack_TestVectorOp.cpp\
+  $(srcdir)/DenseLinAlgPack_TestDenseLinAlgPackIO.cpp\
+  $(srcdir)/TestDenseLinAlgPackMain.cpp
+TestDenseLinAlgPack_DEPENDENCIES = $(common_dependencies)
+TestDenseLinAlgPack_LDADD = $(common_ldadd)
 
+include $(top_srcdir)/test/MakefileExeStub.mak

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// extended_value_type.hpp
+// DenseLinAlgPack_extended_value_type.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

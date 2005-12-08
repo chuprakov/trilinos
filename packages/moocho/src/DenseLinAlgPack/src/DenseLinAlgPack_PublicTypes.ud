@@ -1,12 +1,12 @@
 // //////////////////////////////////////////////////////////////
-// DenseLinAlgPackPublicTypes.ud
+// DenseLinAlgPack_PublicTypes.ud
 //
 // This is a set of using declarations for the types that DenseLinAlgPack
 // exposes publicly.  A namespace that wants to included these
 // names should use:
 //
 // namespace MyNamespace {
-//     #include "DenseLinAlgPackPublicTypes.ud"
+//     #include "DenseLinAlgPack_PublicTypes.ud"
 // }
 
 typedef DenseLinAlgPack::value_type		value_type;

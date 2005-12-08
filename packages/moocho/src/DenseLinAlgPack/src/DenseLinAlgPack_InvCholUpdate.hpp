@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// InvCholUpdate.hpp
+// DenseLinAlgPack_InvCholUpdate.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef INV_CHOL_UPDATE_H
 #define INV_CHOL_UPDATE_H
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

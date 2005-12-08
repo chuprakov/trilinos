@@ -16,9 +16,9 @@
 #include <limits>
 #include <algorithm>
 
-#include "MatVecCompare.hpp"
-#include "DMatrixClass.hpp"
-#include "DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_MatVecCompare.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 
 namespace {
 //

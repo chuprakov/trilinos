@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// BLAS_Cpp.hpp
+// DenseLinAlgPack_BLAS_Cpp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 #ifndef BLAS_CPP_OVERLOADS_DECLARATIONS_H
 #define BLAS_CPP_OVERLOADS_DECLARATIONS_H
 
-#include "MoochoMoreUtilities/src/fortran_types.hpp"
-#include "MoochoMoreUtilities/src/BLAS_CppTypes.hpp"
+#include "Teuchos_F77_wrappers.h"
+#include "BLAS_Cpp_Types.hpp"
 
 // Overloaded BLAS wrappers.
 // The naming convention is the Fortran BLAS name minus the type prefix.

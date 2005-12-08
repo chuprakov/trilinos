@@ -6,6 +6,7 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/RTOpPack/src/base \
   -I@abs_top_srcdir@/src/MoochoUtilities/src \
   -I@abs_top_srcdir@/src/IterationPack/src \
+  -I@abs_top_srcdir@/src/DenseLinAlgPack/src \
   -I@abs_top_srcdir@/src \
   -I@abs_top_builddir@/src \
   $(THYRA_INCLUDES)

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackIO_NameLookups.hpp
+// DenseLinAlgPack_IO_NameLookups.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

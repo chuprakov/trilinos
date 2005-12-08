@@ -15,10 +15,10 @@
 
 #include <sstream>
 
-#include "MoochoMoreUtilities/src/EatInputComment.hpp"
-#include "DMatrixInFunc.hpp"
-#include "DVectorInFunc.hpp"
-#include "DMatrixClass.hpp"
+#include "InputStreamHelperPack_EatInputComment.hpp"
+#include "DenseLinAlgPack_DMatrixInFunc.hpp"
+#include "DenseLinAlgPack_DVectorInFunc.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 namespace {	// Local inplementation
 std::istream& input_gms(std::istream& is, DenseLinAlgPack::DMatrixSlice* gms, const char func[]);

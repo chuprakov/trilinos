@@ -17,8 +17,8 @@
 #include <iomanip>
 #include <ostream>
 
-#include "MatlabPack.hpp"
-#include "DMatrixClass.hpp"
+#include "DenseLinAlgPack_MatlabPack.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 namespace DenseLinAlgPack {
 

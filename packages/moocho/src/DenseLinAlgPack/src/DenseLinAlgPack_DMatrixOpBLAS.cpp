@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DMatrixOp.hpp"
-#include "BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 
 namespace {
 

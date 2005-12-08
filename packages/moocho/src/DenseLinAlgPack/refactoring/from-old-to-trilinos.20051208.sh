@@ -7,10 +7,10 @@
 # To run this script, you must have the variable $MOOCHO_BASE_DIR set
 # to the base MOOCHO directory so that
 #
-#    $MOOCHO_BASE_DIR/moocho/src/RTOpPack/refactoring
+#    $MOOCHO_BASE_DIR/moocho/src/DenseLinAlgPack/refactoring
 #
 # is where this file is.  Trilinos/commonTools/refactoring must also
 # be added to your path.
 #
 
-token-replace-list-r $MOOCHO_BASE_DIR/moocho/src/RTOpPack/refactoring/new-headers-includes.20051207.txt
+token-replace-list-r $MOOCHO_BASE_DIR/moocho/src/DenseLinAlgPack/refactoring/new-header-includes.20051208.txt

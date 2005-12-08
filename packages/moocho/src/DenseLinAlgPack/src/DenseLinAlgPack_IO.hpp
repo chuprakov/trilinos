@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// DenseLinAlgPackIO.hpp
+// DenseLinAlgPack_IO.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,17 +20,17 @@
 #ifndef LINALGPACK_IO_H
 #define LINALGPACK_IO_H
 
-#include "MoochoMoreUtilities/src/EatInputComment.hpp"
-#include "DVectorIn.hpp"
-#include "DVectorOut.hpp"
-#include "DMatrixIn.hpp"
-#include "DMatrixOut.hpp"
-#include "DenseLinAlgPackInFormatDef.hpp"
-#include "DenseLinAlgPackOutFormatDef.hpp"
+#include "InputStreamHelperPack_EatInputComment.hpp"
+#include "DenseLinAlgPack_DVectorIn.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
+#include "DenseLinAlgPack_DMatrixIn.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_InFormat.hpp"
+#include "DenseLinAlgPack_OutFormat.hpp"
 
 // Include namelookups for templated operator functions.  MS VS++ 5.0 standard
 // nonconformance problem.
 
-#include "DenseLinAlgPackIO_NameLookups.hpp"
+#include "DenseLinAlgPack_IO_NameLookups.hpp"
 
 #endif // LINALGPACK_IO_H

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// PermIn.hpp
+// DenseLinAlgPack_PermIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <istream>
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace DenseLinAlgPack {
 

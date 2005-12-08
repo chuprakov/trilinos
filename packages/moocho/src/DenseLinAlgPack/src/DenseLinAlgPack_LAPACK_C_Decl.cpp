@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPack/src/LAPACK_C_Decl.hpp"
+#include "DenseLinAlgPack_LAPACK_C_Decl.hpp"
 
 // DPOTRF
 

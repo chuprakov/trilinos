@@ -18,11 +18,11 @@
 #include <vector>
 #include <typeinfo>
 
-#include "TestDenseLinAlgPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/MatVecCompare.hpp"
+#include "DenseLinAlgPack_TestDenseLinAlgPack.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_MatVecCompare.hpp"
 
 namespace {
 

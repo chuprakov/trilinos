@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// PermVecMat.hpp
+// DenseLinAlgPack_PermVecMat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <stdexcept>
 
-#include "DenseLinAlgPackTypes.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 /* * @name {\bf DVector / Matrix Permutations}.
   *
@@ -48,7 +48,7 @@
 
 // @{
 
-// @Include: IVector.hpp
+// @Include: DenseLinAlgPack_IVector.hpp
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Public Permutation functions

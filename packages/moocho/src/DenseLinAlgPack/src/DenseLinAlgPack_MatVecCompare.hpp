@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatVecCompare.hpp
+// DenseLinAlgPack_MatVecCompare.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,8 +23,8 @@
 #include <math.h>
 #endif
 
-#include "DenseLinAlgPackTypes.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "DenseLinAlgPack_Types.hpp"
+#include "TestingHelperPack_update_success.hpp"
 
 namespace DenseLinAlgPack {
 
