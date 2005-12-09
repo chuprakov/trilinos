@@ -24,6 +24,8 @@ IterationPack/src/IterQuantityAccessContiguousDef.hpp                           
 IterQuantityAccessContiguousDef.hpp                                                                   IterationPack_IterQuantityAccessContiguousDef.hpp
 IterationPack/src/IterationPackTypes.hpp                                                              IterationPack_Types.hpp
 IterationPackTypes.hpp                                                                                IterationPack_Types.hpp
+IterationPack/src/IterationPackPublicTypes.ud                                                         IterationPack_PublicTypes.ud
+IterationPackPublicTypes.ud                                                                           IterationPack_PublicTypes.ud
 IterationPack/src/cast_iq.hpp                                                                         IterationPack_cast_iq.hpp
 cast_iq.hpp                                                                                           IterationPack_cast_iq.hpp
 IterationPack/src/print_algorithm_step.hpp                                                            IterationPack_print_algorithm_step.hpp
