@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPTesterSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "NLPInterfacePack_NLPTesterSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

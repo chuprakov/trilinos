@@ -1,16 +1,16 @@
 // //////////////////////////////////////////////////////////////
-// NLPInterfacePackPublicTypes.ud
+// NLPInterfacePack_PublicTypes.ud
 //
 // This is a set of using declarations for the types that NLPInterfacePack
 // exposes publicly.  A namespace that wants to included these
 // names should use:
 //
 // namespace MyNamespace {
-//     #include "NLPInterfacePackPublicTypes.ud"
+//     #include "NLPInterfacePack_PublicTypes.ud"
 // }
 
 // Include the types from AbstractLinAlgPack
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackPublicTypes.ud"
+#include "AbstractLinAlgPack_PublicTypes.ud"
 
 using NLPInterfacePack::NLP;
 using NLPInterfacePack::NLPObjGrad;

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSerialPreprocess.hpp
+// NLPInterfacePack_NLPSerialPreprocess.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,13 +18,13 @@
 
 #include <valarray>
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "NLPInterfacePack_NLPVarReductPerm.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "AbstractLinAlgPack_PermutationSerial.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 
 namespace NLPInterfacePack {
 

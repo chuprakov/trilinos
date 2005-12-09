@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "Range1D.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

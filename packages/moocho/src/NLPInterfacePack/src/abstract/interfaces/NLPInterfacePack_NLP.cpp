@@ -15,9 +15,9 @@
 
 #include <limits>
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "NLPInterfacePack_NLP.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSerialPreprocessExplJac.hpp
+// NLPInterfacePack_NLPSerialPreprocessExplJac.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <valarray>
 
-#include "NLPInterfacePack/src/serial/NLPSerialPreprocess.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "NLPInterfacePack_NLPSerialPreprocess.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "AbstractLinAlgPack_BasisSystemFactoryStd.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 

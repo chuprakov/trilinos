@@ -17,17 +17,17 @@
 
 #include <algorithm>
 
-#include "NLPThyraModelEvaluator.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/thyra/ThyraAccessors.hpp"
-#include "AbstractLinAlgPack/src/abstract/thyra/VectorSpaceThyra.hpp"
-#include "AbstractLinAlgPack/src/abstract/thyra/VectorMutableThyra.hpp"
-#include "AbstractLinAlgPack/src/abstract/thyra/MatrixOpNonsingThyra.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
+#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_ThyraAccessors.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsingThyra.hpp"
+#include "AbstractLinAlgPack_BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
 #include "Thyra_ExplicitVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -36,7 +36,7 @@
 // Debugging only
 //#include <iostream>
 //#include <typeinfo>
-//#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+//#include "AbstractLinAlgPack_VectorOut.hpp"
 //#include "TSFCoreTestingTools.hpp"
 
 /** ToDo:

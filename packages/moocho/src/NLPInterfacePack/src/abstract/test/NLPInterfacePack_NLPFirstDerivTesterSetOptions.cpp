@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPFirstDerivTesterSetOptions.hpp"
+#include "NLPInterfacePack_NLPFirstDerivTesterSetOptions.hpp"
 
 // Define the options
 namespace {

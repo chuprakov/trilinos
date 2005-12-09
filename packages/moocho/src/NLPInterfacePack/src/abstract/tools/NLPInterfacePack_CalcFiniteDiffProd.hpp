@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// CalcFiniteDiffProd.hpp
+// NLPInterfacePack_CalcFiniteDiffProd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef CALC_FINITE_DIFF_FIRST_DERIVATIVE_PRODUCT_H
 #define CALC_FINITE_DIFF_FIRST_DERIVATIVE_PRODUCT_H
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack_Types.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {

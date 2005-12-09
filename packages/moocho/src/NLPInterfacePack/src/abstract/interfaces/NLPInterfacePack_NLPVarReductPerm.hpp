@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPVarReductPerm.hpp
+// NLPInterfacePack_NLPVarReductPerm.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_VAR_REDUCT_PERM_H
 #define NLP_VAR_REDUCT_PERM_H
 
-#include "NLP.hpp"
+#include "NLPInterfacePack_NLP.hpp"
 
 namespace NLPInterfacePack {
 

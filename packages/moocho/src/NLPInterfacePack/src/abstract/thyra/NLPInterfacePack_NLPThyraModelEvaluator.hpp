@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// NLPThyraModelEvaluator.hpp
+// NLPInterfacePack_NLPThyraModelEvaluator.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 //#include "TSFCoreNonlinTypes.hpp"
 #include "Thyra_ModelEvaluator.hpp"
 #include "Teuchos_TestForException.hpp"

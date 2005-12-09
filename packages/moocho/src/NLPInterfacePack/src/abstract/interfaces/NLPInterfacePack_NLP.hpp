@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLP.hpp
+// NLPInterfacePack_NLP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,9 +19,9 @@
 #include <stdexcept>
 #include <string>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
+#include "NLPInterfacePack_Types.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_Permutation.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 

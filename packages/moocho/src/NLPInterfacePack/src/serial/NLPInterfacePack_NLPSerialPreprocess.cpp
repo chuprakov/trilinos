@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include <iostream> // Debug only
-#include "DenseLinAlgPack/src/PermOut.hpp"
+#include "DenseLinAlgPack_PermOut.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -24,16 +24,16 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "NLPInterfacePack/src/serial/NLPSerialPreprocess.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "NLPInterfacePack_NLPSerialPreprocess.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_PermutationSerial.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"

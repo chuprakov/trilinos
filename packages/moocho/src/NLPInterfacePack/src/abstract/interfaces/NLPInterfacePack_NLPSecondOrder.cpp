@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
+#include "NLPInterfacePack_NLPSecondOrder.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

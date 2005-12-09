@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPObjGrad.hpp
+// NLPInterfacePack_NLPObjGrad.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_OBJ_GRADIENT_H
 #define NLP_OBJ_GRADIENT_H
 
-#include "NLP.hpp"
+#include "NLPInterfacePack_NLP.hpp"
 
 namespace NLPInterfacePack {
 ///

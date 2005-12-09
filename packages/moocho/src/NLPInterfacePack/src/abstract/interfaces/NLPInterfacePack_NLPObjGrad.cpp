@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "NLPInterfacePack_NLPObjGrad.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 
 namespace {
 	const char name_Gf[] = "Gf";

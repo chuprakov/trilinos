@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPDirectTesterSetOptions.hpp
+// NLPInterfacePack_NLPDirectTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 
-#include "NLPDirectTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "NLPInterfacePack_NLPDirectTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

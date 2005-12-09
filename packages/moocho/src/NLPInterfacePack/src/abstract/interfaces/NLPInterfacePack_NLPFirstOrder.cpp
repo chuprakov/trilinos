@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "Range1D.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

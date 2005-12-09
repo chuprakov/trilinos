@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPFirstOrder.hpp
+// NLPInterfacePack_NLPFirstOrder.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_FIRST_ORDER_INFO_H
 #define NLP_FIRST_ORDER_INFO_H
 
-#include "NLPObjGrad.hpp"
+#include "NLPInterfacePack_NLPObjGrad.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 
 namespace NLPInterfacePack {

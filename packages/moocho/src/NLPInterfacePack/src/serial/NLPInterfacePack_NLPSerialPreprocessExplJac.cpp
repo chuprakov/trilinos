@@ -18,20 +18,20 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include "NLPSerialPreprocessExplJac.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixPermAggr.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "NLPInterfacePack_NLPSerialPreprocessExplJac.hpp"
+#include "AbstractLinAlgPack_MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack_BasisSystemFactory.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_MatrixSparseCOORSerial.hpp"
+#include "AbstractLinAlgPack_PermutationSerial.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 
 namespace NLPInterfacePack {
 

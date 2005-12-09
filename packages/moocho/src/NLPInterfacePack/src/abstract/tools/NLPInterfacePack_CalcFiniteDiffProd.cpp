@@ -22,14 +22,14 @@
 #include <sstream>
 #include <limits>
 
-#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "Range1D.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack_NLP.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

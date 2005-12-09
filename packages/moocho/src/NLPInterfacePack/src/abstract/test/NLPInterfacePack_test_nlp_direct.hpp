@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_direct.hpp
+// NLPInterfacePack_test_nlp_direct.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack_Types.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

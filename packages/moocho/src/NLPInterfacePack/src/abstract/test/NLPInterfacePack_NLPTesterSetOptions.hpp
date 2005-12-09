@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPTesterSetOptions.hpp
+// NLPInterfacePack_NLPTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_TESTER_SET_OPTIONS_H
 #define NLP_TESTER_SET_OPTIONS_H
 
-#include "NLPTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "NLPInterfacePack_NLPTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

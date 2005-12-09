@@ -21,16 +21,16 @@
 #include <sstream>
 #include <limits>
 
-#include "NLPDirectTester.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "Range1D.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "NLPInterfacePack_NLPDirectTester.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "Thyra_Range1D.hpp"
+#include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

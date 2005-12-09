@@ -588,6 +588,52 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
 
+NLP_INTERFACE_PACK_HPP = \
+  $(srcdir)/NLPInterfacePack/src/NLPInterfacePack_Types.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPDirect.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPFirstOrder.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPObjGrad.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPSecondOrder.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPVarReductPerm.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTester.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTesterSetOptions.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTester.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTesterSetOptions.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTester.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTesterSetOptions.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.hpp\
+  $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.hpp\
+  $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.hpp
+
+NLP_INTERFACE_PACK_CPP = \
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPDirect.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPFirstOrder.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPObjGrad.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPSecondOrder.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTester.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTesterSetOptions.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTester.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTesterSetOptions.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTester.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTesterSetOptions.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.cpp\
+  $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.cpp\
+  $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.cpp\
+  $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -617,7 +663,8 @@ MOOCHO_H = \
 	$(RTOP_PACK_STD_OPS_H) \
 	$(RTOP_PACK_STD_OPS_HPP) \
 	$(DENSE_LIN_ALG_PACK_HPP) \
-	$(ABSTRACT_LIN_ALG_PACK_HPP)
+	$(ABSTRACT_LIN_ALG_PACK_HPP) \
+	$(NLP_INTERFACE_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -628,7 +675,8 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_STD_OPS_C) \
   $(RTOP_PACK_STD_OPS_CPP) \
   $(DENSE_LIN_ALG_PACK_CPP) \
-	$(ABSTRACT_LIN_ALG_PACK_CPP)
+	$(ABSTRACT_LIN_ALG_PACK_CPP) \
+	$(NLP_INTERFACE_PACK_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

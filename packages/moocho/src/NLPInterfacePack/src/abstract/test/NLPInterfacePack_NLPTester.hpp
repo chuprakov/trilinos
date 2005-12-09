@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPTester.hpp
+// NLPInterfacePack_NLPTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack_Types.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {

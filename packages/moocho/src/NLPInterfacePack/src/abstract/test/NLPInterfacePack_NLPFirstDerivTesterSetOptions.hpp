@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstDerivTesterSetOptions.hpp
+// NLPInterfacePack_NLPFirstDerivTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 
-#include "NLPFirstDerivTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "NLPInterfacePack_NLPFirstDerivTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

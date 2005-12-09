@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

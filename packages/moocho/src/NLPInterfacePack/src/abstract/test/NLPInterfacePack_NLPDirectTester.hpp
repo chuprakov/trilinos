@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPDirectTester.hpp
+// NLPInterfacePack_NLPDirectTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack_Types.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProd.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

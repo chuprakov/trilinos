@@ -17,3 +17,4 @@ $MOOCHO_BASE_DIR/moocho/src/MoochoUtilities/refactoring/from-old-to-trilinos.200
 $MOOCHO_BASE_DIR/moocho/src/IterationPack/refactoring/from-old-to-trilinos.20051207.sh
 $MOOCHO_BASE_DIR/moocho/src/RTOpPack/refactoring/from-old-to-trilinos.20051207.sh
 $MOOCHO_BASE_DIR/moocho/src/DenseLinAlgPack/refactoring/from-old-to-trilinos.20051208.sh
+$MOOCHO_BASE_DIR/moocho/src/AbstractLinAlgPack/refactoring/from-old-to-trilinos.20051208.sh

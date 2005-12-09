@@ -2,22 +2,29 @@
 include @abs_top_builddir@/../thyra/Makefile.export.thyra
 
 _MOOCHO_INCLUDES = \
-  -I@abs_top_srcdir@/src/RTOpPack/src/std_ops \
-  -I@abs_top_srcdir@/src/RTOpPack/src/base \
-  -I@abs_top_srcdir@/src/MoochoUtilities/src \
-  -I@abs_top_srcdir@/src/IterationPack/src \
-  -I@abs_top_srcdir@/src/DenseLinAlgPack/src \
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/interfaces\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/thyra\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/tools\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/implementations\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/interfaces\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/serial\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/tools\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/thyra\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/test\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/interfaces\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract\
+  -I@abs_top_srcdir@/src/NLPInterfacePack/src\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/solvers\
-  -I@abs_top_srcdir@/src \
-  -I@abs_top_builddir@/src \
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/interfaces\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/implementations\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/tools\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/thyra\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/interfaces\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src\
+  -I@abs_top_srcdir@/src/DenseLinAlgPack/src\
+  -I@abs_top_srcdir@/src/IterationPack/src\
+  -I@abs_top_srcdir@/src/RTOpPack/src/std_ops\
+  -I@abs_top_srcdir@/src/RTOpPack/src/base\
+  -I@abs_top_srcdir@/src/MoochoUtilities/src\
+  -I@abs_top_srcdir@/src\
+  -I@abs_top_builddir@/src\
   $(THYRA_INCLUDES)
 
 _MOOCHO_LIBS = @LDFLAGS@ -L@abs_top_builddir@/src -lmoocho $(THYRA_LIBS) @LIBS@ @FLIBS@ 

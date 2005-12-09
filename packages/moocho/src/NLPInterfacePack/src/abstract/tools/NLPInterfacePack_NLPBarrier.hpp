@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// NLPBarrier.hpp
+// NLPInterfacePack_NLPBarrier.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,7 +16,7 @@
 #ifndef BARRIER_NLP_H
 #define BARRIER_NLP_H
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
+#include "NLPInterfacePack_NLPObjGrad.hpp"
 
 namespace NLPInterfacePack {
 

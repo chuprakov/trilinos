@@ -17,10 +17,10 @@
 #include <iostream>
 #include <limits>
 
-#include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "NLPInterfacePack_NLPBarrier.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

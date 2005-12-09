@@ -18,15 +18,15 @@
 #include <iomanip>
 #include <ostream>
 
-#include "NLPTester.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "NLPInterfacePack_NLPTester.hpp"
+#include "NLPInterfacePack_NLP.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "TestingHelperPack_update_success.hpp"
 
 namespace NLPInterfacePack {
 

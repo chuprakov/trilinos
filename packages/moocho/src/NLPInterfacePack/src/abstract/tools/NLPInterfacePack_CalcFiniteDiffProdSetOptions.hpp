@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// CalcFiniteDiffProdSetOptions.hpp
+// NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef CALC_FINITE_DIFF_PROD_SET_OPTIONS_H
 #define CALC_FINITE_DIFF_PROD_SET_OPTIONS_H
 
-#include "CalcFiniteDiffProd.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProd.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

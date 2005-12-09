@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPInterfacePackTypes.hpp
+// NLPInterfacePack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,12 +16,12 @@
 #ifndef NLP_INTERFACE_PACK_TYPES_H
 #define NLP_INTERFACE_PACK_TYPES_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp" // Needed for doxygen?
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp" // Needed for doxygen?
 
 namespace NLPInterfacePack {
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackPublicTypes.ud"
+#include "AbstractLinAlgPack_PublicTypes.ud"
 
 // NLP interface classes
 
