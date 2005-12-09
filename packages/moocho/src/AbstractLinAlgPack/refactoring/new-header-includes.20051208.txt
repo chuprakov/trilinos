@@ -22,10 +22,7 @@ AbstractLinAlgPack/src/abstract/interfaces/InnerProductDot.hpp                  
 InnerProductDot.hpp                                                                                   AbstractLinAlgPack_InnerProductDot.hpp
 AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp                                           AbstractLinAlgPack_LinAlgOpPack.hpp
 LinAlgOpPack.hpp                                                                                      AbstractLinAlgPack_LinAlgOpPack.hpp
-AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPackDecl.hpp                                       AbstractLinAlgPack_LinAlgOpPackDecl.hpp
-LinAlgOpPackDecl.hpp                                                                                  AbstractLinAlgPack_LinAlgOpPackDecl.hpp
-AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPackDef.hpp                                        AbstractLinAlgPack_LinAlgOpPackDef.hpp
-LinAlgOpPackDef.hpp                                                                                   AbstractLinAlgPack_LinAlgOpPackDef.hpp
+AbstractLinAlgPack/src/abstract/interfaces/DenseLinAlgPack_LinAlgOpPack.hpp                           AbstractLinAlgPack_LinAlgOpPack.hpp
 AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp                                             AbstractLinAlgPack_MatrixBase.hpp
 MatrixBase.hpp                                                                                        AbstractLinAlgPack_MatrixBase.hpp
 AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp                                          AbstractLinAlgPack_MatrixNonsing.hpp
@@ -152,7 +149,7 @@ AbstractLinAlgPack/src/abstract/tools/VectorSpaceTesterSetOptions.hpp           
 VectorSpaceTesterSetOptions.hpp                                                                       AbstractLinAlgPack_VectorSpaceTesterSetOptions.hpp
 AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp                                        AbstractLinAlgPack_assert_print_nan_inf.hpp
 assert_print_nan_inf.hpp                                                                              AbstractLinAlgPack_assert_print_nan_inf.hpp
-assert_print_nan_inf.hpp                                                                              AbstractLinAlgPack_assert_print_nan_inf.hpp
+AbstractLinAlgPack/src/abstract/tools/DenseLinAlgPack_assert_print_nan_inf.hpp                        AbstractLinAlgPack_assert_print_nan_inf.hpp
 InnerProductTSFCore.hpp                                                                               AbstractLinAlgPack_InnerProductTSFCore.hpp
 AbstractLinAlgPack/src/abstract/tsfcore/MatrixOpNonsingTSFCore.hpp                                    AbstractLinAlgPack_MatrixOpNonsingTSFCore.hpp
 MatrixOpNonsingTSFCore.hpp                                                                            AbstractLinAlgPack_MatrixOpNonsingTSFCore.hpp
