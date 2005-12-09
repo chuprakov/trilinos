@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckConvergenceStd_AddedStep.hpp
+// MoochoPack_CheckConvergenceStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
-#include "CheckConvergence_Strategy.hpp"
+#include "MoochoPack_CheckConvergence_Strategy.hpp"
 
 namespace MoochoPack {
 

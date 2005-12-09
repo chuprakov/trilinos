@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// PBFGS_helpers.hpp
+// MoochoPack_PBFGS_helpers.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef PBFGS_HELPERS
 #define PBFGS_HELPERS
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "MoochoPack/src/std/ActSetStats.hpp"
+#include "MoochoPack_Types.hpp"
+#include "MoochoPack_ActSetStats.hpp"
 
 namespace MoochoPack {
 namespace PBFGSPack {

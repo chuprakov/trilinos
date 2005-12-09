@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// active_set_change.hpp
+// MoochoPack_active_set_change.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "../MoochoPackTypes.hpp"
+#include "../MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

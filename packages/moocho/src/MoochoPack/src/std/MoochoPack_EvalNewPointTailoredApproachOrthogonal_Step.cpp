@@ -13,17 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 

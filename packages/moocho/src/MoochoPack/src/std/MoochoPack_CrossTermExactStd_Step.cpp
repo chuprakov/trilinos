@@ -15,14 +15,14 @@
 
 #include <ostream>
 
-#include "../std/CrossTermExactStd_Step.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "../std/MoochoPack_CrossTermExactStd_Step.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

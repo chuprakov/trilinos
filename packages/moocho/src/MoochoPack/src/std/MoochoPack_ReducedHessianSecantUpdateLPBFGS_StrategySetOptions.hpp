@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp
+// MoochoPack_ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_SET_OPTIONS_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_SET_OPTIONS_H
 
-#include "ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

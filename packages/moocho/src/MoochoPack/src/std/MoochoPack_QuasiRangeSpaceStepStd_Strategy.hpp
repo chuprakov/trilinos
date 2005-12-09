@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// QuasiRangeSpaceStepStd_Strategy.hpp
+// MoochoPack_QuasiRangeSpaceStepStd_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QUASI_RANGE_SPACE_STEP_STD_STRATEGY_H
 #define QUASI_RANGE_SPACE_STEP_STD_STRATEGY_H
 
-#include "QuasiRangeSpaceStep_Strategy.hpp"
+#include "MoochoPack_QuasiRangeSpaceStep_Strategy.hpp"
 
 namespace MoochoPack {
 

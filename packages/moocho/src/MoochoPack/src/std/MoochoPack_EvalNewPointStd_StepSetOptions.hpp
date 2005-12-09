@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// EvalNewPointStd_StepSetOptions.hpp
+// MoochoPack_EvalNewPointStd_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H
 #define EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H
 
-#include "EvalNewPointStd_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_EvalNewPointStd_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

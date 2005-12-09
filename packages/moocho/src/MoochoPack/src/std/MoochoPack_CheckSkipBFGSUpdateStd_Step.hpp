@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckSkipBFGSUpdateStd_Step.hpp
+// MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

@@ -14,16 +14,16 @@
 // above mentioned "Artistic License" for more details.
 
 #include <ostream>
-#include "MoochoPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
-#include "MoochoPack/src/NLPAlgoContainer.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_CalcReducedGradLagrangianStd_AddedStep.hpp"
+#include "MoochoPack_NLPAlgoContainer.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

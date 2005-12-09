@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "../std/CheckConvergenceStd_AddedStepSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "../std/MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// InitFinDiffReducedHessian_Step.hpp
+// MoochoPack_InitFinDiffReducedHessian_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

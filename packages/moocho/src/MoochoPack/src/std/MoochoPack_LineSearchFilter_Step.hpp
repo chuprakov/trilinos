@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFilter_Step.hpp
+// MoochoPack_LineSearchFilter_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,13 +18,13 @@
 
 #include <list>
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "IterationPack_CastIQMember.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
-#include "IterationPack/src/AlgorithmState.hpp"
+#include "IterationPack_AlgorithmState.hpp"
 
 namespace MoochoPack {
  

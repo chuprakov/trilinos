@@ -16,14 +16,14 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncPenaltyParam.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncPenaltyParam.hpp"
+#include "ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 
 namespace {
 template< class T >

@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/qp_solver_stats.hpp"
+#include "MoochoPack_qp_solver_stats.hpp"
 
 extern const std::string
 	MoochoPack::qp_solver_stats_name = "qp_solver_stats";

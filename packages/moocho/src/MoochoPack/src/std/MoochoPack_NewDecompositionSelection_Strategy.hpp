@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NewDecompositionSelection_Strategy.hpp
+// MoochoPack_NewDecompositionSelection_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 #define NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/Algorithm.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_Algorithm.hpp"
 
 namespace MoochoPack {
 

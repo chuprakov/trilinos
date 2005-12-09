@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateBFGSFull_Strategy.hpp
+// MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 
-#include "MoochoPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
-#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
+#include "MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp"
+#include "MoochoPack_BFGSUpdate_Strategy.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "MoochoPack/src/std/ReducedHessianSerialization_StepSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoPack_ReducedHessianSerialization_StepSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

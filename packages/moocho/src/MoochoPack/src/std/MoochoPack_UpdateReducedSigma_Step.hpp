@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////
-// UpdateReducedSigma_Step.hpp
+// MoochoPack_UpdateReducedSigma_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,15 +16,15 @@
 #ifndef UPDATE_REDUCED_SIGMA_STEP_H
 #define UPDATE_REDUCED_SIGMA_STEP_H
 
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFullStep_Step.hpp
+// MoochoPack_LineSearchFullStep_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_FULL_STEP_STEP_H
 #define LINE_SEARCH_FULL_STEP_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "ConstrainedOptPack_VariableBoundsTester.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckDecompositionFromRPy_Step.hpp
+// MoochoPack_CheckDecompositionFromRPy_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CHECK_DECOMPOSITION_FROM_R_PY_STEP_H
 #define CHECK_DECOMPOSITION_FROM_R_PY_STEP_H
 
-#include "NewDecompositionSelection_Strategy.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_NewDecompositionSelection_Strategy.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

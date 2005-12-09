@@ -18,7 +18,7 @@
 #include <iostream> // for debugging Release version.
 #include <typeinfo>
 
-#include "NLPAlgo.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
 
 namespace MoochoPack {
 

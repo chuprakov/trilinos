@@ -17,19 +17,19 @@
 
 #include <ostream>
 
-#include "MoochoPack/src/std/InitFinDiffReducedHessian_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-//#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "MoochoPack_InitFinDiffReducedHessian_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "NLPInterfacePack_NLPObjGrad.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+//#include "AbstractLinAlgPack_SpVectorClass.hpp"
 //#include "AbstractLinAlgPack/src/max_near_feas_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace {

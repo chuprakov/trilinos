@@ -20,12 +20,12 @@
 #include <iomanip>
 #include <time.h>
 
-#include "MoochoPack/src/std/MoochoTrackerXMLSummary.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-//#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-//#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "MoochoPack_MoochoTrackerXMLSummary.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+//#include "AbstractLinAlgPack_Vector.hpp"
+//#include "AbstractLinAlgPack_MatrixSymOp.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 using std::endl;

@@ -15,16 +15,16 @@
 
 #include <ostream>
 
-#include "../std/CalcLambdaIndepStd_AddedStep.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
+#include "../std/MoochoPack_CalcLambdaIndepStd_AddedStep.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_ComputeMinMult.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

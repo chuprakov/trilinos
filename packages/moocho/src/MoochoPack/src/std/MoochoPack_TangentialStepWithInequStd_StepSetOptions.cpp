@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "MoochoPack/src/std/TangentialStepWithInequStd_StepSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoPack_TangentialStepWithInequStd_StepSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

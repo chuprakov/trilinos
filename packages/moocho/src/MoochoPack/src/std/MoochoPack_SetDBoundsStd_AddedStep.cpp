@@ -15,11 +15,11 @@
 
 #include <ostream>
 
-#include "MoochoPack/src/std/SetDBoundsStd_AddedStep.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "MoochoPack_SetDBoundsStd_AddedStep.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
 
 namespace MoochoPack {
 

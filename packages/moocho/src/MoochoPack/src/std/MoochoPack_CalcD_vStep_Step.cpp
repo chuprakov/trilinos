@@ -17,17 +17,17 @@
 #include <ostream>
 #include <iostream>
 
-#include "MoochoPack/src/std/CalcD_vStep_Step.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-//#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_CalcD_vStep_Step.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+//#include "ConstrainedOptPack_print_vector_change_stats.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 

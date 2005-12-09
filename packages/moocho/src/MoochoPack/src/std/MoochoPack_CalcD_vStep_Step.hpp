@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcD_vStep_Step.hpp
+// MoochoPack_CalcD_vStep_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,8 +16,8 @@
 #ifndef CALC_D_v_STEP_STEP_H
 #define CALC_D_v_STEP_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace MoochoPack {
 

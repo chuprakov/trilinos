@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchWatchDog_Step.hpp
+// MoochoPack_LineSearchWatchDog_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define LINE_SEARCH_WATCH_DOG_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"

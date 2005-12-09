@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MoochoTrackerXMLSummary.hpp
+// MoochoPack_MoochoTrackerXMLSummary.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,9 +16,9 @@
 #ifndef MOOCHO_TRACKER_XML_SUMMARY_HPP
 #define MOOCHO_TRACKER_XML_SUMMARY_HPP
 
-#include "IterationPack/src/Algorithm.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "IterationPack_Algorithm.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

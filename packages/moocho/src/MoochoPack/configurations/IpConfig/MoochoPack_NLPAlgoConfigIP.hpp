@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// NLPAlgoConfigIP.hpp
+// MoochoPack_NLPAlgoConfigIP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef ALGO_CONFIG_IP_H
 #define ALGO_CONFIG_IP_H
 
-#include "MoochoPack/src/NLPAlgoConfig.hpp"
-#include "MoochoPack/src/NLPAlgo.hpp"
-#include "MoochoPack/configurations/Shared/DecompositionSystemStateStepBuilderStd.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "MoochoPack_NLPAlgoConfig.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "MoochoPack_DecompositionSystemStateStepBuilderStd.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 
 namespace MoochoPack {
 

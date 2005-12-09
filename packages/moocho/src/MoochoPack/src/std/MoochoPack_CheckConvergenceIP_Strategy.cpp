@@ -19,13 +19,13 @@
 //#include <limits>
 //#include <sstream>
 
-#include "MoochoPack/src/std/CheckConvergenceIP_Strategy.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "MoochoPack_CheckConvergenceIP_Strategy.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

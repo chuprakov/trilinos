@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// InitFinDiffReducedHessian_StepSetOptions.hpp
+// MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H
 
-#include "InitFinDiffReducedHessian_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_InitFinDiffReducedHessian_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

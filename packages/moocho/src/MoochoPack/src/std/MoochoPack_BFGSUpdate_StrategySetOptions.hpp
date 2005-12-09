@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BFGSUpdate_StrategySetOptions.hpp
+// MoochoPack_BFGSUpdate_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H
 #define REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H
 
-#include "BFGSUpdate_Strategy.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_BFGSUpdate_Strategy.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

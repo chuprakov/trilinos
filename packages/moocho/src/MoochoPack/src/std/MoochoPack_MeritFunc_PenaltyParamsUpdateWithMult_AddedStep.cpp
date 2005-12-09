@@ -16,15 +16,15 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncPenaltyParams.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
+#include "../std/MoochoPack_MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_MeritFuncPenaltyParams.hpp"
+#include "ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 
 namespace {
 

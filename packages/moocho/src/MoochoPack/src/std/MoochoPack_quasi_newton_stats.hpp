@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// quasi_newton_stats.hpp
+// MoochoPack_quasi_newton_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef QUASI_NEWTON_STATS_HH
 #define QUASI_NEWTON_STATS_HH
 
-#include "QuasiNewtonStats.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
+#include "MoochoPack_QuasiNewtonStats.hpp"
+#include "IterationPack_CastIQMember.hpp"
 
 namespace MoochoPack {
 

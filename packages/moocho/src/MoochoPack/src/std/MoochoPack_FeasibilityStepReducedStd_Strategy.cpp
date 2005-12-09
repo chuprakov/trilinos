@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
-#include "MoochoPack/src/NLPAlgo.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "MoochoPack/src/MoochoPackExceptions.hpp"
+#include "MoochoPack_FeasibilityStepReducedStd_Strategy.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "MoochoPack_Exceptions.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ReducedHessianSerialization_Step.hpp
+// MoochoPack_ReducedHessianSerialization_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SERIALIZATION_STEP_HPP
 #define REDUCED_HESSIAN_SERIALIZATION_STEP_HPP
 
-#include "MoochoPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

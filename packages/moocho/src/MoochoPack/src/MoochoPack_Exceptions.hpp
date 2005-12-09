@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// MoochoPackExceptions.hpp
+// MoochoPack_Exceptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
-#include "MoochoPackTypes.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
+#include "MoochoPack_Types.hpp"
+#include "ConstrainedOptPack_QPSolverStats.hpp"
 
 namespace MoochoPack {
 

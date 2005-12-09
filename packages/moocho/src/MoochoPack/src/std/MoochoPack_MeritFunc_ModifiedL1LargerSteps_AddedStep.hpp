@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp
+// MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

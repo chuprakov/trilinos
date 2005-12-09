@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemHandler_Strategy.hpp
+// MoochoPack_DecompositionSystemHandler_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 #define DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/Algorithm.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_Algorithm.hpp"
 
 namespace MoochoPack {
 

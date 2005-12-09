@@ -18,15 +18,15 @@
 #include <iostream>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
-#include "MoochoPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "NLPInterfacePack_NLPBarrier.hpp"
+#include "MoochoPack_PostProcessBarrierLineSearch_Step.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 

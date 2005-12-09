@@ -15,11 +15,11 @@
 
 #include <ostream>
 
-#include "../std/ActSetStats_AddedStep.hpp"
-#include "../std/active_set_change.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "../std/MoochoPack_ActSetStats_AddedStep.hpp"
+#include "../std/MoochoPack_active_set_change.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 
 bool MoochoPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)

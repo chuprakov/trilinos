@@ -19,10 +19,10 @@
 
 #include <iostream>	// used for debugging the Release version.
 
-#include "MoochoPack/src/NLPAlgoContainer.hpp"
-#include "MoochoPack/src/NLPAlgoInterface.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
+#include "MoochoPack_NLPAlgoContainer.hpp"
+#include "MoochoPack_NLPAlgoInterface.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "NLPInterfacePack_NLP.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

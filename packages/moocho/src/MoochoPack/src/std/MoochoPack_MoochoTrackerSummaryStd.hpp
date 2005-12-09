@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MoochoTrackerSummaryStd.hpp
+// MoochoPack_MoochoTrackerSummaryStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_TRACK_SUMMARY_STD_H
 #define RSQP_TRACK_SUMMARY_STD_H
 
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
-#include "MoochoPack/src/std/qp_solver_stats.hpp"
-#include "MoochoPack/src/std/act_set_stats.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
+#include "MoochoPack_qp_solver_stats.hpp"
+#include "MoochoPack_act_set_stats.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 
 namespace MoochoPack {
 

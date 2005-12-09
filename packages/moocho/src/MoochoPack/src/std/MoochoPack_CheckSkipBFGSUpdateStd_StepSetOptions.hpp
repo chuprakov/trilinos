@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// CheckSkipBFGSUpdateStd_StepSetOptions.hpp
+// MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef CHECK_SKIP_BFGS_UPDATE_STD_STEP_SET_OPTIONS_H
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_SET_OPTIONS_H
 
-#include "CheckSkipBFGSUpdateStd_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

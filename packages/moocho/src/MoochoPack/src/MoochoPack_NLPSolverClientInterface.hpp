@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NLPSolverClientInterface.hpp
+// MoochoPack_NLPSolverClientInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <stdexcept>
 
-#include "MoochoPackTypes.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
+#include "MoochoPack_Types.hpp"
+#include "NLPInterfacePack_NLP.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

@@ -750,6 +750,197 @@ CONSTRAINED_OPT_PACK_F =
 #CONSTRAINED_OPT_PACK_F = \
 #  $(srcdir)/ConstrainedOptPack/src/qpsolvers/qpoptcpp.f
 
+MOOCHO_PACK_HPP = \
+  $(srcdir)/MoochoPack/configurations/MoochoPack_MoochoSolver.hpp \
+  $(srcdir)/MoochoPack/configurations/IpConfig/MoochoPack_NLPAlgoConfigIP.hpp \
+  $(srcdir)/MoochoPack/configurations/MamaJama/MoochoPack_NLPAlgoConfigMamaJama.hpp \
+  $(srcdir)/MoochoPack/configurations/Shared/MoochoPack_DecompositionSystemStateStepBuilderStd.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_IpState.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_Exceptions.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_Types.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgo.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoClientInterface.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoConfig.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoContainer.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoInterface.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoState.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterface.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterfaceSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_moocho_algo_conversion.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ActSetStats.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ActSetStats_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_StrategySetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPYZPZ_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPY_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromZPZ_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcD_vStep_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcLambdaIndepStd_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcReducedGradLagrangianStd_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceIP_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergence_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromPy_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromRPy_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDescentQuasiNormalStep_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CrossTermExactStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DampenCrossTermStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerSelectNew_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerStd_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandler_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_StrategySetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStep_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchDirect_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFailureNewDecompositionSelection_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStepAfterKIter_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStep_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchNLE_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_DummyUpdate_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoAlgorithmStepNames.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerStatsStd.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerSummaryStd.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerXMLSummary.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelectionStd_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelection_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_NumFixedDepIndep_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PBFGS_helpers.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PostEvalNewPointBarrier_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PostProcessBarrierLineSearch_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PreEvalNewPointBarrier_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PreProcessBarrierLineSearch_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QPFailureReinitReducedHessian_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNewtonStats.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNormalStepStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepStd_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepTailoredApproach_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStep_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedGradientStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianExactStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_SetDBoundsStd_AddedStep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepIP_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_StepSetOptions.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithoutBounds_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateBarrierParameter_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateReducedSigma_Step.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_act_set_stats.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_active_set_change.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_d_bounds_iter_quant.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_get_init_fixed_free_indep.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_qp_solver_stats.hpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_quasi_newton_stats.hpp
+
+MOOCHO_PACK_CPP = \
+  $(srcdir)/MoochoPack/configurations/MoochoPack_MoochoSolver.cpp \
+  $(srcdir)/MoochoPack/configurations/IpConfig/MoochoPack_NLPAlgoConfigIP.cpp \
+  $(srcdir)/MoochoPack/configurations/MamaJama/MoochoPack_NLPAlgoConfigMamaJama.cpp \
+  $(srcdir)/MoochoPack/configurations/Shared/MoochoPack_DecompositionSystemStateStepBuilderStd.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_IpState.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgo.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoContainer.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoState.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterface.cpp \
+  $(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterfaceSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_StrategySetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPYZPZ_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPY_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromZPZ_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcD_vStep_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CalcReducedGradLagrangianStd_AddedStep.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceIP_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStep.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergence_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromPy_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromRPy_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckDescentQuasiNormalStep_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerStd_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchDirect_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFailureNewDecompositionSelection_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStep_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchNLE_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_DummyUpdate_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerStatsStd.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerSummaryStd.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerXMLSummary.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelectionStd_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PostEvalNewPointBarrier_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PostProcessBarrierLineSearch_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PreEvalNewPointBarrier_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_PreProcessBarrierLineSearch_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QPFailureReinitReducedHessian_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNormalStepStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepStd_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedGradientStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_SetDBoundsStd_AddedStep.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepIP_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_StepSetOptions.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithoutBounds_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateBarrierParameter_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_UpdateReducedSigma_Step.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_act_set_stats.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_d_bounds_iter_quant.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_qp_solver_stats.cpp \
+  $(srcdir)/MoochoPack/src/std/MoochoPack_quasi_newton_stats.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -781,7 +972,8 @@ MOOCHO_H = \
 	$(DENSE_LIN_ALG_PACK_HPP) \
 	$(ABSTRACT_LIN_ALG_PACK_HPP) \
 	$(NLP_INTERFACE_PACK_HPP) \
-	$(CONSTRAINED_OPT_PACK_HPP)
+	$(CONSTRAINED_OPT_PACK_HPP) \
+	$(MOOCHO_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -795,7 +987,8 @@ libmoocho_a_SOURCES = \
 	$(ABSTRACT_LIN_ALG_PACK_CPP) \
 	$(NLP_INTERFACE_PACK_CPP) \
 	$(CONSTRAINED_OPT_PACK_CPP) \
-	$(CONSTRAINED_OPT_PACK_F)
+	$(CONSTRAINED_OPT_PACK_F) \
+	$(MOOCHO_PACK_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

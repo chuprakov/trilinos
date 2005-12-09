@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "MoochoPack/src/NLPSolverClientInterfaceSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoPack_NLPSolverClientInterfaceSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

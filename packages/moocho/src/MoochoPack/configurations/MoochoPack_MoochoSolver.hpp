@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MoochoSolver.hpp
+// MoochoPack_MoochoSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RSSQPP_RSQPPP_SOLVER_H
 #define RSSQPP_RSQPPP_SOLVER_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "MoochoPack/src/NLPAlgoContainer.hpp"
+#include "MoochoPack_Types.hpp"
+#include "MoochoPack_NLPAlgoContainer.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace OptionsFromStreamPack {

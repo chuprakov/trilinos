@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// FeasibilityStepReducedStd_StrategySetOptions.hpp
+// MoochoPack_FeasibilityStepReducedStd_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 
-#include "FeasibilityStepReducedStd_Strategy.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_FeasibilityStepReducedStd_Strategy.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

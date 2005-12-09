@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateLPBFGS_Strategy.hpp
+// MoochoPack_ReducedHessianSecantUpdateLPBFGS_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_H
 
-#include "MoochoPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
-#include "MoochoPack/src/std/BFGSUpdate_Strategy.hpp"
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
-#include "MoochoPack/src/std/act_set_stats.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
+#include "MoochoPack_ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
+#include "MoochoPack_BFGSUpdate_Strategy.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
+#include "MoochoPack_act_set_stats.hpp"
+#include "ConstrainedOptPack_MatrixHessianSuperBasic.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

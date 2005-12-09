@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// EvalNewPointStd_Step.hpp
+// MoochoPack_EvalNewPointStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_H
 #define EVAL_NEW_POINT_STD_STEP_H
 
-#include "DecompositionSystemHandler_Strategy.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
-#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
+#include "MoochoPack_DecompositionSystemHandler_Strategy.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "ConstrainedOptPack_DecompositionSystemTester.hpp"
+#include "ConstrainedOptPack_VariableBoundsTester.hpp"
+#include "NLPInterfacePack_NLPFirstDerivTester.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

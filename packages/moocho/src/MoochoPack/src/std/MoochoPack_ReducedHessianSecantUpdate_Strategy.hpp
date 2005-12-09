@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdate_Strategy.hpp
+// MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

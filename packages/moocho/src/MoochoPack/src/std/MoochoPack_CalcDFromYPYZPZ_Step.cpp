@@ -16,15 +16,15 @@
 #include <limits>
 #include <ostream>
 
-#include "MoochoPack/src/std/CalcDFromYPYZPZ_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-//#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_CalcDFromYPYZPZ_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+//#include "ConstrainedOptPack_print_vector_change_stats.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

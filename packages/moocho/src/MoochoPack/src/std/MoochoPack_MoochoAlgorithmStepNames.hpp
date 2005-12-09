@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// MoochoAlgorithmStepNames.hpp
+// MoochoPack_MoochoAlgorithmStepNames.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "../MoochoPackTypes.hpp"
+#include "../MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

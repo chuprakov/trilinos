@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// CheckDescentQuasiNormalStep_Step.hpp
+// MoochoPack_CheckDescentQuasiNormalStep_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef CHECK_DESCENT_RANGE_SPACE_STEP_STEP_H
 #define CHECK_DESCENT_RANGE_SPACE_STEP_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProd.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

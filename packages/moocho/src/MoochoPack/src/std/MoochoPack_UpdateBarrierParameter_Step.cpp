@@ -18,17 +18,17 @@
 #include <iostream>
 #include <math.h>
 
-#include "MoochoPack/src/std/UpdateBarrierParameter_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "MoochoPack_UpdateBarrierParameter_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "Teuchos_TestForException.hpp"
 
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// LineSearchWatchDog_StepSetOptions.hpp
+// MoochoPack_LineSearchWatchDog_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H
 #define LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H
 
-#include "LineSearchWatchDog_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_LineSearchWatchDog_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

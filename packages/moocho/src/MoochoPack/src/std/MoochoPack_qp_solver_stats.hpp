@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// qp_solver_stats.hpp
+// MoochoPack_qp_solver_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_STATS_HH
 #define QP_SOLVER_STATS_HH
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverStats.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
+#include "MoochoPack_Types.hpp"
+#include "ConstrainedOptPack_QPSolverStats.hpp"
+#include "IterationPack_CastIQMember.hpp"
 
 namespace MoochoPack {
 

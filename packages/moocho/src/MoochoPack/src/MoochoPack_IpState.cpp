@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-#include "MoochoPack/src/IpState.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
 
 // Iteration Quantity Strings
 extern const std::string MoochoPack::barrier_parameter_name = "barrier_parameter";

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// TangentialStepWithInequStd_Step.hpp
+// MoochoPack_TangentialStepWithInequStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,14 +16,14 @@
 #ifndef NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 #define NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
-#include "MoochoPack/src/std/d_bounds_iter_quant.hpp"
-#include "MoochoPack/src/std/qp_solver_stats.hpp"
-#include "MoochoPack/src/std/act_set_stats.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "IterationPack_CastIQMember.hpp"
+#include "MoochoPack_d_bounds_iter_quant.hpp"
+#include "MoochoPack_qp_solver_stats.hpp"
+#include "MoochoPack_act_set_stats.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedTester.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

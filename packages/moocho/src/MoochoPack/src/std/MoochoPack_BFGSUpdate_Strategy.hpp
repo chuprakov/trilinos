@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-// BFGSUpdate_Strategy.hpp
+// MoochoPack_BFGSUpdate_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef BFGS_UPDATE_STRATEGY_H
 #define BFGS_UPDATE_STRATEGY_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "MoochoPack/src/std/QuasiNewtonStats.hpp"
+#include "MoochoPack_Types.hpp"
+#include "MoochoPack_QuasiNewtonStats.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {

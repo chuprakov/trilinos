@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "../std/MoochoPack_ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CrossTermExactStd_Step.hpp
+// MoochoPack_CrossTermExactStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../std/act_set_stats.hpp"
+#include "../std/MoochoPack_act_set_stats.hpp"
 
 extern const std::string
 	MoochoPack::act_set_stats_name = "act_set_stats";

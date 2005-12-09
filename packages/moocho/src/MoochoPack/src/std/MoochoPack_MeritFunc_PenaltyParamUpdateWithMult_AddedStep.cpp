@@ -16,8 +16,8 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack_MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
 
 namespace MoochoPack {

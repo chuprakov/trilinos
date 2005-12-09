@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// MoochoPack/src/std/CheckConvergenceIP_Strategy.hpp
+// MoochoPack_CheckConvergenceIP_Strategy.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,7 +17,7 @@
 #if !defined CHECK_CONVERGENCE_IP_STRATEGY_H
 #define CHECK_CONVERGENCE_IP_STRATEGY_H
 
-#include "MoochoPack/src/std/CheckConvergenceStd_Strategy.hpp"
+#include "MoochoPack_CheckConvergenceStd_Strategy.hpp"
 
 namespace MoochoPack {
 

@@ -19,3 +19,5 @@ $MOOCHO_BASE_DIR/moocho/src/RTOpPack/refactoring/from-old-to-trilinos.20051207.s
 $MOOCHO_BASE_DIR/moocho/src/DenseLinAlgPack/refactoring/from-old-to-trilinos.20051208.sh
 $MOOCHO_BASE_DIR/moocho/src/AbstractLinAlgPack/refactoring/from-old-to-trilinos.20051208.sh
 $MOOCHO_BASE_DIR/moocho/src/NLPInterfacePack/refactoring/from-old-to-trilinos.20051209.sh
+$MOOCHO_BASE_DIR/moocho/src/ConstrainedOptPack/refactoring/from-old-to-trilinos.20051209.sh
+$MOOCHO_BASE_DIR/moocho/src/MoochoPack/refactoring/from-old-to-trilinos.20051209.sh

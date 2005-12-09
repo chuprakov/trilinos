@@ -15,19 +15,19 @@
 
 #include <fstream>
 
-#include "ReducedHessianSerialization_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "MoochoPack/src/MoochoPackExceptions.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "MoochoMoreUtilities/src/Serializable.hpp"
+#include "MoochoPack_ReducedHessianSerialization_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "MoochoPack_Exceptions.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "SerializationPack_Serializable.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

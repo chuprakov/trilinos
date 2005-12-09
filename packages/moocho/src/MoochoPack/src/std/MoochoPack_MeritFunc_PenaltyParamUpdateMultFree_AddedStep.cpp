@@ -18,10 +18,10 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 
 namespace MoochoPack {
 

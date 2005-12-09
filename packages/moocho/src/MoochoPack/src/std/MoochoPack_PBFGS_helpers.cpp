@@ -16,10 +16,10 @@
 #include <ostream>
 #include <iomanip>
 
-#include "MoochoPack/src/std/PBFGS_helpers.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "MoochoPack_PBFGS_helpers.hpp"
+#include "AbstractLinAlgPack_SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace MoochoPack {

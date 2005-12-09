@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// EvalNewPointTailoredApproachCoordinate_Step.hpp
+// MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_COORDINATE_STEP_H
 
-#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproach_Step.hpp"
 
 namespace MoochoPack {
 

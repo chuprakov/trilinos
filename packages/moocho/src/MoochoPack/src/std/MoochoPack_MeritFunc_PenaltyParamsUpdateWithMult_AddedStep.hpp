@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp
+// MoochoPack_MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_PENALTY_PARAMS_UPDATE_WITH_MULT_ADDED_STEP_H
 #define MERIT_FUNC_PENALTY_PARAMS_UPDATE_WITH_MULT_ADDED_STEP_H
 
-#include "MeritFunc_PenaltyParamUpdate_AddedStep.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStep.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

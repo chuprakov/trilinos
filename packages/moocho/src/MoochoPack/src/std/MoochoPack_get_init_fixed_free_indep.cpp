@@ -16,9 +16,9 @@
 #include <ostream>
 #include <iomanip>
 
-#include "MoochoPack/src/std/get_init_fixed_free_indep.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "MoochoPack_get_init_fixed_free_indep.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
 
 void MoochoPack::get_init_fixed_free_indep(
 	const size_type                        n

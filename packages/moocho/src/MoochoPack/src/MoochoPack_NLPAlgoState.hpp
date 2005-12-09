@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// NLPAlgoState.hpp
+// MoochoPack_NLPAlgoState.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,19 +18,19 @@
 
 #include <deque>
 
-#include "MoochoPackTypes.hpp"
-#include "IterationPack/src/IterQuantityAccess.hpp"
-#include "IterationPack/src/AlgorithmState.hpp"
-#include "IterationPack/src/cast_iq.hpp"
-#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-//#include "DenseLinAlgPack/src/IVector.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_IterQuantityAccess.hpp"
+#include "IterationPack_AlgorithmState.hpp"
+#include "IterationPack_cast_iq.hpp"
+#include "IterationPack_IterQuantityAccessContiguous.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_Permutation.hpp"
+#include "ConstrainedOptPack_DecompositionSystem.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+//#include "DenseLinAlgPack_IVector.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace MoochoPack {
 

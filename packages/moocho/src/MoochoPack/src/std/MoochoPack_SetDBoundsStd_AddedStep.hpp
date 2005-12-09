@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// SetDBoundsStd_AddedStep.hpp
+// MoochoPack_SetDBoundsStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
 #define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
-#include "MoochoPack/src/std/d_bounds_iter_quant.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "IterationPack_CastIQMember.hpp"
+#include "MoochoPack_d_bounds_iter_quant.hpp"
 
 namespace MoochoPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcReducedGradLagrangianStd_AddedStep.hpp
+// MoochoPack_CalcReducedGradLagrangianStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace MoochoPack {
 

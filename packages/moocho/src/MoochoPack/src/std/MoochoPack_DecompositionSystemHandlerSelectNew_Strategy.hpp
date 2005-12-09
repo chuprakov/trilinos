@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemHandlerSelectNew_Strategy.hpp
+// MoochoPack_DecompositionSystemHandlerSelectNew_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DECOMPOSITION_SYSTEM_HANDLER_SELECT_NEW_STRATEGY_H
 #define DECOMPOSITION_SYSTEM_HANDLER_SELECT_NEW_STRATEGY_H
 
-#include "DecompositionSystemHandler_Strategy.hpp"
+#include "MoochoPack_DecompositionSystemHandler_Strategy.hpp"
 
 namespace MoochoPack {
 

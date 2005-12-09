@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// NLPAlgoConfigMamaJama.hpp
+// MoochoPack_NLPAlgoConfigMamaJama.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
 #define RSQP_ALGO_CONFIG_MAMA_JAMA_H
 
-#include "MoochoPack/src/NLPAlgoConfig.hpp"
-#include "MoochoPack/src/NLPAlgo.hpp"
-#include "MoochoPack/configurations/Shared/DecompositionSystemStateStepBuilderStd.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "MoochoPack_NLPAlgoConfig.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "MoochoPack_DecompositionSystemStateStepBuilderStd.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 
 namespace MoochoPack {
 

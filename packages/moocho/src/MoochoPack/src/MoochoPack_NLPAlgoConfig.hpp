@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NLPAlgoConfig.hpp
+// MoochoPack_NLPAlgoConfig.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef RSQP_ALGO_CONFIG_H
 #define RSQP_ALGO_CONFIG_H
 
-#include "MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

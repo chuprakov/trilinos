@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/d_bounds_iter_quant.hpp"
+#include "MoochoPack_d_bounds_iter_quant.hpp"
 
 const std::string  MoochoPack::dl_name = "dl";
 const std::string  MoochoPack::du_name = "du";

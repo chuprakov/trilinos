@@ -16,13 +16,13 @@
 #include <limits>
 #include <ostream>
 
-#include "MoochoPack/src/std/MeritFunc_DummyUpdate_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLPDirecDeriv.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "MoochoPack_MeritFunc_DummyUpdate_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

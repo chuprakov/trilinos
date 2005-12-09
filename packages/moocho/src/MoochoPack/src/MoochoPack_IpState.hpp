@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// IpState.hpp
+// MoochoPack_IpState.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,7 +17,7 @@
 #if !defined IP_STATE_H
 #define IP_STATE_H
 
-#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
 
 namespace MoochoPack {
 

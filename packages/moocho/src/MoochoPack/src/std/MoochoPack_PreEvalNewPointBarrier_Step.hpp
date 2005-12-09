@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// PreEvalNewPointBarrier_Step.hpp
+// MoochoPack_PreEvalNewPointBarrier_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,15 +17,15 @@
 #define PRE_EVAL_NEW_POINT_BARRIER_STEP_H
 
 
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

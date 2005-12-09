@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NLPAlgoContainer.hpp
+// MoochoPack_NLPAlgoContainer.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_ALGO_CONTAINER_H
 #define RSQP_ALGO_CONTAINER_H
 
-#include "NLPAlgoClientInterface.hpp"
-#include "NLPAlgoInterface.hpp"
-#include "NLPAlgoConfig.hpp"
+#include "MoochoPack_NLPAlgoClientInterface.hpp"
+#include "MoochoPack_NLPAlgoInterface.hpp"
+#include "MoochoPack_NLPAlgoConfig.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

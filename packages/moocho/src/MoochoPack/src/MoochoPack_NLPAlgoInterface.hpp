@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NLPAlgoInterface.hpp
+// MoochoPack_NLPAlgoInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RSQP_ALGO_INTERFACE_H
 #define RSQP_ALGO_INTERFACE_H
 
-#include "MoochoPackTypes.hpp"
-#include "NLPSolverClientInterface.hpp"
+#include "MoochoPack_Types.hpp"
+#include "MoochoPack_NLPSolverClientInterface.hpp"
 
 namespace MoochoPack {
 

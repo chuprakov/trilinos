@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// TangentialStepIP_Step.hpp
+// MoochoPack_TangentialStepIP_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,8 +16,8 @@
 #ifndef NullSpaceStepIP_Step_H
 #define NullSpaceStepIP_Step_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace MoochoPack {
 

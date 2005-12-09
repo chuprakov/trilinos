@@ -17,11 +17,11 @@
 
 #include <ostream>
 
-#include "MoochoPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
+#include "MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
 
 namespace MoochoPack {
 

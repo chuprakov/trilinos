@@ -16,11 +16,11 @@
 #include <typeinfo>
 #include <limits>
 
-#include "MoochoPack/src/std/CheckDecompositionFromPy_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_CheckDecompositionFromPy_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
 namespace MoochoPack {
 

@@ -17,10 +17,10 @@
 
 #include <ostream>
 
-#include "MoochoPack/src/std/CheckConvergenceStd_AddedStep.hpp"
-#include "MoochoPack/src/NLPAlgoContainer.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "MoochoPack_CheckConvergenceStd_AddedStep.hpp"
+#include "MoochoPack_NLPAlgoContainer.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 
 namespace MoochoPack {
 

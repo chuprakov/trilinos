@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixZero.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

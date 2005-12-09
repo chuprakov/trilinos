@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ReducedGradientStd_Step.hpp
+// MoochoPack_ReducedGradientStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef REDUCED_GRADIENT_STD_STEP_H
 #define REDUCED_GRADIENT_STD_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace MoochoPack {
 

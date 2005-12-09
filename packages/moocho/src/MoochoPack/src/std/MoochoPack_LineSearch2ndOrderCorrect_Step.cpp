@@ -16,22 +16,22 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/misc/print_vector_change_stats.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLE.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLESqrResid.hpp"
+#include "MoochoPack_LineSearch2ndOrderCorrect_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_print_vector_change_stats.hpp"
+#include "ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptPack_MeritFuncCalcNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncCalcNLE.hpp"
+#include "ConstrainedOptPack_MeritFuncNLESqrResid.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/max_near_feas_step.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

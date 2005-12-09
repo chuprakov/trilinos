@@ -16,17 +16,17 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/LineSearchDirect_Step.hpp"
-#include "MoochoPack/src/MoochoPackExceptions.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalcNLP.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_LineSearchDirect_Step.hpp"
+#include "MoochoPack_Exceptions.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptPack_MeritFuncCalcNLP.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {

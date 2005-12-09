@@ -17,14 +17,14 @@
 #include <sstream>
 #include <limits>
 
-#include "../std/DampenCrossTermStd_Step.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "../std/MoochoPack_DampenCrossTermStd_Step.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
 #include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 
 MoochoPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const value_type& frac_descent)
 	: frac_descent_(frac_descent)

@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/InitFinDiffReducedHessian_StepSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "../std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

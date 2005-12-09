@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// TangentialStepWithoutBounds_Step.hpp
+// MoochoPack_TangentialStepWithoutBounds_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 #define NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 
 namespace MoochoPack {
 

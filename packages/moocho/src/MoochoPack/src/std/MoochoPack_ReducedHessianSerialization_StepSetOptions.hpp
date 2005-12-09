@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ReducedHessianSerialization_StepSetOptions.hpp
+// MoochoPack_ReducedHessianSerialization_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SERIALIZATION_STEP_SET_OPTIONS_H
 #define REDUCED_HESSIAN_SERIALIZATION_STEP_SET_OPTIONS_H
 
-#include "ReducedHessianSerialization_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_ReducedHessianSerialization_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

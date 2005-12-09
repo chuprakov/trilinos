@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// MoochoPackTypes.hpp
+// MoochoPack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,16 +16,16 @@
 #ifndef REDUCED_SPACE_SQP_PACK_TYPES_H
 #define REDUCED_SPACE_SQP_PACK_TYPES_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "IterationPack/src/IterationPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "IterationPack_Types.hpp"
 
 namespace MoochoPack {
 
 // using types from ConstrainedOptPack
-#include "ConstrainedOptPack/src/ConstrainedOptPackPublicTypes.ud"
+#include "ConstrainedOptPack_PublicTypes.ud"
 
 // using types from IterationPack
-#include "IterationPack/src/IterationPackPublicTypes.ud"
+#include "IterationPack_PublicTypes.ud"
 
 // enum for journal output.
 enum EJournalOutputLevel {

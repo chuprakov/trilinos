@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// CheckConvergenceStd_AddedStepSetOptions.hpp
+// MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDED_STEP_SET_OPTIONS_H
 #define CHECK_CONVERGENCE_STD_ADDED_STEP_SET_OPTIONS_H
 
-#include "CheckConvergenceStd_AddedStep.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_CheckConvergenceStd_AddedStep.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

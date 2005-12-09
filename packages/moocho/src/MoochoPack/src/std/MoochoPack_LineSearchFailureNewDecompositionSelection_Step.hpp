@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFailureNewDecompositionSelection_Step.hpp
+// MoochoPack_LineSearchFailureNewDecompositionSelection_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H
 #define LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H
 
-#include "NewDecompositionSelection_Strategy.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_NewDecompositionSelection_Strategy.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

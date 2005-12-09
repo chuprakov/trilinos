@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// DecompositionSystemStateStepBuilderStd.hpp
+// MoochoPack_DecompositionSystemStateStepBuilderStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 #define DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
+#include "AbstractLinAlgPack_BasisSystemPerm.hpp"
 #endif
-#include "MoochoPack/src/std/NewDecompositionSelection_Strategy.hpp"
+#include "MoochoPack_NewDecompositionSelection_Strategy.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

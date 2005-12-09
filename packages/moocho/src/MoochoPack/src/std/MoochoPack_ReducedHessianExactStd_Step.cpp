@@ -17,19 +17,19 @@
 #include <typeinfo>
 #include <iomanip>
 
-#include "MoochoPack/src/std/ReducedHessianExactStd_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "MoochoPack_ReducedHessianExactStd_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "AbstractLinAlgPack_MatrixSymDenseInitialize.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "NLPInterfacePack_NLPSecondOrder.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace MoochoPack {

@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "MoochoPack/src/std/LineSearchFilter_StepSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoPack_LineSearchFilter_StepSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

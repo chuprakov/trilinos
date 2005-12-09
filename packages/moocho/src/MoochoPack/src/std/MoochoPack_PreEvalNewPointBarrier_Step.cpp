@@ -17,18 +17,18 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "MoochoPack/src/std/PreEvalNewPointBarrier_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "MoochoPack_PreEvalNewPointBarrier_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 #include "Teuchos_dyn_cast.hpp"
 

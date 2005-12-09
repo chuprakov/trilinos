@@ -16,14 +16,14 @@
 #include <typeinfo>
 
 #include "MoochoPack/src/std/CheckBasisFromCPy_Step.h"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReduct.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptPack/src/VectorWithNorms.h"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 

@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
-#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
-#include "MoochoPack/src/NLPAlgo.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack_QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
+#include "MoochoPack_MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
 #include "MoochoPack/src/NLPrSQPTailoredApproach.h"
-#include "MoochoPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptPack/src/DenseIdentVertConcatMatrixSubclass.h"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"
 #include "Midynamic_cast_verbose.h"
 

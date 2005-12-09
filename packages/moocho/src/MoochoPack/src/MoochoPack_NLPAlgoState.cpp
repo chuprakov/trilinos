@@ -16,15 +16,15 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
-#include "IterationPack/src/IterQuantityAccess.hpp"
-#include "IterationPack/src/cast_iq.hpp"
-#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack_IterQuantityAccess.hpp"
+#include "IterationPack_cast_iq.hpp"
+#include "IterationPack_IterQuantityAccessContiguous.hpp"
 
 // NLPAlgoState iteration quantities names
 

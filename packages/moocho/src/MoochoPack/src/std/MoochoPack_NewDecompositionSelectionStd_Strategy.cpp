@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
-#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
-#include "MoochoPack/src/NLPAlgo.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
+#include "MoochoPack_NewDecompositionSelectionStd_Strategy.hpp"
+#include "MoochoPack_MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
 
 namespace MoochoPack {
 

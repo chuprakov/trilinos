@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/NLPSolverClientInterface.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
+#include "MoochoPack_NLPSolverClientInterface.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
 
 MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	int                      max_iter

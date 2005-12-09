@@ -18,8 +18,8 @@
 #include <iomanip>
 #include <ostream>
 
-#include "../std/active_set_change.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "../std/MoochoPack_active_set_change.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 
 void MoochoPack::active_set_change(
 	const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep

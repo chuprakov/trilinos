@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MoochoPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "MoochoPack_QuasiRangeSpaceStepStd_Strategy.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
 namespace MoochoPack {
 

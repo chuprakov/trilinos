@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// FeasibilityStepReducedStd_Strategy.hpp
+// MoochoPack_FeasibilityStepReducedStd_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,15 +16,15 @@
 #ifndef FEASIBILITY_STEP_REDUCED_STD_STRATEGY_H
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_H
 
-#include "FeasibilityStep_Strategy.hpp"
-#include "QuasiRangeSpaceStep_Strategy.hpp"
-#include "d_bounds_iter_quant.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "MoochoPack_FeasibilityStep_Strategy.hpp"
+#include "MoochoPack_QuasiRangeSpaceStep_Strategy.hpp"
+#include "MoochoPack_d_bounds_iter_quant.hpp"
+#include "IterationPack_CastIQMember.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedTester.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

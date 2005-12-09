@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// d_bounds_iter_quant.hpp
+// MoochoPack_d_bounds_iter_quant.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef D_BOUNDS_ITE_QUANT_HH
 #define D_BOUNDS_ITE_QUANT_HH
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFullStepAfterKIter_Step.hpp
+// MoochoPack_LineSearchFullStepAfterKIter_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <limits>
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 

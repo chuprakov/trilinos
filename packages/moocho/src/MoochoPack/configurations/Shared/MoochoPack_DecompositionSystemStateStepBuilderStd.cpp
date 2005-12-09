@@ -13,59 +13,59 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DecompositionSystemStateStepBuilderStd.hpp"
+#include "MoochoPack_DecompositionSystemStateStepBuilderStd.hpp"
 
 // NLP Stuff
 
-#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPDirectTesterSetOptions.hpp"
+#include "NLPInterfacePack_NLPSecondOrder.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "NLPInterfacePack_NLPVarReductPerm.hpp"
+#include "NLPInterfacePack_NLPDirectTester.hpp"
+#include "NLPInterfacePack_NLPDirectTesterSetOptions.hpp"
 
 // Basis system and direct sparse solvers
 
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
+#include "AbstractLinAlgPack_BasisSystemTester.hpp"
+#include "AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductPermStd.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReductPermStd.hpp"
 #endif
 
 // Range/null decomposition
 
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
-#include "MoochoPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
-#include "MoochoPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemCoordinate.hpp"
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemOrthogonal.hpp"
+#include "AbstractLinAlgPack_MatrixSymIdent.hpp"
+#include "MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
+#include "MoochoPack_DecompositionSystemHandlerStd_Strategy.hpp"
+#include "ConstrainedOptPack_DecompositionSystemTester.hpp"
+#include "ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp"
+#include "ConstrainedOptPack_DecompositionSystemCoordinate.hpp"
+#include "ConstrainedOptPack_DecompositionSystemOrthogonal.hpp"
 
 // Iteration quantities
 
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"               // Y, Z
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"               // Y, Z
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
 
 // Eval new point
 
-#include "MoochoPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
-#include "MoochoPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
-#include "MoochoPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
-#include "MoochoPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
+#include "MoochoPack_EvalNewPointStd_StepSetOptions.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproach_StepSetOptions.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 
 // Other classes
 
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "MoochoPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
-#include "ConstrainedOptPack/src/misc/VariableBoundsTesterSetOptions.hpp"
-#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTesterSetOptions.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "MoochoPack_NewDecompositionSelectionStd_Strategy.hpp"
+#include "ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp"
+#include "NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack_NLPFirstDerivTester.hpp"
+#include "NLPInterfacePack_NLPFirstDerivTesterSetOptions.hpp"
 
 // Common utilities
-#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "OptionsFromStreamPack_StringToIntMap.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

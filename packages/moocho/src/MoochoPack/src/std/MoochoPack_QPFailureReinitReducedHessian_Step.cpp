@@ -16,11 +16,11 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "MoochoPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
-#include "MoochoPack/src/std/MoochoAlgorithmStepNames.hpp"
-#include "MoochoPack/src/MoochoPackExceptions.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "MoochoPack_QPFailureReinitReducedHessian_Step.hpp"
+#include "MoochoPack_MoochoAlgorithmStepNames.hpp"
+#include "MoochoPack_Exceptions.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 
 namespace MoochoPack {
 

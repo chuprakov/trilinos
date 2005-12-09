@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// act_set_stats.hpp
+// MoochoPack_act_set_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ACT_SET_STATS_HH
 #define ACT_SET_STATS_HH
 
-#include "ActSetStats.hpp"
-#include "IterationPack/src/CastIQMember.hpp"
+#include "MoochoPack_ActSetStats.hpp"
+#include "IterationPack_CastIQMember.hpp"
 
 namespace MoochoPack {
 

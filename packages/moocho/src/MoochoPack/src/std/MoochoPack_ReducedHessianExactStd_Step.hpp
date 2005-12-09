@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ReducedHessianExactStd_Step.hpp
+// MoochoPack_ReducedHessianExactStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 #define REDUCED_HESSIAN_EXACT_STD_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "../NLPAlgo.hpp"
+#include "../MoochoPack_NLPAlgo.hpp"
 
 namespace MoochoPack {
 

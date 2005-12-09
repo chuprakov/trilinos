@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DampenCrossTermStd_Step.hpp
+// MoochoPack_DampenCrossTermStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

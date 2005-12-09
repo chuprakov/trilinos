@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NLPAlgo.hpp
+// MoochoPack_NLPAlgo.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_ALGO_H
 #define RSQP_ALGO_H
 
-#include "NLPAlgoInterface.hpp"
-#include "NLPAlgoContainer.hpp"
-#include "NLPAlgoState.hpp"
-#include "IterationPack/src/Algorithm.hpp"
+#include "MoochoPack_NLPAlgoInterface.hpp"
+#include "MoochoPack_NLPAlgoContainer.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "IterationPack_Algorithm.hpp"
 #include "StandardAggregationMacros.hpp"
 
 namespace MoochoPack {

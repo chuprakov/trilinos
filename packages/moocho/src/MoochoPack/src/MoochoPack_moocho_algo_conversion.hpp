@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// moocho_algo_conversion.hpp
+// MoochoPack_moocho_algo_conversion.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RSQP_ALGO_CONVERSION_H
 #define RSQP_ALGO_CONVERSION_H
 
-#include "NLPAlgo.hpp"
-#include "IterationPack/src/Algorithm.hpp"
+#include "MoochoPack_NLPAlgo.hpp"
+#include "IterationPack_Algorithm.hpp"
 
 namespace MoochoPack {
 

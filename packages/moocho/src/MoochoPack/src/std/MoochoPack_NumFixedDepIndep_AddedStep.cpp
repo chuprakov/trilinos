@@ -15,10 +15,10 @@
 
 #include <ostream>
 
-#include "../std/NumFixedDepIndep_AddedStep.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "../std/MoochoPack_NumFixedDepIndep_AddedStep.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
 
 bool MoochoPack::NumFixedDepIndep_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)

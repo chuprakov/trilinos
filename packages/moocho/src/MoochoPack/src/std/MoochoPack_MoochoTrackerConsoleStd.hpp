@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MoochoTrackerConsoleStd.hpp
+// MoochoPack_MoochoTrackerConsoleStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_TRACK_CONSOLE_STD_H
 #define RSQP_TRACK_CONSOLE_STD_H
 
-#include "MoochoPack/src/std/quasi_newton_stats.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
-#include "MoochoMoreUtilities/src/stpwatch.hpp"
+#include "MoochoPack_quasi_newton_stats.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 
 namespace MoochoPack {
 

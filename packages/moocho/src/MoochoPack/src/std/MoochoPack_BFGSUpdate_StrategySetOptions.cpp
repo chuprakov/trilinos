@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "MoochoPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "MoochoPack_BFGSUpdate_StrategySetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

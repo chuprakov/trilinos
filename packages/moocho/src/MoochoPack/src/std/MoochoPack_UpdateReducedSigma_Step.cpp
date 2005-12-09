@@ -17,22 +17,22 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
-#include "MoochoPack/src/IpState.hpp"
-#include "MoochoPack/src/std/UpdateReducedSigma_Step.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcat.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
+#include "MoochoPack_IpState.hpp"
+#include "MoochoPack_UpdateReducedSigma_Step.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
 
-#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
+#include "OptionsFromStreamPack_StringToIntMap.hpp"
 
 #include "Teuchos_dyn_cast.hpp"
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// QuasiNewtonStats.hpp
+// MoochoPack_QuasiNewtonStats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QUASI_NEWTON_STATS_H
 #define QUASI_NEWTON_STATS_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

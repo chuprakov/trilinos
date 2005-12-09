@@ -17,11 +17,11 @@
 
 #include <iomanip>
 
-#include "MoochoPack/src/std/MoochoTrackerConsoleStd.hpp"
-#include "MoochoPack/src/NLPAlgoState.hpp"
-#include "MoochoPack/src/moocho_algo_conversion.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "MoochoPack_MoochoTrackerConsoleStd.hpp"
+#include "MoochoPack_NLPAlgoState.hpp"
+#include "MoochoPack_moocho_algo_conversion.hpp"
+#include "NLPInterfacePack_NLPFirstOrder.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace MoochoPack {

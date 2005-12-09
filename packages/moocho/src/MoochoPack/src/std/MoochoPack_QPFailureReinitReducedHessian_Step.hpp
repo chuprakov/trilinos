@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// QPFailureReinitReducedHessian_Step.hpp
+// MoochoPack_QPFailureReinitReducedHessian_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 #define QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

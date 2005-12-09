@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// EvalNewPointTailoredApproach_Step.hpp
+// MoochoPack_EvalNewPointTailoredApproach_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
-#include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
+#include "MoochoPack_Types.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
+#include "ConstrainedOptPack_VariableBoundsTester.hpp"
+#include "NLPInterfacePack_NLPDirectTester.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

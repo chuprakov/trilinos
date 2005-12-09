@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// LineSearch2ndOrderCorrect_StepSetOptions.hpp
+// MoochoPack_LineSearch2ndOrderCorrect_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H
 
-#include "LineSearch2ndOrderCorrect_Step.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_LineSearch2ndOrderCorrect_Step.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

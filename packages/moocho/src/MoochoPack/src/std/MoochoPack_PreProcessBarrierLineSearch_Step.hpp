@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// PreProcessBarrierLineSearch_Step.hpp
+// MoochoPack_PreProcessBarrierLineSearch_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -18,14 +18,14 @@
 
 #include <list>
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
-#include "IterationPack/src/AlgorithmStep.hpp"
+#include "MoochoPack_Types.hpp"
+#include "MoochoPack_LineSearchFilter_Step.hpp"
+#include "IterationPack_AlgorithmStep.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

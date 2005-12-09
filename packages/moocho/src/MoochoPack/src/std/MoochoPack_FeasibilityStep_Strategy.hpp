@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// FeasibilityStep_Strategy.hpp
+// MoochoPack_FeasibilityStep_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef FEASIBILITY_STEP_STRATEGY_H
 #define FEASIBILITY_STEP_STRATEGY_H
 
-#include "MoochoPack/src/MoochoPackTypes.hpp"
+#include "MoochoPack_Types.hpp"
 
 namespace MoochoPack {
 

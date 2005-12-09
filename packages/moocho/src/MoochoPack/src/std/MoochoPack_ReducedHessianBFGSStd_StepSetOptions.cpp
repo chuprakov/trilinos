@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "../std/ReducedHessianBFGSStd_StepSetOptions.h"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

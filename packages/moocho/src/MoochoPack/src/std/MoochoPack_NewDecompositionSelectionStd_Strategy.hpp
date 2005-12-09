@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NewDecompositionSelectionStd_Strategy.hpp
+// MoochoPack_NewDecompositionSelectionStd_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NEW_DECOMPOSITION_SELECTION_STD_STRATEGY_H
 #define NEW_DECOMPOSITION_SELECTION_STD_STRATEGY_H
 
-#include "NewDecompositionSelection_Strategy.hpp"
-#include "DecompositionSystemHandlerSelectNew_Strategy.hpp"
+#include "MoochoPack_NewDecompositionSelection_Strategy.hpp"
+#include "MoochoPack_DecompositionSystemHandlerSelectNew_Strategy.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace MoochoPack {

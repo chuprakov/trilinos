@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPSolverClientInterfaceSetOptions.hpp
+// MoochoPack_NLPSolverClientInterfaceSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 #define RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 
-#include "NLPSolverClientInterface.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "MoochoPack_NLPSolverClientInterface.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace MoochoPack {
 

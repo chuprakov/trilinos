@@ -15,9 +15,9 @@
 
 #include <ostream>
 
-#include "../std/LineSearchFullStepAfterKIter_Step.hpp"
-#include "../moocho_algo_conversion.hpp"
-#include "IterationPack/src/print_algorithm_step.hpp"
+#include "../std/MoochoPack_LineSearchFullStepAfterKIter_Step.hpp"
+#include "../MoochoPack_moocho_algo_conversion.hpp"
+#include "IterationPack_print_algorithm_step.hpp"
 
 bool MoochoPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)

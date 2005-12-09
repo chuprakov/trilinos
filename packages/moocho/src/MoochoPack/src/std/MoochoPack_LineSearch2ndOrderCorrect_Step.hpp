@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearch2ndOrderCorrect_Step.hpp
+// MoochoPack_LineSearch2ndOrderCorrect_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 
 #include "MoochoPack/src/rSQPAlgo_StepBaseClasses.h"
-#include "FeasibilityStep_Strategy.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
-#include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
+#include "MoochoPack_FeasibilityStep_Strategy.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
