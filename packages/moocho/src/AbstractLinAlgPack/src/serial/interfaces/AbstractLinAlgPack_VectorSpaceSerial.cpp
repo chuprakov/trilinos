@@ -15,13 +15,13 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactorySerial.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef _DEBUG

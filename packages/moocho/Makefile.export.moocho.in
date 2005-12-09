@@ -7,6 +7,15 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/MoochoUtilities/src \
   -I@abs_top_srcdir@/src/IterationPack/src \
   -I@abs_top_srcdir@/src/DenseLinAlgPack/src \
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/interfaces\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/thyra\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/tools\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/implementations\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/interfaces\
+  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/solvers\
   -I@abs_top_srcdir@/src \
   -I@abs_top_builddir@/src \
   $(THYRA_INCLUDES)

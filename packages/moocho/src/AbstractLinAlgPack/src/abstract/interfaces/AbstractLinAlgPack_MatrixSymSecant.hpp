@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymSecant.hpp
+// AbstractLinAlgPack_MatrixSymSecant.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
 
 namespace AbstractLinAlgPack {
 

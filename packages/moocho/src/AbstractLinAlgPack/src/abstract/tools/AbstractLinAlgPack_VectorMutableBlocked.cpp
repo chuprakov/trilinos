@@ -16,10 +16,10 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutableSubView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_VectorMutableBlocked.hpp"
+#include "AbstractLinAlgPack_VectorMutableSubView.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "COOMatrixPartitionViewSubclass.hpp"
-#include "SparseVectorSliceOp.hpp"
-#include "SparseElement.hpp"
-#include "COOMPartitionOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack_COOMatrixPartitionViewSubclass.hpp"
+#include "AbstractLinAlgPack_SparseVectorSliceOp.hpp"
+#include "AbstractLinAlgPack_SparseElement.hpp"
+#include "AbstractLinAlgPack_COOMPartitionOp.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
 
 namespace LinAlgOpPack {
 

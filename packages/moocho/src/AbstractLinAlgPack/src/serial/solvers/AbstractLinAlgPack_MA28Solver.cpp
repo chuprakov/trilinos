@@ -15,7 +15,7 @@
 
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 
-#include "AbstractLinAlgPack/src/serial/solvers/MA28Solver.hpp"
+#include "AbstractLinAlgPack_MA28Solver.hpp"
 
 // Initialize static variables
 MA28_Cpp::MA28Solver* MA28_Cpp::MA28Solver::curr_solver_ = 0;

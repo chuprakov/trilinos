@@ -3,9 +3,9 @@
 
 #include <assert.h>
 
-#include "apply_op_helper.hpp"
-#include "VectorSpace.hpp"
-#include "VectorMutable.hpp"
+#include "AbstractLinAlgPack_apply_op_helper.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

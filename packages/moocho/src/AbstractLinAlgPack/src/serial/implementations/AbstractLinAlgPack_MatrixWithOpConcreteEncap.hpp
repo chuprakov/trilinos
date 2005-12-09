@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixWithOpConcreteEncap.hpp
+// AbstractLinAlgPack_MatrixWithOpConcreteEncap.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_CONCRETE_ENCAP_H
 #define MATRIX_WITH_OP_CONCRETE_ENCAP_H
 
-#include "MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
 
 namespace AbstractLinAlgPack {
 

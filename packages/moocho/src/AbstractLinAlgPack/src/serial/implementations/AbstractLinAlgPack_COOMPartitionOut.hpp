@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// COOMPartitionOut.hpp
+// AbstractLinAlgPack_COOMPartitionOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef COOM_PARTITION_OUT_H
 #define COOM_PARTITION_OUT_H
 
-#include "COOMatrixTmplOutFunc.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOutFunc.hpp"
 
 namespace AbstractLinAlgPack {
 

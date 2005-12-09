@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOutFunc.hpp
+// AbstractLinAlgPack_COOMatrixTmplOutFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_TMPL_OUT_FUNC_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixTmplOutFuncDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOutFuncDecl.hpp"
 #else
-#include "COOMatrixTmplOutFuncDef.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOutFuncDef.hpp"
 #endif
 
 #endif	// COO_MATRIX_TMPL_OUT_FUNC_H

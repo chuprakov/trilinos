@@ -147,11 +147,13 @@ RTOP_PACK_BASE_C = \
 RTOP_PACK_BASE_HPP = \
   $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.hpp\
   $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpCPostMod.hpp\
-  $(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp
+  $(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp\
+  $(srcdir)/RTOpPack/src/base/RTOpPack_print_sub_vector.hpp
 
 RTOP_PACK_BASE_CPP = \
   $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp\
-  $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp
+  $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp\
+  $(srcdir)/RTOpPack/src/base/RTOpPack_print_sub_vector.cpp
 
 RTOp_PACK_STD_OPS_H = \
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.h\
@@ -292,8 +294,6 @@ DENSE_LIN_ALG_PACK_HPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_Cpp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDecl.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDef.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Options.hpp\
@@ -331,6 +331,263 @@ DENSE_LIN_ALG_PACK_CPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
 
+ABSTRACT_LIN_ALG_PACK_HPP = \
+  $(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_Types.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystem.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystemFactory.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystemPerm.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_EtaVector.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSlice.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProduct.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProductDot.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_LinAlgOpPack.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixBase.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixNonsing.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsing.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsingAggr.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpSubView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixPermAggr.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymDiag.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymInitDiag.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymNonsing.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOpNonsing.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymSecant.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVector.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVectorMutable.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Permutation.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_PermutationOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClassDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClassDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorClass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseElement.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClassDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClassDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Vector.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorApplyOpSerialBase.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutable.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutableSubView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpace.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceFactory.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceSubSpace.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorStdOps.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_compare_element_indexes.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixComposite.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixOpNonsingTester.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymDiagStd.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymIdent.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixZero.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceBlocked.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTester.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTesterSetOptions.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_assert_print_nan_inf.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_BFGS_helpers.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMPartitionOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMPartitionOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixClass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixIn.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixOutFunc.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionViewSubclass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClassDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClassDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumn.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOpDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOpDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFunc.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedViewSubclass.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixBasisNonbasisStd.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixCOORTmplItfc.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSparseCOORSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymDiagSparseStd.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixVectorTemplateOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixVectorTemplateOpDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixWithOpConcreteEncap.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_PermutationSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SortByDescendingAbsValue.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SpVectorOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOElementTransView.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOPtrElement.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOReadMatrix.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseElementOut.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparsePtrElement.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOpDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOpDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOutput.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOutputDef.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorSliceOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_TransSparseCOOElementViewIter.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_VectorDenseEncap.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_dense_Vp_StPtMtV.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_rank_2_chol_update.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds_diff.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_ConvertToCSC.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixBasisNonbasis.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparse.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparseEncap.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractInvCholFactor.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractSparseElements.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixLoadSparseElements.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixNonsingSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMS.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMSMutable.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMSTri.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpNonsingSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDenseInitialize.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDiagSparse.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymNonsingSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpGetGMSSym.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableCols.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableDense.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorMutableDense.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceFactorySerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolver.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MatrixScaling_Strategy.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.hpp
+
+ABSTRACT_LIN_ALG_PACK_CPP = \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AbstractLinAlgOpPack.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystem.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSlice.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceIterator.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOut.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProductDot.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixBase.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixNonsing.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsing.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsingAggr.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpSubView.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymNonsing.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOpNonsing.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixPermAggr.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVector.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVectorMutable.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Vector.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorApplyOpSerialBase.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpace.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceSubSpace.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceFactory.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutable.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutableSubView.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorStdOps.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClass.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorOut.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorView.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_assert_print_nan_inf.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixOpNonsingTester.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymIdent.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymDiagStd.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixComposite.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixZero.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTester.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTesterSetOptions.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceBlocked.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceFactorySerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorMutableDense.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableDense.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableCols.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparseEncap.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixNonsingSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymNonsingSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDiagSparse.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractSparseElements.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_BFGS_helpers.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymDiagSparseStd.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymPosDefCholFactor.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSparseCOORSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_PermutationSerial.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SpVectorOp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_rank_2_chol_update.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemPermDirectSparse.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -352,14 +609,15 @@ AM_CPPFLAGS = $(EXPORT_INCLUDES)
 MOOCHO_LIB = libmoocho.a
 
 MOOCHO_H = \
-  $(srcdir)/Moocho_ConfigDefs.hpp \
+	$(srcdir)/Moocho_ConfigDefs.hpp \
 	$(MOOCHO_UTILITIES_HPP) \
   $(ITERATION_PACK_HPP) \
-  $(RTOP_PACK_BASE_H) \
-  $(RTOP_PACK_BASE_HPP) \
-  $(RTOP_PACK_STD_OPS_H) \
-  $(RTOP_PACK_STD_OPS_HPP) \
-  $(DENSE_LIN_ALG_PACK_HPP)
+	$(RTOP_PACK_BASE_H) \
+	$(RTOP_PACK_BASE_HPP) \
+	$(RTOP_PACK_STD_OPS_H) \
+	$(RTOP_PACK_STD_OPS_HPP) \
+	$(DENSE_LIN_ALG_PACK_HPP) \
+	$(ABSTRACT_LIN_ALG_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -369,7 +627,8 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_BASE_CPP) \
   $(RTOP_PACK_STD_OPS_C) \
   $(RTOP_PACK_STD_OPS_CPP) \
-  $(DENSE_LIN_ALG_PACK_CPP)
+  $(DENSE_LIN_ALG_PACK_CPP) \
+	$(ABSTRACT_LIN_ALG_PACK_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

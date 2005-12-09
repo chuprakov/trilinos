@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// SuperLUSolver.hpp
+// AbstractLinAlgPack_SuperLUSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

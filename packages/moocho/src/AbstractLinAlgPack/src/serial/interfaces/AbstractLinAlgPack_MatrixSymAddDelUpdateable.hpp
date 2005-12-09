@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymAddDelUpdateable.hpp
+// AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
 
 namespace AbstractLinAlgPack {
 

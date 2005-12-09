@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolverImp.hpp
+// AbstractLinAlgPack_DirectSparseSolverImp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef	ALAP_DIRECT_SPARSE_SOLVER_IMP_H
 #define ALAP_DIRECT_SPARSE_SOLVER_IMP_H
 
-#include "DirectSparseSolver.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolver.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
 
 namespace AbstractLinAlgPack {
 

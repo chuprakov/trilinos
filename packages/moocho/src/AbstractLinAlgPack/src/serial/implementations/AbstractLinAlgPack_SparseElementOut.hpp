@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// SparseElementOut.hpp
+// AbstractLinAlgPack_SparseElementOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <ostream>
 
-#include "SparseElement.hpp"
+#include "AbstractLinAlgPack_SparseElement.hpp"
 
 namespace AbstractLinAlgPack {
 

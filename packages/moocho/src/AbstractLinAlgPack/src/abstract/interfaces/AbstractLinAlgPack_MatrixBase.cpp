@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MatrixBase.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

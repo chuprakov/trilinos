@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// SpVectorView.hpp
+// AbstractLinAlgPack_SpVectorView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SP_VECTOR_VIEW_H
 #define SP_VECTOR_VIEW_H
 
-#include "SpVectorClass.hpp"
-#include "RTOpPackTypes.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "RTOpPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplConvertToSparseCompressedColumn.hpp
+// AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp"
 #else
-#include "COOMatrixTmplConvertToSparseCompressedColumnDef.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDef.hpp"
 #endif
 
 #endif	// COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H

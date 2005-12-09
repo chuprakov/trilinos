@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// rank_2_chol_update.hpp
+// AbstractLinAlgPack_rank_2_chol_update.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef RANK_2_CHOL_UPDATE_H
 #define RANK_2_CHOL_UPDATE_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

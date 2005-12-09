@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// EtaVector.hpp
+// AbstractLinAlgPack_EtaVector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ETA_VECTOR_H
 #define ETA_VECTOR_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
 
 namespace AbstractLinAlgPack {
 

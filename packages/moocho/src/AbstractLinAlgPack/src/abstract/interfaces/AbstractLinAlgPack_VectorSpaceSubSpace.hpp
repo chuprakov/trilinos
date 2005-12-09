@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// VectorSpaceSubSpace.hpp
+// AbstractLinAlgPack_VectorSpaceSubSpace.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_SPACE_SUB_SPACE_H
 #define VECTOR_SPACE_SUB_SPACE_H
 
-#include "VectorSpace.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

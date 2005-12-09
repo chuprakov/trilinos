@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// MatrixZero.hpp
+// AbstractLinAlgPack_MatrixZero.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_ZERO_H
 #define ALAP_MATRIX_ZERO_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

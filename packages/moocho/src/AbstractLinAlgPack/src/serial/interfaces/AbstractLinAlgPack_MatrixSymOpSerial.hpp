@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymOpSerial.hpp
+// AbstractLinAlgPack_MatrixSymOpSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 #define SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 
-#include "MatrixOpSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOpSerial.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
 
 namespace AbstractLinAlgPack {
 

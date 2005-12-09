@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixBasisNonbasis.hpp
+// AbstractLinAlgPack_MatrixBasisNonbasis.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

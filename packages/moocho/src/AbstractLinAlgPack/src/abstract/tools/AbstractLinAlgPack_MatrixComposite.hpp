@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixComposite.hpp
+// AbstractLinAlgPack_MatrixComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <deque>
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 

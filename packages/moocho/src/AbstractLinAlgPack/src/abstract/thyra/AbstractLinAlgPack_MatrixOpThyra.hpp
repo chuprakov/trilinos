@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MatrixOpThyra.hpp
+// AbstractLinAlgPack_MatrixOpThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_OP_Thyra_HPP
 #define ALAP_MATRIX_OP_Thyra_HPP
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
 #include "Thyra_LinearOpBase.hpp"
 
 namespace AbstractLinAlgPack {

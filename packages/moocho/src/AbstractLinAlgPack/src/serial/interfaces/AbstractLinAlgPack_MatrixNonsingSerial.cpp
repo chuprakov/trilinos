@@ -18,18 +18,18 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixNonsingSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSMutable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSTri.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_MatrixNonsingSerial.hpp"
+#include "AbstractLinAlgPack_MatrixOpSerial.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_MatrixOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack_MatrixOpGetGMSTri.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

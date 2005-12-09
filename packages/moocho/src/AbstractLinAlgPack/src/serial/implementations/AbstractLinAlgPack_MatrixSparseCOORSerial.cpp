@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixCOORTmplItfc.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/COOMatrixTmplOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixSparseCOORSerial.hpp"
+#include "AbstractLinAlgPack_MatrixCOORTmplItfc.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOp.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

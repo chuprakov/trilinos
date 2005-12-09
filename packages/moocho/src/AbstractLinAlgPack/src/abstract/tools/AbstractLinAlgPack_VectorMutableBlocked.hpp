@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// VectorMutableBlocked.hpp
+// AbstractLinAlgPack_VectorMutableBlocked.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 
 namespace AbstractLinAlgPack {
 

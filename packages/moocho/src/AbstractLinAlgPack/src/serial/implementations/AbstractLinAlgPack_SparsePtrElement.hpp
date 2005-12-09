@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparsePtrElement.hpp
+// AbstractLinAlgPack_SparsePtrElement.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SPARSE_PTR_ELEMENT_H
 #define SPARSE_PTR_ELEMENT_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymOpGetGMSSym.hpp
+// AbstractLinAlgPack_MatrixSymOpGetGMSSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {

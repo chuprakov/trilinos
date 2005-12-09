@@ -19,7 +19,7 @@
 #include <valarray>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/serial/solvers/SuperLUSolver.hpp"
+#include "AbstractLinAlgPack_SuperLUSolver.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"

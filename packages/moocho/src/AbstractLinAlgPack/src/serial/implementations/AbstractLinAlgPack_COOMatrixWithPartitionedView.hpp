@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// COOMatrixWithPartitionedView.hpp
+// AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef COO_MATRIX_WITH_PARTITIONED_VIEW_H
 #define COO_MATRIX_WITH_PARTITIONED_VIEW_H
 
-#include "COOMatrixClass.hpp"
-#include "COOMatrixPartitionedViewClass.hpp"
-#include "DenseLinAlgPack/src/Range1D.hpp"
+#include "AbstractLinAlgPack_COOMatrixClass.hpp"
+#include "AbstractLinAlgPack_COOMatrixPartitionedViewClass.hpp"
+#include "DenseLinAlgPack/src/Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

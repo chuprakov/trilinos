@@ -3,11 +3,11 @@
 
 #include <assert.h>
 
-#include "MultiVectorMutable.hpp"
-#include "MatrixSymDiag.hpp"
-#include "VectorMutable.hpp"
-#include "AbstractLinAlgPackAssertOp.hpp"
-#include "LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiag.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

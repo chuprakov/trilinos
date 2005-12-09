@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymOpGetGMSSymMutable.hpp
+// AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSym.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpGetGMSSym.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////
-// GenPermMatrixSliceIterator.hpp
+// AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <iterator>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

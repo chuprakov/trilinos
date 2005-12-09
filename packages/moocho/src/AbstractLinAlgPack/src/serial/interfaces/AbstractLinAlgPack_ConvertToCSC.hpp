@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ConvertToCSC.hpp
+// AbstractLinAlgPack_ConvertToCSC.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 #define CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 
 /** @name Conversion utilites / interfaces for a Fortran compatable sparse compressed column matrix format.
   *

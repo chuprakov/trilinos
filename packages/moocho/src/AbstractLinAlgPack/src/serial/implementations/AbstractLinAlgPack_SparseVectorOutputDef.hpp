@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOutputDef.hpp
+// AbstractLinAlgPack_SparseVectorOutputDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

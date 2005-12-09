@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymPosDefCholFactor.hpp
+// AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,16 +16,16 @@
 #ifndef MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 #define MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "MoochoMoreUtilities/src/Serializable.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixExtractInvCholFactor.hpp"
+#include "AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp"
+#include "AbstractLinAlgPack_MatrixSymDenseInitialize.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack_MatrixSymSecant.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "SerializationPack_Serializable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 

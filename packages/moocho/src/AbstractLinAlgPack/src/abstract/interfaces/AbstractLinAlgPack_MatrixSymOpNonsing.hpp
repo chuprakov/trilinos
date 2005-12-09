@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// MatrixSymOpNonsing.hpp
+// AbstractLinAlgPack_MatrixSymOpNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 
-#include "MatrixSymOp.hpp"
-#include "MatrixSymNonsing.hpp"
-#include "MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixSymNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMPartitionOp.hpp
+// AbstractLinAlgPack_COOMPartitionOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COOM_PARTITION_OP_H
 #define COOM_PARTITION_OP_H
 
-#include "COOMatrixTmplOp.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOp.hpp"
 
 namespace AbstractLinAlgPack {
 

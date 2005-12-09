@@ -17,9 +17,9 @@
 #include <limits>
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "AbstractLinAlgPack_BFGS_helpers.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 
 bool AbstractLinAlgPack::BFGS_sTy_suff_p_d(
 	const Vector    &s

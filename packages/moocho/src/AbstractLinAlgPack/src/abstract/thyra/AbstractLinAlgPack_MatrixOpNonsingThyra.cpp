@@ -14,8 +14,8 @@
 // above mentioned "Artistic License" for more details.
 //
 
-#include "MatrixOpNonsingThyra.hpp"
-#include "VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsingThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

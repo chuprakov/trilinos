@@ -18,14 +18,14 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "MatrixOpSubView.hpp"
-#include "MultiVectorMutable.hpp"
-#include "VectorSpace.hpp"
-#include "VectorMutable.hpp"
-#include "SpVectorClass.hpp"
-#include "SpVectorView.hpp"
-#include "EtaVector.hpp"
-#include "LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixOpSubView.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorView.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_TestForException.hpp"
 

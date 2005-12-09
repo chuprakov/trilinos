@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// MatrixOpNonsingThyra.hpp
+// AbstractLinAlgPack_MatrixOpNonsingThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,8 @@
 #ifndef ALAP_MATRIX_OP_NONSING_Thyra_HPP
 #define ALAP_MATRIX_OP_NONSING_Thyra_HPP
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "MatrixOpThyra.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpThyra.hpp"
 #include "Thyra_LinearOpWithSolveBase.hpp"
 
 namespace AbstractLinAlgPack {

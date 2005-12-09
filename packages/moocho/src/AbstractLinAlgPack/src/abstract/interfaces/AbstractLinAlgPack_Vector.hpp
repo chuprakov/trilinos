@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// Vector.hpp
+// AbstractLinAlgPack_Vector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "RTOpPack_RTOpT.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

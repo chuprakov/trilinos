@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "VectorSpaceFactoryThyra.hpp"
-#include "VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

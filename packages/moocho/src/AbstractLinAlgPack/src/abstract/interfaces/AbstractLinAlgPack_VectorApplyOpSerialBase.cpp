@@ -1,8 +1,8 @@
 // /////////////////////////////////////////////////////
 // VectorApplyOpSerialBase.cpp
 
-#include "VectorApplyOpSerialBase.hpp"
-#include "apply_op_helper.hpp"
+#include "AbstractLinAlgPack_VectorApplyOpSerialBase.hpp"
+#include "AbstractLinAlgPack_apply_op_helper.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixBasisNonbasis.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_MatrixBasisNonbasis.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// MatrixSymIdent.hpp
+// AbstractLinAlgPack_MatrixSymIdent.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_SYM_IDENTITY_H
 #define ALAP_MATRIX_SYM_IDENTITY_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

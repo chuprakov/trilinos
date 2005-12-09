@@ -17,12 +17,12 @@
 
 #include <algorithm>
 
-#include "ConvertToCSC.hpp"
-#include "MatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_ConvertToCSC.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Mp_StM;

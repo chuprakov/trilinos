@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/implementations/rank_2_chol_update.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
+#include "AbstractLinAlgPack_rank_2_chol_update.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 
 void AbstractLinAlgPack::rank_2_chol_update(
 	const value_type     a

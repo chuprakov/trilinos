@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixOp.hpp
+// AbstractLinAlgPack_MatrixOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "Teuchos_RefCountPtr.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

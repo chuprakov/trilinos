@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MultiVectorMutableCols.hpp
+// AbstractLinAlgPack_MultiVectorMutableCols.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 

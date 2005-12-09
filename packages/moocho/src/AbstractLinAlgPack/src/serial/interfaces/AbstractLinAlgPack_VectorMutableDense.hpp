@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// VectorMutableDense.hpp
+// AbstractLinAlgPack_VectorMutableDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_DENSE_H
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
-#include "VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorApplyOpSerialBase.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorApplyOpSerialBase.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 

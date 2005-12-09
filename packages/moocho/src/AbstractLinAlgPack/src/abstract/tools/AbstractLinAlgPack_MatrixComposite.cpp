@@ -13,16 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-//#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorMutableBlocked.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+//#include "AbstractLinAlgPack/src/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "MoochoMoreUtilities/src/profile_hack.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 
 namespace {
 

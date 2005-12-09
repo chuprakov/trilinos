@@ -19,8 +19,8 @@
 #include <functional>
 #include <algorithm>
 
-#include "GenPermMatrixSlice.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef _WINDOWS

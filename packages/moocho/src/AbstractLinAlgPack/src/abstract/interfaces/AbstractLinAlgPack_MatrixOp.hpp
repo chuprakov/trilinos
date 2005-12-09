@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixOp.hpp
+// AbstractLinAlgPack_MatrixOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "MatrixBase.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {

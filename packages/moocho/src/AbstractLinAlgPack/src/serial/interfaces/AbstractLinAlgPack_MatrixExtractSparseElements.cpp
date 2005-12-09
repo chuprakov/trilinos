@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_MatrixExtractSparseElements.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

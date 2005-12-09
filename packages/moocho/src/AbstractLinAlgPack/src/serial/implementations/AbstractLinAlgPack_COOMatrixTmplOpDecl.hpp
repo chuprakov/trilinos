@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOpDecl.hpp
+// AbstractLinAlgPack_COOMatrixTmplOpDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_TMPL_OP_DECL_H
 #define COO_MATRIX_TMPL_OP_DECL_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

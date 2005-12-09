@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// COOMatrixPartitionedViewClassDef.hpp
+// AbstractLinAlgPack_COOMatrixPartitionedViewClassDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "COOMatrixPartitionedViewClassDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixPartitionedViewClassDecl.hpp"
 
 namespace AbstractLinAlgPack {
 

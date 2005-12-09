@@ -1,10 +1,10 @@
 // ////////////////////////////////////////////////////
-// ThyraAccessors.hpp
+// AbstractLinAlgPack_ThyraAccessors.hpp
 
 #ifndef ALAP_THYRA_ACCESSORS_HPP
 #define ALAP_THYRA_ACCESSORS_HPP
 
-#include "VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
 
 namespace AbstractLinAlgPack {
 

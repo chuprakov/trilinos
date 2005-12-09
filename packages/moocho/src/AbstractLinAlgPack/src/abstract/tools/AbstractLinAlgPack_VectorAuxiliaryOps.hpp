@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// VectorAuxiliaryOps.hpp
+// AbstractLinAlgPack_VectorAuxiliaryOps.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 

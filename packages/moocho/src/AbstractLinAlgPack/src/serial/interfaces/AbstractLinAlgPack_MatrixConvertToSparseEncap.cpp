@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "AbstractLinAlgPack_MatrixConvertToSparseEncap.hpp"
+#include "AbstractLinAlgPack_MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

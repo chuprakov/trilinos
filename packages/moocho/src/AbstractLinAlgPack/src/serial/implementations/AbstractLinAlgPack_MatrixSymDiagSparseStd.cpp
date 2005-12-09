@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymDiagSparseStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagSparseStd.hpp"
+#include "AbstractLinAlgPack_SpVectorOut.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

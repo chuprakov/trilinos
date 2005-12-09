@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixPermAggr.hpp
+// AbstractLinAlgPack_MatrixPermAggr.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_PERM_AGGR_H
 #define MATRIX_PERM_AGGR_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
 
 namespace AbstractLinAlgPack {
 

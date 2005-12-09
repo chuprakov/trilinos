@@ -16,10 +16,10 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/apply_op_helper.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack_apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"

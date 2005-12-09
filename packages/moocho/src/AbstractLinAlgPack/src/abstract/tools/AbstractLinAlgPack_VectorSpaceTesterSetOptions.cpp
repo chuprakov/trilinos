@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTesterSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "AbstractLinAlgPack_VectorSpaceTesterSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

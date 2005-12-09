@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOp.hpp
+// AbstractLinAlgPack_COOMatrixTmplOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_TMPL_OP_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixTmplOpDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOpDecl.hpp"
 #else
-#include "COOMatrixTmplOpDef.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOpDef.hpp"
 #endif
 
 #endif	// COO_MATRIX_TMPL_OP_H

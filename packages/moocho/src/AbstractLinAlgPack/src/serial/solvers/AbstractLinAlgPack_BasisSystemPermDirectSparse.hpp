@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemPermDirectSparse.hpp
+// AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_PERM_DIRECT_SPARSE_SYSTEM_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_PERM_DIRECT_SPARSE_SYSTEM_H
 
-#include "DirectSparseSolver.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolver.hpp"
+#include "AbstractLinAlgPack_BasisSystemPerm.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 
 namespace AbstractLinAlgPack {
 

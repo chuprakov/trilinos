@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorClass.hpp
+// AbstractLinAlgPack_SparseVectorClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define SPARSE_VECTOR_CLASS_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "SparseVectorClassDecl.hpp"
+#include "AbstractLinAlgPack_SparseVectorClassDecl.hpp"
 #else
-#include "SparseVectorClassDef.hpp"
+#include "AbstractLinAlgPack_SparseVectorClassDef.hpp"
 #endif
 
 #endif // SPARSE_VECTOR_CLASS_H

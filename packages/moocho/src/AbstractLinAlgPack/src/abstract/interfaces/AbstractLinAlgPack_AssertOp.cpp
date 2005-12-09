@@ -17,10 +17,10 @@
 #include <string>
 #include <typeinfo>
 
-#include "AbstractLinAlgPackAssertOp.hpp"
-#include "VectorSpace.hpp"
-#include "VectorMutable.hpp"
-#include "MatrixOp.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // boilerplate code

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymDiagSparse.hpp
+// AbstractLinAlgPack_MatrixSymDiagSparse.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,8 +15,8 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 
-#include "MatrixSymOpSerial.hpp"
-#include "MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpSerial.hpp"
+#include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {

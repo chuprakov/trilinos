@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolverMA28.hpp
+// AbstractLinAlgPack_DirectSparseSolverMA28.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,10 +22,10 @@
 #include <vector>
 #include <string>
 
-#include "DirectSparseSolverImp.hpp"
-#include "MA28Solver.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverImp.hpp"
+#include "AbstractLinAlgPack_MA28Solver.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {

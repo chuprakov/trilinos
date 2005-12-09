@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// SortByDescendingAbsValue.hpp
+// AbstractLinAlgPack_SortByDescendingAbsValue.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
 
 namespace AbstractLinAlgPack {
 

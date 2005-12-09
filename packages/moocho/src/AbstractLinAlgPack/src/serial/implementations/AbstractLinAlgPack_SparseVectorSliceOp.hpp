@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorSliceOp.hpp
+// AbstractLinAlgPack_SparseVectorSliceOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #ifndef SPARSE_VECTOR_SLICE_OP_H
 #define SPARSE_VECTOR_SLICE_OP_H
 
-#include "SparseVectorOp.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "AbstractLinAlgPack_SparseVectorOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
 
 namespace AbstractLinAlgPack {
 

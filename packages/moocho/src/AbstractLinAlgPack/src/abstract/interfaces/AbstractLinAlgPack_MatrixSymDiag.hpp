@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymDiag.hpp
+// AbstractLinAlgPack_MatrixSymDiag.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_DIAGONAL_H
 #define MATRIX_SYM_DIAGONAL_H
 
-#include "MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

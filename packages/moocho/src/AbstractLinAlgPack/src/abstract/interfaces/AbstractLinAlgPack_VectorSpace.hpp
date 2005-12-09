@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// VectorSpace.hpp
+// AbstractLinAlgPack_VectorSpace.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ALAP_VECTOR_SPACE_HPP
 #define ALAP_VECTOR_SPACE_HPP
 
-#include "InnerProduct.hpp"
+#include "AbstractLinAlgPack_InnerProduct.hpp"
 #include "Teuchos_AbstractFactory.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

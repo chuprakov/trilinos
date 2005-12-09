@@ -15,8 +15,8 @@
 
 #include <ostream>
 
-#include "GenPermMatrixSliceOut.hpp"
-#include "GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOut.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 
 std::ostream& AbstractLinAlgPack::operator<<(
 	std::ostream& out, const GenPermMatrixSlice& P

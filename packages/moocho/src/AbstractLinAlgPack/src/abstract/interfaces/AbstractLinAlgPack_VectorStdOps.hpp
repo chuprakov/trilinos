@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// VectorStdOps.hpp
+// AbstractLinAlgPack_VectorStdOps.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 #define ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 
-#include "VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MA28Solver.hpp
+// AbstractLinAlgPack_MA28Solver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,7 +22,7 @@
 #ifndef SSP_MA28_SOLVER_H
 #define SSP_MA28_SOLVER_H
 
-#include "MA28CommonBlockEncap.hpp"
+#include "AbstractLinAlgPack_MA28CommonBlockEncap.hpp"
 
 namespace MA28_Cpp {
 

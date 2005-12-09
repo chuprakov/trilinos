@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolver.hpp
+// AbstractLinAlgPack_DirectSparseSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef	ALAP_DIRECT_SPARSE_SOLVER_H
 #define ALAP_DIRECT_SPARSE_SOLVER_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack_MatrixNonsing.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 

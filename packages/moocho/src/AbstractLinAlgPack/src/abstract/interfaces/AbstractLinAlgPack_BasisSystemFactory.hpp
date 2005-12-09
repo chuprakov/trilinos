@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemFactory.hpp
+// AbstractLinAlgPack_BasisSystemFactory.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 

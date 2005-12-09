@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AbstractLinAlgPackPublicTypes.ud
+// AbstractLinAlgPack_PublicTypes.ud
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 // Include the types from DenseLinAlgPack
-#include "DenseLinAlgPack/src/DenseLinAlgPackPublicTypes.ud"
+#include "DenseLinAlgPack_PublicTypes.ud"
 
 //
 // Main interface library

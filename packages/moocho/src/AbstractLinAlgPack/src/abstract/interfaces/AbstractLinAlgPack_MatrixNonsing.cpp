@@ -18,13 +18,13 @@
 
 #include <assert.h>
 
-#include "MatrixNonsing.hpp"
-#include "MultiVectorMutable.hpp"
-#include "VectorSpace.hpp"
-#include "SpVectorClass.hpp"
-#include "SpVectorView.hpp"
-#include "EtaVector.hpp"
-#include "LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixNonsing.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorView.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

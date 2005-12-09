@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// MultiVectorMutableDense.hpp
+// AbstractLinAlgPack_MultiVectorMutableDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef MULTI_VECTOR_MUTABLE_DENSE_H
 #define MULTI_VECTOR_MUTABLE_DENSE_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "AbstractLinAlgPack_MatrixOpSerial.hpp"
+#include "AbstractLinAlgPack_MatrixOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {

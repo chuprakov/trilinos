@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BFGS_helpers.hpp
+// AbstractLinAlgPack_BFGS_helpers.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef BFGS_HELPERS_H
 #define BFGS_HELPERS_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

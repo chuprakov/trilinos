@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// compare_element_indexes.hpp
+// AbstractLinAlgPack_compare_element_indexes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <functional>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

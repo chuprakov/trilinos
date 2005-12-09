@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// MA28CommonBlockEncap.hpp
+// AbstractLinAlgPack_MA28CommonBlockEncap.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include "MA28_CppDecl.hpp"
+#include "AbstractLinAlgPack_MA28_CppDecl.hpp"
 
 namespace MA28_Cpp {
 

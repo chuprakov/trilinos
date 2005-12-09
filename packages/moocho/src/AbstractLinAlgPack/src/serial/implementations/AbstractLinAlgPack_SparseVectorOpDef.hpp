@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOpDef.hpp
+// AbstractLinAlgPack_SparseVectorOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// The declarations for these functions is in the file SparseVectorOpDecl.hpp
+// The declarations for these functions is in the file AbstractLinAlgPack_SparseVectorOpDecl.hpp
 // but because of a bug with the MS VC++ 5.0 compiler you can not use
 // namespace qualification with definitions of previously declared
 // nonmember template funcitons.  By not including the declarations
@@ -30,12 +30,12 @@
 #ifndef SPARSE_VECTOR_OP_DEF_H
 #define SPARSE_VECTOR_OP_DEF_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SparseVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_SparseVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"	// also included in AbstractLinAlgPack_SparseVectorOpDef.hpp
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace {
 template< class T >

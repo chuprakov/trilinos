@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatrixOpNonsing.hpp
+// AbstractLinAlgPack_MatrixOpNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_OP_NONSING_HPP
 #define ALAP_MATRIX_OP_NONSING_HPP
 
-#include "MatrixOp.hpp"
-#include "MatrixNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

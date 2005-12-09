@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-#include "SparseCOOReadMatrix.hpp"
+#include "AbstractLinAlgPack_SparseCOOReadMatrix.hpp"
 
 // Throw an exception if the char is not ':'
 namespace {

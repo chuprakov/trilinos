@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"

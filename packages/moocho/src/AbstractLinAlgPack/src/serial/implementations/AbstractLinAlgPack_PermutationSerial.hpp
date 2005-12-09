@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// PermutationSerial.hpp
+// AbstractLinAlgPack_PermutationSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_PERMUTATION_SERIAL_H
 #define SLAP_PERMUTATION_SERIAL_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_Permutation.hpp"
 
 namespace AbstractLinAlgPack {
 

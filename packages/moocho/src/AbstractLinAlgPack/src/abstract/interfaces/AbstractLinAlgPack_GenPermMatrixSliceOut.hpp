@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// GenPermMatrixSliceOut.hpp
+// AbstractLinAlgPack_GenPermMatrixSliceOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

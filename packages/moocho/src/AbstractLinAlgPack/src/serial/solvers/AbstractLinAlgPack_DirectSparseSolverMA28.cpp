@@ -20,15 +20,15 @@
 #include <fstream>
 #include <algorithm>
 
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/MatrixScaling_Strategy.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverMA28.hpp"
+#include "AbstractLinAlgPack_MatrixScaling_Strategy.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "MoochoMoreUtilities/src/f_open_file.hpp"
+#include "FortranTypes_f_open_file.hpp"
 
 namespace {
 //

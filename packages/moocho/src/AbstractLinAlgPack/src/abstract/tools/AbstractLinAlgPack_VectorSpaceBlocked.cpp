@@ -17,12 +17,12 @@
 
 #include <algorithm>
 
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceSubSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
+#include "AbstractLinAlgPack_VectorMutableBlocked.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSubSpace.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactory.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

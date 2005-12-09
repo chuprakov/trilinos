@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AbstractLinAlgPackTypes.hpp
+// AbstractLinAlgPack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,12 +20,12 @@
 #include <stdexcept>
 
 #include "RTOp.h"
-#include "MoochoMoreUtilities/src/BLAS_CppTypes.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
+#include "BLAS_Cpp_Types.hpp"
+#include "DenseLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 
-#include "DenseLinAlgPack/src/DenseLinAlgPackPublicTypes.ud"
+#include "DenseLinAlgPack_PublicTypes.ud"
 
 typedef RTOp_index_type  size_type;
 typedef RTOp_value_type  value_type;

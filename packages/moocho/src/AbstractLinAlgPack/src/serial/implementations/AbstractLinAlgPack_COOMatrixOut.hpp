@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// COOMatrixOut.hpp
+// AbstractLinAlgPack_COOMatrixOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_OUT_H
 #define COO_MATRIX_OUT_H
 
-#include "COOMatrixOutFunc.hpp"
+#include "AbstractLinAlgPack_COOMatrixOutFunc.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,10 +1,10 @@
 // //////////////////////////////////////////////////////////////////////////////
-// apply_op_helper.hpp
+// AbstractLinAlgPack_apply_op_helper.hpp
 
 #ifndef APPLY_OP_HELPER_H
 #define APPLY_OP_HELPER_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "RTOpPack_RTOpT.hpp"
 
 namespace AbstractLinAlgPack {

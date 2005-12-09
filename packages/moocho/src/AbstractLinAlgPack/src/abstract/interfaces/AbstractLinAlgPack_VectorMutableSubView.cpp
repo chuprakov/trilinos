@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "VectorMutableSubView.hpp"
+#include "AbstractLinAlgPack_VectorMutableSubView.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMatrixWithPartitionedViewSubclass.hpp
+// AbstractLinAlgPack_COOMatrixWithPartitionedViewSubclass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef COO_MATRIX_WITH_PARTITIONED_VIEW_SUBCLASS_H
 #define COO_MATRIX_WITH_PARTITIONED_VIEW_SUBCLASS_H
 
-#include "MatrixWithOpConcreteEncap.hpp"
-#include "COOMatrixWithPartitionedView.hpp"
-#include "ConvertToCSC.hpp"
+#include "AbstractLinAlgPack_MatrixWithOpConcreteEncap.hpp"
+#include "AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp"
+#include "AbstractLinAlgPack_ConvertToCSC.hpp"
 #include "MatrixConvertToSparseFortranCompatible.hpp"
-#include "COOMPartitionOut.hpp"
+#include "AbstractLinAlgPack_COOMPartitionOut.hpp"
 
 namespace AbstractLinAlgPack {
 

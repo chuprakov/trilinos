@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 
-#include "InnerProductThyra.hpp"
-#include "VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_InnerProductThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// MatrixConvertToSparse.hpp
+// AbstractLinAlgPack_MatrixConvertToSparse.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_CONVERT_TO_SPARSE_H
 #define MATRIX_CONVERT_TO_SPARSE_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
 
 namespace AbstractLinAlgPack {
 

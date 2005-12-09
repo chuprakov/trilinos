@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "DenseLinAlgPack/src/PermOut.hpp"
+#include "AbstractLinAlgPack_PermutationSerial.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
+#include "DenseLinAlgPack_PermOut.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

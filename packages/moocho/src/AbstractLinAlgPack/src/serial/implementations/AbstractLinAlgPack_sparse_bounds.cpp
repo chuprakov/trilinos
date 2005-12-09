@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "sparse_bounds.hpp"
+#include "AbstractLinAlgPack_sparse_bounds.hpp"
 
 ///
 /** Count the number of sparse bounds where at least one bound is

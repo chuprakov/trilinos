@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 void AbstractLinAlgPack::V_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P

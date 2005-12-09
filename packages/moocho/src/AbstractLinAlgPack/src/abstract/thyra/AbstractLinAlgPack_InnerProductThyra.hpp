@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// InnerProductThyra.hpp
+// AbstractLinAlgPack_InnerProductThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_INNER_PRODUCT_Thyra_H
 #define ALAP_INNER_PRODUCT_Thyra_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/InnerProduct.hpp"
+#include "AbstractLinAlgPack_InnerProduct.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
 
 namespace AbstractLinAlgPack {

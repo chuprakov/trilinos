@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymInitDiag.hpp
+// AbstractLinAlgPack_MatrixSymInitDiag.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_INIT_DIAGONAL_H
 #define MATRIX_SYM_INIT_DIAGONAL_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

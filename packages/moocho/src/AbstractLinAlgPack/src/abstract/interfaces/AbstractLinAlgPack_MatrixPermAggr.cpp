@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MatrixPermAggr.hpp"
-#include "LinAlgOpPack.hpp"
-#include "MatrixOpOut.hpp"
-#include "VectorStdOps.hpp"
-#include "VectorSpace.hpp"
-#include "Permutation.hpp"
-#include "PermutationOut.hpp"
+#include "AbstractLinAlgPack_MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_Permutation.hpp"
+#include "AbstractLinAlgPack_PermutationOut.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

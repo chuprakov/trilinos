@@ -1,5 +1,5 @@
 // /////////////////////////////////////
-// COOMatrixTmplOpDef.hpp
+// AbstractLinAlgPack_COOMatrixTmplOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef COO_MATRIX_TMPL_OP_DEF_H
 #define COO_MATRIX_TMPL_OP_DEF_H
 
-#include "COOMatrixTmplOpDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOpDecl.hpp"
 
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace AbstractLinAlgPack {
 

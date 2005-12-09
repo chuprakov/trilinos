@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "VectorStdOps.hpp"
-#include "VectorSpace.hpp"
-#include "VectorMutable.hpp"
-#include "AbstractLinAlgPackAssertOp.hpp"
-#include "SpVectorClass.hpp"
-#include "SpVectorView.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorView.hpp"
 #include "RTOp_ROp_dot_prod.h"
 #include "RTOp_ROp_max_abs_ele.h"
 #include "RTOp_ROp_sum.h"

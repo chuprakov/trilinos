@@ -15,7 +15,7 @@
 
 #include <string>
 
-#include "GenPermMatrixSliceIterator.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp"
 #include "Teuchos_TestForException.hpp"
 
 void AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::GPMS_row_col_iterator_assert_not_null(

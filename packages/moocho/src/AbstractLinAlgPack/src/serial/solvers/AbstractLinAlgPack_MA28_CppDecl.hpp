@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// MA28_CppDecl.hpp
+// AbstractLinAlgPack_MA28_CppDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,7 +15,7 @@
 //
 // C declarations for MA28 functions.  These declarations should not have to change
 // for different platforms.  As long as the fortran object code uses capitalized
-// names for its identifers then the declarations in fortran_types.hpp should be
+// names for its identifers then the declarations in Teuchos_F77_wrappers.h should be
 // sufficent for portability.
 
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
@@ -23,7 +23,7 @@
 #ifndef MA28_CPPDECL_H
 #define MA28_CPPDECL_H
 
-#include "MoochoMoreUtilities/src/fortran_types.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 namespace MA28_CppDecl {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MatrixSymNonsingSerial.hpp
+// AbstractLinAlgPack_MatrixSymNonsingSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 
-#include "MatrixNonsingSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixNonsingSerial.hpp"
+#include "AbstractLinAlgPack_MatrixSymNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

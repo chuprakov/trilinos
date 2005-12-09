@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixOpGetGMSTri.hpp
+// AbstractLinAlgPack_MatrixOpGetGMSTri.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_TRI_H
 #define MATRIX_WITH_OP_GET_GMS_TRI_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {

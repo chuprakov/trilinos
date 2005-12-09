@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixCOORTmplItfc.hpp
+// AbstractLinAlgPack_MatrixCOORTmplItfc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

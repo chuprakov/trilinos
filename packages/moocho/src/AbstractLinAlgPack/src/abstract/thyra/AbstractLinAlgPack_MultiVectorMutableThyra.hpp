@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MultiVectorMutableThyra.hpp
+// AbstractLinAlgPack_MultiVectorMutableThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef ALAP_MULTI_VECTOR_MUTABLE_Thyra_HPP
 #define ALAP_MULTI_VECTOR_MUTABLE_Thyra_HPP
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "MatrixOpThyra.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_MatrixOpThyra.hpp"
 #include "Thyra_MultiVectorBase.hpp"
 
 namespace AbstractLinAlgPack {

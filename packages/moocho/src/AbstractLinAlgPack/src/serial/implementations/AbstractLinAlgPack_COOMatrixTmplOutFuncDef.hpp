@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOutFuncDef.hpp
+// AbstractLinAlgPack_COOMatrixTmplOutFuncDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <ostream>
 #include <iomanip>
 
-#include "COOMatrixTmplOutFuncDecl.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplOutFuncDecl.hpp"
 
 namespace AbstractLinAlgPack {
 

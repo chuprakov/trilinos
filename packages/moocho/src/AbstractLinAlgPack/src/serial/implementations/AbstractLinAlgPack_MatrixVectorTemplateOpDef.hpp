@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MatrixVectorTemplateOpDef.hpp
+// AbstractLinAlgPack_MatrixVectorTemplateOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// Definitions of template functions declared in MatrixVectorTemplateOp.hpp.
+// Definitions of template functions declared in AbstractLinAlgPack_MatrixVectorTemplateOp.hpp.
 
 #ifndef MATRIX_VECTOR_TEMPLATE_OP_DEF_H
 #define MATRIX_VECTOR_TEMPLATE_OP_DEF_H
 
-#include "MatrixVectorTemplateOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "AbstractLinAlgPack_MatrixVectorTemplateOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 
 // ///////////////////////////////////
 // Matrix assignment

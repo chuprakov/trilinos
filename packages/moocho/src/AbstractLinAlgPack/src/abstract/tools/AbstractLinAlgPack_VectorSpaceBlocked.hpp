@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// VectorSpaceBlocked.hpp
+// AbstractLinAlgPack_VectorSpaceBlocked.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

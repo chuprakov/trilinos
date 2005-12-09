@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
 
 namespace {
 // Setup some template classes to check at complile time that

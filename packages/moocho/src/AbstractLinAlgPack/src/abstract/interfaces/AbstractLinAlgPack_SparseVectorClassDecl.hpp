@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorClassDecl.hpp
+// AbstractLinAlgPack_SparseVectorClassDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,8 +21,8 @@
 #include <vector>
 #include <sstream>
 
-#include "SpVecIndexLookupClass.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_SpVecIndexLookupClass.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MultiVectorMutable.hpp"
-#include "VectorMutable.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "RTOp_TOp_assign_scalar.h"
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_scale_vector.h"

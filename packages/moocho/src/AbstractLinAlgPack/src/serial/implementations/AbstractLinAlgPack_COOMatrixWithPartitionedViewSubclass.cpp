@@ -15,14 +15,14 @@
 
 #include <assert.h>
 
-#include "COOMatrixWithPartitionedViewSubclass.hpp"
-#include "SparseVectorSliceOp.hpp"
-#include "SparseElement.hpp"
-#include "COOMPartitionOp.hpp"
-#include "COOMPartitionOut.hpp"
-#include "COOMatrixTmplConvertToSparseCompressedColumn.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_COOMatrixWithPartitionedViewSubclass.hpp"
+#include "AbstractLinAlgPack_SparseVectorSliceOp.hpp"
+#include "AbstractLinAlgPack_SparseElement.hpp"
+#include "AbstractLinAlgPack_COOMPartitionOp.hpp"
+#include "AbstractLinAlgPack_COOMPartitionOut.hpp"
+#include "AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumn.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
 
 namespace LinAlgOpPack {
 

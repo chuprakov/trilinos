@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "VectorMutable.hpp"
-#include "VectorMutableSubView.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorMutableSubView.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "RTOp_TOp_assign_scalar.h"
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_axpy.h"
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

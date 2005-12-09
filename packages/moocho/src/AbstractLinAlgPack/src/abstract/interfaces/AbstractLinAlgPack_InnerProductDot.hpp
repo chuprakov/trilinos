@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// InnerProductDot.hpp
+// AbstractLinAlgPack_InnerProductDot.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_INNER_PRODUCT_DOT_H
 #define ALAP_INNER_PRODUCT_DOT_H
 
-#include "InnerProduct.hpp"
+#include "AbstractLinAlgPack_InnerProduct.hpp"
 
 namespace AbstractLinAlgPack {
 

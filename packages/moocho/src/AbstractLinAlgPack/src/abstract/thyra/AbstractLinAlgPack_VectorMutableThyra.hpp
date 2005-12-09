@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// VectorMutableThyra.hpp
+// AbstractLinAlgPack_VectorMutableThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ALAP_VECTOR_MUTABLE_Thyra_HPP
 #define ALAP_VECTOR_MUTABLE_Thyra_HPP
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorApplyOpSerialBase.hpp"
-#include "VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorApplyOpSerialBase.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
 #include "Thyra_VectorBase.hpp"
 
 namespace AbstractLinAlgPack {

@@ -15,15 +15,15 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymNonsingSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack_MatrixSymNonsingSerial.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack_MatrixOpSerial.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {

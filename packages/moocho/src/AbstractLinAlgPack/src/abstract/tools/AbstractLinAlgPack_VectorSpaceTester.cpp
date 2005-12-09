@@ -17,12 +17,12 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTester.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "MoochoMoreUtilities/src/update_success.hpp"
+#include "AbstractLinAlgPack_VectorSpaceTester.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

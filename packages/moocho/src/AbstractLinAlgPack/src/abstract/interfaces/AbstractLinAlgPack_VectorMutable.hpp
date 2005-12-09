@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// VectorMutable.hpp
+// AbstractLinAlgPack_VectorMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ALAP_VECTOR_MUTABLE_HPP
 #define ALAP_VECTOR_MUTABLE_HPP
 
-#include "Vector.hpp"
-#include "RTOpPackTypes.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "RTOpPack_Types.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

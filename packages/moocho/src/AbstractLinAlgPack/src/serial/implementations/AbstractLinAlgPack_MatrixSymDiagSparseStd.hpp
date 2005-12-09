@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MatrixSymDiagSparseStd.hpp
+// AbstractLinAlgPack_MatrixSymDiagSparseStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagSparse.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagSparse.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// BasisSystemComposite.hpp
+// AbstractLinAlgPack_BasisSystemComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef BASIS_SYSTEM_COMPOSITE_STD_H
 #define BASIS_SYSTEM_COMPOSITE_STD_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "Range1D.hpp"
+#include "AbstractLinAlgPack_BasisSystem.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

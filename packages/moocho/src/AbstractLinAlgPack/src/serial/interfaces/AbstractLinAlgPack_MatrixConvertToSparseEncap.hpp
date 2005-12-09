@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// MatrixConvertToSparseEncap.hpp
+// AbstractLinAlgPack_MatrixConvertToSparseEncap.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_CONVERT_TO_SPARSE_ENCAP_H
 #define MATRIX_CONVERT_TO_SPARSE_ENCAP_H
 
-#include "MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {

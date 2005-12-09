@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOpDecl.hpp
+// AbstractLinAlgPack_SparseVectorOpDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #ifndef SPARSE_VECTOR_OP_DECL_H
 #define SPARSE_VECTOR_OP_DECL_H
 
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MatrixVectorTemplateOp.hpp
+// AbstractLinAlgPack_MatrixVectorTemplateOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,13 +17,13 @@
 #define MATRIX_VECTOR_TEMPLATE_OP_H
 
 #include <stdexcept>
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 
 /** @name {\bf Templated Matrix-DVector Operations}.
   *
-  * These are the declarations (MatrixVectorTemplateOp.hpp) for template functions for
+  * These are the declarations (AbstractLinAlgPack_MatrixVectorTemplateOp.hpp) for template functions for
   * performing selected matrix-vector and matrix-matrix operations.  The templated
   * matrix type must have the following interface:
   * \begin{itemize}

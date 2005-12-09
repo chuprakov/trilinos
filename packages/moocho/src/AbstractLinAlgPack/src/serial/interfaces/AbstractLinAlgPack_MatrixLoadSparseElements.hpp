@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixLoadSparseElements.hpp
+// AbstractLinAlgPack_MatrixLoadSparseElements.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_MATRIX_LOAD_SPARSE_ELEMENTS_H
 #define ALAP_MATRIX_LOAD_SPARSE_ELEMENTS_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
 
 namespace AbstractLinAlgPack {
 

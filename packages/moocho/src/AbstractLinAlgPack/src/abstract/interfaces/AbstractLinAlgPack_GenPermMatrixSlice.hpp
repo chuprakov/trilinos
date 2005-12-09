@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////
-// GenPermMatrixSlice.hpp
+// AbstractLinAlgPack_GenPermMatrixSlice.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GEN_PERM_MATRIX_SLICE_H
 #define GEN_PERM_MATRIX_SLICE_H
 
-#include "GenPermMatrixSliceIterator.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp"
 
 namespace AbstractLinAlgPack {
 

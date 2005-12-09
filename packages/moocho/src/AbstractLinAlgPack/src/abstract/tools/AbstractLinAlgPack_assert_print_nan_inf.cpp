@@ -16,8 +16,8 @@
 #include <ostream>
 #include <iomanip>
 
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOpPack_RTOpC.hpp"
 #include "check_nan_inf.h"

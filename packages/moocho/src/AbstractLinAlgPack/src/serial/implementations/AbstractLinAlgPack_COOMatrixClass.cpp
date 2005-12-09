@@ -15,10 +15,10 @@
 
 #include <sstream>
 
-#include "COOMatrixClass.hpp"
-#include "SparseCOOReadMatrix.hpp"
-#include "DenseLinAlgPack/src/IVector.hpp"
-#include "DenseLinAlgPack/src/Range1D.hpp"
+#include "AbstractLinAlgPack_COOMatrixClass.hpp"
+#include "AbstractLinAlgPack_SparseCOOReadMatrix.hpp"
+#include "DenseLinAlgPack_IVector.hpp"
+#include "DenseLinAlgPack/src/Thyra_Range1D.hpp"
 
 // Junk, test compilation
 //#include "MemMngPackDef.h"

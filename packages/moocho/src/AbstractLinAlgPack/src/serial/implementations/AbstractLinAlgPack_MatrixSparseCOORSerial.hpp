@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSparseCOORSerial.hpp
+// AbstractLinAlgPack_MatrixSparseCOORSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef MATRIX_SPARSE_COOR_SERIAL_H
 #define MATRIX_SPARSE_COOR_SERIAL_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixLoadSparseElements.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_MatrixLoadSparseElements.hpp"
+#include "AbstractLinAlgPack_MatrixExtractSparseElements.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {

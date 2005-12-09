@@ -18,16 +18,16 @@
 #include <limits>
 #include <ostream>
 
-#include "VectorMutable.hpp"
-#include "VectorSubView.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSubView.hpp"
 #include "RTOp_ROp_dot_prod.h"
 #include "RTOp_ROp_sum.h"
 #include "RTOp_ROp_norms.h"
 #include "RTOp_ROp_num_nonzeros.h"
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "print_sub_vector.hpp"
-#include "Range1D.hpp"
+#include "RTOpPack_print_sub_vector.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 

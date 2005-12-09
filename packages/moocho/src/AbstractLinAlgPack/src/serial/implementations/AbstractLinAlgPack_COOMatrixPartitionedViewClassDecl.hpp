@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// COOMatrixPartitionedViewClassDecl.hpp
+// AbstractLinAlgPack_COOMatrixPartitionedViewClassDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef COO_MATRIX_PARTITIONED_VIEW_CLASS_DECL_H
 #define COO_MATRIX_PARTITIONED_VIEW_CLASS_DECL_H
 
-#include "SparseCOOPtrElement.hpp"
-#include "TransSparseCOOElementViewIter.hpp"
+#include "AbstractLinAlgPack_SparseCOOPtrElement.hpp"
+#include "AbstractLinAlgPack_TransSparseCOOElementViewIter.hpp"
 #include "MiRefCount.h"
 
 namespace AbstractLinAlgPack {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BasisSystemTesterSetOptions.hpp
+// AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef BASIS_SYSTEM_TESTER_SET_OPTIONS_H
 #define BASIS_SYSTEM_TESTER_SET_OPTIONS_H
 
-#include "BasisSystemTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "AbstractLinAlgPack_BasisSystemTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace AbstractLinAlgPack {
 

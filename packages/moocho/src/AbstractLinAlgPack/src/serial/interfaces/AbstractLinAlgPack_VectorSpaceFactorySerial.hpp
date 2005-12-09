@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// VectorSpaceFactorySerial.hpp
+// AbstractLinAlgPack_VectorSpaceFactorySerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_SPACE_FACTORY_SERIAL_H
 #define VECTOR_SPACE_FACTORY_SERIAL_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactory.hpp"
 
 namespace AbstractLinAlgPack {
 

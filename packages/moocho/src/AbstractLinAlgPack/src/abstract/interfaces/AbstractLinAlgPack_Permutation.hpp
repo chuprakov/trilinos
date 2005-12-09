@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// Permutation.hpp
+// AbstractLinAlgPack_Permutation.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_PERMUTATION_H
 #define ALAP_PERMUTATION_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

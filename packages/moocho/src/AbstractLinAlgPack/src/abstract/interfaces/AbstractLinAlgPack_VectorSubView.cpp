@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 
-#include "VectorMutableSubView.hpp"
+#include "AbstractLinAlgPack_VectorMutableSubView.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"

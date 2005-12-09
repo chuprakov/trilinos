@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MultiVectorMutable.hpp
+// AbstractLinAlgPack_MultiVectorMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_MULTI_VECTOR_MUTABLE_H
 #define ALAP_MULTI_VECTOR_MUTABLE_H
 
-#include "MultiVector.hpp"
+#include "AbstractLinAlgPack_MultiVector.hpp"
 
 namespace AbstractLinAlgPack {
 

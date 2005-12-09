@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemFactoryStd.hpp
+// AbstractLinAlgPack_BasisSystemFactoryStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 #define SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
+#include "AbstractLinAlgPack_BasisSystemFactory.hpp"
 #include "Teuchos_AbstractFactory.hpp"
 
 namespace AbstractLinAlgPack {

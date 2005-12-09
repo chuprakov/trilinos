@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "VectorSpaceThyra.hpp"
-#include "VectorSpaceFactoryThyra.hpp"
-#include "VectorMutableThyra.hpp"
-#include "MultiVectorMutableThyra.hpp"
-#include "InnerProductThyra.hpp"
+#include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_InnerProductThyra.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

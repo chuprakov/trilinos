@@ -17,8 +17,8 @@
 
 #include <assert.h>
 
-#include "DirectSparseSolverMA28SetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

@@ -1,8 +1,8 @@
 // ////////////////////////////////////////////////////
 // ThyraAccessors.cpp
 
-#include "ThyraAccessors.hpp"
-#include "VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_ThyraAccessors.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 void AbstractLinAlgPack::get_thyra_vector(

@@ -178,7 +178,7 @@ general this is not allowed.
 <li> Miscellaneous vector operations.
 
 A set of functions for miscellaneous vector operations based on the RTOp operator classes in 
-<A HREF="../../RTOpStdOpsLib/html/index.html">libRTOpStdOpsLib</A> is declared in VectorStdOps.hpp
+<A HREF="../../RTOpStdOpsLib/html/index.html">libRTOpStdOpsLib</A> is declared in AbstractLinAlgPack_VectorStdOps.hpp
 and documented \ref VectorStdOps_grp "here".  As more general vector opeations are needed, they
 will be added to this header file.
 

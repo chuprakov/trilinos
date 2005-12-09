@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// LinAlgOpPackHack.hpp
+// AbstractLinAlgPack_LinAlgOpPackHack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,10 @@
 #ifndef LIN_ALG_OP_PACK_HACK_H
 #define LIN_ALG_OP_PACK_HACK_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+
+#include "DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp"
 
 namespace LinAlgOpPack {
 
@@ -27,6 +29,9 @@ using DenseLinAlgPack::DVectorSlice;
 using DenseLinAlgPack::DMatrixSlice;
 using AbstractLinAlgPack::SpVectorSlice;
 using AbstractLinAlgPack::GenPermMatrixSlice;
+using AbstractLinAlgPack::MatrixOp;
+using AbstractLinAlgPack::MatrixNonsing;
+using AbstractLinAlgPack::MatrixOpNonsing;
 
 ///
 /** <tt>m_lhs += alpha * op(mwo_rhs1)</tt>.

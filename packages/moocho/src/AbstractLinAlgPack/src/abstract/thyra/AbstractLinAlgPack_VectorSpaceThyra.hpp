@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// VectorSpaceThyra.hpp
+// AbstractLinAlgPack_VectorSpaceThyra.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_VECTOR_SPACE_Thyra_HPP
 #define ALAP_VECTOR_SPACE_Thyra_HPP
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Thyra_VectorSpaceBase.hpp"
 
 namespace AbstractLinAlgPack {

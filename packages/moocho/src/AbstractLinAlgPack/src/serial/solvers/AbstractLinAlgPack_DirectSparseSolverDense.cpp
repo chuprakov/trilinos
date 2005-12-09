@@ -18,10 +18,10 @@
 #include <fstream>
 #include <algorithm>
 
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverDense.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverDense.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_Workspace.hpp"

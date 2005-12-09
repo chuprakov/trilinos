@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixExtractSparseElements.hpp
+// AbstractLinAlgPack_MatrixExtractSparseElements.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_MATRIX_EXTRACT_SPARSE_ELEMENTS_H
 #define ALAP_MATRIX_EXTRACT_SPARSE_ELEMENTS_H
 
-#include "MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack_MatrixConvertToSparse.hpp"
 
 namespace AbstractLinAlgPack {
 

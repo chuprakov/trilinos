@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// VectorSpaceTesterSetOptions.hpp
+// AbstractLinAlgPack_VectorSpaceTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef VECTOR_SPACE_TESTER_SET_OPTIONS_H
 #define VECTOR_SPACE_TESTER_SET_OPTIONS_H
 
-#include "VectorSpaceTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "AbstractLinAlgPack_VectorSpaceTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace AbstractLinAlgPack {
 

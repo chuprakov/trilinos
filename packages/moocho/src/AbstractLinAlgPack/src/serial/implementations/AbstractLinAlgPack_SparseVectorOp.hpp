@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOp.hpp
+// AbstractLinAlgPack_SparseVectorOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define SPARSE_VECTOR_OP_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "SparseVectorOpDecl.hpp"
+#include "AbstractLinAlgPack_SparseVectorOpDecl.hpp"
 #else
-#include "SparseVectorOpDef.hpp"
+#include "AbstractLinAlgPack_SparseVectorOpDef.hpp"
 #endif
 
 #endif // SPARSE_VECTOR_OP_H

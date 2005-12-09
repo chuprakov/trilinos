@@ -1,10 +1,10 @@
 // /////////////////////////////////////////////////////
-// VectorApplyOpSerialBase.hpp
+// AbstractLinAlgPack_VectorApplyOpSerialBase.hpp
 
 #ifndef ALAP_VECTOR_APPLY_OP_SERIAL_BASE_HPP
 #define ALAP_VECTOR_APPLY_OP_SERIAL_BASE_HPP
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "RTOpPack_RTOpT.hpp"
 
 namespace AbstractLinAlgPack {

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// AbstractLinAlgPackAssertOp.hpp
+// AbstractLinAlgPack_AssertOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_ASSERT_OP_H
 #define ABSTRACT_LIN_ALG_PACK_ASSERT_OP_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

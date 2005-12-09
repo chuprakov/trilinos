@@ -13,16 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemPermDirectSparse.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverDense.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28SetOptions.hpp"
-#include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
+#include "AbstractLinAlgPack_BasisSystemFactoryStd.hpp"
+#include "AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverDense.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverMA28.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
-#include "MoochoMoreUtilities/src/StringToIntMap.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
+#include "OptionsFromStreamPack_StringToIntMap.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 namespace AbstractLinAlgPack {
 

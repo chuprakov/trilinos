@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixOpNonsingAggr.hpp
+// AbstractLinAlgPack_MatrixOpNonsingAggr.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_NONSINGULAR_AGGR_H
 #define MATRIX_WITH_OP_NONSINGULAR_AGGR_H
 
-#include "MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

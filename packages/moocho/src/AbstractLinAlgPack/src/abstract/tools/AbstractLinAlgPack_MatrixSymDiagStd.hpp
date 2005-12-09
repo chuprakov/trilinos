@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymDiagStd.hpp
+// AbstractLinAlgPack_MatrixSymDiagStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_DIAGONAL_STD_H
 #define MATRIX_SYM_DIAGONAL_STD_H
 
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiag.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

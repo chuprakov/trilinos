@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMatrixPartitionViewSubclass.hpp
+// AbstractLinAlgPack_COOMatrixPartitionViewSubclass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef COO_MATRIX_PARTITION_VIEW_SUBCLASS_H
 #define COO_MATRIX_PARTITION_VIEW_SUBCLASS_H
 
-#include "MatrixOp.hpp"
-#include "COOMatrixWithPartitionedView.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp"
 
 namespace AbstractLinAlgPack {
 

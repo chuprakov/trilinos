@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// MatrixScaling_Strategy.hpp
+// AbstractLinAlgPack_MatrixScaling_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

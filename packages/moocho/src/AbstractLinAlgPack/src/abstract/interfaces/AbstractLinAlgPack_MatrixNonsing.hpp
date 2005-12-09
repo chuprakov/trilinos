@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// MatrixNonsing.hpp
+// AbstractLinAlgPack_MatrixNonsing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_NONSINGULAR_H
 
-#include "MatrixBase.hpp"
+#include "AbstractLinAlgPack_MatrixBase.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {

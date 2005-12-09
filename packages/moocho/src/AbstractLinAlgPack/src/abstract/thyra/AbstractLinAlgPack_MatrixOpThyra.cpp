@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "MatrixOpThyra.hpp"
-#include "VectorMutableThyra.hpp"
-#include "ThyraAccessors.hpp"
+#include "AbstractLinAlgPack_MatrixOpThyra.hpp"
+#include "AbstractLinAlgPack_VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_ThyraAccessors.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

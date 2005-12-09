@@ -14,17 +14,17 @@
 // above mentioned "Artistic License" for more details.
 //
 
-#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMS.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_MatrixOpGetGMS.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
 
 void LinAlgOpPack::Mp_StM(
 	DMatrixSlice* C, value_type a

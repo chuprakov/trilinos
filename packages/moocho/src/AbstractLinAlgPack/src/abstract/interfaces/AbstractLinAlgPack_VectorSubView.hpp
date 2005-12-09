@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// VectorSubView.hpp
+// AbstractLinAlgPack_VectorSubView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ALAP_VECTOR_SUB_VIEW_H
 #define ALAP_VECTOR_SUB_VIEW_H
 
-#include "Vector.hpp"
-#include "VectorApplyOpSerialBase.hpp"
-#include "VectorSpaceSubSpace.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorApplyOpSerialBase.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSubSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

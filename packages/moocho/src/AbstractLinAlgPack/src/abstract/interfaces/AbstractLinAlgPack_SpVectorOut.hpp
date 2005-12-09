@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// SpVectorOut.hpp
+// AbstractLinAlgPack_SpVectorOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef SP_VECTOR_OUT_H
 #define SP_VECTOR_OUT_H
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
 

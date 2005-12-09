@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "InnerProductDot.hpp"
-#include "Vector.hpp"
-#include "VectorStdOps.hpp"
+#include "AbstractLinAlgPack_InnerProductDot.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 
 namespace AbstractLinAlgPack {
 
