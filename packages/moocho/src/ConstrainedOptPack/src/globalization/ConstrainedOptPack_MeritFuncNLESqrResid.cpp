@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MeritFuncNLESqrResid.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_MeritFuncNLESqrResid.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 
 namespace ConstrainedOptPack {
 

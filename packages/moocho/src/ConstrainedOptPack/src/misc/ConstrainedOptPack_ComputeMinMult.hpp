@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////
-// ComputeMinMult.hpp
+// ConstrainedOptPack_ComputeMinMult.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COMPUTE_MIN_MULT_H
 #define COMPUTE_MIN_MULT_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 
 namespace ConstrainedOptPack {
 

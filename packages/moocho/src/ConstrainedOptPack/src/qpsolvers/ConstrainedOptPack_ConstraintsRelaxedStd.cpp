@@ -24,17 +24,17 @@
 
 #include <limits>
 
-#include "ConstrainedOptPack/src/qpsolvers/ConstraintsRelaxedStd.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "ConstrainedOptPack_ConstraintsRelaxedStd.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

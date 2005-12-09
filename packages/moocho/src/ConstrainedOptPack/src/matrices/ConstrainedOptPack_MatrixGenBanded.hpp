@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// MatrixGenBanded.hpp
+// ConstrainedOptPack_MatrixGenBanded.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_GEN_BANDED_H
 #define MATRIX_GEN_BANDED_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////
-// MatrixKKTFullSpaceRelaxed.hpp
+// ConstrainedOptPack_MatrixKKTFullSpaceRelaxed.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_KKT_FULL_SPACE_RELAXED_H
 #define MATRIX_KKT_FULL_SPACE_RELAXED_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"

@@ -17,16 +17,16 @@
 
 #include <vector>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPTSOL.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "MoochoMoreUtilities/src/profile_hack.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPOPTSOL.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack_sparse_bounds.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 
 // /////////////////////////////////////////////////////////////////
 //

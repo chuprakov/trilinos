@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// DirectLineSearch_Strategy.hpp
+// ConstrainedOptPack_DirectLineSearch_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <iosfwd>
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 
 namespace ConstrainedOptPack {
 

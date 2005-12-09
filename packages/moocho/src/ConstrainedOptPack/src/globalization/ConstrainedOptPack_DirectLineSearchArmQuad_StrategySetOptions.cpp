@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "DirectLineSearchArmQuad_StrategySetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

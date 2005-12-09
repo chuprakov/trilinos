@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcat.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp" // RAB: 12/20/2002: Must be after LinAlgOpPack.hpp
+#include "ConstrainedOptPack_MatrixIdentConcat.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_AssertOp.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp" // RAB: 12/20/2002: Must be after DenseLinAlgPack_LinAlgOpPack.hpp
                                                                         // for Intel C++ 5.0 (Windows 2000).  Namespaces
                                                                         // and lookup rules don't work properly with this compiler.
 

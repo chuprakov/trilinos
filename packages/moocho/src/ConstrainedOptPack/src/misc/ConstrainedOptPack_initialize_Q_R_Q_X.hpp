@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// initialize_Q_R_Q_X.hpp
+// ConstrainedOptPack_initialize_Q_R_Q_X.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef INITIALIZE_Q_R_Q_X_H
 #define INITIALIZE_Q_R_Q_X_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 
 namespace ConstrainedOptPack {
 

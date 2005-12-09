@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MeritFuncNLPModL1.hpp
+// ConstrainedOptPack_MeritFuncNLPModL1.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MERIT_FUNC_NLP_MOD_L1_H
 #define MERIT_FUNC_NLP_MOD_L1_H
 
-#include "MeritFuncNLP.hpp"
-#include "MeritFuncNLPDirecDeriv.hpp"
-#include "MeritFuncPenaltyParams.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp"
+#include "ConstrainedOptPack_MeritFuncPenaltyParams.hpp"
 
 namespace ConstrainedOptPack {
 

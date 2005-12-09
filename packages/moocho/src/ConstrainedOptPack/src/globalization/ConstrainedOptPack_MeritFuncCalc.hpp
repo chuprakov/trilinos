@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// MeritFuncCalc.hpp
+// ConstrainedOptPack_MeritFuncCalc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MERIT_FUNC_CALC_H
 #define MERIT_FUNC_CALC_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymPosDefInvCholFactor.hpp
+// ConstrainedOptPack_MatrixSymPosDefInvCholFactor.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,11 +17,11 @@
 #define MATRIX_SYM_POS_DEF_INV_CHOL_FACTOR_H
 
 #include "SymInvCholMatrixClass.hpp"
-#include "MatrixSymSecant.hpp"
-#include "MatrixExtractInvCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixWithOpConcreteEncap.hpp"
+#include "AbstractLinAlgPack_MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack_MatrixExtractInvCholFactor.hpp"
+#include "AbstractLinAlgPack_MatrixWithOpConcreteEncap.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
-#include "MoochoMoreUtilities/src/Serializable.hpp"
+#include "SerializationPack_Serializable.hpp"
 
 namespace ConstrainedOptPack {
 

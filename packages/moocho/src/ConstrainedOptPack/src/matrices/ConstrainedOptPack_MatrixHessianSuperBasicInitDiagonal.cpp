@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "ConstrainedOptPack_MatrixHessianSuperBasicInitDiagonal.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace ConstrainedOptPack {

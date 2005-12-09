@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// QPSchur.hpp
+// ConstrainedOptPack_QPSchur.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,19 +20,19 @@
 #include <map>
 #include <vector>
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "ConstrainedOptPack_MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack_MatrixOpSerial.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "MoochoMoreUtilities/src/stpwatch.hpp"
+#include "StopWatchPack_stopwatch.hpp"
 
 namespace ConstrainedOptPack {
 

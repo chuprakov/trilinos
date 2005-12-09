@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptPack/src/matrices/MatrixHessianRelaxed.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_MatrixHessianRelaxed.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptPack/src/misc/VariableBoundsTesterSetOptions.hpp"
+#include "ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp"
 
 // Define the options
 namespace {

@@ -15,16 +15,16 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "MoochoMoreUtilities/src/profile_hack.hpp"
+#include "ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianFixedFree.hpp"
-#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_QPSchurInitKKTSystemHessianFixedFree.hpp"
+#include "ConstrainedOptPack_initialize_Q_R_Q_X.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 #include "Miprofile_hack.h"

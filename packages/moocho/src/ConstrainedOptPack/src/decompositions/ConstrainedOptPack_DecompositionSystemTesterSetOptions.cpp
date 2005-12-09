@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Define the options

@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalc1DQuadratic.hpp"
-#include "ConstrainedOptPack/src/globalization/MeritFuncCalc.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptPack_MeritFuncCalc.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {

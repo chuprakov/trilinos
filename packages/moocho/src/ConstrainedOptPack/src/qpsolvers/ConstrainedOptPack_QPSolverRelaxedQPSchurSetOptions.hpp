@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// QPSolverRelaxedQPSchurSetOptions.hpp
+// ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 #define QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 
-#include "QPSolverRelaxedQPSchur.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

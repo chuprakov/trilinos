@@ -15,10 +15,10 @@
 
 #include <math.h>
 
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLPL1.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "ConstrainedOptPack_MeritFuncNLPL1.hpp"
+#include "AbstractLinAlgPack_Vector.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 

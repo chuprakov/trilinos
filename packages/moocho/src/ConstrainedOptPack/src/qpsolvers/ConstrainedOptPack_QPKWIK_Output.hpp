@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// QPKWIK_Output.hpp
+// ConstrainedOptPack_QPKWIK_Output.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

@@ -17,8 +17,8 @@
 
 #include <sstream>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPInitFixedFreeStd.hpp"
-#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
+#include "ConstrainedOptPack_QPInitFixedFreeStd.hpp"
+#include "ConstrainedOptPack_initialize_Q_R_Q_X.hpp"
 
 namespace ConstrainedOptPack {
 namespace QPSchurPack {

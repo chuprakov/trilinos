@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymHessianRelaxNonSing.hpp
+// ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 #define MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace ConstrainedOptPack {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// DirectLineSearchArmQuad_Strategy.hpp
+// ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_H
 #define DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_H
 
-#include "DirectLineSearch_Strategy.hpp"
+#include "ConstrainedOptPack_DirectLineSearch_Strategy.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemCoordinate.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_DecompositionSystemCoordinate.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpSubView.hpp"
+#include "AbstractLinAlgPack_MatrixZero.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"

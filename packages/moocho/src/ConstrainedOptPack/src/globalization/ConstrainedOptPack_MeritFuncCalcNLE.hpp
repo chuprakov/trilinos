@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncCalcNLE.hpp
+// ConstrainedOptPack_MeritFuncCalcNLE.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_CALC_NLE_H
 #define MERIT_FUNC_CALC_NLE_H
 
-#include "MeritFuncCalc.hpp"
-#include "MeritFuncNLE.hpp"
+#include "ConstrainedOptPack_MeritFuncCalc.hpp"
+#include "ConstrainedOptPack_MeritFuncNLE.hpp"
 #include "StandardAggregationMacros.hpp"
 
 namespace ConstrainedOptPack {

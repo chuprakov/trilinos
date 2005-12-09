@@ -17,17 +17,17 @@
 
 #include <vector>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchur.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_VectorSpaceFactory.hpp"
+#include "AbstractLinAlgPack_SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_sparse_bounds.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "MoochoMoreUtilities/src/profile_hack.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 
 namespace ConstrainedOptPack {
 

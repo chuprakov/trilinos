@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// MatrixDecompRangeOrthog.hpp
+// ConstrainedOptPack_MatrixDecompRangeOrthog.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_DECOMP_RANGE_ORTHOG_H
 #define MATRIX_DECOMP_RANGE_ORTHOG_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymPosDefLBFGS.hpp
+// ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "MatrixSymSecant.hpp"
-#include "MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack_MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

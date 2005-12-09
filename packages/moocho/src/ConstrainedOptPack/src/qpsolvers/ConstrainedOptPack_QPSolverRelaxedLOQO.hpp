@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxedLOQO.hpp
+// ConstrainedOptPack_QPSolverRelaxedLOQO.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,9 +20,9 @@
 
 #include <vector>
 
-#include "QPSolverRelaxed.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 

@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchurSetOptions.hpp"
-#include "MoochoMoreUtilities/src/StringToBool.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.hpp"
+#include "OptionsFromStreamPack_StringToBool.hpp"
 
 // Define the options
 namespace {

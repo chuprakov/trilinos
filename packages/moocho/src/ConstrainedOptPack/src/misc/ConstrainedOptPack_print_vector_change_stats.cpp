@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "print_vector_change_stats.hpp"
-#include "vector_change_stats.hpp"
+#include "ConstrainedOptPack_print_vector_change_stats.hpp"
+#include "ConstrainedOptPack_vector_change_stats.hpp"
 
 void ConstrainedOptPack::print_vector_change_stats(
 	  const DVectorSlice& x, const char x_name[]

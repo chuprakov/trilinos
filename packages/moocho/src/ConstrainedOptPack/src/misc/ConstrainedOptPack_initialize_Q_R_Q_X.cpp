@@ -15,8 +15,8 @@
 
 #include <vector>
 
-#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
+#include "ConstrainedOptPack_initialize_Q_R_Q_X.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 
 void ConstrainedOptPack::initialize_Q_R_Q_X(
 	size_type            n_R

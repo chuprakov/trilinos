@@ -17,13 +17,13 @@
 
 #include <limits>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "MoochoMoreUtilities/src/profile_hack.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
+#include "AbstractLinAlgPack_MatrixSymOp.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorOut.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "ProfileHackPack_profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// DecompositionSystemTesterSetOptions.hpp
+// ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef DECOMPOSITION_SYSTEM_TESTER_SET_OPTIONS_H
 #define DECOMPOSITION_SYSTEM_TESTER_SET_OPTIONS_H
 
-#include "DecompositionSystemTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "ConstrainedOptPack_DecompositionSystemTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxedQPSchur.hpp
+// ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef QP_SOLVER_RELAXED_QP_SCHUR_H
 #define QP_SOLVER_RELAXED_QP_SCHUR_H
 
-#include "QPSolverRelaxed.hpp"
-#include "QPSchur.hpp"
-#include "QPInitFixedFreeStd.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
-#include "ConstraintsRelaxedStd.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack_QPSchur.hpp"
+#include "ConstrainedOptPack_QPInitFixedFreeStd.hpp"
+#include "ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp"
+#include "ConstrainedOptPack_ConstraintsRelaxedStd.hpp"
+#include "ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

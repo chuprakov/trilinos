@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ConstrainedOptPackTypes.hpp
+// ConstrainedOptPack_Types.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,12 +16,12 @@
 #ifndef CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
+#include "NLPInterfacePack_Types.hpp"
+#include "NLPInterfacePack_NLP.hpp"
 
 namespace ConstrainedOptPack {
 
-#include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
+#include "NLPInterfacePack_PublicTypes.ud"
 
 /// Bounds type
 enum EBounds { FREE, UPPER, LOWER, EQUALITY };

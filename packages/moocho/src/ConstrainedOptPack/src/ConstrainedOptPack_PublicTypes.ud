@@ -1,15 +1,15 @@
 // //////////////////////////////////////////////////////////////
-// ConstrainedOptPackPublicTypes.ud
+// ConstrainedOptPack_PublicTypes.ud
 //
 // This is a set of using declarations for the types that ConstrainedOptPack
 // exposes publicly.  A namespace that wants to included these
 // names should use:
 //
 // namespace MyNamespace {
-//     #include "ConstrainedOptPack/src/ConstrainedOptPackPublicTypes.ud"
+//     #include "ConstrainedOptPack_PublicTypes.ud"
 // }
 
-#include "NLPInterfacePack/src/NLPInterfacePackPublicTypes.ud"
+#include "NLPInterfacePack_PublicTypes.ud"
 
 using ConstrainedOptPack::VariableBoundsTester;
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// QPSchurInitKKTSystemHessianRelaxed.hpp
+// ConstrainedOptPack_QPSchurInitKKTSystemHessianRelaxed.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_RELAXED_H
 #define QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_RELAXED_H
 
-#include "QPSolverRelaxedQPSchur.hpp"
-#include "QPSchurInitKKTSystemHessianFull.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp"
+#include "ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.hpp"
 
 namespace ConstrainedOptPack {
 

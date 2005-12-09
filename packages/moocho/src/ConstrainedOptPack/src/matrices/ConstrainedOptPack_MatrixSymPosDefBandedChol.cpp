@@ -17,10 +17,10 @@
 
 #include <sstream>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefBandedChol.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
+#include "ConstrainedOptPack_MatrixSymPosDefBandedChol.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_BLAS_Cpp.hpp"
 #include "MiReleaseResource_ref_count_ptr.h"
 #include "MiWorkspacePack.h"
 

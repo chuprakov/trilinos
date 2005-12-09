@@ -15,9 +15,9 @@
 
 #include <limits>
 
-#include "vector_change_stats.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "ConstrainedOptPack_vector_change_stats.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 void ConstrainedOptPack::vector_change_stats(
 	  const DVectorSlice& x, const DVectorSlice& d

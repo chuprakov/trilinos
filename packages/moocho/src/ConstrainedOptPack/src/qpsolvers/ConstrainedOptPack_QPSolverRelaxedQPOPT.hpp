@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// QPSolverRelaxedQPOPT.hpp
+// ConstrainedOptPack_QPSolverRelaxedQPOPT.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef QP_SOLVER_RELAXED_QPOPT_H
 #define QP_SOLVER_RELAXED_QPOPT_H
 
-#include "QPSolverRelaxedQPOPTSOL.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPOPTSOL.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

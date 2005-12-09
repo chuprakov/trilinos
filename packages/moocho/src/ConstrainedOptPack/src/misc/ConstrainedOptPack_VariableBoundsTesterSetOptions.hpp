@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// VariableBoundsTesterSetOptions.hpp
+// ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 #define VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 
-#include "VariableBoundsTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "ConstrainedOptPack_VariableBoundsTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

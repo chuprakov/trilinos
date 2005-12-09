@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// MatrixIdentConcatStd.hpp
+// ConstrainedOptPack_MatrixIdentConcatStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_IDENT_CONCAT_STD_H
 #define MATRIX_IDENT_CONCAT_STD_H
 
-#include "MatrixIdentConcat.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "Range1D.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcat.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace ConstrainedOptPack {

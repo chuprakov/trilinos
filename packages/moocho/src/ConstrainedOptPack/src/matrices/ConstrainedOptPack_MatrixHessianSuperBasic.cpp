@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
-#include "ConstrainedOptPack/src/misc/initialize_Q_R_Q_X.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "ConstrainedOptPack_MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptPack_initialize_Q_R_Q_X.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

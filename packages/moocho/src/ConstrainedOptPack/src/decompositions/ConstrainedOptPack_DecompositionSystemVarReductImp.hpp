@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemVarReductImp.hpp
+// ConstrainedOptPack_DecompositionSystemVarReductImp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 
-#include "DecompositionSystemVarReduct.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReduct.hpp"
+#include "AbstractLinAlgPack_BasisSystemTester.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 

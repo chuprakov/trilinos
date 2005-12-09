@@ -15,9 +15,9 @@
 
 #include <limits>
 
-#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "ConstrainedOptPack_ComputeMinMult.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 
 namespace {
 template< class T >

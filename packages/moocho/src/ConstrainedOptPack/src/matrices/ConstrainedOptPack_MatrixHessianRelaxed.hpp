@@ -1,5 +1,5 @@
 // /////////////////////////////////////
-// MatrixHessianRelaxed.hpp
+// ConstrainedOptPack_MatrixHessianRelaxed.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_HESSIAN_RELAXED_H
 #define MATRIX_HESSIAN_RELAXED_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "ConstrainedOptPack_Types.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack_MatrixSymOp.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemVarReduct.hpp
+// ConstrainedOptPack_DecompositionSystemVarReduct.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef DECOMPOSITION_SYSTEM_VAR_REDUCT_H
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_H
 
-#include "DecompositionSystem.hpp"
+#include "ConstrainedOptPack_DecompositionSystem.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
+#include "AbstractLinAlgPack_BasisSystem.hpp"
 
 namespace ConstrainedOptPack {
 

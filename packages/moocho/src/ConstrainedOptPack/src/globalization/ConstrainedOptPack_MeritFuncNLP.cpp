@@ -15,7 +15,7 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
+#include "ConstrainedOptPack_MeritFuncNLP.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// VariableBoundsTester.hpp
+// ConstrainedOptPack_VariableBoundsTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VARIABLE_BOUNDS_TESTER_H
 #define VARIABLE_BOUNDS_TESTER_H
 
-#include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
+#include "ConstrainedOptPack_Types.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

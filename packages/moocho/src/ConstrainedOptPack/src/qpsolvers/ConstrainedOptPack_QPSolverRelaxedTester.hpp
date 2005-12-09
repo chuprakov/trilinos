@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxedTester.hpp
+// ConstrainedOptPack_QPSolverRelaxedTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QP_SOLVER_RELAXED_TESTER_H
 #define QP_SOLVER_RELAXED_TESTER_H
 
-#include "QPSolverRelaxed.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxed.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

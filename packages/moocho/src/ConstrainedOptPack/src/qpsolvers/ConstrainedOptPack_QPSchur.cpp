@@ -15,7 +15,7 @@
 
 //
 // 7/4/2002: RAB: I was able to update this class using the
-// functions in LinAlgOpPackHack.hpp.  This is wastefull in that
+// functions in AbstractLinAlgPack_LinAlgOpPackHack.hpp.  This is wastefull in that
 // I am creating temporaries every time any operation is performed
 // but this was the easiest way to get things going.
 //
@@ -31,25 +31,25 @@
 #include <iomanip>
 #include <limits>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSchur.hpp"
-#include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSliceOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DVectorClassExt.hpp"
-#include "DenseLinAlgPack/src/DVectorOp.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "ConstrainedOptPack_QPSchur.hpp"
+#include "ConstrainedOptPack_ComputeMinMult.hpp"
+#include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack_SpVectorOp.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack_GenPermMatrixSliceOut.hpp"
+#include "AbstractLinAlgPack_SpVectorOut.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_DVectorClassExt.hpp"
+#include "DenseLinAlgPack_DVectorOp.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -1196,7 +1196,7 @@ void QPSchur::ActiveSet::initialize(
 	P_plus_hat_row_.resize(q_plus_hat_max);
 	P_plus_hat_col_.resize(q_plus_hat_max);
 	if(q_hat) {
-		// See QPSchur.hpp for description of P_XF_hat and P_plus_hat
+		// See ConstrainedOptPack_QPSchur.hpp for description of P_XF_hat and P_plus_hat
 		size_type
 			k_XF_hat = 0,	// zero based
 			k_plus_hat = 0;	// zero based
@@ -1257,7 +1257,7 @@ void QPSchur::ActiveSet::initialize(
 	Q_XD_hat_row_.resize(q_D_hat_max);
 	Q_XD_hat_col_.resize(q_D_hat_max);
 	if(q_D_hat) {
-		// See QPSchur.hpp for description of Q_XD_hat
+		// See ConstrainedOptPack_QPSchur.hpp for description of Q_XD_hat
 		size_type
 			k_XD_hat = 0;	// zero based
 		GenPermMatrixSlice::const_iterator

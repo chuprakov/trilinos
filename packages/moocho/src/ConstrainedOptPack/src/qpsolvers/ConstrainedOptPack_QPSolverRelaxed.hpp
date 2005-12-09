@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxed.hpp
+// ConstrainedOptPack_QPSolverRelaxed.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QP_SOLVER_RELAXED_H
 #define QP_SOLVER_RELAXED_H
 
-#include "QPSolverStats.hpp"
+#include "ConstrainedOptPack_QPSolverStats.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

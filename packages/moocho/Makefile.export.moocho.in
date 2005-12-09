@@ -2,6 +2,12 @@
 include @abs_top_builddir@/../thyra/Makefile.export.thyra
 
 _MOOCHO_INCLUDES = \
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src/qpsolvers\
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src/misc\
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src/matrices\
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src/globalization\
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src/decompositions\
+  -I@abs_top_srcdir@/src/ConstrainedOptPack/src\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/serial\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/tools\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/thyra\

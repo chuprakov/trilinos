@@ -45,11 +45,11 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"
-#include "ConstrainedOptPack/src/BFGS_helpers.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
+#include "ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp"
+#include "ConstrainedOptPack/src/AbstractLinAlgPack_BFGS_helpers.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgLAPack.hpp"
 
 namespace {
 

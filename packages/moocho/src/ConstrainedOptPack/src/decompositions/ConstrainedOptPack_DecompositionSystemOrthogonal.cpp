@@ -17,14 +17,14 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemOrthogonal.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixDecompRangeOrthog.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "ConstrainedOptPack_DecompositionSystemOrthogonal.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack_MatrixDecompRangeOrthog.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_MatrixOpSubView.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"

@@ -18,12 +18,12 @@
 
 #include <limits>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "DenseLinAlgPack/src/delete_row_col.hpp"
+#include "ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp"
+#include "DenseLinAlgLAPack.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
+#include "DenseLinAlgPack_delete_row_col.hpp"
 
 namespace ConstrainedOptPack {
 

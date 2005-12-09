@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// ConstraintsRelaxedStd.hpp
+// ConstrainedOptPack_ConstraintsRelaxedStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <list>
 
-#include "QPSchur.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
+#include "ConstrainedOptPack_QPSchur.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 
 namespace ConstrainedOptPack {
 namespace QPSchurPack {

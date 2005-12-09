@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// DirectLineSearchArmQuad_StrategySetOptions.hpp
+// ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_SET_OPTIONS_H
 #define DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_SET_OPTIONS_H
 
-#include "DirectLineSearchArmQuad_Strategy.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -272,9 +272,50 @@ am__objects_8 = NLPInterfacePack_NLP.$(OBJEXT) \
 	NLPInterfacePack_NLPBarrier.$(OBJEXT) \
 	NLPInterfacePack_NLPSerialPreprocess.$(OBJEXT) \
 	NLPInterfacePack_NLPSerialPreprocessExplJac.$(OBJEXT)
+am__objects_9 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemCoordinate.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemOrthogonal.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemTester.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemTesterSetOptions.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemVarReductImp.$(OBJEXT) \
+	ConstrainedOptPack_DecompositionSystemVarReductPermStd.$(OBJEXT) \
+	ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.$(OBJEXT) \
+	ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncCalc1DQuadratic.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncCalcNLE.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncCalcNLP.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncNLESqrResid.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncNLP.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncNLPL1.$(OBJEXT) \
+	ConstrainedOptPack_MeritFuncNLPModL1.$(OBJEXT) \
+	ConstrainedOptPack_MatrixDecompRangeOrthog.$(OBJEXT) \
+	ConstrainedOptPack_MatrixIdentConcat.$(OBJEXT) \
+	ConstrainedOptPack_MatrixIdentConcatStd.$(OBJEXT) \
+	ConstrainedOptPack_MatrixSymAddDelBunchKaufman.$(OBJEXT) \
+	ConstrainedOptPack_MatrixSymHessianRelaxNonSing.$(OBJEXT) \
+	ConstrainedOptPack_MatrixSymIdentitySerial.$(OBJEXT) \
+	ConstrainedOptPack_MatrixSymPosDefLBFGS.$(OBJEXT) \
+	ConstrainedOptPack_MatrixVarReductImplicit.$(OBJEXT) \
+	ConstrainedOptPack_ComputeMinMult.$(OBJEXT) \
+	ConstrainedOptPack_VariableBoundsTester.$(OBJEXT) \
+	ConstrainedOptPack_VariableBoundsTesterSetOptions.$(OBJEXT) \
+	ConstrainedOptPack_initialize_Q_R_Q_X.$(OBJEXT) \
+	ConstrainedOptPack_print_vector_change_stats.$(OBJEXT) \
+	ConstrainedOptPack_ConstraintsRelaxedStd.$(OBJEXT) \
+	ConstrainedOptPack_QPInitFixedFreeStd.$(OBJEXT) \
+	ConstrainedOptPack_QPKWIK_Output.$(OBJEXT) \
+	ConstrainedOptPack_QPSchur.$(OBJEXT) \
+	ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxed.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxedQPSchur.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxedTester.$(OBJEXT) \
+	ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.$(OBJEXT)
+am__objects_10 =
 am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8)
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -366,6 +407,45 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_apply_op_helper.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_assert_print_nan_inf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_rank_2_chol_update.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSchur.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgLAPack.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_AssertOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po \
@@ -1176,6 +1256,120 @@ NLP_INTERFACE_PACK_CPP = \
   $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.cpp\
   $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp
 
+CONSTRAINED_OPT_PACK_HPP = \
+  $(srcdir)/ConstrainedOptPack/src/ConstrainedOptPack_Types.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReduct.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPerm.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearch_Strategy.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1D.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLE.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParam.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParams.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixGenBanded.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasicInitDiagonal.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixKKTFullSpaceRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelUpdateableWithOpNonsingular.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefBandedChol.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefInvCholFactor.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGSSerial.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPOPT_CppDecl.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFixedFree.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianSuperBasic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedLOQO.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPT.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPTSOL.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverStats.hpp
+
+CONSTRAINED_OPT_PACK_CPP = \
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp
+
+
+# ToDo: Add conditional logic for QPOPT and QPKWIK!
+CONSTRAINED_OPT_PACK_F = 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
@@ -1194,7 +1388,8 @@ MOOCHO_H = \
 	$(RTOP_PACK_STD_OPS_HPP) \
 	$(DENSE_LIN_ALG_PACK_HPP) \
 	$(ABSTRACT_LIN_ALG_PACK_HPP) \
-	$(NLP_INTERFACE_PACK_HPP)
+	$(NLP_INTERFACE_PACK_HPP) \
+	$(CONSTRAINED_OPT_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -1206,7 +1401,9 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_STD_OPS_CPP) \
   $(DENSE_LIN_ALG_PACK_CPP) \
 	$(ABSTRACT_LIN_ALG_PACK_CPP) \
-	$(NLP_INTERFACE_PACK_CPP)
+	$(NLP_INTERFACE_PACK_CPP) \
+	$(CONSTRAINED_OPT_PACK_CPP) \
+	$(CONSTRAINED_OPT_PACK_F)
 
 @USE_ALTERNATE_AR_FALSE@libmoocho_a_AR = $(AR) cru
 
@@ -1431,6 +1628,45 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_apply_op_helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_assert_print_nan_inf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_rank_2_chol_update.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSchur.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgLAPack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_AssertOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DenseLinAlgPack_BLAS_Cpp.Po@am__quote@
@@ -4216,6 +4452,630 @@ NLPInterfacePack_NLPSerialPreprocessExplJac.obj: $(srcdir)/NLPInterfacePack/src/
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPSerialPreprocessExplJac.obj `if test -f '$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp'; fi`
 
+ConstrainedOptPack_DecompositionSystem.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystem.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo" -c -o ConstrainedOptPack_DecompositionSystem.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp' object='ConstrainedOptPack_DecompositionSystem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystem.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp
+
+ConstrainedOptPack_DecompositionSystem.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystem.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo" -c -o ConstrainedOptPack_DecompositionSystem.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp' object='ConstrainedOptPack_DecompositionSystem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystem.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystem.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemCoordinate.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemCoordinate.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo" -c -o ConstrainedOptPack_DecompositionSystemCoordinate.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp' object='ConstrainedOptPack_DecompositionSystemCoordinate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemCoordinate.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp
+
+ConstrainedOptPack_DecompositionSystemCoordinate.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemCoordinate.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo" -c -o ConstrainedOptPack_DecompositionSystemCoordinate.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp' object='ConstrainedOptPack_DecompositionSystemCoordinate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemCoordinate.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemCoordinate.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemOrthogonal.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemOrthogonal.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo" -c -o ConstrainedOptPack_DecompositionSystemOrthogonal.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp' object='ConstrainedOptPack_DecompositionSystemOrthogonal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemOrthogonal.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp
+
+ConstrainedOptPack_DecompositionSystemOrthogonal.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemOrthogonal.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo" -c -o ConstrainedOptPack_DecompositionSystemOrthogonal.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp' object='ConstrainedOptPack_DecompositionSystemOrthogonal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemOrthogonal.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemOrthogonal.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemTester.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemTester.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo" -c -o ConstrainedOptPack_DecompositionSystemTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp' object='ConstrainedOptPack_DecompositionSystemTester.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp
+
+ConstrainedOptPack_DecompositionSystemTester.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemTester.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo" -c -o ConstrainedOptPack_DecompositionSystemTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp' object='ConstrainedOptPack_DecompositionSystemTester.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemTesterSetOptions.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemTesterSetOptions.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo" -c -o ConstrainedOptPack_DecompositionSystemTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp' object='ConstrainedOptPack_DecompositionSystemTesterSetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp
+
+ConstrainedOptPack_DecompositionSystemTesterSetOptions.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemTesterSetOptions.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo" -c -o ConstrainedOptPack_DecompositionSystemTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp' object='ConstrainedOptPack_DecompositionSystemTesterSetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemVarReductImp.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemVarReductImp.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo" -c -o ConstrainedOptPack_DecompositionSystemVarReductImp.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp' object='ConstrainedOptPack_DecompositionSystemVarReductImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemVarReductImp.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp
+
+ConstrainedOptPack_DecompositionSystemVarReductImp.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemVarReductImp.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo" -c -o ConstrainedOptPack_DecompositionSystemVarReductImp.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp' object='ConstrainedOptPack_DecompositionSystemVarReductImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemVarReductImp.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp'; fi`
+
+ConstrainedOptPack_DecompositionSystemVarReductPermStd.o: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemVarReductPermStd.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo" -c -o ConstrainedOptPack_DecompositionSystemVarReductPermStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp' object='ConstrainedOptPack_DecompositionSystemVarReductPermStd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemVarReductPermStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp
+
+ConstrainedOptPack_DecompositionSystemVarReductPermStd.obj: $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DecompositionSystemVarReductPermStd.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo" -c -o ConstrainedOptPack_DecompositionSystemVarReductPermStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp' object='ConstrainedOptPack_DecompositionSystemVarReductPermStd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DecompositionSystemVarReductPermStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DecompositionSystemVarReductPermStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp'; fi`
+
+ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo" -c -o ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo" "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp' object='ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp
+
+ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo" -c -o ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo" "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp' object='ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp'; fi`
+
+ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo" -c -o ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp' object='ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp
+
+ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo" -c -o ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp' object='ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncCalc1DQuadratic.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalc1DQuadratic.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo" -c -o ConstrainedOptPack_MeritFuncCalc1DQuadratic.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp' object='ConstrainedOptPack_MeritFuncCalc1DQuadratic.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalc1DQuadratic.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp
+
+ConstrainedOptPack_MeritFuncCalc1DQuadratic.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalc1DQuadratic.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo" -c -o ConstrainedOptPack_MeritFuncCalc1DQuadratic.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp' object='ConstrainedOptPack_MeritFuncCalc1DQuadratic.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalc1DQuadratic.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalc1DQuadratic.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncCalcNLE.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalcNLE.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo" -c -o ConstrainedOptPack_MeritFuncCalcNLE.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp' object='ConstrainedOptPack_MeritFuncCalcNLE.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalcNLE.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp
+
+ConstrainedOptPack_MeritFuncCalcNLE.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalcNLE.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo" -c -o ConstrainedOptPack_MeritFuncCalcNLE.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp' object='ConstrainedOptPack_MeritFuncCalcNLE.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLE.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalcNLE.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncCalcNLP.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalcNLP.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo" -c -o ConstrainedOptPack_MeritFuncCalcNLP.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp' object='ConstrainedOptPack_MeritFuncCalcNLP.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalcNLP.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp
+
+ConstrainedOptPack_MeritFuncCalcNLP.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncCalcNLP.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo" -c -o ConstrainedOptPack_MeritFuncCalcNLP.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp' object='ConstrainedOptPack_MeritFuncCalcNLP.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncCalcNLP.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncCalcNLP.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncNLESqrResid.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLESqrResid.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo" -c -o ConstrainedOptPack_MeritFuncNLESqrResid.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp' object='ConstrainedOptPack_MeritFuncNLESqrResid.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLESqrResid.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp
+
+ConstrainedOptPack_MeritFuncNLESqrResid.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLESqrResid.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo" -c -o ConstrainedOptPack_MeritFuncNLESqrResid.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp' object='ConstrainedOptPack_MeritFuncNLESqrResid.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLESqrResid.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLESqrResid.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncNLP.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLP.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo" -c -o ConstrainedOptPack_MeritFuncNLP.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp' object='ConstrainedOptPack_MeritFuncNLP.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLP.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp
+
+ConstrainedOptPack_MeritFuncNLP.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLP.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo" -c -o ConstrainedOptPack_MeritFuncNLP.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp' object='ConstrainedOptPack_MeritFuncNLP.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLP.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLP.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncNLPL1.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLPL1.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo" -c -o ConstrainedOptPack_MeritFuncNLPL1.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp' object='ConstrainedOptPack_MeritFuncNLPL1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLPL1.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp
+
+ConstrainedOptPack_MeritFuncNLPL1.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLPL1.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo" -c -o ConstrainedOptPack_MeritFuncNLPL1.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp' object='ConstrainedOptPack_MeritFuncNLPL1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPL1.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLPL1.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp'; fi`
+
+ConstrainedOptPack_MeritFuncNLPModL1.o: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLPModL1.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo" -c -o ConstrainedOptPack_MeritFuncNLPModL1.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp' object='ConstrainedOptPack_MeritFuncNLPModL1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLPModL1.o `test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp
+
+ConstrainedOptPack_MeritFuncNLPModL1.obj: $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MeritFuncNLPModL1.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo" -c -o ConstrainedOptPack_MeritFuncNLPModL1.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo" "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp' object='ConstrainedOptPack_MeritFuncNLPModL1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MeritFuncNLPModL1.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MeritFuncNLPModL1.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp'; fi`
+
+ConstrainedOptPack_MatrixDecompRangeOrthog.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixDecompRangeOrthog.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo" -c -o ConstrainedOptPack_MatrixDecompRangeOrthog.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp' object='ConstrainedOptPack_MatrixDecompRangeOrthog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixDecompRangeOrthog.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp
+
+ConstrainedOptPack_MatrixDecompRangeOrthog.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixDecompRangeOrthog.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo" -c -o ConstrainedOptPack_MatrixDecompRangeOrthog.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp' object='ConstrainedOptPack_MatrixDecompRangeOrthog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixDecompRangeOrthog.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixDecompRangeOrthog.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp'; fi`
+
+ConstrainedOptPack_MatrixIdentConcat.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixIdentConcat.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo" -c -o ConstrainedOptPack_MatrixIdentConcat.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp' object='ConstrainedOptPack_MatrixIdentConcat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixIdentConcat.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp
+
+ConstrainedOptPack_MatrixIdentConcat.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixIdentConcat.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo" -c -o ConstrainedOptPack_MatrixIdentConcat.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp' object='ConstrainedOptPack_MatrixIdentConcat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcat.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixIdentConcat.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp'; fi`
+
+ConstrainedOptPack_MatrixIdentConcatStd.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixIdentConcatStd.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo" -c -o ConstrainedOptPack_MatrixIdentConcatStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp' object='ConstrainedOptPack_MatrixIdentConcatStd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixIdentConcatStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp
+
+ConstrainedOptPack_MatrixIdentConcatStd.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixIdentConcatStd.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo" -c -o ConstrainedOptPack_MatrixIdentConcatStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp' object='ConstrainedOptPack_MatrixIdentConcatStd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixIdentConcatStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixIdentConcatStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp'; fi`
+
+ConstrainedOptPack_MatrixSymAddDelBunchKaufman.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymAddDelBunchKaufman.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo" -c -o ConstrainedOptPack_MatrixSymAddDelBunchKaufman.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp' object='ConstrainedOptPack_MatrixSymAddDelBunchKaufman.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymAddDelBunchKaufman.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp
+
+ConstrainedOptPack_MatrixSymAddDelBunchKaufman.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymAddDelBunchKaufman.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo" -c -o ConstrainedOptPack_MatrixSymAddDelBunchKaufman.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp' object='ConstrainedOptPack_MatrixSymAddDelBunchKaufman.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymAddDelBunchKaufman.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp'; fi`
+
+ConstrainedOptPack_MatrixSymHessianRelaxNonSing.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymHessianRelaxNonSing.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo" -c -o ConstrainedOptPack_MatrixSymHessianRelaxNonSing.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp' object='ConstrainedOptPack_MatrixSymHessianRelaxNonSing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymHessianRelaxNonSing.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp
+
+ConstrainedOptPack_MatrixSymHessianRelaxNonSing.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymHessianRelaxNonSing.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo" -c -o ConstrainedOptPack_MatrixSymHessianRelaxNonSing.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp' object='ConstrainedOptPack_MatrixSymHessianRelaxNonSing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymHessianRelaxNonSing.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp'; fi`
+
+ConstrainedOptPack_MatrixSymIdentitySerial.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymIdentitySerial.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo" -c -o ConstrainedOptPack_MatrixSymIdentitySerial.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp' object='ConstrainedOptPack_MatrixSymIdentitySerial.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymIdentitySerial.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp
+
+ConstrainedOptPack_MatrixSymIdentitySerial.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymIdentitySerial.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo" -c -o ConstrainedOptPack_MatrixSymIdentitySerial.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp' object='ConstrainedOptPack_MatrixSymIdentitySerial.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymIdentitySerial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymIdentitySerial.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp'; fi`
+
+ConstrainedOptPack_MatrixSymPosDefLBFGS.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymPosDefLBFGS.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo" -c -o ConstrainedOptPack_MatrixSymPosDefLBFGS.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp' object='ConstrainedOptPack_MatrixSymPosDefLBFGS.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymPosDefLBFGS.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp
+
+ConstrainedOptPack_MatrixSymPosDefLBFGS.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixSymPosDefLBFGS.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo" -c -o ConstrainedOptPack_MatrixSymPosDefLBFGS.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp' object='ConstrainedOptPack_MatrixSymPosDefLBFGS.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixSymPosDefLBFGS.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixSymPosDefLBFGS.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp'; fi`
+
+ConstrainedOptPack_MatrixVarReductImplicit.o: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixVarReductImplicit.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo" -c -o ConstrainedOptPack_MatrixVarReductImplicit.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp' object='ConstrainedOptPack_MatrixVarReductImplicit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixVarReductImplicit.o `test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp
+
+ConstrainedOptPack_MatrixVarReductImplicit.obj: $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_MatrixVarReductImplicit.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo" -c -o ConstrainedOptPack_MatrixVarReductImplicit.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo" "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp' object='ConstrainedOptPack_MatrixVarReductImplicit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_MatrixVarReductImplicit.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_MatrixVarReductImplicit.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp'; fi`
+
+ConstrainedOptPack_ComputeMinMult.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_ComputeMinMult.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo" -c -o ConstrainedOptPack_ComputeMinMult.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo" "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp' object='ConstrainedOptPack_ComputeMinMult.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_ComputeMinMult.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp
+
+ConstrainedOptPack_ComputeMinMult.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_ComputeMinMult.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo" -c -o ConstrainedOptPack_ComputeMinMult.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo" "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp' object='ConstrainedOptPack_ComputeMinMult.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_ComputeMinMult.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_ComputeMinMult.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp'; fi`
+
+ConstrainedOptPack_VariableBoundsTester.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_VariableBoundsTester.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo" -c -o ConstrainedOptPack_VariableBoundsTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp' object='ConstrainedOptPack_VariableBoundsTester.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_VariableBoundsTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp
+
+ConstrainedOptPack_VariableBoundsTester.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_VariableBoundsTester.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo" -c -o ConstrainedOptPack_VariableBoundsTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp' object='ConstrainedOptPack_VariableBoundsTester.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_VariableBoundsTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp'; fi`
+
+ConstrainedOptPack_VariableBoundsTesterSetOptions.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_VariableBoundsTesterSetOptions.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo" -c -o ConstrainedOptPack_VariableBoundsTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp' object='ConstrainedOptPack_VariableBoundsTesterSetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_VariableBoundsTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp
+
+ConstrainedOptPack_VariableBoundsTesterSetOptions.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_VariableBoundsTesterSetOptions.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo" -c -o ConstrainedOptPack_VariableBoundsTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp' object='ConstrainedOptPack_VariableBoundsTesterSetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_VariableBoundsTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_VariableBoundsTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp'; fi`
+
+ConstrainedOptPack_initialize_Q_R_Q_X.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_initialize_Q_R_Q_X.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo" -c -o ConstrainedOptPack_initialize_Q_R_Q_X.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo" "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp' object='ConstrainedOptPack_initialize_Q_R_Q_X.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_initialize_Q_R_Q_X.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp
+
+ConstrainedOptPack_initialize_Q_R_Q_X.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_initialize_Q_R_Q_X.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo" -c -o ConstrainedOptPack_initialize_Q_R_Q_X.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo" "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp' object='ConstrainedOptPack_initialize_Q_R_Q_X.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_initialize_Q_R_Q_X.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_initialize_Q_R_Q_X.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp'; fi`
+
+ConstrainedOptPack_print_vector_change_stats.o: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_print_vector_change_stats.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo" -c -o ConstrainedOptPack_print_vector_change_stats.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo" "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp' object='ConstrainedOptPack_print_vector_change_stats.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_print_vector_change_stats.o `test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp
+
+ConstrainedOptPack_print_vector_change_stats.obj: $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_print_vector_change_stats.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo" -c -o ConstrainedOptPack_print_vector_change_stats.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo" "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp' object='ConstrainedOptPack_print_vector_change_stats.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_print_vector_change_stats.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_print_vector_change_stats.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp'; fi`
+
+ConstrainedOptPack_ConstraintsRelaxedStd.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_ConstraintsRelaxedStd.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo" -c -o ConstrainedOptPack_ConstraintsRelaxedStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp' object='ConstrainedOptPack_ConstraintsRelaxedStd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_ConstraintsRelaxedStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp
+
+ConstrainedOptPack_ConstraintsRelaxedStd.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_ConstraintsRelaxedStd.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo" -c -o ConstrainedOptPack_ConstraintsRelaxedStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp' object='ConstrainedOptPack_ConstraintsRelaxedStd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_ConstraintsRelaxedStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_ConstraintsRelaxedStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp'; fi`
+
+ConstrainedOptPack_QPInitFixedFreeStd.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPInitFixedFreeStd.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo" -c -o ConstrainedOptPack_QPInitFixedFreeStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp' object='ConstrainedOptPack_QPInitFixedFreeStd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPInitFixedFreeStd.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp
+
+ConstrainedOptPack_QPInitFixedFreeStd.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPInitFixedFreeStd.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo" -c -o ConstrainedOptPack_QPInitFixedFreeStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp' object='ConstrainedOptPack_QPInitFixedFreeStd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPInitFixedFreeStd.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPInitFixedFreeStd.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp'; fi`
+
+ConstrainedOptPack_QPKWIK_Output.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPKWIK_Output.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo" -c -o ConstrainedOptPack_QPKWIK_Output.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp' object='ConstrainedOptPack_QPKWIK_Output.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPKWIK_Output.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp
+
+ConstrainedOptPack_QPKWIK_Output.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPKWIK_Output.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo" -c -o ConstrainedOptPack_QPKWIK_Output.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp' object='ConstrainedOptPack_QPKWIK_Output.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPKWIK_Output.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPKWIK_Output.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp'; fi`
+
+ConstrainedOptPack_QPSchur.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSchur.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo" -c -o ConstrainedOptPack_QPSchur.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSchur.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp' object='ConstrainedOptPack_QPSchur.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSchur.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSchur.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSchur.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp
+
+ConstrainedOptPack_QPSchur.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSchur.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo" -c -o ConstrainedOptPack_QPSchur.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSchur.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSchur.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp' object='ConstrainedOptPack_QPSchur.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSchur.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSchur.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSchur.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp'; fi`
+
+ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo" -c -o ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp' object='ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp
+
+ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo" -c -o ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp' object='ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp'; fi`
+
+ConstrainedOptPack_QPSolverRelaxed.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxed.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxed.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp' object='ConstrainedOptPack_QPSolverRelaxed.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxed.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp
+
+ConstrainedOptPack_QPSolverRelaxed.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxed.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxed.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp' object='ConstrainedOptPack_QPSolverRelaxed.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxed.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxed.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp'; fi`
+
+ConstrainedOptPack_QPSolverRelaxedQPSchur.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPSchur.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPSchur.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPSchur.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPSchur.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp
+
+ConstrainedOptPack_QPSolverRelaxedQPSchur.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPSchur.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPSchur.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPSchur.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchur.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPSchur.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp'; fi`
+
+ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp
+
+ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp' object='ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp'; fi`
+
+ConstrainedOptPack_QPSolverRelaxedTester.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedTester.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp' object='ConstrainedOptPack_QPSolverRelaxedTester.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedTester.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp
+
+ConstrainedOptPack_QPSolverRelaxedTester.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedTester.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp' object='ConstrainedOptPack_QPSolverRelaxedTester.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTester.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedTester.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp'; fi`
+
+ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.o: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.o -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp' object='ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.o `test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp' || echo '$(srcdir)/'`$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp
+
+ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.obj: $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.obj -MD -MP -MF "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo" -c -o ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo" "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po"; else rm -f "$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp' object='ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.Po' tmpdepfile='$(DEPDIR)/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.obj `if test -f '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp'; fi`
+
 .f.o:
 	$(F77COMPILE) -c -o $@ $<
 
@@ -4322,7 +5182,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/thyra $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/thyra $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base
+	$(mkdir_p) $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/thyra $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/ConstrainedOptPack/src $(distdir)/ConstrainedOptPack/src/decompositions $(distdir)/ConstrainedOptPack/src/globalization $(distdir)/ConstrainedOptPack/src/matrices $(distdir)/ConstrainedOptPack/src/misc $(distdir)/ConstrainedOptPack/src/qpsolvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/thyra $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -4444,6 +5304,8 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-am uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLIBRARIES uninstall-nodist_execincludeHEADERS
 
+#CONSTRAINED_OPT_PACK_F = \
+#  $(srcdir)/ConstrainedOptPack/src/qpsolvers/qpoptcpp.f
 
 #
 # Specify locations of include files within Trilinos

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncNLESqrResid.hpp
+// ConstrainedOptPack_MeritFuncNLESqrResid.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MERIT_FUNC_NLE_SQR_RESID_H
 #define MERIT_FUNC_NLE_SQR_RESID_H
 
-#include "MeritFuncNLE.hpp"
+#include "ConstrainedOptPack_MeritFuncNLE.hpp"
 
 namespace ConstrainedOptPack {
 

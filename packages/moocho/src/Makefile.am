@@ -27,7 +27,6 @@
 # ************************************************************************
 # @HEADER
 
-
 # ------------------------------------------------------------------------
 # For each category, create two variables - NAME and NAME_H. The
 # second is the list of headers to be installed, i.e., any header that
@@ -634,6 +633,123 @@ NLP_INTERFACE_PACK_CPP = \
   $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.cpp\
   $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp
 
+CONSTRAINED_OPT_PACK_HPP = \
+  $(srcdir)/ConstrainedOptPack/src/ConstrainedOptPack_Types.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReduct.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPerm.hpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearch_Strategy.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1D.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLE.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParam.hpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParams.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixGenBanded.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasicInitDiagonal.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixKKTFullSpaceRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelUpdateableWithOpNonsingular.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefBandedChol.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefInvCholFactor.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGSSerial.hpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.hpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPOPT_CppDecl.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFixedFree.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianSuperBasic.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedLOQO.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPT.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPTSOL.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.hpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverStats.hpp
+
+CONSTRAINED_OPT_PACK_CPP = \
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp\
+  $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp\
+  $(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp\
+  $(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp\
+  $(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp\
+  $(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp
+
+# ToDo: Add conditional logic for QPOPT and QPKWIK!
+
+CONSTRAINED_OPT_PACK_F =
+#CONSTRAINED_OPT_PACK_F = \
+#  $(srcdir)/ConstrainedOptPack/src/qpsolvers/qpoptcpp.f
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -664,7 +780,8 @@ MOOCHO_H = \
 	$(RTOP_PACK_STD_OPS_HPP) \
 	$(DENSE_LIN_ALG_PACK_HPP) \
 	$(ABSTRACT_LIN_ALG_PACK_HPP) \
-	$(NLP_INTERFACE_PACK_HPP)
+	$(NLP_INTERFACE_PACK_HPP) \
+	$(CONSTRAINED_OPT_PACK_HPP)
 
 libmoocho_a_SOURCES = \
 	$(MOOCHO_UTILITIES_CPP) \
@@ -676,7 +793,9 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_STD_OPS_CPP) \
   $(DENSE_LIN_ALG_PACK_CPP) \
 	$(ABSTRACT_LIN_ALG_PACK_CPP) \
-	$(NLP_INTERFACE_PACK_CPP)
+	$(NLP_INTERFACE_PACK_CPP) \
+	$(CONSTRAINED_OPT_PACK_CPP) \
+	$(CONSTRAINED_OPT_PACK_F)
 
 # --------------------------------------------------------------------
 # For using a special archiver

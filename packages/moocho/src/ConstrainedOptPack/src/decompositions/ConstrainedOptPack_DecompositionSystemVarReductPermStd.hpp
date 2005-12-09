@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemVarReductPermStd.hpp
+// ConstrainedOptPack_DecompositionSystemVarReductPermStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <stdexcept>
 
-#include "DecompositionSystemVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReductPerm.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 
 namespace ConstrainedOptPack {
 

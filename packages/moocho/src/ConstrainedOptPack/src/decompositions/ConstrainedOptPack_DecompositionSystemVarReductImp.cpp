@@ -15,11 +15,11 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptPack/src/decompositions/DecompositionSystemVarReductImp.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "ConstrainedOptPack/src/matrices/MatrixVarReductImplicit.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReductImp.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack_MatrixVarReductImplicit.hpp"
+#include "AbstractLinAlgPack_MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack_MatrixOpSubView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"

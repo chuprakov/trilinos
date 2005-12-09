@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// QPInitFixedFreeStd.hpp
+// ConstrainedOptPack_QPInitFixedFreeStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QP_INIT_FIXED_FREE_STD_H
 #define QP_INIT_FIXED_FREE_STD_H
 
-#include "QPSchur.hpp"
+#include "ConstrainedOptPack_QPSchur.hpp"
 
 namespace ConstrainedOptPack {
 namespace QPSchurPack {

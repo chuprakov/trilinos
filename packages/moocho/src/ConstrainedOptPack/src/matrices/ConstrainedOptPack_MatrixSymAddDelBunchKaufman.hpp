@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////
-// MatrixSymAddDelBunchKaufman.hpp
+// ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,11 +18,11 @@
 
 #include <vector>
 
-#include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "ConstrainedOptPack_MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -20,12 +20,12 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "ConstrainedOptPack/src/matrices/MatrixKKTFullSpaceRelaxed.hpp"
+#include "ConstrainedOptPack_MatrixKKTFullSpaceRelaxed.hpp"
 #include "AbstractLinAlgPack/src/DirectSparseFortranCompatibleSolver.h"
 #include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "AbstractLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace ConstrainedOptPack {
 

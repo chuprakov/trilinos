@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptPack_MatrixIdentConcatStd.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {

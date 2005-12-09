@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "QPKWIK_Output.hpp"
-#include "MoochoMoreUtilities/src/fortran_types.hpp"
+#include "ConstrainedOptPack_QPKWIK_Output.hpp"
+#include "Teuchos_F77_wrappers.h"
 
 namespace QPKWIK_Output {
 	std::ostream* out = 0;

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// DecompositionSystemOrthogonal.hpp
+// ConstrainedOptPack_DecompositionSystemOrthogonal.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DECOMPOSITION_SYSTEM_ORTHOGONAL_H
 #define DECOMPOSITION_SYSTEM_ORTHOGONAL_H
 
-#include "DecompositionSystemVarReductImp.hpp"
+#include "ConstrainedOptPack_DecompositionSystemVarReductImp.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

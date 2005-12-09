@@ -47,15 +47,15 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
+#include "ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp"
+#include "AbstractLinAlgPack_BFGS_helpers.hpp"
+#include "AbstractLinAlgPack_VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack_MatrixOpOut.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgLAPack.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MeritFuncCalcNLP.hpp"
-#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "ConstrainedOptPack_MeritFuncCalcNLP.hpp"
+#include "DenseLinAlgPack_DVectorClass.hpp"
 
 namespace ConstrainedOptPack {
 

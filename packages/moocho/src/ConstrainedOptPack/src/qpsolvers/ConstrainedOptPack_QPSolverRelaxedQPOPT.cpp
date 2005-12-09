@@ -21,16 +21,16 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPT.hpp"
-#include "ConstrainedOptPack/src/qpsolvers/QPOPT_CppDecl.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedQPOPT.hpp"
+#include "ConstrainedOptPack_QPOPT_CppDecl.hpp"
+#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "AbstractLinAlgPack_SpVectorClass.hpp"
+#include "AbstractLinAlgPack_EtaVector.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_VectorMutableDense.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_DVectorOut.hpp"
 
 // //////////////////////////////////////////////////////////
 // Local implementation functions.

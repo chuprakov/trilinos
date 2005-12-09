@@ -17,12 +17,12 @@
 
 #include <limits>
 
-#include "ConstrainedOptPack/src/matrices/MatrixSymIdentitySerial.hpp"
-#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "DenseLinAlgPack/src/DMatrixOp.hpp"
-#include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "ConstrainedOptPack_MatrixSymIdentitySerial.hpp"
+#include "DenseLinAlgPack_DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack_DMatrixOp.hpp"
+#include "DenseLinAlgPack_DMatrixOut.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
+#include "DenseLinAlgPack_AssertOp.hpp"
 
 namespace ConstrainedOptPack {
 

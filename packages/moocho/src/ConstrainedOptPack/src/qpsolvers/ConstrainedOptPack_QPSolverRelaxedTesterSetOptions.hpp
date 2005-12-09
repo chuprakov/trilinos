@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// QPSolverRelaxedTesterSetOptions.hpp
+// ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_RELAXED_TESTER_SET_OPTIONS_H
 #define QP_SOLVER_RELAXED_TESTER_SET_OPTIONS_H
 
-#include "QPSolverRelaxedTester.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsFromStreamNode.hpp"
-#include "MoochoMoreUtilities/src/SetOptionsToTargetBase.hpp"
+#include "ConstrainedOptPack_QPSolverRelaxedTester.hpp"
+#include "OptionsFromStreamPack_SetOptionsFromStreamNode.hpp"
+#include "OptionsFromStreamPack_SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptPack {
 
