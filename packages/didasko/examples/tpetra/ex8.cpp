@@ -81,7 +81,7 @@ public:
 
   inline ElementInfo(const vector<int> rhs)
   {
-    assert (ElementInfoSize == rhs.size());
+    assert (ElementInfoSize == (signed)rhs.size());
     for (int i = 0 ; i < ElementInfoSize ; ++i)
       data[i] = rhs[i];
   }
@@ -90,18 +90,21 @@ public:
   {
     for (int i = 0 ; i < ElementInfoSize ; ++i)
       data[i] = rhs;
+    return *this;
   }
 
   inline ElementInfo& operator=(const ElementInfo rhs)
   {
     for (int i = 0 ; i < ElementInfoSize ; ++i)
       data[i] = rhs.data[i];
+    return *this;
   }
 
   inline ElementInfo& operator+=(const ElementInfo rhs)
   {
     for (int i = 0 ; i < ElementInfoSize ; ++i)
       data[i] += rhs.data[i];
+    return *this;
   }
 
   inline ElementInfo operator*(const int i) const
@@ -243,9 +246,9 @@ class MATLABGrid
     MATLABGrid(const Tpetra::Comm<OrdinalType, ScalarType>& CommST, 
                const Tpetra::Comm<OrdinalType, ElementInfo>& CommEI,
                char* FileName) :
+      FileName_(FileName),
       CommST_(CommST),
-      CommEI_(CommEI),
-      FileName_(FileName)
+      CommEI_(CommEI)
     {
 #ifdef HAVE_MPI
       platformOT_ = new Tpetra::MpiPlatform <OrdinalType, OrdinalType>(MPI_COMM_WORLD);

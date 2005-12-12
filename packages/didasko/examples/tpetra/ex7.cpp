@@ -60,18 +60,21 @@ public:
   {
     for (int i = 0 ; i < MyScalarTypeSize ; ++i)
       data[i] = rhs;
+    return *this;
   }
 
   inline MyScalarType& operator=(const MyScalarType rhs)
   {
     for (int i = 0 ; i < MyScalarTypeSize ; ++i)
       data[i] = rhs.data[i];
+    return *this;
   }
 
   inline MyScalarType& operator+=(const MyScalarType rhs)
   {
     for (int i = 0 ; i < MyScalarTypeSize ; ++i)
       data[i] += rhs.data[i];
+    return *this;
   }
 
   inline MyScalarType operator*(const int i) const
@@ -233,6 +236,9 @@ namespace Teuchos {
 
 } // namespace Teuchos
 
+
+#ifdef TPETRA_MPI
+
 namespace Tpetra 
 {
   template<>
@@ -290,6 +296,8 @@ namespace Tpetra
     };
   };
 } // namespace Tpetra
+
+#endif // TPETRA_MPI
 
 typedef int OrdinalType;
 typedef MyScalarType ScalarType;
