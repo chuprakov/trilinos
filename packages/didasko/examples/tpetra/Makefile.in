@@ -42,7 +42,7 @@
 # ************************************************************************
 #@HEADER
 
-SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES) $(ex4_SOURCES) $(ex5_SOURCES) $(ex6_SOURCES) $(ex7_SOURCES) $(ex8_SOURCES)
+SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES) $(ex4_SOURCES) $(ex5_SOURCES) $(ex6_SOURCES) $(ex7_SOURCES) $(ex8_SOURCES) $(ex9_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -98,7 +98,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Didasko_config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = ex1$(EXEEXT) ex2$(EXEEXT) ex3$(EXEEXT) ex4$(EXEEXT) \
-	ex5$(EXEEXT) ex6$(EXEEXT) ex7$(EXEEXT) ex8$(EXEEXT)
+	ex5$(EXEEXT) ex6$(EXEEXT) ex7$(EXEEXT) ex8$(EXEEXT) \
+	ex9$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
@@ -133,23 +134,29 @@ am_ex8_OBJECTS = ex8-ex8.$(OBJEXT)
 ex8_OBJECTS = $(am_ex8_OBJECTS)
 ex8_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_ex9_OBJECTS = ex9-ex9.$(OBJEXT)
+ex9_OBJECTS = $(am_ex9_OBJECTS)
+ex9_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ex1-ex1.Po ./$(DEPDIR)/ex2-ex2.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ex3-ex3.Po ./$(DEPDIR)/ex4-ex4.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ex5-ex5.Po ./$(DEPDIR)/ex6-ex6.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/ex7-ex7.Po ./$(DEPDIR)/ex8-ex8.Po
+@AMDEP_TRUE@	./$(DEPDIR)/ex7-ex7.Po ./$(DEPDIR)/ex8-ex8.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ex9-ex9.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES) $(ex4_SOURCES) \
-	$(ex5_SOURCES) $(ex6_SOURCES) $(ex7_SOURCES) $(ex8_SOURCES)
+	$(ex5_SOURCES) $(ex6_SOURCES) $(ex7_SOURCES) $(ex8_SOURCES) \
+	$(ex9_SOURCES)
 DIST_SOURCES = $(ex1_SOURCES) $(ex2_SOURCES) $(ex3_SOURCES) \
 	$(ex4_SOURCES) $(ex5_SOURCES) $(ex6_SOURCES) $(ex7_SOURCES) \
-	$(ex8_SOURCES)
+	$(ex8_SOURCES) $(ex9_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -293,7 +300,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXAMPLE = ex1  ex2  ex3  ex4  ex5 ex6 ex7 ex8
+EXAMPLE = ex1  ex2  ex3  ex4  ex5 ex6 ex7 ex8 ex9
 ex1_SOURCES = $(srcdir)/ex1.cpp
 ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
 ex1_LDADD = $(DIDASKO_LIBS) \
@@ -353,6 +360,14 @@ ex7_LDADD = $(DIDASKO_LIBS) \
 ex8_SOURCES = $(srcdir)/ex8.cpp
 ex8_CXXFLAGS = $(DIDASKO_INCLUDES) 
 ex8_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
+
+ex9_SOURCES = $(srcdir)/ex9.cpp
+ex9_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex9_LDADD = $(DIDASKO_LIBS) \
             $(LIBS)         \
             $(LAPACK_LIBS)  \
             $(BLAS_LIBS)    \
@@ -418,6 +433,9 @@ ex7$(EXEEXT): $(ex7_OBJECTS) $(ex7_DEPENDENCIES)
 ex8$(EXEEXT): $(ex8_OBJECTS) $(ex8_DEPENDENCIES) 
 	@rm -f ex8$(EXEEXT)
 	$(CXXLINK) $(ex8_LDFLAGS) $(ex8_OBJECTS) $(ex8_LDADD) $(LIBS)
+ex9$(EXEEXT): $(ex9_OBJECTS) $(ex9_DEPENDENCIES) 
+	@rm -f ex9$(EXEEXT)
+	$(CXXLINK) $(ex9_LDFLAGS) $(ex9_OBJECTS) $(ex9_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -433,6 +451,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex6-ex6.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex7-ex7.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex8-ex8.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex9-ex9.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -577,6 +596,22 @@ ex8-ex8.obj: $(srcdir)/ex8.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex8-ex8.Po' tmpdepfile='$(DEPDIR)/ex8-ex8.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex8_CXXFLAGS) $(CXXFLAGS) -c -o ex8-ex8.obj `if test -f '$(srcdir)/ex8.cpp'; then $(CYGPATH_W) '$(srcdir)/ex8.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex8.cpp'; fi`
+
+ex9-ex9.o: $(srcdir)/ex9.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex9_CXXFLAGS) $(CXXFLAGS) -MT ex9-ex9.o -MD -MP -MF "$(DEPDIR)/ex9-ex9.Tpo" -c -o ex9-ex9.o `test -f '$(srcdir)/ex9.cpp' || echo '$(srcdir)/'`$(srcdir)/ex9.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex9-ex9.Tpo" "$(DEPDIR)/ex9-ex9.Po"; else rm -f "$(DEPDIR)/ex9-ex9.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex9.cpp' object='ex9-ex9.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex9-ex9.Po' tmpdepfile='$(DEPDIR)/ex9-ex9.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex9_CXXFLAGS) $(CXXFLAGS) -c -o ex9-ex9.o `test -f '$(srcdir)/ex9.cpp' || echo '$(srcdir)/'`$(srcdir)/ex9.cpp
+
+ex9-ex9.obj: $(srcdir)/ex9.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex9_CXXFLAGS) $(CXXFLAGS) -MT ex9-ex9.obj -MD -MP -MF "$(DEPDIR)/ex9-ex9.Tpo" -c -o ex9-ex9.obj `if test -f '$(srcdir)/ex9.cpp'; then $(CYGPATH_W) '$(srcdir)/ex9.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex9.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ex9-ex9.Tpo" "$(DEPDIR)/ex9-ex9.Po"; else rm -f "$(DEPDIR)/ex9-ex9.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ex9.cpp' object='ex9-ex9.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ex9-ex9.Po' tmpdepfile='$(DEPDIR)/ex9-ex9.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ex9_CXXFLAGS) $(CXXFLAGS) -c -o ex9-ex9.obj `if test -f '$(srcdir)/ex9.cpp'; then $(CYGPATH_W) '$(srcdir)/ex9.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ex9.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
