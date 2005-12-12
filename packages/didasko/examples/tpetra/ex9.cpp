@@ -39,6 +39,7 @@
 #include "Teuchos_ScalarTraits.hpp"
 #include "Tpetra_DistObject.hpp"
 #include "Tpetra_Import.hpp"
+#include <map>
 
 // \author Marzio Sala, ETHZ/COLAB
 //
@@ -64,11 +65,87 @@ namespace Tpetra
       void fillComplete()
       {
         // =============================== //
+        // Part 0: send off-image elements //
+        // =============================== //
+
+        int NumImages = RowSpace_.comm().getNumImages();
+        map<OrdinalType, OrdinalType> containter;
+
+        for (typename map<OrdinalType, vector<OrdinalType> >::iterator iter = nonlocalIndices_.begin() ; 
+             iter != nonlocalIndices_.end() ; ++iter)
+        {
+          containter[iter->first] = 1;
+        }
+
+        // convert the map to a vector so that I can use get getRemoteIDList()
+        vector<OrdinalType> myrowlist;
+
+        for (typename map<OrdinalType, OrdinalType>::iterator iter = containter.begin() ;
+             iter != containter.end() ; ++iter)
+        {
+          myrowlist.push_back(iter->first);
+        }
+
+        vector<OrdinalType> imageIDList(myrowlist.size());
+
+        RowSpace_.getRemoteIDList (myrowlist, imageIDList);
+
+        vector<OrdinalType> mylist(RowSpace_.comm().getNumImages());
+        for (OrdinalType i = 0 ; i < mylist.size() ; ++i) mylist[i] = 0;
+
+        for (OrdinalType i = 0 ; i < myrowlist.size() ; ++i)
+        {
+          mylist[imageIDList[i]] = 1;
+        }
+
+        vector<OrdinalType> globalList(NumImages * NumImages);
+
+        RowSpace_.comm().gatherAll(&mylist[0], &globalList[0], NumImages);
+
+        // now I loop over all columns to know which image is supposed to send
+        // me something
+        vector<OrdinalType> rcvImages;
+
+        for (int j = 0 ; j < NumImages ; ++j)
+        {
+          OrdinalType what = globalList[j * NumImages + RowSpace_.comm().getMyImageID()];
+          if (what > 0)
+          {
+            rcvImages.push_back(j);
+          }
+        }
+
+        for (int i = 0 ; i < rcvImages.size() ; ++i)
+          cout << rcvImages[i] << " " << endl;
+
+#if 0
+        // At this point I know how many processors will send a message to
+        // this image. I have to compute what to send, size and content.
+        // I make another loop over all the elements, by separing all data
+        // image by image.
+        
+        map<OrdinalType, OrdinalType> sendSizes;
+        map<OrdinalType, vector<OrdinalType> > sendIndices;
+        map<OrdinalType, vector<ScalarType> > sendValues;
+
+        for (typename map<OrdinalType, vector<OrdinalType> >::iterator iter = nonlocalIndices_.begin() ; 
+             iter != nonlocalIndices_.end() ; ++iter)
+        {
+          OrdinalType Row = iter->first;
+          for (int j = 0 ; j < (iter->second).size() ; ++j)
+          {
+            OrdinalType Col = (iter->second)[j];
+            ScalarType Val = 
+          containter[iter->first] = 1;
+        }
+#endif
+
+
+        
+        // =============================== //
         // Part I: remove repeated indices //
         // =============================== //
         
-        std::map<OrdinalType, ScalarType>::iterator iter;
-
         // I load all matrix entries in a hash table, then I re-fill
         // the row with the last inserted value.
         for (OrdinalType i = 0 ; i < NumMyRows_ ; ++i)
@@ -81,7 +158,8 @@ namespace Tpetra
           }
 
           OrdinalType count = 0;
-          for (iter = singleRow.begin() ; iter != singleRow.end() ; ++iter)
+          for (typename std::map<OrdinalType,ScalarType>::iterator iter = singleRow.begin() ; 
+               iter != singleRow.end() ; ++iter)
           {
             Indices_[i][count] = iter->first;
             Values_[i][count] = iter->second;
@@ -112,11 +190,11 @@ namespace Tpetra
         }
 
         vector<OrdinalType> MyPaddedGlobalElements(MyGlobalElements_);
-        std::map<OrdinalType, bool>::iterator iter_c;
 
-        for (iter_c = container.begin() ; iter_c != container.end() ; ++iter_c)
+        for (typename std::map<OrdinalType, bool>::iterator iter = container.begin() ; 
+             iter != container.end() ; ++iter)
         {
-          MyPaddedGlobalElements.push_back(iter_c->first);
+          MyPaddedGlobalElements.push_back(iter->first);
         }
 
         // now I can build the column space
@@ -124,8 +202,6 @@ namespace Tpetra
         ColSpace_ = new ElementSpace<OrdinalType>(-1, MyPaddedGlobalElements.size(),
                                                   MyPaddedGlobalElements, RowSpace_.getIndexBase(), RowSpace_.platform());
         VectorColSpace_ = new VectorSpace<OrdinalType, ScalarType>(*ColSpace_, VectorRowSpace_.platform());
-
-        cout << *VectorColSpace_;
 
         PaddedVector_ = new Vector<OrdinalType, ScalarType>(*VectorColSpace_);
         Importer_ = new Import<OrdinalType>(RowSpace_, *ColSpace_);
@@ -146,7 +222,7 @@ namespace Tpetra
       void setGlobalElement(OrdinalType GlobalRow, OrdinalType GlobalCol,
                             ScalarType Value)
       {
-        if (RowSpace_.isMyGID(GlobalCol))
+        if (RowSpace_.isMyGID(GlobalRow))
         {
           OrdinalType LocalRow = RowSpace_.getLID(GlobalRow);
           Indices_[LocalRow].push_back(GlobalCol);
@@ -155,7 +231,7 @@ namespace Tpetra
         else
         {
           nonlocalIndices_[GlobalRow].push_back(GlobalCol);
-          nonlocalValues_[GlobalRow].push_back(Values);
+          nonlocalValues_[GlobalRow].push_back(Value);
         }
       }
 
@@ -232,6 +308,9 @@ namespace Tpetra
 
       Vector<OrdinalType, ScalarType>* PaddedVector_;
       Import<OrdinalType>* Importer_;
+
+      map<OrdinalType, vector<OrdinalType> > nonlocalIndices_;
+      map<OrdinalType, vector<ScalarType> > nonlocalValues_;
   };
 } // namespace Tpetra
 
@@ -285,25 +364,32 @@ int main(int argc, char *argv[])
 
   Tpetra::CrsMatrix<OrdinalType, ScalarType> Matrix(vectorSpace);
 
-  for (int i = 0 ; i < elementSpace.getNumMyElements() ; ++i)
+  if (Comm.getMyImageID() == 0)
   {
-    int GRID = elementSpace.getGID(i);
+    for (int i = 0 ; i < elementSpace.getNumGlobalElements() ; ++i)
+    {
+      int GRID = i; // elementSpace.getGID(i);
 
-    if (GRID != 0)
-      Matrix.setGlobalElement(GRID, GRID - 1, -1.0);
-    if (GRID != elementSpace.getNumGlobalElements() - 1)
-      Matrix.setGlobalElement(GRID, GRID + 1, -1.0);
-    Matrix.setGlobalElement(GRID, GRID, 2.0);
+      if (GRID != 0)
+        Matrix.setGlobalElement(GRID, GRID - 1, -1.0);
+      if (GRID != elementSpace.getNumGlobalElements() - 1)
+        Matrix.setGlobalElement(GRID, GRID + 1, -1.0);
+      Matrix.setGlobalElement(GRID, GRID, 2.0);
+    }
   }
 
+#if 0
   Tpetra::Vector<OrdinalType, ScalarType> x(vectorSpace), y(vectorSpace);
 
   x.setAllToScalar(1.0);
 
+#endif
   Matrix.fillComplete();
+#if 0
   Matrix.apply(x, y);
 
   cout << y;
+#endif
 
 
 
