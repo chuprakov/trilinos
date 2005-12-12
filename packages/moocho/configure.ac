@@ -280,7 +280,7 @@ AC_CONFIG_FILES([
     example/ExampleNLPBanded/Makefile
     example/ExampleNLPDirect/Makefile
     example/ExampleNLPFirstOrder/Makefile
-    example/NLPWBCounterExample/Makefile
+    example/NLPThyraEpetraModelEval4DOpt/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile

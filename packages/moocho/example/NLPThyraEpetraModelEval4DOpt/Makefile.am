@@ -1,7 +1,10 @@
 #@HEADER
 # ************************************************************************
 # 
-# 
+# Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
+#
+#   Copyright (2003) Sandia Corporation
+#
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 # license for use of this work by or on behalf of the U.S. Government.
 # 
@@ -24,6 +27,14 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample NLPThyraEpetraModelEval4DOpt
+noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt
 
-# Todo: Conditionally include the Thyra example only if epetraext, thyra etc. are enabled
+NLPThyraEpetraModelEval4DOpt_SOURCES = \
+  $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/EpetraModelEval4DOpt.cpp
+NLPThyraEpetraModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
+NLPThyraEpetraModelEval4DOpt_LDADD = $(common_ldadd)
+
+include $(top_srcdir)/MakefileExeStub.mak
+
+AM_CPPFLAGS += -I$(top_srcdir)/../epetraext/example/model_evaluator

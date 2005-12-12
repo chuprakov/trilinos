@@ -269,3 +269,50 @@
        ;
     COMM = SERIAL;
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --do-sim
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --x00=0.9
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --x00=0.9
+      --do-sim
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --xt0=0.9
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = 
+      --xt0=0.9
+      --do-sim
+       ;
+    COMM = SERIAL;
+}
