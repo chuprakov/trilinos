@@ -18,7 +18,7 @@ implemented in C (as are all the rest of the RTOp operators in the other librari
 able to run on any platform.
 
 Also included in this package is an encapsulation function <tt>ExampleNLPDirectRun()</tt>
-declared in the header file <tt>ExampleNLPDirectRun.hpp</tt>.  This helper function creates an
+declared in the header file <tt>NLPInterfacePack_ExampleNLPDirectRun.hpp</tt>.  This helper function creates an
 <tt>\ref NLPInterfacePack::ExampleNLPDirect "ExampleNLPDirect"</tt> object
 (given an input vector space object) and then calls
 <tt>\ref NLPInterfacePack::test_nlp_direct "test_nlp_direct()"</tt> to run

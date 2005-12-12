@@ -29,7 +29,7 @@
 // ////////////////////////////////////////////////
 // initRTOpStdOpsLibCpp.cpp
 
-#include "initRTOpStdOpsLibCpp.hpp"
+#include "RTOpPack_initRTOpStdOpsLibCpp.hpp"
 #include "RTOpPack_RTOpCPostMod.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "RTOp_ROp_combined_nu_comp_err.h"

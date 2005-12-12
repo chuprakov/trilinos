@@ -40,4 +40,4 @@ TestDenseLinAlgPack_SOURCES = \
 TestDenseLinAlgPack_DEPENDENCIES = $(common_dependencies)
 TestDenseLinAlgPack_LDADD = $(common_ldadd)
 
-include $(top_srcdir)/test/MakefileExeStub.mak
+include $(top_srcdir)/MakefileExeStub.mak

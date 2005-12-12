@@ -15,9 +15,9 @@
 
 #include <math.h>
 
-#include "ExampleNLPBanded.hpp"
-#include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "NLPInterfacePack_ExampleNLPBanded.hpp"
+#include "DenseLinAlgPack_PermVecMat.hpp"
+#include "DenseLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

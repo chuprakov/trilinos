@@ -18,15 +18,15 @@
 #include <stdexcept>
 #include <limits>
 
-#include "ExampleNLPObjGrad.hpp"
+#include "NLPInterfacePack_ExampleNLPObjGrad.hpp"
 #include "ExampleNLPDirectRTOps.h"
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "RTOpPack_RTOpC.hpp"
-#include "Range1D.hpp"
+#include "Thyra_Range1D.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"

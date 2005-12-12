@@ -154,7 +154,7 @@ RTOP_PACK_BASE_CPP = \
   $(srcdir)/RTOpPack/src/base/check_nan_inf.cpp\
   $(srcdir)/RTOpPack/src/base/RTOpPack_print_sub_vector.cpp
 
-RTOp_PACK_STD_OPS_H = \
+RTOP_PACK_STD_OPS_H = \
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.h\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.h\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.h\
@@ -194,7 +194,7 @@ RTOp_PACK_STD_OPS_H = \
   $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.h\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.h
 
-RTOp_PACK_STD_OPS_C = \
+RTOP_PACK_STD_OPS_C = \
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.c\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.c\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.c\
@@ -234,11 +234,13 @@ RTOp_PACK_STD_OPS_C = \
   $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.c\
   $(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.c
 
-RTOp_PACK_STD_OPS_HPP = \
-  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.hpp
+RTOP_PACK_STD_OPS_HPP =
 
-RTOp_PACK_STD_OPS_CPP = \
-  $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
+# $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.hpp
+
+RTOP_PACK_STD_OPS_CPP =
+
+# $(srcdir)/RTOpPack/src/std_ops/RTOpPack_initRTOpStdOpsLibCpp.cpp
 
 DENSE_LIN_ALG_PACK_HPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.hpp\
@@ -586,6 +588,11 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
+
+ABSTRACT_LIN_ALG_PACK_F = \
+  $(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f
+
+# ToDo: Add configure-time logic to only build this if it is missing from $LIBS
 
 NLP_INTERFACE_PACK_HPP = \
   $(srcdir)/NLPInterfacePack/src/NLPInterfacePack_Types.hpp\
@@ -985,6 +992,7 @@ libmoocho_a_SOURCES = \
   $(RTOP_PACK_STD_OPS_CPP) \
   $(DENSE_LIN_ALG_PACK_CPP) \
 	$(ABSTRACT_LIN_ALG_PACK_CPP) \
+	$(ABSTRACT_LIN_ALG_PACK_F) \
 	$(NLP_INTERFACE_PACK_CPP) \
 	$(CONSTRAINED_OPT_PACK_CPP) \
 	$(CONSTRAINED_OPT_PACK_F) \

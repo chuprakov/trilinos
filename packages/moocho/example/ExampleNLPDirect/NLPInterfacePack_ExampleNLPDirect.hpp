@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPDirect.hpp
+// NLPInterfacePack_ExampleNLPDirect.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 
-#include "ExampleNLPObjGrad.hpp"
-#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
+#include "NLPInterfacePack_ExampleNLPObjGrad.hpp"
+#include "NLPInterfacePack_NLPDirect.hpp"
+#include "AbstractLinAlgPack_VectorMutable.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 
 namespace NLPInterfacePack {
 
@@ -73,7 +73,7 @@ namespace NLPInterfacePack {
  *
  * To make this possible this subclass relies on some specialized RTOp operators which
  * are implemented in C (for portability).  These operator classes are declared in the header
- * file <tt>ExampleNLPDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
+ * file <tt>NLPInterfacePack_ExampleNLPDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
  */
 class ExampleNLPDirect
 	: virtual public NLPDirect

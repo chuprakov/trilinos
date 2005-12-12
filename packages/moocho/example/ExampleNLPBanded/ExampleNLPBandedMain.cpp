@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-#include "ExampleNLPBanded.hpp"
-#include "MoochoPack/configurations/MoochoSolver.hpp"
+#include "NLPInterfacePack_ExampleNLPBanded.hpp"
+#include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )
@@ -94,6 +94,9 @@ int main( int argc, char* argv[] )
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
+    
+    std::cout << "\nPrinting commandline options used (options used shown as (default: \?\?\?) ...\n\n";
+    command_line_processor.printHelpMessage(argv[0],std::cout);
 		
 		//
 		// Create the NLP

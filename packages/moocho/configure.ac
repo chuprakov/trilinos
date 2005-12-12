@@ -276,6 +276,8 @@ AC_CONFIG_FILES([
     Makefile 
     Makefile.export.moocho
     src/Makefile
+    example/Makefile
+    example/ExampleNLPBanded/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile

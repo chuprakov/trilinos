@@ -12,3 +12,136 @@
     TESTS = ./DenseLinAlgPack/TestDenseLinAlgPack.exe;
     COMM = SERIAL;
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=2
+      --nI=1
+      --bw=1
+      --mI=0
+      --xo=0.1
+      --diag-scale=1e+1
+      --nlp-selects-basis
+      ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=2
+      --nI=2
+      --bw=2
+      --mI=0
+      --xo=0.1
+      --diag-scale=1e+1
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=1000
+      --nI=8
+      --bw=5
+      --mI=0
+      --nlp-selects-basis
+      --xo=0.1
+      --diag-scale=1e+3
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=1000
+      --nI=300
+      --bw=20
+      --mI=0
+      --nlp-selects-basis
+      --xo=0.1
+      --diag-scale=1e+2
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=8
+      --nI=2
+      --bw=2
+      --mI=4
+      --xo=0.1
+      --diag-scale=1e+1
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=100
+      --nI=50
+      --bw=100
+      --mI=100
+      --nlp-selects-basis
+      --xo=0.1
+      --diag-scale=1e+1
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=100
+      --nI=4
+      --bw=20
+      --mI=0
+      --xo=0.1
+      --diag-scale=1e+3
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=4
+      --nI=4
+      --bw=2
+      --mI=0
+      --xo=0.1
+      --diag-scale=1e+3
+      --xIl=0.01
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=2
+      --nI=2
+      --ignore-constriants
+      --xo=0.1
+      --xIl=0.01
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPBanded/ExampleNLPBanded.exe;
+    ARGS = 
+      --nD=100
+      --nI=100
+      --ignore-constriants
+      --xo=0.1
+      --xIl=0.01
+       ;
+    COMM = SERIAL;
+}

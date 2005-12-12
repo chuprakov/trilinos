@@ -26,14 +26,14 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "ExampleNLPFirstOrderRun.hpp"
-#include "ExampleNLPFirstOrder.hpp"
-#include "ExampleBasisSystem.hpp"
-#include "MoochoPack/configurations/MamaJama/NLPAlgoConfigMamaJama.hpp"
-#include "IterationPack/src/AlgorithmTracker.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "NLPInterfacePack_ExampleNLPFirstOrderRun.hpp"
+#include "NLPInterfacePack_ExampleNLPFirstOrder.hpp"
+#include "NLPInterfacePack_ExampleBasisSystem.hpp"
+#include "MoochoPack_NLPAlgoConfigMamaJama.hpp"
+#include "IterationPack_AlgorithmTracker.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
+#include "AbstractLinAlgPack_BasisSystem.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 
 MoochoPack::MoochoSolver::ESolutionStatus
 NLPInterfacePack::ExampleNLPFirstOrderRun(

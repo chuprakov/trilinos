@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// NLPWBCounterExample.hpp
+// NLPInterfacePack_NLPWBCounterExample.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_WB_COUNTER_EXAMPLE_H
 #define NLP_WB_COUNTER_EXAMPLE_H
 
-#include "NLPInterfacePack/src/serial/NLPSerialPreprocessExplJac.hpp"
+#include "NLPInterfacePack_NLPSerialPreprocessExplJac.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// exampleNLPDiagSetup.hpp
+// AbstractLinAlgPack_exampleNLPDiagSetup.hpp
 
 #ifndef ALAP_EXPL_NLP_DIAG_SETUP_HPP
 #define ALAP_EXPL_NLP_DIAG_SETUP_HPP
@@ -11,7 +11,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack_Types.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {

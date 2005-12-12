@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// exampleNLPDiagSetup.hpp
+// AbstractLinAlgPack_exampleNLPDiagSetup.hpp
 
 #include <assert.h>
 
@@ -8,12 +8,12 @@
 #include <iostream>
 #include <iomanip>
 
-#include "exampleNLPDiagSetup.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
+#include "AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
+#include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack_VectorSpaceTSFCore.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreSerialVectorSpaceStd.hpp"
-#include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
+#include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Epetra_Map.h"
 #ifdef HAVE_MPI

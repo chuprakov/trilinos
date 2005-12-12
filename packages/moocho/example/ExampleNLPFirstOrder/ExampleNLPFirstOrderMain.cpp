@@ -21,9 +21,9 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ExampleNLPFirstOrderRun.hpp"
-#include "ExampleNLPDirect/exampleNLPDiagSetup.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "NLPInterfacePack_ExampleNLPFirstOrderRun.hpp"
+#include "ExampleNLPDirect/AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
+#include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_oblackholestream.hpp"
 

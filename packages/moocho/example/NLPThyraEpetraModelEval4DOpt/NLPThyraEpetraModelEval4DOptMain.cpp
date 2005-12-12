@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include "NLPInterfacePack/src/abstract/thyra/NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
-#include "MoochoPack/configurations/MoochoSolver.hpp"
+#include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
 /** \mainpage Example optimization problem using <tt>Thyra::ModelEvaluator</tt> and <tt>EpetraExt::ModelEvaluator</tt>.

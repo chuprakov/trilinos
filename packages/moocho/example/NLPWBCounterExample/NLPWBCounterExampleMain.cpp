@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-#include "NLPWBCounterExample.hpp"
-#include "MoochoPack/configurations/MoochoSolver.hpp"
+#include "NLPInterfacePack_NLPWBCounterExample.hpp"
+#include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )

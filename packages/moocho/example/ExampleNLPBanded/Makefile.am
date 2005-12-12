@@ -27,17 +27,12 @@
 # ************************************************************************
 #@HEADER
 
-noinst_PROGRAMS = TestIterationPack
+noinst_PROGRAMS = ExampleNLPBanded
 
-TestIterationPack_SOURCES = \
-  $(srcdir)/IterationPack_AlgorithmStepTesting.cpp\
-	$(srcdir)/IterationPack_AlgorithmTrackTesting.cpp\
-	$(srcdir)/IterationPack_TestAlgorithm.cpp\
-	$(srcdir)/IterationPack_TestAlgorithmState.cpp\
-	$(srcdir)/IterationPack_TestIterationPack.cpp\
-	$(srcdir)/IterationPack_TestIterQuantityAccessContinuous.cpp\
-	$(srcdir)/TestIterationPackMain.cpp
-TestIterationPack_DEPENDENCIES = $(common_dependencies)
-TestIterationPack_LDADD = $(common_ldadd)
+ExampleNLPBanded_SOURCES = \
+  $(srcdir)/ExampleNLPBandedMain.cpp\
+  $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
+ExampleNLPBanded_DEPENDENCIES = $(common_dependencies)
+ExampleNLPBanded_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak

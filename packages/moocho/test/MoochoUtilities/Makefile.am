@@ -35,4 +35,4 @@ test_stop_watch_SOURCES = $(srcdir)/TestStopWatchMain.cpp
 test_stop_watch_DEPENDENCIES = $(common_dependencies)
 test_stop_watch_LDADD = $(common_ldadd)
 
-include $(top_srcdir)/test/MakefileExeStub.mak
+include $(top_srcdir)/MakefileExeStub.mak

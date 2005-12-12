@@ -71,7 +71,7 @@
 # ************************************************************************
 #@HEADER
 
-SOURCES = $(test_stop_watch_SOURCES)
+SOURCES = $(ExampleNLPBanded_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -94,10 +94,10 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-noinst_PROGRAMS = $(am__EXEEXT_1)
+noinst_PROGRAMS = ExampleNLPBanded$(EXEEXT)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
-subdir = test/MoochoUtilities
+subdir = example/ExampleNLPBanded
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_check_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
@@ -115,10 +115,10 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Moocho_Config.h
 CONFIG_CLEAN_FILES =
-am__EXEEXT_1 = test_stop_watch$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am_test_stop_watch_OBJECTS = TestStopWatchMain.$(OBJEXT)
-test_stop_watch_OBJECTS = $(am_test_stop_watch_OBJECTS)
+am_ExampleNLPBanded_OBJECTS = ExampleNLPBandedMain.$(OBJEXT) \
+	NLPInterfacePack_ExampleNLPBanded.$(OBJEXT)
+ExampleNLPBanded_OBJECTS = $(am_ExampleNLPBanded_OBJECTS)
 am__DEPENDENCIES_1 =
 @USING_GNUMAKE_TRUE@am__DEPENDENCIES_2 = $(shell $(am__DEPENDENCIES_1) \
 @USING_GNUMAKE_TRUE@	$(top_srcdir)/config/strip_dup_libs.pl \
@@ -127,14 +127,15 @@ am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TestStopWatchMain.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ExampleNLPBandedMain.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(test_stop_watch_SOURCES)
-DIST_SOURCES = $(test_stop_watch_SOURCES)
+SOURCES = $(ExampleNLPBanded_SOURCES)
+DIST_SOURCES = $(ExampleNLPBanded_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -259,10 +260,12 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-TEST_STOP_WATCH = test_stop_watch
-test_stop_watch_SOURCES = $(srcdir)/TestStopWatchMain.cpp
-test_stop_watch_DEPENDENCIES = $(common_dependencies)
-test_stop_watch_LDADD = $(common_ldadd)
+ExampleNLPBanded_SOURCES = \
+  $(srcdir)/ExampleNLPBandedMain.cpp\
+  $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
+
+ExampleNLPBanded_DEPENDENCIES = $(common_dependencies)
+ExampleNLPBanded_LDADD = $(common_ldadd)
 common_dependencies = \
   $(top_builddir)/src/libmoocho.a
 
@@ -285,9 +288,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  test/MoochoUtilities/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  example/ExampleNLPBanded/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  test/MoochoUtilities/Makefile
+	  $(AUTOMAKE) --foreign  example/ExampleNLPBanded/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -308,9 +311,9 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-test_stop_watch$(EXEEXT): $(test_stop_watch_OBJECTS) $(test_stop_watch_DEPENDENCIES) 
-	@rm -f test_stop_watch$(EXEEXT)
-	$(CXXLINK) $(test_stop_watch_LDFLAGS) $(test_stop_watch_OBJECTS) $(test_stop_watch_LDADD) $(LIBS)
+ExampleNLPBanded$(EXEEXT): $(ExampleNLPBanded_OBJECTS) $(ExampleNLPBanded_DEPENDENCIES) 
+	@rm -f ExampleNLPBanded$(EXEEXT)
+	$(CXXLINK) $(ExampleNLPBanded_LDFLAGS) $(ExampleNLPBanded_OBJECTS) $(ExampleNLPBanded_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -318,7 +321,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestStopWatchMain.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExampleNLPBandedMain.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -336,21 +340,37 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-TestStopWatchMain.o: $(srcdir)/TestStopWatchMain.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TestStopWatchMain.o -MD -MP -MF "$(DEPDIR)/TestStopWatchMain.Tpo" -c -o TestStopWatchMain.o `test -f '$(srcdir)/TestStopWatchMain.cpp' || echo '$(srcdir)/'`$(srcdir)/TestStopWatchMain.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TestStopWatchMain.Tpo" "$(DEPDIR)/TestStopWatchMain.Po"; else rm -f "$(DEPDIR)/TestStopWatchMain.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/TestStopWatchMain.cpp' object='TestStopWatchMain.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TestStopWatchMain.Po' tmpdepfile='$(DEPDIR)/TestStopWatchMain.TPo' @AMDEPBACKSLASH@
+ExampleNLPBandedMain.o: $(srcdir)/ExampleNLPBandedMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ExampleNLPBandedMain.o -MD -MP -MF "$(DEPDIR)/ExampleNLPBandedMain.Tpo" -c -o ExampleNLPBandedMain.o `test -f '$(srcdir)/ExampleNLPBandedMain.cpp' || echo '$(srcdir)/'`$(srcdir)/ExampleNLPBandedMain.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ExampleNLPBandedMain.Tpo" "$(DEPDIR)/ExampleNLPBandedMain.Po"; else rm -f "$(DEPDIR)/ExampleNLPBandedMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ExampleNLPBandedMain.cpp' object='ExampleNLPBandedMain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ExampleNLPBandedMain.Po' tmpdepfile='$(DEPDIR)/ExampleNLPBandedMain.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestStopWatchMain.o `test -f '$(srcdir)/TestStopWatchMain.cpp' || echo '$(srcdir)/'`$(srcdir)/TestStopWatchMain.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ExampleNLPBandedMain.o `test -f '$(srcdir)/ExampleNLPBandedMain.cpp' || echo '$(srcdir)/'`$(srcdir)/ExampleNLPBandedMain.cpp
 
-TestStopWatchMain.obj: $(srcdir)/TestStopWatchMain.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TestStopWatchMain.obj -MD -MP -MF "$(DEPDIR)/TestStopWatchMain.Tpo" -c -o TestStopWatchMain.obj `if test -f '$(srcdir)/TestStopWatchMain.cpp'; then $(CYGPATH_W) '$(srcdir)/TestStopWatchMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/TestStopWatchMain.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TestStopWatchMain.Tpo" "$(DEPDIR)/TestStopWatchMain.Po"; else rm -f "$(DEPDIR)/TestStopWatchMain.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/TestStopWatchMain.cpp' object='TestStopWatchMain.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TestStopWatchMain.Po' tmpdepfile='$(DEPDIR)/TestStopWatchMain.TPo' @AMDEPBACKSLASH@
+ExampleNLPBandedMain.obj: $(srcdir)/ExampleNLPBandedMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ExampleNLPBandedMain.obj -MD -MP -MF "$(DEPDIR)/ExampleNLPBandedMain.Tpo" -c -o ExampleNLPBandedMain.obj `if test -f '$(srcdir)/ExampleNLPBandedMain.cpp'; then $(CYGPATH_W) '$(srcdir)/ExampleNLPBandedMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ExampleNLPBandedMain.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ExampleNLPBandedMain.Tpo" "$(DEPDIR)/ExampleNLPBandedMain.Po"; else rm -f "$(DEPDIR)/ExampleNLPBandedMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ExampleNLPBandedMain.cpp' object='ExampleNLPBandedMain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ExampleNLPBandedMain.Po' tmpdepfile='$(DEPDIR)/ExampleNLPBandedMain.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TestStopWatchMain.obj `if test -f '$(srcdir)/TestStopWatchMain.cpp'; then $(CYGPATH_W) '$(srcdir)/TestStopWatchMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/TestStopWatchMain.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ExampleNLPBandedMain.obj `if test -f '$(srcdir)/ExampleNLPBandedMain.cpp'; then $(CYGPATH_W) '$(srcdir)/ExampleNLPBandedMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ExampleNLPBandedMain.cpp'; fi`
+
+NLPInterfacePack_ExampleNLPBanded.o: $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_ExampleNLPBanded.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo" -c -o NLPInterfacePack_ExampleNLPBanded.o `test -f '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo" "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp' object='NLPInterfacePack_ExampleNLPBanded.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_ExampleNLPBanded.o `test -f '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
+
+NLPInterfacePack_ExampleNLPBanded.obj: $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_ExampleNLPBanded.obj -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo" -c -o NLPInterfacePack_ExampleNLPBanded.obj `if test -f '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo" "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp' object='NLPInterfacePack_ExampleNLPBanded.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_ExampleNLPBanded.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_ExampleNLPBanded.obj `if test -f '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

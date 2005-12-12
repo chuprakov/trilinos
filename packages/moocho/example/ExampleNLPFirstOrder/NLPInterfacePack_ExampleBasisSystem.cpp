@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ExampleBasisSystem.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "NLPInterfacePack_ExampleBasisSystem.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"

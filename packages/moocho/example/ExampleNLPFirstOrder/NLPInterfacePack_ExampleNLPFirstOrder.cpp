@@ -17,13 +17,13 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPFirstOrder.hpp"
-#include "ExampleBasisSystem.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "Range1D.hpp"
+#include "NLPInterfacePack_ExampleNLPFirstOrder.hpp"
+#include "NLPInterfacePack_ExampleBasisSystem.hpp"
+#include "AbstractLinAlgPack_BasisSystemComposite.hpp"
+#include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack_MatrixComposite.hpp"
+#include "AbstractLinAlgPack_VectorStdOps.hpp"
+#include "Thyra_Range1D.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
