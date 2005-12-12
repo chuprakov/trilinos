@@ -10,17 +10,22 @@
 
 #include "AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
 #include "AbstractLinAlgPack_VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack_VectorSpaceTSFCore.hpp"
-#include "TSFCoreEpetraVectorSpace.hpp"
-#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
+
+#ifdef USE_EPETRA_THYRA
+
+#include "TSFCoreSerialVectorSpaceStd.hpp"
+#include "AbstractLinAlgPack_VectorSpaceTSFCore.hpp"
+#include "TSFCoreEpetraVectorSpace.hpp"
 #include "Epetra_Map.h"
 #ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
 #else
 #include "Epetra_SerialComm.h"
 #endif
+
+#endif // USE_EPETRA_THYRA
 
 ///
 int AbstractLinAlgPack::exampleNLPDiagSetup(
@@ -41,8 +46,6 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 	using AbstractLinAlgPack::Vector;
 	using AbstractLinAlgPack::VectorMutable;
 
-	using AbstractLinAlgPack::VectorSpaceTSFCore;
-
 	using Teuchos::CommandLineProcessor;
 
 	// Get an idea of what processors we have.
@@ -58,10 +61,12 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 	*has_bounds = false;
 	// Make the dependent or independent variables bounded.
 	*dep_bounded = true;
+#ifdef USE_EPETRA_THYRA
 	// Serial or parallel?
 	bool in_parallel = false;
 	// Use TSF?
 	bool use_tsf = false;
+#endif // USE_EPETRA_THYRA
 
 	CommandLineProcessor  command_line_processor;
 	
@@ -73,12 +78,14 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 	command_line_processor.setOption(
 		"dep-bounded", "indep-bounded", dep_bounded
 		,"Determine if the dependent or independent variables are bounded" );
+#ifdef USE_EPETRA_THYRA
 	command_line_processor.setOption(
 		"in-parallel", "in-serial", &in_parallel
 		,"Determine if computations are performed in parallel or not" );
 	command_line_processor.setOption(
 		"use-tsf", "no-use-tsf", &use_tsf
 		,"Determine whether to use TSF vectors or not" );
+#endif // USE_EPETRA_THYRA
 	
 	CommandLineProcessor::EParseCommandLineReturn
 		parse_return = command_line_processor.parse(argc,argv,&std::cerr);
@@ -87,6 +94,10 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 		return parse_return;
 
 	// Create the vector space object to use.
+
+#ifdef USE_EPETRA_THYRA
+
+	using AbstractLinAlgPack::VectorSpaceTSFCore;
 
 	if(in_parallel) {
 		//
@@ -113,6 +124,12 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 			*vec_space = Teuchos::rcp(new AbstractLinAlgPack::VectorSpaceSerial(*n));
 		}
 	}
+
+#else // USE_EPETRA_THYRA
+
+  *vec_space = Teuchos::rcp(new AbstractLinAlgPack::VectorSpaceSerial(*n));
+
+#endif // USE_EPETRA_THYRA
 	
 	return 0;
 }

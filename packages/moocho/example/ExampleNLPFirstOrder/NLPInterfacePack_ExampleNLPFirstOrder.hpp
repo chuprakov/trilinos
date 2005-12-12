@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_INFO_H
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
-#include "ExampleNLPDirect/NLPInterfacePack_ExampleNLPObjGrad.hpp"
+#include "NLPInterfacePack_ExampleNLPObjGrad.hpp"
 #include "NLPInterfacePack_NLPFirstOrder.hpp"
 
 namespace NLPInterfacePack {

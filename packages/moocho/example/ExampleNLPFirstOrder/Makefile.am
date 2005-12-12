@@ -1,7 +1,10 @@
 #@HEADER
 # ************************************************************************
 # 
-# 
+# Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
+#
+#   Copyright (2003) Sandia Corporation
+#
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 # license for use of this work by or on behalf of the U.S. Government.
 # 
@@ -24,8 +27,20 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample
+noinst_PROGRAMS = ExampleNLPFirstOrder
 
-#  NLPThyraEpetraModelEval4DOpt
+ExampleNLPFirstOrder_SOURCES = \
+  $(srcdir)/ExampleNLPFirstOrderMain.cpp\
+  $(srcdir)/NLPInterfacePack_ExampleBasisSystem.cpp\
+  $(srcdir)/NLPInterfacePack_ExampleNLPFirstOrder.cpp\
+  $(srcdir)/NLPInterfacePack_ExampleNLPFirstOrderRun.cpp\
+  $(srcdir)/../ExampleNLPDirect/AbstractLinAlgPack_exampleNLPDiagSetup.cpp\
+  $(srcdir)/../ExampleNLPDirect/ExampleNLPDirectRTOps.c\
+  $(srcdir)/../ExampleNLPDirect/NLPInterfacePack_ExampleNLPDirect.cpp\
+  $(srcdir)/../ExampleNLPDirect/NLPInterfacePack_ExampleNLPObjGrad.cpp
+ExampleNLPFirstOrder_DEPENDENCIES = $(common_dependencies)
+ExampleNLPFirstOrder_LDADD = $(common_ldadd)
 
-# Todo: Conditionally include the Thyra example only if epetraext, thyra etc. are enabled
+include $(top_srcdir)/MakefileExeStub.mak
+
+AM_CPPFLAGS += -I$(top_srcdir)/example/ExampleNLPDirect

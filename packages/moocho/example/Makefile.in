@@ -210,7 +210,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = ExampleNLPBanded
+SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample
 all: all-recursive
 
 .SUFFIXES:
@@ -491,7 +491,9 @@ uninstall-info: uninstall-info-recursive
 	uninstall uninstall-am uninstall-info-am
 
 
-#  ExampleNLPDirect  ExampleNLPFirstOrder  NLPThyraEpetraModelEval4DOpt  NLPWBCounterExample
+#  NLPThyraEpetraModelEval4DOpt
+
+# Todo: Conditionally include the Thyra example only if epetraext, thyra etc. are enabled
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

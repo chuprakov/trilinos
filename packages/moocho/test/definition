@@ -145,3 +145,127 @@
        ;
     COMM = SERIAL;
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPDirect/ExampleNLPDirect.exe;
+    ARGS = 
+      --n=4
+      --xo=0.1
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPDirect/ExampleNLPDirect.exe;
+    ARGS = 
+      --n=4
+      --xo=0.2
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPDirect/ExampleNLPDirect.exe;
+    ARGS = 
+      --n=1000
+      --xo=0.2
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPFirstOrder/ExampleNLPFirstOrder.exe;
+    ARGS = 
+      --n=4
+      --xo=0.1
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPFirstOrder/ExampleNLPFirstOrder.exe;
+    ARGS = 
+      --n=4
+      --xo=0.2
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/ExampleNLPFirstOrder/ExampleNLPFirstOrder.exe;
+    ARGS = 
+      --n=1000
+      --xo=0.2
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPWBCounterExample/NLPWBCounterExample.exe;
+    ARGS = 
+      --a=0.0
+      --b=1.0
+      --x1-init=0.0
+      --x2-init=0.0
+      --x3-init=0.0
+      --nlp-selects-basis
+      --linear-obj
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPWBCounterExample/NLPWBCounterExample.exe;
+    ARGS = 
+      --a=0.0
+      --b=1.0
+      --x1-init=0.0
+      --x2-init=0.0
+      --x3-init=0.0
+      --nlp-selects-basis
+      --nonlinear-obj
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPWBCounterExample/NLPWBCounterExample.exe;
+    ARGS = 
+      --a=0.0
+      --b=1.0
+      --x1-init=0.0
+      --x2-init=0.0
+      --x3-init=0.0
+      --no-nlp-selects-basis
+      --nonlinear-obj
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPWBCounterExample/NLPWBCounterExample.exe;
+    ARGS = 
+      --a=0.0
+      --b=0.01
+      --x1-init=0.0
+      --x2-init=0.0
+      --x3-init=0.0
+      --no-nlp-selects-basis
+      --nonlinear-obj
+       ;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPWBCounterExample/NLPWBCounterExample.exe;
+    ARGS = 
+      --a=0.0
+      --b=0.01
+      --x1-init=0.0
+      --x2-init=0.0
+      --x3-init=0.0
+      --no-nlp-selects-basis
+      --linear-obj
+       ;
+    COMM = SERIAL;
+}

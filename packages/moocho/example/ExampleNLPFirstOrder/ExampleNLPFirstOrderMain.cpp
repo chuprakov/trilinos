@@ -22,7 +22,7 @@
 #include <iomanip>
 
 #include "NLPInterfacePack_ExampleNLPFirstOrderRun.hpp"
-#include "ExampleNLPDirect/AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
+#include "AbstractLinAlgPack_exampleNLPDiagSetup.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_oblackholestream.hpp"

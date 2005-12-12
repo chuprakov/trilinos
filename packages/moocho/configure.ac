@@ -278,6 +278,9 @@ AC_CONFIG_FILES([
     src/Makefile
     example/Makefile
     example/ExampleNLPBanded/Makefile
+    example/ExampleNLPDirect/Makefile
+    example/ExampleNLPFirstOrder/Makefile
+    example/NLPWBCounterExample/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile

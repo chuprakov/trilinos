@@ -5719,7 +5719,7 @@ fi
 # Output files
 # ------------------------------------------------------------------------
 
-                                                                                          ac_config_files="$ac_config_files Makefile Makefile.export.moocho src/Makefile example/Makefile example/ExampleNLPBanded/Makefile test/Makefile test/MoochoUtilities/Makefile test/IterationPack/Makefile test/DenseLinAlgPack/Makefile"
+                                                                                                                        ac_config_files="$ac_config_files Makefile Makefile.export.moocho src/Makefile example/Makefile example/ExampleNLPBanded/Makefile example/ExampleNLPDirect/Makefile example/ExampleNLPFirstOrder/Makefile example/NLPWBCounterExample/Makefile test/Makefile test/MoochoUtilities/Makefile test/IterationPack/Makefile test/DenseLinAlgPack/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -6346,6 +6346,9 @@ do
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "example/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Makefile" ;;
   "example/ExampleNLPBanded/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/ExampleNLPBanded/Makefile" ;;
+  "example/ExampleNLPDirect/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/ExampleNLPDirect/Makefile" ;;
+  "example/ExampleNLPFirstOrder/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/ExampleNLPFirstOrder/Makefile" ;;
+  "example/NLPWBCounterExample/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/NLPWBCounterExample/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/MoochoUtilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/MoochoUtilities/Makefile" ;;
   "test/IterationPack/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/IterationPack/Makefile" ;;
