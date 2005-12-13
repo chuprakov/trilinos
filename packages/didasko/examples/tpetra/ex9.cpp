@@ -69,7 +69,17 @@ namespace Tpetra
       {
         Indices_.resize(NumMyRows_);
         Values_.resize(NumMyRows_);
+
         FillCompleted_ = false;
+
+        NumGlobalNonzeros_ = ordinalOne();
+        NumMyNonzeros_     = ordinalOne();
+
+        NumGlobalDiagonals_ = ordinalOne();
+        NumMyDiagonals_     = ordinalOne();
+
+        GlobalMaxNumEntries_ = ordinalOne();
+        MyMaxNumEntries_     = ordinalOne();
       }
 
       bool isFillCompleted() const
@@ -82,11 +92,443 @@ namespace Tpetra
         if (isFillCompleted())
           throw(-1);
 
-#ifdef HAVE_MPI
         // =============================== //
         // Part 0: send off-image elements //
         // =============================== //
 
+        if (getComm().getNumImages() > 1) globalAssemble();
+
+        // =============================== //
+        // Part I: remove repeated indices //
+        // =============================== //
+        
+        // I load all matrix entries in a hash table, then I re-fill
+        // the row with the last inserted value.
+        for (OrdinalType i = ordinalZero() ; i < NumMyRows_ ; ++i)
+        {
+          std::map<OrdinalType, ScalarType> singleRow;
+
+          for (OrdinalType j = ordinalZero() ; j < Indices_[i].size() ; ++j)
+          {
+            singleRow[Indices_[i][j]] += Values_[i][j];
+          }
+
+          OrdinalType count = ordinalZero();
+
+          for (typename std::map<OrdinalType,ScalarType>::iterator iter = singleRow.begin() ; 
+               iter != singleRow.end() ; ++iter)
+          {
+            Indices_[i][count] = iter->first;
+            Values_[i][count] = iter->second;
+            ++count;
+          }
+
+          Indices_[i].resize(count);
+          Values_[i].resize(count);
+        }
+
+        // =============================== //
+        // Part II: build the column space //
+        // =============================== //
+        
+        // I have to find the list of non-locally owned columns
+
+        map<OrdinalType, bool> container; // replace with a hash table
+
+        for (OrdinalType i = ordinalZero() ; i < NumMyRows_ ; ++i)
+        {
+          for (OrdinalType j = ordinalZero() ; j < Indices_[i].size() ; ++j)
+          {
+            OrdinalType what = Indices_[i][j];
+            if (RowSpace_.isMyGID(what)) continue;
+            else
+              container[what] = true;
+          }
+        }
+
+        vector<OrdinalType> MyPaddedGlobalElements(MyGlobalElements_);
+
+        for (typename std::map<OrdinalType, bool>::iterator iter = container.begin() ; 
+             iter != container.end() ; ++iter)
+        {
+          MyPaddedGlobalElements.push_back(iter->first);
+        }
+
+        // now I can build the column space
+
+        ColSpace_ = new ElementSpace<OrdinalType>(-1, MyPaddedGlobalElements.size(),
+                                                  MyPaddedGlobalElements, RowSpace_.getIndexBase(), RowSpace_.platform());
+
+        VectorColSpace_ = new VectorSpace<OrdinalType, ScalarType>(*ColSpace_, VectorRowSpace_.platform());
+
+        PaddedVector_ = new Vector<OrdinalType, ScalarType>(*VectorColSpace_);
+        Importer_ = new Import<OrdinalType>(RowSpace_, *ColSpace_);
+
+        // ============================== //
+        // Part IV: move to local indices //
+        // ============================== //
+        
+        for (OrdinalType i = ordinalZero() ; i < NumMyRows_ ; ++i)
+        {
+          for (OrdinalType j = ordinalZero() ; j < Indices_[i].size() ; ++j)
+          {
+            Indices_[i][j] = ColSpace_->getLID(Indices_[i][j]);
+          }
+        }
+
+        // ================================================ //
+        // Part V: compute some local and global quantities //
+        // ================================================ //
+        
+        for (OrdinalType i = ordinalZero() ; i < NumMyRows_ ; ++i)
+        {
+          OrdinalType NumEntries = Indices_[i].size();
+
+          NumMyNonzeros_ += NumEntries;
+
+          for (OrdinalType j = ordinalZero() ; j < NumEntries; ++j)
+          {
+            OrdinalType col = Indices_[i][j];
+            if (col == i)
+            {
+              ++NumMyDiagonals_;
+              break;
+            }
+          }
+          
+          if (MyMaxNumEntries_ < NumEntries) MyMaxNumEntries_ = NumEntries;
+        }
+
+        // workaround, should be fixed in Comm
+#ifdef HAVE_MPI
+        MPI_Comm MpiCommunicator = (dynamic_cast<const MpiComm<OrdinalType, ScalarType>&>(getComm())).getMpiComm();
+        MPI_Allreduce((void*)&NumMyNonzeros_, (void*)&NumGlobalNonzeros_, MpiTraits<OrdinalType>::count(1),
+                      MpiTraits<OrdinalType>::datatype(), MPI_SUM, MpiCommunicator);
+
+        MPI_Allreduce((void*)&NumMyDiagonals_, (void*)&NumGlobalDiagonals_, MpiTraits<OrdinalType>::count(1),
+                      MpiTraits<OrdinalType>::datatype(), MPI_SUM, MpiCommunicator);
+
+        MPI_Allreduce((void*)&MyMaxNumEntries_, (void*)&GlobalMaxNumEntries_, MpiTraits<OrdinalType>::count(1),
+                      MpiTraits<OrdinalType>::datatype(), MPI_MAX, MpiCommunicator);
+#else
+        NumGlobalNonzeros_ = NumMyNonzeros_;
+        NumGlobalDiagonals_ = NumMyDiagonals_;
+        GlobalMaxNumEntries_ = MyMaxNumEntries_;
+#endif
+
+        // mark transformation as successfully completed
+
+        FillCompleted_ = true;
+      }
+
+      inline void submitEntry(const OrdinalType& GlobalRow, const OrdinalType& GlobalCol,
+                              const ScalarType& Value)
+      {
+        if (FillCompleted_)
+          throw(-1);
+
+        if (RowSpace_.isMyGID(GlobalRow))
+        {
+          OrdinalType MyRow = RowSpace_.getLID(GlobalRow);
+
+          Indices_[MyRow].push_back(GlobalCol);
+          Values_[MyRow].push_back(Value);
+        }
+        else
+        {
+          nonlocals_[GlobalRow].push_back(pair<OrdinalType, ScalarType>(GlobalCol, Value));
+        }
+      }
+
+      inline void getMyRowCopy(const OrdinalType MyRow, OrdinalType& NumEntries,
+                               vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
+      {
+        if (FillCompleted_)
+          throw(-1);
+
+        NumEntries = Indices_[MyRow].size();
+
+        if (Indices.size() < NumEntries || Values.size() < NumEntries)
+          throw(-1);
+
+        for (OrdinalType i = ordinalZero() ; i < NumEntries ; ++i)
+        {
+          Indices[i] = Indices_[MyRow][i];
+          Values[i] = Values_[MyRow][i];
+        }
+      }
+
+      inline void getGlobalRowCopy(const OrdinalType GlobalRow, OrdinalType& NumEntries,
+                                   vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
+      {
+        // Only locally owned rows can be queried, otherwise complain
+        if (!RowSpace_.isMyGID(GlobalRow))
+          throw(-1);
+
+        OrdinalType MyRow = RowSpace_.getLID(GlobalRow);
+
+        NumEntries = Indices_[MyRow].size();
+
+        if (Indices.size() < NumEntries || Values.size() < NumEntries)
+          throw(-1);
+
+        if (isFillCompleted())
+        {
+          for (OrdinalType i = ordinalZero() ; i < NumEntries ; ++i)
+          {
+            Indices[i] = ColSpace_->getGID(Indices_[MyRow][i]);
+            Values[i] = Values_[MyRow][i];
+          }
+        }
+        else
+        {
+          for (OrdinalType i = ordinalZero() ; i < NumEntries ; ++i)
+          {
+            Indices[i] = Indices_[MyRow][i];
+            Values[i] = Values_[MyRow][i];
+          }
+        }
+      }
+
+      void apply(const Vector<OrdinalType, ScalarType>& x, Vector<OrdinalType, ScalarType> y,
+                 ApplyMode Mode = AsIs) const
+      {
+        assert (Mode == AsIs);
+
+        y.setAllToScalar(scalarZero());
+
+        PaddedVector_->doImport(x, *Importer_, Insert);
+
+        for (OrdinalType i = ordinalZero() ; i < NumMyRows_ ; ++i)
+        {
+          for (OrdinalType j = ordinalZero() ; j < Indices_[i].size() ; ++j)
+          {
+            OrdinalType col = Indices_[i][j];
+            ScalarType val = Values_[i][j];
+            y[i] += val * (*PaddedVector_)[col];
+          }
+        }
+      }
+
+      virtual void print(ostream& os) const 
+      {
+        OrdinalType MyImageID = RowSpace_.comm().getMyImageID();
+
+        if (MyImageID == 0)
+        {
+          os << "Tpetra::CrsMatrix, label = " << label() << endl;
+          os << "Number of global rows    = " << RowSpace_.getNumGlobalElements() << endl;
+          if (isFillCompleted())
+          {
+            os << "Number of global columns = " << ColSpace_->getNumGlobalElements() << endl;
+            os << "Status = FillCompleted" << endl;
+            os << "MyMaxNumEntries = " << getMyMaxNumEntries() << endl;
+            os << "GlobalMaxNumEntries = " << getGlobalMaxNumEntries() << endl;
+          }
+          else
+          {
+            os << "Status = not FillCompleted" << endl;
+          }
+        }
+
+        if (isFillCompleted())
+        {
+          for (OrdinalType pid = 0 ; pid < RowSpace_.comm().getNumImages() ; ++pid)
+          {
+            if (pid == MyImageID)
+            {
+              vector<OrdinalType> Indices(getMyMaxNumEntries()); // FIXME
+              vector<ScalarType>  Values(getMyMaxNumEntries());
+              OrdinalType NumEntries;
+
+              os << "% Number of rows on image " << MyImageID << " = " << RowSpace_.getNumMyElements() << endl;
+              for (OrdinalType i = ordinalZero() ; i < RowSpace_.getNumMyElements() ; ++i)
+              {
+                OrdinalType GlobalRow = RowSpace_.getGID(i);
+
+                getGlobalRowCopy(GlobalRow, NumEntries, Indices, Values);
+                for (OrdinalType j = ordinalZero() ; j < NumEntries ; ++j)
+                  os << "Matrix(" << GlobalRow << ", " << Indices[j] << ") = " << Values[j] << ";" << endl;
+              }
+            }
+            RowSpace_.comm().barrier();
+          }
+        }
+      }
+
+      inline const Comm<OrdinalType, ScalarType>& getComm() const
+      {
+        return(Comm_);
+      }
+
+      //! Set all matrix entries equal to scalarThis.
+      inline void setAllToScalar (ScalarType scalarThis)
+      {
+        throw(-2); // not yet implemented
+      }
+
+      //! Scale the current values of a matrix, this = scalarThis*this. 
+      inline void scale (ScalarType scalarThis)
+      {
+        throw(-2); // not yet implemented
+      }
+
+      //! Returns the number of nonzero entries in the global matrix. 
+      inline OrdinalType getNumGlobalNonzeros () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(NumGlobalNonzeros_);
+      }
+
+      //! Returns the number of nonzero entries in the calling image's portion of the matrix. 
+      inline OrdinalType getNumMyNonzeros () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(NumMyNonzeros_);
+      }
+
+      //! Returns the number of global matrix rows. 
+      inline OrdinalType getNumGlobalRows () const
+      {
+        return(RowSpace_.getGlobalElements());
+      }
+
+      //! Returns the number of global matrix columns. 
+      inline OrdinalType getNumGlobalCols () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(ColSpace_->getGlobalElements());
+      }
+
+      //! Returns the number of matrix rows owned by the calling image. 
+      inline OrdinalType getNumMyRows () const
+      {
+        return(RowSpace_.getMyElements());
+      }
+
+      //! Returns the number of matrix columns owned by the calling image. 
+      inline OrdinalType getNumMyCols () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(ColSpace_->getMyElements());
+      }
+
+      //! Returns the number of global nonzero diagonal entries, based on global row/column index comparisons. 
+      inline OrdinalType getNumGlobalDiagonals () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(NumGlobalDiagonals_);
+      }
+
+      //! Returns the number of local nonzero diagonal entries, based on global row/column index comparisons. 
+      inline OrdinalType getNumMyDiagonals () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(NumMyDiagonals_);
+      }
+
+      //! Returns the current number of nonzero entries in specified global index on this image. 
+      inline OrdinalType getNumEntries (OrdinalType index) const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(Indices_[index].size());
+      }
+
+      //! Returns the maximum number of nonzero entries across all rows/columns on all images. 
+      inline OrdinalType getGlobalMaxNumEntries () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(GlobalMaxNumEntries_);
+      }
+
+      //! Returns the maximum number of nonzero entries across all rows/columns on this image. 
+      inline OrdinalType getMyMaxNumEntries () const
+      {
+        if(!isFillCompleted())
+          throw(-1);
+        
+        return(MyMaxNumEntries_);
+      }
+
+      //! Returns the index base for global indices for this matrix. 
+      inline OrdinalType getIndexBase () const
+      {
+        return(RowSpace_.getIndexBase());
+      }
+
+      void rawPrint()
+      {
+        // this prints out the structure as they are
+        for (int i = 0 ; i < Indices_.size() ; ++i)
+        {
+          for (int j = 0 ; j < Indices_[i].size() ; ++j)
+          {
+            cout << "local row " << i << ", col " << Indices_[i][j] << ", val " << Values_[i][j] << endl;
+          }
+        }
+      }
+
+    private:
+
+      inline OrdinalType ordinalOne() const
+      {
+        return(Teuchos::ScalarTraits<OrdinalType>::one());
+      }
+
+      inline OrdinalType ordinalZero() const
+      {
+        return(Teuchos::ScalarTraits<OrdinalType>::zero());
+      }
+
+      inline OrdinalType ordinalMinusOne() const
+      {
+        return(ordinalZero() - ordinalOne());
+      }
+
+      inline ScalarType scalarOne() const
+      {
+        return(Teuchos::ScalarTraits<ScalarType>::one());
+      }
+
+      inline ScalarType scalarZero() const
+      {
+        return(Teuchos::ScalarTraits<ScalarType>::zero());
+      }
+
+      inline ScalarType scalarMinusOne() const
+      {
+        return(scalarZero() - scalarOne());
+      }
+
+      const vector<vector<OrdinalType> >& getIndices() const
+      {
+        return(Indices_);
+      }
+
+      const vector<vector<ScalarType> >& getValues() const
+      {
+        return(Values_);
+      }
+
+      void globalAssemble()
+      {
+#ifdef HAVE_MPI
         MPI_Comm MpiCommunicator;
         try
         {
@@ -98,7 +540,20 @@ namespace Tpetra
           throw(-1);
         }
 
+        // First I want to check that we actually need to do this; it may be
+        // that the user has only inserted locally owned elements.
+        
+        OrdinalType MyNonlocals = nonlocals_.size(), GlobalNonlocals;
+
+        MPI_Allreduce((void*)&MyNonlocals, (void*)&GlobalNonlocals, MpiTraits<OrdinalType>::count(1),
+                      MpiTraits<OrdinalType>::datatype(), MPI_MAX, MpiCommunicator);
+
+        if (GlobalNonlocals == ordinalZero()) return;
+
+        // Ok, so we need to do the hard work.
+        
         int NumImages = RowSpace_.comm().getNumImages();
+
         map<OrdinalType, OrdinalType> containter_map;
 
         // this is a list of non-locally owned rows, in a map (should become a
@@ -106,7 +561,7 @@ namespace Tpetra
         for (typename map<OrdinalType, vector<pair<OrdinalType, ScalarType> > >::iterator iter = nonlocals_.begin() ; 
              iter != nonlocals_.end() ; ++iter)
         {
-          containter_map[iter->first] = 1;
+          containter_map[iter->first] = ordinalOne();
         }
 
         // convert the map to a vector so that I can use get getRemoteIDList()
@@ -124,15 +579,15 @@ namespace Tpetra
 
         map<OrdinalType, OrdinalType> image_map;
 
-        for (OrdinalType i = 0 ; i < image_vector.size() ; ++i)
+        for (OrdinalType i = ordinalZero() ; i < image_vector.size() ; ++i)
         {
           image_map[container_vector[i]] = image_vector[i];
         }
 
         vector<OrdinalType> local_neighbors(RowSpace_.comm().getNumImages());
-        for (OrdinalType i = 0 ; i < local_neighbors.size() ; ++i) local_neighbors[i] = 0;
+        for (OrdinalType i = ordinalZero() ; i < local_neighbors.size() ; ++i) local_neighbors[i] = 0;
 
-        for (OrdinalType i = 0 ; i < image_vector.size() ; ++i)
+        for (OrdinalType i = ordinalZero() ; i < image_vector.size() ; ++i)
         {
           local_neighbors[image_vector[i]] = 1;
         }
@@ -174,7 +629,7 @@ namespace Tpetra
           OrdinalType row   = iter->first;
           OrdinalType image = image_map[row];
 
-          for (OrdinalType i = 0 ; i < iter->second.size() ; ++i)
+          for (OrdinalType i = ordinalZero() ; i < iter->second.size() ; ++i)
           {
             OrdinalType col   = iter->second[i].first;
             ScalarType  val   = iter->second[i].second;
@@ -190,7 +645,7 @@ namespace Tpetra
         vector<MPI_Request> send_requests(NumImages * 3);
 
         OrdinalType send_count = 0;
-        for (int j = 0 ; j < NumImages ; ++j)
+        for (int j = ordinalZero() ; j < NumImages ; ++j)
         {
           OrdinalType what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
           if (what > 0)
@@ -313,230 +768,6 @@ namespace Tpetra
           }
         }
 #endif
-
-        // =============================== //
-        // Part I: remove repeated indices //
-        // =============================== //
-        
-        // I load all matrix entries in a hash table, then I re-fill
-        // the row with the last inserted value.
-        for (OrdinalType i = 0 ; i < NumMyRows_ ; ++i)
-        {
-          std::map<OrdinalType, ScalarType> singleRow;
-
-          for (OrdinalType j = 0 ; j < Indices_[i].size() ; ++j)
-          {
-            singleRow[Indices_[i][j]] += Values_[i][j];
-          }
-
-          OrdinalType count = 0;
-          for (typename std::map<OrdinalType,ScalarType>::iterator iter = singleRow.begin() ; 
-               iter != singleRow.end() ; ++iter)
-          {
-            Indices_[i][count] = iter->first;
-            Values_[i][count] = iter->second;
-            ++count;
-          }
-
-          Indices_[i].resize(count);
-          Values_[i].resize(count);
-        }
-
-        // =============================== //
-        // Part II: build the column space //
-        // =============================== //
-        
-        // I have to find the list of non-locally owned columns
-
-        map<OrdinalType, bool> container; // replace with a hash table
-
-        for (OrdinalType i = 0 ; i < NumMyRows_ ; ++i)
-        {
-          for (OrdinalType j = 0 ; j < Indices_[i].size() ; ++j)
-          {
-            OrdinalType what = Indices_[i][j];
-            if (RowSpace_.isMyGID(what)) continue;
-            else
-              container[what] = true;
-          }
-        }
-
-        vector<OrdinalType> MyPaddedGlobalElements(MyGlobalElements_);
-
-        for (typename std::map<OrdinalType, bool>::iterator iter = container.begin() ; 
-             iter != container.end() ; ++iter)
-        {
-          MyPaddedGlobalElements.push_back(iter->first);
-        }
-
-        // now I can build the column space
-
-        ColSpace_ = new ElementSpace<OrdinalType>(-1, MyPaddedGlobalElements.size(),
-                                                  MyPaddedGlobalElements, RowSpace_.getIndexBase(), RowSpace_.platform());
-        VectorColSpace_ = new VectorSpace<OrdinalType, ScalarType>(*ColSpace_, VectorRowSpace_.platform());
-
-        PaddedVector_ = new Vector<OrdinalType, ScalarType>(*VectorColSpace_);
-        Importer_ = new Import<OrdinalType>(RowSpace_, *ColSpace_);
-
-        // =============================== //
-        // Part III: move to local indices //
-        // =============================== //
-        
-        for (OrdinalType i = 0 ; i < NumMyRows_ ; ++i)
-        {
-          for (OrdinalType j = 0 ; j < Indices_[i].size() ; ++j)
-          {
-            Indices_[i][j] = ColSpace_->getLID(Indices_[i][j]);
-          }
-        }
-
-        FillCompleted_ = true;
-      }
-
-      void submitEntry(const OrdinalType& GlobalRow, const OrdinalType& GlobalCol,
-                                   const ScalarType& Value)
-      {
-        if (FillCompleted_)
-          throw(-1);
-
-        if (RowSpace_.isMyGID(GlobalRow))
-        {
-          OrdinalType LocalRow = RowSpace_.getLID(GlobalRow);
-          Indices_[LocalRow].push_back(GlobalCol);
-          Values_[LocalRow].push_back(Value);
-        }
-        else
-        {
-          nonlocals_[GlobalRow].push_back(pair<OrdinalType, ScalarType>(GlobalCol, Value));
-        }
-      }
-
-      void getMyRowCopy(const OrdinalType MyRow, OrdinalType& NumEntries,
-                        vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
-      {
-        if (FillCompleted_)
-          throw(-1);
-
-        OrdinalType length = Indices_[MyRow].size();
-
-        if (Indices.size() < length || Values.size() < length)
-          throw(-1);
-
-        for (OrdinalType i = 0 ; i < length ; ++i)
-        {
-          Indices[i] = Indices_[MyRow][i];
-          Values[i] = Values_[MyRow][i];
-        }
-
-        NumEntries = length;
-      }
-
-      void getGlobalRowCopy(const OrdinalType GlobalRow, OrdinalType& NumEntries,
-                            vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
-      {
-        // Only locally owned rows can be queried, otherwise complain
-        if (!RowSpace_.isMyGID(GlobalRow))
-          throw(-1);
-
-        OrdinalType MyRow = RowSpace_.getLID(GlobalRow);
-
-        OrdinalType length = Indices_[MyRow].size();
-
-        if (Indices.size() < length || Values.size() < length)
-          throw(-1);
-
-        if (isFillCompleted())
-        {
-          for (OrdinalType i = 0 ; i < length ; ++i)
-          {
-            Indices[i] = ColSpace_->getGID(Indices_[MyRow][i]);
-            Values[i] = Values_[MyRow][i];
-          }
-        }
-        else
-        {
-          for (OrdinalType i = 0 ; i < length ; ++i)
-          {
-            Indices[i] = Indices_[MyRow][i];
-            Values[i] = Values_[MyRow][i];
-          }
-        }
-
-        NumEntries = length;
-      }
-
-      void apply(const Vector<OrdinalType, ScalarType>& x, Vector<OrdinalType, ScalarType> y,
-                 ApplyMode Mode = AsIs) const
-      {
-        y.setAllToScalar(0.0);
-
-        PaddedVector_->doImport(x, *Importer_, Insert);
-
-        for (OrdinalType i = 0 ; i < NumMyRows_ ; ++i)
-        {
-          for (OrdinalType j = 0 ; j < Indices_[i].size() ; ++j)
-          {
-            OrdinalType col = Indices_[i][j];
-            ScalarType val = Values_[i][j];
-            y[i] += val * (*PaddedVector_)[col];
-          }
-        }
-      }
-
-      virtual void print(ostream& os) const 
-      {
-        OrdinalType MyImageID = RowSpace_.comm().getMyImageID();
-
-        if (MyImageID == 0)
-        {
-          os << "Tpetra::CrsMatrix, label = " << label() << endl;
-          os << "Number of global rows    = " << RowSpace_.getNumGlobalElements() << endl;
-          if (isFillCompleted())
-          {
-            os << "Number of global cols    = " << ColSpace_->getNumGlobalElements() << endl;
-            os << "Status = FillCompleted" << endl;
-          }
-          else
-          {
-            os << "Status = not FillCompleted" << endl;
-          }
-        }
-
-        for (OrdinalType pid = 0 ; pid < RowSpace_.comm().getNumImages() ; ++pid)
-        {
-          if (pid == MyImageID)
-          {
-            vector<OrdinalType> Indices(100); // FIXME
-            vector<ScalarType>  Values(100);
-            OrdinalType NumEntries;
-
-            os << "% Number of rows on image " << MyImageID << " = " << RowSpace_.getNumMyElements() << endl;
-            for (OrdinalType i = 0 ; i < RowSpace_.getNumMyElements() ; ++i)
-            {
-              OrdinalType GlobalRow = RowSpace_.getGID(i);
-              getGlobalRowCopy(GlobalRow, NumEntries, Indices, Values);
-              for (OrdinalType j = 0 ; j < NumEntries ; ++j)
-                os << "Matrix(" << GlobalRow << ", " << Indices[j] << ") = " << Values[j] << ";" << endl;
-            }
-          }
-          RowSpace_.comm().barrier();
-        }
-      }
-
-      const Comm<OrdinalType, ScalarType>& getComm() const
-      {
-        return(Comm_);
-      }
-
-    private:
-      const vector<vector<OrdinalType> >& getIndices() const
-      {
-        return(Indices_);
-      }
-
-      const vector<vector<ScalarType> >& getValues() const
-      {
-        return(Values_);
       }
 
       const Comm<OrdinalType, ScalarType>& Comm_;
@@ -558,6 +789,16 @@ namespace Tpetra
       map<OrdinalType, vector<pair<OrdinalType, ScalarType> > > nonlocals_;
 
       bool FillCompleted_;
+
+      OrdinalType NumGlobalNonzeros_;
+      OrdinalType NumMyNonzeros_;
+
+      OrdinalType NumGlobalDiagonals_;
+      OrdinalType NumMyDiagonals_;
+
+      OrdinalType GlobalMaxNumEntries_;
+      OrdinalType MyMaxNumEntries_;
+
 
   }; // class CrsMatrix
 
@@ -587,7 +828,12 @@ int main(int argc, char *argv[])
 
   // Creates a vector of size `length', then set the elements values.
   
-  OrdinalType length    = OrdinalOne * 4 * Comm.getNumImages();
+  OrdinalType length    = OrdinalOne * 5 * Comm.getNumImages();
+
+  // Sets the base index to 1, so that the global numbering is
+  // like in MATLAB. (However, the local number is still like C/C++, that is,
+  // it starts from 0).
+  
   OrdinalType indexBase = OrdinalOne;
 
   // 1) Creation of a platform
@@ -611,17 +857,18 @@ int main(int argc, char *argv[])
 
   Tpetra::CrsMatrix<OrdinalType, ScalarType> Matrix(Comm, vectorSpace);
 
-  if (Comm.getMyImageID() < 2)
+  if (Comm.getMyImageID() == 0)
   {
-    for (int i = OrdinalOne ; i <= elementSpace.getNumGlobalElements() ; ++i)
-    {
-      int GRID = i; // elementSpace.getGID(i);
+    OrdinalType n = elementSpace.getNumGlobalElements();
 
-      if (GRID != OrdinalOne)
-        Matrix.submitEntry(GRID, GRID - 1, -1.0);
-      if (GRID != elementSpace.getNumGlobalElements())
-        Matrix.submitEntry(GRID, GRID + 1, -1.0);
-      Matrix.submitEntry(GRID, GRID, 2.0);
+    for (OrdinalType i = OrdinalOne ; i <= n ; ++i)
+    {
+      if (i > 2 * OrdinalOne)  Matrix.submitEntry(i, i - 2 * OrdinalOne, -ScalarOne);
+      if (i != OrdinalOne)     Matrix.submitEntry(i, i - OrdinalOne, -ScalarOne);
+      if (i != n)              Matrix.submitEntry(i, i + OrdinalOne, -ScalarOne);
+      if (i < n - OrdinalOne)  Matrix.submitEntry(i, i + 2 * OrdinalOne, -ScalarOne);
+
+      Matrix.submitEntry(i, i, 4.0 * ScalarOne);
     }
   }
 
