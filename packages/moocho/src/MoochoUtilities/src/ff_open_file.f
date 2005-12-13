@@ -9,7 +9,7 @@
       INTEGER IFORM, IBLANK, IACCESS, IRECL
 ***
 *** This function is ment to be called from C++ to open
-*** a Fortran file The file name is a string stored as an
+*** a Fortran file.  The file name is a string stored as an
 *** integer array.
 ***
 *** This interface is closly tied with the C++ function
@@ -28,12 +28,12 @@
 ***	IRECL		[I] > 0 for IACCESS = 1, otherwise who cares
 ***
 *** Return values:
-*** 0		Successfully opened file.
+*** 0	    Successfully opened file.
 *** < 0.	Filename is not a valid ASCII string and -i will 
-***			be returned where i is the ith character in I_FILE_NAME
-***			that could not be converted to a Fortran CHARACTER.
+***	      be returned where i is the ith character in I_FILE_NAME
+***       that could not be converted to a Fortran CHARACTER.
 ***	> 0		File could not be opened and this is the value of IOSTAT
-***			returned from OPEN(...)
+***       returned from OPEN(...)
 ***
 
 *     *** External procedures

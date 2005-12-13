@@ -3,7 +3,7 @@
 *** See FortranTypes_CppFortranStrings.hpp for documentation
 ***
 
-*** ToDo: 8/9/99: Make sure that the ASCII conversions ar legal
+*** ToDo: 8/9/99: Make sure that the ASCII conversions are legal
 *** on the target platform.
 
       INTEGER FUNCTION CONVERT_FROM_C_INT_STR( I_STRING, STRING_LEN
@@ -19,7 +19,7 @@
 *     *** Convert from an integer representation of a string to
 *     *** a fortran CHARACTER string.
 *     ***
-*     *** Returns 0 of conversion is successful.  Otherwise returns
+*     *** Returns 0 if conversion is successful.  Otherwise returns
 *     *** the indice of the ith character that was not ASCII converable.
 *     ***
 
@@ -48,7 +48,7 @@
 *     *** Convert from a fortran CHARACTER string to an integer
 *     *** representation suitable for passing to C++.
 *     ***
-*     *** Returns 0 of conversion is successful.  Otherwise returns
+*     *** Returns 0 if conversion is successful.  Otherwise returns
 *     *** the indice of the ith character that was not ASCII converable.
 *     ***
 
