@@ -641,17 +641,21 @@ namespace Tpetra
         int MyImageID = RowSpace_.comm().getMyImageID();
 
         vector<MPI_Request> send_requests(NumImages * 3);
+        vector<MPI_Status>  send_status(NumImages * 3);
 
         OrdinalType send_count = 0;
+
+        vector<OrdinalType> send_sizes(NumImages); // because Isend is not buffered
+
         for (int j = 0 ; j < NumImages ; ++j)
         {
           int what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             sendImages.push_back(j);
-            int size = MpiTraits<OrdinalType>::count(sendRows[j].size());
+            send_sizes[send_count] = MpiTraits<OrdinalType>::count(sendRows[j].size());
 
-            MPI_Isend(&size, MpiTraits<OrdinalType>::count(1), MpiTraits<OrdinalType>::datatype(), 
+            MPI_Isend(&(send_sizes[send_count]), MpiTraits<OrdinalType>::count(1), MpiTraits<OrdinalType>::datatype(), 
                       j, 23, MpiCommunicator, &(send_requests[send_count]));
             ++send_count;
           }
@@ -659,6 +663,8 @@ namespace Tpetra
 
         // Now receive the actual sizes
         vector<MPI_Request> recv_requests(NumImages * 3);
+        vector<MPI_Status>  recv_status(NumImages * 3);
+
         vector<OrdinalType> recv_sizes(NumImages);
         vector<OrdinalType> recv_images(NumImages);
 
@@ -675,11 +681,8 @@ namespace Tpetra
           }
         }
 
-        for (int i = 0 ; i < send_count ; ++i)
-          MPI_Wait(&(send_requests[i]), MPI_STATUS_IGNORE);
-
-        for (int i = 0 ; i < recv_count ; ++i)
-          MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
+        MPI_Waitall(send_count, &(send_requests[0]), &(send_status[0]));
+        MPI_Waitall(recv_count, &(recv_requests[0]), &(recv_status[0]));
 
         MPI_Barrier(MpiCommunicator);
 
@@ -747,11 +750,8 @@ namespace Tpetra
           }
         }
 
-        for (int i = 0 ; i < send_count ; ++i)
-          MPI_Wait(&(send_requests[i]), MPI_STATUS_IGNORE);
-
-        for (int i = 0 ; i < recv_count ; ++i)
-          MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
+        MPI_Waitall(send_count, &(send_requests[0]), &(send_status[0]));
+        MPI_Waitall(recv_count, &(recv_requests[0]), &(recv_status[0]));
 
         MPI_Barrier(MpiCommunicator);
 
