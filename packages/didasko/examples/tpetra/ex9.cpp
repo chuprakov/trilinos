@@ -28,7 +28,6 @@
 
 #include "Tpetra_ElementSpace.hpp"
 #include "Tpetra_VectorSpace.hpp"
-#include "Tpetra_Version.hpp"
 #ifdef TPETRA_MPI
 #include "Tpetra_MpiPlatform.hpp"
 #include "Tpetra_MpiComm.hpp"
@@ -39,7 +38,6 @@
 #include "Teuchos_ScalarTraits.hpp"
 #include "Tpetra_Object.hpp"
 #include "Tpetra_Import.hpp"
-#include <map>
 
 // \author Marzio Sala, ETHZ/COLAB
 //
@@ -312,7 +310,7 @@ namespace Tpetra
 
       virtual void print(ostream& os) const 
       {
-        OrdinalType MyImageID = RowSpace_.comm().getMyImageID();
+        int MyImageID = RowSpace_.comm().getMyImageID();
 
         if (MyImageID == 0)
         {
@@ -333,7 +331,7 @@ namespace Tpetra
 
         if (isFillCompleted())
         {
-          for (OrdinalType pid = 0 ; pid < RowSpace_.comm().getNumImages() ; ++pid)
+          for (int pid = 0 ; pid < RowSpace_.comm().getNumImages() ; ++pid)
           {
             if (pid == MyImageID)
             {
@@ -552,7 +550,7 @@ namespace Tpetra
 
         // Ok, so we need to do the hard work.
         
-        int NumImages = RowSpace_.comm().getNumImages();
+        int NumImages = getComm().getNumImages();
 
         map<OrdinalType, OrdinalType> containter_map;
 
@@ -573,26 +571,26 @@ namespace Tpetra
           container_vector.push_back(iter->first);
         }
 
-        vector<OrdinalType> image_vector(container_vector.size());
+        vector<int> image_vector(container_vector.size());
 
         RowSpace_.getRemoteIDList (container_vector, image_vector);
 
-        map<OrdinalType, OrdinalType> image_map;
+        map<OrdinalType, int> image_map;
 
         for (OrdinalType i = ordinalZero() ; i < image_vector.size() ; ++i)
         {
           image_map[container_vector[i]] = image_vector[i];
         }
 
-        vector<OrdinalType> local_neighbors(RowSpace_.comm().getNumImages());
-        for (OrdinalType i = ordinalZero() ; i < local_neighbors.size() ; ++i) local_neighbors[i] = 0;
+        vector<int> local_neighbors(RowSpace_.comm().getNumImages());
+        for (int i = 0 ; i < local_neighbors.size() ; ++i) local_neighbors[i] = 0;
 
-        for (OrdinalType i = ordinalZero() ; i < image_vector.size() ; ++i)
+        for (int i = 0 ; i < image_vector.size() ; ++i)
         {
           local_neighbors[image_vector[i]] = 1;
         }
 
-        vector<OrdinalType> global_neighbors(NumImages * NumImages);
+        vector<int> global_neighbors(NumImages * NumImages);
 
         RowSpace_.comm().gatherAll(&local_neighbors[0], &global_neighbors[0], NumImages);
 
@@ -604,11 +602,11 @@ namespace Tpetra
         
         // now I loop over all columns to know which image is supposed to send
         // me something
-        vector<OrdinalType> recvImages;
+        vector<int> recvImages;
 
         for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
+          int what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             recvImages.push_back(j);
@@ -616,7 +614,7 @@ namespace Tpetra
         }
 
         // do the same but with send
-        vector<OrdinalType> sendImages;
+        vector<int> sendImages;
 
         // now I pack what has to be sent to the other images
         map<OrdinalType, vector<OrdinalType> > sendRows;
@@ -627,7 +625,7 @@ namespace Tpetra
              iter != nonlocals_.end() ; ++iter)
         {
           OrdinalType row   = iter->first;
-          OrdinalType image = image_map[row];
+          int image = image_map[row];
 
           for (OrdinalType i = ordinalZero() ; i < iter->second.size() ; ++i)
           {
@@ -645,9 +643,9 @@ namespace Tpetra
         vector<MPI_Request> send_requests(NumImages * 3);
 
         OrdinalType send_count = 0;
-        for (int j = ordinalZero() ; j < NumImages ; ++j)
+        for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
+          int what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             sendImages.push_back(j);
@@ -667,7 +665,7 @@ namespace Tpetra
         OrdinalType recv_count = 0;
         for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
+          int what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             recv_images[recv_count] = j;
@@ -710,7 +708,7 @@ namespace Tpetra
         send_count = 0;
         for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
+          int what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             // want to send to image `j', first Rows, then Cols, then Vals
@@ -731,7 +729,7 @@ namespace Tpetra
         recv_count = 0;
         for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
+          int what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
             int osize = MpiTraits<OrdinalType>::count(xxx[j]);
@@ -761,7 +759,7 @@ namespace Tpetra
 
         for (int i = 0 ; i < recv_images.size() ; ++i)
         {
-          OrdinalType image = recv_images[i];
+          int image = recv_images[i];
           for (int j = 0 ; j < recv_sizes[i] ; ++j)
           {
             submitEntry(recvRows[image][j], recvCols[image][j], recvVals[image][j]);
@@ -804,7 +802,7 @@ namespace Tpetra
 
 } // namespace Tpetra
 
-typedef int OrdinalType;
+typedef int OrdinalType; // quite unsafe to change this
 typedef complex<double> ScalarType;
 
 int main(int argc, char *argv[]) 
