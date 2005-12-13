@@ -64,84 +64,223 @@ namespace Tpetra
 
       void fillComplete()
       {
+#ifdef HAVE_MPI
         // =============================== //
         // Part 0: send off-image elements //
         // =============================== //
 
         int NumImages = RowSpace_.comm().getNumImages();
-        map<OrdinalType, OrdinalType> containter;
+        map<OrdinalType, OrdinalType> containter_map;
 
-        for (typename map<OrdinalType, vector<OrdinalType> >::iterator iter = nonlocalIndices_.begin() ; 
-             iter != nonlocalIndices_.end() ; ++iter)
+        // this is a list of non-locally owned rows, in a map (should become a
+        // hash some day for faster access)
+        for (typename map<OrdinalType, vector<pair<OrdinalType, ScalarType> > >::iterator iter = nonlocals_.begin() ; 
+             iter != nonlocals_.end() ; ++iter)
         {
-          containter[iter->first] = 1;
+          containter_map[iter->first] = 1;
         }
 
         // convert the map to a vector so that I can use get getRemoteIDList()
-        vector<OrdinalType> myrowlist;
+        vector<OrdinalType> container_vector;
 
-        for (typename map<OrdinalType, OrdinalType>::iterator iter = containter.begin() ;
-             iter != containter.end() ; ++iter)
+        for (typename map<OrdinalType, OrdinalType>::iterator iter = containter_map.begin() ;
+             iter != containter_map.end() ; ++iter)
         {
-          myrowlist.push_back(iter->first);
+          container_vector.push_back(iter->first);
         }
 
-        vector<OrdinalType> imageIDList(myrowlist.size());
+        vector<OrdinalType> image_vector(container_vector.size());
 
-        RowSpace_.getRemoteIDList (myrowlist, imageIDList);
+        RowSpace_.getRemoteIDList (container_vector, image_vector);
 
-        vector<OrdinalType> mylist(RowSpace_.comm().getNumImages());
-        for (OrdinalType i = 0 ; i < mylist.size() ; ++i) mylist[i] = 0;
+        map<OrdinalType, OrdinalType> image_map;
 
-        for (OrdinalType i = 0 ; i < myrowlist.size() ; ++i)
+        for (OrdinalType i = 0 ; i < image_vector.size() ; ++i)
         {
-          mylist[imageIDList[i]] = 1;
+          image_map[container_vector[i]] = image_vector[i];
         }
 
-        vector<OrdinalType> globalList(NumImages * NumImages);
+        vector<OrdinalType> local_neighbors(RowSpace_.comm().getNumImages());
+        for (OrdinalType i = 0 ; i < local_neighbors.size() ; ++i) local_neighbors[i] = 0;
 
-        RowSpace_.comm().gatherAll(&mylist[0], &globalList[0], NumImages);
+        for (OrdinalType i = 0 ; i < image_vector.size() ; ++i)
+        {
+          local_neighbors[image_vector[i]] = 1;
+        }
 
+        vector<OrdinalType> global_neighbors(NumImages * NumImages);
+
+        RowSpace_.comm().gatherAll(&local_neighbors[0], &global_neighbors[0], NumImages);
+
+        // `global_neighbors' at this point contains (on all images) the
+        // connectivity between the images. On the row `i', a nonzero on col `j' means
+        // that image i will send something to image j. On the column `j', a
+        // nonzero on row `i' means that image j will receive something from
+        // image i.
+        
         // now I loop over all columns to know which image is supposed to send
         // me something
-        vector<OrdinalType> rcvImages;
+        vector<OrdinalType> recvImages;
 
         for (int j = 0 ; j < NumImages ; ++j)
         {
-          OrdinalType what = globalList[j * NumImages + RowSpace_.comm().getMyImageID()];
+          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
-            rcvImages.push_back(j);
+            recvImages.push_back(j);
           }
         }
 
-        for (int i = 0 ; i < rcvImages.size() ; ++i)
-          cout << rcvImages[i] << " " << endl;
+        // do the same but with send
+        vector<OrdinalType> sendImages;
 
-#if 0
-        // At this point I know how many processors will send a message to
-        // this image. I have to compute what to send, size and content.
-        // I make another loop over all the elements, by separing all data
-        // image by image.
-        
-        map<OrdinalType, OrdinalType> sendSizes;
-        map<OrdinalType, vector<OrdinalType> > sendIndices;
-        map<OrdinalType, vector<ScalarType> > sendValues;
+        // now I pack what has to be sent to the other images
+        map<OrdinalType, vector<OrdinalType> > sendRows;
+        map<OrdinalType, vector<OrdinalType> > sendCols;
+        map<OrdinalType, vector<ScalarType> >  sendVals;
 
-        for (typename map<OrdinalType, vector<OrdinalType> >::iterator iter = nonlocalIndices_.begin() ; 
-             iter != nonlocalIndices_.end() ; ++iter)
+        for (typename map<OrdinalType, vector<pair<OrdinalType, ScalarType> > >::iterator iter = nonlocals_.begin() ; 
+             iter != nonlocals_.end() ; ++iter)
         {
-          OrdinalType Row = iter->first;
-          for (int j = 0 ; j < (iter->second).size() ; ++j)
+          OrdinalType row   = iter->first;
+          OrdinalType image = image_map[row];
+
+          for (OrdinalType i = 0 ; i < iter->second.size() ; ++i)
           {
-            OrdinalType Col = (iter->second)[j];
-            ScalarType Val = 
-          containter[iter->first] = 1;
+            OrdinalType col   = iter->second[i].first;
+            ScalarType  val   = iter->second[i].second;
+
+            sendRows[image].push_back(row);
+            sendCols[image].push_back(col);
+            sendVals[image].push_back(val);
+          }
+        }
+
+        int MyImageID = RowSpace_.comm().getMyImageID();
+
+        vector<MPI_Request> send_requests(NumImages * 3);
+
+        OrdinalType send_count = 0;
+        for (int j = 0 ; j < NumImages ; ++j)
+        {
+          OrdinalType what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
+          if (what > 0)
+          {
+            sendImages.push_back(j);
+            OrdinalType size = sendRows[j].size();
+
+            MPI_Isend(&size, 1, MPI_INT, j, 23, MPI_COMM_WORLD, &(send_requests[send_count]));
+            ++send_count;
+          }
+        }
+
+        // Now receive the actual sizes
+        vector<MPI_Request> recv_requests(NumImages * 3);
+        vector<OrdinalType> recv_sizes(NumImages);
+        vector<OrdinalType> recv_images(NumImages);
+
+        OrdinalType recv_count = 0;
+        for (int j = 0 ; j < NumImages ; ++j)
+        {
+          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
+          if (what > 0)
+          {
+            recv_images[recv_count] = j;
+            MPI_Irecv(&(recv_sizes[recv_count]), 1, MPI_INT, j, 23, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            ++recv_count;
+          }
+        }
+
+        for (int i = 0 ; i < send_count ; ++i)
+          MPI_Wait(&(send_requests[i]), MPI_STATUS_IGNORE);
+
+        for (int i = 0 ; i < recv_count ; ++i)
+          MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        map<OrdinalType, vector<OrdinalType> > recvRows;
+        map<OrdinalType, vector<OrdinalType> > recvCols;
+        map<OrdinalType, vector<ScalarType> >  recvVals;
+
+        map<OrdinalType, OrdinalType> xxx;
+
+        for (int i = 0 ; i < recv_count ; ++i)
+        {
+          OrdinalType image = recv_images[i];
+          recvRows[image].resize(recv_sizes[i]);
+          recvCols[image].resize(recv_sizes[i]);
+          recvVals[image].resize(recv_sizes[i]);
+
+          xxx[image] = recv_sizes[i];
+        }
+
+        // At this point I know:
+        // - I have to receive from `recv_count' images;
+        // - image `i' will send recv_count[i] things, split in
+        //   two vectors of OrdinalType and a vector of ScalarType.
+        // First I start sending, then receiving
+
+        send_count = 0;
+        for (int j = 0 ; j < NumImages ; ++j)
+        {
+          OrdinalType what = global_neighbors[j + NumImages * RowSpace_.comm().getMyImageID()];
+          if (what > 0)
+          {
+            // want to send to image `j', first Rows, then Cols, then Vals
+            OrdinalType size = sendRows[j].size();
+            
+            MPI_Isend(&(sendRows[j][0]), size, MPI_INT, j, 32, MPI_COMM_WORLD, &(send_requests[send_count]));
+            ++send_count;
+
+            MPI_Isend(&(sendCols[j][0]), size, MPI_INT, j, 33, MPI_COMM_WORLD, &(send_requests[send_count]));
+            ++send_count;
+
+            MPI_Isend(&(sendVals[j][0]), size, MPI_DOUBLE, j, 34, MPI_COMM_WORLD, &(send_requests[send_count]));
+            ++send_count;
+          }
+        }
+
+        recv_count = 0;
+        for (int j = 0 ; j < NumImages ; ++j)
+        {
+          OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
+          if (what > 0)
+          {
+            OrdinalType size = xxx[j];
+
+            // I want to receive from image `j', first Rows, then Cols, then Vals.
+            MPI_Irecv(&(recvRows[j][0]), size, MPI_INT, j, 32, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            ++recv_count;
+
+            MPI_Irecv(&(recvCols[j][0]), size, MPI_INT, j, 33, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            ++recv_count;
+
+            MPI_Irecv(&(recvVals[j][0]), size, MPI_DOUBLE, j, 34, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            ++recv_count;
+          }
+        }
+
+        for (int i = 0 ; i < send_count ; ++i)
+          MPI_Wait(&(send_requests[i]), MPI_STATUS_IGNORE);
+
+        for (int i = 0 ; i < recv_count ; ++i)
+          MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        // now I add all the received elements to the list of local elements.
+
+        for (int i = 0 ; i < recv_images.size() ; ++i)
+        {
+          OrdinalType image = recv_images[i];
+          for (int j = 0 ; j < recv_sizes[i] ; ++j)
+          {
+            setGlobalElement(recvRows[image][j], recvCols[image][j], recvVals[image][j]);
+          }
         }
 #endif
 
-
-        
         // =============================== //
         // Part I: remove repeated indices //
         // =============================== //
@@ -219,8 +358,8 @@ namespace Tpetra
         }
       }
 
-      void setGlobalElement(OrdinalType GlobalRow, OrdinalType GlobalCol,
-                            ScalarType Value)
+      void setGlobalElement(const OrdinalType& GlobalRow, const OrdinalType& GlobalCol,
+                            const ScalarType& Value)
       {
         if (RowSpace_.isMyGID(GlobalRow))
         {
@@ -230,8 +369,7 @@ namespace Tpetra
         }
         else
         {
-          nonlocalIndices_[GlobalRow].push_back(GlobalCol);
-          nonlocalValues_[GlobalRow].push_back(Value);
+          nonlocals_[GlobalRow].push_back(pair<OrdinalType, ScalarType>(GlobalCol, Value));
         }
       }
 
@@ -309,9 +447,8 @@ namespace Tpetra
       Vector<OrdinalType, ScalarType>* PaddedVector_;
       Import<OrdinalType>* Importer_;
 
-      map<OrdinalType, vector<OrdinalType> > nonlocalIndices_;
-      map<OrdinalType, vector<ScalarType> > nonlocalValues_;
-  };
+      map<OrdinalType, vector<pair<OrdinalType, ScalarType> > > nonlocals_;
+  }; // class CrsMatrix
 } // namespace Tpetra
 
 
@@ -378,20 +515,14 @@ int main(int argc, char *argv[])
     }
   }
 
-#if 0
   Tpetra::Vector<OrdinalType, ScalarType> x(vectorSpace), y(vectorSpace);
 
   x.setAllToScalar(1.0);
 
-#endif
   Matrix.fillComplete();
-#if 0
   Matrix.apply(x, y);
 
   cout << y;
-#endif
-
-
 
 #ifdef HAVE_MPI
   MPI_Finalize() ;
