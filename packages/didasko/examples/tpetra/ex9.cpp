@@ -37,7 +37,7 @@
 #include "Tpetra_SerialComm.hpp"
 #endif
 #include "Teuchos_ScalarTraits.hpp"
-#include "Tpetra_DistObject.hpp"
+#include "Tpetra_Object.hpp"
 #include "Tpetra_Import.hpp"
 #include <map>
 
@@ -47,11 +47,20 @@
 
 namespace Tpetra 
 {
+  enum ApplyMode 
+  {
+    AsIs,      // multiply with the matrix as it is stored
+    Transpose, // multiply with its transpose
+    Hermitian  // multiply with its Hermitian
+  };
+
   template<class OrdinalType, class ScalarType>
-  class CrsMatrix 
+  class CrsMatrix : public Object
   {
     public:
-      CrsMatrix(VectorSpace<OrdinalType, ScalarType>& VectorRowSpace) :
+      CrsMatrix(const Comm<OrdinalType, ScalarType>& Comm, 
+                VectorSpace<OrdinalType, ScalarType>& VectorRowSpace) :
+        Comm_(Comm),
         VectorRowSpace_(VectorRowSpace),
         RowSpace_(VectorRowSpace.elementSpace()),
         NumMyRows_(RowSpace_.getNumMyElements()),
@@ -60,14 +69,34 @@ namespace Tpetra
       {
         Indices_.resize(NumMyRows_);
         Values_.resize(NumMyRows_);
+        FillCompleted_ = false;
+      }
+
+      bool isFillCompleted() const
+      {
+        return(FillCompleted_);
       }
 
       void fillComplete()
       {
+        if (isFillCompleted())
+          throw(-1);
+
 #ifdef HAVE_MPI
         // =============================== //
         // Part 0: send off-image elements //
         // =============================== //
+
+        MPI_Comm MpiCommunicator;
+        try
+        {
+          MpiCommunicator = (dynamic_cast<const MpiComm<OrdinalType, ScalarType>&>(getComm())).getMpiComm();
+        }
+        catch(std::bad_cast bc) 
+        {
+          cerr << "Bad cast" << endl;
+          throw(-1);
+        }
 
         int NumImages = RowSpace_.comm().getNumImages();
         map<OrdinalType, OrdinalType> containter_map;
@@ -167,9 +196,10 @@ namespace Tpetra
           if (what > 0)
           {
             sendImages.push_back(j);
-            OrdinalType size = sendRows[j].size();
+            int size = MpiTraits<OrdinalType>::count(sendRows[j].size());
 
-            MPI_Isend(&size, 1, MPI_INT, j, 23, MPI_COMM_WORLD, &(send_requests[send_count]));
+            MPI_Isend(&size, MpiTraits<OrdinalType>::count(1), MpiTraits<OrdinalType>::datatype(), 
+                      j, 23, MpiCommunicator, &(send_requests[send_count]));
             ++send_count;
           }
         }
@@ -186,7 +216,8 @@ namespace Tpetra
           if (what > 0)
           {
             recv_images[recv_count] = j;
-            MPI_Irecv(&(recv_sizes[recv_count]), 1, MPI_INT, j, 23, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            MPI_Irecv(&(recv_sizes[recv_count]), MpiTraits<OrdinalType>::count(1), MpiTraits<OrdinalType>::datatype(), 
+                      j, 23, MpiCommunicator, &(recv_requests[recv_count]));
             ++recv_count;
           }
         }
@@ -197,7 +228,7 @@ namespace Tpetra
         for (int i = 0 ; i < recv_count ; ++i)
           MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
 
-        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Barrier(MpiCommunicator);
 
         map<OrdinalType, vector<OrdinalType> > recvRows;
         map<OrdinalType, vector<OrdinalType> > recvCols;
@@ -228,15 +259,16 @@ namespace Tpetra
           if (what > 0)
           {
             // want to send to image `j', first Rows, then Cols, then Vals
-            OrdinalType size = sendRows[j].size();
+            int osize = MpiTraits<OrdinalType>::count(sendRows[j].size());
+            int ssize = MpiTraits<ScalarType>::count(sendRows[j].size());
             
-            MPI_Isend(&(sendRows[j][0]), size, MPI_INT, j, 32, MPI_COMM_WORLD, &(send_requests[send_count]));
+            MPI_Isend(&(sendRows[j][0]), osize, MpiTraits<OrdinalType>::datatype(), j, 32, MpiCommunicator, &(send_requests[send_count]));
             ++send_count;
 
-            MPI_Isend(&(sendCols[j][0]), size, MPI_INT, j, 33, MPI_COMM_WORLD, &(send_requests[send_count]));
+            MPI_Isend(&(sendCols[j][0]), osize, MpiTraits<OrdinalType>::datatype(), j, 33, MpiCommunicator, &(send_requests[send_count]));
             ++send_count;
 
-            MPI_Isend(&(sendVals[j][0]), size, MPI_DOUBLE, j, 34, MPI_COMM_WORLD, &(send_requests[send_count]));
+            MPI_Isend(&(sendVals[j][0]), ssize, MpiTraits<ScalarType>::datatype(), j, 34, MpiCommunicator, &(send_requests[send_count]));
             ++send_count;
           }
         }
@@ -247,16 +279,17 @@ namespace Tpetra
           OrdinalType what = global_neighbors[j * NumImages + RowSpace_.comm().getMyImageID()];
           if (what > 0)
           {
-            OrdinalType size = xxx[j];
+            int osize = MpiTraits<OrdinalType>::count(xxx[j]);
+            int ssize = MpiTraits<ScalarType>::count(xxx[j]);
 
             // I want to receive from image `j', first Rows, then Cols, then Vals.
-            MPI_Irecv(&(recvRows[j][0]), size, MPI_INT, j, 32, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            MPI_Irecv(&(recvRows[j][0]), osize, MpiTraits<OrdinalType>::datatype(), j, 32, MpiCommunicator, &(recv_requests[recv_count]));
             ++recv_count;
 
-            MPI_Irecv(&(recvCols[j][0]), size, MPI_INT, j, 33, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            MPI_Irecv(&(recvCols[j][0]), osize, MpiTraits<OrdinalType>::datatype(), j, 33, MpiCommunicator, &(recv_requests[recv_count]));
             ++recv_count;
 
-            MPI_Irecv(&(recvVals[j][0]), size, MPI_DOUBLE, j, 34, MPI_COMM_WORLD, &(recv_requests[recv_count]));
+            MPI_Irecv(&(recvVals[j][0]), ssize, MpiTraits<ScalarType>::datatype(), j, 34, MpiCommunicator, &(recv_requests[recv_count]));
             ++recv_count;
           }
         }
@@ -267,7 +300,7 @@ namespace Tpetra
         for (int i = 0 ; i < recv_count ; ++i)
           MPI_Wait(&(recv_requests[i]), MPI_STATUS_IGNORE);
 
-        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Barrier(MpiCommunicator);
 
         // now I add all the received elements to the list of local elements.
 
@@ -276,7 +309,7 @@ namespace Tpetra
           OrdinalType image = recv_images[i];
           for (int j = 0 ; j < recv_sizes[i] ; ++j)
           {
-            setGlobalElement(recvRows[image][j], recvCols[image][j], recvVals[image][j]);
+            submitEntry(recvRows[image][j], recvCols[image][j], recvVals[image][j]);
           }
         }
 #endif
@@ -293,7 +326,7 @@ namespace Tpetra
 
           for (OrdinalType j = 0 ; j < Indices_[i].size() ; ++j)
           {
-            singleRow[Indices_[i][j]] = Values_[i][j];
+            singleRow[Indices_[i][j]] += Values_[i][j];
           }
 
           OrdinalType count = 0;
@@ -356,11 +389,16 @@ namespace Tpetra
             Indices_[i][j] = ColSpace_->getLID(Indices_[i][j]);
           }
         }
+
+        FillCompleted_ = true;
       }
 
-      void setGlobalElement(const OrdinalType& GlobalRow, const OrdinalType& GlobalCol,
-                            const ScalarType& Value)
+      void submitEntry(const OrdinalType& GlobalRow, const OrdinalType& GlobalCol,
+                                   const ScalarType& Value)
       {
+        if (FillCompleted_)
+          throw(-1);
+
         if (RowSpace_.isMyGID(GlobalRow))
         {
           OrdinalType LocalRow = RowSpace_.getLID(GlobalRow);
@@ -373,24 +411,12 @@ namespace Tpetra
         }
       }
 
-      void setGlobalElements(std::vector<OrdinalType>& GlobalRows, 
-                             std::vector<OrdinalType>& GlobalCols,
-                             std::vector<ScalarType>& Values)
+      void getMyRowCopy(const OrdinalType MyRow, OrdinalType& NumEntries,
+                        vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
       {
-        if (GlobalRows.size() != GlobalCols.size())
+        if (FillCompleted_)
           throw(-1);
 
-        for (OrdinalType i = 0 ; i < GlobalRows.size() ; ++i)
-        {
-          OrdinalType LocalRow = RowSpace_.getLID(GlobalRows[i]);
-          Indices_[LocalRow].push_back(GlobalCols[i]);
-          Values_[LocalRow].push_back(Values[i]);
-        }
-      }
-
-      void getMyRowCopy(const OrdinalType MyRow, vector<OrdinalType> Indices,
-                        vector<ScalarType> Values)
-      {
         OrdinalType length = Indices_[MyRow].size();
 
         if (Indices.size() < length || Values.size() < length)
@@ -401,10 +427,46 @@ namespace Tpetra
           Indices[i] = Indices_[MyRow][i];
           Values[i] = Values_[MyRow][i];
         }
+
+        NumEntries = length;
       }
 
-      void apply(const Vector<OrdinalType, ScalarType>& x,
-                 Vector<OrdinalType, ScalarType> y) const
+      void getGlobalRowCopy(const OrdinalType GlobalRow, OrdinalType& NumEntries,
+                            vector<OrdinalType>& Indices, vector<ScalarType>& Values) const
+      {
+        // Only locally owned rows can be queried, otherwise complain
+        if (!RowSpace_.isMyGID(GlobalRow))
+          throw(-1);
+
+        OrdinalType MyRow = RowSpace_.getLID(GlobalRow);
+
+        OrdinalType length = Indices_[MyRow].size();
+
+        if (Indices.size() < length || Values.size() < length)
+          throw(-1);
+
+        if (isFillCompleted())
+        {
+          for (OrdinalType i = 0 ; i < length ; ++i)
+          {
+            Indices[i] = ColSpace_->getGID(Indices_[MyRow][i]);
+            Values[i] = Values_[MyRow][i];
+          }
+        }
+        else
+        {
+          for (OrdinalType i = 0 ; i < length ; ++i)
+          {
+            Indices[i] = Indices_[MyRow][i];
+            Values[i] = Values_[MyRow][i];
+          }
+        }
+
+        NumEntries = length;
+      }
+
+      void apply(const Vector<OrdinalType, ScalarType>& x, Vector<OrdinalType, ScalarType> y,
+                 ApplyMode Mode = AsIs) const
       {
         y.setAllToScalar(0.0);
 
@@ -421,6 +483,51 @@ namespace Tpetra
         }
       }
 
+      virtual void print(ostream& os) const 
+      {
+        OrdinalType MyImageID = RowSpace_.comm().getMyImageID();
+
+        if (MyImageID == 0)
+        {
+          os << "Tpetra::CrsMatrix, label = " << label() << endl;
+          os << "Number of global rows    = " << RowSpace_.getNumGlobalElements() << endl;
+          if (isFillCompleted())
+          {
+            os << "Number of global cols    = " << ColSpace_->getNumGlobalElements() << endl;
+            os << "Status = FillCompleted" << endl;
+          }
+          else
+          {
+            os << "Status = not FillCompleted" << endl;
+          }
+        }
+
+        for (OrdinalType pid = 0 ; pid < RowSpace_.comm().getNumImages() ; ++pid)
+        {
+          if (pid == MyImageID)
+          {
+            vector<OrdinalType> Indices(100); // FIXME
+            vector<ScalarType>  Values(100);
+            OrdinalType NumEntries;
+
+            os << "% Number of rows on image " << MyImageID << " = " << RowSpace_.getNumMyElements() << endl;
+            for (OrdinalType i = 0 ; i < RowSpace_.getNumMyElements() ; ++i)
+            {
+              OrdinalType GlobalRow = RowSpace_.getGID(i);
+              getGlobalRowCopy(GlobalRow, NumEntries, Indices, Values);
+              for (OrdinalType j = 0 ; j < NumEntries ; ++j)
+                os << "Matrix(" << GlobalRow << ", " << Indices[j] << ") = " << Values[j] << ";" << endl;
+            }
+          }
+          RowSpace_.comm().barrier();
+        }
+      }
+
+      const Comm<OrdinalType, ScalarType>& getComm() const
+      {
+        return(Comm_);
+      }
+
     private:
       const vector<vector<OrdinalType> >& getIndices() const
       {
@@ -432,6 +539,7 @@ namespace Tpetra
         return(Values_);
       }
 
+      const Comm<OrdinalType, ScalarType>& Comm_;
       const VectorSpace<OrdinalType, ScalarType>& VectorRowSpace_;
       const ElementSpace<OrdinalType>& RowSpace_;
 
@@ -448,13 +556,15 @@ namespace Tpetra
       Import<OrdinalType>* Importer_;
 
       map<OrdinalType, vector<pair<OrdinalType, ScalarType> > > nonlocals_;
+
+      bool FillCompleted_;
+
   }; // class CrsMatrix
+
 } // namespace Tpetra
 
-
-
 typedef int OrdinalType;
-typedef double ScalarType;
+typedef complex<double> ScalarType;
 
 int main(int argc, char *argv[]) 
 {
@@ -478,7 +588,7 @@ int main(int argc, char *argv[])
   // Creates a vector of size `length', then set the elements values.
   
   OrdinalType length    = OrdinalOne * 4 * Comm.getNumImages();
-  OrdinalType indexBase = OrdinalZero;
+  OrdinalType indexBase = OrdinalOne;
 
   // 1) Creation of a platform
   
@@ -499,19 +609,19 @@ int main(int argc, char *argv[])
   // 3) and the vector, which has type int for the OrdinalType
   //    and double for the ScalarType
 
-  Tpetra::CrsMatrix<OrdinalType, ScalarType> Matrix(vectorSpace);
+  Tpetra::CrsMatrix<OrdinalType, ScalarType> Matrix(Comm, vectorSpace);
 
-  if (Comm.getMyImageID() == 0)
+  if (Comm.getMyImageID() < 2)
   {
-    for (int i = 0 ; i < elementSpace.getNumGlobalElements() ; ++i)
+    for (int i = OrdinalOne ; i <= elementSpace.getNumGlobalElements() ; ++i)
     {
       int GRID = i; // elementSpace.getGID(i);
 
-      if (GRID != 0)
-        Matrix.setGlobalElement(GRID, GRID - 1, -1.0);
-      if (GRID != elementSpace.getNumGlobalElements() - 1)
-        Matrix.setGlobalElement(GRID, GRID + 1, -1.0);
-      Matrix.setGlobalElement(GRID, GRID, 2.0);
+      if (GRID != OrdinalOne)
+        Matrix.submitEntry(GRID, GRID - 1, -1.0);
+      if (GRID != elementSpace.getNumGlobalElements())
+        Matrix.submitEntry(GRID, GRID + 1, -1.0);
+      Matrix.submitEntry(GRID, GRID, 2.0);
     }
   }
 
@@ -523,6 +633,8 @@ int main(int argc, char *argv[])
   Matrix.apply(x, y);
 
   cout << y;
+
+  cout << Matrix;
 
 #ifdef HAVE_MPI
   MPI_Finalize() ;
