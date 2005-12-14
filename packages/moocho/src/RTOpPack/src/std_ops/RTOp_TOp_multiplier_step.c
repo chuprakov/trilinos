@@ -1,8 +1,9 @@
-/* @HEADER
+/*
+// @HEADER
 // ***********************************************************************
 // 
-//      TSFCoreUtils: Trilinos Solver Framework Utilities Package 
-//                 Copyright (2004) Sandia Corporation
+// Moocho: Multi-functional Object-Oriented arCHitecture for Optimization
+//                  Copyright (2003) Sandia Corporation
 // 
 // Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 // license for use of this work by or on behalf of the U.S. Government.
@@ -21,7 +22,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
+// Questions? Contact Roscoe A. Bartlett (rabartl@sandia.gov) 
 // 
 // ***********************************************************************
 // @HEADER
