@@ -230,32 +230,32 @@ private:
 
 	/// Enumeration for iflag
 	enum E_IFlag {
-		SLOW_ITER_CONV							= -17,
-		MAXIT_REACHED							= -16,
-		MA28BD_CALLED_WITH_DROPPED				= -15,
-		DUPLICATE_ELEMENTS						= -14,
-		NEW_NONZERO_ELEMENT						= -13,
-		N_OUT_OF_RANGE							= -11,
-		NZ_LE_ZERO								= -10,
-		LICN_LE_NZ								= -9,
-		LIRN_LE_NZ								= -8,
-		ERROR_DURRING_BLOCK_TRI					= -7,
-		LICN_AND_LIRN_TOO_SMALL					= -6,
-		LICN_TOO_SMALL							= -5,
-		LICN_FAR_TOO_SMALL						= -4,
-		LIRN_TOO_SMALL							= -3,
-		NUMERICALLY_SINGULAR					= -2,
-		STRUCTURALLY_SINGULAR					= -1,
-		SUCCESSFUL_DECOMP_ON_STRUCT_SINGULAR	=  1,
-		SUCCESSFUL_DECOMP_ON_NUMER_SINGULAR		=  2
+    SLOW_ITER_CONV                        = -17,
+    MAXIT_REACHED                         = -16,
+    MA28BD_CALLED_WITH_DROPPED            = -15,
+    DUPLICATE_ELEMENTS                    = -14,
+    NEW_NONZERO_ELEMENT                   = -13,
+    N_OUT_OF_RANGE                        = -11,
+    NZ_LE_ZERO                            = -10,
+    LICN_LE_NZ                            = -9,
+    LIRN_LE_NZ                            = -8,
+    ERROR_DURRING_BLOCK_TRI               = -7,
+    LICN_AND_LIRN_TOO_SMALL               = -6,
+    LICN_TOO_SMALL                        = -5,
+    LICN_FAR_TOO_SMALL                    = -4,
+    LIRN_TOO_SMALL                        = -3,
+    NUMERICALLY_SINGULAR                  = -2,
+    STRUCTURALLY_SINGULAR                 = -1,
+    SUCCESSFUL_DECOMP_ON_STRUCT_SINGULAR  =  1,
+    SUCCESSFUL_DECOMP_ON_NUMER_SINGULAR   =  2
 	};
 
 	// /////////////////////////////////
 	// Private data members
 
-	value_type                               estimated_fillin_ratio_;
+	value_type                          estimated_fillin_ratio_;
 	Teuchos::RefCountPtr<std::ostream>  output_file_;
-	int                                      file_output_num_;
+	int                                 file_output_num_;
 
 	// ////////////////////////////////
 	// Private member functions
