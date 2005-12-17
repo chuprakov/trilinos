@@ -331,6 +331,24 @@ DENSE_LIN_ALG_PACK_CPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
 
+if ENABLE_MOOCHO_MA28
+ABSTRACT_LIN_ALG_PACK_MA28_HPP = \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp
+ABSTRACT_LIN_ALG_PACK_MA28_CPP = \
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp\
+  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp
+else
+ABSTRACT_LIN_ALG_PACK_MA28_HPP =
+ABSTRACT_LIN_ALG_PACK_MA28_CPP =
+endif
+
 ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_Types.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.hpp\
@@ -490,14 +508,11 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolver.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MatrixScaling_Strategy.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.hpp
+  $(ABSTRACT_LIN_ALG_PACK_MA28_HPP)
+
+#  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.hpp
+#  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp
 
 ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.cpp \
@@ -580,13 +595,10 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
+  $(ABSTRACT_LIN_ALG_PACK_MA28_CPP)
+
+# $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp
+# $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
 
 ABSTRACT_LIN_ALG_PACK_F = \
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f

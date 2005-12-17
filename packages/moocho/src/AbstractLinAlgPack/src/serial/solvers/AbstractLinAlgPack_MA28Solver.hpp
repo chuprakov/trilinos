@@ -30,8 +30,6 @@
 // and object so that multiple sparse matrix systems can
 // be solved at the same time.
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #ifndef SSP_MA28_SOLVER_H
 #define SSP_MA28_SOLVER_H
 
@@ -321,5 +319,3 @@ private:
 }	// end namespace MA28_Cpp
 
 #endif // SSP_MA28_SOLVER_H
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

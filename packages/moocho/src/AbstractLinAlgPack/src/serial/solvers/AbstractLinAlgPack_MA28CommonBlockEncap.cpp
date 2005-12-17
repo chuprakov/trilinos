@@ -26,8 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #include "AbstractLinAlgPack_MA28CommonBlockEncap.hpp"
 
 using std::cout;
@@ -167,5 +165,3 @@ void MA28_Cpp::MA28CommonBlockStorage::dump_values(std::ostream& o) {
 			<< "ma30id.nsrch = "	<< ma30id_.nsrch	<< endl
 			<< "ma30id.lbig = "		<< ma30id_.lbig		<< endl;
 }
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

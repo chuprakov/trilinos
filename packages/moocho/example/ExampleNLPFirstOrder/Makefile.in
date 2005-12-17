@@ -100,6 +100,7 @@ subdir = example/ExampleNLPFirstOrder
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_check_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
+	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
@@ -181,6 +182,12 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
+ENABLE_AMESOS_THYRA_FALSE = @ENABLE_AMESOS_THYRA_FALSE@
+ENABLE_AMESOS_THYRA_TRUE = @ENABLE_AMESOS_THYRA_TRUE@
+ENABLE_EPETRAEXT_THYRA_FALSE = @ENABLE_EPETRAEXT_THYRA_FALSE@
+ENABLE_EPETRAEXT_THYRA_TRUE = @ENABLE_EPETRAEXT_THYRA_TRUE@
+ENABLE_MOOCHO_MA28_FALSE = @ENABLE_MOOCHO_MA28_FALSE@
+ENABLE_MOOCHO_MA28_TRUE = @ENABLE_MOOCHO_MA28_TRUE@
 EXEEXT = .exe
 F77 = @F77@
 FFLAGS = @FFLAGS@

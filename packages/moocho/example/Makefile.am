@@ -26,6 +26,10 @@
 # ************************************************************************
 # @HEADER
 
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample NLPThyraEpetraModelEval4DOpt
+if ENABLE_EPETRAEXT_THYRA
+if ENABLE_AMESOS_THYRA
+EPETRAEXT_AMESOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt
+endif
+endif
 
-# Todo: Conditionally include the Thyra example only if epetraext, thyra etc. are enabled
+SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample $(EPETRAEXT_AMESOS_EXAMPLES)

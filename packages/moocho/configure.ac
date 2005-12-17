@@ -166,6 +166,21 @@ AC_C_INLINE
 # Checks for special package flags
 # ------------------------------------------------------------------------
 
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+  moocho, ma28, MOOCHO_MA28, ENABLE_MOOCHO_MA28, yes,
+  [Build in support for HSL solver MA28 into Moocho.],
+  [Build in support for HSL solver MA28 into Moocho.  Can be overridden with --disable-moocho-ma28.])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+  epetraext, thyra, EPETRAEXT_THYRA, ENABLE_EPETRAEXT_THYRA, yes
+  ,[Build the Thyra adapater support in EpetraExt.]
+  ,[Build the Thyra adapater support in EpetraExt.  Can be overridden with --disable-epetraext-thyra.])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+   amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
+  [Build the Thyra operator/vector adapater support in Amesos.],
+  [Build the Thyra operator/vector adapater support in Amesos.  Can be overridden with --disable-amesos-thyra.])
+
 # ------------------------------------------------------------------------
 # Checks if examples should be built
 # ------------------------------------------------------------------------
@@ -223,7 +238,6 @@ TAC_ARG_ENABLE_EXPORT_MAKEFILES(yes)
 
 # Determine libraries needed for linking with Fortran
 AC_F77_LIBRARY_LDFLAGS
-
 
 #  ----------------------------------------------------
 #  Needs this because Dec handles templates differently

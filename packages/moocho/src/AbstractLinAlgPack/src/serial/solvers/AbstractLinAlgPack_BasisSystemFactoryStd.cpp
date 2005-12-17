@@ -44,7 +44,7 @@ BasisSystemFactoryStd::BasisSystemFactoryStd()
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
 		LA_MA48                        // If we have MA48 use it as a first choice
 #else
-#  ifdef SPARSE_SOLVER_PACK_USE_MA28
+#  ifdef USE_MOOCHO_MA28
 		LA_MA28                        // If we have MA28 use it as a second choice
 #  else
 		LA_DENSE                       // If we don't have any sparse solvers use dense
@@ -86,7 +86,7 @@ BasisSystemFactoryStd::create() const
 			break;
 		}
 		case LA_MA28: {
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
+#ifdef USE_MOOCHO_MA28
 			Teuchos::RefCountPtr<DirectSparseSolverMA28>
 				dss_ma28 = Teuchos::rcp(new DirectSparseSolverMA28());
 			if(options_.get()) {
@@ -98,7 +98,7 @@ BasisSystemFactoryStd::create() const
 #else
 			TEST_FOR_EXCEPTION(
 				true, std::logic_error
-				,"Error, SPARSE_SOLVER_PACK_USE_MA28 is not defined and therefore MA28 is not supported!" );
+				,"Error, USE_MOOCHO_MA28 is not defined and therefore MA28 is not supported!" );
 #endif
 			break;
 		}
@@ -165,13 +165,13 @@ void BasisSystemFactoryStd::read_options() const
 					if( linear_solver == "DENSE" ) {
 						direct_linear_solver_type_ = LA_DENSE;
 					} else if( linear_solver == "MA28" ) {
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
+#ifdef USE_MOOCHO_MA28
 						direct_linear_solver_type_ = LA_MA28;
 #else
 						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"BasisSystemFactoryStd::read_options(...) : MA28 is not supported,"
-							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
+							" you must configure with --enable-moocho-ma28!" );
 #endif
 					} else if( linear_solver == "MA48" ) {
 #ifdef SPARSE_SOLVER_PACK_USE_MA48

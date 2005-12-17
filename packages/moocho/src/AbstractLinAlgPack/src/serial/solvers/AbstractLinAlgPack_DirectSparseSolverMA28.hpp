@@ -26,8 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #ifndef	ALAP_DIRECT_SPARSE_SOLVER_MA28_H
 #define ALAP_DIRECT_SPARSE_SOLVER_MA28_H
 
@@ -283,5 +281,3 @@ private:
 }	// end namespace AbstractLinAlgPack 
 
 #endif	// ALAP_DIRECT_SPARSE_SOLVER_MA28_H
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

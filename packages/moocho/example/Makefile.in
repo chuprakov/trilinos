@@ -67,6 +67,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_check_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
+	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
@@ -91,7 +92,8 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	uninstall-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder \
+	NLPWBCounterExample NLPThyraEpetraModelEval4DOpt
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALTERNATE_AR = @ALTERNATE_AR@
@@ -120,6 +122,12 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
+ENABLE_AMESOS_THYRA_FALSE = @ENABLE_AMESOS_THYRA_FALSE@
+ENABLE_AMESOS_THYRA_TRUE = @ENABLE_AMESOS_THYRA_TRUE@
+ENABLE_EPETRAEXT_THYRA_FALSE = @ENABLE_EPETRAEXT_THYRA_FALSE@
+ENABLE_EPETRAEXT_THYRA_TRUE = @ENABLE_EPETRAEXT_THYRA_TRUE@
+ENABLE_MOOCHO_MA28_FALSE = @ENABLE_MOOCHO_MA28_FALSE@
+ENABLE_MOOCHO_MA28_TRUE = @ENABLE_MOOCHO_MA28_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -212,7 +220,8 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample NLPThyraEpetraModelEval4DOpt
+@ENABLE_AMESOS_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@EPETRAEXT_AMESOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt
+SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample $(EPETRAEXT_AMESOS_EXAMPLES)
 all: all-recursive
 
 .SUFFIXES:
@@ -390,7 +399,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d "$(distdir)/$$subdir" \
 	    || mkdir "$(distdir)/$$subdir" \
@@ -492,8 +501,6 @@ uninstall-info: uninstall-info-recursive
 	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
 	uninstall uninstall-am uninstall-info-am
 
-
-# Todo: Conditionally include the Thyra example only if epetraext, thyra etc. are enabled
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

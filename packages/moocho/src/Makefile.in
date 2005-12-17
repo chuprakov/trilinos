@@ -82,11 +82,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 subdir = src
-DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(am__include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/Moocho_Config.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_check_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
+	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_export-makefiles.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
@@ -108,6 +109,327 @@ libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
 am__DEPENDENCIES_1 =
 libmoocho_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.cpp \
+	$(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.cpp \
+	$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.cpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.cpp \
+	$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp \
+	$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp \
+	$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp \
+	$(srcdir)/MoochoUtilities/src/ff_open_file.f \
+	$(srcdir)/MoochoUtilities/src/FortranCppStrings.f \
+	$(srcdir)/MoochoUtilities/src/FSeconds.f \
+	$(srcdir)/IterationPack/src/IterationPack_Algorithm.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_CastIQMember.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantity.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_cast_iq.cpp \
+	$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.cpp \
+	$(srcdir)/RTOpPack/src/base/RTOp.c \
+	$(srcdir)/RTOpPack/src/base/RTOpToMPI.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.c \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c \
+	$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.cpp \
+	$(srcdir)/RTOpPack/src/base/check_nan_inf.cpp \
+	$(srcdir)/RTOpPack/src/base/RTOpPack_print_sub_vector.cpp \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.c \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.c \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOpBLAS.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AbstractLinAlgOpPack.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystem.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSlice.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceIterator.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOut.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProductDot.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixBase.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixNonsing.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsing.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsingAggr.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpSubView.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymNonsing.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOpNonsing.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixPermAggr.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVector.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVectorMutable.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Vector.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorApplyOpSerialBase.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpace.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceSubSpace.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceFactory.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutable.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutableSubView.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorStdOps.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClass.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorOut.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorView.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_assert_print_nan_inf.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixOpNonsingTester.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymIdent.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymDiagStd.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixComposite.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixZero.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTester.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTesterSetOptions.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceBlocked.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceFactorySerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorMutableDense.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableDense.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableCols.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparseEncap.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixNonsingSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymNonsingSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDiagSparse.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractSparseElements.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_BFGS_helpers.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymDiagSparseStd.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymPosDefCholFactor.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSparseCOORSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_PermutationSerial.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SpVectorOp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_rank_2_chol_update.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemPermDirectSparse.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPDirect.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPFirstOrder.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPObjGrad.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPSecondOrder.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTester.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTesterSetOptions.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTester.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTesterSetOptions.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTester.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTesterSetOptions.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.cpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.cpp \
+	$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.cpp \
+	$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.cpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.cpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.cpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.cpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.cpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.cpp \
+	$(srcdir)/MoochoPack/configurations/MoochoPack_MoochoSolver.cpp \
+	$(srcdir)/MoochoPack/configurations/IpConfig/MoochoPack_NLPAlgoConfigIP.cpp \
+	$(srcdir)/MoochoPack/configurations/MamaJama/MoochoPack_NLPAlgoConfigMamaJama.cpp \
+	$(srcdir)/MoochoPack/configurations/Shared/MoochoPack_DecompositionSystemStateStepBuilderStd.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_IpState.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgo.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoContainer.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoState.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterface.cpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterfaceSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_StrategySetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPYZPZ_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPY_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromZPZ_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcD_vStep_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcReducedGradLagrangianStd_AddedStep.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceIP_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStep.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergence_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromPy_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromRPy_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDescentQuasiNormalStep_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerStd_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchDirect_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFailureNewDecompositionSelection_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStep_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchNLE_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_DummyUpdate_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerStatsStd.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerSummaryStd.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerXMLSummary.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelectionStd_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PostEvalNewPointBarrier_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PostProcessBarrierLineSearch_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PreEvalNewPointBarrier_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PreProcessBarrierLineSearch_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QPFailureReinitReducedHessian_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNormalStepStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepStd_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedGradientStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_SetDBoundsStd_AddedStep.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepIP_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_StepSetOptions.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithoutBounds_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_UpdateBarrierParameter_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_UpdateReducedSigma_Step.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_act_set_stats.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_d_bounds_iter_quant.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_qp_solver_stats.cpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_quasi_newton_stats.cpp
 am__objects_1 = FortranTypes_CppFortranStrings.$(OBJEXT) \
 	FortranTypes_f_open_file.$(OBJEXT) \
 	InputStreamHelperPack_EatInputComment.$(OBJEXT) \
@@ -193,7 +515,12 @@ am__objects_8 = DenseLinAlgPack_BLAS_Cpp.$(OBJEXT) \
 	DenseLinAlgPack_assert_print_nan_inf.$(OBJEXT) \
 	DenseLinAlgPack_LAPACK_C_Decl.$(OBJEXT) \
 	DenseLinAlgLAPack.$(OBJEXT)
-am__objects_9 = AbstractLinAlgPack_AssertOp.$(OBJEXT) \
+@ENABLE_MOOCHO_MA28_TRUE@am__objects_9 = AbstractLinAlgPack_DirectSparseSolverMA28.$(OBJEXT) \
+@ENABLE_MOOCHO_MA28_TRUE@	AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.$(OBJEXT) \
+@ENABLE_MOOCHO_MA28_TRUE@	AbstractLinAlgPack_MA28_CppDecl.$(OBJEXT) \
+@ENABLE_MOOCHO_MA28_TRUE@	AbstractLinAlgPack_MA28CommonBlockEncap.$(OBJEXT) \
+@ENABLE_MOOCHO_MA28_TRUE@	AbstractLinAlgPack_MA28Solver.$(OBJEXT)
+am__objects_10 = AbstractLinAlgPack_AssertOp.$(OBJEXT) \
 	AbstractLinAlgPack_AbstractLinAlgOpPack.$(OBJEXT) \
 	AbstractLinAlgPack_apply_op_helper.$(OBJEXT) \
 	AbstractLinAlgPack_BasisSystem.$(OBJEXT) \
@@ -273,15 +600,9 @@ am__objects_9 = AbstractLinAlgPack_AssertOp.$(OBJEXT) \
 	AbstractLinAlgPack_BasisSystemFactoryStd.$(OBJEXT) \
 	AbstractLinAlgPack_DirectSparseSolverImp.$(OBJEXT) \
 	AbstractLinAlgPack_DirectSparseSolverDense.$(OBJEXT) \
-	AbstractLinAlgPack_DirectSparseSolverMA28.$(OBJEXT) \
-	AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.$(OBJEXT) \
-	AbstractLinAlgPack_DirectSparseSolverSuperLU.$(OBJEXT) \
-	AbstractLinAlgPack_MA28_CppDecl.$(OBJEXT) \
-	AbstractLinAlgPack_MA28CommonBlockEncap.$(OBJEXT) \
-	AbstractLinAlgPack_MA28Solver.$(OBJEXT) \
-	AbstractLinAlgPack_SuperLUSolver.$(OBJEXT)
-am__objects_10 = dchud.$(OBJEXT)
-am__objects_11 = NLPInterfacePack_NLP.$(OBJEXT) \
+	$(am__objects_9)
+am__objects_11 = dchud.$(OBJEXT)
+am__objects_12 = NLPInterfacePack_NLP.$(OBJEXT) \
 	NLPInterfacePack_NLPDirect.$(OBJEXT) \
 	NLPInterfacePack_NLPFirstOrder.$(OBJEXT) \
 	NLPInterfacePack_NLPObjGrad.$(OBJEXT) \
@@ -301,7 +622,7 @@ am__objects_11 = NLPInterfacePack_NLP.$(OBJEXT) \
 	NLPInterfacePack_NLPBarrier.$(OBJEXT) \
 	NLPInterfacePack_NLPSerialPreprocess.$(OBJEXT) \
 	NLPInterfacePack_NLPSerialPreprocessExplJac.$(OBJEXT)
-am__objects_12 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
+am__objects_13 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
 	ConstrainedOptPack_DecompositionSystemCoordinate.$(OBJEXT) \
 	ConstrainedOptPack_DecompositionSystemOrthogonal.$(OBJEXT) \
 	ConstrainedOptPack_DecompositionSystemTester.$(OBJEXT) \
@@ -340,7 +661,7 @@ am__objects_12 = ConstrainedOptPack_DecompositionSystem.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedTester.$(OBJEXT) \
 	ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.$(OBJEXT)
-am__objects_13 = MoochoPack_MoochoSolver.$(OBJEXT) \
+am__objects_14 = MoochoPack_MoochoSolver.$(OBJEXT) \
 	MoochoPack_NLPAlgoConfigIP.$(OBJEXT) \
 	MoochoPack_NLPAlgoConfigMamaJama.$(OBJEXT) \
 	MoochoPack_DecompositionSystemStateStepBuilderStd.$(OBJEXT) \
@@ -417,8 +738,8 @@ am__objects_13 = MoochoPack_MoochoSolver.$(OBJEXT) \
 am_libmoocho_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12) $(am__objects_7) $(am__objects_13)
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13) $(am__objects_7) $(am__objects_14)
 libmoocho_a_OBJECTS = $(am_libmoocho_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -436,7 +757,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverImp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverMA28.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSlice.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceIterator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOp.Po \
@@ -484,7 +804,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SpVectorOut.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SpVectorView.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SparseVectorClass.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_TestMatrixSymSecant.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_Vector.Po \
@@ -755,7 +1074,512 @@ F77LD = $(F77)
 F77LINK = $(F77LD) $(AM_FFLAGS) $(FFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
 	$@
 SOURCES = $(libmoocho_a_SOURCES)
-DIST_SOURCES = $(libmoocho_a_SOURCES)
+DIST_SOURCES = $(am__libmoocho_a_SOURCES_DIST)
+am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
+	$(srcdir)/MoochoUtilities/src/BLAS_Cpp_Types.hpp \
+	$(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.hpp \
+	$(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.hpp \
+	$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStreamExceptions.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStream.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsToTargetBase.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp \
+	$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp \
+	$(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp \
+	$(srcdir)/MoochoUtilities/src/SpecialASCII.hpp \
+	$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp \
+	$(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp \
+	$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_Algorithm.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmSetOptions.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmState.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmStep.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmTracker.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_AlgorithmTrackerComposite.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_CastIQMember.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantity.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantityAccess.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguous.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDecl.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDef.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_Types.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_cast_iq.hpp \
+	$(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.hpp \
+	$(srcdir)/RTOpPack/src/base/RTOp.h \
+	$(srcdir)/RTOpPack/src/base/RTOpToMPI.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_SparseSubVector.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_mpi.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_apply_op_serial.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_free_free.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_index_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_null_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_index_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_value_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_value_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_obj_values_vtbl.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_max_value.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_min_value.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_value.h \
+	$(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.h \
+	$(srcdir)/RTOpPack/src/base/check_nan_inf.h \
+	$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.hpp \
+	$(srcdir)/RTOpPack/src/base/RTOpPack_RTOpCPostMod.hpp \
+	$(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp \
+	$(srcdir)/RTOpPack/src/base/RTOpPack_print_sub_vector.hpp \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_combined_nu_comp_err.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_comp_err_with_mu.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_dot_prod.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_find_nan_inf.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_boundary.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_fraction_to_zero_boundary.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_ele.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_get_sub_vector.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_log_bound_barrier.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_abs_ele.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_inequ_viol.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_near_feas_step.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_rel_step.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_max_step.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_norms.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_bounded.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_num_nonzeros.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_ROp_sum_abs.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_add_scalar.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_scalar.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_assign_vectors.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_axpy.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_correct_multipliers.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_divide.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_prod.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_ele_wise_sqrt.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_force_in_bounds.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_inv_of_difference.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_abs_vec_scalar.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_max_vec_scalar.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_multiplier_step.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_random_vector.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_scale_vector.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_ele.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_set_sub_vector.h \
+	$(srcdir)/RTOpPack/src/std_ops/RTOp_TOp_sign.h \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOp.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOut.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOutFunc.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_ElementaryMatVec.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOBasic.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IOFormat.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IO_NameLookups.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_IVector.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormat.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDecl.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InFormatDef.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_InvCholUpdate.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_Cpp.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Options.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_OutFormat.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Types.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_extended_value_type.hpp \
+	$(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_random_vector.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_Types.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystem.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystemFactory.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystemPerm.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_EtaVector.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSlice.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceIterator.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProduct.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_InnerProductDot.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_LinAlgOpPack.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixBase.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixNonsing.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsing.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpNonsingAggr.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixOpSubView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixPermAggr.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymDiag.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymInitDiag.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymNonsing.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymOpNonsing.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MatrixSymSecant.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVector.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_MultiVectorMutable.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Permutation.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_PermutationOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClassDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVecIndexLookupClassDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorClass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SpVectorView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseElement.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClassDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_SparseVectorClassDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_Vector.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorApplyOpSerialBase.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutable.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorMutableSubView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpace.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceFactory.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSpaceSubSpace.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorStdOps.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_compare_element_indexes.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixComposite.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixOpNonsingTester.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymDiagStd.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixSymIdent.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_MatrixZero.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceBlocked.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTester.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorSpaceTesterSetOptions.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_assert_print_nan_inf.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_BFGS_helpers.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMPartitionOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMPartitionOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixClass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixIn.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixOutFunc.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionViewSubclass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClassDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixPartitionedViewClassDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumn.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplConvertToSparseCompressedColumnDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOpDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOpDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFunc.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixTmplOutFuncDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_COOMatrixWithPartitionedViewSubclass.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixBasisNonbasisStd.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixCOORTmplItfc.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSparseCOORSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymDiagSparseStd.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixVectorTemplateOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixVectorTemplateOpDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_MatrixWithOpConcreteEncap.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_PermutationSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SortByDescendingAbsValue.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SpVectorOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOElementTransView.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOPtrElement.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseCOOReadMatrix.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseElementOut.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparsePtrElement.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOpDecl.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOpDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOutput.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorOutputDef.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_SparseVectorSliceOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_TransSparseCOOElementViewIter.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_VectorDenseEncap.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_dense_Vp_StPtMtV.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_rank_2_chol_update.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/implementations/AbstractLinAlgPack_sparse_bounds_diff.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_ConvertToCSC.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixBasisNonbasis.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparse.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixConvertToSparseEncap.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractInvCholFactor.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixExtractSparseElements.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixLoadSparseElements.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixNonsingSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMS.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMSMutable.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpGetGMSTri.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpNonsingSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixOpSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymAddDelUpdateable.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDenseInitialize.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymDiagSparse.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymNonsingSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpGetGMSSym.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpGetGMSSymMutable.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpNonsingSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MatrixSymOpSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableCols.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_MultiVectorMutableDense.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorMutableDense.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceFactorySerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolver.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MatrixScaling_Strategy.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp \
+	$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp \
+	$(srcdir)/NLPInterfacePack/src/NLPInterfacePack_Types.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPDirect.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPFirstOrder.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPObjGrad.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPSecondOrder.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPVarReductPerm.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTester.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPDirectTesterSetOptions.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTester.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPFirstDerivTesterSetOptions.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTester.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_NLPTesterSetOptions.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp \
+	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.hpp \
+	$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocess.hpp \
+	$(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.hpp \
+	$(srcdir)/ConstrainedOptPack/src/ConstrainedOptPack_Types.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemOrthogonal.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTester.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemTesterSetOptions.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReduct.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductImp.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPerm.hpp \
+	$(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemVarReductPermStd.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_Strategy.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearchArmQuad_StrategySetOptions.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_DirectLineSearch_Strategy.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1D.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalc1DQuadratic.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLE.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncCalcNLP.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLE.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLESqrResid.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLP.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPDirecDeriv.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPL1.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncNLPModL1.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParam.hpp \
+	$(srcdir)/ConstrainedOptPack/src/globalization/ConstrainedOptPack_MeritFuncPenaltyParams.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixDecompRangeOrthog.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixGenBanded.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianRelaxed.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasic.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixHessianSuperBasicInitDiagonal.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcat.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixIdentConcatStd.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixKKTFullSpaceRelaxed.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelBunchKaufman.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymAddDelUpdateableWithOpNonsingular.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymHessianRelaxNonSing.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymIdentitySerial.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefBandedChol.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefInvCholFactor.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGS.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixSymPosDefLBFGSSerial.hpp \
+	$(srcdir)/ConstrainedOptPack/src/matrices/ConstrainedOptPack_MatrixVarReductImplicit.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_ComputeMinMult.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTester.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_VariableBoundsTesterSetOptions.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_initialize_Q_R_Q_X.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_print_vector_change_stats.hpp \
+	$(srcdir)/ConstrainedOptPack/src/misc/ConstrainedOptPack_vector_change_stats.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_ConstraintsRelaxedStd.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPInitFixedFreeStd.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPKWIK_Output.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPOPT_CppDecl.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchur.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFixedFree.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianFull.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianRelaxed.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSchurInitKKTSystemHessianSuperBasic.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxed.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedLOQO.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPKWIK.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPT.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPOPTSOL.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchur.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedQPSchurSetOptions.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTester.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverRelaxedTesterSetOptions.hpp \
+	$(srcdir)/ConstrainedOptPack/src/qpsolvers/ConstrainedOptPack_QPSolverStats.hpp \
+	$(srcdir)/MoochoPack/configurations/MoochoPack_MoochoSolver.hpp \
+	$(srcdir)/MoochoPack/configurations/IpConfig/MoochoPack_NLPAlgoConfigIP.hpp \
+	$(srcdir)/MoochoPack/configurations/MamaJama/MoochoPack_NLPAlgoConfigMamaJama.hpp \
+	$(srcdir)/MoochoPack/configurations/Shared/MoochoPack_DecompositionSystemStateStepBuilderStd.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_IpState.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_Exceptions.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_Types.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgo.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoClientInterface.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoConfig.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoContainer.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoInterface.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPAlgoState.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterface.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_NLPSolverClientInterfaceSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/MoochoPack_moocho_algo_conversion.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ActSetStats.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ActSetStats_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_BFGSUpdate_StrategySetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPYZPZ_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromYPY_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcDFromZPZ_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcD_vStep_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcLambdaIndepStd_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CalcReducedGradLagrangianStd_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceIP_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_AddedStepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergenceStd_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckConvergence_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromPy_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDecompositionFromRPy_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckDescentQuasiNormalStep_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CheckSkipBFGSUpdateStd_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_CrossTermExactStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DampenCrossTermStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerSelectNew_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerStd_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandlerVarReductPerm_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_DecompositionSystemHandler_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointStd_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachCoordinate_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproachOrthogonal_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_EvalNewPointTailoredApproach_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStepReducedStd_StrategySetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_FeasibilityStep_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_InitFinDiffReducedHessian_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearch2ndOrderCorrect_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchDirect_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFailureNewDecompositionSelection_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFilter_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStepAfterKIter_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchFullStep_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchNLE_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_LineSearchWatchDog_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_DummyUpdate_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoAlgorithmStepNames.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerConsoleStd.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerStatsStd.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerSummaryStd.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_MoochoTrackerXMLSummary.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelectionStd_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_NewDecompositionSelection_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_NumFixedDepIndep_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PBFGS_helpers.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PostEvalNewPointBarrier_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PostProcessBarrierLineSearch_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PreEvalNewPointBarrier_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_PreProcessBarrierLineSearch_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QPFailureReinitReducedHessian_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNewtonStats.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiNormalStepStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepStd_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStepTailoredApproach_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_QuasiRangeSpaceStep_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedGradientStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianExactStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateBFGSFull_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdateStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSecantUpdate_Strategy.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_ReducedHessianSerialization_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_SetDBoundsStd_AddedStep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepIP_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithInequStd_StepSetOptions.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_TangentialStepWithoutBounds_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_UpdateBarrierParameter_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_UpdateReducedSigma_Step.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_act_set_stats.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_active_set_change.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_d_bounds_iter_quant.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_get_init_fixed_free_indep.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_qp_solver_stats.hpp \
+	$(srcdir)/MoochoPack/src/std/MoochoPack_quasi_newton_stats.hpp
 includeHEADERS_INSTALL = $(INSTALL_HEADER)
 nodist_execincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(include_HEADERS) $(nodist_execinclude_HEADERS)
@@ -789,6 +1613,12 @@ DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
+ENABLE_AMESOS_THYRA_FALSE = @ENABLE_AMESOS_THYRA_FALSE@
+ENABLE_AMESOS_THYRA_TRUE = @ENABLE_AMESOS_THYRA_TRUE@
+ENABLE_EPETRAEXT_THYRA_FALSE = @ENABLE_EPETRAEXT_THYRA_FALSE@
+ENABLE_EPETRAEXT_THYRA_TRUE = @ENABLE_EPETRAEXT_THYRA_TRUE@
+ENABLE_MOOCHO_MA28_FALSE = @ENABLE_MOOCHO_MA28_FALSE@
+ENABLE_MOOCHO_MA28_TRUE = @ENABLE_MOOCHO_MA28_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -1169,6 +1999,22 @@ DENSE_LIN_ALG_PACK_CPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.cpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.cpp
 
+@ENABLE_MOOCHO_MA28_FALSE@ABSTRACT_LIN_ALG_PACK_MA28_HPP = 
+@ENABLE_MOOCHO_MA28_TRUE@ABSTRACT_LIN_ALG_PACK_MA28_HPP = \
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp
+
+@ENABLE_MOOCHO_MA28_FALSE@ABSTRACT_LIN_ALG_PACK_MA28_CPP = 
+@ENABLE_MOOCHO_MA28_TRUE@ABSTRACT_LIN_ALG_PACK_MA28_CPP = \
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp\
+@ENABLE_MOOCHO_MA28_TRUE@  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp
+
 ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_Types.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.hpp\
@@ -1328,15 +2174,12 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolver.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.hpp\
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MatrixScaling_Strategy.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.hpp
+  $(ABSTRACT_LIN_ALG_PACK_MA28_HPP)
 
+
+#  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.hpp
+#  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp
 ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.cpp \
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AbstractLinAlgOpPack.cpp \
@@ -1418,14 +2261,11 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_BasisSystemFactoryStd.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverImp.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverDense.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28CommonBlockEncap.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
+  $(ABSTRACT_LIN_ALG_PACK_MA28_CPP)
 
+
+# $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp
+# $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
 ABSTRACT_LIN_ALG_PACK_F = \
   $(srcdir)/AbstractLinAlgPack/src/serial/implementations/dchud.f
 
@@ -1971,7 +2811,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverImp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverMA28.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSlice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceIterator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOp.Po@am__quote@
@@ -2019,7 +2858,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SpVectorOut.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SpVectorView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SparseVectorClass.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_TestMatrixSymSecant.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_Vector.Po@am__quote@
@@ -5190,22 +6028,6 @@ AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.obj: $(srcdir)/AbstractLinAl
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.cpp'; fi`
 
-AbstractLinAlgPack_DirectSparseSolverSuperLU.o: $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_DirectSparseSolverSuperLU.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo" -c -o AbstractLinAlgPack_DirectSparseSolverSuperLU.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo" "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp' object='AbstractLinAlgPack_DirectSparseSolverSuperLU.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_DirectSparseSolverSuperLU.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp
-
-AbstractLinAlgPack_DirectSparseSolverSuperLU.obj: $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_DirectSparseSolverSuperLU.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo" -c -o AbstractLinAlgPack_DirectSparseSolverSuperLU.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo" "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp' object='AbstractLinAlgPack_DirectSparseSolverSuperLU.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_DirectSparseSolverSuperLU.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_DirectSparseSolverSuperLU.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_DirectSparseSolverSuperLU.cpp'; fi`
-
 AbstractLinAlgPack_MA28_CppDecl.o: $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MA28_CppDecl.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MA28_CppDecl.Tpo" -c -o AbstractLinAlgPack_MA28_CppDecl.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28_CppDecl.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MA28_CppDecl.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MA28_CppDecl.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MA28_CppDecl.Tpo"; exit 1; fi
@@ -5253,22 +6075,6 @@ AbstractLinAlgPack_MA28Solver.obj: $(srcdir)/AbstractLinAlgPack/src/serial/solve
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MA28Solver.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MA28Solver.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MA28Solver.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_MA28Solver.cpp'; fi`
-
-AbstractLinAlgPack_SuperLUSolver.o: $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_SuperLUSolver.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo" -c -o AbstractLinAlgPack_SuperLUSolver.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo" "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp' object='AbstractLinAlgPack_SuperLUSolver.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_SuperLUSolver.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
-
-AbstractLinAlgPack_SuperLUSolver.obj: $(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_SuperLUSolver.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo" -c -o AbstractLinAlgPack_SuperLUSolver.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo" "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp' object='AbstractLinAlgPack_SuperLUSolver.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_SuperLUSolver.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_SuperLUSolver.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/serial/solvers/AbstractLinAlgPack_SuperLUSolver.cpp'; fi`
 
 NLPInterfacePack_NLP.o: $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLP.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLP.Tpo" -c -o NLPInterfacePack_NLP.o `test -f '$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.cpp; \

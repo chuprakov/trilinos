@@ -43,7 +43,7 @@ for (my $i = 0; $i < @ARGV; ++$i) {
 #
 open FILE_OUT, ">Moocho.opt" || die "The file Moocho.opt could not be opended for output\n";
 #
-my $moocho_conf_base_dir = "$ENV{MOOCHO_BASE_DIR}/Moocho/core/MoochoPack/configurations";
+my $moocho_conf_base_dir = "$ENV{MOOCHO_BASE_DIR}/moocho/src/MoochoPack/configurations";
 #
 print FILE_OUT "*** Automatically generated options file\n\nbegin_options\n";
 #
@@ -67,6 +67,7 @@ sub output_options {
   #
   my $file_name      = shift;
   my $print_comments = shift;
+  #print "\nfile_name = $file_name\n";
   #
   open FILE_IN, "<$file_name" || die "Error, could not open \'$file_name\' for input: $!";
   #

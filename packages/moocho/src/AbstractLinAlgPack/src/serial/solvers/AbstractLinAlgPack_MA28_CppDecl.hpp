@@ -31,8 +31,6 @@
 // names for its identifers then the declarations in Teuchos_F77_wrappers.h should be
 // sufficent for portability.
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #ifndef MA28_CPPDECL_H
 #define MA28_CPPDECL_H
 
@@ -595,5 +593,3 @@ inline void ma28cd(const f_int& n, const f_dbl_prec a[], const f_int& licn, cons
 } // end namespace MA28_CDecl
 
 #endif // MA28_CPPDECL_H
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

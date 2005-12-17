@@ -26,8 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #include <assert.h>
 
 #include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
@@ -119,5 +117,3 @@ void DirectSparseSolverMA28SetOptions::setOption(
 }
 
 }	// end namespace AbstractLinAlgPack 
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

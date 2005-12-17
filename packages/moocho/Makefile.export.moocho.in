@@ -3,11 +3,11 @@
 include @abs_top_builddir@/../thyra/Makefile.export.thyra
 
 # ToDo: Make this dependence optional
-include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
-include @abs_top_builddir@/../amesos/Makefile.export.amesos
+@ENABLE_EPETRAEXT_THYRA_TRUE@include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
+@ENABLE_AMESOS_THYRA_TRUE@include @abs_top_builddir@/../amesos/Makefile.export.amesos
 
-MOOCHO_EPETRAEXT_INCLUDES = $(AMESOS_INCLUDES) $(EPETRAEXT_INCLUDES)
-MOOCHO_EPETRAEXT_LIBS = $(AMESOS_LIBS) $(EPETRAEXT_LIBS)
+@ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_INCLUDES = $(AMESOS_INCLUDES) $(EPETRAEXT_INCLUDES)
+@ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_LIBS = $(AMESOS_LIBS) $(EPETRAEXT_LIBS)
 
 _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/MoochoPack/src/std\

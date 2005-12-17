@@ -26,8 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #include <assert.h>
 
 #include <fstream>
@@ -611,5 +609,3 @@ void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
 }
 
 }	// end namespace AbstractLinAlgPack 
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

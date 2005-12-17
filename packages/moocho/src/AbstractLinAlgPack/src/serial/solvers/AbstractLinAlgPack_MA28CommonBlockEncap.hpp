@@ -29,8 +29,6 @@
 // These classes are used to encapsulate the copy of ma28 common block data from
 // on set to another.
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #ifndef MA28_COMMON_BLOCK_ENCAP_H
 #define MA28_COMMON_BLOCK_ENCAP_H
 
@@ -155,5 +153,3 @@ public:
 }	// end namespace MA28_Cpp
 
 #endif // MA28_COMMON_BLOCK_ENCAP_H
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28

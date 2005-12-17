@@ -26,8 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-
 #ifndef DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 #define DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 
@@ -79,5 +77,3 @@ protected:
 }	// end namespace AbstractLinAlgPack 
 
 #endif	// DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
-
-#endif // SPARSE_SOLVER_PACK_USE_MA28
