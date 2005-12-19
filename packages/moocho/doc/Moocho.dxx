@@ -1,17 +1,14 @@
 /*
 
-This is the main documentation file for MOOCHO.
-For this to work properly doxygen must be run in this
-directory for these include paths to work.  The paths
-must always be relative to the directory that doc++
-is invoked in.  That is the rule that I discovered by
-running through doc++ in the debugger.
+This is the main documentation file for MOOCHO.  For this to work properly
+doxygen must be run in this directory for these include paths to work.  The
+paths must always be relative to the directory that doxygen is invoked in.
 
 */
 
-/** \mainpage MOOCHO: Object-Oriented arCHitecture for Optimization
+/** \mainpage MOOCHO: Multi-functional Object-Oriented arCHitecture for Optimization
 
-This is a reference for the projects of C++ classes and functions that
+This is a reference for the collections of C++ classes and functions that
 comprise MOOCHO.
 
 Warning!  The documentation is still under construction and is not
@@ -24,7 +21,6 @@ extensive.
 	Packages that are used in the implementation of the other packages.
 	<ul>
 	<li> <A HREF="../MoochoUtilities/html/index.html">MoochoUtilities</A>
-	<li> <A HREF="../MoochoMoreUtilities/html/index.html">MoochoMoreUtilities</A>
 	</ul>
 
 <li> Abstractions for General Iterative Algorithms:
@@ -71,7 +67,7 @@ extensive.
 	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>: SQP-related algorithms and algorithm building blocks.
 	</ul>
 
-<li> Example projects:
+<li> Examples:
 	<ul>
 	<li> <A HREF="../ExampleRTOpSimple/html/index.html">ExampleRTOpSimple</A>.
 	<li> <A HREF="../ExampleNLPDirect/html/index.html">ExampleNLPDirect</A>.
