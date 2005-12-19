@@ -8,6 +8,7 @@ use strict 'refs';
 use FileHandle;
 use File::Copy;
 use File::Path;
+use File::Basename;
 use Cwd;
 #
 my $g_use_msg =
@@ -43,7 +44,8 @@ for (my $i = 0; $i < @ARGV; ++$i) {
 #
 open FILE_OUT, ">Moocho.opt" || die "The file Moocho.opt could not be opended for output\n";
 #
-my $moocho_conf_base_dir = "$ENV{MOOCHO_BASE_DIR}/moocho/src/MoochoPack/configurations";
+my ( $this_script_name, $moocho_conf_base_dir, $this_script_suffix)
+  = fileparse($0);
 #
 print FILE_OUT "*** Automatically generated options file\n\nbegin_options\n";
 #
