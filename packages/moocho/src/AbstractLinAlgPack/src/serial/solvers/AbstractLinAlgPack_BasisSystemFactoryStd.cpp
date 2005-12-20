@@ -29,13 +29,16 @@
 #include "AbstractLinAlgPack_BasisSystemFactoryStd.hpp"
 #include "AbstractLinAlgPack_BasisSystemPermDirectSparse.hpp"
 #include "AbstractLinAlgPack_DirectSparseSolverDense.hpp"
-#include "AbstractLinAlgPack_DirectSparseSolverMA28.hpp"
-#include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
 #include "AbstractLinAlgPack_DirectSparseSolverSuperLU.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "OptionsFromStreamPack_OptionsFromStream.hpp"
 #include "OptionsFromStreamPack_StringToIntMap.hpp"
 #include "OptionsFromStreamPack_StringToBool.hpp"
+
+#ifdef HAVE_MOOCHO_MA28
+#include "AbstractLinAlgPack_DirectSparseSolverMA28.hpp"
+#include "AbstractLinAlgPack_DirectSparseSolverMA28SetOptions.hpp"
+#endif
 
 namespace AbstractLinAlgPack {
 
