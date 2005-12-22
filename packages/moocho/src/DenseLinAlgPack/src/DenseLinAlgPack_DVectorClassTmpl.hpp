@@ -1287,13 +1287,13 @@ typename VectorTmpl<T>::difference_type VectorTmpl<T>::stride() const
 template<class T>
 EOverLap VectorSliceTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 
-	const VectorSliceTmpl<T>::value_type
+	const typename VectorSliceTmpl<T>::value_type
 		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (dim()-1)*stride() ),
 		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.dim()-1)*vs.stride() );
-	VectorSliceTmpl<T>::size_type
+	typename VectorSliceTmpl<T>::size_type
 		size1 = dim(),
 		size2 = vs.dim();
-	VectorSliceTmpl<T>::difference_type
+	typename VectorSliceTmpl<T>::difference_type
 		stride1 = ::abs(stride()),
 		stride2 = ::abs(vs.stride());
 
@@ -1308,7 +1308,7 @@ EOverLap VectorSliceTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) cons
 		return NO_OVERLAP; // can't be any overlap
 	}
 
-	VectorSliceTmpl<T>::size_type
+	typename VectorSliceTmpl<T>::size_type
 		start1 = 0,
 		start2 = raw_ptr2 - raw_ptr1;
 

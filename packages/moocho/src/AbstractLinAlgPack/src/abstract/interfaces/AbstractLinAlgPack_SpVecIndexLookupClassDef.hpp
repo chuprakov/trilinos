@@ -99,7 +99,7 @@ AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::find_p
 }
 
 template<class T_Element>
-typename AbstractLinAlgPack::size_type
+AbstractLinAlgPack::size_type
 AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::find_element(
 	index_type index, bool is_sorted ) const
 {

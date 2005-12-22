@@ -48,10 +48,10 @@ class ReducedHessianSerialization_Step
 public:
 
 	/// Pick the file name to read in the reduced Hessian from
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_input_file_name );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_input_file_name )
 
 	/// Pick the file name to write in the reduced Hessian to
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_output_file_name );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_output_file_name )
 
 	///
 	ReducedHessianSerialization_Step(

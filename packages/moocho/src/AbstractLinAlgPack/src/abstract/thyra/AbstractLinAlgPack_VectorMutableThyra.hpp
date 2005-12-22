@@ -137,7 +137,7 @@ private:
 	VectorSpaceThyra                                       space_;
 
 	// Not defined and not to be called!
-	VectorMutableThyra(const VectorMutableThyra&);
+	//VectorMutableThyra(const VectorMutableThyra&);
 	VectorMutableThyra& operator=(const VectorMutableThyra&);
 
 }; // class VectorMutableThyra 

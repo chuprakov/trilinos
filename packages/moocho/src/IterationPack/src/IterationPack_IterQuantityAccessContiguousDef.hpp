@@ -121,7 +121,7 @@ bool IterQuantityAccessContiguous<T_info>::updated_k(int offset) const {
 template<class T_info>
 int IterQuantityAccessContiguous<T_info>::last_updated() const {
 	if( !is_initialized() )
-		return NONE_UPDATED;
+		return base_t::NONE_UPDATED;
 	// Find the last still set as updated.
 	for(	int offset = max_offset_;
 			offset >= max_offset_ - num_quantities_ + 1;
@@ -130,12 +130,12 @@ int IterQuantityAccessContiguous<T_info>::last_updated() const {
 		if( updated_[max_offset_ - offset] )
 			return offset;
 	}
-	return NONE_UPDATED;
+	return base_t::NONE_UPDATED;
 }
 
 template<class T_info>
 void IterQuantityAccessContiguous<T_info>::set_not_updated_k(int offset) {
-	assert_updated_k(offset);
+	this->assert_updated_k(offset);
 	updated_[max_offset_ - offset] = false;
 }
 
@@ -147,7 +147,7 @@ void IterQuantityAccessContiguous<T_info>::set_all_not_updated() {
 
 template<class T_info>
 bool IterQuantityAccessContiguous<T_info>::will_loose_mem(int offset, int set_offset) const {
-	assert_updated_k(offset);
+	this->assert_updated_k(offset);
 	return set_offset - max_offset_ > num_quantities_ - (max_offset_ - offset) - 1;
 }
 
@@ -162,7 +162,7 @@ template<class T_info>
 void IterQuantityAccessContiguous<T_info>::print_concrete_type( std::ostream& out ) const
 {
 	const int last_updated = this->last_updated();
-	if(last_updated != NONE_UPDATED)
+	if(last_updated != base_t::NONE_UPDATED)
 		out << typeid(get_k(last_updated)).name();
 	else if( abstract_factory_.get() == NULL )
 		out << "NULL";
@@ -174,12 +174,12 @@ void IterQuantityAccessContiguous<T_info>::print_concrete_type( std::ostream& ou
 
 template<class T_info>
 T_info& IterQuantityAccessContiguous<T_info>::get_k(int offset) {
-	assert_updated_k(offset);
+	this->assert_updated_k(offset);
 	return *quantities_[max_offset_ - offset];
 }
 template<class T_info>
 const T_info& IterQuantityAccessContiguous<T_info>::get_k(int offset) const {
-	assert_updated_k(offset);
+	this->assert_updated_k(offset);
 	return *quantities_[max_offset_ - offset];
 }
 
@@ -188,7 +188,7 @@ T_info& IterQuantityAccessContiguous<T_info>::set_k(int offset) {
 
 	lazy_initialization();
 
-	assert_has_storage_k(offset);	// assert that we are not trying to iterate backwards
+	this->assert_has_storage_k(offset);	// assert that we are not trying to iterate backwards
 
 	if(offset > max_offset_ + num_quantities_ - 1) {
 		// There will be no back memory so you don't need to adjust the pointers

@@ -74,6 +74,9 @@ template<class T_info>
 class IterQuantityAccessContiguous : public IterQuantityAccess<T_info> {
 public:
 
+  ///
+  typedef IterQuantityAccess<T_info> base_t;
+
 	///
 	typedef Teuchos::RefCountPtr<
 		const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;

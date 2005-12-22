@@ -208,7 +208,7 @@ private:
 	VectorSpaceSerial         space_;
 
 	// Not defined and not to be called
-	VectorMutableDense(const VectorMutableDense&);
+	//VectorMutableDense(const VectorMutableDense&);
 	VectorMutableDense& operator=(const VectorMutableDense&);
 
 }; // end class VectorMutableDense

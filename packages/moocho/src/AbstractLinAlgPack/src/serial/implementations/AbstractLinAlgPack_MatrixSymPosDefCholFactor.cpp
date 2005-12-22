@@ -308,10 +308,9 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	// If only the original is updated
 	if(did_op) {
 		if( diag_op && is_diagonal_ )
-			init_diagonal( VectorMutableDense(
-				this->M().gms().diag(), Teuchos::null ) );
+			this->init_diagonal(VectorMutableDense(this->M().gms().diag(),Teuchos::null));
 		else
-			initialize( this->M() );
+			this->initialize(this->M());
 		return true;
 	}
 	return false;
