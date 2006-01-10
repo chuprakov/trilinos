@@ -72,7 +72,10 @@ NLPDirectTester::NLPDirectTester(
 	,Gc_warning_tol_(Gc_warning_tol)
 	,Gc_error_tol_(Gc_error_tol)
 	,num_fd_directions_(num_fd_directions)
-{}
+{
+  if(calc_fd_prod_ == Teuchos::null)
+    calc_fd_prod_ = Teuchos::rcp(new CalcFiniteDiffProd());
+}
 
 bool NLPDirectTester::finite_diff_check(
 	NLPDirect         *nlp
