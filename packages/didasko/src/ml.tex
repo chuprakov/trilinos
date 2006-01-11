@@ -95,7 +95,7 @@ methods that are easier to use.
 In AMG, both the matrix hierarchy and the prolongation operators are
 constructed just from the stiffness matrix.  
 Recall that to use Aztec00 or IFPACK,  a user must 
-supply a linear system, a select a preconditioning strategy.
+supply a linear system, and select a preconditioning strategy.
 In AMG, the only additional information required 
 from the user is to specify a coarsening strategy.
 
@@ -335,7 +335,7 @@ Users must include it, and along with some subset of
 \verb!Epetra_MultiVector.h!
 and
 \verb!Epetra_LinearProblem.h!.
-Check the Epetra and AztecOO documentation may be helpful on this topic.
+Check the Epetra and AztecOO documentation for more information on this topic.
 
 The next steps proceed exactly as in \S~\ref{sec:ml_prec}:
 \begin{verbatim}

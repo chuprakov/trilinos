@@ -270,7 +270,7 @@ To sum up, the main options reviewed here are:
   continuous chunks among the processors. This is the default value.} \\
 {\tt box} & {Used for problems defined on Cartesian grids over a
   square. The domain is subdivided into {\tt mx x my} subdomains.  {\tt mx}
-  and {\tt my} are automatically computed if the total number or
+  and {\tt my} are automatically computed if the total number of
   processes is a perfect square. Alternatively, {\tt
     mx} and {\tt my} are specified via {\tt Set("mx",IntValue)} and {\tt
     Set("my",IntValue)}.} \\
@@ -303,7 +303,7 @@ To sum up, the main options reviewed here are:
   \label{tab:triutils:exact}
 \end{table}
 
-A list of currently avaialble problems is reported below. We use the
+A list of currently available problems is reported below. We use the
 following notation.  \verb!IntValue! always refer to a generic positive
 integer. The following symbols {\tt a,b,c,d,e,f,g} always refer to
 double-precision values.  Note that some matrices are dense, but still
@@ -578,7 +578,7 @@ int main(int argc, char *argv[])
   // various computatons...
 
   // check that computed solution (in StartingSolution) 
-  // is close enough the ExactSolution
+  // is close enough to ExactSolution
 
   double residual, diff;
 

@@ -52,7 +52,7 @@ Epetra\_MultiVector objects.
 
 The Chapter reviews the following topics:
 \begin{itemize}
-\item Outline the basic issued of the iterative solution of linear
+\item Outline the basic issue of the iterative solution of linear
   systems (in \S~\ref{aztecoo:theoretical});
 \item Present the basic usage of AztecOO (in
   \S~\ref{sec:basic_aztecoo});
@@ -226,14 +226,14 @@ depends on the number of processor.
 When \verb!Iterate()! returns, one can query for the number of
 iterations performed by the linear solver using
 \verb!Solver.NumIters()!, while \verb!Solver.TrueResidual()! gives the
-(unscaled) norm the residual.
+(unscaled) norm of the residual.
 
 %%%
 %%%
 %%%
 \section{Overlapping Domain Decomposition Preconditioners}
 \label{sec:aztecoo_dd}
-A one level overlapping domain decomposition preconditioners $P$ takes the form
+A one level overlapping domain decomposition preconditioner $P$ takes the form
 \begin{equation}
   \label{eq:prec_dd}
   P^{-1} = \sum_{i=1}^M R_i^T \tilde{A}_i^{-1} R_i,
@@ -345,9 +345,9 @@ The second category contains preconditioners
 such as polynomial preconditioners
 that are defined by the action of
 the matrix on some set of vectors.
-For example only category two preconditioners apply in matrix free mode.
+Note that only category two preconditioners apply in matrix free mode.
 The topic of this section is another type of category two preconditioner, 
-preconditioning one Krylov subspace method by another Krylov subspace method, 
+preconditioning one Krylov subspace method by another Krylov subspace method. 
 
 AztecOO accepts Epetra\_Operator objects as preconditioners. That is
 any class, derived from an Epetra\_Operator implementing the
@@ -446,7 +446,7 @@ The following methods are often used:
 \item \verb!NumIters()! returns the total number of iterations performed
   on {\sl this} problem;
 \item \verb!TrueResidal()! returns the true unscaled residual;
-\item \verb!ScaledResidual()! returns the unscaled residual;
+\item \verb!ScaledResidual()! returns the true scaled residual;
 \item \verb!SetAztecDefaults()! can be used to restore default values in
   the options and params vectors.
 \end{itemize}
