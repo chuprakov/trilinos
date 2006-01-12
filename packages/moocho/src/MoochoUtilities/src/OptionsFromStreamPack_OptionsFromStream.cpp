@@ -162,9 +162,10 @@ void OptionsFromStream::print_options( std::ostream& out ) const {
 	out << "\nbegin_options\n";
 	const_iterator og_itr = begin();
 	for( ; og_itr != end(); ++og_itr ) {
-		out << "\noptions_group " << options_group_name( og_itr ) << " {\n";
 		const options_group_t optgrp = OptionsFromStreamPack::options_group( og_itr );
 		options_group_t::const_iterator itr = optgrp.begin();
+    if(itr == optgrp.end()) continue;
+		out << "\noptions_group " << options_group_name( og_itr ) << " {\n";
 		for( ; itr != optgrp.end(); ++itr ) {
 			const std::string
 				&name  = option_name(itr),
