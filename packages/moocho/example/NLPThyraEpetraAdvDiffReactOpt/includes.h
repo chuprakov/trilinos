@@ -31,7 +31,10 @@ int meshreader(const Epetra_Comm &,
                Epetra_SerialDenseMatrix &,
                Epetra_IntSerialDenseMatrix &,
                Epetra_IntSerialDenseMatrix &,
-               const char myfile[]);
+               const char geomFileBase[],
+               const bool trace = true,
+               const bool dumpAll = false
+               );
 
 int lassembly(const Epetra_SerialDenseMatrix &,
               const Epetra_SerialDenseVector &,

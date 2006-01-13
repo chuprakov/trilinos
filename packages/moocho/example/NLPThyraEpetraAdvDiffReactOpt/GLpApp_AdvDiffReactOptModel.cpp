@@ -1,5 +1,6 @@
 #include "GLpApp_AdvDiffReactOptModel.hpp"
 #include "Teuchos_ScalarTraits.hpp"
+#include "Teuchos_VerboseObject.hpp"
 #include "Epetra_SerialComm.h"
 #include "Epetra_CrsMatrix.h"
 
@@ -15,9 +16,12 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
   ,const double                                              x0
   ,const double                                              p0
+  ,const bool                                                dumpAll
 )
   :dat_(dat)
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = Teuchos::VerboseObjectBase::getDefaultOStream();
   //
   // Get the maps
   //
@@ -42,9 +46,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   //
   // Initialize the graph for W
   //
-
-  // ToDo: Implement this!
-
+  dat_->computeNpy(x0_);
+  if(dumpAll) { *out << "\nA =\n"; { Teuchos::OSTab tab(out); dat_->getA()->Print(*out); } }
+  if(dumpAll) { *out << "\nNpy =\n"; {  Teuchos::OSTab tab(out); dat_->getNpy()->Print(*out); } }
+  W_graph_ = Teuchos::rcp(new Epetra_CrsGraph(dat_->getA()->Graph())); // Assume A and Npy have same graph!
   //
   isInitialized_ = true;
 }
@@ -129,7 +134,7 @@ AdvDiffReactOptModel::createInArgs() const
   inArgs.setModelEvalDescription(this->description());
   //inArgs.set_Np(1);
   inArgs.setSupports(IN_ARG_x,true);
-  //inArgs.setSupports(IN_ARG_beta,true);
+  inArgs.setSupports(IN_ARG_beta,true);
   return inArgs;
 }
 
@@ -217,8 +222,32 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 */
   if(W_inout.get()) {
     const double beta = inArgs.get_beta();
+    dat_->computeNpy(Teuchos::rcp(&x,false));
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_inout);
-    TEST_FOR_EXCEPT(true);
+    Teuchos::RefCountPtr<Epetra_CrsMatrix>
+      dat_A = dat_->getA(),
+      dat_Npy = dat_->getNpy();
+    const int numMyRows = dat_A->NumMyRows();
+    for( int i = 0; i < numMyRows; ++i ) {
+      int dat_A_num_row_entries=0; double *dat_A_row_vals=0; int *dat_A_row_inds=0;
+      dat_A->ExtractMyRowView(i,dat_A_num_row_entries,dat_A_row_vals,dat_A_row_inds);
+      int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
+      dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
+#ifdef _DEBUG
+      TEST_FOR_EXCEPT(dat_A_num_row_entries!=dat_Npy_num_row_entries);
+#endif
+      int DfDx_num_row_entries=0; double *DfDx_row_vals=0; int *DfDx_row_inds=0;
+      DfDx.ExtractMyRowView(i,DfDx_num_row_entries,DfDx_row_vals,DfDx_row_inds);
+#ifdef _DEBUG
+      TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_Npy_num_row_entries);
+#endif
+      for(int k = 0; k < DfDx_num_row_entries; ++k) {
+#ifdef _DEBUG
+        TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
+#endif
+        DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + dat_Npy_row_vals[k]);
+      }
+    }
   }
 /*
   if(DfDp_inout.get()) {

@@ -40,7 +40,7 @@ for( $i = 0; $i < $num_nodes; ++$i ) {
   $line = <MESH_IN_NODE>;
   my ($node_idx, $node_x, $node_y) = split(" ",$line);
   print "(node_idx,node_x,node_y) = ($node_idx,$node_x,$node_y)\n" if $debug;
-  printf MESH_OUT "%d %e %e\n", $node_idx, $node_x, $node_y;
+  printf MESH_OUT "%d %e %e %d\n", $node_idx, $node_x, $node_y, 0;
 }
 close MESH_IN_NODE || die;
 #
@@ -48,7 +48,7 @@ print "\nWrite the bogus node lines that metis would have written ...\n";
 #
 print MESH_OUT "0 0\n";
 for( $i = 0; $i < $num_nodes; ++$i ) {
-  printf MESH_OUT "%d %e %e\n", 0, 0, 0;
+  printf MESH_OUT "%d %e %e %d\n", 0, 0, 0, 0;
 }
 #
 print "\nRead the ${input_mesh_base_fn}.ele element file and write the elements ...\n\n";

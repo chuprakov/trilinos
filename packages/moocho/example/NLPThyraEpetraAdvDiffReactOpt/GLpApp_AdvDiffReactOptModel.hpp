@@ -22,6 +22,7 @@ public:
     Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
     ,const double                                              x0  = 0.0
     ,const double                                              p0  = 1.0
+    ,const bool                                                dumpAll = false
     );
 
   /** \name Overridden from EpetraExt::ModelEvaluator . */

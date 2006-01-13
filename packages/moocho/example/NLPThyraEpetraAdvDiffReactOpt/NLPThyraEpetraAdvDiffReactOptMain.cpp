@@ -8,6 +8,8 @@
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
+#include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_oblackholestream.hpp"
 
 #ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
@@ -29,6 +31,8 @@ int main( int argc, char* argv[] )
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
+  const int procRank = Teuchos::GlobalMPISession::getRank();
+  //const int numProcs = Teuchos::GlobalMPISession::getNProc();
 
 	try {
 	
@@ -36,19 +40,23 @@ int main( int argc, char* argv[] )
 		// Get options from the command line
 		//
 
-    std::string  geomFile    = "";
-    double       beta        = 1.0;
-    double       x0          = 0.0;
-    double       p0          = 1.0;
-		bool         do_sim      = false;
+    std::string  geomFileBase    = "";
+    double       beta            = 1.0;
+    double       x0              = 0.0;
+    double       p0              = 1.0;
+		bool         do_sim          = false;
+    bool         printOnAllProcs = true;
+    bool         dump_all        = false;
 
 		CommandLineProcessor  command_line_processor(false); // Don't throw exceptions
 
-		command_line_processor.setOption( "geom-file", &geomFile, "Base name of geometry file." );
+		command_line_processor.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file." );
 		command_line_processor.setOption( "beta", &beta, "Regularization." );
 		command_line_processor.setOption( "x0", &x0, "Initial guess for the state." );
 		command_line_processor.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
 		command_line_processor.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+    command_line_processor.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
+		command_line_processor.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
 	
 		CommandLineProcessor::EParseCommandLineReturn
 			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
@@ -56,7 +64,18 @@ int main( int argc, char* argv[] )
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
 
-    TEST_FOR_EXCEPTION(geomFile=="",std::logic_error,"Error, you must specify a geometry file as --geom-file=???, see --help");
+    TEST_FOR_EXCEPTION(geomFileBase=="",std::logic_error,"Error, you must specify a geometry file as --geom-file-base=???, see --help");
+
+    //
+    // Setup the output streams
+    //
+
+    Teuchos::oblackholestream black_hole_out;
+    std::ostream &this_proc_out = ( procRank==0 || printOnAllProcs ? std::cout : black_hole_out );
+    Teuchos::VerboseObjectBase::setDefaultOStream(
+      Teuchos::rcp(new Teuchos::FancyOStream(Teuchos::rcp(&this_proc_out,false),"  ")));
+    Teuchos::RefCountPtr<Teuchos::FancyOStream>
+      out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
 		//
 		// Create the NLP
@@ -70,11 +89,11 @@ int main( int argc, char* argv[] )
     Epetra_SerialComm comm;
 #endif
 
-    GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFile.c_str() );
+    GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFileBase.c_str() );
 		
     // Create the Epetra-centric model
 
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0);
+    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,dump_all);
 
     // Create the Thyra-wrapped model with a linear solver set
     
