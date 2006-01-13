@@ -44,6 +44,7 @@ int main( int argc, char* argv[] )
     double       beta            = 1.0;
     double       x0              = 0.0;
     double       p0              = 1.0;
+    bool         withReaction    = true;
 		bool         do_sim          = false;
     bool         printOnAllProcs = true;
     bool         dump_all        = false;
@@ -54,6 +55,7 @@ int main( int argc, char* argv[] )
 		command_line_processor.setOption( "beta", &beta, "Regularization." );
 		command_line_processor.setOption( "x0", &x0, "Initial guess for the state." );
 		command_line_processor.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
+		command_line_processor.setOption( "with-reaction", "without-reaction",  &withReaction, "Flag for if the nonlinear reaction term is included or not" );
 		command_line_processor.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     command_line_processor.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		command_line_processor.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
@@ -93,7 +95,7 @@ int main( int argc, char* argv[] )
 		
     // Create the Epetra-centric model
 
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,dump_all);
+    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,withReaction,dump_all);
 
     // Create the Thyra-wrapped model with a linear solver set
     

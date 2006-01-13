@@ -22,6 +22,7 @@ public:
     Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
     ,const double                                              x0  = 0.0
     ,const double                                              p0  = 1.0
+    ,const bool                                                includeReactionTerm = true
     ,const bool                                                dumpAll = false
     );
 
@@ -67,6 +68,7 @@ private:
 	bool      isInitialized_;
 
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool> dat_;
+  bool                                              includeReactionTerm_;
 
   Teuchos::RefCountPtr<const Epetra_Comm>  epetra_comm_;
 	Teuchos::RefCountPtr<const Epetra_Map>   map_x_;

@@ -16,9 +16,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
   ,const double                                              x0
   ,const double                                              p0
+  ,const bool                                                includeReactionTerm
   ,const bool                                                dumpAll
-)
-  :dat_(dat)
+  )
+  :dat_(dat),includeReactionTerm_(includeReactionTerm)
 {
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -206,13 +207,16 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   //
   if(f_inout.get()) {
     Epetra_Vector &f = *f_inout;
-    dat_->computeNy(Teuchos::rcp(&x,false));
     Epetra_Vector Ax(*map_f_);
     dat_->getA()->Multiply(false,x,Ax);
     Epetra_Vector Bp(*map_f_);
     dat_->getB()->Multiply(false,*p0_,Bp);
-    f.Update(1.0,Ax,1.0,*dat_->getNy(),0.0);
+    f.Update(1.0,Ax,0.0);
     f.Update(1.0,Bp,-1.0,*dat_->getb(),1.0);
+    if(includeReactionTerm_) {
+      dat_->computeNy(Teuchos::rcp(&x,false));
+      f.Update(1.0,*dat_->getNy(),1.0);
+    }
   }
 /*
   if(g_inout.get()) {
@@ -222,7 +226,8 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 */
   if(W_inout.get()) {
     const double beta = inArgs.get_beta();
-    dat_->computeNpy(Teuchos::rcp(&x,false));
+    if(includeReactionTerm_)
+      dat_->computeNpy(Teuchos::rcp(&x,false));
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_inout);
     Teuchos::RefCountPtr<Epetra_CrsMatrix>
       dat_A = dat_->getA(),
@@ -231,21 +236,31 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     for( int i = 0; i < numMyRows; ++i ) {
       int dat_A_num_row_entries=0; double *dat_A_row_vals=0; int *dat_A_row_inds=0;
       dat_A->ExtractMyRowView(i,dat_A_num_row_entries,dat_A_row_vals,dat_A_row_inds);
-      int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
-      dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
-#ifdef _DEBUG
-      TEST_FOR_EXCEPT(dat_A_num_row_entries!=dat_Npy_num_row_entries);
-#endif
       int DfDx_num_row_entries=0; double *DfDx_row_vals=0; int *DfDx_row_inds=0;
       DfDx.ExtractMyRowView(i,DfDx_num_row_entries,DfDx_row_vals,DfDx_row_inds);
 #ifdef _DEBUG
-      TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_Npy_num_row_entries);
+      TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_A_num_row_entries);
 #endif
-      for(int k = 0; k < DfDx_num_row_entries; ++k) {
+      if(includeReactionTerm_) {
+        int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
+        dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
 #ifdef _DEBUG
-        TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
+        TEST_FOR_EXCEPT(dat_A_num_row_entries!=dat_Npy_num_row_entries);
 #endif
-        DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + dat_Npy_row_vals[k]);
+        for(int k = 0; k < DfDx_num_row_entries; ++k) {
+#ifdef _DEBUG
+          TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
+#endif
+          DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + dat_Npy_row_vals[k]);
+        }
+      }
+      else {
+        for(int k = 0; k < DfDx_num_row_entries; ++k) {
+#ifdef _DEBUG
+          TEST_FOR_EXCEPT(dat_A_row_inds[k]!=DfDx_row_inds[k]);
+#endif
+          DfDx_row_vals[k] = beta * dat_A_row_vals[k];
+        }
       }
     }
   }
