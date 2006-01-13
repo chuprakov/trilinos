@@ -12,7 +12,9 @@
 
 namespace GLpApp {
 
-GLpYUEpetraDataPool::GLpYUEpetraDataPool( Teuchos::RefCountPtr<const Epetra_Comm> const& commptr, double beta, const char myfile[] )
+GLpYUEpetraDataPool::GLpYUEpetraDataPool(
+  Teuchos::RefCountPtr<const Epetra_Comm> const& commptr, double beta, const char myfile[], const bool trace
+  )
   : commptr_(commptr),
     beta_(beta)
 {
@@ -24,7 +26,7 @@ GLpYUEpetraDataPool::GLpYUEpetraDataPool( Teuchos::RefCountPtr<const Epetra_Comm
   e_ = Teuchos::rcp( new Epetra_IntSerialDenseMatrix() );
   
   // Read subdomain info.
-  meshreader(*commptr_, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, myfile);
+  meshreader(*commptr_, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, myfile, trace);
 
   // Assemble volume and boundary mass and stiffness matrices, and the right-hand side of the PDE.
   assemble(*commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, A_, H_, b_);

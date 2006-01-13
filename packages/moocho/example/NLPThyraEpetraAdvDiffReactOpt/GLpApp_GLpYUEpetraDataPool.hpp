@@ -87,7 +87,7 @@ private:
 
 public:
 
-  GLpYUEpetraDataPool( Teuchos::RefCountPtr<const Epetra_Comm> const& commptr, double beta, const char myfile[] );
+  GLpYUEpetraDataPool( Teuchos::RefCountPtr<const Epetra_Comm> const& commptr, double beta, const char myfile[], const bool trace );
 
   /** \brief Calls functions to compute nonlinear quantities and the augmented system matrix.
              These computations are performed after every update of the SQP iterate.

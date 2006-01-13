@@ -91,7 +91,7 @@ int main( int argc, char* argv[] )
     Epetra_SerialComm comm;
 #endif
 
-    GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFileBase.c_str() );
+    GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFileBase.c_str(), false );
 		
     // Create the Epetra-centric model
 
