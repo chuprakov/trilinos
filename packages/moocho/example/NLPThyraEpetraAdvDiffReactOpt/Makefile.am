@@ -26,10 +26,25 @@
 # ************************************************************************
 # @HEADER
 
-if ENABLE_EPETRAEXT_THYRA
-if ENABLE_AMESOS_THYRA
-EPETRAEXT_AMESOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
-endif
-endif
+noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt
 
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample $(EPETRAEXT_AMESOS_EXAMPLES)
+NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
+  $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
+  $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
+  $(srcdir)/GenSQP_YUEpetraVector.cpp\
+  $(srcdir)/assemble.cpp\
+  $(srcdir)/assemble_bdry.cpp\
+  $(srcdir)/lassembly.cpp\
+  $(srcdir)/meshreader.cpp\
+  $(srcdir)/nonlinhessvec.cpp\
+  $(srcdir)/nonlinjac.cpp\
+  $(srcdir)/nonlinvec.cpp\
+  $(srcdir)/print2MATLAB.cpp\
+  $(srcdir)/quadrature.cpp\
+  $(srcdir)/usr_par.cpp\
+  $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
+
+NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies)
+NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
+
+include $(top_srcdir)/MakefileExeStub.mak

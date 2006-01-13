@@ -295,6 +295,7 @@ AC_CONFIG_FILES([
     example/ExampleNLPFirstOrder/Makefile
     example/NLPWBCounterExample/Makefile
     example/NLPThyraEpetraModelEval4DOpt/Makefile
+    example/NLPThyraEpetraAdvDiffReactOpt/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile
