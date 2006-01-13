@@ -85,7 +85,7 @@ bool NLPTester::test_interface(
 			n = nlp->n(),
 			m = nlp->m();
 		if(out)
-			*out << "\n*** Dimensions of the NLP"
+			*out << "\n*** Dimensions of the NLP ...\n"
 				 << "\nnlp->n()  = " << n
 				 << "\nnlp->m()  = " << m
 				 << std::endl;
@@ -100,20 +100,20 @@ bool NLPTester::test_interface(
 
 		// Validate the vector spaces
 		if(out)
-			*out << "\n*** Validate the dimensions of the vector spaces";
+			*out << "\n*** Validate the dimensions of the vector spaces ...\n";
 		
 		result = nlp->space_x()->dim() == nlp->n();
 		update_success( result, &success );
 		if(out)
 			*out << "\ncheck: nlp->space_x()->dim() = " << nlp->space_x()->dim()
-				 << " == nlp->n() = " << nlp->n() << ": " << result;
+           << " == nlp->n() = " << nlp->n() << ": " << result << std::endl;
 
 		if( nlp->m() ) {
 			result = nlp->space_c()->dim() == nlp->m();
 			update_success( result, &success );
 			if(out)
 				*out << "\ncheck: nlp->space_c()->dim() = " << nlp->space_c()->dim()
-					 << " == nlp->m() = " << nlp->m() << ": " << result;
+             << " == nlp->m() = " << nlp->m() << ": " << result << std::endl;
 		}
 		else {
 			result = nlp->space_c().get() == NULL;
