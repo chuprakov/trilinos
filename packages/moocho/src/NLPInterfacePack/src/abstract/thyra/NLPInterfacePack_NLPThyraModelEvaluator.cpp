@@ -548,7 +548,7 @@ void NLPThyraModelEvaluator::evalModel(
       if(p_idx_>=0)
         np_outArgs.set_DfDp(p_idx_,np_->create_DfDp_mv(1,MEB::DERIV_MV_BY_COL));
     }
-    np_inArgs.set_alpha(0.0);
+    if(np_inArgs.supports(MEB::IN_ARG_alpha)) np_inArgs.set_alpha(0.0);
     np_inArgs.set_beta(1.0);
   }
   //
