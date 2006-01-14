@@ -16,10 +16,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
   ,const double                                              x0
   ,const double                                              p0
-  ,const bool                                                includeReactionTerm
+  ,const double                                              reactionRate
   ,const bool                                                dumpAll
   )
-  :dat_(dat),includeReactionTerm_(includeReactionTerm)
+  :dat_(dat),reactionRate_(reactionRate)
 {
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -213,9 +213,9 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     dat_->getB()->Multiply(false,*p0_,Bp);
     f.Update(1.0,Ax,0.0);
     f.Update(1.0,Bp,-1.0,*dat_->getb(),1.0);
-    if(includeReactionTerm_) {
+    if(reactionRate_!=0.0) {
       dat_->computeNy(Teuchos::rcp(&x,false));
-      f.Update(1.0,*dat_->getNy(),1.0);
+      f.Update(reactionRate_,*dat_->getNy(),1.0);
     }
   }
 /*
@@ -226,7 +226,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 */
   if(W_inout.get()) {
     const double beta = inArgs.get_beta();
-    if(includeReactionTerm_)
+    if(reactionRate_!=0.0)
       dat_->computeNpy(Teuchos::rcp(&x,false));
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_inout);
     Teuchos::RefCountPtr<Epetra_CrsMatrix>
@@ -241,7 +241,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
       TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_A_num_row_entries);
 #endif
-      if(includeReactionTerm_) {
+      if(reactionRate_!=0.0) {
         int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
         dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
 #ifdef _DEBUG
@@ -251,7 +251,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
-          DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + dat_Npy_row_vals[k]);
+          DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + reactionRate_ * dat_Npy_row_vals[k]);
         }
       }
       else {
