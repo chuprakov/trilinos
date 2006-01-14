@@ -316,3 +316,27 @@
        ;
     COMM = SERIAL;
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.1;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.1 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2;
+    COMM = SERIAL;
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
+    COMM = SERIAL;
+}
