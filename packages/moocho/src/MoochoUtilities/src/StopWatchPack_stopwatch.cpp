@@ -30,6 +30,14 @@
 //#include <iosfwd>
 
 #include "StopWatchPack_stopwatch.hpp"
+#include "Teuchos_Time.hpp"
+
+double StopWatchPack::seconds(void)
+{
+  return Teuchos::Time::wallTime();
+}
+
+/*
 
 #ifndef _INTEL_CXX
 
@@ -87,3 +95,5 @@ double StopWatchPack::seconds(void)
 }
 
 #endif	// _INTEL_CXX
+
+*/
