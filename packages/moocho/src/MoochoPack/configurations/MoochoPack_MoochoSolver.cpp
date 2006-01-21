@@ -58,6 +58,7 @@
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_oblackholestream.hpp"
+#include "Teuchos_VerboseObject.hpp"
 
 namespace MoochoPack {
 
@@ -78,7 +79,7 @@ MoochoSolver::MoochoSolver()
 	,do_journal_outputting_(true)
 	,do_algo_outputting_(true)
 	,configuration_(MAMA_JAMA)
-	,error_out_used_(Teuchos::rcp(&std::cerr,false))
+	,error_out_used_(Teuchos::VerboseObjectBase::getDefaultOStream())
 	,send_all_output_to_black_hole_(false)
 {}
 
@@ -148,7 +149,7 @@ void MoochoSolver::set_error_handling(
 	namespace mmp = MemMngPack;
 	if( error_out_.get() != NULL ) {
 		if( error_out.get() == NULL )
-			error_out_used_ = Teuchos::rcp(&std::cerr,false);
+			error_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
 		else 
 			error_out_used_ = error_out;
 	}
@@ -635,7 +636,7 @@ void MoochoSolver::update_solver() const
 		if( console_out_.get() != NULL )
 			console_out_used_ = console_out_;
 		else
-			console_out_used_ = Teuchos::rcp(&std::cout,false);
+			console_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
 	}
 	if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
 		if( summary_out_.get() == NULL )
