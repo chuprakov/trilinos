@@ -14,6 +14,7 @@ namespace Teuchos {
 }
 class Usr_Par;
 
+const double GLp_pi = 3.14159265358979323846;
 
 bool CrsMatrix2MATLAB(const Epetra_CrsMatrix &, ostream &);
 

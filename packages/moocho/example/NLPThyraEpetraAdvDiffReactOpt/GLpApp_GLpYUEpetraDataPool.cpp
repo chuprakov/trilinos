@@ -39,7 +39,7 @@ GLpYUEpetraDataPool::GLpYUEpetraDataPool(
   double * qdvalues = new double[standardmap.NumMyElements()];
   standardmap.MyGlobalElements(qintvalues);
   for (int i = 0; i < standardmap.NumMyElements(); i++)
-      qdvalues[i]=cos( M_PI* ((*ipcoords_)(i,0)) ) * cos( M_PI* ((*ipcoords_)(i,1)) );
+      qdvalues[i]=cos( GLp_pi* ((*ipcoords_)(i,0)) ) * cos( GLp_pi* ((*ipcoords_)(i,1)) );
   q_->ReplaceGlobalValues(standardmap.NumMyElements(), qintvalues, qdvalues);
   q_->GlobalAssemble();
 }

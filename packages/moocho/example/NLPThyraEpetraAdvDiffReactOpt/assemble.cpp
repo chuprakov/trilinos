@@ -144,8 +144,8 @@ int assemble(const Epetra_Comm & Comm,
       vertices(j,0) = pcoords(overlapmap.LID(nodes[j]), 0);
       vertices(j,1) = pcoords(overlapmap.LID(nodes[j]), 1);
       // set rhs function
-      f(j) = cos(M_PI*vertices(j,0))*cos(M_PI*vertices(j,1)) * 
-               (2*M_PI*M_PI + pow(cos(M_PI*vertices(j,0)),2)*pow(cos(M_PI*vertices(j,1)),2) - 1.0);
+      f(j) = cos(GLp_pi*vertices(j,0))*cos(GLp_pi*vertices(j,1)) * 
+               (2*GLp_pi*GLp_pi + pow(cos(GLp_pi*vertices(j,0)),2)*pow(cos(GLp_pi*vertices(j,1)),2) - 1.0);
     }
     lassembly(vertices, k, c, r, f, usr_par, At, bt);
     err = A->InsertGlobalValues(epetra_nodes, At, format);
