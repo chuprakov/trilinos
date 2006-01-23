@@ -1,6 +1,3 @@
-// //////////////////////////////////////////////////////////////////
-// NLPThyraEpetraModelEval4DOptMain.cpp
-
 #include "GLpApp_AdvDiffReactOptModel.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
@@ -8,6 +5,7 @@
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
+#include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_oblackholestream.hpp"
 
@@ -17,12 +15,6 @@
 #include "Epetra_SerialComm.h"
 #endif
 
-/* * \mainpage Example optimization problem using <tt>Thyra::ModelEvaluator</tt> and <tt>EpetraExt::ModelEvaluator</tt>.
-
-ToDo: Finish documentation!
-
-*/
-
 int main( int argc, char* argv[] )
 {
 	using MoochoPack::MoochoSolver;
@@ -30,9 +22,13 @@ int main( int argc, char* argv[] )
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
-  Teuchos::GlobalMPISession mpiSession(&argc,&argv,0);
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
   const int procRank = Teuchos::GlobalMPISession::getRank();
   //const int numProcs = Teuchos::GlobalMPISession::getNProc();
+
+  bool dummySuccess = true;
+
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
 	try {
 	
@@ -59,7 +55,7 @@ int main( int argc, char* argv[] )
 		command_line_processor.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     command_line_processor.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		command_line_processor.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
-	
+
 		CommandLineProcessor::EParseCommandLineReturn
 			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
 
@@ -76,14 +72,13 @@ int main( int argc, char* argv[] )
     std::ostream &this_proc_out = ( procRank==0 || printOnAllProcs ? std::cout : black_hole_out );
     Teuchos::VerboseObjectBase::setDefaultOStream(
       Teuchos::rcp(new Teuchos::FancyOStream(Teuchos::rcp(&this_proc_out,false),"  ")));
-    Teuchos::RefCountPtr<Teuchos::FancyOStream>
-      out = Teuchos::VerboseObjectBase::getDefaultOStream();
+    out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
 		//
 		// Create the NLP
 		//
 
-    // Create the GenSQP data pool object
+    *out << "\nCreate the GLpApp::GLpYUEpetraDataPool object ...\n";
 
 #ifdef HAVE_MPI
     Epetra_MpiComm comm(MPI_COMM_WORLD);
@@ -92,12 +87,12 @@ int main( int argc, char* argv[] )
 #endif
 
     GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFileBase.c_str(), false );
-		
-    // Create the Epetra-centric model
+
+    *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
     GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,reactionRate,dump_all);
 
-    // Create the Thyra-wrapped model with a linear solver set
+    *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
     Thyra::EpetraModelEvaluator thyraModel; // Sets default options!
     thyraModel.initialize(
@@ -131,12 +126,7 @@ int main( int argc, char* argv[] )
 		return solution_status;
 
 	}
-	catch(const std::exception& excpt) {
-		std::cerr << "\nCaught a std::exception " << excpt.what() << std::endl;
-	}
-	catch(...) {
-		std::cerr << "\nCaught an unknown exception\n";
-	}
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
 
 	return MoochoSolver::SOLVE_RETURN_EXCEPTION;
 }
