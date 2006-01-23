@@ -1,16 +1,16 @@
 (FRAMEWORK, INSTALL) {
     TESTS = ./MoochoUtilities/test_stop_watch.exe;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ./IterationPack/TestIterationPack.exe;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ./DenseLinAlgPack/TestDenseLinAlgPack.exe;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -152,7 +152,7 @@
       --n=4
       --xo=0.1
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -161,7 +161,7 @@
       --n=4
       --xo=0.2
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -170,7 +170,7 @@
       --n=1000
       --xo=0.2
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -179,7 +179,7 @@
       --n=4
       --xo=0.1
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -188,7 +188,7 @@
       --n=4
       --xo=0.2
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -197,7 +197,7 @@
       --n=1000
       --xo=0.2
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -272,7 +272,7 @@
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -280,7 +280,7 @@
     ARGS = 
       --do-sim
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -288,7 +288,7 @@
     ARGS = 
       --x00=0.9
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -297,7 +297,7 @@
       --x00=0.9
       --do-sim
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -305,7 +305,7 @@
     ARGS = 
       --xt0=0.9
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
@@ -314,29 +314,29 @@
       --xt0=0.9
       --do-sim
        ;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.1;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.1 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
-    COMM = SERIAL;
+    COMM = SERIAL, MPI(1);
 }
