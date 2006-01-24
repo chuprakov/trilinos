@@ -3,7 +3,7 @@
 ## #######################################################################
 EXTRA_DIST = Doxyfile          \
              mainpage.doxygen  \
-             tutorial.pdf      \
+	     ../src/Trilinos60Tutorial.pdf \
              didasko_logo.jpeg
 
 # ------------------------------------------------------------------------
