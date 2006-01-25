@@ -402,14 +402,6 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_compare_element_indexes.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp\
@@ -562,14 +554,6 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.cpp \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.cpp \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.cpp \
@@ -622,7 +606,6 @@ NLP_INTERFACE_PACK_HPP = \
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.hpp\
-  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.hpp\
@@ -644,7 +627,6 @@ NLP_INTERFACE_PACK_CPP = \
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp\
-  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.cpp\
@@ -1072,4 +1054,4 @@ MAINTAINERCLEANFILES = Makefile.in
 # ------------------------------------------------------------------------
 all-libs:
 	$(MAKE) libmoocho.a
-	cd $(top_builddir)/../teuchos ; $(MAKE) all-libs
+	cd $(top_builddir)/../thyra ; $(MAKE) all-libs

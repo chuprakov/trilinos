@@ -257,14 +257,6 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.cpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.cpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp \
 	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp \
 	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.cpp \
 	$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.cpp \
@@ -310,7 +302,6 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.cpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.cpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp \
-	$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.cpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.cpp \
@@ -567,14 +558,6 @@ am__objects_10 = AbstractLinAlgPack_AssertOp.$(OBJEXT) \
 	AbstractLinAlgPack_VectorMutableBlocked.$(OBJEXT) \
 	AbstractLinAlgPack_VectorAuxiliaryOps.$(OBJEXT) \
 	AbstractLinAlgPack_TestMatrixSymSecant.$(OBJEXT) \
-	AbstractLinAlgPack_InnerProductThyra.$(OBJEXT) \
-	AbstractLinAlgPack_VectorSpaceFactoryThyra.$(OBJEXT) \
-	AbstractLinAlgPack_VectorSpaceThyra.$(OBJEXT) \
-	AbstractLinAlgPack_VectorMutableThyra.$(OBJEXT) \
-	AbstractLinAlgPack_MatrixOpThyra.$(OBJEXT) \
-	AbstractLinAlgPack_MatrixOpNonsingThyra.$(OBJEXT) \
-	AbstractLinAlgPack_MultiVectorMutableThyra.$(OBJEXT) \
-	AbstractLinAlgPack_ThyraAccessors.$(OBJEXT) \
 	AbstractLinAlgPack_LinAlgOpPackHack.$(OBJEXT) \
 	AbstractLinAlgPack_GenPermMatrixSliceOp.$(OBJEXT) \
 	AbstractLinAlgPack_VectorSpaceSerial.$(OBJEXT) \
@@ -616,7 +599,6 @@ am__objects_12 = NLPInterfacePack_NLP.$(OBJEXT) \
 	NLPInterfacePack_test_basis_system.$(OBJEXT) \
 	NLPInterfacePack_test_nlp_direct.$(OBJEXT) \
 	NLPInterfacePack_test_nlp_first_order.$(OBJEXT) \
-	NLPInterfacePack_NLPThyraModelEvaluator.$(OBJEXT) \
 	NLPInterfacePack_CalcFiniteDiffProd.$(OBJEXT) \
 	NLPInterfacePack_CalcFiniteDiffProdSetOptions.$(OBJEXT) \
 	NLPInterfacePack_NLPBarrier.$(OBJEXT) \
@@ -762,7 +744,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOut.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_InnerProductDot.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MA28CommonBlockEncap.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MA28Solver.Po \
@@ -777,10 +758,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsing.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingAggr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingTester.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpSerial.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpSubView.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixPermAggr.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixSparseCOORSerial.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MatrixSymDiagSparse.Po \
@@ -798,14 +777,12 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutable.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableCols.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableDense.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_PermutationSerial.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SpVectorOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SpVectorOut.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SpVectorView.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_SparseVectorClass.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_TestMatrixSymSecant.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_Vector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorApplyOpSerialBase.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorAuxiliaryOps.Po \
@@ -813,17 +790,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableBlocked.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableDense.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableSubView.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceBlocked.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactorySerial.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceSerial.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceSubSpace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceTester.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceTesterSetOptions.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorStdOps.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSubView.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_apply_op_helper.Po \
@@ -993,7 +967,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPSerialPreprocessExplJac.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPTester.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPTesterSetOptions.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_basis_system.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_nlp_direct.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.Po \
@@ -1266,14 +1239,6 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_compare_element_indexes.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp \
-	$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.hpp \
 	$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp \
@@ -1394,7 +1359,6 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.hpp \
-	$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp \
 	$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.hpp \
@@ -2068,14 +2032,6 @@ ABSTRACT_LIN_ALG_PACK_HPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_VectorSubView.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_apply_op_helper.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_compare_element_indexes.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.hpp\
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemComposite.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTester.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_BasisSystemTesterSetOptions.hpp\
@@ -2228,14 +2184,6 @@ ABSTRACT_LIN_ALG_PACK_CPP = \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorMutableBlocked.cpp \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_VectorAuxiliaryOps.cpp \
   $(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp \
-  $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_GenPermMatrixSliceOp.cpp \
   $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_VectorSpaceSerial.cpp \
@@ -2288,7 +2236,6 @@ NLP_INTERFACE_PACK_HPP = \
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.hpp\
-  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.hpp\
@@ -2310,7 +2257,6 @@ NLP_INTERFACE_PACK_CPP = \
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_basis_system.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_direct.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp\
-  $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProdSetOptions.cpp\
   $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_NLPBarrier.cpp\
@@ -2816,7 +2762,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_GenPermMatrixSliceOut.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_InnerProductDot.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MA28CommonBlockEncap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MA28Solver.Po@am__quote@
@@ -2831,10 +2776,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingAggr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingTester.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpSerial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpSubView.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixPermAggr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixSparseCOORSerial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MatrixSymDiagSparse.Po@am__quote@
@@ -2852,14 +2795,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableCols.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableDense.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_PermutationSerial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SpVectorOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SpVectorOut.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SpVectorView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_SparseVectorClass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_TestMatrixSymSecant.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_Vector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorApplyOpSerialBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorAuxiliaryOps.Po@am__quote@
@@ -2867,17 +2808,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableBlocked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableDense.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableSubView.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceBlocked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactorySerial.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceSerial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceSubSpace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceTester.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceTesterSetOptions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorStdOps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSubView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_apply_op_helper.Po@am__quote@
@@ -3047,7 +2985,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPSerialPreprocessExplJac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPTester.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPTesterSetOptions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_basis_system.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_nlp_direct.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.Po@am__quote@
@@ -5468,134 +5405,6 @@ AbstractLinAlgPack_TestMatrixSymSecant.obj: $(srcdir)/AbstractLinAlgPack/src/abs
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_TestMatrixSymSecant.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/tools/AbstractLinAlgPack_TestMatrixSymSecant.cpp'; fi`
 
-AbstractLinAlgPack_InnerProductThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_InnerProductThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo" -c -o AbstractLinAlgPack_InnerProductThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp' object='AbstractLinAlgPack_InnerProductThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_InnerProductThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp
-
-AbstractLinAlgPack_InnerProductThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_InnerProductThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo" -c -o AbstractLinAlgPack_InnerProductThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp' object='AbstractLinAlgPack_InnerProductThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_InnerProductThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_InnerProductThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_InnerProductThyra.cpp'; fi`
-
-AbstractLinAlgPack_VectorSpaceFactoryThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorSpaceFactoryThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo" -c -o AbstractLinAlgPack_VectorSpaceFactoryThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp' object='AbstractLinAlgPack_VectorSpaceFactoryThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorSpaceFactoryThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp
-
-AbstractLinAlgPack_VectorSpaceFactoryThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorSpaceFactoryThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo" -c -o AbstractLinAlgPack_VectorSpaceFactoryThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp' object='AbstractLinAlgPack_VectorSpaceFactoryThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorSpaceFactoryThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceFactoryThyra.cpp'; fi`
-
-AbstractLinAlgPack_VectorSpaceThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorSpaceThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo" -c -o AbstractLinAlgPack_VectorSpaceThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp' object='AbstractLinAlgPack_VectorSpaceThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorSpaceThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp
-
-AbstractLinAlgPack_VectorSpaceThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorSpaceThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo" -c -o AbstractLinAlgPack_VectorSpaceThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp' object='AbstractLinAlgPack_VectorSpaceThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorSpaceThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorSpaceThyra.cpp'; fi`
-
-AbstractLinAlgPack_VectorMutableThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorMutableThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo" -c -o AbstractLinAlgPack_VectorMutableThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp' object='AbstractLinAlgPack_VectorMutableThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorMutableThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp
-
-AbstractLinAlgPack_VectorMutableThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_VectorMutableThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo" -c -o AbstractLinAlgPack_VectorMutableThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp' object='AbstractLinAlgPack_VectorMutableThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_VectorMutableThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_VectorMutableThyra.cpp'; fi`
-
-AbstractLinAlgPack_MatrixOpThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MatrixOpThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo" -c -o AbstractLinAlgPack_MatrixOpThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp' object='AbstractLinAlgPack_MatrixOpThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MatrixOpThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp
-
-AbstractLinAlgPack_MatrixOpThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MatrixOpThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo" -c -o AbstractLinAlgPack_MatrixOpThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp' object='AbstractLinAlgPack_MatrixOpThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MatrixOpThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpThyra.cpp'; fi`
-
-AbstractLinAlgPack_MatrixOpNonsingThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MatrixOpNonsingThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo" -c -o AbstractLinAlgPack_MatrixOpNonsingThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp' object='AbstractLinAlgPack_MatrixOpNonsingThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MatrixOpNonsingThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp
-
-AbstractLinAlgPack_MatrixOpNonsingThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MatrixOpNonsingThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo" -c -o AbstractLinAlgPack_MatrixOpNonsingThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp' object='AbstractLinAlgPack_MatrixOpNonsingThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MatrixOpNonsingThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MatrixOpNonsingThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MatrixOpNonsingThyra.cpp'; fi`
-
-AbstractLinAlgPack_MultiVectorMutableThyra.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MultiVectorMutableThyra.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo" -c -o AbstractLinAlgPack_MultiVectorMutableThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp' object='AbstractLinAlgPack_MultiVectorMutableThyra.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MultiVectorMutableThyra.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp
-
-AbstractLinAlgPack_MultiVectorMutableThyra.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_MultiVectorMutableThyra.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo" -c -o AbstractLinAlgPack_MultiVectorMutableThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo" "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp' object='AbstractLinAlgPack_MultiVectorMutableThyra.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_MultiVectorMutableThyra.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_MultiVectorMutableThyra.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_MultiVectorMutableThyra.cpp'; fi`
-
-AbstractLinAlgPack_ThyraAccessors.o: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_ThyraAccessors.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo" -c -o AbstractLinAlgPack_ThyraAccessors.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo" "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp' object='AbstractLinAlgPack_ThyraAccessors.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_ThyraAccessors.o `test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp
-
-AbstractLinAlgPack_ThyraAccessors.obj: $(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_ThyraAccessors.obj -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo" -c -o AbstractLinAlgPack_ThyraAccessors.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo" "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp' object='AbstractLinAlgPack_ThyraAccessors.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.Po' tmpdepfile='$(DEPDIR)/AbstractLinAlgPack_ThyraAccessors.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AbstractLinAlgPack_ThyraAccessors.obj `if test -f '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; then $(CYGPATH_W) '$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AbstractLinAlgPack/src/abstract/thyra/AbstractLinAlgPack_ThyraAccessors.cpp'; fi`
-
 AbstractLinAlgPack_LinAlgOpPackHack.o: $(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT AbstractLinAlgPack_LinAlgOpPackHack.o -MD -MP -MF "$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Tpo" -c -o AbstractLinAlgPack_LinAlgOpPackHack.o `test -f '$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp' || echo '$(srcdir)/'`$(srcdir)/AbstractLinAlgPack/src/serial/interfaces/AbstractLinAlgPack_LinAlgOpPackHack.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Tpo" "$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Po"; else rm -f "$(DEPDIR)/AbstractLinAlgPack_LinAlgOpPackHack.Tpo"; exit 1; fi
@@ -6299,22 +6108,6 @@ NLPInterfacePack_test_nlp_first_order.obj: $(srcdir)/NLPInterfacePack/src/abstra
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_test_nlp_first_order.obj `if test -f '$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/src/abstract/test/NLPInterfacePack_test_nlp_first_order.cpp'; fi`
-
-NLPInterfacePack_NLPThyraModelEvaluator.o: $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPThyraModelEvaluator.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPThyraModelEvaluator.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp
-
-NLPInterfacePack_NLPThyraModelEvaluator.obj: $(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPThyraModelEvaluator.obj -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPThyraModelEvaluator.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/src/abstract/thyra/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; fi`
 
 NLPInterfacePack_CalcFiniteDiffProd.o: $(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_CalcFiniteDiffProd.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_CalcFiniteDiffProd.Tpo" -c -o NLPInterfacePack_CalcFiniteDiffProd.o `test -f '$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/src/abstract/tools/NLPInterfacePack_CalcFiniteDiffProd.cpp; \
@@ -8332,7 +8125,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/thyra $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/ConstrainedOptPack/src $(distdir)/ConstrainedOptPack/src/decompositions $(distdir)/ConstrainedOptPack/src/globalization $(distdir)/ConstrainedOptPack/src/matrices $(distdir)/ConstrainedOptPack/src/misc $(distdir)/ConstrainedOptPack/src/qpsolvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoPack/configurations $(distdir)/MoochoPack/configurations/IpConfig $(distdir)/MoochoPack/configurations/MamaJama $(distdir)/MoochoPack/configurations/Shared $(distdir)/MoochoPack/src $(distdir)/MoochoPack/src/std $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/thyra $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base $(distdir)/RTOpPack/src/std_ops
+	$(mkdir_p) $(distdir)/AbstractLinAlgPack/src $(distdir)/AbstractLinAlgPack/src/abstract/interfaces $(distdir)/AbstractLinAlgPack/src/abstract/tools $(distdir)/AbstractLinAlgPack/src/serial/implementations $(distdir)/AbstractLinAlgPack/src/serial/interfaces $(distdir)/AbstractLinAlgPack/src/serial/solvers $(distdir)/ConstrainedOptPack/src $(distdir)/ConstrainedOptPack/src/decompositions $(distdir)/ConstrainedOptPack/src/globalization $(distdir)/ConstrainedOptPack/src/matrices $(distdir)/ConstrainedOptPack/src/misc $(distdir)/ConstrainedOptPack/src/qpsolvers $(distdir)/DenseLinAlgPack/src $(distdir)/IterationPack/src $(distdir)/MoochoPack/configurations $(distdir)/MoochoPack/configurations/IpConfig $(distdir)/MoochoPack/configurations/MamaJama $(distdir)/MoochoPack/configurations/Shared $(distdir)/MoochoPack/src $(distdir)/MoochoPack/src/std $(distdir)/MoochoUtilities/src $(distdir)/NLPInterfacePack/src $(distdir)/NLPInterfacePack/src/abstract/interfaces $(distdir)/NLPInterfacePack/src/abstract/test $(distdir)/NLPInterfacePack/src/abstract/tools $(distdir)/NLPInterfacePack/src/serial $(distdir)/RTOpPack/src/base $(distdir)/RTOpPack/src/std_ops
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -8466,7 +8259,7 @@ include $(top_builddir)/Makefile.export.moocho
 # ------------------------------------------------------------------------
 all-libs:
 	$(MAKE) libmoocho.a
-	cd $(top_builddir)/../teuchos ; $(MAKE) all-libs
+	cd $(top_builddir)/../thyra ; $(MAKE) all-libs
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

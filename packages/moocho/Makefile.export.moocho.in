@@ -9,7 +9,18 @@ include @abs_top_builddir@/../thyra/Makefile.export.thyra
 @ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_INCLUDES = $(AMESOS_INCLUDES) $(EPETRAEXT_INCLUDES)
 @ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_LIBS = $(AMESOS_LIBS) $(EPETRAEXT_LIBS)
 
+_MOOCHO_THYRA_INCLUDES = \
+  -I@abs_top_srcdir@/thyra/src/AbstractLinAlgPack\
+  -I@abs_top_srcdir@/thyra/src/NLPInterfacePack\
+  $(MOOCHO_EPETRAEXT_INCLUDES)\
+  $(THYRA_INCLUDES)
+
+_MOOCHO_THYRA_LIB =  -L@abs_top_builddir@/thyra/src -lmoochothyra
+
+# ToDo: Make above conditional and only include if Thyra is enabled!
+
 _MOOCHO_INCLUDES = \
+  $(_MOOCHO_THYRA_INCLUDES)\
   -I@abs_top_srcdir@/src/MoochoPack/src/std\
   -I@abs_top_srcdir@/src/MoochoPack/src\
   -I@abs_top_srcdir@/src/MoochoPack/configurations/Shared\
@@ -24,7 +35,6 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/ConstrainedOptPack/src\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/serial\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/tools\
-  -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/thyra\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/test\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract/interfaces\
   -I@abs_top_srcdir@/src/NLPInterfacePack/src/abstract\
@@ -34,7 +44,6 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial/implementations\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/serial\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/tools\
-  -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/thyra\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract/interfaces\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src/abstract\
   -I@abs_top_srcdir@/src/AbstractLinAlgPack/src\
@@ -44,11 +53,9 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/RTOpPack/src/base\
   -I@abs_top_srcdir@/src/MoochoUtilities/src\
   -I@abs_top_srcdir@/src\
-  -I@abs_top_builddir@/src\
-  $(MOOCHO_EPETRAEXT_INCLUDES)\
-  $(THYRA_INCLUDES)
+  -I@abs_top_builddir@/src
 
-_MOOCHO_LIBS = @LDFLAGS@ -L@abs_top_builddir@/src -lmoocho $(MOOCHO_EPETRAEXT_LIBS) $(THYRA_LIBS)
+_MOOCHO_LIBS = @LDFLAGS@  $(_MOOCHO_THYRA_LIB) -L@abs_top_builddir@/src -lmoocho $(MOOCHO_EPETRAEXT_LIBS) $(THYRA_LIBS)
 
 @USING_GNUMAKE_TRUE@MOOCHO_INCLUDES  = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(_MOOCHO_INCLUDES))
 @USING_GNUMAKE_TRUE@MOOCHO_LIBS      = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_libs.pl $(_MOOCHO_LIBS))

@@ -95,7 +95,9 @@ if BUILD_EXAMPLES
 EXAMPLE_SUBDIR=example
 endif
 
-SUBDIRS = src $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
+MOOCHO_THYRA_SUBDIR=thyra
+
+SUBDIRS = src $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) $(MOOCHO_THYRA_SUBDIR)
 
 ## #######################################################################
 ## The below targets allow you to use the new

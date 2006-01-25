@@ -294,12 +294,15 @@ AC_CONFIG_FILES([
     example/ExampleNLPDirect/Makefile
     example/ExampleNLPFirstOrder/Makefile
     example/NLPWBCounterExample/Makefile
-    example/NLPThyraEpetraModelEval4DOpt/Makefile
-    example/NLPThyraEpetraAdvDiffReactOpt/Makefile
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile
     test/DenseLinAlgPack/Makefile
+    thyra/Makefile
+    thyra/src/Makefile
+    thyra/example/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
+    thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile
     ])
 
 AC_OUTPUT()

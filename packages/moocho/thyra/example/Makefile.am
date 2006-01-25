@@ -26,4 +26,10 @@
 # ************************************************************************
 # @HEADER
 
-SUBDIRS = ExampleNLPBanded ExampleNLPDirect ExampleNLPFirstOrder NLPWBCounterExample
+if ENABLE_EPETRAEXT_THYRA
+if ENABLE_AMESOS_THYRA
+EPETRAEXT_AMESOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
+endif
+endif
+
+SUBDIRS = $(EPETRAEXT_AMESOS_EXAMPLES)
