@@ -7,6 +7,7 @@
 #include "Epetra_Vector.h"
 #include "Epetra_Comm.h"
 #include "Epetra_CrsGraph.h"
+#include "Teuchos_VerboseObject.hpp"
 
 namespace GLpApp {
 
@@ -14,7 +15,10 @@ namespace GLpApp {
  *
  * ToDo: Finish Documentation!
  */
-class AdvDiffReactOptModel : public EpetraExt::ModelEvaluator {
+class AdvDiffReactOptModel
+  : public EpetraExt::ModelEvaluator
+  , public Teuchos::VerboseObject<AdvDiffReactOptModel>
+{
 public:
 
   // Constructor
@@ -23,7 +27,6 @@ public:
     ,const double                                              x0  = 0.0
     ,const double                                              p0  = 1.0
     ,const double                                              reactionRate = 1.0
-    ,const bool                                                dumpAll = false
     );
 
   /** \name Overridden from EpetraExt::ModelEvaluator . */
@@ -51,6 +54,8 @@ public:
   Teuchos::RefCountPtr<const Epetra_Vector> get_p_upper_bounds(int l) const;
   /** \brief . */
   Teuchos::RefCountPtr<Epetra_Operator> create_W() const;
+  /** \brief . */
+  Teuchos::RefCountPtr<Epetra_Operator> create_DfDp_op(int l) const;
   /** \brief . */
   InArgs createInArgs() const;
   /** \brief . */

@@ -340,3 +340,21 @@
     ARGS = --do-sim --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
     COMM = SERIAL, MPI(1);
 }
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.1;
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --beta=1e+3 --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2;
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --reaction-rate=1e+5 --geom-file-base=../example/NLPThyraEpetraAdvDiffReactOpt/square.2;
+    COMM = SERIAL, MPI(1);
+}

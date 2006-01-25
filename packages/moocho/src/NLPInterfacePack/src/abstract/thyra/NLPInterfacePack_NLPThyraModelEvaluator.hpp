@@ -54,23 +54,23 @@ namespace NLPInterfacePack {
 
     where:
 
-        x = [ np.x        ]
-            [ np.p(p_idx) ]
+        x = [ model.x        ]
+            [ model.p(p_idx) ]
 
-        f(x) = np.g(g_idx)
+        f(x) = model.g(g_idx)
 
-        c(x) = np.f()
+        c(x) = model.f()
 
  \endverbatim
 
  * where <tt>p_idx > 0</tt> and <tt>g_idx > 0</tt> are some indexes that
  * specificy the indepenent variables and the objective function.
  *
- * In addition, the client can also override the bounds on <tt>np.x</tt> and
- * <tt>np.p(p_idx)</tt> defined in the object <tt>np</tt>.
+ * In addition, the client can also override the bounds on <tt>model.x</tt> and
+ * <tt>model.p(p_idx)</tt> defined in the object <tt>model</tt>.
  *
  * The current implementation of this class does not allow the use of any of
- * the auxiliary functions <tt>np.g()</tt> as undecomposed equality
+ * the auxiliary functions <tt>model.g()</tt> as undecomposed equality
  * constraints or extra general inequality constraints.  This type of
  * functionality can be added when it is needed (just ask for it).
  *
@@ -80,7 +80,7 @@ class NLPThyraModelEvaluator : virtual public NLPFirstOrder {
 public:
 	
 	///
-	enum EObjPow { OBJ_LINEAR, OBJ_SQUARED };
+	enum EDerivSupport { DERIV_SUPPORT_ADJOINT_ONLY, DERIV_SUPPORT_ADJOINT_OR_DIRECT };
 
 	/// Initialize to uninitialized
 	NLPThyraModelEvaluator();
@@ -89,48 +89,48 @@ public:
 	/** Calls <tt>initialize()</tt>.
 	 */
 	NLPThyraModelEvaluator(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
+		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *np_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_p0      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
 		);
 
 	///
 	/** Initialize given a <tt>Thyra::ModelEvaluator</tt> and
 	 * a description of how to interpret it.
 	 *
-	 * @param  np    [in] NonlinearProblem that defines all of the functions and variables.
+	 * @param  model    [in] NonlinearProblem that defines all of the functions and variables.
    * @param  p_idx [in] Index of the subset of parameter vectors to use as the independent
    *               variables.  If <tt>p_idx < 0</tt>, then no extra parameters are added.
    * @param  g_idx [in] Index of the subset of auxiliary response functions to use as
-   *               the objective function.  Note, only the first element <tt>np.g(g_idx)(1)</tt>
+   *               the objective function.  Note, only the first element <tt>model.g(g_idx)(1)</tt>
    *               will be used as the objective function value.
-	 * @param  np_xL [in] Pointer to upper bounds for the state variables <tt>np.x</tt>.  If NULL
-	 *               then the default supplied in <tt>np->get_x_lower_bounds()</tt> will be used.
-	 * @param  np_xU [in] Pointer to upper bounds for the state variables <tt>x</tt>.  If NULL
-	 *               then the default supplied in <tt>np->get_x_upper_bounds()</tt> will be used.
-	 * @param  np_x0 [in] Pointer to initial guess for the state variables <tt>x</tt>.  If NULL
-	 *               the the default supplied in <tt>np->get_x_init()</tt> will be used.
+	 * @param  model_xL [in] Pointer to upper bounds for the state variables <tt>model.x</tt>.  If NULL
+	 *               then the default supplied in <tt>model->get_x_lower_bounds()</tt> will be used.
+	 * @param  model_xU [in] Pointer to upper bounds for the state variables <tt>x</tt>.  If NULL
+	 *               then the default supplied in <tt>model->get_x_upper_bounds()</tt> will be used.
+	 * @param  model_x0 [in] Pointer to initial guess for the state variables <tt>x</tt>.  If NULL
+	 *               the the default supplied in <tt>model->get_x_init()</tt> will be used.
 	 *
 	 * ToDo: Finish documentation!
 	 *
 	 * Todo: Add arguments for auxiliary inequalites and equalities
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &np
+		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *np_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *np_p0      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
 		);
 
 	/** @name Overridden public members from NLP */
@@ -250,9 +250,11 @@ private:
 	bool                                force_xinit_in_bounds_; // default = true.
 	index_type                          num_bounded_x_;
 	Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
-	                                    np_;
+	                                    model_;
   int                                 p_idx_;
   int                                 g_idx_;
+  bool                                DfDp_supports_op_;
+  bool                                DfDp_supports_mv_;
 	VectorSpace::space_ptr_t            space_x_;      // Space for the variables
 	VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
 	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
@@ -261,10 +263,10 @@ private:
 	VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
 	VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
-	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     np_g_;
+	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     model_g_;
 
-  mutable bool np_g_updated_;
-  mutable bool np_Dg_updated_;
+  mutable bool model_g_updated_;
+  mutable bool model_Dg_updated_;
 
   mutable bool f_updated_;
   mutable bool c_updated_;
@@ -277,9 +279,9 @@ private:
 	///
 	void assert_is_initialized() const;
 	///
-	void copy_from_np_x( const Thyra::VectorBase<value_type>* np_x, VectorMutable* x_D ) const;
+	void copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const;
 	///
-	void copy_from_np_p( const Thyra::VectorBase<value_type> *np_p, VectorMutable* x_I ) const;
+	void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
   ///
   void evalModel( 
 		const Vector            &x

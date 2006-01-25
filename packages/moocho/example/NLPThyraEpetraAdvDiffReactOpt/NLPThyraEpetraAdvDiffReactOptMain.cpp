@@ -74,6 +74,14 @@ int main( int argc, char* argv[] )
       Teuchos::rcp(new Teuchos::FancyOStream(Teuchos::rcp(&this_proc_out,false),"  ")));
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
+    Teuchos::RefCountPtr<Teuchos::FancyOStream>
+      journalOut = Teuchos::rcp(
+        new Teuchos::FancyOStream(
+          Teuchos::rcp(new std::ofstream("MoochoJournal.out"))
+          ,"  "
+          )
+        );
+
 		//
 		// Create the NLP
 		//
@@ -86,11 +94,13 @@ int main( int argc, char* argv[] )
     Epetra_SerialComm comm;
 #endif
 
-    GLpApp::GLpYUEpetraDataPool dat ( Teuchos::rcp(&comm,false), beta, geomFileBase.c_str(), false );
+    GLpApp::GLpYUEpetraDataPool dat(Teuchos::rcp(&comm,false),beta,geomFileBase.c_str(),false);
 
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,reactionRate,dump_all);
+    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,reactionRate);
+    epetraModel.setOStream(journalOut);
+    if(dump_all) epetraModel.setVerbLevel(Teuchos::VERB_EXTREME);
 
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
@@ -112,6 +122,7 @@ int main( int argc, char* argv[] )
 
 		// Create the solver object
 		MoochoSolver  solver;
+    solver.set_journal_out(journalOut);
 
 		// Set the NLP
 		solver.set_nlp( Teuchos::rcp(&nlp,false) );

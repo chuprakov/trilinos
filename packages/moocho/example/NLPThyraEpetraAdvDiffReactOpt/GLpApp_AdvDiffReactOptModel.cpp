@@ -8,6 +8,13 @@ namespace {
 
 inline double sqr( const double& s ) { return s*s; }
 
+inline double dot( const Epetra_Vector &x, const Epetra_Vector &y )
+{
+  double dot[1];
+  x.Dot(y,dot);
+  return dot[0];
+}
+
 } // namespace
 
 namespace GLpApp {
@@ -17,12 +24,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   ,const double                                              x0
   ,const double                                              p0
   ,const double                                              reactionRate
-  ,const bool                                                dumpAll
   )
   :dat_(dat),reactionRate_(reactionRate)
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream>
-    out = Teuchos::VerboseObjectBase::getDefaultOStream();
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = getOStream();
   //
   // Get the maps
   //
@@ -48,8 +53,8 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   // Initialize the graph for W
   //
   dat_->computeNpy(x0_);
-  if(dumpAll) { *out << "\nA =\n"; { Teuchos::OSTab tab(out); dat_->getA()->Print(*out); } }
-  if(dumpAll) { *out << "\nNpy =\n"; {  Teuchos::OSTab tab(out); dat_->getNpy()->Print(*out); } }
+  //if(dumpAll) { *out << "\nA =\n"; { Teuchos::OSTab tab(out); dat_->getA()->Print(*out); } }
+  //if(dumpAll) { *out << "\nNpy =\n"; {  Teuchos::OSTab tab(out); dat_->getNpy()->Print(*out); } }
   W_graph_ = Teuchos::rcp(new Epetra_CrsGraph(dat_->getA()->Graph())); // Assume A and Npy have same graph!
   //
   isInitialized_ = true;
@@ -128,14 +133,21 @@ AdvDiffReactOptModel::create_W() const
   return Teuchos::rcp(new Epetra_CrsMatrix(::Copy,*W_graph_));
 }
 
+Teuchos::RefCountPtr<Epetra_Operator>
+AdvDiffReactOptModel::create_DfDp_op(int l) const
+{
+  TEST_FOR_EXCEPT(l!=1);
+  return Teuchos::rcp(new Epetra_CrsMatrix(::Copy,dat_->getB()->Graph()));
+  // See DfDp in evalModel(...) below for details
+}
+
 EpetraExt::ModelEvaluator::InArgs
 AdvDiffReactOptModel::createInArgs() const
 {
   InArgsSetup inArgs;
   inArgs.setModelEvalDescription(this->description());
-  //inArgs.set_Np(1);
+  inArgs.set_Np(1);
   inArgs.setSupports(IN_ARG_x,true);
-  inArgs.setSupports(IN_ARG_beta,true);
   return inArgs;
 }
 
@@ -144,18 +156,17 @@ AdvDiffReactOptModel::createOutArgs() const
 {
   OutArgsSetup outArgs;
   outArgs.setModelEvalDescription(this->description());
-  //outArgs.set_Np_Ng(1,1);
+  outArgs.set_Np_Ng(1,1);
   outArgs.setSupports(OUT_ARG_f,true);
   outArgs.setSupports(OUT_ARG_W,true);
   outArgs.set_W_properties(
     DerivativeProperties(
-      DERIV_LINEARITY_NONCONST
+      reactionRate_!=0.0 ? DERIV_LINEARITY_NONCONST : DERIV_LINEARITY_CONST
       ,DERIV_RANK_FULL
       ,true // supportsAdjoint
       )
     );
-/*
-  outArgs.setSupports(OUT_ARG_DfDp,1,DERIV_MV_BY_COL);
+  outArgs.setSupports(OUT_ARG_DfDp,1,DerivativeSupport(DERIV_LINEAR_OP,DERIV_MV_BY_COL));
   outArgs.set_DfDp_properties(
     1,DerivativeProperties(
       DERIV_LINEARITY_CONST
@@ -179,7 +190,6 @@ AdvDiffReactOptModel::createOutArgs() const
       ,true // supportsAdjoint
       )
     );
-*/
   return outArgs;
 }
 
@@ -188,29 +198,39 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   using Teuchos::dyn_cast;
   using Teuchos::rcp_dynamic_cast;
   //
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = this->getOStream();
+  const bool trace = ( static_cast<int>(this->getVerbLevel()) >= static_cast<int>(Teuchos::VERB_LOW) );
+  const bool dumpAll = ( static_cast<int>(this->getVerbLevel()) >= static_cast<int>(Teuchos::VERB_EXTREME) );
+  //
+  Teuchos::OSTab tab(out);
+  if(out.get() && trace) *out << "\n*** Entering AdvDiffReactOptModel::evalModel(...) ...\n"; 
+  //
   // Get the input arguments
   //
-  //Teuchos::RefCountPtr<const Epetra_Vector> p_in = inArgs.get_p(1);
-  //const Epetra_Vector &p = (p_in.get() ? *p_in : *p0_);
+  const Epetra_Vector *p_in = inArgs.get_p(1).get();
+  const Epetra_Vector &p = (p_in ? *p_in : *p0_);
   const Epetra_Vector &x = *inArgs.get_x();
   //
   // Get the output arguments
   //
-  Teuchos::RefCountPtr<Epetra_Vector>       f_inout = outArgs.get_f();
-  //Teuchos::RefCountPtr<Epetra_Vector>       g_inout = outArgs.get_g(1);
-  Teuchos::RefCountPtr<Epetra_Operator>     W_inout = outArgs.get_W();
-  //Teuchos::RefCountPtr<Epetra_MultiVector>  DfDp_inout = get_DfDp_mv(1,outArgs);
-  //Teuchos::RefCountPtr<Epetra_MultiVector>  DgDx_trans_inout = get_DgDx_mv(1,outArgs,DERIV_TRANS_MV_BY_ROW);
-  //Teuchos::RefCountPtr<Epetra_MultiVector>  DgDp_trans_inout = get_DgDp_mv(1,1,outArgs,DERIV_TRANS_MV_BY_ROW);
+  Epetra_Vector       *f_out = outArgs.get_f().get();
+  Epetra_Vector       *g_out = outArgs.get_g(1).get();
+  Epetra_Operator     *W_out = outArgs.get_W().get();
+  Derivative          DfDp_out = outArgs.get_DfDp(1);
+  Epetra_MultiVector  *DgDx_trans_out = get_DgDx_mv(1,outArgs,DERIV_TRANS_MV_BY_ROW).get();
+  Epetra_MultiVector  *DgDp_trans_out = get_DgDp_mv(1,1,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   //
   // Compute the functions
   //
-  if(f_inout.get()) {
-    Epetra_Vector &f = *f_inout;
+  if(f_out) {
+    //
+    // f = A*x + B*p + Ny(x)
+    //
+    Epetra_Vector &f = *f_out;
     Epetra_Vector Ax(*map_f_);
     dat_->getA()->Multiply(false,x,Ax);
     Epetra_Vector Bp(*map_f_);
-    dat_->getB()->Multiply(false,*p0_,Bp);
+    dat_->getB()->Multiply(false,p,Bp);
     f.Update(1.0,Ax,0.0);
     f.Update(1.0,Bp,-1.0,*dat_->getb(),1.0);
     if(reactionRate_!=0.0) {
@@ -218,17 +238,26 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       f.Update(reactionRate_,*dat_->getNy(),1.0);
     }
   }
-/*
-  if(g_inout.get()) {
-    Epetra_Vector &g = *g_inout;
-    TEST_FOR_EXCEPT(true);
+  if(g_out) {
+    //
+    // g = 0.5 * (x-q)*H*(x-q) + 0.5*regBeta*p*R*p
+    //
+    Epetra_Vector &g = *g_out;
+    Epetra_Vector xq(x);
+    xq.Update(-1.0, *dat_->getq(), 1.0);
+    Epetra_Vector Hxq(x);
+    dat_->getH()->Multiply(false,xq,Hxq);
+    Epetra_Vector Rp(p);
+    dat_->getR()->Multiply(false,p,Rp);
+    g[0] = 0.5*dot(xq,Hxq) + 0.5*dat_->getbeta()*dot(p,Rp);
   }
-*/
-  if(W_inout.get()) {
-    const double beta = inArgs.get_beta();
+  if(W_out) {
+    //
+    // W = A + Npy(x)
+    //
+    Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_out);
     if(reactionRate_!=0.0)
       dat_->computeNpy(Teuchos::rcp(&x,false));
-    Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_inout);
     Teuchos::RefCountPtr<Epetra_CrsMatrix>
       dat_A = dat_->getA(),
       dat_Npy = dat_->getNpy();
@@ -251,7 +280,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
-          DfDx_row_vals[k] = beta * (dat_A_row_vals[k] + reactionRate_ * dat_Npy_row_vals[k]);
+          DfDx_row_vals[k] = dat_A_row_vals[k] + reactionRate_ * dat_Npy_row_vals[k];
         }
       }
       else {
@@ -259,25 +288,82 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
-          DfDx_row_vals[k] = beta * dat_A_row_vals[k];
+          DfDx_row_vals[k] = dat_A_row_vals[k];
         }
       }
     }
   }
-/*
-  if(DfDp_inout.get()) {
-    Epetra_MultiVector &DfDp = *DfDp_inout;
-    TEST_FOR_EXCEPT(true);
+  if(!DfDp_out.isEmpty()) {
+    if(out.get() && trace) *out << "\nComputing DfDp ...\n"; 
+    //
+    // DfDp = B
+    //
+    // Note: We copy from B every time in order to be safe.  Note that since
+    // the client know s that B is constant (sense we told it so in createOutArgs())
+    // then it should only compute this matrix once and keep it if it is smart.
+    //
+    // Note: We support both the CrsMatrix and MultiVector form of this object
+    // to make things easier for the client.
+    //
+    Epetra_CrsMatrix   *DfDp_op = NULL;
+    Epetra_MultiVector *DfDp_mv = NULL;
+    if(out.get() && dumpAll)
+    { *out << "\nB =\n"; { Teuchos::OSTab tab(out); dat_->getB()->Print(*out); } }
+    if(DfDp_out.getLinearOp().get()) {
+      DfDp_op = &dyn_cast<Epetra_CrsMatrix>(*DfDp_out.getLinearOp());
+    }
+    else {
+      DfDp_mv = &*DfDp_out.getDerivativeMultiVector().getMultiVector();
+      DfDp_mv->PutScalar(0.0);
+    }
+    Teuchos::RefCountPtr<Epetra_CrsMatrix>
+      dat_B = dat_->getB();
+    const int numMyRows = dat_B->NumMyRows();
+    for( int i = 0; i < numMyRows; ++i ) {
+      int dat_B_num_row_entries=0; double *dat_B_row_vals=0; int *dat_B_row_inds=0;
+      dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
+      if(DfDp_op) {
+        int DfDp_num_row_entries=0; double *DfDp_row_vals=0; int *DfDp_row_inds=0;
+        DfDp_op->ExtractMyRowView(i,DfDp_num_row_entries,DfDp_row_vals,DfDp_row_inds);
+#ifdef _DEBUG
+        TEST_FOR_EXCEPT(DfDp_num_row_entries!=dat_B_num_row_entries);
+#endif
+        for(int k = 0; k < DfDp_num_row_entries; ++k) {
+#ifdef _DEBUG
+          TEST_FOR_EXCEPT(dat_B_row_inds[k]!=DfDp_row_inds[k]);
+#endif
+          DfDp_row_vals[k] = dat_B_row_vals[k];
+        }
+        // ToDo: The above code should be put in a utility function called copyValues(...)!
+      }
+      else if(DfDp_mv) {
+        for(int k = 0; k < dat_B_num_row_entries; ++k) {
+          (*(*DfDp_mv)(dat_B_row_inds[k]))[i] = dat_B_row_vals[k];
+        }
+        if(out.get() && dumpAll)
+        { *out << "\nDfDp_mv after setting row i="<<i<<":\n"; { Teuchos::OSTab tab(out); DfDp_mv->Print(*out); } }
+        // ToDo: The above code should be put in a utility function called copyValues(...)!
+      }
+    }
   }
-  if(DgDx_trans_inout.get()) {
-    Epetra_Vector &DgDx_trans = *(*DgDx_trans_inout)(0);
-    TEST_FOR_EXCEPT(true);
+  if(DgDx_trans_out) {
+    //
+    // DgDx' = H*(x-q)
+    //
+    Epetra_Vector &DgDx_trans = *(*DgDx_trans_out)(0);
+    Epetra_Vector xq(x);
+    xq.Update(-1.0,*dat_->getq(),1.0);
+    dat_->getH()->Multiply(false,xq,DgDx_trans);
   }
-  if(DgDp_trans_inout.get()) {
-    Epetra_Vector &DgDp_trans = *(*DgDp_trans_inout)(0);
-    TEST_FOR_EXCEPT(true);
+  if(DgDp_trans_out) {
+    //
+    // DgDp' = regBeta*R*p
+    //
+    Epetra_Vector &DgDp_trans = *(*DgDp_trans_out)(0);
+    dat_->getR()->Multiply(false,p,DgDp_trans);
+    DgDp_trans.Scale(dat_->getbeta());
   }
-*/
+  if(out.get() && trace) *out << "\n*** Leaving AdvDiffReactOptModel::evalModel(...) ...\n"; 
 }
 
 } // namespace GLpApp
