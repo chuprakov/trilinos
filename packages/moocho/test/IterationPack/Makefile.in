@@ -290,7 +290,8 @@ TestIterationPack_SOURCES = \
 TestIterationPack_DEPENDENCIES = $(common_dependencies)
 TestIterationPack_LDADD = $(common_ldadd)
 common_dependencies = \
-  $(top_builddir)/src/libmoocho.a
+  $(top_builddir)/src/libmoocho.a \
+  $(top_builddir)/thyra/src/libmoochothyra.a
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 @USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))

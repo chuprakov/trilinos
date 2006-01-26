@@ -29,7 +29,8 @@
 EXEEXT = .exe
 
 common_dependencies = \
-  $(top_builddir)/src/libmoocho.a
+  $(top_builddir)/src/libmoocho.a \
+  $(top_builddir)/thyra/src/libmoochothyra.a
 
 include $(top_builddir)/Makefile.export.moocho
 
