@@ -33,7 +33,6 @@
 
 #include "NLPInterfacePack_NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-//#include "TSFCoreNonlinTypes.hpp"
 #include "Thyra_ModelEvaluator.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -41,7 +40,7 @@ namespace AbstractLinAlgPack { class VectorSpaceThyra; }
 
 namespace NLPInterfacePack {
 
-/** \brief Implement the %NLPFirstOrder interface using a
+/** \brief Implements the base %NLP interface using a
  * <tt>Thyra::ModelEvaluator</tt> object.
  *
  * The nonlinear program is mapped as follows:
@@ -76,32 +75,97 @@ namespace NLPInterfacePack {
  *
  * ToDo: Finish documentation!
  */
-class NLPThyraModelEvaluator : virtual public NLPFirstOrder {
+class NLPThyraModelEvaluator : virtual public NLPObjGrad {
 public:
-	
-	///
-	enum EDerivSupport { DERIV_SUPPORT_ADJOINT_ONLY, DERIV_SUPPORT_ADJOINT_OR_DIRECT };
 
-	/// Initialize to uninitialized
-	NLPThyraModelEvaluator();
+	/** @name Overridden public members from NLP */
+	//@{
 
-	///
-	/** Calls <tt>initialize()</tt>.
-	 */
-	NLPThyraModelEvaluator(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
-    ,const int                                                      p_idx
-    ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+	/** \brief . */
+	void initialize(bool test_setup);
+	/** \brief . */
+	bool is_initialized() const;
+	/** \brief . */
+	vec_space_ptr_t space_x() const;
+	/** \brief . */
+	vec_space_ptr_t space_c() const;
+	/** \brief . */
+    size_type num_bounded_x() const;
+	/** \brief . */
+	void force_xinit_in_bounds(bool force_xinit_in_bounds);
+	/** \brief . */
+	bool force_xinit_in_bounds() const;
+	/** \brief . */
+	const Vector& xinit() const;
+	/** \brief . */
+	const Vector& xl() const;
+	/** \brief . */
+	const Vector& xu() const;
+	/** \brief . */
+	value_type max_var_bounds_viol() const;
+	/** \brief . */
+	void set_f(value_type* f);
+	/** \brief . */
+	void set_c(VectorMutable* c);
+	/** \brief . */
+	void unset_quantities();
+	/** \brief . */
+	void scale_f( value_type scale_f );
+	/** \brief . */
+	value_type scale_f() const;
+	/** \brief . */
+	void report_final_solution(
+		const Vector&    x
+		,const Vector*   lambda
+		,const Vector*   nu
+		,bool            optimal
 		);
 
-	///
-	/** Initialize given a <tt>Thyra::ModelEvaluator</tt> and
+	//@}
+
+	/** @name Overridden public members from NLPObjGrad */
+	//@{
+
+	/** \brief . */
+	void set_Gf(VectorMutable* Gf);
+
+	//@}
+
+protected:
+
+	/** @name Overridden protected members from NLP */
+	//@{
+
+	/** \brief . */
+	void imp_calc_f(
+		const Vector& x, bool newx
+		,const ZeroOrderInfo& zero_order_info) const;
+	/** \brief . */
+	void imp_calc_c(
+		const Vector& x, bool newx
+		,const ZeroOrderInfo& zero_order_info) const;
+
+	//@}
+
+	/** @name Overridden protected members from NLPObjGrad */
+	//@{
+
+	/** \brief . */
+	void imp_calc_Gf(
+		const Vector& x, bool newx
+		,const ObjGradInfo& obj_grad_info) const;
+
+	//@}
+
+protected:
+
+  /** @name Protected functions to be used by subclasses */
+  //@{
+
+	/** Initialize to uninitialized */
+	NLPThyraModelEvaluator();
+
+	/** \brief Initialize given a <tt>Thyra::ModelEvaluator</tt> and
 	 * a description of how to interpret it.
 	 *
 	 * @param  model    [in] NonlinearProblem that defines all of the functions and variables.
@@ -121,7 +185,7 @@ public:
 	 *
 	 * Todo: Add arguments for auxiliary inequalites and equalities
 	 */
-	void initialize(
+	void initializeBase(
 		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
@@ -133,108 +197,37 @@ public:
 		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
 		);
 
-	/** @name Overridden public members from NLP */
-	//@{
+	/** \brief . */
+	void assert_is_initialized() const;
+	/** \brief . */
+	void copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const;
+	/** \brief . */
+	void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
+  /** \brief . */
+  void preprocessBaseInOutArgs(
+    const Vector                                      &x
+    ,bool                                             newx
+    ,const ZeroOrderInfo                              *zero_order_info
+    ,const ObjGradInfo                                *obj_grad_info
+    ,const NLPFirstOrder::FirstOrderInfo              *first_order_info
+    ,Thyra::ModelEvaluatorBase::InArgs<value_type>    *model_inArgs_inout
+    ,Thyra::ModelEvaluatorBase::OutArgs<value_type>   *model_outArgs_inout
+    ,MatrixOp*                                        *Gc_out
+    ,VectorMutable*                                   *Gf_out
+    ,value_type*                                      *f_out
+    ,VectorMutable*                                   *c_out
+    ) const;
+  /** \brief . */
+  void postprocessBaseOutArgs(
+    Thyra::ModelEvaluatorBase::OutArgs<value_type>        *model_outArgs_inout
+    ,VectorMutable                                        *Gf
+    ,value_type                                           *f
+    ,VectorMutable                                        *c
+    ) const;
+    
+  //@}
 
-	///
-	void initialize(bool test_setup);
-	///
-	bool is_initialized() const;
-	///
-	vec_space_ptr_t space_x() const;
-	///
-	vec_space_ptr_t space_c() const;
-	///
-    size_type num_bounded_x() const;
-	///
-	void force_xinit_in_bounds(bool force_xinit_in_bounds);
-	///
-	bool force_xinit_in_bounds() const;
-	///
-	const Vector& xinit() const;
-	///
-	const Vector& xl() const;
-	///
-	const Vector& xu() const;
-	///
-	value_type max_var_bounds_viol() const;
-	///
-	void set_f(value_type* f);
-	///
-	void set_c(VectorMutable* c);
-	///
-	void unset_quantities();
-	///
-	void scale_f( value_type scale_f );
-	///
-	value_type scale_f() const;
-	///
-	void report_final_solution(
-		const Vector&    x
-		,const Vector*   lambda
-		,const Vector*   nu
-		,bool            optimal
-		);
-
-	//@}
-
-	/** @name Overridden public members from NLPObjGrad */
-	//@{
-
-	///
-	void set_Gf(VectorMutable* Gf);
-
-	//@}
-
-	/** @name Overridden public members from NLPFirstOrder */
-	//@{
-
-	/// Overridden to check the concrete type of Gc
-	void set_Gc(MatrixOp* Gc);
-	///
-	const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
-	/// Returns an ExampleBasisSystem
-	const basis_sys_ptr_t basis_sys() const;
-
-	//@}
-
-protected:
-
-	/** @name Overridden protected members from NLP */
-	//@{
-
-	///
-	void imp_calc_f(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
-	///
-	void imp_calc_c(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
-
-	//@}
-
-	/** @name Overridden protected members from NLPObjGrad */
-	//@{
-
-	///
-	void imp_calc_Gf(
-		const Vector& x, bool newx
-		,const ObjGradInfo& obj_grad_info) const;
-
-	//@}
-
-	/** @name Overridden protected members from NLPFirstOrder */
-	//@{
-
-	///
-	void imp_calc_Gc(
-    const Vector& x, bool newx
-    ,const FirstOrderInfo& first_order_info) const;
-
-	//@}
-
-private:
+//private: // ToDo: Make these private and refactor the other classes ...
 
 	// /////////////////////////////////////////
 	// Private types
@@ -273,22 +266,15 @@ private:
   mutable bool Gf_updated_;
   mutable bool Gc_updated_;
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_is_initialized() const;
-	///
-	void copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const;
-	///
-	void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
   ///
   void evalModel( 
 		const Vector            &x
     ,bool                   newx
 		,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
     ,const ObjGradInfo      *obj_grad_info    // != NULL if obj-grad and below info
-    ,const FirstOrderInfo   *first_order_info // != NULL if first-order and below info
     ) const;
 
 };	// end class NLPThyraModelEvaluator

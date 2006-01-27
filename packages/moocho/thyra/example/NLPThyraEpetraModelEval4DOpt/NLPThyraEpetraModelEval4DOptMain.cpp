@@ -1,9 +1,7 @@
 // //////////////////////////////////////////////////////////////////
 // NLPThyraEpetraModelEval4DOptMain.cpp
 
-#include <iostream>
-
-#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
@@ -19,7 +17,7 @@ ToDo: Finish documentation!
 int main( int argc, char* argv[] )
 {
 	using MoochoPack::MoochoSolver;
-	using NLPInterfacePack::NLPThyraModelEvaluator;
+	using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
@@ -81,7 +79,7 @@ int main( int argc, char* argv[] )
 
     // ToDo: Specify an initial guess not from the Thyra::EpetraModelEvaluator object
     
-		NLPThyraModelEvaluator nlp(
+		NLPFirstOrderThyraModelEvaluator nlp(
 			Teuchos::rcp(&thyraModel,false)
 			,do_sim ? -1 : 1
 			,do_sim ? -1 : 1

@@ -44,12 +44,13 @@ namespace NLPInterfacePack {
  * useful in reduced space SQP-type and other related optimization algorithms.
  *
  * Specifically, the variables are partitioned into dependent and independent
- * sets <tt>x = [ x_dep'  x_indep' ]'</tt> and Jacobians of the constraints
+ * sets <tt>x = [ x_dep' x_indep' ]'</tt> and Jacobians of the constraints
  * <tt>c(x)</tt> at the point <tt>x</tt> are:
+
  \verbatim
 
-	del(c,x) = Gc' = [ del(c(con_decomp))   ] = [ GcD' ] = [ GcDD'  GcDI' ] = [ C  N ]
-                     [ del(c(con_undecomp)) ]   [ GcU' ]   [ GcUD'  GcUI' ]   [ E  F ]
+  del(c,x) = Gc' = [ del(c(con_decomp))   ] = [ GcD' ] = [ GcDD'  GcDI' ] = [ C  N ]
+                   [ del(c(con_undecomp)) ]   [ GcU' ]   [ GcUD'  GcUI' ]   [ E  F ]
 
     where:
       C <: R^(r x r) is nonsingular
@@ -57,13 +58,16 @@ namespace NLPInterfacePack {
       E <: R^((m-r) x r)
       F <: R^((m-r) x (n-r))
  \endverbatim
+
  * This partitions the general equality constraints c(x) into two sets;
  * decomposed c(con_decomp) and undecomposed c(con_undecomp).  It is therefore
- * expected that sub-vectors and subspaces from <tt>space_x().sub_space(var_dep)</tt>,
- * <tt>space_x().sub_space(var_indep)</tt>, <tt>space_c().sub_space(con_decomp)</tt> and
- * <tt>space_c().sub_space(con_undecomp)</tt> can all be accessed.  Other sub-vectors
- * and sub-spaces may not be available (but the algorithm should not need access to other
- * sub-spaces).
+ * expected that sub-vectors and subspaces from
+ * <tt>space_x().sub_space(var_dep)</tt>,
+ * <tt>space_x().sub_space(var_indep)</tt>,
+ * <tt>space_c().sub_space(con_decomp)</tt> and
+ * <tt>space_c().sub_space(con_undecomp)</tt> can all be accessed.  Other
+ * sub-vectors and sub-spaces may not be available (but the algorithm should
+ * not need access to other sub-spaces).
  *
  * Free access to solves with the basis <tt>C</tt> is not given however and instead this interface
  * computes, for the current point \a x, the direct sensitivity matrice <tt>D = -inv(C)*N</tt>,

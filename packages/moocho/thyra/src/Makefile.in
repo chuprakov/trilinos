@@ -102,7 +102,9 @@ am__objects_1 = AbstractLinAlgPack_InnerProductThyra.$(OBJEXT) \
 	AbstractLinAlgPack_MatrixOpNonsingThyra.$(OBJEXT) \
 	AbstractLinAlgPack_MultiVectorMutableThyra.$(OBJEXT) \
 	AbstractLinAlgPack_ThyraAccessors.$(OBJEXT)
-am__objects_2 = NLPInterfacePack_NLPThyraModelEvaluator.$(OBJEXT)
+am__objects_2 = NLPInterfacePack_NLPThyraModelEvaluator.$(OBJEXT) \
+	NLPInterfacePack_NLPDirectThyraModelEvaluator.$(OBJEXT) \
+	NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.$(OBJEXT)
 am_libmoochothyra_a_OBJECTS = $(am__objects_1) $(am__objects_2)
 libmoochothyra_a_OBJECTS = $(am_libmoochothyra_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
@@ -116,6 +118,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -276,10 +280,14 @@ ABSTRACT_LIN_ALG_PACK_THYRA_CPP = \
   $(srcdir)/AbstractLinAlgPack/AbstractLinAlgPack_ThyraAccessors.cpp
 
 NLP_INTERFACE_PACK_THYRA_HPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.hpp
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp
 
 NLP_INTERFACE_PACK_THYRA_CPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
 @USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
 
@@ -426,6 +434,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorMutableThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceFactoryThyra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractLinAlgPack_VectorSpaceThyra.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po@am__quote@
 
 .cpp.o:
@@ -587,6 +597,38 @@ NLPInterfacePack_NLPThyraModelEvaluator.obj: $(srcdir)/NLPInterfacePack/NLPInter
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp'; fi`
+
+NLPInterfacePack_NLPDirectThyraModelEvaluator.o: $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPDirectThyraModelEvaluator.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPDirectThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPDirectThyraModelEvaluator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPDirectThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp
+
+NLPInterfacePack_NLPDirectThyraModelEvaluator.obj: $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPDirectThyraModelEvaluator.obj -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPDirectThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPDirectThyraModelEvaluator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPDirectThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPDirectThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp'; fi`
+
+NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.o: $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.o -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.o `test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
+
+NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj: $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj -MD -MP -MF "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo" -c -o NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo" "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po"; else rm -f "$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp' object='NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.Po' tmpdepfile='$(DEPDIR)/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.obj `if test -f '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; then $(CYGPATH_W) '$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp'; fi`
 uninstall-info-am:
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

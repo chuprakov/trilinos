@@ -1,6 +1,6 @@
 #include "GLpApp_AdvDiffReactOptModel.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -18,7 +18,7 @@
 int main( int argc, char* argv[] )
 {
 	using MoochoPack::MoochoSolver;
-	using NLPInterfacePack::NLPThyraModelEvaluator;
+	using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
@@ -110,7 +110,7 @@ int main( int argc, char* argv[] )
       ,Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory())
       );
     
-		NLPThyraModelEvaluator nlp(
+		NLPFirstOrderThyraModelEvaluator nlp(
 			Teuchos::rcp(&thyraModel,false)
 			,do_sim ? -1 : 1
 			,do_sim ? -1 : 1

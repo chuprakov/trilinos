@@ -47,10 +47,14 @@ ABSTRACT_LIN_ALG_PACK_THYRA_CPP = \
   $(srcdir)/AbstractLinAlgPack/AbstractLinAlgPack_ThyraAccessors.cpp
 
 NLP_INTERFACE_PACK_THYRA_HPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.hpp
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp
 
 NLP_INTERFACE_PACK_THYRA_CPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
 #
 # Specify locations of include files within Trilinos

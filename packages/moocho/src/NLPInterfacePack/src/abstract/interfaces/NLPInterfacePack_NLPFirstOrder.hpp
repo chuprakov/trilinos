@@ -253,8 +253,6 @@ public:
 
 	//@}
 
-protected:
-
 	///
 	/** Struct for zero and first order quantities (pointers)
 	 */
@@ -276,6 +274,8 @@ protected:
 		/// Pointer to equality constraints residule <tt>c</tt> (may be NULL if not set)
 		VectorMutable*      c;
 	}; // end struct FirstOrderInfo
+
+protected:
 
 	/// Return objective gradient and zero order information.
 	const FirstOrderInfo first_order_info() const;
