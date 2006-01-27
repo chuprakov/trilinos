@@ -34,6 +34,9 @@
 #include "InputStreamHelperPack_EatInputComment.hpp"
 #include "Teuchos_TestForException.hpp"
 
+// Define this if you want to debug the parser
+//#define PRINT_OPTIONS_FROM_STREAM_TRACE
+
 namespace {
 
 // Remove white space from beginning and end.
@@ -114,48 +117,90 @@ void OptionsFromStream::read_options( std::istream& in )
 	using InputStreamHelperPack::eat_comment_lines;
 
 	std::string curr_word;
-	int ignore_len = 100;
 
 	if(!in)
 		return; // No options to read!
 
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+  std::cout << "\n*** Entering OptionsFromStream::read_options(...)!\n\n";
+#endif
+
 	// Eat words until you get to begin_options.
 	while( curr_word != "begin_options" && !in.eof() )
 		in >> curr_word;
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+  std::cout << "Found begin_options, start parsing options!\n";
+#endif
 	// Loop through each options group.
 	while( !in.eof() ) {
 	 	eat_comment_lines(in,'*');
 		// read options_group
 		in >> curr_word;
-		if( curr_word == "end_options" )
-			return;
+		if( curr_word == "end_options" ) {
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+      std::cout << "Found end_options, stoping parsing options!\n";
+#endif
+      break;
+    }
 		TEST_FOR_EXCEPTION(
 			curr_word != "options_group", InputStreamError
 			,"OptionsFromStream::read_options(...) : "
 			"Error, curr_word = \'" << curr_word << " != \'options_group\'" );
 		// read the name of the options group up to {
-		in >> curr_word;
-		if( curr_word[curr_word.length()-1] == '{' )
-			curr_word.erase( curr_word.length()-1, 1 );	// remove '{' from the end.
-		else
-			in.ignore(ignore_len,'{');	// remove (hopefully whitespace) up to '{'
+    std::getline(in,curr_word,'{');
 		clip_ws( &curr_word );
+    const std::string optgroup_name = curr_word;
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+    std::cout << "\noptgroup_name = \"" << optgroup_name << "\"\n";
+#endif
 		// Access the options and values map for this options group.
-		option_to_value_map_t& optval = options_group_map_[curr_word].first;
-		// Loop through and add the options.
+		option_to_value_map_t& optval = options_group_map_[optgroup_name].first;
+    // Grap all of the options for this options group
 	 	eat_comment_lines(in,'*');
-		in >> curr_word; // should be an option name.
-		while( curr_word != "}" ) {
-			std::string &value = optval[curr_word];
-			in.ignore( ignore_len, '=' );
-			// Read in the value.
-			getline( in, value, ';' );
-			clip_ws( &value );
-			// Read the next option name.
-		 	eat_comment_lines(in,'*');
-			in >> curr_word;
+    std::string optgroup_options;
+    getline(in,optgroup_options,'}');
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+    std::cout << "optgroup_options = \"" << optgroup_options << "\"\n";
+#endif
+    std::istringstream optgroup_options_in(optgroup_options);
+		// Loop through and add the options.
+    while(true) {
+      eat_comment_lines(optgroup_options_in,'*');
+      // Get an option and its value
+      std::string option_and_value;
+      getline(optgroup_options_in,option_and_value,';');
+      // Note: above If ';' is missing it will take the rest of the string to
+      // the end of '}' for the end of the options group.  These means that if
+      // there is not comments after the last option=value pair then the last
+      // semicolon is optional!  This turns out to work nicely for the
+      // CommandLineOptionsFromStreamProcessor class so this is good behavior!
+      clip_ws(&option_and_value);
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+      std::cout << "  option_and_value = \"" << option_and_value << "\"\n";
+#endif
+      if(!option_and_value.length())
+        break;
+      // Process the option and value
+      const std::string::size_type equal_idx = option_and_value.find('=',0);
+      TEST_FOR_EXCEPTION(
+        equal_idx==std::string::npos, std::logic_error
+        ,"Error, for the option group \""<<options_group_name<<"\""
+        " the option value string \"" << option_and_value << "\" is missing the \"=\" separator!"
+        );
+      std::string option = option_and_value.substr(0,equal_idx);
+      std::string value = option_and_value.substr(equal_idx+1);
+      clip_ws(&option);
+      clip_ws(&value);
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+      std::cout << "    option = \"" << option << "\"\n";
+      std::cout << "    value  = \"" << value << "\"\n";
+#endif
+			optval[option] = value;
 		}
 	}
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+  std::cout << "\n*** Leaving OptionsFromStream::read_options(...)!\n\n";
+#endif
 }
 
 void OptionsFromStream::print_options( std::ostream& out ) const {

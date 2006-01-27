@@ -26,14 +26,6 @@
 // ***********************************************************************
 // @HEADER
 
-#include <assert.h>
-
-#include <fstream>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-
 #include "MoochoPack_MoochoSolver.hpp"
 
 #include "MoochoPack_NLPAlgoConfigMamaJama.hpp"
@@ -64,8 +56,12 @@ namespace MoochoPack {
 
 // Initialization and algorithm configuration
 
-MoochoSolver::MoochoSolver()
-	:reconfig_solver_(true)
+MoochoSolver::MoochoSolver(
+  const std::string &options_file_name
+  ,const std::string &extra_options_str
+  )
+	:commandLineOptionsFromStreamProcessor_(options_file_name,extra_options_str)
+  ,reconfig_solver_(true)
 	,workspace_MB_(-1.0)
 	,obj_scale_(1.0)
 	,test_nlp_(true)
@@ -82,6 +78,25 @@ MoochoSolver::MoochoSolver()
 	,error_out_used_(Teuchos::VerboseObjectBase::getDefaultOStream())
 	,send_all_output_to_black_hole_(false)
 {}
+
+OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
+MoochoSolver::commandLineOptionsFromStreamProcessor()
+{
+  return commandLineOptionsFromStreamProcessor_;
+}
+
+const OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
+MoochoSolver::commandLineOptionsFromStreamProcessor() const
+{
+  return commandLineOptionsFromStreamProcessor_;
+}
+
+void MoochoSolver::setup_commandline_processor(
+  Teuchos::CommandLineProcessor *clp
+  )
+{
+  commandLineOptionsFromStreamProcessor_.setup_commandline_processor(clp);
+}
 
 void MoochoSolver::set_nlp(const nlp_ptr_t& nlp)
 {
@@ -124,13 +139,13 @@ MoochoSolver::get_config() const
 
 void MoochoSolver::set_options( const options_ptr_t& options )
 {
-	namespace mmp = MemMngPack;
-	options_ = options;                  // Must totally free all of the references we
-	const config_ptr_t                   // have to the current options.  That includes
-		&config = solver_.get_config();  // removing the options object for the configuration
-	if(config.get())                     // object.
+	options_ = options;                    // Must totally free all of the references we
+	const config_ptr_t                     // have to the current options.  That includes
+		&config = solver_.get_config();      // removing the options object for the configuration
+	if(config.get())                       // object.
 		config->set_options(Teuchos::null);  // ...
 	options_used_ = options;
+  commandLineOptionsFromStreamProcessor_.set_options(options);
 	reconfig_solver_ = true;
 }
 
@@ -365,21 +380,21 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 		
     }
 	catch(const std::exception& excpt) {
+		*error_out_used_   << "\nCaught a std::exception: " << excpt.what() << endl;
 		if(do_summary_outputting())
 			*summary_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
 		if(do_journal_outputting())
 			*journal_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
-		*error_out_used_   << "\nCaught a std::exception: " << excpt.what() << endl;
 		if(throw_exceptions_)
 			throw;
 		threw_exception = true;
 	}
 	catch(...) {
+		*error_out_used_   << "\nCaught an unknown exception\n";
 		if(do_summary_outputting())
 			*summary_out_used_ << "\nCaught an unknown exception\n";
 		if(do_journal_outputting())
 			*journal_out_used_ << "\nCaught an unknown exception\n";
-		*error_out_used_   << "\nCaught an unknown exception\n";
 		if(throw_exceptions_)
 			throw;
 		threw_exception = true;
@@ -514,11 +529,7 @@ void MoochoSolver::update_solver() const
 	
 	if( options_used_.get() == NULL ) {
 		if( options_.get() == NULL ) {
-			std::ifstream options_in("Moocho.opt");
-			if(options_in)
-				options_used_ = Teuchos::rcp(new OptionsFromStream(options_in));
-			else
-				options_used_ = Teuchos::null;
+      options_used_ = commandLineOptionsFromStreamProcessor_.process_and_get_options();
 		}
 		else
 			options_used_ = options_;
@@ -664,8 +675,6 @@ void MoochoSolver::update_solver() const
 		*algo_out_used_
 			<< "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
 			"Using a default set of options ...\n";
-
-
 
 	//
 	// Configure the algorithm

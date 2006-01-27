@@ -32,6 +32,12 @@ int main( int argc, char* argv[] )
 
 	try {
 	
+		// Create the solver object
+		MoochoSolver  solver;
+    solver.commandLineOptionsFromStreamProcessor().set_extra_options_str(
+      "DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}"
+      );
+
 		//
 		// Get options from the command line
 		//
@@ -45,19 +51,20 @@ int main( int argc, char* argv[] )
     bool         printOnAllProcs = true;
     bool         dump_all        = false;
 
-		CommandLineProcessor  command_line_processor(false); // Don't throw exceptions
+		CommandLineProcessor  clp(false); // Don't throw exceptions
 
-		command_line_processor.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file." );
-		command_line_processor.setOption( "beta", &beta, "Regularization." );
-		command_line_processor.setOption( "x0", &x0, "Initial guess for the state." );
-		command_line_processor.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
-		command_line_processor.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
-		command_line_processor.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
-    command_line_processor.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
-		command_line_processor.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
+		clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file." );
+		clp.setOption( "beta", &beta, "Regularization." );
+		clp.setOption( "x0", &x0, "Initial guess for the state." );
+		clp.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
+		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
+		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+    clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
+		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
+    solver.setup_commandline_processor(&clp);
 
 		CommandLineProcessor::EParseCommandLineReturn
-			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
+			parse_return = clp.parse(argc,argv,&std::cerr);
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
@@ -120,8 +127,7 @@ int main( int argc, char* argv[] )
     // Solve the NLP
     //
 
-		// Create the solver object
-		MoochoSolver  solver;
+    // Set the journal file
     solver.set_journal_out(journalOut);
 
 		// Set the NLP

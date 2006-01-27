@@ -46,6 +46,7 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.hpp\
   $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.hpp\
   $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStreamExceptions.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStream.hpp\
@@ -64,6 +65,7 @@ MOOCHO_UTILITIES_CPP = \
   $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.cpp\
   $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.cpp\
   $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp\

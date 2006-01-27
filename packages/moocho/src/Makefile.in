@@ -112,6 +112,7 @@ libmoocho_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.cpp \
 	$(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.cpp \
 	$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.cpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp \
@@ -424,6 +425,7 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 am__objects_1 = FortranTypes_CppFortranStrings.$(OBJEXT) \
 	FortranTypes_f_open_file.$(OBJEXT) \
 	InputStreamHelperPack_EatInputComment.$(OBJEXT) \
+	OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.$(OBJEXT) \
 	OptionsFromStreamPack_OptionsFromStream.$(OBJEXT) \
 	OptionsFromStreamPack_SetOptionsFromStreamNode.$(OBJEXT) \
 	OptionsFromStreamPack_StringToBool.$(OBJEXT) \
@@ -970,6 +972,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_basis_system.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_nlp_direct.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_OptionsFromStream.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_SetOptionsFromStreamNode.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po \
@@ -1053,6 +1056,7 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.hpp \
 	$(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.hpp \
 	$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.hpp \
+	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStreamExceptions.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStream.hpp \
@@ -1680,6 +1684,7 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.hpp\
   $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.hpp\
   $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.hpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStreamExceptions.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStream.hpp\
@@ -1698,6 +1703,7 @@ MOOCHO_UTILITIES_CPP = \
   $(srcdir)/MoochoUtilities/src/FortranTypes_CppFortranStrings.cpp\
   $(srcdir)/MoochoUtilities/src/FortranTypes_f_open_file.cpp\
   $(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp\
+  $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_SetOptionsFromStreamNode.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp\
@@ -2988,6 +2994,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_basis_system.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_nlp_direct.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPInterfacePack_test_nlp_first_order.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_OptionsFromStream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_SetOptionsFromStreamNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionsFromStreamPack_StringToBool.Po@am__quote@
@@ -3996,6 +4003,22 @@ InputStreamHelperPack_EatInputComment.obj: $(srcdir)/MoochoUtilities/src/InputSt
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/InputStreamHelperPack_EatInputComment.Po' tmpdepfile='$(DEPDIR)/InputStreamHelperPack_EatInputComment.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InputStreamHelperPack_EatInputComment.obj `if test -f '$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/InputStreamHelperPack_EatInputComment.cpp'; fi`
+
+OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.o: $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.o -MD -MP -MF "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo" -c -o OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.o `test -f '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo" "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po"; else rm -f "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp' object='OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po' tmpdepfile='$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.o `test -f '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp
+
+OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.obj: $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.obj -MD -MP -MF "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo" -c -o OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.obj `if test -f '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo" "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po"; else rm -f "$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp' object='OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.Po' tmpdepfile='$(DEPDIR)/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.obj `if test -f '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.cpp'; fi`
 
 OptionsFromStreamPack_OptionsFromStream.o: $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT OptionsFromStreamPack_OptionsFromStream.o -MD -MP -MF "$(DEPDIR)/OptionsFromStreamPack_OptionsFromStream.Tpo" -c -o OptionsFromStreamPack_OptionsFromStream.o `test -f '$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_OptionsFromStream.cpp; \

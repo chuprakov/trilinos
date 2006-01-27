@@ -26,16 +26,12 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef RSSQPP_RSQPPP_SOLVER_H
-#define RSSQPP_RSQPPP_SOLVER_H
+#ifndef MOOCHOPACK_MOOCHO_SOLVER_HPP
+#define MOOCHOPACK_MOOCHO_SOLVER_HPP
 
 #include "MoochoPack_Types.hpp"
 #include "MoochoPack_NLPAlgoContainer.hpp"
-#include "Teuchos_RefCountPtr.hpp"
-
-namespace OptionsFromStreamPack {
-	class OptionsFromStream;
-}
+#include "OptionsFromStreamPack_CommandLineOptionsFromStreamProcessor.hpp"
 
 namespace MoochoPack {
 
@@ -57,21 +53,22 @@ namespace MoochoPack {
  *   encapuslaited solver object).
  * </ol>
  *
- * In the algorithm configuration phase, the client must, at a minimum, set the
- * NLP object for the NLP to be solved using <tt>this->set_nlp()</tt>.
- * The NLP object is needed so that the algorithm configuration object can adapt
- * the MOOCHO algorithm to the NLP in the best way possible.  The configuration
- * phase can also include setting a user defined track object(s) and a user
- * defined <tt>NLPAlgoConfig</tt> object.  An NLP is solved by calling
- * the method <tt>this->solve_nlp()</tt> which returns an <tt>enum</tt>
- * stating what happended and reporting the final point to the <tt>NLP</tt>
- * object.
+ * In the algorithm configuration phase, the client must, at a minimum, set
+ * the NLP object for the NLP to be solved using <tt>this->set_nlp()</tt>.
+ * The NLP object is needed so that the algorithm configuration object can
+ * adapt the MOOCHO algorithm to the NLP in the best way possible.  The
+ * configuration phase can also include setting a user-defined track object(s)
+ * and a user-defined <tt>NLPAlgoConfig</tt> object.  An NLP is solved by
+ * calling the method <tt>this->solve_nlp()</tt> which returns an
+ * <tt>enum</tt> stating what happended and reporting the final point to the
+ * <tt>NLP</tt> object.
  *
- * This class encapsulates a <tt>NLPAlgoClientInterface</tt> object and takes
+ * This class encapsulates an <tt>NLPAlgoClientInterface</tt> object and takes
  * over some of the drudgery of working with this interface.  In most cases
- * all the options that can be set to configuration object and other algorithmic
- * objects can be set using an <tt>OptionsFromStreamPack::OptionsFromStream</tt>
- * object by calling <tt>this->set_options()</tt>.
+ * all the options that can be set to configuration object and other
+ * algorithmic objects can be set using an
+ * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object by calling
+ * <tt>this->set_options()</tt>.
  *
  * Options specific to this class and the configuration object (down to the lower
  * algorithmic objects that it creates) can be set through an
@@ -191,7 +188,25 @@ public:
 	 * <li> ToDo: Fill these in!
 	 * </ul>
 	 */
-	MoochoSolver();
+	MoochoSolver(
+    const std::string &options_file_name = "Moocho.opt"
+    ,const std::string &extra_options_str = ""
+    );
+
+  ///
+  OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
+  commandLineOptionsFromStreamProcessor();
+
+  ///
+  const OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
+  commandLineOptionsFromStreamProcessor() const;
+
+  ///
+  /** Setup the commandline processor to process commandline options.
+   */
+  void setup_commandline_processor(
+    Teuchos::CommandLineProcessor *clp
+    );
 
 	///
 	/** Set the NLP to be solved.
@@ -672,6 +687,7 @@ private:
 	// ////////////////////////////////////
 	// Private data members
 
+  mutable OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor commandLineOptionsFromStreamProcessor_;
 #ifndef DOXYGEN_COMPILE
 	mutable NLPAlgoContainer solver_;          // Solver object.
 #else
@@ -803,4 +819,4 @@ bool MoochoSolver::generate_stats_file() const
 
 } // end namespace MoochoPack
 
-#endif // RSSQPP_RSQPPP_SOLVER_H
+#endif // MOOCHOPACK_MOOCHO_SOLVER_HPP

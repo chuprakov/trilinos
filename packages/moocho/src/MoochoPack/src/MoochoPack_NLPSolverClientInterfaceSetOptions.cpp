@@ -123,8 +123,10 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
 				target().journal_output_level(PRINT_ITERATION_QUANTITIES);
 			else
-				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
-																		 "Error, incorrect value for \"journal_output_level\"." );
+        TEST_FOR_EXCEPTION(
+          true,std::invalid_argument
+          ,"NLPSolverClientInterfaceSetOptions::setOption(...) : "
+          "Error, incorrect value \""<<option_value<<"\" for \"journal_output_level\"." );
 			if((int)target().null_space_journal_output_level() <= (int)PRINT_ALGORITHM_STEPS)
 				target().null_space_journal_output_level(target().journal_output_level());
 			break;
@@ -140,8 +142,10 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
 				target().null_space_journal_output_level(PRINT_ITERATION_QUANTITIES);
 			else
-				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
-																		 "Error, incorrect value for \"null_space_journal_output_level\"." );
+				TEST_FOR_EXCEPTION(
+          true,std::invalid_argument
+          ,"NLPSolverClientInterfaceSetOptions::setOption(...) : "
+          "Error, incorrect value \""<<option_value<<"\" for \"null_space_journal_output_level\"." );
 			break;
 		}
 		case JOURNAL_PRINT_DIGITS:
