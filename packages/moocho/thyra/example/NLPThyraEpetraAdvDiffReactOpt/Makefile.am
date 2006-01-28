@@ -44,10 +44,16 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/usr_par.cpp\
   $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 
-NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files
+#NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files
+NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
 NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
 
-input_mesh_files:
+#input_mesh_files:
+#	cp $(srcdir)/data/square/square.1.000 square.1.000
+#	cp $(srcdir)/data/square/square.2.000 square.2.000
+
+
+square.1.000: $(srcdir)/data/square/square.1.000
 	cp $(srcdir)/data/square/square.1.000 square.1.000
 	cp $(srcdir)/data/square/square.2.000 square.2.000
 
