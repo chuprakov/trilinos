@@ -97,7 +97,7 @@ endif
 
 MOOCHO_THYRA_SUBDIR=thyra
 
-SUBDIRS = src $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) $(MOOCHO_THYRA_SUBDIR)
+SUBDIRS = src $(MOOCHO_THYRA_SUBDIR) $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 
 ## #######################################################################
 ## The below targets allow you to use the new
