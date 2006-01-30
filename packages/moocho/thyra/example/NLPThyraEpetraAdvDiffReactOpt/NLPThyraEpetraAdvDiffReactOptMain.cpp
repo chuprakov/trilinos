@@ -34,7 +34,7 @@ int main( int argc, char* argv[] )
 	
 		// Create the solver object
 		MoochoSolver  solver;
-    solver.commandLineOptionsFromStreamProcessor().set_extra_options_str(
+    solver.commandLineOptionsFromStreamProcessor().extra_options_str(
       "DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}"
       );
 

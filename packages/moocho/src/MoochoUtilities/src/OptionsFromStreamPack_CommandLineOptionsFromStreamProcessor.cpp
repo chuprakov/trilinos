@@ -34,11 +34,18 @@
 namespace OptionsFromStreamPack {
 
 CommandLineOptionsFromStreamProcessor::CommandLineOptionsFromStreamProcessor(
-  const std::string &options_file_name
+  const std::string  &options_file_name_opt_name
+  ,const std::string &options_file_name_opt_doc
+  ,const std::string &options_file_name
+  ,const std::string &extra_options_str_opt_name
+  ,const std::string &extra_options_str_opt_doc
   ,const std::string &extra_options_str
   )
-  :options_are_processed_(false)
+  :options_file_name_opt_name_(options_file_name_opt_name)
+  ,options_file_name_opt_doc_(options_file_name_opt_doc)
   ,options_file_name_(options_file_name)
+  ,extra_options_str_opt_name_(extra_options_str_opt_name)
+  ,extra_options_str_opt_doc_(extra_options_str_opt_doc)
   ,extra_options_str_(extra_options_str)
 {}
 
@@ -55,47 +62,16 @@ CommandLineOptionsFromStreamProcessor::get_options() const
   return options_;
 }
 
-void CommandLineOptionsFromStreamProcessor::set_options_file_name( 
-  const std::string &options_file_name
-  )
-{
-  options_file_name_ = options_file_name;
-}
-
-std::string CommandLineOptionsFromStreamProcessor::get_options_file_name() const
-{
-  return options_file_name_;
-}
-
-void CommandLineOptionsFromStreamProcessor::set_extra_options_str( 
-  const std::string &extra_options_str
-  )
-{
-  extra_options_str_ = extra_options_str;
-}
-
-std::string CommandLineOptionsFromStreamProcessor::get_extra_options_str() const
-{
-  return extra_options_str_;
-}
-
 void CommandLineOptionsFromStreamProcessor::setup_commandline_processor(
   Teuchos::CommandLineProcessor *clp
   )
 {
-  clp->setOption("ofs-options-file",&options_file_name_,"The name of the file containing input options for OptionsFromStream object.");
-  clp->setOption("ofs-extra-options",&extra_options_str_,"Extra options in format \"OptGroup1{name1=val1,...,namen=valn}:OptGroup2{name1=val1,...,namen=valn}:...\"");
-  // RAB: 2006/01/27: Note, this value contains no semi-columns since this
-  // conflicts with Trilinos' runtests script.  Therefore, I have to replace
-  // the ',' separators with ';' below!
-  // Note: we can leave off the last ',' since it turns out that the
-  // way the new OptionsFromStream::parse_options(...) is written that
-  // the last semicolon in an options group is not necessary!
+  clp->setOption(options_file_name_opt_name().c_str(),&options_file_name_,options_file_name_opt_doc().c_str());
+  clp->setOption(extra_options_str_opt_name().c_str(),&extra_options_str_,extra_options_str_opt_doc().c_str());
 }
 
 void CommandLineOptionsFromStreamProcessor::process_options()
 {
-  if(options_are_processed_) return;
   // Process the file options first
   if(options_file_name_.length()) {
     std::ifstream options_in(options_file_name_.c_str());
@@ -131,7 +107,6 @@ void CommandLineOptionsFromStreamProcessor::process_options()
     std::istringstream ioptsstream(options_str);
     options_->read_options(ioptsstream);
   }
-  options_are_processed_ = true;
 }
 
 Teuchos::RefCountPtr<OptionsFromStream>

@@ -60,8 +60,7 @@ MoochoSolver::MoochoSolver(
   const std::string &options_file_name
   ,const std::string &extra_options_str
   )
-	:commandLineOptionsFromStreamProcessor_(options_file_name,extra_options_str)
-  ,reconfig_solver_(true)
+  :reconfig_solver_(true)
 	,workspace_MB_(-1.0)
 	,obj_scale_(1.0)
 	,test_nlp_(true)
@@ -77,7 +76,23 @@ MoochoSolver::MoochoSolver(
 	,configuration_(MAMA_JAMA)
 	,error_out_used_(Teuchos::VerboseObjectBase::getDefaultOStream())
 	,send_all_output_to_black_hole_(false)
-{}
+{
+
+	commandLineOptionsFromStreamProcessor_.options_file_name_opt_name(
+    "moocho-options-file");
+	commandLineOptionsFromStreamProcessor_.options_file_name_opt_doc(
+    "Set the name of the MOOCHO options file in the OptionsFromStream format."
+    "  File is ignored if it does not exist!");
+	commandLineOptionsFromStreamProcessor_.options_file_name(options_file_name);
+
+	commandLineOptionsFromStreamProcessor_.extra_options_str_opt_name(
+    "moocho-extra-options");
+	commandLineOptionsFromStreamProcessor_.extra_options_str_opt_doc(
+    "Extra MOOCHO options specified in the format"
+    " \"OptGrp1{name1=val1,...,namen=valn}:OptGr2{name1=val1,...,namen=valn}:...\"");
+  commandLineOptionsFromStreamProcessor_.extra_options_str(extra_options_str);
+
+}
 
 OptionsFromStreamPack::CommandLineOptionsFromStreamProcessor&
 MoochoSolver::commandLineOptionsFromStreamProcessor()

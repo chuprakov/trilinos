@@ -320,7 +320,7 @@
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=8,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=8,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
@@ -328,48 +328,48 @@
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=6,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=6,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=7,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=7,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 --x0=1.0 --p0=0.0 --reaction-rate=1e-5;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=6,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=6,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=16,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=16,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=25,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=25,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --reaction-rate=1e+5 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
-    #--ofs-extra-options="NLPSolverClientInterface{max_iter=15,journal_output_level=PRINT_NOTHING}";
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=15,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
-    #--ofs-extra-options="NLPSolverClientInterface{opt_tol=1e-4,feas_tol=1e-10,max_iter=52,journal_output_level=PRINT_ALGORITHM_STEPS}:DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}";
+    #--moocho-extra-options="NLPSolverClientInterface{opt_tol=1e-4,feas_tol=1e-10,max_iter=52,journal_output_level=PRINT_ALGORITHM_STEPS}:DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}";
     COMM = SERIAL, MPI(1);
 }
