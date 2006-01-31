@@ -1,5 +1,6 @@
 #include "GLpApp_AdvDiffReactOptModel.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp"
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
@@ -17,7 +18,10 @@
 
 int main( int argc, char* argv[] )
 {
+	using Teuchos::rcp;
 	using MoochoPack::MoochoSolver;
+	using NLPInterfacePack::NLP;
+	using NLPInterfacePack::NLPDirectThyraModelEvaluator;
 	using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
@@ -47,6 +51,7 @@ int main( int argc, char* argv[] )
     double       x0              = 0.0;
     double       p0              = 1.0;
     double       reactionRate    = 1.0;
+    bool         use_direct      = false;
 		bool         do_sim          = false;
     bool         printOnAllProcs = true;
     bool         dump_all        = false;
@@ -58,6 +63,7 @@ int main( int argc, char* argv[] )
 		clp.setOption( "x0", &x0, "Initial guess for the state." );
 		clp.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
 		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
+		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
 		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
@@ -117,11 +123,25 @@ int main( int argc, char* argv[] )
       ,Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory())
       );
     
-		NLPFirstOrderThyraModelEvaluator nlp(
-			Teuchos::rcp(&thyraModel,false)
-			,do_sim ? -1 : 1
-			,do_sim ? -1 : 1
-			);
+    Teuchos::RefCountPtr<NLP> nlp;
+    if(use_direct) {
+      nlp = rcp(
+        new NLPDirectThyraModelEvaluator(
+          Teuchos::rcp(&thyraModel,false)
+          ,do_sim ? -1 : 1
+          ,do_sim ? -1 : 1
+          )
+        );
+    }
+    else {
+      nlp = rcp(
+        new NLPFirstOrderThyraModelEvaluator(
+          Teuchos::rcp(&thyraModel,false)
+          ,do_sim ? -1 : 1
+          ,do_sim ? -1 : 1
+          )
+        );
+    }
     
     //
     // Solve the NLP
@@ -131,7 +151,7 @@ int main( int argc, char* argv[] )
     solver.set_journal_out(journalOut);
 
 		// Set the NLP
-		solver.set_nlp( Teuchos::rcp(&nlp,false) );
+		solver.set_nlp(nlp);
 
 		// Solve the NLP
 		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();

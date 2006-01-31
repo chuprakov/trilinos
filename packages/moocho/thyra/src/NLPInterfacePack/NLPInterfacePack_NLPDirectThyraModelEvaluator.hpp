@@ -96,6 +96,10 @@ public:
 	/** \brief . */
 	Range1D var_indep() const;
 	/** \brief . */
+	const mat_fcty_ptr_t factory_D() const;
+  /** \brief . */
+	const mat_sym_nonsing_fcty_ptr_t factory_S() const;
+	/** \brief . */
 	void calc_point(
 		const Vector     &x
 		,value_type      *f
@@ -120,6 +124,9 @@ public:
 
 private:
 
+  mutable Teuchos::RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >  thyra_C_;
+  mutable Teuchos::RefCountPtr<Thyra::MultiVectorBase<value_type> >        thyra_N_;
+  
 };	// end class NLPDirectThyraModelEvaluator
 
 }	// end namespace NLPInterfacePack

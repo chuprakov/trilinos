@@ -32,10 +32,12 @@
 #include "AbstractLinAlgPack_ThyraAccessors.hpp"
 #include "AbstractLinAlgPack_VectorSpaceThyra.hpp"
 #include "AbstractLinAlgPack_VectorMutableThyra.hpp"
+#include "AbstractLinAlgPack_MultiVectorMutableThyra.hpp"
 #include "AbstractLinAlgPack_MatrixOpNonsingThyra.hpp"
 #include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_BasisSystem.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Thyra_ExplicitVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -73,15 +75,28 @@ void NLPDirectThyraModelEvaluator::initialize(
   ,const Thyra::VectorBase<value_type>                            *model_p0
 	)
 {
+  typedef Thyra::ModelEvaluatorBase MEB;
 	initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
-  TEST_FOR_EXCEPT(true);
+  Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
+  MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
+  if( p_idx >= 0 ) {
+    TEST_FOR_EXCEPTION(
+      !model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).supports(MEB::DERIV_MV_BY_COL),std::invalid_argument
+      ,"Error, model must support computing DfDp("<<p_idx<<") as a column-oriented multi-vector!"
+      );
+  }
 }
-	
+
 // Overridden public members from NLP
 
 void NLPDirectThyraModelEvaluator::initialize(bool test_setup)
 {
-  TEST_FOR_EXCEPT(true);
+	if(initialized_) {
+		NLPDirect::initialize(test_setup);
+		return;
+	}
+  NLPThyraModelEvaluator::initialize(test_setup);
+  NLPDirect::initialize(test_setup);
 }
 
 void NLPDirectThyraModelEvaluator::unset_quantities()
@@ -101,6 +116,18 @@ Range1D NLPDirectThyraModelEvaluator::var_indep() const
   return basis_sys_->var_indep();
 }
 
+const NLPDirect::mat_fcty_ptr_t
+NLPDirectThyraModelEvaluator::factory_D() const
+{
+  return basis_sys_->factory_D();
+}
+
+const NLPDirect::mat_sym_nonsing_fcty_ptr_t
+NLPDirectThyraModelEvaluator::factory_S() const
+{
+  return basis_sys_->factory_S();
+}
+
 void NLPDirectThyraModelEvaluator::calc_point(
   const Vector     &x
   ,value_type      *f
@@ -114,7 +141,98 @@ void NLPDirectThyraModelEvaluator::calc_point(
   ,MatrixOp        *Uz
   ) const
 {
-  TEST_FOR_EXCEPT(true);
+  using Teuchos::dyn_cast;
+  using Teuchos::RefCountPtr;
+  using Teuchos::rcp;
+  using Teuchos::rcp_const_cast;
+  using Teuchos::rcp_dynamic_cast;
+  using AbstractLinAlgPack::VectorSpaceThyra;
+  using AbstractLinAlgPack::VectorMutableThyra;
+  using AbstractLinAlgPack::MultiVectorMutableThyra;
+  using AbstractLinAlgPack::MatrixOpThyra;
+  using AbstractLinAlgPack::MatrixOpNonsingThyra;
+  typedef Thyra::ModelEvaluatorBase MEB;
+  typedef MEB::DerivativeMultiVector<value_type> DerivMV;
+  typedef MEB::Derivative<value_type> Deriv;
+  //
+  // Validate input
+  //
+  TEST_FOR_EXCEPT(GcU!=NULL);  // Can't handle these yet!
+  TEST_FOR_EXCEPT(Uz!=NULL);
+  //
+  // Set the input and output arguments
+  //
+  // ToDo: Disallow computation Gf and instead just compute
+  // the operators for this!
+  //
+  MEB::InArgs<value_type>  model_inArgs  = model_->createInArgs();
+  MEB::OutArgs<value_type> model_outArgs = model_->createOutArgs();
+  NLPObjGrad::ObjGradInfo obj_grad_info;
+  obj_grad_info.Gf = Gf;
+  obj_grad_info.f = f;
+  if(recalc_c) obj_grad_info.c = c;
+  preprocessBaseInOutArgs(
+    x,true,NULL,&obj_grad_info,NULL
+    ,&model_inArgs,&model_outArgs,NULL,NULL,NULL,NULL
+    );
+  if( py || rGf || D ) {
+    if(thyra_C_.get()==NULL)
+      thyra_C_ = model_->create_W();
+    model_outArgs.set_W(thyra_C_);
+  }
+  if( rGf || D ) {
+    if(thyra_N_.get()==NULL)
+      thyra_N_ = model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL).getMultiVector();
+    model_outArgs.set_DfDp(p_idx_,DerivMV(thyra_N_,MEB::DERIV_MV_BY_COL));
+  }
+  //
+  // Evaluate the functions
+  //
+  model_->evalModel(model_inArgs,model_outArgs);
+  //
+  // Postprocess the evaluation
+  //
+  postprocessBaseOutArgs(&model_outArgs,Gf,f,recalc_c?c:NULL);
+  if( py ) {
+    // py = -inv(C)*c
+    Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > thyra_c;
+    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_py;
+    const VectorSpaceThyra
+      &space_c  = dyn_cast<const VectorSpaceThyra>(c->space()),
+      &space_xD = dyn_cast<const VectorSpaceThyra>(py->space());
+    get_thyra_vector(space_c,*c,&thyra_c);
+    get_thyra_vector(space_xD,py,&thyra_py);
+    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
+    Thyra::Vt_S(&*thyra_py,-1.0);
+    free_thyra_vector(space_c,*c,&thyra_c);
+    commit_thyra_vector(space_xD,py,&thyra_py);
+  }
+  if( D || rGf ) {
+    // D = -inv(C)*N
+    RefCountPtr<MatrixOp> D_used = rcp(D,false);
+    if(!D) D_used = this->factory_D()->create();
+    RefCountPtr<Thyra::MultiVectorBase<value_type> >
+      thyra_D
+      =
+      rcp_const_cast<Thyra::MultiVectorBase<value_type> >(
+        rcp_dynamic_cast<const Thyra::MultiVectorBase<value_type> >(
+          dyn_cast<MultiVectorMutableThyra>(*D_used).thyra_multi_vec()
+          )
+        );
+    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
+    Thyra::scale(-1.0,&*thyra_D);
+    // rGf = D*'*Gf_xD + Gf_xI
+    const Range1D
+      var_dep   = basis_sys_->var_dep(),
+      var_indep = basis_sys_->var_indep();
+    LinAlgOpPack::V_MtV( rGf, *D_used, BLAS_Cpp::trans, *Gf->sub_view(var_dep) );
+    LinAlgOpPack::Vp_V( rGf, *Gf->sub_view(var_indep) );
+    // ToDo: Just compute the operators allocated with Gf and not Gf directly!
+  }
+  // * ToDo: Add initial "if( py && ( D || rGf ) )" logic for computing py and D
+  //   together using block solver!
+  // * ToDo: Add specialized algorithm for computing D using an inexact Jacobian
+  // * ToDo: Add in logic for inexact solves
 }
 
 void NLPDirectThyraModelEvaluator::calc_semi_newton_step(
@@ -124,6 +242,13 @@ void NLPDirectThyraModelEvaluator::calc_semi_newton_step(
   ,VectorMutable  *py
   ) const
 {
+  if(recalc_c) {
+    //
+    // Recompute c
+    //
+    TEST_FOR_EXCEPT(true);
+  }
+  // Compute py = - inv(C)*c
   TEST_FOR_EXCEPT(true);
 }
 
