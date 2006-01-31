@@ -187,7 +187,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
     else {
       model_outArgs.set_W(model_->create_W());
       if(p_idx_>=0)
-        model_outArgs.set_DfDp(p_idx_,model_->create_DfDp_mv(1,MEB::DERIV_MV_BY_COL));
+        model_outArgs.set_DfDp(p_idx_,model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL));
     }
     if(model_inArgs.supports(MEB::IN_ARG_alpha)) model_inArgs.set_alpha(0.0);
   }
