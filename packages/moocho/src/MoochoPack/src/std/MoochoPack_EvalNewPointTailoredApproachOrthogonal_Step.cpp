@@ -85,7 +85,6 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 
 	const size_type
 		n = nlp.n(),
-		m = nlp.m(),
 		r = nlp.r();
 	const Range1D
 		var_dep(1,r),
@@ -124,7 +123,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 			,MatrixIdentConcatStd::BOTTOM                     // top_or_bottom
 			,-1.0                                             // alpha
 			,D_ptr                                            // D_ptr
-			,BLAS_Cpp::no_trans                               // D_trans
+			,BLAS_Cpp::trans                                  // D_trans
 			);
 	}
 
@@ -143,8 +142,8 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
-	const MatrixOp       &D
-	,VectorMutable     *py
+	const MatrixOp           &D
+	,VectorMutable           *py
 	,EJournalOutputLevel     olevel
 	,std::ostream            &out
 	)
@@ -161,9 +160,10 @@ void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
 		tIa = D.space_rows().create_member(),
 		tIb = D.space_rows().create_member();
 	//
-	// y = (I - D*inv(S)*D')*inv(C)*x
-	//   = (I - D*inv(S)*D')*py
-	//   = py - D*inv(S)*D'*py
+  // py = -inv(R)*c
+	// py = -((I - D*inv(S)*D')*inv(C))*c
+	//    = -(I - D*inv(S)*D')*(-py)
+	//    = py - D*inv(S)*D'*py
 	//
 	// =>
 	//
@@ -171,10 +171,9 @@ void EvalNewPointTailoredApproachOrthogonal_Step::recalc_py(
 	// tIb  = inv(S)*tIa
 	// py   += -D*tIb
 	//
-	V_MtV( tIa.get(), D, trans, *py );        // tIa  = D'*py
-	V_InvMtV( tIb.get(), S, no_trans, *tIa ); // tIb  = inv(S)*tIa
-	Vp_StMtV( py, -1.0, D, no_trans, *tIb );  // y   += -D*tIb
-
+	V_MtV( tIa.get(), D, trans, *py );              // tIa  = D'*py
+	V_InvMtV( tIb.get(), S, no_trans, *tIa );       // tIb  = inv(S)*tIa
+	Vp_StMtV( py, -1.0, D, no_trans, *tIb );        // py   += -D*tIb
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::print_calc_py_Y_Uy(
