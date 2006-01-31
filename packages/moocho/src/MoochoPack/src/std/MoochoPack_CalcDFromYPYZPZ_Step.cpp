@@ -69,12 +69,14 @@ bool MoochoPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		const value_type very_small = std::numeric_limits<value_type>::min();
-		out << "\n(Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps) = "
-			<< dot( Ypy_k, Zpz_k ) / ( Ypy_k.norm_2() * Zpz_k.norm_2() + very_small );
+		out
+      << "\n(Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps)\n"
+      << "  = ("<<dot(Ypy_k,Zpz_k)<<")/("<<Ypy_k.norm_2()<<" * "<<Zpz_k.norm_2()<<" + "<<very_small<<")\n"
+      << "  = " << dot(Ypy_k,Zpz_k) / ( Ypy_k.norm_2() * Zpz_k.norm_2() + very_small ) << "\n";
 		out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;
 /*
-        ConstrainedOptPack::print_vector_change_stats(
-            s.x().get_k(0), "x", s.d().get_k(0), "d", out );
+  ConstrainedOptPack::print_vector_change_stats(
+  s.x().get_k(0), "x", s.d().get_k(0), "d", out );
 */
 		// ToDo: Replace the above with a reduction operator!
 	}
