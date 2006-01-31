@@ -187,6 +187,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	s.equ_undecomp( nlp.con_undecomp() );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+    out << "\nQuantities computed directly from NLPDirect nlp object ...\n";
 		out << "\nf_k           = " << s.f().get_k(0);
 		out << "\n||c_k||inf    = " << s.c().get_k(0).norm_inf();
 		out << "\n||Gf_k||inf   = " << s.Gf().get_k(0).norm_inf();
@@ -271,6 +272,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	V_MtV( &Ypy_k, Y_k, BLAS_Cpp::no_trans, py_k );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+    out << "\nQuantities after computing final py and Ypy ...\n";
 		out	<< "\n||py_k||inf   = " << s.py().get_k(0).norm_inf();
 		out << "\n||Ypy_k||inf  = " << s.Ypy().get_k(0).norm_inf();
 		out << std::endl;
