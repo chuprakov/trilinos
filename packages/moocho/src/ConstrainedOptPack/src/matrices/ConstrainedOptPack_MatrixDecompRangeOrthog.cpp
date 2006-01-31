@@ -140,7 +140,7 @@ void MatrixDecompRangeOrthog::Vp_StMtV(
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,R_trans,x);
 
 	const MatrixOpNonsing      &C = *C_ptr_;
-	const MatrixOp                 &D = *D_ptr_;
+	const MatrixOp             &D = *D_ptr_;
 	const MatrixSymOpNonsing   &S = *S_ptr_;
 	//
 	// y = b*y + a*op(R)*x
@@ -202,7 +202,7 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,BLAS_Cpp::trans_not(R_trans),x);
 
 	const MatrixOpNonsing      &C = *C_ptr_;
-	const MatrixOp                 &D = *D_ptr_;
+	const MatrixOp             &D = *D_ptr_;
 	const MatrixSymOpNonsing   &S = *S_ptr_;
 	//
 	// y = inv(op(R))*x
@@ -218,15 +218,13 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 		//
 		// =>
 		//
-		// tD   = inv(C)*x
-		// y    = tD
-		// tIa  = D'*tD
+		// y    = inv(C)*x
+		// tIa  = D'*y
 		// tIb  = inv(S)*tIa
 		// y   += -D*tIb
 		//
-		V_InvMtV( tD.get(), C, no_trans, x );     // tD   = inv(C)*x
-		*y = *tD;                                 // y    = tD
-		V_MtV( tIa.get(), D, trans, *tD );        // tIa  = D'*tD
+		V_InvMtV( y, C, no_trans, x );            // y    = inv(C)*x
+		V_MtV( tIa.get(), D, trans, *y );         // tIa  = D'*y
 		V_InvMtV( tIb.get(), S, no_trans, *tIa ); // tIb  = inv(S)*tIa
 		Vp_StMtV( y, -1.0, D, no_trans, *tIb );   // y   += -D*tIb
 	}
