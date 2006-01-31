@@ -317,13 +317,20 @@
     COMM = SERIAL, MPI(1);
 }
 
+#
+# Test NLPThyraEpetraAdvDiffReactOpt.exe
+#
+
+#
+# --do-sim
+#
+
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
     #--moocho-extra-options="NLPSolverClientInterface{max_iter=8,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
-
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
@@ -346,9 +353,20 @@
     COMM = SERIAL, MPI(1);
 }
 
+#
+# --do-opt
+#
+
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
-    ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
+    ARGS = --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=16,journal_output_level=PRINT_NOTHING}";
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --use-direct --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1;
     #--moocho-extra-options="NLPSolverClientInterface{max_iter=16,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
@@ -356,6 +374,13 @@
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
+    #--moocho-extra-options="NLPSolverClientInterface{max_iter=25,journal_output_level=PRINT_NOTHING}";
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --use-direct --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2;
     #--moocho-extra-options="NLPSolverClientInterface{max_iter=25,journal_output_level=PRINT_NOTHING}";
     COMM = SERIAL, MPI(1);
 }
