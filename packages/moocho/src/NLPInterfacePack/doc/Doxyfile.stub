@@ -1,0 +1,31 @@
+#
+# Package options
+#
+PROJECT_NAME           = "NLPInterfacePack: C++ Interfaces and Implementation for Non-Linear Programs"
+OUTPUT_DIRECTORY       = ../src/NLPInterfacePack/doc
+#
+# What and how documentation is extracted
+#
+INPUT                  = ../src/NLPInterfacePack/doc/index.doc \
+                         ../src/NLPInterfacePack/src
+FILE_PATTERNS          = *.h *c *.hpp *.cpp
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATH           =
+EXAMPLE_PATTERNS       =
+IMAGE_PATH             =
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+# Links to other packages
+#
+TAGFILES               = ../../common/tag_files/teuchos.tag=../../../../../teuchos/doc/html \
+                       = ../../common/tag_files/MoochoUtilities.tag=../../../MoochoUtilities/doc/html \
+                       = ../../common/tag_files/RTOpPack.tag=../../../RTOpPack/doc/html \
+                       = ../../common/tag_files/DenseLinAlgPack.tag=../../../DenseLinAlgPack/doc/html \
+                       = ../../common/tag_files/AbstractLinAlgPack.tag=../../../AbstractLinAlgPack/doc/html
+GENERATE_TAGFILE       = ../../common/tag_files/NLPInterfacePack.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO

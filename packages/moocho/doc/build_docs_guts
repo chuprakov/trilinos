@@ -1,0 +1,25 @@
+#!/bin/bash
+
+pushd ../src/MoochoUtilities/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/MoochoUtilities/doc/Doxyfile
+
+pushd ../src/IterationPack/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/IterationPack/doc/Doxyfile
+
+pushd ../src/RTOpPack/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/RTOpPack/doc/Doxyfile
+
+pushd ../src/DenseLinAlgPack/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/DenseLinAlgPack/doc/Doxyfile
+
+pushd ../src/AbstractLinAlgPack/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/AbstractLinAlgPack/doc/Doxyfile
+
+pushd ../src/NLPInterfacePack/doc ; ./generate_Doxyfile ; popd
+doxygen ../src/NLPInterfacePack/doc/Doxyfile
+
+pushd ./all ; ./generate_Doxyfile ; popd
+doxygen ./all/Doxyfile
+
+./generate_Doxyfile
+doxygen Doxyfile

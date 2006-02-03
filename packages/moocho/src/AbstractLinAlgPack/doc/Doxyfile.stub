@@ -1,0 +1,30 @@
+#
+# Package options
+#
+PROJECT_NAME           = "AbstractLinAlgPack: C++ Interfaces For Vectors, Matrices And Related Linear Algebra Objects"
+OUTPUT_DIRECTORY       = ../src/AbstractLinAlgPack/doc
+#
+# What and how documentation is extracted
+#
+INPUT                  = ../src/AbstractLinAlgPack/doc/index.doc \
+                         ../src/AbstractLinAlgPack/src
+FILE_PATTERNS          = *.h *c *.hpp *.cpp
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATH           =
+EXAMPLE_PATTERNS       =
+IMAGE_PATH             =
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+# Links to other packages
+#
+TAGFILES               = ../../common/tag_files/teuchos.tag=../../../../../teuchos/doc/html \
+                       = ../../common/tag_files/MoochoUtilities.tag=../../../MoochoUtilities/doc/html \
+                       = ../../common/tag_files/RTOpPack.tag=../../../RTOpPack/doc/html \
+                       = ../../common/tag_files/DenseLinAlgPack.tag=../../../DenseLinAlgPack/doc/html
+GENERATE_TAGFILE       = ../../common/tag_files/AbstractLinAlgPack.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO

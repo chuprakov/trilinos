@@ -1,0 +1,35 @@
+#
+# Package options
+#
+PROJECT_NAME           = "MOOCHO (Single Doxygen Collection)"
+OUTPUT_DIRECTORY       = ./all
+#
+# What and how documentation is extracted
+#
+INPUT                  = ./all/index.doc \
+                         ../src \
+                         ../example \
+                         ../test \
+                         ../../epetraext/example/model_evaluator
+FILE_PATTERNS          = *.h *c *.hpp *.cpp
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATH           =
+EXAMPLE_PATTERNS       =
+IMAGE_PATH             =
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+# Links to other packages
+#
+TAGFILES               = ../../common/tag_files/teuchos.tag=../../../../../teuchos/doc/html \
+                         ../../common/tag_files/epetra.tag=../../../../../epetra/doc/html \
+                         ../../common/tag_files/EpetraThyra.tag=../../../../../epetra/thyra/doc/html \
+                         ../../common/tag_files/epetraext.tag=../../../../../epetraext/doc/html \
+                         ../../common/tag_files/EpetraExtThyra.tag=../../../../../epetraext/thyra/doc/html \
+                         ../../common/tag_files/amesos.tag=../../../../../amesos/doc/html \
+                         ../../common/tag_files/AmesosThyra.tag=../../../../../AmesosThyra/doc/html
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO

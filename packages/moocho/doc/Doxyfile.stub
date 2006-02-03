@@ -1,0 +1,26 @@
+#
+# Package options
+#
+PROJECT_NAME           = "MOOCHO"
+OUTPUT_DIRECTORY       = .
+#
+# What and how documentation is extracted
+#
+INPUT                  = ./index.doc
+FILE_PATTERNS          = *.h *c *.hpp *.cpp
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATTERNS       =
+EXAMPLE_PATH           =
+IMAGE_PATH             =
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+# Links to other packages
+#
+TAGFILES               = ../../common/tag_files/ThyraUtils.tag=../../src/MoochoUtilities/doc/html \
+                         ../../common/tag_files/ThyraUtils.tag=../../src/IterationPack/doc/html
+ALLEXTERNALS           = YES
+EXTERNAL_GROUPS        = YES
