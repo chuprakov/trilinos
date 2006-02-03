@@ -74,7 +74,7 @@ public:
    * fill options in to.
    *
    * Postconditions:<ul>
-   * <li><tt>this->get_options()=options.get()</tt>
+   * <li><tt>this->get_options()==options.get()</tt>
    * </ul>
    */
   void set_options(
@@ -119,7 +119,7 @@ public:
    * extra options.
    *
    * <b>Postconditions:</b><ul>
-   * <li><tt>this->oextra_options_str_opt_name()==extra_options_str_opt_name</tt>
+   * <li><tt>this->extra_options_str_opt_name()==extra_options_str_opt_name</tt>
    * </ul>
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str_opt_name)
@@ -137,7 +137,7 @@ public:
    * for "--${extra_options_str_opt_name}=???" commandline option).
    *
    * <b>Postconditions:</b><ul>
-   * <li><tt>this->get_extra_options_str()==extra_options_str</tt>
+   * <li><tt>this->get_extra_options_str()===extra_options_str</tt>
    * </ul>
    */
   STANDARD_MEMBER_COMPOSITION_MEMBERS(std::string,extra_options_str)
