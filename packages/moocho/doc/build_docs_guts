@@ -1,25 +1,64 @@
 #!/bin/bash
 
+if [ $TRILINOS_HOME ]; then
+  echo "TRILINOS_HOME has already been set!"
+else
+  echo "TRILINOS_HOME has not been set.  Setting it!"
+  export TRILINOS_HOME=`pwd`/../../..
+fi
+
+echo
+echo "Generating doxygen documentation for moocho/src/MoochoUtilities ..."
+echo
+
 pushd ../src/MoochoUtilities/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/MoochoUtilities/doc/Doxyfile
+
+echo
+echo "Generating doxygen documentation for moocho/src/IterationPack ..."
+echo
 
 pushd ../src/IterationPack/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/IterationPack/doc/Doxyfile
 
+echo
+echo "Generating doxygen documentation for moocho/src/RTOpPack ..."
+echo
+
 pushd ../src/RTOpPack/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/RTOpPack/doc/Doxyfile
+
+echo
+echo "Generating doxygen documentation for moocho/src/DenseLinAlgPack ..."
+echo
 
 pushd ../src/DenseLinAlgPack/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/DenseLinAlgPack/doc/Doxyfile
 
+echo
+echo "Generating doxygen documentation for moocho/src/AbstractLinAlgPack ..."
+echo
+
 pushd ../src/AbstractLinAlgPack/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/AbstractLinAlgPack/doc/Doxyfile
+
+echo
+echo "Generating doxygen documentation for moocho/src/NLPInterfacePack ..."
+echo
 
 pushd ../src/NLPInterfacePack/doc ; ./generate_Doxyfile ; popd
 doxygen ../src/NLPInterfacePack/doc/Doxyfile
 
-pushd ./all ; ./generate_Doxyfile ; popd
-doxygen ./all/Doxyfile
+echo
+echo "Generating doxygen documentation for all of moocho as a single documentation collection ..."
+echo
+
+pushd ../all/doc ; ./generate_Doxyfile ; popd
+doxygen ../all/doc/Doxyfile
+
+echo
+echo "Generating main thyra doxygen documentation page ..."
+echo
 
 ./generate_Doxyfile
 doxygen Doxyfile
