@@ -274,7 +274,7 @@ PACKAGE_STRING='moocho version of the day'
 PACKAGE_BUGREPORT='rabartl@sandia.gov'
 
 ac_unique_file="/src/MoochoUtilities/src/SpecialASCII.hpp"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot MPI_TEMP_CXX MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP ENABLE_MOOCHO_MA28_TRUE ENABLE_MOOCHO_MA28_FALSE ENABLE_EPETRAEXT_THYRA_TRUE ENABLE_EPETRAEXT_THYRA_FALSE ENABLE_AMESOS_THYRA_TRUE ENABLE_AMESOS_THYRA_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE USING_EXPORT_MAKEFILES_TRUE USING_EXPORT_MAKEFILES_FALSE PERL_EXE HAVE_PERL USING_PERL_TRUE USING_PERL_FALSE USING_GNUMAKE_TRUE USING_GNUMAKE_FALSE FLIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot MPI_TEMP_CXX MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP ENABLE_MOOCHO_MA28_TRUE ENABLE_MOOCHO_MA28_FALSE ENABLE_MOOCHO_THYRA_TRUE ENABLE_MOOCHO_THYRA_FALSE ENABLE_EPETRAEXT_THYRA_TRUE ENABLE_EPETRAEXT_THYRA_FALSE ENABLE_AMESOS_THYRA_TRUE ENABLE_AMESOS_THYRA_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE USING_EXPORT_MAKEFILES_TRUE USING_EXPORT_MAKEFILES_FALSE PERL_EXE HAVE_PERL USING_PERL_TRUE USING_PERL_FALSE USING_GNUMAKE_TRUE USING_GNUMAKE_FALSE FLIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -841,15 +841,14 @@ Optional Features:
   --enable-ma28           Build in support for HSL solver MA28 into Moocho.
                           Can be overridden with --disable-moocho-ma28.
   --enable-moocho-ma28    Build in support for HSL solver MA28 into Moocho.
-  --enable-thyra          Build the Thyra adapater support in EpetraExt. Can
-                          be overridden with --disable-epetraext-thyra.
+  --enable-thyra          Build the Thyra adapater support in Moocho. Can be
+                          overridden with --disable-moocho-thyra.
+  --enable-moocho-thyra   Build the Thyra adapater support in Moocho.
+  --enable-thyra          See epetraext/configure --help
   --enable-epetraext-thyra
-                          Build the Thyra adapater support in EpetraExt.
-  --enable-thyra          Build the Thyra operator/vector adapater support in
-                          Amesos. Can be overridden with
-                          --disable-amesos-thyra.
-  --enable-amesos-thyra   Build the Thyra operator/vector adapater support in
-                          Amesos.
+                          See epetraext/configure --help
+  --enable-thyra          See amesos/configure --help
+  --enable-amesos-thyra   See amesos/configure --help
   --enable-tests          Build tests for all Trilinos packages (not all
                           packages are sensitive to this option) (default is
                           yes)
@@ -3788,7 +3787,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3791:" \
+echo "$as_me:3790:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -4767,6 +4766,60 @@ fi;
 
 if test "Xyes
   " != "Xno"; then
+  ac_cv_moocho_using_thyra_default=$ac_cv_implicit_use_thyra
+else
+  ac_cv_moocho_using_thyra_default=no
+fi
+
+# Check whether --enable-moocho-thyra or --disable-moocho-thyra was given.
+if test "${enable_moocho_thyra+set}" = set; then
+  enableval="$enable_moocho_thyra"
+  ac_cv_use_thyra=$enableval
+else
+  ac_cv_use_thyra=$ac_cv_moocho_using_thyra_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional thyra dependent code in moocho" >&5
+echo $ECHO_N "checking whether to build optional thyra dependent code in moocho... $ECHO_C" >&6
+
+if test "X$ac_cv_use_thyra" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_MOOCHO_THYRA 1
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_thyra" = "Xyes"; then
+  ENABLE_MOOCHO_THYRA_TRUE=
+  ENABLE_MOOCHO_THYRA_FALSE='#'
+else
+  ENABLE_MOOCHO_THYRA_TRUE='#'
+  ENABLE_MOOCHO_THYRA_FALSE=
+fi
+
+
+
+
+
+
+# Check whether --enable-thyra or --disable-thyra was given.
+if test "${enable_thyra+set}" = set; then
+  enableval="$enable_thyra"
+  ac_cv_implicit_use_thyra=$enableval
+else
+  ac_cv_implicit_use_thyra=no
+fi;
+
+if test "Xyes
+  " != "Xno"; then
   ac_cv_epetraext_using_thyra_default=$ac_cv_implicit_use_thyra
 else
   ac_cv_epetraext_using_thyra_default=no
@@ -5590,7 +5643,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:5593: \"$ac_link\") >&5
+(eval echo $as_me:5646: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -5668,7 +5721,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:5671: \"$ac_link\") >&5
+(eval echo $as_me:5724: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6037,6 +6090,13 @@ if test -z "${ENABLE_MOOCHO_MA28_TRUE}" && test -z "${ENABLE_MOOCHO_MA28_FALSE}"
   { { echo "$as_me:$LINENO: error: conditional \"ENABLE_MOOCHO_MA28\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"ENABLE_MOOCHO_MA28\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLE_MOOCHO_THYRA_TRUE}" && test -z "${ENABLE_MOOCHO_THYRA_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_MOOCHO_THYRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_MOOCHO_THYRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -6712,6 +6772,8 @@ s,@ALTERNATE_AR@,$ALTERNATE_AR,;t t
 s,@CXXCPP@,$CXXCPP,;t t
 s,@ENABLE_MOOCHO_MA28_TRUE@,$ENABLE_MOOCHO_MA28_TRUE,;t t
 s,@ENABLE_MOOCHO_MA28_FALSE@,$ENABLE_MOOCHO_MA28_FALSE,;t t
+s,@ENABLE_MOOCHO_THYRA_TRUE@,$ENABLE_MOOCHO_THYRA_TRUE,;t t
+s,@ENABLE_MOOCHO_THYRA_FALSE@,$ENABLE_MOOCHO_THYRA_FALSE,;t t
 s,@ENABLE_EPETRAEXT_THYRA_TRUE@,$ENABLE_EPETRAEXT_THYRA_TRUE,;t t
 s,@ENABLE_EPETRAEXT_THYRA_FALSE@,$ENABLE_EPETRAEXT_THYRA_FALSE,;t t
 s,@ENABLE_AMESOS_THYRA_TRUE@,$ENABLE_AMESOS_THYRA_TRUE,;t t

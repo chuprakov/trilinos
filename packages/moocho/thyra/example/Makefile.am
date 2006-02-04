@@ -26,10 +26,8 @@
 # ************************************************************************
 # @HEADER
 
-if ENABLE_EPETRAEXT_THYRA
 if ENABLE_AMESOS_THYRA
-EPETRAEXT_AMESOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
-endif
+AMESOS_THYRA_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
 endif
 
-SUBDIRS = $(EPETRAEXT_AMESOS_EXAMPLES)
+SUBDIRS = $(AMESOS_THYRA_EXAMPLES)

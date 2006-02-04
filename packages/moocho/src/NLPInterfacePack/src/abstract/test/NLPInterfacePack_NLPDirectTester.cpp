@@ -42,7 +42,6 @@
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
-#include "Thyra_Range1D.hpp"
 #include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
 

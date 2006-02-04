@@ -118,6 +118,7 @@ am__libmoocho_a_SOURCES_DIST = $(srcdir)/MoochoUtilities/src/FortranTypes_CppFor
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.cpp \
 	$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp \
+	$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp \
 	$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp \
 	$(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp \
 	$(srcdir)/MoochoUtilities/src/ff_open_file.f \
@@ -431,7 +432,7 @@ am__objects_1 = FortranTypes_CppFortranStrings.$(OBJEXT) \
 	OptionsFromStreamPack_StringToBool.$(OBJEXT) \
 	OptionsFromStreamPack_StringToIntMap.$(OBJEXT) \
 	ProfileHackPack_profile_hack.$(OBJEXT) \
-	StopWatchPack_stopwatch.$(OBJEXT) \
+	RangePack_Range1D.$(OBJEXT) StopWatchPack_stopwatch.$(OBJEXT) \
 	TestingHelperPack_update_success.$(OBJEXT)
 am__objects_2 = ff_open_file.$(OBJEXT) FortranCppStrings.$(OBJEXT) \
 	FSeconds.$(OBJEXT)
@@ -1033,6 +1034,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_min_value.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_value.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_values.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RangePack_Range1D.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/StopWatchPack_stopwatch.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TestingHelperPack_update_success.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po
@@ -1065,6 +1067,7 @@ am__include_HEADERS_DIST = $(srcdir)/Moocho_ConfigDefs.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp \
 	$(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp \
 	$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp \
+	$(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp \
 	$(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp \
 	$(srcdir)/MoochoUtilities/src/SpecialASCII.hpp \
 	$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp \
@@ -1587,6 +1590,8 @@ ENABLE_EPETRAEXT_THYRA_FALSE = @ENABLE_EPETRAEXT_THYRA_FALSE@
 ENABLE_EPETRAEXT_THYRA_TRUE = @ENABLE_EPETRAEXT_THYRA_TRUE@
 ENABLE_MOOCHO_MA28_FALSE = @ENABLE_MOOCHO_MA28_FALSE@
 ENABLE_MOOCHO_MA28_TRUE = @ENABLE_MOOCHO_MA28_TRUE@
+ENABLE_MOOCHO_THYRA_FALSE = @ENABLE_MOOCHO_THYRA_FALSE@
+ENABLE_MOOCHO_THYRA_TRUE = @ENABLE_MOOCHO_THYRA_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -1693,6 +1698,7 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
+  $(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp\
   $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
   $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
@@ -1709,6 +1715,7 @@ MOOCHO_UTILITIES_CPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.cpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp\
+  $(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp\
   $(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp
 
@@ -3056,6 +3063,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_min_value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_values.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RangePack_Range1D.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StopWatchPack_stopwatch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestingHelperPack_update_success.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
@@ -4099,6 +4107,22 @@ ProfileHackPack_profile_hack.obj: $(srcdir)/MoochoUtilities/src/ProfileHackPack_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ProfileHackPack_profile_hack.Po' tmpdepfile='$(DEPDIR)/ProfileHackPack_profile_hack.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ProfileHackPack_profile_hack.obj `if test -f '$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp'; fi`
+
+RangePack_Range1D.o: $(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RangePack_Range1D.o -MD -MP -MF "$(DEPDIR)/RangePack_Range1D.Tpo" -c -o RangePack_Range1D.o `test -f '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RangePack_Range1D.Tpo" "$(DEPDIR)/RangePack_Range1D.Po"; else rm -f "$(DEPDIR)/RangePack_Range1D.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp' object='RangePack_Range1D.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RangePack_Range1D.Po' tmpdepfile='$(DEPDIR)/RangePack_Range1D.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RangePack_Range1D.o `test -f '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp
+
+RangePack_Range1D.obj: $(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RangePack_Range1D.obj -MD -MP -MF "$(DEPDIR)/RangePack_Range1D.Tpo" -c -o RangePack_Range1D.obj `if test -f '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RangePack_Range1D.Tpo" "$(DEPDIR)/RangePack_Range1D.Po"; else rm -f "$(DEPDIR)/RangePack_Range1D.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp' object='RangePack_Range1D.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RangePack_Range1D.Po' tmpdepfile='$(DEPDIR)/RangePack_Range1D.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RangePack_Range1D.obj `if test -f '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp'; fi`
 
 StopWatchPack_stopwatch.o: $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StopWatchPack_stopwatch.o -MD -MP -MF "$(DEPDIR)/StopWatchPack_stopwatch.Tpo" -c -o StopWatchPack_stopwatch.o `test -f '$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp; \

@@ -36,7 +36,6 @@
 #include "AbstractLinAlgPack_MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack_MatrixComposite.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
-#include "Thyra_Range1D.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"

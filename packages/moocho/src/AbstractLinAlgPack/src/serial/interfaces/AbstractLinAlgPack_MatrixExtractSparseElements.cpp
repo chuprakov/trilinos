@@ -29,7 +29,6 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack_MatrixExtractSparseElements.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

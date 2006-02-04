@@ -39,11 +39,15 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "RTOp_config.h"
+#include "RTOp_MPI_config.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef Teuchos_Index RTOp_index_type;
+typedef double        RTOp_value_type;
+typedef char          RTOp_char_type;
 
 /** \defgroup RTOp_grp Interfaces for generalized vector
  * reduction/transformation operators in C.

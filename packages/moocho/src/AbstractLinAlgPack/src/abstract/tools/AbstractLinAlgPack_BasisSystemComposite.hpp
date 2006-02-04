@@ -31,7 +31,6 @@
 
 #include "AbstractLinAlgPack_BasisSystem.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

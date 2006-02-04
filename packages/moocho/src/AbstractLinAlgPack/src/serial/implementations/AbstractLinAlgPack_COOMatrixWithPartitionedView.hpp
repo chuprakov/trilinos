@@ -31,7 +31,6 @@
 
 #include "AbstractLinAlgPack_COOMatrixClass.hpp"
 #include "AbstractLinAlgPack_COOMatrixPartitionedViewClass.hpp"
-#include "DenseLinAlgPack/src/Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -30,8 +30,6 @@
 #define ALAP_VECTOR_MUTABLE_HPP
 
 #include "AbstractLinAlgPack_Vector.hpp"
-#include "RTOpPack_Types.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

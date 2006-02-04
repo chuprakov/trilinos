@@ -40,7 +40,6 @@
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOpPack_RTOpC.hpp"
 #include "RTOpPack_print_sub_vector.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 

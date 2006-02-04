@@ -26,54 +26,11 @@
 // ***********************************************************************
 // @HEADER
 
-#include "AbstractLinAlgPack_BasisSystem.hpp"
-#include "AbstractLinAlgPack_MatrixOp.hpp"
+#include "RangePack_Range1D.hpp"
+#include "Teuchos_TestForException.hpp"
 
-namespace AbstractLinAlgPack {
+namespace RangePack {
 
-BasisSystem::BasisSystem(
-	const mat_sym_fcty_ptr_t             &factory_transDtD
-	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-	)
-{
-	this->initialize(factory_transDtD,factory_S);
-}
+const Range1D Range1D::Invalid(Range1D::INVALID);
 
-void BasisSystem::initialize(
-	const mat_sym_fcty_ptr_t             &factory_transDtD
-	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-	)
-{
-	factory_transDtD_ = factory_transDtD;
-	factory_S_        = factory_S;
-}
-
-Range1D BasisSystem::equ_decomp() const
-{
-	const size_type r = this->var_dep().size();
-	return r ? Range1D(1,r) : Range1D::Invalid;
-}
-
-Range1D BasisSystem::equ_undecomp() const
-{
-	return Range1D::Invalid;
-}
-
-const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
-{
-	return Teuchos::null;
-}
-
-const BasisSystem::mat_sym_fcty_ptr_t
-BasisSystem::factory_transDtD() const
-{
-	return factory_transDtD_;
-}
-	
-const BasisSystem::mat_sym_nonsing_fcty_ptr_t
-BasisSystem::factory_S() const
-{
-	return factory_S_;
-}
-
-} // end namespace AbstractLinAlgPack
+} // end namespace RangePack

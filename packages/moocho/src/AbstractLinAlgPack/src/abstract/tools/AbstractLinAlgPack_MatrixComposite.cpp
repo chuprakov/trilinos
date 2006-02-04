@@ -33,7 +33,6 @@
 #include "AbstractLinAlgPack_AssertOp.hpp"
 //#include "AbstractLinAlgPack/src/AbstractLinAlgPack_GenPermMatrixSliceOp.hpp"
 #include "Teuchos_Workspace.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "ProfileHackPack_profile_hack.hpp"
 

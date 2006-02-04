@@ -30,7 +30,7 @@
 #define LINALGPACK_TYPES_H
 
 #include "DenseLinAlgPack_Options.hpp"
-#include "Thyra_Range1D.hpp"
+#include "RangePack_Range1D.hpp"
 #include "BLAS_Cpp_Types.hpp"
 
 namespace DenseLinAlgPack {

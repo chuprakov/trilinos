@@ -1,3 +1,4 @@
+/*
 // @HEADER
 // ***********************************************************************
 // 
@@ -25,55 +26,33 @@
 // 
 // ***********************************************************************
 // @HEADER
+*/
 
-#include "AbstractLinAlgPack_BasisSystem.hpp"
-#include "AbstractLinAlgPack_MatrixOp.hpp"
+#ifndef RTOPPACK_OLD_TYPES_HPP
+#define RTOPPACK_OLD_TYPES_HPP
 
-namespace AbstractLinAlgPack {
+#include "RTOpPack_Types.hpp"
+#include "RTOp.h"
 
-BasisSystem::BasisSystem(
-	const mat_sym_fcty_ptr_t             &factory_transDtD
-	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-	)
-{
-	this->initialize(factory_transDtD,factory_S);
-}
+namespace RTOpPack {
 
-void BasisSystem::initialize(
-	const mat_sym_fcty_ptr_t             &factory_transDtD
-	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-	)
-{
-	factory_transDtD_ = factory_transDtD;
-	factory_S_        = factory_S;
-}
+//
+// Typedefs
+//
 
-Range1D BasisSystem::equ_decomp() const
-{
-	const size_type r = this->var_dep().size();
-	return r ? Range1D(1,r) : Range1D::Invalid;
-}
+/** \brief . */
+typedef SubVectorT<RTOp_value_type>              SubVector;
+/** \brief . */
+typedef MutableSubVectorT<RTOp_value_type>       MutableSubVector;
+/** \brief . */
+typedef SparseSubVectorT<RTOp_value_type>        SparseSubVector;
+/** \brief . */
+typedef SubMultiVectorT<RTOp_value_type>         SubMultiVector;
+/** \brief . */
+typedef MutableSubMultiVectorT<RTOp_value_type>  MutableSubMultiVector;
+/** \brief . */
+typedef RTOpT<RTOp_value_type>                   RTOp;
 
-Range1D BasisSystem::equ_undecomp() const
-{
-	return Range1D::Invalid;
-}
+} // namespace RTOpPack
 
-const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
-{
-	return Teuchos::null;
-}
-
-const BasisSystem::mat_sym_fcty_ptr_t
-BasisSystem::factory_transDtD() const
-{
-	return factory_transDtD_;
-}
-	
-const BasisSystem::mat_sym_nonsing_fcty_ptr_t
-BasisSystem::factory_S() const
-{
-	return factory_S_;
-}
-
-} // end namespace AbstractLinAlgPack
+#endif // RTOPPACK_OLD_TYPES_HPP

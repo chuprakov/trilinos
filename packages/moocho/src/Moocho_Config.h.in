@@ -24,6 +24,9 @@
 /* Define if want to build moocho-tests */
 #undef HAVE_MOOCHO_TESTS
 
+/* Define if want to build with moocho enabled */
+#undef HAVE_MOOCHO_THYRA
+
 /* define if we want to use MPI */
 #undef HAVE_MPI
 

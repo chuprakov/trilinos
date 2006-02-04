@@ -28,7 +28,6 @@
 
 #include "NLPInterfacePack_NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack_MatrixOp.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

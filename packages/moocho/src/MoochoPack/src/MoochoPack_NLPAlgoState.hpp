@@ -43,7 +43,6 @@
 //#include "DenseLinAlgPack_IVector.hpp"
 #include "Teuchos_StandardCompositionMacros.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace MoochoPack {
 

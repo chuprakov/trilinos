@@ -28,10 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
-#include <string.h>
-
 #include "RTOpToMPI.h"
 
 #ifdef RTOP_TO_MPI_SHOW_TIMES

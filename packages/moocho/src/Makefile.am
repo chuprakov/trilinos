@@ -55,6 +55,7 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
+  $(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp\
   $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
   $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
@@ -71,6 +72,7 @@ MOOCHO_UTILITIES_CPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.cpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.cpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.cpp\
+  $(srcdir)/MoochoUtilities/src/RangePack_Range1D.cpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.cpp\
   $(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.cpp
 

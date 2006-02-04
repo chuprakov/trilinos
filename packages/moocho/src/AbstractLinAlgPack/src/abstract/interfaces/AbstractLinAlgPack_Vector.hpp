@@ -33,7 +33,6 @@
 
 #include "AbstractLinAlgPack_Types.hpp"
 #include "RTOpPack_RTOpT.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

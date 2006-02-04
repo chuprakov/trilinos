@@ -172,14 +172,19 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   [Build in support for HSL solver MA28 into Moocho.  Can be overridden with --disable-moocho-ma28.])
 
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+  moocho, thyra, MOOCHO_THYRA, ENABLE_MOOCHO_THYRA, yes
+  ,[Build the Thyra adapater support in Moocho.]
+  ,[Build the Thyra adapater support in Moocho.  Can be overridden with --disable-moocho-thyra.])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   epetraext, thyra, EPETRAEXT_THYRA, ENABLE_EPETRAEXT_THYRA, yes
-  ,[Build the Thyra adapater support in EpetraExt.]
-  ,[Build the Thyra adapater support in EpetraExt.  Can be overridden with --disable-epetraext-thyra.])
+  ,[See epetraext/configure --help]
+  ,[See epetraext/configure --help])
 
 TAC_ARG_ENABLE_CAN_USE_PACKAGE(
    amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
-  [Build the Thyra operator/vector adapater support in Amesos.],
-  [Build the Thyra operator/vector adapater support in Amesos.  Can be overridden with --disable-amesos-thyra.])
+  [See amesos/configure --help],
+  [See amesos/configure --help])
 
 # ------------------------------------------------------------------------
 # Checks if examples should be built

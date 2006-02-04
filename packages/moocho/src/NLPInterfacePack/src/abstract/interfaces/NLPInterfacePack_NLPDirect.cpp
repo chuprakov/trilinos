@@ -31,7 +31,6 @@
 #include "NLPInterfacePack_NLPDirect.hpp"
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

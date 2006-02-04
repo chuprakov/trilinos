@@ -43,7 +43,6 @@
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_MatrixOpOut.hpp"
-#include "Thyra_Range1D.hpp"
 #include "TestingHelperPack_update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_direct(

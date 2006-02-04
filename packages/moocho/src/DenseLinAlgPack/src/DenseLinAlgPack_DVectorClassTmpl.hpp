@@ -32,7 +32,6 @@
 #include <vector>
 
 #include "DenseLinAlgPack_Types.hpp"
-#include "Thyra_Range1D.hpp"
 #include "StrideIterPack_StrideIter.hpp"
 
 namespace DenseLinAlgPack{

@@ -32,7 +32,6 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack_MatrixBase.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {

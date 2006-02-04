@@ -32,7 +32,6 @@
 #include "AbstractLinAlgPack_VectorMutableBlocked.hpp"
 #include "AbstractLinAlgPack_VectorMutableSubView.hpp"
 #include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

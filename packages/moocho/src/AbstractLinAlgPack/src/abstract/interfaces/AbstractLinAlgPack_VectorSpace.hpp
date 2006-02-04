@@ -31,7 +31,6 @@
 
 #include "AbstractLinAlgPack_InnerProduct.hpp"
 #include "Teuchos_AbstractFactory.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

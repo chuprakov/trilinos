@@ -32,6 +32,7 @@
 #ifndef RTOPPACK_RTOP_NEW_C_HPP
 #define RTOPPACK_RTOP_NEW_C_HPP
 
+#include "RTOpPack_OldTypes.hpp"
 #include "RTOpPack_RTOpT.hpp"
 #include "RTOp.h"
 #include "Teuchos_dyn_cast.hpp"

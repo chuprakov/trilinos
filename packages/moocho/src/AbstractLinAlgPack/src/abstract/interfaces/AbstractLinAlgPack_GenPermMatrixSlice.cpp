@@ -33,7 +33,6 @@
 #include <algorithm>
 
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef _WINDOWS

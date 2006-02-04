@@ -39,7 +39,6 @@
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "RTOpPack_RTOpC.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"

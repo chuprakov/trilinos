@@ -1,21 +1,17 @@
+#
+# Stuff for main library
+#
 
-# ToDo: Make rtop its own package and make it the only required dependancy
-include @abs_top_builddir@/../thyra/Makefile.export.thyra
+include @abs_top_builddir@/../rtop/Makefile.export.rtop
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
 
-# ToDo: Make this dependence optional
-@ENABLE_EPETRAEXT_THYRA_TRUE@include @abs_top_builddir@/../epetraext/Makefile.export.epetraext
-@ENABLE_AMESOS_THYRA_TRUE@include @abs_top_builddir@/../amesos/Makefile.export.amesos
-
-@ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_INCLUDES = $(AMESOS_INCLUDES) $(EPETRAEXT_INCLUDES)
-@ENABLE_EPETRAEXT_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@MOOCHO_EPETRAEXT_LIBS = $(AMESOS_LIBS) $(EPETRAEXT_LIBS)
-
-_MOOCHO_THYRA_INCLUDES = \
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@_MOOCHO_THYRA_INCLUDES =\
   -I@abs_top_srcdir@/thyra/src/AbstractLinAlgPack\
   -I@abs_top_srcdir@/thyra/src/NLPInterfacePack\
-  $(MOOCHO_EPETRAEXT_INCLUDES)\
-  $(THYRA_INCLUDES)
-
-_MOOCHO_THYRA_LIB =  -L@abs_top_builddir@/thyra/src -lmoochothyra
+  $(EPETRAEXT_INCLUDES)
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@_MOOCHO_THYRA_LIBS =\
+  -L@abs_top_builddir@/thyra/src -lmoochothyra \
+  $(EPETRAEXT_LIBS)
 
 # ToDo: Make above conditional and only include if Thyra is enabled!
 
@@ -53,11 +49,18 @@ _MOOCHO_INCLUDES = \
   -I@abs_top_srcdir@/src/RTOpPack/src/base\
   -I@abs_top_srcdir@/src/MoochoUtilities/src\
   -I@abs_top_srcdir@/src\
-  -I@abs_top_builddir@/src
+  -I@abs_top_builddir@/src\
+  $(RTOP_INCLUDES)
 
-_MOOCHO_LIBS = @LDFLAGS@  $(_MOOCHO_THYRA_LIB) -L@abs_top_builddir@/src -lmoocho $(MOOCHO_EPETRAEXT_LIBS) $(THYRA_LIBS)
+_MOOCHO_LIBS = @LDFLAGS@  $(_MOOCHO_THYRA_LIBS) -L@abs_top_builddir@/src -lmoocho $(RTOP_LIBS)
 
 @USING_GNUMAKE_TRUE@MOOCHO_INCLUDES  = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_incl_paths.pl $(_MOOCHO_INCLUDES))
 @USING_GNUMAKE_TRUE@MOOCHO_LIBS      = $(shell @PERL_EXE@ @abs_top_srcdir@/config/strip_dup_libs.pl $(_MOOCHO_LIBS))
 @USING_GNUMAKE_FALSE@MOOCHO_INCLUDES = $(_MOOCHO_INCLUDES)
 @USING_GNUMAKE_FALSE@MOOCHO_LIBS     = $(_MOOCHO_LIBS)
+
+#
+# Stuff for some tests and examples
+#
+
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@include @abs_top_builddir@/../amesos/Makefile.export.amesos

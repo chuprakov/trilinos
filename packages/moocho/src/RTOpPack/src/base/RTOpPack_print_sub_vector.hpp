@@ -29,7 +29,7 @@
 #ifndef PRINT_SUB_VECTOR_H
 #define PRINT_SUB_VECTOR_H
 
-#include "RTOpPack_Types.hpp"
+#include "RTOpPack_OldTypes.hpp"
 
 namespace RTOpPack {
 

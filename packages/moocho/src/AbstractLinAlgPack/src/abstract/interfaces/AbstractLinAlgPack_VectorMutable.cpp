@@ -34,7 +34,6 @@
 #include "RTOp_TOp_axpy.h"
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {

@@ -30,7 +30,7 @@
 #define SP_VECTOR_VIEW_H
 
 #include "AbstractLinAlgPack_SpVectorClass.hpp"
-#include "RTOpPack_Types.hpp"
+#include "RTOpPack_OldTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

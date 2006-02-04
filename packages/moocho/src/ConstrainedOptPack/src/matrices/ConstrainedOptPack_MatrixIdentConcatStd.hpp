@@ -31,7 +31,6 @@
 
 #include "ConstrainedOptPack_MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack_VectorSpace.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace ConstrainedOptPack {

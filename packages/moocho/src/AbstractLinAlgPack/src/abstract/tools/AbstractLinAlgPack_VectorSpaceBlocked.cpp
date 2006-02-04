@@ -35,7 +35,6 @@
 #include "AbstractLinAlgPack_VectorSpaceSubSpace.hpp"
 #include "AbstractLinAlgPack_VectorSpaceFactory.hpp"
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

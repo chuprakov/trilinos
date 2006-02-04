@@ -35,7 +35,6 @@
 #include <sstream>
 
 #include "AbstractLinAlgPack_SpVecIndexLookupClass.hpp"
-#include "Thyra_Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

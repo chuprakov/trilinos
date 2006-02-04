@@ -42,7 +42,6 @@
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
-#include "Thyra_Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {

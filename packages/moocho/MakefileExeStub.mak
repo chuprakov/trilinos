@@ -34,12 +34,15 @@ common_dependencies = \
 
 include $(top_builddir)/Makefile.export.moocho
 
+_EXPORT_INCLUDES = $(MOOCHO_INCLUDES) $(AMESOS_INCLUDES)
+_EXPORT_LIBS = $(MOOCHO_LIBS) $(AMESOS_LIBS)
+
 if USING_GNUMAKE
-EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))
-EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(MOOCHO_LIBS))
+EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(_EXPORT_INCLUDES))
+EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(_EXPORT_LIBS))
 else
-EXPORT_INCLUDES = $(MOOCHO_INCLUDES)
-EXPORT_LIBS = $(MOOCHO_LIBS)
+EXPORT_INCLUDES = $(_EXPORT_INCLUDES)
+EXPORT_LIBS = $(_EXPORT_LIBS)
 endif
 
 AM_CPPFLAGS = $(EXPORT_INCLUDES)

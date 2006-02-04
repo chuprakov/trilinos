@@ -33,7 +33,7 @@
 #include <stdexcept>
 
 #include "RTOp.h"
-#include "BLAS_Cpp_Types.hpp"
+#include "RTOpPack_OldTypes.hpp"
 #include "DenseLinAlgPack_Types.hpp"
 
 namespace AbstractLinAlgPack {
