@@ -1,3 +1,4 @@
+@INCLUDES = teuchos/doc/TagFiles
 #
 # Package options
 #
@@ -21,7 +22,6 @@ IGNORE_PREFIX          =
 #
 # Links to other packages
 #
-TAGFILES               = ../../common/tag_files/teuchos.tag=../../../../../teuchos/doc/html
 GENERATE_TAGFILE       = ../../common/tag_files/MoochoUtilities.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO

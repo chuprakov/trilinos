@@ -1,3 +1,5 @@
+@INCLUDES = epetraext/doc/TagFiles
+@INCLUDES = amesos/doc/TagFiles
 #
 # Package options
 #
@@ -24,12 +26,5 @@ IGNORE_PREFIX          =
 #
 # Links to other packages
 #
-TAGFILES               = ../../common/tag_files/teuchos.tag=../../../../../teuchos/doc/html \
-                         ../../common/tag_files/epetra.tag=../../../../../epetra/doc/html \
-                         ../../common/tag_files/EpetraThyra.tag=../../../../../epetra/thyra/doc/html \
-                         ../../common/tag_files/epetraext.tag=../../../../../epetraext/doc/html \
-                         ../../common/tag_files/EpetraExtThyra.tag=../../../../../epetraext/thyra/doc/html \
-                         ../../common/tag_files/amesos.tag=../../../../../amesos/doc/html \
-                         ../../common/tag_files/AmesosThyra.tag=../../../../../AmesosThyra/doc/html
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO

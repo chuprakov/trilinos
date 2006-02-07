@@ -2,20 +2,19 @@
 # Include the global look and feel options
 #
 @INCLUDE_PATH          = $(TRILINOS_HOME)/packages
-@INCLUDE               = common/Doxyfile
+@INCLUDE               = ../../../../Trilinos/packages/common/Doxyfile
 #
 # Package options
 #
 OUTPUT_LANGUAGE        = English
-PROJECT_NUMBER         = "Version of the Day"
 #
 # What and how documentation is extracted
 #
 SUBGROUPING            = NO
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
+#EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
-EXTRACT_LOCAL_CLASSES  = NO
 HIDE_UNDOC_MEMBERS     = YES
 HIDE_UNDOC_CLASSES     = YES
 BRIEF_MEMBER_DESC      = YES
@@ -37,7 +36,7 @@ CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
 VERBATIM_HEADERS       = YES
 SHOW_INCLUDE_FILES     = YES
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 INHERIT_DOCS           = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = NO
@@ -73,7 +72,7 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = DOXYGEN_COMPILE DOXYGEN_SHOULD_SKIP_THIS EPETRA_MPI
-INCLUDE_PATH           = ../../../../Trilinos/packages/teuchos/src
+INCLUDE_PATH           = ../../teuchos/src
 EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITION_MEMBERS \
                          STANDARD_NONCONST_COMPOSITION_MEMBERS STANDARD_CONST_COMPOSITION_MEMBERS
 #
