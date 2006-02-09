@@ -1,5 +1,8 @@
-@INCLUDES = epetraext/doc/TagFiles
-@INCLUDES = amesos/doc/TagFiles
+#
+# Note: all relative paths are relative to package/doc!
+#
+@INCLUDE = Doxyfile.options
+@INCLUDE = epetra/doc/BrowserTagFiles # Requires @INCLUDE_PAH=$(TRILINOS_HOME)/packages
 #
 # Override some options from Doxyfile.options
 #
@@ -10,17 +13,16 @@ EXTRACT_LOCAL_CLASSES  = YES
 #
 # Package options
 #
-PROJECT_NAME           = "MOOCHO (Single Doxygen Collection)"
-OUTPUT_DIRECTORY       = ../all/doc
+PROJECT_NAME           = "New_Package Package Browser (Single Doxygen Collection)"
+OUTPUT_DIRECTORY       = ../browser/doc
 #
 # What and how documentation is extracted
 #
-INPUT                  = ../all/doc/index.doc \
+INPUT                  = ../browser/doc/index.doc \
                          ../src \
                          ../example \
-                         ../test \
-                         ../../epetraext/example/model_evaluator
-FILE_PATTERNS          = *.h *c *.hpp *.cpp
+                         ../test
+FILE_PATTERNS          = *.h *c *.hpp *.cpp groups.doc
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
@@ -35,3 +37,5 @@ IGNORE_PREFIX          =
 #
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = NO
+GENERATE_TAGFILE       = ../../common/tag_files/new_packageBrowser.tag
+#
