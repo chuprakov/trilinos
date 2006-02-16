@@ -26,5 +26,12 @@
 # ************************************************************************
 #@HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package meros subdirectory example built successfully."
+	@echo ""
+
 SUBDIRS = saddle_solve saddle_bjb saddle_kayloghin saddle_matvec saddle_diagschur saddle_simple saddle_simplec\
 	vbr_test kayloghin_vbr
