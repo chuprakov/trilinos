@@ -1,3 +1,9 @@
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsf subdirectory examples built successfully."
+	@echo ""
 
 EXEEXT = .exe
 

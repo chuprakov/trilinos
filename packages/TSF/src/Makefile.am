@@ -1,5 +1,12 @@
 # @HEADER
 # @HEADER
+
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsf subdirectory src built successfully."
+	@echo ""
  
 Implementations_SOURCES_H =\
 $(srcdir)/Implementations/DenseSerialVector.h\

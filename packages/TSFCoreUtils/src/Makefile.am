@@ -26,6 +26,13 @@
 # ************************************************************************
 # @HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsfcoreutils subdirectory src built successfully."
+	@echo ""
+
 MoochoUtilities_SOURCES_H=\
 $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\

@@ -26,5 +26,12 @@
 # ************************************************************************
 #@HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsfextended subdirectory test built successfully."
+	@echo ""
+
 SUBDIRS = BlockTests VectorTests Double RectMatrixTest PoissonTest Nonlinear 
 

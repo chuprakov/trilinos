@@ -26,4 +26,11 @@
 # ************************************************************************
 #@HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsfcore subdirectory test built successfully."
+	@echo ""
+
 SUBDIRS = scripts epetra-adapters product-space scalar-product std-ops

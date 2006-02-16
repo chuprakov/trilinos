@@ -26,6 +26,13 @@
 # ************************************************************************
 #@HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package tsfcore subdirectory example built successfully."
+	@echo ""
+
 # These headers need to be in the distribution tarball
 EXTRA_DIST = $(srcdir)/Core/TSFCoreSimpleMPIVectorSpace.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVectorDecl.hpp \
