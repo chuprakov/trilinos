@@ -26,6 +26,13 @@
 # ************************************************************************
 # @HEADER
 
+# The following line helps the test harness recover from build errors.
+
+all-local:
+	@echo ""
+	@echo "Trilinos package moocho subdirectory test built successfully."
+	@echo ""
+
 SUBDIRS = MoochoUtilities IterationPack DenseLinAlgPack
 
 EXTRA_DIST = definition
