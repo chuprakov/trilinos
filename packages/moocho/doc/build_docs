@@ -15,7 +15,7 @@ rm -r ../src/AbstractLinAlgPack/doc/html
 
 rm -r ../src/NLPInterfacePack/doc/html
 
-rm -r ../all/doc/html
+rm -r ../browser/doc/html
 
 rm -r html
 
@@ -34,7 +34,7 @@ mkdir ../src/AbstractLinAlgPack/doc/html
 
 mkdir ../src/NLPInterfacePack/doc/html
 
-mkdir ../all/doc/html
+mkdir ../browser/doc/html
 
 mkdir html
 

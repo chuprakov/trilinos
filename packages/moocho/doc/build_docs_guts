@@ -53,8 +53,7 @@ echo
 echo "Generating doxygen documentation for all of moocho as a single documentation collection ..."
 echo
 
-pushd ../all/doc ; ./generate_Doxyfile ; popd
-doxygen ../all/doc/Doxyfile
+doxygen ../browser/doc/Doxyfile
 
 echo
 echo "Generating main thyra doxygen documentation page ..."
