@@ -112,6 +112,7 @@ MatrixOp& MatrixOpThyra::operator=(const MatrixOp& mwo_rhs)
 	thyra_linear_op_trans_ = mwo_rhs_thyra.thyra_linear_op_trans_;
 	space_cols_           = mwo_rhs_thyra.space_cols_;  // ToDo: Clone this!
 	space_rows_           = mwo_rhs_thyra.space_rows_;  // ToDo: Clone this!
+  return *this;
 }
 
 void MatrixOpThyra::Vp_StMtV(
