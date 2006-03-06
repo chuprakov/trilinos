@@ -25,8 +25,8 @@ void AbstractLinAlgPack::get_thyra_vector(
 			_thyra_vec = ::Thyra::createMember(thyra_vec_spc.thyra_vec_spc());
 		// Get explicit views of the elements
 		RTOpPack::SubVector vec_sv;
-		RTOpPack::MutableSubVector _thyra_vec_sv;
 		vec.get_sub_vector( Range1D(), &vec_sv );
+		RTOpPack::MutableSubVectorT<value_type> _thyra_vec_sv;
 		_thyra_vec->getSubVector( Range1D(), &_thyra_vec_sv );
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
@@ -82,7 +82,7 @@ void AbstractLinAlgPack::get_thyra_vector(
 		// Get explicit views of the elements
 		RTOpPack::SubVector vec_sv;
 		vec->get_sub_vector( Range1D(), &vec_sv );
-		RTOpPack::MutableSubVector _thyra_vec_sv;
+		RTOpPack::MutableSubVectorT<value_type> _thyra_vec_sv;
 		_thyra_vec->getSubVector( Range1D(), &_thyra_vec_sv );
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
@@ -123,7 +123,7 @@ void AbstractLinAlgPack::commit_thyra_vector(
 	else if(thyra_vec_spc.is_in_core()) {
 		// We need to copy back the temporary
 		// Get explicit views of the elements
-		RTOpPack::SubVector thyra_vec_sv;
+		RTOpPack::SubVectorT<value_type> thyra_vec_sv;
 		thyra_vec->getSubVector( Range1D(), &thyra_vec_sv );
 		RTOpPack::MutableSubVector vec_sv;
 		vec->get_sub_vector( Range1D(), &vec_sv );

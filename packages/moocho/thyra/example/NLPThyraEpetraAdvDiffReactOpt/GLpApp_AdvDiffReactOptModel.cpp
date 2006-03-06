@@ -77,14 +77,14 @@ AdvDiffReactOptModel::get_f_map() const
 Teuchos::RefCountPtr<const Epetra_Map>
 AdvDiffReactOptModel::get_p_map(int l) const
 {
-  TEST_FOR_EXCEPT(l!=1);
+  TEST_FOR_EXCEPT(l!=0);
   return map_p_;
 }
 
 Teuchos::RefCountPtr<const Epetra_Map>
 AdvDiffReactOptModel::get_g_map(int j) const
 {
-  TEST_FOR_EXCEPT(j!=1);
+  TEST_FOR_EXCEPT(j!=0);
   return map_g_;
 }
 
@@ -97,7 +97,7 @@ AdvDiffReactOptModel::get_x_init() const
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_init(int l) const
 {
-  TEST_FOR_EXCEPT(l!=1);
+  TEST_FOR_EXCEPT(l!=0);
   return p0_;
 }
 
@@ -116,14 +116,14 @@ AdvDiffReactOptModel::get_x_upper_bounds() const
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_lower_bounds(int l) const
 {
-  TEST_FOR_EXCEPT(l!=1);
+  TEST_FOR_EXCEPT(l!=0);
   return pL_;
 }
 
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_upper_bounds(int l) const
 {
-  TEST_FOR_EXCEPT(l!=1);
+  TEST_FOR_EXCEPT(l!=0);
   return pU_;
 }
 
@@ -136,7 +136,7 @@ AdvDiffReactOptModel::create_W() const
 Teuchos::RefCountPtr<Epetra_Operator>
 AdvDiffReactOptModel::create_DfDp_op(int l) const
 {
-  TEST_FOR_EXCEPT(l!=1);
+  TEST_FOR_EXCEPT(l!=0);
   return Teuchos::rcp(new Epetra_CrsMatrix(::Copy,dat_->getB()->Graph()));
   // See DfDp in evalModel(...) below for details
 }
@@ -166,25 +166,25 @@ AdvDiffReactOptModel::createOutArgs() const
       ,true // supportsAdjoint
       )
     );
-  outArgs.setSupports(OUT_ARG_DfDp,1,DerivativeSupport(DERIV_LINEAR_OP,DERIV_MV_BY_COL));
+  outArgs.setSupports(OUT_ARG_DfDp,0,DerivativeSupport(DERIV_LINEAR_OP,DERIV_MV_BY_COL));
   outArgs.set_DfDp_properties(
-    1,DerivativeProperties(
+    0,DerivativeProperties(
       DERIV_LINEARITY_CONST
       ,DERIV_RANK_DEFICIENT
       ,true // supportsAdjoint
       )
     );
-  outArgs.setSupports(OUT_ARG_DgDx,1,DERIV_TRANS_MV_BY_ROW);
+  outArgs.setSupports(OUT_ARG_DgDx,0,DERIV_TRANS_MV_BY_ROW);
   outArgs.set_DgDx_properties(
-    1,DerivativeProperties(
+    0,DerivativeProperties(
       DERIV_LINEARITY_NONCONST
       ,DERIV_RANK_DEFICIENT
       ,true // supportsAdjoint
       )
     );
-  outArgs.setSupports(OUT_ARG_DgDp,1,1,DERIV_TRANS_MV_BY_ROW);
+  outArgs.setSupports(OUT_ARG_DgDp,0,0,DERIV_TRANS_MV_BY_ROW);
   outArgs.set_DgDp_properties(
-    1,1,DerivativeProperties(
+    0,0,DerivativeProperties(
       DERIV_LINEARITY_NONCONST
       ,DERIV_RANK_DEFICIENT
       ,true // supportsAdjoint
@@ -207,18 +207,18 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   //
   // Get the input arguments
   //
-  const Epetra_Vector *p_in = inArgs.get_p(1).get();
+  const Epetra_Vector *p_in = inArgs.get_p(0).get();
   const Epetra_Vector &p = (p_in ? *p_in : *p0_);
   const Epetra_Vector &x = *inArgs.get_x();
   //
   // Get the output arguments
   //
   Epetra_Vector       *f_out = outArgs.get_f().get();
-  Epetra_Vector       *g_out = outArgs.get_g(1).get();
+  Epetra_Vector       *g_out = outArgs.get_g(0).get();
   Epetra_Operator     *W_out = outArgs.get_W().get();
-  Derivative          DfDp_out = outArgs.get_DfDp(1);
-  Epetra_MultiVector  *DgDx_trans_out = get_DgDx_mv(1,outArgs,DERIV_TRANS_MV_BY_ROW).get();
-  Epetra_MultiVector  *DgDp_trans_out = get_DgDp_mv(1,1,outArgs,DERIV_TRANS_MV_BY_ROW).get();
+  Derivative          DfDp_out = outArgs.get_DfDp(0);
+  Epetra_MultiVector  *DgDx_trans_out = get_DgDx_mv(0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
+  Epetra_MultiVector  *DgDp_trans_out = get_DgDp_mv(0,0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   //
   // Compute the functions
   //

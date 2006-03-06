@@ -128,8 +128,8 @@ int main( int argc, char* argv[] )
       nlp = rcp(
         new NLPDirectThyraModelEvaluator(
           Teuchos::rcp(&thyraModel,false)
-          ,do_sim ? -1 : 1
-          ,do_sim ? -1 : 1
+          ,do_sim ? -1 : 0
+          ,do_sim ? -1 : 0
           )
         );
     }
@@ -137,8 +137,8 @@ int main( int argc, char* argv[] )
       nlp = rcp(
         new NLPFirstOrderThyraModelEvaluator(
           Teuchos::rcp(&thyraModel,false)
-          ,do_sim ? -1 : 1
-          ,do_sim ? -1 : 1
+          ,do_sim ? -1 : 0
+          ,do_sim ? -1 : 0
           )
         );
     }

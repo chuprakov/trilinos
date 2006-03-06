@@ -81,18 +81,18 @@ void AbstractLinAlgPack::apply_op_serial(
 	// Get explicit views of the vector elements
 	//
 
-	Workspace<RTOpPack::SubVector >         local_vecs(wss,num_vecs);
-	Workspace<RTOpPack::MutableSubVector>  local_targ_vecs(wss,num_targ_vecs);
+	Workspace<RTOpPack::SubVectorT<value_type> >         local_vecs(wss,num_vecs);
+	Workspace<RTOpPack::MutableSubVectorT<value_type> >  local_targ_vecs(wss,num_targ_vecs);
 	int k;
 	for(k = 0; k < num_vecs; ++k) {
-		RTOpPack::SubVector &v = local_vecs[k];
-		vecs[k]->get_sub_vector( global_sub_rng, &v );
-		v.setGlobalOffset( v.globalOffset() + global_offset_in );
+		RTOpPack::SubVector _v;
+		vecs[k]->get_sub_vector( global_sub_rng, &_v );
+		(local_vecs[k] = _v).setGlobalOffset( _v.globalOffset() + global_offset_in );
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
-		RTOpPack::MutableSubVector &v = local_targ_vecs[k];
-		targ_vecs[k]->get_sub_vector( global_sub_rng, &v );
-		v.setGlobalOffset( v.globalOffset() + global_offset_in );
+		RTOpPack::MutableSubVector _v;
+		targ_vecs[k]->get_sub_vector( global_sub_rng, &_v );
+		(local_targ_vecs[k] = _v).setGlobalOffset( _v.globalOffset() + global_offset_in );
 	}
 
 	//
@@ -112,14 +112,16 @@ void AbstractLinAlgPack::apply_op_serial(
 	//
 
 	for(k = 0; k < num_vecs; ++k) {
-		RTOpPack::SubVector &v = local_vecs[k];
+		RTOpPack::SubVectorT<value_type> &v = local_vecs[k];
 		v.setGlobalOffset( v.globalOffset() - global_offset_in );
-		vecs[k]->free_sub_vector(&v);
+		RTOpPack::SubVector _v = v;
+		vecs[k]->free_sub_vector(&_v);
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
-		RTOpPack::MutableSubVector &v = local_targ_vecs[k];
+		RTOpPack::MutableSubVectorT<value_type> &v = local_targ_vecs[k];
 		v.setGlobalOffset( v.globalOffset() - global_offset_in );
-		targ_vecs[k]->commit_sub_vector(&v);
+		RTOpPack::MutableSubVector _v = v;
+		targ_vecs[k]->commit_sub_vector(&_v);
 	}
 
 }

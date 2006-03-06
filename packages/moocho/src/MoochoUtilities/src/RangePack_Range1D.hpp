@@ -231,13 +231,13 @@ Range1D::Range1D(Index lbound, Index ubound)
 
 inline
 Range1D::Range1D( const Teuchos::Range1D &rng )
-  : lbound_(rng.lbound()), ubound_(rng.ubound())
+  : lbound_(rng.lbound()+1), ubound_(rng.ubound()+1)
 {}
 
 inline
 Range1D::operator Teuchos::Range1D() const
 {
-  return Teuchos::Range1D(lbound(),ubound());
+  return Teuchos::Range1D(lbound()-1,ubound()-1);
 }
 
 inline

@@ -222,8 +222,8 @@ void NLPThyraModelEvaluator::initializeBase(
 	const char msg_err[] = "NLPThyraModelEvaluator::initialize(...): Errror!";
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
 	TEST_FOR_EXCEPTION( model.get() == NULL, std::invalid_argument, msg_err );
-	TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx == 0 || p_idx > model_outArgs.Np() ), std::invalid_argument, msg_err );
-	TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx == 0 || g_idx > model_outArgs.Ng() ), std::invalid_argument, msg_err );
+	TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx > model_outArgs.Np()-1 ), std::invalid_argument, msg_err );
+	TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx > model_outArgs.Ng()-1 ), std::invalid_argument, msg_err );
 	TEST_FOR_EXCEPTION( !model_outArgs.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
 	TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );

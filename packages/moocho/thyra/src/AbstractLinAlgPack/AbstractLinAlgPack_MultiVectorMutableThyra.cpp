@@ -164,7 +164,7 @@ void MultiVectorMutableThyra::apply_op(
 MultiVectorMutable::vec_mut_ptr_t
 MultiVectorMutableThyra::col(index_type j)
 {
-	return Teuchos::rcp(new VectorMutableThyra(cast_thyra_multi_vec()->col(j)));
+	return Teuchos::rcp(new VectorMutableThyra(cast_thyra_multi_vec()->col(j-1)));
 }
 
 MultiVectorMutable::vec_mut_ptr_t

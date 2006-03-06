@@ -145,26 +145,34 @@ void VectorMutableThyra::get_sub_vector(
 	const Range1D& rng, RTOpPack::SubVector* sub_vec
 	) const
 {
-	thyra_vec_->getSubVector(rng,sub_vec);
+  RTOpPack::SubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->getSubVector(rng,&_sub_vec);
+  *sub_vec = _sub_vec;
 }
 
 void VectorMutableThyra::free_sub_vector(
 	RTOpPack::SubVector* sub_vec
 	) const
 {
-	thyra_vec_->freeSubVector(sub_vec);
+  RTOpPack::SubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->freeSubVector(&_sub_vec);
+  *sub_vec = _sub_vec;
 }
 
 // Methods overridden from VectorMutable
 
 void VectorMutableThyra::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec	)
 {
-	thyra_vec_->getSubVector(rng,sub_vec);
+  RTOpPack::MutableSubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->getSubVector(rng,&_sub_vec);
+  *sub_vec = _sub_vec;
 }
 
 void VectorMutableThyra::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
 {
-	thyra_vec_->commitSubVector(sub_vec);
+  RTOpPack::MutableSubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->commitSubVector(&_sub_vec);
+  *sub_vec = _sub_vec;
 	this->has_changed();
 }
 

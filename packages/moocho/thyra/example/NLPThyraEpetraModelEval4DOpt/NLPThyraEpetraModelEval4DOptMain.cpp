@@ -81,8 +81,8 @@ int main( int argc, char* argv[] )
     
 		NLPFirstOrderThyraModelEvaluator nlp(
 			Teuchos::rcp(&thyraModel,false)
-			,do_sim ? -1 : 1
-			,do_sim ? -1 : 1
+			,do_sim ? -1 : 0
+			,do_sim ? -1 : 0
 			);
     
     //
