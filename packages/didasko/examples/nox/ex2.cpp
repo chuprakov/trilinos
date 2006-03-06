@@ -243,7 +243,7 @@ public:
   
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
-      double newdiag = diag + lambda_*x[i];
+      double newdiag = diag + lambda_*exp(x[i]);
       Matrix_->ReplaceGlobalValues(MyGlobalElements[i], 1, 
 				   &newdiag, MyGlobalElements+i);
     }
