@@ -38,7 +38,7 @@
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_BasisSystem.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
-#include "Thyra_ExplicitVectorView.hpp"
+#include "Thyra_DetachedVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"

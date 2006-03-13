@@ -145,8 +145,8 @@ void VectorMutableThyra::get_sub_vector(
 	const Range1D& rng, RTOpPack::SubVector* sub_vec
 	) const
 {
-  RTOpPack::SubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
-	thyra_vec_->getSubVector(rng,&_sub_vec);
+  RTOpPack::ConstSubVectorView<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->acquireDetachedView(rng,&_sub_vec);
   *sub_vec = _sub_vec;
 }
 
@@ -154,8 +154,8 @@ void VectorMutableThyra::free_sub_vector(
 	RTOpPack::SubVector* sub_vec
 	) const
 {
-  RTOpPack::SubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
-	thyra_vec_->freeSubVector(&_sub_vec);
+  RTOpPack::ConstSubVectorView<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->releaseDetachedView(&_sub_vec);
   *sub_vec = _sub_vec;
 }
 
@@ -163,15 +163,15 @@ void VectorMutableThyra::free_sub_vector(
 
 void VectorMutableThyra::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec	)
 {
-  RTOpPack::MutableSubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
-	thyra_vec_->getSubVector(rng,&_sub_vec);
+  RTOpPack::SubVectorView<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->acquireDetachedView(rng,&_sub_vec);
   *sub_vec = _sub_vec;
 }
 
 void VectorMutableThyra::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
 {
-  RTOpPack::MutableSubVectorT<RTOp_value_type> _sub_vec = *sub_vec;
-	thyra_vec_->commitSubVector(&_sub_vec);
+  RTOpPack::SubVectorView<RTOp_value_type> _sub_vec = *sub_vec;
+	thyra_vec_->commitDetachedView(&_sub_vec);
   *sub_vec = _sub_vec;
 	this->has_changed();
 }

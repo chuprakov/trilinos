@@ -97,7 +97,7 @@ bool VectorSpaceThyra::is_compatible(const VectorSpace& vec_spc ) const
 
 bool VectorSpaceThyra::is_in_core() const
 {
-	return thyra_vec_spc_->isInCore();
+	return thyra_vec_spc_->hasInCoreView();
 }
 
 index_type VectorSpaceThyra::dim() const

@@ -150,7 +150,7 @@ void VectorMutable::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVect
 	//
 	// Here we get a copy of the data for the sub-vector that the
 	// client will modify.  We must later commit these changes to the
-	// actual vector when the client calls commitSubVector(...).
+	// actual vector when the client calls commitDetachedView(...).
 	// Note, this implementation is very dependent on the behavior of
 	// the default implementation of constant version of
 	// Vector<Scalar>::get_sub_vector(...) and the implementation of

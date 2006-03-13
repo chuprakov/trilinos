@@ -129,8 +129,8 @@ public:
   const char* op_name() const;
   ///
 	void apply_op(
-		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
-		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
+		const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]
+		,const int  num_targ_vecs,  const SubVectorView<Scalar>  targ_sub_vecs[]
 		,ReductTarget *_reduct_obj
 		) const;
 

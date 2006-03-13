@@ -240,7 +240,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 	RTOpPack::RTOpC get_sub_vector_op;
 	TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(rng.lbound(),rng.ubound(),&get_sub_vector_op.op()));
 	// Create the reduction object (another sub_vec)
-  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::SubVectorT<Scalar>!
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::ConstSubVectorView<Scalar>!
 	// Perform the reduction (get the sub-vector requested)
 	const size_t  num_vecs = 1;
 	const Vector* sub_vecs[num_vecs] = { this };

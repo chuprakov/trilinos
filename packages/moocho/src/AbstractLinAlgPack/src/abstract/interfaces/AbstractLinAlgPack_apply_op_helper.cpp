@@ -81,8 +81,8 @@ void AbstractLinAlgPack::apply_op_serial(
 	// Get explicit views of the vector elements
 	//
 
-	Workspace<RTOpPack::SubVectorT<value_type> >         local_vecs(wss,num_vecs);
-	Workspace<RTOpPack::MutableSubVectorT<value_type> >  local_targ_vecs(wss,num_targ_vecs);
+	Workspace<RTOpPack::ConstSubVectorView<value_type> >         local_vecs(wss,num_vecs);
+	Workspace<RTOpPack::SubVectorView<value_type> >  local_targ_vecs(wss,num_targ_vecs);
 	int k;
 	for(k = 0; k < num_vecs; ++k) {
 		RTOpPack::SubVector _v;
@@ -112,13 +112,13 @@ void AbstractLinAlgPack::apply_op_serial(
 	//
 
 	for(k = 0; k < num_vecs; ++k) {
-		RTOpPack::SubVectorT<value_type> &v = local_vecs[k];
+		RTOpPack::ConstSubVectorView<value_type> &v = local_vecs[k];
 		v.setGlobalOffset( v.globalOffset() - global_offset_in );
 		RTOpPack::SubVector _v = v;
 		vecs[k]->free_sub_vector(&_v);
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
-		RTOpPack::MutableSubVectorT<value_type> &v = local_targ_vecs[k];
+		RTOpPack::SubVectorView<value_type> &v = local_targ_vecs[k];
 		v.setGlobalOffset( v.globalOffset() - global_offset_in );
 		RTOpPack::MutableSubVector _v = v;
 		targ_vecs[k]->commit_sub_vector(&_v);

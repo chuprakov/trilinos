@@ -52,12 +52,12 @@ public:
     :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
     {}
   /** \brief . */
-  SubVectorT1B( const SubVectorT<Scalar>& sv )
+  SubVectorT1B( const ConstSubVectorView<Scalar>& sv )
     :globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
     {}
   /** \brief . */
-  operator SubVectorT<Scalar>()
-    { return SubVectorT<Scalar>(globalOffset(),subDim(),values(),stride()); }
+  operator ConstSubVectorView<Scalar>()
+    { return ConstSubVectorView<Scalar>(globalOffset(),subDim(),values(),stride()); }
   /** \brief . */
   void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, const Scalar *values, ptrdiff_t stride)
     { globalOffset_=globalOffset; subDim_=subDim; values_=values; stride_=stride;  }
@@ -110,12 +110,12 @@ public:
     :SubVectorT1B<Scalar>(sv)
     {}
   /** \brief . */
-  MutableSubVectorT1B( const MutableSubVectorT<Scalar>& sv )
+  MutableSubVectorT1B( const SubVectorView<Scalar>& sv )
     :SubVectorT1B<Scalar>(MutableSubVectorT1B<Scalar>(sv.globalOffset(),sv.subDim(),sv.values(),sv.stride())) 
     {}
   /** \brief . */
-  operator MutableSubVectorT<Scalar>()
-    { return MutableSubVectorT<Scalar>(this->globalOffset(),this->subDim(),this->values(),this->stride()); }
+  operator SubVectorView<Scalar>()
+    { return SubVectorView<Scalar>(this->globalOffset(),this->subDim(),this->values(),this->stride()); }
   /** \brief . */
   void initialize(Teuchos_Index globalOffset, Teuchos_Index subDim, Scalar *values, ptrdiff_t stride)
     { SubVectorT1B<Scalar>::initialize(globalOffset, subDim, values, stride); }
@@ -169,13 +169,13 @@ public:
     ,values_(smv.values()), leadingDim_(smv.leadingDim())
     {}
 /*
-  SubMultiVectorT1B( const SubMultiVectorT<Scalar>& smv )
+  SubMultiVectorT1B( const ConstSubMultiVectorView<Scalar>& smv )
     :globalOffset_(smv.globalOffset()), subDim_(smv.subDim())
     ,colOffset_(smv.colOffset()), numSubCols_(smv.numSubCols())
     ,values_(smv.values()), leadingDim_(smv.leadingDim())
     {}
-  operator SubMultiVectorT<Scalar>()
-    { return SubMultiVectorT<Scalar>(globalOffset(),subDim(),colOffset(),numSubCols(),values(),leadingDim()); }
+  operator ConstSubMultiVectorView<Scalar>()
+    { return ConstSubMultiVectorView<Scalar>(globalOffset(),subDim(),colOffset(),numSubCols(),values(),leadingDim()); }
 */
   /** \brief . */
   void initialize(
@@ -257,7 +257,7 @@ public:
     :SubMultiVectorT1B<Scalar>(smv)
     {}
 /*
-  MutableSubMultiVectorT1B( const MutableSubMultiVectorT<Scalar>& smv )
+  MutableSubMultiVectorT1B( const SubMultiVectorView<Scalar>& smv )
     :SubMultiVectorT1B<Scalar>(
       MutableSubMultiVectorT1B<Scalar>(
         smv.globalOffset(),smv.subDim(),smv.colOffset(),smv.numSubCols()
@@ -265,8 +265,8 @@ public:
         )
       )
     {}
-  operator MutableSubMultiVectorT<Scalar>()
-    { return MutableSubMultiVectorT<Scalar>(this->globalOffset(),this->subDim(),this->colOffset(),this->numSubCols(),this->values(),this->leadingDim()); }
+  operator SubMultiVectorView<Scalar>()
+    { return SubMultiVectorView<Scalar>(this->globalOffset(),this->subDim(),this->colOffset(),this->numSubCols(),this->values(),this->leadingDim()); }
 */
   /** \brief . */
   void initialize(
