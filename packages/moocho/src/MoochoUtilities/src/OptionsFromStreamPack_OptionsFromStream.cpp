@@ -136,9 +136,18 @@ void OptionsFromStream::read_options( std::istream& in )
 	 	eat_comment_lines(in,'*');
 		// read options_group
 		in >> curr_word;
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+    std::cout << "curr_word = \""<<curr_word<<"\"\n";
+#endif
+		if( curr_word == "}" ) {
+#ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
+      std::cout << "Found \'}\', Moving on to the next options group or the end!\n";
+#endif
+      break;
+    }
 		if( curr_word == "end_options" ) {
 #ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
-      std::cout << "Found end_options, stoping parsing options!\n";
+      std::cout << "Found \'end_options\', stoping parsing options!\n";
 #endif
       break;
     }
@@ -171,7 +180,7 @@ void OptionsFromStream::read_options( std::istream& in )
       getline(optgroup_options_in,option_and_value,';');
       // Note: above If ';' is missing it will take the rest of the string to
       // the end of '}' for the end of the options group.  These means that if
-      // there is not comments after the last option=value pair then the last
+      // there is no comments after the last option=value pair then the last
       // semicolon is optional!  This turns out to work nicely for the
       // CommandLineOptionsFromStreamProcessor class so this is good behavior!
       clip_ws(&option_and_value);
