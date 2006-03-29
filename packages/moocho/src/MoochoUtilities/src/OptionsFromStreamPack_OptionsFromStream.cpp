@@ -137,7 +137,7 @@ void OptionsFromStream::read_options( std::istream& in )
 		// read options_group
 		in >> curr_word;
 #ifdef PRINT_OPTIONS_FROM_STREAM_TRACE
-    std::cout << "curr_word = \""<<curr_word<<"\"\n";
+    std::cout << "\ncurr_word = \""<<curr_word<<"\"\n";
 #endif
 		if( curr_word == "}" ) {
 #ifdef PRINT_OPTIONS_FROM_STREAM_TRACE

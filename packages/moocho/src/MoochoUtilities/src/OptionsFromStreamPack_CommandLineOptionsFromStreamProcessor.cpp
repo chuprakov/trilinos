@@ -93,8 +93,16 @@ void CommandLineOptionsFromStreamProcessor::process_options()
     std::string::size_type start_i = 0, last_i = 0;
     while(true) {
       last_i = extra_options_str_.find(colon,start_i);
-      std::string optgroup = extra_options_str_.substr(start_i,last_i);
+      std::string optgroup = extra_options_str_.substr(start_i,last_i-start_i);
+#ifdef PRINT_COMMAND_LINE_OPTIONS_FROM_STREAM_PROCESSOR_TRACE
+      std::cout << "\nstart_i = " << start_i;
+      std::cout << "\nlast_i = " << last_i;
+      std::cout << "\noptgroup (before replacement) = \""<<optgroup<<"\"\n";
+#endif
       std::replace( optgroup.begin(), optgroup.end(), ',',';' ); // See above!
+#ifdef PRINT_COMMAND_LINE_OPTIONS_FROM_STREAM_PROCESSOR_TRACE
+      std::cout << "\noptgroup (after replacement) = \""<<optgroup<<"\"\n";
+#endif
       ooptsstream << "options_group " << optgroup << "\n";
       if(last_i == npos) break;
       start_i = last_i + 1;

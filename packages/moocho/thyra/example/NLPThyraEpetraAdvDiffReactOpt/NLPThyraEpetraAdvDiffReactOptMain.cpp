@@ -23,8 +23,9 @@
 #else
 #  include "Epetra_SerialComm.h"
 #endif
-#ifdef HAVE_TEUCHOS_EXTENDED
+#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 #  include "Teuchos_FileInputSource.hpp"
+#  include "Teuchos_StringInputSource.hpp"
 #  include "Teuchos_XMLParameterListReader.hpp"
 #  include "Teuchos_XMLParameterListWriter.hpp"
 #endif
@@ -102,8 +103,9 @@ int main( int argc, char* argv[] )
     bool                use_direct      = false;
 		bool                do_sim          = false;
     ELOWSFactoryType    lowsFactoryType = AMESOS_LOWSF;
-#ifdef HAVE_TEUCHOS_EXTENDED
+#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
     std::string         lowsfParamsFile = "";
+    std::string         lowsfExtraParams = "";
 #endif
     bool                printOnAllProcs = true;
     bool                dump_all        = false;
@@ -120,8 +122,9 @@ int main( int argc, char* argv[] )
 		clp.setOption( "lowsf", &lowsFactoryType
                    ,numLOWSFactoryTypes,LOWSFactoryTypeValues,LOWSFactoryTypeNames
                    ,"The implementation for the LinearOpWithSolveFactory object used to solve the state linear systems" );
-#ifdef HAVE_TEUCHOS_EXTENDED
+#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
+		clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
 #endif
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
@@ -196,19 +199,26 @@ int main( int argc, char* argv[] )
       lowsfPL = Teuchos::rcp(new Teuchos::ParameterList("LOWSF"));
     if(1) {
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+      Teuchos::XMLParameterListReader xmlPLReader;
       if(lowsfParamsFile.length()) {
         Teuchos::FileInputSource xmlFile(lowsfParamsFile);
         Teuchos::XMLObject xmlParams = xmlFile.getObject();
-        Teuchos::XMLParameterListReader xmlPLReader;
         lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
-        *out << "\nRead in LOWSF parameters:\n";
+        *out << "\nLOWSF parameters read from the file \""<<lowsfParamsFile<<"\":\n";
+        lowsfPL->print(*OSTab(out).getOStream(),0,true);
+      }
+      if(lowsfExtraParams.length()) {
+        Teuchos::StringInputSource xmlStr(lowsfExtraParams);
+        Teuchos::XMLObject xmlParams = xmlStr.getObject();
+        lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
+        *out << "\nExtra LOWSF parameters taken from the command-line:\n";
         lowsfPL->print(*OSTab(out).getOStream(),0,true);
       }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
       lowsFactory->setParameterList(lowsfPL);
-      *out << "\nList of valid LOWSF parameters:\n";
+      *out << "\nList of all valid LOWSF parameters:\n";
       OSTab tab(out);
-      *out << lowsFactory->getValidParameters()->name() << "->\n";
+      *out << lowsFactory->getValidParameters()->name() << " ->\n";
       tab.incrTab();
       lowsFactory->getValidParameters()->print(*out,0,true);
     }
@@ -245,7 +255,8 @@ int main( int argc, char* argv[] )
 
     // Set the journal file
     solver.set_journal_out(journalOut);
-    
+
+/*    
     // Create the initial options group that will be overridden
     if(1) {
       Teuchos::RefCountPtr<OptionsFromStreamPack::OptionsFromStream>
@@ -254,6 +265,7 @@ int main( int argc, char* argv[] )
       moochoOptions->read_options(iss);
       solver.set_options(moochoOptions);
     }
+*/
     
 		// Set the NLP
 		solver.set_nlp(nlp);
