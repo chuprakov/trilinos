@@ -58,9 +58,10 @@ bool NLPInterfacePack::test_nlp_direct(
 	bool success = true;
 
 	if(out)
-		*out << "\n****************************************"
-			 << "\n*** test_nlp_direct(...) ***"
-			 << "\n****************************************\n";
+		*out
+      << "\n****************************"
+      << "\n*** test_nlp_direct(...) ***"
+      << "\n*****************************\n";
 	
 	nlp->initialize(true);
 

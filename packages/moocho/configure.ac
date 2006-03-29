@@ -186,6 +186,21 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   [See amesos/configure --help],
   [See amesos/configure --help])
 
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+   aztecoo, thyra, AZTECOO_THYRA, ENABLE_AZTECOO_THYRA, yes,
+  [See aztecoo/configure --help],
+  [See aztecoo/configure --help])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+   belos, thyra, BELOS_THYRA, ENABLE_BELOS_THYRA, yes,
+  [See belos/configure --help],
+  [See belos/configure --help])
+
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+   ifpack, thyra, IFPACK_THYRA, ENABLE_IFPACK_THYRA, yes,
+  [See ifpack/configure --help],
+  [See ifpack/configure --help])
+
 # ------------------------------------------------------------------------
 # Checks if examples should be built
 # ------------------------------------------------------------------------

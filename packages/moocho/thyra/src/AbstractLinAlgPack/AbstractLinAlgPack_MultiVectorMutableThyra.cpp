@@ -189,7 +189,7 @@ MultiVectorMutableThyra::mv_sub_view(const Range1D& row_rng_in, const Range1D& c
 		,"MultiVectorMutableThyra::mv_sub_view(thyra_multi_vec): Error, can not handle subviews of the"
 		" elements in a row yet!"
 		);
-	return Teuchos::rcp(new MultiVectorMutableThyra(cast_thyra_multi_vec()->subView(col_rng_in)));
+	return Teuchos::rcp(new MultiVectorMutableThyra(cast_thyra_multi_vec()->subView(convert(col_rng_in))));
 }
 
 // private

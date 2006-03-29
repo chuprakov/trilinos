@@ -193,44 +193,73 @@ void NLPDirectThyraModelEvaluator::calc_point(
   // Postprocess the evaluation
   //
   postprocessBaseOutArgs(&model_outArgs,Gf,f,recalc_c?c:NULL);
+  // Setup solve components
+  const VectorSpaceThyra                                       *space_c;
+  const VectorSpaceThyra                                       *space_xD;
+  Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >   thyra_c;
+  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >         thyra_py;
+  RefCountPtr<MatrixOp>                                        D_used = rcp(D,false);
+  RefCountPtr<Thyra::MultiVectorBase<value_type> >             thyra_D;
   if( py ) {
-    // py = -inv(C)*c
-    Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> > thyra_c;
-    Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_py;
-    const VectorSpaceThyra
-      &space_c  = dyn_cast<const VectorSpaceThyra>(c->space()),
-      &space_xD = dyn_cast<const VectorSpaceThyra>(py->space());
-    get_thyra_vector(space_c,*c,&thyra_c);
-    get_thyra_vector(space_xD,py,&thyra_py);
-    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
-    Thyra::Vt_S(&*thyra_py,-1.0);
-    free_thyra_vector(space_c,*c,&thyra_c);
-    commit_thyra_vector(space_xD,py,&thyra_py);
+    space_c  = &dyn_cast<const VectorSpaceThyra>(c->space()),
+    space_xD = &dyn_cast<const VectorSpaceThyra>(py->space());
+    get_thyra_vector(*space_c,*c,&thyra_c);
+    get_thyra_vector(*space_xD,py,&thyra_py);
   }
   if( D || rGf ) {
-    // D = -inv(C)*N
-    RefCountPtr<MatrixOp> D_used = rcp(D,false);
     if(!D) D_used = this->factory_D()->create();
-    RefCountPtr<Thyra::MultiVectorBase<value_type> >
-      thyra_D
-      =
+    thyra_D =
       rcp_const_cast<Thyra::MultiVectorBase<value_type> >(
         rcp_dynamic_cast<const Thyra::MultiVectorBase<value_type> >(
           dyn_cast<MultiVectorMutableThyra>(*D_used).thyra_multi_vec()
           )
         );
-    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
-    Thyra::scale(-1.0,&*thyra_D);
-    // rGf = D*'*Gf_xD + Gf_xI
+  }
+  // Perform solve
+  if( ( D || rGf ) && py ) {
+    // Solve for [py,D] all at once!
+    const int nind = thyra_N_->domain()->dim();
+    RefCountPtr<Thyra::MultiVectorBase<value_type> > 
+      thyra_cN = Thyra::createMembers(thyra_N_->range(),nind+1);
+    Thyra::assign(&*thyra_cN->col(0),*thyra_c);
+    Thyra::assign(&*thyra_cN->subView(Teuchos::Range1D(1,nind)),*thyra_N_);
+    RefCountPtr<Thyra::MultiVectorBase<value_type> > 
+      thyra_pyD = Thyra::createMembers(thyra_D->range(),nind+1);
+    Thyra::assign(&*thyra_pyD,0.0);
+    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_cN,&*thyra_pyD);
+    Thyra::scale(-1.0,&*thyra_pyD);
+    Thyra::assign(&*thyra_py,*thyra_pyD->col(0));
+    Thyra::assign(&*thyra_D,*thyra_pyD->subView(Teuchos::Range1D(1,nind)));
+  }
+  else {
+    // Solve for py or D
+    if( py ) {
+      // py = -inv(C)*c
+      Thyra::assign(&*thyra_py,0.0);
+      Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
+      Thyra::Vt_S(&*thyra_py,-1.0);
+    }
+    if( D || rGf ) {
+      // D = -inv(C)*N
+      Thyra::assign(&*thyra_D,0.0);
+      Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
+      Thyra::scale(-1.0,&*thyra_D);
+      // ToDo: Just compute the operators allocated with Gf and not Gf directly!
+    }
+  }
+  if(thyra_py.get()) {
+    free_thyra_vector(*space_c,*c,&thyra_c);
+    commit_thyra_vector(*space_xD,py,&thyra_py);
+  }
+  // Compute reduced gradient
+  if(rGf) {
+    // rGf = D' * Gf_xD + Gf_xI
     const Range1D
       var_dep   = basis_sys_->var_dep(),
       var_indep = basis_sys_->var_indep();
     LinAlgOpPack::V_MtV( rGf, *D_used, BLAS_Cpp::trans, *Gf->sub_view(var_dep) );
     LinAlgOpPack::Vp_V( rGf, *Gf->sub_view(var_indep) );
-    // ToDo: Just compute the operators allocated with Gf and not Gf directly!
   }
-  // * ToDo: Add initial "if( py && ( D || rGf ) )" logic for computing py and D
-  //   together using block solver!
   // * ToDo: Add specialized algorithm for computing D using an inexact Jacobian
   // * ToDo: Add in logic for inexact solves
 }

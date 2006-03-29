@@ -3,6 +3,12 @@
 /* Define if want to build with amesos enabled */
 #undef HAVE_AMESOS_THYRA
 
+/* Define if want to build with aztecoo enabled */
+#undef HAVE_AZTECOO_THYRA
+
+/* Define if want to build with belos enabled */
+#undef HAVE_BELOS_THYRA
+
 /* Define if want to build with epetraext enabled */
 #undef HAVE_EPETRAEXT_THYRA
 
@@ -14,6 +20,9 @@
 
 /* Define if you are using gnumake - this will shorten your link lines. */
 #undef HAVE_GNUMAKE
+
+/* Define if want to build with ifpack enabled */
+#undef HAVE_IFPACK_THYRA
 
 /* Define if want to build moocho-examples */
 #undef HAVE_MOOCHO_EXAMPLES

@@ -371,7 +371,7 @@ bool VectorSpaceTester::check_vector_space(
 
 			err = sub_vec_dim - sub_vec.subDim();
 			if(out && (print_all_tests() || ::fabs(err) >= warning_tol()))
-				*out << "check: ("<<i2<<"-"<<i1<<"+1) - sub_vec.sub_dim = "
+				*out << "check: ("<<i2<<"-"<<i1<<"+1) - sub_vec.subDim() = "
 					 << sub_vec_dim << " - " << sub_vec.subDim() << "  = " << err << std::endl;
 			check_test(err,out,&success);
 
@@ -387,7 +387,7 @@ bool VectorSpaceTester::check_vector_space(
 				z_sum         = sum(z_to);
 			err = (v_sub_vec_sum - z_sum)/sub_vec_dim;
 			if(out && (print_all_tests() || ::fabs(err) >= warning_tol()))
-				*out << "check: (sum(*"<<v_name<<".sub_view("<<i1<<","<<i2<<"))-sum("<<z_name<<"))/sub_vec.sub_dim"
+				*out << "check: (sum(*"<<v_name<<".sub_view("<<i1<<","<<i2<<"))-sum("<<z_name<<"))/sub_vec.subDim()"
 					" = ("<<v_sub_vec_sum<<"-"<<z_sum<<")/"<<sub_vec_dim<<" = "<<err<<std::endl;
 
 			if(out && print_all_tests())

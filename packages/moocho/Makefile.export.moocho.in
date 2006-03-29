@@ -64,3 +64,6 @@ _MOOCHO_LIBS = @LDFLAGS@  $(_MOOCHO_THYRA_LIBS) -L@abs_top_builddir@/src -lmooch
 #
 
 @ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_AMESOS_THYRA_TRUE@include @abs_top_builddir@/../amesos/Makefile.export.amesos
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_AZTECOO_THYRA_TRUE@include @abs_top_builddir@/../aztecoo/Makefile.export.aztecoo
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_BELOS_THYRA_TRUE@include @abs_top_builddir@/../belos/Makefile.export.belos
+@ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_IFPACK_THYRA_TRUE@include @abs_top_builddir@/../ifpack/Makefile.export.ifpack

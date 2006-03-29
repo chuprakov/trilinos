@@ -9,16 +9,50 @@
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_oblackholestream.hpp"
-
-#ifdef HAVE_MPI
-#include "Epetra_MpiComm.h"
-#else
-#include "Epetra_SerialComm.h"
+#ifdef HAVE_AZTECOO_THYRA
+#  include "Thyra_AztecOOLinearOpWithSolveFactory.hpp"
 #endif
+#ifdef HAVE_BELOS_THYRA
+#  include "Thyra_BelosLinearOpWithSolveFactory.hpp"
+#endif
+#ifdef HAVE_IFPACK_THYRA
+#  include "Thyra_IfpackPreconditionerFactory.hpp"
+#endif
+#ifdef HAVE_MPI
+#  include "Epetra_MpiComm.h"
+#else
+#  include "Epetra_SerialComm.h"
+#endif
+#ifdef HAVE_TEUCHOS_EXTENDED
+#  include "Teuchos_FileInputSource.hpp"
+#  include "Teuchos_XMLParameterListReader.hpp"
+#  include "Teuchos_XMLParameterListWriter.hpp"
+#endif
+
+enum ELOWSFactoryType {
+  AMESOS_LOWSF
+#ifdef HAVE_AZTECOO_THYRA
+  ,AZTECOO_LOWSF
+#endif
+#ifdef HAVE_BELOS_THYRA
+  ,BELOS_LOWSF
+#endif
+};
+
+const int numLOWSFactoryTypes =
+1
+#ifdef HAVE_AZTECOO_THYRA
++1
+#endif
+#ifdef HAVE_BELOS_THYRA
++1
+#endif
+;
 
 int main( int argc, char* argv[] )
 {
 	using Teuchos::rcp;
+	using Teuchos::OSTab;
 	using MoochoPack::MoochoSolver;
 	using NLPInterfacePack::NLP;
 	using NLPInterfacePack::NLPDirectThyraModelEvaluator;
@@ -27,8 +61,6 @@ int main( int argc, char* argv[] )
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
-  const int procRank = Teuchos::GlobalMPISession::getRank();
-  //const int numProcs = Teuchos::GlobalMPISession::getNProc();
 
   bool dummySuccess = true;
 
@@ -38,23 +70,43 @@ int main( int argc, char* argv[] )
 	
 		// Create the solver object
 		MoochoSolver  solver;
-    solver.commandLineOptionsFromStreamProcessor().extra_options_str(
-      "DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}"
-      );
 
 		//
 		// Get options from the command line
 		//
 
-    std::string  geomFileBase    = "";
-    double       beta            = 1.0;
-    double       x0              = 0.0;
-    double       p0              = 1.0;
-    double       reactionRate    = 1.0;
-    bool         use_direct      = false;
-		bool         do_sim          = false;
-    bool         printOnAllProcs = true;
-    bool         dump_all        = false;
+    const ELOWSFactoryType LOWSFactoryTypeValues[numLOWSFactoryTypes] = {
+      AMESOS_LOWSF
+#ifdef HAVE_AZTECOO_THYRA
+      ,AZTECOO_LOWSF
+#endif
+#ifdef HAVE_BELOS_THYRA
+      ,BELOS_LOWSF
+#endif
+    };
+    const char* LOWSFactoryTypeNames[numLOWSFactoryTypes] = {
+      "amesos"
+#ifdef HAVE_AZTECOO_THYRA
+      ,"aztecoo"
+#endif
+#ifdef HAVE_BELOS_THYRA
+      ,"belos"
+#endif
+    };
+
+    std::string         geomFileBase    = "";
+    double              beta            = 1.0;
+    double              x0              = 0.0;
+    double              p0              = 1.0;
+    double              reactionRate    = 1.0;
+    bool                use_direct      = false;
+		bool                do_sim          = false;
+    ELOWSFactoryType    lowsFactoryType = AMESOS_LOWSF;
+#ifdef HAVE_TEUCHOS_EXTENDED
+    std::string         lowsfParamsFile = "";
+#endif
+    bool                printOnAllProcs = true;
+    bool                dump_all        = false;
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
@@ -65,6 +117,12 @@ int main( int argc, char* argv[] )
 		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
 		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
 		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+		clp.setOption( "lowsf", &lowsFactoryType
+                   ,numLOWSFactoryTypes,LOWSFactoryTypeValues,LOWSFactoryTypeNames
+                   ,"The implementation for the LinearOpWithSolveFactory object used to solve the state linear systems" );
+#ifdef HAVE_TEUCHOS_EXTENDED
+		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
+#endif
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
     solver.setup_commandline_processor(&clp);
@@ -80,12 +138,6 @@ int main( int argc, char* argv[] )
     //
     // Setup the output streams
     //
-
-    Teuchos::oblackholestream black_hole_out;
-    std::ostream &this_proc_out = ( procRank==0 || printOnAllProcs ? std::cout : black_hole_out );
-    Teuchos::VerboseObjectBase::setDefaultOStream(
-      Teuchos::rcp(new Teuchos::FancyOStream(Teuchos::rcp(&this_proc_out,false),"  ")));
-    out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
     Teuchos::RefCountPtr<Teuchos::FancyOStream>
       journalOut = Teuchos::rcp(
@@ -114,14 +166,58 @@ int main( int argc, char* argv[] )
     GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,reactionRate);
     epetraModel.setOStream(journalOut);
     if(dump_all) epetraModel.setVerbLevel(Teuchos::VERB_EXTREME);
-
+    
+    Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> > lowsFactory;
+    switch(lowsFactoryType) {
+      case AMESOS_LOWSF:
+        *out << "\nCreating a Thyra::AmesosLinearOpWithSolveFactory object ...\n";
+        lowsFactory = Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory());
+        break;
+#ifdef HAVE_AZTECOO_THYRA
+      case AZTECOO_LOWSF:
+        *out << "\nCreating a Thyra::AztecOOLinearOpWithSolveFactory object ...\n";
+        lowsFactory = Teuchos::rcp(new Thyra::AztecOOLinearOpWithSolveFactory());
+        break;
+#endif // HAVE_AZTECOO_THYRA
+#ifdef HAVE_BELOS_THYRA
+      case BELOS_LOWSF:
+        *out << "\nCreating a Thyra::BelosLinearOpWithSolveFactory object ...\n";
+        lowsFactory = Teuchos::rcp(new Thyra::BelosLinearOpWithSolveFactory<Scalar>());
+#ifdef HAVE_IFPACK_THYRA
+        *out << "\nCreating a Thyra::IfpackPreconditionerFactory object ...\n";
+        lowsFactory->setPreconditionerFactory(Teuchos::rcp(new Thyra::IfpackPreconditionerFactory()),"");
+#endif // HAVE_IFPACK_THYRA
+        break;
+#endif // HAVE_BELOS_THYRA
+      default:
+        TEST_FOR_EXCEPT(true); // should never get here!
+    }
+    Teuchos::RefCountPtr<Teuchos::ParameterList>
+      lowsfPL = Teuchos::rcp(new Teuchos::ParameterList("LOWSF"));
+    if(1) {
+#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+      if(lowsfParamsFile.length()) {
+        Teuchos::FileInputSource xmlFile(lowsfParamsFile);
+        Teuchos::XMLObject xmlParams = xmlFile.getObject();
+        Teuchos::XMLParameterListReader xmlPLReader;
+        lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
+        *out << "\nRead in LOWSF parameters:\n";
+        lowsfPL->print(*OSTab(out).getOStream(),0,true);
+      }
+#endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+      lowsFactory->setParameterList(lowsfPL);
+      *out << "\nList of valid LOWSF parameters:\n";
+      OSTab tab(out);
+      *out << lowsFactory->getValidParameters()->name() << "->\n";
+      tab.incrTab();
+      lowsFactory->getValidParameters()->print(*out,0,true);
+    }
+    
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
     Thyra::EpetraModelEvaluator thyraModel; // Sets default options!
-    thyraModel.initialize(
-      Teuchos::rcp(&epetraModel,false)
-      ,Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory())
-      );
+    thyraModel.setOStream(journalOut);
+    thyraModel.initialize(Teuchos::rcp(&epetraModel,false),lowsFactory);
     
     Teuchos::RefCountPtr<NLP> nlp;
     if(use_direct) {
@@ -149,12 +245,31 @@ int main( int argc, char* argv[] )
 
     // Set the journal file
     solver.set_journal_out(journalOut);
-
+    
+    // Create the initial options group that will be overridden
+    if(1) {
+      Teuchos::RefCountPtr<OptionsFromStreamPack::OptionsFromStream>
+        moochoOptions = Teuchos::rcp(new OptionsFromStreamPack::OptionsFromStream());
+      std::istringstream iss("DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}");
+      moochoOptions->read_options(iss);
+      solver.set_options(moochoOptions);
+    }
+    
 		// Set the NLP
 		solver.set_nlp(nlp);
 
 		// Solve the NLP
 		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
+
+    // Write the LOWSF parameters that were used:
+#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+    if(1) {
+      Teuchos::XMLParameterListWriter plWriter;
+      Teuchos::XMLObject xml = plWriter.toXML(*lowsfPL);
+      std::ofstream of("lowsfParams.used.xml");
+      of << xml << std::endl;
+    }
+#endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 		
 		//
 		// Return the solution status (0 if sucessfull)

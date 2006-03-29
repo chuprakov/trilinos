@@ -104,10 +104,6 @@ public:
    *	</ul>
    */
   inline Range1D(Index lbound, Index ubound);
-  /** \brief . */
-  inline Range1D( const Teuchos::Range1D &rng );
-  /** \brief . */
-  inline operator Teuchos::Range1D() const;
   /// Returns \c true if the range represents the entire region (constructed from \c Range1D())
   inline bool full_range() const;
   /// Return lower bound of the range
@@ -133,16 +129,11 @@ private:
   
 }; // end class Range1D
   
-/** \defgroup Range1D_funcs_grp  Non-Member Functions Associated with Range1D.
- *
- * The first three are arithmetic operator functions for incrementing the index
- * and the last is utility function.
- */
-//@{
-  
 /** \brief rng1 == rng2.
  *
  * @return Returns <tt>rng1.lbound() == rng2.ubound() && rng1.ubound() == rng2.ubound()</tt>.
+ *
+ * \relates Range1D
  */
 inline bool operator==(const Range1D& rng1, const Range1D& rng2 )
 {
@@ -150,61 +141,85 @@ inline bool operator==(const Range1D& rng1, const Range1D& rng2 )
 }
 
 /** \brief rng_lhs = rng_rhs + i.
-  *
-  * Increments the upper and lower bounds by a constant.
-  *
-  * Postcondition: <ul>
-  *	<li> <tt>rng_lhs.lbound() == rng_rhs.lbound() + i</tt>
-  *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() + i</tt>
-  *	</ul>
-  */
+ *
+ * Increments the upper and lower bounds by a constant.
+ *
+ * Postcondition: <ul>
+ *	<li> <tt>rng_lhs.lbound() == rng_rhs.lbound() + i</tt>
+ *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() + i</tt>
+ *	</ul>
+ *
+ * \relates Range1D
+ */
 inline Range1D operator+(const Range1D &rng_rhs, Range1D::Index i)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
 
 /** \brief rng_lhs = i + rng_rhs.
-  *
-  * Increments the upper and lower bounds by a constant.
-  *
-  * Postcondition: <ul>
-  *	<li> <tt>rng_lhs.lbound() == i + rng_rhs.lbound()</tt>
-  *	<li> <tt>rng_lhs.ubound() == i + rng_rhs.ubound()</tt>
-  *	</ul>
-  */
+ *
+ * Increments the upper and lower bounds by a constant.
+ *
+ * Postcondition: <ul>
+ *	<li> <tt>rng_lhs.lbound() == i + rng_rhs.lbound()</tt>
+ *	<li> <tt>rng_lhs.ubound() == i + rng_rhs.ubound()</tt>
+ *	</ul>
+ *
+ * \relates Range1D
+ */
 inline Range1D operator+(Range1D::Index i, const Range1D &rng_rhs)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
 
 /** \brief rng_lhs = rng_rhs - i.
-  *
-  * Deincrements the upper and lower bounds by a constant.
-  *
-  * Postcondition: <ul>
-  *	<li> <tt>rng_lhs.lbound() == rng_rhs.lbound() - 1</tt>
-  *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() - 1</tt>
-  *	</ul>
-  */
+ *
+ * Deincrements the upper and lower bounds by a constant.
+ *
+ * Postcondition: <ul>
+ *	<li> <tt>rng_lhs.lbound() == rng_rhs.lbound() - 1</tt>
+ *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() - 1</tt>
+ *	</ul>
+ *
+ * \relates Range1D
+ */
 inline Range1D operator-(const Range1D &rng_rhs, Range1D::Index i)
 {
     return Range1D(rng_rhs.lbound()-i, rng_rhs.ubound()-i);
 }
 
 /** \brief Return a bounded index range from a potentially unbounded index range.
-  * 
-  * Return a index range of lbound to ubound if rng.full_range() == true
-  * , otherwise just return a copy of rng.
-  *
-  * Postconditions: <ul>
-  *	<li> [<tt>rng.full_range() == true</tt>] <tt>return.lbound() == lbound</tt>
-  *	<li> [<tt>rng.full_range() == true</tt>] <tt>return.ubound() == ubound</tt>
-  *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.lbound() == rng.lbound()</tt>
-  *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.ubound() == rng.ubound()</tt>
-  *	</ul>
-  */
+ * 
+ * Return a index range of lbound to ubound if rng.full_range() == true
+ * , otherwise just return a copy of rng.
+ *
+ * Postconditions: <ul>
+ *	<li> [<tt>rng.full_range() == true</tt>] <tt>return.lbound() == lbound</tt>
+ *	<li> [<tt>rng.full_range() == true</tt>] <tt>return.ubound() == ubound</tt>
+ *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.lbound() == rng.lbound()</tt>
+ *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.ubound() == rng.ubound()</tt>
+ *	</ul>
+ *
+ * \relates Range1D
+ */
 inline Range1D full_range(const Range1D &rng, Range1D::Index lbound, Range1D::Index ubound)
 {	return rng.full_range() ? Range1D(lbound,ubound) : rng; }
+
+/** \brief Convert from a 0-based Teuchos::Range1D object to a 1-based RangePack::Range1D object.
+ *
+ * \relates Range1D
+ */
+inline Range1D convert( const Teuchos::Range1D &rng )
+{ return Range1D(rng.lbound()+1,rng.ubound()+1); }
+
+/** \brief Convert from a 1-based RangePack::Range1D object to a 0-based Teuchos::Range1D object.
+ *
+ * \relates Range1D
+ */
+inline Teuchos::Range1D convert( const Range1D &rng )
+{
+  return Teuchos::Range1D(rng.lbound()-1,rng.ubound()-1);
+}
 
 //@}
 
@@ -227,17 +242,6 @@ Range1D::Range1D(Index lbound, Index ubound)
   : lbound_(lbound), ubound_(ubound)
 {
   assert_valid_range(lbound,ubound);
-}
-
-inline
-Range1D::Range1D( const Teuchos::Range1D &rng )
-  : lbound_(rng.lbound()+1), ubound_(rng.ubound()+1)
-{}
-
-inline
-Range1D::operator Teuchos::Range1D() const
-{
-  return Teuchos::Range1D(lbound()-1,ubound()-1);
 }
 
 inline
