@@ -290,18 +290,28 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 	using std::endl;
 	using std::setw;
 	using StopWatchPack::stopwatch;
-	namespace mmp = MemMngPack;
 	using Teuchos::RefCountPtr;
-	typedef MoochoPack::NLPSolverClientInterface    solver_interface_t;
 
-	stopwatch                             timer;
-	bool                                  threw_exception = false;
-	ESolutionStatus                       solve_return    = SOLVE_RETURN_EXCEPTION;
-	solver_interface_t::EFindMinReturn    r_find_min      = solver_interface_t::SOLUTION_FOUND;
+	stopwatch                                  timer;
+	bool                                       threw_exception = false;
+	ESolutionStatus                            solve_return    = SOLVE_RETURN_EXCEPTION;
+	NLPSolverClientInterface::EFindMinReturn   r_find_min      = NLPSolverClientInterface::SOLUTION_FOUND;
 
 	try {
 		
 		update_solver();
+
+    //
+    // Direct any output from the NLP to the journal output file
+    //
+
+    EJournalOutputLevel olevel = solver_.journal_output_level();
+    Teuchos::VerboseObjectTempState<NLP>
+      nlpOutputTempState(nlp_,Teuchos::getFancyOStream(journal_out_used_),convertToVerbLevel(olevel));
+
+    //
+    // Scale the NLP objective function
+    //
 	
 		nlp_->scale_f(obj_scale_);
 
@@ -425,7 +435,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 	}
 	else {
 		switch( r_find_min ) {
-		    case solver_interface_t::SOLUTION_FOUND: {
+		    case NLPSolverClientInterface::SOLUTION_FOUND: {
 				if(do_summary_outputting())
 					*summary_out_used_	<< "\n\n************************\n"
 										<< "**** Solution Found ****\n";
@@ -433,7 +443,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 				solve_return = SOLVE_RETURN_SOLVED;
 				break;
 			}
-		    case solver_interface_t::MAX_ITER_EXCEEDED: {
+		    case NLPSolverClientInterface::MAX_ITER_EXCEEDED: {
 				if(do_summary_outputting())
 					*summary_out_used_	<< "\n\n**********************************************\n"
 										<< "**** Maximun number of iteration exceeded ****\n";
@@ -441,7 +451,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 				solve_return = SOLVE_RETURN_MAX_ITER;
 				break;
 			}
-		    case solver_interface_t::MAX_RUN_TIME_EXCEEDED: {
+		    case NLPSolverClientInterface::MAX_RUN_TIME_EXCEEDED: {
 				if(do_summary_outputting())
 					*summary_out_used_	<< "\n\n**********************************\n"
 										<< "**** Maximun runtime exceeded ****\n";
@@ -449,7 +459,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 				solve_return = SOLVE_RETURN_MAX_RUN_TIME;
 				break;
 			}
-		    case solver_interface_t::ALGORITHMIC_ERROR: {
+		    case NLPSolverClientInterface::ALGORITHMIC_ERROR: {
 				if(do_summary_outputting())
 					*summary_out_used_	<< "\n\n*********************************************\n"
 										<< "**** Some error occured in the algorithm ****\n";

@@ -77,7 +77,7 @@ bool CheckConvergenceStd_AddedStep::do_step(
 	}
 	
 	if( static_cast<int>(olevel) > static_cast<int>(PRINT_NOTHING) )
-		out	<< "\nHave not found the solution yet, have to keep going :-(\n";
+		out	<< "\nHave not found the solution yet, have to keep going (k = " << algo.state().k() << ") :-(\n";
 	
 	// We are not at the solution so keep going
 	return true;

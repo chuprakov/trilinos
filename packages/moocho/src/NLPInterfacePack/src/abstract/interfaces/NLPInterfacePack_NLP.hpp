@@ -37,6 +37,7 @@
 #include "AbstractLinAlgPack_Permutation.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_VerboseObject.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
@@ -69,11 +70,11 @@ namespace NLPInterfacePack {
 
      min    f(x)
      s.t.   c(x) = 0
-	        xl <= x <= xu
+            xl <= x <= xu
 	where:
-	        x    <: space_x
+            x    <: space_x
             f(x) <: space_x -> R^1
-	        c(x) <: space_x -> space_c 
+            c(x) <: space_x -> space_c 
             space_x <: R^n
             space_c <: R^n -> R^m
  \endverbatim
@@ -287,9 +288,9 @@ namespace NLPInterfacePack {
  * <tt>x <: { x | xl <= x <= x}</tt> is a desireable properly, this is not required by this interface.  As a result
  * the client should be prepaired to deal with return values of \c NaN or \c Inf for \c f, \c c and \c h.
  */
-class NLP {
+class NLP : virtual public Teuchos::VerboseObject<NLP> {
 public:
-
+  
 	typedef AbstractLinAlgPack::Vector         Vector;         // doxygen likes typedef?
 	typedef AbstractLinAlgPack::VectorMutable  VectorMutable;  // doxygen likes typedef?
 	

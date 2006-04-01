@@ -46,9 +46,9 @@
 #include "TestingHelperPack_update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_direct(
-	NLPDirect*                          nlp
-	,OptionsFromStreamPack::OptionsFromStream*    options
-	,std::ostream*                                out
+	NLPDirect                                    *nlp
+	,OptionsFromStreamPack::OptionsFromStream    *options
+	,std::ostream                                *out
 	)
 {
 	namespace rcp = MemMngPack;
@@ -196,6 +196,7 @@ bool NLPInterfacePack::test_nlp_direct(
 		if( con_decomp.size() < m ) {
 			assert(0); // ToDo: Print GcU and Uz
 		}
+    *out << "\n";
 	}
 
 	CalcFiniteDiffProd

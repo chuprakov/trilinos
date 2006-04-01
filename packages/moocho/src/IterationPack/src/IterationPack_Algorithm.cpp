@@ -1053,7 +1053,7 @@ void Algorithm::look_for_interrupt()
 				response = R_ABORT_NOW;
 				valid_response = true;
 			}
-			if( abort_mode == 'c' ) {
+			else if( abort_mode == 'c' ) {
 				response = R_CONTINUE;
 				valid_response = true;
 			}
@@ -1240,7 +1240,8 @@ void Algorithm::look_for_interrupt()
 		if( static_proc_rank == 0 ) {
 			std::cerr << "\nAborting the program now!\n";
 		}
-		abort();
+		//abort();
+    exit();
 	}
 #endif
 }
@@ -1249,10 +1250,6 @@ void Algorithm::look_for_interrupt()
 
 void Algorithm::interrupt()
 {
-	static_processed_user_interrupt = false;
-#ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
-	std::cerr	<< "\np="<<static_proc_rank<<": IterationPack::Algorithm::interrupt() called!\n";
-#endif
 	//
 	// This function assumes that every process will recieve the same
 	// signal which I found to be the case with MPICH.  I am not clear
@@ -1267,6 +1264,11 @@ void Algorithm::interrupt()
 	// Note that you have to be very careful what you do inside of a
 	// signal handler and in general you should only be setting flags or
 	// aborting.
+  //
+	static_processed_user_interrupt = false;
+#ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
+	std::cerr	<< "\np="<<static_proc_rank<<": IterationPack::Algorithm::interrupt() called!\n";
+#endif
 	//
 	// See if an algorithm is possibly even running yet!
 	//
@@ -1284,22 +1286,24 @@ void Algorithm::interrupt()
 	//
 	const bool query_for_interrupt = true; // ToDo: Make this an external option!
 	if( !query_for_interrupt && static_num_proc > 1 ) {
-		if( static_proc_rank == 0 )
+		if( static_proc_rank == 0 ) {
 			std::cerr
 				<< "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT but num_proc = "
 				<< static_num_proc << " > 1 and query_for_interrupt = false so:\n"
 				<< "\nAborting the program now!\n";
+    }
 		abort();
 		return;  // Should not be called!
 	}
 	//
 	// Remember that this interrupt has been called!
 	//
-	if( static_proc_rank == 0 )
+	if( static_proc_rank == 0 ) {
 		std::cerr
 			<< "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT.  "
 			<< "Wait for the end of the current step and respond to an interactive query,  "
 			<< "kill the process by sending another signal (i.e. SIGKILL).\n";
+  }
 	static_interrupt_called = true;
 }
 

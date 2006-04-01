@@ -141,6 +141,8 @@ void NLPDirectThyraModelEvaluator::calc_point(
   ,MatrixOp        *Uz
   ) const
 {
+  using Teuchos::FancyOStream;
+  using Teuchos::OSTab;
   using Teuchos::dyn_cast;
   using Teuchos::RefCountPtr;
   using Teuchos::rcp;
@@ -152,6 +154,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   using AbstractLinAlgPack::MatrixOpThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef Thyra::ModelEvaluatorBase MEB;
+  typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   typedef MEB::DerivativeMultiVector<value_type> DerivMV;
   typedef MEB::Derivative<value_type> Deriv;
   //
@@ -159,6 +162,15 @@ void NLPDirectThyraModelEvaluator::calc_point(
   //
   TEST_FOR_EXCEPT(GcU!=NULL);  // Can't handle these yet!
   TEST_FOR_EXCEPT(Uz!=NULL);
+  //
+  // Get output and verbosity
+  //
+  const RefCountPtr<FancyOStream> out       = this->getOStream();
+  const Teuchos::EVerbosityLevel  verbLevel = this->getVerbLevel();
+  Teuchos::OSTab tab(out);
+  VOTSME modelOutputTempState(model_,out,verbLevel);
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nEntering MoochoPack::NLPDirectThyraModelEvaluator::calc_point(...) ...\n";
   //
   // Set the input and output arguments
   //
@@ -217,7 +229,8 @@ void NLPDirectThyraModelEvaluator::calc_point(
   }
   // Perform solve
   if( ( D || rGf ) && py ) {
-    // Solve for [py,D] all at once!
+    if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+      *out << "\nSolving C*[py,D] = -[c,N] simultaneously ...\n";
     const int nind = thyra_N_->domain()->dim();
     RefCountPtr<Thyra::MultiVectorBase<value_type> > 
       thyra_cN = Thyra::createMembers(thyra_N_->range(),nind+1);
@@ -226,7 +239,13 @@ void NLPDirectThyraModelEvaluator::calc_point(
     RefCountPtr<Thyra::MultiVectorBase<value_type> > 
       thyra_pyD = Thyra::createMembers(thyra_D->range(),nind+1);
     Thyra::assign(&*thyra_pyD,0.0);
-    Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_cN,&*thyra_pyD);
+    Thyra::SolveStatus<value_type>
+      solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_cN,&*thyra_pyD);
+    if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW)) {
+      *out
+        << "\nsolve status:\n";
+      *OSTab(out).getOStream() << solveStatus;
+    }
     Thyra::scale(-1.0,&*thyra_pyD);
     Thyra::assign(&*thyra_py,*thyra_pyD->col(0));
     Thyra::assign(&*thyra_D,*thyra_pyD->subView(Teuchos::Range1D(1,nind)));
@@ -234,17 +253,30 @@ void NLPDirectThyraModelEvaluator::calc_point(
   else {
     // Solve for py or D
     if( py ) {
-      // py = -inv(C)*c
+      if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+        *out << "\nSolving C*py = -c ...\n";
       Thyra::assign(&*thyra_py,0.0);
-      Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
+      Thyra::SolveStatus<value_type>
+        solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_c,&*thyra_py);
+      if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW)) {
+        *out
+          << "\nsolve status:\n";
+        *OSTab(out).getOStream() << solveStatus;
+      }
       Thyra::Vt_S(&*thyra_py,-1.0);
     }
     if( D || rGf ) {
-      // D = -inv(C)*N
+      if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+        *out << "\nSolving C*D = -N ...\n";
       Thyra::assign(&*thyra_D,0.0);
-      Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
+      Thyra::SolveStatus<value_type>
+        solveStatus = Thyra::solve(*thyra_C_,Thyra::NOTRANS,*thyra_N_,&*thyra_D);
+      if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW)) {
+        *out
+          << "\nsolve status:\n";
+        *OSTab(out).getOStream() << solveStatus;
+      }
       Thyra::scale(-1.0,&*thyra_D);
-      // ToDo: Just compute the operators allocated with Gf and not Gf directly!
     }
   }
   if(thyra_py.get()) {
@@ -259,9 +291,12 @@ void NLPDirectThyraModelEvaluator::calc_point(
       var_indep = basis_sys_->var_indep();
     LinAlgOpPack::V_MtV( rGf, *D_used, BLAS_Cpp::trans, *Gf->sub_view(var_dep) );
     LinAlgOpPack::Vp_V( rGf, *Gf->sub_view(var_indep) );
+    // ToDo: Just compute the operators allocated with Gf and not Gf directly!
   }
   // * ToDo: Add specialized algorithm for computing D using an inexact Jacobian
   // * ToDo: Add in logic for inexact solves
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nLeaving MoochoPack::NLPDirectThyraModelEvaluator::calc_point(...) ...\n";
 }
 
 void NLPDirectThyraModelEvaluator::calc_semi_newton_step(

@@ -31,6 +31,7 @@
 
 #include "ConstrainedOptPack_Types.hpp"
 #include "IterationPack_Types.hpp"
+#include "Teuchos_VerbosityLevel.hpp"
 
 namespace MoochoPack {
 
@@ -40,7 +41,7 @@ namespace MoochoPack {
 // using types from IterationPack
 #include "IterationPack_PublicTypes.ud"
 
-// enum for journal output.
+/** \brief enum for journal output. */
 enum EJournalOutputLevel {
 	PRINT_NOTHING = 0
 	,PRINT_BASIC_ALGORITHM_INFO = 1
@@ -49,6 +50,26 @@ enum EJournalOutputLevel {
 	,PRINT_VECTORS = 4
 	,PRINT_ITERATION_QUANTITIES = 5
 };
+
+/** \brief Conver to Teuchos::EVerbosityLevel. */
+inline Teuchos::EVerbosityLevel convertToVerbLevel( const EJournalOutputLevel output_level )
+{
+  switch(output_level) {
+    case PRINT_NOTHING:
+    case PRINT_BASIC_ALGORITHM_INFO:
+      return Teuchos::VERB_NONE;
+    case PRINT_ACTIVE_SET:
+    case PRINT_ALGORITHM_STEPS:
+      return Teuchos::VERB_LOW;
+    case PRINT_VECTORS:
+      return Teuchos::VERB_HIGH;
+    case PRINT_ITERATION_QUANTITIES:
+      return Teuchos::VERB_EXTREME;
+    default:
+      TEST_FOR_EXCEPT(true); // Should never get here!
+  }
+  return Teuchos::VERB_NONE; // Should never be called!
+}
 
 // public interface classes
 
