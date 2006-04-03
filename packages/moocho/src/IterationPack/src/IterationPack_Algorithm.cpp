@@ -1240,8 +1240,7 @@ void Algorithm::look_for_interrupt()
 		if( static_proc_rank == 0 ) {
 			std::cerr << "\nAborting the program now!\n";
 		}
-		//abort();
-    exit();
+		abort();
 	}
 #endif
 }
