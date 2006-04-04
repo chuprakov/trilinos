@@ -240,7 +240,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   }
   if(g_out) {
     //
-    // g = 0.5 * (x-q)*H*(x-q) + 0.5*regBeta*p*R*p
+    // g = 0.5 * (x-q)'*H*(x-q) + 0.5*regBeta*p'*R*p
     //
     Epetra_Vector &g = *g_out;
     Epetra_Vector xq(x);

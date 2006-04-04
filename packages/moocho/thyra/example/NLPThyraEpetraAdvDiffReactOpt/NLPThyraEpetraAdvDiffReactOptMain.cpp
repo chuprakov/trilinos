@@ -186,15 +186,17 @@ int main( int argc, char* argv[] )
       case BELOS_LOWSF:
         *out << "\nCreating a Thyra::BelosLinearOpWithSolveFactory object ...\n";
         lowsFactory = Teuchos::rcp(new Thyra::BelosLinearOpWithSolveFactory<Scalar>());
-#ifdef HAVE_IFPACK_THYRA
-        *out << "\nCreating a Thyra::IfpackPreconditionerFactory object ...\n";
-        lowsFactory->setPreconditionerFactory(Teuchos::rcp(new Thyra::IfpackPreconditionerFactory()),"");
-#endif // HAVE_IFPACK_THYRA
         break;
 #endif // HAVE_BELOS_THYRA
       default:
         TEST_FOR_EXCEPT(true); // should never get here!
     }
+#ifdef HAVE_IFPACK_THYRA
+    if(lowsFactory->acceptsPreconditionerFactory()) {
+      *out << "\nCreating a Thyra::IfpackPreconditionerFactory object ...\n";
+      lowsFactory->setPreconditionerFactory(Teuchos::rcp(new Thyra::IfpackPreconditionerFactory()),"");
+    }
+#endif // HAVE_IFPACK_THYRA
     Teuchos::RefCountPtr<Teuchos::ParameterList>
       lowsfPL = Teuchos::rcp(new Teuchos::ParameterList("LOWSF"));
     if(1) {

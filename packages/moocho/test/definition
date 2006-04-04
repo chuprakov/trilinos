@@ -385,6 +385,20 @@
     COMM = SERIAL, MPI(1);
 }
 
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --use-direct --lowsf=aztecoo --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --use-first-order --lowsf=aztecoo --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.1 \
+    --moocho-extra-options="NLPSolverClientInterface\{max_iter=16\,journal_output_level=PRINT_NOTHING\}";
+    COMM = SERIAL, MPI(1);
+}
+
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
