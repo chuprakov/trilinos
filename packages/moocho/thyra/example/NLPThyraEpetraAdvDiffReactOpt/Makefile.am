@@ -58,3 +58,5 @@ square.1.000: $(srcdir)/data/square/square.1.000
 	cp $(srcdir)/data/square/square.2.000 square.2.000
 
 include $(top_srcdir)/MakefileExeStub.mak
+
+CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector

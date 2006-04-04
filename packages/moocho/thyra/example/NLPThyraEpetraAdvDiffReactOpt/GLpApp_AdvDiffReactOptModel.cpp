@@ -4,6 +4,10 @@
 #include "Epetra_SerialComm.h"
 #include "Epetra_CrsMatrix.h"
 
+// For orthogonalization of the basis B_bar
+#include "sillyModifiedGramSchmidt.hpp" // This is just an example!
+#include "Thyra_EpetraThyraWrappers.hpp"
+
 namespace {
 
 inline double sqr( const double& s ) { return s*s; }
@@ -40,11 +44,39 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   // Initialize the basis matrix for p such that p_bar = B_bar * p
   //
   if(np_ > 0) {
+    TEST_FOR_EXCEPTION(
+      np_ > map_p_bar_->NumGlobalElements(), std::logic_error
+      ,"Error, np="<<np_<<" can not be greater than map_p_bar_->NumGlobalElements()="
+      <<map_p_bar_->NumGlobalElements()<<"!"
+      );
     map_p_ = Teuchos::rcp(new Epetra_Map(np_,0,serialComm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
+    //
+    // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
+    //
+/*
+    // Orthogonalize against more columns than I need in order to generate a
+    // nicely conditioned set of columnns
+    const int ortho_dim = TEUCHOS_MIN(map_p_bar_->NumGlobalElements(),np_+10);
+    Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >
+      space_p_bar = Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)));
+    Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
+      B_bar_orth_thyra = Thyra::createMembers(space_p_bar,ortho_dim),
+      thyra_fact_R;
+    Thyra::randomize(-1.0,+1.0,&*B_bar_orth_thyra);
+    sillyModifiedGramSchmidt(&*B_bar_orth_thyra,&thyra_fact_R);
+    *B_bar_ = *Thyra::get_Epetra_MultiVector(*map_p_bar_,B_bar_orth_thyra->subView(Teuchos::Range1D(0,np_-1)));
+*/
     B_bar_->Random();
-    // ToDo: We may need to create a better conditioned basis using some type
-    // of orthogonalization procudure!
+    Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
+      thyra_B_bar = Thyra::create_MPIMultiVectorBase(
+        B_bar_
+        ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
+        ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
+        ),
+      thyra_fact_R;
+    sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
+    // We just discard the "R" factory thyra_fact_R
   }
   else {
     map_p_ = map_p_bar_;
