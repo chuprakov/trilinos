@@ -24,8 +24,9 @@ public:
   // Constructor
   AdvDiffReactOptModel(
     Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
-    ,const double                                              x0  = 0.0
-    ,const double                                              p0  = 1.0
+    ,const int                                                 np           = -1
+    ,const double                                              x0           = 0.0
+    ,const double                                              p0           = 1.0
     ,const double                                              reactionRate = 1.0
     );
 
@@ -72,8 +73,12 @@ private:
 
 	bool      isInitialized_;
 
-  Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool> dat_;
-  double                                            reactionRate_;
+  Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   dat_;
+  int                                                 np_;
+  double                                              reactionRate_;
+
+	Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
+	Teuchos::RefCountPtr<Epetra_MultiVector>            B_bar_;
 
   Teuchos::RefCountPtr<const Epetra_Comm>  epetra_comm_;
 	Teuchos::RefCountPtr<const Epetra_Map>   map_x_;

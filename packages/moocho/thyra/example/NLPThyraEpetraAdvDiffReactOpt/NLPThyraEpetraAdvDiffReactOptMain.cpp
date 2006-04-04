@@ -31,12 +31,12 @@
 #endif
 
 enum ELOWSFactoryType {
-  AMESOS_LOWSF
+  LOWSF_AMESOS
 #ifdef HAVE_AZTECOO_THYRA
-  ,AZTECOO_LOWSF
+  ,LOWSF_AZTECOO
 #endif
 #ifdef HAVE_BELOS_THYRA
-  ,BELOS_LOWSF
+  ,LOWSF_BELOS
 #endif
 };
 
@@ -77,12 +77,12 @@ int main( int argc, char* argv[] )
 		//
 
     const ELOWSFactoryType LOWSFactoryTypeValues[numLOWSFactoryTypes] = {
-      AMESOS_LOWSF
+      LOWSF_AMESOS
 #ifdef HAVE_AZTECOO_THYRA
-      ,AZTECOO_LOWSF
+      ,LOWSF_AZTECOO
 #endif
 #ifdef HAVE_BELOS_THYRA
-      ,BELOS_LOWSF
+      ,LOWSF_BELOS
 #endif
     };
     const char* LOWSFactoryTypeNames[numLOWSFactoryTypes] = {
@@ -96,13 +96,14 @@ int main( int argc, char* argv[] )
     };
 
     std::string         geomFileBase    = "";
+    int                 np              = -1;
     double              beta            = 1.0;
     double              x0              = 0.0;
     double              p0              = 1.0;
     double              reactionRate    = 1.0;
     bool                use_direct      = false;
 		bool                do_sim          = false;
-    ELOWSFactoryType    lowsFactoryType = AMESOS_LOWSF;
+    ELOWSFactoryType    lowsFactoryType = LOWSF_AMESOS;
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
     std::string         lowsfParamsFile = "";
     std::string         lowsfExtraParams = "";
@@ -113,9 +114,10 @@ int main( int argc, char* argv[] )
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
 		clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file." );
+		clp.setOption( "np", &np, "The number of optimization parameters (If < 0 then all of boundary is used)" );
 		clp.setOption( "beta", &beta, "Regularization." );
 		clp.setOption( "x0", &x0, "Initial guess for the state." );
-		clp.setOption( "p0", &p0, "Initial guess or nonminal value for control." );
+		clp.setOption( "p0", &p0, "Initial guess or nonminal value for optimization parameters." );
 		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
 		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
 		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
@@ -166,24 +168,24 @@ int main( int argc, char* argv[] )
 
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),x0,p0,reactionRate);
+    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),np,x0,p0,reactionRate);
     epetraModel.setOStream(journalOut);
     if(dump_all) epetraModel.setVerbLevel(Teuchos::VERB_EXTREME);
     
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> > lowsFactory;
     switch(lowsFactoryType) {
-      case AMESOS_LOWSF:
+      case LOWSF_AMESOS:
         *out << "\nCreating a Thyra::AmesosLinearOpWithSolveFactory object ...\n";
         lowsFactory = Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory());
         break;
 #ifdef HAVE_AZTECOO_THYRA
-      case AZTECOO_LOWSF:
+      case LOWSF_AZTECOO:
         *out << "\nCreating a Thyra::AztecOOLinearOpWithSolveFactory object ...\n";
         lowsFactory = Teuchos::rcp(new Thyra::AztecOOLinearOpWithSolveFactory());
         break;
 #endif // HAVE_AZTECOO_THYRA
 #ifdef HAVE_BELOS_THYRA
-      case BELOS_LOWSF:
+      case LOWSF_BELOS:
         *out << "\nCreating a Thyra::BelosLinearOpWithSolveFactory object ...\n";
         lowsFactory = Teuchos::rcp(new Thyra::BelosLinearOpWithSolveFactory<Scalar>());
         break;

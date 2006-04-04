@@ -21,20 +21,35 @@ namespace GLpApp {
 
 AdvDiffReactOptModel::AdvDiffReactOptModel(
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
+  ,const int                                                 np
   ,const double                                              x0
   ,const double                                              p0
   ,const double                                              reactionRate
   )
-  :dat_(dat),reactionRate_(reactionRate)
+  :dat_(dat),np_(np),reactionRate_(reactionRate)
 {
-  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = getOStream();
   //
   // Get the maps
   //
+  const Epetra_SerialComm serialComm;
   map_x_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorDomainMap()));
-  map_p_ = Teuchos::rcp(new Epetra_Map(dat_->getB()->OperatorDomainMap()));
+  map_p_bar_ = Teuchos::rcp(new Epetra_Map(dat_->getB()->OperatorDomainMap()));
   map_f_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorRangeMap()));
-  map_g_ = Teuchos::rcp(new Epetra_Map(1,0,Epetra_SerialComm()));
+  map_g_ = Teuchos::rcp(new Epetra_Map(1,0,serialComm));
+  //
+  // Initialize the basis matrix for p such that p_bar = B_bar * p
+  //
+  if(np_ > 0) {
+    map_p_ = Teuchos::rcp(new Epetra_Map(np_,0,serialComm));
+    B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
+    B_bar_->Random();
+    // ToDo: We may need to create a better conditioned basis using some type
+    // of orthogonalization procudure!
+  }
+  else {
+    map_p_ = map_p_bar_;
+    // B_bar_ is identity so we don't form it explicitly!
+  }
   //
   // Create vectors
   //
@@ -166,7 +181,13 @@ AdvDiffReactOptModel::createOutArgs() const
       ,true // supportsAdjoint
       )
     );
-  outArgs.setSupports(OUT_ARG_DfDp,0,DerivativeSupport(DERIV_LINEAR_OP,DERIV_MV_BY_COL));
+  outArgs.setSupports(
+    OUT_ARG_DfDp,0
+    ,( np_ > 0
+       ? DerivativeSupport(DERIV_MV_BY_COL)
+       : DerivativeSupport(DERIV_LINEAR_OP,DERIV_MV_BY_COL)
+      )
+    );
   outArgs.set_DfDp_properties(
     0,DerivativeProperties(
       DERIV_LINEARITY_CONST
@@ -220,36 +241,57 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   Epetra_MultiVector  *DgDx_trans_out = get_DgDx_mv(0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   Epetra_MultiVector  *DgDp_trans_out = get_DgDp_mv(0,0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   //
+  // p_bar = B_bar*p
+  //
+  Teuchos::RefCountPtr<const Epetra_Vector> p_bar;
+  if(np_ > 0) {
+    Teuchos::RefCountPtr<Epetra_Vector> _p_bar;
+    _p_bar = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
+    _p_bar->Multiply('N','N',1.0,*B_bar_,p,0.0);
+    p_bar = _p_bar;
+  }
+  else {
+    p_bar = Teuchos::rcp(&p,false);
+  }
+  //
+  // R_p_bar = R*p_bar = R*(B_bar*p)
+  //
+  Teuchos::RefCountPtr<const Epetra_Vector> R_p_bar;
+  if( g_out || DgDp_trans_out ) {
+      Teuchos::RefCountPtr<Epetra_Vector>
+      _R_p_bar = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
+    dat_->getR()->Multiply(false,*p_bar,*_R_p_bar);
+    R_p_bar = _R_p_bar;
+  }
+  //
   // Compute the functions
   //
   if(f_out) {
     //
-    // f = A*x + B*p + Ny(x)
+    // f = A*x + Ny(x) + B*(B_bar*p)
     //
     Epetra_Vector &f = *f_out;
     Epetra_Vector Ax(*map_f_);
     dat_->getA()->Multiply(false,x,Ax);
-    Epetra_Vector Bp(*map_f_);
-    dat_->getB()->Multiply(false,p,Bp);
     f.Update(1.0,Ax,0.0);
-    f.Update(1.0,Bp,-1.0,*dat_->getb(),1.0);
     if(reactionRate_!=0.0) {
       dat_->computeNy(Teuchos::rcp(&x,false));
       f.Update(reactionRate_,*dat_->getNy(),1.0);
     }
+    Epetra_Vector Bp(*map_f_);
+    dat_->getB()->Multiply(false,*p_bar,Bp);
+    f.Update(1.0,Bp,-1.0,*dat_->getb(),1.0);
   }
   if(g_out) {
     //
-    // g = 0.5 * (x-q)'*H*(x-q) + 0.5*regBeta*p'*R*p
+    // g = 0.5 * (x-q)'*H*(x-q) + 0.5*regBeta*(B_bar*p)'*R*(B_bar*p)
     //
     Epetra_Vector &g = *g_out;
     Epetra_Vector xq(x);
     xq.Update(-1.0, *dat_->getq(), 1.0);
     Epetra_Vector Hxq(x);
     dat_->getH()->Multiply(false,xq,Hxq);
-    Epetra_Vector Rp(p);
-    dat_->getR()->Multiply(false,p,Rp);
-    g[0] = 0.5*dot(xq,Hxq) + 0.5*dat_->getbeta()*dot(p,Rp);
+    g[0] = 0.5*dot(xq,Hxq) + 0.5*dat_->getbeta()*dot(*p_bar,*R_p_bar);
   }
   if(W_out) {
     //
@@ -296,14 +338,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   if(!DfDp_out.isEmpty()) {
     if(out.get() && trace) *out << "\nComputing DfDp ...\n"; 
     //
-    // DfDp = B
-    //
-    // Note: We copy from B every time in order to be safe.  Note that since
-    // the client know s that B is constant (sense we told it so in createOutArgs())
-    // then it should only compute this matrix once and keep it if it is smart.
-    //
-    // Note: We support both the CrsMatrix and MultiVector form of this object
-    // to make things easier for the client.
+    // DfDp = B*B_bar
     //
     Epetra_CrsMatrix   *DfDp_op = NULL;
     Epetra_MultiVector *DfDp_mv = NULL;
@@ -318,31 +353,50 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     }
     Teuchos::RefCountPtr<Epetra_CrsMatrix>
       dat_B = dat_->getB();
-    const int numMyRows = dat_B->NumMyRows();
-    for( int i = 0; i < numMyRows; ++i ) {
-      int dat_B_num_row_entries=0; double *dat_B_row_vals=0; int *dat_B_row_inds=0;
-      dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
-      if(DfDp_op) {
-        int DfDp_num_row_entries=0; double *DfDp_row_vals=0; int *DfDp_row_inds=0;
-        DfDp_op->ExtractMyRowView(i,DfDp_num_row_entries,DfDp_row_vals,DfDp_row_inds);
+    if(np_ > 0) {
+      //
+      // We only support a Multi-vector form when we have a non-idenity basis
+      // matrix B_bar for p!
+      //
+      TEST_FOR_EXCEPT(DfDp_mv==NULL);
+      dat_B->Multiply(false,*B_bar_,*DfDp_mv);
+    }
+    else {
+      //
+      // Note: We copy from B every time in order to be safe.  Note that since
+      // the client knows that B is constant (sense we told them so in
+      // createOutArgs()) then it should only compute this matrix once and keep
+      // it if it is smart.
+      //
+      // Note: We support both the CrsMatrix and MultiVector form of this object
+      // to make things easier for the client.
+      //
+      const int numMyRows = dat_B->NumMyRows();
+      for( int i = 0; i < numMyRows; ++i ) {
+        int dat_B_num_row_entries=0; double *dat_B_row_vals=0; int *dat_B_row_inds=0;
+        dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
+        if(DfDp_op) {
+          int DfDp_num_row_entries=0; double *DfDp_row_vals=0; int *DfDp_row_inds=0;
+          DfDp_op->ExtractMyRowView(i,DfDp_num_row_entries,DfDp_row_vals,DfDp_row_inds);
 #ifdef _DEBUG
-        TEST_FOR_EXCEPT(DfDp_num_row_entries!=dat_B_num_row_entries);
+          TEST_FOR_EXCEPT(DfDp_num_row_entries!=dat_B_num_row_entries);
 #endif
-        for(int k = 0; k < DfDp_num_row_entries; ++k) {
+          for(int k = 0; k < DfDp_num_row_entries; ++k) {
 #ifdef _DEBUG
-          TEST_FOR_EXCEPT(dat_B_row_inds[k]!=DfDp_row_inds[k]);
+            TEST_FOR_EXCEPT(dat_B_row_inds[k]!=DfDp_row_inds[k]);
 #endif
-          DfDp_row_vals[k] = dat_B_row_vals[k];
+            DfDp_row_vals[k] = dat_B_row_vals[k];
+          }
+          // ToDo: The above code should be put in a utility function called copyValues(...)!
         }
-        // ToDo: The above code should be put in a utility function called copyValues(...)!
-      }
-      else if(DfDp_mv) {
-        for(int k = 0; k < dat_B_num_row_entries; ++k) {
-          (*(*DfDp_mv)(dat_B_row_inds[k]))[i] = dat_B_row_vals[k];
+        else if(DfDp_mv) {
+          for(int k = 0; k < dat_B_num_row_entries; ++k) {
+            (*(*DfDp_mv)(dat_B_row_inds[k]))[i] = dat_B_row_vals[k];
+          }
+          if(out.get() && dumpAll)
+          { *out << "\nDfDp_mv after setting row i="<<i<<":\n"; { Teuchos::OSTab tab(out); DfDp_mv->Print(*out); } }
+          // ToDo: The above code should be put in a utility function called copyValues(...)!
         }
-        if(out.get() && dumpAll)
-        { *out << "\nDfDp_mv after setting row i="<<i<<":\n"; { Teuchos::OSTab tab(out); DfDp_mv->Print(*out); } }
-        // ToDo: The above code should be put in a utility function called copyValues(...)!
       }
     }
   }
@@ -357,11 +411,15 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   }
   if(DgDp_trans_out) {
     //
-    // DgDp' = regBeta*R*p
+    // DgDp' = regBeta*B_bar'*(R*(B_bar*p))
     //
     Epetra_Vector &DgDp_trans = *(*DgDp_trans_out)(0);
-    dat_->getR()->Multiply(false,p,DgDp_trans);
-    DgDp_trans.Scale(dat_->getbeta());
+    if(np_ > 0) {
+      DgDp_trans.Multiply('T','N',dat_->getbeta(),*B_bar_,*R_p_bar,0.0);
+    }
+    else {
+      DgDp_trans.Update(dat_->getbeta(),*R_p_bar,0.0);
+    }
   }
   if(out.get() && trace) *out << "\n*** Leaving AdvDiffReactOptModel::evalModel(...) ...\n"; 
 }
