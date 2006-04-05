@@ -1293,8 +1293,8 @@ EOverLap VectorSliceTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) cons
 		size1 = dim(),
 		size2 = vs.dim();
 	typename VectorSliceTmpl<T>::difference_type
-		stride1 = ::abs(stride()),
-		stride2 = ::abs(vs.stride());
+		stride1 = std::abs(stride()),
+		stride2 = std::abs(vs.stride());
 
 	// Establish a frame of reference where raw_ptr1 < raw_ptr2
 	if(raw_ptr1 > raw_ptr2) {

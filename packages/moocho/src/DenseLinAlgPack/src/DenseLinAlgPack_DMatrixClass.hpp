@@ -638,8 +638,8 @@ inline
   * implicit conversion operator temp_type() (which returns DMatrix for DMatrixSlice
   * resulting expressions).
   */
-DMatrixSlice EvaluateToDMatrixSlice(const DMatrix& gm)
-{	return DMatrixSlice(gm); }
+//DMatrixSlice EvaluateToDMatrixSlice(const DMatrix& gm)
+//{	return DMatrixSlice(gm); }
 
 /// Assert two matrices are the same size and throws length_error if they are not (LINALGPACK_CHECK_RHS_SIZES).
 void assert_gms_sizes(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1, const DMatrixSlice& gms2
