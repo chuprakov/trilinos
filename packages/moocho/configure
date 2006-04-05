@@ -844,15 +844,20 @@ Optional Features:
   --enable-thyra          Build the Thyra adapater support in Moocho. Can be
                           overridden with --disable-moocho-thyra.
   --enable-moocho-thyra   Build the Thyra adapater support in Moocho.
+  --enable-epetraext      See epetraext/configure --help
   --enable-thyra          See epetraext/configure --help
   --enable-epetraext-thyra
                           See epetraext/configure --help
+  --enable-amesos         See amesos/configure --help
   --enable-thyra          See amesos/configure --help
   --enable-amesos-thyra   See amesos/configure --help
+  --enable-aztecoo        See aztecoo/configure --help
   --enable-thyra          See aztecoo/configure --help
   --enable-aztecoo-thyra  See aztecoo/configure --help
+  --enable-belos          See belos/configure --help
   --enable-thyra          See belos/configure --help
   --enable-belos-thyra    See belos/configure --help
+  --enable-ifpack         See ifpack/configure --help
   --enable-thyra          See ifpack/configure --help
   --enable-ifpack-thyra   See ifpack/configure --help
   --enable-tests          Build tests for all Trilinos packages (not all
@@ -3793,7 +3798,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3796:" \
+echo "$as_me:3801:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -4816,6 +4821,14 @@ fi
 
 
 
+# Check whether --enable-epetraext or --disable-epetraext was given.
+if test "${enable_epetraext+set}" = set; then
+  enableval="$enable_epetraext"
+  ac_cv_implicit_use_epetraext=$enableval
+else
+  ac_cv_implicit_use_epetraext=no
+fi;
+
 # Check whether --enable-thyra or --disable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval="$enable_thyra"
@@ -4826,7 +4839,11 @@ fi;
 
 if test "Xyes
   " != "Xno"; then
-  ac_cv_epetraext_using_thyra_default=$ac_cv_implicit_use_thyra
+  if test "X$ac_cv_implicit_use_epetraext" != "Xno"; then
+    ac_cv_epetraext_using_thyra_default=$ac_cv_implicit_use_thyra
+  else
+    ac_cv_epetraext_using_thyra_default=no
+  fi
 else
   ac_cv_epetraext_using_thyra_default=no
 fi
@@ -4870,6 +4887,14 @@ fi
 
 
 
+# Check whether --enable-amesos or --disable-amesos was given.
+if test "${enable_amesos+set}" = set; then
+  enableval="$enable_amesos"
+  ac_cv_implicit_use_amesos=$enableval
+else
+  ac_cv_implicit_use_amesos=no
+fi;
+
 # Check whether --enable-thyra or --disable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval="$enable_thyra"
@@ -4879,7 +4904,11 @@ else
 fi;
 
 if test "Xyes" != "Xno"; then
-  ac_cv_amesos_using_thyra_default=$ac_cv_implicit_use_thyra
+  if test "X$ac_cv_implicit_use_amesos" != "Xno"; then
+    ac_cv_amesos_using_thyra_default=$ac_cv_implicit_use_thyra
+  else
+    ac_cv_amesos_using_thyra_default=no
+  fi
 else
   ac_cv_amesos_using_thyra_default=no
 fi
@@ -4923,6 +4952,14 @@ fi
 
 
 
+# Check whether --enable-aztecoo or --disable-aztecoo was given.
+if test "${enable_aztecoo+set}" = set; then
+  enableval="$enable_aztecoo"
+  ac_cv_implicit_use_aztecoo=$enableval
+else
+  ac_cv_implicit_use_aztecoo=no
+fi;
+
 # Check whether --enable-thyra or --disable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval="$enable_thyra"
@@ -4932,7 +4969,11 @@ else
 fi;
 
 if test "Xyes" != "Xno"; then
-  ac_cv_aztecoo_using_thyra_default=$ac_cv_implicit_use_thyra
+  if test "X$ac_cv_implicit_use_aztecoo" != "Xno"; then
+    ac_cv_aztecoo_using_thyra_default=$ac_cv_implicit_use_thyra
+  else
+    ac_cv_aztecoo_using_thyra_default=no
+  fi
 else
   ac_cv_aztecoo_using_thyra_default=no
 fi
@@ -4976,6 +5017,14 @@ fi
 
 
 
+# Check whether --enable-belos or --disable-belos was given.
+if test "${enable_belos+set}" = set; then
+  enableval="$enable_belos"
+  ac_cv_implicit_use_belos=$enableval
+else
+  ac_cv_implicit_use_belos=no
+fi;
+
 # Check whether --enable-thyra or --disable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval="$enable_thyra"
@@ -4985,7 +5034,11 @@ else
 fi;
 
 if test "Xyes" != "Xno"; then
-  ac_cv_belos_using_thyra_default=$ac_cv_implicit_use_thyra
+  if test "X$ac_cv_implicit_use_belos" != "Xno"; then
+    ac_cv_belos_using_thyra_default=$ac_cv_implicit_use_thyra
+  else
+    ac_cv_belos_using_thyra_default=no
+  fi
 else
   ac_cv_belos_using_thyra_default=no
 fi
@@ -5029,6 +5082,14 @@ fi
 
 
 
+# Check whether --enable-ifpack or --disable-ifpack was given.
+if test "${enable_ifpack+set}" = set; then
+  enableval="$enable_ifpack"
+  ac_cv_implicit_use_ifpack=$enableval
+else
+  ac_cv_implicit_use_ifpack=no
+fi;
+
 # Check whether --enable-thyra or --disable-thyra was given.
 if test "${enable_thyra+set}" = set; then
   enableval="$enable_thyra"
@@ -5038,7 +5099,11 @@ else
 fi;
 
 if test "Xyes" != "Xno"; then
-  ac_cv_ifpack_using_thyra_default=$ac_cv_implicit_use_thyra
+  if test "X$ac_cv_implicit_use_ifpack" != "Xno"; then
+    ac_cv_ifpack_using_thyra_default=$ac_cv_implicit_use_thyra
+  else
+    ac_cv_ifpack_using_thyra_default=no
+  fi
 else
   ac_cv_ifpack_using_thyra_default=no
 fi
@@ -5808,7 +5873,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:5811: \"$ac_link\") >&5
+(eval echo $as_me:5876: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -5886,7 +5951,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:5889: \"$ac_link\") >&5
+(eval echo $as_me:5954: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS

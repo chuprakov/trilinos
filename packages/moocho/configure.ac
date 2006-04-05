@@ -176,27 +176,27 @@ TAC_ARG_ENABLE_CAN_USE_PACKAGE(
   ,[Build the Thyra adapater support in Moocho.]
   ,[Build the Thyra adapater support in Moocho.  Can be overridden with --disable-moocho-thyra.])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+TAC_ARG_INFORM_SUBPACKAGE_USED(
   epetraext, thyra, EPETRAEXT_THYRA, ENABLE_EPETRAEXT_THYRA, yes
   ,[See epetraext/configure --help]
   ,[See epetraext/configure --help])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+TAC_ARG_INFORM_SUBPACKAGE_USED(
    amesos, thyra, AMESOS_THYRA, ENABLE_AMESOS_THYRA, yes,
   [See amesos/configure --help],
   [See amesos/configure --help])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+TAC_ARG_INFORM_SUBPACKAGE_USED(
    aztecoo, thyra, AZTECOO_THYRA, ENABLE_AZTECOO_THYRA, yes,
   [See aztecoo/configure --help],
   [See aztecoo/configure --help])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+TAC_ARG_INFORM_SUBPACKAGE_USED(
    belos, thyra, BELOS_THYRA, ENABLE_BELOS_THYRA, yes,
   [See belos/configure --help],
   [See belos/configure --help])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(
+TAC_ARG_INFORM_SUBPACKAGE_USED(
    ifpack, thyra, IFPACK_THYRA, ENABLE_IFPACK_THYRA, yes,
   [See ifpack/configure --help],
   [See ifpack/configure --help])

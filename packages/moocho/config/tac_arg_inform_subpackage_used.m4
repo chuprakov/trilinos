@@ -1,22 +1,14 @@
-# @synopsis TAC_ARG_ENABLE_CAN_USE_PACKAGE(PACKAGE_NAME, OPTIONAL_DEPENDENCY_NAME, AC_DEFINE, AM_CONDITIONAL, ALLOW_IMPLICIT_ENABLE, HELP_STRING, IMPLICIT_HELP_STRING)
+# @synopsis TAC_ARG_INFORM_SUBPACKAGE_USED(PACKAGE_NAME, OPTIONAL_DEPENDENCY_NAME, AC_DEFINE, AM_CONDITIONAL, ALLOW_IMPLICIT_ENABLE, HELP_STRING, IMPLICIT_HELP_STRING)
 # 
 
-# Use this macro to facilitate definition of options related to other
-# Trilinos packages that a package "can use" but does not depend on.
-
-# This macro supports both explicit and implicit configure options.
-# For example to build epetra support into nox (so that nox can call
-# epetra) we can explicitly use the flag --enable-nox-epetra.  This
-# requires the user to enable both packages and the support between
-# them: --enable-nox --enable-epetra --enable-nox-epetra.	
-
-# Some packages, to simplify build requirements, implicitly assume
-# that epetra support in nox should be built if both --enable-nox and
-# --enable-epetra are supplied.  Users can override this by using the
-# explicit command --enable-nox-epetra.
+# This macro determines if a sub-feature in another dependent package was
+# enabled or not.  For example, we would like to know if support for package
+# pb was enabled in package pa or not.  For this, we will assume that this is
+# supported if we see --enable-pa and --enable-pb (and implicit enabling is
+# allows) or --enable-pa --enable-pa-pb but not if we see --disable-pa-pb.
 
 # Usage:
-#  TAC_ARG_ENABLE_CAN_USE_PACKAGE(PACKAGE_NAME, 
+#  TAC_ARG_INFORM_SUBPACKAGE_USED(PACKAGE_NAME, 
 #                                 OPTIONAL_PACKAGE_DEPENDENCY_NAME, 
 #                                 AC_DEFINE, 
 #                                 AM_CONDITIONAL, 
@@ -39,20 +31,6 @@
 #               --enable-<PACKAGE_NAME>-<OPTIONAL_PACKAGE_DEPENDENCY_NAME>
 # IMPLICIT_HELP_STRING - Help string for implicit configure option:
 #               --enable-<OPTIONAL_PACKAGE_DEPENDENCY_NAME>
-# 
-# For example, to force explicit configuration of epetra support in nox:
-# 
-#  TAC_ARG_ENABLE_EXPLICIT_CAN_USE_PACKAGE(nox, epetra, NOX_EPETRA, 
-#                                          NOX_USING_EPETRA, no, 
-#                                          [Builds epetra support into nox.], 
-#                                          [DOES NOTHING!])
-# 
-# To allow both implicit and explicit configuration of epetra support in nox:
-#
-# TAC_ARG_ENABLE_EXPLICIT_CAN_USE_PACKAGE(nox, epetra, NOX_EPETRA, 
-# NOX_USING_EPETRA, no, yes, 
-# [Builds epetra support in nox.], 
-# [Builds epetra support in nox.  Can be overridden with --enable-nox-epetra.])
 #
 # Results of calling this file:
 #  1. An AM_CONDITIONAL will be set for the AM_CONDITIONAL argument defined
@@ -63,18 +41,28 @@
 # @author Roger Pawlowski <rppawlo@sandia.gov>
 # Based on original verison by Jim Willenbring.
 #
-AC_DEFUN([TAC_ARG_ENABLE_CAN_USE_PACKAGE],
+AC_DEFUN([TAC_ARG_INFORM_SUBPACKAGE_USED],
 [
 
-dnl Check for implicit enabling of optional package  
+dnl Check for implicit enabling of base package  
+AC_ARG_ENABLE([$1],
+AC_HELP_STRING([--enable-$1],[$7]),
+ac_cv_implicit_use_$1=$enableval, 
+ac_cv_implicit_use_$1=no)
+
+dnl Check for implicit enabling of subpackage  
 AC_ARG_ENABLE([$2],
 AC_HELP_STRING([--enable-$2],[$7]),
 ac_cv_implicit_use_$2=$enableval, 
 ac_cv_implicit_use_$2=no)
 
-dnl If implicit enabling is used, set that as teh default
+dnl If implicit enabling is used, set that as the default
 if test "X$5" != "Xno"; then
-  ac_cv_$1_using_$2_default=$ac_cv_implicit_use_$2
+  if test "X$ac_cv_implicit_use_$1" != "Xno"; then
+    ac_cv_$1_using_$2_default=$ac_cv_implicit_use_$2
+  else
+    ac_cv_$1_using_$2_default=no
+  fi
 else
   ac_cv_$1_using_$2_default=no
 fi
