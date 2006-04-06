@@ -44,6 +44,7 @@
 #include "AbstractLinAlgPack_EtaVector.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -74,17 +75,19 @@ MatrixOp& MatrixOp::operator=(const MatrixOp& M)
 	return *this; // assignment to self
 }
 
-std::ostream& MatrixOp::output(std::ostream& out) const
+std::ostream& MatrixOp::output(std::ostream& out_arg) const
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
 	const size_type m = this->rows(), n = this->cols();
 	VectorSpace::vec_mut_ptr_t
 		row_vec = space_rows().create_member(); // dim() == n
-	out << m << " " << n << std::endl;
+	*out << m << " " << n << std::endl;
 	for( size_type i = 1; i <= m; ++i ) {
-		LinAlgOpPack::V_StMtV( row_vec.get(), 1.0, *this, BLAS_Cpp::trans, EtaVector(i,m)() );
-		row_vec->output(out,false,true);
+		LinAlgOpPack::V_StMtV( &*row_vec, 1.0, *this, BLAS_Cpp::trans, EtaVector(i,m)() );
+		row_vec->output(*out,false,true);
 	}
-	return out;
+	return out_arg;
 }
 
 // Clone

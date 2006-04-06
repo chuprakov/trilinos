@@ -34,6 +34,7 @@
 #include "AbstractLinAlgPack_AssertOp.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -112,14 +113,18 @@ const VectorSpace& MatrixDecompRangeOrthog::space_rows() const
 	return C_ptr_->space_rows();
 }
 
-std::ostream& MatrixDecompRangeOrthog::output(std::ostream& out) const
+std::ostream& MatrixDecompRangeOrthog::output(std::ostream& out_arg) const
 {
-	out << "This is a " << this->rows() << " x " << this->cols()
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
+	*out
+    << "This is a " << this->rows() << " x " << this->cols()
 		<< " nonsingular matrix (I + D'*D)*C with inverse inv(C')*(I + D*inv(S)*D') where C, D and S are:\n";
-	out << "C =\n" << *C_ptr();
-	out << "D =\n" << *D_ptr();
-	out << "S =\n" << *S_ptr();
-	return out;
+  tab.incrTab();
+	*out << "C =\n" << *C_ptr();
+	*out << "D =\n" << *D_ptr();
+	*out << "S =\n" << *S_ptr();
+	return out_arg;
 }
 
 void MatrixDecompRangeOrthog::Vp_StMtV(

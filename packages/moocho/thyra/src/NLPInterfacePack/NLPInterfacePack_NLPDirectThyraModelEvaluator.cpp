@@ -158,11 +158,6 @@ void NLPDirectThyraModelEvaluator::calc_point(
   typedef MEB::DerivativeMultiVector<value_type> DerivMV;
   typedef MEB::Derivative<value_type> Deriv;
   //
-  // Validate input
-  //
-  TEST_FOR_EXCEPT(GcU!=NULL);  // Can't handle these yet!
-  TEST_FOR_EXCEPT(Uz!=NULL);
-  //
   // Get output and verbosity
   //
   const RefCountPtr<FancyOStream> out       = this->getOStream();
@@ -171,6 +166,11 @@ void NLPDirectThyraModelEvaluator::calc_point(
   VOTSME modelOutputTempState(model_,out,verbLevel);
   if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
     *out << "\nEntering MoochoPack::NLPDirectThyraModelEvaluator::calc_point(...) ...\n";
+  //
+  // Validate input
+  //
+  TEST_FOR_EXCEPT(GcU!=NULL);  // Can't handle these yet!
+  TEST_FOR_EXCEPT(Uz!=NULL);
   //
   // Set the input and output arguments
   //

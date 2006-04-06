@@ -48,14 +48,12 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
 NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
 NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
 
-#input_mesh_files:
-#	cp $(srcdir)/data/square/square.1.000 square.1.000
-#	cp $(srcdir)/data/square/square.2.000 square.2.000
-
 
 square.1.000: $(srcdir)/data/square/square.1.000
 	cp $(srcdir)/data/square/square.1.000 square.1.000
 	cp $(srcdir)/data/square/square.2.000 square.2.000
+	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
+	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
 
 include $(top_srcdir)/MakefileExeStub.mak
 

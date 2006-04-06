@@ -789,13 +789,11 @@ uninstall-am: uninstall-info-am
 	uninstall-am uninstall-info-am
 
 
-#input_mesh_files:
-#	cp $(srcdir)/data/square/square.1.000 square.1.000
-#	cp $(srcdir)/data/square/square.2.000 square.2.000
-
 square.1.000: $(srcdir)/data/square/square.1.000
 	cp $(srcdir)/data/square/square.1.000 square.1.000
 	cp $(srcdir)/data/square/square.2.000 square.2.000
+	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
+	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
 
 include $(top_builddir)/Makefile.export.moocho
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

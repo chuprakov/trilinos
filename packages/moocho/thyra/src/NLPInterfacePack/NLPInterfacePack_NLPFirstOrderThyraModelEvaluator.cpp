@@ -135,6 +135,8 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   ,const FirstOrderInfo   *first_order_info
   ) const
 {
+  using Teuchos::FancyOStream;
+  using Teuchos::OSTab;
   using Teuchos::dyn_cast;
   using Teuchos::RefCountPtr;
   using Teuchos::rcp_const_cast;
@@ -143,8 +145,18 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   using AbstractLinAlgPack::MatrixOpThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef Thyra::ModelEvaluatorBase MEB;
+  typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   typedef MEB::DerivativeMultiVector<value_type> DerivMV;
   typedef MEB::Derivative<value_type> Deriv;
+  //
+  // Get output and verbosity
+  //
+  const RefCountPtr<FancyOStream> out       = this->getOStream();
+  const Teuchos::EVerbosityLevel  verbLevel = this->getVerbLevel();
+  Teuchos::OSTab tab(out);
+  VOTSME modelOutputTempState(model_,out,verbLevel);
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nEntering MoochoPack::NLPFirstOrderThyraModelEvaluator::calc_point(...) ...\n";
   //
   // Set the input and output arguments
   //
@@ -211,7 +223,11 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
         N_aggr = &*N_ptr;
       }
     }
-    dyn_cast<MatrixOpNonsingThyra>(*C_aggr).initialize(model_outArgs.get_W(),BLAS_Cpp::no_trans);
+    RefCountPtr<Thyra::LinearOpWithSolveBase<value_type> >
+      model_W = model_outArgs.get_W();
+    model_W->setOStream(out);
+    model_W->setVerbLevel(verbLevel);
+    dyn_cast<MatrixOpNonsingThyra>(*C_aggr).initialize(model_W,BLAS_Cpp::no_trans);
     // ToDo: This is implemented for direct sensitivities, change this for adjoint sensitivities
     if(p_idx_>=0)
       dyn_cast<MatrixOpThyra>(*N_aggr).initialize(model_outArgs.get_DfDp(p_idx_).getDerivativeMultiVector().getMultiVector(),BLAS_Cpp::no_trans);
@@ -225,6 +241,8 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
     }
     Gc_updated_ = true;
   }
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nLeaving MoochoPack::NLPFirstOrderThyraModelEvaluator::calc_point(...) ...\n";
 }
 
 }	// end namespace NLPInterfacePack

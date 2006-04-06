@@ -67,16 +67,24 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
     sillyModifiedGramSchmidt(&*B_bar_orth_thyra,&thyra_fact_R);
     *B_bar_ = *Thyra::get_Epetra_MultiVector(*map_p_bar_,B_bar_orth_thyra->subView(Teuchos::Range1D(0,np_-1)));
 */
-    B_bar_->Random();
-    Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
-      thyra_B_bar = Thyra::create_MPIMultiVectorBase(
-        B_bar_
-        ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
-        ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
-        ),
-      thyra_fact_R;
-    sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
-    // We just discard the "R" factory thyra_fact_R
+    if(np_ > 1) {
+      //B_bar_->Random();
+      Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
+        thyra_B_bar = Thyra::create_MPIMultiVectorBase(
+          B_bar_
+          ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
+          ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
+          ),
+        thyra_fact_R;
+      Thyra::seed_randomize<double>(0);
+      Thyra::randomize(1.0,2.0,&*thyra_B_bar);
+      sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
+      // We just discard the "R" factory thyra_fact_R
+    }
+    else {
+      // This will make it unique no matter how many processors are used!
+      B_bar_->PutScalar(1.0);
+    }
   }
   else {
     map_p_ = map_p_bar_;

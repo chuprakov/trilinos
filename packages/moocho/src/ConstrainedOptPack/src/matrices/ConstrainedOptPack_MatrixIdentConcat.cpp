@@ -37,6 +37,7 @@
 #include "AbstractLinAlgPack_SpVectorOp.hpp" // RAB: 12/20/2002: Must be after DenseLinAlgPack_LinAlgOpPack.hpp
                                                                         // for Intel C++ 5.0 (Windows 2000).  Namespaces
                                                                         // and lookup rules don't work properly with this compiler.
+#include "Teuchos_FancyOStream.hpp"
 
 namespace {
 
@@ -137,30 +138,33 @@ size_type MatrixIdentConcat::nz() const
 
 // Overridden from MatrixOp
 
-std::ostream& MatrixIdentConcat::output(std::ostream& out) const
+std::ostream& MatrixIdentConcat::output(std::ostream& out_arg) const
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
 	const Range1D           D_rng   = this->D_rng();
 	const BLAS_Cpp::Transp  D_trans = this->D_trans();
-	out << "Converted to dense =\n";
-	MatrixOp::output(out);
-	out << "This is a " << this->rows() << " x " << this->cols()
+	*out << "Converted to dense =\n";
+	MatrixOp::output(*out);
+	*out << "This is a " << this->rows() << " x " << this->cols()
 		<< " general matrix / identity matrix concatenated matrix object ";
 	if( D_rng.lbound() == 1 ) {
 		if( D_trans == BLAS_Cpp::no_trans )
-			out << "[ alpha*D; I ]";
+			*out << "[ alpha*D; I ]";
 		else
-			out << "[ alpha*D'; I ]";
+			*out << "[ alpha*D'; I ]";
 	}
 	else {
 		if( D_trans == BLAS_Cpp::no_trans )
-			out << "[ I; alpha*D ]";
+			*out << "[ I; alpha*D ]";
 		else
-			out << "[ I; alpha*D' ]";
+			*out << "[ I; alpha*D' ]";
 	}
-	out << " where alpha and D are:";
-	out << "\nalpha = " << this->alpha();
-	out << "\nD =\n" << D();
-	return out;
+	*out << " where alpha and D are:";
+  tab.incrTab();
+	*out << "\nalpha = " << this->alpha();
+	*out << "\nD =\n" << D();
+	return out_arg;
 }
 
 void MatrixIdentConcat::Vp_StMtV(

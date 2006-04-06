@@ -108,6 +108,7 @@ int main( int argc, char* argv[] )
     std::string         lowsfParamsFile = "";
     std::string         lowsfExtraParams = "";
 #endif
+    bool                usePrec         = true;
     bool                printOnAllProcs = true;
     bool                dump_all        = false;
 
@@ -128,6 +129,7 @@ int main( int argc, char* argv[] )
 		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
 		clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
 #endif
+		clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
     solver.setup_commandline_processor(&clp);
@@ -151,7 +153,8 @@ int main( int argc, char* argv[] )
           ,"  "
           )
         );
-
+    journalOut->copyAllOutputOptions(*out);
+    
 		//
 		// Create the NLP
 		//
@@ -194,7 +197,7 @@ int main( int argc, char* argv[] )
         TEST_FOR_EXCEPT(true); // should never get here!
     }
 #ifdef HAVE_IFPACK_THYRA
-    if(lowsFactory->acceptsPreconditionerFactory()) {
+    if( usePrec && lowsFactory->acceptsPreconditionerFactory() ) {
       *out << "\nCreating a Thyra::IfpackPreconditionerFactory object ...\n";
       lowsFactory->setPreconditionerFactory(Teuchos::rcp(new Thyra::IfpackPreconditionerFactory()),"");
     }

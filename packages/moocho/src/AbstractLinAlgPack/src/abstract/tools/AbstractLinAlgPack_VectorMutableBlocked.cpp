@@ -34,6 +34,7 @@
 #include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 // Uncomment to ignore cache of reduction data
 //#define ALAP_VECTOR_MUTABLE_BLOCKED_IGNORE_CACHE_DATA
@@ -229,21 +230,23 @@ index_type VectorMutableBlocked::nz() const
 }
 
 std::ostream& VectorMutableBlocked::output(
-	std::ostream& out, bool print_dim, bool newline
+	std::ostream& out_arg, bool print_dim, bool newline
 	,index_type global_offset
 	) const
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
 	if(print_dim)
-		out << this->dim() << std::endl;
+		*out << this->dim() << std::endl;
 	size_type off = global_offset;
 	const int num_vec_spaces = vec_space_->num_vector_spaces();
 	for( int k = 0; k < num_vec_spaces; ++k ) {
-		vecs_[k]->output(out,false,false,off);
+		vecs_[k]->output(*out,false,false,off);
 		off += vecs_[k]->dim();
 	}
 	if(newline)
-		out << std::endl;
-	return out;
+		*out << std::endl;
+	return out_arg;
 }
 
 value_type VectorMutableBlocked::get_ele(index_type i) const

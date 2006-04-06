@@ -76,6 +76,7 @@ bool EvalNewPointStd_Step::do_step(
 	,poss_type assoc_step_poss
 	)
 {
+	using Teuchos::rcp;
 	using Teuchos::dyn_cast;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using IterationPack::print_algorithm_step;
@@ -97,6 +98,9 @@ bool EvalNewPointStd_Step::do_step(
 
 	if(!nlp.is_initialized())
 		nlp.initialize(algo.algo_cntr().check_results());
+
+  Teuchos::VerboseObjectTempState<NLP>
+    nlpOutputTempState(rcp(&nlp,false),Teuchos::getFancyOStream(rcp(&out,false)),convertToVerbLevel(olevel));
 
 	const size_type
 		n  = nlp.n(),

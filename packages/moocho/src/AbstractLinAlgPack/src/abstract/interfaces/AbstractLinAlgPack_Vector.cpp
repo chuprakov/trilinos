@@ -42,6 +42,7 @@
 #include "RTOpPack_print_sub_vector.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 // Uncomment to ignore cache of reduction data
 //#define ALAP_VECTOR_IGNORE_CACHE_DATA
@@ -122,16 +123,18 @@ index_type Vector::nz() const
 }
 
 std::ostream& Vector::output(
-	std::ostream& out, bool print_dim , bool newline
+	std::ostream& out_arg, bool print_dim , bool newline
 	,index_type global_offset
 	) const
 {
+  Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::getFancyOStream(Teuchos::rcp(&out_arg,false));
+  Teuchos::OSTab tab(out);
 	RTOpPack::SubVector sub_vec;
 	this->get_sub_vector( Range1D(), &sub_vec );
   RTOpPack::SubVector sub_vec_print( sub_vec.globalOffset() + global_offset, sub_vec.subDim(), sub_vec.values(), sub_vec.stride() );
-	RTOpPack::output(out,sub_vec_print,print_dim,newline);
+	RTOpPack::output(*out,sub_vec_print,print_dim,newline);
 	this->free_sub_vector( &sub_vec );
-	return out;
+	return out_arg;
 }
 
 VectorMutable::vec_mut_ptr_t Vector::clone() const

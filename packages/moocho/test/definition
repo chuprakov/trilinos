@@ -353,6 +353,12 @@
     COMM = SERIAL, MPI(1);
 }
 
+(FRAMEWORK,INSTALL,MOOCHOBELOSP2) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.9x9.2 --use-first-order --lowsf=belos --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-6\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}";
+    COMM = MPI(2);
+}
+
 #
 # --do-opt
 #
@@ -450,4 +456,13 @@
     --lowsf-extra-params="<ParameterList><Parameter name=\"Default Rel Res Norm\" type=\"double\" value=\"1e-04\"/><Parameter name=\"Block Size\" type=\"int\" value=\"100\"/></ParameterList>" \
     --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,feas_tol=1e-3\,max_iter=9\,journal_output_level=PRINT_ALGORITHM_STEPS\}:DecompositionSystemStateStepBuilderStd\{range_space_matrix=ORTHOGONAL\}:NLPAlgoConfigMamaJama\{line_search_method=FILTER\}";
     COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK,INSTALL,MOOCHOBELOSP2) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-opt --use-direct --np=2 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.9x9.2 \ 
+    --use-first-order --lowsf=belos \ 
+    --lowsf-extra-params="<ParameterList><Parameter name=\"Block Size\" type=\"int\" value=\"1\"/></ParameterList>" \ 
+    --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-4\,feas_tol=1e-8\,max_iter=12\,journal_output_level=PRINT_NOTHING\}";
+    COMM = MPI(2);
 }

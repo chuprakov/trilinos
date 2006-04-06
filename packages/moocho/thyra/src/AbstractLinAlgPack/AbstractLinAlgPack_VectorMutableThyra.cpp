@@ -125,7 +125,7 @@ void VectorMutableThyra::apply_op(
 		,num_vecs,      num_vecs      ? &thyra_vecs[0]      : NULL
 		,num_targ_vecs, num_targ_vecs ? &targ_thyra_vecs[0] : NULL
 		,reduct_obj
-		,first_ele,sub_dim,global_offset
+		,first_ele-1,sub_dim,global_offset
 		);
 	// Free/commit the Thyra vector views
 	for(int k = 0; k < num_vecs; ++k ) {
