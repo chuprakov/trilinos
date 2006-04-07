@@ -31,6 +31,38 @@
 #  include "Teuchos_XMLParameterListWriter.hpp"
 #endif
 
+namespace {
+
+Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+readVectorFromFile(
+  const std::string                                                   &fileName
+  ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >  &vs
+  )
+{
+  std::ifstream in_file(fileName.c_str());
+  TEST_FOR_EXCEPTION(
+    in_file.eof(), std::logic_error
+    ,"Error, the file \""<<fileName<<"\" could not be opened for input!"
+    );
+  Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+    vec = Thyra::createMember(vs);
+  Thyra::MultiVectorSerialization<double> mvSerializer;
+  mvSerializer.unserialize(in_file,&*vec);
+  return vec;
+}
+
+void writeVectorToFile(
+  const Thyra::VectorBase<double>    &vec
+  ,const std::string                 &fileName
+  )
+{
+  std::ofstream out_file(fileName.c_str());
+  Thyra::MultiVectorSerialization<double> mvSerializer;
+  mvSerializer.serialize(vec,out_file);
+}
+
+} // namespace
+
 enum ELOWSFactoryType {
   LOWSF_AMESOS
 #ifdef HAVE_AZTECOO_THYRA
@@ -222,23 +254,23 @@ int main( int argc, char* argv[] )
         Teuchos::FileInputSource xmlFile(lowsfParamsFile);
         Teuchos::XMLObject xmlParams = xmlFile.getObject();
         lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
-        *out << "\nLOWSF parameters read from the file \""<<lowsfParamsFile<<"\":\n";
-        lowsfPL->print(*OSTab(out).getOStream(),0,true);
+        *journalOut << "\nLOWSF parameters read from the file \""<<lowsfParamsFile<<"\":\n";
+        lowsfPL->print(*OSTab(journalOut).getOStream(),0,true);
       }
       if(lowsfExtraParams.length()) {
         Teuchos::StringInputSource xmlStr(lowsfExtraParams);
         Teuchos::XMLObject xmlParams = xmlStr.getObject();
         lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
-        *out << "\nExtra LOWSF parameters taken from the command-line:\n";
-        lowsfPL->print(*OSTab(out).getOStream(),0,true);
+        *journalOut << "\nExtra LOWSF parameters taken from the command-line:\n";
+        lowsfPL->print(*OSTab(journalOut).getOStream(),0,true);
       }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
       lowsFactory->setParameterList(lowsfPL);
-      *out << "\nList of all valid LOWSF parameters:\n";
-      OSTab tab(out);
-      *out << lowsFactory->getValidParameters()->name() << " ->\n";
+      *journalOut << "\nList of all valid LOWSF parameters:\n";
+      OSTab tab(journalOut);
+      *journalOut << lowsFactory->getValidParameters()->name() << " ->\n";
       tab.incrTab();
-      lowsFactory->getValidParameters()->print(*out,0,true);
+      lowsFactory->getValidParameters()->print(*journalOut,0,true);
     }
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
@@ -249,33 +281,23 @@ int main( int argc, char* argv[] )
 
     if(matchingVecFile != "") {
       *out << "\nRead the matching vector \'q\' from the file \""<<matchingVecFile<<"\" ...\n";
-      std::ifstream in_file(matchingVecFile.c_str());
-      Thyra::MultiVectorSerialization<double> mvSerializer;
-      Teuchos::RefCountPtr<Thyra::VectorBase<double> >
-        q = Thyra::createMember(thyraModel.get_x_space());
-      mvSerializer.unserialize(in_file,&*q);
-      epetraModel.set_q(Thyra::get_Epetra_Vector(*epetraModel.get_x_map(),q));
+      epetraModel.set_q(
+        Thyra::get_Epetra_Vector(
+          *epetraModel.get_x_map(),readVectorFromFile(matchingVecFile,thyraModel.get_x_space()
+            )
+          )
+        );
     }
     
     if(1) {
       Thyra::ModelEvaluatorBase::InArgs<double> thyraModel_initialGuess = thyraModel.createInArgs();
       if(stateGuessFile != "") {
         *out << "\nRead the guess of the state \'x\' from the file \""<<stateGuessFile<<"\" ...\n";
-        std::ifstream in_file(stateGuessFile.c_str());
-        Thyra::MultiVectorSerialization<double> mvSerializer;
-        Teuchos::RefCountPtr<Thyra::VectorBase<double> >
-          x_init = Thyra::createMember(thyraModel.get_x_space());
-        mvSerializer.unserialize(in_file,&*x_init);
-        thyraModel_initialGuess.set_x(x_init);
+        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFile,thyraModel.get_x_space()));
       }
       if(paramGuessFile != "") {
         *out << "\nRead the guess of the parameters \'p\' from the file \""<<paramGuessFile<<"\" ...\n";
-        std::ifstream in_file(paramGuessFile.c_str());
-        Thyra::MultiVectorSerialization<double> mvSerializer;
-        Teuchos::RefCountPtr<Thyra::VectorBase<double> >
-          p_init = Thyra::createMember(thyraModel.get_p_space(0));
-        mvSerializer.unserialize(in_file,&*p_init);
-        thyraModel_initialGuess.set_p(0,p_init);
+        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFile,thyraModel.get_p_space(0)));
       }
       thyraModel.setInitialGuess(thyraModel_initialGuess);
     }
@@ -325,15 +347,11 @@ int main( int argc, char* argv[] )
 
     if(stateSoluFile != "") {
       *out << "\nWriting the state solution \'x\' to the file \""<<stateSoluFile<<"\" ...\n";
-      std::ofstream out_file(stateSoluFile.c_str());
-      Thyra::MultiVectorSerialization<double> mvSerializer;
-      mvSerializer.serialize(*thyraModel.getFinalPoint().get_x(),out_file);
+      writeVectorToFile(*thyraModel.getFinalPoint().get_x(),stateSoluFile);
     }
     if( paramSoluFile != "" ) {
       *out << "\nWriting the parameter solution \'p\' to the file \""<<paramSoluFile<<"\" ...\n";
-      std::ofstream out_file(paramSoluFile.c_str());
-      Thyra::MultiVectorSerialization<double> mvSerializer;
-      mvSerializer.serialize(*thyraModel.getFinalPoint().get_p(0),out_file);
+      writeVectorToFile(*thyraModel.getFinalPoint().get_p(0),paramSoluFile);
     }
 		
 		//
