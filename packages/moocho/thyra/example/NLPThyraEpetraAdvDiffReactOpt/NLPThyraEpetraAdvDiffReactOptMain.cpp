@@ -33,12 +33,32 @@
 
 namespace {
 
+const int maxProcOrder = 4; // Good for 9,999 processors!
+
+std::string getParallelFileName( const std::string &fileNameBase )
+{
+  std::ostringstream parallelFileName;
+  parallelFileName
+    << fileNameBase
+    << "."
+    << std::setfill('0')
+    << std::right << std::setw(maxProcOrder)
+    << Teuchos::GlobalMPISession::getNProc()
+    << "."
+    << std::setfill('0')
+    << std::right << std::setw(maxProcOrder)
+    << Teuchos::GlobalMPISession::getRank()
+    ;
+  return parallelFileName.str();
+}
+
 Teuchos::RefCountPtr<Thyra::VectorBase<double> >
 readVectorFromFile(
-  const std::string                                                   &fileName
+  const std::string                                                   &fileNameBase
   ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >  &vs
   )
 {
+  const std::string fileName = getParallelFileName(fileNameBase);
   std::ifstream in_file(fileName.c_str());
   TEST_FOR_EXCEPTION(
     in_file.eof(), std::logic_error
@@ -53,15 +73,14 @@ readVectorFromFile(
 
 void writeVectorToFile(
   const Thyra::VectorBase<double>    &vec
-  ,const std::string                 &fileName
+  ,const std::string                 &fileNameBase
   )
 {
+  const std::string fileName = getParallelFileName(fileNameBase);
   std::ofstream out_file(fileName.c_str());
   Thyra::MultiVectorSerialization<double> mvSerializer;
   mvSerializer.serialize(vec,out_file);
 }
-
-} // namespace
 
 enum ELOWSFactoryType {
   LOWSF_AMESOS
@@ -83,6 +102,8 @@ const int numLOWSFactoryTypes =
 #endif
 ;
 
+} // namespace
+
 int main( int argc, char* argv[] )
 {
 	using Teuchos::rcp;
@@ -96,6 +117,9 @@ int main( int argc, char* argv[] )
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
+  const int procRank = mpiSession.getRank();
+  const int numProcs = mpiSession.getNProc();
+  
   bool dummySuccess = true;
 
   Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -140,15 +164,16 @@ int main( int argc, char* argv[] )
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
     std::string         lowsfParamsFile = "";
     std::string         lowsfExtraParams = "";
+    std::string         lowsfParamsUsedFile = "";
 #endif
     bool                usePrec         = true;
     bool                printOnAllProcs = true;
     bool                dump_all        = false;
     std::string         matchingVecFile = "";
-    std::string         stateGuessFile  = "";
-    std::string         paramGuessFile  = "";
-    std::string         stateSoluFile   = "";
-    std::string         paramSoluFile   = "";
+    std::string         stateGuessFileBase  = "";
+    std::string         paramGuessFileBase  = "";
+    std::string         stateSoluFileBase   = "";
+    std::string         paramSoluFileBase   = "";
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
@@ -166,15 +191,16 @@ int main( int argc, char* argv[] )
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
 		clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
+		clp.setOption( "lowf-params-used-file", &lowsfParamsUsedFile, "File to write the LOWSF parameters that where actually used to." );
 #endif
 		clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
-		clp.setOption( "q-vec-file", &matchingVecFile, "File to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
-		clp.setOption( "x-guess-file", &stateGuessFile, "File to read the guess of the state x from." );
-		clp.setOption( "p-guess-file", &paramGuessFile, "File to read the guess of the parameters p from." );
-		clp.setOption( "x-solu-file", &stateSoluFile, "File to write the state solution x to." );
-		clp.setOption( "p-solu-file", &paramSoluFile, "File to write the parameter solution p to." );
+		clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
+		clp.setOption( "x-guess-file", &stateGuessFileBase, "Base file name to read the guess of the state x from." );
+		clp.setOption( "p-guess-file", &paramGuessFileBase, "Base file name to read the guess of the parameters p from." );
+		clp.setOption( "x-solu-file", &stateSoluFileBase, "Base file name to write the state solution x to." );
+		clp.setOption( "p-solu-file", &paramSoluFileBase, "Base file name to write the parameter solution p to." );
     solver.setup_commandline_processor(&clp);
 
 		CommandLineProcessor::EParseCommandLineReturn
@@ -280,7 +306,7 @@ int main( int argc, char* argv[] )
     thyraModel.initialize(Teuchos::rcp(&epetraModel,false),lowsFactory);
 
     if(matchingVecFile != "") {
-      *out << "\nRead the matching vector \'q\' from the file \""<<matchingVecFile<<"\" ...\n";
+      *out << "\nReading the matching vector \'q\' from the file(s) with base name \""<<matchingVecFile<<"\" ...\n";
       epetraModel.set_q(
         Thyra::get_Epetra_Vector(
           *epetraModel.get_x_map(),readVectorFromFile(matchingVecFile,thyraModel.get_x_space()
@@ -291,13 +317,13 @@ int main( int argc, char* argv[] )
     
     if(1) {
       Thyra::ModelEvaluatorBase::InArgs<double> thyraModel_initialGuess = thyraModel.createInArgs();
-      if(stateGuessFile != "") {
-        *out << "\nRead the guess of the state \'x\' from the file \""<<stateGuessFile<<"\" ...\n";
-        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFile,thyraModel.get_x_space()));
+      if(stateGuessFileBase != "") {
+        *out << "\nReading the guess of the state \'x\' from the file(s) with base name \""<<stateGuessFileBase<<"\" ...\n";
+        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,thyraModel.get_x_space()));
       }
-      if(paramGuessFile != "") {
-        *out << "\nRead the guess of the parameters \'p\' from the file \""<<paramGuessFile<<"\" ...\n";
-        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFile,thyraModel.get_p_space(0)));
+      if(paramGuessFileBase != "") {
+        *out << "\nReading the guess of the parameters \'p\' from the file(s) with base name \""<<paramGuessFileBase<<"\" ...\n";
+        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFileBase,thyraModel.get_p_space(0)));
       }
       thyraModel.setInitialGuess(thyraModel_initialGuess);
     }
@@ -335,24 +361,24 @@ int main( int argc, char* argv[] )
 		// Solve the NLP
 		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
 
+    if(stateSoluFileBase != "") {
+      *out << "\nWriting the state solution \'x\' to the file(s) with base name \""<<stateSoluFileBase<<"\" ...\n";
+      writeVectorToFile(*thyraModel.getFinalPoint().get_x(),stateSoluFileBase);
+    }
+    if( paramSoluFileBase != "" ) {
+      *out << "\nWriting the parameter solution \'p\' to the file(s) with base name \""<<paramSoluFileBase<<"\" ...\n";
+      writeVectorToFile(*thyraModel.getFinalPoint().get_p(0),paramSoluFileBase);
+    }
+
     // Write the LOWSF parameters that were used:
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-    if(1) {
+    if(lowsfParamsUsedFile != "" && procRank == 0) {
       Teuchos::XMLParameterListWriter plWriter;
       Teuchos::XMLObject xml = plWriter.toXML(*lowsfPL);
-      std::ofstream of("lowsfParams.used.xml");
+      std::ofstream of(lowsfParamsUsedFile.c_str());
       of << xml << std::endl;
     }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-
-    if(stateSoluFile != "") {
-      *out << "\nWriting the state solution \'x\' to the file \""<<stateSoluFile<<"\" ...\n";
-      writeVectorToFile(*thyraModel.getFinalPoint().get_x(),stateSoluFile);
-    }
-    if( paramSoluFile != "" ) {
-      *out << "\nWriting the parameter solution \'p\' to the file \""<<paramSoluFile<<"\" ...\n";
-      writeVectorToFile(*thyraModel.getFinalPoint().get_p(0),paramSoluFile);
-    }
 		
 		//
 		// Return the solution status (0 if sucessfull)
