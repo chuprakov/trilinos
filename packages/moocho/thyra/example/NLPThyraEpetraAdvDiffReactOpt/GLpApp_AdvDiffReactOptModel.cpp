@@ -112,7 +112,16 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   //if(dumpAll) { *out << "\nNpy =\n"; {  Teuchos::OSTab tab(out); dat_->getNpy()->Print(*out); } }
   W_graph_ = Teuchos::rcp(new Epetra_CrsGraph(dat_->getA()->Graph())); // Assume A and Npy have same graph!
   //
+  // Get default objective matching vector q
+  //
+  q_ = Teuchos::rcp(new Epetra_Vector(*(*dat_->getq())(0))); // From Epetra_FEVector to Epetra_Vector!
+  //
   isInitialized_ = true;
+}
+
+void AdvDiffReactOptModel::set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q )
+{
+  q_ = q;
 }
 
 // Overridden from EpetraExt::ModelEvaluator
@@ -328,7 +337,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     Epetra_Vector &g = *g_out;
     Epetra_Vector xq(x);
-    xq.Update(-1.0, *dat_->getq(), 1.0);
+    xq.Update(-1.0, *q_, 1.0);
     Epetra_Vector Hxq(x);
     dat_->getH()->Multiply(false,xq,Hxq);
     g[0] = 0.5*dot(xq,Hxq) + 0.5*dat_->getbeta()*dot(*p_bar,*R_p_bar);
@@ -446,7 +455,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     Epetra_Vector &DgDx_trans = *(*DgDx_trans_out)(0);
     Epetra_Vector xq(x);
-    xq.Update(-1.0,*dat_->getq(),1.0);
+    xq.Update(-1.0,*q_,1.0);
     dat_->getH()->Multiply(false,xq,DgDx_trans);
   }
   if(DgDp_trans_out) {

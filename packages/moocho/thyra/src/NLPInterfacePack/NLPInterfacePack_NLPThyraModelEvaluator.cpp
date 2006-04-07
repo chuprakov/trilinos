@@ -149,9 +149,28 @@ void NLPThyraModelEvaluator::report_final_solution(
 	,bool            optimal
 	)
 {
-  // ToDo: Do something with this stuff like save it as local data or write it
-  // to a file!  Or, add a function to ModelEvaluator that accepts a final
-  // point.
+  using Teuchos::dyn_cast;
+  using Teuchos::RefCountPtr;
+  typedef Thyra::ModelEvaluatorBase MEB;
+  using AbstractLinAlgPack::VectorMutableThyra;
+  MEB::InArgs<value_type> model_finalPoint = model_->createInArgs();
+	if( basis_sys_.get() ) {
+		const Range1D
+			var_dep   = basis_sys_->var_dep(),
+			var_indep = basis_sys_->var_indep();
+		RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
+		if(p_idx_>=0) xI = x.sub_view(var_indep);
+    model_finalPoint.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec());
+		if(p_idx_ >= 0)
+      model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec());
+    else if( model_finalPoint.Np() >= 1 )
+      model_finalPoint.set_p(0,model_->get_p_init(0));
+  }
+	else { // no dependent vars
+    TEST_FOR_EXCEPT(p_idx_<0);
+    model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec());
+	}
+  model_->reportFinalPoint(model_finalPoint,optimal);
 }
 
 // Overridden public members from NLPObjGrad

@@ -3,6 +3,7 @@
 #include "NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp"
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
+#include "Thyra_MultiVectorSerialization.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
@@ -111,6 +112,11 @@ int main( int argc, char* argv[] )
     bool                usePrec         = true;
     bool                printOnAllProcs = true;
     bool                dump_all        = false;
+    std::string         matchingVecFile = "";
+    std::string         stateGuessFile  = "";
+    std::string         paramGuessFile  = "";
+    std::string         stateSoluFile   = "";
+    std::string         paramSoluFile   = "";
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
@@ -132,6 +138,11 @@ int main( int argc, char* argv[] )
 		clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
+		clp.setOption( "q-vec-file", &matchingVecFile, "File to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
+		clp.setOption( "x-guess-file", &stateGuessFile, "File to read the guess of the state x from." );
+		clp.setOption( "p-guess-file", &paramGuessFile, "File to read the guess of the parameters p from." );
+		clp.setOption( "x-solu-file", &stateSoluFile, "File to write the state solution x to." );
+		clp.setOption( "p-solu-file", &paramSoluFile, "File to write the parameter solution p to." );
     solver.setup_commandline_processor(&clp);
 
 		CommandLineProcessor::EParseCommandLineReturn
@@ -235,6 +246,39 @@ int main( int argc, char* argv[] )
     Thyra::EpetraModelEvaluator thyraModel; // Sets default options!
     thyraModel.setOStream(journalOut);
     thyraModel.initialize(Teuchos::rcp(&epetraModel,false),lowsFactory);
+
+    if(matchingVecFile != "") {
+      *out << "\nRead the matching vector \'q\' from the file \""<<matchingVecFile<<"\" ...\n";
+      std::ifstream in_file(matchingVecFile.c_str());
+      Thyra::MultiVectorSerialization<double> mvSerializer;
+      Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+        q = Thyra::createMember(thyraModel.get_x_space());
+      mvSerializer.unserialize(in_file,&*q);
+      epetraModel.set_q(Thyra::get_Epetra_Vector(*epetraModel.get_x_map(),q));
+    }
+    
+    if(1) {
+      Thyra::ModelEvaluatorBase::InArgs<double> thyraModel_initialGuess = thyraModel.createInArgs();
+      if(stateGuessFile != "") {
+        *out << "\nRead the guess of the state \'x\' from the file \""<<stateGuessFile<<"\" ...\n";
+        std::ifstream in_file(stateGuessFile.c_str());
+        Thyra::MultiVectorSerialization<double> mvSerializer;
+        Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+          x_init = Thyra::createMember(thyraModel.get_x_space());
+        mvSerializer.unserialize(in_file,&*x_init);
+        thyraModel_initialGuess.set_x(x_init);
+      }
+      if(paramGuessFile != "") {
+        *out << "\nRead the guess of the parameters \'p\' from the file \""<<paramGuessFile<<"\" ...\n";
+        std::ifstream in_file(paramGuessFile.c_str());
+        Thyra::MultiVectorSerialization<double> mvSerializer;
+        Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+          p_init = Thyra::createMember(thyraModel.get_p_space(0));
+        mvSerializer.unserialize(in_file,&*p_init);
+        thyraModel_initialGuess.set_p(0,p_init);
+      }
+      thyraModel.setInitialGuess(thyraModel_initialGuess);
+    }
     
     Teuchos::RefCountPtr<NLP> nlp;
     if(use_direct) {
@@ -262,17 +306,6 @@ int main( int argc, char* argv[] )
 
     // Set the journal file
     solver.set_journal_out(journalOut);
-
-/*    
-    // Create the initial options group that will be overridden
-    if(1) {
-      Teuchos::RefCountPtr<OptionsFromStreamPack::OptionsFromStream>
-        moochoOptions = Teuchos::rcp(new OptionsFromStreamPack::OptionsFromStream());
-      std::istringstream iss("DecompositionSystemStateStepBuilderStd{range_space_matrix=ORTHOGONAL}");
-      moochoOptions->read_options(iss);
-      solver.set_options(moochoOptions);
-    }
-*/
     
 		// Set the NLP
 		solver.set_nlp(nlp);
@@ -289,6 +322,19 @@ int main( int argc, char* argv[] )
       of << xml << std::endl;
     }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+
+    if(stateSoluFile != "") {
+      *out << "\nWriting the state solution \'x\' to the file \""<<stateSoluFile<<"\" ...\n";
+      std::ofstream out_file(stateSoluFile.c_str());
+      Thyra::MultiVectorSerialization<double> mvSerializer;
+      mvSerializer.serialize(*thyraModel.getFinalPoint().get_x(),out_file);
+    }
+    if( paramSoluFile != "" ) {
+      *out << "\nWriting the parameter solution \'p\' to the file \""<<paramSoluFile<<"\" ...\n";
+      std::ofstream out_file(paramSoluFile.c_str());
+      Thyra::MultiVectorSerialization<double> mvSerializer;
+      mvSerializer.serialize(*thyraModel.getFinalPoint().get_p(0),out_file);
+    }
 		
 		//
 		// Return the solution status (0 if sucessfull)

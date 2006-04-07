@@ -21,7 +21,7 @@ class AdvDiffReactOptModel
 {
 public:
 
-  // Constructor
+  /** \brief Constructor. */
   AdvDiffReactOptModel(
     Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
     ,const int                                                 np           = -1
@@ -29,6 +29,9 @@ public:
     ,const double                                              p0           = 1.0
     ,const double                                              reactionRate = 1.0
     );
+
+  /** \brief . */
+  void set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q );
 
   /** \name Overridden from EpetraExt::ModelEvaluator . */
   //@{
@@ -76,6 +79,7 @@ private:
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   dat_;
   int                                                 np_;
   double                                              reactionRate_;
+	Teuchos::RefCountPtr<Epetra_Vector>                 q_;
 
 	Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
 	Teuchos::RefCountPtr<Epetra_MultiVector>            B_bar_;
