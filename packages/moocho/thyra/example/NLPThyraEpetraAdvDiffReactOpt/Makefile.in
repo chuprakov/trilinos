@@ -94,7 +94,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt$(EXEEXT)
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraAdvDiffReactOpt
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -125,6 +125,7 @@ am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
 	meshreader.$(OBJEXT) nonlinhessvec.$(OBJEXT) \
 	nonlinjac.$(OBJEXT) nonlinvec.$(OBJEXT) print2MATLAB.$(OBJEXT) \
 	quadrature.$(OBJEXT) usr_par.$(OBJEXT) \
+	rect2DMeshGenerator.$(OBJEXT) \
 	NLPThyraEpetraAdvDiffReactOptMain.$(OBJEXT)
 NLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
 	$(am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS)
@@ -147,7 +148,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/nonlinhessvec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/nonlinjac.Po ./$(DEPDIR)/nonlinvec.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/print2MATLAB.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/quadrature.Po ./$(DEPDIR)/usr_par.Po
+@AMDEP_TRUE@	./$(DEPDIR)/quadrature.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rect2DMeshGenerator.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/usr_par.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -307,6 +310,7 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/print2MATLAB.cpp\
   $(srcdir)/quadrature.cpp\
   $(srcdir)/usr_par.cpp\
+  $(srcdir)/rect2DMeshGenerator.cpp\
   $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 
 
@@ -383,6 +387,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonlinvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print2MATLAB.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quadrature.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect2DMeshGenerator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/usr_par.Po@am__quote@
 
 .cpp.o:
@@ -608,6 +613,22 @@ usr_par.obj: $(srcdir)/usr_par.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/usr_par.Po' tmpdepfile='$(DEPDIR)/usr_par.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o usr_par.obj `if test -f '$(srcdir)/usr_par.cpp'; then $(CYGPATH_W) '$(srcdir)/usr_par.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/usr_par.cpp'; fi`
+
+rect2DMeshGenerator.o: $(srcdir)/rect2DMeshGenerator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.o -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.o `test -f '$(srcdir)/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(srcdir)/rect2DMeshGenerator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.o `test -f '$(srcdir)/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(srcdir)/rect2DMeshGenerator.cpp
+
+rect2DMeshGenerator.obj: $(srcdir)/rect2DMeshGenerator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.obj -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.obj `if test -f '$(srcdir)/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(srcdir)/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/rect2DMeshGenerator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.obj `if test -f '$(srcdir)/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(srcdir)/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/rect2DMeshGenerator.cpp'; fi`
 
 NLPThyraEpetraAdvDiffReactOptMain.o: $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPThyraEpetraAdvDiffReactOptMain.o -MD -MP -MF "$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Tpo" -c -o NLPThyraEpetraAdvDiffReactOptMain.o `test -f '$(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp; \

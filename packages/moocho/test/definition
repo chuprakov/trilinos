@@ -359,6 +359,14 @@
     COMM = MPI(2);
 }
 
+(FRAMEWORK,INSTALL,MOOCHOBELOSP4) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --do-sim --len-x=1.0 --len-y=10.0 --local-nx=3 --local-ny=4 --reaction-rate=1e-3 \
+    --use-first-order --lowsf=belos \
+    --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-3\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}";
+    COMM = MPI(2,4);
+}
+
 #
 # --do-opt
 #
@@ -466,3 +474,12 @@
     --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-4\,feas_tol=1e-8\,max_iter=12\,journal_output_level=PRINT_NOTHING\}";
     COMM = MPI(2);
 }
+
+#(FRAMEWORK,INSTALL,MOOCHOBELOSP4) {
+#    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
+#    ARGS = --len-x=1.0 --len-y=10.0 --local-nx=3 --local-ny=4 --reaction-rate=1e-3 \
+#    --do-opt --use-direct --beta=0.0 --lowsf=belos --q-vec-file=x_solu.out \
+#    --moocho-extra-options="MoochoSolver\{test_nlp=false\}:NLPSolverClientInterface\{opt_tol=1e-3\,feas_tol=1e-8\,max_iter=11\,journal_output_level=PRINT_NOTHING\}";
+#    COMM = MPI(2,4);
+#}
+

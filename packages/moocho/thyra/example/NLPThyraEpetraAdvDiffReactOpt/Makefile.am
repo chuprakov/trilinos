@@ -42,6 +42,7 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/print2MATLAB.cpp\
   $(srcdir)/quadrature.cpp\
   $(srcdir)/usr_par.cpp\
+  $(srcdir)/rect2DMeshGenerator.cpp\
   $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 
 #NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files

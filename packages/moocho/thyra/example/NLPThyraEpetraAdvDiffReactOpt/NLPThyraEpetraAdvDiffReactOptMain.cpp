@@ -4,6 +4,7 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "Thyra_MultiVectorSerialization.hpp"
+#include "Thyra_VectorStdOps.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
@@ -56,6 +57,7 @@ Teuchos::RefCountPtr<Thyra::VectorBase<double> >
 readVectorFromFile(
   const std::string                                                   &fileNameBase
   ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >  &vs
+  ,const double                                                       scaleBy = 0.0
   )
 {
   const std::string fileName = getParallelFileName(fileNameBase);
@@ -68,6 +70,7 @@ readVectorFromFile(
     vec = Thyra::createMember(vs);
   Thyra::MultiVectorSerialization<double> mvSerializer;
   mvSerializer.unserialize(in_file,&*vec);
+  Thyra::Vt_S(&*vec,scaleBy);
   return vec;
 }
 
@@ -115,7 +118,7 @@ int main( int argc, char* argv[] )
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
-  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv,NULL);
 
   const int procRank = mpiSession.getRank();
   const int numProcs = mpiSession.getNProc();
@@ -152,6 +155,10 @@ int main( int argc, char* argv[] )
 #endif
     };
 
+    double              len_x           = 1.0;
+    double              len_y           = 1.0;
+    int                 local_nx        = 3;
+    int                 local_ny        = 4;
     std::string         geomFileBase    = "";
     int                 np              = -1;
     double              beta            = 1.0;
@@ -171,13 +178,19 @@ int main( int argc, char* argv[] )
     bool                dump_all        = false;
     std::string         matchingVecFile = "";
     std::string         stateGuessFileBase  = "";
+    double              scaleStateGuess     = 1.0;
     std::string         paramGuessFileBase  = "";
+    double              scaleParamGuess     = 1.0;
     std::string         stateSoluFileBase   = "";
     std::string         paramSoluFileBase   = "";
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
-		clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file." );
+		clp.setOption( "len-x", &len_x, "Mesh dimension in the x direction (Overridden by --geom-file-base)." );
+		clp.setOption( "len-y", &len_y, "Mesh dimension in the y direction (Overridden by --geom-file-base)." );
+		clp.setOption( "local-nx", &local_nx, "Number of local discretization segments in the x direction (Overridden by --geom-file-base)." );
+		clp.setOption( "local-ny", &local_ny, "Number of local discretization segments in the y direction (Overridden by --geom-file-base)." );
+		clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file to read the mesh from." );
 		clp.setOption( "np", &np, "The number of optimization parameters (If < 0 then all of boundary is used)" );
 		clp.setOption( "beta", &beta, "Regularization." );
 		clp.setOption( "x0", &x0, "Initial guess for the state." );
@@ -191,14 +204,16 @@ int main( int argc, char* argv[] )
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
 		clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
-		clp.setOption( "lowf-params-used-file", &lowsfParamsUsedFile, "File to write the LOWSF parameters that where actually used to." );
+		clp.setOption( "lowsf-params-used-file", &lowsfParamsUsedFile, "File to write the LOWSF parameters that where actually used to." );
 #endif
 		clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
 		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
 		clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
 		clp.setOption( "x-guess-file", &stateGuessFileBase, "Base file name to read the guess of the state x from." );
+		clp.setOption( "scale-x-guess", &scaleStateGuess, "Amount to scale the guess for x read in by --x-guess-file." );
 		clp.setOption( "p-guess-file", &paramGuessFileBase, "Base file name to read the guess of the parameters p from." );
+		clp.setOption( "scale-p-guess", &scaleParamGuess, "Amount to scale the guess for p read in by --p-guess-file." );
 		clp.setOption( "x-solu-file", &stateSoluFileBase, "Base file name to write the state solution x to." );
 		clp.setOption( "p-solu-file", &paramSoluFileBase, "Base file name to write the parameter solution p to." );
     solver.setup_commandline_processor(&clp);
@@ -208,8 +223,6 @@ int main( int argc, char* argv[] )
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
-
-    TEST_FOR_EXCEPTION(geomFileBase=="",std::logic_error,"Error, you must specify a geometry file as --geom-file-base=???, see --help");
 
     //
     // Setup the output streams
@@ -223,6 +236,12 @@ int main( int argc, char* argv[] )
           )
         );
     journalOut->copyAllOutputOptions(*out);
+
+    *out
+      << "\n***"
+      << "\n*** NLPThyraEpetraAdvDiffReactOptMain, numProcs="<<numProcs
+      << "\n***\n";
+
     
 		//
 		// Create the NLP
@@ -236,7 +255,7 @@ int main( int argc, char* argv[] )
     Epetra_SerialComm comm;
 #endif
 
-    GLpApp::GLpYUEpetraDataPool dat(Teuchos::rcp(&comm,false),beta,geomFileBase.c_str(),false);
+    GLpApp::GLpYUEpetraDataPool dat(Teuchos::rcp(&comm,false),beta,len_x,len_y,local_nx,local_ny,geomFileBase.c_str(),false);
 
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
@@ -319,11 +338,11 @@ int main( int argc, char* argv[] )
       Thyra::ModelEvaluatorBase::InArgs<double> thyraModel_initialGuess = thyraModel.createInArgs();
       if(stateGuessFileBase != "") {
         *out << "\nReading the guess of the state \'x\' from the file(s) with base name \""<<stateGuessFileBase<<"\" ...\n";
-        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,thyraModel.get_x_space()));
+        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,thyraModel.get_x_space(),scaleStateGuess));
       }
       if(paramGuessFileBase != "") {
         *out << "\nReading the guess of the parameters \'p\' from the file(s) with base name \""<<paramGuessFileBase<<"\" ...\n";
-        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFileBase,thyraModel.get_p_space(0)));
+        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFileBase,thyraModel.get_p_space(0),scaleParamGuess));
       }
       thyraModel.setInitialGuess(thyraModel_initialGuess);
     }

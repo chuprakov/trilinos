@@ -9,14 +9,26 @@
 #include "EpetraExt_MatrixMatrix.h"
 #include "EpetraExt_Transpose_RowMatrix.h"
 //#include "GLpApp_SchurOp.hpp"
+#include "rect2DMeshGenerator.hpp"
+#include "Teuchos_VerboseObject.hpp"
+
+// Define to see all debug output for mesh generation
+//#define GLPYUEPETRA_DATAPOOL_DUMP_ALL_MESH
 
 namespace GLpApp {
 
 GLpYUEpetraDataPool::GLpYUEpetraDataPool(
-  Teuchos::RefCountPtr<const Epetra_Comm> const& commptr, double beta, const char myfile[], const bool trace
+  Teuchos::RefCountPtr<const Epetra_Comm>    const& commptr
+  ,const double                              beta
+  ,const double                              len_x
+  ,const double                              len_y
+  ,const int                                 local_nx
+  ,const int                                 local_ny
+  ,const char                                myfile[]
+  ,const bool                                trace
   )
-  : commptr_(commptr),
-    beta_(beta)
+  :commptr_(commptr)
+  ,beta_(beta)
 {
   ipcoords_ = Teuchos::rcp( new Epetra_SerialDenseMatrix() );
   ipindx_ = Teuchos::rcp( new Epetra_IntSerialDenseVector() );
@@ -24,9 +36,22 @@ GLpYUEpetraDataPool::GLpYUEpetraDataPool(
   pindx_ = Teuchos::rcp( new Epetra_IntSerialDenseVector() );
   t_ = Teuchos::rcp( new Epetra_IntSerialDenseMatrix() );
   e_ = Teuchos::rcp( new Epetra_IntSerialDenseMatrix() );
-  
-  // Read subdomain info.
-  meshreader(*commptr_, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, myfile, trace);
+
+  if( myfile && myfile[0] != '\0' ) {
+    meshreader(*commptr_,*ipindx_,*ipcoords_,*pindx_,*pcoords_,*t_,*e_,myfile,trace);
+  }
+  else {
+    rect2DMeshGenerator(
+      commptr_->NumProc(),commptr_->MyPID()
+      ,len_x,len_y,local_nx,local_ny,2 // 2==Neuman boundary conditions!
+      ,&*ipindx_,&*ipcoords_,&*pindx_,&*pcoords_,&*t_,&*e_
+#ifdef GLPYUEPETRA_DATAPOOL_DUMP_ALL_MESH
+      ,&*Teuchos::VerboseObjectBase::getDefaultOStream(),true
+#else
+      ,NULL,false
+#endif
+      );
+  }
 
   // Assemble volume and boundary mass and stiffness matrices, and the right-hand side of the PDE.
   assemble(*commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, A_, H_, b_);
