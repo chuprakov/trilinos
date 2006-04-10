@@ -54,8 +54,8 @@ GLpYUEpetraDataPool::GLpYUEpetraDataPool(
   }
 
   // Assemble volume and boundary mass and stiffness matrices, and the right-hand side of the PDE.
-  assemble(*commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, A_, H_, b_);
-  assemble_bdry(*commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, B_, R_);
+  assemble( *commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, A_, H_, b_ );
+  assemble_bdry( *commptr, *ipindx_, *ipcoords_, *pindx_, *pcoords_, *t_, *e_, &B_, &R_ );
 
   // Set desired state q.
   Epetra_Map standardmap(A_->DomainMap());

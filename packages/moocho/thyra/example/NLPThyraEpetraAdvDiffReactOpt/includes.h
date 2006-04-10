@@ -78,15 +78,17 @@ int assemble(const Epetra_Comm &,
              Teuchos::RefCountPtr<Epetra_FECrsMatrix> &,
              Teuchos::RefCountPtr<Epetra_FEVector> &);
 
-int assemble_bdry(const Epetra_Comm &,
-                  const Epetra_IntSerialDenseVector &,
-                  const Epetra_SerialDenseMatrix &,
-                  const Epetra_IntSerialDenseVector &,
-                  const Epetra_SerialDenseMatrix &,
-                  const Epetra_IntSerialDenseMatrix &,
-                  const Epetra_IntSerialDenseMatrix &,
-                  Teuchos::RefCountPtr<Epetra_FECrsMatrix> &,
-                  Teuchos::RefCountPtr<Epetra_FECrsMatrix> &);
+int assemble_bdry(
+  const Epetra_Comm                                &Comm
+  ,const Epetra_IntSerialDenseVector               &ipindx
+  ,const Epetra_SerialDenseMatrix                  &ipcoords
+  ,const Epetra_IntSerialDenseVector               &pindx
+  ,const Epetra_SerialDenseMatrix                  &pcoords
+  ,const Epetra_IntSerialDenseMatrix               &t
+  ,const Epetra_IntSerialDenseMatrix               &e
+  ,Teuchos::RefCountPtr<Epetra_FECrsMatrix>        *B
+  ,Teuchos::RefCountPtr<Epetra_FECrsMatrix>        *R
+  );
 
 int nonlinvec(const Epetra_Comm &,
               const Epetra_IntSerialDenseVector &,

@@ -22,10 +22,6 @@
 #include <stdlib.h>
 #include <algorithm>
 
-using Teuchos::RefCountPtr;
-using Teuchos::rcp;
-using Teuchos::set_extra_data;
-
 class Epetra_BLAS;
 int compproduct(Epetra_SerialDenseVector &, double *, double *);
 int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
@@ -47,13 +43,13 @@ int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
                             pcoords(i,0) x-coordinate of node i, \n
                             pcoords(i,1) y-coordinate of node i.
   \param  t         [in]  - Matrix (ELE x 3) of indices of the vertices in a triangle: \n
-                            t(i,j) index of the j-th vertex in triangle i, where i = 1, ..., ELE
+                            t(i,j) index of the 0-based j-th vertex in triangle i, where i = 0, ..., numElements-1
   \param  e         [in]  - Matrix (EDGE x 3) of edges. \n
-                            e(i,1:2) contains the indices of the endpoints of edge i, where i = 1, ..., EDGE \n
+                            e(i,1:2) contains the indices of the endpoints of edge i, where i = 0, ..., numEdges-1 \n
                             e(i,3) contains the boundary marker
-  \param  B         [out] - Reference-counting pointer to the Epetra_FECrsMatrix describing the FE
+  \param  B_out     [out] - Reference-counting pointer to the Epetra_FECrsMatrix describing the FE
                             state/control face mass matrix.
-  \param  R         [out] - Reference-counting pointer to the Epetra_FECrsMatrix describing the FE
+  \param  R_out     [out] - Reference-counting pointer to the Epetra_FECrsMatrix describing the FE
                             control/control volume mass matrix.
   \return 0                 if successful.
 
@@ -73,100 +69,130 @@ int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
      where \f$\{ \mu_j \}_{j = 1}^{n}\f$ is the piecewise linear nodal basis for the finite-dimensional
      control space.
 */
-int assemble_bdry(const Epetra_Comm & Comm,
-                  const Epetra_IntSerialDenseVector & ipindx,
-                  const Epetra_SerialDenseMatrix & ipcoords,
-                  const Epetra_IntSerialDenseVector & pindx,
-                  const Epetra_SerialDenseMatrix & pcoords,
-                  const Epetra_IntSerialDenseMatrix & t,
-                  const Epetra_IntSerialDenseMatrix & e,
-                  RefCountPtr<Epetra_FECrsMatrix> & B,
-                  RefCountPtr<Epetra_FECrsMatrix> & R)
+int assemble_bdry(
+  const Epetra_Comm                                &Comm
+  ,const Epetra_IntSerialDenseVector               &ipindx
+  ,const Epetra_SerialDenseMatrix                  &ipcoords
+  ,const Epetra_IntSerialDenseVector               &pindx
+  ,const Epetra_SerialDenseMatrix                  &pcoords
+  ,const Epetra_IntSerialDenseMatrix               &t
+  ,const Epetra_IntSerialDenseMatrix               &e
+  ,Teuchos::RefCountPtr<Epetra_FECrsMatrix>        *B_out
+  ,Teuchos::RefCountPtr<Epetra_FECrsMatrix>        *R_out
+  )
 {
 
-  int myPID = Comm.MyPID();
-  int numProcs = Comm.NumProc();
-  //Usr_Par usr_par;
+  using Teuchos::rcp;
 
   int numLocElems = t.M();
   int numLocEdges = e.M();
 
   int indexBase = 1;
 
-  /* Determine ALL boundary vertices in a subdomain. */
+  //
+  // Create a sorted (by global ID) list of boundry nodes
+  //
   int * lastindx = 0;
   Epetra_IntSerialDenseVector BdryNode(2*numLocEdges);
   for (int j=0; j<numLocEdges; j++) {
     BdryNode[j] = e(j,0);
     BdryNode[j+numLocEdges] = e(j,1);
   }
-  sort(BdryNode.Values(), BdryNode.Values()+2*numLocEdges);
-  lastindx  = unique(BdryNode.Values(), BdryNode.Values()+2*numLocEdges);
+  std::sort(BdryNode.Values(), BdryNode.Values()+2*numLocEdges);
+  lastindx  = std::unique(BdryNode.Values(), BdryNode.Values()+2*numLocEdges);
   const int numBdryNodes = lastindx - BdryNode.Values();
-  BdryNode.Resize(numBdryNodes);  
+  BdryNode.Resize(numBdryNodes); // RAB: This does not overwrite?
 
-  /* Determine the boundary vertices that belong to this processor. */
+  //
+  // Determine the boundary vertices that belong to this processor.
+  //
   Epetra_IntSerialDenseVector MyBdryNode(numBdryNodes);
-  lastindx  = set_intersection(BdryNode.Values(), BdryNode.Values()+numBdryNodes,
-                               ipindx.Values(), ipindx.Values()+ipindx.M(),
-                               MyBdryNode.Values());
+  lastindx = std::set_intersection(
+    BdryNode.Values(), BdryNode.Values()+numBdryNodes,  // (Sorted) set A
+    ipindx.Values(), ipindx.Values()+ipindx.M(),        // (Sorted) set B
+    MyBdryNode.Values()                                 // Intersection
+    );
   const int numMyBdryNodes = lastindx - MyBdryNode.Values();
-  MyBdryNode.Resize(numMyBdryNodes);
-
-  /* Define data maps. */
+  MyBdryNode.Resize(numMyBdryNodes); // RAB: This does not overwrite?
+  
+  //
+  // Define the maps for the various lists
+  //
   Epetra_Map standardmap(-1, ipindx.M(), const_cast<int*>(ipindx.A()), indexBase, Comm);
   Epetra_Map overlapmap(-1, pindx.M(), const_cast<int*>(pindx.A()), indexBase, Comm);
-  Epetra_Map mybdryctrlmap(-1, MyBdryNode.M(), const_cast<int*>(MyBdryNode.A()), indexBase, Comm);
+  Epetra_Map mybdryctrlmap(-1, numMyBdryNodes, const_cast<int*>(MyBdryNode.A()), indexBase, Comm);
+  // Above, it is important to note what mybndyctrlmap represents.  It is the
+  // a sorted list of global vertex node IDS for nodes on a boundary that are
+  // uniquely owned by the local process.
 
-  const int numNodesPerEdge = 2;
-  int nodes[numNodesPerEdge];
-  int i=0, j=0, err=0;
-
-  /* Define desired matrices. */
-  B = rcp(new Epetra_FECrsMatrix(Copy, standardmap, 0));
-  R = rcp(new Epetra_FECrsMatrix(Copy, standardmap, 0));
+  //
+  // Allocate matrices to fill
+  //
+  Teuchos::RefCountPtr<Epetra_FECrsMatrix>
+    B = rcp(new Epetra_FECrsMatrix(Copy,standardmap,0)),
+    R = rcp(new Epetra_FECrsMatrix(Copy,standardmap,0));
   // NOTE: The data map is the same as for the volume matrices. Later, when
   // FillComplete is called, we will fix the proper domain and range maps. 
 
   // Declare quantities needed for the call to the local assembly routine.
-  int format = Epetra_FECrsMatrix::COLUMN_MAJOR;
-  Epetra_IntSerialDenseVector epetra_nodes(View, nodes, numNodesPerEdge);
-  Epetra_SerialDenseMatrix vertices(numNodesPerEdge, pcoords.N());
+  const int numNodesPerEdge = 2;
+  Epetra_IntSerialDenseVector epetra_nodes(numNodesPerEdge);
 
-  // Local contribution matrix.
-  Epetra_SerialDenseMatrix Bt;
+  //
+  // Load B and R by looping through the edges
+  //
 
-  for(i=0; i<numLocEdges; i++) {
-    nodes[0] = e(i,0); nodes[1] = e(i,1);
-    for (j=0; j<numNodesPerEdge; j++) {
-      vertices(j,0) = pcoords(overlapmap.LID(nodes[j]), 0);
-      vertices(j,1) = pcoords(overlapmap.LID(nodes[j]), 1);
-    }
+  Epetra_SerialDenseMatrix Bt(2,2);
+  int err=0;
+
+  for( int i=0; i < numLocEdges; i++ ) {
+
+    const int
+      global_id_0 = e(i,0),
+      global_id_1 = e(i,1),
+      local_id_0  = overlapmap.LID(global_id_0), // O(log(numip)) bindary search
+      local_id_1  = overlapmap.LID(global_id_1); // O(log(numip)) bindary search
+
+    epetra_nodes(0) = global_id_0;
+    epetra_nodes(1) = global_id_1;
+
+    const double
+      x0 = pcoords(local_id_0,0),
+      y0 = pcoords(local_id_0,1),
+      x1 = pcoords(local_id_1,0),
+      y1 = pcoords(local_id_1,1);
     
-    double l = sqrt(pow(vertices(0,0)-vertices(1,0),2) + pow(vertices(0,1)-vertices(1,1),2));
-
+    const double l = sqrt(pow(x0-x1,2) + pow(y0-y1,2));  // Length of this edge
+    
     // We have an explicit formula for Bt.
-    Bt.Reshape(2,2);
-    double sixth = 1.0/6.0;
-    Bt(0,0) = l * sixth * 2.0;
-    Bt(0,1) = l * sixth * 1.0;
-    Bt(1,0) = l * sixth * 1.0;
-    Bt(1,1) = l * sixth * 2.0;
+    const double l_sixth = l * (1.0/6.0);
+    Bt(0,0) = l_sixth * 2.0;
+    Bt(0,1) = l_sixth * 1.0;
+    Bt(1,0) = l_sixth * 1.0;
+    Bt(1,1) = l_sixth * 2.0;
 
-    err = B->InsertGlobalValues(epetra_nodes, Bt, format);
+    const int format = Epetra_FECrsMatrix::COLUMN_MAJOR;
+    err = B->InsertGlobalValues(epetra_nodes,Bt,format);
     if (err<0) return(err);
-    err = R->InsertGlobalValues(epetra_nodes, Bt, format);
+    err = R->InsertGlobalValues(epetra_nodes,Bt,format);
     if (err<0) return(err);
+    
   }
 
   err = B->GlobalAssemble(false);
+  if (err<0) return(err);
   err = R->GlobalAssemble(false);
+  if (err<0) return(err);
 
-  err = B->FillComplete(mybdryctrlmap, standardmap);
+  err = B->FillComplete(mybdryctrlmap,standardmap);
   if (err<0) return(err);
-  err = R->FillComplete(mybdryctrlmap, mybdryctrlmap);
+  err = R->FillComplete(mybdryctrlmap,mybdryctrlmap);
   if (err<0) return(err);
+
+  if(B_out) *B_out = B;
+  if(R_out) *R_out = R;
 
   return(0);
+
 }
 

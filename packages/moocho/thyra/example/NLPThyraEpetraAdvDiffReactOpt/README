@@ -24,7 +24,7 @@ nump: int
 ipindx: Epetra_intSerialDenseVector
 
   This array (size=numip) gives the *1-based* global IDs of the nodes that are
-  owned by this processor.
+  owned by this processor.  WARNING!  This list must be sorted!
 
 ipcoords: Epetra_SerialDenseMatrix
 
@@ -41,6 +41,8 @@ pindx: Epetra_IntSerialDenseVector
   processors owned or shared by this processor.  Specifically:
 
      pindx(i) = ipindx(i), for i = 0 ... numip-1.
+
+  WARNING!  This list must be sorted!
 
 pcoords: Epetra_SerialDenseMatrix
 
