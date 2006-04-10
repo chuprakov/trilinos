@@ -118,7 +118,7 @@ int main( int argc, char* argv[] )
 	using Teuchos::CommandLineProcessor;
 	typedef AbstractLinAlgPack::value_type  Scalar;
 
-  Teuchos::GlobalMPISession mpiSession(&argc,&argv,NULL);
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
   const int procRank = mpiSession.getRank();
   const int numProcs = mpiSession.getNProc();
