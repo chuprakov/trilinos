@@ -290,8 +290,9 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   Epetra_MultiVector  *DgDx_trans_out = get_DgDx_mv(0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   Epetra_MultiVector  *DgDp_trans_out = get_DgDp_mv(0,0,outArgs,DERIV_TRANS_MV_BY_ROW).get();
   //
-  // p_bar = B_bar*p
+  // Precompute some shared quantities
   //
+  // p_bar = B_bar*p
   Teuchos::RefCountPtr<const Epetra_Vector> p_bar;
   if(np_ > 0) {
     Teuchos::RefCountPtr<Epetra_Vector> _p_bar;
@@ -302,9 +303,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   else {
     p_bar = Teuchos::rcp(&p,false);
   }
-  //
   // R_p_bar = R*p_bar = R*(B_bar*p)
-  //
   Teuchos::RefCountPtr<const Epetra_Vector> R_p_bar;
   if( g_out || DgDp_trans_out ) {
       Teuchos::RefCountPtr<Epetra_Vector>
@@ -317,7 +316,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   //
   if(f_out) {
     //
-    // f = A*x + Ny(x) + B*(B_bar*p)
+    // f = A*x + reationRate*Ny(x) + B*(B_bar*p)
     //
     Epetra_Vector &f = *f_out;
     Epetra_Vector Ax(*map_f_);
@@ -344,7 +343,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   }
   if(W_out) {
     //
-    // W = A + Npy(x)
+    // W = A + reationRate*Npy(x)
     //
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_out);
     if(reactionRate_!=0.0)
