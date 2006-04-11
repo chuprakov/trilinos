@@ -16,6 +16,7 @@ my $max_num_procs          = 1;
 my $exe                    = "";
 my $mpi_go                 = "";
 my $has_expat              = 1;
+my $extra_args             = "";
 
 GetOptions(
   "len-x=i"                 => \$len_x,
@@ -30,7 +31,8 @@ GetOptions(
   "max-num-procs=i"         => \$max_num_procs,
   "exe=s"                   => \$exe,
   "mpi-go=s"                => \$mpi_go,
-  "has-expat!"              => \$has_expat
+  "has-expat!"              => \$has_expat,
+  "extra-args=s"            => \$extra_args
   );
 
 my $base_base_dir = cwd();
@@ -75,6 +77,7 @@ for( ; $num_procs <= $max_num_procs; $num_procs *= 2 ) {
         ." --reaction-rate=$reaction_rate --beta=$beta"
         ." --x0=0.0 --np=1 --p0=0.0"
         ." --moocho-extra-options=\"$moochoOptions\""
+        ." $extra_args"
         ." | tee run-test.out"
         ;
     
