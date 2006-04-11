@@ -41,18 +41,6 @@ extern "C" {
  */
 /*@{ */
 
-extern RTOp_value_type
-    RTOp_pos_inf,
-	RTOp_neg_inf,
-    RTOp_pos_nan,
-    RTOp_neg_nan;
-
-/* Return true if the number is +-NaN if this reprsentation exists. */
-int RTOp_is_nan( RTOp_value_type val );
-
-/* Return true if the number is +-infinity if this reprsentation exists. */
-int RTOp_is_inf( RTOp_value_type val );
-
 /* Return true if the number is +-NaN or +-infinity if this reprsentation exists. */
 int RTOp_is_nan_inf( RTOp_value_type val );
 
