@@ -7,6 +7,7 @@ my $len_x                  = 1.0;
 my $local_len_y            = 1.0;
 my $local_nx               = 4;
 my $local_ny               = 4;
+my $const_global_dim       = 0;
 my $reaction_rate          = 1e-3;
 my $beta                   = 0.0;
 my $max_linear_iters       = 10;
@@ -23,6 +24,7 @@ GetOptions(
   "local-len-y=i"           => \$local_len_y,
   "local-nx=i"              => \$local_nx,
   "local-ny=i"              => \$local_ny,
+  "const-global-dim!"       => \$const_global_dim,
   "reaction-rate=f"         => \$reaction_rate,
   "beta=f"                  => \$beta,
   "max-linear-iters=i"      => \$max_linear_iters,
@@ -64,7 +66,15 @@ for( ; $num_procs <= $max_num_procs; $num_procs *= 2 ) {
         ,"\n*** $curr_dir"
         ,"\n***\n";
 
-    my $len_y = $local_len_y * $num_procs;
+    my $len_y;
+    if($const_global_dim) {
+      $len_y = $local_len_y;
+      $local_ny = $local_ny / $num_procs;
+    }
+    else {
+      $len_y = $local_len_y * $num_procs;
+    }
+    
     my $belosParams = getBelosParams();
     my $moochoOptions = getMoochoOptions();
 
