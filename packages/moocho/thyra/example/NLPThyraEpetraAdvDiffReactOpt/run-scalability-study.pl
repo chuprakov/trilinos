@@ -14,6 +14,8 @@ my $max_rsqp_iters         = 1;
 my $starting_num_procs     = 1;
 my $max_num_procs          = 1;
 my $exe                    = "";
+my $mpi_go                 = "";
+my $has_expat              = 1;
 
 GetOptions(
   "len-x=i"                 => \$len_x,
@@ -26,12 +28,19 @@ GetOptions(
   "max-rsqp-iters=i"        => \$max_rsqp_iters,
   "starting-num-procs=i"    => \$starting_num_procs,
   "max-num-procs=i"         => \$max_num_procs,
-  "exe=s"                   => \$exe
+  "exe=s"                   => \$exe,
+  "mpi-go=s"                => \$mpi_go,
+  "has-expat!"              => \$has_expat
   );
 
 my $base_base_dir = cwd();
+
 if($exe eq "") {
     $exe = "$base_base_dir/NLPThyraEpetraAdvDiffReactOpt.exe";
+}
+
+if($mpi_go eq "") {
+    $mpi_go = "mpirun -np";
 }
 
 my $base_dir_name = "runs";
@@ -58,16 +67,17 @@ for( ; $num_procs <= $max_num_procs; $num_procs *= 2 ) {
     my $moochoOptions = getMoochoOptions();
 
     my $cmnd =
-        "mpirun -machinefile ~/machinelist.txt -np $num_procs"
+        "$mpi_go $num_procs"
         ." $exe"
-        ." --no-use-prec --do-opt --use-direct --lowsf=belos --lowsf-extra-params=\"$belosParams\""
+        ." --no-use-prec --do-opt --use-direct --lowsf=belos"
+        .( $has_expat ? " --lowsf-extra-params=\"$belosParams\"" : "" )
         ." --len-x=$len_x --len-y=$len_y --local-nx=$local_nx --local-ny=$local_ny"
         ." --reaction-rate=$reaction_rate --beta=$beta"
         ." --x0=0.0 --np=1 --p0=0.0"
         ." --moocho-extra-options=\"$moochoOptions\""
         ." | tee run-test.out"
         ;
-
+    
     run_cmnd($cmnd);
 
     chdir "..";
