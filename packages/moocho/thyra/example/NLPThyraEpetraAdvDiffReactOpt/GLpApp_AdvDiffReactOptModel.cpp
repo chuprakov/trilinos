@@ -51,24 +51,24 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
       );
     map_p_ = Teuchos::rcp(new Epetra_Map(np_,0,serialComm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
-    //
-    // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
-    //
-/*
-    // Orthogonalize against more columns than I need in order to generate a
-    // nicely conditioned set of columnns
-    const int ortho_dim = TEUCHOS_MIN(map_p_bar_->NumGlobalElements(),np_+10);
-    Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >
-      space_p_bar = Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)));
-    Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
-      B_bar_orth_thyra = Thyra::createMembers(space_p_bar,ortho_dim),
-      thyra_fact_R;
-    Thyra::randomize(-1.0,+1.0,&*B_bar_orth_thyra);
-    sillyModifiedGramSchmidt(&*B_bar_orth_thyra,&thyra_fact_R);
-    *B_bar_ = *Thyra::get_Epetra_MultiVector(*map_p_bar_,B_bar_orth_thyra->subView(Teuchos::Range1D(0,np_-1)));
-*/
     if(np_ > 1) {
-      //B_bar_->Random();
+      //
+      // Create a random local B_bar that will be the same no matter how the
+      // problem is distributed.
+      //
+      typedef Teuchos::ScalarTraits<double> ST;
+      const int numBndyNodes        = map_p_bar_->NumMyElements();
+      const int *bndyNodeGlobalIDs  = map_p_bar_->MyGlobalElements();
+      for( int i = 0; i < numBndyNodes; ++i ) {
+        (*B_bar_)[0][i] = 1.0;
+        ST::seedrandom(bndyNodeGlobalIDs[i]);
+        for( int j = 1; j < np_; ++j ) {
+          (*B_bar_)[j][i] = ST::random();
+        }
+      }
+      //
+      // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
+      //
       Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
         thyra_B_bar = Thyra::create_MPIMultiVectorBase(
           B_bar_
@@ -76,8 +76,6 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
           ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
           ),
         thyra_fact_R;
-      Thyra::seed_randomize<double>(0);
-      Thyra::randomize(1.0,2.0,&*thyra_B_bar);
       sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
       // We just discard the "R" factory thyra_fact_R
     }
