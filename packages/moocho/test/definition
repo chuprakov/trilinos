@@ -277,9 +277,19 @@
 
 (FRAMEWORK, INSTALL) {
     TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
-    ARGS = 
-      --do-sim
-       ;
+    ARGS = --external-lowsf;
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = --do-sim;
+    COMM = SERIAL, MPI(1);
+}
+
+(FRAMEWORK, INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraModelEval4DOpt/NLPThyraEpetraModelEval4DOpt.exe;
+    ARGS = --external-lowsf --do-sim;
     COMM = SERIAL, MPI(1);
 }
 

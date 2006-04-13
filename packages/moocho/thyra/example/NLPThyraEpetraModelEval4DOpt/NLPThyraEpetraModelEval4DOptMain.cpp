@@ -3,6 +3,7 @@
 
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
+#include "Thyra_DefaultModelEvaluatorWithSolveFactory.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
@@ -41,22 +42,25 @@ int main( int argc, char* argv[] )
     Scalar       p00         = 2.0;
     Scalar       p01         = 0.0;
 		bool         do_sim      = false;
+    bool         externalFactory = false;
 
-		CommandLineProcessor  command_line_processor(false); // Don't throw exceptions
+		CommandLineProcessor  clp(false); // Don't throw exceptions
 
-		command_line_processor.setOption( "xt0", &xt0 );
-		command_line_processor.setOption( "xt1", &xt1 );
-		command_line_processor.setOption( "pt0", &pt0 );
-		command_line_processor.setOption( "pt1", &pt1 );
-		command_line_processor.setOption( "d", &d );
-		command_line_processor.setOption( "x00", &x00 );
-		command_line_processor.setOption( "x01", &x01 );
-		command_line_processor.setOption( "p00", &p00 );
-		command_line_processor.setOption( "p01", &p01 );
-		command_line_processor.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+		clp.setOption( "xt0", &xt0 );
+		clp.setOption( "xt1", &xt1 );
+		clp.setOption( "pt0", &pt0 );
+		clp.setOption( "pt1", &pt1 );
+		clp.setOption( "d", &d );
+		clp.setOption( "x00", &x00 );
+		clp.setOption( "x01", &x01 );
+		clp.setOption( "p00", &p00 );
+		clp.setOption( "p01", &p01 );
+		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+    clp.setOption( "external-lowsf", "internal-lowsf", &externalFactory
+                   ,"Determines of the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
 	
 		CommandLineProcessor::EParseCommandLineReturn
-			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
+			parse_return = clp.parse(argc,argv,&std::cerr);
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
@@ -66,21 +70,37 @@ int main( int argc, char* argv[] )
 		//
 		
     // Create the EpetraExt::ModelEvaluator object
-    
-    EpetraModelEval4DOpt epetraModel(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01);
+
+    Teuchos::RefCountPtr<EpetraExt::ModelEvaluator>
+      epetraModel = rcp(new EpetraModelEval4DOpt(xt0,xt1,pt0,pt1,d,x00,x01,p00,p01));
 
     // Create the Thyra::EpetraModelEvaluator object
+
+    Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<double> >
+      lowsFactory = rcp(new Thyra::AmesosLinearOpWithSolveFactory());
+
+    Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
+      epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
     
-    Thyra::EpetraModelEvaluator thyraModel; // Sets default options!
-    thyraModel.initialize(
-      Teuchos::rcp(&epetraModel,false)
-      ,Teuchos::rcp(new Thyra::AmesosLinearOpWithSolveFactory())
-      );
+    Teuchos::RefCountPtr<Thyra::ModelEvaluator<double> > thyraModel;
+    if(externalFactory) {
+      epetraThyraModel->initialize(epetraModel,Teuchos::null);
+      thyraModel = Teuchos::rcp(
+        new Thyra::DefaultModelEvaluatorWithSolveFactory<double>(
+          epetraThyraModel
+          ,lowsFactory
+          )
+        );
+    }
+    else {
+      epetraThyraModel->initialize(epetraModel,lowsFactory);
+      thyraModel = epetraThyraModel;
+    }
 
     // ToDo: Specify an initial guess not from the Thyra::EpetraModelEvaluator object
     
 		NLPFirstOrderThyraModelEvaluator nlp(
-			Teuchos::rcp(&thyraModel,false)
+			thyraModel
 			,do_sim ? -1 : 0
 			,do_sim ? -1 : 0
 			);
