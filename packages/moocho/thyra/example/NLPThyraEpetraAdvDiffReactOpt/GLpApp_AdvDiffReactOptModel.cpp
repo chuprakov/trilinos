@@ -417,11 +417,11 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       // Note: We support both the CrsMatrix and MultiVector form of this object
       // to make things easier for the client.
       //
-      const int numMyRows = dat_B->NumMyRows();
-      for( int i = 0; i < numMyRows; ++i ) {
-        int dat_B_num_row_entries=0; double *dat_B_row_vals=0; int *dat_B_row_inds=0;
-        dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
-        if(DfDp_op) {
+      if(DfDp_op) {
+        const int numMyRows = dat_B->NumMyRows();
+        for( int i = 0; i < numMyRows; ++i ) {
+          int dat_B_num_row_entries=0; double *dat_B_row_vals=0; int *dat_B_row_inds=0;
+          dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
           int DfDp_num_row_entries=0; double *DfDp_row_vals=0; int *DfDp_row_inds=0;
           DfDp_op->ExtractMyRowView(i,DfDp_num_row_entries,DfDp_row_vals,DfDp_row_inds);
 #ifdef _DEBUG
@@ -435,14 +435,20 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
           }
           // ToDo: The above code should be put in a utility function called copyValues(...)!
         }
-        else if(DfDp_mv) {
-          for(int k = 0; k < dat_B_num_row_entries; ++k) {
-            (*(*DfDp_mv)(dat_B_row_inds[k]))[i] = dat_B_row_vals[k];
-          }
-          if(out.get() && dumpAll)
-          { *out << "\nDfDp_mv after setting row i="<<i<<":\n"; { Teuchos::OSTab tab(out); DfDp_mv->Print(*out); } }
-          // ToDo: The above code should be put in a utility function called copyValues(...)!
-        }
+      }
+      else if(DfDp_mv) {
+        // We must do a mat-vec to get this since we can't just copy out the
+        // matrix entries since the domain map may be different from the
+        // column map!  I learned this the very very hard way!
+        double one[1] = { 1.0 };
+        int index [1];
+        Epetra_Vector etaVec(*map_p_bar_);
+        for( int i = 0; i < map_p_bar_->NumGlobalElements(); ++i ) {
+          etaVec.PutScalar(0.0);
+          index[0] = i+1; // This map is one-based!
+          etaVec.ReplaceGlobalValues(1,one,index);
+          dat_B->Multiply(false,etaVec,*(*DfDp_mv)(i));
+        };
       }
     }
   }
