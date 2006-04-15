@@ -129,8 +129,9 @@ bool NLPInterfacePack::test_nlp_first_order(
 			*out << "\nCalling nlp->calc_Gc(...) at nlp->xinit() ...\n";
 		nlp->set_Gc( Gc.get() );
 		nlp->calc_Gc( nlp->xinit(), true );
-		if(nlp_tester.print_all())
-			*out << "\nGc =\n" << *Gc;
+		if(nlp_tester.print_all()) {
+      *out << "\nGc =\n" << *Gc;
+    }
 	}
 
 	if(out)
