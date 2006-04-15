@@ -17,6 +17,7 @@
 #include "Epetra_SerialDenseMatrix.h"
 #include "Epetra_SerialDenseVector.h"
 #include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_VerboseObject.hpp"
 #include "includes.h"
 //#include "usr_par.h"
 #include <stdlib.h>
@@ -26,6 +27,7 @@ class Epetra_BLAS;
 int compproduct(Epetra_SerialDenseVector &, double *, double *);
 int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
 
+//#define GLPAPP_SHOW_BOUNDARY_ASSEMBLY
 
 /**  \brief Performs finite-element assembly of face mass matrices.
 
@@ -84,6 +86,13 @@ int assemble_bdry(
 
   using Teuchos::rcp;
 
+#ifdef GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = Teuchos::VerboseObjectBase::getDefaultOStream();
+  Teuchos::OSTab tab(out);
+  *out << "\nEntering assemble_bdry(...) ...\n";
+#endif
+
   int numLocElems = t.M();
   int numLocEdges = e.M();
 
@@ -124,6 +133,13 @@ int assemble_bdry(
   // Above, it is important to note what mybndyctrlmap represents.  It is the
   // a sorted list of global vertex node IDS for nodes on a boundary that are
   // uniquely owned by the local process.
+
+#ifdef GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+  *out << "\nstandardmap:\n";
+  standardmap.Print(*Teuchos::OSTab(out).getOStream());
+  *out << "\nmybdryctrlmap:\n";
+  mybdryctrlmap.Print(*Teuchos::OSTab(out).getOStream());
+#endif
 
   //
   // Allocate matrices to fill
@@ -171,6 +187,14 @@ int assemble_bdry(
     Bt(1,0) = l_sixth * 1.0;
     Bt(1,1) = l_sixth * 2.0;
 
+#ifdef GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+    *out
+      << "\nEdge global nodes = ("<<global_id_0<<","<<global_id_1<<"),"
+      << " local nodes = ("<<local_id_0<<","<<local_id_1<<"),"
+      << " Bt = ["<<Bt(0,0)<<","<<Bt(0,1)<<";"<<Bt(1,0)<<","<<Bt(1,1)<<"]\n";
+#endif
+
+
     const int format = Epetra_FECrsMatrix::COLUMN_MAJOR;
     err = B->InsertGlobalValues(epetra_nodes,Bt,format);
     if (err<0) return(err);
@@ -178,6 +202,8 @@ int assemble_bdry(
     if (err<0) return(err);
     
   }
+
+/*
 
   err = B->GlobalAssemble(false);
   if (err<0) return(err);
@@ -189,8 +215,21 @@ int assemble_bdry(
   err = R->FillComplete(mybdryctrlmap,mybdryctrlmap);
   if (err<0) return(err);
 
+*/
+
+  err = B->GlobalAssemble(mybdryctrlmap,standardmap,true);
+  if (err<0) return(err);
+  err = R->GlobalAssemble(mybdryctrlmap,mybdryctrlmap,true);
+  if (err<0) return(err);
+
   if(B_out) *B_out = B;
   if(R_out) *R_out = R;
+
+#ifdef GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+  *out << "B =\n";
+  B->Print(*Teuchos::OSTab(out).getOStream());
+  *out << "\nLeaving assemble_bdry(...) ...\n";
+#endif
 
   return(0);
 
