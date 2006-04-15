@@ -179,7 +179,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
       model_outArgs.set_W(
         rcp_const_cast<Thyra::LinearOpWithSolveBase<value_type> >(
           dyn_cast<MatrixOpNonsingThyra>(*C_aggr).set_uninitialized()
-          )
+          ).assert_not_null()
         );
       if(p_idx_ >= 0) {
         // ToDo: This is implemented for direct sensitivities, change this for adjoint sensitivities
@@ -190,14 +190,14 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
               rcp_dynamic_cast<const Thyra::MultiVectorBase<value_type> >(
                 dyn_cast<MatrixOpThyra>(*N_aggr).set_uninitialized()
                 )
-              )
+              ).assert_not_null()
             ,MEB::DERIV_MV_BY_COL
             )
           );
       }
     }
     else {
-      model_outArgs.set_W(model_->create_W());
+      model_outArgs.set_W(model_->create_W().assert_not_null());
       if(p_idx_>=0)
         model_outArgs.set_DfDp(p_idx_,model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL));
     }

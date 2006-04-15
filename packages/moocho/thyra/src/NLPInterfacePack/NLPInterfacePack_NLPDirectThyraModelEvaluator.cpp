@@ -190,12 +190,12 @@ void NLPDirectThyraModelEvaluator::calc_point(
   if( py || rGf || D ) {
     if(thyra_C_.get()==NULL)
       thyra_C_ = model_->create_W();
-    model_outArgs.set_W(thyra_C_);
+    model_outArgs.set_W(thyra_C_.assert_not_null());
   }
   if( rGf || D ) {
     if(thyra_N_.get()==NULL)
       thyra_N_ = model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL).getMultiVector();
-    model_outArgs.set_DfDp(p_idx_,DerivMV(thyra_N_,MEB::DERIV_MV_BY_COL));
+    model_outArgs.set_DfDp(p_idx_,DerivMV(thyra_N_.assert_not_null(),MEB::DERIV_MV_BY_COL));
   }
   //
   // Evaluate the functions

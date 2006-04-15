@@ -160,15 +160,15 @@ void NLPThyraModelEvaluator::report_final_solution(
 			var_indep = basis_sys_->var_indep();
 		RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
 		if(p_idx_>=0) xI = x.sub_view(var_indep);
-    model_finalPoint.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec());
+    model_finalPoint.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
 		if(p_idx_ >= 0)
-      model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec());
+      model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
     else if( model_finalPoint.Np() >= 1 )
-      model_finalPoint.set_p(0,model_->get_p_init(0));
+      model_finalPoint.set_p(0,model_->get_p_init(0).assert_not_null());
   }
 	else { // no dependent vars
     TEST_FOR_EXCEPT(p_idx_<0);
-    model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec());
+    model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
 	}
   model_->reportFinalPoint(model_finalPoint,optimal);
 }
@@ -416,13 +416,13 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
 			var_indep = basis_sys_->var_indep();
 		RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
 		if(p_idx_>=0) xI = x.sub_view(var_indep);
-    model_inArgs.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec());
+    model_inArgs.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
 		if(p_idx_ >= 0)
-      model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec());
+      model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
   }
 	else { // no dependent vars
     TEST_FOR_EXCEPT(p_idx_<0);
-    model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec());
+    model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
 	}
   //
   // Set the output arguments
@@ -453,12 +453,12 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
   //
   MEB::OutArgs<value_type> &model_outArgs = *model_outArgs_inout;
   if( f && (g_idx_>=0) && !f_updated_ ) {
-    model_outArgs.set_g(g_idx_,model_g_); // ToDo: Make more general!
+    model_outArgs.set_g(g_idx_,model_g_.assert_not_null()); // ToDo: Make more general!
   }
   if( c && !c_updated_ ) {
     Teuchos::RefCountPtr<Thyra::VectorBase<value_type> > thyra_c;
     get_thyra_vector(*space_c_,c,&thyra_c);
-    model_outArgs.set_f(thyra_c);
+    model_outArgs.set_f(thyra_c.assert_not_null());
   }
   if( Gf && !Gf_updated_ ) {
     if(g_idx_>=0) {
@@ -471,7 +471,7 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
           ,DerivMV(
             rcp_const_cast<Thyra::VectorBase<value_type> >(
               dyn_cast<VectorMutableThyra>(*Gf->sub_view(var_dep)).thyra_vec()
-              )
+              ).assert_not_null()
             ,MEB::DERIV_TRANS_MV_BY_ROW
             )
           );
@@ -480,7 +480,7 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
           ,DerivMV(
             rcp_const_cast<Thyra::VectorBase<value_type> >(
               dyn_cast<VectorMutableThyra>(*Gf->sub_view(var_indep)).thyra_vec()
-              )
+              ).assert_not_null()
             ,MEB::DERIV_TRANS_MV_BY_ROW
             )
           );
