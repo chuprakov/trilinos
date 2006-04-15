@@ -227,11 +227,21 @@ int main( int argc, char* argv[] )
     //
     // Setup the output streams
     //
-
+    
+    std::string journalOutName;
+    if( numProcs > 1 && out->getOutputToRootOnly() < 0 ) {
+      std::ostringstream oss;
+      oss << "MoochoJournal."<<std::setfill('0')<<std::setw(4)<<std::right<<procRank<<".out";
+      journalOutName = oss.str();
+    }
+    else {
+      journalOutName = "MoochoJournal.out";
+    }
+    
     Teuchos::RefCountPtr<Teuchos::FancyOStream>
       journalOut = Teuchos::rcp(
         new Teuchos::FancyOStream(
-          Teuchos::rcp(new std::ofstream("MoochoJournal.out"))
+          Teuchos::rcp(new std::ofstream(journalOutName.c_str()))
           ,"  "
           )
         );
