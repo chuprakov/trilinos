@@ -286,8 +286,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	// Process the NLP
 	NLPFirstOrder    *nlp_foi = NULL;
 	NLPSecondOrder   *nlp_soi = NULL;
-	NLPDirect  *nlp_fod = NULL;
-	bool                 tailored_approach = false;
+	NLPDirect        *nlp_fod = NULL;
+	bool             tailored_approach = false;
 	decomp_sys_step_builder_.process_nlp_and_options(
 		trase_out, nlp
 		,&nlp_foi, &nlp_soi, &nlp_fod, &tailored_approach
@@ -407,8 +407,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			*trase_out <<
 				"\nline_search_method == 2ND_ORDER_CORRECT:\n"
 				"Sorry, the second order corrrection linesearch is not updated yet!\n"
-				"setting line_search_method = DIRECT ...\n";
-		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
+				"setting line_search_method = FILTER ...\n";
+		cov_.line_search_method_ = LINE_SEARCH_FILTER;
 	}
 	if( cov_.line_search_method_ == LINE_SEARCH_WATCHDOG ) {
 		if(trase_out)
@@ -1845,8 +1845,8 @@ void NLPAlgoConfigMamaJama::set_default_options(
 	if( cov->line_search_method_ == LINE_SEARCH_AUTO && uov.line_search_method_ == LINE_SEARCH_AUTO ) {
 		if(trase_out)
 			*trase_out
-				<< "\nline_search_method == AUTO: setting line_search_method = 2ND_ORDER_CORRECT\n";
-		cov->line_search_method_ = LINE_SEARCH_2ND_ORDER_CORRECT;
+				<< "\nline_search_method == AUTO: setting line_search_method = FILTER\n";
+		cov->line_search_method_ = LINE_SEARCH_FILTER;
 	}
 	else if(cov->line_search_method_ == LINE_SEARCH_AUTO) {
 		cov->line_search_method_ = uov.line_search_method_;

@@ -190,11 +190,11 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 
 	// Decide what type of range-space matrix to use
 	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
-		const bool use_orth = dof*dof*r	<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
+		const bool use_orth = (dof*dof/r) <= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
 		if(trase_out)
 			*trase_out
 				<< "\nrange_space_matrix == AUTO:"
-				<< "\n(n-r)^2*r = (" << dof << ")^2 * " << r << " = " << (dof*dof*r)
+				<< "\n(n-r)^2/r = (" << dof << ")^2/r = " << (dof*dof/r)
 				<< ( use_orth ? " <= " : " > " ) << "max_dof_quasi_newton_dense^2 = ("
 				<< cov_.max_dof_quasi_newton_dense_ << ")^2 = "
 				<< cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_
@@ -801,8 +801,8 @@ void DecompositionSystemStateStepBuilderStd::set_default_options(
 	if( cov->max_dof_quasi_newton_dense_ < 0 && uov.max_dof_quasi_newton_dense_ < 0 ) {
 		if(trase_out)
 			*trase_out
-				<< "\nmax_dof_quasi_newton_dense < 0 : setting max_dof_quasi_newton_dense = 500\n";
-		cov->max_dof_quasi_newton_dense_ = 500;
+				<< "\nmax_dof_quasi_newton_dense < 0 : setting max_dof_quasi_newton_dense = "<<DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE<<"\n";
+		cov->max_dof_quasi_newton_dense_ = DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE;
 	}
 	else if(cov->max_dof_quasi_newton_dense_ < 0) {
 		cov->max_dof_quasi_newton_dense_ = uov.max_dof_quasi_newton_dense_;
