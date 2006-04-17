@@ -8,6 +8,8 @@
 #include "sillyModifiedGramSchmidt.hpp" // This is just an example!
 #include "Thyra_EpetraThyraWrappers.hpp"
 
+//#define GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+
 namespace {
 
 inline double sqr( const double& s ) { return s*s; }
@@ -32,14 +34,23 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   )
   :dat_(dat),np_(np),reactionRate_(reactionRate)
 {
+
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = Teuchos::VerboseObjectBase::getDefaultOStream();
+  Teuchos::OSTab tab(out);
+  *out << "\nEntering AdvDiffReactOptModel::AdvDiffReactOptModel(...) ...\n";
+#endif
+
   //
   // Get the maps
   //
   const Epetra_SerialComm serialComm;
+  const Epetra_Comm &comm = dat_->getA()->OperatorDomainMap().Comm();
   map_x_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorDomainMap()));
   map_p_bar_ = Teuchos::rcp(new Epetra_Map(dat_->getB()->OperatorDomainMap()));
   map_f_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorRangeMap()));
-  map_g_ = Teuchos::rcp(new Epetra_Map(1,0,serialComm));
+  map_g_ = Teuchos::rcp(new Epetra_Map(1,1,0,comm));
   //
   // Initialize the basis matrix for p such that p_bar = B_bar * p
   //
@@ -49,7 +60,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
       ,"Error, np="<<np_<<" can not be greater than map_p_bar_->NumGlobalElements()="
       <<map_p_bar_->NumGlobalElements()<<"!"
       );
-    map_p_ = Teuchos::rcp(new Epetra_Map(np_,0,serialComm));
+    map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,comm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
     if(np_ > 1) {
       //
@@ -83,6 +94,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
       // This will make it unique no matter how many processors are used!
       B_bar_->PutScalar(1.0);
     }
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *out << "\nB_bar =\n\n";
+    B_bar_->Print(*Teuchos::OSTab(out).getOStream());
+#endif
   }
   else {
     map_p_ = map_p_bar_;
@@ -115,6 +130,9 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   q_ = Teuchos::rcp(new Epetra_Vector(*(*dat_->getq())(0))); // From Epetra_FEVector to Epetra_Vector!
   //
   isInitialized_ = true;
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+  *out << "\nLeaving AdvDiffReactOptModel::AdvDiffReactOptModel(...) ...\n";
+#endif
 }
 
 void AdvDiffReactOptModel::set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q )
@@ -263,6 +281,12 @@ AdvDiffReactOptModel::createOutArgs() const
 
 void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outArgs ) const
 {
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    dout = Teuchos::VerboseObjectBase::getDefaultOStream();
+  Teuchos::OSTab dtab(dout);
+  *dout << "\nEntering AdvDiffReactOptModel::evalModel(...) ...\n";
+#endif
   using Teuchos::dyn_cast;
   using Teuchos::rcp_dynamic_cast;
   //
@@ -472,8 +496,19 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     else {
       DgDp_trans.Update(dat_->getbeta(),*R_p_bar,0.0);
     }
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *dout << "\nR_p_bar =\n\n";
+    R_p_bar->Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "\nB_bar =\n\n";
+    B_bar_->Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "\nDgDp_trans =\n\n";
+    DgDp_trans.Print(*Teuchos::OSTab(dout).getOStream());
+#endif
   }
   if(out.get() && trace) *out << "\n*** Leaving AdvDiffReactOptModel::evalModel(...) ...\n"; 
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+  *dout << "\nLeaving AdvDiffReactOptModel::evalModel(...) ...\n";
+#endif
 }
 
 } // namespace GLpApp
