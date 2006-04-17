@@ -485,6 +485,7 @@
     COMM = MPI(2);
 }
 
+# This test can't work since I can't read a file from a prior test
 #(FRAMEWORK,INSTALL,MOOCHOBELOSP4) {
 #    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
 #    ARGS = --len-x=1.0 --len-y=10.0 --local-nx=3 --local-ny=4 --reaction-rate=1e-3 \
