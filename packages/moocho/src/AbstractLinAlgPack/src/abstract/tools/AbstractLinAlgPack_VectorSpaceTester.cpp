@@ -85,8 +85,6 @@ bool VectorSpaceTester::check_vector_space(
 	typedef VectorMutable::vec_ptr_t       vec_ptr_t;
 	typedef VectorMutable::vec_mut_ptr_t   vec_mut_ptr_t;
 
-/*
-
 	// Create three random non-mutable vectors
 	vec_ptr_t            v_array[3];
 	const Vector*  v[3];
@@ -253,6 +251,8 @@ bool VectorSpaceTester::check_vector_space(
 		}}
 	}
 
+  /*
+
 	//////////////////////////////////////////////////////////////////
 	if(out && print_all_tests())
 		*out << "\n*** Testing sub-vector and sub-space access\n";
@@ -405,6 +405,8 @@ bool VectorSpaceTester::check_vector_space(
 		}}
 	}
 
+  */
+
 	//////////////////////////////////////////////////////////////////
 	if(out && print_all_tests())
 		*out << "\n*** Testing norms\n";
@@ -486,8 +488,6 @@ bool VectorSpaceTester::check_vector_space(
 				 << " = " << err << std::endl;
 		check_test(err,out,&success);
 	}
-
-*/
 
 	} // end try
 	catch(const std::exception& except) {
