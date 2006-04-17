@@ -153,7 +153,7 @@ value_type Vector::get_ele(index_type i) const
 		sum_op,1,vecs,0,NULL,&*sum_targ
 		,i,1,0 // first_ele, sub_dim, global_offset
 		);
-	return RTOp_ROp_sum_val(sum_op(*sum_targ));
+ 	return RTOp_ROp_sum_val(sum_op(*sum_targ));
 }
 
 value_type Vector::norm_1() const
