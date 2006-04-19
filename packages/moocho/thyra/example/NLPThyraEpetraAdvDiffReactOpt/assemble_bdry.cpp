@@ -27,7 +27,7 @@ class Epetra_BLAS;
 int compproduct(Epetra_SerialDenseVector &, double *, double *);
 int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
 
-//#define GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+// #define GLPAPP_SHOW_BOUNDARY_ASSEMBLY
 
 /**  \brief Performs finite-element assembly of face mass matrices.
 
@@ -226,7 +226,7 @@ int assemble_bdry(
   if(R_out) *R_out = R;
 
 #ifdef GLPAPP_SHOW_BOUNDARY_ASSEMBLY
-  *out << "B =\n";
+  *out << "\nB =\n";
   B->Print(*Teuchos::OSTab(out).getOStream());
   *out << "\nLeaving assemble_bdry(...) ...\n";
 #endif

@@ -54,15 +54,19 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   //
   // Initialize the basis matrix for p such that p_bar = B_bar * p
   //
-  if(np_ > 0) {
-    TEST_FOR_EXCEPTION(
-      np_ > map_p_bar_->NumGlobalElements(), std::logic_error
-      ,"Error, np="<<np_<<" can not be greater than map_p_bar_->NumGlobalElements()="
-      <<map_p_bar_->NumGlobalElements()<<"!"
-      );
+  TEST_FOR_EXCEPTION(
+    np_ > map_p_bar_->NumGlobalElements(), std::logic_error
+    ,"Error, np="<<np_<<" can not be greater than map_p_bar_->NumGlobalElements()="
+    <<map_p_bar_->NumGlobalElements()<<"!"
+    );
+  if( np_ > 0 ) {
     map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,comm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
-    if(np_ > 1) {
+    if( np_ == 1 ) {
+      // Just make B_bar a column with ones!
+      B_bar_->PutScalar(1.0);
+    }
+    else if( np_ > 1 ) {
       //
       // Create a random local B_bar that will be the same no matter how the
       // problem is distributed.
@@ -91,8 +95,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
       // We just discard the "R" factory thyra_fact_R
     }
     else {
-      // This will make it unique no matter how many processors are used!
-      B_bar_->PutScalar(1.0);
+      TEST_FOR_EXCEPT(true); // Should never get here!
     }
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *out << "\nB_bar =\n\n";
@@ -100,8 +103,8 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
 #endif
   }
   else {
+    // B_bar = I implicitly!
     map_p_ = map_p_bar_;
-    // B_bar_ is identity so we don't form it explicitly!
   }
   //
   // Create vectors
@@ -463,18 +466,34 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       else if(DfDp_mv) {
         // We must do a mat-vec to get this since we can't just copy out the
         // matrix entries since the domain map may be different from the
-        // column map!  I learned this the very very hard way!
-        double one[1] = { 1.0 };
-        int index [1];
-        Epetra_Vector etaVec(*map_p_bar_);
+        // column map!  I learned this the very very hard way!  I am using
+        // Thyra wrappers here since I can't figure out for the life of me how
+        // to do this cleanly with Epetra alone!
+        Teuchos::RefCountPtr<Epetra_Vector>
+          etaVec = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
+        Teuchos::RefCountPtr<const Thyra::MPIVectorSpaceBase<double> >
+          space_p_bar = Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)));
+        Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+          thyra_etaVec = Thyra::create_MPIVectorBase(etaVec,space_p_bar);
         for( int i = 0; i < map_p_bar_->NumGlobalElements(); ++i ) {
-          etaVec.PutScalar(0.0);
-          index[0] = i+1; // This map is one-based!
-          etaVec.ReplaceGlobalValues(1,one,index);
-          dat_B->Multiply(false,etaVec,*(*DfDp_mv)(i));
+          Thyra::assign(&*thyra_etaVec,0.0);
+          Thyra::set_ele(i,1.0,&*thyra_etaVec);
+          dat_B->Multiply(false,*etaVec,*(*DfDp_mv)(i));
         };
       }
     }
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    if(DfDp_op) {
+      *dout << "\nDfDp_op =\n\n";
+      DfDp_op->Print(*Teuchos::OSTab(dout).getOStream());
+    }
+    if(DfDp_mv) {
+      *dout << "\nDfDp_mv =\n\n";
+      DfDp_mv->Print(*Teuchos::OSTab(dout).getOStream());
+    }
+#endif
+
+
   }
   if(DgDx_trans_out) {
     //
@@ -499,8 +518,10 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *dout << "\nR_p_bar =\n\n";
     R_p_bar->Print(*Teuchos::OSTab(dout).getOStream());
-    *dout << "\nB_bar =\n\n";
-    B_bar_->Print(*Teuchos::OSTab(dout).getOStream());
+    if(B_bar_.get()) {
+      *dout << "\nB_bar =\n\n";
+      B_bar_->Print(*Teuchos::OSTab(dout).getOStream());
+    }
     *dout << "\nDgDp_trans =\n\n";
     DgDp_trans.Print(*Teuchos::OSTab(dout).getOStream());
 #endif
