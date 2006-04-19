@@ -41,7 +41,8 @@
 #include "RTOp_TOp_axpy.h"
 #include "RTOp_TOp_ele_wise_divide.h"
 #include "RTOp_TOp_ele_wise_prod.h"
-#include "RTOp_TOp_random_vector.h"
+//#include "RTOp_TOp_random_vector.h"
+#include "RTOpPack_TOpRandomize.hpp"
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOp_TOp_sign.h"
 #include "RTOpPack_RTOpC.hpp"
@@ -65,7 +66,8 @@ static RTOpPack::RTOpC                               scale_vector_op;
 // axpy
 static RTOpPack::RTOpC                               axpy_op;
 // random vector
-static RTOpPack::RTOpC                               random_vector_op;
+//static RTOpPack::RTOpC                               random_vector_op;
+static RTOpPack::TOpRandomize<AbstractLinAlgPack::value_type>  random_vector_op;
 // element-wise division
 static RTOpPack::RTOpC                               ele_wise_divide_op;
 // element-wise product
@@ -88,7 +90,7 @@ public:
 		// Operator axpy
 		TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
 		// Operator random_vector
-		TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_construct(0.0,0.0,&random_vector_op.op()));
+		//TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_construct(0.0,0.0,&random_vector_op.op()));
 		// Operator ele_wise_divide
 		TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_construct(0.0,&ele_wise_divide_op.op()));
 		// Operator ele_wise_prod
@@ -226,7 +228,7 @@ void AbstractLinAlgPack::ele_wise_divide(
 
 void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 {
-	srand(s);
+	random_vector_op.set_seed(s);
 }
 
 void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutable* v )
@@ -234,9 +236,11 @@ void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutabl
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
-	TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
+	//TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
+  random_vector_op.set_bounds(l,u);
 	VectorMutable* targ_vecs[1] = { v };
 	apply_op(random_vector_op,0,NULL,1,targ_vecs,NULL);
+  
 }
 
 void AbstractLinAlgPack::sign(
