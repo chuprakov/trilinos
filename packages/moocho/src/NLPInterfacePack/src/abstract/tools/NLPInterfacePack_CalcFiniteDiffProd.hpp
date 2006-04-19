@@ -224,6 +224,8 @@ public:
 		,value_type        *Gf_prod
 		,VectorMutable     *Gc_prod
 		,std::ostream      *out
+    ,bool              trace    = false
+    ,bool              dump_all = false
 		) const;
 
 };	// end class CalcFiniteDiffProd

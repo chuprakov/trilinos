@@ -82,7 +82,7 @@ void NLPFirstDerivTesterSetOptions::setOption(
 			break;
 		}
 	    case NUM_FD_DIRECTIONS:
-			target().num_fd_directions(::abs(::atoi(option_value.c_str())));
+			target().num_fd_directions(::atoi(option_value.c_str()));
 			break;
 	    case WARNING_TOL:
 			target().warning_tol(::fabs(::atof(option_value.c_str())));

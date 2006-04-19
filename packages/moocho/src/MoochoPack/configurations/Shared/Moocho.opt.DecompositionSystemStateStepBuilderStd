@@ -204,7 +204,8 @@ options_group VariableBoundsTester {
 options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
 *    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
-*    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
+*    num_fd_directions = 1;   *** [fd_testing_method == DIRECTIONAL]
+*    num_fd_directions = -1;  *** [fd_testing_method == DIRECTIONAL] Use single direction y=1.0
 *    warning_tol   = 1e-8; *** [default]
 *    warning_tol   = 0.0;  *** Show me all comparisons.
 *    error_tol     = 1e-3; *** [default]
@@ -234,6 +235,8 @@ options_group NLPDirectTester {
 *    Gc_warning_tol   = 1e-10;
 *    Gc_error_tol     = 1e-5;
 *    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
+*    dump_all = true;
+*    dump_all = false; *** [default]
 }
 
 ****************************************************************

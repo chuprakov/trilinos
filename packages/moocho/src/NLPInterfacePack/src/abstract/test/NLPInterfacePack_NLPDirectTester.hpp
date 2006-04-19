@@ -177,6 +177,8 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
 	/// Members for option \c num_fd_directions()
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+	/// Members for option \c dump_all()
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
 
 	/// Constructor
 	NLPDirectTester(
@@ -188,6 +190,7 @@ public:
 		,value_type               Gc_warning_tol      = 1e-6
 		,value_type               Gc_error_tol        = 1e-1
 		,size_type                num_fd_directions   = 1
+    ,bool                     dump_all            = false
 		);
 
 	///

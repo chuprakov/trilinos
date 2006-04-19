@@ -357,7 +357,7 @@ bool NLPFirstDerivTester::fd_directional_check(
 
 	if(out)
 		*out
-			<< "\nComparing products Gf'*y and/or Gc'*y with finite difference values "
+			<< "\nComparing directional products Gf'*y and/or Gc'*y with finite difference values "
 				" FDGf'*y and/or FDGc'*y for random y's ...\n";
 
 	value_type  max_Gf_warning_viol = 0.0;
@@ -368,14 +368,26 @@ bool NLPFirstDerivTester::fd_directional_check(
 		Gc_prod   = ( Gc ? space_c->create_member()  : Teuchos::null ),
 		FDGc_prod = ( Gc ? space_c->create_member()  : Teuchos::null );
 
-	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
-		random_vector( rand_y_l, rand_y_u, y.get() );
-		if(out)
-			*out
-				<< "\n****"
-				<< "\n**** Random directional vector " << direc_i << " ( ||y||_1 / n = "
-				<< (y->norm_1() / y->dim()) << " )"
-				<< "\n***\n";
+  const int num_fd_directions_used = ( num_fd_directions() > 0 ? num_fd_directions() : 1 );
+
+	for( int direc_i = 1; direc_i <= num_fd_directions_used; ++direc_i ) {
+    if( num_fd_directions() > 0 ) {
+      random_vector( rand_y_l, rand_y_u, y.get() );
+      if(out)
+        *out
+          << "\n****"
+          << "\n**** Random directional vector " << direc_i << " ( ||y||_1 / n = "
+          << (y->norm_1() / y->dim()) << " )"
+          << "\n***\n";
+    }
+    else {
+      *y = 1.0;
+      if(out)
+        *out
+          << "\n****"
+          << "\n**** Ones vector y ( ||y||_1 / n = "<<(y->norm_1()/y->dim())<<" )"
+          << "\n***\n";
+    }
 		// Compute exact??? values
 		value_type
 			Gf_y = Gf ? dot( *Gf, *y ) : 0.0;

@@ -56,7 +56,9 @@ namespace NLPInterfacePack {
  * <tt>v</tt> are computed randomly between <tt>[-1,+1]</tt> so that
  * they are well scaled and should give good results.  The option
  * <tt>num_fd_directions()</tt> determines how many random directions
- * are used.
+ * are used.  A value of <tt>num_fd_directions() <= 0</tt> means that
+ * a single finite difference direction of <tt>1.0</tt> will be used
+ * for the test.
  *
  * This class computes the derivatives using a
  * <tt>CalcFiniteDiffProd</tt> object can can use up to fourth-order

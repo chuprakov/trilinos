@@ -54,6 +54,7 @@ namespace NLPInterfacePack {
 	    Gc_warning_tol    = 1e-6;
 	    Gc_error_tol      = 1e-1;
 		num_fd_directions = 3;  *** [testing_method == FD_DIRECTIONAL]
+    dump_all = false;
 	}
   \endverbatim
   */
