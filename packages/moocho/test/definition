@@ -442,14 +442,14 @@
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=25\,journal_output_level=PRINT_NOTHING\}";
+    --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
 (FRAMEWORK) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --use-direct --beta=1e+3 --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
-    --moocho-extra-options="NLPSolverClientInterface\{max_iter=25\,journal_output_level=PRINT_NOTHING\}";
+    --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,max_iter=25\,journal_output_level=PRINT_NOTHING\}";
     COMM = SERIAL, MPI(1);
 }
 
@@ -470,9 +470,9 @@
 (FRAMEWORK,MOOCHOBELOS1) {
     TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/NLPThyraEpetraAdvDiffReactOpt.exe;
     ARGS = --do-opt --geom-file-base=../thyra/example/NLPThyraEpetraAdvDiffReactOpt/square.2 \
-    --use-direct --lowsf=belos \
-    --lowsf-extra-params="<ParameterList><Parameter name=\"Default Rel Res Norm\" type=\"double\" value=\"1e-04\"/><Parameter name=\"Block Size\" type=\"int\" value=\"100\"/></ParameterList>" \
-    --moocho-extra-options="NLPSolverClientInterface\{opt_tol=0.2\,feas_tol=1e-3\,max_iter=9\,journal_output_level=PRINT_ALGORITHM_STEPS\}:DecompositionSystemStateStepBuilderStd\{range_space_matrix=ORTHOGONAL\}:NLPAlgoConfigMamaJama\{line_search_method=FILTER\}";
+    --use-direct --lowsf=belos --np=10 \
+    --lowsf-extra-params="<ParameterList><Parameter name=\"Default Rel Res Norm\" type=\"double\" value=\"1e-04\"/><Parameter name=\"Block Size\" type=\"int\" value=\"11\"/></ParameterList>" \
+    --moocho-extra-options="NLPSolverClientInterface\{feas_tol=1e-3\,opt_tol=0.15\,max_iter=10\,journal_output_level=PRINT_ALGORITHM_STEPS\}:DecompositionSystemStateStepBuilderStd\{range_space_matrix=ORTHOGONAL\}:NLPAlgoConfigMamaJama\{line_search_method=FILTER\}:NLPDirectTester\{Gc_error_tol=0.2\}";
     COMM = SERIAL, MPI(1);
 }
 
