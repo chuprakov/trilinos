@@ -31,7 +31,7 @@
 
 #include <vector>
 
-#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPThyraModelEvaluatorBase.hpp"
 
 namespace NLPInterfacePack {
 
@@ -42,7 +42,7 @@ namespace NLPInterfacePack {
  */
 class NLPFirstOrderThyraModelEvaluator
   : virtual public NLPFirstOrder
-  , virtual public NLPThyraModelEvaluator
+  , virtual public NLPThyraModelEvaluatorBase
 {
 public:
 

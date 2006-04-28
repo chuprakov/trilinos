@@ -140,8 +140,15 @@ runtests-mpi :
 ## Export makefile stuff
 ## #######################################################################
 
+if ENABLE_MOOCHO_THYRA
+BUILD_THYRA_SUBLIB=cd $(top_builddir)/thyra/src ; $(MAKE)
+else
+BUILD_THYRA_SUBLIB=
+endif
+
 all-libs:
 	cd $(top_builddir)/src ; $(MAKE) all-libs
+	$(BUILD_THYRA_SUBLIB)
 
 if USING_EXPORT_MAKEFILES
 

@@ -41,6 +41,7 @@
 #include "AbstractLinAlgPack_VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_MatrixSymPosDefCholFactor.hpp"
+#include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_DetachedVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -89,7 +90,7 @@ void NLPFirstOrderThyraModelEvaluator::initialize(bool test_setup)
 		NLPFirstOrder::initialize(test_setup);
 		return;
 	}
-  NLPThyraModelEvaluator::initialize(test_setup);
+  NLPThyraModelEvaluatorBase::initialize(test_setup);
   NLPFirstOrder::initialize(test_setup);
 }
 
@@ -199,7 +200,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
     else {
       model_outArgs.set_W(model_->create_W().assert_not_null());
       if(p_idx_>=0)
-        model_outArgs.set_DfDp(p_idx_,model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL));
+        model_outArgs.set_DfDp(p_idx_,Thyra::create_DfDp_mv(*model_,p_idx_,MEB::DERIV_MV_BY_COL));
     }
     if(model_inArgs.supports(MEB::IN_ARG_alpha)) model_inArgs.set_alpha(0.0);
   }

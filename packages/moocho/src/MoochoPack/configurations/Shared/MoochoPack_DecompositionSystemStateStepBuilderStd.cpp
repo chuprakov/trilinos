@@ -146,26 +146,24 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 			*trase_out << "\nDetected that NLP object supports the NLPFirstOrder interface!\n";
 		*tailored_approach = false;
 	}
-	else {
-		if( *nlp_fod ) {
-			if(trase_out)
-				*trase_out << "\nDetected that NLP object supports the NLPDirect interface!\n";
-			*tailored_approach = true;
-		}
-		else {
-			TEST_FOR_EXCEPTION(
-				true, std::logic_error
-				,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
-				"the NLP object of type \'" << typeid(nlp).name() <<
-				"\' does not support the NLPDirect or "
-				"NLPFirstOrder interfaces!" );
-		}
-	}
+	else if( *nlp_fod ) {
+    if(trase_out)
+      *trase_out << "\nDetected that NLP object supports the NLPDirect interface!\n";
+    *tailored_approach = true;
+  }
+  else {
+    TEST_FOR_EXCEPTION(
+      true, std::logic_error
+      ,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
+      "the NLP object of type \'" << typeid(nlp).name() <<
+      "\' does not support the NLPFirstOrder or NLPDirect "
+      "interfaces!" );
+  }
 	if( *nlp_soi ) {
 		if(trase_out)
 			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrder interface!\n";
 	}
-
+  
 	//
 	// Process the options
 	//
@@ -189,7 +187,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 		cov_.max_dof_quasi_newton_dense_ = uov_.max_dof_quasi_newton_dense_;
 
 	// Decide what type of range-space matrix to use
-	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
+	if( r && uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
 		const bool use_orth = (dof*dof/r) <= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
 		if(trase_out)
 			*trase_out
@@ -213,13 +211,13 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 }
 
 void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
-	std::ostream                                           *trase_out
-	,NLP                                                   &nlp
-	,NLPFirstOrder                                         *nlp_foi
-	,NLPSecondOrder                                        *nlp_soi
-	,NLPDirect                                             *nlp_fod
-	,bool                                                  tailored_approach
-	,Teuchos::RefCountPtr<DecompositionSystem>        *decomp_sys
+  std::ostream                                       *trase_out
+  ,NLP                                               &nlp
+  ,NLPFirstOrder                                     *nlp_foi
+  ,NLPSecondOrder                                    *nlp_soi
+  ,NLPDirect                                         *nlp_fod
+  ,bool                                              tailored_approach
+  ,Teuchos::RefCountPtr<DecompositionSystem>         *decomp_sys
 	)
 {
 	namespace mmp = MemMngPack;
@@ -335,14 +333,14 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 }
 
 void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
-	std::ostream                                           *trase_out
-	,NLP                                                   &nlp
-	,NLPFirstOrder                                         *nlp_foi
-	,NLPSecondOrder                                        *nlp_soi
-	,NLPDirect                                             *nlp_fod
-	,bool                                                  tailored_approach
-	,const Teuchos::RefCountPtr<DecompositionSystem>  &decomp_sys
-	,const Teuchos::RefCountPtr<NLPAlgoState>         &state
+  std::ostream                                           *trase_out
+  ,NLP                                                   &nlp
+  ,NLPFirstOrder                                         *nlp_foi
+  ,NLPSecondOrder                                        *nlp_soi
+  ,NLPDirect                                             *nlp_fod
+  ,bool                                                  tailored_approach
+  ,const Teuchos::RefCountPtr<DecompositionSystem>       &decomp_sys
+  ,const Teuchos::RefCountPtr<NLPAlgoState>              &state
 	)
 {
 	namespace mmp = MemMngPack;
@@ -517,17 +515,17 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 }
 
 void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
-	std::ostream                                                      *trase_out
-	,NLP                                                              &nlp
-	,NLPFirstOrder                                                    *nlp_foi
-	,NLPSecondOrder                                                   *nlp_soi
-	,NLPDirect                                                        *nlp_fod
-	,bool                                                             tailored_approach
-	,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
-	,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
-	,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
-	,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
-	,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
+  std::ostream                                                 *trase_out
+  ,NLP                                                         &nlp
+  ,NLPFirstOrder                                               *nlp_foi
+  ,NLPSecondOrder                                              *nlp_soi
+  ,NLPDirect                                                   *nlp_fod
+  ,bool                                                        tailored_approach
+  ,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
+  ,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
+  ,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
+  ,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
+  ,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
 	)
 {
 	namespace mmp = MemMngPack;

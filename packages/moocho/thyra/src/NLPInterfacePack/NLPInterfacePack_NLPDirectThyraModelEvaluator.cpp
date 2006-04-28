@@ -38,6 +38,7 @@
 #include "AbstractLinAlgPack_VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack_BasisSystem.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "Thyra_ModelEvaluatorHelpers.hpp"
 #include "Thyra_DetachedVectorView.hpp"
 #include "Teuchos_AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -95,7 +96,7 @@ void NLPDirectThyraModelEvaluator::initialize(bool test_setup)
 		NLPDirect::initialize(test_setup);
 		return;
 	}
-  NLPThyraModelEvaluator::initialize(test_setup);
+  NLPThyraModelEvaluatorBase::initialize(test_setup);
   NLPDirect::initialize(test_setup);
 }
 
@@ -154,7 +155,6 @@ void NLPDirectThyraModelEvaluator::calc_point(
   using AbstractLinAlgPack::MatrixOpThyra;
   using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef Thyra::ModelEvaluatorBase MEB;
-  typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   typedef MEB::DerivativeMultiVector<value_type> DerivMV;
   typedef MEB::Derivative<value_type> Deriv;
   //
@@ -163,6 +163,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   const RefCountPtr<FancyOStream> out       = this->getOStream();
   const Teuchos::EVerbosityLevel  verbLevel = this->getVerbLevel();
   Teuchos::OSTab tab(out);
+  typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
   VOTSME modelOutputTempState(model_,out,verbLevel);
   if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
     *out << "\nEntering MoochoPack::NLPDirectThyraModelEvaluator::calc_point(...) ...\n";
@@ -194,7 +195,7 @@ void NLPDirectThyraModelEvaluator::calc_point(
   }
   if( rGf || D ) {
     if(thyra_N_.get()==NULL)
-      thyra_N_ = model_->create_DfDp_mv(p_idx_,MEB::DERIV_MV_BY_COL).getMultiVector();
+      thyra_N_ = Thyra::create_DfDp_mv(*model_,p_idx_,MEB::DERIV_MV_BY_COL).getMultiVector();
     model_outArgs.set_DfDp(p_idx_,DerivMV(thyra_N_.assert_not_null(),MEB::DERIV_MV_BY_COL));
   }
   //

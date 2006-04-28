@@ -134,8 +134,9 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nf_kp1        = " << s.f().get_k(+1);
 		if(m)
-			out << "\n||c_kp1||inf = " << s.c().get_k(+1).norm_inf() << std::endl;
-	}
+			out << "\n||c_kp1||inf = " << s.c().get_k(+1).norm_inf();
+    out << std::endl;
+  }
 
 	if( m && static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nc_kp1 =\n" << s.c().get_k(+1); 

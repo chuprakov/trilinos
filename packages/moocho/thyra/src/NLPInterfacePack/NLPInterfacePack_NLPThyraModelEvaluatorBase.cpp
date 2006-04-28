@@ -31,7 +31,7 @@
 // var_dep() and var_indep() and for not much else.
 //
 
-#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPThyraModelEvaluatorBase.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "AbstractLinAlgPack_ThyraAccessors.hpp"
@@ -51,7 +51,7 @@ namespace NLPInterfacePack {
 	
 // Overridden public members from NLP
 
-void NLPThyraModelEvaluator::initialize(bool test_setup)
+void NLPThyraModelEvaluatorBase::initialize(bool test_setup)
 {
 	if(initialized_) {
 		NLPObjGrad::initialize(test_setup);
@@ -63,86 +63,86 @@ void NLPThyraModelEvaluator::initialize(bool test_setup)
 	initialized_ = true;
 }
 
-bool NLPThyraModelEvaluator::is_initialized() const
+bool NLPThyraModelEvaluatorBase::is_initialized() const
 {
 	return initialized_;
 }
 
 NLP::vec_space_ptr_t
-NLPThyraModelEvaluator::space_x() const
+NLPThyraModelEvaluatorBase::space_x() const
 {
 	return space_x_;
 }
 
 NLP::vec_space_ptr_t
-NLPThyraModelEvaluator::space_c() const
+NLPThyraModelEvaluatorBase::space_c() const
 {
 	return space_c_;
 }
 
-size_type NLPThyraModelEvaluator::num_bounded_x() const
+size_type NLPThyraModelEvaluatorBase::num_bounded_x() const
 {
 	return num_bounded_x_;
 }
 
-void NLPThyraModelEvaluator::force_xinit_in_bounds(bool force_xinit_in_bounds)
+void NLPThyraModelEvaluatorBase::force_xinit_in_bounds(bool force_xinit_in_bounds)
 {
 	force_xinit_in_bounds_ = force_xinit_in_bounds;
 }
 
-bool NLPThyraModelEvaluator::force_xinit_in_bounds() const
+bool NLPThyraModelEvaluatorBase::force_xinit_in_bounds() const
 {
 	return force_xinit_in_bounds_;
 }
 
-const Vector& NLPThyraModelEvaluator::xinit() const
+const Vector& NLPThyraModelEvaluatorBase::xinit() const
 {
 	return *xinit_;
 }
 
-const Vector& NLPThyraModelEvaluator::xl() const
+const Vector& NLPThyraModelEvaluatorBase::xl() const
 {
 	return *xl_;
 }
 
-const Vector& NLPThyraModelEvaluator::xu() const
+const Vector& NLPThyraModelEvaluatorBase::xu() const
 {
 	return *xu_;
 }
 
-value_type NLPThyraModelEvaluator::max_var_bounds_viol() const
+value_type NLPThyraModelEvaluatorBase::max_var_bounds_viol() const
 {
 	return 1e-5; // I have no idea?
 }
 
-void NLPThyraModelEvaluator::set_f(value_type* f)
+void NLPThyraModelEvaluatorBase::set_f(value_type* f)
 {
 	NLP::set_f(f);
   f_updated_ = false;
 }
 
-void NLPThyraModelEvaluator::set_c(VectorMutable* c)
+void NLPThyraModelEvaluatorBase::set_c(VectorMutable* c)
 {
 	NLP::set_c(c);
   c_updated_ = false;
 }
 
-void NLPThyraModelEvaluator::unset_quantities()
+void NLPThyraModelEvaluatorBase::unset_quantities()
 {
   NLP::unset_quantities();
 }
 
-void NLPThyraModelEvaluator::scale_f( value_type scale_f )
+void NLPThyraModelEvaluatorBase::scale_f( value_type scale_f )
 {
 	obj_scale_ = scale_f;
 }
 
-value_type NLPThyraModelEvaluator::scale_f() const
+value_type NLPThyraModelEvaluatorBase::scale_f() const
 {
 	return obj_scale_;
 }
 
-void NLPThyraModelEvaluator::report_final_solution(
+void NLPThyraModelEvaluatorBase::report_final_solution(
 	const Vector&    x
 	,const Vector*   lambda
 	,const Vector*   nu
@@ -164,7 +164,7 @@ void NLPThyraModelEvaluator::report_final_solution(
 		if(p_idx_ >= 0)
       model_finalPoint.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
     else if( model_finalPoint.Np() >= 1 )
-      model_finalPoint.set_p(0,model_->get_p_init(0).assert_not_null());
+      model_finalPoint.set_p(0,model_->getNominalValues().get_p(0)); // Assume we will find in it zero!
   }
 	else { // no dependent vars
     TEST_FOR_EXCEPT(p_idx_<0);
@@ -175,7 +175,7 @@ void NLPThyraModelEvaluator::report_final_solution(
 
 // Overridden public members from NLPObjGrad
 
-void NLPThyraModelEvaluator::set_Gf(VectorMutable* Gf)
+void NLPThyraModelEvaluatorBase::set_Gf(VectorMutable* Gf)
 {
   NLPObjGrad::set_Gf(Gf);
   Gf_updated_ = false;
@@ -183,7 +183,7 @@ void NLPThyraModelEvaluator::set_Gf(VectorMutable* Gf)
 
 // Overridden protected members from NLP
 
-void NLPThyraModelEvaluator::imp_calc_f(
+void NLPThyraModelEvaluatorBase::imp_calc_f(
 	const Vector& x, bool newx
 	,const ZeroOrderInfo& zero_order_info
   ) const
@@ -191,7 +191,7 @@ void NLPThyraModelEvaluator::imp_calc_f(
   evalModel(x,newx,&zero_order_info,NULL);
 }
 
-void NLPThyraModelEvaluator::imp_calc_c(
+void NLPThyraModelEvaluatorBase::imp_calc_c(
 	const Vector& x, bool newx
 	,const ZeroOrderInfo& zero_order_info
   ) const
@@ -201,7 +201,7 @@ void NLPThyraModelEvaluator::imp_calc_c(
 
 // Overridden protected members from NLPObjGrad
 
-void NLPThyraModelEvaluator::imp_calc_Gf(
+void NLPThyraModelEvaluatorBase::imp_calc_Gf(
 	const Vector& x, bool newx
 	,const ObjGradInfo& obj_grad_info
   ) const
@@ -212,11 +212,11 @@ void NLPThyraModelEvaluator::imp_calc_Gf(
 
 // Protected functions to be used by subclasses
 
-NLPThyraModelEvaluator::NLPThyraModelEvaluator()
+NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
 	:initialized_(false),obj_scale_(1.0)
 {}
 
-void NLPThyraModelEvaluator::initializeBase(
+void NLPThyraModelEvaluatorBase::initializeBase(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
@@ -234,27 +234,35 @@ void NLPThyraModelEvaluator::initializeBase(
 	using AbstractLinAlgPack::VectorMutableThyra;
 	using AbstractLinAlgPack::MatrixOpNonsingThyra;
   typedef ::Thyra::ModelEvaluatorBase MEB;
-	
+	//
 	initialized_ = false;
 	model_g_updated_ = model_Dg_updated_ = f_updated_ = c_updated_ = Gf_updated_ = Gc_updated_ = false;
-
-	const char msg_err[] = "NLPThyraModelEvaluator::initialize(...): Errror!";
-  Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
+  //
+	const char msg_err[] = "NLPThyraModelEvaluatorBase::initialize(...): Errror!";
+  Thyra::ModelEvaluatorBase::OutArgs<value_type> model_outArgs = model->createOutArgs();
 	TEST_FOR_EXCEPTION( model.get() == NULL, std::invalid_argument, msg_err );
 	TEST_FOR_EXCEPTION( p_idx >= 0 && ( p_idx > model_outArgs.Np()-1 ), std::invalid_argument, msg_err );
 	TEST_FOR_EXCEPTION( g_idx >= 0 && ( g_idx > model_outArgs.Ng()-1 ), std::invalid_argument, msg_err );
-	TEST_FOR_EXCEPTION( !model_outArgs.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
-  MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
-	TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
-	TEST_FOR_EXCEPTION( model_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
-  if(p_idx >= 0 ) {
-    TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).none(), std::invalid_argument, msg_err );
-    if(g_idx >= 0) {
-      TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDp,g_idx,p_idx).none(), std::invalid_argument, msg_err );
+  //
+	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_x(model->get_x_space());
+	const bool no_model_x = (model_space_x.get() == NULL);
+	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_f(model->get_f_space());
+	const bool no_model_f = (model_space_f.get() == NULL);
+  //
+  if( !no_model_f ) {
+    TEST_FOR_EXCEPTION( !model_outArgs.supports(MEB::OUT_ARG_W), std::invalid_argument, msg_err );
+    MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
+    TEST_FOR_EXCEPTION( model_W_properties.supportsAdjoint==false, std::invalid_argument, msg_err );
+    TEST_FOR_EXCEPTION( model_W_properties.rank==MEB::DERIV_RANK_DEFICIENT, std::invalid_argument, msg_err );
+    if(p_idx >= 0 ) {
+      TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DfDp,p_idx).none(), std::invalid_argument, msg_err );
+      if(g_idx >= 0) {
+        TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDp,g_idx,p_idx).none(), std::invalid_argument, msg_err );
+      }
     }
-  }
-  if(g_idx >= 0) {
-    TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDx,g_idx).none(), std::invalid_argument, msg_err );
+    if(g_idx >= 0) {
+      TEST_FOR_EXCEPTION( model_outArgs.supports(MEB::OUT_ARG_DgDx,g_idx).none(), std::invalid_argument, msg_err );
+    }
   }
 	//
 	model_ = model;
@@ -269,9 +277,10 @@ void NLPThyraModelEvaluator::initializeBase(
     DfDp_supports_op_ = false;
     DfDp_supports_mv_ = false;
   }
-	//
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_x(model_->get_x_space());
-	bool no_model_x = (model_space_x.get() == NULL);
+  //
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_initialGuess = model->getNominalValues();
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_lowerBounds = model->getLowerBounds();
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_upperBounds = model->getUpperBounds();
 	//
 	VectorSpace::space_ptr_t space_xI;
   if(p_idx >= 0)
@@ -293,8 +302,6 @@ void NLPThyraModelEvaluator::initializeBase(
 	} 
 	TEST_FOR_EXCEPT(!space_x_.get());
 
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > model_space_f(model_->get_f_space());
-	bool no_model_f = (model_space_f.get() == NULL);
 	//
 	if(!no_model_f)
 		space_c_ = Teuchos::rcp(new VectorSpaceThyra(model_space_f));
@@ -322,13 +329,13 @@ void NLPThyraModelEvaluator::initializeBase(
 		if(!no_model_x) {
 			VectorSpace::vec_mut_ptr_t xinit_D = xinit_->sub_view(basis_sys_->var_dep());
 			if(model_x0)  copy_from_model_x( model_x0, xinit_D.get() );
-			else       copy_from_model_x( model_->get_x_init().get(), &*xinit_D );
+			else       copy_from_model_x( model_initialGuess.get_x().get(), &*xinit_D );
 			VectorSpace::vec_mut_ptr_t xl_D = xl_->sub_view(basis_sys_->var_dep());
 			if(model_xL)  copy_from_model_x( model_xL, xl_D.get() );
-			else       copy_from_model_x( model_->get_x_lower_bounds().get(), &*xl_D );
+			else       copy_from_model_x( model_lowerBounds.get_x().get(), &*xl_D );
 			VectorSpace::vec_mut_ptr_t xu_D = xu_->sub_view(basis_sys_->var_dep());
 			if(model_xU)  copy_from_model_x( model_xU, xu_D.get() );
-			else       copy_from_model_x( model_->get_x_upper_bounds().get(), &*xu_D );
+			else       copy_from_model_x( model_upperBounds.get_x().get(), &*xu_D );
 		}
 
 	}
@@ -344,13 +351,13 @@ void NLPThyraModelEvaluator::initializeBase(
     Range1D var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
     VectorSpace::vec_mut_ptr_t xinit_I = xinit_->sub_view(var_indep);
     if(model_p0) copy_from_model_p( model_p0, &*xinit_I );
-    else      copy_from_model_p( model_->get_p_init(p_idx).get(), &*xinit_I );
+    else      copy_from_model_p( model_initialGuess.get_p(p_idx).get(), &*xinit_I );
     VectorSpace::vec_mut_ptr_t xl_I = xl_->sub_view(var_indep);
     if(model_pL) copy_from_model_p( model_pL, &*xl_I );
-    else      copy_from_model_p( model_->get_p_lower_bounds(p_idx).get(), &*xl_I );
+    else      copy_from_model_p( model_lowerBounds.get_p(p_idx).get(), &*xl_I );
     VectorSpace::vec_mut_ptr_t xu_I = xu_->sub_view(var_indep);
     if(model_pU) copy_from_model_p( model_pU, &*xu_I );
-    else      copy_from_model_p( model_->get_p_upper_bounds(p_idx).get(), &*xu_I );
+    else      copy_from_model_p( model_upperBounds.get_p(p_idx).get(), &*xu_I );
   }
   
 	if(g_idx >= 0) {
@@ -359,28 +366,28 @@ void NLPThyraModelEvaluator::initializeBase(
 
 }
 
-void NLPThyraModelEvaluator::assert_is_initialized() const
+void NLPThyraModelEvaluatorBase::assert_is_initialized() const
 {
 	TEST_FOR_EXCEPTION(
 		!is_initialized(), NLP::UnInitialized
-		,"NLPThyraModelEvaluator::assert_is_initialized() : Error, "
-		"NLPThyraModelEvaluator::initialize() has not been called yet."
+		,"NLPThyraModelEvaluatorBase::assert_is_initialized() : Error, "
+		"NLPThyraModelEvaluatorBase::initialize() has not been called yet."
 		);
 }
 
-void NLPThyraModelEvaluator::copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const
+void NLPThyraModelEvaluatorBase::copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const
 {
   if(!model_x) return;
 	*x_D = AbstractLinAlgPack::VectorMutableThyra(Teuchos::rcp(const_cast<Thyra::VectorBase<value_type>*>(model_x),false));
 }
 
-void NLPThyraModelEvaluator::copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const
+void NLPThyraModelEvaluatorBase::copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const
 {
   if(!model_p) return;
 	*x_I = AbstractLinAlgPack::VectorMutableThyra(Teuchos::rcp(const_cast<Thyra::VectorBase<value_type>*>(model_p),false));
 }
 
-void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
+void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
   const Vector                                      &x
   ,bool                                             newx
   ,const ZeroOrderInfo                              *zero_order_info
@@ -464,17 +471,19 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
     if(g_idx_>=0) {
       if(p_idx_>=0) {
         const Range1D
-          var_dep   = basis_sys_->var_dep(),
-          var_indep = basis_sys_->var_indep();
-        model_outArgs.set_DgDx(
-          g_idx_
-          ,DerivMV(
-            rcp_const_cast<Thyra::VectorBase<value_type> >(
-              dyn_cast<VectorMutableThyra>(*Gf->sub_view(var_dep)).thyra_vec()
-              ).assert_not_null()
-            ,MEB::DERIV_TRANS_MV_BY_ROW
-            )
-          );
+          var_dep   = ( basis_sys_.get() ? basis_sys_->var_dep() : Range1D::Invalid ),
+          var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
+        if( var_dep.size() ) {
+          model_outArgs.set_DgDx(
+            g_idx_
+            ,DerivMV(
+              rcp_const_cast<Thyra::VectorBase<value_type> >(
+                dyn_cast<VectorMutableThyra>(*Gf->sub_view(var_dep)).thyra_vec()
+                ).assert_not_null()
+              ,MEB::DERIV_TRANS_MV_BY_ROW
+              )
+            );
+        }
         model_outArgs.set_DgDp(
           g_idx_,p_idx_
           ,DerivMV(
@@ -493,7 +502,7 @@ void NLPThyraModelEvaluator::preprocessBaseInOutArgs(
   if(c_out)  *c_out  = c;
 }
 
-void NLPThyraModelEvaluator::postprocessBaseOutArgs(
+void NLPThyraModelEvaluatorBase::postprocessBaseOutArgs(
   Thyra::ModelEvaluatorBase::OutArgs<value_type>        *model_outArgs_inout
   ,VectorMutable                                        *Gf
   ,value_type                                           *f
@@ -521,10 +530,12 @@ void NLPThyraModelEvaluator::postprocessBaseOutArgs(
   if( Gf && !Gf_updated_ ) {
     if(g_idx_>=0) {
       const Range1D
-        var_dep   = basis_sys_->var_dep(),
-        var_indep = basis_sys_->var_indep();
-      Gf->sub_view(var_dep)->has_changed();
-      Gf->sub_view(var_indep)->has_changed();
+        var_dep   = ( basis_sys_.get() ? basis_sys_->var_dep() : Range1D::Invalid ),
+        var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
+      if(var_dep.size())
+        Gf->sub_view(var_dep)->has_changed();
+      if(var_indep.size())
+        Gf->sub_view(var_indep)->has_changed();
     }
     else {
       *Gf = 0.0;
@@ -535,7 +546,7 @@ void NLPThyraModelEvaluator::postprocessBaseOutArgs(
 
 // private
 
-void NLPThyraModelEvaluator::evalModel( 
+void NLPThyraModelEvaluatorBase::evalModel( 
   const Vector            &x
   ,bool                   newx
   ,const ZeroOrderInfo    *zero_order_info
@@ -543,6 +554,16 @@ void NLPThyraModelEvaluator::evalModel(
   ) const
 {
   typedef Thyra::ModelEvaluatorBase MEB;
+  //
+  // Get output and verbosity
+  //
+  const Teuchos::RefCountPtr<Teuchos::FancyOStream> out       = this->getOStream();
+  const Teuchos::EVerbosityLevel                    verbLevel = this->getVerbLevel();
+  Teuchos::OSTab tab(out);
+  typedef Teuchos::VerboseObjectTempState<MEB> VOTSME;
+  VOTSME modelOutputTempState(model_,out,verbLevel);
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nEntering MoochoPack::NLPFirstOrderThyraModelEvaluator::evalModel(...) ...\n";
   //
   // Set the input and output arguments
   //
@@ -563,6 +584,9 @@ void NLPThyraModelEvaluator::evalModel(
   // Postprocess the output arguments
   //
   postprocessBaseOutArgs(&model_outArgs,Gf,f,c);
+  //
+  if(out.get() && static_cast<int>(verbLevel) >= static_cast<int>(Teuchos::VERB_LOW))
+    *out << "\nLeaving MoochoPack::NLPFirstOrderThyraModelEvaluator::evalModel(...) ...\n";
 }
 
 }	// end namespace NLPInterfacePack

@@ -328,15 +328,13 @@ bool EvalNewPointStd_Step::do_step(
 		nlp.calc_f( x, false);
 	}
 	nlp.unset_quantities();
-
+  
 	// Check for NaN and Inf
-	if(algo.algo_cntr().check_results()) {
-		assert_print_nan_inf(f_iq.get_k(0),"f_k",true,&out); 
-		if(m)
-			assert_print_nan_inf(c_iq->get_k(0),"c_k",true,&out); 
-		assert_print_nan_inf(Gf_iq.get_k(0),"Gf_k",true,&out); 
-	}
-
+  assert_print_nan_inf(f_iq.get_k(0),"f_k",true,&out); 
+  if(m)
+    assert_print_nan_inf(c_iq->get_k(0),"c_k",true,&out); 
+  assert_print_nan_inf(Gf_iq.get_k(0),"Gf_k",true,&out); 
+  
 	// Print the iteration quantities before we test the derivatives for debugging
 
 	// Update the selection of dependent and independent variables

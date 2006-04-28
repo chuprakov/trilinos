@@ -1065,4 +1065,3 @@ MAINTAINERCLEANFILES = Makefile.in
 # ------------------------------------------------------------------------
 all-libs:
 	$(MAKE) libmoocho.a
-	cd $(top_builddir)/../thyra ; $(MAKE) all-libs

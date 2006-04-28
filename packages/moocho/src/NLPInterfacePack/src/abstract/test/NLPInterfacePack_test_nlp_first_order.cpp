@@ -44,6 +44,7 @@
 #include "AbstractLinAlgPack_MatrixOp.hpp"
 #include "AbstractLinAlgPack_MatrixOpOut.hpp"
 #include "TestingHelperPack_update_success.hpp"
+#include "Teuchos_FancyOStream.hpp"
 
 bool NLPInterfacePack::test_nlp_first_order(
 	NLPFirstOrder                                 *nlp
@@ -56,6 +57,9 @@ bool NLPInterfacePack::test_nlp_first_order(
 
 	bool result;
 	bool success = true;
+  
+  Teuchos::VerboseObjectTempState<NLP>
+    nlpOutputTempState(Teuchos::rcp(nlp,false),Teuchos::getFancyOStream(Teuchos::rcp(out,false)),Teuchos::VERB_LOW);
 
 	if(out)
 		*out << "\n*********************************"

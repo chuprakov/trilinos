@@ -11,6 +11,8 @@ my $base_options =
 ." --no-use-prec"
 ; # Can be overridden by --extra-args!
 
+my $do_serial = 1;
+
 my $mpi_go = "mpirun -machinefile ~/bin/linux/machinelist-sahp6556 -np";
 
 my $exe = "$base_base_dir/NLPThyraEpetraAdvDiffReactOpt.exe";
@@ -53,6 +55,7 @@ my $inv_options_file;
 my $extra_args = "";
 
 GetOptions(
+  "do-serial!"              => \$do_serial,
   "mpi-go=s"                => \$mpi_go,
   "exe=s"                   => \$exe,
   "len-x=f"                 => \$len_x,
@@ -101,7 +104,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
   }
 
   my $num_procs = $starting_num_procs;
-  my $vary_num_procs = ( $num_procs < $max_num_procs );
+  my $vary_num_procs = ( $num_procs < $max_num_procs && !$do_serial );
   for( ; $num_procs <= $max_num_procs; $num_procs *= 2 ) {
 
     if($vary_num_procs) {
@@ -118,7 +121,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
     }
 
     my $cmnd_first =
-      "$mpi_go $num_procs"
+      ( $do_serial ? "" : "$mpi_go $num_procs" )
       ." $exe $base_options"
       ." --len-x=$len_x --len-y=$len_y --local-nx=$local_nx --local-ny=$local_ny"
       ." --np=$model_np"
@@ -278,11 +281,11 @@ sub run_case {
 
       chdir "..";
 
-      my $dir_name = "fwd";
+      $dir_name = "fwd";
       mkdir $dir_name, 0777;
       chdir $dir_name;
 
-      my $fwdcmnd =
+      $fwdcmnd =
         $cmnd
         ." --moocho-options-file=$fwd_options_file"
         ." --do-sim --use-first-order --x-guess-file=../fwd-init/x.out --p-guess-file=../fwd-init/p.out --scale-p-guess=$p_solu_scale"

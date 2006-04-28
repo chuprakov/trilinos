@@ -47,12 +47,12 @@ ABSTRACT_LIN_ALG_PACK_THYRA_CPP = \
   $(srcdir)/AbstractLinAlgPack/AbstractLinAlgPack_ThyraAccessors.cpp
 
 NLP_INTERFACE_PACK_THYRA_HPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.hpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluatorBase.hpp\
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp\
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp
 
 NLP_INTERFACE_PACK_THYRA_CPP = \
-  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluator.cpp\
+  $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPThyraModelEvaluatorBase.cpp\
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp\
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
@@ -61,9 +61,6 @@ NLP_INTERFACE_PACK_THYRA_CPP = \
 #
 
 include $(top_builddir)/Makefile.export.moocho
-
-# ToDo: Update this once MOOCHO only directly depends on RTOp and then
-# we will have to include Makefile.export.thyra here!
 
 if USING_GNUMAKE
 EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(MOOCHO_INCLUDES))

@@ -29,7 +29,7 @@
 #ifndef NLPIP_NLP_DIRECT_THYRA_MODEL_EVALUATOR_HPP
 #define NLPIP_NLP_DIRECT_THYRA_MODEL_EVALUATOR_HPP
 
-#include "NLPInterfacePack_NLPThyraModelEvaluator.hpp"
+#include "NLPInterfacePack_NLPThyraModelEvaluatorBase.hpp"
 #include "NLPInterfacePack_NLPDirect.hpp"
 
 namespace NLPInterfacePack {
@@ -41,7 +41,7 @@ namespace NLPInterfacePack {
  */
 class NLPDirectThyraModelEvaluator
   : virtual public NLPDirect
-  , virtual public NLPThyraModelEvaluator
+  , virtual public NLPThyraModelEvaluatorBase
 {
 public:
 

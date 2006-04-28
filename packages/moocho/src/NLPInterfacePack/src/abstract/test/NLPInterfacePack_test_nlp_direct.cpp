@@ -51,11 +51,13 @@ bool NLPInterfacePack::test_nlp_direct(
 	,std::ostream                                *out
 	)
 {
-	namespace rcp = MemMngPack;
 	using TestingHelperPack::update_success;
 
 	bool result;
 	bool success = true;
+  
+  Teuchos::VerboseObjectTempState<NLP>
+    nlpOutputTempState(Teuchos::rcp(nlp,false),Teuchos::getFancyOStream(Teuchos::rcp(out,false)),Teuchos::VERB_LOW);
 
 	if(out)
 		*out

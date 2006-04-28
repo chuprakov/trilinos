@@ -26,8 +26,8 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef NLPIP_NLP_THYRA_MODEL_EVALUATOR_HPP
-#define NLPIP_NLP_THYRA_MODEL_EVALUATOR_HPP
+#ifndef NLPIP_NLP_THYRA_MODEL_EVALUATOR_BASE_HPP
+#define NLPIP_NLP_THYRA_MODEL_EVALUATOR_BASE_HPP
 
 #include <vector>
 
@@ -75,7 +75,7 @@ namespace NLPInterfacePack {
  *
  * ToDo: Finish documentation!
  */
-class NLPThyraModelEvaluator : virtual public NLPObjGrad {
+class NLPThyraModelEvaluatorBase : virtual public NLPObjGrad {
 public:
 
 	/** @name Overridden public members from NLP */
@@ -163,7 +163,7 @@ protected:
   //@{
 
 	/** Initialize to uninitialized */
-	NLPThyraModelEvaluator();
+	NLPThyraModelEvaluatorBase();
 
 	/** \brief Initialize given a <tt>Thyra::ModelEvaluator</tt> and
 	 * a description of how to interpret it.
@@ -277,8 +277,8 @@ protected:
     ,const ObjGradInfo      *obj_grad_info    // != NULL if obj-grad and below info
     ) const;
 
-};	// end class NLPThyraModelEvaluator
+};	// end class NLPThyraModelEvaluatorBase
 
 }	// end namespace NLPInterfacePack
 
-#endif	// NLPIP_NLP_THYRA_MODEL_EVALUATOR_HPP
+#endif	// NLPIP_NLP_THYRA_MODEL_EVALUATOR_BASE_HPP

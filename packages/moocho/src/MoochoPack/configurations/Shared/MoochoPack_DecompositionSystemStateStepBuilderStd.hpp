@@ -113,9 +113,9 @@ public:
 	void process_nlp_and_options(
 		std::ostream          *trase_out
 		,NLP                  &nlp
-		,NLPFirstOrder    **nlp_foi
-		,NLPSecondOrder   **nlp_soi
-		,NLPDirect  **nlp_fod
+		,NLPFirstOrder        **nlp_foi
+		,NLPSecondOrder       **nlp_soi
+		,NLPDirect            **nlp_fod
 		,bool                 *tailored_approach
 		);
 	///
@@ -124,13 +124,13 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	void create_decomp_sys(
-		std::ostream                                                     *trase_out
-		,NLP                                                             &nlp
-		,NLPFirstOrder                                               *nlp_foi
-		,NLPSecondOrder                                              *nlp_soi
-		,NLPDirect                                             *nlp_fod
-		,bool                                                            tailored_approach
-		,Teuchos::RefCountPtr<DecompositionSystem>                  *decomp_sys
+		std::ostream                                       *trase_out
+		,NLP                                               &nlp
+		,NLPFirstOrder                                     *nlp_foi
+		,NLPSecondOrder                                    *nlp_soi
+		,NLPDirect                                         *nlp_fod
+		,bool                                              tailored_approach
+		,Teuchos::RefCountPtr<DecompositionSystem>         *decomp_sys
 		);
 	///
 	/** Add the common iteration quantities to the state object.
@@ -138,14 +138,14 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	void add_iter_quantities(
-		std::ostream                                                     *trase_out
-		,NLP                                                             &nlp
-		,NLPFirstOrder                                               *nlp_foi
-		,NLPSecondOrder                                              *nlp_soi
+		std::ostream                                           *trase_out
+		,NLP                                                   &nlp
+		,NLPFirstOrder                                         *nlp_foi
+		,NLPSecondOrder                                        *nlp_soi
 		,NLPDirect                                             *nlp_fod
-		,bool                                                            tailored_approach
-		,const Teuchos::RefCountPtr<DecompositionSystem>            &decomp_sys
-		,const Teuchos::RefCountPtr<NLPAlgoState>                      &state
+		,bool                                                  tailored_approach
+		,const Teuchos::RefCountPtr<DecompositionSystem>       &decomp_sys
+		,const Teuchos::RefCountPtr<NLPAlgoState>              &state
 		);
 
 	///
@@ -154,14 +154,14 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	void create_eval_new_point(
-		std::ostream                                                      *trase_out
-		,NLP                                                              &nlp
-		,NLPFirstOrder                                                *nlp_foi
-		,NLPSecondOrder                                               *nlp_soi
-		,NLPDirect                                              *nlp_fod
-		,bool                                                             tailored_approach
+		std::ostream                                                 *trase_out
+		,NLP                                                         &nlp
+		,NLPFirstOrder                                               *nlp_foi
+		,NLPSecondOrder                                              *nlp_soi
+		,NLPDirect                                                   *nlp_fod
+		,bool                                                        tailored_approach
 		,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
-		,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>   *eval_new_point_step
+		,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
 		,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
 		,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
 		,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy

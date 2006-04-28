@@ -4,6 +4,9 @@
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "Thyra_MultiVectorSerialization.hpp"
+#include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
+#include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
+#include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
@@ -165,8 +168,13 @@ int main( int argc, char* argv[] )
     double              x0              = 0.0;
     double              p0              = 1.0;
     double              reactionRate    = 1.0;
-    bool                use_direct      = false;
 		bool                do_sim          = false;
+    bool                use_direct      = false;
+    bool                use_black_box   = false;
+    bool                use_finite_diff = true;
+    double              fd_step_len     = 1e-4;
+    double              fwd_newton_tol  = 1e-8;
+    int                 fwd_newton_max_iters  = 20;
     ELOWSFactoryType    lowsFactoryType = LOWSF_AMESOS;
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
     std::string         lowsfParamsFile = "";
@@ -196,8 +204,13 @@ int main( int argc, char* argv[] )
 		clp.setOption( "x0", &x0, "Initial guess for the state." );
 		clp.setOption( "p0", &p0, "Initial guess or nonminal value for optimization parameters." );
 		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
-		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
 		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
+		clp.setOption( "black-box", "all-at-once",  &use_black_box, "Flag for if we do black-box NAND or all-at-once SAND." );
+		//clp.setOption( "use-finite-diff", "use-finite-diff",  &use_finite_diff, "Flag for if we are using finite differences or not." );
+		clp.setOption( "fd-step-len", &fd_step_len, "The finite-difference step length." );
+		clp.setOption( "fwd-newton-tol", &fwd_newton_tol, "Nonlinear residual tolerance for the forward Newton solve." );
+		clp.setOption( "fwd-newton-max-iters", &fwd_newton_max_iters, "Max number of iterations for the forward Newton solve." );
 		clp.setOption( "lowsf", &lowsFactoryType
                    ,numLOWSFactoryTypes,LOWSFactoryTypeValues,LOWSFactoryTypeNames
                    ,"The implementation for the LinearOpWithSolveFactory object used to solve the state linear systems" );
@@ -251,10 +264,9 @@ int main( int argc, char* argv[] )
       << "\n***"
       << "\n*** NLPThyraEpetraAdvDiffReactOptMain, numProcs="<<numProcs
       << "\n***\n";
-
     
 		//
-		// Create the NLP
+		// Create the Thyra::ModelEvaluator object
 		//
 
     *out << "\nCreate the GLpApp::GLpYUEpetraDataPool object ...\n";
@@ -330,51 +342,82 @@ int main( int argc, char* argv[] )
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
-    Thyra::EpetraModelEvaluator thyraModel; // Sets default options!
-    thyraModel.setOStream(journalOut);
-    thyraModel.initialize(Teuchos::rcp(&epetraModel,false),lowsFactory);
+    Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
+      epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator()); // Sets default options!
+    epetraThyraModel->setOStream(journalOut);
+    epetraThyraModel->initialize(Teuchos::rcp(&epetraModel,false),lowsFactory);
+
+    *out
+      << "\nnx = " << epetraThyraModel->get_x_space()->dim()
+      << "\nnp = " << epetraThyraModel->get_p_space(0)->dim() << "\n";
+
 
     if(matchingVecFile != "") {
       *out << "\nReading the matching vector \'q\' from the file(s) with base name \""<<matchingVecFile<<"\" ...\n";
       epetraModel.set_q(
         Thyra::get_Epetra_Vector(
-          *epetraModel.get_x_map(),readVectorFromFile(matchingVecFile,thyraModel.get_x_space()
+          *epetraModel.get_x_map(),readVectorFromFile(matchingVecFile,epetraThyraModel->get_x_space()
             )
           )
         );
     }
     
     if(1) {
-      Thyra::ModelEvaluatorBase::InArgs<double> thyraModel_initialGuess = thyraModel.createInArgs();
+      Thyra::ModelEvaluatorBase::InArgs<double> epetraThyraModel_initialGuess = epetraThyraModel->createInArgs();
       if(stateGuessFileBase != "") {
         *out << "\nReading the guess of the state \'x\' from the file(s) with base name \""<<stateGuessFileBase<<"\" ...\n";
-        thyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,thyraModel.get_x_space(),scaleStateGuess));
+        epetraThyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,epetraThyraModel->get_x_space(),scaleStateGuess));
       }
       if(paramGuessFileBase != "") {
         *out << "\nReading the guess of the parameters \'p\' from the file(s) with base name \""<<paramGuessFileBase<<"\" ...\n";
-        thyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFileBase,thyraModel.get_p_space(0),scaleParamGuess));
+        epetraThyraModel_initialGuess.set_p(0,readVectorFromFile(paramGuessFileBase,epetraThyraModel->get_p_space(0),scaleParamGuess));
       }
-      thyraModel.setInitialGuess(thyraModel_initialGuess);
+      epetraThyraModel->setInitialGuess(epetraThyraModel_initialGuess);
     }
+
+		//
+		// Create the NLP
+		//
     
     Teuchos::RefCountPtr<NLP> nlp;
-    if(use_direct) {
-      nlp = rcp(
-        new NLPDirectThyraModelEvaluator(
-          Teuchos::rcp(&thyraModel,false)
-          ,do_sim ? -1 : 0
-          ,do_sim ? -1 : 0
-          )
-        );
+
+    if(do_sim) {
+      nlp = rcp(new NLPFirstOrderThyraModelEvaluator(epetraThyraModel,-1,-1));
     }
     else {
-      nlp = rcp(
-        new NLPFirstOrderThyraModelEvaluator(
-          Teuchos::rcp(&thyraModel,false)
-          ,do_sim ? -1 : 0
-          ,do_sim ? -1 : 0
-          )
-        );
+      if( use_black_box ) {
+        // Create a Thyra::NonlinearSolverBase object to solve and eliminate the
+        // state variables and the state equations
+        Teuchos::RefCountPtr<Thyra::DampenedNewtonNonlinearSolver<Scalar> >
+          stateSolver = rcp(new Thyra::DampenedNewtonNonlinearSolver<Scalar>()); // ToDo: Replace with MOOCHO!
+        stateSolver->defaultTol(fwd_newton_tol);
+        stateSolver->defaultMaxNewtonIterations(fwd_newton_max_iters);
+        // Create the reduced  Thyra::ModelEvaluator object for p -> g_hat(p)
+        Teuchos::RefCountPtr<Thyra::DefaultStateEliminationModelEvaluator<Scalar> >
+          reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(epetraThyraModel,stateSolver));
+        Teuchos::RefCountPtr<Thyra::ModelEvaluator<Scalar> >
+          finalReducedThyraModel;
+        if(use_finite_diff) {
+          // Create the finite-difference wrapped Thyra::ModelEvaluator object
+          Teuchos::RefCountPtr<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
+            fdReducedThyraModel = rcp(new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(reducedThyraModel));
+          fdReducedThyraModel->fdStepLen(fd_step_len);
+          finalReducedThyraModel = fdReducedThyraModel;
+        }
+        else {
+          finalReducedThyraModel = reducedThyraModel;
+        }
+        // Wrap the reduced NAND Thyra::ModelEvaluator object in an NLP object
+        nlp = rcp(new NLPFirstOrderThyraModelEvaluator(finalReducedThyraModel,0,0));
+      }
+      else {
+        if(use_direct) {
+          nlp = rcp(new NLPDirectThyraModelEvaluator(epetraThyraModel,0,0));
+        }
+        else {
+          nlp = rcp(new NLPFirstOrderThyraModelEvaluator(epetraThyraModel,0,0));
+        }
+      }
     }
     
     //
@@ -390,13 +433,13 @@ int main( int argc, char* argv[] )
 		// Solve the NLP
 		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
 
-    if(stateSoluFileBase != "") {
+    if( stateSoluFileBase != "" && epetraThyraModel->getFinalPoint().get_x().get() ) {
       *out << "\nWriting the state solution \'x\' to the file(s) with base name \""<<stateSoluFileBase<<"\" ...\n";
-      writeVectorToFile(*thyraModel.getFinalPoint().get_x(),stateSoluFileBase);
+      writeVectorToFile(*epetraThyraModel->getFinalPoint().get_x(),stateSoluFileBase);
     }
     if( paramSoluFileBase != "" ) {
       *out << "\nWriting the parameter solution \'p\' to the file(s) with base name \""<<paramSoluFileBase<<"\" ...\n";
-      writeVectorToFile(*thyraModel.getFinalPoint().get_p(0),paramSoluFileBase);
+      writeVectorToFile(*epetraThyraModel->getFinalPoint().get_p(0),paramSoluFileBase);
     }
 
     // Write the LOWSF parameters that were used:
