@@ -29,10 +29,11 @@
 #  include "Epetra_SerialComm.h"
 #endif
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-#  include "Teuchos_FileInputSource.hpp"
-#  include "Teuchos_StringInputSource.hpp"
-#  include "Teuchos_XMLParameterListReader.hpp"
-#  include "Teuchos_XMLParameterListWriter.hpp"
+//#  include "Teuchos_FileInputSource.hpp"
+//#  include "Teuchos_StringInputSource.hpp"
+//#  include "Teuchos_XMLParameterListReader.hpp"
+//#  include "Teuchos_XMLParameterListWriter.hpp"
+#  include "Teuchos_XMLParameterListHelpers.hpp"
 #endif
 
 namespace {
@@ -192,7 +193,9 @@ int main( int argc, char* argv[] )
     std::string         stateSoluFileBase   = "";
     std::string         paramSoluFileBase   = "";
 
-		CommandLineProcessor  clp(false); // Don't throw exceptions
+		CommandLineProcessor  clp;
+    clp.throwExceptions(false);
+    clp.addOutputSetupOptions(true);
 
 		clp.setOption( "len-x", &len_x, "Mesh dimension in the x direction (Overridden by --geom-file-base)." );
 		clp.setOption( "len-y", &len_y, "Mesh dimension in the y direction (Overridden by --geom-file-base)." );
@@ -315,20 +318,16 @@ int main( int argc, char* argv[] )
     Teuchos::RefCountPtr<Teuchos::ParameterList>
       lowsfPL = Teuchos::rcp(new Teuchos::ParameterList("LOWSF"));
     if(1) {
+
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-      Teuchos::XMLParameterListReader xmlPLReader;
       if(lowsfParamsFile.length()) {
-        Teuchos::FileInputSource xmlFile(lowsfParamsFile);
-        Teuchos::XMLObject xmlParams = xmlFile.getObject();
-        lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
+        Teuchos::updateParametersFromXmlFile(lowsfParamsFile,&*lowsfPL);
         *journalOut << "\nLOWSF parameters read from the file \""<<lowsfParamsFile<<"\":\n";
         lowsfPL->print(*OSTab(journalOut).getOStream(),0,true);
       }
       if(lowsfExtraParams.length()) {
-        Teuchos::StringInputSource xmlStr(lowsfExtraParams);
-        Teuchos::XMLObject xmlParams = xmlStr.getObject();
-        lowsfPL->setParameters(xmlPLReader.toParameterList(xmlParams));
-        *journalOut << "\nExtra LOWSF parameters taken from the command-line:\n";
+        Teuchos::updateParametersFromXmlString(lowsfExtraParams,&*lowsfPL);
+        *journalOut << "\nUpdated with extra LOWSF parameters taken from the command-line:\n";
         lowsfPL->print(*OSTab(journalOut).getOStream(),0,true);
       }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
@@ -350,7 +349,6 @@ int main( int argc, char* argv[] )
     *out
       << "\nnx = " << epetraThyraModel->get_x_space()->dim()
       << "\nnp = " << epetraThyraModel->get_p_space(0)->dim() << "\n";
-
 
     if(matchingVecFile != "") {
       *out << "\nReading the matching vector \'q\' from the file(s) with base name \""<<matchingVecFile<<"\" ...\n";
@@ -445,10 +443,7 @@ int main( int argc, char* argv[] )
     // Write the LOWSF parameters that were used:
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
     if(lowsfParamsUsedFile != "" && procRank == 0) {
-      Teuchos::XMLParameterListWriter plWriter;
-      Teuchos::XMLObject xml = plWriter.toXML(*lowsfPL);
-      std::ofstream of(lowsfParamsUsedFile.c_str());
-      of << xml << std::endl;
+      Teuchos::writeParameterListToXmlFile(*lowsfPL,lowsfParamsUsedFile);
     }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
 		
