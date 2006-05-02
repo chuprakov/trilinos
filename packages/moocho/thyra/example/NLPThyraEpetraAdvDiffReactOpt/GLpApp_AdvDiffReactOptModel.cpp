@@ -7,6 +7,7 @@
 // For orthogonalization of the basis B_bar
 #include "sillyModifiedGramSchmidt.hpp" // This is just an example!
 #include "Thyra_EpetraThyraWrappers.hpp"
+#include "Thyra_MultiVectorStdOps.hpp"
 
 //#define GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
 
@@ -78,7 +79,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
         (*B_bar_)[0][i] = 1.0;
         ST::seedrandom(bndyNodeGlobalIDs[i]);
         for( int j = 1; j < np_; ++j ) {
-          (*B_bar_)[j][i] = ST::random();
+          (*B_bar_)[j][i] = 0.5*(ST::random() + 1.0) + 1.0; // [1.0,2.0]
         }
       }
       //
@@ -92,6 +93,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
           ),
         thyra_fact_R;
       sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
+      Thyra::scale(double(numBndyNodes)/double(np_),&*thyra_B_bar); // Each row should sum to around one!
       // We just discard the "R" factory thyra_fact_R
     }
     else {
@@ -141,6 +143,13 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
 void AdvDiffReactOptModel::set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q )
 {
   q_ = q;
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    dout = Teuchos::VerboseObjectBase::getDefaultOStream();
+  Teuchos::OSTab dtab(dout);
+  *dout << "\nIn AdvDiffReactOptModel::set_q(q):  q =\n\n";
+  q_->Print(*Teuchos::OSTab(dout).getOStream());
+#endif
 }
 
 // Overridden from EpetraExt::ModelEvaluator
@@ -365,6 +374,18 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     Epetra_Vector Hxq(x);
     dat_->getH()->Multiply(false,xq,Hxq);
     g[0] = 0.5*dot(xq,Hxq) + 0.5*dat_->getbeta()*dot(*p_bar,*R_p_bar);
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *dout << "q =\n\n";
+    q_->Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "x =\n\n";
+    x.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "x-q =\n\n";
+    xq.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "H*(x-q) =\n\n";
+    Hxq.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "0.5*dot(xq,Hxq) = " << (0.5*dot(xq,Hxq)) << "\n";
+    *dout << "0.5*regBeta*(B_bar*p)'*R*(B_bar*p) = " << (0.5*dat_->getbeta()*dot(*p_bar,*R_p_bar)) << "\n";
+#endif
   }
   if(W_out) {
     //
@@ -492,8 +513,6 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       DfDp_mv->Print(*Teuchos::OSTab(dout).getOStream());
     }
 #endif
-
-
   }
   if(DgDx_trans_out) {
     //
@@ -503,6 +522,16 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     Epetra_Vector xq(x);
     xq.Update(-1.0,*q_,1.0);
     dat_->getH()->Multiply(false,xq,DgDx_trans);
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *dout << "q =\n\n";
+    q_->Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "x =\n\n";
+    x.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "x-q =\n\n";
+    xq.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "DgDx_trans = H*(x-q) =\n\n";
+    DgDx_trans.Print(*Teuchos::OSTab(dout).getOStream());
+#endif
   }
   if(DgDp_trans_out) {
     //

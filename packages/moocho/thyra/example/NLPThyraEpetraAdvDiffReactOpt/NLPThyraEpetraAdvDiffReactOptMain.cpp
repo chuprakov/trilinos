@@ -61,7 +61,7 @@ Teuchos::RefCountPtr<Thyra::VectorBase<double> >
 readVectorFromFile(
   const std::string                                                   &fileNameBase
   ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >  &vs
-  ,const double                                                       scaleBy = 0.0
+  ,const double                                                       scaleBy = 1.0
   )
 {
   const std::string fileName = getParallelFileName(fileNameBase);
