@@ -473,9 +473,11 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		}
 
 		if(keep_on) {
+
 			// All the step objects returned true so increment the step and loop around
 
 			if( curr_step_poss_ == static_cast<poss_type>(num_steps()) ) {
+
 				//
 				// This is the last step in the algorithm
 				//
@@ -508,13 +510,18 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 				// Setup to start the major loop over again
 				next_step_poss_ = 1;
 				next_step_name_ = &steps_[0].name;
+
 			}
 			else {
+
 				// else just increment the step
 				++next_step_poss_;
 				next_step_name_ = &steps_[next_step_poss_ - 1].name;
+
 			}
+
 			continue;	// loop around
+
 		}
 		else {
 			// some step object returned false from its do_step(..) operation so it
