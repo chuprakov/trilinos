@@ -121,97 +121,97 @@ namespace NLPInterfacePack {
 class NLPFirstDerivTester {
 public:
 
-	///
-	enum ETestingMethod {
-		FD_COMPUTE_ALL
-		,FD_DIRECTIONAL
-	};
+  ///
+  enum ETestingMethod {
+    FD_COMPUTE_ALL
+    ,FD_DIRECTIONAL
+  };
 
-	///
-	STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  ///
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, fd_testing_method )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
-	/// Constructor
-	NLPFirstDerivTester(
-		const calc_fd_prod_ptr_t  &calc_fd_prod      = Teuchos::rcp(new CalcFiniteDiffProd())
-		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
-		,size_type                num_fd_directions  = 1
-		,value_type               warning_tol        = 1e-8
-		,value_type               error_tol          = 1e-3
-		);
+  /// Constructor
+  NLPFirstDerivTester(
+    const calc_fd_prod_ptr_t  &calc_fd_prod      = Teuchos::rcp(new CalcFiniteDiffProd())
+    ,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
+    ,size_type                num_fd_directions  = 1
+    ,value_type               warning_tol        = 1e-8
+    ,value_type               error_tol          = 1e-3
+    );
 
-	///
-	/** This function takes an NLP object and its computed derivatives
-	 * and function values and validates
-	 * the functions and the derivatives by evaluating them
-	 * about the given point <tt>x</tt>.  If all the checks as described in the
-	 * intro checkout then this function will return true, otherwise it
-	 * will return false.
-	 *
-	 * @param  nlp      [in] NLP object used to compute and test derivatives for.
-	 * @param  xo       [in] Point at which the derivatives are computed at.
-	 * @param  xl       [in] If != NULL then this is the lower variable bounds.
-	 * @param  xu       [in] If != NULL then this is the upper variable bounds.
-	 *                  If xl != NULL then xu != NULL must also be true
-	 *                  and visa-versa or a std::invalid_arguement exceptions
-	 *                  will be thrown.
-	 * @param  Gc       [in] A matrix object for the Gc computed at xo.
-	 *                  If Gc==NULL then this is not tested for.
-	 * @param  Gf       [in] Gradient of f(x) computed at xo.
-	 *                  If Gf==NULL then this is not tested for.
-	 * @param  print_all_warnings
-	 *                  [in] If true then all errors greater than warning_tol
-	 *                  will be printed if out!=NULL
-	 * @param  out      [in/out] If != null then some summary information is printed to it
-	 *                  and if a derivative does not match up then it prints which
-	 *                  derivative failed.  If <tt>out == 0</tt> then no output is printed.
-	 *
-	 * @return Returns <tt>true</tt> if all the derivatives check out, and false
-	 * otherwise.
-	 */
-	bool finite_diff_check(
-		NLP               *nlp
-		,const Vector     &xo
-		,const Vector     *xl
-		,const Vector     *xu
-		,const MatrixOp   *Gc
-		,const Vector     *Gf
-		,bool             print_all_warnings
-		,std::ostream     *out
-		) const;
+  ///
+  /** This function takes an NLP object and its computed derivatives
+   * and function values and validates
+   * the functions and the derivatives by evaluating them
+   * about the given point <tt>x</tt>.  If all the checks as described in the
+   * intro checkout then this function will return true, otherwise it
+   * will return false.
+   *
+   * @param  nlp      [in] NLP object used to compute and test derivatives for.
+   * @param  xo       [in] Point at which the derivatives are computed at.
+   * @param  xl       [in] If != NULL then this is the lower variable bounds.
+   * @param  xu       [in] If != NULL then this is the upper variable bounds.
+   *                  If xl != NULL then xu != NULL must also be true
+   *                  and visa-versa or a std::invalid_arguement exceptions
+   *                  will be thrown.
+   * @param  Gc       [in] A matrix object for the Gc computed at xo.
+   *                  If Gc==NULL then this is not tested for.
+   * @param  Gf       [in] Gradient of f(x) computed at xo.
+   *                  If Gf==NULL then this is not tested for.
+   * @param  print_all_warnings
+   *                  [in] If true then all errors greater than warning_tol
+   *                  will be printed if out!=NULL
+   * @param  out      [in/out] If != null then some summary information is printed to it
+   *                  and if a derivative does not match up then it prints which
+   *                  derivative failed.  If <tt>out == 0</tt> then no output is printed.
+   *
+   * @return Returns <tt>true</tt> if all the derivatives check out, and false
+   * otherwise.
+   */
+  bool finite_diff_check(
+    NLP               *nlp
+    ,const Vector     &xo
+    ,const Vector     *xl
+    ,const Vector     *xu
+    ,const MatrixOp   *Gc
+    ,const Vector     *Gf
+    ,bool             print_all_warnings
+    ,std::ostream     *out
+    ) const;
 
 private:
 
-	///
-	bool fd_check_all(
-		NLP               *nlp
-		,const Vector     &xo
-		,const Vector     *xl
-		,const Vector     *xu
-		,const MatrixOp   *Gc
-		,const Vector     *Gf
-		,bool             print_all_warnings
-		,std::ostream     *out
-		) const;
+  ///
+  bool fd_check_all(
+    NLP               *nlp
+    ,const Vector     &xo
+    ,const Vector     *xl
+    ,const Vector     *xu
+    ,const MatrixOp   *Gc
+    ,const Vector     *Gf
+    ,bool             print_all_warnings
+    ,std::ostream     *out
+    ) const;
 
-	///
-	bool fd_directional_check(
-		NLP               *nlp
-		,const Vector     &xo
-		,const Vector     *xl
-		,const Vector     *xu
-		,const MatrixOp   *Gc
-		,const Vector     *Gf
-		,bool             print_all_warnings
-		,std::ostream     *out
-		) const;
+  ///
+  bool fd_directional_check(
+    NLP               *nlp
+    ,const Vector     &xo
+    ,const Vector     *xl
+    ,const Vector     *xu
+    ,const MatrixOp   *Gc
+    ,const Vector     *Gf
+    ,bool             print_all_warnings
+    ,std::ostream     *out
+    ) const;
 };
 
 }	// end namespace NLPInterfacePack

@@ -57,14 +57,14 @@ IpState::IpState(
   ,const vec_space_ptr_t& space_range
   ,const vec_space_ptr_t& space_null
   )
-	:
-	NLPAlgoState(decomp_sys, space_x, space_c, space_range, space_null)
-	{
-	}
+  :
+  NLPAlgoState(decomp_sys, space_x, space_c, space_range, space_null)
+  {
+  }
 
 IpState::~IpState()
-	{
-	}
+  {
+  }
 
 ///********** Iteration Quantities **************
 

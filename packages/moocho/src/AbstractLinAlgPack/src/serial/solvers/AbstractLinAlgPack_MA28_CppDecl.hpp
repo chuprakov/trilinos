@@ -50,17 +50,17 @@ extern "C" {
 
 // analyze and factorize a matrix
 FORTRAN_FUNC_DECL_UL(void,MA28AD,ma28ad) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
-	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int* iflag);
-	
+  , f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
+  , f_dbl_prec w[], f_int* iflag);
+  
 // factor using previous analyze
 FORTRAN_FUNC_DECL_UL(void,MA28BD,ma28bd) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
-	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int* iflag);
+  , const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
+  , f_dbl_prec w[], f_int* iflag);
 
 // solve for rhs using internally stored factorized matrix
 FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28cd) (const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
-	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype);
+  , const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype);
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Declare structs that represent the MA28 common blocks.  
@@ -77,10 +77,10 @@ FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28cd) (const f_int& n, const f_dbl_prec a[], 
 //  INTEGER LP, MP
 //  LOGICAL LBLOCK, GROW
 struct MA28ED_struct {
-	f_int		lp;
-	f_int		mp;
-	f_logical	lblock;
-	f_logical	grow;
+  f_int		lp;
+  f_int		mp;
+  f_logical	lblock;
+  f_logical	grow;
 };
 extern MA28ED_struct FORTRAN_NAME_UL(MA28ED,ma28ed); // link to fortan common block
 
@@ -90,16 +90,16 @@ extern MA28ED_struct FORTRAN_NAME_UL(MA28ED,ma28ed); // link to fortan common bl
 //  LOGICAL ABORT1, ABORT2
 //  REAL EPS, RMIN, RESID
 struct MA28FD_struct {
-	f_dbl_prec	eps;
-	f_dbl_prec	rmin;
-	f_dbl_prec	resid;
-	f_int		irncp;
-	f_int		icncp;
-	f_int		minirn;
-	f_int		minicn;
-	f_int		irank;
-	f_logical	abort1;
-	f_logical	abort2;
+  f_dbl_prec	eps;
+  f_dbl_prec	rmin;
+  f_dbl_prec	resid;
+  f_int		irncp;
+  f_int		icncp;
+  f_int		minirn;
+  f_int		minicn;
+  f_int		irank;
+  f_logical	abort1;
+  f_logical	abort2;
 };
 extern MA28FD_struct FORTRAN_NAME_UL(MA28FD,ma28fd); // link to fortan common block
 
@@ -107,7 +107,7 @@ extern MA28FD_struct FORTRAN_NAME_UL(MA28FD,ma28fd); // link to fortan common bl
 //  COMMON /MA28GD/ IDISP
 //  INTEGER IDISP
 struct MA28GD_struct {
-	f_int		idisp[2];
+  f_int		idisp[2];
 };
 extern MA28GD_struct FORTRAN_NAME_UL(MA28GD,ma28gd); // link to fortan common block
 
@@ -117,19 +117,19 @@ extern MA28GD_struct FORTRAN_NAME_UL(MA28GD,ma28gd); // link to fortan common bl
 //  LOGICAL LBIG
 //  REAL TOL, THEMAX, BIG, DXMAX, ERRMAX, DRES, CGCE
 struct MA28HD_struct {
-	f_dbl_prec	tol;
-	f_dbl_prec	themax;
-	f_dbl_prec	big;
-	f_dbl_prec	dxmax;
-	f_dbl_prec	errmax;
-	f_dbl_prec	dres;
-	f_dbl_prec	cgce;
-	f_int		ndrop;
-	f_int		maxit;
-	f_int		noiter;
-	f_int		nsrch;
-	f_int		istart;
-	f_logical	lbig;
+  f_dbl_prec	tol;
+  f_dbl_prec	themax;
+  f_dbl_prec	big;
+  f_dbl_prec	dxmax;
+  f_dbl_prec	errmax;
+  f_dbl_prec	dres;
+  f_dbl_prec	cgce;
+  f_int		ndrop;
+  f_int		maxit;
+  f_int		noiter;
+  f_int		nsrch;
+  f_int		istart;
+  f_logical	lbig;
 };
 extern MA28HD_struct FORTRAN_NAME_UL(MA28HD,ma28hd); // link to fortan common block
 
@@ -137,36 +137,36 @@ extern MA28HD_struct FORTRAN_NAME_UL(MA28HD,ma28hd); // link to fortan common bl
 //  INTEGER LP
 //  LOGICAL ABORT1, ABORT2, ABORT3
 struct MA30ED_struct {
-	f_int		lp;
-	f_logical	abort1;
-	f_logical	abort2;
-	f_logical	abort3;
+  f_int		lp;
+  f_logical	abort1;
+  f_logical	abort2;
+  f_logical	abort3;
 };
 extern MA30ED_struct FORTRAN_NAME_UL(MA30ED,ma30ed); // link to fortan common block
 
 //  COMMON /MA30FD/ IRNCP, ICNCP, IRANK, IRN, ICN
 //  INTEGER IRNCP, ICNCP, IRANK, IRN, ICN
 struct MA30FD_struct {
-	f_int		irncp;
-	f_int		icncp;
-	f_int		irank;
-	f_int		minirn;
-	f_int		minicn;
+  f_int		irncp;
+  f_int		icncp;
+  f_int		irank;
+  f_int		minirn;
+  f_int		minicn;
 };
 extern MA30FD_struct FORTRAN_NAME_UL(MA30FD,ma30fd); // link to fortan common block
 
 //  COMMON /MA30GD/ EPS, RMIN
 //  DOUBLE PRECISION EPS, RMIN
 struct MA30GD_struct {
-	f_dbl_prec	eps;
-	f_dbl_prec	rmin;
+  f_dbl_prec	eps;
+  f_dbl_prec	rmin;
 };
 extern MA30GD_struct FORTRAN_NAME_UL(MA30GD,ma30gd); // link to fortan common block
 
 //  COMMON /MA30HD/ RESID
 //  DOUBLE PRECISION RESID
 struct MA30HD_struct {
-	f_dbl_prec	resid;
+  f_dbl_prec	resid;
 };
 extern MA30HD_struct FORTRAN_NAME_UL(MA30HD,ma30hd); // link to fortan common block
 
@@ -175,11 +175,11 @@ extern MA30HD_struct FORTRAN_NAME_UL(MA30HD,ma30hd); // link to fortan common bl
 //  LOGICAL LBIG
 //  DOUBLE PRECISION TOL, BIG
 struct MA30ID_struct {
-	f_dbl_prec	tol;
-	f_dbl_prec	big;
-	f_int		ndrop;
-	f_int		nsrch;
-	f_logical	lbig;
+  f_dbl_prec	tol;
+  f_dbl_prec	big;
+  f_int		ndrop;
+  f_int		nsrch;
+  f_logical	lbig;
 };
 extern MA30ID_struct FORTRAN_NAME_UL(MA30ID,ma30id); // link to fortan common block
 
@@ -187,11 +187,11 @@ extern MA30ID_struct FORTRAN_NAME_UL(MA30ID,ma30id); // link to fortan common bl
 //  INTEGER LP, NUMNZ, NUM, LARGE
 //  LOGICAL ABORT
 struct MC23BD_struct {
-	f_int		lp;
-	f_int		numnz;
-	f_int		num;
-	f_int		large;
-	f_logical	abort;
+  f_int		lp;
+  f_int		numnz;
+  f_int		num;
+  f_int		large;
+  f_logical	abort;
 };
 extern MC23BD_struct FORTRAN_NAME_UL(MC23BD,mc23bd); // link to fortan common block
 
@@ -411,12 +411,12 @@ static MA30ID_struct &ma30id_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MA30ID,ma30id);
 // / Common block with members: #lp#, #numnz#, #num#, #large#, #abort#
 static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MC23BD,mc23bd);
 
-	// The reason that these are declared static is because I need to
-	// make sure that these references are initialized before they are
-	// used in other global defintions.  This means that every translation
-	// unit will have their own copy of this data.  To reduce this code
-	// blot you could declair them as pointers then set then using the 
-	// trick of an initialization class (Myers).
+  // The reason that these are declared static is because I need to
+  // make sure that these references are initialized before they are
+  // used in other global defintions.  This means that every translation
+  // unit will have their own copy of this data.  To reduce this code
+  // blot you could declair them as pointers then set then using the 
+  // trick of an initialization class (Myers).
 
 //		end MA28 Common Block Access
 // @}
@@ -506,8 +506,8 @@ static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MC23BD,mc23bd);
   *					\end{description}
   */
 inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
-	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int* iflag)
+  , f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
+  , f_dbl_prec w[], f_int* iflag)
 {	FORTRAN_FUNC_CALL_UL(MA28AD,ma28ad) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
 
 // /
@@ -548,8 +548,8 @@ inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   *					\end{description}
   */
 inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
-	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int* iflag)
+  , const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
+  , f_dbl_prec w[], f_int* iflag)
 {	FORTRAN_FUNC_CALL_UL(MA28BD,ma28bd) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
 
 // /
@@ -584,7 +584,7 @@ inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   *					\end{description} 
   */
 inline void ma28cd(const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
-	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
+  , const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
 {	FORTRAN_FUNC_CALL_UL(MA28CD,ma28cd) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
 
 //		end MA28 C++ Declarations

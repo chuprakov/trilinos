@@ -43,32 +43,32 @@ namespace ConstrainedOptPack {
  *
  * The options group is:
  \verbatim
-	options_group QPSolverRelaxedTester {
-	    opt_warning_tol   = 1e-10;  *** Tolerances for optimality conditions
-	    opt_error_tol     = 1e-5;
-	    feas_warning_tol  = 1e-10;  *** Tolerances for feasibility
-	    feas_error_tol    = 1e-5;
-	    comp_warning_tol  = 1e-10;  *** Tolerances for complementarity
-	    comp_error_tol    = 1e-5;
-	}
+  options_group QPSolverRelaxedTester {
+      opt_warning_tol   = 1e-10;  *** Tolerances for optimality conditions
+      opt_error_tol     = 1e-5;
+      feas_warning_tol  = 1e-10;  *** Tolerances for feasibility
+      feas_error_tol    = 1e-5;
+      comp_warning_tol  = 1e-10;  *** Tolerances for complementarity
+      comp_error_tol    = 1e-5;
+  }
   \endverbatim
   */
 class QPSolverRelaxedTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			QPSolverRelaxedTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      QPSolverRelaxedTester >
 {
 public:
 
-	///
-	QPSolverRelaxedTesterSetOptions(
-		  QPSolverRelaxedTester* target = 0
-		, const char opt_grp_name[] = "QPSolverRelaxedTester" );
+  ///
+  QPSolverRelaxedTesterSetOptions(
+      QPSolverRelaxedTester* target = 0
+    , const char opt_grp_name[] = "QPSolverRelaxedTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class QPSolverRelaxedTesterSetOptions
 

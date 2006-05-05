@@ -45,82 +45,82 @@ class NLPDirectThyraModelEvaluator
 {
 public:
 
-	/** \brief Initialize to uninitialized */
-	NLPDirectThyraModelEvaluator();
+  /** \brief Initialize to uninitialized */
+  NLPDirectThyraModelEvaluator();
 
-	/** \brief Calls <tt>initialize()</tt>. */
-	NLPDirectThyraModelEvaluator(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  /** \brief Calls <tt>initialize()</tt>. */
+  NLPDirectThyraModelEvaluator(
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
-		);
+    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+    );
 
-	/** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
-	 * a description of how to interpret it.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	void initialize(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  /** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
+   * a description of how to interpret it.
+   *
+   * ToDo: Finish documentation!
+   */
+  void initialize(
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
-		);
+    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+    );
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	/** \brief . */
-	void initialize(bool test_setup);
-	/** \brief . */
-	void unset_quantities();
-
-	//@}
-
-	/** @name Overridden public members from NLPDirect */
-	//@{
-
-	/** \brief . */
-	Range1D var_dep() const;
-	/** \brief . */
-	Range1D var_indep() const;
-	/** \brief . */
-	const mat_fcty_ptr_t factory_D() const;
   /** \brief . */
-	const mat_sym_nonsing_fcty_ptr_t factory_S() const;
-	/** \brief . */
-	void calc_point(
-		const Vector     &x
-		,value_type      *f
-		,VectorMutable   *c
-		,bool            recalc_c
-		,VectorMutable   *Gf
-		,VectorMutable   *py
-		,VectorMutable   *rGf
-		,MatrixOp        *GcU
-		,MatrixOp        *D
-		,MatrixOp        *Uz
-		) const;
-	/** \brief . */
-	void calc_semi_newton_step(
-		const Vector    &x
-		,VectorMutable  *c
-		,bool           recalc_c
-		,VectorMutable  *py
-		) const;
+  void initialize(bool test_setup);
+  /** \brief . */
+  void unset_quantities();
 
-	//@}
+  //@}
+
+  /** @name Overridden public members from NLPDirect */
+  //@{
+
+  /** \brief . */
+  Range1D var_dep() const;
+  /** \brief . */
+  Range1D var_indep() const;
+  /** \brief . */
+  const mat_fcty_ptr_t factory_D() const;
+  /** \brief . */
+  const mat_sym_nonsing_fcty_ptr_t factory_S() const;
+  /** \brief . */
+  void calc_point(
+    const Vector     &x
+    ,value_type      *f
+    ,VectorMutable   *c
+    ,bool            recalc_c
+    ,VectorMutable   *Gf
+    ,VectorMutable   *py
+    ,VectorMutable   *rGf
+    ,MatrixOp        *GcU
+    ,MatrixOp        *D
+    ,MatrixOp        *Uz
+    ) const;
+  /** \brief . */
+  void calc_semi_newton_step(
+    const Vector    &x
+    ,VectorMutable  *c
+    ,bool           recalc_c
+    ,VectorMutable  *py
+    ) const;
+
+  //@}
 
 private:
 

@@ -43,29 +43,29 @@ namespace OptionsFromStreamPack {
   * Here is an example of its use.
   \verbatim
 
-	const int n_opt = 3;
-	enum MyOptEnum {
-		OPT_ONE
-		,OPT_TWO
-		,OPT_THREE
-	};	// must be 0, 1,..., n_opt - 1
-	const char* MyOptStrings[n_opt] = {
-		"OPT_ONE
-		,"OPT_TWO"
-		,"OPT_THREE"
-	}; // parallels MyOptEnum
-	StringToIntMap my_enum_map( "opt_map", n_opt, NyOptStrings );
-	...
-	switch( (MyEnum)my_enum_map( "OPT_ONE" ) ) {
-		case OPT_ONE:
-			// do stuff
-		case OPT_TWO:
-			// do stuff
-		case OPT_THREE:
-			// do stuff
-		default:
-			// ???
-	}
+  const int n_opt = 3;
+  enum MyOptEnum {
+    OPT_ONE
+    ,OPT_TWO
+    ,OPT_THREE
+  };	// must be 0, 1,..., n_opt - 1
+  const char* MyOptStrings[n_opt] = {
+    "OPT_ONE
+    ,"OPT_TWO"
+    ,"OPT_THREE"
+  }; // parallels MyOptEnum
+  StringToIntMap my_enum_map( "opt_map", n_opt, NyOptStrings );
+  ...
+  switch( (MyEnum)my_enum_map( "OPT_ONE" ) ) {
+    case OPT_ONE:
+      // do stuff
+    case OPT_TWO:
+      // do stuff
+    case OPT_THREE:
+      // do stuff
+    default:
+      // ???
+  }
 
   \endverbatim
   * 
@@ -84,30 +84,30 @@ namespace OptionsFromStreamPack {
 class StringToIntMap {
 public:
 
-	///
-	class AlreadyExists : public std::logic_error
-	{public: AlreadyExists(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  ///
+  class AlreadyExists : public std::logic_error
+  {public: AlreadyExists(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	///
-	class DoesNotExist : public AccessException
-	{public: DoesNotExist(const std::string& what_arg) : AccessException(what_arg) {}};
+  ///
+  class DoesNotExist : public AccessException
+  {public: DoesNotExist(const std::string& what_arg) : AccessException(what_arg) {}};
 
-	///
-	StringToIntMap( const std::string& name, int n, const char* strings[] );
+  ///
+  StringToIntMap( const std::string& name, int n, const char* strings[] );
 
-	///
-	int operator()( const std::string& str ) const;
+  ///
+  int operator()( const std::string& str ) const;
 
-	///
-	const std::string& name() const;
+  ///
+  const std::string& name() const;
 
 private:
-	typedef std::map< std::string, int > map_t;	// all share implementation.
-	std::string name_;
-	map_t map_;
+  typedef std::map< std::string, int > map_t;	// all share implementation.
+  std::string name_;
+  map_t map_;
 
-	// not defined and not to be called.
-	StringToIntMap();
+  // not defined and not to be called.
+  StringToIntMap();
 
 };	// end class StringToIntMap
 
@@ -117,7 +117,7 @@ private:
 inline
 const std::string& StringToIntMap::name() const
 {
-	return name_;
+  return name_;
 }
 
 }	// end namespace OptionsFromStreamPack 

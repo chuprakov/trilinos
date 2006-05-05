@@ -41,21 +41,21 @@ namespace MoochoPack {
 class NewDecompositionSelection_Strategy {
 public:
 
-	///
-	virtual ~NewDecompositionSelection_Strategy() {}
+  ///
+  virtual ~NewDecompositionSelection_Strategy() {}
 
-	///
-	virtual bool new_decomposition(
-		NLPAlgo& algo, Algorithm::poss_type step_poss
-		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
-		) = 0;
+  ///
+  virtual bool new_decomposition(
+    NLPAlgo& algo, Algorithm::poss_type step_poss
+    ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+    ) = 0;
 
-	///
-	virtual void print_new_decomposition(
-		const NLPAlgo& algo, Algorithm::poss_type step_poss
-		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
-		,std::ostream& out, const std::string& leading_str
-		) const = 0;
+  ///
+  virtual void print_new_decomposition(
+    const NLPAlgo& algo, Algorithm::poss_type step_poss
+    ,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+    ,std::ostream& out, const std::string& leading_str
+    ) const = 0;
 
 };	// end class NewDecompositionSelection_Strategy
 

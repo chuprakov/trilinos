@@ -41,23 +41,23 @@ T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 ConstrainedOptPack::value_type
 ConstrainedOptPack ::min_abs( const DVectorSlice& mu )
 {
-	if( !mu.dim() )
-		return 0.0;
-	value_type min = ::fabs(mu(1));
-	for( DVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
-		min = my_min( min, ::fabs(*itr++) );
-	return min;
+  if( !mu.dim() )
+    return 0.0;
+  value_type min = ::fabs(mu(1));
+  for( DVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
+    min = my_min( min, ::fabs(*itr++) );
+  return min;
 }
 
 ConstrainedOptPack::value_type
 ConstrainedOptPack ::min_abs( const SpVectorSlice& mu )
 {
-	if( !mu.dim() )
-		return 0.0;
-	if( !mu.nz() )
-		return 0.0;
-	value_type min = ::fabs(mu.begin()->value());
-	for( SpVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); ++itr )
-		min = my_min( min, ::fabs(itr->value()) );
-	return min;
+  if( !mu.dim() )
+    return 0.0;
+  if( !mu.nz() )
+    return 0.0;
+  value_type min = ::fabs(mu.begin()->value());
+  for( SpVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); ++itr )
+    min = my_min( min, ::fabs(itr->value()) );
+  return min;
 }

@@ -49,11 +49,11 @@ typedef FortranTypes::f_logical		f_logical;
 inline
 ///
 void potrf(  BLAS_Cpp::Uplo uplo
-	, const f_int& n, f_dbl_prec* A, const f_int& lda
-	, f_int* info )
+  , const f_int& n, f_dbl_prec* A, const f_int& lda
+  , f_int* info )
 {
-	LAPACK_C_Decl::dpotrf( BLAS_Cpp::UploChar[uplo]
-		,n ,A ,lda ,info );
+  LAPACK_C_Decl::dpotrf( BLAS_Cpp::UploChar[uplo]
+    ,n ,A ,lda ,info );
 }
 
 // xGEQRF
@@ -61,11 +61,11 @@ void potrf(  BLAS_Cpp::Uplo uplo
 inline
 ///
 void geqrf( const f_int& m
-	, const f_int& n, f_dbl_prec* A, const f_int& lda
-	, f_dbl_prec* tau, f_dbl_prec* work
-	, const f_int& lwork, f_int* info  )
+  , const f_int& n, f_dbl_prec* A, const f_int& lda
+  , f_dbl_prec* tau, f_dbl_prec* work
+  , const f_int& lwork, f_int* info  )
 {
-	LAPACK_C_Decl::dgeqrf(m,n,A,lda,tau,work,lwork,info);
+  LAPACK_C_Decl::dgeqrf(m,n,A,lda,tau,work,lwork,info);
 }
 
 // xORMQR
@@ -73,15 +73,15 @@ void geqrf( const f_int& m
 inline
 ///
 void ormqr( BLAS_Cpp::Side side, BLAS_Cpp::Transp trans
-	, const f_int& m, const f_int& n
-	, const f_int& k, const f_dbl_prec* A, const f_int& lda
-	, const f_dbl_prec* tau, f_dbl_prec* C, const f_int& ldc
-	, f_dbl_prec* work, const f_int& lwork, f_int* info )
+  , const f_int& m, const f_int& n
+  , const f_int& k, const f_dbl_prec* A, const f_int& lda
+  , const f_dbl_prec* tau, f_dbl_prec* C, const f_int& ldc
+  , f_dbl_prec* work, const f_int& lwork, f_int* info )
 {
-	LAPACK_C_Decl::dormqr( BLAS_Cpp::SideChar[side]
-		, BLAS_Cpp::TransChar[trans], m, n, k, A, lda
-		, tau, C, ldc, work, lwork, info );
-	
+  LAPACK_C_Decl::dormqr( BLAS_Cpp::SideChar[side]
+    , BLAS_Cpp::TransChar[trans], m, n, k, A, lda
+    , tau, C, ldc, work, lwork, info );
+  
 }
 
 // xSYTRF
@@ -89,11 +89,11 @@ void ormqr( BLAS_Cpp::Side side, BLAS_Cpp::Transp trans
 inline
 //
 void sytrf( BLAS_Cpp::Uplo uplo, const f_int& n, f_dbl_prec A[]
-	, const f_int& lda, f_int ipiv[], f_dbl_prec work[], const f_int& lwork
-	, f_int* info )
+  , const f_int& lda, f_int ipiv[], f_dbl_prec work[], const f_int& lwork
+  , f_int* info )
 {
-	LAPACK_C_Decl::dsytrf( BLAS_Cpp::UploChar[uplo]
-		, n, A, lda, ipiv, work, lwork, info );
+  LAPACK_C_Decl::dsytrf( BLAS_Cpp::UploChar[uplo]
+    , n, A, lda, ipiv, work, lwork, info );
 }
 
 // xSYTRS
@@ -101,12 +101,12 @@ void sytrf( BLAS_Cpp::Uplo uplo, const f_int& n, f_dbl_prec A[]
 inline
 ///
 void sytrs( BLAS_Cpp::Uplo uplo
-	, const f_int& n, const f_int& nrhs, const f_dbl_prec A[]
-	, const f_int& lda, const f_int ipiv[], f_dbl_prec B[]
-	, const f_int& ldb, f_int* info )
+  , const f_int& n, const f_int& nrhs, const f_dbl_prec A[]
+  , const f_int& lda, const f_int ipiv[], f_dbl_prec B[]
+  , const f_int& ldb, f_int* info )
 {
-	LAPACK_C_Decl::dsytrs( BLAS_Cpp::UploChar[uplo]
-		, n, nrhs, A, lda, ipiv, B, ldb, info );
+  LAPACK_C_Decl::dsytrs( BLAS_Cpp::UploChar[uplo]
+    , n, nrhs, A, lda, ipiv, B, ldb, info );
 }
 
 // xGETRF
@@ -114,10 +114,10 @@ void sytrs( BLAS_Cpp::Uplo uplo
 inline
 //
 void getrf(
-	const f_int& m, const f_int& n, f_dbl_prec A[]
-	,const f_int& lda, f_int ipiv[], f_int* info )
+  const f_int& m, const f_int& n, f_dbl_prec A[]
+  ,const f_int& lda, f_int ipiv[], f_int* info )
 {
-	LAPACK_C_Decl::dgetrf( m, n, A, lda, ipiv, info );
+  LAPACK_C_Decl::dgetrf( m, n, A, lda, ipiv, info );
 }
 
 // xGETRS
@@ -125,14 +125,14 @@ void getrf(
 inline
 ///
 void getrs(
-	BLAS_Cpp::Transp trans
-	,const f_int& n, const f_int& nrhs, const f_dbl_prec A[]
-	, const f_int& lda, const f_int ipiv[], f_dbl_prec B[]
-	, const f_int& ldb, f_int* info )
+  BLAS_Cpp::Transp trans
+  ,const f_int& n, const f_int& nrhs, const f_dbl_prec A[]
+  , const f_int& lda, const f_int ipiv[], f_dbl_prec B[]
+  , const f_int& ldb, f_int* info )
 {
-	LAPACK_C_Decl::dgetrs(
-		BLAS_Cpp::TransChar[trans], n, nrhs, A, lda, ipiv, B, ldb, info
-		);
+  LAPACK_C_Decl::dgetrs(
+    BLAS_Cpp::TransChar[trans], n, nrhs, A, lda, ipiv, B, ldb, info
+    );
 }
 
 }	// end namespace LAPACK_Cpp

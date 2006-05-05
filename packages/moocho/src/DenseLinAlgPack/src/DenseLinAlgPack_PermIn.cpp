@@ -30,13 +30,13 @@
 #include "DenseLinAlgPack_IVector.hpp"
 
 std::istream& DenseLinAlgPack::operator>>(std::istream& istrm, IVector& perm) {
-	size_type size;
-	istrm >> size;
-	perm.resize(size);
+  size_type size;
+  istrm >> size;
+  perm.resize(size);
 
-	IVector::iterator		itr_perm		= perm.begin(),
-							itr_perm_end	= perm.end();
-	for(;itr_perm != itr_perm_end;)
-		istrm >> *itr_perm++;
-	return istrm;
+  IVector::iterator		itr_perm		= perm.begin(),
+              itr_perm_end	= perm.end();
+  for(;itr_perm != itr_perm_end;)
+    istrm >> *itr_perm++;
+  return istrm;
 }

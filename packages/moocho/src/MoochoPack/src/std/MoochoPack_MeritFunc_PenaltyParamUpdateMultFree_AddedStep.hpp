@@ -38,30 +38,30 @@ namespace MoochoPack {
   * min_mu = |(Gf_k+nu_k)'* Ypy_k| / ||c_k||1.
   */
 class MeritFunc_PenaltyParamUpdateMultFree_AddedStep
-	: public MeritFunc_PenaltyParamUpdateGuts_AddedStep
+  : public MeritFunc_PenaltyParamUpdateGuts_AddedStep
 {
 public:
 
-	///
-	MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
-		value_type   small_mu = 1e-6
-		,value_type  mult_factor = 1e-4
-		,value_type  kkt_near_sol = 1.0
-		);
+  ///
+  MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
+    value_type   small_mu = 1e-6
+    ,value_type  mult_factor = 1e-4
+    ,value_type  kkt_near_sol = 1.0
+    );
 
 protected:
 
-	/** @name Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep */
-	//@{
+  /** @name Overridden from MeritFunc_PenaltyParamUpdateGuts_AddedStep */
+  //@{
 
-	///
-	bool min_mu( NLPAlgoState& s, value_type* min_mu ) const;
-	///
-	void print_min_mu_step( std::ostream& out
-		, const std::string& leading_str ) const;
+  ///
+  bool min_mu( NLPAlgoState& s, value_type* min_mu ) const;
+  ///
+  void print_min_mu_step( std::ostream& out
+    , const std::string& leading_str ) const;
 
-	//@}
-	
+  //@}
+  
 };	// end class MeritFunc_PenaltyParamUpdateMultFree_AddedStep
 
 }	// end namespace MoochoPack 

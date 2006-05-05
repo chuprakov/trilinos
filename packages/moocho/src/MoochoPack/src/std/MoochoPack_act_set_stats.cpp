@@ -29,4 +29,4 @@
 #include "../std/MoochoPack_act_set_stats.hpp"
 
 extern const std::string
-	MoochoPack::act_set_stats_name = "act_set_stats";
+  MoochoPack::act_set_stats_name = "act_set_stats";

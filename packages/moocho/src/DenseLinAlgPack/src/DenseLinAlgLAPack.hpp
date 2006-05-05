@@ -92,10 +92,10 @@ void geqrf( DMatrixSlice* A, DVectorSlice* tau, DVectorSlice* work );
  *	
  */
 void ormrq(
-	BLAS_Cpp::Side side, BLAS_Cpp::Transp trans
-	, const DMatrixSlice& A, const DVectorSlice& tau
-	, DMatrixSlice* C, DVectorSlice* work
-	);
+  BLAS_Cpp::Side side, BLAS_Cpp::Transp trans
+  , const DMatrixSlice& A, const DVectorSlice& tau
+  , DMatrixSlice* C, DVectorSlice* work
+  );
 
 ///
 /** Calls xSYTRF to compute the P*A*P' = L'*D*L factorization of a symmetric
@@ -138,9 +138,9 @@ void sytrf( DMatrixSliceTriEle* A, FortranTypes::f_int ipiv[], DVectorSlice* wor
  *						is the optimal block size (64?), n = A.rows().
  */
 void sytrs(
-	const DMatrixSliceTriEle& A, FortranTypes::f_int ipiv[]
-	,DMatrixSlice* B, DVectorSlice* work
-	);
+  const DMatrixSliceTriEle& A, FortranTypes::f_int ipiv[]
+  ,DMatrixSlice* B, DVectorSlice* work
+  );
 
 ///
 /** Calls xGETRF to compute the P'*A = L*U factorization of a general
@@ -182,9 +182,9 @@ void getrf( DMatrixSlice* A, FortranTypes::f_int ipiv[], FortranTypes::f_int* ra
  *               the solution matix X.
  */
 void getrs(
-	const DMatrixSlice& LU, const FortranTypes::f_int ipiv[], BLAS_Cpp::Transp transp
-	,DMatrixSlice* B
-	);
+  const DMatrixSlice& LU, const FortranTypes::f_int ipiv[], BLAS_Cpp::Transp transp
+  ,DMatrixSlice* B
+  );
 
 }	// end namespace DenseLinAlgLAPack
 

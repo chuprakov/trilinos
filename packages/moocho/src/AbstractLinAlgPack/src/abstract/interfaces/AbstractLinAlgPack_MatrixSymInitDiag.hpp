@@ -39,14 +39,14 @@ namespace AbstractLinAlgPack {
 class MatrixSymInitDiag {
 public:
 
-	///
-	virtual ~MatrixSymInitDiag() {}
+  ///
+  virtual ~MatrixSymInitDiag() {}
 
-	/// Initialize a <tt>n x n</tt> identity matrix scaled by \c alpha (where <tt>n = diag.dim()</tt>).
-	virtual void init_identity( const VectorSpace& space_diag, value_type alpha = 1.0 ) = 0;
+  /// Initialize a <tt>n x n</tt> identity matrix scaled by \c alpha (where <tt>n = diag.dim()</tt>).
+  virtual void init_identity( const VectorSpace& space_diag, value_type alpha = 1.0 ) = 0;
 
-	/// Initialize an <tt>n x n</tt> diagonal matrix (where <tt>n = diag.dim()</tt>).
-	virtual void init_diagonal( const Vector& diag ) = 0;
+  /// Initialize an <tt>n x n</tt> diagonal matrix (where <tt>n = diag.dim()</tt>).
+  virtual void init_diagonal( const Vector& diag ) = 0;
 
 }; // end class MatrixSymInitDiag
 

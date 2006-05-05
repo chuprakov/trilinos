@@ -89,28 +89,28 @@ namespace MoochoPack {
 
 void NLPAlgoState::set_space_range (const vec_space_ptr_t& space_range )
 {
-	space_range_ = space_range;
-	update_vector_factories(VST_SPACE_RANGE,space_range);
+  space_range_ = space_range;
+  update_vector_factories(VST_SPACE_RANGE,space_range);
 }
 
 void NLPAlgoState::set_space_null (const vec_space_ptr_t& space_null )
 {
-	space_null_ = space_null;
-	update_vector_factories(VST_SPACE_NULL,space_null);
+  space_null_ = space_null;
+  update_vector_factories(VST_SPACE_NULL,space_null);
 }
 
 NLPAlgoState::NLPAlgoState(
-	const decomp_sys_ptr_t& decomp_sys
-	,const vec_space_ptr_t& space_x
-	,const vec_space_ptr_t& space_c
-	,const vec_space_ptr_t& space_range
-	,const vec_space_ptr_t& space_null
-	)
-	:decomp_sys_(decomp_sys)
-	,space_x_(space_x)
-	,space_c_(space_c)
-	,space_range_(space_range)
-	,space_null_(space_null)
+  const decomp_sys_ptr_t& decomp_sys
+  ,const vec_space_ptr_t& space_x
+  ,const vec_space_ptr_t& space_c
+  ,const vec_space_ptr_t& space_range
+  ,const vec_space_ptr_t& space_null
+  )
+  :decomp_sys_(decomp_sys)
+  ,space_x_(space_x)
+  ,space_c_(space_c)
+  ,space_range_(space_range)
+  ,space_null_(space_null)
 {}
 
 // Iteration Info
@@ -171,122 +171,122 @@ STATE_VECTOR_IQ_DEF( NLPAlgoState,                  nu,             nu_name,    
 // protected
 
 void NLPAlgoState::update_iq_id(
-	const std::string&                iq_name
-	,iq_id_encap*                     iq_id
-	) const
+  const std::string&                iq_name
+  ,iq_id_encap*                     iq_id
+  ) const
 {
-	namespace rcp = MemMngPack;
-	if(iq_id->iq_id == DOES_NOT_EXIST)
-		iq_id->iq_id = this->get_iter_quant_id(iq_name);
-	TEST_FOR_EXCEPTION(
-		iq_id->iq_id == DOES_NOT_EXIST, DoesNotExist
-		,"NLPAlgoState::update_iq_id(iq_name,iq_id) : Error, "
-		" The iteration quantity with name \'" << iq_name <<
-		"\' does not exist!" );
+  namespace rcp = MemMngPack;
+  if(iq_id->iq_id == DOES_NOT_EXIST)
+    iq_id->iq_id = this->get_iter_quant_id(iq_name);
+  TEST_FOR_EXCEPTION(
+    iq_id->iq_id == DOES_NOT_EXIST, DoesNotExist
+    ,"NLPAlgoState::update_iq_id(iq_name,iq_id) : Error, "
+    " The iteration quantity with name \'" << iq_name <<
+    "\' does not exist!" );
 }
 
 void NLPAlgoState::update_index_type_iq_id(
-	const std::string&                iq_name
-	,iq_id_encap*                     iq_id
-	)
+  const std::string&                iq_name
+  ,iq_id_encap*                     iq_id
+  )
 {
-	namespace rcp = MemMngPack;
-	if(iq_id->iq_id == DOES_NOT_EXIST) {
-		iq_id_type
-			_iq_id = this->get_iter_quant_id(iq_name);
-		if(_iq_id == DOES_NOT_EXIST) {
-			iq_id->iq_id = this->set_iter_quant(
-				iq_name
-				,Teuchos::rcp(
-					new IterQuantityAccessContiguous<index_type>(
-						1
-						,iq_name
+  namespace rcp = MemMngPack;
+  if(iq_id->iq_id == DOES_NOT_EXIST) {
+    iq_id_type
+      _iq_id = this->get_iter_quant_id(iq_name);
+    if(_iq_id == DOES_NOT_EXIST) {
+      iq_id->iq_id = this->set_iter_quant(
+        iq_name
+        ,Teuchos::rcp(
+          new IterQuantityAccessContiguous<index_type>(
+            1
+            ,iq_name
 #ifdef _MIPS_CXX
-						,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<index_type,index_type> >(
-							new Teuchos::AbstractFactoryStd<index_type,index_type>())
+            ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<index_type,index_type> >(
+              new Teuchos::AbstractFactoryStd<index_type,index_type>())
 #endif
-						)
-					)
-				);
-		}
-		else {
-			iq_id->iq_id = _iq_id;
-		}
-	}
+            )
+          )
+        );
+    }
+    else {
+      iq_id->iq_id = _iq_id;
+    }
+  }
 }
 
 void NLPAlgoState::update_value_type_iq_id(
-	const std::string&                iq_name
-	,iq_id_encap*                     iq_id
-	)
+  const std::string&                iq_name
+  ,iq_id_encap*                     iq_id
+  )
 {
-	namespace rcp = MemMngPack;
-	if(iq_id->iq_id == DOES_NOT_EXIST) {
-		iq_id_type
-			_iq_id = this->get_iter_quant_id(iq_name);
-		if(_iq_id == DOES_NOT_EXIST) {
-			iq_id->iq_id = this->set_iter_quant(
-				iq_name
-				,Teuchos::rcp(
-					new IterQuantityAccessContiguous<value_type>(
-						1
-						,iq_name
+  namespace rcp = MemMngPack;
+  if(iq_id->iq_id == DOES_NOT_EXIST) {
+    iq_id_type
+      _iq_id = this->get_iter_quant_id(iq_name);
+    if(_iq_id == DOES_NOT_EXIST) {
+      iq_id->iq_id = this->set_iter_quant(
+        iq_name
+        ,Teuchos::rcp(
+          new IterQuantityAccessContiguous<value_type>(
+            1
+            ,iq_name
 #ifdef _MIPS_CXX
-						,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<value_type,value_type> >(
-							new Teuchos::AbstractFactoryStd<value_type,value_type>())
+            ,Teuchos::RefCountPtr<Teuchos::AbstractFactoryStd<value_type,value_type> >(
+              new Teuchos::AbstractFactoryStd<value_type,value_type>())
 #endif
-						)
-					)
-				);
-		}
-		else {
-			iq_id->iq_id = _iq_id;
-		}
-	}
+            )
+          )
+        );
+    }
+    else {
+      iq_id->iq_id = _iq_id;
+    }
+  }
 }
 
 void NLPAlgoState::update_vector_iq_id(
-	const std::string&                iq_name
-	,const VectorSpace::space_ptr_t&  vec_space
-	,EVecSpaceType                    vec_space_type
-	,iq_id_encap*                     iq_id
-	)
+  const std::string&                iq_name
+  ,const VectorSpace::space_ptr_t&  vec_space
+  ,EVecSpaceType                    vec_space_type
+  ,iq_id_encap*                     iq_id
+  )
 {
-	namespace rcp = MemMngPack;
-	if(iq_id->iq_id == DOES_NOT_EXIST) {
-		iq_id_type
-			_iq_id = this->get_iter_quant_id(iq_name);
-		if(_iq_id == DOES_NOT_EXIST) {
-			iq_id->iq_id = this->set_iter_quant(
-				iq_name
-				,Teuchos::rcp(
-					new IterQuantityAccessContiguous<VectorMutable>(
-						1
-						,iq_name
-						,vec_space
-						)
-					)
-				);
-		}
-		else {
-			iq_id->iq_id = _iq_id;
-		}
-		// Record the list of vectors for a given vector space. 
-		vector_iqs_lists_[vec_space_type].push_back(iq_id->iq_id);
-	}
+  namespace rcp = MemMngPack;
+  if(iq_id->iq_id == DOES_NOT_EXIST) {
+    iq_id_type
+      _iq_id = this->get_iter_quant_id(iq_name);
+    if(_iq_id == DOES_NOT_EXIST) {
+      iq_id->iq_id = this->set_iter_quant(
+        iq_name
+        ,Teuchos::rcp(
+          new IterQuantityAccessContiguous<VectorMutable>(
+            1
+            ,iq_name
+            ,vec_space
+            )
+          )
+        );
+    }
+    else {
+      iq_id->iq_id = _iq_id;
+    }
+    // Record the list of vectors for a given vector space. 
+    vector_iqs_lists_[vec_space_type].push_back(iq_id->iq_id);
+  }
 }
 
 // private
 
 void NLPAlgoState::update_vector_factories(
-	EVecSpaceType             vec_space_type
-	,const vec_space_ptr_t&   vec_space
-	)
+  EVecSpaceType             vec_space_type
+  ,const vec_space_ptr_t&   vec_space
+  )
 {
-	using Teuchos::dyn_cast;
-	iq_vector_list_t  &iq_vector_list = vector_iqs_lists_[vec_space_type];
-	for( iq_vector_list_t::const_iterator iq_itr = iq_vector_list.begin(); iq_itr != iq_vector_list.end(); ++iq_itr )
-		dyn_cast<IterQuantityAccessContiguous<VectorMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
+  using Teuchos::dyn_cast;
+  iq_vector_list_t  &iq_vector_list = vector_iqs_lists_[vec_space_type];
+  for( iq_vector_list_t::const_iterator iq_itr = iq_vector_list.begin(); iq_itr != iq_vector_list.end(); ++iq_itr )
+    dyn_cast<IterQuantityAccessContiguous<VectorMutable> >(this->iter_quant(*iq_itr)).set_factory(vec_space);
 }
 
 }	// end namespace MoochoPack

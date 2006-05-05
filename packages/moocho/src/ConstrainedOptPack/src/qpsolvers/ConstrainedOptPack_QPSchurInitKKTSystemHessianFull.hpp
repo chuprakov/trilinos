@@ -43,50 +43,50 @@ namespace ConstrainedOptPack {
  * system for the current active set.
  */
 class QPSchurInitKKTSystemHessianFull
-	: public QPSolverRelaxedQPSchur::InitKKTSystem 
+  : public QPSolverRelaxedQPSchur::InitKKTSystem 
 {
 public:
 
-	/** @name Overridden from InitKKTSystem */
-	//@{
+  /** @name Overridden from InitKKTSystem */
+  //@{
 
-	///
-	/** Initialize the KKT system where all variables (except the relaxation variable)
-	 * are initially free and no constraints are in Ko.
-	 *
-	 * For this implementation:
-	 *
-	 * <tt>n_R = nd</tt>\\
-	 * <tt>i_x_free = emply (it is identity)</tt>\\
-	 * <tt>i_x_fixed[0] = nd+1</tt>\\
-	 * <tt>bnd_fixed[0] = LOWER</tt>\\
-	 * <tt>j_f_decomp[] = empty</tt>\\
-	 * <tt>b_X = etaL</tt>\\
-	 * <tt>Ko = G</tt>\\
-	 * <tt>fo = -g</tt>\\
-	 */
-	void initialize_kkt_system(
-		const Vector    &g
-		,const MatrixOp   &G
-		,value_type           etaL
-		,const Vector   *dL
-		,const Vector   *dU
-		,const MatrixOp   *F
-		,BLAS_Cpp::Transp     trans_F
-		,const Vector   *f
-		,const Vector   *d
-		,const Vector   *nu
-		,size_type            *n_R
-		,i_x_free_t           *i_x_free
-		,i_x_fixed_t          *i_x_fixed
-		,bnd_fixed_t          *bnd_fixed
-		,j_f_decomp_t         *j_f_decomp
-		,DVector               *b_X
-		,Ko_ptr_t             *Ko
-		,DVector               *fo
-		) const;
+  ///
+  /** Initialize the KKT system where all variables (except the relaxation variable)
+   * are initially free and no constraints are in Ko.
+   *
+   * For this implementation:
+   *
+   * <tt>n_R = nd</tt>\\
+   * <tt>i_x_free = emply (it is identity)</tt>\\
+   * <tt>i_x_fixed[0] = nd+1</tt>\\
+   * <tt>bnd_fixed[0] = LOWER</tt>\\
+   * <tt>j_f_decomp[] = empty</tt>\\
+   * <tt>b_X = etaL</tt>\\
+   * <tt>Ko = G</tt>\\
+   * <tt>fo = -g</tt>\\
+   */
+  void initialize_kkt_system(
+    const Vector    &g
+    ,const MatrixOp   &G
+    ,value_type           etaL
+    ,const Vector   *dL
+    ,const Vector   *dU
+    ,const MatrixOp   *F
+    ,BLAS_Cpp::Transp     trans_F
+    ,const Vector   *f
+    ,const Vector   *d
+    ,const Vector   *nu
+    ,size_type            *n_R
+    ,i_x_free_t           *i_x_free
+    ,i_x_fixed_t          *i_x_fixed
+    ,bnd_fixed_t          *bnd_fixed
+    ,j_f_decomp_t         *j_f_decomp
+    ,DVector               *b_X
+    ,Ko_ptr_t             *Ko
+    ,DVector               *fo
+    ) const;
 
-	//@}
+  //@}
 
 }; // end class QPSchurInitKKTSystemHessianFull
 

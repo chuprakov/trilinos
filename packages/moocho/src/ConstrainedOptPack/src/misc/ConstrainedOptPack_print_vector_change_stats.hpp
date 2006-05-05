@@ -37,7 +37,7 @@ namespace ConstrainedOptPack {
 /** Compute statistics for change in a vector and output to a stream.
   *
   * Calls the function vector_change_stats(x,d,max_term,max_k,min_term,min_k
-	,av_term) then produces the following output to the given stream.
+  ,av_term) then produces the following output to the given stream.
   *
   * max(|d(i)|/(1+|x(i)|)) => |d(max_k)|/(1+|x(max_k)|) = max_term \\
   * min(|d(i)|/(1+|x(i)|)) => |d(min_k)|/(1+|x(min_k)|) = min_term \\ 
@@ -48,7 +48,7 @@ namespace ConstrainedOptPack {
   * are replaced with their computed values.
   */
 void print_vector_change_stats( const DVectorSlice& x, const char x_name[]
-	, const DVectorSlice& d, const char d_name[], std::ostream& out );
+  , const DVectorSlice& d, const char d_name[], std::ostream& out );
 
 }	// end namespace ConstrainedOptPack
 

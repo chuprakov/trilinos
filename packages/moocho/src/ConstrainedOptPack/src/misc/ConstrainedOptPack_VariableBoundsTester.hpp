@@ -50,46 +50,46 @@ namespace ConstrainedOptPack {
 class VariableBoundsTester {
 public:
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
-	///
-	VariableBoundsTester(
-		  value_type	warning_tol		= 1e-10
-		, value_type	error_tol		= 1e-5
-		);
+  ///
+  VariableBoundsTester(
+      value_type	warning_tol		= 1e-10
+    , value_type	error_tol		= 1e-5
+    );
 
-	///
-	virtual ~VariableBoundsTester() {}
+  ///
+  virtual ~VariableBoundsTester() {}
 
-	///
-	/** Check that the variables are within bounds.
-	 *
-	 * @param  print_all_warnings
-	 *              [in] If true, then all errors greater than warning_tol will
-	 *              be printed.
-	 * @param  xL   [in] Sparse lower bound vector (xL.size()==x.size())
-	 * @param  xL_name
-	 *              [in] The name of the vector xL (null terminated string).
-	 * @param  xU   [in] Sparse upper bound vector (xU.size()==x.size())
-	 * @param  xU_name
-	 *              [in] The name of the vector xU (null terminated string).
-	 * @param  x    [in] Variable to test that it is in bounds.
-	 * @param  x_name
-	 *              [in] The name of the vector x (null terminated string).
-	 *
-	 * @return \c true if all of the errors are greater than the error tolerances,
-	 * otherwise it returns \c false
-	 */
-	virtual bool check_in_bounds(
-		std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& xL, const char xL_name[]
-		,const Vector& xU, const char xU_name[]
-		,const Vector& x,  const char x_name[]
-		);
+  ///
+  /** Check that the variables are within bounds.
+   *
+   * @param  print_all_warnings
+   *              [in] If true, then all errors greater than warning_tol will
+   *              be printed.
+   * @param  xL   [in] Sparse lower bound vector (xL.size()==x.size())
+   * @param  xL_name
+   *              [in] The name of the vector xL (null terminated string).
+   * @param  xU   [in] Sparse upper bound vector (xU.size()==x.size())
+   * @param  xU_name
+   *              [in] The name of the vector xU (null terminated string).
+   * @param  x    [in] Variable to test that it is in bounds.
+   * @param  x_name
+   *              [in] The name of the vector x (null terminated string).
+   *
+   * @return \c true if all of the errors are greater than the error tolerances,
+   * otherwise it returns \c false
+   */
+  virtual bool check_in_bounds(
+    std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& xL, const char xL_name[]
+    ,const Vector& xU, const char xU_name[]
+    ,const Vector& x,  const char x_name[]
+    );
 
 };	// end class VariableBoundsTester
 

@@ -47,73 +47,73 @@ namespace AbstractLinAlgPack {
 template <class T_Index, class T_Value>
 class SparseElement {
 public:
-	/** @name Public Typedefs. */
-	//@{
+  /** @name Public Typedefs. */
+  //@{
 
-	///
-	typedef T_Value						value_type;
-	///
-	typedef T_Index						index_type;
+  ///
+  typedef T_Value						value_type;
+  ///
+  typedef T_Index						index_type;
 
-	//@}
+  //@}
 
-	/** @name Constructors */
-	//@{
+  /** @name Constructors */
+  //@{
 
-	/// Construct uninitialized (#value() == 0.0#, #index() == 0#).
-	SparseElement()
-	{
-		idx_pad_.index_  = 0;
-		value_           = 0.0;
-	}
+  /// Construct uninitialized (#value() == 0.0#, #index() == 0#).
+  SparseElement()
+  {
+    idx_pad_.index_  = 0;
+    value_           = 0.0;
+  }
 
-	/// Construct with a value and index set
-	SparseElement(index_type index, value_type value)
-	{
-		idx_pad_.index_ = index;
-		value_          = value;
-	}
-	
-	//@}
+  /// Construct with a value and index set
+  SparseElement(index_type index, value_type value)
+  {
+    idx_pad_.index_ = index;
+    value_          = value;
+  }
+  
+  //@}
 
-	/** @name Value and index access */
-	//@{ 
+  /** @name Value and index access */
+  //@{ 
 
-	///
-	value_type& value()
-	{
-		return value_;
-	}
-	///
-	const value_type& value() const
-	{
-		return value_;
-	}
-	///
-	const index_type& index() const
-	{
-		return idx_pad_.index_;
-	}
-	/// Initialize
-	void initialize(index_type index, value_type value) {
-		idx_pad_.index_ = index;
-		value_          = value;
-	}	
-	/// Change the index
-	void change_index(index_type index)
-	{
-		idx_pad_.index_ = index;
-	}
+  ///
+  value_type& value()
+  {
+    return value_;
+  }
+  ///
+  const value_type& value() const
+  {
+    return value_;
+  }
+  ///
+  const index_type& index() const
+  {
+    return idx_pad_.index_;
+  }
+  /// Initialize
+  void initialize(index_type index, value_type value) {
+    idx_pad_.index_ = index;
+    value_          = value;
+  }	
+  /// Change the index
+  void change_index(index_type index)
+  {
+    idx_pad_.index_ = index;
+  }
 
-	//@}
+  //@}
 
 private:
-	union index_and_padding {
-		value_type  dummy;     // This is just included for alignment
-		index_type index_;   // so that sizeof(this) == 2*sizeof(value_type)
-	};
-	index_and_padding		idx_pad_;
-	value_type				value_;
+  union index_and_padding {
+    value_type  dummy;     // This is just included for alignment
+    index_type index_;   // so that sizeof(this) == 2*sizeof(value_type)
+  };
+  index_and_padding		idx_pad_;
+  value_type				value_;
 
 };	// end class SparseElement
 

@@ -35,10 +35,10 @@
 std::ostream&
 AbstractLinAlgPack::operator<<(std::ostream& os, const SpVectorSlice& svs)
 {
-	os << std::left << std::setw(0) << svs.dim() << "  " << svs.nz() << std::endl << std::right;
-	if( !svs.dim() ) return os;
-	const SpVectorSlice::difference_type offset = svs.offset();
-	for(SpVectorSlice::const_iterator itr = svs.begin(); itr != svs.end(); ++itr )
-		os << "  " << itr->value() << ":" << (itr->index() + offset);
-	return os << std::endl;
+  os << std::left << std::setw(0) << svs.dim() << "  " << svs.nz() << std::endl << std::right;
+  if( !svs.dim() ) return os;
+  const SpVectorSlice::difference_type offset = svs.offset();
+  for(SpVectorSlice::const_iterator itr = svs.begin(); itr != svs.end(); ++itr )
+    os << "  " << itr->value() << ":" << (itr->index() + offset);
+  return os << std::endl;
 }

@@ -42,8 +42,8 @@ namespace AbstractLinAlgPack {
   */
 template <class T_Indice, class T_Value>
 inline std::ostream& operator<<(std::ostream& os
-	, const COOMatrixPartitionedViewUtilityPack::Partition<T_Indice,T_Value>& part) {
-	return output_COOM(os,part,0);
+  , const COOMatrixPartitionedViewUtilityPack::Partition<T_Indice,T_Value>& part) {
+  return output_COOM(os,part,0);
 }
 
 ///
@@ -53,9 +53,9 @@ inline std::ostream& operator<<(std::ostream& os
   */
 template <class T_Indice, class T_Value>
 inline std::ostream& operator<<(std::ostream& os
-	, const COOMatrixPartitionedViewUtilityPack::TransposedPartition<T_Indice,T_Value>& trans_part)
+  , const COOMatrixPartitionedViewUtilityPack::TransposedPartition<T_Indice,T_Value>& trans_part)
 {
-	return output_COOM(os,trans_part,0);	
+  return output_COOM(os,trans_part,0);	
 }
 
 }	// end namespace AbstractLinAlgPack

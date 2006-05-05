@@ -39,16 +39,16 @@ namespace IterationPack {
 class AlgorithmTrackTesting : public AlgorithmTracker {
 public:
 
-	AlgorithmTrackTesting(const ostream_ptr_t& journal_out) : AlgorithmTracker(journal_out)
-	{}
+  AlgorithmTrackTesting(const ostream_ptr_t& journal_out) : AlgorithmTracker(journal_out)
+  {}
 
-	// Overriden
-	
-	///
-	void output_iteration(const Algorithm& algo) const;
+  // Overriden
+  
+  ///
+  void output_iteration(const Algorithm& algo) const;
 
-	///
-	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  ///
+  void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
 };	// end class AlgorithmTrackTesting
 

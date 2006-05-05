@@ -61,21 +61,21 @@ namespace AbstractLinAlgPack {
   \endverbatim
   */
 class BasisSystemTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			BasisSystemTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      BasisSystemTester >
 {
 public:
 
-	///
-	BasisSystemTesterSetOptions(
-		  BasisSystemTester* target = 0
-		, const char opt_grp_name[] = "BasisSystemTester" );
+  ///
+  BasisSystemTesterSetOptions(
+      BasisSystemTester* target = 0
+    , const char opt_grp_name[] = "BasisSystemTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class BasisSystemTesterSetOptions
 

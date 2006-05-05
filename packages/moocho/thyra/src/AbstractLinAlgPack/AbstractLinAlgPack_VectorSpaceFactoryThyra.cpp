@@ -38,29 +38,29 @@ VectorSpaceFactoryThyra::VectorSpaceFactoryThyra()
 {}
 
 VectorSpaceFactoryThyra::VectorSpaceFactoryThyra(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
+  )
 {
-	this->initialize(thyra_vec_spc_fcty);
+  this->initialize(thyra_vec_spc_fcty);
 }
 
 void VectorSpaceFactoryThyra::initialize(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty
+  )
 {
-	TEST_FOR_EXCEPTION(
-		thyra_vec_spc_fcty.get()==NULL, std::invalid_argument
-		,"VectorSpaceFactoryThyra::initialize(thyra_vec_spc_fcty): Error!"
-		);
-	thyra_vec_spc_fcty_ = thyra_vec_spc_fcty;
+  TEST_FOR_EXCEPTION(
+    thyra_vec_spc_fcty.get()==NULL, std::invalid_argument
+    ,"VectorSpaceFactoryThyra::initialize(thyra_vec_spc_fcty): Error!"
+    );
+  thyra_vec_spc_fcty_ = thyra_vec_spc_fcty;
 }
 
 Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > 
 VectorSpaceFactoryThyra::set_uninitialized()
 {
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > tmp_thyra_vec_spc_fcty = thyra_vec_spc_fcty_;
-	thyra_vec_spc_fcty_ = Teuchos::null;
-	return tmp_thyra_vec_spc_fcty;
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > tmp_thyra_vec_spc_fcty = thyra_vec_spc_fcty_;
+  thyra_vec_spc_fcty_ = Teuchos::null;
+  return tmp_thyra_vec_spc_fcty;
 }
 
 // Overridden from VectorSpaceFactory
@@ -68,7 +68,7 @@ VectorSpaceFactoryThyra::set_uninitialized()
 VectorSpaceFactory::space_ptr_t
 VectorSpaceFactoryThyra::create_vec_spc(index_type dim) const
 {
-	return Teuchos::rcp(new VectorSpaceThyra(thyra_vec_spc_fcty_->createVecSpc(dim)));
+  return Teuchos::rcp(new VectorSpaceThyra(thyra_vec_spc_fcty_->createVecSpc(dim)));
 }
 
 } // end namespace AbstractLinAlgPack

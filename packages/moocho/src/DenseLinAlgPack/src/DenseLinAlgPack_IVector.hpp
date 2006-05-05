@@ -44,42 +44,42 @@ namespace DenseLinAlgPack {
 class IVector : public std::valarray<DenseLinAlgPack::size_type> {
 public:
 
-	// STL typedefs
-	typedef DenseLinAlgPack::index_type		value_type;
-	typedef DenseLinAlgPack::size_type		size_type;
-	typedef value_type&					reference;
-	typedef const value_type&			const_reference;
-	typedef value_type*					iterator;
-	typedef const value_type*			const_iterator;
-	typedef std::valarray<size_type>	valarray;
+  // STL typedefs
+  typedef DenseLinAlgPack::index_type		value_type;
+  typedef DenseLinAlgPack::size_type		size_type;
+  typedef value_type&					reference;
+  typedef const value_type&			const_reference;
+  typedef value_type*					iterator;
+  typedef const value_type*			const_iterator;
+  typedef std::valarray<size_type>	valarray;
 
-	// constructors
+  // constructors
 
-	///
-	IVector();
-	///
-	IVector(size_type n);
-	///
-	IVector(const value_type& val, size_type n);
-	///
-	IVector(const value_type* p, size_type n);
+  ///
+  IVector();
+  ///
+  IVector(size_type n);
+  ///
+  IVector(const value_type& val, size_type n);
+  ///
+  IVector(const value_type* p, size_type n);
 
-	/// Resize on assignment
-	IVector& operator=(const IVector&);
+  /// Resize on assignment
+  IVector& operator=(const IVector&);
 
-	/// 1-based element access (range checked if _DEBUG is defined)
-	reference operator()(size_type i);
-	/// 1-based element access (range checked if _DEBUG is defined)
-	const_reference operator()(size_type i) const;
+  /// 1-based element access (range checked if _DEBUG is defined)
+  reference operator()(size_type i);
+  /// 1-based element access (range checked if _DEBUG is defined)
+  const_reference operator()(size_type i) const;
 
-	/// STL iterator
-	iterator begin();
-	/// STL iterator
-	const_iterator begin() const;
-	/// STL iterator
-	iterator end();
-	/// STL iterator
-	const_iterator end() const;
+  /// STL iterator
+  iterator begin();
+  /// STL iterator
+  const_iterator begin() const;
+  /// STL iterator
+  iterator end();
+  /// STL iterator
+  const_iterator end() const;
 
 }; // end class IVector
 
@@ -99,25 +99,25 @@ inline IVector::IVector(const value_type* p, size_type n) : std::valarray<size_t
 
 inline IVector& IVector::operator=(const IVector& iv)
 {
-	this->resize(iv.size());
-	std::valarray<DenseLinAlgPack::size_type>::operator=(iv);
-	return *this;
+  this->resize(iv.size());
+  std::valarray<DenseLinAlgPack::size_type>::operator=(iv);
+  return *this;
 }
 
 inline IVector::reference IVector::operator()(size_type i)
 {
 #ifdef _DEBUG
-	assert( 1 <= i && i <= static_cast<size_type>(size()) );
+  assert( 1 <= i && i <= static_cast<size_type>(size()) );
 #endif
-	return operator[](i-1);
+  return operator[](i-1);
 }
 
 inline IVector::const_reference IVector::operator()(size_type i) const
 {
 #ifdef _DEBUG
-	assert( 1 <= i && i <= static_cast<size_type>(size()) );
+  assert( 1 <= i && i <= static_cast<size_type>(size()) );
 #endif
-	return const_cast<IVector*>(this)->operator[](i-1);
+  return const_cast<IVector*>(this)->operator[](i-1);
 }
 
 inline IVector::iterator IVector::begin()

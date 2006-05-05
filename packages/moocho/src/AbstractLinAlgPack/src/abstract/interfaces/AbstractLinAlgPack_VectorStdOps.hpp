@@ -111,15 +111,15 @@ void Vp_StV( VectorMutable* v_lhs, const value_type& alpha, const SpVectorSlice&
 /** v_lhs(i) += alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_prod(
-	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
-	,VectorMutable* v_lhs );
+  const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+  ,VectorMutable* v_lhs );
 
 ///
 /** v_lhs(i) = alpha * v_rhs1(i) / v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_divide(
-	const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
-	,VectorMutable* v_lhs );
+  const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
+  ,VectorMutable* v_lhs );
 
 ///
 /** Seed the random number generator
@@ -147,9 +147,9 @@ void random_vector( value_type l, value_type u, VectorMutable* v );
  \endverbatim
  */
 void sign(
-	const Vector      &v
-	,VectorMutable    *z
-	);
+  const Vector      &v
+  ,VectorMutable    *z
+  );
 
 //@}
 
@@ -164,7 +164,7 @@ inline
 AbstractLinAlgPack::value_type
 AbstractLinAlgPack::dot( const SpVectorSlice& sv_rhs1, const Vector& v_rhs2 )
 {
-	return dot(v_rhs2,sv_rhs1);
+  return dot(v_rhs2,sv_rhs1);
 }
 
 #endif // ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H

@@ -53,12 +53,12 @@ namespace IterationPack {
   */
 template<class T>
 IterQuantityAccess<T>& cast_iq(
-	AlgorithmState& state, const std::string& iq_name );
+  AlgorithmState& state, const std::string& iq_name );
 
 ///
 template<class T>
 const IterQuantityAccess<T>& cast_iq(
-	const AlgorithmState& state, const std::string& iq_name );
+  const AlgorithmState& state, const std::string& iq_name );
 
 ///
 /** Lookup an iteration quantity using its id and cast it
@@ -78,27 +78,27 @@ const IterQuantityAccess<T>& cast_iq(
  */
 template<class T>
 IterQuantityAccess<T>& cast_iq(
-	AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );
+  AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );
 
 ///
 template<class T>
 const IterQuantityAccess<T>& cast_iq(
-	const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );
+  const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name );
 
 // Helper function
 
 void imp_cast_iq_throw_error(
-	const std::string&                 iq_name
-	,const std::string&                iq_is_type_name
-	,const std::string&                iq_want_type_name
-	);
+  const std::string&                 iq_name
+  ,const std::string&                iq_is_type_name
+  ,const std::string&                iq_want_type_name
+  );
 
 void imp_cast_iq_throw_error(
-	const AlgorithmState::iq_id_type   iq_id
-	,const std::string&                iq_name
-	,const std::string&                iq_is_type_name
-	,const std::string&                iq_want_type_name
-	);
+  const AlgorithmState::iq_id_type   iq_id
+  ,const std::string&                iq_name
+  ,const std::string&                iq_is_type_name
+  ,const std::string&                iq_want_type_name
+  );
 
 // ///////////////////
 // Inline definitions
@@ -106,61 +106,61 @@ void imp_cast_iq_throw_error(
 template<class T>
 //inline
 IterQuantityAccess<T>& cast_iq(
-	AlgorithmState& state, const std::string& iq_name )
+  AlgorithmState& state, const std::string& iq_name )
 {
-	IterQuantity
-	 	&iq = state.iter_quant( iq_name );
-	IterQuantityAccess<T>
-		*p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
-			// will throw exception if iq_name does not exist
-	if( !p )
-		imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
-	return *p;	
+  IterQuantity
+     &iq = state.iter_quant( iq_name );
+  IterQuantityAccess<T>
+    *p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
+      // will throw exception if iq_name does not exist
+  if( !p )
+    imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
+  return *p;	
 }
 
 template<class T>
 //inline
 const IterQuantityAccess<T>& cast_iq(
-	const AlgorithmState& state, const std::string& iq_name )
+  const AlgorithmState& state, const std::string& iq_name )
 {
-	const IterQuantity
-	 	&iq = state.iter_quant( iq_name );
-	const IterQuantityAccess<T>
-		*p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
-			// will throw exception if iq_name does not exist
-	if( !p )
-		imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
-	return *p;	
+  const IterQuantity
+     &iq = state.iter_quant( iq_name );
+  const IterQuantityAccess<T>
+    *p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
+      // will throw exception if iq_name does not exist
+  if( !p )
+    imp_cast_iq_throw_error( iq_name, typeid(iq).name(), typeid(T).name() );
+  return *p;	
 }
 
 template<class T>
 //inline
 IterQuantityAccess<T>& cast_iq(
-	AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name )
+  AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name )
 {
-	IterQuantity
-	 	&iq = state.iter_quant( iq_id );
-	IterQuantityAccess<T>
-		*p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
-			// will throw exception if iq_name does not exist
-	if( !p )
-		imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
-	return *p;	
+  IterQuantity
+     &iq = state.iter_quant( iq_id );
+  IterQuantityAccess<T>
+    *p = dynamic_cast<IterQuantityAccess<T>*>( &iq );
+      // will throw exception if iq_name does not exist
+  if( !p )
+    imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
+  return *p;	
 }
 
 template<class T>
 //inline
 const IterQuantityAccess<T>& cast_iq(
-	const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name )
+  const AlgorithmState& state, const AlgorithmState::iq_id_type iq_id, const std::string& iq_name )
 {
-	IterQuantity
-	 	&iq = state.iter_quant( iq_id );
-	const IterQuantityAccess<T>
-		*p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
-			// will throw exception if iq_name does not exist
-	if( !p )
-		imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
-	return *p;
+  IterQuantity
+     &iq = state.iter_quant( iq_id );
+  const IterQuantityAccess<T>
+    *p = dynamic_cast<const IterQuantityAccess<T>*>( &iq );
+      // will throw exception if iq_name does not exist
+  if( !p )
+    imp_cast_iq_throw_error( iq_id, iq_name, typeid(iq).name(), typeid(T).name() );
+  return *p;
 }
 
 }	// namespace IterationPack

@@ -36,20 +36,20 @@ namespace AbstractLinAlgPack {
 MatrixSymNonsing::mat_msns_mut_ptr_t
 MatrixSymNonsing::clone_msns()
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 MatrixSymNonsing::mat_msns_ptr_t
 MatrixSymNonsing::clone_msns() const
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 void MatrixSymNonsing::M_StMtInvMtM(
-	  MatrixSymOp* S, value_type a, const MatrixOp& B
-	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
+    MatrixSymOp* S, value_type a, const MatrixOp& B
+  , BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
-	assert(0); // ToDo: Implement!
+  assert(0); // ToDo: Implement!
 }
 
 // Overridden from MatrixNonsing
@@ -57,13 +57,13 @@ void MatrixSymNonsing::M_StMtInvMtM(
 MatrixSymNonsing::mat_mns_mut_ptr_t
 MatrixSymNonsing::clone_mns()
 {
-	return clone_msns();
+  return clone_msns();
 }
 
 MatrixSymNonsing::mat_mns_ptr_t
 MatrixSymNonsing::clone_mns() const
 {
-	return clone_msns();
+  return clone_msns();
 }
 
 }	// end namespace AbstractLinAlgPack

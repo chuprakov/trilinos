@@ -42,11 +42,11 @@ namespace MoochoPack {
   * The options group is (with the default name):
   *
   \begin{verbatim}
-	options_group ReducedHessianSecantUpdateBFGSProjected {
-		act_set_frac_proj_start   = 0.8;   *** (+dbl)
-		project_error_tol         = 1e-5;  *** (+dbl) [0.0, 1.0]
+  options_group ReducedHessianSecantUpdateBFGSProjected {
+    act_set_frac_proj_start   = 0.8;   *** (+dbl)
+    project_error_tol         = 1e-5;  *** (+dbl) [0.0, 1.0]
         super_basic_mult_drop_tol = 1e-5;  *** (+dbl)
-	}
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -56,21 +56,21 @@ namespace MoochoPack {
   *	\end{description}
   */
 class ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			ReducedHessianSecantUpdateBFGSProjected_Strategy >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      ReducedHessianSecantUpdateBFGSProjected_Strategy >
 {
 public:
 
-	///
-	ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions(
-		ReducedHessianSecantUpdateBFGSProjected_Strategy* target = 0
-		, const char opt_grp_name[] = "ReducedHessianSecantUpdatePBFGS" );
+  ///
+  ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions(
+    ReducedHessianSecantUpdateBFGSProjected_Strategy* target = 0
+    , const char opt_grp_name[] = "ReducedHessianSecantUpdatePBFGS" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions
 

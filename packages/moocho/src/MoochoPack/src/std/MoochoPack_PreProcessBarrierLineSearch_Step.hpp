@@ -52,66 +52,66 @@ namespace MoochoPack {
  */
 
 class PreProcessBarrierLineSearch_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
-	{
-	public:
+  : public IterationPack::AlgorithmStep // doxygen needs full path
+  {
+  public:
 
-		/** @name Constructors / initializers */
-		//@{
+    /** @name Constructors / initializers */
+    //@{
 
-		///
-		/** Fraction to Boundary parameter
-		 *
-		 * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
-		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_boundary_frac )
+    ///
+    /** Fraction to Boundary parameter
+     *
+     * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
+     */
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_boundary_frac )
 
-		///
-		/** Constructor.
-		 */
-		PreProcessBarrierLineSearch_Step(
-		  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
-		  const value_type tau_boundary_frac = 0.99
-		  );
-		//@}
+    ///
+    /** Constructor.
+     */
+    PreProcessBarrierLineSearch_Step(
+      Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
+      const value_type tau_boundary_frac = 0.99
+      );
+    //@}
 
-		/** @name Overridden from AlgorithmStep */
-		//@{
-		///
-		bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-					 , poss_type assoc_step_poss);
-		
-		
-		void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-		//@}
+    /** @name Overridden from AlgorithmStep */
+    //@{
+    ///
+    bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+           , poss_type assoc_step_poss);
+    
+    
+    void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+             , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+    //@}
 
-	private:
+  private:
 
     // //////////////////////////
     // Private data members
 
-		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
-		CastIQMember< Filter_T > filter_;
+    Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+    CastIQMember< Filter_T > filter_;
 
-	}; // end class PreProcessBarrierLineSearch_Step
+  }; // end class PreProcessBarrierLineSearch_Step
 
 
 class PreProcessBarrierLineSearch_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode,
-	  public OptionsFromStreamPack::SetOptionsToTargetBase< PreProcessBarrierLineSearch_Step >
-	{
-	public:
-		PreProcessBarrierLineSearch_StepSetOptions(
-		  PreProcessBarrierLineSearch_Step* target = 0,
-		  const char opt_grp_name[] = "PreProcessBarrierLineSearch" );
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode,
+    public OptionsFromStreamPack::SetOptionsToTargetBase< PreProcessBarrierLineSearch_Step >
+  {
+  public:
+    PreProcessBarrierLineSearch_StepSetOptions(
+      PreProcessBarrierLineSearch_Step* target = 0,
+      const char opt_grp_name[] = "PreProcessBarrierLineSearch" );
 
-	protected:
+  protected:
 
-		/// Overridden from SetOptionsFromStreamNode
-		void setOption( int option_num, const std::string& option_value );
-	
-	};	// end class PreProcessBarrierLineSearch_StepSetOptions
+    /// Overridden from SetOptionsFromStreamNode
+    void setOption( int option_num, const std::string& option_value );
+  
+  };	// end class PreProcessBarrierLineSearch_StepSetOptions
 
 } // end namespace MoochoPack
 

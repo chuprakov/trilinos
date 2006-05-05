@@ -41,28 +41,28 @@ namespace ConstrainedOptPack {
 class MeritFuncPenaltyParams {
 public:
 
-	///
-	class CanNotResize : public std::logic_error
-	{public: CanNotResize(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  ///
+  class CanNotResize : public std::logic_error
+  {public: CanNotResize(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	///
-	virtual ~MeritFuncPenaltyParams() {}
+  ///
+  virtual ~MeritFuncPenaltyParams() {}
 
-	/** @name To be overridden by subclasses */
-	//@{
+  /** @name To be overridden by subclasses */
+  //@{
 
-	///
-	/** Set the vector space for \c to use for the penalty parameters.
-	  */
-	virtual void set_space_c( const VectorSpace::space_ptr_t& space_c ) = 0;
+  ///
+  /** Set the vector space for \c to use for the penalty parameters.
+    */
+  virtual void set_space_c( const VectorSpace::space_ptr_t& space_c ) = 0;
 
-	/// Get the vector of penalty parameters for setting them
-	virtual VectorMutable& set_mu() = 0;
+  /// Get the vector of penalty parameters for setting them
+  virtual VectorMutable& set_mu() = 0;
 
-	/// Get the vector of penalty parameters for viewing them
-	virtual const Vector& get_mu() const = 0;
+  /// Get the vector of penalty parameters for viewing them
+  virtual const Vector& get_mu() const = 0;
 
-	//@}
+  //@}
 
 };	// end class MeritFuncPenaltyParams
 

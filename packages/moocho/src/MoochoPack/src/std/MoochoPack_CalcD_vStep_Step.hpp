@@ -39,19 +39,19 @@ namespace MoochoPack {
  *   and       <tt>dvu_k = mu*invXu_k*e - vu_k + invXu_k*Vu_k*d_k</tt>
  */
 class CalcD_vStep_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 };	// end class CalcD_vStep_Step
 

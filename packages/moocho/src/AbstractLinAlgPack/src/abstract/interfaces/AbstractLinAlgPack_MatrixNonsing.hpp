@@ -85,145 +85,145 @@ namespace AbstractLinAlgPack {
 class MatrixNonsing : public virtual MatrixBase {
 public:
 
-	/** @name Friends */
-	//@{
+  /** @name Friends */
+  //@{
 
-	///
-	friend
-	void V_InvMtV(
-		VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
-		,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2);
-	///
-	friend
-	void V_InvMtV(
-		VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
-		,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2);
-	///
-	friend
-	value_type transVtInvMtV(
-		const Vector& v_rhs1, const MatrixNonsing& M_rhs2
-		,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3);
-	///
-	friend
-	value_type transVtInvMtV(
-		const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
-		,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3);
-	///
-	friend
-	void M_StInvMtM(
-		MatrixOp* m_lhs, value_type alpha
-		,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
-		,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 );
-	///
-	friend
-	void M_StMtInvM(
-		MatrixOp* m_lhs, value_type alpha
-		,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
-		,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 );
+  ///
+  friend
+  void V_InvMtV(
+    VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+    ,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2);
+  ///
+  friend
+  void V_InvMtV(
+    VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+    ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2);
+  ///
+  friend
+  value_type transVtInvMtV(
+    const Vector& v_rhs1, const MatrixNonsing& M_rhs2
+    ,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3);
+  ///
+  friend
+  value_type transVtInvMtV(
+    const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
+    ,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3);
+  ///
+  friend
+  void M_StInvMtM(
+    MatrixOp* m_lhs, value_type alpha
+    ,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
+    ,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 );
+  ///
+  friend
+  void M_StMtInvM(
+    MatrixOp* m_lhs, value_type alpha
+    ,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
+    ,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 );
 
-	//@}
+  //@}
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
 #ifndef DOXYGEN_COMPILE
-	///
-	typedef Teuchos::RefCountPtr<const MatrixNonsing>    mat_mns_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<MatrixNonsing>          mat_mns_mut_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const MatrixNonsing>    mat_mns_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<MatrixNonsing>          mat_mns_mut_ptr_t;
 #endif
 
-	///
-	/** This exception will be thrown if it turns out at runtime that
-	 * the matrix is numerically singular.
-	 */
-	class SingularMatrix : public std::logic_error
-	{public: SingularMatrix(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  ///
+  /** This exception will be thrown if it turns out at runtime that
+   * the matrix is numerically singular.
+   */
+  class SingularMatrix : public std::logic_error
+  {public: SingularMatrix(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	//@}
+  //@}
 
-	/** @name Clone */
-	//@{
+  /** @name Clone */
+  //@{
 
-	///
-	/** Clone the non-const matrix object (if supported).
-	 *
-	 * The default implementation returns NULL which is perfectly acceptable.
-	 * A matrix object is not required to return a non-NULL value but almost
-	 * every good matrix implementation will.
-	 */
-	virtual mat_mns_mut_ptr_t clone_mns();
+  ///
+  /** Clone the non-const matrix object (if supported).
+   *
+   * The default implementation returns NULL which is perfectly acceptable.
+   * A matrix object is not required to return a non-NULL value but almost
+   * every good matrix implementation will.
+   */
+  virtual mat_mns_mut_ptr_t clone_mns();
 
-	///
-	/** Clone the const matrix object (if supported).
-	 *
-	 * The behavior of this method is the same as for the non-const version
-	 * above except it returns a smart pointer to a const matrix object.
-	 *
-	 * The default implementation of this method will call the non-const version
-	 * and then cast to constant.
-	 */
-	virtual mat_mns_ptr_t clone_mns() const;
+  ///
+  /** Clone the const matrix object (if supported).
+   *
+   * The behavior of this method is the same as for the non-const version
+   * above except it returns a smart pointer to a const matrix object.
+   *
+   * The default implementation of this method will call the non-const version
+   * and then cast to constant.
+   */
+  virtual mat_mns_ptr_t clone_mns() const;
 
-	//@}
+  //@}
 
-	/** @name Level-2 BLAS */
-	//@{
+  /** @name Level-2 BLAS */
+  //@{
 
-	/// v_lhs	= inv(op(M_rhs1)) * vs_rhs2
-	virtual void V_InvMtV(
-		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const Vector& v_rhs2) const = 0;
-	/// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
-	virtual void V_InvMtV(
-		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2) const;
-	/// result	= vs_rhs1' * inv(op(M_rhs2)) * vs_rhs3
-	virtual value_type transVtInvMtV(
-		const Vector& v_rhs1
-		,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3) const;
-	/// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
-	virtual value_type transVtInvMtV(
-		const SpVectorSlice& sv_rhs1
-		,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
+  /// v_lhs	= inv(op(M_rhs1)) * vs_rhs2
+  virtual void V_InvMtV(
+    VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    ,const Vector& v_rhs2) const = 0;
+  /// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
+  virtual void V_InvMtV(
+    VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2) const;
+  /// result	= vs_rhs1' * inv(op(M_rhs2)) * vs_rhs3
+  virtual value_type transVtInvMtV(
+    const Vector& v_rhs1
+    ,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3) const;
+  /// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
+  virtual value_type transVtInvMtV(
+    const SpVectorSlice& sv_rhs1
+    ,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
 
-	//		end Level-2 BLAS
-	//@}
+  //		end Level-2 BLAS
+  //@}
 
-	/** @name Level-3 BLAS */
-	//@{
+  /** @name Level-3 BLAS */
+  //@{
 
-	///
-	/** m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
-	 *
-	 * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
-	 * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
-	 * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
-	 * false, then this default implementation has no choice but to throw an exception
-	 * (<tt>std::invalid_argument</tt>).
-	 */
-	virtual void M_StInvMtM(
-		MatrixOp* m_lhs, value_type alpha
-		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-		) const;
-	///
-	/** m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
-	 *
-	 * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
-	 * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
-	 * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
-	 * false, then this default implementation has no choice but to throw an exception
-	 * (<tt>std::invalid_argument</tt>).
-	 */
-	virtual void M_StMtInvM(
-		MatrixOp* m_lhs, value_type alpha
-		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-		,BLAS_Cpp::Transp trans_rhs2
-		) const;
+  ///
+  /** m_lhs = alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right).
+   *
+   * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
+   * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
+   * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
+   * false, then this default implementation has no choice but to throw an exception
+   * (<tt>std::invalid_argument</tt>).
+   */
+  virtual void M_StInvMtM(
+    MatrixOp* m_lhs, value_type alpha
+    ,BLAS_Cpp::Transp trans_rhs1
+    ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+    ) const;
+  ///
+  /** m_lhs = alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left).
+   *
+   * The default implemention performs a <tt>dynamic_cast<MultiVectorMutable>(m_lhs)</tt>.
+   * If this \c dynamic_cast<> does not return  \c NULL , then this operation is implemented in terms of
+   * <tt>this->V_InvMtV()</tt> one row or column at a time.  If this \c dynamic_cast<> returns
+   * false, then this default implementation has no choice but to throw an exception
+   * (<tt>std::invalid_argument</tt>).
+   */
+  virtual void M_StMtInvM(
+    MatrixOp* m_lhs, value_type alpha
+    ,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+    ,BLAS_Cpp::Transp trans_rhs2
+    ) const;
 
-	//		end Level-3 BLAS
-	//@}
+  //		end Level-3 BLAS
+  //@}
 
 };	// end class MatrixNonsing
 
@@ -240,34 +240,34 @@ public:
 
 /// v_lhs	= inv(op(M_rhs1)) * v_rhs2
 inline void V_InvMtV(
-	VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
-	,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2)
+  VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2)
 {
-	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,v_rhs2);
+  M_rhs1.V_InvMtV(v_lhs,trans_rhs1,v_rhs2);
 }
 
 /// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
 inline void V_InvMtV(
-	VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
-	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2)
+  VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+  ,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2)
 {
-	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,sv_rhs2);
+  M_rhs1.V_InvMtV(v_lhs,trans_rhs1,sv_rhs2);
 }
 
 /// result	= v_rhs1' * inv(op(M_rhs2)) * v_rhs3
 inline value_type transVtInvMtV(
-	const Vector& v_rhs1, const MatrixNonsing& M_rhs2
-	,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3)
+  const Vector& v_rhs1, const MatrixNonsing& M_rhs2
+  ,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3)
 {
-	return M_rhs2.transVtInvMtV(v_rhs1,trans_rhs2,v_rhs3);
+  return M_rhs2.transVtInvMtV(v_rhs1,trans_rhs2,v_rhs3);
 }
 
 /// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
 inline value_type transVtInvMtV(
-	const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
-	,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
+  const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
+  ,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
 {
-	return M_rhs2.transVtInvMtV(sv_rhs1,trans_rhs2,sv_rhs3);
+  return M_rhs2.transVtInvMtV(sv_rhs1,trans_rhs2,sv_rhs3);
 }
 
 //		end Level-2 BLAS
@@ -278,20 +278,20 @@ inline value_type transVtInvMtV(
 
 /// m_lhs	= alpha * inv(op(mwo_rhs1)) * op(mwo_rhs2) (right)
 inline void M_StInvMtM(
-	MatrixOp* m_lhs, value_type alpha
-	,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
-	,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 )
+  MatrixOp* m_lhs, value_type alpha
+  ,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
+  ,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 )
 {
-	M_rhs1.M_StInvMtM(m_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
+  M_rhs1.M_StInvMtM(m_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
 }
 
 /// m_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 inline void M_StMtInvM(
-	MatrixOp* m_lhs, value_type alpha
-	,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 )
+  MatrixOp* m_lhs, value_type alpha
+  ,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
+  ,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 )
 {
-	M_rhs2.M_StMtInvM(m_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);
+  M_rhs2.M_StMtInvM(m_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);
 }
 
 //		end Level-3 BLAS

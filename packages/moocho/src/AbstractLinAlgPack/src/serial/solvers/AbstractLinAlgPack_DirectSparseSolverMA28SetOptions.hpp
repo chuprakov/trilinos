@@ -57,20 +57,20 @@ namespace AbstractLinAlgPack {
   * See MA28 documentation for a description of these options.
   */
 class DirectSparseSolverMA28SetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			DirectSparseSolverMA28 >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      DirectSparseSolverMA28 >
 {
 public:
 
-	///
-	DirectSparseSolverMA28SetOptions(
-		DirectSparseSolverMA28* qp_solver = 0 );
+  ///
+  DirectSparseSolverMA28SetOptions(
+    DirectSparseSolverMA28* qp_solver = 0 );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class DirectSparseSolverMA28SetOptions
 

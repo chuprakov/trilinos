@@ -50,78 +50,78 @@ namespace MoochoPack {
  */
 
 class PreEvalNewPointBarrier_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
-	{
-	public:
+  : public IterationPack::AlgorithmStep // doxygen needs full path
+  {
+  public:
 
-		///
-		/** relative fraction for initializing x within
-		 *   bounds.
-		 *   xl_sb = min(xl+relative_bound_push*(xu-xl),
-		 *               xl + absolute_bound_push)
-		 *   xu_sb = max(xu-relative_bound_push*(xu-xl),
-		 *               xu - absolute_bound_push)
-		 *   if (xl_sb > xu_sb) then
-		 *      x = (xl + (xu-xl)/2
-		 *   else if (x < xl_sb) then 
-		 *      x = xl_sb
-		 *   else if (x > xu_sb) then
-		 *      x = xu_sb
-		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push )
+    ///
+    /** relative fraction for initializing x within
+     *   bounds.
+     *   xl_sb = min(xl+relative_bound_push*(xu-xl),
+     *               xl + absolute_bound_push)
+     *   xu_sb = max(xu-relative_bound_push*(xu-xl),
+     *               xu - absolute_bound_push)
+     *   if (xl_sb > xu_sb) then
+     *      x = (xl + (xu-xl)/2
+     *   else if (x < xl_sb) then 
+     *      x = xl_sb
+     *   else if (x > xu_sb) then
+     *      x = xu_sb
+     */
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push )
 
-		///
-		/** absolute measure for initializing x within
-		 *   bounds.
-		 *   xl_sb = min(xl+relative_bound_push*(xu-xl),
-		 *               xl + absolute_bound_push)
-		 *   xu_sb = max(xu-relative_bound_push*(xu-xl),
-		 *               xu - absolute_bound_push)
-		 *   if (xl_sb > xu_sb) then
-		 *      x = (xl + (xu-xl)/2
-		 *   else if (x < xl_sb) then 
-		 *      x = xl_sb
-		 *   else if (x > xu_sb) then
-		 *      x = xu_sb
-		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push )
+    ///
+    /** absolute measure for initializing x within
+     *   bounds.
+     *   xl_sb = min(xl+relative_bound_push*(xu-xl),
+     *               xl + absolute_bound_push)
+     *   xu_sb = max(xu-relative_bound_push*(xu-xl),
+     *               xu - absolute_bound_push)
+     *   if (xl_sb > xu_sb) then
+     *      x = (xl + (xu-xl)/2
+     *   else if (x < xl_sb) then 
+     *      x = xl_sb
+     *   else if (x > xu_sb) then
+     *      x = xu_sb
+     */
+    STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push )
 
-		/** @name Overridden from AlgorithmStep */
-		//@{
-		///
-		bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-					 , poss_type assoc_step_poss);
-		
-		
-		void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-		//@}
+    /** @name Overridden from AlgorithmStep */
+    //@{
+    ///
+    bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+           , poss_type assoc_step_poss);
+    
+    
+    void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+             , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+    //@}
 
-		/** Constructor.
-		 */
-		PreEvalNewPointBarrier_Step(
-		  const value_type relative_bound_push = 0.01,
-		  const value_type absolute_bound_push = 0.001
-		  );
-		//@}
+    /** Constructor.
+     */
+    PreEvalNewPointBarrier_Step(
+      const value_type relative_bound_push = 0.01,
+      const value_type absolute_bound_push = 0.001
+      );
+    //@}
 
-	}; // end class PreEvalNewPointBarrier_Step
+  }; // end class PreEvalNewPointBarrier_Step
 
 class PreEvalNewPointBarrier_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode,
-	  public OptionsFromStreamPack::SetOptionsToTargetBase< PreEvalNewPointBarrier_Step >
-	{
-	public:
-		PreEvalNewPointBarrier_StepSetOptions(
-		  PreEvalNewPointBarrier_Step* target = 0,
-		  const char opt_grp_name[] = "PreEvalNewPointBarrier" );
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode,
+    public OptionsFromStreamPack::SetOptionsToTargetBase< PreEvalNewPointBarrier_Step >
+  {
+  public:
+    PreEvalNewPointBarrier_StepSetOptions(
+      PreEvalNewPointBarrier_Step* target = 0,
+      const char opt_grp_name[] = "PreEvalNewPointBarrier" );
 
-	protected:
+  protected:
 
-		/// Overridden from SetOptionsFromStreamNode
-		void setOption( int option_num, const std::string& option_value );
-	
-	};	// end class PreEvalNewPointBarrier_StepSetOptions
+    /// Overridden from SetOptionsFromStreamNode
+    void setOption( int option_num, const std::string& option_value );
+  
+  };	// end class PreEvalNewPointBarrier_StepSetOptions
 
 
 }  // end namespace MoochoPack

@@ -66,11 +66,11 @@ namespace MoochoPack {
   * @param	out	[O] Target for output.
   */
 void active_set_change(
-	const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep
-	,EJournalOutputLevel olevel, std::ostream* out
-	,size_type* num_adds, size_type* num_drops
-	,size_type* num_active_indep, size_type* num_adds_indep, size_type* num_drops_indep
-	); 
+  const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep
+  ,EJournalOutputLevel olevel, std::ostream* out
+  ,size_type* num_adds, size_type* num_drops
+  ,size_type* num_active_indep, size_type* num_adds_indep, size_type* num_drops_indep
+  ); 
 
 }	// end namespace MoochoPack
 

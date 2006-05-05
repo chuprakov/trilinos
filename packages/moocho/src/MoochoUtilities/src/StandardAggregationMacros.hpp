@@ -41,10 +41,10 @@
  * declaration as follows:
  *
  \verbatim
-	class YourClass {
-	public:
-		STANDARD_AGGREGATION_MEMBERS( MyClass, my_object )
-	};
+  class YourClass {
+  public:
+    STANDARD_AGGREGATION_MEMBERS( MyClass, my_object )
+  };
  \endverbatim
  *
  * Note that the macro addes the private member #TYPE* NAME_#
@@ -53,10 +53,10 @@
  *
  * In order to have a const only association use:
  \verbatim
-	class YourClass {
-	public:
-		STANDARD_CONST_AGGREGATION_MEMBERS( MyClass, my_object )
-	};
+  class YourClass {
+  public:
+    STANDARD_CONST_AGGREGATION_MEMBERS( MyClass, my_object )
+  };
  \endverbatim
 */
 //@{
@@ -64,40 +64,40 @@
 /// Insert class members for a non-const association
 #define STANDARD_AGGREGATION_MEMBERS( TYPE, NAME )						\
 public:																	\
-	void set_ ## NAME ( TYPE* NAME )									\
-	{	NAME ## _ = NAME; }												\
-	TYPE* get_ ## NAME()												\
-	{	return NAME ## _; }												\
-	const TYPE* get_ ## NAME() const									\
-	{	return NAME ## _; }												\
-	TYPE& NAME()														\
-	{																	\
-		return StandardCompositionRelationshipsPack::role_name(			\
-			NAME ## _, false, " ## NAME ## " );							\
-	}																	\
-	const TYPE& NAME() const											\
-	{																	\
-		return StandardCompositionRelationshipsPack::role_name(			\
-			NAME ## _, false, " ## NAME ## " );							\
-	}																	\
+  void set_ ## NAME ( TYPE* NAME )									\
+  {	NAME ## _ = NAME; }												\
+  TYPE* get_ ## NAME()												\
+  {	return NAME ## _; }												\
+  const TYPE* get_ ## NAME() const									\
+  {	return NAME ## _; }												\
+  TYPE& NAME()														\
+  {																	\
+    return StandardCompositionRelationshipsPack::role_name(			\
+      NAME ## _, false, " ## NAME ## " );							\
+  }																	\
+  const TYPE& NAME() const											\
+  {																	\
+    return StandardCompositionRelationshipsPack::role_name(			\
+      NAME ## _, false, " ## NAME ## " );							\
+  }																	\
 private:																\
-	TYPE* NAME ## _;													\
+  TYPE* NAME ## _;													\
 public:
 
 /// Insert class members for a constant association.
 #define STANDARD_CONST_AGGREGATION_MEMBERS( TYPE, NAME )				\
 public:																	\
-	void set_ ## NAME ( const TYPE* NAME )								\
-	{	NAME ## _ = NAME; }												\
-	const TYPE* get_ ## NAME() const									\
-	{	return NAME ## _; }												\
-	const TYPE& NAME() const											\
-	{																	\
-		return StandardCompositionRelationshipsPack::const_role_name(	\
-			NAME ## _, false, " ## NAME ## " );							\
-	}																	\
+  void set_ ## NAME ( const TYPE* NAME )								\
+  {	NAME ## _ = NAME; }												\
+  const TYPE* get_ ## NAME() const									\
+  {	return NAME ## _; }												\
+  const TYPE& NAME() const											\
+  {																	\
+    return StandardCompositionRelationshipsPack::const_role_name(	\
+      NAME ## _, false, " ## NAME ## " );							\
+  }																	\
 private:																\
-	const TYPE* NAME ## _;												\
+  const TYPE* NAME ## _;												\
 public:
-	
+  
 #endif	// STANDARD_AGGRAGATION_MACROS_H

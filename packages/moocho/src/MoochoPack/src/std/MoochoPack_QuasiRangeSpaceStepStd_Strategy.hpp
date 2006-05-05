@@ -40,27 +40,27 @@ namespace MoochoPack {
 class QuasiRangeSpaceStepStd_Strategy : public QuasiRangeSpaceStep_Strategy {
 public:
 
-	/** @name Overridden from QuasiRangeSpaceStep_Strategy */
-	//@{
+  /** @name Overridden from QuasiRangeSpaceStep_Strategy */
+  //@{
 
-	///
-	/** Solves the range space problem with the old decomposition at x_k.
-	 *
-	 * Solves:
-	 \verbatim
-	 vy = -inv(Gc_k'*Y_k) * c_xo
-	 v = Y_k*vy
-	 \endverbatim
-	 */
- 	 bool solve_quasi_range_space_step(
-		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
-		,const Vector& xo, const Vector& c_xo, VectorMutable* v
-	  	);
+  ///
+  /** Solves the range space problem with the old decomposition at x_k.
+   *
+   * Solves:
+   \verbatim
+   vy = -inv(Gc_k'*Y_k) * c_xo
+   v = Y_k*vy
+   \endverbatim
+   */
+    bool solve_quasi_range_space_step(
+    std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
+    ,const Vector& xo, const Vector& c_xo, VectorMutable* v
+      );
 
-	///
-	void print_step( std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
 }; // end class QuasiRangeSpaceStepStd_Strategy
 

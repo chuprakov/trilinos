@@ -43,38 +43,38 @@ namespace MoochoPack {
  * The options group is:
  *
  \verbatim
-	options_group NLPSolverClientInterface {
+  options_group NLPSolverClientInterface {
         max_iter = ?;
         max_run_time = ?;  *** In minutes
         opt_tol = ?;
         feas_tol = ?;
         step_tol = ?;
-		journal_output_level = ?;
-		journal_print_digits = ?;
-		check_results = ?;
-		calc_conditioning = ?
-	}
+    journal_output_level = ?;
+    journal_print_digits = ?;
+    check_results = ?;
+    calc_conditioning = ?
+  }
  \endverbatim
  *
  * See the class \c NLPSolverClientInterface for a description of these
  * parameters.
  */
 class NLPSolverClientInterfaceSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPSolverClientInterface >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      NLPSolverClientInterface >
 {
 public:
 
-	///
-	NLPSolverClientInterfaceSetOptions(
-		  NLPSolverClientInterface* target = 0
-		, const char opt_grp_name[] = "NLPSolverClientInterface" );
+  ///
+  NLPSolverClientInterfaceSetOptions(
+      NLPSolverClientInterface* target = 0
+    , const char opt_grp_name[] = "NLPSolverClientInterface" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class NLPSolverClientInterfaceSetOptions
 

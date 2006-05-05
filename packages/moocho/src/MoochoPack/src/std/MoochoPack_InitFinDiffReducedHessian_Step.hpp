@@ -68,51 +68,51 @@ namespace MoochoPack {
  * to limit the smallest diagonal as diag(i) > max(diag(i)) / max_cond.
  */
 class InitFinDiffReducedHessian_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/** @name Initializers/constructors */
-	//@{
+  /** @name Initializers/constructors */
+  //@{
 
-	///
-	enum EInitializationMethod { SCALE_IDENTITY, SCALE_DIAGONAL, SCALE_DIAGONAL_ABS };
+  ///
+  enum EInitializationMethod { SCALE_IDENTITY, SCALE_DIAGONAL, SCALE_DIAGONAL_ABS };
 
-	///
-	InitFinDiffReducedHessian_Step(
-		EInitializationMethod   initialization_method  = SCALE_IDENTITY
-		,value_type             max_cond               = 1e+1
-		,value_type             min_diag               = 1e-8
-		,value_type             step_scale             = 1e-1
-		);
+  ///
+  InitFinDiffReducedHessian_Step(
+    EInitializationMethod   initialization_method  = SCALE_IDENTITY
+    ,value_type             max_cond               = 1e+1
+    ,value_type             min_diag               = 1e-8
+    ,value_type             step_scale             = 1e-1
+    );
 
-	/// The initialization method for setting the diagonal
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(EInitializationMethod,initialization_method)
+  /// The initialization method for setting the diagonal
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EInitializationMethod,initialization_method)
 
-	/// Maximum condition (l2 norm) for the intial matrix = (max(diag(i))/min(diag(i)).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_cond)
+  /// Maximum condition (l2 norm) for the intial matrix = (max(diag(i))/min(diag(i)).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_cond)
 
-	/// The absolute minimum value of a diagonal element
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,min_diag)
+  /// The absolute minimum value of a diagonal element
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,min_diag)
 
-	/// The scaling of the step length u = step_scale / ||Z*e||inf
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,step_scale)
+  /// The scaling of the step length u = step_scale / ||Z*e||inf
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,step_scale)
 
-	//@}
+  //@}
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 
 private:
-	quasi_newton_stats_iq_member	quasi_newton_stats_;
+  quasi_newton_stats_iq_member	quasi_newton_stats_;
 
 };	// end class ReducedHessianBFGS_Step
 

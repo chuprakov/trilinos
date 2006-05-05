@@ -53,14 +53,14 @@ typedef size_t size_type;
 
 /// SIDE
 enum Side{
-	left
-	,right
+  left
+  ,right
 };
 /// TRANS
 enum Transp{
-	no_trans     ///< Not transposed
-	,trans       ///< Transposed
-	,conj_trans  ///< Conjugate transpose
+  no_trans     ///< Not transposed
+  ,trans       ///< Transposed
+  ,conj_trans  ///< Conjugate transpose
 };
 /// UPLO
 enum Uplo {upper, lower};
@@ -77,12 +77,12 @@ enum Diag {unit, nonunit};
 
 /// Return Transp given a bool
 inline Transp bool_to_trans(bool return_trans) {
-	return return_trans ? trans : no_trans;
+  return return_trans ? trans : no_trans;
 }
 
 /// Returns true if _trans == trans
 inline bool trans_to_bool(Transp _trans) {
-	return ( _trans == trans );
+  return ( _trans == trans );
 }
 
 /// Return the opposite of the transpose argument
@@ -100,21 +100,21 @@ inline Transp trans_trans(Transp _trans1, Transp _trans2) // does not work with 
 /// Give a string name to Transp value
 inline const char*  trans_to_string(Transp _trans)
 {
-	return _trans == no_trans ? "no_trans" : "trans";
+  return _trans == no_trans ? "no_trans" : "trans";
 }
 
 /// Return rows of a possible transposed matrix
 inline size_type rows(size_type rows, size_type cols
-	, BLAS_Cpp::Transp _trans)
+  , BLAS_Cpp::Transp _trans)
 {
-	return _trans == BLAS_Cpp::no_trans ? rows : cols;
+  return _trans == BLAS_Cpp::no_trans ? rows : cols;
 }
 
 /// Return columns of a possible transposed matrix
 inline size_type cols(size_type rows, size_type cols
-	, BLAS_Cpp::Transp _trans)
+  , BLAS_Cpp::Transp _trans)
 {
-	return _trans == BLAS_Cpp::no_trans ? cols : rows;
+  return _trans == BLAS_Cpp::no_trans ? cols : rows;
 }
 
 //@}

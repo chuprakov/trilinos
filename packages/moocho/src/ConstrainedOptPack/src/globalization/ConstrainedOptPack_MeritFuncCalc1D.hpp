@@ -44,18 +44,18 @@ namespace ConstrainedOptPack {
 class MeritFuncCalc1D {
 public:
 
-	///
-	virtual ~MeritFuncCalc1D() {}
+  ///
+  virtual ~MeritFuncCalc1D() {}
 
-	/// Return the value of the merit function at alpha.
-	virtual value_type operator()( value_type alpha ) const = 0;
+  /// Return the value of the merit function at alpha.
+  virtual value_type operator()( value_type alpha ) const = 0;
 
-	/// Return the derivative of the merit function at alpha = 0
-	virtual value_type deriv() const = 0;
+  /// Return the derivative of the merit function at alpha = 0
+  virtual value_type deriv() const = 0;
 
-	/// Print the particular merit function
-	virtual void print_merit_func(
-		std::ostream& out, const std::string& leading_str ) const = 0;
+  /// Print the particular merit function
+  virtual void print_merit_func(
+    std::ostream& out, const std::string& leading_str ) const = 0;
 
 };	// end class MeritFuncCalc1D
 

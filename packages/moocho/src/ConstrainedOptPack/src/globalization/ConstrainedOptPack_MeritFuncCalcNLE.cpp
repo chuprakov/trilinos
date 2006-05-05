@@ -32,24 +32,24 @@
 namespace ConstrainedOptPack {
 
 MeritFuncCalcNLE::MeritFuncCalcNLE( const MeritFuncNLE* phi, const NLP* nlp )
-	: phi_(phi), nlp_(nlp)
+  : phi_(phi), nlp_(nlp)
 {}
 
 value_type MeritFuncCalcNLE::operator()(const Vector& x) const {
-	nlp().calc_c(x);
-	return phi().value( nlp().c() );
+  nlp().calc_c(x);
+  return phi().value( nlp().c() );
 }
 
 value_type MeritFuncCalcNLE::deriv() const {
-	return phi().deriv();
+  return phi().deriv();
 }
 
 void MeritFuncCalcNLE::print_merit_func(std::ostream& out
-	, const std::string& L) const
+  , const std::string& L) const
 {
-	out	<< L << "*** MeritFuncCalcNLE\n"
-		<< L << "c = c(x)\n";
-	phi().print_merit_func(out,L);
+  out	<< L << "*** MeritFuncCalcNLE\n"
+    << L << "c = c(x)\n";
+  phi().print_merit_func(out,L);
 }
 
 }	// end namespace ConstrainedOptPack

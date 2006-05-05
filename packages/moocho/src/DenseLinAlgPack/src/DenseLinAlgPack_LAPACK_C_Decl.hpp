@@ -44,53 +44,53 @@ typedef FortranTypes::f_char		f_char;
 // DPOTRF
 
 void dpotrf(  const f_char& UPLO
-	, const f_int& N, f_dbl_prec* A, const f_int& LDA
-	, f_int* INFO  );
+  , const f_int& N, f_dbl_prec* A, const f_int& LDA
+  , f_int* INFO  );
 
 // DGEQRF
 
 void dgeqrf( const f_int& M
-	, const f_int& N, f_dbl_prec* A, const f_int& LDA
-	, f_dbl_prec* TAU, f_dbl_prec* WORK
-	, const f_int& LWORK, f_int* INFO  );
+  , const f_int& N, f_dbl_prec* A, const f_int& LDA
+  , f_dbl_prec* TAU, f_dbl_prec* WORK
+  , const f_int& LWORK, f_int* INFO  );
 
 // DORMRQ
 
 void dormqr( const f_char& SIDE
-	, const f_char& TRANS, const f_int& M, const f_int& N
-	, const f_int& K, const f_dbl_prec* A, const f_int& LDA
-	, const f_dbl_prec* TAU, f_dbl_prec* C, const f_int& LDC
-	, f_dbl_prec* WORK, const f_int& LWORK, f_int* INFO );
+  , const f_char& TRANS, const f_int& M, const f_int& N
+  , const f_int& K, const f_dbl_prec* A, const f_int& LDA
+  , const f_dbl_prec* TAU, f_dbl_prec* C, const f_int& LDC
+  , f_dbl_prec* WORK, const f_int& LWORK, f_int* INFO );
 
 // DSYTRF
 
 void dsytrf( const f_char& UPLO
-	, const f_int& N, f_dbl_prec A[], const f_int& LDA
-	, f_int IPIV[], f_dbl_prec WORK[], const f_int& LWORK
-	, f_int* INFO );
+  , const f_int& N, f_dbl_prec A[], const f_int& LDA
+  , f_int IPIV[], f_dbl_prec WORK[], const f_int& LWORK
+  , f_int* INFO );
 
 // DSYTRS
 
 void dsytrs( const f_char& UPLO
-	, const f_int& N, const f_int& NRHS, const f_dbl_prec A[]
-	, const f_int& LDA, const f_int IPIV[], f_dbl_prec B[]
-	, const f_int& LDB, f_int* INFO );
+  , const f_int& N, const f_int& NRHS, const f_dbl_prec A[]
+  , const f_int& LDA, const f_int IPIV[], f_dbl_prec B[]
+  , const f_int& LDB, f_int* INFO );
 
 // DGETRF
 
 void dgetrf(
-	const f_int& M, const f_int& N, f_dbl_prec A[], const f_int& LDA
-	,f_int IPIV[], f_int* INFO
-	);
+  const f_int& M, const f_int& N, f_dbl_prec A[], const f_int& LDA
+  ,f_int IPIV[], f_int* INFO
+  );
 
 // DGETRS
 
 void dgetrs(
-	const f_char& TRANS
-	,const f_int& N, const f_int& NRHS, const f_dbl_prec A[]
-	,const f_int& LDA, const f_int IPIV[], f_dbl_prec B[]
-	,const f_int& LDB, f_int* INFO
-	);
+  const f_char& TRANS
+  ,const f_int& N, const f_int& NRHS, const f_dbl_prec A[]
+  ,const f_int& LDA, const f_int IPIV[], f_dbl_prec B[]
+  ,const f_int& LDB, f_int* INFO
+  );
 
 
 }	// end namespace LAPACK_C_Decl

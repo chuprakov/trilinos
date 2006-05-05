@@ -119,282 +119,282 @@ namespace AbstractLinAlgPack {
  * properly.
  */
 class VectorSpace
-	: public Teuchos::AbstractFactory<VectorMutable>
+  : public Teuchos::AbstractFactory<VectorMutable>
 {
 public:
 
-	/// Thrown if vector spaces are incompatible
-	class IncompatibleVectorSpaces : public std::logic_error
-	{public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
-	///
-	typedef Teuchos::RefCountPtr<const InnerProduct>          inner_prod_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<const VectorSpace>           space_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<const VectorSpaceFactory>    space_fcty_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<MultiVectorMutable>          multi_vec_mut_ptr_t;
+  /// Thrown if vector spaces are incompatible
+  class IncompatibleVectorSpaces : public std::logic_error
+  {public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  ///
+  typedef Teuchos::RefCountPtr<const InnerProduct>          inner_prod_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const VectorSpace>           space_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const VectorSpaceFactory>    space_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	/// Calls \c inner_prod()
-	VectorSpace( const inner_prod_ptr_t& inner_prod = Teuchos::null );
+  /// Calls \c inner_prod()
+  VectorSpace( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
-	///
-	/** Initialize with an inner product object.
-	 *
-	 * @param  inner_prod  [in] Smart pointer to inner product strategy object.
-	 *                     If <tt>inner_prod.get()==NULL</tt> then an
-	 *                     \c InnerProductDot object will be used instead.
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>inner_prod.get() != NULL</tt>] <tt>this->inner_prod().get() == inner_prod.get()</tt>
-	 * <li> [<tt>inner_prod.get() == NULL</tt>] <tt>dynamic_cast<InnerProductDot*>(this->inner_prod().get()) != NULL</tt>
-	 * </ul>
-	 */
-	virtual void inner_prod( const inner_prod_ptr_t& inner_prod );
+  ///
+  /** Initialize with an inner product object.
+   *
+   * @param  inner_prod  [in] Smart pointer to inner product strategy object.
+   *                     If <tt>inner_prod.get()==NULL</tt> then an
+   *                     \c InnerProductDot object will be used instead.
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>inner_prod.get() != NULL</tt>] <tt>this->inner_prod().get() == inner_prod.get()</tt>
+   * <li> [<tt>inner_prod.get() == NULL</tt>] <tt>dynamic_cast<InnerProductDot*>(this->inner_prod().get()) != NULL</tt>
+   * </ul>
+   */
+  virtual void inner_prod( const inner_prod_ptr_t& inner_prod );
 
-	///
-	/** Return the smart pointer to the inner product strategy object.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * </ul>
-	 */
-	virtual const inner_prod_ptr_t inner_prod() const;
+  ///
+  /** Return the smart pointer to the inner product strategy object.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.get() != NULL</tt>
+   * </ul>
+   */
+  virtual const inner_prod_ptr_t inner_prod() const;
 
-	//@}
+  //@}
 
-	/** @name Pure virtual functions that must be overridden */
-	//@{
+  /** @name Pure virtual functions that must be overridden */
+  //@{
 
-	///
-	/** Create a clone of \c this vector space object.
-	 *
-	 * The returned vector space object is expected to be independent from \c this
-	 * and have a lifetime that extends beyond \c this.  This makes a vector space
-	 * class a little hander to implement by makes for much better flexibility
-	 * for the client.  A complete implementation of <tt>%VectorSpace</tt> is not
-	 * allowed to return \c NULL from this method.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * </ul>
-	 */
-	virtual space_ptr_t clone() const = 0;
+  ///
+  /** Create a clone of \c this vector space object.
+   *
+   * The returned vector space object is expected to be independent from \c this
+   * and have a lifetime that extends beyond \c this.  This makes a vector space
+   * class a little hander to implement by makes for much better flexibility
+   * for the client.  A complete implementation of <tt>%VectorSpace</tt> is not
+   * allowed to return \c NULL from this method.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.get() != NULL</tt>
+   * </ul>
+   */
+  virtual space_ptr_t clone() const = 0;
 
-	///
-	/** Compare the compatibility of two vector spaces.
-	 *
-	 * If this function returns true, then vectors created from
-	 * either of the vector spaces will be compatible and can
-	 * be combined in vector operations.
-	 *
-	 * Invariants:<ul>
-	 * <li> [<tt>this->is_compatible(vec_spc) == true</tt>] <tt>vec_spc.is_compatible(*this) == true</tt>
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->dim() != vec_spc.dim()</tt>] <tt>return == false</tt>
-	 * </ul>
-	 */
-	virtual bool is_compatible(const VectorSpace& vec_spc ) const = 0;
+  ///
+  /** Compare the compatibility of two vector spaces.
+   *
+   * If this function returns true, then vectors created from
+   * either of the vector spaces will be compatible and can
+   * be combined in vector operations.
+   *
+   * Invariants:<ul>
+   * <li> [<tt>this->is_compatible(vec_spc) == true</tt>] <tt>vec_spc.is_compatible(*this) == true</tt>
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->dim() != vec_spc.dim()</tt>] <tt>return == false</tt>
+   * </ul>
+   */
+  virtual bool is_compatible(const VectorSpace& vec_spc ) const = 0;
 
-	///
-	/** Return the dimmension of the vector space.
-	 */
-	virtual index_type dim() const = 0;
+  ///
+  /** Return the dimmension of the vector space.
+   */
+  virtual index_type dim() const = 0;
 
-	///
-	/** Create a vector member from the vector space.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * <li> <tt>return->dim() == this->dim()</tt>
-	 * <li> <tt>return->space().is_compatible(*this) == true</tt>
-	 * </ul>
-	 *
-	 * @return  Returns a smart reference counted pointer to a dynamically
-	 * allocated vector object.  After construction the values returnd by 
-	 * <tt>return->get_ele(i)</tt> are unspecified (uninitialized).  This allows for
-	 * faster execution times.  Note that <tt>&return->space()</tt> does not have to
-	 * be equal to <tt>this</tt>.
-	 */
-	virtual vec_mut_ptr_t create_member() const = 0;
+  ///
+  /** Create a vector member from the vector space.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.get() != NULL</tt>
+   * <li> <tt>return->dim() == this->dim()</tt>
+   * <li> <tt>return->space().is_compatible(*this) == true</tt>
+   * </ul>
+   *
+   * @return  Returns a smart reference counted pointer to a dynamically
+   * allocated vector object.  After construction the values returnd by 
+   * <tt>return->get_ele(i)</tt> are unspecified (uninitialized).  This allows for
+   * faster execution times.  Note that <tt>&return->space()</tt> does not have to
+   * be equal to <tt>this</tt>.
+   */
+  virtual vec_mut_ptr_t create_member() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Virtual functions with default implementations */
-	//@{
+  /** @name Virtual functions with default implementations */
+  //@{
 
-	///
-	/** Returns true if the vectors are in core.
-	 *
-	 * If this function returns true then it means that the vector
-	 * access functions <tt>Vector::get_sub_vector()</tt> and
-	 * <tt>VectorMutable::get_sub_vector()</tt> can be safely called and
-	 * can be expected to be fairly efficient.  If this function does
-	 * return true then the functions <tt>Vector::get_sub_vector()</tt>,
-	 * <tt>Vector::free_sub_vector()</tt>,
-	 * <tt>VectorMutable::get_sub_vector()</tt> and
-	 * <tt>VectorMutable::commit_sub_vector()</tt> had better be
-	 * overridden and had better not call
-	 * <tt>Vector::apply_op(...)</tt>.
-	 *
-	 * The default implementation returns <tt>false</tt>
-	 */
-	virtual bool is_in_core() const;
+  ///
+  /** Returns true if the vectors are in core.
+   *
+   * If this function returns true then it means that the vector
+   * access functions <tt>Vector::get_sub_vector()</tt> and
+   * <tt>VectorMutable::get_sub_vector()</tt> can be safely called and
+   * can be expected to be fairly efficient.  If this function does
+   * return true then the functions <tt>Vector::get_sub_vector()</tt>,
+   * <tt>Vector::free_sub_vector()</tt>,
+   * <tt>VectorMutable::get_sub_vector()</tt> and
+   * <tt>VectorMutable::commit_sub_vector()</tt> had better be
+   * overridden and had better not call
+   * <tt>Vector::apply_op(...)</tt>.
+   *
+   * The default implementation returns <tt>false</tt>
+   */
+  virtual bool is_in_core() const;
 
-	///
-	/** Return a <tt>VectorSpaceFactory</tt> object for the creation of
-	 * vector spaces with a small dimension.
-	 *
-	 * ToDo: Finish documentation!
-	 *
-	 * The default implementation returns <tt>return.get() == NULL</tt>.
-	 *
-	 */
-	virtual space_fcty_ptr_t small_vec_spc_fcty() const;
+  ///
+  /** Return a <tt>VectorSpaceFactory</tt> object for the creation of
+   * vector spaces with a small dimension.
+   *
+   * ToDo: Finish documentation!
+   *
+   * The default implementation returns <tt>return.get() == NULL</tt>.
+   *
+   */
+  virtual space_fcty_ptr_t small_vec_spc_fcty() const;
 
-	///
-	/** Create a vector member from the vector space initialized to a scalar.
-	 *
-	 * @param  alpha   [in] Scalar that all elements of allocated vector are
-	 *                 initialized to.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * <li> <tt>return->dim() == this->dim()</tt>
-	 * <li> <tt>return->space().is_compatible(*this) == true</tt>
-	 * </ul>
-	 *
-	 * @return  Returns a smart reference counted pointer to a dynamically
-	 * allocated vector object.  After construction the values returnd by 
-	 * <tt>return->get_ele(i)</tt> are equal to <tt>alpha</tt>.
-	 * Note that <tt>&return->space()</tt> does not have to
-	 * be equal to <tt>this</tt>.
-	 *
-	 * The default implementation just calls \c create_member() and then
-	 * assigns <tt>alpha</tt> before returning the smart pointer object.
-	 */
-	virtual vec_mut_ptr_t create_member(const value_type& alpha) const;
+  ///
+  /** Create a vector member from the vector space initialized to a scalar.
+   *
+   * @param  alpha   [in] Scalar that all elements of allocated vector are
+   *                 initialized to.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.get() != NULL</tt>
+   * <li> <tt>return->dim() == this->dim()</tt>
+   * <li> <tt>return->space().is_compatible(*this) == true</tt>
+   * </ul>
+   *
+   * @return  Returns a smart reference counted pointer to a dynamically
+   * allocated vector object.  After construction the values returnd by 
+   * <tt>return->get_ele(i)</tt> are equal to <tt>alpha</tt>.
+   * Note that <tt>&return->space()</tt> does not have to
+   * be equal to <tt>this</tt>.
+   *
+   * The default implementation just calls \c create_member() and then
+   * assigns <tt>alpha</tt> before returning the smart pointer object.
+   */
+  virtual vec_mut_ptr_t create_member(const value_type& alpha) const;
 
-	///
-	/** Create a set of vector members (a \c MultiVectorMutable) from the vector space.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>num_vecs >= 1</tt> (throw <tt>???</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_cols().is_compatible(*this) == true</tt>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_rows().dim() == num_vecs</tt>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>(return->access_by() & MultiVector::COL_ACCESS) == true</tt>
-	 * </ul>
-	 *
-	 * @return  Returns a smart reference counted pointer to a dynamically
-	 * allocated multi-vector object.  After construction the values returnd by 
-	 * <tt>return->col(j)->get_ele(i)</tt> are unspecified (uninitialized).  This
-	 * allows for faster execution times.  Note that <tt>&return->space_cols()</tt>
-	 * does not have to be equal to <tt>this</tt>.  It is allowed for a vector
-	 * space implementation to refuse to create multi-vectors and can return
-	 * \c NULL from this method.
-	 *
-	 * The default implementation just returns \c NULL.
-	 */
-	virtual multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
+  ///
+  /** Create a set of vector members (a \c MultiVectorMutable) from the vector space.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>num_vecs >= 1</tt> (throw <tt>???</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_cols().is_compatible(*this) == true</tt>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_rows().dim() == num_vecs</tt>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>(return->access_by() & MultiVector::COL_ACCESS) == true</tt>
+   * </ul>
+   *
+   * @return  Returns a smart reference counted pointer to a dynamically
+   * allocated multi-vector object.  After construction the values returnd by 
+   * <tt>return->col(j)->get_ele(i)</tt> are unspecified (uninitialized).  This
+   * allows for faster execution times.  Note that <tt>&return->space_cols()</tt>
+   * does not have to be equal to <tt>this</tt>.  It is allowed for a vector
+   * space implementation to refuse to create multi-vectors and can return
+   * \c NULL from this method.
+   *
+   * The default implementation just returns \c NULL.
+   */
+  virtual multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
 
-	//@}
+  //@}
 
-	///
-	/** Create a transient sub-space of the current vector space.
-	 *
-	 * @param  rng  [in] The range of the elements to extract a vector sub-space.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>rng.ubound() <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->dim() == rng->size()</tt>
-	 * </ul>
-	 *
-	 * @return  Returns a smart reference counted pointer to a dynamically
-	 * allocated vector space object.  Note that the vector object returned
-	 * by <tt>this->sub_space(rng).create_member()</tt> should be exactly equivalent
-	 * to the vector returned by
-	 * <tt>this->create_member()->sub_view(rng)->space()->create_member()</tt>.
-	 * It is allowed for the implementation to return <tt>return->get() == NULL</tt>
-	 * for arbitrary values of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed
-	 * but they will be appropriate for the application at hand.  However, a
-	 * very good implementation should be able to accomidate any valid <tt>rng</tt>
-	 * that meets the basic preconditions.
-	 *
-	 * Note that if two vector space objects <tt>X</tt> and <tt>Y</tt> are compatible
-	 * (i.e. <tt>X.is_compatible(Y) == true</tt>, then it is also expected that
-	 * <tt>X.sub_space(rng)->is_compatible(*Y.sub_space(rng))</tt> will also be \c true.
-	 * However, in general it can not be expected that
-	 * <tt>X.sub_space(rng1)->is_compatible(*X.sub_space(rng2)) == true</tt>, even if
-	 * <tt>rng1.size() == rng2.size()</tt>.  For serial vectors, it may
-	 * be but for parallel vectors it will most certainly not be.  Therefore, in
-	 * general, don't assume that arbitrary subsets of the vector spaces will be
-	 * compatible, even if the sizes of these subspaces are the same.
-	 *
-	 * The default implementation uses the subclass \c VectorSpaceSubSpace to
-	 * represent any arbitrary sub-space but this can be very inefficient if the
-	 * sub-space is very small compared this this full vector space.
-	 */
-	virtual space_ptr_t sub_space(const Range1D& rng) const;
+  ///
+  /** Create a transient sub-space of the current vector space.
+   *
+   * @param  rng  [in] The range of the elements to extract a vector sub-space.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>rng.ubound() <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>return->dim() == rng->size()</tt>
+   * </ul>
+   *
+   * @return  Returns a smart reference counted pointer to a dynamically
+   * allocated vector space object.  Note that the vector object returned
+   * by <tt>this->sub_space(rng).create_member()</tt> should be exactly equivalent
+   * to the vector returned by
+   * <tt>this->create_member()->sub_view(rng)->space()->create_member()</tt>.
+   * It is allowed for the implementation to return <tt>return->get() == NULL</tt>
+   * for arbitrary values of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed
+   * but they will be appropriate for the application at hand.  However, a
+   * very good implementation should be able to accomidate any valid <tt>rng</tt>
+   * that meets the basic preconditions.
+   *
+   * Note that if two vector space objects <tt>X</tt> and <tt>Y</tt> are compatible
+   * (i.e. <tt>X.is_compatible(Y) == true</tt>, then it is also expected that
+   * <tt>X.sub_space(rng)->is_compatible(*Y.sub_space(rng))</tt> will also be \c true.
+   * However, in general it can not be expected that
+   * <tt>X.sub_space(rng1)->is_compatible(*X.sub_space(rng2)) == true</tt>, even if
+   * <tt>rng1.size() == rng2.size()</tt>.  For serial vectors, it may
+   * be but for parallel vectors it will most certainly not be.  Therefore, in
+   * general, don't assume that arbitrary subsets of the vector spaces will be
+   * compatible, even if the sizes of these subspaces are the same.
+   *
+   * The default implementation uses the subclass \c VectorSpaceSubSpace to
+   * represent any arbitrary sub-space but this can be very inefficient if the
+   * sub-space is very small compared this this full vector space.
+   */
+  virtual space_ptr_t sub_space(const Range1D& rng) const;
 
-	/// Inlined to call <tt>this->sub_space(Range1D(il,iu))</tt>.
-	space_ptr_t sub_space( const index_type il, const index_type iu ) const;
+  /// Inlined to call <tt>this->sub_space(Range1D(il,iu))</tt>.
+  space_ptr_t sub_space( const index_type il, const index_type iu ) const;
 
-	///
-	/** Create a vector space for vector to gather the elements into.
-	 *
-	 * @param  P        [in] A <tt>GenPermMatrixSlice</tt> object specifying the map.
-	 * @param  P_trans  [in] Determines if <tt>P</tt> is transposed or not.
-	 *
-	 * Preconditions:<ul>
-	 * <li> ???
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>return.get()!=NULL</tt>]
-	 *   return->space(P,trans_not(P_trans))->is_compatible(*this) == true
-	 * </ul>
-	 *
-	 * @return  Returns a smart reference counted pointer to a dynamically
-	 * allocated vector space object.  
-	 *
-	 * ToDo: Finish documentation!
-	 *
-	 * The default implementation returns <tt>return.get() == NULL</tt>.
-	 */
-	virtual space_ptr_t space(
-		const GenPermMatrixSlice  &P
-		,BLAS_Cpp::Transp         P_trans
-		) const;
+  ///
+  /** Create a vector space for vector to gather the elements into.
+   *
+   * @param  P        [in] A <tt>GenPermMatrixSlice</tt> object specifying the map.
+   * @param  P_trans  [in] Determines if <tt>P</tt> is transposed or not.
+   *
+   * Preconditions:<ul>
+   * <li> ???
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>return.get()!=NULL</tt>]
+   *   return->space(P,trans_not(P_trans))->is_compatible(*this) == true
+   * </ul>
+   *
+   * @return  Returns a smart reference counted pointer to a dynamically
+   * allocated vector space object.  
+   *
+   * ToDo: Finish documentation!
+   *
+   * The default implementation returns <tt>return.get() == NULL</tt>.
+   */
+  virtual space_ptr_t space(
+    const GenPermMatrixSlice  &P
+    ,BLAS_Cpp::Transp         P_trans
+    ) const;
 
-	//@}
-	
-	/** @name Overridden from AbstractFactory */
-	//@{
+  //@}
+  
+  /** @name Overridden from AbstractFactory */
+  //@{
 
-	/// Just calls <tt>this->create_member()</tt> by default!
-	obj_ptr_t create() const;
+  /// Just calls <tt>this->create_member()</tt> by default!
+  obj_ptr_t create() const;
 
-	//@}
+  //@}
 
 private:
 #ifdef DOXYGEN_COMPILE
-	const InnerProduct   *inner_prod;
+  const InnerProduct   *inner_prod;
 #else
-	inner_prod_ptr_t     inner_prod_;
+  inner_prod_ptr_t     inner_prod_;
 #endif
 
 }; // end class VectorSpace
@@ -406,7 +406,7 @@ inline
 VectorSpace::space_ptr_t
 VectorSpace::sub_space( const index_type il, const index_type iu ) const
 {
-	return this->sub_space(Range1D(il,iu));
+  return this->sub_space(Range1D(il,iu));
 }
 
 } // end namespace AbstractLinAlgPack

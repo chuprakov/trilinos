@@ -70,152 +70,152 @@ class VectorMutableBlocked : virtual public VectorMutable
 {
 public:
 
-	///
-	typedef Teuchos::RefCountPtr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
 
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	VectorMutableBlocked(
-		VectorMutable::vec_mut_ptr_t*  vecs
-		,const vec_space_comp_ptr_t&         vec_space
-		);
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  VectorMutableBlocked(
+    VectorMutable::vec_mut_ptr_t*  vecs
+    ,const vec_space_comp_ptr_t&         vec_space
+    );
 
-	///
-	/** Initialize given a list of constituent vectors.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>vec_space.get() != NULL</tt> (throw <tt>std::logic_error</tt>).
-	 * <li> <tt>vecs[k]->space().is_compatible(*vec_spaces->vector_spaces()[k]) == true</tt>,
-	 *      for <tt>k = 0...vec_space->num_vector_spaces()</tt>.
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> ToDo: Spell out for carefully!
-	 * </ul>
-	 *
-	 * @param  vecs       [in] Array (size <tt>vec_space->num_vector_spaces()</tt>) of smart reference
-	 *                    counted pointers to the constituent vectors.
-	 * @param  vec_space  [in] Block vector space object containing constituent vector spaces.
-	 */
-	void initialize(
-		VectorMutable::vec_mut_ptr_t*  vecs
-		,const vec_space_comp_ptr_t&         vec_space
-		);
+  ///
+  /** Initialize given a list of constituent vectors.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>vec_space.get() != NULL</tt> (throw <tt>std::logic_error</tt>).
+   * <li> <tt>vecs[k]->space().is_compatible(*vec_spaces->vector_spaces()[k]) == true</tt>,
+   *      for <tt>k = 0...vec_space->num_vector_spaces()</tt>.
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> ToDo: Spell out for carefully!
+   * </ul>
+   *
+   * @param  vecs       [in] Array (size <tt>vec_space->num_vector_spaces()</tt>) of smart reference
+   *                    counted pointers to the constituent vectors.
+   * @param  vec_space  [in] Block vector space object containing constituent vector spaces.
+   */
+  void initialize(
+    VectorMutable::vec_mut_ptr_t*  vecs
+    ,const vec_space_comp_ptr_t&         vec_space
+    );
 
-	///
-	/** Return the underlying block vector space.
-	 */
-	const VectorSpaceBlocked& block_space() const;
+  ///
+  /** Return the underlying block vector space.
+   */
+  const VectorSpaceBlocked& block_space() const;
 
-	///
-	/** Get the kth (zero based) constituent vector.
-	 */
-	const Vector& get_vector(int k) const;
+  ///
+  /** Get the kth (zero based) constituent vector.
+   */
+  const Vector& get_vector(int k) const;
 
-	///
-	/** Get the kth (zero based) constituent vector.
-	 */
-	VectorMutable& get_vector(int k);
+  ///
+  /** Get the kth (zero based) constituent vector.
+   */
+  VectorMutable& get_vector(int k);
 
-	//@}
+  //@}
 
-	/** @name Overridden form Vector */
-	//@{
+  /** @name Overridden form Vector */
+  //@{
 
-	///
-	index_type dim() const;
-	///
-	const VectorSpace& space() const;
-	///
-	void apply_op(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector* vecs[]
-		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-		,RTOpPack::ReductTarget *reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const;
-	///
-	index_type nz() const;
-	///
-	std::ostream& output(
-		std::ostream& out, bool print_dim, bool newline
-		,index_type global_offset 
-		) const;
-	///
-	value_type get_ele(index_type i) const;
-	///
-	value_type norm_1() const;
-	///
-	value_type norm_inf() const;
-	///
-	value_type inner_product( const Vector& ) const;
-	///
-	void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-	///
-	void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
+  ///
+  index_type dim() const;
+  ///
+  const VectorSpace& space() const;
+  ///
+  void apply_op(
+    const RTOpPack::RTOp& op
+    ,const size_t num_vecs, const Vector* vecs[]
+    ,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj
+    ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+    ) const;
+  ///
+  index_type nz() const;
+  ///
+  std::ostream& output(
+    std::ostream& out, bool print_dim, bool newline
+    ,index_type global_offset 
+    ) const;
+  ///
+  value_type get_ele(index_type i) const;
+  ///
+  value_type norm_1() const;
+  ///
+  value_type norm_inf() const;
+  ///
+  value_type inner_product( const Vector& ) const;
+  ///
+  void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
+  ///
+  void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from VectorMutable */
-	//@{
+  /** @name Overridden from VectorMutable */
+  //@{
 
-	///
-	vec_mut_ptr_t sub_view( const Range1D& rng );
-	///
-	void axpy( value_type alpha, const Vector& x );
-	///
-	VectorMutable& operator=(value_type);
-	///
-	VectorMutable& operator=(const Vector&);
-	///
-	void set_ele( index_type i, value_type val );
-	///
-	void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
+  ///
+  vec_mut_ptr_t sub_view( const Range1D& rng );
+  ///
+  void axpy( value_type alpha, const Vector& x );
+  ///
+  VectorMutable& operator=(value_type);
+  ///
+  VectorMutable& operator=(const Vector&);
+  ///
+  void set_ele( index_type i, value_type val );
+  ///
+  void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden form Vector */
-	//@{
-	///
-	void has_changed() const;
-	//@}
+  /** @name Overridden form Vector */
+  //@{
+  ///
+  void has_changed() const;
+  //@}
 
 private:
 
-	// ////////////////////////////////////
-	// Private types
-	
-	typedef std::vector<VectorMutable::vec_mut_ptr_t>   vecs_t; ///< Type for list of constituent vectors
+  // ////////////////////////////////////
+  // Private types
+  
+  typedef std::vector<VectorMutable::vec_mut_ptr_t>   vecs_t; ///< Type for list of constituent vectors
 
-	// ////////////////////////////////////
-	// Private data members
+  // ////////////////////////////////////
+  // Private data members
 
 #ifdef DOXYGEN_COMPILE
-	VectorMutable        *vectors;
-	VectorSpaceBlocked    *block_vector_space;
+  VectorMutable        *vectors;
+  VectorSpaceBlocked    *block_vector_space;
 #else
-	vecs_t                 vecs_;        ///< List of all the vector members.
-	vec_space_comp_ptr_t   vec_space_;   ///< overall block vector space.
+  vecs_t                 vecs_;        ///< List of all the vector members.
+  vec_space_comp_ptr_t   vec_space_;   ///< overall block vector space.
 #endif
-	mutable index_type     nz_; ///< > dim() not initalized, < dim() already initialized! 
-	mutable value_type     norm_1_, norm_inf_;   ///< < 0, not initialized, > 0 already calculated
+  mutable index_type     nz_; ///< > dim() not initalized, < dim() already initialized! 
+  mutable value_type     norm_1_, norm_inf_;   ///< < 0, not initialized, > 0 already calculated
 
-	// ////////////////////////////////////
-	// Private member functions
+  // ////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_in_range(int k) const;
+  ///
+  void assert_in_range(int k) const;
 
-	///
-	void assert_initialized() const;
+  ///
+  void assert_initialized() const;
 
-	// not defined and not to be called!
-	VectorMutableBlocked();
-	VectorMutableBlocked(const VectorMutableBlocked&);
-	VectorMutableBlocked& operator=(const VectorMutableBlocked&);
+  // not defined and not to be called!
+  VectorMutableBlocked();
+  VectorMutableBlocked(const VectorMutableBlocked&);
+  VectorMutableBlocked& operator=(const VectorMutableBlocked&);
 
 }; // end class VectorMutableBlocked
 
@@ -226,24 +226,24 @@ inline
 const VectorSpaceBlocked&
 VectorMutableBlocked::block_space() const
 {
-	assert_initialized();
-	return *vec_space_;
+  assert_initialized();
+  return *vec_space_;
 }
 
 inline
 const Vector&
 VectorMutableBlocked::get_vector(int k) const
 {
-	assert_in_range(k);
-	return *vecs_[k];
+  assert_in_range(k);
+  return *vecs_[k];
 }
 
 inline
 VectorMutable&
 VectorMutableBlocked::get_vector(int k)
 {
-	assert_in_range(k);
-	return *vecs_[k];
+  assert_in_range(k);
+  return *vecs_[k];
 }
 
 } // end namespace AbstractLinAlgPack

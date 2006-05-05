@@ -53,65 +53,65 @@ namespace ConstrainedOptPack {
  * are allowed.
  */
 class MeritFuncNLPL1
-	: public MeritFuncNLP
-	, public MeritFuncNLPDirecDeriv
-	, public MeritFuncPenaltyParam
+  : public MeritFuncNLP
+  , public MeritFuncNLPDirecDeriv
+  , public MeritFuncPenaltyParam
 {
 public:
 
-	/// Initializes deriv() = 0 and mu() = 0
-	MeritFuncNLPL1();
+  /// Initializes deriv() = 0 and mu() = 0
+  MeritFuncNLPL1();
 
-	/** @name Overridden from MeritFuncNLP */
-	//@{
+  /** @name Overridden from MeritFuncNLP */
+  //@{
 
-	///
-	MeritFuncNLP& operator=(const MeritFuncNLP&);
-	///
-	value_type value(
-		value_type             f
-		,const Vector    *c
-		,const Vector    *h
-		,const Vector    *hl
-		,const Vector    *hu
-		) const;
-	///
-	value_type deriv() const;
-	///
-	void print_merit_func(
-		std::ostream& out, const std::string& leading_str ) const;
+  ///
+  MeritFuncNLP& operator=(const MeritFuncNLP&);
+  ///
+  value_type value(
+    value_type             f
+    ,const Vector    *c
+    ,const Vector    *h
+    ,const Vector    *hl
+    ,const Vector    *hu
+    ) const;
+  ///
+  value_type deriv() const;
+  ///
+  void print_merit_func(
+    std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MeritFuncNLPDirecDeriv */
-	//@{
+  /** @name Overridden from MeritFuncNLPDirecDeriv */
+  //@{
 
-	///
-	value_type calc_deriv(
-		const Vector    &Gf_k
-		,const Vector   *c_k
-		,const Vector   *h_k
-		,const Vector   *hl
-		,const Vector   *hu
-		,const Vector   &d_k
-		);
+  ///
+  value_type calc_deriv(
+    const Vector    &Gf_k
+    ,const Vector   *c_k
+    ,const Vector   *h_k
+    ,const Vector   *hl
+    ,const Vector   *hu
+    ,const Vector   &d_k
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden from MeritFuncPenaltyParam */
-	//@{
+  /** @name Overridden from MeritFuncPenaltyParam */
+  //@{
 
-	///
-	void mu(value_type mu);
+  ///
+  void mu(value_type mu);
 
-	///
-	value_type mu() const;
+  ///
+  value_type mu() const;
 
-	//@}
+  //@}
 
 private:
-	value_type deriv_;
-	value_type mu_;
+  value_type deriv_;
+  value_type mu_;
 
 };	// end class MeritFuncNLPL1
 

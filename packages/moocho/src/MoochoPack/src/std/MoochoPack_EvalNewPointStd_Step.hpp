@@ -47,79 +47,79 @@ namespace MoochoPack {
  * \c h, and \c f in that order.
  */
 class EvalNewPointStd_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	enum EFDDerivTesting   { FD_DEFAULT,  FD_TEST,  FD_NO_TEST  };
+  ///
+  enum EFDDerivTesting   { FD_DEFAULT,  FD_TEST,  FD_NO_TEST  };
 
-	//@}
+  //@}
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	/// «std comp» members for range/null decomposition handler
-	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler )
-	/// «std comp» members for first derivative tester object
-	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivTester, deriv_tester )
-	/// «std comp» Members for variable bounds tester object
-	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
-	/// «std comp» members for decomp_sys tester tester object
-	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
-	///
-	/** Set how and if finite derivatives are tested.
-	  *
-	  * ToDo: Finish documentation.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
-	///
-	/** Set how and if the decomposition system is tested.
-	  *
-	  * ToDo: Finish documentation.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing )
-	///
-	/** Set how to set the print level for decomp_sys_tester (only if testing).
-	  *
-	  * ToDo: Finish documentation.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level )
+  /// «std comp» members for range/null decomposition handler
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler )
+  /// «std comp» members for first derivative tester object
+  STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivTester, deriv_tester )
+  /// «std comp» Members for variable bounds tester object
+  STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+  /// «std comp» members for decomp_sys tester tester object
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
+  ///
+  /** Set how and if finite derivatives are tested.
+    *
+    * ToDo: Finish documentation.
+    */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
+  ///
+  /** Set how and if the decomposition system is tested.
+    *
+    * ToDo: Finish documentation.
+    */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing )
+  ///
+  /** Set how to set the print level for decomp_sys_tester (only if testing).
+    *
+    * ToDo: Finish documentation.
+    */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level )
 
-	///
-	/** Constructor.
-	 *
-	 * new_point == true by default.
-	 */
-	EvalNewPointStd_Step(
-		const decomp_sys_handler_ptr_t                              &decomp_sys_handler
-		,const deriv_tester_ptr_t                                   &deriv_tester
-		,const bounds_tester_ptr_t                                  &bounds_tester
-		,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
-		,EFDDerivTesting                                            fd_deriv_testing               = FD_DEFAULT
-		,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing             = DecompositionSystemHandler_Strategy::DST_DEFAULT
-		,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level = DecompositionSystemHandler_Strategy::DSPL_USE_GLOBAL
-		);
+  ///
+  /** Constructor.
+   *
+   * new_point == true by default.
+   */
+  EvalNewPointStd_Step(
+    const decomp_sys_handler_ptr_t                              &decomp_sys_handler
+    ,const deriv_tester_ptr_t                                   &deriv_tester
+    ,const bounds_tester_ptr_t                                  &bounds_tester
+    ,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
+    ,EFDDerivTesting                                            fd_deriv_testing               = FD_DEFAULT
+    ,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing             = DecompositionSystemHandler_Strategy::DST_DEFAULT
+    ,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level = DecompositionSystemHandler_Strategy::DSPL_USE_GLOBAL
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
 
-	// Not defined and not to be called
-	EvalNewPointStd_Step();
+  // Not defined and not to be called
+  EvalNewPointStd_Step();
 
 };	// end class EvalNewPointStd_Step
 

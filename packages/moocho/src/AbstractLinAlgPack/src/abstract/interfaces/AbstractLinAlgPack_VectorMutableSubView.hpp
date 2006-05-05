@@ -49,77 +49,77 @@ namespace AbstractLinAlgPack {
  * which in turn relys on \c VectorSpace::sub_space().
  */
 class VectorMutableSubView
-	: virtual public VectorMutable
-	, virtual public VectorSubView
+  : virtual public VectorMutable
+  , virtual public VectorSubView
 {
 public:
 
-	///
-	/** Constructs to uninitialized.
-	 *
-	 * Postconditions: see \c set_uninitialized().
-	 */
-	VectorMutableSubView();
+  ///
+  /** Constructs to uninitialized.
+   *
+   * Postconditions: see \c set_uninitialized().
+   */
+  VectorMutableSubView();
 
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	VectorMutableSubView( const vec_mut_ptr_t& full_vec, const Range1D& rng );
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  VectorMutableSubView( const vec_mut_ptr_t& full_vec, const Range1D& rng );
 
-	///
-	/** Initialize.
-	 *
-	 * Constructs a view of the vector this = vec(rng).
-	 *
-	 * @param  full_vec  [in] The original full vector.  It is allowed for <tt>full_vec.get() == NULL</tt>
-	 *                   in which case <tt>this</tt> is uninitialized (i.e. <tt>this->dim() == 0</tt>).
-	 * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
-	 */
-	void initialize( const vec_mut_ptr_t& vec, const Range1D& rng );
+  ///
+  /** Initialize.
+   *
+   * Constructs a view of the vector this = vec(rng).
+   *
+   * @param  full_vec  [in] The original full vector.  It is allowed for <tt>full_vec.get() == NULL</tt>
+   *                   in which case <tt>this</tt> is uninitialized (i.e. <tt>this->dim() == 0</tt>).
+   * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
+   */
+  void initialize( const vec_mut_ptr_t& vec, const Range1D& rng );
 
-	///
-	/** Set uninitialized()
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->dim() == 0</tt>
-	 * <li> <tt>this->full_vec() = NULL</tt>
-	 * </ul>
-	 */
-	void set_uninitialized();
+  ///
+  /** Set uninitialized()
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->dim() == 0</tt>
+   * <li> <tt>this->full_vec() = NULL</tt>
+   * </ul>
+   */
+  void set_uninitialized();
 
-	///
-	const vec_mut_ptr_t& full_vec() const;
+  ///
+  const vec_mut_ptr_t& full_vec() const;
 
-	/** @name Overridden from Vector */
-	//@{
+  /** @name Overridden from Vector */
+  //@{
 
-	/// Overridden to pick VectorSubView::sub_view().
-	vec_ptr_t sub_view( const Range1D& rng ) const;
+  /// Overridden to pick VectorSubView::sub_view().
+  vec_ptr_t sub_view( const Range1D& rng ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from VectorMutable */
-	//@{
-	
-	///
-	void set_ele( index_type i, value_type val );
-	///
-	vec_mut_ptr_t sub_view( const Range1D& rng );
-	///
-	void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
-	///
-	void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
-	///
-	void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
+  /** @name Overridden from VectorMutable */
+  //@{
+  
+  ///
+  void set_ele( index_type i, value_type val );
+  ///
+  vec_mut_ptr_t sub_view( const Range1D& rng );
+  ///
+  void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
+  ///
+  void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
+  ///
+  void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
-	//@}
+  //@}
 
 private:
 
-	vec_mut_ptr_t       full_vec_; // The full vector
+  vec_mut_ptr_t       full_vec_; // The full vector
 
-	// Not defined and not to be called!
-	VectorMutableSubView& operator=(const VectorMutableSubView&);
+  // Not defined and not to be called!
+  VectorMutableSubView& operator=(const VectorMutableSubView&);
 
 }; // end class VectorMutableSubView
 
@@ -134,7 +134,7 @@ inline
 const VectorMutableSubView::vec_mut_ptr_t&
 VectorMutableSubView::full_vec() const
 {
-	return full_vec_;
+  return full_vec_;
 }
 
 } // end namespace AbstractLinAlgPack

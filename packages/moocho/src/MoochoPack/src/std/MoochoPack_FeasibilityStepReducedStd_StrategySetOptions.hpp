@@ -44,32 +44,32 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group FeasibilityStepReducedStd_Strategy {
-	*    qp_objective = OBJ_MIN_FULL_STEP;
-	*    qp_objective = OBJ_MIN_NULL_SPACE_STEP;
-	*    qp_objective = OBJ_RSQP;
-	*    qp_testing   = QP_TEST_DEFAULT;
-	*    qp_testing   = QP_TEST;
-	*    qp_testing   = QP_NO_TEST;
-	}
+  options_group FeasibilityStepReducedStd_Strategy {
+  *    qp_objective = OBJ_MIN_FULL_STEP;
+  *    qp_objective = OBJ_MIN_NULL_SPACE_STEP;
+  *    qp_objective = OBJ_RSQP;
+  *    qp_testing   = QP_TEST_DEFAULT;
+  *    qp_testing   = QP_TEST;
+  *    qp_testing   = QP_NO_TEST;
+  }
   \end{verbatim}
   */
 class FeasibilityStepReducedStd_StrategySetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			FeasibilityStepReducedStd_Strategy >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      FeasibilityStepReducedStd_Strategy >
 {
 public:
 
-	///
-	FeasibilityStepReducedStd_StrategySetOptions(
-		  FeasibilityStepReducedStd_Strategy* target = 0
-		, const char opt_grp_name[] = "FeasibilityStepReducedStd" );
+  ///
+  FeasibilityStepReducedStd_StrategySetOptions(
+      FeasibilityStepReducedStd_Strategy* target = 0
+    , const char opt_grp_name[] = "FeasibilityStepReducedStd" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class FeasibilityStepReducedStd_StrategySetOptions
 

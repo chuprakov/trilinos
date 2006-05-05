@@ -142,213 +142,213 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 class ExampleNLPBanded
-	: public NLPSerialPreprocessExplJac
+  : public NLPSerialPreprocessExplJac
 {
 public:
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	/** Constructor.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	ExampleNLPBanded(
-		size_type     nD
-		,size_type    nI
-		,size_type    bw                = 1
-		,size_type    mU                = 0
-		,size_type    mI                = 0
-		,value_type   xo                = 0.1
-		,value_type   xDl               = -NLP::infinite_bound()
-		,value_type   xDu               = +NLP::infinite_bound()
-		,value_type   xIl               = -NLP::infinite_bound()
-		,value_type   xIu               = +NLP::infinite_bound()
-		,value_type   hl                = -NLP::infinite_bound()
-		,value_type   hu                = +NLP::infinite_bound()
-		,bool         nlp_selects_basis = false
-		,value_type   diag_scal         = 10.0
-		,value_type   diag_vary         = 1.0
-		,bool         sym_basis         = false
-		,value_type   f_offset          = 0.0
-		,value_type   co                = 0.0
-		,bool         ignore_constraints = false
-		);
+  ///
+  /** Constructor.
+   *
+   * ToDo: Finish documentation!
+   */
+  ExampleNLPBanded(
+    size_type     nD
+    ,size_type    nI
+    ,size_type    bw                = 1
+    ,size_type    mU                = 0
+    ,size_type    mI                = 0
+    ,value_type   xo                = 0.1
+    ,value_type   xDl               = -NLP::infinite_bound()
+    ,value_type   xDu               = +NLP::infinite_bound()
+    ,value_type   xIl               = -NLP::infinite_bound()
+    ,value_type   xIu               = +NLP::infinite_bound()
+    ,value_type   hl                = -NLP::infinite_bound()
+    ,value_type   hu                = +NLP::infinite_bound()
+    ,bool         nlp_selects_basis = false
+    ,value_type   diag_scal         = 10.0
+    ,value_type   diag_vary         = 1.0
+    ,bool         sym_basis         = false
+    ,value_type   f_offset          = 0.0
+    ,value_type   co                = 0.0
+    ,bool         ignore_constraints = false
+    );
 
-	//@}
+  //@}
 
-	// Todo: Add methods to manipulate bounds and co ...
+  // Todo: Add methods to manipulate bounds and co ...
 
-	/** @name Access */
-	//@{
-	
-	// ToDo: Add these ...
+  /** @name Access */
+  //@{
+  
+  // ToDo: Add these ...
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	///
-	void initialize(bool test_setup);
-	///
-	bool is_initialized() const;
-	///
-	value_type max_var_bounds_viol() const;
+  ///
+  void initialize(bool test_setup);
+  ///
+  bool is_initialized() const;
+  ///
+  value_type max_var_bounds_viol() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from NLPVarReductPerm */
-	//@{
-	
-	///
-	bool nlp_selects_basis() const;
+  /** @name Overridden from NLPVarReductPerm */
+  //@{
+  
+  ///
+  bool nlp_selects_basis() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden protected methods from NLPSerialPreprocess */
-	//@{
+  /** @name Overridden protected methods from NLPSerialPreprocess */
+  //@{
 
-	///
-	bool imp_nlp_has_changed() const;
-	///
-	size_type imp_n_orig() const;
-	///
-	size_type imp_m_orig() const;
-	///
-	size_type imp_mI_orig() const;
-	///
-	const DVectorSlice imp_xinit_orig() const;
-	///
-	bool imp_has_var_bounds() const;
-	///
-	const DVectorSlice imp_xl_orig() const;
-	///
-	const DVectorSlice imp_xu_orig() const;
-	///
-	const DVectorSlice imp_hl_orig() const;
-	///
-	const DVectorSlice imp_hu_orig() const;
-	///
-	void imp_calc_f_orig(
-		const DVectorSlice            &x_full
-		,bool                        newx
-		,const ZeroOrderInfoSerial   &zero_order_info
-		) const;
-	///
-	void imp_calc_c_orig(
-		const DVectorSlice            &x_full
-		,bool                        newx
-		,const ZeroOrderInfoSerial   &zero_order_info
-		) const;
-	///
-	void imp_calc_h_orig(
-		const DVectorSlice            &x_full
-		,bool                        newx
-		,const ZeroOrderInfoSerial   &zero_order_info
-		) const;
-	///
-	void imp_calc_Gf_orig(
-		const DVectorSlice            &x_full
-		,bool                        newx
-		,const ObjGradInfoSerial     &obj_grad_info
-		) const;
-	///
-	bool imp_get_next_basis(
-		IVector      *var_perm_full
-		,IVector     *equ_perm_full
-		,size_type   *rank_full
-		,size_type   *rank
-		);
-	///
-	void imp_report_orig_final_solution(
-		const DVectorSlice      &x_orig
-		,const DVectorSlice     *lambda_orig
-		,const DVectorSlice     *lambdaI_orig
-		,const DVectorSlice     *nu_orig
-		,bool                  is_optimal
-		) const;
+  ///
+  bool imp_nlp_has_changed() const;
+  ///
+  size_type imp_n_orig() const;
+  ///
+  size_type imp_m_orig() const;
+  ///
+  size_type imp_mI_orig() const;
+  ///
+  const DVectorSlice imp_xinit_orig() const;
+  ///
+  bool imp_has_var_bounds() const;
+  ///
+  const DVectorSlice imp_xl_orig() const;
+  ///
+  const DVectorSlice imp_xu_orig() const;
+  ///
+  const DVectorSlice imp_hl_orig() const;
+  ///
+  const DVectorSlice imp_hu_orig() const;
+  ///
+  void imp_calc_f_orig(
+    const DVectorSlice            &x_full
+    ,bool                        newx
+    ,const ZeroOrderInfoSerial   &zero_order_info
+    ) const;
+  ///
+  void imp_calc_c_orig(
+    const DVectorSlice            &x_full
+    ,bool                        newx
+    ,const ZeroOrderInfoSerial   &zero_order_info
+    ) const;
+  ///
+  void imp_calc_h_orig(
+    const DVectorSlice            &x_full
+    ,bool                        newx
+    ,const ZeroOrderInfoSerial   &zero_order_info
+    ) const;
+  ///
+  void imp_calc_Gf_orig(
+    const DVectorSlice            &x_full
+    ,bool                        newx
+    ,const ObjGradInfoSerial     &obj_grad_info
+    ) const;
+  ///
+  bool imp_get_next_basis(
+    IVector      *var_perm_full
+    ,IVector     *equ_perm_full
+    ,size_type   *rank_full
+    ,size_type   *rank
+    );
+  ///
+  void imp_report_orig_final_solution(
+    const DVectorSlice      &x_orig
+    ,const DVectorSlice     *lambda_orig
+    ,const DVectorSlice     *lambdaI_orig
+    ,const DVectorSlice     *nu_orig
+    ,bool                  is_optimal
+    ) const;
 
-	//@}
-	
-	/** @name Overridden protected methods from NLPSerialPreprocessExplJac */
-	//@{
+  //@}
+  
+  /** @name Overridden protected methods from NLPSerialPreprocessExplJac */
+  //@{
 
-	///
-	size_type imp_Gc_nz_orig() const;
-	///
-	size_type imp_Gh_nz_orig() const;
-	///
-	void imp_calc_Gc_orig(
-		const DVectorSlice& x_full, bool newx
-		, const FirstOrderExplInfo& first_order_expl_info
-		) const;
-	///
-	void imp_calc_Gh_orig(
-		const DVectorSlice& x_full, bool newx
-		, const FirstOrderExplInfo& first_order_expl_info
-		) const;
+  ///
+  size_type imp_Gc_nz_orig() const;
+  ///
+  size_type imp_Gh_nz_orig() const;
+  ///
+  void imp_calc_Gc_orig(
+    const DVectorSlice& x_full, bool newx
+    , const FirstOrderExplInfo& first_order_expl_info
+    ) const;
+  ///
+  void imp_calc_Gh_orig(
+    const DVectorSlice& x_full, bool newx
+    , const FirstOrderExplInfo& first_order_expl_info
+    ) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////
-	// Private types
+  // /////////////////////////////////////////
+  // Private types
 
-	// /////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////
+  // Private data members
 
-	bool         is_initialized_;
+  bool         is_initialized_;
 
-	bool         nlp_selects_basis_;
-	bool         basis_selection_was_given_;
+  bool         nlp_selects_basis_;
+  bool         basis_selection_was_given_;
 
-	bool         has_var_bounds_;
+  bool         has_var_bounds_;
 
-	value_type   f_offset_;
+  value_type   f_offset_;
 
-	size_type    nD_;
-	size_type    nI_;
-	size_type    bw_;
-	size_type    mU_;
-	size_type    mI_;
+  size_type    nD_;
+  size_type    nI_;
+  size_type    bw_;
+  size_type    mU_;
+  size_type    mI_;
 
-	bool         ignore_constraints_;
+  bool         ignore_constraints_;
 
-	size_type    Gc_orig_nz_;
-	size_type    Gh_orig_nz_;
+  size_type    Gc_orig_nz_;
+  size_type    Gh_orig_nz_;
 
-	DVector      xinit_orig_;
-	DVector      xl_orig_;
-	DVector      xu_orig_;
-	DVector      hl_orig_;
-	DVector      hu_orig_;
+  DVector      xinit_orig_;
+  DVector      xl_orig_;
+  DVector      xu_orig_;
+  DVector      hl_orig_;
+  DVector      hu_orig_;
 
-	DVector      co_orig_;
+  DVector      co_orig_;
 
-	mutable bool c_orig_updated_;
+  mutable bool c_orig_updated_;
 
-	value_type   diag_scal_;
-	value_type   diag_vary_;
-	value_type   fu_;
+  value_type   diag_scal_;
+  value_type   diag_vary_;
+  value_type   fu_;
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_is_initialized() const;
+  ///
+  void assert_is_initialized() const;
 
-	///
-	void inform_new_point(bool newx) const;
+  ///
+  void inform_new_point(bool newx) const;
 
-	// Not defined and not to be called
-	ExampleNLPBanded();
-	ExampleNLPBanded(const ExampleNLPBanded&);
-	ExampleNLPBanded& operator=(const ExampleNLPBanded&);
+  // Not defined and not to be called
+  ExampleNLPBanded();
+  ExampleNLPBanded(const ExampleNLPBanded&);
+  ExampleNLPBanded& operator=(const ExampleNLPBanded&);
 
 };	// end class ExampleNLPBanded
 

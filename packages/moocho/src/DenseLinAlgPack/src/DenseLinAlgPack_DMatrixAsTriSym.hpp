@@ -49,63 +49,63 @@ namespace DenseLinAlgPack {
   */
 class DMatrixSliceTriEle {
 public:
-	///
-	DMatrixSliceTriEle(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
-		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
-	{
-		#ifdef LINALGPACK_CHECK_RHS_SIZES
-			assert_gms_square(gms);
-		#endif
-	}
-	///
-	size_type rows() const {
-		return gms_.rows();
-	}
-	///
-	size_type cols() const {
-		return gms_.cols();
-	}
-	///
-	DMatrixSlice& gms() {
-		return gms_;
-	}
-	///
-	const DMatrixSlice& gms() const {
-		return gms_;
-	}
-	///
-	BLAS_Cpp::Uplo	uplo() const {
-		return uplo_;
-	}
-	/// Allow address to be taken of rvalue of this object
-	DMatrixSliceTriEle* operator&() {
-	  return this;
-	}
-	///
-	const DMatrixSliceTriEle* operator&() const {
-	  return this;
-	}
+  ///
+  DMatrixSliceTriEle(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+    : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
+  {
+    #ifdef LINALGPACK_CHECK_RHS_SIZES
+      assert_gms_square(gms);
+    #endif
+  }
+  ///
+  size_type rows() const {
+    return gms_.rows();
+  }
+  ///
+  size_type cols() const {
+    return gms_.cols();
+  }
+  ///
+  DMatrixSlice& gms() {
+    return gms_;
+  }
+  ///
+  const DMatrixSlice& gms() const {
+    return gms_;
+  }
+  ///
+  BLAS_Cpp::Uplo	uplo() const {
+    return uplo_;
+  }
+  /// Allow address to be taken of rvalue of this object
+  DMatrixSliceTriEle* operator&() {
+    return this;
+  }
+  ///
+  const DMatrixSliceTriEle* operator&() const {
+    return this;
+  }
 
 private:	
-	DMatrixSlice	gms_;
-	BLAS_Cpp::Uplo	uplo_;
-	// Not defined and not to be called
-	DMatrixSliceTriEle();
-	DMatrixSliceTriEle& operator=(const DMatrixSliceTriEle&);
+  DMatrixSlice	gms_;
+  BLAS_Cpp::Uplo	uplo_;
+  // Not defined and not to be called
+  DMatrixSliceTriEle();
+  DMatrixSliceTriEle& operator=(const DMatrixSliceTriEle&);
 };	// end class DMatrixSliceTriEle
 
 inline
 /// Return a triangular element-wise matrix
 DMatrixSliceTriEle nonconst_tri_ele(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
-	return DMatrixSliceTriEle(gms, uplo);
+  return DMatrixSliceTriEle(gms, uplo);
 }
 
 inline
 ///
 const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
-	return DMatrixSliceTriEle(gms, uplo);
+  return DMatrixSliceTriEle(gms, uplo);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////
@@ -117,68 +117,68 @@ const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
   */
 class DMatrixSliceTri {
 public:
-	///
-	DMatrixSliceTri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
-		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo), diag_(diag)
-	{
-		#ifdef LINALGPACK_CHECK_RHS_SIZES
-			assert_gms_square(gms);
-		#endif
-	}
-	///
-	size_type rows() const {
-		return gms_.rows();
-	}
-	///
-	size_type cols() const {
-		return gms_.cols();
-	}
-	///
-	DMatrixSlice& gms() {
-		return gms_;
-	}
-	///
-	const DMatrixSlice& gms() const {
-		return gms_;
-	}
-	///
-	BLAS_Cpp::Uplo	uplo() const {
-		return uplo_;
-	}
-	///
-	BLAS_Cpp::Diag	diag() const {
-		return diag_;
-	}
-	/// Allow address to be taken of rvalue of this object
-	DMatrixSliceTri* operator&() {
-	  return this;
-	}
-	///
-	const DMatrixSliceTri* operator&() const {
-	  return this;
-	}
+  ///
+  DMatrixSliceTri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
+    : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo), diag_(diag)
+  {
+    #ifdef LINALGPACK_CHECK_RHS_SIZES
+      assert_gms_square(gms);
+    #endif
+  }
+  ///
+  size_type rows() const {
+    return gms_.rows();
+  }
+  ///
+  size_type cols() const {
+    return gms_.cols();
+  }
+  ///
+  DMatrixSlice& gms() {
+    return gms_;
+  }
+  ///
+  const DMatrixSlice& gms() const {
+    return gms_;
+  }
+  ///
+  BLAS_Cpp::Uplo	uplo() const {
+    return uplo_;
+  }
+  ///
+  BLAS_Cpp::Diag	diag() const {
+    return diag_;
+  }
+  /// Allow address to be taken of rvalue of this object
+  DMatrixSliceTri* operator&() {
+    return this;
+  }
+  ///
+  const DMatrixSliceTri* operator&() const {
+    return this;
+  }
 
 private:	
-	DMatrixSlice	gms_;
-	BLAS_Cpp::Uplo	uplo_;
-	BLAS_Cpp::Diag	diag_;
-	// not defined and not to be called
-	DMatrixSliceTri();
-	DMatrixSliceTri& operator=(const DMatrixSliceTri&);
+  DMatrixSlice	gms_;
+  BLAS_Cpp::Uplo	uplo_;
+  BLAS_Cpp::Diag	diag_;
+  // not defined and not to be called
+  DMatrixSliceTri();
+  DMatrixSliceTri& operator=(const DMatrixSliceTri&);
 };	// end class DMatrixSliceTri
 
 inline
 /// Return a triangular matrix
 DMatrixSliceTri nonconst_tri(DMatrixSlice gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
-	return DMatrixSliceTri(gms, uplo, diag);
+  return DMatrixSliceTri(gms, uplo, diag);
 }
 
 inline
 ///
 const DMatrixSliceTri tri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
-	return DMatrixSliceTri(gms, uplo, diag);
+  return DMatrixSliceTri(gms, uplo, diag);
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
@@ -189,62 +189,62 @@ const DMatrixSliceTri tri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp
   */
 class DMatrixSliceSym {
 public:
-	///
-	DMatrixSliceSym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
-		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
-	{
-		#ifdef LINALGPACK_CHECK_RHS_SIZES
-			assert_gms_square(gms);
-		#endif
-	}
-	///
-	size_type rows() const {
-		return gms_.rows();
-	}
-	///
-	size_type cols() const {
-		return gms_.cols();
-	}
-	///
-	DMatrixSlice& gms() {
-		return gms_;
-	}
-	///
-	const DMatrixSlice& gms() const {
-		return gms_;
-	}
-	///
-	BLAS_Cpp::Uplo	uplo() const {
-		return uplo_;
-	}
-	/// Allow address to be taken of rvalue of this object
-	DMatrixSliceSym* operator&() {
-	  return this;
-	}
-	const DMatrixSliceSym* operator&() const {
-	  return this;
-	}
+  ///
+  DMatrixSliceSym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+    : gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
+  {
+    #ifdef LINALGPACK_CHECK_RHS_SIZES
+      assert_gms_square(gms);
+    #endif
+  }
+  ///
+  size_type rows() const {
+    return gms_.rows();
+  }
+  ///
+  size_type cols() const {
+    return gms_.cols();
+  }
+  ///
+  DMatrixSlice& gms() {
+    return gms_;
+  }
+  ///
+  const DMatrixSlice& gms() const {
+    return gms_;
+  }
+  ///
+  BLAS_Cpp::Uplo	uplo() const {
+    return uplo_;
+  }
+  /// Allow address to be taken of rvalue of this object
+  DMatrixSliceSym* operator&() {
+    return this;
+  }
+  const DMatrixSliceSym* operator&() const {
+    return this;
+  }
 
 private:	
-	DMatrixSlice	gms_;
-	BLAS_Cpp::Uplo	uplo_;
-	// not defined and not to be called
-	DMatrixSliceSym();
-	DMatrixSliceSym& operator=(const DMatrixSliceTri&);
+  DMatrixSlice	gms_;
+  BLAS_Cpp::Uplo	uplo_;
+  // not defined and not to be called
+  DMatrixSliceSym();
+  DMatrixSliceSym& operator=(const DMatrixSliceTri&);
 };	// end class DMatrixSliceSym
 
 inline
 /// Return a symmetric matrix
 DMatrixSliceSym nonconst_sym(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
-	return DMatrixSliceSym(gms, uplo);
+  return DMatrixSliceSym(gms, uplo);
 }
 
 inline
 ///
 const DMatrixSliceSym sym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
-	return DMatrixSliceSym(gms, uplo);
+  return DMatrixSliceSym(gms, uplo);
 }
 
 // @}

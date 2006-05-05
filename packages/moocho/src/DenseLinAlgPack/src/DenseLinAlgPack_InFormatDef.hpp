@@ -39,22 +39,22 @@ namespace DenseLinAlgPack {
 
 template<class T>
 std::istream& operator>>(std::istream& is, const LinAlgPackIO::bound_format<T>& bf) {
-	using LinAlgPackIO::ios_format_memento;
+  using LinAlgPackIO::ios_format_memento;
 
-	ios_format_memento old_format = ios_format_memento::save_format(is);
+  ios_format_memento old_format = ios_format_memento::save_format(is);
 
-	try {
-		bf.f().set_format(is);
-		input( is, &const_cast< LinAlgPackIO::bound_format<T>&>(bf).obj()
-			   , bf.f().extra_flags().flags() );
-	}
-	catch(...) {
-		old_format.set_format(is);
-		throw;
-	}
+  try {
+    bf.f().set_format(is);
+    input( is, &const_cast< LinAlgPackIO::bound_format<T>&>(bf).obj()
+         , bf.f().extra_flags().flags() );
+  }
+  catch(...) {
+    old_format.set_format(is);
+    throw;
+  }
 
-	old_format.set_format(is);
-	return is;
+  old_format.set_format(is);
+  return is;
 }
 
 }	// end namespace DenseLinAlgPack

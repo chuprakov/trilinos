@@ -49,14 +49,14 @@ public:
 
   ///
   typedef RTOp_value_type Scalar;
-	///
-	RTOpC();
-	///
-	~RTOpC();
-	///
-	RTOp_RTOp& op();
-	///
-	const RTOp_RTOp& op() const;
+  ///
+  RTOpC();
+  ///
+  ~RTOpC();
+  ///
+  RTOp_RTOp& op();
+  ///
+  const RTOp_RTOp& op() const;
   ///
   RTOp_ReductTarget& operator()(ReductTarget& reduct_obj) const;
   ///
@@ -66,79 +66,79 @@ public:
   //@{
 
   ///
-	void get_reduct_type_num_entries(
-		int*   num_values
-		,int*  num_indexes
-		,int*  num_chars
-		) const;
-	///
-	Teuchos::RefCountPtr<ReductTarget> reduct_obj_create() const;
-	///
-	void reduce_reduct_objs(
-		const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
-		) const;
-	///
-	void reduct_obj_reinit( ReductTarget* reduct_obj ) const;
-	///
-	void extract_reduct_obj_state(
-		const ReductTarget     &reduct_obj
-		,int                      num_values
-		,primitive_value_type     value_data[]
-		,int                      num_indexes
-		,index_type               index_data[]
-		,int                      num_chars
-		,char_type                char_data[]
-		) const;
-	///
-	void load_reduct_obj_state(
-		int                            num_values
-		,const primitive_value_type    value_data[]
-		,int                           num_indexes
-		,const index_type              index_data[]
-		,int                           num_chars
-		,const char_type               char_data[]
-		,ReductTarget               *reduct_obj
-		) const;
+  void get_reduct_type_num_entries(
+    int*   num_values
+    ,int*  num_indexes
+    ,int*  num_chars
+    ) const;
   ///
-	void get_op_type_num_entries(
-		int*  num_values
-		,int* num_indexes
-		,int* num_chars
-		) const;
-	///
-	void extract_op_state(
-		int                             num_values
-		,primitive_value_type           value_data[]
-		,int                            num_indexes
-		,index_type                     index_data[]
-		,int                            num_chars
-		,char_type                      char_data[]
-		) const;
-	///
-	void load_op_state(
-		int                           num_values
-		,const primitive_value_type   value_data[]
-		,int                          num_indexes
-		,const index_type             index_data[]
-		,int                          num_chars
-		,const char_type              char_data[]
-		);
-	///
-	bool coord_invariant() const;
+  Teuchos::RefCountPtr<ReductTarget> reduct_obj_create() const;
+  ///
+  void reduce_reduct_objs(
+    const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
+    ) const;
+  ///
+  void reduct_obj_reinit( ReductTarget* reduct_obj ) const;
+  ///
+  void extract_reduct_obj_state(
+    const ReductTarget     &reduct_obj
+    ,int                      num_values
+    ,primitive_value_type     value_data[]
+    ,int                      num_indexes
+    ,index_type               index_data[]
+    ,int                      num_chars
+    ,char_type                char_data[]
+    ) const;
+  ///
+  void load_reduct_obj_state(
+    int                            num_values
+    ,const primitive_value_type    value_data[]
+    ,int                           num_indexes
+    ,const index_type              index_data[]
+    ,int                           num_chars
+    ,const char_type               char_data[]
+    ,ReductTarget               *reduct_obj
+    ) const;
+  ///
+  void get_op_type_num_entries(
+    int*  num_values
+    ,int* num_indexes
+    ,int* num_chars
+    ) const;
+  ///
+  void extract_op_state(
+    int                             num_values
+    ,primitive_value_type           value_data[]
+    ,int                            num_indexes
+    ,index_type                     index_data[]
+    ,int                            num_chars
+    ,char_type                      char_data[]
+    ) const;
+  ///
+  void load_op_state(
+    int                           num_values
+    ,const primitive_value_type   value_data[]
+    ,int                          num_indexes
+    ,const index_type             index_data[]
+    ,int                          num_chars
+    ,const char_type              char_data[]
+    );
+  ///
+  bool coord_invariant() const;
   ///
   const char* op_name() const;
   ///
-	void apply_op(
-		const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]
-		,const int  num_targ_vecs,  const SubVectorView<Scalar>  targ_sub_vecs[]
-		,ReductTarget *_reduct_obj
-		) const;
+  void apply_op(
+    const int   num_vecs,       const ConstSubVectorView<Scalar>         sub_vecs[]
+    ,const int  num_targ_vecs,  const SubVectorView<Scalar>  targ_sub_vecs[]
+    ,ReductTarget *_reduct_obj
+    ) const;
 
   //@}
 
 private:
 
-	RTOp_RTOp op_;
+  RTOp_RTOp op_;
 
 }; // class RTOpC
 
@@ -165,13 +165,13 @@ private:
 inline
 RTOp_RTOp& RTOpC::op()
 {
-	return op_;
+  return op_;
 }
 
 inline
 const RTOp_RTOp& RTOpC::op() const
 {
-	return op_;
+  return op_;
 }
 
 inline

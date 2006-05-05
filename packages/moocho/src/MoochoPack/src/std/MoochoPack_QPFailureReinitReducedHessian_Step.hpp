@@ -45,34 +45,34 @@ namespace MoochoPack {
  * back to the ReducedHessian step (see the printed step description).
  */
 class QPFailureReinitReducedHessian_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	///
-	STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, null_space_step )
+  ///
+  STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, null_space_step )
 
-	///
-	QPFailureReinitReducedHessian_Step( const null_space_step_ptr_t& null_space_step );
+  ///
+  QPFailureReinitReducedHessian_Step( const null_space_step_ptr_t& null_space_step );
 
-	// ////////////////////
-	// Overridden
+  // ////////////////////
+  // Overridden
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	int last_qp_failure_k_;
+  int last_qp_failure_k_;
 
-	// not defined and not to be called
-	QPFailureReinitReducedHessian_Step();
-	QPFailureReinitReducedHessian_Step(const QPFailureReinitReducedHessian_Step&);
-	QPFailureReinitReducedHessian_Step& operator=(const QPFailureReinitReducedHessian_Step&);
-	
+  // not defined and not to be called
+  QPFailureReinitReducedHessian_Step();
+  QPFailureReinitReducedHessian_Step(const QPFailureReinitReducedHessian_Step&);
+  QPFailureReinitReducedHessian_Step& operator=(const QPFailureReinitReducedHessian_Step&);
+  
 };	// end class QPFailureReinitReducedHessian_Step
 
 }	// end namespace MoochoPack 

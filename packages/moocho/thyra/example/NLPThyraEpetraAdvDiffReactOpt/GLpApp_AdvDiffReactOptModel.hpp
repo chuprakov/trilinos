@@ -74,30 +74,30 @@ private:
   // /////////////////////////////////////
   // Private member data
 
-	bool      isInitialized_;
+  bool      isInitialized_;
 
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   dat_;
   int                                                 np_;
   double                                              reactionRate_;
-	Teuchos::RefCountPtr<Epetra_Vector>                 q_;
+  Teuchos::RefCountPtr<Epetra_Vector>                 q_;
 
-	Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
-	Teuchos::RefCountPtr<Epetra_MultiVector>            B_bar_;
+  Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
+  Teuchos::RefCountPtr<Epetra_MultiVector>            B_bar_;
 
   Teuchos::RefCountPtr<const Epetra_Comm>  epetra_comm_;
-	Teuchos::RefCountPtr<const Epetra_Map>   map_x_;
-	Teuchos::RefCountPtr<const Epetra_Map>   map_p_;
-	Teuchos::RefCountPtr<const Epetra_Map>   map_f_;
-	Teuchos::RefCountPtr<const Epetra_Map>   map_g_;
+  Teuchos::RefCountPtr<const Epetra_Map>   map_x_;
+  Teuchos::RefCountPtr<const Epetra_Map>   map_p_;
+  Teuchos::RefCountPtr<const Epetra_Map>   map_f_;
+  Teuchos::RefCountPtr<const Epetra_Map>   map_g_;
 
-	Teuchos::RefCountPtr<Epetra_Vector> xL_;
-	Teuchos::RefCountPtr<Epetra_Vector> xU_;
-	Teuchos::RefCountPtr<Epetra_Vector> pL_;
-	Teuchos::RefCountPtr<Epetra_Vector> pU_;
-	Teuchos::RefCountPtr<Epetra_Vector> gL_;
-	Teuchos::RefCountPtr<Epetra_Vector> gU_;
-	Teuchos::RefCountPtr<Epetra_Vector> x0_;
-	Teuchos::RefCountPtr<Epetra_Vector> p0_;
+  Teuchos::RefCountPtr<Epetra_Vector> xL_;
+  Teuchos::RefCountPtr<Epetra_Vector> xU_;
+  Teuchos::RefCountPtr<Epetra_Vector> pL_;
+  Teuchos::RefCountPtr<Epetra_Vector> pU_;
+  Teuchos::RefCountPtr<Epetra_Vector> gL_;
+  Teuchos::RefCountPtr<Epetra_Vector> gU_;
+  Teuchos::RefCountPtr<Epetra_Vector> x0_;
+  Teuchos::RefCountPtr<Epetra_Vector> p0_;
 
   Teuchos::RefCountPtr<Epetra_CrsGraph>  W_graph_;
 

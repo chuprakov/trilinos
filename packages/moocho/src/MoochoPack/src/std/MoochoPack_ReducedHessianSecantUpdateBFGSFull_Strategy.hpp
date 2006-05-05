@@ -46,36 +46,36 @@ namespace MoochoPack {
 class ReducedHessianSecantUpdateBFGSFull_Strategy : public ReducedHessianSecantUpdate_Strategy
 {
 public:
-	
-	///
-	/** <<std comp>> members for the strategy object that will
-	 * perform guts secant update.
-	 */
-	STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
+  
+  ///
+  /** <<std comp>> members for the strategy object that will
+   * perform guts secant update.
+   */
+  STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
 
     ReducedHessianSecantUpdateBFGSFull_Strategy(
-		const bfgs_update_ptr_t&      bfgs_update = Teuchos::null
-		);      
+    const bfgs_update_ptr_t&      bfgs_update = Teuchos::null
+    );      
 
-	/** @name Overridden from ReducedHessianSecantUpdate_Strategy */
-	//@{
-	///
-	bool perform_update(
-		VectorMutable     *s_bfgs
-		,VectorMutable    *y_bfgs
-		,bool                   first_update
-		,std::ostream           & out
-		,EJournalOutputLevel    olevel
-		,NLPAlgo               *algo
-		,NLPAlgoState              *s
-		,MatrixSymOp        *rHL_k
-		);
-	///
-	void print_step( std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from ReducedHessianSecantUpdate_Strategy */
+  //@{
+  ///
+  bool perform_update(
+    VectorMutable     *s_bfgs
+    ,VectorMutable    *y_bfgs
+    ,bool                   first_update
+    ,std::ostream           & out
+    ,EJournalOutputLevel    olevel
+    ,NLPAlgo               *algo
+    ,NLPAlgoState              *s
+    ,MatrixSymOp        *rHL_k
+    );
+  ///
+  void print_step( std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
-	quasi_newton_stats_iq_member	quasi_newton_stats_;
+  quasi_newton_stats_iq_member	quasi_newton_stats_;
 
 }; // end class ReducedHessianSecantUpdateBFGSFull_Strategy
 

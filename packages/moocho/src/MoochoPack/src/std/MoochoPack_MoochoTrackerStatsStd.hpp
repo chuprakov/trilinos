@@ -65,46 +65,46 @@ namespace MoochoPack {
  * from what is shown above.
  */
 class MoochoTrackerStatsStd
-	: public IterationPack::AlgorithmTracker
+  : public IterationPack::AlgorithmTracker
  {
 public:
 
-	/// Construct with an output stream object.
-	MoochoTrackerStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
+  /// Construct with an output stream object.
+  MoochoTrackerStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
 
-	///
-	/* Set the output stream for statistics outputting.
-	 */
-	void set_output_stream(const ostream_ptr_t& o);
+  ///
+  /* Set the output stream for statistics outputting.
+   */
+  void set_output_stream(const ostream_ptr_t& o);
 
-	/// Get the output stream for statistics outputting.
-	const ostream_ptr_t& get_output_stream() const;
+  /// Get the output stream for statistics outputting.
+  const ostream_ptr_t& get_output_stream() const;
 
-	/** @name Overridden from AlgorithmTracker */
-	//@{
+  /** @name Overridden from AlgorithmTracker */
+  //@{
 
-	/// Restarts the timer
-	void initialize();
-	///
-	void output_iteration(const Algorithm& algo) const;
-	///
-	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  /// Restarts the timer
+  void initialize();
+  ///
+  void output_iteration(const Algorithm& algo) const;
+  ///
+  void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
-	//@}
+  //@}
 
 protected:
 
-	std::ostream& o() const
-	{	return *o_; }
+  std::ostream& o() const
+  {	return *o_; }
 
 private:
-	ostream_ptr_t                       o_;
-	mutable int		                    num_QN_updates_;
-	quasi_newton_stats_iq_member	    quasi_newton_stats_;
-	mutable StopWatchPack::stopwatch    timer_;
+  ostream_ptr_t                       o_;
+  mutable int		                    num_QN_updates_;
+  quasi_newton_stats_iq_member	    quasi_newton_stats_;
+  mutable StopWatchPack::stopwatch    timer_;
 
-	// Not defined and not to be called
-	MoochoTrackerStatsStd();
+  // Not defined and not to be called
+  MoochoTrackerStatsStd();
 
 };	// end class MoochoTrackerStatsStd
 

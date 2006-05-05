@@ -32,6 +32,6 @@
 // version can not be built.
 
 extern "C" {
-	int _CrtDbgReport()
-	{ return 0; }	// do nothing and return no error
+  int _CrtDbgReport()
+  { return 0; }	// do nothing and return no error
 }

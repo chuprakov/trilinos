@@ -40,30 +40,30 @@ namespace MoochoPack {
 /** Check for convergence.
   */
 class CheckConvergenceStd_AddedStep
-	: public IterationPack::AlgorithmStep // doxygen needs full path
-	{
-	public:
-		
-		///
-		/** Strategy object to be used when checking for convergence
-		 * 
-		 */
-		STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy )
+  : public IterationPack::AlgorithmStep // doxygen needs full path
+  {
+  public:
+    
+    ///
+    /** Strategy object to be used when checking for convergence
+     * 
+     */
+    STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy )
 
-		///
-		CheckConvergenceStd_AddedStep(
-		  Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
-		  );
+    ///
+    CheckConvergenceStd_AddedStep(
+      Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
+      );
 
-		/** @name Overridden from AlgorithmStep */
-		//@{
-		///
-		bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-					 , poss_type assoc_step_poss);
-		///
-		void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-		//@}
+    /** @name Overridden from AlgorithmStep */
+    //@{
+    ///
+    bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+           , poss_type assoc_step_poss);
+    ///
+    void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+             , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+    //@}
 
 private:
 

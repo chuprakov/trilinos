@@ -35,67 +35,67 @@
 // Forward declarations.
 
 namespace OptionsFromStreamPack {
-	namespace OptionsFromStreamUtilityPack {
+  namespace OptionsFromStreamUtilityPack {
 
-		// Simple class for a boolean variable that is false on construction.
-		class false_bool_t {
-		public:
-			false_bool_t() : val_(false) {}
-			void set(bool val) { val_ = val; }
-			operator bool() const { return val_; }
-		private:
-			bool val_;
-		};
+    // Simple class for a boolean variable that is false on construction.
+    class false_bool_t {
+    public:
+      false_bool_t() : val_(false) {}
+      void set(bool val) { val_ = val; }
+      operator bool() const { return val_; }
+    private:
+      bool val_;
+    };
 
-		// Implementation type for the map for looking up a value given
-		// a an options name.
-		typedef std::map< std::string , std::string >			option_to_value_map_t;
+    // Implementation type for the map for looking up a value given
+    // a an options name.
+    typedef std::map< std::string , std::string >			option_to_value_map_t;
 
-		// Implementation type for an options group's options and
-		// a boolean variable to determine if this option has been visited yet.
-		typedef std::pair< option_to_value_map_t, false_bool_t >	options_group_pair_t;
+    // Implementation type for an options group's options and
+    // a boolean variable to determine if this option has been visited yet.
+    typedef std::pair< option_to_value_map_t, false_bool_t >	options_group_pair_t;
 
-		// Implementation type of the map for looking up a set of options
-		// given the option groups name.
-		typedef std::map< std::string, options_group_pair_t >	options_group_map_t;
+    // Implementation type of the map for looking up a set of options
+    // given the option groups name.
+    typedef std::map< std::string, options_group_pair_t >	options_group_map_t;
 
-		// The above declarations sets up the data structure:
-		// 
-		//       map<string,options_group_pair_t> (options_group_map_t)
-		//                  |
-		//                  | value_type
-		//                 `.'
-		//       pair<string,options_group_pair_t> 
-		//                  |
-		//       -----------------------              
-		//      |                       |         
-		//      | first                 | second
-		//     `.'                     `.'
-		//    string         pair<option_to_value_map_t,false_bool_t> (options_group_pair_t)
-		//      |                      |
-		// "solver_options"            |
-		//                             |
-		//        ------------------------------------------------
-		//       |                                                |
-		//       | first                                          | second
-		//      `.'                                              `.'
-		//    map<string,string> (option_to_value_map_t)       false_bool_t
-		//       |                                                |
-		//       | value_type                                   "true"
-		//      `.'
-		// pair<string,string>
-		//       |
-		//     --------------
-		//    | first        | second
-		//   `.'            `.'
-		//  string         string
-		//    |              |    
-		//  "tol"          "1e-6"
-		//  
+    // The above declarations sets up the data structure:
+    // 
+    //       map<string,options_group_pair_t> (options_group_map_t)
+    //                  |
+    //                  | value_type
+    //                 `.'
+    //       pair<string,options_group_pair_t> 
+    //                  |
+    //       -----------------------              
+    //      |                       |         
+    //      | first                 | second
+    //     `.'                     `.'
+    //    string         pair<option_to_value_map_t,false_bool_t> (options_group_pair_t)
+    //      |                      |
+    // "solver_options"            |
+    //                             |
+    //        ------------------------------------------------
+    //       |                                                |
+    //       | first                                          | second
+    //      `.'                                              `.'
+    //    map<string,string> (option_to_value_map_t)       false_bool_t
+    //       |                                                |
+    //       | value_type                                   "true"
+    //      `.'
+    // pair<string,string>
+    //       |
+    //     --------------
+    //    | first        | second
+    //   `.'            `.'
+    //  string         string
+    //    |              |    
+    //  "tol"          "1e-6"
+    //  
 
-		class OptionsGroup;
-	}
-	class OptionsFromStream;
+    class OptionsGroup;
+  }
+  class OptionsFromStream;
 }
 
 // //////////////////////////////////////////////////
@@ -130,9 +130,9 @@ namespace OptionsFromStreamUtilityPack {
   * on the <tt>OptionsGroup</tt> object <tt>optgrp</tt>.
   \verbatim
 
-	const std::string& val = optgrp.option_value( "tol" );
-	if( OptionsGroup::option_exists( val ) )
-	    std::cout << "\ntol = " << val;
+  const std::string& val = optgrp.option_value( "tol" );
+  if( OptionsGroup::option_exists( val ) )
+      std::cout << "\ntol = " << val;
 
   \endverbatim
   * The total cost of this way of looking up option values is:
@@ -158,38 +158,38 @@ namespace OptionsFromStreamUtilityPack {
   *
   \verbatim
 
-	const char optgrp_name[] = "MySolverOptions";
-	const int num_opt = 3;
-	enum EOptions {
-		TOL
-		,MAX_ITER
-		,PROB_TYPE
-	};
-	const char* SOptions[num_opt] = {
-		"tol"
-		,"max_iter"
-		,"prob_type"
-	};
-	StringToIntMap	opt_map( optgrp_name, num_opt, SOptions );
-	OptionsGroup::const_iterator
-		itr     = optgrp.begin(),
-		itr_end = optgrp.end();
-	for( ; itr != itr_end; ++itr ) {
-		switch( (EOptions)opt_map(option_name(itr)) ) {
-			case TOL:
-				std::cout << "\noption tol = " << option_value(itr);
-				break;
-			case MAX_ITER:
-				std::cout << "\noption max_iter = " << option_value(itr);
-				break;
-			case PROB_TYPE:
-				std::cout << "\noption prob_type = " << option_value(itr);
-				break;
-			default:
-				std::cout << "\nThe option " << option_name(itr) << " is not valid";
-				exit(-1);	            
-		}
-	}
+  const char optgrp_name[] = "MySolverOptions";
+  const int num_opt = 3;
+  enum EOptions {
+    TOL
+    ,MAX_ITER
+    ,PROB_TYPE
+  };
+  const char* SOptions[num_opt] = {
+    "tol"
+    ,"max_iter"
+    ,"prob_type"
+  };
+  StringToIntMap	opt_map( optgrp_name, num_opt, SOptions );
+  OptionsGroup::const_iterator
+    itr     = optgrp.begin(),
+    itr_end = optgrp.end();
+  for( ; itr != itr_end; ++itr ) {
+    switch( (EOptions)opt_map(option_name(itr)) ) {
+      case TOL:
+        std::cout << "\noption tol = " << option_value(itr);
+        break;
+      case MAX_ITER:
+        std::cout << "\noption max_iter = " << option_value(itr);
+        break;
+      case PROB_TYPE:
+        std::cout << "\noption prob_type = " << option_value(itr);
+        break;
+      default:
+        std::cout << "\nThe option " << option_name(itr) << " is not valid";
+        exit(-1);	            
+    }
+  }
 
   \endverbatim
   *
@@ -217,90 +217,90 @@ namespace OptionsFromStreamUtilityPack {
 class OptionsGroup {
 public:
 
-	// friends
-	friend class OptionsFromStream;
+  // friends
+  friend class OptionsFromStream;
 
-	/** @name Public Types */
-	//@{
+  /** @name Public Types */
+  //@{
 
-	///
-	typedef option_to_value_map_t::iterator			iterator;
-	///
-	typedef option_to_value_map_t::const_iterator	const_iterator;
+  ///
+  typedef option_to_value_map_t::iterator			iterator;
+  ///
+  typedef option_to_value_map_t::const_iterator	const_iterator;
 
-	//@}
+  //@}
 
-	/** @name Constructors.
-	  *
-	  * Default constructor and assignment operator are not publicly allowed.
-	  * Default copy constructor is allowed.
-	  */
-	//@{
+  /** @name Constructors.
+    *
+    * Default constructor and assignment operator are not publicly allowed.
+    * Default copy constructor is allowed.
+    */
+  //@{
 
-	//@}
+  //@}
 
-	/** @name Lookup an an value of an option given the option's name.
-	  *
-	  * If the option does not exist then <tt>option_exists( option_value( option_name ) )</tt>
-	  * will return <tt>false</tt> otherwise the option exists and can be read.
-	  */
-	//@{
+  /** @name Lookup an an value of an option given the option's name.
+    *
+    * If the option does not exist then <tt>option_exists( option_value( option_name ) )</tt>
+    * will return <tt>false</tt> otherwise the option exists and can be read.
+    */
+  //@{
 
-	///
-	std::string& option_value( const std::string& option_name );
-	///
-	const std::string& option_value( const std::string& option_name ) const;
+  ///
+  std::string& option_value( const std::string& option_name );
+  ///
+  const std::string& option_value( const std::string& option_name ) const;
 
-	//@}
+  //@}
 
-	///
-	static bool option_exists( const std::string& option_value );
+  ///
+  static bool option_exists( const std::string& option_value );
 
-	/// Returns true if this options groups exists.
-	bool options_group_exists() const;
+  /// Returns true if this options groups exists.
+  bool options_group_exists() const;
 
-	/** @name Iterator access */
-	//@{
+  /** @name Iterator access */
+  //@{
 
-	///
-	int				num_options() const;
-	///
-	iterator		begin();
-	///
-	iterator		end();
-	///
-	const_iterator	begin() const;
-	///
-	const_iterator	end() const;
+  ///
+  int				num_options() const;
+  ///
+  iterator		begin();
+  ///
+  iterator		end();
+  ///
+  const_iterator	begin() const;
+  ///
+  const_iterator	end() const;
 
-	//@}
+  //@}
 
 private:
-	
-	option_to_value_map_t*	option_to_value_map_;	// 0 used for no options group.
-	static std::string		option_does_not_exist_;
+  
+  option_to_value_map_t*	option_to_value_map_;	// 0 used for no options group.
+  static std::string		option_does_not_exist_;
 
-	// Not defined and not to be called
-	OptionsGroup();
-	OptionsGroup& operator=(const OptionsGroup&);
+  // Not defined and not to be called
+  OptionsGroup();
+  OptionsGroup& operator=(const OptionsGroup&);
 
 public:
-	// Is given zero by OptionsFromStream to signify the option group does't exist.
-	// It is put here to keep it away from the eyes of the general user.
-	OptionsGroup( option_to_value_map_t* option_to_value_map );
+  // Is given zero by OptionsFromStream to signify the option group does't exist.
+  // It is put here to keep it away from the eyes of the general user.
+  OptionsGroup( option_to_value_map_t* option_to_value_map );
 
 };	// end class OptionsGroup
 
 inline
 ///
 const std::string& option_name( OptionsGroup::const_iterator& itr ) {
-	return (*itr).first;
+  return (*itr).first;
 }
 
 inline
 ///
 const std::string& option_value( OptionsGroup::const_iterator& itr ) {
-	return (*itr).second;
+  return (*itr).second;
 }
 
 
@@ -321,30 +321,30 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   * The syntax for the file (or any C++ istream) is as follows:
   \verbatim
 
-	begin_options
+  begin_options
 
-	*** These are my solver options
-	options_group MySolverOptions {
-	    tol       = 1e-5; *** Convergence tolerance
-	    max_iter  = 100;  *** Maximum number of iterations
-	    prob_type = LINEAR;
-	    *prob_type = NON_LINEAR;  *** Comment this line out
-	}
+  *** These are my solver options
+  options_group MySolverOptions {
+      tol       = 1e-5; *** Convergence tolerance
+      max_iter  = 100;  *** Maximum number of iterations
+      prob_type = LINEAR;
+      *prob_type = NON_LINEAR;  *** Comment this line out
+  }
 
-	*** Options for another solver
-	options_group YourSolverOptions {
-	    tol       = 1e-4;
-	    *** These options determine the type of problem solved
-	    *type_prob = LP;
-	    type_prob = QP;
-	}
+  *** Options for another solver
+  options_group YourSolverOptions {
+      tol       = 1e-4;
+      *** These options determine the type of problem solved
+      *type_prob = LP;
+      type_prob = QP;
+  }
 
-	*** Reset the tolerance
-	options_group MySolverOptions {
-	    tol = 1e-8; *** Reset to a tighter tolerance
-	}
+  *** Reset the tolerance
+  options_group MySolverOptions {
+      tol = 1e-8; *** Reset to a tighter tolerance
+  }
 
-	end_options
+  end_options
 
   \endverbatim
   * The text stream will be read up to the <tt>end_options</tt> line.
@@ -408,123 +408,123 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
 class OptionsFromStream {
 public:
 
-	/** @name Public Types */
-	//@{
+  /** @name Public Types */
+  //@{
 
-	/// const iterator through options group access options
-	typedef OptionsFromStreamUtilityPack::options_group_map_t::iterator			iterator;
-	/// non-const iterator through options group access options
-	typedef OptionsFromStreamUtilityPack::options_group_map_t::const_iterator	const_iterator;
+  /// const iterator through options group access options
+  typedef OptionsFromStreamUtilityPack::options_group_map_t::iterator			iterator;
+  /// non-const iterator through options group access options
+  typedef OptionsFromStreamUtilityPack::options_group_map_t::const_iterator	const_iterator;
 
-	/// \Ref{OptionsGroup} typedef
-	typedef	OptionsFromStreamUtilityPack::OptionsGroup							options_group_t;
+  /// \Ref{OptionsGroup} typedef
+  typedef	OptionsFromStreamUtilityPack::OptionsGroup							options_group_t;
 
-	/// Thrown if there is an input error
-	class InputStreamError : public std::logic_error
-	{public: InputStreamError(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown if there is an input error
+  class InputStreamError : public std::logic_error
+  {public: InputStreamError(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	//@}
+  //@}
 
-	/** @name Constructors / Initializes.
-	  *
-	  * The default constructor, copy constructor and assignment operator functions
-	  * are allowed.
-	  */
-	//@{
+  /** @name Constructors / Initializes.
+    *
+    * The default constructor, copy constructor and assignment operator functions
+    * are allowed.
+    */
+  //@{
 
-	/// Construct with no options set.
-	OptionsFromStream();
+  /// Construct with no options set.
+  OptionsFromStream();
 
-	///
-	/** Construct initialized from a text stream.
-	  *
-	  * This is equivalent to calling the default constructor and then calling
-	  * <tt>read_options(in)</tt>.
-	  */
-	explicit OptionsFromStream( std::istream& in );
+  ///
+  /** Construct initialized from a text stream.
+    *
+    * This is equivalent to calling the default constructor and then calling
+    * <tt>read_options(in)</tt>.
+    */
+  explicit OptionsFromStream( std::istream& in );
 
-	/// Clear all the options
-	void clear_options();
+  /// Clear all the options
+  void clear_options();
 
-	///
-	/** Add / modify options read in from a text stream.
-	  *
-	  * The format of the text stream is described in the introduction.
-	  *
-	  * The options read in from <tt>in</tt> will either be added anew or will
-	  * overwrite options already present.
-	  *
-	  * If the format of the stream is not correct then a \Ref{InputStreamError}
-	  * exception will be thrown.
-	  */
-	void read_options( std::istream& in );
+  ///
+  /** Add / modify options read in from a text stream.
+    *
+    * The format of the text stream is described in the introduction.
+    *
+    * The options read in from <tt>in</tt> will either be added anew or will
+    * overwrite options already present.
+    *
+    * If the format of the stream is not correct then a \Ref{InputStreamError}
+    * exception will be thrown.
+    */
+  void read_options( std::istream& in );
 
-	//@}
+  //@}
 
-	///
+  ///
     /** Print the options to an output stream.
-	  *
+    *
       * This is useful for debugging and also to record exactly what options have been set.
-	  */
-	void print_options( std::ostream& out ) const;
+    */
+  void print_options( std::ostream& out ) const;
 
-	/** @name Get an options group access object given its name.
-	  *
-	  * If the option group does not exist then\\
-	  * <tt>options_group_exists( this->options_group( options_group_name ) ) == false</tt>\\
-	  * where <tt>options_group_name</tt> is the string name of the option group. 
-	  */
-	//@{
+  /** @name Get an options group access object given its name.
+    *
+    * If the option group does not exist then\\
+    * <tt>options_group_exists( this->options_group( options_group_name ) ) == false</tt>\\
+    * where <tt>options_group_name</tt> is the string name of the option group. 
+    */
+  //@{
 
-	///
-	options_group_t options_group( const std::string& options_group_name );
-	///
-	const options_group_t options_group( const std::string& options_group_name ) const;
+  ///
+  options_group_t options_group( const std::string& options_group_name );
+  ///
+  const options_group_t options_group( const std::string& options_group_name ) const;
 
-	//@}
+  //@}
 
-	///
-	static bool options_group_exists( const options_group_t& options_group );
+  ///
+  static bool options_group_exists( const options_group_t& options_group );
 
-	/** @name Determine what options groups where not accessed.
-	  *
-	  * The only the options groups accessed through the this->options_group(...)
-	  * functions are maked as accessed.  When the options groups are
-	  * accessed through the iterator access, it is assumed that the client
-	  * will not need this other information.  Note that all of the
-	  * flags are false by default.
-	  */
-	//@{
+  /** @name Determine what options groups where not accessed.
+    *
+    * The only the options groups accessed through the this->options_group(...)
+    * functions are maked as accessed.  When the options groups are
+    * accessed through the iterator access, it is assumed that the client
+    * will not need this other information.  Note that all of the
+    * flags are false by default.
+    */
+  //@{
 
-	/// Reset the flags to false for if the options groups was accessed.
-	void reset_unaccessed_options_groups();
+  /// Reset the flags to false for if the options groups was accessed.
+  void reset_unaccessed_options_groups();
 
-	/// Print a list of options groups never accessed (accessed flag is falsed).
-	void print_unaccessed_options_groups( std::ostream& out ) const;
+  /// Print a list of options groups never accessed (accessed flag is falsed).
+  void print_unaccessed_options_groups( std::ostream& out ) const;
 
-	//@}
+  //@}
 
-	/** @name Iterator access to options groups. */
-	//@{
+  /** @name Iterator access to options groups. */
+  //@{
 
-	///
-	int				num_options_groups() const;
-	///
-	iterator		begin();
-	///
-	iterator		end();
-	///
-	const_iterator	begin() const;
-	///
-	const_iterator	end() const;
+  ///
+  int				num_options_groups() const;
+  ///
+  iterator		begin();
+  ///
+  iterator		end();
+  ///
+  const_iterator	begin() const;
+  ///
+  const_iterator	end() const;
 
-	//@}
+  //@}
 
 private:
-	typedef OptionsFromStreamUtilityPack::false_bool_t			false_bool_t;
-	typedef OptionsFromStreamUtilityPack::option_to_value_map_t	option_to_value_map_t;
-	typedef OptionsFromStreamUtilityPack::options_group_map_t	options_group_map_t;
-	options_group_map_t											options_group_map_;
+  typedef OptionsFromStreamUtilityPack::false_bool_t			false_bool_t;
+  typedef OptionsFromStreamUtilityPack::option_to_value_map_t	option_to_value_map_t;
+  typedef OptionsFromStreamUtilityPack::options_group_map_t	options_group_map_t;
+  options_group_map_t											options_group_map_;
 
 };	// end class OptionsFromStream
 
@@ -533,7 +533,7 @@ inline
 const std::string&
 options_group_name( OptionsFromStream::const_iterator& itr )
 {
-	return (*itr).first;
+  return (*itr).first;
 }
 
 ///
@@ -541,8 +541,8 @@ inline
 const OptionsFromStream::options_group_t
 options_group( OptionsFromStream::const_iterator& itr )
 {
-	return OptionsFromStream::options_group_t(
-		const_cast<OptionsFromStreamUtilityPack::option_to_value_map_t*>(&(*itr).second.first) );
+  return OptionsFromStream::options_group_t(
+    const_cast<OptionsFromStreamUtilityPack::option_to_value_map_t*>(&(*itr).second.first) );
 }
 
 
@@ -574,54 +574,54 @@ namespace OptionsFromStreamUtilityPack {
 
 inline
 std::string& OptionsGroup::option_value( const std::string& option_name ) {
-	option_to_value_map_t::iterator itr = option_to_value_map_->find( option_name );
-	return ( itr != option_to_value_map_->end() ? (*itr).second : option_does_not_exist_ );
+  option_to_value_map_t::iterator itr = option_to_value_map_->find( option_name );
+  return ( itr != option_to_value_map_->end() ? (*itr).second : option_does_not_exist_ );
 }
 
 inline
 const std::string& OptionsGroup::option_value( const std::string& option_name ) const {
-	option_to_value_map_t::const_iterator itr = option_to_value_map_->find( option_name );
-	return ( itr != option_to_value_map_->end() ? (*itr).second : option_does_not_exist_ );
+  option_to_value_map_t::const_iterator itr = option_to_value_map_->find( option_name );
+  return ( itr != option_to_value_map_->end() ? (*itr).second : option_does_not_exist_ );
 }
 
 inline
 bool OptionsGroup::option_exists( const std::string& option_value ) {
-	return &option_value != &option_does_not_exist_;
+  return &option_value != &option_does_not_exist_;
 }
 
 inline
 bool OptionsGroup::options_group_exists() const {
-	return option_to_value_map_ != 0;
+  return option_to_value_map_ != 0;
 }
 
 inline
 int	OptionsGroup::num_options() const {
-	return option_to_value_map_->size();
+  return option_to_value_map_->size();
 }
 
 inline
 OptionsGroup::iterator		OptionsGroup::begin() {
-	return option_to_value_map_->begin();
+  return option_to_value_map_->begin();
 }
 
 inline
 OptionsGroup::iterator		OptionsGroup::end() {
-	return option_to_value_map_->end();
+  return option_to_value_map_->end();
 }
 
 inline
 OptionsGroup::const_iterator	OptionsGroup::begin() const {
-	return option_to_value_map_->begin();
+  return option_to_value_map_->begin();
 }
 
 inline
 OptionsGroup::const_iterator	OptionsGroup::end() const {
-	return option_to_value_map_->end();
+  return option_to_value_map_->end();
 }
 
 inline
 OptionsGroup::OptionsGroup( option_to_value_map_t* option_to_value_map )
-	: option_to_value_map_(option_to_value_map)
+  : option_to_value_map_(option_to_value_map)
 {}
 
 }	// end namespace OptionsFromStreamPack
@@ -634,43 +634,43 @@ OptionsFromStream::OptionsFromStream()
 
 inline
 OptionsFromStream::OptionsFromStream( std::istream& in ) {
-	read_options(in);
+  read_options(in);
 }
 
 inline
 void OptionsFromStream::clear_options() {
-	options_group_map_.clear();
+  options_group_map_.clear();
 }
 
 inline
 bool OptionsFromStream::options_group_exists( const options_group_t& options_group )
 {
-	return options_group.options_group_exists();
+  return options_group.options_group_exists();
 }
 
 inline
 int	OptionsFromStream::num_options_groups() const {
-	return options_group_map_.size();
+  return options_group_map_.size();
 }
 
 inline
 OptionsFromStream::iterator OptionsFromStream::begin() {
-	return options_group_map_.begin();
+  return options_group_map_.begin();
 }
 
 inline
 OptionsFromStream::iterator OptionsFromStream::end() {
-	return options_group_map_.end();
+  return options_group_map_.end();
 }
 
 inline
 OptionsFromStream::const_iterator OptionsFromStream::begin() const {
-	return options_group_map_.begin();
+  return options_group_map_.begin();
 }
 
 inline
 OptionsFromStream::const_iterator OptionsFromStream::end() const {
-	return options_group_map_.end();
+  return options_group_map_.end();
 }
 
 }	// end namespace OptionsFromStreamPack

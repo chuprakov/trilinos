@@ -43,41 +43,41 @@ namespace MoochoPack {
  * ToDo: Finish documentation!
  */
 class ReducedHessianSerialization_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/// Pick the file name to read in the reduced Hessian from
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_input_file_name )
+  /// Pick the file name to read in the reduced Hessian from
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_input_file_name )
 
-	/// Pick the file name to write in the reduced Hessian to
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_output_file_name )
+  /// Pick the file name to write in the reduced Hessian to
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, reduced_hessian_output_file_name )
 
-	///
-	ReducedHessianSerialization_Step(
-		const std::string    &reduced_hessian_input_file_name   = "reduced_hessian.in"
-		,const std::string   &reduced_hessian_output_file_name  = "reduced_hessian.out"
-		);
-	
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(
-		Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
+  ///
+  ReducedHessianSerialization_Step(
+    const std::string    &reduced_hessian_input_file_name   = "reduced_hessian.in"
+    ,const std::string   &reduced_hessian_output_file_name  = "reduced_hessian.out"
+    );
+  
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(
+    Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
   void finalize_step(
-		Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
-	void print_step(
-		const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		,poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str
-		) const;
-	//@}
-	
+    Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
+  void print_step(
+    const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    ,poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str
+    ) const;
+  //@}
+  
 };	// end class ReducedHessianSerialization_Step
 
 }	// end namespace MoochoPack 

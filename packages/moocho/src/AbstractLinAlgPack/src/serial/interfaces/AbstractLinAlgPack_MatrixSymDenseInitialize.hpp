@@ -37,19 +37,19 @@ namespace AbstractLinAlgPack {
 /** Mix-in Interface for initializing a matrix with a dense symmetric matrix.
   */
 class MatrixSymDenseInitialize
-	: virtual public AbstractLinAlgPack::MatrixBase // doxygen needs the full name
+  : virtual public AbstractLinAlgPack::MatrixBase // doxygen needs the full name
 {
 public:
 
-	///
-	/** Initialize with a symmetric dense matrix.
-	 *
-	 * Through this interface there are absolutly no postconditions
-	 * as the the state of \c this after this function executes.
-	 * The implementation can use \c M to initialize itself any way
-	 * it would like.
-	 */
-	virtual void initialize( const DMatrixSliceSym& M ) = 0;
+  ///
+  /** Initialize with a symmetric dense matrix.
+   *
+   * Through this interface there are absolutly no postconditions
+   * as the the state of \c this after this function executes.
+   * The implementation can use \c M to initialize itself any way
+   * it would like.
+   */
+  virtual void initialize( const DMatrixSliceSym& M ) = 0;
 
 };	// end class MatrixSymDenseInitialize
 

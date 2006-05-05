@@ -39,21 +39,21 @@ namespace IterationPack {
 /** Set options for <tt>Algorithm</tt> from an <tt>OptionsFromStream</tt> object.
  */
 class AlgorithmSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			Algorithm >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      Algorithm >
 {
 public:
 
-	///
-	AlgorithmSetOptions(
-		  Algorithm* target = 0
-		, const char opt_grp_name[] = "IterationPack::Algorithm" );
+  ///
+  AlgorithmSetOptions(
+      Algorithm* target = 0
+    , const char opt_grp_name[] = "IterationPack::Algorithm" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class AlgorithmSetOptions
 

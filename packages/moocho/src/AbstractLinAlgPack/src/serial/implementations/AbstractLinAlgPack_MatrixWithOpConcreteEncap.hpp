@@ -44,47 +44,47 @@ class MatrixWithOpConcreteEncap : public virtual MatrixOp
 {
 public:
 
-	// /////////////////////////////////////////////////////
-	/** @name Representation access */
-	//@{
+  // /////////////////////////////////////////////////////
+  /** @name Representation access */
+  //@{
 
-	/// The compiler did not generate this default constructor
-	MatrixWithOpConcreteEncap()
-	{}
+  /// The compiler did not generate this default constructor
+  MatrixWithOpConcreteEncap()
+  {}
 
-	/// This constructor will have to be overridden.
-	MatrixWithOpConcreteEncap(const M& m) : m_(m)
-	{}
+  /// This constructor will have to be overridden.
+  MatrixWithOpConcreteEncap(const M& m) : m_(m)
+  {}
 
-	/// Get the underlying M object
-	M& m() {
-		return m_;
-	}
+  /// Get the underlying M object
+  M& m() {
+    return m_;
+  }
 
-	///
-	const M& m() const {
-		return m_;
-	}
+  ///
+  const M& m() const {
+    return m_;
+  }
 
-	//@}	// end Representation access
+  //@}	// end Representation access
 
-	// /////////////////////////////////////////////////////
-	// Overridden from Matrix
+  // /////////////////////////////////////////////////////
+  // Overridden from Matrix
 
-	///
-	size_type rows() const;
+  ///
+  size_type rows() const;
 
-	///
-	size_type cols() const;
+  ///
+  size_type cols() const;
 
-	// /////////////////////////////////////////////////////
-	// Overridden from MatrixOp
+  // /////////////////////////////////////////////////////
+  // Overridden from MatrixOp
 
-	///
-	MatrixOp& operator=(const MatrixOp& m);
+  ///
+  MatrixOp& operator=(const MatrixOp& m);
 
 private:
-	M m_;
+  M m_;
 
 };	// end class MatrixWithOpConcreteEncap<M>
 
@@ -92,26 +92,26 @@ private:
 
 template<class M>
 size_type MatrixWithOpConcreteEncap<M>::rows() const {
-	return m().rows();
+  return m().rows();
 }
 
 template<class M>
 size_type MatrixWithOpConcreteEncap<M>::cols() const {
-	return m().cols();
+  return m().cols();
 }
 
 template<class M>
 MatrixOp& MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m) {
-	if(&m == this) return *this;	// assignment to self
-	const MatrixWithOpConcreteEncap<M> *p_m = dynamic_cast<const MatrixWithOpConcreteEncap<M>*>(&m);
-	if(p_m) {
-		m_ = p_m->m_;
-	}
-	else {
-		throw std::invalid_argument("MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m)"
-			" : The concrete type of m is not a subclass of MatrixWithOpConcreteEncap<M> as expected" );
-	}
-	return *this;
+  if(&m == this) return *this;	// assignment to self
+  const MatrixWithOpConcreteEncap<M> *p_m = dynamic_cast<const MatrixWithOpConcreteEncap<M>*>(&m);
+  if(p_m) {
+    m_ = p_m->m_;
+  }
+  else {
+    throw std::invalid_argument("MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m)"
+      " : The concrete type of m is not a subclass of MatrixWithOpConcreteEncap<M> as expected" );
+  }
+  return *this;
 }
 
 }	// end namespace AbstractLinAlgPack 

@@ -59,67 +59,67 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 class ExampleNLPFirstOrder
-	: virtual public NLPFirstOrder
-	, virtual public ExampleNLPObjGrad
+  : virtual public NLPFirstOrder
+  , virtual public ExampleNLPObjGrad
 {
 public:
 
-	///
-	/** Constructor (see </tt>ExampleNLPDirect::ExampleNLPDirect()</tt>).
-	 */
-	ExampleNLPFirstOrder(
-		const VectorSpace::space_ptr_t&  vec_space
-		,value_type                      xo
-		,bool                            has_bounds
-		,bool                            dep_bounded
-		);
+  ///
+  /** Constructor (see </tt>ExampleNLPDirect::ExampleNLPDirect()</tt>).
+   */
+  ExampleNLPFirstOrder(
+    const VectorSpace::space_ptr_t&  vec_space
+    ,value_type                      xo
+    ,bool                            has_bounds
+    ,bool                            dep_bounded
+    );
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	///
-	void initialize(bool test_setup);
-	///
-	bool is_initialized() const;
+  ///
+  void initialize(bool test_setup);
+  ///
+  bool is_initialized() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLPFirstOrder */
-	//@{
+  /** @name Overridden public members from NLPFirstOrder */
+  //@{
 
-	/// Overridden to check the concrete type of Gc
-	void set_Gc(MatrixOp* Gc);
-	///
-	const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
-	/// Returns an ExampleBasisSystem
-	const basis_sys_ptr_t basis_sys() const;
+  /// Overridden to check the concrete type of Gc
+  void set_Gc(MatrixOp* Gc);
+  ///
+  const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
+  /// Returns an ExampleBasisSystem
+  const basis_sys_ptr_t basis_sys() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden protected members from NLPFirstOrder */
-	//@{
+  /** @name Overridden protected members from NLPFirstOrder */
+  //@{
 
-	///
-	void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
+  ///
+  void imp_calc_Gc(const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////
+  // Private data members
 
-	bool                                initialized_;  // flag for if initialized has been called.
-	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
-	NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
+  bool                                initialized_;  // flag for if initialized has been called.
+  NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
+  NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_is_initialized() const;
+  ///
+  void assert_is_initialized() const;
 
 };	// end class ExampleNLPFirstOrder
 
@@ -130,9 +130,9 @@ inline
 void ExampleNLPFirstOrder::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
-	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPFirstOrder::assert_is_initialized() : Error, "
-			"ExampleNLPFirstOrder::initialize() has not been called yet." );
+  if( !is_initialized() )
+    throw NLP::UnInitialized("ExampleNLPFirstOrder::assert_is_initialized() : Error, "
+      "ExampleNLPFirstOrder::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

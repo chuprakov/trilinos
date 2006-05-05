@@ -32,7 +32,7 @@
 #include "NLPInterfacePack_Types.hpp"
 
 namespace OptionsFromStreamPack {
-	class OptionsFromStream;
+  class OptionsFromStream;
 }
 
 namespace NLPInterfacePack {
@@ -43,11 +43,11 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 bool test_basis_system(
- 	NLPFirstOrder                               *nlp
-	,BasisSystem                                *basis_sys
-	,OptionsFromStreamPack::OptionsFromStream   *options
-	,std::ostream                               *out
-	);
+   NLPFirstOrder                               *nlp
+  ,BasisSystem                                *basis_sys
+  ,OptionsFromStreamPack::OptionsFromStream   *options
+  ,std::ostream                               *out
+  );
 
 } // end NLPInterfacePack
 

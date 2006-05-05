@@ -52,29 +52,29 @@ namespace MoochoPack {
  * <tt>MoochoPack::CalcFiniteDiffProd</tt>.
  */
 class CheckDescentQuasiNormalStep_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/// Set the object that will compute the finite difference products.
-	STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  /// Set the object that will compute the finite difference products.
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
 
-	///
-	/** Constructor
-	 */
-	CheckDescentQuasiNormalStep_Step(
-		const calc_fd_prod_ptr_t&   calc_fd_prod
-		);
+  ///
+  /** Constructor
+   */
+  CheckDescentQuasiNormalStep_Step(
+    const calc_fd_prod_ptr_t&   calc_fd_prod
+    );
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 };	// end class CheckDescentQuasiNormalStep_Step
 

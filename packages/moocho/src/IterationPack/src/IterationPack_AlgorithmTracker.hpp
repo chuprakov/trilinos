@@ -50,84 +50,84 @@ public:
   ///
   virtual ~AlgorithmTracker() {}
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<std::ostream>    ostream_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<std::ostream>    ostream_ptr_t;
 
-	//@}
+  //@}
 
-	/** @name Constructors */
-	//@{
+  /** @name Constructors */
+  //@{
 
-	///
-	/** Construct with an output stream for journal_out.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>journal_out.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
-	 * </ul>
-	 */
-	AlgorithmTracker(const ostream_ptr_t& journal_out);
-	
-	//@}
-	
-	/** @name Algorithm iteration state notification */
-	//@{
-	
-	///
-	/** Reinitialize the track object right before it is used.
-	 *
-	 * The default implementation does nothing.
-	 */
-	virtual void initialize();
+  ///
+  /** Construct with an output stream for journal_out.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>journal_out.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
+   * </ul>
+   */
+  AlgorithmTracker(const ostream_ptr_t& journal_out);
+  
+  //@}
+  
+  /** @name Algorithm iteration state notification */
+  //@{
+  
+  ///
+  /** Reinitialize the track object right before it is used.
+   *
+   * The default implementation does nothing.
+   */
+  virtual void initialize();
 
-	///
-	/** Output information about an iteration just completed.
-	  *
-	  * The default just does nothing.
-	  */
-	virtual void output_iteration(const Algorithm& algo) const;
+  ///
+  /** Output information about an iteration just completed.
+    *
+    * The default just does nothing.
+    */
+  virtual void output_iteration(const Algorithm& algo) const;
 
-	///
-	/** Output information about a just completed algorithm.
-	  *
-	  * The default just does nothing.
-	  */
-	virtual void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  ///
+  /** Output information about a just completed algorithm.
+    *
+    * The default just does nothing.
+    */
+  virtual void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
-	//@}
+  //@}
 
-	/** @name Journal file access */
-	//@{
+  /** @name Journal file access */
+  //@{
 
-	///
-	/** Set a smart pointer to the journal file.
-	  */
-	virtual void set_journal_out(const ostream_ptr_t& journal_out);
+  ///
+  /** Set a smart pointer to the journal file.
+    */
+  virtual void set_journal_out(const ostream_ptr_t& journal_out);
 
-	///
-	/** Get the smart pointer to the journal file.
-	 */
-	const ostream_ptr_t& get_journal_out() const;
+  ///
+  /** Get the smart pointer to the journal file.
+   */
+  const ostream_ptr_t& get_journal_out() const;
 
-	///
-	/** Return a reference to a <tt>std::ostream</tt> to be used to output debug information 
-	  * and the like.
-	  */
-	virtual std::ostream& journal_out() const;
+  ///
+  /** Return a reference to a <tt>std::ostream</tt> to be used to output debug information 
+    * and the like.
+    */
+  virtual std::ostream& journal_out() const;
 
-	//@}
+  //@}
 
 private:
 
 #ifndef DOXYGEN_COMPILE
-	ostream_ptr_t   journal_out_;
+  ostream_ptr_t   journal_out_;
 #endif
 
-	// not defined and not to be called
-	AlgorithmTracker();
-	
+  // not defined and not to be called
+  AlgorithmTracker();
+  
 };	// end class AlgorithmTracker
 
 }	// end namespace IterationPack 

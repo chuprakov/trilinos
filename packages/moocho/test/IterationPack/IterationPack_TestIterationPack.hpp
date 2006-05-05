@@ -32,16 +32,16 @@
 #include <iosfwd>
 
 namespace IterationPack {
-	namespace TestingPack {
-		/// Test all of IterationPack
-		bool TestIterationPack( std::ostream* out );
-		///
-		bool TestIterQuantityAccessContiguous( std::ostream* out );
-		///
-		bool TestAlgorithmState( std::ostream* out );
-		///
-		bool TestAlgorithm( std::ostream* out );
-	}
+  namespace TestingPack {
+    /// Test all of IterationPack
+    bool TestIterationPack( std::ostream* out );
+    ///
+    bool TestIterQuantityAccessContiguous( std::ostream* out );
+    ///
+    bool TestAlgorithmState( std::ostream* out );
+    ///
+    bool TestAlgorithm( std::ostream* out );
+  }
 }
 
 #endif // TEST_GENERAL_ITERATION_PACK_H

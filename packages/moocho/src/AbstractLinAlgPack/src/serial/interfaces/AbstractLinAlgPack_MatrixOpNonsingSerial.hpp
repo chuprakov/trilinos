@@ -40,9 +40,9 @@ namespace AbstractLinAlgPack {
  * linear systems efficiently.
  */
 class MatrixOpNonsingSerial
-	: virtual public MatrixOpSerial
-	, virtual public MatrixNonsingSerial
-	, virtual public AbstractLinAlgPack::MatrixOpNonsing  // doxygen needs full name
+  : virtual public MatrixOpSerial
+  , virtual public MatrixNonsingSerial
+  , virtual public AbstractLinAlgPack::MatrixOpNonsing  // doxygen needs full name
 {};
 
 }	// end namespace AbstractLinAlgPack

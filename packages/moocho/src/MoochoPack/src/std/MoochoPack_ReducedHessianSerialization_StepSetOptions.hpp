@@ -44,29 +44,29 @@ namespace MoochoPack {
  *
  \verbatim
     options_group ReducedHessianSerialization {
-		  reduced_hessian_input_file_name   = "reduced_hessian.in";
-		  reduced_hessian_output_file_name  = "reduced_hessian.out";
+      reduced_hessian_input_file_name   = "reduced_hessian.in";
+      reduced_hessian_output_file_name  = "reduced_hessian.out";
     }
  \verbatim
  *
  * See the file Moocho.opt.NLPAlgoConfigMamaJama
  */
 class ReducedHessianSerialization_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			ReducedHessianSerialization_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      ReducedHessianSerialization_Step >
 {
 public:
 
-	///
-	ReducedHessianSerialization_StepSetOptions(
-		  ReducedHessianSerialization_Step* target = 0
-		, const char opt_grp_name[] = "ReducedHessianSerialization" );
+  ///
+  ReducedHessianSerialization_StepSetOptions(
+      ReducedHessianSerialization_Step* target = 0
+    , const char opt_grp_name[] = "ReducedHessianSerialization" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class ReducedHessianSerialization_StepSetOptions
 

@@ -54,48 +54,48 @@ namespace AbstractLinAlgPack {
  *
  */
 class BasisSystemFactoryStd
-	: public AbstractLinAlgPack::BasisSystemFactory
+  : public AbstractLinAlgPack::BasisSystemFactory
 {
 public:
 
-	///
-	BasisSystemFactoryStd(); // ToDo: Add arguments!
+  ///
+  BasisSystemFactoryStd(); // ToDo: Add arguments!
 
-	/** @name Overridden from BasisSystemFactory */
-	//@{
+  /** @name Overridden from BasisSystemFactory */
+  //@{
 
-	///
-	void set_options( const options_ptr_t& options );
-	///
-	const options_ptr_t& get_options() const;
+  ///
+  void set_options( const options_ptr_t& options );
+  ///
+  const options_ptr_t& get_options() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from AbstractFactory */
-	//@{
+  /** @name Overridden from AbstractFactory */
+  //@{
 
-	///
-	obj_ptr_t create() const;
+  ///
+  obj_ptr_t create() const;
 
-	//@}
+  //@}
 
 private:
 
-	// ////////////////////////
-	// Private types
+  // ////////////////////////
+  // Private types
 
-	enum EDirectLinearSolverType { LA_DENSE, LA_MA28, LA_MA48, LA_SUPERLU };
+  enum EDirectLinearSolverType { LA_DENSE, LA_MA28, LA_MA48, LA_SUPERLU };
 
-	// ////////////////////////
-	// Private data members
+  // ////////////////////////
+  // Private data members
 
-	mutable EDirectLinearSolverType  direct_linear_solver_type_;
-	options_ptr_t                    options_;
+  mutable EDirectLinearSolverType  direct_linear_solver_type_;
+  options_ptr_t                    options_;
 
-	// ////////////////////////
-	// Private member functions
-	
-	void read_options() const;
+  // ////////////////////////
+  // Private member functions
+  
+  void read_options() const;
 
 }; // end class BasisSystemFactoryStd
 

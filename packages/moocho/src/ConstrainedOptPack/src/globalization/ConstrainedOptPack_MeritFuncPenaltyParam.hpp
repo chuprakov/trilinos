@@ -40,14 +40,14 @@ namespace ConstrainedOptPack {
 class MeritFuncPenaltyParam {
 public:
 
-	///
-	virtual ~MeritFuncPenaltyParam() {}
+  ///
+  virtual ~MeritFuncPenaltyParam() {}
 
-	/// Set the penalty parameter mu
-	virtual void mu(value_type mu) = 0;
+  /// Set the penalty parameter mu
+  virtual void mu(value_type mu) = 0;
 
-	/// Get the value of mu
-	virtual value_type mu() const = 0;
+  /// Get the value of mu
+  virtual value_type mu() const = 0;
 
 };	// end class MeritFuncPenaltyParam
 

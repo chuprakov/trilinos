@@ -49,36 +49,36 @@ namespace MoochoPack {
  */
 
 class PostProcessBarrierLineSearch_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
-	{
-	public:
+  : public IterationPack::AlgorithmStep // doxygen needs full path
+  {
+  public:
 
-		/** @name Constructors / initializers */
-		//@{
+    /** @name Constructors / initializers */
+    //@{
 
-		///
-		/** Constructor.
-		 */
-		PostProcessBarrierLineSearch_Step(
-		  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
-		  );
-		//@}
+    ///
+    /** Constructor.
+     */
+    PostProcessBarrierLineSearch_Step(
+      Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
+      );
+    //@}
 
-		/** @name Overridden from AlgorithmStep */
-		//@{
-		///
-		bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-					 , poss_type assoc_step_poss);
-		
-		
-		void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-		//@}
+    /** @name Overridden from AlgorithmStep */
+    //@{
+    ///
+    bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+           , poss_type assoc_step_poss);
+    
+    
+    void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+             , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+    //@}
 
-	private:
-		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+  private:
+    Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
-	}; // end class PostProcessBarrierLineSearch_Step
+  }; // end class PostProcessBarrierLineSearch_Step
 
 
 } // end namespace MoochoPack

@@ -39,15 +39,15 @@ namespace MoochoPack {
  * ToDo: Finish documentation!
  */
 class DecompositionSystemHandlerSelectNew_Strategy
-	: public DecompositionSystemHandler_Strategy
+  : public DecompositionSystemHandler_Strategy
 {
 public:
-	
-	///
-	/** Instruct the \c DecompositionSystemHandler_Strategy object to select a new decomposition
-	 * the next time \c update_decomposition() is called.
-	 */
-	virtual void select_new_decomposition( bool select_new_decomposition = true ) = 0;
+  
+  ///
+  /** Instruct the \c DecompositionSystemHandler_Strategy object to select a new decomposition
+   * the next time \c update_decomposition() is called.
+   */
+  virtual void select_new_decomposition( bool select_new_decomposition = true ) = 0;
 
 }; // end class DecompositionSystemHandlerSelectNew_Strategy
 

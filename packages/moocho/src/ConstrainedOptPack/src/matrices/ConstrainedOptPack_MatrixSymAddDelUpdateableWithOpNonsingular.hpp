@@ -42,14 +42,14 @@ namespace ConstrainedOptPack {
 class MatrixSymAddDelUpdateableWithOpNonsingular {
 public:
 
-	///
-	virtual ~MatrixSymAddDelUpdateableWithOpNonsingular() {}
-	///
-	virtual const MatrixSymOpNonsing& op_interface() const = 0;
-	///
-	virtual MatrixSymAddDelUpdateable& update_interface() = 0;
-	///
-	virtual const MatrixSymAddDelUpdateable& update_interface() const = 0;
+  ///
+  virtual ~MatrixSymAddDelUpdateableWithOpNonsingular() {}
+  ///
+  virtual const MatrixSymOpNonsing& op_interface() const = 0;
+  ///
+  virtual MatrixSymAddDelUpdateable& update_interface() = 0;
+  ///
+  virtual const MatrixSymAddDelUpdateable& update_interface() const = 0;
 
 };	// end class MatrixSymAddDelUpdateableWithOpNonsingular
 

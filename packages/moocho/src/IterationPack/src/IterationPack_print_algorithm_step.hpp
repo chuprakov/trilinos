@@ -44,8 +44,8 @@ namespace IterationPack {
   * its name, and the name of its concreate subclass.
   */
 void print_algorithm_step( const Algorithm& algo, Algorithm::poss_type step_poss
-	, EDoStepType type, Algorithm::poss_type assoc_step_poss
-	, std::ostream& out );
+  , EDoStepType type, Algorithm::poss_type assoc_step_poss
+  , std::ostream& out );
 
 }	// end namespace IterationPack
 

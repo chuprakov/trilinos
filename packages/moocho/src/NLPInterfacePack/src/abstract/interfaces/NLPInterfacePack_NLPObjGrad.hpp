@@ -67,210 +67,210 @@ namespace NLPInterfacePack {
 class NLPObjGrad : virtual public NLP {
 public:
 
-	/** @name Constructors */
-	//@{
+  /** @name Constructors */
+  //@{
 
-	/// Initialize to no reference set to calculation quanities
-	NLPObjGrad();
+  /// Initialize to no reference set to calculation quanities
+  NLPObjGrad();
 
-	//@}
+  //@}
 
-	/** @name NLP initialization */
-	//@{
+  /** @name NLP initialization */
+  //@{
 
-	///
-	/** Initialize the NLP for its first use.
-	  *
-	  * This function implementation should be called by subclass implementations
-	  * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.
-	  * This implementation calls <tt>this->NLP::initialize()</tt>
-	  *
-	  * Postconditions:<ul>
-	  * <li> See <tt>NLP::initialize()</tt>
-	  * <li> <tt>this->num_Gf_evals() == 0</tt>
-	  * </ul>
-	  */
-	void initialize(bool test_setup);
+  ///
+  /** Initialize the NLP for its first use.
+    *
+    * This function implementation should be called by subclass implementations
+    * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.
+    * This implementation calls <tt>this->NLP::initialize()</tt>
+    *
+    * Postconditions:<ul>
+    * <li> See <tt>NLP::initialize()</tt>
+    * <li> <tt>this->num_Gf_evals() == 0</tt>
+    * </ul>
+    */
+  void initialize(bool test_setup);
 
-	//@}
+  //@}
 
-	/** @name <<std aggr>> members for the gradient of the objective function Gf(x) */
-	//@{
+  /** @name <<std aggr>> members for the gradient of the objective function Gf(x) */
+  //@{
 
-	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_Gf()</tt> is called.
-	 *
-	 * @param  Gf  [in] Pointer to gradient vector.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>Gf != NULL</tt>] <tt>Gf->space().is_compatible(*this->space_x()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_Gf() == Gf</tt>
-	 * </ul>
-	 */
-	virtual void set_Gf(VectorMutable* Gf);
-	///
-	/** Return pointer passed to <tt>this->set_Gf()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable* get_Gf();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_Gf()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable& Gf();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_Gf()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual const Vector& Gf() const;
+  ///
+  /** Set a pointer to a vector to be updated when <tt>this->calc_Gf()</tt> is called.
+   *
+   * @param  Gf  [in] Pointer to gradient vector.  May be \c NULL.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> [<tt>Gf != NULL</tt>] <tt>Gf->space().is_compatible(*this->space_x()) == true</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_Gf() == Gf</tt>
+   * </ul>
+   */
+  virtual void set_Gf(VectorMutable* Gf);
+  ///
+  /** Return pointer passed to <tt>this->set_Gf()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual VectorMutable* get_Gf();
+  ///
+  /** Returns non-<tt>const</tt> <tt>*this->get_Gf()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual VectorMutable& Gf();
+  ///
+  /** Returns <tt>const</tt> <tt>*this->get_Gf()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual const Vector& Gf() const;
 
-	//@}
+  //@}
 
-	/** @name Unset calculation quantities */
-	//@{
-	
-	///
-	/** Call to unset all storage quantities (both in this class and all subclasses).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> See <tt>NLP::unset_quantities()</tt>
-	 * <li> <tt>this->get_Gf() == NULL</tt>
-	 * </ul>
-	 *
-	 * This method must be called by all subclasses that override it.
-	 */
-	void unset_quantities();
+  /** @name Unset calculation quantities */
+  //@{
+  
+  ///
+  /** Call to unset all storage quantities (both in this class and all subclasses).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> See <tt>NLP::unset_quantities()</tt>
+   * <li> <tt>this->get_Gf() == NULL</tt>
+   * </ul>
+   *
+   * This method must be called by all subclasses that override it.
+   */
+  void unset_quantities();
 
-	//@}
+  //@}
 
-	/** @name Calculation Members */
-	//@{
+  /** @name Calculation Members */
+  //@{
 
-	///
-	/** Update the vector for \c Gf at the point \c x and put it in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate the gradient of the objective <tt>Gf(x)</tt>.
-	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->Gf()</tt> is updated to \c Gf(x)
-	 * </ul>
-	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c
-	 * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
-	 * to be updated as a side effect (i.e. no higher order derivatives).
-	 */ 
-	virtual void calc_Gf(const Vector& x, bool newx = true) const;
+  ///
+  /** Update the vector for \c Gf at the point \c x and put it in the stored reference.
+   *
+   * @param  x     [in] Point at which to calculate the gradient of the objective <tt>Gf(x)</tt>.
+   * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c true, the values in \c x are assumed to not be the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->Gf()</tt> is updated to \c Gf(x)
+   * </ul>
+   *
+   * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c
+   * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
+   * to be updated as a side effect (i.e. no higher order derivatives).
+   */ 
+  virtual void calc_Gf(const Vector& x, bool newx = true) const;
 
-	//@}
+  //@}
 
-	/** @name Function evaluation counts. */
-	//@{
+  /** @name Function evaluation counts. */
+  //@{
 
-	///
-	/** Objective gradient evaluations count.
-	 *
-	 * This function can be called to find out how many evaluations
-	 * \c this->calc_Gf() the client requested since \c this->initialize() was called.
-	 */
-	virtual size_type num_Gf_evals() const;
-	
-	//@}
+  ///
+  /** Objective gradient evaluations count.
+   *
+   * This function can be called to find out how many evaluations
+   * \c this->calc_Gf() the client requested since \c this->initialize() was called.
+   */
+  virtual size_type num_Gf_evals() const;
+  
+  //@}
 
-	/** @name Protected types */
-	//@{
-	
-	///
-	/** Struct for gradient (objective), objective and constriants (pointers)
-	 */
-	struct ObjGradInfo {
-		///
-		ObjGradInfo()
-			: Gf(NULL), f(NULL), c(NULL)
-		{}
-		///
-		ObjGradInfo( VectorMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
-			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c)
-		{}
-		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		VectorMutable*       Gf;
-		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
-		value_type*          f;
-		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
-		VectorMutable*       c;
-	}; // end struct ObjGradInfo
+  /** @name Protected types */
+  //@{
+  
+  ///
+  /** Struct for gradient (objective), objective and constriants (pointers)
+   */
+  struct ObjGradInfo {
+    ///
+    ObjGradInfo()
+      : Gf(NULL), f(NULL), c(NULL)
+    {}
+    ///
+    ObjGradInfo( VectorMutable* Gf_in, const ZeroOrderInfo& first_order_info_in )
+      : Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c)
+    {}
+    /// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
+    VectorMutable*       Gf;
+    /// Pointer to objective function <tt>f</tt> (may be NULL if not set)
+    value_type*          f;
+    /// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
+    VectorMutable*       c;
+  }; // end struct ObjGradInfo
 
-	//@}
+  //@}
 
 protected:
 
-	/// Return objective gradient and zero order information.
-	const ObjGradInfo obj_grad_info() const;
+  /// Return objective gradient and zero order information.
+  const ObjGradInfo obj_grad_info() const;
 
-	/** @name Protected methods to be overridden by subclasses */
-	//@{
+  /** @name Protected methods to be overridden by subclasses */
+  //@{
 
-	///
-	/** Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
-	 * <li> <tt>obj_grad_info.Gf != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
-	 * </ul>
-	 *
-	 * @param x       [in]  Unknown vector (size n).
-	 * @param  newx   [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
-	 *                the last call to a <tt>this->imp_calc_*(x,newx)</tt> member.
-	 *                If \c true, the values in \c x are assumed to not be the same as the last call to a
-	 *                <tt>this->imp_calc_*(x,newx)</tt> member.
-	 * @param obj_grad_info
-	 *                [out] Pointers to \c f, \c c and \c Gf.
-	 *                On output <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
-	 *                Any of the other objects pointed to in
-	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
-	 *                now guaranteed to be.
-	 */
-	virtual void imp_calc_Gf(const Vector& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
+  ///
+  /** Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+   * <li> <tt>obj_grad_info.Gf != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
+   * </ul>
+   *
+   * @param x       [in]  Unknown vector (size n).
+   * @param  newx   [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+   *                the last call to a <tt>this->imp_calc_*(x,newx)</tt> member.
+   *                If \c true, the values in \c x are assumed to not be the same as the last call to a
+   *                <tt>this->imp_calc_*(x,newx)</tt> member.
+   * @param obj_grad_info
+   *                [out] Pointers to \c f, \c c and \c Gf.
+   *                On output <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
+   *                Any of the other objects pointed to in
+   *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
+   *                now guaranteed to be.
+   */
+  virtual void imp_calc_Gf(const Vector& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
 
-	//@}
+  //@}
 
 private:
 
-	mutable VectorMutable     *Gf_;
-	mutable size_type         num_Gf_evals_;
+  mutable VectorMutable     *Gf_;
+  mutable size_type         num_Gf_evals_;
 
 };	// end class NLPObjGrad
 
@@ -280,7 +280,7 @@ private:
 inline
 const NLPObjGrad::ObjGradInfo NLPObjGrad::obj_grad_info() const
 {
-	return ObjGradInfo(Gf_,zero_order_info());
+  return ObjGradInfo(Gf_,zero_order_info());
 }
 
 }	// end namespace NLPInterfacePack 

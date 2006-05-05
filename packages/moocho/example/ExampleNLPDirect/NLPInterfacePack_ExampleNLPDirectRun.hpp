@@ -66,17 +66,17 @@ namespace NLPInterfacePack {
  */
 MoochoPack::MoochoSolver::ESolutionStatus
 ExampleNLPDirectRun(
-	const VectorSpace&   vec_space
-	,value_type          xo
-	,bool                has_bounds
-	,bool                dep_bounded
-	,std::ostream*       console_out
-	,std::ostream*       error_out
-	,bool                throw_solve_exception = false
-	,std::ostream*       algo_out              = NULL
-	,std::ostream*       summary_out           = NULL
-	,std::ostream*       journal_out           = NULL
-	);
+  const VectorSpace&   vec_space
+  ,value_type          xo
+  ,bool                has_bounds
+  ,bool                dep_bounded
+  ,std::ostream*       console_out
+  ,std::ostream*       error_out
+  ,bool                throw_solve_exception = false
+  ,std::ostream*       algo_out              = NULL
+  ,std::ostream*       summary_out           = NULL
+  ,std::ostream*       journal_out           = NULL
+  );
 
 //@}
 

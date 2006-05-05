@@ -71,10 +71,10 @@ value_type max( const Vector& v );
   */
 std::pair<value_type,value_type>
 max_near_feas_step(
-	const Vector& x, const Vector& d
-	,const Vector& xl, const Vector& xu
-	,value_type max_bnd_viol
-	); 
+  const Vector& x, const Vector& d
+  ,const Vector& xl, const Vector& xu
+  ,value_type max_bnd_viol
+  ); 
 
 ///
 /** Computes the maximum relative step of <tt>x = x + d</tt>.
@@ -85,8 +85,8 @@ max_near_feas_step(
   \endverbatim
   */
 value_type max_rel_step(
-	const Vector& x, const Vector& d
-	);
+  const Vector& x, const Vector& d
+  );
 
 /// 
 /** Computes alpha_max by the fraction to boundary rule.
@@ -119,8 +119,8 @@ value_type fraction_to_zero_boundary(
  * ToDo: Finish documentation!
  */
 size_type num_bounded(
-	const Vector& xl, const Vector& xu
-	,value_type inf_bound );
+  const Vector& xl, const Vector& xu
+  ,value_type inf_bound );
 
 ///
 /** Computes the log barrier term:
@@ -131,10 +131,10 @@ size_type num_bounded(
  \endverbatim
  */
 value_type log_bound_barrier(
-	const Vector    &x
-	,const Vector   &xl
-	,const Vector   &xu
-	); 
+  const Vector    &x
+  ,const Vector   &xl
+  ,const Vector   &xu
+  ); 
 
 ///
 /** Computes an estimate of the
@@ -146,11 +146,11 @@ value_type log_bound_barrier(
 \endverbatim
  */
 value_type combined_nu_comp_err(
-	const Vector    &v
-	,const Vector   &x
-	,const Vector   &xl
-	,const Vector   &xu
-	); 
+  const Vector    &v
+  ,const Vector   &x
+  ,const Vector   &xl
+  ,const Vector   &xu
+  ); 
 
 
 ///
@@ -168,9 +168,9 @@ NOTE: equivalent to
 \endverbatim
  */
 value_type combined_nu_comp_err_lower(
-	const Vector    &v
-	,const Vector    &x
-	,const Vector   &xl
+  const Vector    &v
+  ,const Vector    &x
+  ,const Vector   &xl
   );
 
 ///
@@ -184,9 +184,9 @@ value_type combined_nu_comp_err_lower(
 \endverbatim
  */
 value_type combined_nu_comp_err_upper(
-	const Vector    &v
-	,const Vector   &x
-	,const Vector   &xu
+  const Vector    &v
+  ,const Vector   &x
+  ,const Vector   &xu
   );
 
 
@@ -198,9 +198,9 @@ value_type combined_nu_comp_err_upper(
  \verbatim
   for every i...
      comp_err = max(comp_err, 
-	                ( fabs(vu(i)*(xu(i)-x(i)) - mu) ),
-					( fabs(vl(i)*(x(i)-xl(i)) - mu) )
-					);
+                  ( fabs(vu(i)*(xu(i)-x(i)) - mu) ),
+          ( fabs(vl(i)*(x(i)-xl(i)) - mu) )
+          );
 \endverbatim
  */
 value_type IP_comp_err_with_mu(
@@ -260,15 +260,15 @@ value_type IP_comp_err_with_mu(
  *
  */
 bool max_inequ_viol(
-	const AbstractLinAlgPack::Vector   &v
-	,const AbstractLinAlgPack::Vector  &vL
-	,const AbstractLinAlgPack::Vector  &vU
-	,AbstractLinAlgPack::size_type     *max_viol_i
-	,AbstractLinAlgPack::value_type    *max_viol
-	,AbstractLinAlgPack::value_type    *v_i
-	,int                               *bnd_type
-	,AbstractLinAlgPack::value_type    *vLU_i
-	); 
+  const AbstractLinAlgPack::Vector   &v
+  ,const AbstractLinAlgPack::Vector  &vL
+  ,const AbstractLinAlgPack::Vector  &vU
+  ,AbstractLinAlgPack::size_type     *max_viol_i
+  ,AbstractLinAlgPack::value_type    *max_viol
+  ,AbstractLinAlgPack::value_type    *v_i
+  ,int                               *bnd_type
+  ,AbstractLinAlgPack::value_type    *vLU_i
+  ); 
 
 //@}
 
@@ -387,8 +387,8 @@ void upperbound_multipliers_step(
  \endverbatim
  */
 void ele_wise_sqrt(
-	VectorMutable* z
-  	);		
+  VectorMutable* z
+    );		
 
 ///
 /** Take the maximum value of the vector elements and a scalar.
@@ -399,9 +399,9 @@ void ele_wise_sqrt(
  \endverbatim
  */
 void max_vec_scalar(
-	value_type              min_ele
-	,VectorMutable    *y
-	);
+  value_type              min_ele
+  ,VectorMutable    *y
+  );
 
 ///
 /** Take the maximum value of the absolute vector elements and a scalar.
@@ -412,9 +412,9 @@ void max_vec_scalar(
  \endverbatim
  */
 void max_abs_vec_scalar(
-	value_type              min_ele
-	,VectorMutable    *y
-	);
+  value_type              min_ele
+  ,VectorMutable    *y
+  );
 
 //@}
 

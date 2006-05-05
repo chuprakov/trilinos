@@ -42,51 +42,51 @@ namespace MoochoPack {
 class NLPAlgoClientInterface : public NLPSolverClientInterface {
 public:
 
-	/** @name Public Types */
-	//@{
+  /** @name Public Types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<NLPAlgoConfig>	config_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<NLPAlgoConfig>	config_ptr_t;
 
-	//@}
+  //@}
 
-	/** @name «std comp» members for config. */
-	//@{
+  /** @name «std comp» members for config. */
+  //@{
 
-	///
-	virtual void set_config(const config_ptr_t& config) = 0;
-	///
-	virtual config_ptr_t& get_config() = 0;
-	///
-	virtual const config_ptr_t& get_config() const = 0;
-	///
-	virtual NLPAlgoConfig& config() = 0;
-	///
-	virtual const NLPAlgoConfig& config() const = 0;
+  ///
+  virtual void set_config(const config_ptr_t& config) = 0;
+  ///
+  virtual config_ptr_t& get_config() = 0;
+  ///
+  virtual const config_ptr_t& get_config() const = 0;
+  ///
+  virtual NLPAlgoConfig& config() = 0;
+  ///
+  virtual const NLPAlgoConfig& config() const = 0;
 
-	//@}
-	
-	///
-	/** Causes the algorithm to be configured.
-	 *
-	 * Causes the \c config object to configure the algorithm
-	 * to be ready to solve an NLP or print the algorithm.
-	 *
-	 * May be called after the \c nlp, \c track and \c config objects
-	 * are set.
-	 *
-	 * Must be  called before \c print_algorithm() or \c find_min() are called.
-	  */
-	virtual void configure_algorithm(std::ostream* trase_out = 0) = 0;
+  //@}
+  
+  ///
+  /** Causes the algorithm to be configured.
+   *
+   * Causes the \c config object to configure the algorithm
+   * to be ready to solve an NLP or print the algorithm.
+   *
+   * May be called after the \c nlp, \c track and \c config objects
+   * are set.
+   *
+   * Must be  called before \c print_algorithm() or \c find_min() are called.
+    */
+  virtual void configure_algorithm(std::ostream* trase_out = 0) = 0;
 
-	/// Print the configured algorithm
-	virtual void print_algorithm(std::ostream& out) const = 0;
+  /// Print the configured algorithm
+  virtual void print_algorithm(std::ostream& out) const = 0;
 
 private:
 
 #ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
-	///
-	NLPAlgoConfig    *config;
+  ///
+  NLPAlgoConfig    *config;
 #endif
 
 };	// end class NLPAlgoClientInterface

@@ -25,7 +25,7 @@ namespace AbstractLinAlgPack {
  \code
  void copy(const Vector& vec_in, DVectorSlice* vs_out ) {
      VectorDenseEncap  vs_in(vec_in);
-	 *vs_out = vs_in();
+   *vs_out = vs_in();
  }
  \endcode
  * In the above code, if the underlying <tt>Vector</tt> object does not have to
@@ -36,21 +36,21 @@ namespace AbstractLinAlgPack {
 class VectorDenseEncap {
 public:
 
-	/// Calls <tt>vec.get_sub_vector(Range1D(),DENSE,&sub_vec)</tt> to get the view.  
-	VectorDenseEncap( const Vector&  vec );
-	/// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
-	~VectorDenseEncap();
-	/// Returns a reference to a constant view of the dense vector.
-	const DVectorSlice& operator()() const;
+  /// Calls <tt>vec.get_sub_vector(Range1D(),DENSE,&sub_vec)</tt> to get the view.  
+  VectorDenseEncap( const Vector&  vec );
+  /// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
+  ~VectorDenseEncap();
+  /// Returns a reference to a constant view of the dense vector.
+  const DVectorSlice& operator()() const;
 
 private:
 
-	const Vector            &vec_;
-	RTOpPack::SubVector     sub_vec_;
-	DVectorSlice            vs_;
-	VectorDenseEncap();                                     // Not defined and not to be called!
-	VectorDenseEncap(const VectorDenseEncap&);              // ""
-	VectorDenseEncap& operator=(const VectorDenseEncap&);   // ""
+  const Vector            &vec_;
+  RTOpPack::SubVector     sub_vec_;
+  DVectorSlice            vs_;
+  VectorDenseEncap();                                     // Not defined and not to be called!
+  VectorDenseEncap(const VectorDenseEncap&);              // ""
+  VectorDenseEncap& operator=(const VectorDenseEncap&);   // ""
 
 }; // end class VectorDenseEncap
 
@@ -64,23 +64,23 @@ private:
 class VectorDenseMutableEncap {
 public:
 
-	/// Calls <tt>vec.get_sub_vector(Range1D(),&sub_vec)</tt> to get the view.  
-	VectorDenseMutableEncap( VectorMutable&  vec );
-	/// Calls <tt>vec.commit_sub_vector(&sub_vec)</tt> to release the view.  
-	~VectorDenseMutableEncap();
-	/// Returns a reference to a constant view of the dense vector.
-	DVectorSlice& operator()();
-	/// Returns a reference to a non-const view of the dense vector.
-	const DVectorSlice& operator()() const;
+  /// Calls <tt>vec.get_sub_vector(Range1D(),&sub_vec)</tt> to get the view.  
+  VectorDenseMutableEncap( VectorMutable&  vec );
+  /// Calls <tt>vec.commit_sub_vector(&sub_vec)</tt> to release the view.  
+  ~VectorDenseMutableEncap();
+  /// Returns a reference to a constant view of the dense vector.
+  DVectorSlice& operator()();
+  /// Returns a reference to a non-const view of the dense vector.
+  const DVectorSlice& operator()() const;
 
 private:
 
-	VectorMutable                  &vec_;
-	RTOpPack::MutableSubVector     sub_vec_;
-	DVectorSlice                   vs_;
-	VectorDenseMutableEncap();                                            // Not defined and not to be called!
-	VectorDenseMutableEncap(const VectorDenseMutableEncap&);              // ""
-	VectorDenseMutableEncap& operator=(const VectorDenseMutableEncap&);   // ""
+  VectorMutable                  &vec_;
+  RTOpPack::MutableSubVector     sub_vec_;
+  DVectorSlice                   vs_;
+  VectorDenseMutableEncap();                                            // Not defined and not to be called!
+  VectorDenseMutableEncap(const VectorDenseMutableEncap&);              // ""
+  VectorDenseMutableEncap& operator=(const VectorDenseMutableEncap&);   // ""
 
 }; // end class VectorDenseMutableEncap
 
@@ -91,60 +91,60 @@ private:
 
 inline
 VectorDenseEncap::VectorDenseEncap( const Vector&  vec )
-	:vec_(vec)
+  :vec_(vec)
 {
-	vec_.get_sub_vector(Range1D(),&sub_vec_);
-	vs_.bind( DVectorSlice(
-				  const_cast<value_type*>(sub_vec_.values())
-				  ,sub_vec_.subDim()
-				  ,sub_vec_.stride()
-				  )
-		);
+  vec_.get_sub_vector(Range1D(),&sub_vec_);
+  vs_.bind( DVectorSlice(
+          const_cast<value_type*>(sub_vec_.values())
+          ,sub_vec_.subDim()
+          ,sub_vec_.stride()
+          )
+    );
 }
 
 inline
 VectorDenseEncap::~VectorDenseEncap()
 {
-	vec_.free_sub_vector(&sub_vec_);
+  vec_.free_sub_vector(&sub_vec_);
 }
 
 inline
 const DVectorSlice& VectorDenseEncap::operator()() const
 {
-	return vs_;
+  return vs_;
 }
 
 // VectorDenseMutableEncap
 
 inline
 VectorDenseMutableEncap::VectorDenseMutableEncap( VectorMutable&  vec )
-	:vec_(vec)
+  :vec_(vec)
 {
-	vec_.get_sub_vector(Range1D(),&sub_vec_);
-	vs_.bind( DVectorSlice(
-				  sub_vec_.values()
-				  ,sub_vec_.subDim()
-				  ,sub_vec_.stride()
-				  )
-		);
+  vec_.get_sub_vector(Range1D(),&sub_vec_);
+  vs_.bind( DVectorSlice(
+          sub_vec_.values()
+          ,sub_vec_.subDim()
+          ,sub_vec_.stride()
+          )
+    );
 }
 
 inline
 VectorDenseMutableEncap::~VectorDenseMutableEncap()
 {
-	vec_.commit_sub_vector(&sub_vec_);
+  vec_.commit_sub_vector(&sub_vec_);
 }
 
 inline
 DVectorSlice& VectorDenseMutableEncap::operator()()
 {
-	return vs_;
+  return vs_;
 }
 
 inline
 const DVectorSlice& VectorDenseMutableEncap::operator()() const
 {
-	return vs_;
+  return vs_;
 }
 
 } // end namespace SparseLinALgPack

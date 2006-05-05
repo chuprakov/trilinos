@@ -29,6 +29,6 @@
 #include "Moocho_ConfigDefs.hpp"
 
 namespace SpecialASCII {
-	const char
-		inf = (char)236;
+  const char
+    inf = (char)236;
 }

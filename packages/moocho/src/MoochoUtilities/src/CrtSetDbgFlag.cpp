@@ -32,6 +32,6 @@
 // version can not be built.
 
 extern "C" {
-	int _CrtSetDbgFlag(int)
-	{ return 0; }	// do nothing
+  int _CrtSetDbgFlag(int)
+  { return 0; }	// do nothing
 }

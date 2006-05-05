@@ -45,86 +45,86 @@
 
 
 bool MoochoPack::CalcD_vStep_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
-	{
-	using Teuchos::dyn_cast;
-	using IterationPack::print_algorithm_step;
-	using AbstractLinAlgPack::ele_wise_prod;
-	using AbstractLinAlgPack::lowerbound_multipliers_step;
-	using AbstractLinAlgPack::upperbound_multipliers_step;
+  , poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
+  {
+  using Teuchos::dyn_cast;
+  using IterationPack::print_algorithm_step;
+  using AbstractLinAlgPack::ele_wise_prod;
+  using AbstractLinAlgPack::lowerbound_multipliers_step;
+  using AbstractLinAlgPack::upperbound_multipliers_step;
 
-	NLPAlgo &algo = rsqp_algo(_algo);
-	IpState	 &s    = dyn_cast<IpState>(_algo.state());
-	NLP      &nlp  = algo.nlp();
+  NLPAlgo &algo = rsqp_algo(_algo);
+  IpState	 &s    = dyn_cast<IpState>(_algo.state());
+  NLP      &nlp  = algo.nlp();
 
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
+  EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  std::ostream& out = algo.track().journal_out();
 
-	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		using IterationPack::print_algorithm_step;
-		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
-		}
+  // print step header.
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+    {
+    using IterationPack::print_algorithm_step;
+    print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
+    }
 
-	// Get iteration quantities
-	const value_type& mu = s.barrier_parameter().get_k(0);
-	const Vector &d_k = s.d().get_k(0);
-	const MatrixSymDiagStd& invXl = s.invXl().get_k(0);
-	const MatrixSymDiagStd& invXu = s.invXu().get_k(0);
-	const MatrixSymDiagStd& Vl = s.Vl().get_k(0);
-	const MatrixSymDiagStd& Vu = s.Vu().get_k(0);
+  // Get iteration quantities
+  const value_type& mu = s.barrier_parameter().get_k(0);
+  const Vector &d_k = s.d().get_k(0);
+  const MatrixSymDiagStd& invXl = s.invXl().get_k(0);
+  const MatrixSymDiagStd& invXu = s.invXu().get_k(0);
+  const MatrixSymDiagStd& Vl = s.Vl().get_k(0);
+  const MatrixSymDiagStd& Vu = s.Vu().get_k(0);
 
-	VectorMutable& dvl_k = s.dvl().set_k(0);
-	VectorMutable& dvu_k = s.dvu().set_k(0);
+  VectorMutable& dvl_k = s.dvl().set_k(0);
+  VectorMutable& dvu_k = s.dvu().set_k(0);
 
-	lowerbound_multipliers_step(mu, invXl.diag(), Vl.diag(), d_k, &dvl_k);
-	upperbound_multipliers_step(mu, invXu.diag(), Vu.diag(), d_k, &dvu_k);
+  lowerbound_multipliers_step(mu, invXl.diag(), Vl.diag(), d_k, &dvl_k);
+  upperbound_multipliers_step(mu, invXu.diag(), Vu.diag(), d_k, &dvu_k);
 
-	/*
-	// dvl = mu*invXl*e - vl - invXl*Vl*d_k
-	dvl_k = 0;
-	ele_wise_prod(-1.0, invXl.diag(), Vl.diag(), &dvl_k);
-	ele_wise_prod(1.0, dvl_k, d_k, &dvl_k);
+  /*
+  // dvl = mu*invXl*e - vl - invXl*Vl*d_k
+  dvl_k = 0;
+  ele_wise_prod(-1.0, invXl.diag(), Vl.diag(), &dvl_k);
+  ele_wise_prod(1.0, dvl_k, d_k, &dvl_k);
 
-	std::cout << "d_k =\n" << d_k;
- 	std::cout << "-invXl*Vl*d_k = \n" << dvl_k;
+  std::cout << "d_k =\n" << d_k;
+   std::cout << "-invXl*Vl*d_k = \n" << dvl_k;
  
-	dvl_k.axpy(-1.0, Vl.diag());
-	
- 	std::cout << "-vl-invXl*Vl*d_k = \n" << dvl_k;
+  dvl_k.axpy(-1.0, Vl.diag());
+  
+   std::cout << "-vl-invXl*Vl*d_k = \n" << dvl_k;
 
-	dvl_k.axpy(mu, invXl.diag());
+  dvl_k.axpy(mu, invXl.diag());
 
-	 std::cout << "dvl_k = \n" << dvl_k;
+   std::cout << "dvl_k = \n" << dvl_k;
 
-	// dvu = mu*invXu*e - vu + invXu*Vu*d_k
-	dvu_k = 0;
-	ele_wise_prod(1.0, invXu.diag(), Vu.diag(), &dvu_k);
-	ele_wise_prod(1.0, dvu_k, d_k, &dvu_k);
+  // dvu = mu*invXu*e - vu + invXu*Vu*d_k
+  dvu_k = 0;
+  ele_wise_prod(1.0, invXu.diag(), Vu.diag(), &dvu_k);
+  ele_wise_prod(1.0, dvu_k, d_k, &dvu_k);
 
-	dvu_k.axpy(-1.0, Vu.diag());
-	
-	dvu_k.axpy(mu, invXu.diag());
-	*/
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
-		{
-		out	<< "\nx_k = \n" << s.x().get_k(0)
-			<< "\nxl = \n" << nlp.xl()
-			<< "\nxu = \n" << nlp.xu()
-			<< "\ndvl_k = \n" << dvl_k
-			<< "\ndvu_k = \n" << dvu_k;
-		}
+  dvu_k.axpy(-1.0, Vu.diag());
+  
+  dvu_k.axpy(mu, invXu.diag());
+  */
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+    {
+    out	<< "\nx_k = \n" << s.x().get_k(0)
+      << "\nxl = \n" << nlp.xl()
+      << "\nxu = \n" << nlp.xu()
+      << "\ndvl_k = \n" << dvl_k
+      << "\ndvu_k = \n" << dvu_k;
+    }
 
-	return true;
-	}
+  return true;
+  }
 
 void MoochoPack::CalcD_vStep_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+  , poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+  , std::ostream& out, const std::string& L ) const
 {
-	out
-		<< L << "*** Calculates the search direction for the dual variables\n"
-		<< L << "dvl_k = mu*invXl_k*e - vl_k - invXl_k*Vl_k*d_k\n"
-		<< L << "dvu_k = mu*invXu_k*e - vu_k + invXu_k*Vu_k*d_k\n";
+  out
+    << L << "*** Calculates the search direction for the dual variables\n"
+    << L << "dvl_k = mu*invXl_k*e - vl_k - invXl_k*Vl_k*d_k\n"
+    << L << "dvu_k = mu*invXu_k*e - vu_k + invXu_k*Vu_k*d_k\n";
 }

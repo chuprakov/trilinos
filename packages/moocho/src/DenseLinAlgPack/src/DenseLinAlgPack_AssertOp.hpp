@@ -58,11 +58,11 @@ void VopV_assert_sizes(size_type v_rhs1_size, size_type v_rhs2_size);
 
 /// op(m_lhs) += op op(m_rhs)
 void Mp_M_assert_sizes(size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
-	, size_type m_rhs_rows, size_type m_rhs_cols, BLAS_Cpp::Transp trans_rhs);
+  , size_type m_rhs_rows, size_type m_rhs_cols, BLAS_Cpp::Transp trans_rhs);
 
 /// v_rhs1 op v_rhs2
 void MopM_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 1 BLAS
 // @}
@@ -73,11 +73,11 @@ void MopM_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::T
 
 /// op(m_rhs1) * v_rhs2
 void MtV_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols
-	, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size);
+  , BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size);
 
 /// v_lhs += op(m_rhs1) * v_rhs2
 void Vp_MtV_assert_sizes(size_type v_lhs_size, size_type m_rhs1_rows
-	, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size);
+  , size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size);
 
 //		end Level 2 BLAS
 // @}
@@ -88,14 +88,14 @@ void Vp_MtV_assert_sizes(size_type v_lhs_size, size_type m_rhs1_rows
 
 /// op(m_lhs) += op(m_rhs1)
 void MtM_assert_sizes(
-	  size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
+    size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
 
 /// op(m_lhs) += op(m_rhs1) * op(m_rhs2)
 void Mp_MtM_assert_sizes(
-	  size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
-	, size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
+    size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
+  , size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 3 BLAS
 // @}
@@ -117,35 +117,35 @@ void VopV_assert_sizes(size_type v_rhs1_size, size_type v_rhs2_size)
 
 inline
 void Mp_M_assert_sizes(size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
-	, size_type m_rhs_rows, size_type m_rhs_cols, BLAS_Cpp::Transp trans_rhs)
+  , size_type m_rhs_rows, size_type m_rhs_cols, BLAS_Cpp::Transp trans_rhs)
 {}
 
 inline
 void MopM_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
 {}
 
 inline
 void MtV_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols
-	, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size)
+  , BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size)
 {}
 
 inline
 void Vp_MtV_assert_sizes(size_type v_lhs_size, size_type m_rhs1_rows
-	, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size)
+  , size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size)
 {}
 
 inline
 void MtM_assert_sizes(
-	  size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
+    size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
 {}
 
 inline
 void Mp_MtM_assert_sizes(
-	  size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
-	, size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
-	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
+    size_type m_lhs_rows, size_type m_lhs_cols, BLAS_Cpp::Transp trans_lhs
+  , size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1
+  , size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2)
 {}
 
 #endif

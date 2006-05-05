@@ -60,133 +60,133 @@ namespace NLPInterfacePack {
 class ExampleNLPObjGrad : virtual public NLPObjGrad {
 public:
 
-	///
-	/** Constructor.
-	 *
-	 * @param  vec_space  [in] Smart pointer to a vector space object that will
-	 *                    be used to define the spaces of dependent and independent
-	 *                    variables.
-	 * @param  xo         [in] The initial starting guess for \a x.
-	 * @param  has_bounds [in] If \c true, then the NLP will have bounds.  If \c false
-	 *                    then it will not have bounds.
-	 * @param  dep_bouned [in] If \c true, then the bounds will be on the dependent
-	 *                    variables.  If \c false, then the bounds will be on the
-	 *                    independent variable.  This argument is ignored if
-	 *                    <tt>has_bounds == false</tt>.
-	 */
-	ExampleNLPObjGrad(
-		const VectorSpace::space_ptr_t&  vec_space
-		,value_type                      xo
-		,bool                            has_bounds
-		,bool                            dep_bounded
-		);
+  ///
+  /** Constructor.
+   *
+   * @param  vec_space  [in] Smart pointer to a vector space object that will
+   *                    be used to define the spaces of dependent and independent
+   *                    variables.
+   * @param  xo         [in] The initial starting guess for \a x.
+   * @param  has_bounds [in] If \c true, then the NLP will have bounds.  If \c false
+   *                    then it will not have bounds.
+   * @param  dep_bouned [in] If \c true, then the bounds will be on the dependent
+   *                    variables.  If \c false, then the bounds will be on the
+   *                    independent variable.  This argument is ignored if
+   *                    <tt>has_bounds == false</tt>.
+   */
+  ExampleNLPObjGrad(
+    const VectorSpace::space_ptr_t&  vec_space
+    ,value_type                      xo
+    ,bool                            has_bounds
+    ,bool                            dep_bounded
+    );
 
-	/** @name Helper methods to be used by subclasses. */
-	//@{
+  /** @name Helper methods to be used by subclasses. */
+  //@{
 
-	///
-	virtual Range1D var_dep() const;
-	///
-	virtual Range1D var_indep() const;
+  ///
+  virtual Range1D var_dep() const;
+  ///
+  virtual Range1D var_indep() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	///
-	void initialize(bool test_setup);
-	///
-	bool is_initialized() const;
-	///
-	size_type n() const;
-	///
-	size_type m() const;
-	///
-	vec_space_ptr_t space_x() const;
-	///
-	vec_space_ptr_t space_c() const;
-	///
+  ///
+  void initialize(bool test_setup);
+  ///
+  bool is_initialized() const;
+  ///
+  size_type n() const;
+  ///
+  size_type m() const;
+  ///
+  vec_space_ptr_t space_x() const;
+  ///
+  vec_space_ptr_t space_c() const;
+  ///
     size_type num_bounded_x() const;
-	///
-	void force_xinit_in_bounds(bool force_xinit_in_bounds);
-	///
-	bool force_xinit_in_bounds() const;
-	///
-	const Vector& xinit() const;
-	///
-	const Vector& xl() const;
-	///
-	const Vector& xu() const;
-	///
-	value_type max_var_bounds_viol() const;
-	///
-	void scale_f( value_type scale_f );
-	///
-	value_type scale_f() const;
-	///
-	void report_final_solution(
-		const Vector&    x
-		,const Vector*   lambda
-		,const Vector*   nu
-		,bool            optimal
-		);
+  ///
+  void force_xinit_in_bounds(bool force_xinit_in_bounds);
+  ///
+  bool force_xinit_in_bounds() const;
+  ///
+  const Vector& xinit() const;
+  ///
+  const Vector& xl() const;
+  ///
+  const Vector& xu() const;
+  ///
+  value_type max_var_bounds_viol() const;
+  ///
+  void scale_f( value_type scale_f );
+  ///
+  value_type scale_f() const;
+  ///
+  void report_final_solution(
+    const Vector&    x
+    ,const Vector*   lambda
+    ,const Vector*   nu
+    ,bool            optimal
+    );
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden protected members from NLP */
-	//@{
+  /** @name Overridden protected members from NLP */
+  //@{
 
-	///
-	void imp_calc_f(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
-	///
-	void imp_calc_c(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
-	/// This implementation does nothing (should never be called though).
-	void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
+  ///
+  void imp_calc_f(
+    const Vector& x, bool newx
+    ,const ZeroOrderInfo& zero_order_info) const;
+  ///
+  void imp_calc_c(
+    const Vector& x, bool newx
+    ,const ZeroOrderInfo& zero_order_info) const;
+  /// This implementation does nothing (should never be called though).
+  void imp_calc_h(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden protected members from NLPObjGrad */
-	//@{
+  /** @name Overridden protected members from NLPObjGrad */
+  //@{
 
-	///
-	void imp_calc_Gf(
-		const Vector& x, bool newx
-		,const ObjGradInfo& obj_grad_info) const;
+  ///
+  void imp_calc_Gf(
+    const Vector& x, bool newx
+    ,const ObjGradInfo& obj_grad_info) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////
+  // Private data members
 
-	VectorSpace::space_ptr_t    vec_space_;       // The vector space for dependent and indepenent variables and c(x).
-	VectorSpace::space_ptr_t    vec_space_comp_;  // Composite vector space for x = [ xD; xI ]
-	Range1D                     var_dep_;         // Range for dependnet variables.
-	Range1D                     var_indep_;       // Range for independent variables.
+  VectorSpace::space_ptr_t    vec_space_;       // The vector space for dependent and indepenent variables and c(x).
+  VectorSpace::space_ptr_t    vec_space_comp_;  // Composite vector space for x = [ xD; xI ]
+  Range1D                     var_dep_;         // Range for dependnet variables.
+  Range1D                     var_indep_;       // Range for independent variables.
 
-	bool         initialized_;            // flag for if initialized has been called.
-	value_type   obj_scale_;              // default = 1.0;
-	bool         has_bounds_;             // default = true
-	bool         force_xinit_in_bounds_;  // default = true.
+  bool         initialized_;            // flag for if initialized has been called.
+  value_type   obj_scale_;              // default = 1.0;
+  bool         has_bounds_;             // default = true
+  bool         force_xinit_in_bounds_;  // default = true.
 
-	size_type    n_;                      // Number of variables in the problem.
-	VectorSpace::vec_mut_ptr_t  xinit_;   // Initial guess.
-	VectorSpace::vec_mut_ptr_t  xl_;      // lower bounds.
-	VectorSpace::vec_mut_ptr_t  xu_;      // upper bounds.
+  size_type    n_;                      // Number of variables in the problem.
+  VectorSpace::vec_mut_ptr_t  xinit_;   // Initial guess.
+  VectorSpace::vec_mut_ptr_t  xl_;      // lower bounds.
+  VectorSpace::vec_mut_ptr_t  xu_;      // upper bounds.
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_is_initialized() const;
+  ///
+  void assert_is_initialized() const;
 
 };	// end class ExampleNLPObjGrad
 
@@ -197,10 +197,10 @@ inline
 void ExampleNLPObjGrad::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
-	TEST_FOR_EXCEPTION(
-		!is_initialized(), NLP::UnInitialized
-		,"ExampleNLPObjGrad::assert_is_initialized() : Error, "
-		"ExampleNLPObjGrad::initialize() has not been called yet." );
+  TEST_FOR_EXCEPTION(
+    !is_initialized(), NLP::UnInitialized
+    ,"ExampleNLPObjGrad::assert_is_initialized() : Error, "
+    "ExampleNLPObjGrad::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

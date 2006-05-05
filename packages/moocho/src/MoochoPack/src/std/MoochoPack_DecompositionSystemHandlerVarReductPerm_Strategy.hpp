@@ -40,53 +40,53 @@ namespace MoochoPack {
  * ToDo: Finish documentation!
  */
 class DecompositionSystemHandlerVarReductPerm_Strategy
-	: public DecompositionSystemHandlerSelectNew_Strategy
+  : public DecompositionSystemHandlerSelectNew_Strategy
 {
 public:
-	
-	/** @name Constructors / initializers */
-	//@{
+  
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	/** Constructor
-	 */
-	DecompositionSystemHandlerVarReductPerm_Strategy();
+  ///
+  /** Constructor
+   */
+  DecompositionSystemHandlerVarReductPerm_Strategy();
 
-	//@}
+  //@}
 
-	/** @name Overridden from DecompositionSystemHandler_Strategy */
-	//@{
+  /** @name Overridden from DecompositionSystemHandler_Strategy */
+  //@{
 
-	///
-	bool update_decomposition(
-		NLPAlgo                                &algo
-		,NLPAlgoState                          &s
-		,NLPFirstOrder                         &nlp
-		,EDecompSysTesting                     decomp_sys_testing
-		,EDecompSysPrintLevel                  decomp_sys_testing_print_level
-		,bool                                  *new_decomp_selected
-		);
-	///
-	void print_update_decomposition(
-		const NLPAlgo                          &algo
-		,const NLPAlgoState                    &s
-		,std::ostream                          &out
-		,const std::string                     &leading_spaces
-		) const;
+  ///
+  bool update_decomposition(
+    NLPAlgo                                &algo
+    ,NLPAlgoState                          &s
+    ,NLPFirstOrder                         &nlp
+    ,EDecompSysTesting                     decomp_sys_testing
+    ,EDecompSysPrintLevel                  decomp_sys_testing_print_level
+    ,bool                                  *new_decomp_selected
+    );
+  ///
+  void print_update_decomposition(
+    const NLPAlgo                          &algo
+    ,const NLPAlgoState                    &s
+    ,std::ostream                          &out
+    ,const std::string                     &leading_spaces
+    ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from DecompositionSystemHandlerSelectNew_Strategy */
-	//@{
+  /** @name Overridden from DecompositionSystemHandlerSelectNew_Strategy */
+  //@{
 
-	///
-	void select_new_decomposition( bool select_new_decomposition );
+  ///
+  void select_new_decomposition( bool select_new_decomposition );
 
-	//@}
+  //@}
 
 private:
 
-	bool select_new_decomposition_;
+  bool select_new_decomposition_;
 
 }; // end class DecompositionSystemHandlerVarReductPerm_Strategy
 

@@ -65,8 +65,8 @@ namespace AbstractLinAlgPack {
   * @param	jvect	vector holding the column indices (1-based)
   */
 void read_coo_into_valarrays(std::istream& istrm, size_type& m, size_type& n, size_type& nz
-	, std::valarray<value_type>& a, std::valarray<indice_type>& ivect
-	, std::valarray<indice_type>& jvect);
+  , std::valarray<value_type>& a, std::valarray<indice_type>& ivect
+  , std::valarray<indice_type>& jvect);
 
 }	// end namespace AbstractLinAlgPack 
 

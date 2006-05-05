@@ -46,7 +46,7 @@ namespace PBFGSPack {
  * This function will return true if:
  \begin{verbatim}
   ( num_adds_indep == NOT_KNOWN || num_drops_indep == NOT_KNOWN || num_active_indep == 0
- 	  ? 0.0
+     ? 0.0
      : std::_MAX(((double)(num_active_indep)-num_adds_indep-num_drops_indep) / num_active_indep, 0.0
    ) >= act_set_frac_proj_start
   &&
@@ -55,11 +55,11 @@ namespace PBFGSPack {
  * Otherwise this function will return false.
  */
 bool act_set_calmed_down( 
-	const ActSetStats         &act_set_stats
-	,const value_type         act_set_frac_proj_start
-	,EJournalOutputLevel      olevel
-	,std::ostream             &out
-	);
+  const ActSetStats         &act_set_stats
+  ,const value_type         act_set_frac_proj_start
+  ,EJournalOutputLevel      olevel
+  ,std::ostream             &out
+  );
 
 ///
 /** Initialize i_x_free[], s_R'*s_R and s_R'*y_R for free variables not in nu_indep.
@@ -75,14 +75,14 @@ bool act_set_calmed_down(
  * @param  yRTyR     [out] y_R'*y_R
  */
 void init_i_x_free_sRTsR_sRTyR(
-	const SpVectorSlice        &nu_indep
-	,const DVectorSlice         &s
-	,const DVectorSlice         &y
-	,size_type                 *n_pz_R
-	,size_type                 i_x_free[]
-	,value_type                *sRTsR
-	,value_type                *sRTyR
-	);
+  const SpVectorSlice        &nu_indep
+  ,const DVectorSlice         &s
+  ,const DVectorSlice         &y
+  ,size_type                 *n_pz_R
+  ,size_type                 i_x_free[]
+  ,value_type                *sRTsR
+  ,value_type                *sRTyR
+  );
 
 ///
 /** Sort fixed variables  according to the condition:
@@ -115,16 +115,16 @@ void init_i_x_free_sRTsR_sRTyR(
  *                   #|s(i)^2*B_XX(l,l)|/|sRTBRRsR| + |s(i)*y(i)|/|sRTyR|#
  */
 void sort_fixed_max_cond_viol(
-	const SpVectorSlice        &nu_indep
-	,const DVectorSlice         &s
-	,const DVectorSlice         &y
-	,const DVectorSlice         &B_XX
-	,const value_type          sRTBRRsR
-	,const value_type          sRTyR
-	,value_type                *sXTBXXsX
-	,value_type                *sXTyX
-	,size_type                 l_x_fixed_sorted[]
-	);
+  const SpVectorSlice        &nu_indep
+  ,const DVectorSlice         &s
+  ,const DVectorSlice         &y
+  ,const DVectorSlice         &B_XX
+  ,const value_type          sRTBRRsR
+  ,const value_type          sRTyR
+  ,value_type                *sXTBXXsX
+  ,value_type                *sXTyX
+  ,size_type                 l_x_fixed_sorted[]
+  );
 
 ///
 /** Choose the rest of i_x_free[] and i_x_fixed[].
@@ -189,25 +189,25 @@ void sort_fixed_max_cond_viol(
  *                   bounds of the indices in i_x_fixed[] on output.
  */
 void choose_fixed_free(
-	const value_type                       project_error_tol
-	,const value_type                      super_basic_mult_drop_tol
-	,const SpVectorSlice                   &nu_indep
-	,const DVectorSlice                     &s
-	,const DVectorSlice                     &y
-	,const DVectorSlice                     &B_XX
-	,const size_type                       l_x_fixed_sorted[]
-	,EJournalOutputLevel                   olevel
-	,std::ostream                          &out
-	,value_type                            *sRTBRRsR
-	,value_type                            *sRTyR
-	,value_type                            *sXTBXXsX
-	,value_type                            *sXTyX
-	,size_type                             *n_pz_X
-	,size_type                             *n_pz_R
-	,size_type                             i_x_free[]
-	,size_type                             i_x_fixed[]
-	,ConstrainedOptPack::EBounds  bnd_fixed[]
-	);
+  const value_type                       project_error_tol
+  ,const value_type                      super_basic_mult_drop_tol
+  ,const SpVectorSlice                   &nu_indep
+  ,const DVectorSlice                     &s
+  ,const DVectorSlice                     &y
+  ,const DVectorSlice                     &B_XX
+  ,const size_type                       l_x_fixed_sorted[]
+  ,EJournalOutputLevel                   olevel
+  ,std::ostream                          &out
+  ,value_type                            *sRTBRRsR
+  ,value_type                            *sRTyR
+  ,value_type                            *sXTBXXsX
+  ,value_type                            *sXTyX
+  ,size_type                             *n_pz_X
+  ,size_type                             *n_pz_R
+  ,size_type                             i_x_free[]
+  ,size_type                             i_x_fixed[]
+  ,ConstrainedOptPack::EBounds  bnd_fixed[]
+  );
 
 //@}
 

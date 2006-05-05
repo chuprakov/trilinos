@@ -77,167 +77,167 @@ public:
   ///
   typedef IterQuantityAccess<T_info> base_t;
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;
-	///
-	typedef Teuchos::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<T_info> >          abstract_factory_ptr_t;
+  ///
+  typedef Teuchos::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
 
-	/** @name Constructors/initalizers */
-	//@{
+  /** @name Constructors/initalizers */
+  //@{
 
-	///
-	/** Construct storage for <tt>num_quantities</tt> with the name <tt>name</tt> given an abstract factory.
-	 *
-	 * After construction <tt>this->set_k(offset)</tt> can be called for any
-	 * <tt>offset</tt> in the range of legal integers.
-	 *
-	 * Preconditions: <ul>
-	 * <li> <tt>num_quantities > 0</tt> (throw std::length_error)
-	 * </ul>
-	 *
-	 * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
-	 * with an non-NULL factory before any attempt is made to call \c get_k() or \c set_k() or an
-	 * exception will be thrown.
-	 */
-	IterQuantityAccessContiguous(
-		int                              num_quantities
-		,const std::string&              name
+  ///
+  /** Construct storage for <tt>num_quantities</tt> with the name <tt>name</tt> given an abstract factory.
+   *
+   * After construction <tt>this->set_k(offset)</tt> can be called for any
+   * <tt>offset</tt> in the range of legal integers.
+   *
+   * Preconditions: <ul>
+   * <li> <tt>num_quantities > 0</tt> (throw std::length_error)
+   * </ul>
+   *
+   * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
+   * with an non-NULL factory before any attempt is made to call \c get_k() or \c set_k() or an
+   * exception will be thrown.
+   */
+  IterQuantityAccessContiguous(
+    int                              num_quantities
+    ,const std::string&              name
 #ifdef _MIPS_CXX // MipsPro 7.3.1.1 tries to instantiate the default type even when one is specified?
-		,const abstract_factory_ptr_t&   abstract_factory
+    ,const abstract_factory_ptr_t&   abstract_factory
 #else
-		,const abstract_factory_ptr_t&   abstract_factory  = Teuchos::rcp(new abstract_factory_std_t())
+    ,const abstract_factory_ptr_t&   abstract_factory  = Teuchos::rcp(new abstract_factory_std_t())
 #endif
-		);
+    );
 
-	///
-	/** Set the abstract factory to use to allocate storate.
-	 *
-	 * Postconditions:<ul>
-	 * <li> \c this will become uninitialized and current memory will be wipped out.
-	 * </ul>
-	 *
-	 * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
-	 * again later with a non-NULL factory before any attempt is made to call \c get_k() or
-	 * \c set_k() or an exception will be thrown.
-	 */
-	void set_factory( const abstract_factory_ptr_t& abstract_factory );
+  ///
+  /** Set the abstract factory to use to allocate storate.
+   *
+   * Postconditions:<ul>
+   * <li> \c this will become uninitialized and current memory will be wipped out.
+   * </ul>
+   *
+   * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
+   * again later with a non-NULL factory before any attempt is made to call \c get_k() or
+   * \c set_k() or an exception will be thrown.
+   */
+  void set_factory( const abstract_factory_ptr_t& abstract_factory );
 
-	///
-	/** Resize the number of contiguous storage locations.
-	 *
-	 * Postconditions:<ul>
-	 * <li> \c this will become uninitialized and current memory will be wipped out.
-	 * </ul>
-	 */
-	void resize( int num_quantities );
+  ///
+  /** Resize the number of contiguous storage locations.
+   *
+   * Postconditions:<ul>
+   * <li> \c this will become uninitialized and current memory will be wipped out.
+   * </ul>
+   */
+  void resize( int num_quantities );
 
-	///
-	~IterQuantityAccessContiguous();
+  ///
+  ~IterQuantityAccessContiguous();
 
-	//@}
+  //@}
 
-	/** @name Access */
-	//@{
+  /** @name Access */
+  //@{
 
-	/// Return the number of continous storage locations
-	int num_quantities() const;
+  /// Return the number of continous storage locations
+  int num_quantities() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from IterQuantity */
-	//@{
+  /** @name Overridden from IterQuantity */
+  //@{
 
-	///
-	IterQuantity* clone() const;
-	///
-	const char* name() const; 
-	///
-	bool has_storage_k(int offset) const;
-	///
-	bool updated_k(int offset) const;
-	///
-	int last_updated() const;
-	///
-	void set_not_updated_k(int offset);
-	///
-	void set_all_not_updated();
-	///
-	bool will_loose_mem(int offset, int set_offset) const;
-	///
-	void next_iteration();
-	///
-	void print_concrete_type( std::ostream& out ) const;
+  ///
+  IterQuantity* clone() const;
+  ///
+  const char* name() const; 
+  ///
+  bool has_storage_k(int offset) const;
+  ///
+  bool updated_k(int offset) const;
+  ///
+  int last_updated() const;
+  ///
+  void set_not_updated_k(int offset);
+  ///
+  void set_all_not_updated();
+  ///
+  bool will_loose_mem(int offset, int set_offset) const;
+  ///
+  void next_iteration();
+  ///
+  void print_concrete_type( std::ostream& out ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from IterQuantityAccess */
-	//@{
+  /** @name Overridden from IterQuantityAccess */
+  //@{
 
-	///
-	T_info& get_k(int offset);
-	///
-	const T_info& get_k(int offset) const;
-	///
-	T_info& set_k(int offset);
-	///
-	T_info& set_k(int set_offset, int get_offset);
+  ///
+  T_info& get_k(int offset);
+  ///
+  const T_info& get_k(int offset) const;
+  ///
+  T_info& set_k(int offset);
+  ///
+  T_info& set_k(int set_offset, int get_offset);
 
-	//@}
+  //@}
 
 private:
 
-	// ///////////////////////////////////////////////
-	// Private types
+  // ///////////////////////////////////////////////
+  // Private types
 
-	//
-	typedef std::vector<bool>                                                       updated_t;
-	//
-	typedef std::vector<typename abstract_factory_ptr_t::element_type::obj_ptr_t>   store_t;
-	//
-	typedef std::vector<T_info*>                                                    quantities_t;
+  //
+  typedef std::vector<bool>                                                       updated_t;
+  //
+  typedef std::vector<typename abstract_factory_ptr_t::element_type::obj_ptr_t>   store_t;
+  //
+  typedef std::vector<T_info*>                                                    quantities_t;
 
-	// ///////////////////////////////////////////////
-	// Private data members
+  // ///////////////////////////////////////////////
+  // Private data members
 
-	// number of contigous iterations memory is reserved for.
-	int	num_quantities_;
-	// The name of the quantity (useful for debugging)
-	std::string name_;
-	// The abstract factory used to create the objects themselves
-	abstract_factory_ptr_t   abstract_factory_;
-	// The highest offset for iteration we are providing storage for.  We are providing
-	// storage for iterations:
-	//   [ k + max_offset_, k + max_offset_ - 1, ..., k + max_offset_ - num_quanities_ + 1 ].
-	// For max_offset_ == 1 and num_quantities_  == 3:  [ k+1, k, k-1 ].
-	int	max_offset_;	
-	// Flags for if the iteration quanity was updated.
-	//    updated_[max_offset - offset]
-	//        for offset = max_offset, max_offset - 1, ..., max_offset_ - num_quanities_ + 1
-	// returns true if and only if the quantity (k + offset) has been updated.
-	updated_t     updated_;
-	// Storage vector for the iteration quantities
-	store_t       store_;
-	// The vector of pointers to the storage quantities
-	quantities_t  quantities_;
+  // number of contigous iterations memory is reserved for.
+  int	num_quantities_;
+  // The name of the quantity (useful for debugging)
+  std::string name_;
+  // The abstract factory used to create the objects themselves
+  abstract_factory_ptr_t   abstract_factory_;
+  // The highest offset for iteration we are providing storage for.  We are providing
+  // storage for iterations:
+  //   [ k + max_offset_, k + max_offset_ - 1, ..., k + max_offset_ - num_quanities_ + 1 ].
+  // For max_offset_ == 1 and num_quantities_  == 3:  [ k+1, k, k-1 ].
+  int	max_offset_;	
+  // Flags for if the iteration quanity was updated.
+  //    updated_[max_offset - offset]
+  //        for offset = max_offset, max_offset - 1, ..., max_offset_ - num_quanities_ + 1
+  // returns true if and only if the quantity (k + offset) has been updated.
+  updated_t     updated_;
+  // Storage vector for the iteration quantities
+  store_t       store_;
+  // The vector of pointers to the storage quantities
+  quantities_t  quantities_;
 
-	// ///////////////////////////////////////////////
-	// Private member functions
+  // ///////////////////////////////////////////////
+  // Private member functions
 
-	// Returns true if storage is initialized and false otherwise.
-	bool is_initialized() const;
+  // Returns true if storage is initialized and false otherwise.
+  bool is_initialized() const;
 
-	// Called to make sure that we are initialized before a
-	// nonconst operation is performed.
-	void lazy_initialization();
+  // Called to make sure that we are initialized before a
+  // nonconst operation is performed.
+  void lazy_initialization();
 
-	// Called to release current memory
-	void release_mem();
+  // Called to release current memory
+  void release_mem();
 
-	// Not defined and not to be called
-	IterQuantityAccessContiguous();
-	IterQuantityAccessContiguous(const IterQuantityAccessContiguous&);
-	IterQuantityAccessContiguous& operator=(const IterQuantityAccessContiguous&);
+  // Not defined and not to be called
+  IterQuantityAccessContiguous();
+  IterQuantityAccessContiguous(const IterQuantityAccessContiguous&);
+  IterQuantityAccessContiguous& operator=(const IterQuantityAccessContiguous&);
 
 };	// end class IterQuantityAccessContiguous
 
@@ -248,7 +248,7 @@ template <class T_info>
 inline
 int IterQuantityAccessContiguous<T_info>::num_quantities() const
 {	
-	return num_quantities_; 
+  return num_quantities_; 
 }
 
 }	// end namespace IterationPack

@@ -37,82 +37,82 @@
 namespace MoochoPack {
 
 EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordinate_Step(
-	const deriv_tester_ptr_t& 	  deriv_tester
-	,const bounds_tester_ptr_t&	  bounds_tester
-	,EFDDerivTesting              fd_deriv_testing
-	)
-	:EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
+  const deriv_tester_ptr_t& 	  deriv_tester
+  ,const bounds_tester_ptr_t&	  bounds_tester
+  ,EFDDerivTesting              fd_deriv_testing
+  )
+  :EvalNewPointTailoredApproach_Step(deriv_tester,bounds_tester,fd_deriv_testing)
 {}
 
 // protected
 
 void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uy(
-	MatrixOp         *Y
-	,MatrixOp        *Uy
-	)
+  MatrixOp         *Y
+  ,MatrixOp        *Uy
+  )
 {
-	// Nothing to free
+  // Nothing to free
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy(
-	const NLPDirect       &nlp
-	,const D_ptr_t        &D
-	,VectorMutable        *py
-	,MatrixOp             *Y
-	,MatrixOp             *Uy
-	,EJournalOutputLevel  olevel
-	,std::ostream         &out
-	)
+  const NLPDirect       &nlp
+  ,const D_ptr_t        &D
+  ,VectorMutable        *py
+  ,MatrixOp             *Y
+  ,MatrixOp             *Uy
+  ,EJournalOutputLevel  olevel
+  ,std::ostream         &out
+  )
 {
-	namespace rcp = MemMngPack;
-	using Teuchos::dyn_cast;
+  namespace rcp = MemMngPack;
+  using Teuchos::dyn_cast;
 
-	MatrixIdentConcatStd
-		&cY = dyn_cast<MatrixIdentConcatStd>(*Y);
-	//
-	// Y = [      I     ] space_xD  
-	//     [    Zero    ] space_xI
-	//        space_xD
-	//
-	VectorSpace::space_ptr_t
-		space_x  = nlp.space_x(),
-		space_xD = space_x->sub_space(nlp.var_dep())->clone(),
-		space_xI = space_x->sub_space(nlp.var_indep())->clone();
-	cY.initialize(
-		space_x                                                // space_cols
-		,space_xD                                              // space_rows
-		,MatrixIdentConcatStd::BOTTOM                          // top_or_bottom
-		,1.0                                                   // alpha
-		,Teuchos::rcp(
-			new MatrixZero(
-				space_xI    // space_cols
-				,space_xD   // space_rows
-				) )                                            // D_ptr
-		,BLAS_Cpp::no_trans                                    // D_trans
-		);
-	// py is not altered here!
+  MatrixIdentConcatStd
+    &cY = dyn_cast<MatrixIdentConcatStd>(*Y);
+  //
+  // Y = [      I     ] space_xD  
+  //     [    Zero    ] space_xI
+  //        space_xD
+  //
+  VectorSpace::space_ptr_t
+    space_x  = nlp.space_x(),
+    space_xD = space_x->sub_space(nlp.var_dep())->clone(),
+    space_xI = space_x->sub_space(nlp.var_indep())->clone();
+  cY.initialize(
+    space_x                                                // space_cols
+    ,space_xD                                              // space_rows
+    ,MatrixIdentConcatStd::BOTTOM                          // top_or_bottom
+    ,1.0                                                   // alpha
+    ,Teuchos::rcp(
+      new MatrixZero(
+        space_xI    // space_cols
+        ,space_xD   // space_rows
+        ) )                                            // D_ptr
+    ,BLAS_Cpp::no_trans                                    // D_trans
+    );
+  // py is not altered here!
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::recalc_py(
-	const MatrixOp          &D
-	,VectorMutable          *py
-	,EJournalOutputLevel    olevel
-	,std::ostream           &out
-	)
+  const MatrixOp          &D
+  ,VectorMutable          *py
+  ,EJournalOutputLevel    olevel
+  ,std::ostream           &out
+  )
 {
-	// py is not altered here!
+  // py is not altered here!
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy(
-	std::ostream& out, const std::string& L
-	) const
+  std::ostream& out, const std::string& L
+  ) const
 {
-	out
-		<< L << "*** Coordinate decomposition\n"
-		<< L << "py_k = py_k\n"
-		<< L << "Y = [ I ; 0 ] <: R^(n x m) [0 represented using MatrixZero]\n"
-		<< L << "Uy = Gc(var_dep,con_undecomp)\'\n"
-		;
+  out
+    << L << "*** Coordinate decomposition\n"
+    << L << "py_k = py_k\n"
+    << L << "Y = [ I ; 0 ] <: R^(n x m) [0 represented using MatrixZero]\n"
+    << L << "Uy = Gc(var_dep,con_undecomp)\'\n"
+    ;
 }
 
 }	// end namespace MoochoPack 

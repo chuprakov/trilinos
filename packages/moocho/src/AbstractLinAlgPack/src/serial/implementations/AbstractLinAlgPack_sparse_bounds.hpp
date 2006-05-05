@@ -42,82 +42,82 @@ namespace AbstractLinAlgPack {
  */
 class sparse_bounds_itr {
 private:
-	enum EBound { LOWER, UPPER, BOTH };
+  enum EBound { LOWER, UPPER, BOTH };
 public:
 
-	///
-	sparse_bounds_itr(	
-		const DVectorSlice::const_iterator   &bl_begin
-		,const DVectorSlice::const_iterator  &bl_end
-		,const DVectorSlice::const_iterator  &bu_begin
-		,const DVectorSlice::const_iterator  &bu_end
-		,value_type                         big_bnd
-		)
-		:bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
-		,big_bnd_(big_bnd), index_(1)
-	{
-		if( !at_end() && ( *bl_itr_ <= -big_bnd_ && +big_bnd_ <= *bu_itr_ ) )
-			this->operator++();
-		else
-			update();
-	}
-	///
-	const value_type& big_bnd() const
-	{    return big_bnd_; }
-	///
-	bool at_end() const
-	{	return bl_itr_ == bl_end_; }
-	///
-	sparse_bounds_itr& operator++() {
-		if(!at_end()) { ++bl_itr_; ++bu_itr_; ++index_; }
-		for( ; !at_end() && ( *bl_itr_ <= -big_bnd_ && +big_bnd_ <= *bu_itr_ )
-			 ; ++bl_itr_, ++bu_itr_, ++index_ );
-		update();
-		return *this;
-	}
-	///
-	index_type index() const
-	{	return index_; }
-	///
-	value_type lbound() const
-	{	return lbound_; }
-	///
-	value_type ubound() const
-	{	return ubound_; }
+  ///
+  sparse_bounds_itr(	
+    const DVectorSlice::const_iterator   &bl_begin
+    ,const DVectorSlice::const_iterator  &bl_end
+    ,const DVectorSlice::const_iterator  &bu_begin
+    ,const DVectorSlice::const_iterator  &bu_end
+    ,value_type                         big_bnd
+    )
+    :bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
+    ,big_bnd_(big_bnd), index_(1)
+  {
+    if( !at_end() && ( *bl_itr_ <= -big_bnd_ && +big_bnd_ <= *bu_itr_ ) )
+      this->operator++();
+    else
+      update();
+  }
+  ///
+  const value_type& big_bnd() const
+  {    return big_bnd_; }
+  ///
+  bool at_end() const
+  {	return bl_itr_ == bl_end_; }
+  ///
+  sparse_bounds_itr& operator++() {
+    if(!at_end()) { ++bl_itr_; ++bu_itr_; ++index_; }
+    for( ; !at_end() && ( *bl_itr_ <= -big_bnd_ && +big_bnd_ <= *bu_itr_ )
+       ; ++bl_itr_, ++bu_itr_, ++index_ );
+    update();
+    return *this;
+  }
+  ///
+  index_type index() const
+  {	return index_; }
+  ///
+  value_type lbound() const
+  {	return lbound_; }
+  ///
+  value_type ubound() const
+  {	return ubound_; }
 
 private:
-	DVectorSlice::const_iterator
-		bl_itr_, bl_end_, bu_itr_, bu_end_;
-	value_type
-		big_bnd_, lbound_, ubound_;
-	index_type
-		index_;
-	EBound
-		at_bound_;
+  DVectorSlice::const_iterator
+    bl_itr_, bl_end_, bu_itr_, bu_end_;
+  value_type
+    big_bnd_, lbound_, ubound_;
+  index_type
+    index_;
+  EBound
+    at_bound_;
 
-	void update() {
-		if( bl_itr_ == bl_end_ ) {
-			return;
-		}
-		else if( -big_bnd_ < *bl_itr_ && *bu_itr_ < +big_bnd_ ) {
-			lbound_ = *bl_itr_;
-			ubound_ = *bu_itr_;
-			at_bound_ = BOTH;
-		}
-		else if( -big_bnd_ < *bl_itr_ ) {
-			lbound_ = *bl_itr_;
-			ubound_ = +big_bnd_;
-			at_bound_ = LOWER;
-		}
-		else if( *bu_itr_ < +big_bnd_ ) {
-			lbound_ = -big_bnd_;
-			ubound_ = *bu_itr_;
-			at_bound_ = UPPER;
-		}
-	}
+  void update() {
+    if( bl_itr_ == bl_end_ ) {
+      return;
+    }
+    else if( -big_bnd_ < *bl_itr_ && *bu_itr_ < +big_bnd_ ) {
+      lbound_ = *bl_itr_;
+      ubound_ = *bu_itr_;
+      at_bound_ = BOTH;
+    }
+    else if( -big_bnd_ < *bl_itr_ ) {
+      lbound_ = *bl_itr_;
+      ubound_ = +big_bnd_;
+      at_bound_ = LOWER;
+    }
+    else if( *bu_itr_ < +big_bnd_ ) {
+      lbound_ = -big_bnd_;
+      ubound_ = *bu_itr_;
+      at_bound_ = UPPER;
+    }
+  }
 
-	// not defined and not to be called
-	sparse_bounds_itr();
+  // not defined and not to be called
+  sparse_bounds_itr();
 
 };	// end class sparse_bounds_itr
 

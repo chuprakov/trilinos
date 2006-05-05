@@ -42,17 +42,17 @@ namespace {
 // Define some boiler plate macros
 
 #define OPEATOR_FUNCTION(OPERATOR,STREAM_TYPE,FORMAT_TYPE,OBJECT_TYPE)								\
-	inline STREAM_TYPE & OPERATOR ( STREAM_TYPE & s													\
-		, DenseLinAlgPack::LinAlgPackIO:: ## FORMAT_TYPE ## <DenseLinAlgPack:: ## OBJECT_TYPE ## >& bf)	\
-	{																								\
-		return DenseLinAlgPack:: ## OPERATOR ## (s,bf);													\
-	}
+  inline STREAM_TYPE & OPERATOR ( STREAM_TYPE & s													\
+    , DenseLinAlgPack::LinAlgPackIO:: ## FORMAT_TYPE ## <DenseLinAlgPack:: ## OBJECT_TYPE ## >& bf)	\
+  {																								\
+    return DenseLinAlgPack:: ## OPERATOR ## (s,bf);													\
+  }
 
 #define INPUT_OPEATOR_FUNCTION(FORMAT_TYPE,OBJECT_TYPE)												\
-	OPEATOR_FUNCTION( operator>> , std::istream , FORMAT_TYPE , OBJECT_TYPE )						\
+  OPEATOR_FUNCTION( operator>> , std::istream , FORMAT_TYPE , OBJECT_TYPE )						\
 
 #define OUTPUT_OPEATOR_FUNCTION(FORMAT_TYPE,OBJECT_TYPE)											\
-	OPEATOR_FUNCTION( operator<< , std::ostream , FORMAT_TYPE , OBJECT_TYPE )						\
+  OPEATOR_FUNCTION( operator<< , std::ostream , FORMAT_TYPE , OBJECT_TYPE )						\
 
 
 INPUT_OPEATOR_FUNCTION(		bound_format		,	DVector			)

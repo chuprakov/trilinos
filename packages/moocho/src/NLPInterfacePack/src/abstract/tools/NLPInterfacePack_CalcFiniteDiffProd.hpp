@@ -108,125 +108,125 @@ namespace NLPInterfacePack {
 class CalcFiniteDiffProd {
 public:
 
-	///
-	enum EFDMethodOrder {
-		FD_ORDER_ONE           ///< Use O(eps) one sided finite differences (cramped bounds)
-		,FD_ORDER_TWO          ///< Use O(eps^2) one sided finite differences (cramped bounds)
-		,FD_ORDER_TWO_CENTRAL  ///< Use O(eps^2) two sided central finite differences
-		,FD_ORDER_TWO_AUTO     ///< Use FD_ORDER_TWO_CENTRAL when not limited by bounds, otherwise use FD_ORDER_TWO
-		,FD_ORDER_FOUR         ///< Use O(eps^4) one sided finite differences (cramped bounds)
-		,FD_ORDER_FOUR_CENTRAL ///< Use O(eps^4) two sided central finite differences
-		,FD_ORDER_FOUR_AUTO    ///< Use FD_ORDER_FOUR_CENTRAL when not limited by bounds, otherwise use FD_ORDER_FOUR
-	};
-	///
-	enum EFDStepSelect {
-		FD_STEP_ABSOLUTE      ///< Use absolute step size <tt>fd_step_size</tt>
-		,FD_STEP_RELATIVE     ///< Use relative step size <tt>fd_step_size * ||xo||inf</tt>
-	};
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDMethodOrder, fd_method_order )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDStepSelect, fd_step_select )
-	///
-	/** Pick the size of the finite difference step.
-	 *
-	 * If <tt>fd_step_size < 0</tt> then the implementation will try to
-	 * select it based on the order of method <tt>fd_method_order()</tt>
-	 * that is selected.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size )
-	///
-	/** Pick the minimum step size under which the finite difference product
-	 * will not be computed.
-	 *
-	 * If <tt>fd_step_size_min == 0</tt> then the finite difference computation
-	 * will always be performed.  If <tt>fd_step_size_min < 0</tt> then the
-	 * minimum step size will be determined internally.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_min )
-	/// Set the step size for \a f(x)
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f )
-	/// Set the step size for \a c(x)
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
+  ///
+  enum EFDMethodOrder {
+    FD_ORDER_ONE           ///< Use O(eps) one sided finite differences (cramped bounds)
+    ,FD_ORDER_TWO          ///< Use O(eps^2) one sided finite differences (cramped bounds)
+    ,FD_ORDER_TWO_CENTRAL  ///< Use O(eps^2) two sided central finite differences
+    ,FD_ORDER_TWO_AUTO     ///< Use FD_ORDER_TWO_CENTRAL when not limited by bounds, otherwise use FD_ORDER_TWO
+    ,FD_ORDER_FOUR         ///< Use O(eps^4) one sided finite differences (cramped bounds)
+    ,FD_ORDER_FOUR_CENTRAL ///< Use O(eps^4) two sided central finite differences
+    ,FD_ORDER_FOUR_AUTO    ///< Use FD_ORDER_FOUR_CENTRAL when not limited by bounds, otherwise use FD_ORDER_FOUR
+  };
+  ///
+  enum EFDStepSelect {
+    FD_STEP_ABSOLUTE      ///< Use absolute step size <tt>fd_step_size</tt>
+    ,FD_STEP_RELATIVE     ///< Use relative step size <tt>fd_step_size * ||xo||inf</tt>
+  };
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDMethodOrder, fd_method_order )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDStepSelect, fd_step_select )
+  ///
+  /** Pick the size of the finite difference step.
+   *
+   * If <tt>fd_step_size < 0</tt> then the implementation will try to
+   * select it based on the order of method <tt>fd_method_order()</tt>
+   * that is selected.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size )
+  ///
+  /** Pick the minimum step size under which the finite difference product
+   * will not be computed.
+   *
+   * If <tt>fd_step_size_min == 0</tt> then the finite difference computation
+   * will always be performed.  If <tt>fd_step_size_min < 0</tt> then the
+   * minimum step size will be determined internally.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_min )
+  /// Set the step size for \a f(x)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_f )
+  /// Set the step size for \a c(x)
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, fd_step_size_c )
 
-	///
-	CalcFiniteDiffProd(
-		EFDMethodOrder              fd_method_order  = FD_ORDER_FOUR_AUTO
-		,EFDStepSelect              fd_step_select   = FD_STEP_ABSOLUTE
-		,value_type                 fd_step_size     = -1.0
-		,value_type                 fd_step_size_min = -1.0
-		,value_type                 fd_step_size_f   = -1.0
-		,value_type                 fd_step_size_c   = -1.0
-		);
+  ///
+  CalcFiniteDiffProd(
+    EFDMethodOrder              fd_method_order  = FD_ORDER_FOUR_AUTO
+    ,EFDStepSelect              fd_step_select   = FD_STEP_ABSOLUTE
+    ,value_type                 fd_step_size     = -1.0
+    ,value_type                 fd_step_size_min = -1.0
+    ,value_type                 fd_step_size_f   = -1.0
+    ,value_type                 fd_step_size_c   = -1.0
+    );
 
-	///
-	virtual ~CalcFiniteDiffProd() {}
+  ///
+  virtual ~CalcFiniteDiffProd() {}
 
-	///
-	/** Compute the directional derivatives by finite differences.
-	 *
-	 * The computation may fail if \c NaN or \c Inf is encountered durring any
-	 * of the computations in which case a \c NaNInfException exception will be
-	 * thrown.  Otherwise the computation should be completed successfully.
-	 * 
-	 * The finite difference peturbations may be limited by the relaxed variable bounds
-	 \verbatim
+  ///
+  /** Compute the directional derivatives by finite differences.
+   *
+   * The computation may fail if \c NaN or \c Inf is encountered durring any
+   * of the computations in which case a \c NaNInfException exception will be
+   * thrown.  Otherwise the computation should be completed successfully.
+   * 
+   * The finite difference peturbations may be limited by the relaxed variable bounds
+   \verbatim
 
-	 xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
-	 \endverbatim
-	 * if variable bounds are present.  If these bounds do limit the finite difference step
-	 * size then a warning will be printed to *out (if <tt>out!=NULL</tt>) and the
-	 * derivatives may be very inaccurate.  If bounds do limit the steps taken then it is
-	 * advisable to use the one sided finite difference (FD_ORDER_ONE) and this implementation
-	 * can move away from the bounds.
-	 * 
-	 * @param  xo       [in] Base point for the unknown variables to compute derivatives at.
-	 * @param  xl       [in] If <tt>!= NULL</tt> then this is the lower variable bounds.
-	 * @param  xu       [in] If <tt>!= NULL</tt> then this is the upper variable bounds.
-	 *                  If <tt>xl != NULL</tt> then <tt>xu != NULL</tt> must also be true
-	 *                  and visa-versa or a <tt>std::invalid_arguement</tt> exception
-	 *                  will be thrown.
-	 * @param  v        [in] The vector for which to form the products with.
-	 * @param  fo       [in] If <tt>fo != NULL</tt> then <tt>*fo</tt> should be set to the
-	 *                  value of <tt>f(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
-	 * @param  co       [in] If <tt>co != NULL</tt> then <tt>*co</tt> should be set to the
-	 *                  value of <tt>c(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
-	 * @param  check_nan_inf
-	 *                  [in] If \c true, the the computed values will be checked for nan and inf.
-	 * @param  nlp      [in] Used to compute \a f(x), \a c(x) and \a h(x).  The current set
-	 *                  references to <tt>nlp->get_f()</tt>, <tt>nlp->get_c()</tt>
-	 *                  and <tt>nlp->get_h()</tt> will be preserved on output.  The
-	 *                  %NLP must be initialized before input.
-	 * @param  Gf_prod	[out] If <tt>!= NULL</tt>, the will contain the finite difference
-	 *                  computed product <tt>Gf'*v</tt> on output.  If <tt>== NULL</tt>,
-	 *                  then \a f(x) is not specifically computed.
-	 * @param  Gc_prod	[out] If <tt>!= NULL</tt>, the will contain the finite
-	 *                  difference computed product <tt>Gc'*v</tt>.  If <tt>== NULL</tt>,
-	 *                  then \a c(x) is not specifically computed.
-	 * @param  out      [in/out] If <tt>out != NULL</tt> then any waring or error messages are
-	 *                  output here.
-	 *
-	 * @return Returns <tt>true if the finite difference computations were performed.</tt>
-	 * Returns <tt>false</tt> if the finite difference computations were not performed
-	 * because the variables bounds limited the step length too much.
-	 *
-	 * ToDo: Discuss options!
-	 */
-	virtual bool calc_deriv_product(
-		const Vector       &xo
-		,const Vector      *xl
-		,const Vector      *xu
-		,const Vector      &v
-		,const value_type  *fo
-		,const Vector      *co
-		,bool              check_nan_inf
-		,NLP               *nlp
-		,value_type        *Gf_prod
-		,VectorMutable     *Gc_prod
-		,std::ostream      *out
+   xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+   \endverbatim
+   * if variable bounds are present.  If these bounds do limit the finite difference step
+   * size then a warning will be printed to *out (if <tt>out!=NULL</tt>) and the
+   * derivatives may be very inaccurate.  If bounds do limit the steps taken then it is
+   * advisable to use the one sided finite difference (FD_ORDER_ONE) and this implementation
+   * can move away from the bounds.
+   * 
+   * @param  xo       [in] Base point for the unknown variables to compute derivatives at.
+   * @param  xl       [in] If <tt>!= NULL</tt> then this is the lower variable bounds.
+   * @param  xu       [in] If <tt>!= NULL</tt> then this is the upper variable bounds.
+   *                  If <tt>xl != NULL</tt> then <tt>xu != NULL</tt> must also be true
+   *                  and visa-versa or a <tt>std::invalid_arguement</tt> exception
+   *                  will be thrown.
+   * @param  v        [in] The vector for which to form the products with.
+   * @param  fo       [in] If <tt>fo != NULL</tt> then <tt>*fo</tt> should be set to the
+   *                  value of <tt>f(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
+   * @param  co       [in] If <tt>co != NULL</tt> then <tt>*co</tt> should be set to the
+   *                  value of <tt>c(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
+   * @param  check_nan_inf
+   *                  [in] If \c true, the the computed values will be checked for nan and inf.
+   * @param  nlp      [in] Used to compute \a f(x), \a c(x) and \a h(x).  The current set
+   *                  references to <tt>nlp->get_f()</tt>, <tt>nlp->get_c()</tt>
+   *                  and <tt>nlp->get_h()</tt> will be preserved on output.  The
+   *                  %NLP must be initialized before input.
+   * @param  Gf_prod	[out] If <tt>!= NULL</tt>, the will contain the finite difference
+   *                  computed product <tt>Gf'*v</tt> on output.  If <tt>== NULL</tt>,
+   *                  then \a f(x) is not specifically computed.
+   * @param  Gc_prod	[out] If <tt>!= NULL</tt>, the will contain the finite
+   *                  difference computed product <tt>Gc'*v</tt>.  If <tt>== NULL</tt>,
+   *                  then \a c(x) is not specifically computed.
+   * @param  out      [in/out] If <tt>out != NULL</tt> then any waring or error messages are
+   *                  output here.
+   *
+   * @return Returns <tt>true if the finite difference computations were performed.</tt>
+   * Returns <tt>false</tt> if the finite difference computations were not performed
+   * because the variables bounds limited the step length too much.
+   *
+   * ToDo: Discuss options!
+   */
+  virtual bool calc_deriv_product(
+    const Vector       &xo
+    ,const Vector      *xl
+    ,const Vector      *xu
+    ,const Vector      &v
+    ,const value_type  *fo
+    ,const Vector      *co
+    ,bool              check_nan_inf
+    ,NLP               *nlp
+    ,value_type        *Gf_prod
+    ,VectorMutable     *Gc_prod
+    ,std::ostream      *out
     ,bool              trace    = false
     ,bool              dump_all = false
-		) const;
+    ) const;
 
 };	// end class CalcFiniteDiffProd
 

@@ -51,22 +51,22 @@ namespace MoochoPack {
  \verbatim
 */
 class LineSearchFilter_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode,
-	  public OptionsFromStreamPack::SetOptionsToTargetBase< LineSearchFilter_Step >
-	{
-	public:
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode,
+    public OptionsFromStreamPack::SetOptionsToTargetBase< LineSearchFilter_Step >
+  {
+  public:
 
-		///
-		LineSearchFilter_StepSetOptions(
-		  LineSearchFilter_Step* target = 0,
-		  const char opt_grp_name[] = "LineSearchFilter" );
+    ///
+    LineSearchFilter_StepSetOptions(
+      LineSearchFilter_Step* target = 0,
+      const char opt_grp_name[] = "LineSearchFilter" );
 
-	protected:
+  protected:
 
-		/// Overridden from SetOptionsFromStreamNode
-		void setOption( int option_num, const std::string& option_value );
-	
-	};	// end class LineSearchFilter_StepSetOptions
+    /// Overridden from SetOptionsFromStreamNode
+    void setOption( int option_num, const std::string& option_value );
+  
+  };	// end class LineSearchFilter_StepSetOptions
 
 }	// end namespace MoochoPack
 

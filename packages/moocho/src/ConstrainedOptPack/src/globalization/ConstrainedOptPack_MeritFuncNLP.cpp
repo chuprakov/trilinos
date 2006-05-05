@@ -35,12 +35,12 @@ namespace ConstrainedOptPack {
 
 MeritFuncNLP& MeritFuncNLP::operator=(const MeritFuncNLP& merit_func)
 {
-	TEST_FOR_EXCEPTION(
-		this != &merit_func, std::logic_error
-		,"MeritFuncNLP::operator=(merit_func) : Error, this is not assignment to self "
-		"and the concreate subclass \'" << typeid(*this).name() << "\' has not overridden "
-		"this method!" );
-	return *this;
+  TEST_FOR_EXCEPTION(
+    this != &merit_func, std::logic_error
+    ,"MeritFuncNLP::operator=(merit_func) : Error, this is not assignment to self "
+    "and the concreate subclass \'" << typeid(*this).name() << "\' has not overridden "
+    "this method!" );
+  return *this;
 }
 
 }	// end namespace ConstrainedOptPack

@@ -41,44 +41,44 @@ namespace MoochoPack {
  */
 class DecompositionSystemHandler_Strategy {
 public:
-	
-	/** @name Public types */
-	//@{
+  
+  /** @name Public types */
+  //@{
 
-	///
-	enum EDecompSysTesting { DST_DEFAULT, DST_TEST, DST_NO_TEST };
-	///
-	enum EDecompSysPrintLevel { DSPL_USE_GLOBAL, DSPL_LEAVE_DEFAULT };
+  ///
+  enum EDecompSysTesting { DST_DEFAULT, DST_TEST, DST_NO_TEST };
+  ///
+  enum EDecompSysPrintLevel { DSPL_USE_GLOBAL, DSPL_LEAVE_DEFAULT };
 
-	//@}
+  //@}
 
-	///
-	virtual ~DecompositionSystemHandler_Strategy() {}
+  ///
+  virtual ~DecompositionSystemHandler_Strategy() {}
 
-	///
-	/** Update the decomposition.
-	 *
-	 * This method may select a new decomposition (permuting the variables
-	 * and constriants) and/or take control of the algorithm.
-	 */
-	virtual bool update_decomposition(
-		NLPAlgo                                &algo
-		,NLPAlgoState                          &s
-		,NLPFirstOrder                         &nlp
-		,EDecompSysTesting                     decomp_sys_testing
-		,EDecompSysPrintLevel                  decomp_sys_testing_print_level
-		,bool                                  *new_decomp_selected
-		) = 0;
+  ///
+  /** Update the decomposition.
+   *
+   * This method may select a new decomposition (permuting the variables
+   * and constriants) and/or take control of the algorithm.
+   */
+  virtual bool update_decomposition(
+    NLPAlgo                                &algo
+    ,NLPAlgoState                          &s
+    ,NLPFirstOrder                         &nlp
+    ,EDecompSysTesting                     decomp_sys_testing
+    ,EDecompSysPrintLevel                  decomp_sys_testing_print_level
+    ,bool                                  *new_decomp_selected
+    ) = 0;
 
-	///
-	/** Print the algorithm used for updating the decomposition.
-	 */
-	virtual void print_update_decomposition(
-		const NLPAlgo                          &algo
-		,const NLPAlgoState                    &s
-		,std::ostream                          &out
-		,const std::string                     &leading_spaces
-		) const = 0;
+  ///
+  /** Print the algorithm used for updating the decomposition.
+   */
+  virtual void print_update_decomposition(
+    const NLPAlgo                          &algo
+    ,const NLPAlgoState                    &s
+    ,std::ostream                          &out
+    ,const std::string                     &leading_spaces
+    ) const = 0;
 
 }; // end class DecompositionSystemHandler_Strategy
 

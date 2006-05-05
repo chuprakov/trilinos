@@ -35,29 +35,29 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 8;
+  const int local_num_options = 8;
 
-	enum local_EOptions {
-		GF_TESTING_METHOD
+  enum local_EOptions {
+    GF_TESTING_METHOD
     ,GF_WARNING_TOL
     ,GF_ERROR_TOL
-		,GC_TESTING_METHOD
+    ,GC_TESTING_METHOD
     ,GC_WARNING_TOL
     ,GC_ERROR_TOL
-		,NUM_FD_DIRECTIONS
+    ,NUM_FD_DIRECTIONS
     ,DUMP_ALL
-	};
+  };
 
-	const char* local_SOptions[local_num_options]	= {
-	    "Gf_testing_method"
-	    ,"Gf_warning_tol"
-	    ,"Gf_error_tol"
-	    ,"Gc_testing_method"
-	    ,"Gc_warning_tol"
-	    ,"Gc_error_tol"
-	    ,"num_fd_directions"
+  const char* local_SOptions[local_num_options]	= {
+      "Gf_testing_method"
+      ,"Gf_warning_tol"
+      ,"Gf_error_tol"
+      ,"Gc_testing_method"
+      ,"Gc_warning_tol"
+      ,"Gc_error_tol"
+      ,"num_fd_directions"
       ,"dump_all"
-	};
+  };
 
 }
 
@@ -67,65 +67,65 @@ NLPDirectTesterSetOptions::NLPDirectTesterSetOptions(
   NLPDirectTester* target
   ,const char opt_grp_name[]
   )
-	:OptionsFromStreamPack::SetOptionsFromStreamNode(opt_grp_name,local_num_options,local_SOptions)
+  :OptionsFromStreamPack::SetOptionsFromStreamNode(opt_grp_name,local_num_options,local_SOptions)
   ,OptionsFromStreamPack::SetOptionsToTargetBase<NLPDirectTester>( target )
 {}
 
 void NLPDirectTesterSetOptions::setOption(
-	int option_num, const std::string& option_value
+  int option_num, const std::string& option_value
   )
 {
-	namespace ofsp = OptionsFromStreamPack;
-	using ofsp::StringToBool;
-	typedef NLPDirectTester target_t;
-	switch( (local_EOptions)option_num ) {
+  namespace ofsp = OptionsFromStreamPack;
+  using ofsp::StringToBool;
+  typedef NLPDirectTester target_t;
+  switch( (local_EOptions)option_num ) {
     case GF_TESTING_METHOD:
-		{
-			const std::string &option = option_value.c_str();
-			if( option == "FD_COMPUTE_ALL" )
-				target().Gf_testing_method( target_t::FD_COMPUTE_ALL );
-			else if( option == "FD_DIRECTIONAL" )
-				target().Gf_testing_method( target_t::FD_DIRECTIONAL );
-			else
-				throw std::invalid_argument( "Error, incorrect value for "
+    {
+      const std::string &option = option_value.c_str();
+      if( option == "FD_COMPUTE_ALL" )
+        target().Gf_testing_method( target_t::FD_COMPUTE_ALL );
+      else if( option == "FD_DIRECTIONAL" )
+        target().Gf_testing_method( target_t::FD_DIRECTIONAL );
+      else
+        throw std::invalid_argument( "Error, incorrect value for "
                                      "\"Gf_testing_method\".  Only the options "
                                      "FD_COMPUTE_ALL and FD_DIRECTIONAL are available" );
-			break;
-		}
+      break;
+    }
     case GF_WARNING_TOL:
-			target().Gf_warning_tol(::fabs(::atof(option_value.c_str())));
-			break;
+      target().Gf_warning_tol(::fabs(::atof(option_value.c_str())));
+      break;
     case GF_ERROR_TOL:
-			target().Gf_error_tol(::fabs(::atof(option_value.c_str())));
-			break;
+      target().Gf_error_tol(::fabs(::atof(option_value.c_str())));
+      break;
     case GC_TESTING_METHOD:
-		{
-			const std::string &option = option_value.c_str();
-			if( option == "FD_COMPUTE_ALL" )
-				target().Gc_testing_method( target_t::FD_COMPUTE_ALL );
-			else if( option == "FD_DIRECTIONAL" )
-				target().Gc_testing_method( target_t::FD_DIRECTIONAL );
-			else
-				throw std::invalid_argument( "Error, incorrect value for "
+    {
+      const std::string &option = option_value.c_str();
+      if( option == "FD_COMPUTE_ALL" )
+        target().Gc_testing_method( target_t::FD_COMPUTE_ALL );
+      else if( option == "FD_DIRECTIONAL" )
+        target().Gc_testing_method( target_t::FD_DIRECTIONAL );
+      else
+        throw std::invalid_argument( "Error, incorrect value for "
                                      "\"Gc_testing_method\".  Only the options "
                                      "FD_COMPUTE_ALL and FD_DIRECTIONAL are available" );
-			break;
-		}
+      break;
+    }
     case GC_WARNING_TOL:
-			target().Gc_warning_tol(::fabs(::atof(option_value.c_str())));
-			break;
+      target().Gc_warning_tol(::fabs(::atof(option_value.c_str())));
+      break;
     case GC_ERROR_TOL:
-			target().Gc_error_tol(::fabs(::atof(option_value.c_str())));
-			break;
+      target().Gc_error_tol(::fabs(::atof(option_value.c_str())));
+      break;
     case NUM_FD_DIRECTIONS:
-			target().num_fd_directions(::abs(::atoi(option_value.c_str())));
-			break;
+      target().num_fd_directions(::abs(::atoi(option_value.c_str())));
+      break;
     case DUMP_ALL:
-			target().dump_all(StringToBool("dump_all",option_value.c_str()));
-			break;
-		default:
-			TEST_FOR_EXCEPT(true); // Local error only?
-	}
+      target().dump_all(StringToBool("dump_all",option_value.c_str()));
+      break;
+    default:
+      TEST_FOR_EXCEPT(true); // Local error only?
+  }
 }
 
 }	// end namespace NLPInterfacePack

@@ -42,42 +42,42 @@ namespace AbstractLinAlgPack {
  * the \ref MatrixSymNonsingularSerial_funcs "provided nonmember functions".
  */
 class MatrixSymNonsingSerial
-	: virtual public MatrixNonsingSerial
-	, virtual public AbstractLinAlgPack::MatrixSymNonsing // doxygen needs full name
+  : virtual public MatrixNonsingSerial
+  , virtual public AbstractLinAlgPack::MatrixSymNonsing // doxygen needs full name
 {
 public:
 
-	///
-	using MatrixSymNonsing::M_StMtInvMtM;
+  ///
+  using MatrixSymNonsing::M_StMtInvMtM;
 
-	/** @name Level-3 */
-	//@{
+  /** @name Level-3 */
+  //@{
 
-	///
-	/** sym_gms_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
-	  *
-	  * The default implementation is based on the operation M_StInvMtM(...)
-	  * assuming that this \c M is a symmetric matrix.  For an efficient implementation
-	  * (for this = L*L' for instance) the subclass may want to override this function.
-	  */
-	virtual void M_StMtInvMtM(
-		DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
-		,EMatrixDummyArg
-		) const;
+  ///
+  /** sym_gms_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
+    *
+    * The default implementation is based on the operation M_StInvMtM(...)
+    * assuming that this \c M is a symmetric matrix.  For an efficient implementation
+    * (for this = L*L' for instance) the subclass may want to override this function.
+    */
+  virtual void M_StMtInvMtM(
+    DMatrixSliceSym* sym_gms_lhs, value_type alpha
+    ,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+    ,EMatrixDummyArg
+    ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixSymNonsing */
-	//@{
+  /** @name Overridden from MatrixSymNonsing */
+  //@{
 
-	void M_StMtInvMtM(
-		MatrixSymOp* sym_lhs, value_type alpha
-		,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
-		,EMatrixDummyArg
-		) const;
+  void M_StMtInvMtM(
+    MatrixSymOp* sym_lhs, value_type alpha
+    ,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
+    ,EMatrixDummyArg
+    ) const;
 
-	//@}
+  //@}
 
 };	// end class MatrixSymNonsingSerial
 
@@ -91,13 +91,13 @@ public:
 inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
 void M_StMtInvMtM(
-	DMatrixSliceSym* sym_gms_lhs, value_type alpha
-	,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
-	,const MatrixSymNonsingSerial& mswons
-	,MatrixSymNonsingSerial::EMatrixDummyArg mwo_rhs
-	 )
+  DMatrixSliceSym* sym_gms_lhs, value_type alpha
+  ,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+  ,const MatrixSymNonsingSerial& mswons
+  ,MatrixSymNonsingSerial::EMatrixDummyArg mwo_rhs
+   )
 {
-	mswons.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
+  mswons.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
 }
 
 //@}

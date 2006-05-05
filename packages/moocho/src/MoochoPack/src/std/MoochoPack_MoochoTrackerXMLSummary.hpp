@@ -44,56 +44,56 @@ using IterationPack::EAlgoReturn;
  *   results and performance
  */
 class MoochoTrackerXMLSummary
-	: public IterationPack::AlgorithmTracker
+  : public IterationPack::AlgorithmTracker
 {
 public:
 
-	/// Construct with an output stream
-	MoochoTrackerXMLSummary(
-	  const Teuchos::RefCountPtr<std::ostream> &journal_out
-	  ,const std::string xml_filename
-	  ,const std::string problem_name
-	  ,const std::string algorithm_description
-	  );
+  /// Construct with an output stream
+  MoochoTrackerXMLSummary(
+    const Teuchos::RefCountPtr<std::ostream> &journal_out
+    ,const std::string xml_filename
+    ,const std::string problem_name
+    ,const std::string algorithm_description
+    );
 
-	/// Set the output stream for summary outputting
-	//void set_output_stream(const ostream_ptr_t& o);
+  /// Set the output stream for summary outputting
+  //void set_output_stream(const ostream_ptr_t& o);
 
-	/// Get the output stream for summary outputting.
-	//const ostream_ptr_t& get_output_stream() const;
+  /// Get the output stream for summary outputting.
+  //const ostream_ptr_t& get_output_stream() const;
 
-	/// Output a basic file (with failed status)
-	//   that will be overwritten if there is no
-	//   exception
-	void output_pre_file() const;
+  /// Output a basic file (with failed status)
+  //   that will be overwritten if there is no
+  //   exception
+  void output_pre_file() const;
 
-	/** @name Overridden from AlgorithmTracker */
-	//@{
+  /** @name Overridden from AlgorithmTracker */
+  //@{
 
-	///
-	void output_iteration(const Algorithm& algo) const;
-	///
-	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
-	
-	//@}
+  ///
+  void output_iteration(const Algorithm& algo) const;
+  ///
+  void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  
+  //@}
 
 protected:
 
-	/// Print the header to the output
-	void open_problem_element( std::ostream& out, const Algorithm& algo) const;
-	void close_problem_element( std::ostream& out) const;
+  /// Print the header to the output
+  void open_problem_element( std::ostream& out, const Algorithm& algo) const;
+  void close_problem_element( std::ostream& out) const;
 
 private:
 
-	mutable value_type obj_value_;
-	mutable value_type c_norm_value_;
+  mutable value_type obj_value_;
+  mutable value_type c_norm_value_;
 
-	std::string xml_filename_;
-	std::string problem_name_;
-	std::string algorithm_description_;
+  std::string xml_filename_;
+  std::string problem_name_;
+  std::string algorithm_description_;
 
-	// Not defined and not to be called
-	MoochoTrackerXMLSummary();
+  // Not defined and not to be called
+  MoochoTrackerXMLSummary();
 
 };	// end class MoochoTrackerXMLSummary
 

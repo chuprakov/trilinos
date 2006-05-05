@@ -44,36 +44,36 @@ VectorSpaceThyra::VectorSpaceThyra()
 {}
 
 VectorSpaceThyra::VectorSpaceThyra(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
-	,const inner_prod_ptr_t                                                  &inner_prod
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+  ,const inner_prod_ptr_t                                                  &inner_prod
+  )
 {
-	this->initialize(thyra_vec_spc,inner_prod);
+  this->initialize(thyra_vec_spc,inner_prod);
 }
 
 void VectorSpaceThyra::initialize(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
-	,const inner_prod_ptr_t                                                  &inner_prod
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >    &thyra_vec_spc
+  ,const inner_prod_ptr_t                                                  &inner_prod
+  )
 {
-	namespace mmp = MemMngPack;
-	TEST_FOR_EXCEPTION(
-		thyra_vec_spc.get()==NULL, std::invalid_argument
-		,"VectorSpaceThyra::initialize(thyra_vec_spc): Error!"
-		);
-	thyra_vec_spc_ = thyra_vec_spc;
-	if(inner_prod.get())
-		this->inner_prod(inner_prod);
-	else
-		this->inner_prod(Teuchos::rcp(new InnerProductThyra(thyra_vec_spc)));
+  namespace mmp = MemMngPack;
+  TEST_FOR_EXCEPTION(
+    thyra_vec_spc.get()==NULL, std::invalid_argument
+    ,"VectorSpaceThyra::initialize(thyra_vec_spc): Error!"
+    );
+  thyra_vec_spc_ = thyra_vec_spc;
+  if(inner_prod.get())
+    this->inner_prod(inner_prod);
+  else
+    this->inner_prod(Teuchos::rcp(new InnerProductThyra(thyra_vec_spc)));
 }
 
 Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
 VectorSpaceThyra::set_uninitialized()
 {
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
-	thyra_vec_spc_ = Teuchos::null;
-	return tmp_thyra_vec_spc;
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
+  thyra_vec_spc_ = Teuchos::null;
+  return tmp_thyra_vec_spc;
 }
 
 // Overridden from VectorSpace
@@ -81,46 +81,46 @@ VectorSpaceThyra::set_uninitialized()
 VectorSpace::space_ptr_t
 VectorSpaceThyra::clone() const
 {
-	return Teuchos::rcp(new VectorSpaceThyra(thyra_vec_spc_->clone()));
+  return Teuchos::rcp(new VectorSpaceThyra(thyra_vec_spc_->clone()));
 }
 
 bool VectorSpaceThyra::is_compatible(const VectorSpace& vec_spc ) const
 {
-	if( this->dim()==vec_spc.dim() && this->is_in_core() && vec_spc.is_in_core() )
-		return true;
-	const VectorSpaceThyra
-		*thyra_vec_spc = dynamic_cast<const VectorSpaceThyra*>(&vec_spc);
-	if( thyra_vec_spc->thyra_vec_spc()->isCompatible(*thyra_vec_spc_) )
-		return true;
-	return false;
+  if( this->dim()==vec_spc.dim() && this->is_in_core() && vec_spc.is_in_core() )
+    return true;
+  const VectorSpaceThyra
+    *thyra_vec_spc = dynamic_cast<const VectorSpaceThyra*>(&vec_spc);
+  if( thyra_vec_spc->thyra_vec_spc()->isCompatible(*thyra_vec_spc_) )
+    return true;
+  return false;
 }
 
 bool VectorSpaceThyra::is_in_core() const
 {
-	return thyra_vec_spc_->hasInCoreView();
+  return thyra_vec_spc_->hasInCoreView();
 }
 
 index_type VectorSpaceThyra::dim() const
 {
-	return thyra_vec_spc_->dim();
+  return thyra_vec_spc_->dim();
 }
 
 VectorSpace::vec_mut_ptr_t
 VectorSpaceThyra::create_member() const
 {
-	return Teuchos::rcp(new VectorMutableThyra(Thyra::createMember(thyra_vec_spc_)));
+  return Teuchos::rcp(new VectorMutableThyra(Thyra::createMember(thyra_vec_spc_)));
 }
 
 VectorSpace::space_fcty_ptr_t
 VectorSpaceThyra::small_vec_spc_fcty() const
 {
-	return Teuchos::rcp(new VectorSpaceFactoryThyra(thyra_vec_spc_->smallVecSpcFcty()));
+  return Teuchos::rcp(new VectorSpaceFactoryThyra(thyra_vec_spc_->smallVecSpcFcty()));
 }
 
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceThyra::create_members(size_type num_vecs) const
 {
-	return Teuchos::rcp(new MultiVectorMutableThyra(Thyra::createMembers(thyra_vec_spc_,num_vecs)));
+  return Teuchos::rcp(new MultiVectorMutableThyra(Thyra::createMembers(thyra_vec_spc_,num_vecs)));
 }
 
 } // end namespace AbstractLinAlgPack

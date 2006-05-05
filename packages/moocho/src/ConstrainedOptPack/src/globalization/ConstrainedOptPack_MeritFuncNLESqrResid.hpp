@@ -51,27 +51,27 @@ namespace ConstrainedOptPack {
 class MeritFuncNLESqrResid : public MeritFuncNLE {
 public:
 
-	/// Initializes deriv() = 0
-	MeritFuncNLESqrResid();
+  /// Initializes deriv() = 0
+  MeritFuncNLESqrResid();
 
-	///
-	value_type calc_deriv( const Vector& c_k );
+  ///
+  value_type calc_deriv( const Vector& c_k );
 
-	// ////////////////////////////////
-	// Overridden from MeritFuncNLE
+  // ////////////////////////////////
+  // Overridden from MeritFuncNLE
 
-	///
-	value_type value(const Vector& c) const;
+  ///
+  value_type value(const Vector& c) const;
 
-	///
-	value_type deriv() const;
+  ///
+  value_type deriv() const;
 
-	///
-	void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const;
+  ///
+  void print_merit_func(std::ostream& out
+    , const std::string& leading_str) const;
 
 private:
-	value_type deriv_;
+  value_type deriv_;
 
 };	// end class MeritFuncNLESqrResid
 

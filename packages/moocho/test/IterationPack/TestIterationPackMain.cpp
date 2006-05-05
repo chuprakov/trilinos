@@ -32,18 +32,18 @@
 #include "TestingHelperPack_update_success.hpp"
 
 int main() {
-	using TestingHelperPack::update_success;
-	using namespace IterationPack::TestingPack;
+  using TestingHelperPack::update_success;
+  using namespace IterationPack::TestingPack;
 
-	std::ostream* out = &std::cout;
+  std::ostream* out = &std::cout;
 
-	bool success = true;
-	update_success( TestIterationPack(out), &success );
+  bool success = true;
+  update_success( TestIterationPack(out), &success );
 
-	if( success )
-		std::cerr << "IterationPack seems to check out!\n";
-	else
-		std::cerr << "Oops! At least one of the tests in IterationPack failed!\n";
-		
-	return success == true ? 0 : -1;
+  if( success )
+    std::cerr << "IterationPack seems to check out!\n";
+  else
+    std::cerr << "Oops! At least one of the tests in IterationPack failed!\n";
+    
+  return success == true ? 0 : -1;
 }

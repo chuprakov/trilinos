@@ -57,18 +57,18 @@ namespace MoochoPack {
  * @param  bnd_fixed [out] Array (size >= n_pz_X) of the bounds for the dropped (nonbasic) variables.
  */
 void get_init_fixed_free_indep(
-	const size_type                        n
-	,const size_type                       r
-	,const SpVectorSlice                   &nu_indep
-	,const value_type                      super_basic_mult_drop_tol
-	,EJournalOutputLevel                   olevel
-	,std::ostream                          &out
-	,size_type                             *n_pz_X
-	,size_type                             *n_pz_R
-	,size_type                             i_x_free[]
-	,size_type                             i_x_fixed[]
-	,ConstrainedOptPack::EBounds  bnd_fixed[]
-	);
+  const size_type                        n
+  ,const size_type                       r
+  ,const SpVectorSlice                   &nu_indep
+  ,const value_type                      super_basic_mult_drop_tol
+  ,EJournalOutputLevel                   olevel
+  ,std::ostream                          &out
+  ,size_type                             *n_pz_X
+  ,size_type                             *n_pz_R
+  ,size_type                             i_x_free[]
+  ,size_type                             i_x_fixed[]
+  ,ConstrainedOptPack::EBounds  bnd_fixed[]
+  );
 
 } // end namespace MoochoPack
 

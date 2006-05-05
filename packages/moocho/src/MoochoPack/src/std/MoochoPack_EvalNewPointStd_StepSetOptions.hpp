@@ -76,21 +76,21 @@ namespace MoochoPack {
  * </ul>
  */
 class EvalNewPointStd_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			EvalNewPointStd_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      EvalNewPointStd_Step >
 {
 public:
 
-	///
-	EvalNewPointStd_StepSetOptions(
-		  EvalNewPointStd_Step* target = 0
-		, const char opt_grp_name[] = "EvalNewPointStd" );
+  ///
+  EvalNewPointStd_StepSetOptions(
+      EvalNewPointStd_Step* target = 0
+    , const char opt_grp_name[] = "EvalNewPointStd" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class EvalNewPointStd_StepSetOptions
 

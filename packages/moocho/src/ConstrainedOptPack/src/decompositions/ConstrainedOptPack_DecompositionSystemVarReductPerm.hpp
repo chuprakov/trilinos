@@ -44,93 +44,93 @@ namespace ConstrainedOptPack {
 class DecompositionSystemVarReductPerm : public DecompositionSystemVarReduct {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
-	//@}
+  //@}
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	DecompositionSystemVarReductPerm(
-		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
-		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
-		)
-		:DecompositionSystemVarReduct(D_imp,Uz_imp)
-	{}
+  ///
+  DecompositionSystemVarReductPerm(
+    EExplicitImplicit     D_imp    = MAT_IMP_AUTO
+    ,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
+    )
+    :DecompositionSystemVarReduct(D_imp,Uz_imp)
+  {}
 
-	//@}
+  //@}
 
-	/** @name Permutation factories */
-	//@{
+  /** @name Permutation factories */
+  //@{
 
-	///
-	virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
-	///
-	virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
+  ///
+  virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
+  ///
+  virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Setting or selecting a new decomposition */
-	//@{
+  /** @name Setting or selecting a new decomposition */
+  //@{
 
-	///
-	/** Query to see if a current basis is already selected.
-	 */
-	virtual bool has_basis() const = 0;
+  ///
+  /** Query to see if a current basis is already selected.
+   */
+  virtual bool has_basis() const = 0;
 
-	///
-	/** Client selects the basis for <tt>Gc(:,con_decomp)'</tt>.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void set_decomp(
-		std::ostream          *out
-		,EOutputLevel         olevel
-		,ERunTests            test_what
-		,const Permutation    &P_var
-		,const Range1D        &var_dep
-		,const Permutation    *P_equ
-		,const Range1D        *equ_decomp
-		,const MatrixOp       &Gc
-		,MatrixOp             *Z
-		,MatrixOp             *Y
-		,MatrixOpNonsing      *R
-		,MatrixOp             *Uz
-		,MatrixOp             *Uy
-		,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
-		) = 0;
-	
-	///
-	/** Client asks decompostion system object to select the basis for <tt>Gc(:,con_decomp)'</tt>.
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void select_decomp(
-		std::ostream              *out
-		,EOutputLevel             olevel
-		,ERunTests                test_what
-		,const Vector             *nu
-		,MatrixOp                 *Gc
-		,Permutation              *P_var
-		,Range1D                  *var_dep
-		,Permutation              *P_equ
-		,Range1D                  *equ_decomp
-		,MatrixOp                 *Z
-		,MatrixOp                 *Y
-		,MatrixOpNonsing          *R
-		,MatrixOp                 *Uz
-		,MatrixOp                 *Uy
-		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
-		) = 0;
+  ///
+  /** Client selects the basis for <tt>Gc(:,con_decomp)'</tt>.
+   *
+   * ToDo: Finish documentation!
+   */
+  virtual void set_decomp(
+    std::ostream          *out
+    ,EOutputLevel         olevel
+    ,ERunTests            test_what
+    ,const Permutation    &P_var
+    ,const Range1D        &var_dep
+    ,const Permutation    *P_equ
+    ,const Range1D        *equ_decomp
+    ,const MatrixOp       &Gc
+    ,MatrixOp             *Z
+    ,MatrixOp             *Y
+    ,MatrixOpNonsing      *R
+    ,MatrixOp             *Uz
+    ,MatrixOp             *Uy
+    ,EMatRelations        mat_rel = MATRICES_INDEP_IMPS
+    ) = 0;
+  
+  ///
+  /** Client asks decompostion system object to select the basis for <tt>Gc(:,con_decomp)'</tt>.
+   *
+   * ToDo: Finish documentation!
+   */
+  virtual void select_decomp(
+    std::ostream              *out
+    ,EOutputLevel             olevel
+    ,ERunTests                test_what
+    ,const Vector             *nu
+    ,MatrixOp                 *Gc
+    ,Permutation              *P_var
+    ,Range1D                  *var_dep
+    ,Permutation              *P_equ
+    ,Range1D                  *equ_decomp
+    ,MatrixOp                 *Z
+    ,MatrixOp                 *Y
+    ,MatrixOpNonsing          *R
+    ,MatrixOp                 *Uz
+    ,MatrixOp                 *Uy
+    ,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
+    ) = 0;
 
-	//@}
-	
+  //@}
+  
 };	// end class DecompositionSystemVarReductPerm
 
 }	// end namespace ConstrainedOptPack

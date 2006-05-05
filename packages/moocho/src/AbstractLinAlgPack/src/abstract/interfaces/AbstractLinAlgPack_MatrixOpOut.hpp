@@ -41,7 +41,7 @@ namespace AbstractLinAlgPack {
 inline
 std::ostream& operator<<( std::ostream& o, const MatrixOp& M )
 {
-	return M.output(o);
+  return M.output(o);
 }
 
 } // end namespace AbstractLinAlgPack

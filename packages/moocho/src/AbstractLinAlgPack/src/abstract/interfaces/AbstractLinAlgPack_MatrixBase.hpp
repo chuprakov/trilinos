@@ -41,50 +41,50 @@ namespace AbstractLinAlgPack {
 class MatrixBase {
 public:
 
-	/// Thrown if matrices are incompatible
-	class IncompatibleMatrices : public std::logic_error
-	{public: IncompatibleMatrices(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown if matrices are incompatible
+  class IncompatibleMatrices : public std::logic_error
+  {public: IncompatibleMatrices(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/// Virtual destructor
-	virtual ~MatrixBase() {}
+  /// Virtual destructor
+  virtual ~MatrixBase() {}
 
-	/** @name Vector spaces for the columns and rows of the matrix */
-	//@{
+  /** @name Vector spaces for the columns and rows of the matrix */
+  //@{
 
-	/// Vector space for vectors that are compatible with the columns of the matrix.
-	virtual const VectorSpace& space_cols() const = 0;
+  /// Vector space for vectors that are compatible with the columns of the matrix.
+  virtual const VectorSpace& space_cols() const = 0;
 
-	/// Vector space for vectors that are compatible with the rows of the matrix.
-	virtual const VectorSpace& space_rows() const = 0;
+  /// Vector space for vectors that are compatible with the rows of the matrix.
+  virtual const VectorSpace& space_rows() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Dimensionality */
-	//@{
+  /** @name Dimensionality */
+  //@{
 
-	///
-	/** Return the number of rows in the matrix.
-	 *
-	 * The default implementation returns <tt>space_cols().dim()</tt>.
-	 */
-	virtual size_type rows() const;
+  ///
+  /** Return the number of rows in the matrix.
+   *
+   * The default implementation returns <tt>space_cols().dim()</tt>.
+   */
+  virtual size_type rows() const;
 
-	///
-	/** Return the number of columns in the matrix.
-	 *
-	 * The default implementation returns <tt>space_rows().dim()</tt>.
-	 */
-	virtual size_type cols() const;
+  ///
+  /** Return the number of columns in the matrix.
+   *
+   * The default implementation returns <tt>space_rows().dim()</tt>.
+   */
+  virtual size_type cols() const;
 
-	///
-	/** Return the number of nonzero elements in the matrix.
-	 *
-	 * The default is to just assume it is dense and to return
-	 * <tt>rows() * cols()</tt>.
-	 */
-	virtual size_type nz() const;
+  ///
+  /** Return the number of nonzero elements in the matrix.
+   *
+   * The default is to just assume it is dense and to return
+   * <tt>rows() * cols()</tt>.
+   */
+  virtual size_type nz() const;
 
-	//@}
+  //@}
 
 };	// end class MatrixBase
 

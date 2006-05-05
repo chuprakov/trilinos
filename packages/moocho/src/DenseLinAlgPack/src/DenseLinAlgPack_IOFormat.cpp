@@ -34,22 +34,22 @@
 DenseLinAlgPack::LinAlgPackIO::ios_format_memento
 DenseLinAlgPack::LinAlgPackIO::ios_format_memento::save_format(const std::ios& s) {
 
-	ios_format_memento m;
+  ios_format_memento m;
 
-	m.flags_	= s.flags();
-	m.prec_		= s.precision();
-	m.wdt_		= s.width();
-	m.fill_		= s.fill();
+  m.flags_	= s.flags();
+  m.prec_		= s.precision();
+  m.wdt_		= s.width();
+  m.fill_		= s.fill();
 
-	return m;
+  return m;
 }
 
 void DenseLinAlgPack::LinAlgPackIO::ios_format_memento::set_format(std::ios& s) const {
 
-	s.flags(flags_);
-	s.precision(prec_);
-	s.width(wdt_);
-	s.fill(fill_);
+  s.flags(flags_);
+  s.precision(prec_);
+  s.width(wdt_);
+  s.fill(fill_);
 
 }
 
@@ -57,15 +57,15 @@ void DenseLinAlgPack::LinAlgPackIO::ios_format_memento::set_format(std::ios& s) 
 // format
 
 void DenseLinAlgPack::LinAlgPackIO::format::copy_format(const std::ios& s) {
-	ios_base_flags().flags(s.flags());
-	precision(s.precision());
-	width(s.width());
-	fill(s.fill());
+  ios_base_flags().flags(s.flags());
+  precision(s.precision());
+  width(s.width());
+  fill(s.fill());
 }
 
 void DenseLinAlgPack::LinAlgPackIO::format::set_format(std::ios& s) const {
-	s.flags(ios_base_flags().flags());
-	s.precision(precision());
-	s.width(width());
-	s.fill(fill());
+  s.flags(ios_base_flags().flags());
+  s.precision(precision());
+  s.width(width());
+  s.fill(fill());
 }

@@ -44,9 +44,9 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group EvalNewPointTailoredApproach {
-		fd_deriv_testing   = FD_DEFAULT;
-	}
+  options_group EvalNewPointTailoredApproach {
+    fd_deriv_testing   = FD_DEFAULT;
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -63,21 +63,21 @@ namespace MoochoPack {
   *		\end{description}
   */
 class EvalNewPointTailoredApproach_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			EvalNewPointTailoredApproach_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      EvalNewPointTailoredApproach_Step >
 {
 public:
 
-	///
-	EvalNewPointTailoredApproach_StepSetOptions(
-		  EvalNewPointTailoredApproach_Step* target = 0
-		, const char opt_grp_name[] = "EvalNewPointTailoredApproach" );
+  ///
+  EvalNewPointTailoredApproach_StepSetOptions(
+      EvalNewPointTailoredApproach_Step* target = 0
+    , const char opt_grp_name[] = "EvalNewPointTailoredApproach" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class EvalNewPointTailoredApproach_StepSetOptions
 

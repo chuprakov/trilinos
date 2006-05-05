@@ -29,4 +29,4 @@
 #include "MoochoPack_quasi_newton_stats.hpp"
 
 extern const std::string
-	MoochoPack::quasi_newton_stats_name = "quasi_newton_stats";
+  MoochoPack::quasi_newton_stats_name = "quasi_newton_stats";

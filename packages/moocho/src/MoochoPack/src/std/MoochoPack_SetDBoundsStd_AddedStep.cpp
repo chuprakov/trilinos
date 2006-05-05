@@ -37,59 +37,59 @@
 namespace MoochoPack {
 
 SetDBoundsStd_AddedStep::SetDBoundsStd_AddedStep()
-	:dl_iq_(dl_name)
-	,du_iq_(du_name)
-	{}
+  :dl_iq_(dl_name)
+  ,du_iq_(du_name)
+  {}
 
 bool SetDBoundsStd_AddedStep::do_step(
-	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
-	,poss_type assoc_step_poss
-	)
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
+  ,poss_type assoc_step_poss
+  )
 {
-	NLPAlgo              &algo      = rsqp_algo(_algo);
-	NLPAlgoState             &s         = algo.rsqp_state();
+  NLPAlgo              &algo      = rsqp_algo(_algo);
+  NLPAlgoState             &s         = algo.rsqp_state();
 
-	EJournalOutputLevel   olevel     = algo.algo_cntr().journal_output_level();
-	std::ostream          &out       = algo.track().journal_out();
+  EJournalOutputLevel   olevel     = algo.algo_cntr().journal_output_level();
+  std::ostream          &out       = algo.track().journal_out();
 
-	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using IterationPack::print_algorithm_step;
-		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
-	}
+  // print step header.
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+    using IterationPack::print_algorithm_step;
+    print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
+  }
 
-	const Vector
-		&x_k = s.x().get_k(0),
-		&xl  = algo.nlp().xl(),
-		&xu  = algo.nlp().xu();
-	VectorMutable
-		&dl  = dl_iq_(s).set_k(0),
-		&du  = du_iq_(s).set_k(0);
-	
-	// dl = xl - x_k
-	LinAlgOpPack::V_VmV( &dl, xl, x_k );	
+  const Vector
+    &x_k = s.x().get_k(0),
+    &xl  = algo.nlp().xl(),
+    &xu  = algo.nlp().xu();
+  VectorMutable
+    &dl  = dl_iq_(s).set_k(0),
+    &du  = du_iq_(s).set_k(0);
+  
+  // dl = xl - x_k
+  LinAlgOpPack::V_VmV( &dl, xl, x_k );	
 
-	// du = xu - x_k
-	LinAlgOpPack::V_VmV( &du, xu, x_k );	
+  // du = xu - x_k
+  LinAlgOpPack::V_VmV( &du, xu, x_k );	
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\ndl_k = \n" << dl;
-		out << "\ndu_k = \n" << du;
-	}
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    out << "\ndl_k = \n" << dl;
+    out << "\ndu_k = \n" << du;
+  }
 
-	return true;
+  return true;
 }
 
 void SetDBoundsStd_AddedStep::print_step(
-	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
-	) const
+  const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+  ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
+  ) const
 {
-	out
-		<< L << "*** Set the bounds on d\n"
-		<< L << "d_bounds_k.l = xl - x_k\n"
-		<< L << "d_bounds_k.u = xu - x_k\n"
-		;
+  out
+    << L << "*** Set the bounds on d\n"
+    << L << "d_bounds_k.l = xl - x_k\n"
+    << L << "d_bounds_k.u = xu - x_k\n"
+    ;
 }
 
 } // end namespace MoochoPack

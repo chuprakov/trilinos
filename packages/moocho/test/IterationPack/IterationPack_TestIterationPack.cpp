@@ -33,24 +33,24 @@
 
 bool IterationPack::TestingPack::TestIterationPack(std::ostream* out)
 {
-	using TestingHelperPack::update_success;
-	using namespace IterationPack::TestingPack;
+  using TestingHelperPack::update_success;
+  using namespace IterationPack::TestingPack;
 
-	bool success = true;
-	update_success( TestIterQuantityAccessContiguous(out), &success );
-	update_success( TestAlgorithmState(out), &success );
-	update_success( TestAlgorithm(out), &success );
+  bool success = true;
+  update_success( TestIterQuantityAccessContiguous(out), &success );
+  update_success( TestAlgorithmState(out), &success );
+  update_success( TestAlgorithm(out), &success );
 
-	if(out) {
-		if(success) {
-			*out << "\n*** Congradulations, IterationPack seems to"
-					" check out.\n";
-		}
-		else {
-			*out << "\n*** Oops, at least one of the above tests for IterationPack "
-					" did not return the expected results\n";
-		}
-	} 
+  if(out) {
+    if(success) {
+      *out << "\n*** Congradulations, IterationPack seems to"
+          " check out.\n";
+    }
+    else {
+      *out << "\n*** Oops, at least one of the above tests for IterationPack "
+          " did not return the expected results\n";
+    }
+  } 
 
-	return success;
+  return success;
 }

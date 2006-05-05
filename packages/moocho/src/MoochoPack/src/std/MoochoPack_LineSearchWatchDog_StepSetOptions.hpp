@@ -42,10 +42,10 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group LineSearchWatchDog {
-		opt_kkt_err_threshold	= 1e-3; *** (+dbl)
-		feas_kkt_err_threshold	= 1e-3; *** (+dbl)
-	}
+  options_group LineSearchWatchDog {
+    opt_kkt_err_threshold	= 1e-3; *** (+dbl)
+    feas_kkt_err_threshold	= 1e-3; *** (+dbl)
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -56,20 +56,20 @@ namespace MoochoPack {
   *	\end{description}
   */
 class LineSearchWatchDog_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			LineSearchWatchDog_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      LineSearchWatchDog_Step >
 {
 public:
 
-	///
-	LineSearchWatchDog_StepSetOptions(
-		LineSearchWatchDog_Step* target = 0 );
+  ///
+  LineSearchWatchDog_StepSetOptions(
+    LineSearchWatchDog_Step* target = 0 );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class LineSearchWatchDog_StepSetOptions
 

@@ -49,157 +49,157 @@ class QPSolverRelaxedQPKWIK : public QPSolverRelaxed
 {
 public:
 
-	/** @name Initialization */
-	//@{
+  /** @name Initialization */
+  //@{
 
-	/// Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
+  /// Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
-	/// Set the value of an infinite bound.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
+  /// Set the value of an infinite bound.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
 
-	///
-	QPSolverRelaxedQPKWIK(
-		  value_type        max_qp_iter_frac	= 10.0
-		  ,value_type       infinite_bound      = 1e+20
-		);
+  ///
+  QPSolverRelaxedQPKWIK(
+      value_type        max_qp_iter_frac	= 10.0
+      ,value_type       infinite_bound      = 1e+20
+    );
 
-	///
-	~QPSolverRelaxedQPKWIK();
+  ///
+  ~QPSolverRelaxedQPKWIK();
 
-	//@}
+  //@}
 
-	/** @name Overridden from QPSolverRelaxed */
-	//@{
+  /** @name Overridden from QPSolverRelaxed */
+  //@{
 
-	///
-	QPSolverStats get_qp_stats() const;
-	///
-	void release_memory();
+  ///
+  QPSolverStats get_qp_stats() const;
+  ///
+  void release_memory();
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden from QPSolverRelaxed */
-	//@{
+  /** @name Overridden from QPSolverRelaxed */
+  //@{
 
-	///
-	QPSolverStats::ESolutionType imp_solve_qp(
-		std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector* dL, const Vector* dU
-		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
-		,const Vector* eL, const Vector* eU
-		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
-		,value_type* obj_d
-		,value_type* eta, VectorMutable* d
-		,VectorMutable* nu
-		,VectorMutable* mu, VectorMutable* Ed
-		,VectorMutable* lambda, VectorMutable* Fd
-		);
+  ///
+  QPSolverStats::ESolutionType imp_solve_qp(
+    std::ostream* out, EOutputLevel olevel, ERunTests test_what
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector* dL, const Vector* dU
+    ,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+    ,const Vector* eL, const Vector* eU
+    ,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+    ,value_type* obj_d
+    ,value_type* eta, VectorMutable* d
+    ,VectorMutable* nu
+    ,VectorMutable* mu, VectorMutable* Ed
+    ,VectorMutable* lambda, VectorMutable* Fd
+    );
 
-	//@}
+  //@}
 
 private:
 
-	// //////////////////////////////////////////////////////////////
-	// Private types
+  // //////////////////////////////////////////////////////////////
+  // Private types
 
-	///
-	typedef std::vector<index_type>  IBND_t;
-	///
-	typedef std::vector<index_type>  IACTSTORE_t;
-	///
-	typedef std::vector<index_type>  IACT_t;
-	///
-	typedef std::vector<index_type>  ISTATE_t;
+  ///
+  typedef std::vector<index_type>  IBND_t;
+  ///
+  typedef std::vector<index_type>  IACTSTORE_t;
+  ///
+  typedef std::vector<index_type>  IACT_t;
+  ///
+  typedef std::vector<index_type>  ISTATE_t;
 
-	// //////////////////////////////////////////////////////////////
-	// Private Data Members.
+  // //////////////////////////////////////////////////////////////
+  // Private Data Members.
 
-	QPSolverStats   qp_stats_;
+  QPSolverStats   qp_stats_;
 
-	// Inverse mapping for IBND_INV(j) == k <-> IBND(k) == j
-	IBND_t          IBND_INV_;
+  // Inverse mapping for IBND_INV(j) == k <-> IBND(k) == j
+  IBND_t          IBND_INV_;
 
-	// Parameters to QPKWIK
+  // Parameters to QPKWIK
 
-	///
-	index_type      N_;
-	///
-	index_type      M1_;
-	///
-	index_type      M2_;
-	///
-	index_type      M3_;
-	///
-	DVector          GRAD_;
-	///
-	DMatrix       UINV_AUG_;
-	///
-	index_type      LDUINV_AUG_;
-	///
-	IBND_t          IBND_;
-	///
-	DVector          BL_;
-	///
-	DVector          BU_;
-	///
-	DMatrix       A_;
-	///
-	index_type		LDA_;
-	///
-	DVector          YPY_;
-	///
-	index_type      IYPY_;
-	///
-	index_type      WARM_;
-	///
-	value_type      NUMPARAM_[3];
-	///
-	index_type      MAX_ITER_;
+  ///
+  index_type      N_;
+  ///
+  index_type      M1_;
+  ///
+  index_type      M2_;
+  ///
+  index_type      M3_;
+  ///
+  DVector          GRAD_;
+  ///
+  DMatrix       UINV_AUG_;
+  ///
+  index_type      LDUINV_AUG_;
+  ///
+  IBND_t          IBND_;
+  ///
+  DVector          BL_;
+  ///
+  DVector          BU_;
+  ///
+  DMatrix       A_;
+  ///
+  index_type		LDA_;
+  ///
+  DVector          YPY_;
+  ///
+  index_type      IYPY_;
+  ///
+  index_type      WARM_;
+  ///
+  value_type      NUMPARAM_[3];
+  ///
+  index_type      MAX_ITER_;
 
-	// Input / Output
+  // Input / Output
 
-	///
-	DVector          X_;
-	///
-	index_type      NACTSTORE_;
-	///
-	IACTSTORE_t     IACTSTORE_;
-	///
-	index_type      INF_;
-	
-	// Output
+  ///
+  DVector          X_;
+  ///
+  index_type      NACTSTORE_;
+  ///
+  IACTSTORE_t     IACTSTORE_;
+  ///
+  index_type      INF_;
+  
+  // Output
 
-	///
-	index_type      NACT_;
-	///
-	IACT_t          IACT_;
-	///
-	DVector          UR_;
-	///
-	value_type      EXTRA_;
-	///
-	index_type      ITER_;
-	///
-	index_type      NUM_ADDS_;
-	///
-	index_type      NUM_DROPS_;
-	
-	// Internal state
+  ///
+  index_type      NACT_;
+  ///
+  IACT_t          IACT_;
+  ///
+  DVector          UR_;
+  ///
+  value_type      EXTRA_;
+  ///
+  index_type      ITER_;
+  ///
+  index_type      NUM_ADDS_;
+  ///
+  index_type      NUM_DROPS_;
+  
+  // Internal state
 
-	///
-	ISTATE_t        ISTATE_;
+  ///
+  ISTATE_t        ISTATE_;
 
-	// Workspace
+  // Workspace
 
-	///
-	index_type      LRW_;
-	///
-	DVector          RW_;
+  ///
+  index_type      LRW_;
+  ///
+  DVector          RW_;
 
 }; // end class QPSolverRelaxedQPKWIK
 

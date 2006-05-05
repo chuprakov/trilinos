@@ -50,24 +50,24 @@ namespace DenseLinAlgPack {
 template<class T>
 std::ostream& operator<<(std::ostream& os, const LinAlgPackIO::const_bound_format<T>& bf)
 {
-	using LinAlgPackIO::ios_format_memento;
-	ios_format_memento old_format = ios_format_memento::save_format(os);
-	try {
-		bf.f().set_format(os);
-		output( os, bf.obj(), bf.f().extra_flags().flags() );
-	}
-	catch(...) {
-		old_format.set_format(os);
-		throw;
-	}
-	old_format.set_format(os);
-	return os;
+  using LinAlgPackIO::ios_format_memento;
+  ios_format_memento old_format = ios_format_memento::save_format(os);
+  try {
+    bf.f().set_format(os);
+    output( os, bf.obj(), bf.f().extra_flags().flags() );
+  }
+  catch(...) {
+    old_format.set_format(os);
+    throw;
+  }
+  old_format.set_format(os);
+  return os;
 }
 
 /// Force a type conversion from #bound_format<T># to #const_bound_format<T># to call #operator<<#().
 template<class T>
 inline std::ostream& operator<<(std::ostream& os, const LinAlgPackIO::bound_format<T>& bf) {
-	return operator<<( os, LinAlgPackIO::const_bound_format<T>( bf.f(), bf.obj() ) );
+  return operator<<( os, LinAlgPackIO::const_bound_format<T>( bf.f(), bf.obj() ) );
 }
 
 }	// end namespace DenseLinAlgPack

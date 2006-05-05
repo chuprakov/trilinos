@@ -60,89 +60,89 @@ namespace AbstractLinAlgPack {
  * to call the methods and not the methods themselves.
  */
 class MatrixSymNonsing
-	: public virtual MatrixNonsing
+  : public virtual MatrixNonsing
 {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
 #ifndef DOXYGEN_COMPILE
-	///
-	typedef Teuchos::RefCountPtr<const MatrixSymNonsing>    mat_msns_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const MatrixSymNonsing>    mat_msns_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
 #endif
-	///
-	enum EMatrixDummyArg { DUMMY_ARG };
+  ///
+  enum EMatrixDummyArg { DUMMY_ARG };
 
-	//@}
+  //@}
 
-	/** @name Friends */
-	//@{
+  /** @name Friends */
+  //@{
 
-	///
-	friend
-	void M_StMtInvMtM(
-		MatrixSymOp* sym_gms_lhs, value_type alpha
-		,const MatrixOp& mwo
-		,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
-		,EMatrixDummyArg mwo_rhs
-		 );
+  ///
+  friend
+  void M_StMtInvMtM(
+    MatrixSymOp* sym_gms_lhs, value_type alpha
+    ,const MatrixOp& mwo
+    ,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
+    ,EMatrixDummyArg mwo_rhs
+     );
 
-	//@}
+  //@}
 
-	/** @name Clone */
-	//@{
+  /** @name Clone */
+  //@{
 
-	///
-	/** Clone the non-const matrix object (if supported).
-	 *
-	 * The default implementation returns NULL which is perfectly acceptable.
-	 * A matrix object is not required to return a non-NULL value but almost
-	 * every good matrix implementation will.
-	 */
-	virtual mat_msns_mut_ptr_t clone_msns();
+  ///
+  /** Clone the non-const matrix object (if supported).
+   *
+   * The default implementation returns NULL which is perfectly acceptable.
+   * A matrix object is not required to return a non-NULL value but almost
+   * every good matrix implementation will.
+   */
+  virtual mat_msns_mut_ptr_t clone_msns();
 
-	///
-	/** Clone the const matrix object (if supported).
-	 *
-	 * The behavior of this method is the same as for the non-const version
-	 * above except it returns a smart pointer to a const matrix object.
-	 */
-	virtual mat_msns_ptr_t clone_msns() const;
+  ///
+  /** Clone the const matrix object (if supported).
+   *
+   * The behavior of this method is the same as for the non-const version
+   * above except it returns a smart pointer to a const matrix object.
+   */
+  virtual mat_msns_ptr_t clone_msns() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Level-3 */
-	//@{
+  /** @name Level-3 */
+  //@{
 
-	///
-	/** symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
-	 *
-	 * The default implementation is based on the operation M_StInvMtM(...)
-	 * assuming that this #M# is a symmetric matrix.  For an efficient implementation
-	 * (for this = L*L' for instance) the subclass may want to override this function.
-	 */
-	virtual void M_StMtInvMtM(
-		MatrixSymOp* symwo_lhs, value_type alpha
-		,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
-		,EMatrixDummyArg
-		) const;
+  ///
+  /** symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
+   *
+   * The default implementation is based on the operation M_StInvMtM(...)
+   * assuming that this #M# is a symmetric matrix.  For an efficient implementation
+   * (for this = L*L' for instance) the subclass may want to override this function.
+   */
+  virtual void M_StMtInvMtM(
+    MatrixSymOp* symwo_lhs, value_type alpha
+    ,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
+    ,EMatrixDummyArg
+    ) const;
 
-	//@}
+  //@}
 
 public:
 
-	/** Overridden from MatrixNonsing */
-	//@{
-	/// Returns <tt>this->clone_msns()</tt>.
-	mat_mns_mut_ptr_t clone_mns();
-	/// Returns <tt>this->clone_msns()</tt>.
-	mat_mns_ptr_t clone_mns() const;
-	//@}
+  /** Overridden from MatrixNonsing */
+  //@{
+  /// Returns <tt>this->clone_msns()</tt>.
+  mat_mns_mut_ptr_t clone_mns();
+  /// Returns <tt>this->clone_msns()</tt>.
+  mat_mns_ptr_t clone_mns() const;
+  //@}
 
 };	// end class MatrixSymNonsing
 
@@ -156,13 +156,13 @@ public:
 inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
 void M_StMtInvMtM(
-	MatrixSymOp* sym_gms_lhs, value_type alpha
-	,const MatrixOp& mwo
-	,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
-	,MatrixSymNonsing::EMatrixDummyArg mwo_rhs
-	)
+  MatrixSymOp* sym_gms_lhs, value_type alpha
+  ,const MatrixOp& mwo
+  ,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
+  ,MatrixSymNonsing::EMatrixDummyArg mwo_rhs
+  )
 {
-	mswof.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
+  mswof.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
 }
 
 //@}

@@ -46,85 +46,85 @@ class NLPFirstOrderThyraModelEvaluator
 {
 public:
 
-	/** \brief Initialize to uninitialized */
-	NLPFirstOrderThyraModelEvaluator();
+  /** \brief Initialize to uninitialized */
+  NLPFirstOrderThyraModelEvaluator();
 
-	/** \brief Calls <tt>initialize()</tt>. */
-	NLPFirstOrderThyraModelEvaluator(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  /** \brief Calls <tt>initialize()</tt>. */
+  NLPFirstOrderThyraModelEvaluator(
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
-		);
+    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+    );
 
-	/** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
-	 * a description of how to interpret it.
-	 *
-	 * ToDo: Finish documentation!
-	 *
-	 * Todo: Add arguments for auxiliary inequalites and equalities
-	 */
-	void initialize(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+  /** \brief .Initialize given a <tt>Thyra::ModelEvaluator</tt> and
+   * a description of how to interpret it.
+   *
+   * ToDo: Finish documentation!
+   *
+   * Todo: Add arguments for auxiliary inequalites and equalities
+   */
+  void initialize(
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
-		);
+    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+    );
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	/** \brief . */
-	void initialize(bool test_setup);
-	/** \brief . */
-	void unset_quantities();
+  /** \brief . */
+  void initialize(bool test_setup);
+  /** \brief . */
+  void unset_quantities();
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLPFirstOrder */
-	//@{
+  /** @name Overridden public members from NLPFirstOrder */
+  //@{
 
-	/** \brief Overridden to check the concrete type of Gc */
-	void set_Gc(MatrixOp* Gc);
-	/** \brief . */
-	const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
-	/** \brief Returns an ExampleBasisSystem */
-	const basis_sys_ptr_t basis_sys() const;
+  /** \brief Overridden to check the concrete type of Gc */
+  void set_Gc(MatrixOp* Gc);
+  /** \brief . */
+  const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
+  /** \brief Returns an ExampleBasisSystem */
+  const basis_sys_ptr_t basis_sys() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden protected members from NLPFirstOrder */
-	//@{
+  /** @name Overridden protected members from NLPFirstOrder */
+  //@{
 
-	/** \brief . */
-	void imp_calc_Gc(
+  /** \brief . */
+  void imp_calc_Gc(
     const Vector& x, bool newx
     ,const FirstOrderInfo& first_order_info) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
   ///
   void evalModel( 
-		const Vector            &x
+    const Vector            &x
     ,bool                   newx
-		,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
+    ,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
     ,const ObjGradInfo      *obj_grad_info    // != NULL if obj-grad and below info
     ,const FirstOrderInfo   *first_order_info // != NULL if first-order and below info
     ) const;

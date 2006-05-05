@@ -95,74 +95,74 @@ namespace MoochoPack {
   * the moment this object is created or when set_output_stream(...) is called.
   */
 class MoochoTrackerConsoleStd
-	: public IterationPack::AlgorithmTracker
+  : public IterationPack::AlgorithmTracker
 {
 public:
 
-	/// Construct with an output stream (console presumably)
-	MoochoTrackerConsoleStd(const ostream_ptr_t& o, const ostream_ptr_t& journal_out);
+  /// Construct with an output stream (console presumably)
+  MoochoTrackerConsoleStd(const ostream_ptr_t& o, const ostream_ptr_t& journal_out);
 
-	/// Set the output stream for console outputting.
-	void set_output_stream(const ostream_ptr_t& o);
+  /// Set the output stream for console outputting.
+  void set_output_stream(const ostream_ptr_t& o);
 
-	/// Get the output stream for console outputting.
-	const ostream_ptr_t& get_output_stream() const;
+  /// Get the output stream for console outputting.
+  const ostream_ptr_t& get_output_stream() const;
 
-	/** @name Overridden from AlgorithmTracker */
-	//@{
+  /** @name Overridden from AlgorithmTracker */
+  //@{
 
-	/// Restarts the timer
-	void initialize();
-	///
-	void output_iteration(const Algorithm& algo) const;
-	///
-	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  /// Restarts the timer
+  void initialize();
+  ///
+  void output_iteration(const Algorithm& algo) const;
+  ///
+  void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
-	//@}
+  //@}
 
 protected:
 
-	/// Print the top header to the output
-	void print_top_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
+  /// Print the top header to the output
+  void print_top_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
 
-	/// Print the header to the output
-	void print_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
+  /// Print the header to the output
+  void print_header(const NLPAlgoState &s, const NLPAlgo& algo) const;
 
-	std::ostream& o() const
-	{	return *o_; }
+  std::ostream& o() const
+  {	return *o_; }
 
 private:
 
-	// ///////////////////////////////////////////
-	// Private types
+  // ///////////////////////////////////////////
+  // Private types
 
-	enum { NUM_PRINT_LINES = 10 };
-	
-	// ///////////////////////////////////////////
-	// Private data members
+  enum { NUM_PRINT_LINES = 10 };
+  
+  // ///////////////////////////////////////////
+  // Private data members
 
-	ostream_ptr_t                       o_;
-	mutable StopWatchPack::stopwatch    timer_;
-	mutable int                         printed_lines_;
-	quasi_newton_stats_iq_member        quasi_newton_stats_;
+  ostream_ptr_t                       o_;
+  mutable StopWatchPack::stopwatch    timer_;
+  mutable int                         printed_lines_;
+  quasi_newton_stats_iq_member        quasi_newton_stats_;
 
-	// Static formating info.
-	static int		w_i2_;
-	static char		ul_i2_[];
-	static int		w_i4_;
-	static char		ul_i4_[];
-	static int		p2_;
-	static int		w_p2_;
-	static char		ul_p2_[];
-	static int		p3_;
-	static int		w_p3_;
-	static char		ul_p3_[];
+  // Static formating info.
+  static int		w_i2_;
+  static char		ul_i2_[];
+  static int		w_i4_;
+  static char		ul_i4_[];
+  static int		p2_;
+  static int		w_p2_;
+  static char		ul_p2_[];
+  static int		p3_;
+  static int		w_p3_;
+  static char		ul_p3_[];
 
-	// ///////////////////////////////////////////
-	// Private member funcitons
+  // ///////////////////////////////////////////
+  // Private member funcitons
 
-	// Not defined and not to be called
-	MoochoTrackerConsoleStd();
+  // Not defined and not to be called
+  MoochoTrackerConsoleStd();
 };	// end class MoochoTrackerConsoleStd
 
 }	// end namespace MoochoPack 

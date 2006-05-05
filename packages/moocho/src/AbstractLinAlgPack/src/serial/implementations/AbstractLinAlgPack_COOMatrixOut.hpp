@@ -46,7 +46,7 @@ std::ostream& operator<<(std::ostream& o, const COOMatrix& coom);
 // Inline definition
 
 inline std::ostream& operator<<(std::ostream& o, const COOMatrix& coom) {
-	return output(o,coom);
+  return output(o,coom);
 }
 
 } // end namespace AbstractLinAlgPack

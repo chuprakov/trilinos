@@ -45,44 +45,44 @@ namespace AbstractLinAlgPack {
 class MatrixSymDiagSparseStd: virtual public MatrixSymDiagSparse {
 public:
 
-	/** @name Constructors/initializes */
-	//@{
+  /** @name Constructors/initializes */
+  //@{
 
-	/// Construct uninitialized
-	MatrixSymDiagSparseStd()
-	{}
+  /// Construct uninitialized
+  MatrixSymDiagSparseStd()
+  {}
 
-	///
-	/** Construct the diagonal.
-	  */
-	MatrixSymDiagSparseStd( const SpVectorSlice& diag );
+  ///
+  /** Construct the diagonal.
+    */
+  MatrixSymDiagSparseStd( const SpVectorSlice& diag );
 
-	///
-	/** Reinitialize the diagonal.
-	  */
-	void initialize( const SpVectorSlice& diag );
+  ///
+  /** Reinitialize the diagonal.
+    */
+  void initialize( const SpVectorSlice& diag );
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixOp */
-	//@{
+  /** @name Overridden from MatrixOp */
+  //@{
 
-	///
-	MatrixOp& operator=(const MatrixOp& m);
+  ///
+  MatrixOp& operator=(const MatrixOp& m);
 
-	//@}
+  //@}
 
-	/** Overridden from MatrixDiagonalSparse */
-	//@{
+  /** Overridden from MatrixDiagonalSparse */
+  //@{
 
-	///
-	const SpVectorSlice diag() const;
+  ///
+  const SpVectorSlice diag() const;
 
-	//@}
+  //@}
 
 private:
-	
-	SpVector	diag_;
+  
+  SpVector	diag_;
 
 };	// end class MatrixDiagonalSparse
 

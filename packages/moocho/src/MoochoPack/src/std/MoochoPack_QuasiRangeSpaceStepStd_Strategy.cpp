@@ -35,29 +35,29 @@
 namespace MoochoPack {
 
 bool QuasiRangeSpaceStepStd_Strategy::solve_quasi_range_space_step(
-	std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
-	,const Vector& xo, const Vector& c_xo, VectorMutable* v
-  	)
+  std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
+  ,const Vector& xo, const Vector& c_xo, VectorMutable* v
+    )
 {
-	using LinAlgOpPack::V_InvMtV;
-	using LinAlgOpPack::V_StMtV;
-	const MatrixOpNonsing
-		&R_k = s->R().get_k(0);
-	VectorSpace::vec_mut_ptr_t
-		vy = R_k.space_rows().create_member();
-	// vy = inv(R_k) * c_xo
-	V_InvMtV( vy.get(), R_k, BLAS_Cpp::no_trans, c_xo );
-	// v = -Y_k*vy
-	V_StMtV( v, -1.0, s->Y().get_k(0), BLAS_Cpp::no_trans, *vy );
+  using LinAlgOpPack::V_InvMtV;
+  using LinAlgOpPack::V_StMtV;
+  const MatrixOpNonsing
+    &R_k = s->R().get_k(0);
+  VectorSpace::vec_mut_ptr_t
+    vy = R_k.space_rows().create_member();
+  // vy = inv(R_k) * c_xo
+  V_InvMtV( vy.get(), R_k, BLAS_Cpp::no_trans, c_xo );
+  // v = -Y_k*vy
+  V_StMtV( v, -1.0, s->Y().get_k(0), BLAS_Cpp::no_trans, *vy );
 
-	return true;
+  return true;
 }
 
 void QuasiRangeSpaceStepStd_Strategy::print_step( std::ostream& out, const std::string& L ) const
 {
-	out << L << "*** Compute the approximate range space step:\n"
-		<< L << "vy = inv(R_k) * c_xo\n"
-		<< L << "v = -Y_k*vy\n";
+  out << L << "*** Compute the approximate range space step:\n"
+    << L << "vy = inv(R_k) * c_xo\n"
+    << L << "v = -Y_k*vy\n";
 }
 
 } // end namespace MoochoPack

@@ -33,19 +33,19 @@
 #include "FortranTypes_CppFortranStrings.hpp"
 
 int FortranTypes::convert_to_f_int_string( const char string[], f_int i_string[]
-	, f_int* string_len )
+  , f_int* string_len )
 {
-	*string_len = 0;
-	for( ; *string != 0; ++(*string_len) )
-		*i_string++ = *string++;	// Sse standard C conversions by default
-	return 0;	// success
+  *string_len = 0;
+  for( ; *string != 0; ++(*string_len) )
+    *i_string++ = *string++;	// Sse standard C conversions by default
+  return 0;	// success
 }
 
 int FortranTypes::convert_from_f_int_string( const f_int i_string[], f_int string_len
-	, char string[] )
+  , char string[] )
 {
-	for( f_int i = 0; i < string_len; )
-		*string++ = *i_string++;	// Sse standard C conversions by default
-	*string = 0; // Null terminate the target string.
-	return 0;	// success
+  for( f_int i = 0; i < string_len; )
+    *string++ = *i_string++;	// Sse standard C conversions by default
+  *string = 0; // Null terminate the target string.
+  return 0;	// success
 }

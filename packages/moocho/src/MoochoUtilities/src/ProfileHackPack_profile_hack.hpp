@@ -71,13 +71,13 @@ void print_timings( std::ostream& out );
      ProfileHackPack::ProfileTiming profile_timing("main()",&std::cout);
  #endif
      for( int i = 0; i < 10; ++i ) {
-	     f();
-	     g();
+       f();
+       g();
      }
      return 0;
      // When main() exists, the destructor for profile_timing will 
      // record the time and will print the total times and number of
-	 // calls for "main()", "f()" and "g()" to <tt>std::cout</tt>.
+   // calls for "main()", "f()" and "g()" to <tt>std::cout</tt>.
  }
 
  void f() {
@@ -112,37 +112,37 @@ void print_timings( std::ostream& out );
  */
 class ProfileTiming {
 public:
-	///
-	/** 
-	 *
-	 * @param  func_name  The name of the function to be timed
-	 * @param  out        If != NULL then the function times will
-	 *                    be printed to this stream when object is destroyed.
-	 */
-	ProfileTiming( const std::string& func_name, std::ostream* out = NULL )
-		: func_name_(func_name), out_(out)
-	{
-		timer_.reset();
-		timer_.start();
-	}
-	///
-	~ProfileTiming()
-	{
-		set_time( func_name_.c_str(), timer_.read() );
-		if( out_ )
-			print_timings( *out_ );
-	}
+  ///
+  /** 
+   *
+   * @param  func_name  The name of the function to be timed
+   * @param  out        If != NULL then the function times will
+   *                    be printed to this stream when object is destroyed.
+   */
+  ProfileTiming( const std::string& func_name, std::ostream* out = NULL )
+    : func_name_(func_name), out_(out)
+  {
+    timer_.reset();
+    timer_.start();
+  }
+  ///
+  ~ProfileTiming()
+  {
+    set_time( func_name_.c_str(), timer_.read() );
+    if( out_ )
+      print_timings( *out_ );
+  }
 
 private:
-	///
-	std::string                 func_name_;
-	std::ostream                *out_;
-	StopWatchPack::stopwatch    timer_;
+  ///
+  std::string                 func_name_;
+  std::ostream                *out_;
+  StopWatchPack::stopwatch    timer_;
 
-	// Not defined and not to be called!
-	ProfileTiming();
-	ProfileTiming(const ProfileTiming&);
-	ProfileTiming& operator=(const ProfileTiming&);
+  // Not defined and not to be called!
+  ProfileTiming();
+  ProfileTiming(const ProfileTiming&);
+  ProfileTiming& operator=(const ProfileTiming&);
 
 }; // end class ProfileTiming
 

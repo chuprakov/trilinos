@@ -43,40 +43,40 @@ InnerProductThyra::InnerProductThyra()
 {}
 
 InnerProductThyra::InnerProductThyra(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
+  )
 {
-	this->initialize(thyra_vec_spc);
+  this->initialize(thyra_vec_spc);
 }
 
 void InnerProductThyra::initialize(
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
-	)
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc
+  )
 {
-	TEST_FOR_EXCEPTION(
-		thyra_vec_spc.get()==NULL, std::invalid_argument
-		,"InnerProductThyra::initialize(thyra_vec_spc): Error!"
-		);
-	thyra_vec_spc_ = thyra_vec_spc;
+  TEST_FOR_EXCEPTION(
+    thyra_vec_spc.get()==NULL, std::invalid_argument
+    ,"InnerProductThyra::initialize(thyra_vec_spc): Error!"
+    );
+  thyra_vec_spc_ = thyra_vec_spc;
 }
 
 Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > 
 InnerProductThyra::set_uninitialized()
 {
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
-	thyra_vec_spc_ = Teuchos::null;
-	return tmp_thyra_vec_spc;
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > tmp_thyra_vec_spc = thyra_vec_spc_;
+  thyra_vec_spc_ = Teuchos::null;
+  return tmp_thyra_vec_spc;
 }
 
 // Overridden from InnerProduct
 
 value_type InnerProductThyra::inner_prod(const Vector& v1, const Vector& v2) const
 {
-	using Teuchos::dyn_cast;
-	return thyra_vec_spc_->scalarProd(
-		*dyn_cast<const VectorMutableThyra>(v1).thyra_vec()
-		,*dyn_cast<const VectorMutableThyra>(v1).thyra_vec()
-		);
+  using Teuchos::dyn_cast;
+  return thyra_vec_spc_->scalarProd(
+    *dyn_cast<const VectorMutableThyra>(v1).thyra_vec()
+    ,*dyn_cast<const VectorMutableThyra>(v1).thyra_vec()
+    );
 }
 
 } // end namespace AbstractLinAlgPack

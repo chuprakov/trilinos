@@ -37,12 +37,12 @@ namespace AbstractLinAlgPack {
 /** Interface to all diagonal matrices {abstract}.
  */
 class MatrixSymDiag
-	: public virtual MatrixSymOpNonsing
+  : public virtual MatrixSymOpNonsing
 {
 public:
 
-	/// Give const access to the diagonal
-	virtual const Vector& diag() const = 0;
+  /// Give const access to the diagonal
+  virtual const Vector& diag() const = 0;
 
 }; // end class MatrixSymDiag
 

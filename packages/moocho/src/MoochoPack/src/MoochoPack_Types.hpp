@@ -43,12 +43,12 @@ namespace MoochoPack {
 
 /** \brief enum for journal output. */
 enum EJournalOutputLevel {
-	PRINT_NOTHING = 0
-	,PRINT_BASIC_ALGORITHM_INFO = 1
-	,PRINT_ALGORITHM_STEPS = 2
-	,PRINT_ACTIVE_SET = 3
-	,PRINT_VECTORS = 4
-	,PRINT_ITERATION_QUANTITIES = 5
+  PRINT_NOTHING = 0
+  ,PRINT_BASIC_ALGORITHM_INFO = 1
+  ,PRINT_ALGORITHM_STEPS = 2
+  ,PRINT_ACTIVE_SET = 3
+  ,PRINT_VECTORS = 4
+  ,PRINT_ITERATION_QUANTITIES = 5
 };
 
 /** \brief Conver to Teuchos::EVerbosityLevel. */

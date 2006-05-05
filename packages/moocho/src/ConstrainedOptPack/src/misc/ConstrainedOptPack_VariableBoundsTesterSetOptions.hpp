@@ -44,28 +44,28 @@ namespace ConstrainedOptPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group VariableBoundsTester {
-	    warning_tol   = 1e-10;
-	    error_tol     = 1e-5;
-	}
+  options_group VariableBoundsTester {
+      warning_tol   = 1e-10;
+      error_tol     = 1e-5;
+  }
   \end{verbatim}
   */
 class VariableBoundsTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			VariableBoundsTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      VariableBoundsTester >
 {
 public:
 
-	///
-	VariableBoundsTesterSetOptions(
-		  VariableBoundsTester* target = 0
-		, const char opt_grp_name[] = "VariableBoundsTester" );
+  ///
+  VariableBoundsTesterSetOptions(
+      VariableBoundsTester* target = 0
+    , const char opt_grp_name[] = "VariableBoundsTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class VariableBoundsTesterSetOptions
 

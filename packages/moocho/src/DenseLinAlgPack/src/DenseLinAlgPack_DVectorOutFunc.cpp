@@ -33,21 +33,21 @@
 #include "DenseLinAlgPack_DVectorClass.hpp"
 
 std::ostream& DenseLinAlgPack::output(std::ostream& os, const DVectorSlice& vs
-	, LinAlgPackIO::fmtflags extra_flags)
+  , LinAlgPackIO::fmtflags extra_flags)
 {
-	int w = os.width(0) - 1; // get the set width (minus 1 since a space is inserted)
+  int w = os.width(0) - 1; // get the set width (minus 1 since a space is inserted)
 
-	if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) )
-		os << std::setw(0) << std::left << vs.dim() << std::endl << std::right;
+  if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) )
+    os << std::setw(0) << std::left << vs.dim() << std::endl << std::right;
 
-	DVectorSlice::const_iterator itr = vs.begin();
-	for( size_type i = 1; itr != vs.end(); ++i, ++itr ) {
-		os << " " << std::setw(w) << (*itr) << ":" << i; // insert a space to be sure there is white space
-		                                                 // inbetween adjacent elements.
-	}
+  DVectorSlice::const_iterator itr = vs.begin();
+  for( size_type i = 1; itr != vs.end(); ++i, ++itr ) {
+    os << " " << std::setw(w) << (*itr) << ":" << i; // insert a space to be sure there is white space
+                                                     // inbetween adjacent elements.
+  }
 
-	if( !(extra_flags & LinAlgPackIO::no_insert_newlines_bit) )
-		os << std::endl;
+  if( !(extra_flags & LinAlgPackIO::no_insert_newlines_bit) )
+    os << std::endl;
 
-	return os;
+  return os;
 }

@@ -59,44 +59,44 @@ namespace MoochoPack {
  * printout for a more detailed description what what is going on.
  */
 class CheckDecompositionFromRPy_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full name
+  : public IterationPack::AlgorithmStep // doxygen needs full name
 {
 public:
 
-	/// <<std comp>> members for Decomposition Select Strategy object.
-	STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
+  /// <<std comp>> members for Decomposition Select Strategy object.
+  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
 
-	///
-	/** Set the maximum change in the relative error in the range space
+  ///
+  /** Set the maximum change in the relative error in the range space
      * step before the selection of a new decomposition is triggered.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
 
-	///
-	CheckDecompositionFromRPy_Step(
-		 const new_decomp_strategy_ptr_t    &new_decomp_strategy
-		,value_type                         max_decomposition_cond_change_frac = 1e+4
-		);
+  ///
+  CheckDecompositionFromRPy_Step(
+     const new_decomp_strategy_ptr_t    &new_decomp_strategy
+    ,value_type                         max_decomposition_cond_change_frac = 1e+4
+    );
 
-	/// Call the reset initialization of all defaults.
-	void reset();
+  /// Call the reset initialization of all defaults.
+  void reset();
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
 
-	value_type	beta_min_;
+  value_type	beta_min_;
 
-	// Not defined and not to be called
-	CheckDecompositionFromRPy_Step();
+  // Not defined and not to be called
+  CheckDecompositionFromRPy_Step();
 
 };	// end class CheckDecompositionFromRPy_Step
 

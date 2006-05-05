@@ -33,17 +33,17 @@ namespace AbstractLinAlgPack {
 
 size_type MatrixBase::rows() const
 {
-	return this->space_cols().dim();
+  return this->space_cols().dim();
 }
 
 size_type MatrixBase::cols() const
 {
-	return this->space_rows().dim();
+  return this->space_rows().dim();
 }
 
 size_type MatrixBase::nz() const
 {
-	return rows() * cols();
+  return rows() * cols();
 }
 
 }	// end namespace AbstractLinAlgPack

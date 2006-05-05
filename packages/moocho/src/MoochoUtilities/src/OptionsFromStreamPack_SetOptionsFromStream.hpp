@@ -43,12 +43,12 @@ class OptionsFromStream;
   */
 class SetOptionsFromStream {
 public:
-	
-	///
-	virtual ~SetOptionsFromStream() {}
-	
-	/// Call to set options from a stream
-	virtual void set_options( const OptionsFromStream& options ) = 0;
+  
+  ///
+  virtual ~SetOptionsFromStream() {}
+  
+  /// Call to set options from a stream
+  virtual void set_options( const OptionsFromStream& options ) = 0;
 
 };	// end class SetOptionsFromStream
 

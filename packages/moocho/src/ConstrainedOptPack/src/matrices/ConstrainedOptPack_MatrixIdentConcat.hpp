@@ -58,50 +58,50 @@ namespace ConstrainedOptPack {
  * the full matrix \c M is of order <tt>(op(D).rows() + op(D).cols()) x op(D).cols()</tt>.
  */
 class MatrixIdentConcat
-	: virtual public AbstractLinAlgPack::MatrixOp
+  : virtual public AbstractLinAlgPack::MatrixOp
 {
 public:
 
-	/** @name Access to representation.
-	 */
-	//@{
-	///
-	virtual Range1D D_rng() const = 0;
-	///
-	virtual Range1D I_rng() const = 0;
-	///
-	virtual value_type alpha() const = 0;
-	///
-	virtual const MatrixOp& D() const = 0;
-	///
-	virtual BLAS_Cpp::Transp D_trans() const = 0;
-	//@}
+  /** @name Access to representation.
+   */
+  //@{
+  ///
+  virtual Range1D D_rng() const = 0;
+  ///
+  virtual Range1D I_rng() const = 0;
+  ///
+  virtual value_type alpha() const = 0;
+  ///
+  virtual const MatrixOp& D() const = 0;
+  ///
+  virtual BLAS_Cpp::Transp D_trans() const = 0;
+  //@}
 
-	/** @name Overridden from MatrixBase */
-	//@{
-	///
-	size_type rows() const;
-	///
-	size_type cols() const;
-	///
-	size_type nz() const;
-	//@}
+  /** @name Overridden from MatrixBase */
+  //@{
+  ///
+  size_type rows() const;
+  ///
+  size_type cols() const;
+  ///
+  size_type nz() const;
+  //@}
 
-	/** @name Overridden from MatrixOp */
-	//@{
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(
-		VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const Vector& vs_rhs2, value_type beta
-		) const;
-	///
-	void Vp_StMtV(
-		VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const SpVectorSlice& sv_rhs2, value_type beta
-		) const;
-	//@}
+  /** @name Overridden from MatrixOp */
+  //@{
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(
+    VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    ,const Vector& vs_rhs2, value_type beta
+    ) const;
+  ///
+  void Vp_StMtV(
+    VectorMutable* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    ,const SpVectorSlice& sv_rhs2, value_type beta
+    ) const;
+  //@}
 
 }; // end class MatrixIdentConcat
 

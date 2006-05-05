@@ -34,7 +34,7 @@ namespace AbstractLinAlgPack {
 // Constructors / initializers
 
 VectorSpaceFactorySerial::VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod )
-	: VectorSpaceFactory(inner_prod)
+  : VectorSpaceFactory(inner_prod)
 {}
 
 // Overridden from VectorSpaceFactory
@@ -42,7 +42,7 @@ VectorSpaceFactorySerial::VectorSpaceFactorySerial( const inner_prod_ptr_t& inne
 VectorSpaceFactory::space_ptr_t
 VectorSpaceFactorySerial::create_vec_spc(index_type dim) const
 {
-	return Teuchos::rcp(new VectorSpaceSerial(dim));
+  return Teuchos::rcp(new VectorSpaceSerial(dim));
 }
 
 } // end namespace AbstractLinAlgPack

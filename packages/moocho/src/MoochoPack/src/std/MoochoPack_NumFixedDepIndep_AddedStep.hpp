@@ -42,16 +42,16 @@ namespace MoochoPack {
 class NumFixedDepIndep_AddedStep : public rSQPAlgo_Step {
 public:
 
-	// ////////////////////
-	// Overridden
+  // ////////////////////
+  // Overridden
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
 
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 };	// end class NumFixedDepIndep_AddedStep
 

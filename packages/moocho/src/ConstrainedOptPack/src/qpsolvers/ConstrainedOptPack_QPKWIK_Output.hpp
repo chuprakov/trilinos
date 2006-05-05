@@ -42,15 +42,15 @@ namespace QPKWIK_Output {
   */
 class set_output {
 public:
-	///
-	set_output(std::ostream* out);
-	///
-	~set_output();
+  ///
+  set_output(std::ostream* out);
+  ///
+  ~set_output();
 private:
-	// not defined and not to be called
-	set_output();
-	set_output(const set_output&);
-	set_output& operator=(const set_output&);
+  // not defined and not to be called
+  set_output();
+  set_output(const set_output&);
+  set_output& operator=(const set_output&);
 };	// end class set_output
 
 // Output stream to use (default == 0, no output).

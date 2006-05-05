@@ -62,21 +62,21 @@ namespace NLPInterfacePack {
  \endverbatim
  */
 class CalcFiniteDiffProdSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			CalcFiniteDiffProd >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      CalcFiniteDiffProd >
 {
 public:
 
-	///
-	CalcFiniteDiffProdSetOptions(
-		CalcFiniteDiffProd* target = 0
-		,const char opt_grp_name[] = "CalcFiniteDiffProd" );
-	
+  ///
+  CalcFiniteDiffProdSetOptions(
+    CalcFiniteDiffProd* target = 0
+    ,const char opt_grp_name[] = "CalcFiniteDiffProd" );
+  
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class CalcFiniteDiffProdSetOptions
 

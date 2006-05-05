@@ -41,7 +41,7 @@ namespace AbstractLinAlgPack {
 inline
 std::ostream& operator<<( std::ostream& o, const Vector& v )
 {
-	return v.output(o);
+  return v.output(o);
 }
 
 } // end namespace AbstractLinAlgPack

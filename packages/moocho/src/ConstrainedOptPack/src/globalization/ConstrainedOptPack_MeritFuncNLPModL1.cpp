@@ -34,85 +34,85 @@
 namespace ConstrainedOptPack {
 
 MeritFuncNLPModL1::MeritFuncNLPModL1()
-	: deriv_(0.0)
+  : deriv_(0.0)
 {}
 
 // Overridden from MeritFuncNLP
 
 value_type MeritFuncNLPModL1::value(
-	value_type             f
-	,const Vector    *c
-	,const Vector    *h
-	,const Vector    *hl
-	,const Vector    *hu
-	) const
+  value_type             f
+  ,const Vector    *c
+  ,const Vector    *h
+  ,const Vector    *hl
+  ,const Vector    *hu
+  ) const
 {
-	TEST_FOR_EXCEPTION(
-		h || hl || hu, std::logic_error
-		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
+  TEST_FOR_EXCEPTION(
+    h || hl || hu, std::logic_error
+    ,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
-	using DenseLinAlgPack::norm_1;
-	return f + local_constr_term( mu_, c, "calc_deriv" );
+  using DenseLinAlgPack::norm_1;
+  return f + local_constr_term( mu_, c, "calc_deriv" );
 */
-	assert(0); // ToDo: Write a reduction operator for the above operation
-	return 0.0;
+  assert(0); // ToDo: Write a reduction operator for the above operation
+  return 0.0;
 }
 
 value_type MeritFuncNLPModL1::deriv() const
 {
-	return deriv_;
+  return deriv_;
 }
 
 void MeritFuncNLPModL1::print_merit_func(
-	std::ostream& out, const std::string& L
-	) const
+  std::ostream& out, const std::string& L
+  ) const
 {
-	out
-		<< L << "*** Define a modified L1 merit funciton that uses different\n"
-		<< L << "*** penalty parameters for each constriant.\n"
-		<< L << "*** (assumes Gc_k'*d_k + c_k = 0):\n"
-		<< L << "phi(f,c) = f + sum( mu(j) * abs(c(j)), j = 1,...,m )\n"
-		<< L << "Dphi(x_k,d_k) = Gf_k' * d_k - sum( mu(j) * abs(c(j)), j = 1,...,m )\n";
+  out
+    << L << "*** Define a modified L1 merit funciton that uses different\n"
+    << L << "*** penalty parameters for each constriant.\n"
+    << L << "*** (assumes Gc_k'*d_k + c_k = 0):\n"
+    << L << "phi(f,c) = f + sum( mu(j) * abs(c(j)), j = 1,...,m )\n"
+    << L << "Dphi(x_k,d_k) = Gf_k' * d_k - sum( mu(j) * abs(c(j)), j = 1,...,m )\n";
 }
 
 // Overridden from MeritFuncNLPDirecDeriv
 
 value_type MeritFuncNLPModL1::calc_deriv(
-	const Vector    &Gf_k
-	,const Vector   *c_k
-	,const Vector   *h_k
-	,const Vector   *hl
-	,const Vector   *hu
-	,const Vector   &d_k
-	)
+  const Vector    &Gf_k
+  ,const Vector   *c_k
+  ,const Vector   *h_k
+  ,const Vector   *hl
+  ,const Vector   *hu
+  ,const Vector   &d_k
+  )
 {
-	TEST_FOR_EXCEPTION(
-		h_k || hl || hu, std::logic_error
-		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
+  TEST_FOR_EXCEPTION(
+    h_k || hl || hu, std::logic_error
+    ,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
-	using DenseLinAlgPack::dot; using DenseLinAlgPack::norm_1;
-	return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
+  using DenseLinAlgPack::dot; using DenseLinAlgPack::norm_1;
+  return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
 */
-	assert(0); // ToDo: Write a reduction operator for the above operation
-	return 0.0;
+  assert(0); // ToDo: Write a reduction operator for the above operation
+  return 0.0;
 }
 
 // Overridden from MeritFuncPenaltyParam
 
 void MeritFuncNLPModL1::set_space_c( const VectorSpace::space_ptr_t& space_c )
 {
-	mu_  = space_c->create_member();
-	*mu_ = 0.0;
+  mu_  = space_c->create_member();
+  *mu_ = 0.0;
 }
 
 VectorMutable& MeritFuncNLPModL1::set_mu()
 {
-	return *mu_;
+  return *mu_;
 }
 
 const Vector& MeritFuncNLPModL1::get_mu() const
 {
-	return *mu_;
+  return *mu_;
 }
 
 }	// end namespace ConstrainedOptPack
@@ -122,24 +122,24 @@ const Vector& MeritFuncNLPModL1::get_mu() const
 namespace {
 
 value_type local_constr_term( const DVector& mu, const DVectorSlice& c
-	, const char func_name[] )
+  , const char func_name[] )
 {
-	if( mu.size() != c.size() ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MeritFuncNLPModL1::" << func_name << "(...) : "
-			<< "Error, the sizes mu.size() == " << mu.size()
-			<< " != c.size() == " << c.size();
-		throw ConstrainedOptPack::MeritFuncNLP::InvalidInitialization(omsg.str());
-	}
-	value_type r = 0.0;
-	DVector::const_iterator
-		mu_itr = mu.begin();
-	DVectorSlice::const_iterator
-		c_itr = c.begin();
-	while( mu_itr != mu.end() )
-		r += *mu_itr++ * ::fabs( *c_itr++ );
-	return r;
+  if( mu.size() != c.size() ) {
+    std::ostringstream omsg;
+    omsg
+      << "MeritFuncNLPModL1::" << func_name << "(...) : "
+      << "Error, the sizes mu.size() == " << mu.size()
+      << " != c.size() == " << c.size();
+    throw ConstrainedOptPack::MeritFuncNLP::InvalidInitialization(omsg.str());
+  }
+  value_type r = 0.0;
+  DVector::const_iterator
+    mu_itr = mu.begin();
+  DVectorSlice::const_iterator
+    c_itr = c.begin();
+  while( mu_itr != mu.end() )
+    r += *mu_itr++ * ::fabs( *c_itr++ );
+  return r;
 }
 
 }	// end namespace

@@ -35,41 +35,41 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 1;
+  const int local_num_options = 1;
 
-	const char options_group_name[] = "CheckSkipBFGSUpdateStd";
+  const char options_group_name[] = "CheckSkipBFGSUpdateStd";
 
-	enum local_EOptions {
-		SKIP_BFGS_PROP_CONST
-	};
+  enum local_EOptions {
+    SKIP_BFGS_PROP_CONST
+  };
 
-	const char* local_SOptions[local_num_options]	= {
-		"skip_bfgs_prop_const"
-	};
+  const char* local_SOptions[local_num_options]	= {
+    "skip_bfgs_prop_const"
+  };
 
 }
 
 namespace MoochoPack {
 
 CheckSkipBFGSUpdateStd_StepSetOptions::CheckSkipBFGSUpdateStd_StepSetOptions(
-			CheckSkipBFGSUpdateStd_Step* target )
-	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
-			  options_group_name, local_num_options, local_SOptions )
-		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			CheckSkipBFGSUpdateStd_Step >( target )
+      CheckSkipBFGSUpdateStd_Step* target )
+  :	OptionsFromStreamPack::SetOptionsFromStreamNode(
+        options_group_name, local_num_options, local_SOptions )
+    , OptionsFromStreamPack::SetOptionsToTargetBase<
+      CheckSkipBFGSUpdateStd_Step >( target )
 {}
 
 void CheckSkipBFGSUpdateStd_StepSetOptions::setOption(
-	int option_num, const std::string& option_value )
+  int option_num, const std::string& option_value )
 {
-	switch( (local_EOptions)option_num ) {
-		case SKIP_BFGS_PROP_CONST: {
-			target().skip_bfgs_prop_const( ::fabs( ::atof( option_value.c_str() ) ) );
-			break;
-		}
-		default:
-			assert(0);	// Local error only?
-	}
+  switch( (local_EOptions)option_num ) {
+    case SKIP_BFGS_PROP_CONST: {
+      target().skip_bfgs_prop_const( ::fabs( ::atof( option_value.c_str() ) ) );
+      break;
+    }
+    default:
+      assert(0);	// Local error only?
+  }
 }
 
 }	// end namespace MoochoPack 

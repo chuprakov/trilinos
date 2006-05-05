@@ -33,48 +33,48 @@
 #include "IterationPack_print_algorithm_step.hpp"
 
 bool MoochoPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
+  , poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	NLPAlgo	&algo	= rsqp_algo(_algo);
-	NLPAlgoState	&s		= algo.rsqp_state();
-	NLP			&nlp	= algo.nlp();
+  NLPAlgo	&algo	= rsqp_algo(_algo);
+  NLPAlgoState	&s		= algo.rsqp_state();
+  NLP			&nlp	= algo.nlp();
 
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
-	out << std::boolalpha;
+  EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  std::ostream& out = algo.track().journal_out();
+  out << std::boolalpha;
 
-	// print step header.
-	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		using IterationPack::print_algorithm_step;
-		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
-	}
+  // print step header.
+  if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+    using IterationPack::print_algorithm_step;
+    print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
+  }
 
-	const bool take_full_step = s.k() > full_steps_after_k();
+  const bool take_full_step = s.k() > full_steps_after_k();
 
-	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			out	<< "\nk = " << s.k() << ( take_full_step ? " > " : " < ")
-					<< "full_steps_after_k = " << full_steps_after_k() << std::endl;
-	}
+  if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+      out	<< "\nk = " << s.k() << ( take_full_step ? " > " : " < ")
+          << "full_steps_after_k = " << full_steps_after_k() << std::endl;
+  }
 
-	if( !take_full_step ) {
-		return line_search().do_step(_algo,step_poss,type,assoc_step_poss);
-	}
-	else {
-		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			out	<< "\nKeep the full step...\n";
-		}
-	}
+  if( !take_full_step ) {
+    return line_search().do_step(_algo,step_poss,type,assoc_step_poss);
+  }
+  else {
+    if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+      out	<< "\nKeep the full step...\n";
+    }
+  }
 
-	return true;
+  return true;
 }
 
 void MoochoPack::LineSearchFullStepAfterKIter_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+  , poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+  , std::ostream& out, const std::string& L ) const
 {
-	out	<< L << "*** Start using full steps after full_steps_after_k iterations.\n"
-		<< L << "default: full_steps_after_k = very big\n";
-	out	<< L << "if k < full_steps_after_k then\n";
-	line_search().print_step(algo,step_poss,type,assoc_step_poss,out,L + "    " );
-	out	<< L << "end\n";
+  out	<< L << "*** Start using full steps after full_steps_after_k iterations.\n"
+    << L << "default: full_steps_after_k = very big\n";
+  out	<< L << "if k < full_steps_after_k then\n";
+  line_search().print_step(algo,step_poss,type,assoc_step_poss,out,L + "    " );
+  out	<< L << "end\n";
 }

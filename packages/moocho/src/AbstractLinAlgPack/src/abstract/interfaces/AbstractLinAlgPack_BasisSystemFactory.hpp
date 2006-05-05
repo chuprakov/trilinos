@@ -34,7 +34,7 @@
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace OptionsFromStreamPack {
-	class OptionsFromStream;
+  class OptionsFromStream;
 }
 
 namespace AbstractLinAlgPack {
@@ -48,32 +48,32 @@ class BasisSystemFactory : public Teuchos::AbstractFactory<BasisSystem>
 {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
-	//@}
+  //@}
 
-	///
-	virtual ~BasisSystemFactory() {}
+  ///
+  virtual ~BasisSystemFactory() {}
 
-	///
-	/** Set the options that will be used to determine what basis system will be returned
-	 * from <tt>this->create()</tt>.
-	 *
-	 * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
-	 * this method is called so <tt>this</tt> had better read the options inside of the
-	 * <tt>this->create()</tt> method.
-	 */
-	virtual void set_options( const options_ptr_t& options ) = 0;
+  ///
+  /** Set the options that will be used to determine what basis system will be returned
+   * from <tt>this->create()</tt>.
+   *
+   * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
+   * this method is called so <tt>this</tt> had better read the options inside of the
+   * <tt>this->create()</tt> method.
+   */
+  virtual void set_options( const options_ptr_t& options ) = 0;
 
-	///
-	/** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
-	 */
-	virtual const options_ptr_t& get_options() const = 0;
+  ///
+  /** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+   */
+  virtual const options_ptr_t& get_options() const = 0;
 
 }; // end class BasisSystemFactory
 

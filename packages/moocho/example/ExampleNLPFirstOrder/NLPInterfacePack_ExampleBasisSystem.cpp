@@ -37,73 +37,73 @@
 namespace NLPInterfacePack {
  
 ExampleBasisSystem::ExampleBasisSystem(
-	const VectorSpace::space_ptr_t       &space_x
-	,const Range1D                       &var_dep
-	,const Range1D                       &var_indep
-	)
-	:BasisSystemComposite(
-		space_x
-		,var_dep
-		,var_indep
-		,space_x->sub_space(var_dep)
-		,Teuchos::rcp(
-			new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
-		,Teuchos::rcp(
-			new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
-		,Teuchos::rcp(
-			new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
-		,Teuchos::rcp(
-			new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
-		)
+  const VectorSpace::space_ptr_t       &space_x
+  ,const Range1D                       &var_dep
+  ,const Range1D                       &var_indep
+  )
+  :BasisSystemComposite(
+    space_x
+    ,var_dep
+    ,var_indep
+    ,space_x->sub_space(var_dep)
+    ,Teuchos::rcp(
+      new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
+    ,Teuchos::rcp(
+      new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
+    ,Teuchos::rcp(
+      new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
+    ,Teuchos::rcp(
+      new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
+    )
 {}
-	
+  
 void ExampleBasisSystem::initialize(
-	const VectorSpace::space_ptr_t       &space_x
-	,const Range1D                       &var_dep
-	,const Range1D                       &var_indep
-	)
+  const VectorSpace::space_ptr_t       &space_x
+  ,const Range1D                       &var_dep
+  ,const Range1D                       &var_indep
+  )
 {
-	namespace mmp = MemMngPack;
-	TEST_FOR_EXCEPTION(
-		space_x.get() == NULL, std::invalid_argument
-		,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
-		);
-	BasisSystemComposite::initialize(
-		space_x
-		,var_dep
-		,var_indep
-		,space_x->sub_space(var_dep)
-		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
-		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
-		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
-		,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
-		);
+  namespace mmp = MemMngPack;
+  TEST_FOR_EXCEPTION(
+    space_x.get() == NULL, std::invalid_argument
+    ,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
+    );
+  BasisSystemComposite::initialize(
+    space_x
+    ,var_dep
+    ,var_indep
+    ,space_x->sub_space(var_dep)
+    ,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
+    ,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
+    ,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
+    ,Teuchos::rcp(new Teuchos::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
+    );
 }
 
 void ExampleBasisSystem::update_D(
-	const MatrixOpNonsing   &C
-	,const MatrixOp         &N
-	,MatrixOp               *D
-	,EMatRelations          mat_rel
-	) const
+  const MatrixOpNonsing   &C
+  ,const MatrixOp         &N
+  ,MatrixOp               *D
+  ,EMatRelations          mat_rel
+  ) const
 {
-	using Teuchos::dyn_cast;
+  using Teuchos::dyn_cast;
 
-	TEST_FOR_EXCEPTION(
-		D == NULL, std::logic_error
-		,"ExampleBasisSystem::update_D(...): Error!" );
+  TEST_FOR_EXCEPTION(
+    D == NULL, std::logic_error
+    ,"ExampleBasisSystem::update_D(...): Error!" );
 
-	const MatrixSymDiagStd
-		&C_aggr = dyn_cast<const MatrixSymDiagStd>(C),
-		&N_aggr = dyn_cast<const MatrixSymDiagStd>(N);
-	MatrixSymDiagStd
-		&D_sym_diag = dyn_cast<MatrixSymDiagStd>(*D);
-	if( D_sym_diag.rows() != C.rows() )
-		D_sym_diag.initialize(
-			this->space_x()->sub_space(this->var_dep())->create_member()
-			);
-	AbstractLinAlgPack::ele_wise_divide(                           // D_diag = - N_diag ./ C_diag
-		-1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  // ...
+  const MatrixSymDiagStd
+    &C_aggr = dyn_cast<const MatrixSymDiagStd>(C),
+    &N_aggr = dyn_cast<const MatrixSymDiagStd>(N);
+  MatrixSymDiagStd
+    &D_sym_diag = dyn_cast<MatrixSymDiagStd>(*D);
+  if( D_sym_diag.rows() != C.rows() )
+    D_sym_diag.initialize(
+      this->space_x()->sub_space(this->var_dep())->create_member()
+      );
+  AbstractLinAlgPack::ele_wise_divide(                           // D_diag = - N_diag ./ C_diag
+    -1.0, N_aggr.diag(), C_aggr.diag(), &D_sym_diag.diag() );  // ...
 }
 
 } // end namespace NLPInterfacePack

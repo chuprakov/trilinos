@@ -41,70 +41,70 @@ namespace MoochoPack {
 /** rSQP Algorithm control class.
   */
 class NLPAlgo
-	: public NLPAlgoInterface
-	, public IterationPack::Algorithm
+  : public NLPAlgoInterface
+  , public IterationPack::Algorithm
 {
 public:
 
-	/** @name Public Types */
-	//@{
+  /** @name Public Types */
+  //@{
 
-	//@}
+  //@}
 
-	/// Constructs with no step, added_step, pre_step, post_step, state, or decomp_sys objects added.
-	NLPAlgo();
+  /// Constructs with no step, added_step, pre_step, post_step, state, or decomp_sys objects added.
+  NLPAlgo();
 
-	/// <<std aggr>> members for algo_cntr
-	STANDARD_AGGREGATION_MEMBERS( NLPAlgoContainer, algo_cntr )
+  /// <<std aggr>> members for algo_cntr
+  STANDARD_AGGREGATION_MEMBERS( NLPAlgoContainer, algo_cntr )
 
-	/// <<std aggr>> members for nlp
-	STANDARD_AGGREGATION_MEMBERS( NLP, nlp )
+  /// <<std aggr>> members for nlp
+  STANDARD_AGGREGATION_MEMBERS( NLP, nlp )
 
-	///
-	NLPAlgoState& rsqp_state()
-	{	return dynamic_cast<NLPAlgoState&>(state()); }
+  ///
+  NLPAlgoState& rsqp_state()
+  {	return dynamic_cast<NLPAlgoState&>(state()); }
 
-	///
-	const NLPAlgoState& rsqp_state() const
-	{	return dynamic_cast<const NLPAlgoState&>(state()); }
+  ///
+  const NLPAlgoState& rsqp_state() const
+  {	return dynamic_cast<const NLPAlgoState&>(state()); }
 
-	///
-	void do_step_first(Algorithm::poss_type first_step_poss)
-	{	first_step_poss_ = first_step_poss; }
+  ///
+  void do_step_first(Algorithm::poss_type first_step_poss)
+  {	first_step_poss_ = first_step_poss; }
 
-	/** @name Overridden form rSQPAlgoInteface */
-	//@{	
-	
-	///
-	const NLPAlgoState& retrieve_state() const;
+  /** @name Overridden form rSQPAlgoInteface */
+  //@{	
+  
+  ///
+  const NLPAlgoState& retrieve_state() const;
 
-	///
-	/** This is the main control function for the rSQP algorithm.
-	  *
-	  * This function basically just calls Algorithm::do_algorithm(...).
-	  */
-	NLPSolverClientInterface::EFindMinReturn dispatch();
+  ///
+  /** This is the main control function for the rSQP algorithm.
+    *
+    * This function basically just calls Algorithm::do_algorithm(...).
+    */
+  NLPSolverClientInterface::EFindMinReturn dispatch();
 
-	///
-	void interface_print_algorithm(std::ostream& out) const;
-	///
-	void interface_set_algo_timing( bool algo_timing );
-	///
-	bool interface_algo_timing() const;
-	///
-	void interface_print_algorithm_times( std::ostream& out ) const;
+  ///
+  void interface_print_algorithm(std::ostream& out) const;
+  ///
+  void interface_set_algo_timing( bool algo_timing );
+  ///
+  bool interface_algo_timing() const;
+  ///
+  void interface_print_algorithm_times( std::ostream& out ) const;
 
-	//@}
+  //@}
 
-	/// overridden from Algorihth.
+  /// overridden from Algorihth.
 
-	///
-	void print_algorithm(std::ostream& out) const;
+  ///
+  void print_algorithm(std::ostream& out) const;
 
 protected:
 
-	// First step to execute
-	Algorithm::poss_type first_step_poss_;
+  // First step to execute
+  Algorithm::poss_type first_step_poss_;
 
 };	// end class NLPAlgo
 

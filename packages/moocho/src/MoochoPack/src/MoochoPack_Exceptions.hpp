@@ -53,12 +53,12 @@ class TestFailed : public std::runtime_error
 class QPFailure : public std::runtime_error
 {
 public:
-	QPFailure(const std::string& what_arg
-			  , const ConstrainedOptPack::QPSolverStats& _qp_stats)
-		: std::runtime_error(what_arg)
-		, qp_stats(_qp_stats)
-		{}
-	ConstrainedOptPack::QPSolverStats qp_stats;
+  QPFailure(const std::string& what_arg
+        , const ConstrainedOptPack::QPSolverStats& _qp_stats)
+    : std::runtime_error(what_arg)
+    , qp_stats(_qp_stats)
+    {}
+  ConstrainedOptPack::QPSolverStats qp_stats;
 };
 
 //@}

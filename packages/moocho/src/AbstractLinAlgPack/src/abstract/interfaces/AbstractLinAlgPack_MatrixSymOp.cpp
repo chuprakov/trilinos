@@ -36,31 +36,31 @@ namespace AbstractLinAlgPack {
 MatrixSymOp::mat_mswo_mut_ptr_t
 MatrixSymOp::clone_mswo()
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 MatrixSymOp::mat_mswo_ptr_t
 MatrixSymOp::clone_mswo() const
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 void MatrixSymOp::Mp_StPtMtP(
-	MatrixSymOp* sym_lhs, value_type alpha
-	, EMatRhsPlaceHolder dummy_place_holder
-	, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-	, value_type beta ) const
+  MatrixSymOp* sym_lhs, value_type alpha
+  , EMatRhsPlaceHolder dummy_place_holder
+  , const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+  , value_type beta ) const
 {
-	assert(0); // ToDo: Implement!
+  assert(0); // ToDo: Implement!
 }
 
 void MatrixSymOp::Mp_StMtMtM(
-	MatrixSymOp* sym_lhs, value_type alpha
-	, EMatRhsPlaceHolder dummy_place_holder
-	, const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-	, value_type beta ) const
+  MatrixSymOp* sym_lhs, value_type alpha
+  , EMatRhsPlaceHolder dummy_place_holder
+  , const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+  , value_type beta ) const
 {
-	assert(0); // ToDo: Implement!
+  assert(0); // ToDo: Implement!
 }
 
 // Overridden from MatrixOp
@@ -68,24 +68,24 @@ void MatrixSymOp::Mp_StMtMtM(
 
 size_type MatrixSymOp::cols() const
 {
-	return this->rows();
+  return this->rows();
 }
 
 const VectorSpace& MatrixSymOp::space_rows() const
 {
-	return this->space_cols();
+  return this->space_cols();
 }
 
 MatrixSymOp::mat_mut_ptr_t
 MatrixSymOp::clone()
 {
-	return clone_mswo();
+  return clone_mswo();
 }
 
 MatrixSymOp::mat_ptr_t
 MatrixSymOp::clone() const
 {
-	return clone_mswo();
+  return clone_mswo();
 }
 
 }	// end namespace AbstractLinAlgPack 

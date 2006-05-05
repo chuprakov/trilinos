@@ -78,131 +78,131 @@ namespace NLPInterfacePack {
 class NLPThyraModelEvaluatorBase : virtual public NLPObjGrad {
 public:
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	/** \brief . */
-	void initialize(bool test_setup);
-	/** \brief . */
-	bool is_initialized() const;
-	/** \brief . */
-	vec_space_ptr_t space_x() const;
-	/** \brief . */
-	vec_space_ptr_t space_c() const;
-	/** \brief . */
+  /** \brief . */
+  void initialize(bool test_setup);
+  /** \brief . */
+  bool is_initialized() const;
+  /** \brief . */
+  vec_space_ptr_t space_x() const;
+  /** \brief . */
+  vec_space_ptr_t space_c() const;
+  /** \brief . */
     size_type num_bounded_x() const;
-	/** \brief . */
-	void force_xinit_in_bounds(bool force_xinit_in_bounds);
-	/** \brief . */
-	bool force_xinit_in_bounds() const;
-	/** \brief . */
-	const Vector& xinit() const;
-	/** \brief . */
-	const Vector& xl() const;
-	/** \brief . */
-	const Vector& xu() const;
-	/** \brief . */
-	value_type max_var_bounds_viol() const;
-	/** \brief . */
-	void set_f(value_type* f);
-	/** \brief . */
-	void set_c(VectorMutable* c);
-	/** \brief . */
-	void unset_quantities();
-	/** \brief . */
-	void scale_f( value_type scale_f );
-	/** \brief . */
-	value_type scale_f() const;
-	/** \brief . */
-	void report_final_solution(
-		const Vector&    x
-		,const Vector*   lambda
-		,const Vector*   nu
-		,bool            optimal
-		);
+  /** \brief . */
+  void force_xinit_in_bounds(bool force_xinit_in_bounds);
+  /** \brief . */
+  bool force_xinit_in_bounds() const;
+  /** \brief . */
+  const Vector& xinit() const;
+  /** \brief . */
+  const Vector& xl() const;
+  /** \brief . */
+  const Vector& xu() const;
+  /** \brief . */
+  value_type max_var_bounds_viol() const;
+  /** \brief . */
+  void set_f(value_type* f);
+  /** \brief . */
+  void set_c(VectorMutable* c);
+  /** \brief . */
+  void unset_quantities();
+  /** \brief . */
+  void scale_f( value_type scale_f );
+  /** \brief . */
+  value_type scale_f() const;
+  /** \brief . */
+  void report_final_solution(
+    const Vector&    x
+    ,const Vector*   lambda
+    ,const Vector*   nu
+    ,bool            optimal
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLPObjGrad */
-	//@{
+  /** @name Overridden public members from NLPObjGrad */
+  //@{
 
-	/** \brief . */
-	void set_Gf(VectorMutable* Gf);
+  /** \brief . */
+  void set_Gf(VectorMutable* Gf);
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden protected members from NLP */
-	//@{
+  /** @name Overridden protected members from NLP */
+  //@{
 
-	/** \brief . */
-	void imp_calc_f(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
-	/** \brief . */
-	void imp_calc_c(
-		const Vector& x, bool newx
-		,const ZeroOrderInfo& zero_order_info) const;
+  /** \brief . */
+  void imp_calc_f(
+    const Vector& x, bool newx
+    ,const ZeroOrderInfo& zero_order_info) const;
+  /** \brief . */
+  void imp_calc_c(
+    const Vector& x, bool newx
+    ,const ZeroOrderInfo& zero_order_info) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden protected members from NLPObjGrad */
-	//@{
+  /** @name Overridden protected members from NLPObjGrad */
+  //@{
 
-	/** \brief . */
-	void imp_calc_Gf(
-		const Vector& x, bool newx
-		,const ObjGradInfo& obj_grad_info) const;
+  /** \brief . */
+  void imp_calc_Gf(
+    const Vector& x, bool newx
+    ,const ObjGradInfo& obj_grad_info) const;
 
-	//@}
+  //@}
 
 protected:
 
   /** @name Protected functions to be used by subclasses */
   //@{
 
-	/** Initialize to uninitialized */
-	NLPThyraModelEvaluatorBase();
+  /** Initialize to uninitialized */
+  NLPThyraModelEvaluatorBase();
 
-	/** \brief Initialize given a <tt>Thyra::ModelEvaluator</tt> and
-	 * a description of how to interpret it.
-	 *
-	 * @param  model    [in] NonlinearProblem that defines all of the functions and variables.
+  /** \brief Initialize given a <tt>Thyra::ModelEvaluator</tt> and
+   * a description of how to interpret it.
+   *
+   * @param  model    [in] NonlinearProblem that defines all of the functions and variables.
    * @param  p_idx [in] Index of the subset of parameter vectors to use as the independent
    *               variables.  If <tt>p_idx < 0</tt>, then no extra parameters are added.
    * @param  g_idx [in] Index of the subset of auxiliary response functions to use as
    *               the objective function.  Note, only the first element <tt>model.g(g_idx)(1)</tt>
    *               will be used as the objective function value.
-	 * @param  model_xL [in] Pointer to upper bounds for the state variables <tt>model.x</tt>.  If NULL
-	 *               then the default supplied in <tt>model->get_x_lower_bounds()</tt> will be used.
-	 * @param  model_xU [in] Pointer to upper bounds for the state variables <tt>x</tt>.  If NULL
-	 *               then the default supplied in <tt>model->get_x_upper_bounds()</tt> will be used.
-	 * @param  model_x0 [in] Pointer to initial guess for the state variables <tt>x</tt>.  If NULL
-	 *               the the default supplied in <tt>model->get_x_init()</tt> will be used.
-	 *
-	 * ToDo: Finish documentation!
-	 *
-	 * Todo: Add arguments for auxiliary inequalites and equalities
-	 */
-	void initializeBase(
-		const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
+   * @param  model_xL [in] Pointer to upper bounds for the state variables <tt>model.x</tt>.  If NULL
+   *               then the default supplied in <tt>model->get_x_lower_bounds()</tt> will be used.
+   * @param  model_xU [in] Pointer to upper bounds for the state variables <tt>x</tt>.  If NULL
+   *               then the default supplied in <tt>model->get_x_upper_bounds()</tt> will be used.
+   * @param  model_x0 [in] Pointer to initial guess for the state variables <tt>x</tt>.  If NULL
+   *               the the default supplied in <tt>model->get_x_init()</tt> will be used.
+   *
+   * ToDo: Finish documentation!
+   *
+   * Todo: Add arguments for auxiliary inequalites and equalities
+   */
+  void initializeBase(
+    const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-		,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-		,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
-		);
+    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
+    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
+    );
 
-	/** \brief . */
-	void assert_is_initialized() const;
-	/** \brief . */
-	void copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const;
-	/** \brief . */
-	void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
+  /** \brief . */
+  void assert_is_initialized() const;
+  /** \brief . */
+  void copy_from_model_x( const Thyra::VectorBase<value_type>* model_x, VectorMutable* x_D ) const;
+  /** \brief . */
+  void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
   /** \brief . */
   void preprocessBaseInOutArgs(
     const Vector                                      &x
@@ -229,34 +229,34 @@ protected:
 
 //private: // ToDo: Make these private and refactor the other classes ...
 
-	// /////////////////////////////////////////
-	// Private types
+  // /////////////////////////////////////////
+  // Private types
 
   typedef Teuchos::RefCountPtr<const AbstractLinAlgPack::VectorSpaceThyra> VectorSpaceThyra_ptr_t;
 
-	// /////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////
+  // Private data members
 
-	bool                                initialized_;  // flag for if initialized has been called.
-	value_type                          obj_scale_;    // default = 1.0;
-	bool                                has_bounds_;   // True if has bounds
-	bool                                force_xinit_in_bounds_; // default = true.
-	index_type                          num_bounded_x_;
-	Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
-	                                    model_;
+  bool                                initialized_;  // flag for if initialized has been called.
+  value_type                          obj_scale_;    // default = 1.0;
+  bool                                has_bounds_;   // True if has bounds
+  bool                                force_xinit_in_bounds_; // default = true.
+  index_type                          num_bounded_x_;
+  Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >
+                                      model_;
   int                                 p_idx_;
   int                                 g_idx_;
   bool                                DfDp_supports_op_;
   bool                                DfDp_supports_mv_;
-	VectorSpace::space_ptr_t            space_x_;      // Space for the variables
-	VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
-	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
-	NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
-	VectorSpace::vec_mut_ptr_t          xinit_;        // Initial guess.
-	VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
-	VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
+  VectorSpace::space_ptr_t            space_x_;      // Space for the variables
+  VectorSpaceThyra_ptr_t              space_c_;      // Space for the constraints
+  NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
+  NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
+  VectorSpace::vec_mut_ptr_t          xinit_;        // Initial guess.
+  VectorSpace::vec_mut_ptr_t          xl_;           // lower bounds.
+  VectorSpace::vec_mut_ptr_t          xu_;           // upper bounds.
 
-	Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     model_g_;
+  Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >                     model_g_;
 
   mutable bool model_g_updated_;
   mutable bool model_Dg_updated_;
@@ -271,9 +271,9 @@ protected:
 
   ///
   void evalModel( 
-		const Vector            &x
+    const Vector            &x
     ,bool                   newx
-		,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
+    ,const ZeroOrderInfo    *zero_order_info  // != NULL if only zero-order info
     ,const ObjGradInfo      *obj_grad_info    // != NULL if obj-grad and below info
     ) const;
 

@@ -59,21 +59,21 @@ namespace AbstractLinAlgPack {
   \endverbatim
   */
 class VectorSpaceTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			VectorSpaceTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      VectorSpaceTester >
 {
 public:
 
-	///
-	VectorSpaceTesterSetOptions(
-		  VectorSpaceTester* target = 0
-		, const char opt_grp_name[] = "VectorSpaceTester" );
+  ///
+  VectorSpaceTesterSetOptions(
+      VectorSpaceTester* target = 0
+    , const char opt_grp_name[] = "VectorSpaceTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class VectorSpaceTesterSetOptions
 

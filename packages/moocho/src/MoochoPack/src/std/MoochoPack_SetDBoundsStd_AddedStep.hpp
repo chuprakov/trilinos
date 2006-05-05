@@ -40,26 +40,26 @@ namespace MoochoPack {
 /** Computes the bounds for the QP subproblem from the %NLP bounds.
  */
 class SetDBoundsStd_AddedStep
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	///
-	SetDBoundsStd_AddedStep();
+  ///
+  SetDBoundsStd_AddedStep();
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
-	IterationPack::CastIQMember<VectorMutable> dl_iq_;
-	IterationPack::CastIQMember<VectorMutable> du_iq_;
+  IterationPack::CastIQMember<VectorMutable> dl_iq_;
+  IterationPack::CastIQMember<VectorMutable> du_iq_;
 
 }; // end class SetDBoundsStd_AddedStep
 

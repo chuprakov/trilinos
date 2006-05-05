@@ -60,114 +60,114 @@ namespace ConstrainedOptPack {
 class MatrixGenBanded	: public MatrixOp
 {
 public:
-	
-	///
-	typedef Teuchos::RefCountPtr<
-		MemMngPack::ReleaseResource>  release_resource_ptr_t;
+  
+  ///
+  typedef Teuchos::RefCountPtr<
+    MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
-	// //////////////
+  // //////////////
     // Constructors
 
-	///
-	/** Construct and Initialize.
-	 *
-	 * This constructor just calls #this->initialize(...)#.
-	 */
-	MatrixGenBanded(
-		size_type                         m                       = 0
-		,size_type                        n                       = 0
-		,size_type                        kl                      = 0
-		,size_type                        ku                      = 0
-		,DMatrixSlice                   *MB                     = NULL
-		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
-		);
+  ///
+  /** Construct and Initialize.
+   *
+   * This constructor just calls #this->initialize(...)#.
+   */
+  MatrixGenBanded(
+    size_type                         m                       = 0
+    ,size_type                        n                       = 0
+    ,size_type                        kl                      = 0
+    ,size_type                        ku                      = 0
+    ,DMatrixSlice                   *MB                     = NULL
+    ,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
+    );
 
-	// ///////////////////////////
+  // ///////////////////////////
     // Access representation
 
-	///
-	/** Initialize
-	 *
-	 * If called with all of the default arguments then #this# will become uninitialized.
-	 *
-	 * ToDo: Finish pre and post conditions!
-	 *
-	 * @param  m        [in] Determines the size of the banded matrix (m x n).  If
-	 *                  If #m == 0# then all of the following arguments should be left at
-	 * @param  n        [in] Determines the size of the banded matrix (m x n).
-	 * @param  kl       [in] Determines the lower band width of the matrix as defined by xGBMV(...).
-	 * @param  ku       [in] Determines the band width of the matrix as defined by xGBMV(...).
-	 * @param  MB       [in/state] If #MB != NULL# then this matrix (size (kl+ku+1) x n) is used to store
-	 *                  the original banded matrix #M# in the format of xGBMV(...).  This matrix must
-	 *                  be initialized on input.
-	 * @param  MB_release_resource_ptr
-	 *                  [in] Only significant if #MB != NULL#.  Points to a resource to
-	 *                  be released when #MB# is no longer needed.
-	 */
-	void initialize(
-		size_type                         m                       = 0
-		,size_type                        n                       = 0
-		,size_type                        kl                      = 0
-		,size_type                        ku                      = 0
-		,DMatrixSlice                   *MB                     = NULL
-		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
-		);
+  ///
+  /** Initialize
+   *
+   * If called with all of the default arguments then #this# will become uninitialized.
+   *
+   * ToDo: Finish pre and post conditions!
+   *
+   * @param  m        [in] Determines the size of the banded matrix (m x n).  If
+   *                  If #m == 0# then all of the following arguments should be left at
+   * @param  n        [in] Determines the size of the banded matrix (m x n).
+   * @param  kl       [in] Determines the lower band width of the matrix as defined by xGBMV(...).
+   * @param  ku       [in] Determines the band width of the matrix as defined by xGBMV(...).
+   * @param  MB       [in/state] If #MB != NULL# then this matrix (size (kl+ku+1) x n) is used to store
+   *                  the original banded matrix #M# in the format of xGBMV(...).  This matrix must
+   *                  be initialized on input.
+   * @param  MB_release_resource_ptr
+   *                  [in] Only significant if #MB != NULL#.  Points to a resource to
+   *                  be released when #MB# is no longer needed.
+   */
+  void initialize(
+    size_type                         m                       = 0
+    ,size_type                        n                       = 0
+    ,size_type                        kl                      = 0
+    ,size_type                        ku                      = 0
+    ,DMatrixSlice                   *MB                     = NULL
+    ,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
+    );
 
-	///
-	size_type kl() const;
-	///
-	size_type ku() const;
-	///
-	/** Get view of MB.
-	 */
-	DMatrixSlice& MB();
-	///
-	const DMatrixSlice& MB() const;
+  ///
+  size_type kl() const;
+  ///
+  size_type ku() const;
+  ///
+  /** Get view of MB.
+   */
+  DMatrixSlice& MB();
+  ///
+  const DMatrixSlice& MB() const;
 
-	// /////////////////////////////
-	// Overridden from MatrixOp
+  // /////////////////////////////
+  // Overridden from MatrixOp
 
-	///
-	size_type rows() const;
-	///
-	size_type cols() const;
-	///
-	size_type nz() const;
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2, value_type beta) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2, value_type beta) const;
-	///
-	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const DVectorSlice& vs_rhs3, value_type beta) const;
-	///
-	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const SpVectorSlice& sv_rhs3, value_type beta) const;
+  ///
+  size_type rows() const;
+  ///
+  size_type cols() const;
+  ///
+  size_type nz() const;
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2, value_type beta) const;
+  ///
+  void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
+    , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    , BLAS_Cpp::Transp M_rhs2_trans
+    , const DVectorSlice& vs_rhs3, value_type beta) const;
+  ///
+  void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
+    , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    , BLAS_Cpp::Transp M_rhs2_trans
+    , const SpVectorSlice& sv_rhs3, value_type beta) const;
 
 private:
-	
-	// /////////////////////////////
-	// Private data members
+  
+  // /////////////////////////////
+  // Private data members
 
-	size_type                       m_;
-	size_type                       n_;
-	size_type                       kl_;
-	size_type                       ku_;
-	DMatrixSlice                  MB_;
-	release_resource_ptr_t          MB_release_resource_ptr_;
+  size_type                       m_;
+  size_type                       n_;
+  size_type                       kl_;
+  size_type                       ku_;
+  DMatrixSlice                  MB_;
+  release_resource_ptr_t          MB_release_resource_ptr_;
 
-	// /////////////////////////////
-	// Private member functions
+  // /////////////////////////////
+  // Private member functions
 
-	void assert_initialized() const;
+  void assert_initialized() const;
 
 }; // end class MatrixGenBanded
 
@@ -177,25 +177,25 @@ private:
 inline
 size_type MatrixGenBanded::kl() const
 {
-	return kl_;
+  return kl_;
 }
 
 inline
 size_type MatrixGenBanded::ku() const
 {
-	return ku_;
+  return ku_;
 }
 
 inline
 DMatrixSlice& MatrixGenBanded::MB()
 {
-	return MB_;
+  return MB_;
 }
 
 inline
 const DMatrixSlice& MatrixGenBanded::MB() const
 {
-	return MB_;
+  return MB_;
 }
 
 } // end namespace ConstrainedOptPack

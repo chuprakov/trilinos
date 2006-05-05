@@ -40,21 +40,21 @@ namespace MoochoPack {
 class QuasiRangeSpaceStepTailoredApproach_Strategy : public QuasiRangeSpaceStep_Strategy {
 public:
 
-	// ////////////////////////////////////////////////////////////
-	// Overridden from QuasiRangeSpaceStep_Strategy
+  // ////////////////////////////////////////////////////////////
+  // Overridden from QuasiRangeSpaceStep_Strategy
 
-	///
-	/** Calls the NLPrSQPTailoredApproach iterface to compute the step.
-	 *
-	 * ToDo: Finish documentation!
-	 */
- 	 bool solve_quasi_range_space_step(
-		std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
-		,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
-	  	);
+  ///
+  /** Calls the NLPrSQPTailoredApproach iterface to compute the step.
+   *
+   * ToDo: Finish documentation!
+   */
+    bool solve_quasi_range_space_step(
+    std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
+    ,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
+      );
 
-	///
-	void print_step( std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 }; // end class QuasiRangeSpaceStepTailoredApproach_Strategy
 

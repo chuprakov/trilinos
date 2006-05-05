@@ -46,76 +46,76 @@ namespace AbstractLinAlgPack {
 template <class T_Index, class T_Value>
 class SparseCOOPtrElement {
 public:
-	/** @name Public Typedefs. */
-	//@{
+  /** @name Public Typedefs. */
+  //@{
 
-	///
-	typedef T_Value						value_type;
-	///
-	typedef T_Index						index_type;
+  ///
+  typedef T_Value						value_type;
+  ///
+  typedef T_Index						index_type;
 
-	//@}
+  //@}
 
-	/** @name Constructors */
-	//@{
+  /** @name Constructors */
+  //@{
 
-	/// Construct uninitialized (poiner to value set to zero) (#index() == 0#).
-	SparseCOOPtrElement() : pvalue_(0), row_i_(0), col_j_(0)
-	{}
+  /// Construct uninitialized (poiner to value set to zero) (#index() == 0#).
+  SparseCOOPtrElement() : pvalue_(0), row_i_(0), col_j_(0)
+  {}
 
-	/// Construct with a pointer to the value and index set
-	SparseCOOPtrElement(value_type* pvalue, index_type row_i, index_type col_j)
-		: pvalue_(pvalue), row_i_(row_i), col_j_(col_j)
-	{}
+  /// Construct with a pointer to the value and index set
+  SparseCOOPtrElement(value_type* pvalue, index_type row_i, index_type col_j)
+    : pvalue_(pvalue), row_i_(row_i), col_j_(col_j)
+  {}
 
-	/// Initialize
-	void initialize(value_type* pvalue, index_type row_i, index_type col_j) {
-		pvalue_	= pvalue;
-		row_i_	= row_i;
-		col_j_	= col_j;
-	}
-	
-	//@}
+  /// Initialize
+  void initialize(value_type* pvalue, index_type row_i, index_type col_j) {
+    pvalue_	= pvalue;
+    row_i_	= row_i;
+    col_j_	= col_j;
+  }
+  
+  //@}
 
-	/** @name Value and index access */
-	//@{ 
+  /** @name Value and index access */
+  //@{ 
 
-	///
-	value_type& value()
-	{
-		return *pvalue_;
-	}
-	///
-	value_type value() const
-	{
-		return *pvalue_;
-	}
-	///
-	index_type row_i() const
-	{
-		return row_i_;
-	}
-	///
-	index_type col_j() const
-	{
-		return col_j_;
-	}
-	/// Change the indexs
-	void change_indexes(index_type row_i, index_type col_j)
-	{
-		row_i_ = row_i;
-		col_j_ = col_j;
-	}
-	/// Change the element pointer
-	void change_value_ptr(value_type* pvalue)
-	{
-		pvalue_ = pvalue;
-	}
+  ///
+  value_type& value()
+  {
+    return *pvalue_;
+  }
+  ///
+  value_type value() const
+  {
+    return *pvalue_;
+  }
+  ///
+  index_type row_i() const
+  {
+    return row_i_;
+  }
+  ///
+  index_type col_j() const
+  {
+    return col_j_;
+  }
+  /// Change the indexs
+  void change_indexes(index_type row_i, index_type col_j)
+  {
+    row_i_ = row_i;
+    col_j_ = col_j;
+  }
+  /// Change the element pointer
+  void change_value_ptr(value_type* pvalue)
+  {
+    pvalue_ = pvalue;
+  }
 
-	//@}
+  //@}
 private:
-	value_type*				pvalue_;
-	index_type				row_i_, col_j_;
+  value_type*				pvalue_;
+  index_type				row_i_, col_j_;
 
 };	// end class SparseCOOPtrElement
 

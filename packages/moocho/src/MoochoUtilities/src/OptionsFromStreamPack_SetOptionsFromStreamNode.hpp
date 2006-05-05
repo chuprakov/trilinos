@@ -43,44 +43,44 @@ namespace OptionsFromStreamPack {
 class SetOptionsFromStreamNode: public SetOptionsFromStream {
 public:
 
-	///
-	/** Constructs with the name of the options group and the names
-	  * of the options.
-	  *
-	  *	@param	options_group	The name of the options group to access
-	  *	@param	num_options		The number of options in the opitons
-	  *							group.
-	  *	@param	option_name		An array (length num_options) containing
-	  *							the names of the options.
-	  *	@param	exists_optional	Specifies if the options group must exist.
-	  */
-	SetOptionsFromStreamNode( const std::string& options_group
-		, int num_options, const char* option_names[]
-		, bool exists_optional = true );
+  ///
+  /** Constructs with the name of the options group and the names
+    * of the options.
+    *
+    *	@param	options_group	The name of the options group to access
+    *	@param	num_options		The number of options in the opitons
+    *							group.
+    *	@param	option_name		An array (length num_options) containing
+    *							the names of the options.
+    *	@param	exists_optional	Specifies if the options group must exist.
+    */
+  SetOptionsFromStreamNode( const std::string& options_group
+    , int num_options, const char* option_names[]
+    , bool exists_optional = true );
 
-	///
-	/** Overridden from SetOptionsFromStream and calls setOption(...).
-	  *
-	  * The options group #options_group# is used.  If this options
-	  * group does not exist and #exists_optional# == false then
-	  * an #std::invalid_argument# exception will be thrown.
-	  */
-	void set_options( const OptionsFromStream& options );
+  ///
+  /** Overridden from SetOptionsFromStream and calls setOption(...).
+    *
+    * The options group #options_group# is used.  If this options
+    * group does not exist and #exists_optional# == false then
+    * an #std::invalid_argument# exception will be thrown.
+    */
+  void set_options( const OptionsFromStream& options );
 
 protected:
 
-	///
-	/** To be overridden by the subclass to set an option given
-	  * its integer position and the option value.
-	  *
-	  * The integer possition returned is the possition of the option
-	  * in option_names[option_num] that was passed to the constructor.
-	  */
-	virtual void setOption( int option_num, const std::string& option_value ) = 0;
+  ///
+  /** To be overridden by the subclass to set an option given
+    * its integer position and the option value.
+    *
+    * The integer possition returned is the possition of the option
+    * in option_names[option_num] that was passed to the constructor.
+    */
+  virtual void setOption( int option_num, const std::string& option_value ) = 0;
 
 private:
-	StringToIntMap	name_map_;
-	bool			exists_optional_;
+  StringToIntMap	name_map_;
+  bool			exists_optional_;
 
 };	// end class SetOptionsFromStreamNode
 

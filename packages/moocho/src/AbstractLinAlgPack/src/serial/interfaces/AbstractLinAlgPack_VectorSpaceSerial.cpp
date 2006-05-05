@@ -49,93 +49,93 @@ namespace AbstractLinAlgPack {
 
 VectorSpaceSerial::VectorSpaceSerial( size_type dim )
 {
-	CLASS_MEMBER_PTRS
-	initialize(dim);
+  CLASS_MEMBER_PTRS
+  initialize(dim);
 }
 
 void VectorSpaceSerial::initialize( size_type dim )
 {
-	CLASS_MEMBER_PTRS
-	dim_ = dim;
+  CLASS_MEMBER_PTRS
+  dim_ = dim;
 }
 
 // Overridden from VectorSpace
 
 bool VectorSpaceSerial::is_compatible(const VectorSpace& a_vec_space ) const
 {
-	CLASS_MEMBER_PTRS
-	return this->dim() == a_vec_space.dim() && a_vec_space.is_in_core();
+  CLASS_MEMBER_PTRS
+  return this->dim() == a_vec_space.dim() && a_vec_space.is_in_core();
 }
 
 bool VectorSpaceSerial::is_in_core() const
 {
-	return true;
+  return true;
 }
 
 index_type VectorSpaceSerial::dim() const
 {
-	CLASS_MEMBER_PTRS
-	return dim_;
+  CLASS_MEMBER_PTRS
+  return dim_;
 }
 
 VectorSpace::space_fcty_ptr_t
 VectorSpaceSerial::small_vec_spc_fcty() const
 {
-	CLASS_MEMBER_PTRS
-	return Teuchos::rcp(new VectorSpaceFactorySerial());
+  CLASS_MEMBER_PTRS
+  return Teuchos::rcp(new VectorSpaceFactorySerial());
 }
 
 VectorSpace::space_ptr_t
 VectorSpaceSerial::clone() const
 {
-	CLASS_MEMBER_PTRS
-	namespace mmp = MemMngPack;
-	return Teuchos::rcp( new VectorSpaceSerial( dim_	) );
+  CLASS_MEMBER_PTRS
+  namespace mmp = MemMngPack;
+  return Teuchos::rcp( new VectorSpaceSerial( dim_	) );
 }
 
 VectorSpace::vec_mut_ptr_t
 VectorSpaceSerial::create_member() const
 {
-	CLASS_MEMBER_PTRS
-	namespace mmp = MemMngPack;
-	return Teuchos::rcp(new VectorMutableDense(dim_));
+  CLASS_MEMBER_PTRS
+  namespace mmp = MemMngPack;
+  return Teuchos::rcp(new VectorMutableDense(dim_));
 }
 
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceSerial::create_members(size_type num_vecs) const
 {
-	CLASS_MEMBER_PTRS
-	namespace mmp = MemMngPack;
-	return Teuchos::rcp(new MultiVectorMutableDense(dim_,num_vecs));
+  CLASS_MEMBER_PTRS
+  namespace mmp = MemMngPack;
+  return Teuchos::rcp(new MultiVectorMutableDense(dim_,num_vecs));
 }
 
 VectorSpace::space_ptr_t
 VectorSpaceSerial::sub_space(const Range1D& rng_in) const
 {
-	CLASS_MEMBER_PTRS
-	namespace mmp = MemMngPack;
-	const size_type this_dim = this->dim();
-	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
+  CLASS_MEMBER_PTRS
+  namespace mmp = MemMngPack;
+  const size_type this_dim = this->dim();
+  const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		rng.ubound() > this_dim, std::out_of_range
-		,"VectorSpaceSerial::sub_view(...) : Error, "
-		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
-		"is not in the range [1,this->dim()] = [1," << this_dim );
+  TEST_FOR_EXCEPTION(
+    rng.ubound() > this_dim, std::out_of_range
+    ,"VectorSpaceSerial::sub_view(...) : Error, "
+    "rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+    "is not in the range [1,this->dim()] = [1," << this_dim );
 #endif
-	if( rng == Range1D(1,this_dim) )
-		return Teuchos::rcp( this, false );
-	return Teuchos::rcp( new VectorSpaceSerial( rng.size() ) ); 
+  if( rng == Range1D(1,this_dim) )
+    return Teuchos::rcp( this, false );
+  return Teuchos::rcp( new VectorSpaceSerial( rng.size() ) ); 
 }
 
 VectorSpace::space_ptr_t
 VectorSpaceSerial::space(
-	const GenPermMatrixSlice  &P
-	,BLAS_Cpp::Transp         P_trans
-	) const
+  const GenPermMatrixSlice  &P
+  ,BLAS_Cpp::Transp         P_trans
+  ) const
 {
-	CLASS_MEMBER_PTRS
-	return Teuchos::rcp( new VectorSpaceSerial( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) ) ); 
+  CLASS_MEMBER_PTRS
+  return Teuchos::rcp( new VectorSpaceSerial( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) ) ); 
 }
 
 } // end namespace AbstractLinAlgPack

@@ -70,9 +70,9 @@ namespace RTOpPack {
  * ToDo: Finish documentation!
  */
 std::ostream& output(
-	std::ostream& o, const SubVector& v
-	,bool print_dim , bool newline
-	);
+  std::ostream& o, const SubVector& v
+  ,bool print_dim , bool newline
+  );
 
 } // end namespace RTOpPack
 

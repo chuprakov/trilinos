@@ -52,103 +52,103 @@ namespace AbstractLinAlgPack {
  * assignment operator is not allowed.
  */
 class VectorSubView
-	: virtual public Vector
-	, virtual private VectorApplyOpSerialBase
+  : virtual public Vector
+  , virtual private VectorApplyOpSerialBase
 {
 public:
 
-	///
-	/** Constructs to uninitialized.
-	 *
-	 * Postconditions: see \c set_uninitialized().
-	 */
-	VectorSubView();
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	VectorSubView( const vec_ptr_t& full_vec, const Range1D& rng );
-	///
-	/** Initialize a sub-view based on a full vector.
-	 *
-	 * Constructs a view of the vector <tt>this = vec(rng)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>full_vec.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> [<tt>rng.full_range() == false</tt>] <tt>rng.lbound() <= full_vec->dim()</tt> (throw <tt>std::out_of_range</tt>).
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_ele(i) == full_vec->get_ele(rng.lbound()-1+i)</tt>,
-	 *      for <tt>i = 1...rng.size()</tt>
-	 * </ul>
-	 *
-	 * @param  full_vec  [in] The original full vector.
-	 * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
-	 */
-	void initialize( const vec_ptr_t& full_vec, const Range1D& rng );
-	///
-	/** Set uninitialized()
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->dim() == 0</tt>
-	 * <li> <tt>this->full_vec() = NULL</tt>
-	 * </ul>
-	 */
-	void set_uninitialized();
-	///
-	const vec_ptr_t& full_vec() const;
-	///
-	const VectorSpaceSubSpace& space_impl() const;
+  ///
+  /** Constructs to uninitialized.
+   *
+   * Postconditions: see \c set_uninitialized().
+   */
+  VectorSubView();
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  VectorSubView( const vec_ptr_t& full_vec, const Range1D& rng );
+  ///
+  /** Initialize a sub-view based on a full vector.
+   *
+   * Constructs a view of the vector <tt>this = vec(rng)</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>full_vec.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * <li> [<tt>rng.full_range() == false</tt>] <tt>rng.lbound() <= full_vec->dim()</tt> (throw <tt>std::out_of_range</tt>).
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_ele(i) == full_vec->get_ele(rng.lbound()-1+i)</tt>,
+   *      for <tt>i = 1...rng.size()</tt>
+   * </ul>
+   *
+   * @param  full_vec  [in] The original full vector.
+   * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
+   */
+  void initialize( const vec_ptr_t& full_vec, const Range1D& rng );
+  ///
+  /** Set uninitialized()
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->dim() == 0</tt>
+   * <li> <tt>this->full_vec() = NULL</tt>
+   * </ul>
+   */
+  void set_uninitialized();
+  ///
+  const vec_ptr_t& full_vec() const;
+  ///
+  const VectorSpaceSubSpace& space_impl() const;
 
-	/** @name Overridden from Vector */
-	//@{
+  /** @name Overridden from Vector */
+  //@{
 
-	///
-	const VectorSpace& space() const;
-	///
-	index_type dim() const;
-	///
-	/** Calls \c apply_op() on the underlying full vectors.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<VectorMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
-	 *      (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k])->full_vec()->space().is_compatible(
-	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>dynamic_cast<VectorMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
-	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 */
-	void apply_op(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector* vecs[]
-		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-		,RTOpPack::ReductTarget *reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const;
-	///
-	value_type get_ele(index_type i) const;
-	///
-	vec_ptr_t sub_view( const Range1D& rng ) const;
-	///
-	void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-	///
-	void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
+  ///
+  const VectorSpace& space() const;
+  ///
+  index_type dim() const;
+  ///
+  /** Calls \c apply_op() on the underlying full vectors.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k]) != NULL</tt>, for <tt>k=0..num_vecs</tt>
+   *      (throw <tt>std::invalid_argument</tt>)
+   * <li> <tt>dynamic_cast<VectorMutableSubView*>(targ_vecs[k]) != NULL</tt>, for <tt>k=0..num_targ_vecs</tt>
+   *      (throw <tt>std::invalid_argument</tt>)
+   * <li> <tt>dynamic_cast<const VectorSubView*>(vecs[k])->full_vec()->space().is_compatible(
+   *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>dynamic_cast<VectorMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
+   *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   */
+  void apply_op(
+    const RTOpPack::RTOp& op
+    ,const size_t num_vecs, const Vector* vecs[]
+    ,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj
+    ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+    ) const;
+  ///
+  value_type get_ele(index_type i) const;
+  ///
+  vec_ptr_t sub_view( const Range1D& rng ) const;
+  ///
+  void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
+  ///
+  void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
-	//@}
+  //@}
 
 private:
 
-	vec_ptr_t                  full_vec_;   ///< If full_vec_.get() == NULL, the vector is uninitalized (dim == 0).
-	VectorSpaceSubSpace        space_;      ///< The space that this vector belongs to.
+  vec_ptr_t                  full_vec_;   ///< If full_vec_.get() == NULL, the vector is uninitalized (dim == 0).
+  VectorSpaceSubSpace        space_;      ///< The space that this vector belongs to.
 
-	// Not defined and not to be called
-	VectorSubView& operator=(const VectorSubView&);
-	
+  // Not defined and not to be called
+  VectorSubView& operator=(const VectorSubView&);
+  
 }; // end class VectorSubView
 
 // /////////////////////////////////////////////
@@ -162,13 +162,13 @@ inline
 const VectorSubView::vec_ptr_t&
 VectorSubView::full_vec() const
 {
-	return full_vec_;
+  return full_vec_;
 }
 
 inline
 const VectorSpaceSubSpace& VectorSubView::space_impl() const
 {
-	return space_;
+  return space_;
 }
 
 } // end namespace AbstractLinAlgPack

@@ -30,7 +30,7 @@
 #include "Teuchos_TestForException.hpp"
 
 namespace {
-	const char name_HL[] = "HL";
+  const char name_HL[] = "HL";
 }
 
 namespace NLPInterfacePack {
@@ -38,59 +38,59 @@ namespace NLPInterfacePack {
 // constructors
 
 NLPSecondOrder::NLPSecondOrder()
-	: HL_(NULL)
+  : HL_(NULL)
 {}
 
 
 void NLPSecondOrder::initialize(bool test_setup) {
-	num_HL_evals_ = 0;
-	NLPFirstOrder::initialize(test_setup);
+  num_HL_evals_ = 0;
+  NLPFirstOrder::initialize(test_setup);
 }
 
 // <<std aggr>> members for HL
 
 void NLPSecondOrder::set_HL(MatrixSymOp* HL)
 {
-	HL_ = HL;
+  HL_ = HL;
 }
 
 MatrixSymOp* NLPSecondOrder::get_HL()
 {
-	return StandardCompositionRelationshipsPack::get_role_name(HL_, false, name_HL);
+  return StandardCompositionRelationshipsPack::get_role_name(HL_, false, name_HL);
 }
 
 MatrixSymOp& NLPSecondOrder::HL()
 {
-	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
+  return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
 const MatrixSymOp& NLPSecondOrder::HL() const
 {
-	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
+  return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
 void NLPSecondOrder::unset_quantities()
 {
-	NLPFirstOrder::unset_quantities();
-	HL_ = NULL;
+  NLPFirstOrder::unset_quantities();
+  HL_ = NULL;
 }
 
 // calculations
 
 void NLPSecondOrder::calc_HL(
-	const Vector& x, const Vector* lambda, bool newpoint
-	) const
+  const Vector& x, const Vector* lambda, bool newpoint
+  ) const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
 #endif
-	StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
-	imp_calc_HL(x,lambda,newpoint,second_order_info());
+  StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
+  imp_calc_HL(x,lambda,newpoint,second_order_info());
 }
 
 size_type NLPSecondOrder::num_HL_evals() const
 {
-	return num_HL_evals_;
+  return num_HL_evals_;
 }
 
 } // namespace NLPInterfacePack

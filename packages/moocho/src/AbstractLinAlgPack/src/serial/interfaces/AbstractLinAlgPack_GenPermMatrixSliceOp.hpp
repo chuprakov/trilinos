@@ -53,18 +53,18 @@ namespace AbstractLinAlgPack {
  * This function will execute in <tt>O(P_rhs1.nz())</tt> time.
  */ 
 void V_StMtV(
-	SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
-	);
+  SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
+  );
 
 inline
 /// <tt>sv_lhs = op(P_rhs1) * vs_rhs2</tt>
 void V_MtV(
-	SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
-	)
+  SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
+  )
 {
-	V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
+  V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
 }
 
 ///
@@ -101,18 +101,18 @@ void V_MtV(
  * not be assumed sorted.
  */ 
 void V_StMtV(
-	SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2
-	);
+  SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2
+  );
 
 inline
 /// sv_lhs = op(P_rhs1) * sv_rhs2
 void V_MtV(
-	SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2
-	)
+  SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2
+  )
 {
-	V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,sv_rhs2);
+  V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,sv_rhs2);
 }
 
 
@@ -130,33 +130,33 @@ void V_MtV(
  * This function will execute in <tt>O(P_rhs1.nz())</tt> time.
  */ 
 void Vp_StMtV(
-	SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
-	);
+  SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
+  );
 
 inline
 ///
 /** <tt>sv_lhs += op(P_rhs1) * vs_rhs2</tt>.
  */ 
 void Vp_MtV(
-	SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
-	)
+  SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
+  )
 {
-	Vp_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
+  Vp_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
 }
 
 /// <tt>vs_lhs = alpha * op(P_rhs1) * vs_rhs2 + beta * vs_lhs</tt>
 void Vp_StMtV(
-	DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2, value_type beta = 1.0
-	);
+  DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2, value_type beta = 1.0
+  );
 
 /// <tt>vs_lhs = alpha * op(P_rhs1) * sv_rhs2 + beta * vs_lhs</tt>
 void Vp_StMtV(
-	DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
-	;
+  DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+  ,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
+  ;
 
 ///
 /** Find the intersection between two GenPermMatrixSlice objects.
@@ -200,16 +200,16 @@ void Vp_StMtV(
  *                    It is allowed for <tt>Q == NULL</tt>.
  */
 void intersection(
-	const GenPermMatrixSlice     &P1
-	,BLAS_Cpp::Transp            P1_trans
-	,const GenPermMatrixSlice    &P2
-	,BLAS_Cpp::Transp            P2_trans
-	,size_type                   *Q_nz
-	,const size_type             Q_max_nz     = 0
-	,size_type                   Q_row_i[]    = NULL
-	,size_type                   Q_col_j[]    = NULL
-	,GenPermMatrixSlice          *Q           = NULL
-	);
+  const GenPermMatrixSlice     &P1
+  ,BLAS_Cpp::Transp            P1_trans
+  ,const GenPermMatrixSlice    &P2
+  ,BLAS_Cpp::Transp            P2_trans
+  ,size_type                   *Q_nz
+  ,const size_type             Q_max_nz     = 0
+  ,size_type                   Q_row_i[]    = NULL
+  ,size_type                   Q_col_j[]    = NULL
+  ,GenPermMatrixSlice          *Q           = NULL
+  );
 
 //@}
 

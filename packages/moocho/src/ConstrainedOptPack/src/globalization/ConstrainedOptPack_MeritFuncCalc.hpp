@@ -43,20 +43,20 @@ namespace ConstrainedOptPack {
 class MeritFuncCalc  {
 public:
 
-	///
-	virtual ~MeritFuncCalc() {}
+  ///
+  virtual ~MeritFuncCalc() {}
 
-	///
-	/** Return the value of the merit function at \a x.
-	  */
-	virtual value_type operator()(const Vector& x) const= 0;
+  ///
+  /** Return the value of the merit function at \a x.
+    */
+  virtual value_type operator()(const Vector& x) const= 0;
 
-	/// Calls value(d_k) on aggregate merit_func.
-	virtual value_type deriv() const = 0;
+  /// Calls value(d_k) on aggregate merit_func.
+  virtual value_type deriv() const = 0;
 
-	/// Print what this merit function is
-	virtual void print_merit_func(
-		std::ostream& out, const std::string& leading_str ) const = 0;
+  /// Print what this merit function is
+  virtual void print_merit_func(
+    std::ostream& out, const std::string& leading_str ) const = 0;
 
 };	// end class MeritFuncCalc
 

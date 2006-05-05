@@ -48,76 +48,76 @@ class NoRefSet : public std::logic_error
 // Throw a NoRefSet exception
 inline void ThrowNoRefSet(const char func_name[], const char name[])
 {
-	TEST_FOR_EXCEPTION(
-		true,NoRefSet
-		,func_name << ": The reference for \'" << name << "\' has not been set yet"
-		);
+  TEST_FOR_EXCEPTION(
+    true,NoRefSet
+    ,func_name << ": The reference for \'" << name << "\' has not been set yet"
+    );
 }
 
 /// Assert that the reference is set.
 template<class ContainedClass>
 inline void assert_role_name_set(const ContainedClass* role_name_, const char func_name[]
-	, const char name[])
+  , const char name[])
 {
-	if(!role_name_) ThrowNoRefSet(func_name, name);
+  if(!role_name_) ThrowNoRefSet(func_name, name);
 }
 
 ///
 template<class ContainedClass>
 inline void set_role_name(ContainedClass*& role_name_, bool& owns_role_name_, const char name[]
-	, ContainedClass* role_name, bool owns_role_name)
+  , ContainedClass* role_name, bool owns_role_name)
 {
-	if(owns_role_name_ && role_name_ != role_name) delete role_name_;
-	role_name_ = role_name; owns_role_name_ = owns_role_name;
+  if(owns_role_name_ && role_name_ != role_name) delete role_name_;
+  role_name_ = role_name; owns_role_name_ = owns_role_name;
 }
 
 ///
 template<class ContainedClass>
 inline ContainedClass* get_role_name(ContainedClass* role_name_, bool owns_role_name_
-	, const char name[])
+  , const char name[])
 {
-	return role_name_;
+  return role_name_;
 }
 
 ///
 template<class ContainedClass>
 inline void set_owns_role_name(ContainedClass*& role_name_, bool& owns_role_name_
-	, const char name[], bool owns_role_name)
+  , const char name[], bool owns_role_name)
 {
-	assert_role_name_set(role_name_, "set_owns_role_name()", name);
-	owns_role_name_ = owns_role_name;
+  assert_role_name_set(role_name_, "set_owns_role_name()", name);
+  owns_role_name_ = owns_role_name;
 }
 
 ///
 template<class ContainedClass>
 inline bool owns_role_name(ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
-	assert_role_name_set(role_name_, "owns_role_name()", name);
-	return owns_role_name_;
+  assert_role_name_set(role_name_, "owns_role_name()", name);
+  return owns_role_name_;
 }
 
 ///
 template<class ContainedClass>
 inline ContainedClass& role_name(ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
-	assert_role_name_set(role_name_, "role_name()", name);
-	return *role_name_;
+  assert_role_name_set(role_name_, "role_name()", name);
+  return *role_name_;
 }
 
 ///
 template<class ContainedClass>
 inline const ContainedClass& role_name(const ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
-	assert_role_name_set(role_name_, "role_name()", name);
-	return *role_name_;
+  assert_role_name_set(role_name_, "role_name()", name);
+  return *role_name_;
 }
 
 ///
 template<class ContainedClass>
 inline const ContainedClass& const_role_name(const ContainedClass* role_name_, bool owns_role_name_, const char name[])
 {
-	assert_role_name_set(role_name_, "role_name()", name);
-	return *role_name_;
+  assert_role_name_set(role_name_, "role_name()", name);
+  return *role_name_;
 }
 
 
@@ -125,7 +125,7 @@ inline const ContainedClass& const_role_name(const ContainedClass* role_name_, b
 template<class ContainedClass>
 inline void destory_container_obj(ContainedClass* role_name_, bool owns_role_name_)
 {
-	if(owns_role_name_) delete role_name_;
+  if(owns_role_name_) delete role_name_;
 }
 
 //@}

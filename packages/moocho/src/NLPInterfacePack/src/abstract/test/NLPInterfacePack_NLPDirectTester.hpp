@@ -155,110 +155,110 @@ namespace NLPInterfacePack {
 class NLPDirectTester {
 public:
 
-	///
-	enum ETestingMethod {
-		FD_COMPUTE_ALL
-		,FD_DIRECTIONAL
-	};
+  ///
+  enum ETestingMethod {
+    FD_COMPUTE_ALL
+    ,FD_DIRECTIONAL
+  };
 
-	///
-	STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
-	/// Members for option \c Gf_testing_method()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
-	/// Members for option \c Gc_testing_method()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
-	/// Members for option \c Gf_warning_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
-	/// Members for option \c Gf_error_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
-	/// Members for option \c Gc_warning_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
-	/// Members for option \c Gc_error_tol()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
-	/// Members for option \c num_fd_directions()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
-	/// Members for option \c dump_all()
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
+  ///
+  STANDARD_COMPOSITION_MEMBERS( CalcFiniteDiffProd, calc_fd_prod )
+  /// Members for option \c Gf_testing_method()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
+  /// Members for option \c Gc_testing_method()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
+  /// Members for option \c Gf_warning_tol()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
+  /// Members for option \c Gf_error_tol()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
+  /// Members for option \c Gc_warning_tol()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
+  /// Members for option \c Gc_error_tol()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
+  /// Members for option \c num_fd_directions()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
+  /// Members for option \c dump_all()
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
 
-	/// Constructor
-	NLPDirectTester(
-		const calc_fd_prod_ptr_t  &calc_fd_prod       = Teuchos::null
-		,ETestingMethod           Gf_testing_method   = FD_DIRECTIONAL
-		,ETestingMethod           Gc_testing_method   = FD_DIRECTIONAL
-		,value_type               Gf_warning_tol      = 1e-6
-		,value_type               Gf_error_tol        = 1e-1
-		,value_type               Gc_warning_tol      = 1e-6
-		,value_type               Gc_error_tol        = 1e-1
-		,size_type                num_fd_directions   = 1
+  /// Constructor
+  NLPDirectTester(
+    const calc_fd_prod_ptr_t  &calc_fd_prod       = Teuchos::null
+    ,ETestingMethod           Gf_testing_method   = FD_DIRECTIONAL
+    ,ETestingMethod           Gc_testing_method   = FD_DIRECTIONAL
+    ,value_type               Gf_warning_tol      = 1e-6
+    ,value_type               Gf_error_tol        = 1e-1
+    ,value_type               Gc_warning_tol      = 1e-6
+    ,value_type               Gc_error_tol        = 1e-1
+    ,size_type                num_fd_directions   = 1
     ,bool                     dump_all            = false
-		);
+    );
 
-	///
-	/** This function takes an NLP object and its computed derivatives
-	 * and function values and validates
-	 * the functions and the derivatives by evaluating them
-	 * about the given point <tt>xo</tt>.
-	 * 
-	 * If all the checks as described in the
-	 * intro checkout then this function will return true, otherwise it
-	 * will return false.
-	 * 
-	 * If the finite difference steps are limited by relaxed variable
-	 * bounds then a warning message is printed and the derivatives
-	 * computed could be very inaccurate.
-	 *
-	 * @param  nlp     [in] %NLP object used to compute and test derivatives for.
-	 * @param  xo      [in] Point at which the derivatives are computed at.
-	 * @param  xl      [in] If != NULL then this is the lower variable bounds.
-	 * @param  xu      [in] If != NULL then this is the upper variable bounds.
-	 *	                If xl != NULL then xu != NULL must also be true
-	 *                 and visa-versa or a std::invalid_arguement exceptions
-	 *                 will be thrown.
-	 * @param  c       [in] Value of c(x) computed at xo.
-	 *                 If NULL, then none of the tests involving it will
-	 *                 be performed.
-	 * @param  Gf      [in] Gradient of f(x) computed at xo.
-	 *                 If NULL, then none of the tests involving it will
-	 *                 be performed.
-	 * @param  py      [in] Newton step <tt>py = -inv(C) * c(con_decomp)</tt>
-	 *                 If NULL, then none of the tests involving it will
-	 *                 be performed.
-	 * @param  rGf     [in] Reduced gradient of the objective function
-	 *                 </tt>rGf = Gf(var_indep) - D' * Gf(var_dep)</tt>.  If NULL,
-	 *                 then none of the tests involving it will be performed.
-	 * @param  GcU     [in]  Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
-	 *                 If NULL, htne none of the tests involving it will be performed.
-	 * @param  D       [in] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If NULL,
-	 *                 none of the tests involving it will be performed.
-	 * @param  Uz      [in] <tt>Uz = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
-	 *                 If NULL, then none of the tests involving it will be performed.
-	 * @param  print_all_warnings
-	 *                 [in] If true then all errors greater than warning_tol
-	 *                 will be printed if out!=NULL
-	 * @param  out     [in/out] If != null then some summary information is printed to it
-	 *                 and if a derivative does not match up then it prints which
-	 *                 derivative failed.  If <tt>out == 0</tt> then no output is printed.
-	 *
-	 * @return Returns <tt>true</tt> if all the derivatives comparisons are
-	 * within the error tolerances or returns false
-	 * otherwise.  This function will return false if any NaN or Inf values
-	 * where encountered.
-	 */
-	bool finite_diff_check(
-		NLPDirect         *nlp
-		,const Vector     &xo
-		,const Vector     *xl
-		,const Vector     *xu
-		,const Vector     *c
-		,const Vector     *Gf
-		,const Vector     *py
-		,const Vector     *rGf
-		,const MatrixOp   *GcU
-		,const MatrixOp   *D
-		,const MatrixOp   *Uz
-		,bool             print_all_warnings
-		,std::ostream     *out
-		) const;
+  ///
+  /** This function takes an NLP object and its computed derivatives
+   * and function values and validates
+   * the functions and the derivatives by evaluating them
+   * about the given point <tt>xo</tt>.
+   * 
+   * If all the checks as described in the
+   * intro checkout then this function will return true, otherwise it
+   * will return false.
+   * 
+   * If the finite difference steps are limited by relaxed variable
+   * bounds then a warning message is printed and the derivatives
+   * computed could be very inaccurate.
+   *
+   * @param  nlp     [in] %NLP object used to compute and test derivatives for.
+   * @param  xo      [in] Point at which the derivatives are computed at.
+   * @param  xl      [in] If != NULL then this is the lower variable bounds.
+   * @param  xu      [in] If != NULL then this is the upper variable bounds.
+   *	                If xl != NULL then xu != NULL must also be true
+   *                 and visa-versa or a std::invalid_arguement exceptions
+   *                 will be thrown.
+   * @param  c       [in] Value of c(x) computed at xo.
+   *                 If NULL, then none of the tests involving it will
+   *                 be performed.
+   * @param  Gf      [in] Gradient of f(x) computed at xo.
+   *                 If NULL, then none of the tests involving it will
+   *                 be performed.
+   * @param  py      [in] Newton step <tt>py = -inv(C) * c(con_decomp)</tt>
+   *                 If NULL, then none of the tests involving it will
+   *                 be performed.
+   * @param  rGf     [in] Reduced gradient of the objective function
+   *                 </tt>rGf = Gf(var_indep) - D' * Gf(var_dep)</tt>.  If NULL,
+   *                 then none of the tests involving it will be performed.
+   * @param  GcU     [in]  Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
+   *                 If NULL, htne none of the tests involving it will be performed.
+   * @param  D       [in] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If NULL,
+   *                 none of the tests involving it will be performed.
+   * @param  Uz      [in] <tt>Uz = F + E * D</tt>, which is the an auxiliary sensitivity matrix.
+   *                 If NULL, then none of the tests involving it will be performed.
+   * @param  print_all_warnings
+   *                 [in] If true then all errors greater than warning_tol
+   *                 will be printed if out!=NULL
+   * @param  out     [in/out] If != null then some summary information is printed to it
+   *                 and if a derivative does not match up then it prints which
+   *                 derivative failed.  If <tt>out == 0</tt> then no output is printed.
+   *
+   * @return Returns <tt>true</tt> if all the derivatives comparisons are
+   * within the error tolerances or returns false
+   * otherwise.  This function will return false if any NaN or Inf values
+   * where encountered.
+   */
+  bool finite_diff_check(
+    NLPDirect         *nlp
+    ,const Vector     &xo
+    ,const Vector     *xl
+    ,const Vector     *xu
+    ,const Vector     *c
+    ,const Vector     *Gf
+    ,const Vector     *py
+    ,const Vector     *rGf
+    ,const MatrixOp   *GcU
+    ,const MatrixOp   *D
+    ,const MatrixOp   *Uz
+    ,bool             print_all_warnings
+    ,std::ostream     *out
+    ) const;
 
 };	// end class NLPDirectTester
 

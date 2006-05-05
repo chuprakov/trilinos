@@ -41,7 +41,7 @@ namespace AbstractLinAlgPack {
 inline
 std::ostream& operator<<( std::ostream& o, const Permutation& P )
 {
-	return P.output(o);
+  return P.output(o);
 }
 
 } // end namespace AbstractLinAlgPack

@@ -33,35 +33,35 @@
 namespace IterationPack {
 
 AlgorithmTrackerComposite::AlgorithmTrackerComposite(const ostream_ptr_t& journal_out)
-	: AlgorithmTracker(journal_out)
+  : AlgorithmTracker(journal_out)
 {}
 
 void AlgorithmTrackerComposite::initialize()
 {
-	track_list_t::const_iterator
-		itr = tracks_.begin(), itr_end = tracks_.end();
-	for(; itr != itr_end; ++itr)
-		(*itr)->initialize();
+  track_list_t::const_iterator
+    itr = tracks_.begin(), itr_end = tracks_.end();
+  for(; itr != itr_end; ++itr)
+    (*itr)->initialize();
 }
 
 void AlgorithmTrackerComposite::output_iteration(
-	const Algorithm& algo
-	) const
+  const Algorithm& algo
+  ) const
 {
-	track_list_t::const_iterator
-		itr = tracks_.begin(), itr_end = tracks_.end();
-	for(; itr != itr_end; ++itr)
-		(*itr)->output_iteration(algo);
+  track_list_t::const_iterator
+    itr = tracks_.begin(), itr_end = tracks_.end();
+  for(; itr != itr_end; ++itr)
+    (*itr)->output_iteration(algo);
 }
 
 void AlgorithmTrackerComposite::output_final(
-	const Algorithm& algo, EAlgoReturn algo_return
-	) const
+  const Algorithm& algo, EAlgoReturn algo_return
+  ) const
 {
-	track_list_t::const_iterator
-		itr = tracks_.begin(), itr_end = tracks_.end();
-	for(; itr != itr_end; ++itr)
-		(*itr)->output_final(algo,algo_return);
+  track_list_t::const_iterator
+    itr = tracks_.begin(), itr_end = tracks_.end();
+  for(; itr != itr_end; ++itr)
+    (*itr)->output_final(algo,algo_return);
 }
 
 } // end namespace IterationPack

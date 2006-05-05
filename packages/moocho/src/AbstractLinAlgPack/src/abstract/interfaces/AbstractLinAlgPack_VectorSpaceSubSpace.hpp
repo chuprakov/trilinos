@@ -48,79 +48,79 @@ namespace AbstractLinAlgPack {
 class VectorSpaceSubSpace : public virtual VectorSpace {
 public:
 
-	///
-	/** Constructs to uninitialized.
-	 *
-	 * Postconditions: see \c set_uninitialized().
-	 */
-	VectorSpaceSubSpace();
+  ///
+  /** Constructs to uninitialized.
+   *
+   * Postconditions: see \c set_uninitialized().
+   */
+  VectorSpaceSubSpace();
 
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	VectorSpaceSubSpace( const space_ptr_t& full_space, const Range1D& rng );
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  VectorSpaceSubSpace( const space_ptr_t& full_space, const Range1D& rng );
 
-	///
-	/** Initialize.
-	 *
-	 * Constructs a sub-space of the vector space this = space.sub_space(rng).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>full_space.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
-	 * <li> [rng.full_range() == false</tt>] <tt>rng.lbound() <= full_space->dim()</tt> (throw <tt>std::out_of_range</tt>).
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [&& rng.full_range() == true</tt>] <tt>this->dim() == full_space->dim()</tt>
-	 * <li> [&& rng.full_range() == false</tt>] <tt>this->dim() == rng.size()</tt>
-	 * </ul>
-	 *
-	 * @param  full_space  [in] The original full vector space (must be <tt>full_space.get() != NULL</tt>).
-	 * @param  rng         [in] The range of element that <tt>this</tt> vector sub-space will represent.
-	 */
-	void initialize( const space_ptr_t& full_space, const Range1D& rng );
+  ///
+  /** Initialize.
+   *
+   * Constructs a sub-space of the vector space this = space.sub_space(rng).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>full_space.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
+   * <li> [rng.full_range() == false</tt>] <tt>rng.lbound() <= full_space->dim()</tt> (throw <tt>std::out_of_range</tt>).
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [&& rng.full_range() == true</tt>] <tt>this->dim() == full_space->dim()</tt>
+   * <li> [&& rng.full_range() == false</tt>] <tt>this->dim() == rng.size()</tt>
+   * </ul>
+   *
+   * @param  full_space  [in] The original full vector space (must be <tt>full_space.get() != NULL</tt>).
+   * @param  rng         [in] The range of element that <tt>this</tt> vector sub-space will represent.
+   */
+  void initialize( const space_ptr_t& full_space, const Range1D& rng );
 
-	///
-	/** Set uninitilized.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->dim() == 0</tt>
-	 * <li> <tt>this->create_member().get() == NULL</tt>
-	 * </ul>
-	 */
-	void set_uninitialized();
+  ///
+  /** Set uninitilized.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->dim() == 0</tt>
+   * <li> <tt>this->create_member().get() == NULL</tt>
+   * </ul>
+   */
+  void set_uninitialized();
 
-	///
-	const space_ptr_t& full_space() const;
+  ///
+  const space_ptr_t& full_space() const;
 
-	///
-	const Range1D& rng() const;
+  ///
+  const Range1D& rng() const;
 
-	/// Validate rng
-	void validate_range( const Range1D& rng ) const;
+  /// Validate rng
+  void validate_range( const Range1D& rng ) const;
 
-	/** @name Overridden from VectorSpace */
-	//@{
+  /** @name Overridden from VectorSpace */
+  //@{
 
-	///
-	bool is_compatible(const VectorSpace& ) const;
-	///
-	bool is_in_core() const;
-	///
-	index_type dim() const;
-	///
-	vec_mut_ptr_t create_member() const;
-	///
-	space_ptr_t clone() const;
-	///
-	space_ptr_t sub_space(const Range1D& rng) const;
+  ///
+  bool is_compatible(const VectorSpace& ) const;
+  ///
+  bool is_in_core() const;
+  ///
+  index_type dim() const;
+  ///
+  vec_mut_ptr_t create_member() const;
+  ///
+  space_ptr_t clone() const;
+  ///
+  space_ptr_t sub_space(const Range1D& rng) const;
 
-	//@}
+  //@}
 
 private:
 
-	space_ptr_t     full_space_;   ///< If space_.get() == NULL, then uninitalized (dim == 0)
-	Range1D         rng_;          ///< The range of elements from this space to represent!
+  space_ptr_t     full_space_;   ///< If space_.get() == NULL, then uninitalized (dim == 0)
+  Range1D         rng_;          ///< The range of elements from this space to represent!
 
 }; // end class VectorSpaceSubSpace
 
@@ -129,19 +129,19 @@ private:
 
 inline
 VectorSpaceSubSpace::VectorSpaceSubSpace()
-	: rng_(Range1D::Invalid)
+  : rng_(Range1D::Invalid)
 {}
 
 inline
 const VectorSpace::space_ptr_t& VectorSpaceSubSpace::full_space() const
 {
-	return full_space_;
+  return full_space_;
 }
 
 inline
 const Range1D& VectorSpaceSubSpace::rng() const
 {
-	return rng_;
+  return rng_;
 }
 
 #ifndef _DEBUG

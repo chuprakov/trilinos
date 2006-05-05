@@ -49,11 +49,11 @@ namespace ConstrainedOptPack {
  * The operations <tt>y = op(D)*x</tt> are implemented as:
  \verbatim
 
-	y = D * x
-	  = -inv(C) * (N * x)
+  y = D * x
+    = -inv(C) * (N * x)
 
-	y = D' * x
-	  = - N' * (inv(C') * x)
+  y = D' * x
+    = - N' * (inv(C') * x)
  \endverbatim
  * This class also allows the client to set a precomputed matrix \c D_direct
  * that represents <tt>D = -inv(C)*N</tt> that will be used to extract rows or columns
@@ -77,195 +77,195 @@ namespace ConstrainedOptPack {
  * called then all of these computed rows are discarded and they must be generated again.
  */
 class MatrixVarReductImplicit
-	: public AbstractLinAlgPack::MatrixOp
+  : public AbstractLinAlgPack::MatrixOp
 {
 public:
 
-	/** @name Public types */
-	//@{
-	
-	///
-	typedef Teuchos::RefCountPtr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<const MatrixOp>              mat_ptr_t;
+  /** @name Public types */
+  //@{
+  
+  ///
+  typedef Teuchos::RefCountPtr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const MatrixOp>              mat_ptr_t;
 
-	//@}
+  //@}
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	/** Initialize \c this matrix object.
-	 *
-	 * @param  C  [in] Nonsingular basis matrix object.  This matrix object must
-	 *            not be altered while \c this is in use or until
-	 *            <tt>this->initialize()</tt> is called again.
-	 * @param  N  [in] Genaral nonbasis matrix object.  This matrix object must
-	 *            not be altered while \c this is in use or until
-	 *            <tt>this->initialize()</tt> is called again.
-	 * @param  D_direct
-	 *            [in] Matrix object for <tt>D = -inv(C)*N</tt> already
-	 *            computed.  The matrix object \c D_direct will not be modifed
-	 *            by \c this and must not be altered while c\ this matrix object
-	 *            is in use or until <tt>this->initialize()</tt> is called again.
-	 *            <tt>D_direct == NULL</tt> is allowed and \c this matrix object
-	 *            will just have to do without.  For most applications (except
-	 *            those using direct linear solvers for \c C and when \c N has
-	 *            many columns) <tt>D_direct</tt> should be set to <tt>NULL</tt>
-	 *            and should not be computed by the client (that is the whole
-	 *            purpose for this matrix class).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>C.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>N.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> [<tt>D_direct != NULL</tt>]
-	 *      <tt>D_direct->space_cols().is_compatible(C->space_cols()) == true
-	 *      && D_direct->space_rows().is_compatible(N->space_rows()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->C_ptr().get() == C.get()</tt>
-	 * <li> <tt>this->N_ptr().get() == N.get()</tt>
-	 * <li> <tt>this->D_direct_ptr().get() == N.get()</tt>
-	 * </ul>
-	 */
-	virtual void initialize(
-		const mat_nonsing_ptr_t          &C
-		,const mat_ptr_t                 &N
-		,const mat_ptr_t                 &D_direct
-		);
-	///
-	/** Set the matrix to uninitialized.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->C_ptr().get() == NULL</tt>
-	 * <li> <tt>this->N_ptr().get() == NULL</tt>
-	 * <li> <tt>this->D_direct_ptr().get() == NULL</tt>
-	 * </ul>
-	 */
-	virtual void set_uninitialized();
+  ///
+  /** Initialize \c this matrix object.
+   *
+   * @param  C  [in] Nonsingular basis matrix object.  This matrix object must
+   *            not be altered while \c this is in use or until
+   *            <tt>this->initialize()</tt> is called again.
+   * @param  N  [in] Genaral nonbasis matrix object.  This matrix object must
+   *            not be altered while \c this is in use or until
+   *            <tt>this->initialize()</tt> is called again.
+   * @param  D_direct
+   *            [in] Matrix object for <tt>D = -inv(C)*N</tt> already
+   *            computed.  The matrix object \c D_direct will not be modifed
+   *            by \c this and must not be altered while c\ this matrix object
+   *            is in use or until <tt>this->initialize()</tt> is called again.
+   *            <tt>D_direct == NULL</tt> is allowed and \c this matrix object
+   *            will just have to do without.  For most applications (except
+   *            those using direct linear solvers for \c C and when \c N has
+   *            many columns) <tt>D_direct</tt> should be set to <tt>NULL</tt>
+   *            and should not be computed by the client (that is the whole
+   *            purpose for this matrix class).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>C.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * <li> <tt>N.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * <li> [<tt>D_direct != NULL</tt>]
+   *      <tt>D_direct->space_cols().is_compatible(C->space_cols()) == true
+   *      && D_direct->space_rows().is_compatible(N->space_rows()) == true</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->C_ptr().get() == C.get()</tt>
+   * <li> <tt>this->N_ptr().get() == N.get()</tt>
+   * <li> <tt>this->D_direct_ptr().get() == N.get()</tt>
+   * </ul>
+   */
+  virtual void initialize(
+    const mat_nonsing_ptr_t          &C
+    ,const mat_ptr_t                 &N
+    ,const mat_ptr_t                 &D_direct
+    );
+  ///
+  /** Set the matrix to uninitialized.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->C_ptr().get() == NULL</tt>
+   * <li> <tt>this->N_ptr().get() == NULL</tt>
+   * <li> <tt>this->D_direct_ptr().get() == NULL</tt>
+   * </ul>
+   */
+  virtual void set_uninitialized();
 
-	//@}
+  //@}
 
-	/** @name Access */
-	//@{
+  /** @name Access */
+  //@{
 
-	///
-	/** Return the smart pointer to the aggregate basis matrix object \c C.
-	 *
-	 * If <tt>this</tt> is the only reference to this matrix object, then
-	 * <tt>return.count() == 1</tt> will be true.
-	 */
-	const mat_nonsing_ptr_t& C_ptr() const;
-	
-	///
-	/** Return the smart pointer to the aggregate nonbasis matrix object \c N.
-	 *
-	 * If <tt>this</tt> is the only reference to this matrix object, then
-	 * <tt>return.count() == 1</tt> will be true.
-	 */
-	const mat_ptr_t& N_ptr() const;
-	
-	///
-	/** Return the smart pointer to the aggregate precomputed matrix object \c D_direct (if set).
-	 *
-	 * If <tt>this</tt> is the only reference to this matrix object, then
-	 * <tt>return.count() == 1</tt> will be true.
-	 */
-	const mat_ptr_t& D_direct_ptr() const;
-	
-	//@}
+  ///
+  /** Return the smart pointer to the aggregate basis matrix object \c C.
+   *
+   * If <tt>this</tt> is the only reference to this matrix object, then
+   * <tt>return.count() == 1</tt> will be true.
+   */
+  const mat_nonsing_ptr_t& C_ptr() const;
+  
+  ///
+  /** Return the smart pointer to the aggregate nonbasis matrix object \c N.
+   *
+   * If <tt>this</tt> is the only reference to this matrix object, then
+   * <tt>return.count() == 1</tt> will be true.
+   */
+  const mat_ptr_t& N_ptr() const;
+  
+  ///
+  /** Return the smart pointer to the aggregate precomputed matrix object \c D_direct (if set).
+   *
+   * If <tt>this</tt> is the only reference to this matrix object, then
+   * <tt>return.count() == 1</tt> will be true.
+   */
+  const mat_ptr_t& D_direct_ptr() const;
+  
+  //@}
 
-	/** @name Overridden from MatrixBase. */
-	//@{
-	///
-	size_type rows() const;
-	///
-	size_type cols() const;
-	//@}
+  /** @name Overridden from MatrixBase. */
+  //@{
+  ///
+  size_type rows() const;
+  ///
+  size_type cols() const;
+  //@}
 
-	/** @name Overridden from MatrixOp. */
-	//@{
+  /** @name Overridden from MatrixOp. */
+  //@{
 
-	///
-	const VectorSpace& space_cols() const;
-	///
-	const VectorSpace& space_rows() const;
-	///
-	MatrixOp& operator=(const MatrixOp& M);
-	///
-	std::ostream& output(std::ostream&) const;
-	///
-	void Vp_StMtV(
-		VectorMutable* v_lhs, value_type alpha
-		,BLAS_Cpp::Transp trans_rhs1
-		,const Vector& v_rhs2, value_type beta
-		) const;
-	///
-	void Vp_StMtV(
-		VectorMutable* v_lhs, value_type alpha
-		,BLAS_Cpp::Transp trans_rhs1
-		,const SpVectorSlice& sv_rhs2, value_type beta
-		) const;
-	///
-	void Vp_StPtMtV(
-		VectorMutable* v_lhs, value_type alpha
-		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		,BLAS_Cpp::Transp M_rhs2_trans
-		,const Vector& v_rhs3, value_type beta
-		) const;
-	///
-	void Vp_StPtMtV(
-		VectorMutable* v_lhs, value_type alpha
-		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		,BLAS_Cpp::Transp M_rhs2_trans
-		,const SpVectorSlice& sv_rhs3, value_type beta
-		) const;
-	
-	//@}
-	
+  ///
+  const VectorSpace& space_cols() const;
+  ///
+  const VectorSpace& space_rows() const;
+  ///
+  MatrixOp& operator=(const MatrixOp& M);
+  ///
+  std::ostream& output(std::ostream&) const;
+  ///
+  void Vp_StMtV(
+    VectorMutable* v_lhs, value_type alpha
+    ,BLAS_Cpp::Transp trans_rhs1
+    ,const Vector& v_rhs2, value_type beta
+    ) const;
+  ///
+  void Vp_StMtV(
+    VectorMutable* v_lhs, value_type alpha
+    ,BLAS_Cpp::Transp trans_rhs1
+    ,const SpVectorSlice& sv_rhs2, value_type beta
+    ) const;
+  ///
+  void Vp_StPtMtV(
+    VectorMutable* v_lhs, value_type alpha
+    ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    ,BLAS_Cpp::Transp M_rhs2_trans
+    ,const Vector& v_rhs3, value_type beta
+    ) const;
+  ///
+  void Vp_StPtMtV(
+    VectorMutable* v_lhs, value_type alpha
+    ,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    ,BLAS_Cpp::Transp M_rhs2_trans
+    ,const SpVectorSlice& sv_rhs3, value_type beta
+    ) const;
+  
+  //@}
+  
 private:
-	
-	// //////////////////////////
-	// Private types
-	
-	typedef std::vector<VectorSpace::vec_mut_ptr_t>    InvCtN_rows_t;
-	typedef std::list<index_type>                      InvCtN_rows_set_list_t;
+  
+  // //////////////////////////
+  // Private types
+  
+  typedef std::vector<VectorSpace::vec_mut_ptr_t>    InvCtN_rows_t;
+  typedef std::list<index_type>                      InvCtN_rows_set_list_t;
 
-	// //////////////////////////
-	// Private data members
+  // //////////////////////////
+  // Private data members
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::MatrixOpNonsing  *C;
-	AbstractLinAlgPack::MatrixOp             *N;
-	AbstractLinAlgPack::MatrixOp             *D_direct;
+  AbstractLinAlgPack::MatrixOpNonsing  *C;
+  AbstractLinAlgPack::MatrixOp             *N;
+  AbstractLinAlgPack::MatrixOp             *D_direct;
 #else
-	mat_nonsing_ptr_t                   C_;
-	mat_ptr_t                           N_;
-	mat_ptr_t                           D_direct_;
+  mat_nonsing_ptr_t                   C_;
+  mat_ptr_t                           N_;
+  mat_ptr_t                           D_direct_;
 
-	mutable InvCtN_rows_t               InvCtN_rows_;
-	// InvCtN_rows_ keeps track of a set pointers of computed rows of inv(C)*N.
-	// If D_direct_ is setup then InvCtN_rows_ is not necessary.  However, if
-	// not, then InvCtN_rows_[j-1] will be !=NULL if it points to the precomputed
-	// jth row of inv(C)*N and will be ==NULL if this row has not been computed
-	// yet.  Each time initialize(...) is called, these rows are deallocated and
-	// InvCtN_rows_[j-1], j=1...this->rows() is set to NULL.
+  mutable InvCtN_rows_t               InvCtN_rows_;
+  // InvCtN_rows_ keeps track of a set pointers of computed rows of inv(C)*N.
+  // If D_direct_ is setup then InvCtN_rows_ is not necessary.  However, if
+  // not, then InvCtN_rows_[j-1] will be !=NULL if it points to the precomputed
+  // jth row of inv(C)*N and will be ==NULL if this row has not been computed
+  // yet.  Each time initialize(...) is called, these rows are deallocated and
+  // InvCtN_rows_[j-1], j=1...this->rows() is set to NULL.
 
-	mutable InvCtN_rows_set_list_t      InvCtN_rows_set_list_;
-	// InvCtN_rows_set_list_ keeps a unorderd=ed list of the row indexes that are
-	// currently updated.  Keeping this list allows the vectors allocated in 
-	// InvCtN_rows_[] to be deallocated much faster than if the whole array
-	// had to be searched everytime that this->initialize() was called again.
+  mutable InvCtN_rows_set_list_t      InvCtN_rows_set_list_;
+  // InvCtN_rows_set_list_ keeps a unorderd=ed list of the row indexes that are
+  // currently updated.  Keeping this list allows the vectors allocated in 
+  // InvCtN_rows_[] to be deallocated much faster than if the whole array
+  // had to be searched everytime that this->initialize() was called again.
 
 #endif
 
-	// //////////////////////////////////
-	// Private member functions
+  // //////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_initialized() const;
+  ///
+  void assert_initialized() const;
 
 };	// end class MatrixVarReductImplicit
 
@@ -276,21 +276,21 @@ inline
 const MatrixVarReductImplicit::mat_nonsing_ptr_t&
 MatrixVarReductImplicit::C_ptr() const
 {
-	return C_;
+  return C_;
 }
 
 inline
 const MatrixVarReductImplicit::mat_ptr_t&
 MatrixVarReductImplicit::N_ptr() const
 {
-	return N_;
+  return N_;
 }
 
 inline
 const MatrixVarReductImplicit::mat_ptr_t&
 MatrixVarReductImplicit::D_direct_ptr() const
 {
-	return D_direct_;
+  return D_direct_;
 }
 
 }	// end namespace ConstrainedOptPack 

@@ -79,18 +79,18 @@ namespace ConstrainedOptPack {
  *                    will be BY_ROW or BY_ROW_AND_COL.
  */
 void initialize_Q_R_Q_X(
-	size_type            n_R
-	,size_type           n_X
-	,const size_type     i_x_free[]
-	,const size_type     i_x_fixed[]
-	,bool                test_setup
-	,size_type           Q_R_row_i[]
-	,size_type           Q_R_col_j[]
-	,GenPermMatrixSlice  *Q_R
-	,size_type           Q_X_row_i[]
-	,size_type           Q_X_col_j[]
-	,GenPermMatrixSlice  *Q_X
-	);
+  size_type            n_R
+  ,size_type           n_X
+  ,const size_type     i_x_free[]
+  ,const size_type     i_x_fixed[]
+  ,bool                test_setup
+  ,size_type           Q_R_row_i[]
+  ,size_type           Q_R_col_j[]
+  ,GenPermMatrixSlice  *Q_R
+  ,size_type           Q_X_row_i[]
+  ,size_type           Q_X_col_j[]
+  ,GenPermMatrixSlice  *Q_X
+  );
 
 }  // end namespace ConstrainedOptPack
 

@@ -44,36 +44,36 @@ namespace NLPInterfacePack {
   * The options group is:
   \verbatim
 
-	options_group NLPDirectTester {
-	*    Gf_testing_method = FD_COMPUTE_ALL;
-	    Gf_testing_method = FD_DIRECTIONAL;
-	    Gf_warning_tol    = 1e-6;
-	    Gf_error_tol      = 1e-1;
-	*    Gc_testing_method = FD_COMPUTE_ALL;
-	    Gc_testing_method = FD_DIRECTIONAL;
-	    Gc_warning_tol    = 1e-6;
-	    Gc_error_tol      = 1e-1;
-		num_fd_directions = 3;  *** [testing_method == FD_DIRECTIONAL]
+  options_group NLPDirectTester {
+  *    Gf_testing_method = FD_COMPUTE_ALL;
+      Gf_testing_method = FD_DIRECTIONAL;
+      Gf_warning_tol    = 1e-6;
+      Gf_error_tol      = 1e-1;
+  *    Gc_testing_method = FD_COMPUTE_ALL;
+      Gc_testing_method = FD_DIRECTIONAL;
+      Gc_warning_tol    = 1e-6;
+      Gc_error_tol      = 1e-1;
+    num_fd_directions = 3;  *** [testing_method == FD_DIRECTIONAL]
     dump_all = false;
-	}
+  }
   \endverbatim
   */
 class NLPDirectTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPDirectTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      NLPDirectTester >
 {
 public:
 
-	///
-	NLPDirectTesterSetOptions(
-		  NLPDirectTester* target = 0
-		, const char opt_grp_name[] = "NLPDirectTester" );
+  ///
+  NLPDirectTesterSetOptions(
+      NLPDirectTester* target = 0
+    , const char opt_grp_name[] = "NLPDirectTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class NLPDirectTesterSetOptions
 

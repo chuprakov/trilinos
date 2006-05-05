@@ -37,29 +37,29 @@ std::istream& input_vs(std::istream& is, DenseLinAlgPack::DVectorSlice* vs, cons
 }
 
 std::istream& DenseLinAlgPack::input(std::istream& is, DVector* v, LinAlgPackIO::fmtflags extra_flags) {
-	if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) ) {
-		size_type n;
-		is >> n;
-		if(is.fail())
-			throw LinAlgPackIO::InputException("DenseLinAlgPack::input() {DVector}:  Input operation of vector dimension failed.  Check that the constant n is a valid integer.");
-		if(is.bad())
-			throw std::ios_base::failure("DenseLinAlgPack::input() {DVector}: Input operation failed because the stream became currupted.");
-		v->resize(n);
-	}
-	return input_vs(is,&(*v)(),"DenseLinAlgPack::input() {DVector}");
+  if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) ) {
+    size_type n;
+    is >> n;
+    if(is.fail())
+      throw LinAlgPackIO::InputException("DenseLinAlgPack::input() {DVector}:  Input operation of vector dimension failed.  Check that the constant n is a valid integer.");
+    if(is.bad())
+      throw std::ios_base::failure("DenseLinAlgPack::input() {DVector}: Input operation failed because the stream became currupted.");
+    v->resize(n);
+  }
+  return input_vs(is,&(*v)(),"DenseLinAlgPack::input() {DVector}");
 }
 
 std::istream& DenseLinAlgPack::input(std::istream& is, DVectorSlice* vs, LinAlgPackIO::fmtflags extra_flags) {
-	if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) ) {
-		size_type n;
-		is >> n;
-		if(is.fail())
-			throw LinAlgPackIO::InputException("DenseLinAlgPack::input() {DVectorSlice}:  Input operation of vector dimension failed.  Check that the constant n is a valid integer.");
-		if(is.bad())
-			throw std::ios_base::failure("DenseLinAlgPack::input() {DVectorSlice}: Input operation failed because the stream became currupted.");
-		DenseLinAlgPack::Vp_V_assert_sizes( vs->dim(), n );
-	}
-	return input_vs(is,vs,"DenseLinAlgPack::input() {DVectorSlice}");
+  if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) ) {
+    size_type n;
+    is >> n;
+    if(is.fail())
+      throw LinAlgPackIO::InputException("DenseLinAlgPack::input() {DVectorSlice}:  Input operation of vector dimension failed.  Check that the constant n is a valid integer.");
+    if(is.bad())
+      throw std::ios_base::failure("DenseLinAlgPack::input() {DVectorSlice}: Input operation failed because the stream became currupted.");
+    DenseLinAlgPack::Vp_V_assert_sizes( vs->dim(), n );
+  }
+  return input_vs(is,vs,"DenseLinAlgPack::input() {DVectorSlice}");
 }
 
 
@@ -75,38 +75,38 @@ namespace {
 // is thrown.  The state of the input steam remains the same on return accept for the char's
 // that have been extracted.
 std::istream& input_vs(std::istream& is, DenseLinAlgPack::DVectorSlice* vs, const char func[]) {
-	using std::ios_base;
-	using DenseLinAlgPack::DVectorSlice;
-	if(!vs->dim()) return is;	// If there are no elements to read in just return
-	ios_base::iostate old_state = is.exceptions();		// save the old state
-	is.exceptions(ios_base::badbit | ios_base::failbit);
-	try {
-		// Read in the elements
-		for(DVectorSlice::iterator itr = vs->begin(); itr != vs->end(); ++itr)
-			is >> *itr;
-	}
-	catch(std::ios_base::failure& excpt) {
-		is.exceptions(old_state);
-		if(is.bad()) throw;	// The stream was bad so rethrow the exception
-		if(is.fail()) {
-			std::ostringstream os;
-			os << func << ":  An vector element input failed.  Check that the vector element is a valid C number.  "
-			   << excpt.what();
-			throw DenseLinAlgPack::LinAlgPackIO::InputException(os.str());			
-		}
-		if(is.eof()) {
-			std::ostringstream os;
-			os << func << ":  DVector input failed.  The end of the file was found before all of the elements where read in.  "
-			   << excpt.what();;
-			throw DenseLinAlgPack::LinAlgPackIO::InputException(os.str());			
-		}
-	}
-	catch(...) {
-		is.exceptions(old_state);
-		throw;
-	}
-	is.exceptions(old_state);
-	return is;
+  using std::ios_base;
+  using DenseLinAlgPack::DVectorSlice;
+  if(!vs->dim()) return is;	// If there are no elements to read in just return
+  ios_base::iostate old_state = is.exceptions();		// save the old state
+  is.exceptions(ios_base::badbit | ios_base::failbit);
+  try {
+    // Read in the elements
+    for(DVectorSlice::iterator itr = vs->begin(); itr != vs->end(); ++itr)
+      is >> *itr;
+  }
+  catch(std::ios_base::failure& excpt) {
+    is.exceptions(old_state);
+    if(is.bad()) throw;	// The stream was bad so rethrow the exception
+    if(is.fail()) {
+      std::ostringstream os;
+      os << func << ":  An vector element input failed.  Check that the vector element is a valid C number.  "
+         << excpt.what();
+      throw DenseLinAlgPack::LinAlgPackIO::InputException(os.str());			
+    }
+    if(is.eof()) {
+      std::ostringstream os;
+      os << func << ":  DVector input failed.  The end of the file was found before all of the elements where read in.  "
+         << excpt.what();;
+      throw DenseLinAlgPack::LinAlgPackIO::InputException(os.str());			
+    }
+  }
+  catch(...) {
+    is.exceptions(old_state);
+    throw;
+  }
+  is.exceptions(old_state);
+  return is;
 }
 
 }	// end namespace

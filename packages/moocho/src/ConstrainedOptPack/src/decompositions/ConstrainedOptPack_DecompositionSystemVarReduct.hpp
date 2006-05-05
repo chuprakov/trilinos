@@ -64,58 +64,58 @@ namespace ConstrainedOptPack {
 class DecompositionSystemVarReduct : public DecompositionSystem {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	enum EExplicitImplicit {
-		MAT_IMP_EXPLICIT
-		,MAT_IMP_IMPLICIT
-		,MAT_IMP_AUTO
-	};
+  ///
+  enum EExplicitImplicit {
+    MAT_IMP_EXPLICIT
+    ,MAT_IMP_IMPLICIT
+    ,MAT_IMP_AUTO
+  };
 
-	//@}
+  //@}
 
-	/** @name Matrix representations */
-	//@{
+  /** @name Matrix representations */
+  //@{
 
-	/// Set whether to use explicit or implicit <tt>D = -inv(C)*N</tt> matrix.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp)
-	/// Set whether to use explicit or implicit <tt>Uz = F + E * D</tt> matrix.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Uz_imp)
+  /// Set whether to use explicit or implicit <tt>D = -inv(C)*N</tt> matrix.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp)
+  /// Set whether to use explicit or implicit <tt>Uz = F + E * D</tt> matrix.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,Uz_imp)
 
-		// ToDo: The above could be implemented as pure virtual funtions if needed later!
+    // ToDo: The above could be implemented as pure virtual funtions if needed later!
 
-	//@}
-		
-	/** @name Constructors / initializers */
-	//@{
+  //@}
+    
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	DecompositionSystemVarReduct(
-		EExplicitImplicit     D_imp    = MAT_IMP_AUTO
-		,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
-		)
-		:D_imp_(D_imp), Uz_imp_(Uz_imp)
-	{}
+  ///
+  DecompositionSystemVarReduct(
+    EExplicitImplicit     D_imp    = MAT_IMP_AUTO
+    ,EExplicitImplicit    Uz_imp   = MAT_IMP_AUTO
+    )
+    :D_imp_(D_imp), Uz_imp_(Uz_imp)
+  {}
 
-	//@}
+  //@}
 
-	/** @name Variable partitions. */
-	//@{
+  /** @name Variable partitions. */
+  //@{
 
-	///
-	virtual Range1D var_indep() const = 0;
-	///
-	virtual Range1D var_dep() const = 0;
+  ///
+  virtual Range1D var_indep() const = 0;
+  ///
+  virtual Range1D var_dep() const = 0;
 
-	//@}
+  //@}
 
 private:
 
-	// not defined and not to be called!
-	DecompositionSystemVarReduct(const DecompositionSystemVarReduct&);
-	DecompositionSystemVarReduct& operator=(const DecompositionSystemVarReduct&);
+  // not defined and not to be called!
+  DecompositionSystemVarReduct(const DecompositionSystemVarReduct&);
+  DecompositionSystemVarReduct& operator=(const DecompositionSystemVarReduct&);
 
 };	// end class DecompositionSystemVarReduct
 

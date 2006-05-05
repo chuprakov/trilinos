@@ -58,62 +58,62 @@ namespace ConstrainedOptPack {
 class DecompositionSystemCoordinate : public DecompositionSystemVarReductImp {
 public:
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	DecompositionSystemCoordinate(
-		const VectorSpace::space_ptr_t     &space_x          = Teuchos::null
-		,const VectorSpace::space_ptr_t    &space_c          = Teuchos::null
-		,const basis_sys_ptr_t             &basis_sys        = Teuchos::null
-		,const basis_sys_tester_ptr_t      &basis_sys_tester = Teuchos::null
-		,EExplicitImplicit                 D_imp             = MAT_IMP_AUTO
-		,EExplicitImplicit                 Uz_imp            = MAT_IMP_AUTO
-		);
+  ///
+  DecompositionSystemCoordinate(
+    const VectorSpace::space_ptr_t     &space_x          = Teuchos::null
+    ,const VectorSpace::space_ptr_t    &space_c          = Teuchos::null
+    ,const basis_sys_ptr_t             &basis_sys        = Teuchos::null
+    ,const basis_sys_tester_ptr_t      &basis_sys_tester = Teuchos::null
+    ,EExplicitImplicit                 D_imp             = MAT_IMP_AUTO
+    ,EExplicitImplicit                 Uz_imp            = MAT_IMP_AUTO
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden from DecompositionSystem */
-	//@{
+  /** @name Overridden from DecompositionSystem */
+  //@{
 
-	///
-	const mat_fcty_ptr_t factory_Y() const;
-	///
-	const mat_nonsing_fcty_ptr_t factory_R() const;
-	///
-	const mat_fcty_ptr_t factory_Uy() const;
+  ///
+  const mat_fcty_ptr_t factory_Y() const;
+  ///
+  const mat_nonsing_fcty_ptr_t factory_R() const;
+  ///
+  const mat_fcty_ptr_t factory_Uy() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden from DecompositionSystemVarReductImp */
-	//@{
+  /** @name Overridden from DecompositionSystemVarReductImp */
+  //@{
 
-	///
-	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
-		std::ostream                                       *out
-		,EOutputLevel                                      olevel
-		,MatrixOp                                          *Y
-		,MatrixOpNonsing                                   *R
-		,MatrixOp                                          *Uy
-		) const;
-	///
-	void initialize_matrices(
-		std::ostream                                           *out
-		,EOutputLevel                                          olevel
-		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
-		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-		,MatrixOp                                              *Y
-		,MatrixOpNonsing                                       *R
-		,MatrixOp                                              *Uy
-		,EMatRelations                                         mat_rel
-		) const;
-	///
-	void print_update_matrices(
-		std::ostream& out, const std::string& leading_str ) const;
+  ///
+  mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
+    std::ostream                                       *out
+    ,EOutputLevel                                      olevel
+    ,MatrixOp                                          *Y
+    ,MatrixOpNonsing                                   *R
+    ,MatrixOp                                          *Uy
+    ) const;
+  ///
+  void initialize_matrices(
+    std::ostream                                           *out
+    ,EOutputLevel                                          olevel
+    ,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
+    ,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
+    ,MatrixOp                                              *Y
+    ,MatrixOpNonsing                                       *R
+    ,MatrixOp                                              *Uy
+    ,EMatRelations                                         mat_rel
+    ) const;
+  ///
+  void print_update_matrices(
+    std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
 };	// end class DecompositionSystemCoordinate
 

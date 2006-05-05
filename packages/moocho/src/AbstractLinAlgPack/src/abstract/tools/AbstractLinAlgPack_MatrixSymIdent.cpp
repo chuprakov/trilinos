@@ -39,64 +39,64 @@ namespace AbstractLinAlgPack {
 // Constructors/initalizers
 
 MatrixSymIdent::MatrixSymIdent(
-	const VectorSpace::space_ptr_t&          vec_space
-	,const value_type                        scale
-	)
+  const VectorSpace::space_ptr_t&          vec_space
+  ,const value_type                        scale
+  )
 {
-	this->initialize(vec_space,scale);
+  this->initialize(vec_space,scale);
 }
 
 void MatrixSymIdent::initialize(
-	const VectorSpace::space_ptr_t&          vec_space
-	,const value_type                        scale
-	)
+  const VectorSpace::space_ptr_t&          vec_space
+  ,const value_type                        scale
+  )
 {
-	vec_space_ = vec_space;
-	scale_     = scale;
+  vec_space_ = vec_space;
+  scale_     = scale;
 }
 
 // Overridden from MatrixBase
 
 size_type MatrixSymIdent::rows() const
 {
-	return vec_space_.get() ? vec_space_->dim() : 0;
+  return vec_space_.get() ? vec_space_->dim() : 0;
 }
 
 size_type MatrixSymIdent::nz() const
 {
-	return vec_space_.get() ? vec_space_->dim() : 0;
+  return vec_space_.get() ? vec_space_->dim() : 0;
 }
 
 // Overridden from MatrixOp
 
 const VectorSpace& MatrixSymIdent::space_cols() const {
-	return *vec_space_;
+  return *vec_space_;
 }
 
 std::ostream& MatrixSymIdent::output(std::ostream& out) const
 {
-	out << "Identity matrix of dimension " << rows() << " x " << rows() << std::endl;
-	return out;
+  out << "Identity matrix of dimension " << rows() << " x " << rows() << std::endl;
+  return out;
 }
 
 void MatrixSymIdent::Vp_StMtV(
-	VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const Vector& x, value_type b
-	) const
+  VectorMutable* y, value_type a, BLAS_Cpp::Transp M_trans
+  ,const Vector& x, value_type b
+  ) const
 {
-	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
-	Vt_S(y,b);
+  AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
+  Vt_S(y,b);
     Vp_StV(y,a*scale_,x);
 }
 
 // Overridden from MatrixNonsing
 
 void MatrixSymIdent::V_InvMtV(
-	VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
-	) const
+  VectorMutable* y, BLAS_Cpp::Transp M_trans, const Vector& x
+  ) const
 {
-	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
-	LinAlgOpPack::V_StV(y,1.0/scale_,x);
+  AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
+  LinAlgOpPack::V_StV(y,1.0/scale_,x);
 }
 
 } // end namespace AbstractLinAlgPack

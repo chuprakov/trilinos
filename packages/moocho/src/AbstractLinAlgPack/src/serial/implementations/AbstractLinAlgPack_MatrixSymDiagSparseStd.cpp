@@ -35,40 +35,40 @@
 namespace AbstractLinAlgPack {
 
 MatrixSymDiagSparseStd::MatrixSymDiagSparseStd( const SpVectorSlice& diag )
-	: diag_(diag)
+  : diag_(diag)
 {}
 
 void MatrixSymDiagSparseStd::initialize( const SpVectorSlice& diag )
 {
-	diag_ = diag;
+  diag_ = diag;
 }
 
 // Overridden from MatrixOp
 
 MatrixOp& MatrixSymDiagSparseStd::operator=(const MatrixOp& m)
 {
-	if(&m == this) return *this;	// assignment to self
-	const MatrixSymDiagSparseStd
-		*p_m = dynamic_cast<const MatrixSymDiagSparseStd*>(&m);
-	if(p_m) {
-		diag_ = p_m->diag_;
-	}
-	else {
-		TEST_FOR_EXCEPTION(
-			true, std::invalid_argument
-			,"MatrixSymDiagSparseStd::operator=(const MatrixOp& m) : Error!"
-			"The concrete type of m = \'" << typeid(m).name() << "\' is not a subclass of "
-			"MatrixSymDiagSparseStd as expected"
-			);
-	}
-	return *this;
+  if(&m == this) return *this;	// assignment to self
+  const MatrixSymDiagSparseStd
+    *p_m = dynamic_cast<const MatrixSymDiagSparseStd*>(&m);
+  if(p_m) {
+    diag_ = p_m->diag_;
+  }
+  else {
+    TEST_FOR_EXCEPTION(
+      true, std::invalid_argument
+      ,"MatrixSymDiagSparseStd::operator=(const MatrixOp& m) : Error!"
+      "The concrete type of m = \'" << typeid(m).name() << "\' is not a subclass of "
+      "MatrixSymDiagSparseStd as expected"
+      );
+  }
+  return *this;
 }
 
 // Overridden from MatrixDiagonalSparse
 
 const SpVectorSlice MatrixSymDiagSparseStd::diag() const
 {
-	return diag_();
+  return diag_();
 }
 
 

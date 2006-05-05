@@ -34,15 +34,15 @@
 
 bool OptionsFromStreamPack ::StringToBool( const char* opt_name, const char* str ) {
 
-	if( !::strcmp( str, "true" ) )
-		return true; 
-	if( !::strcmp( str, "false" ) )
-		return false;
-	std::ostringstream omsg;
-	omsg	<< "StringToBool(...): "
-			<< "Error, the string \"" << str << "\" must be \"true\" or \"false\" for \""
-			<< opt_name << "\"";
-	throw InputException( omsg.str() );
+  if( !::strcmp( str, "true" ) )
+    return true; 
+  if( !::strcmp( str, "false" ) )
+    return false;
+  std::ostringstream omsg;
+  omsg	<< "StringToBool(...): "
+      << "Error, the string \"" << str << "\" must be \"true\" or \"false\" for \""
+      << opt_name << "\"";
+  throw InputException( omsg.str() );
 
-	return false;	// will never execute.
+  return false;	// will never execute.
 }

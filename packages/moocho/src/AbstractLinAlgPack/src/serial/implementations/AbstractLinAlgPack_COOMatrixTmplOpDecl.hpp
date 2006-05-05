@@ -46,35 +46,35 @@ namespace AbstractLinAlgPack {
  * The specifications for these template interfaces are given below:\\
  *
  \begin{verbatim}
-	class SparseCOOElementTemplateInterface {
-	public:
-		typedef ...		value_type;
-		typedef ...		index_type;
+  class SparseCOOElementTemplateInterface {
+  public:
+    typedef ...		value_type;
+    typedef ...		index_type;
 
-		value_type& value();
-		value_type value() const;
-		index_type row_i() const;
-		index_type col_j() const;
-	};
+    value_type& value();
+    value_type value() const;
+    index_type row_i() const;
+    index_type col_j() const;
+  };
 
-	class COOMatrixTemplateInterface {
-	public:
-		typedef ...		size_type;
-		typedef ...		difference_type;
-		typedef ...		element_type;		// SparseCOOElementTemplateInterface compliant
-		typedef ...		iterator;			// returns an element_type
-		typedef ...		const_iterator;		// returns a const element_type
+  class COOMatrixTemplateInterface {
+  public:
+    typedef ...		size_type;
+    typedef ...		difference_type;
+    typedef ...		element_type;		// SparseCOOElementTemplateInterface compliant
+    typedef ...		iterator;			// returns an element_type
+    typedef ...		const_iterator;		// returns a const element_type
 
-		size_type rows() const;
-		size_type cols() const;
-		size_type nz() const;
-		difference_type row_offset() const;
-		difference_type col_offset() const;
-		iterator begin();
-		const_iterator begin() const;
-		iterator end();
-		const_iterator end() const;
-	};
+    size_type rows() const;
+    size_type cols() const;
+    size_type nz() const;
+    difference_type row_offset() const;
+    difference_type col_offset() const;
+    iterator begin();
+    const_iterator begin() const;
+    iterator end();
+    const_iterator end() const;
+  };
  \end{verbatim}
  *
  * The nonzero elements are specified by the triplet (val,i,j) where:\\
@@ -109,22 +109,22 @@ namespace AbstractLinAlgPack {
 /// gms_lhs += alpha * op(coom_rhs) (time = O(coom_rhs.nz(), space = O(1))
 template<class T_COOM>
 void Mp_StCOOM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
-	, BLAS_Cpp::Transp trans_rhs);
+  , BLAS_Cpp::Transp trans_rhs);
 
 /// vs_lhs += alpha * op(coom_rhs1) * vs_rhs2 (BLAS xGEMV) (time = O(coom_rhs.nz(), space = O(1))
 template<class T_COOM>
 void Vp_StCOOMtV(DVectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2);
 
 /// gms_lhs += alpha * op(coom_rhs1) * op(gms_rhs2) (right) (BLAS xGEMM)
 template<class T_COOM>
 void Mp_StCOOMtM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 /// gms_lhs += alpha * op(gms_rhs1) * op(coom_rhs2) (left) (BLAS xGEMM)
 template<class T_COOM>
 void Mp_StMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // / gms_lhs = alpha * op(coom_rhs1) * op(sym_rhs2) (right) (BLAS xSYMM)
 //template<class T_COOM>

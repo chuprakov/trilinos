@@ -51,119 +51,119 @@ PreEvalNewPointBarrier_Step::PreEvalNewPointBarrier_Step(
   const value_type relative_bound_push,
   const value_type absolute_bound_push
   )
-	:
-	relative_bound_push_(relative_bound_push),
-	absolute_bound_push_(absolute_bound_push)
-	{}
+  :
+  relative_bound_push_(relative_bound_push),
+  absolute_bound_push_(absolute_bound_push)
+  {}
 
 bool PreEvalNewPointBarrier_Step::do_step(
   Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss
   )
-	{
-	using Teuchos::dyn_cast;
-	using IterationPack::print_algorithm_step;
-	using AbstractLinAlgPack::force_in_bounds_buffer;
+  {
+  using Teuchos::dyn_cast;
+  using IterationPack::print_algorithm_step;
+  using AbstractLinAlgPack::force_in_bounds_buffer;
 
-	NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
-	IpState             &s      = dyn_cast<IpState>(_algo.state());
-	NLP                 &nlp    = algo.nlp();
-	NLPFirstOrder   *nlp_foi = dynamic_cast<NLPFirstOrder*>(&nlp);
-	
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
-	
-	if(!nlp.is_initialized())
-		nlp.initialize(algo.algo_cntr().check_results());
-
-	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		using IterationPack::print_algorithm_step;
-		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
-		}
-
-	IterQuantityAccess<value_type>     &barrier_parameter_iq = s.barrier_parameter();
-	IterQuantityAccess<VectorMutable>  &x_iq  = s.x();
-
-	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) 
-		{
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-			{
-			out << "\nInitialize x with x_k = nlp.xinit() ...\n"
-				<< " and push x_k within bounds.\n";
-			}
-		VectorMutable& x_k = x_iq.set_k(0) = nlp.xinit();
+  NLPAlgo            &algo   = dyn_cast<NLPAlgo>(_algo);
+  IpState             &s      = dyn_cast<IpState>(_algo.state());
+  NLP                 &nlp    = algo.nlp();
+  NLPFirstOrder   *nlp_foi = dynamic_cast<NLPFirstOrder*>(&nlp);
   
-		// apply transformation operator to push x sufficiently within bounds
-		force_in_bounds_buffer(relative_bound_push_, 
-							   absolute_bound_push_,
-							   nlp.xl(),
-							   nlp.xu(),
-							   &x_k);
+  EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  std::ostream& out = algo.track().journal_out();
+  
+  if(!nlp.is_initialized())
+    nlp.initialize(algo.algo_cntr().check_results());
 
-		// evaluate the func and constraints
-		IterQuantityAccess<value_type>
-			&f_iq    = s.f();
-		IterQuantityAccess<VectorMutable>
-			&Gf_iq   = s.Gf(),
-			*c_iq    = nlp.m() > 0 ? &s.c() : NULL;
-		IterQuantityAccess<MatrixOp>
-			*Gc_iq   = nlp_foi ? &s.Gc() : NULL;
+  // print step header.
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+    {
+    using IterationPack::print_algorithm_step;
+    print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
+    }
 
-		using AbstractLinAlgPack::assert_print_nan_inf;
-		assert_print_nan_inf(x_k, "x", true, NULL); // With throw exception if Inf or NaN!
+  IterQuantityAccess<value_type>     &barrier_parameter_iq = s.barrier_parameter();
+  IterQuantityAccess<VectorMutable>  &x_iq  = s.x();
 
-		// Wipe out storage for computed iteration quantities (just in case?) : RAB: 7/29/2002
-		if(f_iq.updated_k(0))
-			f_iq.set_not_updated_k(0);
-		if(Gf_iq.updated_k(0))
-			Gf_iq.set_not_updated_k(0);
-		if (c_iq)
-			{
-			if(c_iq->updated_k(0))
-				c_iq->set_not_updated_k(0);
-			}
-		if (nlp_foi)
-			{
-			if(Gc_iq->updated_k(0))
-				Gc_iq->set_not_updated_k(0);
-			}
-		}
+  if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) 
+    {
+    if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+      {
+      out << "\nInitialize x with x_k = nlp.xinit() ...\n"
+        << " and push x_k within bounds.\n";
+      }
+    VectorMutable& x_k = x_iq.set_k(0) = nlp.xinit();
+  
+    // apply transformation operator to push x sufficiently within bounds
+    force_in_bounds_buffer(relative_bound_push_, 
+                 absolute_bound_push_,
+                 nlp.xl(),
+                 nlp.xu(),
+                 &x_k);
 
-	if (barrier_parameter_iq.last_updated() == IterQuantity::NONE_UPDATED)
-		{
-		barrier_parameter_iq.set_k(-1) = 0.1; // RAB: 7/29/2002: This should be parameterized! (allow user to set this!)
-		}
+    // evaluate the func and constraints
+    IterQuantityAccess<value_type>
+      &f_iq    = s.f();
+    IterQuantityAccess<VectorMutable>
+      &Gf_iq   = s.Gf(),
+      *c_iq    = nlp.m() > 0 ? &s.c() : NULL;
+    IterQuantityAccess<MatrixOp>
+      *Gc_iq   = nlp_foi ? &s.Gc() : NULL;
 
-	// Print vector information
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
-		{
-		out << "x_k =\n" << x_iq.get_k(0);
-		}
+    using AbstractLinAlgPack::assert_print_nan_inf;
+    assert_print_nan_inf(x_k, "x", true, NULL); // With throw exception if Inf or NaN!
 
-	return true;
-	}
+    // Wipe out storage for computed iteration quantities (just in case?) : RAB: 7/29/2002
+    if(f_iq.updated_k(0))
+      f_iq.set_not_updated_k(0);
+    if(Gf_iq.updated_k(0))
+      Gf_iq.set_not_updated_k(0);
+    if (c_iq)
+      {
+      if(c_iq->updated_k(0))
+        c_iq->set_not_updated_k(0);
+      }
+    if (nlp_foi)
+      {
+      if(Gc_iq->updated_k(0))
+        Gc_iq->set_not_updated_k(0);
+      }
+    }
+
+  if (barrier_parameter_iq.last_updated() == IterQuantity::NONE_UPDATED)
+    {
+    barrier_parameter_iq.set_k(-1) = 0.1; // RAB: 7/29/2002: This should be parameterized! (allow user to set this!)
+    }
+
+  // Print vector information
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+    {
+    out << "x_k =\n" << x_iq.get_k(0);
+    }
+
+  return true;
+  }
 
 
 void PreEvalNewPointBarrier_Step::print_step(
   const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
-	{
-	//const NLPAlgo   &algo = rsqp_algo(_algo);
-	//const NLPAlgoState  &s    = algo.rsqp_state();
-	out << L << "# Evaluate information specific to primal / dual barrier algorithms\n"
-		<< L << "if (x never updated) then\n"
-		<< L << "  x_k = nlp.xinit()\n"
-		<< L << "  force_in_bounds(x_k)\n"
-		<< L << "  set f_k not updated\n"
-		<< L << "  set Gf_k not updated\n"
-		<< L << "  if (m > 0) then\n"
-		<< L << "    set c_k not updated\n"
-		<< L << "    set Gc_k not updated\n"
-		<< L << "end\n";
-	}
+  {
+  //const NLPAlgo   &algo = rsqp_algo(_algo);
+  //const NLPAlgoState  &s    = algo.rsqp_state();
+  out << L << "# Evaluate information specific to primal / dual barrier algorithms\n"
+    << L << "if (x never updated) then\n"
+    << L << "  x_k = nlp.xinit()\n"
+    << L << "  force_in_bounds(x_k)\n"
+    << L << "  set f_k not updated\n"
+    << L << "  set Gf_k not updated\n"
+    << L << "  if (m > 0) then\n"
+    << L << "    set c_k not updated\n"
+    << L << "    set Gc_k not updated\n"
+    << L << "end\n";
+  }
 
 
 namespace {
@@ -171,16 +171,16 @@ namespace {
 const int local_num_options = 2;
 
 enum local_EOptions 
-	{
-	RELATIVE_BOUND_PUSH,
-	ABSOLUTE_BOUND_PUSH
-	};
+  {
+  RELATIVE_BOUND_PUSH,
+  ABSOLUTE_BOUND_PUSH
+  };
 
 const char* local_SOptions[local_num_options] = 
-	{
-	"relative_bound_push",
-	"absolute_bound_push"
-	};
+  {
+  "relative_bound_push",
+  "absolute_bound_push"
+  };
 
 }
 
@@ -188,30 +188,30 @@ const char* local_SOptions[local_num_options] =
 PreEvalNewPointBarrier_StepSetOptions::PreEvalNewPointBarrier_StepSetOptions(
   PreEvalNewPointBarrier_Step* target
   , const char opt_grp_name[] )
-	:
-	OptionsFromStreamPack::SetOptionsFromStreamNode(
-	  opt_grp_name, local_num_options, local_SOptions ),
-	OptionsFromStreamPack::SetOptionsToTargetBase< PreEvalNewPointBarrier_Step >( target )
-	{
-	}
+  :
+  OptionsFromStreamPack::SetOptionsFromStreamNode(
+    opt_grp_name, local_num_options, local_SOptions ),
+  OptionsFromStreamPack::SetOptionsToTargetBase< PreEvalNewPointBarrier_Step >( target )
+  {
+  }
 
 void PreEvalNewPointBarrier_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
-	{
-	using OptionsFromStreamPack::StringToBool;
+  {
+  using OptionsFromStreamPack::StringToBool;
 
-	typedef PreEvalNewPointBarrier_Step target_t;
-	switch( (local_EOptions)option_num ) 
-		{
-		case RELATIVE_BOUND_PUSH:
-			target().relative_bound_push(::atof(option_value.c_str()));
-			break;
-		case ABSOLUTE_BOUND_PUSH:
-			target().absolute_bound_push(::atof(option_value.c_str()));
-			break;
-		default:
-			assert(0);	// Local error only?
-		}
-	}
+  typedef PreEvalNewPointBarrier_Step target_t;
+  switch( (local_EOptions)option_num ) 
+    {
+    case RELATIVE_BOUND_PUSH:
+      target().relative_bound_push(::atof(option_value.c_str()));
+      break;
+    case ABSOLUTE_BOUND_PUSH:
+      target().absolute_bound_push(::atof(option_value.c_str()));
+      break;
+    default:
+      assert(0);	// Local error only?
+    }
+  }
 
 }  // end namespace MoochoPack

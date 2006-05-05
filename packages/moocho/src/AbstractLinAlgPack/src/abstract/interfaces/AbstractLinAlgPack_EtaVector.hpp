@@ -44,34 +44,34 @@ namespace AbstractLinAlgPack {
   */
 class EtaVector {
 public:
-	
-	typedef SpVectorSlice::element_type		ele_t;
+  
+  typedef SpVectorSlice::element_type		ele_t;
 
 
-	///
-	EtaVector( ele_t::index_type i, size_type n, ele_t::value_type alpha = 1.0 )
-		: ele_(i,alpha), sv_(&ele_,1,0,n,true)
-	{}
+  ///
+  EtaVector( ele_t::index_type i, size_type n, ele_t::value_type alpha = 1.0 )
+    : ele_(i,alpha), sv_(&ele_,1,0,n,true)
+  {}
 
-	/// Implicit conversion to a SpVectorSlice object.
-	operator const SpVectorSlice() const
-	{
-		return sv_;
-	}
+  /// Implicit conversion to a SpVectorSlice object.
+  operator const SpVectorSlice() const
+  {
+    return sv_;
+  }
 
-	/// Explicit conversion to a SpVectorSlice object.
-	const SpVectorSlice& operator()() const
-	{
-		return sv_;
-	}
+  /// Explicit conversion to a SpVectorSlice object.
+  const SpVectorSlice& operator()() const
+  {
+    return sv_;
+  }
 
 private:
-	ele_t			ele_;
-	SpVectorSlice	sv_;
+  ele_t			ele_;
+  SpVectorSlice	sv_;
 
-	// not defined and not to be called
-	EtaVector();
-	EtaVector& operator=(const EtaVector&);
+  // not defined and not to be called
+  EtaVector();
+  EtaVector& operator=(const EtaVector&);
 
 };	// end class EtaVector
 

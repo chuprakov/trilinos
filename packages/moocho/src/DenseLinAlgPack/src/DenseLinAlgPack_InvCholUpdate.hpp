@@ -47,7 +47,7 @@ namespace DenseLinAlgPack {
   * </ul>
   */
 void update_chol_factor(DMatrixSlice* UpTriM, DVectorSlice* u
-	, const DVectorSlice& v);
+  , const DVectorSlice& v);
 
 ///
 /* * Perform a jacobi rotation or a matrix about row i.
@@ -57,7 +57,7 @@ void update_chol_factor(DMatrixSlice* UpTriM, DVectorSlice* u
   * </ul>
   */
 void jacobi_rotate(DMatrixSlice* UpTriM, size_type row_i, value_type alpha
-	, value_type beta); 
+  , value_type beta); 
 
 }	// end namespace DenseLinAlgPack
 

@@ -76,7 +76,7 @@ namespace ConstrainedOptPack {
  where:
                / (s^{k-1}'*y^{k-1})/(y^{k-1}'*y^{k-1})           :  if auto_rescaling() == true
      gamma_k = |
-	           \  alpha from last call to init_identity(n,alpha) :  otherwise
+             \  alpha from last call to init_identity(n,alpha) :  otherwise
  
  \end{verbatim}
  * Now let us define the matrices #S# and #Y# that store the update vectors
@@ -105,269 +105,269 @@ namespace ConstrainedOptPack {
  * remove rows and columns from the matrix.
  */
 class MatrixSymPosDefLBFGS
-	: public MatrixSymWithOpFactorized
-	, public MatrixSymSecant
-	, public MatrixSymAddDelUpdateable
+  : public MatrixSymWithOpFactorized
+  , public MatrixSymSecant
+  , public MatrixSymAddDelUpdateable
 {
 public:
 
-	// //////////////////////////////////////////////
-	// Constructors and initializers
+  // //////////////////////////////////////////////
+  // Constructors and initializers
 
-	/// Calls initial_setup(,,,)
-	MatrixSymPosDefLBFGS(
-		size_type   max_size           = 0
-	    ,size_type  m                  = 10
-		,bool       maintain_original  = true
-		,bool       maintain_inverse   = true
-		,bool       auto_rescaling     = false
-		);
+  /// Calls initial_setup(,,,)
+  MatrixSymPosDefLBFGS(
+    size_type   max_size           = 0
+      ,size_type  m                  = 10
+    ,bool       maintain_original  = true
+    ,bool       maintain_inverse   = true
+    ,bool       auto_rescaling     = false
+    );
 
-	///
-	/** Set whether automatic rescaling is used or not.
-	  *
-	  * This function must be called before a BFGS update is performed
-	  * in order for it to take effect for that update.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
+  ///
+  /** Set whether automatic rescaling is used or not.
+    *
+    * This function must be called before a BFGS update is performed
+    * in order for it to take effect for that update.
+    */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
 
-	///
-	/** Initial setup for the matrix.
-	  *
-	  * This function must be called before init_identity(n)
-	  * is called.  When this function is called all current
-	  * updates are lost and the matrix becomes uninitialized.
-	  *
-	  * @param  max_size
-	  *            [in] If max_size > 0 then this is the max size
-	  *            the matrix is allowed to become.  If max_size == 0
-	  *            then this size will be determined by one of the
-	  *            initialization methods.
-	  * @param  m  [in] Max number of recent update vectors stored
-	  * @param  maintain_original
-	  *            [in] If true then quantities needed to compute
-	  *            x = Bk*y will be maintained, otherwise they
-	  *            will not be unless needed.  This is to save
-	  *            computational costs in case matrix vector
-	  *            products will never be needed.  However,
-	  *            if a matrix vector product is needed then
-	  *            these quantities will be computed on the fly
-	  *            in order to satisfy the request.
-	  * @param  maintain_inverse
-	  *            [in] If true then quantities needed to compute
-	  *            x = inv(Bk)*y = x = Hk*y will be maintained
-	  *            , otherwise they will not be unless needed.
-	  *            This is to save computational costs in case
-	  *            inverse matrix vector products will never be needed.
-	  *            However, if the inverse product is ever needed
-	  *            then the needed quantities will be computed
-	  *            on the fly in order to satisfiy the request.
-	  *            Because it takes so little extra work to maintain
-	  *            the quantities needed for Hk it is recommended
-	  *            to always set this to true.
-	  * @param  auto_rescaling
-	  *            [in] See intro.
-	  */
-	 void initial_setup(
-		 size_type   max_size           = 0
-		 ,size_type  m                  = 10
-		 ,bool       maintain_original  = true
-		 ,bool       maintain_inverse   = true
-		 ,bool       auto_rescaling     = false
-		 );
+  ///
+  /** Initial setup for the matrix.
+    *
+    * This function must be called before init_identity(n)
+    * is called.  When this function is called all current
+    * updates are lost and the matrix becomes uninitialized.
+    *
+    * @param  max_size
+    *            [in] If max_size > 0 then this is the max size
+    *            the matrix is allowed to become.  If max_size == 0
+    *            then this size will be determined by one of the
+    *            initialization methods.
+    * @param  m  [in] Max number of recent update vectors stored
+    * @param  maintain_original
+    *            [in] If true then quantities needed to compute
+    *            x = Bk*y will be maintained, otherwise they
+    *            will not be unless needed.  This is to save
+    *            computational costs in case matrix vector
+    *            products will never be needed.  However,
+    *            if a matrix vector product is needed then
+    *            these quantities will be computed on the fly
+    *            in order to satisfy the request.
+    * @param  maintain_inverse
+    *            [in] If true then quantities needed to compute
+    *            x = inv(Bk)*y = x = Hk*y will be maintained
+    *            , otherwise they will not be unless needed.
+    *            This is to save computational costs in case
+    *            inverse matrix vector products will never be needed.
+    *            However, if the inverse product is ever needed
+    *            then the needed quantities will be computed
+    *            on the fly in order to satisfiy the request.
+    *            Because it takes so little extra work to maintain
+    *            the quantities needed for Hk it is recommended
+    *            to always set this to true.
+    * @param  auto_rescaling
+    *            [in] See intro.
+    */
+   void initial_setup(
+     size_type   max_size           = 0
+     ,size_type  m                  = 10
+     ,bool       maintain_original  = true
+     ,bool       maintain_inverse   = true
+     ,bool       auto_rescaling     = false
+     );
 
-	// //////////////////////////////////
-	// Representation access
+  // //////////////////////////////////
+  // Representation access
 
-	///
-	size_type m() const;
-	///
-	size_type m_bar() const;
-	///
-	size_type k_bar() const;
-	///
-	value_type gamma_k() const;
-	///
-	const DMatrixSlice S() const;
-	///
-	const DMatrixSlice Y() const;
-	///
-	bool maintain_original() const;
-	///
-	bool maintain_inverse() const;
-	/// Returns the total number of successful secant updates performed.
-	size_type num_secant_updates() const;
+  ///
+  size_type m() const;
+  ///
+  size_type m_bar() const;
+  ///
+  size_type k_bar() const;
+  ///
+  value_type gamma_k() const;
+  ///
+  const DMatrixSlice S() const;
+  ///
+  const DMatrixSlice Y() const;
+  ///
+  bool maintain_original() const;
+  ///
+  bool maintain_inverse() const;
+  /// Returns the total number of successful secant updates performed.
+  size_type num_secant_updates() const;
 
-	// /////////////////////////////////////////////////////
-	// Overridden from Matrix
+  // /////////////////////////////////////////////////////
+  // Overridden from Matrix
 
-	///
-	size_type rows() const;
+  ///
+  size_type rows() const;
 
-	// /////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixOp */
-	//@{
+  // /////////////////////////////////////////////////////////
+  /** @name Overridden from MatrixOp */
+  //@{
 
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	MatrixOp& operator=(const MatrixOp& m);
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2, value_type beta) const;
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  MatrixOp& operator=(const MatrixOp& m);
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const;
 
-	//@}
+  //@}
 
-	// ////////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixWithOpFactorized */
-	//@{
+  // ////////////////////////////////////////////////////////////
+  /** @name Overridden from MatrixWithOpFactorized */
+  //@{
 
-	///
-	void V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2) const;
+  ///
+  void V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2) const;
 
-	//@}
+  //@}
 
-	// ///////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixSymSecant */
-	//@{
+  // ///////////////////////////////////////////////////////////
+  /** @name Overridden from MatrixSymSecant */
+  //@{
 
-	///
-	void init_identity( size_type n, value_type alpha );
-	///
-	/** Actually this calls init_identity( (&diag)->size(), norm_inf(diag) ).
-	  *
-	  * This initialization is not convienent for this implementation.
-	  * Besides, when we are using automatric rescaling (auto_rescaling == true)
-	  * then this will really not matter much anyway.
-	  */
-	void init_diagonal( const DVectorSlice& diag );
-	///
-	void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
+  ///
+  void init_identity( size_type n, value_type alpha );
+  ///
+  /** Actually this calls init_identity( (&diag)->size(), norm_inf(diag) ).
+    *
+    * This initialization is not convienent for this implementation.
+    * Besides, when we are using automatric rescaling (auto_rescaling == true)
+    * then this will really not matter much anyway.
+    */
+  void init_diagonal( const DVectorSlice& diag );
+  ///
+  void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
-	//		end Overridden from MatrixSymSecant
-	//@}
+  //		end Overridden from MatrixSymSecant
+  //@}
 
-	// ////////////////////////////////////////////////////////
-	/** @name Overridden from MatrixSymAddDelUpdateble */
-	//@{
+  // ////////////////////////////////////////////////////////
+  /** @name Overridden from MatrixSymAddDelUpdateble */
+  //@{
 
-	/// This is fine as long as alpha > 0.0.
-	void initialize(
-		value_type         alpha
-		,size_type         max_size
-		);
-	/// Sorry, this will throw an exception!
-	void initialize(
-		const DMatrixSliceSym      &A
-		,size_type         max_size
-		,bool              force_factorization
-		,Inertia           inertia
-		,PivotTolerances   pivot_tols
-		);
-	///
-	size_type max_size() const;
-	/// Returns (0,0,rows())
-	Inertia inertia() const;
-	/// Will set rows() == 0
-	void set_uninitialized();
-	///
-	/** Augment the matrix to add a row and column.
-	 *
-	 * This function is very limited in what it will do.
-	 * It will throw exceptions if alpha <= 0.0 or t != NULL
-	 * or add_eigen_val == EIGEN_VAL_NEG or this->rows() == this->max_size().
-	 * The obvious postconditions for this function will only technically
-	 * be satisfied if alpha == this->gamma_k().
-	 */
-	void augment_update(
-		const DVectorSlice  *t
-		,value_type        alpha
-		,bool              force_refactorization
-		,EEigenValType     add_eigen_val
-		,PivotTolerances   pivot_tols
-		);
-	/// Should always succeed unless user gives a wrong value for drop_eigen_val.
-	void delete_update(
-		size_type          jd
-		,bool              force_refactorization
-		,EEigenValType     drop_eigen_val
-		,PivotTolerances   pivot_tols
-		);
-	
-	//@}
-	
+  /// This is fine as long as alpha > 0.0.
+  void initialize(
+    value_type         alpha
+    ,size_type         max_size
+    );
+  /// Sorry, this will throw an exception!
+  void initialize(
+    const DMatrixSliceSym      &A
+    ,size_type         max_size
+    ,bool              force_factorization
+    ,Inertia           inertia
+    ,PivotTolerances   pivot_tols
+    );
+  ///
+  size_type max_size() const;
+  /// Returns (0,0,rows())
+  Inertia inertia() const;
+  /// Will set rows() == 0
+  void set_uninitialized();
+  ///
+  /** Augment the matrix to add a row and column.
+   *
+   * This function is very limited in what it will do.
+   * It will throw exceptions if alpha <= 0.0 or t != NULL
+   * or add_eigen_val == EIGEN_VAL_NEG or this->rows() == this->max_size().
+   * The obvious postconditions for this function will only technically
+   * be satisfied if alpha == this->gamma_k().
+   */
+  void augment_update(
+    const DVectorSlice  *t
+    ,value_type        alpha
+    ,bool              force_refactorization
+    ,EEigenValType     add_eigen_val
+    ,PivotTolerances   pivot_tols
+    );
+  /// Should always succeed unless user gives a wrong value for drop_eigen_val.
+  void delete_update(
+    size_type          jd
+    ,bool              force_refactorization
+    ,EEigenValType     drop_eigen_val
+    ,PivotTolerances   pivot_tols
+    );
+  
+  //@}
+  
 private:
 
-	// //////////////////////////////////
-	// Private types
+  // //////////////////////////////////
+  // Private types
 
-	// //////////////////////////////////
-	// Private data members
+  // //////////////////////////////////
+  // Private data members
 
-	bool        maintain_original_;  // If true, qualities needed for Bk will be maintained
-	bool        original_is_updated_;// If true, qualities needed for Bk are already updated
-	bool        maintain_inverse_;   // If true, quantities needed for Hk will be maintained
-	bool        inverse_is_updated_; // If true, quantities needed for Hk are already updated
+  bool        maintain_original_;  // If true, qualities needed for Bk will be maintained
+  bool        original_is_updated_;// If true, qualities needed for Bk are already updated
+  bool        maintain_inverse_;   // If true, quantities needed for Hk will be maintained
+  bool        inverse_is_updated_; // If true, quantities needed for Hk are already updated
 
-	size_type	n_max_,	// The maximum size the matrix is allowed to become.
-				n_,		// Size of the matrix.  If 0 then is uninitialized
-				m_,		// Maximum number of update vectors that can be stored.
-				m_bar_,	// Current number of update vectors being stored.
-						// 0 <= m_bar <= m
-				k_bar_,	// Position of the most recently stored update vector in S & Y
-						// 1 <= k_bar <= m_bar
-		        num_secant_updates_; // Records the number of secant updates performed
-	value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
+  size_type	n_max_,	// The maximum size the matrix is allowed to become.
+        n_,		// Size of the matrix.  If 0 then is uninitialized
+        m_,		// Maximum number of update vectors that can be stored.
+        m_bar_,	// Current number of update vectors being stored.
+            // 0 <= m_bar <= m
+        k_bar_,	// Position of the most recently stored update vector in S & Y
+            // 1 <= k_bar <= m_bar
+            num_secant_updates_; // Records the number of secant updates performed
+  value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
 
-	DMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
-						// S(:,k_bar) is the most recently stored s update vector
-				Y_,		// (n_max x m) Matrix of stored update vectors = [ y1, ..., ym ]
-						// Y(:,k_bar) is the most recently stored y update vector
-				STY_,	// (m x m) The matrix S'Y
-				STSYTY_;// ((m+1) x (m+1)) The strictly upper triangular part stores the
-						// upper triangular part Y'Y and the strictly lower triangular
-						// part stores the lower triangular part of S'S.  The diagonal
-						// can be used for workspace.
+  DMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
+            // S(:,k_bar) is the most recently stored s update vector
+        Y_,		// (n_max x m) Matrix of stored update vectors = [ y1, ..., ym ]
+            // Y(:,k_bar) is the most recently stored y update vector
+        STY_,	// (m x m) The matrix S'Y
+        STSYTY_;// ((m+1) x (m+1)) The strictly upper triangular part stores the
+            // upper triangular part Y'Y and the strictly lower triangular
+            // part stores the lower triangular part of S'S.  The diagonal
+            // can be used for workspace.
 
-	mutable bool		Q_updated_;	// True if Q has been updated for the most current update.
-	mutable DMatrix	QJ_;		// Used to store factorization of the schur complement of Q.
+  mutable bool		Q_updated_;	// True if Q has been updated for the most current update.
+  mutable DMatrix	QJ_;		// Used to store factorization of the schur complement of Q.
 
-	mutable DVector		work_;	// workspace for performing operations.
+  mutable DVector		work_;	// workspace for performing operations.
 
-	// //////////////////////////////////
-	// Private member functions
+  // //////////////////////////////////
+  // Private member functions
 
-	// Access to important matrices.
+  // Access to important matrices.
 
-	///
-	const DMatrixSliceTri R() const;
-	/// Strictly lower triangular part of L
-	const DMatrixSliceTri Lb() const;
-	///
-	DMatrixSlice STY();
-	///
-	const DMatrixSlice STY() const;
-	///
-	DMatrixSliceSym STS();
-	///
-	const DMatrixSliceSym STS() const;
-	///
-	DMatrixSliceSym YTY();
-	///
-	const DMatrixSliceSym YTY() const;
-	/// y = inv(Q) * x
-	void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
-	/// y += D * x
-	void Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const;
+  ///
+  const DMatrixSliceTri R() const;
+  /// Strictly lower triangular part of L
+  const DMatrixSliceTri Lb() const;
+  ///
+  DMatrixSlice STY();
+  ///
+  const DMatrixSlice STY() const;
+  ///
+  DMatrixSliceSym STS();
+  ///
+  const DMatrixSliceSym STS() const;
+  ///
+  DMatrixSliceSym YTY();
+  ///
+  const DMatrixSliceSym YTY() const;
+  /// y = inv(Q) * x
+  void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
+  /// y += D * x
+  void Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const;
 
-	// Updates
+  // Updates
 
-	/// Update Q
-	void update_Q() const;
+  /// Update Q
+  void update_Q() const;
 
-	///
-	void assert_initialized() const;
+  ///
+  void assert_initialized() const;
 
 };	// end class MatrixSymPosDefLBFGS
 
@@ -377,55 +377,55 @@ private:
 inline
 size_type MatrixSymPosDefLBFGS::m() const
 {
-	return m_;
+  return m_;
 }
 
 inline
 size_type MatrixSymPosDefLBFGS::m_bar() const
 {
-	return m_bar_;
+  return m_bar_;
 }
 
 inline
 size_type MatrixSymPosDefLBFGS::k_bar() const
 {
-	return k_bar_;
+  return k_bar_;
 }
 
 inline
 value_type MatrixSymPosDefLBFGS::gamma_k() const
 {
-	return gamma_k_;
+  return gamma_k_;
 }
 
 inline
 const DMatrixSlice MatrixSymPosDefLBFGS::S() const
 {
-	return S_(1,n_,1,m_bar_);
+  return S_(1,n_,1,m_bar_);
 }
 
 inline
 const DMatrixSlice MatrixSymPosDefLBFGS::Y() const
 {
-	return Y_(1,n_,1,m_bar_);
+  return Y_(1,n_,1,m_bar_);
 }
 
 inline
 bool MatrixSymPosDefLBFGS::maintain_original() const
 {
-	return maintain_original_;
+  return maintain_original_;
 }
 
 inline
 bool MatrixSymPosDefLBFGS::maintain_inverse() const
 {
-	return maintain_inverse_;
+  return maintain_inverse_;
 }
 
 inline
 size_type MatrixSymPosDefLBFGS::num_secant_updates() const
 {
-	return num_secant_updates_;
+  return num_secant_updates_;
 }
 
 

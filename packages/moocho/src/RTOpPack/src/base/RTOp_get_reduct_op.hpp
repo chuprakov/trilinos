@@ -36,47 +36,47 @@
     ,external_reduct_op,get_reduct_op                                                                                 \
     )                                                                                                                 \
 static void external_reduct_op( void* in_targ_array, void* inout_targ_array                                           \
-	, int* len, RTOp_Datatype* datatype )                                                                             \
+  , int* len, RTOp_Datatype* datatype )                                                                             \
 {                                                                                                                     \
-	struct reduct_obj_t                                                                                               \
-		in_obj, *in_obj_p = &in_obj, inout_obj, *inout_obj_p = &inout_obj;                                            \
+  struct reduct_obj_t                                                                                               \
+    in_obj, *in_obj_p = &in_obj, inout_obj, *inout_obj_p = &inout_obj;                                            \
     const int                                                                                                         \
         values_off  = 3*sizeof(RTOp_value_type),                                                                      \
         indexes_off = values_off + num_values*sizeof(RTOp_value_type),                                                \
         chars_off   = indexes_off + num_indexes*sizeof(RTOp_index_type);                                              \
-	const int size_obj = chars_off + (num_chars)*sizeof(RTOp_index_type);                                             \
-	char                                                                                                              \
- 		*in_array    = in_targ_array,                                                                                 \
-		*inout_array = inout_targ_array;                                                                              \
-	int i;                                                                                                            \
-	for( i = 0; i < *len; ++i, in_array += size_obj, inout_array += size_obj ) {                                      \
-		targ_load_state(                                                                                              \
-			NULL, NULL                                                                                                \
-			,num_values,  num_values  ? (RTOp_value_type*)(in_array + values_off) : NULL                              \
-			,num_indexes, num_indexes ? (RTOp_index_type*)(in_array + values_off) : NULL                              \
-			,num_chars,   num_chars   ? (RTOp_char_type*) (in_array + values_off) : NULL                              \
-			,(void**)&in_obj_p );                                                                                     \
-		targ_load_state(                                                                                              \
-			NULL, NULL                                                                                                \
-			,num_values,  num_values  ? (RTOp_value_type*)(inout_array + values_off) : NULL                           \
-			,num_indexes, num_indexes ? (RTOp_index_type*)(inout_array + values_off) : NULL                           \
-			,num_chars,   num_chars   ? (RTOp_char_type*) (inout_array + values_off) : NULL                           \
-			,(void**)&inout_obj_p );                                                                                  \
-		reduce_reduct_objs( NULL, NULL, &in_obj, &inout_obj );                                                        \
-		targ_extract_state(                                                                                           \
-			NULL, NULL, &inout_obj                                                                                    \
-			,num_values,  num_values  ? (RTOp_value_type*)(inout_array + values_off) : NULL                           \
-			,num_indexes, num_indexes ? (RTOp_index_type*)(inout_array + values_off) : NULL                           \
-			,num_chars,   num_chars   ? (RTOp_char_type*) (inout_array + values_off) : NULL                           \
+  const int size_obj = chars_off + (num_chars)*sizeof(RTOp_index_type);                                             \
+  char                                                                                                              \
+     *in_array    = in_targ_array,                                                                                 \
+    *inout_array = inout_targ_array;                                                                              \
+  int i;                                                                                                            \
+  for( i = 0; i < *len; ++i, in_array += size_obj, inout_array += size_obj ) {                                      \
+    targ_load_state(                                                                                              \
+      NULL, NULL                                                                                                \
+      ,num_values,  num_values  ? (RTOp_value_type*)(in_array + values_off) : NULL                              \
+      ,num_indexes, num_indexes ? (RTOp_index_type*)(in_array + values_off) : NULL                              \
+      ,num_chars,   num_chars   ? (RTOp_char_type*) (in_array + values_off) : NULL                              \
+      ,(void**)&in_obj_p );                                                                                     \
+    targ_load_state(                                                                                              \
+      NULL, NULL                                                                                                \
+      ,num_values,  num_values  ? (RTOp_value_type*)(inout_array + values_off) : NULL                           \
+      ,num_indexes, num_indexes ? (RTOp_index_type*)(inout_array + values_off) : NULL                           \
+      ,num_chars,   num_chars   ? (RTOp_char_type*) (inout_array + values_off) : NULL                           \
+      ,(void**)&inout_obj_p );                                                                                  \
+    reduce_reduct_objs( NULL, NULL, &in_obj, &inout_obj );                                                        \
+    targ_extract_state(                                                                                           \
+      NULL, NULL, &inout_obj                                                                                    \
+      ,num_values,  num_values  ? (RTOp_value_type*)(inout_array + values_off) : NULL                           \
+      ,num_indexes, num_indexes ? (RTOp_index_type*)(inout_array + values_off) : NULL                           \
+      ,num_chars,   num_chars   ? (RTOp_char_type*) (inout_array + values_off) : NULL                           \
       );                                                                                                        \
-	}                                                                                                                 \
+  }                                                                                                                 \
 }                                                                                                                     \
 static int get_reduct_op(                                                                                             \
-	const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data                                                         \
-	, RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr )                                                                 \
+  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data                                                         \
+  , RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr )                                                                 \
 {                                                                                                                     \
-	*reduct_op_func_ptr = external_reduct_op;                                                                         \
-	return 0;                                                                                                         \
+  *reduct_op_func_ptr = external_reduct_op;                                                                         \
+  return 0;                                                                                                         \
 }
 
 #endif

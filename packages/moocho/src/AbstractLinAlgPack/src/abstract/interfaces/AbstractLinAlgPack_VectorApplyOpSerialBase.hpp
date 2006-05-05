@@ -20,21 +20,21 @@ namespace AbstractLinAlgPack {
 class VectorApplyOpSerialBase {
 public:
 
-	///
-	VectorApplyOpSerialBase();
+  ///
+  VectorApplyOpSerialBase();
 
-	///
-	void apply_op_serial(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector* vecs[]
-		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-		,RTOpPack::ReductTarget *reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const;
+  ///
+  void apply_op_serial(
+    const RTOpPack::RTOp& op
+    ,const size_t num_vecs, const Vector* vecs[]
+    ,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj
+    ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+    ) const;
 
 private:
 
-	mutable bool in_apply_op_;
+  mutable bool in_apply_op_;
 
 }; // class VectorApplyOpSerialBase
 

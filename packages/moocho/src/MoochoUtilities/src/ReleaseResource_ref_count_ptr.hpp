@@ -46,20 +46,20 @@ template <class T>
 class ReleaseResource_ref_count_ptr : public ReleaseResource {
 public:
 
-	///
-	typedef Teuchos::RefCountPtr<T>   ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<T>   ptr_t;
 
-	/// Just give public access to pointer
-	ptr_t  ptr;
+  /// Just give public access to pointer
+  ptr_t  ptr;
 
-	/// Construct from a pointer
-	ReleaseResource_ref_count_ptr(const ptr_t& ptr);
+  /// Construct from a pointer
+  ReleaseResource_ref_count_ptr(const ptr_t& ptr);
 
-	// ////////////////////////////////////
-	// Overriddend from ReleaseResource
+  // ////////////////////////////////////
+  // Overriddend from ReleaseResource
 
-	///
-	bool resource_is_bound() const;
+  ///
+  bool resource_is_bound() const;
 
 }; // end class ReleaseResource_ref_count_ptr
 
@@ -69,7 +69,7 @@ public:
 template <class T>
 inline
 ReleaseResource_ref_count_ptr<T>::ReleaseResource_ref_count_ptr(const ptr_t& p)
-	: ptr(p)
+  : ptr(p)
 {}
 
 // ///////////////////////////////
@@ -78,7 +78,7 @@ ReleaseResource_ref_count_ptr<T>::ReleaseResource_ref_count_ptr(const ptr_t& p)
 template <class T>
 bool ReleaseResource_ref_count_ptr<T>::resource_is_bound() const
 {
-	return ptr.get() != 0;
+  return ptr.get() != 0;
 }
 
 } // end namespace MemMngPack

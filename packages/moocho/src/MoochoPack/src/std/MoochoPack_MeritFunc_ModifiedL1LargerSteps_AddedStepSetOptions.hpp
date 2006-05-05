@@ -42,13 +42,13 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group MeritFuncModifiedL1LargerSteps {
-		after_k_iter                = 3;
-		obj_increase_threshold      = 1e-3;
-		max_pos_penalty_increase    = 1.0;
-		pos_to_neg_penalty_increase = 1.0;
-		incr_mult_factor            = 1e-4;
-	}
+  options_group MeritFuncModifiedL1LargerSteps {
+    after_k_iter                = 3;
+    obj_increase_threshold      = 1e-3;
+    max_pos_penalty_increase    = 1.0;
+    pos_to_neg_penalty_increase = 1.0;
+    incr_mult_factor            = 1e-4;
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -65,20 +65,20 @@ namespace MoochoPack {
   *	\end{description}
   */
 class MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			MeritFunc_ModifiedL1LargerSteps_AddedStep >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      MeritFunc_ModifiedL1LargerSteps_AddedStep >
 {
 public:
 
-	///
-	MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions(
-		MeritFunc_ModifiedL1LargerSteps_AddedStep* target = 0 );
+  ///
+  MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions(
+    MeritFunc_ModifiedL1LargerSteps_AddedStep* target = 0 );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions
 

@@ -39,9 +39,9 @@ namespace AbstractLinAlgPack {
  * <tt>SpVectorSlice</tt> object.
  */
 RTOpPack::SparseSubVector sub_vec_view(
-	const SpVectorSlice&   sv
-	,const Range1D&        rng = Range1D()
-	);
+  const SpVectorSlice&   sv
+  ,const Range1D&        rng = Range1D()
+  );
 
 } // end namespace AbstractLinAlgPack
 

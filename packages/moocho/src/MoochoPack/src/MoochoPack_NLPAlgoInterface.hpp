@@ -42,39 +42,39 @@ namespace MoochoPack {
 class NLPAlgoInterface {
 public:
 
-	///
-	virtual ~NLPAlgoInterface() {}
+  ///
+  virtual ~NLPAlgoInterface() {}
 
-	///
-	/** Print the algorithm description.
-	 */
-	virtual void interface_print_algorithm(std::ostream& out) const = 0;
+  ///
+  /** Print the algorithm description.
+   */
+  virtual void interface_print_algorithm(std::ostream& out) const = 0;
 
-	///
-	/** Start the iterations.
-	  *
-	  * This function returns true if the solution was found and false
-	  * if the maximum number of iterations was reached before the
-	  * solution was found.
-	  */
-	virtual NLPSolverClientInterface::EFindMinReturn dispatch() = 0;
+  ///
+  /** Start the iterations.
+    *
+    * This function returns true if the solution was found and false
+    * if the maximum number of iterations was reached before the
+    * solution was found.
+    */
+  virtual NLPSolverClientInterface::EFindMinReturn dispatch() = 0;
 
-	///
-	/** Return the state object.
-	 */
-	virtual const NLPAlgoState& retrieve_state() const = 0;
+  ///
+  /** Return the state object.
+   */
+  virtual const NLPAlgoState& retrieve_state() const = 0;
 
-	/** @name Algorithm timing */
-	//@{
+  /** @name Algorithm timing */
+  //@{
 
-	///
-	virtual void interface_set_algo_timing( bool algo_timing ) = 0;
-	///
-	virtual bool interface_algo_timing() const = 0;
-	///
-	virtual void interface_print_algorithm_times( std::ostream& out ) const = 0;
+  ///
+  virtual void interface_set_algo_timing( bool algo_timing ) = 0;
+  ///
+  virtual bool interface_algo_timing() const = 0;
+  ///
+  virtual void interface_print_algorithm_times( std::ostream& out ) const = 0;
 
-	//@}
+  //@}
 
 };	// end class NLPAlgoInterface
 

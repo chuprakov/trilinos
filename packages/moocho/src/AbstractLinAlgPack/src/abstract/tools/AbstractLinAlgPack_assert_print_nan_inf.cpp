@@ -44,10 +44,10 @@ static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  find_nan_inf_targ;
 
 class init_rtop_server_t {
 public:
-	init_rtop_server_t() {
-		TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
-		find_nan_inf_targ = find_nan_inf_op.reduct_obj_create();
-	}
+  init_rtop_server_t() {
+    TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
+    find_nan_inf_targ = find_nan_inf_op.reduct_obj_create();
+  }
 }; 
 
 init_rtop_server_t  init_rtop_server;
@@ -55,42 +55,42 @@ init_rtop_server_t  init_rtop_server;
 } // end namespace
 
 bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
-	, bool throw_excpt, std::ostream* out )
+  , bool throw_excpt, std::ostream* out )
 {
-	if( RTOp_is_nan_inf(val) ) {
-		std::ostringstream omsg;
-		omsg
-			<< "The scalar \"" << name
-			<< "\" = " << val << " is not a valid bounded number";
-		if(out)
-			*out << omsg.str() << std::endl;
-		TEST_FOR_EXCEPTION(
-			throw_excpt,NaNInfException
-			,"assert_print_nan_inf(...) : Error, " << omsg.str() );
-		return false;
-	}
-	return true;
+  if( RTOp_is_nan_inf(val) ) {
+    std::ostringstream omsg;
+    omsg
+      << "The scalar \"" << name
+      << "\" = " << val << " is not a valid bounded number";
+    if(out)
+      *out << omsg.str() << std::endl;
+    TEST_FOR_EXCEPTION(
+      throw_excpt,NaNInfException
+      ,"assert_print_nan_inf(...) : Error, " << omsg.str() );
+    return false;
+  }
+  return true;
 }
 
 bool AbstractLinAlgPack::assert_print_nan_inf(
-	const Vector& v, char name[]
-	,bool throw_excpt, std::ostream* out
-	)
+  const Vector& v, char name[]
+  ,bool throw_excpt, std::ostream* out
+  )
 {
-	find_nan_inf_op.reduct_obj_reinit(&*find_nan_inf_targ);
-	const Vector* vecs[1] = { &v };
-	apply_op(find_nan_inf_op,1,vecs,0,NULL,&*find_nan_inf_targ);
-	RTOp_ROp_find_nan_inf_reduct_obj_t
-		ele =RTOp_ROp_find_nan_inf_val(find_nan_inf_op(*find_nan_inf_targ));
-	if(out && ele.i) {
-		*out
-			<< "The vector \"" << name << "\" has the first following NaN or Inf element\n"
-			<< name << "(" << ele.i << ") = " << ele.v0_i << std::endl;
-	}
-	TEST_FOR_EXCEPTION(
-		ele.i && throw_excpt, NaNInfException
-		,"assert_print_nan_inf(...) : Error, the vector named "
-		<< name << " has at least one element which is NaN or Inf" );
-	
-	return ele.i == 0;
+  find_nan_inf_op.reduct_obj_reinit(&*find_nan_inf_targ);
+  const Vector* vecs[1] = { &v };
+  apply_op(find_nan_inf_op,1,vecs,0,NULL,&*find_nan_inf_targ);
+  RTOp_ROp_find_nan_inf_reduct_obj_t
+    ele =RTOp_ROp_find_nan_inf_val(find_nan_inf_op(*find_nan_inf_targ));
+  if(out && ele.i) {
+    *out
+      << "The vector \"" << name << "\" has the first following NaN or Inf element\n"
+      << name << "(" << ele.i << ") = " << ele.v0_i << std::endl;
+  }
+  TEST_FOR_EXCEPTION(
+    ele.i && throw_excpt, NaNInfException
+    ,"assert_print_nan_inf(...) : Error, the vector named "
+    << name << " has at least one element which is NaN or Inf" );
+  
+  return ele.i == 0;
 }

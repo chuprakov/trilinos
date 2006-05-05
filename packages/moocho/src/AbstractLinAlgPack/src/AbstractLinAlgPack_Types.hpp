@@ -127,13 +127,13 @@ template <class T_Element>					class SparseVectorSlice;
 class EtaVector;
 class GenPermMatrixSlice;
 typedef SparseVector<
-	SparseElement<index_type,value_type>
-	, std::allocator<
-		SparseElement<index_type,value_type>
-	  >
+  SparseElement<index_type,value_type>
+  , std::allocator<
+    SparseElement<index_type,value_type>
+    >
   >												SpVector;
 typedef SparseVectorSlice<
-	SparseElement<index_type,value_type> >		SpVectorSlice;
+  SparseElement<index_type,value_type> >		SpVectorSlice;
 
 //@}
 

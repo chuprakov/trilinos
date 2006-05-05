@@ -79,12 +79,12 @@ void assign(DMatrixSlice& gms_lhs, const T_Matrix& gm_rhs, BLAS_Cpp::Transp tran
 /// v_lhs = T_M * vs_lhs (templated matrix type T_M)
 template<class T_Matrix>
 void V_MtV(DVector& v_lhs, const T_Matrix& gm_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const DVectorSlice& vs_rhs2);
+  , const DVectorSlice& vs_rhs2);
 
 /// vs_lhs = T_M * vs_lhs (templated matrix type T_M)
 template<class T_Matrix>
 void V_MtV(DVectorSlice& v_lhs, const T_Matrix& gm_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const DVectorSlice& vs_rhs2);
+  , const DVectorSlice& vs_rhs2);
 
 //@}
 

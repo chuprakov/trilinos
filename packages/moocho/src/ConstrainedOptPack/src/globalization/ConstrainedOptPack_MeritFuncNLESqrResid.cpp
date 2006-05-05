@@ -32,36 +32,36 @@
 namespace ConstrainedOptPack {
 
 MeritFuncNLESqrResid::MeritFuncNLESqrResid()
-	: deriv_(0.0)
+  : deriv_(0.0)
 {}
 
 value_type MeritFuncNLESqrResid::calc_deriv( const Vector& c_k )
 {
-	using LinAlgOpPack::dot;
-	return deriv_ = - dot(c_k,c_k);
+  using LinAlgOpPack::dot;
+  return deriv_ = - dot(c_k,c_k);
 }
 
 // Overridden from MeritFuncNLP
 
 value_type MeritFuncNLESqrResid::value(const Vector& c) const
 {
-	using LinAlgOpPack::dot;
-	return 0.5 * dot(c,c);
+  using LinAlgOpPack::dot;
+  return 0.5 * dot(c,c);
 }
 
 value_type MeritFuncNLESqrResid::deriv() const
 {
-	return deriv_;
+  return deriv_;
 }
 
 void MeritFuncNLESqrResid::print_merit_func(std::ostream& out
-	, const std::string& L ) const
+  , const std::string& L ) const
 {
-	out
-		<< L << "*** Define a square of constraint residuals merit funciton\n"
-		<< L << "*** (assumes Gc_k'*d_k + c_k = 0):\n"
-		<< L << "phi(c) = 1/2 * dot(c,c)\n"
-		<< L << "Dphi(x_k,d_k) = - dot(c_k,c_k)\n";
+  out
+    << L << "*** Define a square of constraint residuals merit funciton\n"
+    << L << "*** (assumes Gc_k'*d_k + c_k = 0):\n"
+    << L << "phi(c) = 1/2 * dot(c,c)\n"
+    << L << "Dphi(x_k,d_k) = - dot(c_k,c_k)\n";
 }
 
 }	// end namespace ConstrainedOptPack 

@@ -45,30 +45,30 @@ namespace MoochoPack {
  *
  \verbatim
 
-	options_group NullSpaceStepWithInequStd {
-	*    warm_start_frac   = 0.8;    *** (+dbl, [0.0,1.0]) Permform warm start when warm_start_frac * 100%
-	                                 *** of the active set is the same.
-	    qp_testing   = QP_TEST_DEFAULT;
-	*    qp_testing   = QP_TEST;
-	*    qp_testing   = QP_NO_TEST;
-	*    primal_feasible_point_error = true;
-	*    dual_feasible_point_error   = true;
-	}
+  options_group NullSpaceStepWithInequStd {
+  *    warm_start_frac   = 0.8;    *** (+dbl, [0.0,1.0]) Permform warm start when warm_start_frac * 100%
+                                   *** of the active set is the same.
+      qp_testing   = QP_TEST_DEFAULT;
+  *    qp_testing   = QP_TEST;
+  *    qp_testing   = QP_NO_TEST;
+  *    primal_feasible_point_error = true;
+  *    dual_feasible_point_error   = true;
+  }
  \endverbatim
  */
 class TangentialStepWithInequStd_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-	, public OptionsFromStreamPack::SetOptionsToTargetBase<
-		TangentialStepWithInequStd_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+  , public OptionsFromStreamPack::SetOptionsToTargetBase<
+    TangentialStepWithInequStd_Step >
 {
 public:
-	///
-	TangentialStepWithInequStd_StepSetOptions(
-		 TangentialStepWithInequStd_Step* target = NULL
-		,const char opt_grp_name[] = "NullSpaceStepWithInequStd" );
+  ///
+  TangentialStepWithInequStd_StepSetOptions(
+     TangentialStepWithInequStd_Step* target = NULL
+    ,const char opt_grp_name[] = "NullSpaceStepWithInequStd" );
 protected:
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 };	// end class TangentialStepWithInequStd_StepSetOptions
 
 }	// end namespace MoochoPack

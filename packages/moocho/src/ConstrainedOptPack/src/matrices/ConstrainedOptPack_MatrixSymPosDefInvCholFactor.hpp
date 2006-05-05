@@ -42,116 +42,116 @@ namespace ConstrainedOptPack {
 /** Implementation of MatrixOp abstract interface for SymInvCholMatrix
   */
 class MatrixSymPosDefInvCholFactor
-	: public virtual MatrixWithOpConcreteEncap<SymInvCholMatrix>
-	, public virtual MatrixSymWithOpFactorized
-	, public MatrixSymSecant
-	, public MatrixExtractInvCholFactor
-	, public virtual SerializationPack::Serializable
+  : public virtual MatrixWithOpConcreteEncap<SymInvCholMatrix>
+  , public virtual MatrixSymWithOpFactorized
+  , public MatrixSymSecant
+  , public MatrixExtractInvCholFactor
+  , public virtual SerializationPack::Serializable
 {
 public:
 
-	///
-	MatrixSymPosDefInvCholFactor()
-	{}
+  ///
+  MatrixSymPosDefInvCholFactor()
+  {}
 
-	///
-	MatrixSymPosDefInvCholFactor(const SymInvCholMatrix& m)
-		: MatrixWithOpConcreteEncap<SymInvCholMatrix>(m)
-	{}
+  ///
+  MatrixSymPosDefInvCholFactor(const SymInvCholMatrix& m)
+    : MatrixWithOpConcreteEncap<SymInvCholMatrix>(m)
+  {}
 
-	/** @name Overridden from Matrix */
-	//@{
+  /** @name Overridden from Matrix */
+  //@{
 
-	/// 
-	size_type cols() const;
+  /// 
+  size_type cols() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixOp */
-	//@{
+  /** @name Overridden from MatrixOp */
+  //@{
 
-	///
-	MatrixOp& operator=(const MatrixOp& m);
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2, value_type beta) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2, value_type beta) const;
-	///
-	value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const DVectorSlice& vs_rhs3) const;
-	///
-	value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const SpVectorSlice& sv_rhs3) const;
+  ///
+  MatrixOp& operator=(const MatrixOp& m);
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2, value_type beta) const;
+  ///
+  value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+    , const DVectorSlice& vs_rhs3) const;
+  ///
+  value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
+    , const SpVectorSlice& sv_rhs3) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixFactorized */
-	//@{
+  /** @name Overridden from MatrixFactorized */
+  //@{
 
-	///
-	void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2) const;
-	///
-	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2) const;
-	///
-	void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2) const;
-	///
-	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2) const;
-	///
-	value_type transVtInvMtV(const DVectorSlice& vs_rhs1
-		, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const;
-	///
-	value_type transVtInvMtV(const SpVectorSlice& sv_rhs1
-		, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
+  ///
+  void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2) const;
+  ///
+  void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2) const;
+  ///
+  void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2) const;
+  ///
+  void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2) const;
+  ///
+  value_type transVtInvMtV(const DVectorSlice& vs_rhs1
+    , BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const;
+  ///
+  value_type transVtInvMtV(const SpVectorSlice& sv_rhs1
+    , BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixSymFactorized */
-	//@{
+  /** @name Overridden from MatrixSymFactorized */
+  //@{
 
-	///
-	void M_StMtInvMtM( DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		, const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
-		) const;
+  ///
+  void M_StMtInvMtM( DMatrixSliceSym* sym_gms_lhs, value_type alpha
+    , const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
+    ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixSymSecant */
-	//@{
+  /** @name Overridden from MatrixSymSecant */
+  //@{
 
-	///
-	void init_identity( size_type n, value_type alpha );
-	///
-	void init_diagonal( const DVectorSlice& diag );
-	///
-	void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
+  ///
+  void init_identity( size_type n, value_type alpha );
+  ///
+  void init_diagonal( const DVectorSlice& diag );
+  ///
+  void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixExtractInvCholFactor */
-	//@{
+  /** @name Overridden from MatrixExtractInvCholFactor */
+  //@{
 
-	///
-	void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
+  ///
+  void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from Serializable */
-	//@{
+  /** @name Overridden from Serializable */
+  //@{
 
-	///
-	void serialize( std::ostream &out ) const;
-	///
-	void unserialize( std::istream &in );
+  ///
+  void serialize( std::ostream &out ) const;
+  ///
+  void unserialize( std::istream &in );
 
-	//@}
+  //@}
 
 };	// end class MatrixSymPosDefInvCholFactor
 

@@ -51,120 +51,120 @@ namespace AbstractLinAlgPack {
 class DirectSparseSolverSuperLU : public DirectSparseSolverImp {
 public:
 
-	/** @name Control parameters */
-	//@{
+  /** @name Control parameters */
+  //@{
 
-	// ToDo: Fill these in!
+  // ToDo: Fill these in!
 
-	//@}
+  //@}
 
-	/** @name Constructors/initializers */
-	//@{
+  /** @name Constructors/initializers */
+  //@{
 
-	///
-	/** Default constructor */
-	DirectSparseSolverSuperLU();
+  ///
+  /** Default constructor */
+  DirectSparseSolverSuperLU();
 
-	//@}
+  //@}
 
-	/** @name Overridden from DirectSparseSolver */
-	//@{
+  /** @name Overridden from DirectSparseSolver */
+  //@{
 
-	///
-	const basis_matrix_factory_ptr_t basis_matrix_factory() const;
-	///
-	void estimated_fillin_ratio( value_type estimated_fillin_ratio );
+  ///
+  const basis_matrix_factory_ptr_t basis_matrix_factory() const;
+  ///
+  void estimated_fillin_ratio( value_type estimated_fillin_ratio );
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Protected types */
-	//@{
+  /** @name Protected types */
+  //@{
 
-	///
-	/** Implements the BasisMatrix object for SuperLU.
-	 */
-	class BasisMatrixSuperLU : public BasisMatrixImp {
-	public:
+  ///
+  /** Implements the BasisMatrix object for SuperLU.
+   */
+  class BasisMatrixSuperLU : public BasisMatrixImp {
+  public:
 
-		/** @name Overridden from BasisMatrixImp */
-		//@{
+    /** @name Overridden from BasisMatrixImp */
+    //@{
 
-		///
-		Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
-		///
-		void V_InvMtV(
-			VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-			,const Vector& v_rhs2) const ;
-		
-		//@}
+    ///
+    Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
+    ///
+    void V_InvMtV(
+      VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+      ,const Vector& v_rhs2) const ;
+    
+    //@}
 
-	}; // end class BasisMatrixSuperLU
+  }; // end class BasisMatrixSuperLU
 
-	///
-	/** Stores the factorization structure for SuperLU
-	 */
-	class FactorizationStructureSuperLU : public FactorizationStructure {
-	public:
-		friend class DirectSparseSolverSuperLU;
-		friend class BasisMatrixSuperLU;
-	private:
-		Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver>
-			superlu_solver_;
-		Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationStructure>
-			fact_struct_;
-		FactorizationStructureSuperLU();
-	}; // end class FactorizationStructureSuperLU
+  ///
+  /** Stores the factorization structure for SuperLU
+   */
+  class FactorizationStructureSuperLU : public FactorizationStructure {
+  public:
+    friend class DirectSparseSolverSuperLU;
+    friend class BasisMatrixSuperLU;
+  private:
+    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver>
+      superlu_solver_;
+    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationStructure>
+      fact_struct_;
+    FactorizationStructureSuperLU();
+  }; // end class FactorizationStructureSuperLU
 
-	///
-	/** Stores the factorization nonzeros for SuperLU
-	 */
-	class FactorizationNonzerosSuperLU : public FactorizationNonzeros {
-	public:
-		friend class DirectSparseSolverSuperLU;
-		friend class BasisMatrixSuperLU;
-	private:
-		Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationNonzeros>
-			fact_nonzeros_;
-	}; // end class FactorizationNonzerosSuperLU
+  ///
+  /** Stores the factorization nonzeros for SuperLU
+   */
+  class FactorizationNonzerosSuperLU : public FactorizationNonzeros {
+  public:
+    friend class DirectSparseSolverSuperLU;
+    friend class BasisMatrixSuperLU;
+  private:
+    Teuchos::RefCountPtr<SuperLUPack::SuperLUSolver::FactorizationNonzeros>
+      fact_nonzeros_;
+  }; // end class FactorizationNonzerosSuperLU
 
-	//@}
+  //@}
 
-	/** @name Overridden from DirectSparseSolverImp */
-	//@{
+  /** @name Overridden from DirectSparseSolverImp */
+  //@{
 
-	///
-	const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
-	///
-	const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
-	///
-	void imp_analyze_and_factor(
-		const AbstractLinAlgPack::MatrixConvertToSparse   &A
-		,FactorizationStructure                         *fact_struc
-		,FactorizationNonzeros                          *fact_nonzeros
-		,DenseLinAlgPack::IVector                            *row_perm
-		,DenseLinAlgPack::IVector                            *col_perm
-		,size_type                                      *rank
-		,std::ostream                                   *out
-		);
-	///
-	void imp_factor(
-		const AbstractLinAlgPack::MatrixConvertToSparse   &A
-		,const FactorizationStructure                   &fact_struc
-		,FactorizationNonzeros                          *fact_nonzeros
-		,std::ostream                                   *out
-		);
+  ///
+  const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
+  ///
+  const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
+  ///
+  void imp_analyze_and_factor(
+    const AbstractLinAlgPack::MatrixConvertToSparse   &A
+    ,FactorizationStructure                         *fact_struc
+    ,FactorizationNonzeros                          *fact_nonzeros
+    ,DenseLinAlgPack::IVector                            *row_perm
+    ,DenseLinAlgPack::IVector                            *col_perm
+    ,size_type                                      *rank
+    ,std::ostream                                   *out
+    );
+  ///
+  void imp_factor(
+    const AbstractLinAlgPack::MatrixConvertToSparse   &A
+    ,const FactorizationStructure                   &fact_struc
+    ,FactorizationNonzeros                          *fact_nonzeros
+    ,std::ostream                                   *out
+    );
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////
-	// Private data members
+  // /////////////////////////////////
+  // Private data members
 
-	// ////////////////////////////////
-	// Private member functions
+  // ////////////////////////////////
+  // Private member functions
 
 };	// end class DirectSparseSolverSuperLU 
 

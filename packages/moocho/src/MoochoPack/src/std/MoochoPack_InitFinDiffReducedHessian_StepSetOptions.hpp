@@ -44,12 +44,12 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group InitFinDiffReducedHessian {
-		initialization_method   = SCALE_DIAGONAL_ABS;
-		max_cond                = 1e+1;
-		min_diag                = 1e-8;
-		step_scale              = 1e-1;
-	}
+  options_group InitFinDiffReducedHessian {
+    initialization_method   = SCALE_DIAGONAL_ABS;
+    max_cond                = 1e+1;
+    min_diag                = 1e-8;
+    step_scale              = 1e-1;
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -73,21 +73,21 @@ namespace MoochoPack {
   *		Example: step_scale = 1.0.
   */
 class InitFinDiffReducedHessian_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			InitFinDiffReducedHessian_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      InitFinDiffReducedHessian_Step >
 {
 public:
 
-	///
-	InitFinDiffReducedHessian_StepSetOptions(
-		  InitFinDiffReducedHessian_Step* target = 0
-		, const char opt_grp_name[] = "InitFinDiffReducedHessian" );
+  ///
+  InitFinDiffReducedHessian_StepSetOptions(
+      InitFinDiffReducedHessian_Step* target = 0
+    , const char opt_grp_name[] = "InitFinDiffReducedHessian" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class InitFinDiffReducedHessian_StepSetOptions
 

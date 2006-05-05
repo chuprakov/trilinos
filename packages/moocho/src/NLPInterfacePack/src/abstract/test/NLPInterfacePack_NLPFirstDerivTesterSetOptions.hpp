@@ -54,21 +54,21 @@ namespace NLPInterfacePack {
  \endverbatim
  */
 class NLPFirstDerivTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPFirstDerivTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      NLPFirstDerivTester >
 {
 public:
 
-	///
-	NLPFirstDerivTesterSetOptions(
-		  NLPFirstDerivTester* target = 0
-		, const char opt_grp_name[] = "NLPFirstDerivTester" );
+  ///
+  NLPFirstDerivTesterSetOptions(
+      NLPFirstDerivTester* target = 0
+    , const char opt_grp_name[] = "NLPFirstDerivTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class NLPFirstDerivTesterSetOptions
 

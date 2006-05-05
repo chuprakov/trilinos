@@ -53,7 +53,7 @@ std::istream& operator>>(std::istream& istrm, COOMatrix& coom);
 
 // Inline definition
 inline std::istream& operator>>(std::istream& istrm, COOMatrix& coom) {
-	coom.initialize(istrm); return istrm;
+  coom.initialize(istrm); return istrm;
 }
 
 } // end namespace AbstractLinAlgPack

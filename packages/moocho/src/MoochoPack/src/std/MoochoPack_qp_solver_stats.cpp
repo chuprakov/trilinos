@@ -29,4 +29,4 @@
 #include "MoochoPack_qp_solver_stats.hpp"
 
 extern const std::string
-	MoochoPack::qp_solver_stats_name = "qp_solver_stats";
+  MoochoPack::qp_solver_stats_name = "qp_solver_stats";

@@ -112,10 +112,10 @@ extern const std::string nu_name;
 /** Add class declarations for an arbitrary iteration quantity
  */
 #define STATE_IQ_DECL(TYPE,NAME)                                          \
-	virtual IterQuantityAccess<TYPE>&       NAME();                       \
-	virtual const IterQuantityAccess<TYPE>& NAME() const;                 \
+  virtual IterQuantityAccess<TYPE>&       NAME();                       \
+  virtual const IterQuantityAccess<TYPE>& NAME() const;                 \
 private:                                                                  \
-	iq_id_encap NAME ## _iq_id_;                                          \
+  iq_id_encap NAME ## _iq_id_;                                          \
 public:
 
 ///
@@ -148,14 +148,14 @@ public:
 IterQuantityAccess<TYPE>&                                                 \
 CLASS::NAME()                                                             \
 {                                                                         \
-	update_iq_id( NAME_STR, &NAME ## _iq_id_ );                           \
-	return IterationPack::cast_iq<TYPE>(                           \
+  update_iq_id( NAME_STR, &NAME ## _iq_id_ );                           \
+  return IterationPack::cast_iq<TYPE>(                           \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<TYPE>&                                           \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<CLASS*>(this)->NAME();                              \
+  return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -167,14 +167,14 @@ CLASS::NAME() const                                                       \
 IterQuantityAccess<index_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
-	update_index_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
-	return IterationPack::cast_iq<index_type>(                     \
+  update_index_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
+  return IterationPack::cast_iq<index_type>(                     \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<index_type>&                                     \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<CLASS*>(this)->NAME();                              \
+  return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -186,14 +186,14 @@ CLASS::NAME() const                                                       \
 IterQuantityAccess<value_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
-	update_value_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
-	return IterationPack::cast_iq<value_type>(                     \
+  update_value_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
+  return IterationPack::cast_iq<value_type>(                     \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<value_type>&                                     \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<CLASS*>(this)->NAME();                              \
+  return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -211,13 +211,13 @@ IterQuantityAccess<VectorMutable>&                                  \
 CLASS::NAME()                                                             \
 {                                                                         \
     update_vector_iq_id( NAME_STR, VEC_SPC, VEC_RN, &NAME ## _iq_id_ );   \
-	return IterationPack::cast_iq<VectorMutable>(            \
+  return IterationPack::cast_iq<VectorMutable>(            \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<VectorMutable>&                            \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<CLASS*>(this)->NAME();                          \
+  return const_cast<CLASS*>(this)->NAME();                          \
 }
 
 //@}
@@ -258,289 +258,289 @@ CLASS::NAME() const                                                       \
  * ToDo: Finish documentation.
  */
 class NLPAlgoState
-	: public IterationPack::AlgorithmState // doxygen needs full path
+  : public IterationPack::AlgorithmState // doxygen needs full path
 {
 public:
 
-	/** @name Public Types */
-	//@{
+  /** @name Public Types */
+  //@{
 
-	/// Thrown if an iteration quantity is of an invalid type.
-	class InvalidType : public std::logic_error
-	{public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
-	
-	///
-	typedef Teuchos::RefCountPtr<const VectorSpace>    vec_space_ptr_t;
+  /// Thrown if an iteration quantity is of an invalid type.
+  class InvalidType : public std::logic_error
+  {public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  
+  ///
+  typedef Teuchos::RefCountPtr<const VectorSpace>    vec_space_ptr_t;
 
-	//@}
+  //@}
 
 protected:
 
-	// /////////////////////////////
-	// Protected types.
+  // /////////////////////////////
+  // Protected types.
 
-	///
-	struct iq_id_encap {
-		iq_id_encap() : iq_id(DOES_NOT_EXIST) {}
-		iq_id_type iq_id;
-	};
+  ///
+  struct iq_id_encap {
+    iq_id_encap() : iq_id(DOES_NOT_EXIST) {}
+    iq_id_type iq_id;
+  };
 
 public:
 
-	/** @name Constructors/initializers */
-	//@{
+  /** @name Constructors/initializers */
+  //@{
 
-	// ToDo: Implement all set_space_xx methods to update factories
-	// for all vector iteration quantities.
+  // ToDo: Implement all set_space_xx methods to update factories
+  // for all vector iteration quantities.
 
-	/// Set the DecompositionSystem object that all share
-	STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys )
-	/// Set the VectorSpace of x
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
-	/// Set the VectorSpace of c
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
-	///
-	/** Set the VectorSpace of the range space (py).
-	 * 
-	 * Calling this method will cause all of the vector iteration
-	 * quantity objects set in this space to be updated with this
-	 * vector space (factory) object.
-	 */
-	void set_space_range (const vec_space_ptr_t& space_range );
-	vec_space_ptr_t& get_space_range();
-	const vec_space_ptr_t& get_space_range() const;
-	const VectorSpace& space_range() const;
-	///
-	/** Set the VectorSpace of the null space (pz).
-	 * 
-	 * Calling this method will cause all of the vector iteration
-	 * quantity objects set in this space to be updated with this
-	 * vector space (factory) object.
-	 */
-	void set_space_null (const vec_space_ptr_t& space_null );
-	vec_space_ptr_t& get_space_null();
-	const vec_space_ptr_t& get_space_null() const;
-	const VectorSpace& space_null() const;
+  /// Set the DecompositionSystem object that all share
+  STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys )
+  /// Set the VectorSpace of x
+  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
+  /// Set the VectorSpace of c
+  STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
+  ///
+  /** Set the VectorSpace of the range space (py).
+   * 
+   * Calling this method will cause all of the vector iteration
+   * quantity objects set in this space to be updated with this
+   * vector space (factory) object.
+   */
+  void set_space_range (const vec_space_ptr_t& space_range );
+  vec_space_ptr_t& get_space_range();
+  const vec_space_ptr_t& get_space_range() const;
+  const VectorSpace& space_range() const;
+  ///
+  /** Set the VectorSpace of the null space (pz).
+   * 
+   * Calling this method will cause all of the vector iteration
+   * quantity objects set in this space to be updated with this
+   * vector space (factory) object.
+   */
+  void set_space_null (const vec_space_ptr_t& space_null );
+  vec_space_ptr_t& get_space_null();
+  const vec_space_ptr_t& get_space_null() const;
+  const VectorSpace& space_null() const;
 
-	///
-	/** Construct
-	 *
-	 * Initializes num_basis() == 0
-	 */
-	NLPAlgoState(
-		const decomp_sys_ptr_t& decomp_sys   = Teuchos::null
-		,const vec_space_ptr_t& space_x      = Teuchos::null
-		,const vec_space_ptr_t& space_c      = Teuchos::null
-		,const vec_space_ptr_t& space_range  = Teuchos::null
-		,const vec_space_ptr_t& space_null   = Teuchos::null
-		);
+  ///
+  /** Construct
+   *
+   * Initializes num_basis() == 0
+   */
+  NLPAlgoState(
+    const decomp_sys_ptr_t& decomp_sys   = Teuchos::null
+    ,const vec_space_ptr_t& space_x      = Teuchos::null
+    ,const vec_space_ptr_t& space_c      = Teuchos::null
+    ,const vec_space_ptr_t& space_range  = Teuchos::null
+    ,const vec_space_ptr_t& space_null   = Teuchos::null
+    );
 
-	///
-	virtual ~NLPAlgoState() {}
+  ///
+  virtual ~NLPAlgoState() {}
 
-	//@}
+  //@}
 
-	/** @name Iteration Info */
-	//@{
+  /** @name Iteration Info */
+  //@{
 
     /// num_basis: Counts basis changes durring the algorithm
-	STATE_INDEX_IQ_DECL(num_basis)
-	
-	//@}
+  STATE_INDEX_IQ_DECL(num_basis)
+  
+  //@}
 
-	/** @name NLP Problem Info */
-	//@{
+  /** @name NLP Problem Info */
+  //@{
 
-	/// x:  The current NLP point
-	STATE_VECTOR_IQ_DECL(x)
-	/// f:  Objective function value
-	STATE_SCALAR_IQ_DECL(f)
-	/// Gf:  Gradient of the objective function sorted according to current basis selection ( n x 1 )
-	STATE_VECTOR_IQ_DECL(Gf)
-	/// HL:  Hessian of the Lagrangian ( n x n 
-	STATE_IQ_DECL(MatrixSymOp,HL)
-	/// c:  DVector of general nonlinear equality constraints ( m x 1 )
-	STATE_VECTOR_IQ_DECL(c)
-	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
-	STATE_IQ_DECL(MatrixOp,Gc)
+  /// x:  The current NLP point
+  STATE_VECTOR_IQ_DECL(x)
+  /// f:  Objective function value
+  STATE_SCALAR_IQ_DECL(f)
+  /// Gf:  Gradient of the objective function sorted according to current basis selection ( n x 1 )
+  STATE_VECTOR_IQ_DECL(Gf)
+  /// HL:  Hessian of the Lagrangian ( n x n 
+  STATE_IQ_DECL(MatrixSymOp,HL)
+  /// c:  DVector of general nonlinear equality constraints ( m x 1 )
+  STATE_VECTOR_IQ_DECL(c)
+  /// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
+  STATE_IQ_DECL(MatrixOp,Gc)
 
-	//@}
+  //@}
 
-	/** @name Constraint Gradient Null Space / Range Space Decomposition Info */
-	//@{
+  /** @name Constraint Gradient Null Space / Range Space Decomposition Info */
+  //@{
 
-	/// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
-	STATE_IQ_DECL(MatrixOp,Y)
-	/// Z:  Null space matrix for Gc(equ_decomp)' (Gc(equ_decomp)' * Z) ( n x (n-r) )
-	STATE_IQ_DECL(MatrixOp,Z)
-	/// R:  Represents the nonsingular matrix Gc(equ_decomp)' * Y ( r x r )
-	STATE_IQ_DECL(MatrixOpNonsing,R)
-	/// Uy:  Represents Gc(equ_undecomp)' * Y ( (m-r) x r )
-	STATE_IQ_DECL(MatrixOp,Uy)
-	/// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
-	STATE_IQ_DECL(MatrixOp,Uz)
+  /// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
+  STATE_IQ_DECL(MatrixOp,Y)
+  /// Z:  Null space matrix for Gc(equ_decomp)' (Gc(equ_decomp)' * Z) ( n x (n-r) )
+  STATE_IQ_DECL(MatrixOp,Z)
+  /// R:  Represents the nonsingular matrix Gc(equ_decomp)' * Y ( r x r )
+  STATE_IQ_DECL(MatrixOpNonsing,R)
+  /// Uy:  Represents Gc(equ_undecomp)' * Y ( (m-r) x r )
+  STATE_IQ_DECL(MatrixOp,Uy)
+  /// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
+  STATE_IQ_DECL(MatrixOp,Uz)
 
-	//@}
+  //@}
 
-	/** @name Search Direction Info */
-	//@{
+  /** @name Search Direction Info */
+  //@{
 
-	/// py:  Range space (dependent) QP solution component ( \c space_range, m x 1 )
-	STATE_VECTOR_IQ_DECL(py)
-	/// Ypy:  Range space (dependent) contribution to search direction (Ypy = Y * py) ( n x 1 )
-	STATE_VECTOR_IQ_DECL(Ypy)
-	/// pz:  Null space (independent) QP solution component ( \c space_null, (n-m) x 1 )
-	STATE_VECTOR_IQ_DECL(pz)
-	/// Zpz:  Null space (independent) contribution to the search direction (Zpz = Z * pz) ( n x 1)
-	STATE_VECTOR_IQ_DECL(Zpz)
-	/// d:  Search direction (d = Zpz + Ypy) ( n x 1 )
-	STATE_VECTOR_IQ_DECL(d)
+  /// py:  Range space (dependent) QP solution component ( \c space_range, m x 1 )
+  STATE_VECTOR_IQ_DECL(py)
+  /// Ypy:  Range space (dependent) contribution to search direction (Ypy = Y * py) ( n x 1 )
+  STATE_VECTOR_IQ_DECL(Ypy)
+  /// pz:  Null space (independent) QP solution component ( \c space_null, (n-m) x 1 )
+  STATE_VECTOR_IQ_DECL(pz)
+  /// Zpz:  Null space (independent) contribution to the search direction (Zpz = Z * pz) ( n x 1)
+  STATE_VECTOR_IQ_DECL(Zpz)
+  /// d:  Search direction (d = Zpz + Ypy) ( n x 1 )
+  STATE_VECTOR_IQ_DECL(d)
 
-	//@}
+  //@}
 
-	/** @name QP Subproblem Info */
-	//@{
+  /** @name QP Subproblem Info */
+  //@{
 
-	/// rGf:  Reduced gradient of the objective function ( \c space_null, (n-r) x 1 )
-	STATE_VECTOR_IQ_DECL(rGf)
-	/// rHL:  Reduced Hessian of the Lagrangian function ( <tt>space_null|space_null</tt>, (n-r) x (n-r) )
-	STATE_IQ_DECL(MatrixSymOp,rHL)
-	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( \c space_null, (n-r) x 1 )
-	STATE_VECTOR_IQ_DECL(w)
-	/// zeta:  QP crossterm dampening parameter [0, 1]
-	STATE_SCALAR_IQ_DECL(zeta)
-	/// qp_grad:  QP gradient (qp_grad = rGf + zeta * w) ( (n-m) x 1 )
-	STATE_VECTOR_IQ_DECL(qp_grad)
-	/// eta:  QP relaxation parameter [0, 1]
-	STATE_SCALAR_IQ_DECL(eta)
+  /// rGf:  Reduced gradient of the objective function ( \c space_null, (n-r) x 1 )
+  STATE_VECTOR_IQ_DECL(rGf)
+  /// rHL:  Reduced Hessian of the Lagrangian function ( <tt>space_null|space_null</tt>, (n-r) x (n-r) )
+  STATE_IQ_DECL(MatrixSymOp,rHL)
+  /// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( \c space_null, (n-r) x 1 )
+  STATE_VECTOR_IQ_DECL(w)
+  /// zeta:  QP crossterm dampening parameter [0, 1]
+  STATE_SCALAR_IQ_DECL(zeta)
+  /// qp_grad:  QP gradient (qp_grad = rGf + zeta * w) ( (n-m) x 1 )
+  STATE_VECTOR_IQ_DECL(qp_grad)
+  /// eta:  QP relaxation parameter [0, 1]
+  STATE_SCALAR_IQ_DECL(eta)
 
-	//@}
+  //@}
 
-	/** @name Global Convergence Info */
-	//@{
+  /** @name Global Convergence Info */
+  //@{
 
-	/// alpha:  Line seach parameter
-	STATE_SCALAR_IQ_DECL(alpha)
-	/// merit_func_nlp: Primary merit function for the NLP
-	STATE_IQ_DECL(MeritFuncNLP,merit_func_nlp)
-	/// mu:  Merit function penalty parameter
-	STATE_SCALAR_IQ_DECL(mu)
-	/// phi:  Merit function value
-	STATE_SCALAR_IQ_DECL(phi)
+  /// alpha:  Line seach parameter
+  STATE_SCALAR_IQ_DECL(alpha)
+  /// merit_func_nlp: Primary merit function for the NLP
+  STATE_IQ_DECL(MeritFuncNLP,merit_func_nlp)
+  /// mu:  Merit function penalty parameter
+  STATE_SCALAR_IQ_DECL(mu)
+  /// phi:  Merit function value
+  STATE_SCALAR_IQ_DECL(phi)
 
-	//@}
+  //@}
 
-	/** @name KKT Info */
-	//@{
+  /** @name KKT Info */
+  //@{
 
-	/// Scaled KKT error for optimality ||rGL||
-	STATE_SCALAR_IQ_DECL(opt_kkt_err)
-	/// Scaled KKT error for feasibility ||c|| and ||hl <= h <= hu||
-	STATE_SCALAR_IQ_DECL(feas_kkt_err)
-	/// Scaled KKT error for complementarity (bounds)
-	STATE_SCALAR_IQ_DECL(comp_kkt_err)
-	/// GL:  Gradient of the Lagrangian ( n x 1 )
-	STATE_VECTOR_IQ_DECL(GL)
-	/// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )
-	STATE_VECTOR_IQ_DECL(rGL)
-	/// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
-	STATE_VECTOR_IQ_DECL(lambda)
-	/// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
-	STATE_VECTOR_IQ_DECL(nu)
+  /// Scaled KKT error for optimality ||rGL||
+  STATE_SCALAR_IQ_DECL(opt_kkt_err)
+  /// Scaled KKT error for feasibility ||c|| and ||hl <= h <= hu||
+  STATE_SCALAR_IQ_DECL(feas_kkt_err)
+  /// Scaled KKT error for complementarity (bounds)
+  STATE_SCALAR_IQ_DECL(comp_kkt_err)
+  /// GL:  Gradient of the Lagrangian ( n x 1 )
+  STATE_VECTOR_IQ_DECL(GL)
+  /// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )
+  STATE_VECTOR_IQ_DECL(rGL)
+  /// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
+  STATE_VECTOR_IQ_DECL(lambda)
+  /// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
+  STATE_VECTOR_IQ_DECL(nu)
 
-	//@}
+  //@}
 
-	/** @name Decomposition information */
-	//@{
+  /** @name Decomposition information */
+  //@{
 
-	/// Range of decomposed equality constraints [1,r]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp )
-	/// Range of undecomposed equality constraints [r+1,m]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_undecomp )
+  /// Range of decomposed equality constraints [1,r]
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp )
+  /// Range of undecomposed equality constraints [r+1,m]
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_undecomp )
 
-	//@}
+  //@}
 
-	/** @name Basis Pivot Info (variable reduction decompositions only) */
-	//@{
+  /** @name Basis Pivot Info (variable reduction decompositions only) */
+  //@{
 
-	/// Current permutation for variables
-	STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current )
-	/// Previous permutation for variables
-	STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_last )
-	/// Current permutation for equality constraints
-	STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_current )
-	/// Previous permutation for equality constraints
-	STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_last )
+  /// Current permutation for variables
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current )
+  /// Previous permutation for variables
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_last )
+  /// Current permutation for equality constraints
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_current )
+  /// Previous permutation for equality constraints
+  STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_last )
 
-	//@}
+  //@}
 
 protected:
 
-	enum { NUM_VEC_SPACE_TYPES = 5 };
-	enum EVecSpaceType {
-		VST_SPACE_X       = 0
-		,VST_SPACE_C      = 1
-		,VST_SPACE_RANGE  = 2
-		,VST_SPACE_NULL   = 3
-	};
+  enum { NUM_VEC_SPACE_TYPES = 5 };
+  enum EVecSpaceType {
+    VST_SPACE_X       = 0
+    ,VST_SPACE_C      = 1
+    ,VST_SPACE_RANGE  = 2
+    ,VST_SPACE_NULL   = 3
+  };
 
-	// /////////////////////////////
-	// Protected member functions
+  // /////////////////////////////
+  // Protected member functions
 
-	// These implementations are used to avoid code blot and help in debugging
-	// (can't debug macros very well).
+  // These implementations are used to avoid code blot and help in debugging
+  // (can't debug macros very well).
 
-	///
-	void update_iq_id(
-		const std::string&                iq_name
-		,iq_id_encap*                     iq_id
-		) const;
-	///
-	void update_index_type_iq_id(
-		const std::string&                iq_name
-		,iq_id_encap*                     iq_id
-		);
-	///
-	void update_value_type_iq_id(
-		const std::string&                iq_name
-		,iq_id_encap*                     iq_id
-		);
-	///
-	void update_vector_iq_id(
-		const std::string&                iq_name
-		,const VectorSpace::space_ptr_t&  vec_space
-		,EVecSpaceType                    vec_space_type
-		,iq_id_encap*                     iq_id
-		);
+  ///
+  void update_iq_id(
+    const std::string&                iq_name
+    ,iq_id_encap*                     iq_id
+    ) const;
+  ///
+  void update_index_type_iq_id(
+    const std::string&                iq_name
+    ,iq_id_encap*                     iq_id
+    );
+  ///
+  void update_value_type_iq_id(
+    const std::string&                iq_name
+    ,iq_id_encap*                     iq_id
+    );
+  ///
+  void update_vector_iq_id(
+    const std::string&                iq_name
+    ,const VectorSpace::space_ptr_t&  vec_space
+    ,EVecSpaceType                    vec_space_type
+    ,iq_id_encap*                     iq_id
+    );
 
 private:
 
-	// ////////////////////////////
-	// Private types
+  // ////////////////////////////
+  // Private types
 
-	typedef std::deque<iq_id_type>  iq_vector_list_t;
-	
-	// ////////////////////////////
-	// Private data member
+  typedef std::deque<iq_id_type>  iq_vector_list_t;
+  
+  // ////////////////////////////
+  // Private data member
 
-	vec_space_ptr_t    space_range_;
-	vec_space_ptr_t    space_null_;
+  vec_space_ptr_t    space_range_;
+  vec_space_ptr_t    space_null_;
 
-	iq_vector_list_t   vector_iqs_lists_[NUM_VEC_SPACE_TYPES];
+  iq_vector_list_t   vector_iqs_lists_[NUM_VEC_SPACE_TYPES];
 
-	// ////////////////////////////
-	// Private member functions.
-	
-	// Update the vector factories for all of the iteration quantities
-	// in the input list.
-	void update_vector_factories(
-		EVecSpaceType             vec_space_type
-		,const vec_space_ptr_t&   vec_space
-		);
+  // ////////////////////////////
+  // Private member functions.
+  
+  // Update the vector factories for all of the iteration quantities
+  // in the input list.
+  void update_vector_factories(
+    EVecSpaceType             vec_space_type
+    ,const vec_space_ptr_t&   vec_space
+    );
 
-	// not defined and not to be called
-	NLPAlgoState(const NLPAlgoState&);
-	NLPAlgoState& operator=(const NLPAlgoState&);
+  // not defined and not to be called
+  NLPAlgoState(const NLPAlgoState&);
+  NLPAlgoState& operator=(const NLPAlgoState&);
 
 };	// end class NLPAlgoState
 

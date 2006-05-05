@@ -45,7 +45,7 @@ class InputException : public std::logic_error
 
 ///
 typedef std::ios_base::fmtflags fmtflags;	
-	
+  
 /// Format flags
 enum { ignore_dim_bit = 0x0001, no_insert_newlines_bit = 0x0002 };
 

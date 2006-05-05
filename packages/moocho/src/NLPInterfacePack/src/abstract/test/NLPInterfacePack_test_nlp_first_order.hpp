@@ -34,7 +34,7 @@
 #include "NLPInterfacePack_Types.hpp"
 
 namespace OptionsFromStreamPack {
-	class OptionsFromStream;
+  class OptionsFromStream;
 }
 
 namespace NLPInterfacePack {
@@ -66,10 +66,10 @@ namespace NLPInterfacePack {
  * objects.
  */
 bool test_nlp_first_order(
-	NLPFirstOrder                               *nlp
-	,OptionsFromStreamPack::OptionsFromStream   *options
-	,std::ostream                               *out
-	);
+  NLPFirstOrder                               *nlp
+  ,OptionsFromStreamPack::OptionsFromStream   *options
+  ,std::ostream                               *out
+  );
 
 } // end namespace NLPInterfacePack
 

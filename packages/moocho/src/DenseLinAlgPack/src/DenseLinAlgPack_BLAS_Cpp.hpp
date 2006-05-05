@@ -83,7 +83,7 @@ void rotg( f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s );
 
 ///
 void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
-		 , const f_dbl_prec& C, const f_dbl_prec& S);
+     , const f_dbl_prec& C, const f_dbl_prec& S);
 // @}
 
 /* * @name  Interchange vectors */
@@ -115,8 +115,8 @@ void copy(const f_int& N, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y,
 
 ///
 void axpy(const f_int& N, const f_dbl_prec& A, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y
-	, const f_int& INCY);
-	
+  , const f_int& INCY);
+  
 // @}
 
 /* * @name  Dot product */
@@ -162,8 +162,8 @@ f_dbl_prec iamax(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 
 ///
 void gemv(Transp transa, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
-			 
+  , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
+       
 // @}	
 
 /* * @name General band matrix-vector products */
@@ -171,14 +171,14 @@ void gemv(Transp transa, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* p
 
 ///
 void gbmv(Transp transa, f_int m, f_int n, f_int kl, f_int ku, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
-			 	
+  , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
+         
 // @}
 
 /* * @name Hermitian matrix-vector products */
 // @{
 
-			 	
+         
 // @}
 
 /* * @name Hermitian band matrix-vector products */
@@ -197,8 +197,8 @@ void gbmv(Transp transa, f_int m, f_int n, f_int kl, f_int ku, f_dbl_prec alpha,
 
 ///
 void symv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
-			
+  , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
+      
 // @}
 
 /* * @name Symmetric band matrix-vector products */
@@ -206,7 +206,7 @@ void symv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
 
 ///
 void sbmv(Uplo uplo, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
+  , f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
 // @}
 
@@ -215,7 +215,7 @@ void sbmv(Uplo uplo, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
 
 ///
 void spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
-	, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
+  , const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
 // @}
 
@@ -224,7 +224,7 @@ void spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
 
 ///
 void trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
-	, f_int lda, f_dbl_prec* px, f_int incx);
+  , f_int lda, f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -233,7 +233,7 @@ void trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 
 ///
 void tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
-	, f_int lda, f_dbl_prec* px, f_int incx);
+  , f_int lda, f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -242,7 +242,7 @@ void tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec
 
 ///
 void tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
-	, f_dbl_prec* px, f_int incx);
+  , f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -251,7 +251,7 @@ void tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 
 ///
 void trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
-	, f_int lda, f_dbl_prec* px, f_int incx);
+  , f_int lda, f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -260,7 +260,7 @@ void trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 
 ///
 void tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
-	, f_int lda, f_dbl_prec* px, f_int incx);
+  , f_int lda, f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -269,7 +269,7 @@ void tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec
 
 ///
 void tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
-	, f_dbl_prec* px, f_int incx);
+  , f_dbl_prec* px, f_int incx);
 
 // @}
 
@@ -278,7 +278,7 @@ void tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 
 ///
 void ger(f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
-	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
+  , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
 // @}
 
@@ -307,7 +307,7 @@ void ger(f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 
 ///
 void syr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
-	, f_int incx, f_dbl_prec* pa, f_int lda);
+  , f_int incx, f_dbl_prec* pa, f_int lda);
 
 // @}
 
@@ -316,7 +316,7 @@ void syr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 
 ///
 void spr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
-	, f_int incx, f_dbl_prec* pap);
+  , f_int incx, f_dbl_prec* pap);
 
 // @}
 
@@ -325,7 +325,7 @@ void spr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 
 ///
 void syr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
-	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
+  , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
 // @}
 
@@ -334,13 +334,13 @@ void syr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 
 ///
 void spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
-	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pap);
+  , f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pap);
 
 // @}
 
 //		end Level 2 BLAS
 // @}
-	
+  
 // /////////////////////////////////////////
 /* * @name Level 3 BLAS (matrix-matrix operations) */
 // @{	
@@ -350,7 +350,7 @@ void spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 
 ///
 void gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
+  , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 // @}
 
@@ -359,7 +359,7 @@ void gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec al
 
 ///
 void symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
+  , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 // @}
 
@@ -373,7 +373,7 @@ void symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_
 
 ///
 void syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
+  , f_int lda, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 // @}
 
@@ -387,7 +387,7 @@ void syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_d
 
 ///
 void syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
-	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
+  , f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 // @}
 
@@ -401,7 +401,7 @@ void syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_
 
 ///
 void trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
-	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
+  , const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
 
 // @}
 
@@ -410,8 +410,8 @@ void trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_db
 
 ///
 void trsm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
-	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
-		 	 	
+  , const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
+          
 // @}
 
 //		end Level 3 BLAS

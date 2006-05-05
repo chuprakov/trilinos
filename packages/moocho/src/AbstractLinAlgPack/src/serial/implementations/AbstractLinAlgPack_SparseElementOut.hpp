@@ -51,7 +51,7 @@ std::ostream& operator<<(std::ostream& o, const SparseElement<T_Indice,T_Value>&
 // Inline definitions
 template <class T_Indice, class T_Value>
 inline std::ostream& operator<<(std::ostream& o, const SparseElement<T_Indice,T_Value>& ele) {
-	return o << ele.value() << ":" << ele.indice();
+  return o << ele.value() << ":" << ele.indice();
 }
 
 } // end namespace AbstractLinAlgPack

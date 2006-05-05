@@ -70,146 +70,146 @@ namespace AbstractLinAlgPack {
  * an exception if the <tt>dynamic_cast<></tt> fails.
  */
 class VectorMutableDense
-	: virtual public VectorMutable
-	, virtual private VectorApplyOpSerialBase
+  : virtual public VectorMutable
+  , virtual private VectorApplyOpSerialBase
 {
 public:
 
-	///
-	typedef Teuchos::RefCountPtr<
-		MemMngPack::ReleaseResource>  release_resource_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
-	/** @name Constructors/initializers */
-	//@{
+  /** @name Constructors/initializers */
+  //@{
 
-	///
-	/** Calls <tt>this->initialize(dim)</tt>.
-	 */
-	VectorMutableDense(
-		const size_type                    dim = 0
-		);
-	///
-	/** Calls <tt>this->initialize(v,v_release)</tt>.
-	 */
-	VectorMutableDense(
-		DVectorSlice                        v
-		,const release_resource_ptr_t&     v_release
-		);
-	///
-	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
-	 * object.
-	 */
-	void initialize(
-		const size_type                    dim
-		);
-	///
-	/** Initialize with a dense vector slice.
-	 */
-	void initialize(
-		DVectorSlice                        v
-		,const release_resource_ptr_t&     v_release
-		);
+  ///
+  /** Calls <tt>this->initialize(dim)</tt>.
+   */
+  VectorMutableDense(
+    const size_type                    dim = 0
+    );
+  ///
+  /** Calls <tt>this->initialize(v,v_release)</tt>.
+   */
+  VectorMutableDense(
+    DVectorSlice                        v
+    ,const release_resource_ptr_t&     v_release
+    );
+  ///
+  /** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
+   * object.
+   */
+  void initialize(
+    const size_type                    dim
+    );
+  ///
+  /** Initialize with a dense vector slice.
+   */
+  void initialize(
+    DVectorSlice                        v
+    ,const release_resource_ptr_t&     v_release
+    );
 
-	//@}
+  //@}
 
-	/** @name Access */
-	//@{
-	
-	///
-	/** Return the non-const dense vector.
-	 *
-	 * Note that calling this method will result in the vector implementation
-	 * being modified.  Therefore, no other methods on \c this object should be
-	 * called until the <tt>DVectorSlice</tt> returned from this method is
-	 * discarded.
-	 *
-	 * Note that the underlying implementation calls <tt>this->has_changed()</tt>
-	 * before this method returns.
-	 */
-	DVectorSlice set_vec();
-	///
-	/** Return a const dense vector.
-	 */
-	const DVectorSlice get_vec() const;
-	///
-	/** Return a <tt>RefCountPtr<></tt> pointer to the object that will
-	 * release the associated resource.
-	 */
-	const release_resource_ptr_t& vec_release() const;
+  /** @name Access */
+  //@{
+  
+  ///
+  /** Return the non-const dense vector.
+   *
+   * Note that calling this method will result in the vector implementation
+   * being modified.  Therefore, no other methods on \c this object should be
+   * called until the <tt>DVectorSlice</tt> returned from this method is
+   * discarded.
+   *
+   * Note that the underlying implementation calls <tt>this->has_changed()</tt>
+   * before this method returns.
+   */
+  DVectorSlice set_vec();
+  ///
+  /** Return a const dense vector.
+   */
+  const DVectorSlice get_vec() const;
+  ///
+  /** Return a <tt>RefCountPtr<></tt> pointer to the object that will
+   * release the associated resource.
+   */
+  const release_resource_ptr_t& vec_release() const;
 
-	//@}
+  //@}
 
-	/** @name Overriddenn from Vector */
-	//@{
+  /** @name Overriddenn from Vector */
+  //@{
 
-	///
-	const VectorSpace& space() const;
-	///
-	void apply_op(
-		const RTOpPack::RTOp& op
-		,const size_t num_vecs, const Vector* vecs[]
-		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-		,RTOpPack::ReductTarget *reduct_obj
-		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
-		) const;
-	///
-	index_type dim() const;
-	///
-	value_type get_ele(index_type i) const;
-	///
-	void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
-	///
-	void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
+  ///
+  const VectorSpace& space() const;
+  ///
+  void apply_op(
+    const RTOpPack::RTOp& op
+    ,const size_t num_vecs, const Vector* vecs[]
+    ,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj
+    ,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+    ) const;
+  ///
+  index_type dim() const;
+  ///
+  value_type get_ele(index_type i) const;
+  ///
+  void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
+  ///
+  void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
-	//@}
+  //@}
 
-	/** @name Overriddenn from VectorMutable */
-	//@{
+  /** @name Overriddenn from VectorMutable */
+  //@{
 
-	///
-	VectorMutable& operator=(value_type alpha);
-	///
-	VectorMutable& operator=(const Vector& v);
-	///
-	VectorMutable& operator=(const VectorMutable& v);
-	///
-	void set_ele( index_type i, value_type val );
-	///
-	vec_mut_ptr_t sub_view( const Range1D& rng );
-	///
-	void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
-	///
-	void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
-	///
-	void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
-	///
-	void Vp_StMtV(
-		value_type                       alpha
-		,const GenPermMatrixSlice        &P
-		,BLAS_Cpp::Transp                P_trans
-		,const Vector                    &x
-		,value_type                      beta
-		);
+  ///
+  VectorMutable& operator=(value_type alpha);
+  ///
+  VectorMutable& operator=(const Vector& v);
+  ///
+  VectorMutable& operator=(const VectorMutable& v);
+  ///
+  void set_ele( index_type i, value_type val );
+  ///
+  vec_mut_ptr_t sub_view( const Range1D& rng );
+  ///
+  void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
+  ///
+  void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
+  ///
+  void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
+  ///
+  void Vp_StMtV(
+    value_type                       alpha
+    ,const GenPermMatrixSlice        &P
+    ,BLAS_Cpp::Transp                P_trans
+    ,const Vector                    &x
+    ,value_type                      beta
+    );
 
-	//@}
+  //@}
 
-	/// Hack
-	VectorMutableDense* operator&()
-	{
-		return this;
-	}
+  /// Hack
+  VectorMutableDense* operator&()
+  {
+    return this;
+  }
 private:
 
-	// ///////////////////////////////////////
-	// Private data members
-	
-	DVectorSlice              v_;
-	release_resource_ptr_t    v_release_;
-	VectorSpaceSerial         space_;
+  // ///////////////////////////////////////
+  // Private data members
+  
+  DVectorSlice              v_;
+  release_resource_ptr_t    v_release_;
+  VectorSpaceSerial         space_;
 
-	// Not defined and not to be called
-	//VectorMutableDense(const VectorMutableDense&);
-	VectorMutableDense& operator=(const VectorMutableDense&);
+  // Not defined and not to be called
+  //VectorMutableDense(const VectorMutableDense&);
+  VectorMutableDense& operator=(const VectorMutableDense&);
 
 }; // end class VectorMutableDense
 
@@ -220,22 +220,22 @@ inline
 DVectorSlice
 VectorMutableDense::set_vec()
 {
-	this->has_changed();
-	return v_;
+  this->has_changed();
+  return v_;
 }
 
 inline
 const DVectorSlice
 VectorMutableDense::get_vec() const
 {
-	return v_;
+  return v_;
 }
 
 inline
 const VectorMutableDense::release_resource_ptr_t&
 VectorMutableDense::vec_release() const
 {
-	return v_release_;
+  return v_release_;
 }
 
 } // end namespace AbstractLinAlgPack

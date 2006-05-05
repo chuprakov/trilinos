@@ -181,7 +181,7 @@ create_N(
     )
 {
     namespace mmp = MemMngPack;
-	return Teuchos::rcp(
+  return Teuchos::rcp(
         new MatrixOpSubView(
             Gc.sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
             )
@@ -216,248 +216,248 @@ create_N(
 class BasisSystem {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
-	///
-	class SingularBasis : public std::runtime_error
-	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
-	///
-	enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
+  ///
+  class SingularBasis : public std::runtime_error
+  {public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+  ///
+  enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
-	//@}
+  //@}
 
-	///
-	/** Required constructor (calls <tt>initialize()</tt>).
-	 */
-	BasisSystem(
-		const mat_sym_fcty_ptr_t             &factory_transDtD
-		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-		);
+  ///
+  /** Required constructor (calls <tt>initialize()</tt>).
+   */
+  BasisSystem(
+    const mat_sym_fcty_ptr_t             &factory_transDtD
+    ,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+    );
 
-	///
-	/** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
-	 *
-	 * Postconditions:<ul>
-	 * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
-	 * <li>this->factory_S().get() == factory_S.get()</tt>
-	 * </ul>
-	 */
-	virtual void initialize(
-		const mat_sym_fcty_ptr_t             &factory_transDtD
-		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-		);
+  ///
+  /** Initialize the factory objects for the special matrices for <tt>D'*D</tt> and <tt>S = I + D'*D</tt>.
+   *
+   * Postconditions:<ul>
+   * <li>this->factory_transDtD().get() == factory_transDtD.get()</tt>
+   * <li>this->factory_S().get() == factory_S.get()</tt>
+   * </ul>
+   */
+  virtual void initialize(
+    const mat_sym_fcty_ptr_t             &factory_transDtD
+    ,const mat_sym_nonsing_fcty_ptr_t    &factory_S
+    );
 
-	///
-	virtual ~BasisSystem() {}
+  ///
+  virtual ~BasisSystem() {}
 
-	/** @name Matrix factories */
-	//@{
+  /** @name Matrix factories */
+  //@{
 
-	///
-	/** Return a matrix factory object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
-	 */
-	virtual const mat_nonsing_fcty_ptr_t factory_C() const = 0;
-	
-	///
-	/** Return a matrix factory object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
-	 *
-	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
-	 * accept a \c D matrix to be computed.
-	 */
-	virtual const mat_fcty_ptr_t factory_D() const = 0;
+  ///
+  /** Return a matrix factory object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
+   */
+  virtual const mat_nonsing_fcty_ptr_t factory_C() const = 0;
+  
+  ///
+  /** Return a matrix factory object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
+   *
+   * It is allowed for this to return \c NULL in which case \c update_basis() will not
+   * accept a \c D matrix to be computed.
+   */
+  virtual const mat_fcty_ptr_t factory_D() const = 0;
 
-	///
-	/** Return a matrix factory object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
-	 *
-	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
-	 * accept a \c GcUP matrix to be computed.
-	 */
-	virtual const mat_fcty_ptr_t factory_GcUP() const;
+  ///
+  /** Return a matrix factory object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
+   *
+   * It is allowed for this to return \c NULL in which case \c update_basis() will not
+   * accept a \c GcUP matrix to be computed.
+   */
+  virtual const mat_fcty_ptr_t factory_GcUP() const;
 
-	///
-	/** Returns a matrix factory for the result of <tt>J = D'*D</tt>
-	 * 
-	 * The resulting matrix is symmetric but is assumed to be singular.
-	 *
-	 * Postconditions:<ul>
-	 * <li> The function <tt>AbstractLinAlgPack::syrk(D,trans,alpha,beta,return->create().get())</tt>
-	 *      must not throw an exception once <tt>D</tt> has been initialized by <tt>this</tt>.
-	 * </ul>
-	 */
-	virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
-	
-	///
-	/** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
-	 * 
-	 * The resulting matrix is symmetric and is guarrenteed to be nonsingular.
-	 *
-	 * Postconditions:<ul>
-	 * <li><tt>dynamic_cast<MatrixSymInitDiag*>(return->create().get()) != NULL</tt>
-	 * </ul>
-	 */
-	virtual const mat_sym_nonsing_fcty_ptr_t factory_S() const;
-	
-	//@}
+  ///
+  /** Returns a matrix factory for the result of <tt>J = D'*D</tt>
+   * 
+   * The resulting matrix is symmetric but is assumed to be singular.
+   *
+   * Postconditions:<ul>
+   * <li> The function <tt>AbstractLinAlgPack::syrk(D,trans,alpha,beta,return->create().get())</tt>
+   *      must not throw an exception once <tt>D</tt> has been initialized by <tt>this</tt>.
+   * </ul>
+   */
+  virtual const mat_sym_fcty_ptr_t factory_transDtD() const;
+  
+  ///
+  /** Returns a matrix factory for the result of <tt>S = I + D'*D</tt>
+   * 
+   * The resulting matrix is symmetric and is guarrenteed to be nonsingular.
+   *
+   * Postconditions:<ul>
+   * <li><tt>dynamic_cast<MatrixSymInitDiag*>(return->create().get()) != NULL</tt>
+   * </ul>
+   */
+  virtual const mat_sym_nonsing_fcty_ptr_t factory_S() const;
+  
+  //@}
 
-	/** @name Return the ranges for variable and constraint partitioning */
-	//@{
+  /** @name Return the ranges for variable and constraint partitioning */
+  //@{
 
-	///
-	/** Range of dependent (basic) variables.
-	 *
-	 * If there are no dependent variables then <tt>return.size() == 0</tt>.
-	 * This would be a strange case where there was no basis matrix in which
-	 * case this whole interface would be worthless.  Therefore, to be useful
-	 * <tt>return.size() > 0</tt> must be true.
-	 *
-	 * If \c var_dep().size() returns 0, then this is an indication that
-	 * \c *this is uninitialized and only the factory methods can be
-	 * called.
-	 */
-	virtual Range1D var_dep() const = 0;
-	///
-	/** Range of independnet (nonbasic) variables.
-	 *
-	 * It is possible that the basis matrix may take up all of the degrees of
-	 * freedom with <tt>var_dep().size() == Gc->rows()</tt>.  In this case, there
-	 * is no nonbasis matrix \a N and no direct sensitivity matrix \a D.
-	 * In this case <tt>return.size() == 0</tt>.  In the more general case
-	 * however, <tt>return.size() > 0</tt>.
-	 */
-	virtual Range1D var_indep() const = 0;
-	///
-	/** Range of decomposed general equality constraints.
-	 *
-	 * If there are no decomposed general equality constriants then
-	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
-	 *
-	 * The default implementation return <tt>Range1D(1,this->var_dep().size())</tt>
-	 */
-	virtual Range1D equ_decomp() const;
-	///
-	/** Range of undecomposed general equality constriants.
-	 *
-	 * If there are no undecomposed equality constriants then
-	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
-	 *
-	 * The default implementation return <tt>Range1D::Invalid</tt>
-	 */
-	virtual Range1D equ_undecomp() const;
+  ///
+  /** Range of dependent (basic) variables.
+   *
+   * If there are no dependent variables then <tt>return.size() == 0</tt>.
+   * This would be a strange case where there was no basis matrix in which
+   * case this whole interface would be worthless.  Therefore, to be useful
+   * <tt>return.size() > 0</tt> must be true.
+   *
+   * If \c var_dep().size() returns 0, then this is an indication that
+   * \c *this is uninitialized and only the factory methods can be
+   * called.
+   */
+  virtual Range1D var_dep() const = 0;
+  ///
+  /** Range of independnet (nonbasic) variables.
+   *
+   * It is possible that the basis matrix may take up all of the degrees of
+   * freedom with <tt>var_dep().size() == Gc->rows()</tt>.  In this case, there
+   * is no nonbasis matrix \a N and no direct sensitivity matrix \a D.
+   * In this case <tt>return.size() == 0</tt>.  In the more general case
+   * however, <tt>return.size() > 0</tt>.
+   */
+  virtual Range1D var_indep() const = 0;
+  ///
+  /** Range of decomposed general equality constraints.
+   *
+   * If there are no decomposed general equality constriants then
+   * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+   *
+   * The default implementation return <tt>Range1D(1,this->var_dep().size())</tt>
+   */
+  virtual Range1D equ_decomp() const;
+  ///
+  /** Range of undecomposed general equality constriants.
+   *
+   * If there are no undecomposed equality constriants then
+   * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+   *
+   * The default implementation return <tt>Range1D::Invalid</tt>
+   */
+  virtual Range1D equ_undecomp() const;
 
-	//@}
+  //@}
 
-	/** @name Update matrices */
-	//@{
+  /** @name Update matrices */
+  //@{
 
-	///
-	/** Update a basis and posssibly the direct sensitivity matrix for a 
-	 * set of Jacobian matrices.
-	 *
-	 * @param  Gc    [in] Jacobian of the equality constriants.
-	 * @param  C     [out] Basis matrix.  If <tt>C == NULL</tt> on input, then this
-	 *               quantity is not updated.  If <tt>C != NULL</tt> then this must
-	 *               have been created by <tt>this->factory_C()->create()</tt>.
-	 *               This basis matrix object must be independent of the input
-	 *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
-	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
-	 *               the basis matrix object \c C.
-	 * @param  D     [out] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If
-	 *               <tt>D == NULL</tt> on input then this quantity is not updated.
-	 *               If <tt>D != NULL</tt> then this must have been created by
-	 *               <tt>this->factory_D()->create()</tt>.  This matrix object
-	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
-	 *               on return.
-	 *               This matrix object must be independent matrices \c Gc and/or \c Gh
-	 *               Therefore, it must be legal to
-	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
-	 *               the direct sensitivity matrix object \c D.
-	 * @param  GcUP  [out] Auxiliary sensistivity matrix
-	 *               <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
-	 *               If <tt>GcUP == NULL</tt> on input then this quantity is not updated.
-	 *               If <tt>GcUP != NULL</tt> then this must have been created by
-	 *               <tt>this->factory_GcUP()->create()</tt>.  This matrix object
-	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
-	 *               on return.
-	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
-	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
-	 *               and/or \c D without affecting the behavior of the matrix object \c GcUP.
-	 * @param mat_rel
-	 *               [in] Determines if the matrix objects must be completely independent or not.
-	 *               <ul>
-	 *               <li> MATRICES_INDEP_IMPS: The matrix objects must have independent implementations (default).
-	 *               <li> MATRICES_ALLOW_DEP_IMPS: The matrix objects can have implementation dependencies.
-	 *               </ul>
-	 * @param  out   [in/out] If <tt>out!=NULL</tt>, then some information about the operations performed
-	 *               internally may be printed to \c *out.  The amount of this output should be
-	 *               very minimal and should not significantly increase with the size of the problem
-	 *               being solved.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>Gc != NULL || Gh != NULL</tt>
-	 * <li> [<tt>Gc != NULL && Gh != NULL</tt>]
-	 *      <tt>Gc->space_cols().is_compatible(Gh->space_cols()) == true</tt>
-	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_dep()).get() != NULL</tt>
-	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_indep()).get() != NULL</tt>
-	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_rows().sub_space(equ_decomp()).get() != NULL</tt>
-	 * <li> [<tt>Gc != NULL && equ_decomp().size() > 0 </tt>]
-	 *      <tt>Gc.space_rows().sub_space(equ_decomp()).get() != NULL</tt>
-	 * <li> [<tt>Gc != NULL && equ_undecomp().size() > 0 </tt>]
-	 *      <tt>Gc.space_rows().sub_space(equ_undecomp()).get() != NULL</tt>
-	 * <li> <tt>C != NULL || D != NULL || GcUP != NULL</tt>
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->var_dep() != Range1D::Invalid && !this->var_dep().full_range()</tt>
-	 * <li> [<tt>C != NULL && Gc != NULL && equ_decomp().size() > 0</tt>]
-	 *      <tt>C->space_cols().sub_space(equ_decomp())->is_compatible(Gc->space_rows().sub_space(equ_decomp()))
-	 *      && C->space_rows().is_compatible(Gc->space_cols().sub_space(var_dep()))</tt>
-	 * <li> [<tt>C != NULL && Gh != NULL && inequ_decomp().size() > 0</tt>]
-	 *      <tt>C->space_cols().sub_space(equ_decomp().size()+inequ_decomp())->is_compatible(Gh->space_rows().sub_space(inequ_decomp()))
-	 *      && C->space_rows().is_compatible(Gh->space_cols().sub_space(var_dep()))</tt>
-	 * <li> [<tt>D != NULL && Gc != NULL && var_indep().size() > 0 && equ_decomp().size() > 0</tt>]
-	 *      <tt>D->space_cols().sub_space(equ_decomp())->is_compatible(Gc->space_rows().sub_space(equ_decomp()))
-	 *      && D->space_rows().is_compatible(Gc->space_cols().sub_space(var_indep()))</tt>
-	 * <li> [<tt>D != NULL && Gh != NULL && var_indep().size() > 0 && inequ_decomp().size() > 0</tt>]
-	 *      <tt>D->space_cols().sub_space(equ_decomp().size()+inequ_decomp())->is_compatible(Gh->space_rows().sub_space(inequ_decomp()))
-	 *      && D->space_rows().is_compatible(Gh->space_cols().sub_space(var_indep()))</tt>
-	 * <li> [<tt>GcUP != NULL && var_indep().size() > 0 && equ_undecomp().size() > 0</tt>]
-	 *      <tt>GcUP->space_rows()->is_compatible(Gc->space_cols().sub_space(var_indep()))
-	 *      && GcUP->space_cols()->is_compatible(Gc->space_rows().sub_space(equ_undecomp()))</tt>
-	 * </ul>
-	 *
-	 * This method with throw a \c SingularBasis exception if the updated basis matrix \a C is too close
-	 * (as defined by the underlying implementation by some means) to being numerically singular.
-	 */
-	virtual void update_basis(
-		const MatrixOp          &Gc
-		,MatrixOpNonsing        *C
-		,MatrixOp               *D
-		,MatrixOp               *GcUP
-		,EMatRelations          mat_rel = MATRICES_INDEP_IMPS
-		,std::ostream           *out    = NULL
-		) const = 0;
+  ///
+  /** Update a basis and posssibly the direct sensitivity matrix for a 
+   * set of Jacobian matrices.
+   *
+   * @param  Gc    [in] Jacobian of the equality constriants.
+   * @param  C     [out] Basis matrix.  If <tt>C == NULL</tt> on input, then this
+   *               quantity is not updated.  If <tt>C != NULL</tt> then this must
+   *               have been created by <tt>this->factory_C()->create()</tt>.
+   *               This basis matrix object must be independent of the input
+   *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
+   *               destroy \c Gc and/or \c Gh without affecting the behavior of
+   *               the basis matrix object \c C.
+   * @param  D     [out] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If
+   *               <tt>D == NULL</tt> on input then this quantity is not updated.
+   *               If <tt>D != NULL</tt> then this must have been created by
+   *               <tt>this->factory_D()->create()</tt>.  This matrix object
+   *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
+   *               on return.
+   *               This matrix object must be independent matrices \c Gc and/or \c Gh
+   *               Therefore, it must be legal to
+   *               destroy \c Gc and/or \c Gh without affecting the behavior of
+   *               the direct sensitivity matrix object \c D.
+   * @param  GcUP  [out] Auxiliary sensistivity matrix
+   *               <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
+   *               If <tt>GcUP == NULL</tt> on input then this quantity is not updated.
+   *               If <tt>GcUP != NULL</tt> then this must have been created by
+   *               <tt>this->factory_GcUP()->create()</tt>.  This matrix object
+   *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
+   *               on return.
+   *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
+   *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
+   *               and/or \c D without affecting the behavior of the matrix object \c GcUP.
+   * @param mat_rel
+   *               [in] Determines if the matrix objects must be completely independent or not.
+   *               <ul>
+   *               <li> MATRICES_INDEP_IMPS: The matrix objects must have independent implementations (default).
+   *               <li> MATRICES_ALLOW_DEP_IMPS: The matrix objects can have implementation dependencies.
+   *               </ul>
+   * @param  out   [in/out] If <tt>out!=NULL</tt>, then some information about the operations performed
+   *               internally may be printed to \c *out.  The amount of this output should be
+   *               very minimal and should not significantly increase with the size of the problem
+   *               being solved.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>Gc != NULL || Gh != NULL</tt>
+   * <li> [<tt>Gc != NULL && Gh != NULL</tt>]
+   *      <tt>Gc->space_cols().is_compatible(Gh->space_cols()) == true</tt>
+   * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_dep()).get() != NULL</tt>
+   * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_indep()).get() != NULL</tt>
+   * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_rows().sub_space(equ_decomp()).get() != NULL</tt>
+   * <li> [<tt>Gc != NULL && equ_decomp().size() > 0 </tt>]
+   *      <tt>Gc.space_rows().sub_space(equ_decomp()).get() != NULL</tt>
+   * <li> [<tt>Gc != NULL && equ_undecomp().size() > 0 </tt>]
+   *      <tt>Gc.space_rows().sub_space(equ_undecomp()).get() != NULL</tt>
+   * <li> <tt>C != NULL || D != NULL || GcUP != NULL</tt>
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->var_dep() != Range1D::Invalid && !this->var_dep().full_range()</tt>
+   * <li> [<tt>C != NULL && Gc != NULL && equ_decomp().size() > 0</tt>]
+   *      <tt>C->space_cols().sub_space(equ_decomp())->is_compatible(Gc->space_rows().sub_space(equ_decomp()))
+   *      && C->space_rows().is_compatible(Gc->space_cols().sub_space(var_dep()))</tt>
+   * <li> [<tt>C != NULL && Gh != NULL && inequ_decomp().size() > 0</tt>]
+   *      <tt>C->space_cols().sub_space(equ_decomp().size()+inequ_decomp())->is_compatible(Gh->space_rows().sub_space(inequ_decomp()))
+   *      && C->space_rows().is_compatible(Gh->space_cols().sub_space(var_dep()))</tt>
+   * <li> [<tt>D != NULL && Gc != NULL && var_indep().size() > 0 && equ_decomp().size() > 0</tt>]
+   *      <tt>D->space_cols().sub_space(equ_decomp())->is_compatible(Gc->space_rows().sub_space(equ_decomp()))
+   *      && D->space_rows().is_compatible(Gc->space_cols().sub_space(var_indep()))</tt>
+   * <li> [<tt>D != NULL && Gh != NULL && var_indep().size() > 0 && inequ_decomp().size() > 0</tt>]
+   *      <tt>D->space_cols().sub_space(equ_decomp().size()+inequ_decomp())->is_compatible(Gh->space_rows().sub_space(inequ_decomp()))
+   *      && D->space_rows().is_compatible(Gh->space_cols().sub_space(var_indep()))</tt>
+   * <li> [<tt>GcUP != NULL && var_indep().size() > 0 && equ_undecomp().size() > 0</tt>]
+   *      <tt>GcUP->space_rows()->is_compatible(Gc->space_cols().sub_space(var_indep()))
+   *      && GcUP->space_cols()->is_compatible(Gc->space_rows().sub_space(equ_undecomp()))</tt>
+   * </ul>
+   *
+   * This method with throw a \c SingularBasis exception if the updated basis matrix \a C is too close
+   * (as defined by the underlying implementation by some means) to being numerically singular.
+   */
+  virtual void update_basis(
+    const MatrixOp          &Gc
+    ,MatrixOpNonsing        *C
+    ,MatrixOp               *D
+    ,MatrixOp               *GcUP
+    ,EMatRelations          mat_rel = MATRICES_INDEP_IMPS
+    ,std::ostream           *out    = NULL
+    ) const = 0;
 
-	//@}
+  //@}
 
 private:
-	mat_sym_fcty_ptr_t             factory_transDtD_;
-	mat_sym_nonsing_fcty_ptr_t     factory_S_;
+  mat_sym_fcty_ptr_t             factory_transDtD_;
+  mat_sym_nonsing_fcty_ptr_t     factory_S_;
 
-	// not defined and not to be called
-	BasisSystem();
+  // not defined and not to be called
+  BasisSystem();
 
 }; // end class BasisSystem
 

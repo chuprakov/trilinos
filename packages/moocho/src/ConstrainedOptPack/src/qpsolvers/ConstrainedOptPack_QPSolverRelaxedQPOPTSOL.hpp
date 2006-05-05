@@ -48,168 +48,168 @@ class QPSolverRelaxedQPOPTSOL : public QPSolverRelaxed
 {
 public:
 
-	// /////////////////////////////////////
-	/** @name Public Types */
-	//@{
+  // /////////////////////////////////////
+  /** @name Public Types */
+  //@{
 
-	///
-	typedef FortranTypes::f_int       f_int;
-	///
-	typedef FortranTypes::f_dbl_prec  f_dbl_prec;
-	///
-	typedef FortranTypes::f_logical   f_logical;
+  ///
+  typedef FortranTypes::f_int       f_int;
+  ///
+  typedef FortranTypes::f_dbl_prec  f_dbl_prec;
+  ///
+  typedef FortranTypes::f_logical   f_logical;
 
-	//@}
+  //@}
 
-	///
-	QPSolverRelaxedQPOPTSOL();
+  ///
+  QPSolverRelaxedQPOPTSOL();
 
-	///
-	~QPSolverRelaxedQPOPTSOL();
+  ///
+  ~QPSolverRelaxedQPOPTSOL();
 
-	/// Return a pointer to the matrix G to be used in the calculation of H*x by QPOPT and QPSOL.
-	virtual const MatrixOp* G() const;
+  /// Return a pointer to the matrix G to be used in the calculation of H*x by QPOPT and QPSOL.
+  virtual const MatrixOp* G() const;
 
-	/// Return the value of the "big M" used in the relaxation (called by QPHESS functions).
-	virtual value_type use_as_bigM() const;
+  /// Return the value of the "big M" used in the relaxation (called by QPHESS functions).
+  virtual value_type use_as_bigM() const;
 
-	// /////////////////////////////////
-	// Overridden from QPSolverRelaxed
+  // /////////////////////////////////
+  // Overridden from QPSolverRelaxed
 
-	///
-	QPSolverStats get_qp_stats() const;
+  ///
+  QPSolverStats get_qp_stats() const;
 
-	///
-	void release_memory();
+  ///
+  void release_memory();
 
 protected:
 
-	// /////////////////////////////////
-	// Overridden from QPSolverRelaxed
+  // /////////////////////////////////
+  // Overridden from QPSolverRelaxed
 
-	///
-	QPSolverStats::ESolutionType imp_solve_qp(
-		std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector* dL, const Vector* dU
-		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
-		,const Vector* eL, const Vector* eU
-		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
-		,value_type* obj_d
-		,value_type* eta, VectorMutable* d
-		,VectorMutable* nu
-		,VectorMutable* mu, VectorMutable* Ed
-		,VectorMutable* lambda, VectorMutable* Fd
-		);
+  ///
+  QPSolverStats::ESolutionType imp_solve_qp(
+    std::ostream* out, EOutputLevel olevel, ERunTests test_what
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector* dL, const Vector* dU
+    ,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+    ,const Vector* eL, const Vector* eU
+    ,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+    ,value_type* obj_d
+    ,value_type* eta, VectorMutable* d
+    ,VectorMutable* nu
+    ,VectorMutable* mu, VectorMutable* Ed
+    ,VectorMutable* lambda, VectorMutable* Fd
+    );
 
-	// //////////////////////////////////////////////////////////////
-	// Protected types
+  // //////////////////////////////////////////////////////////////
+  // Protected types
 
-	///
-	typedef std::vector<f_int>			ISTATE_t;
-	///
-	typedef std::vector<f_int>			IWORK_t;
-	///
-	typedef std::vector<f_dbl_prec>		WORK_t;
+  ///
+  typedef std::vector<f_int>			ISTATE_t;
+  ///
+  typedef std::vector<f_int>			IWORK_t;
+  ///
+  typedef std::vector<f_dbl_prec>		WORK_t;
 public: // RAB: 2001/05/03: MS VC++ 6.0 must have this public ???
-	///
-	enum EInform {
-		STRONG_LOCAL_MIN,
-		WEAK_LOCAL_MIN,
-		MAX_ITER_EXCEEDED,
-		OTHER_ERROR
-	};
+  ///
+  enum EInform {
+    STRONG_LOCAL_MIN,
+    WEAK_LOCAL_MIN,
+    MAX_ITER_EXCEEDED,
+    OTHER_ERROR
+  };
 
 protected:
 
-	// //////////////////////////////////////////////////////////////
-	// Protected Data Members.
+  // //////////////////////////////////////////////////////////////
+  // Protected Data Members.
 
-	QPSolverStats			qp_stats_;
+  QPSolverStats			qp_stats_;
 
-	/** @name Input/Output parameters common to both QPOPT and QPSOL
-	  *
-	  * These are access and updated by subclasses that call QPOPT
-	  * and QPSOL.
-	  */
-	//@{
+  /** @name Input/Output parameters common to both QPOPT and QPSOL
+    *
+    * These are access and updated by subclasses that call QPOPT
+    * and QPSOL.
+    */
+  //@{
 
-	///
-	f_int		N_;
-	///
-	f_int		NCLIN_;
-	///
-	DMatrix	A_;
-	///
-	DVector		BL_;
-	///
-	DVector		BU_;
-	///
-	DVector		CVEC_;
-	///
-	ISTATE_t	ISTATE_;
-	///
-	DVector		X_;
-	///
-	DVector		AX_;
-	///
-	DVector		CLAMDA_;
-	///
-	f_int		ITER_;
-	///
-	f_dbl_prec	OBJ_;
-	///
-	f_int		LIWORK_;
-	///
-	IWORK_t		IWORK_;
-	///
-	f_int		LWORK_;
-	///
-	WORK_t		WORK_;
+  ///
+  f_int		N_;
+  ///
+  f_int		NCLIN_;
+  ///
+  DMatrix	A_;
+  ///
+  DVector		BL_;
+  ///
+  DVector		BU_;
+  ///
+  DVector		CVEC_;
+  ///
+  ISTATE_t	ISTATE_;
+  ///
+  DVector		X_;
+  ///
+  DVector		AX_;
+  ///
+  DVector		CLAMDA_;
+  ///
+  f_int		ITER_;
+  ///
+  f_dbl_prec	OBJ_;
+  ///
+  f_int		LIWORK_;
+  ///
+  IWORK_t		IWORK_;
+  ///
+  f_int		LWORK_;
+  ///
+  WORK_t		WORK_;
 
-	//@}
+  //@}
 
-	// /////////////////////////////////////////////////////////////
-	// Template method primatives to be overridden.
+  // /////////////////////////////////////////////////////////////
+  // Template method primatives to be overridden.
 
-	/// Length of integer workspace
-	virtual f_int liwork(f_int N, f_int NCLIN) const = 0;
+  /// Length of integer workspace
+  virtual f_int liwork(f_int N, f_int NCLIN) const = 0;
 
-	/// Length of real workspace
-	virtual f_int lrwork(f_int N, f_int NCLIN) const = 0;
+  /// Length of real workspace
+  virtual f_int lrwork(f_int N, f_int NCLIN) const = 0;
 
-	///
-	/** Solve the QP defined in the protected input data members
-	  * and set the solution in the protected output data members.
-	  */
-	virtual EInform call_qp_solver(bool warm_start) = 0;
+  ///
+  /** Solve the QP defined in the protected input data members
+    * and set the solution in the protected output data members.
+    */
+  virtual EInform call_qp_solver(bool warm_start) = 0;
 
 private:
 
-	// /////////////////////////
-	// Private types
+  // /////////////////////////
+  // Private types
 
-	typedef std::vector<f_int>	ibnds_t;
+  typedef std::vector<f_int>	ibnds_t;
 
-	// ///////////////////////////
-	// Private data members
+  // ///////////////////////////
+  // Private data members
 
-	size_type			n_inequ_bnds_;		// Used to record the number of bounds with at least
-											// one bound existing in eL and eU.
-	ibnds_t				i_inequ_bnds_;		// size(nbounds_). Remembers which bounds in
-											// eL, eU had at least one bound present.  This is
-											// needed to map from CLAMDA_ to mu.
-	value_type			bigM_;				// Big M value used to construct relaxation.
-	value_type			use_as_bigM_;		// Big M value used in QPHESS.
-	const MatrixOp*	G_;					// used to compute HESS * x = [ G, 0; 0, bigM ] * x products.
+  size_type			n_inequ_bnds_;		// Used to record the number of bounds with at least
+                      // one bound existing in eL and eU.
+  ibnds_t				i_inequ_bnds_;		// size(nbounds_). Remembers which bounds in
+                      // eL, eU had at least one bound present.  This is
+                      // needed to map from CLAMDA_ to mu.
+  value_type			bigM_;				// Big M value used to construct relaxation.
+  value_type			use_as_bigM_;		// Big M value used in QPHESS.
+  const MatrixOp*	G_;					// used to compute HESS * x = [ G, 0; 0, bigM ] * x products.
 
-	// ///////////////////////////
-	// Private member functions
+  // ///////////////////////////
+  // Private member functions
 
-	// not defined and not to be called.
-	QPSolverRelaxedQPOPTSOL(const QPSolverRelaxedQPOPTSOL&);
-	QPSolverRelaxedQPOPTSOL& operator=(const QPSolverRelaxedQPOPTSOL&);
+  // not defined and not to be called.
+  QPSolverRelaxedQPOPTSOL(const QPSolverRelaxedQPOPTSOL&);
+  QPSolverRelaxedQPOPTSOL& operator=(const QPSolverRelaxedQPOPTSOL&);
 
 };	// end class QPSolverRelaxedQPOPTSOL
 

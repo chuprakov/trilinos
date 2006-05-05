@@ -63,22 +63,22 @@ namespace MoochoPack {
 class DampenCrossTermStd_Step : public rSQPAlgo_Step {
 public:
 
-	/// «std comp» members for frac_descent
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, frac_descent )
+  /// «std comp» members for frac_descent
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, frac_descent )
 
-	///
-	DampenCrossTermStd_Step(const value_type& frac_descent = 0.9);
+  ///
+  DampenCrossTermStd_Step(const value_type& frac_descent = 0.9);
 
-	// ////////////////////
-	// Overridden
+  // ////////////////////
+  // Overridden
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
 
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 };	// end class DampenCrossTermStd_Step
 

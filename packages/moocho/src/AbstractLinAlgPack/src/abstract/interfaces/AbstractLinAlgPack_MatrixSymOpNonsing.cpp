@@ -33,13 +33,13 @@ namespace AbstractLinAlgPack {
 MatrixSymOpNonsing::mat_mswons_mut_ptr_t
 MatrixSymOpNonsing::clone_mswons()
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 MatrixSymOpNonsing::mat_mswons_ptr_t
 MatrixSymOpNonsing::clone_mswons() const
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 // Overridden from MatrixOp
@@ -47,13 +47,13 @@ MatrixSymOpNonsing::clone_mswons() const
 MatrixSymOpNonsing::mat_mut_ptr_t
 MatrixSymOpNonsing::clone()
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 MatrixSymOpNonsing::mat_ptr_t
 MatrixSymOpNonsing::clone() const
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 // Overridden from MatrixNonsing
@@ -61,13 +61,13 @@ MatrixSymOpNonsing::clone() const
 MatrixSymOpNonsing::mat_mns_mut_ptr_t
 MatrixSymOpNonsing::clone_mns()
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 MatrixSymOpNonsing::mat_mns_ptr_t
 MatrixSymOpNonsing::clone_mns() const
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 // Overridden from MatrixSymOp
@@ -75,13 +75,13 @@ MatrixSymOpNonsing::clone_mns() const
 MatrixSymOpNonsing::mat_mswo_mut_ptr_t
 MatrixSymOpNonsing::clone_mswo()
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 MatrixSymOpNonsing::mat_mswo_ptr_t
 MatrixSymOpNonsing::clone_mswo() const
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 // Overridden from MatrixSymNonsing
@@ -89,13 +89,13 @@ MatrixSymOpNonsing::clone_mswo() const
 MatrixSymOpNonsing::mat_msns_mut_ptr_t
 MatrixSymOpNonsing::clone_msns()
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 MatrixSymOpNonsing::mat_msns_ptr_t
 MatrixSymOpNonsing::clone_msns() const
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 // Overridden from MatrixOpNonsing
@@ -103,13 +103,13 @@ MatrixSymOpNonsing::clone_msns() const
 MatrixSymOpNonsing::mat_mwons_mut_ptr_t
 MatrixSymOpNonsing::clone_mwons()
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 MatrixSymOpNonsing::mat_mwons_ptr_t
 MatrixSymOpNonsing::clone_mwons() const
 {
-	return clone_mswons();
+  return clone_mswons();
 }
 
 }	// end namespace AbstractLinAlgPack

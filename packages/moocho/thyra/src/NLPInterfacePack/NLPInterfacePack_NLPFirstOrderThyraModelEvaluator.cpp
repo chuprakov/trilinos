@@ -62,9 +62,9 @@ NLPFirstOrderThyraModelEvaluator::NLPFirstOrderThyraModelEvaluator(
   ,const Thyra::VectorBase<value_type>                            *model_pL
   ,const Thyra::VectorBase<value_type>                            *model_pU
   ,const Thyra::VectorBase<value_type>                            *model_p0
-	)
+  )
 {
-	initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
 }
 
 void NLPFirstOrderThyraModelEvaluator::initialize(
@@ -77,19 +77,19 @@ void NLPFirstOrderThyraModelEvaluator::initialize(
   ,const Thyra::VectorBase<value_type>                            *model_pL
   ,const Thyra::VectorBase<value_type>                            *model_pU
   ,const Thyra::VectorBase<value_type>                            *model_p0
-	)
+  )
 {
-	initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
 }
-	
+  
 // Overridden public members from NLP
 
 void NLPFirstOrderThyraModelEvaluator::initialize(bool test_setup)
 {
-	if(initialized_) {
-		NLPFirstOrder::initialize(test_setup);
-		return;
-	}
+  if(initialized_) {
+    NLPFirstOrder::initialize(test_setup);
+    return;
+  }
   NLPThyraModelEvaluatorBase::initialize(test_setup);
   NLPFirstOrder::initialize(test_setup);
 }
@@ -110,13 +110,13 @@ void NLPFirstOrderThyraModelEvaluator::set_Gc(MatrixOp* Gc)
 const NLPFirstOrder::mat_fcty_ptr_t
 NLPFirstOrderThyraModelEvaluator::factory_Gc() const
 {
-	return factory_Gc_;
+  return factory_Gc_;
 }
 
 const NLPFirstOrder::basis_sys_ptr_t
 NLPFirstOrderThyraModelEvaluator::basis_sys() const
 {
-	return basis_sys_;
+  return basis_sys_;
 }
 
 // Overridden protected members from NLPFirstOrder
@@ -175,7 +175,7 @@ void NLPFirstOrderThyraModelEvaluator::evalModel(
   MatrixOpNonsing  *C_aggr;
   MatrixOp         *N_aggr;
   if( Gc && !Gc_updated_ ) {
-		BasisSystemComposite::get_C_N( Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
+    BasisSystemComposite::get_C_N( Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
     if(C_aggr) {
       model_outArgs.set_W(
         rcp_const_cast<Thyra::LinearOpWithSolveBase<value_type> >(

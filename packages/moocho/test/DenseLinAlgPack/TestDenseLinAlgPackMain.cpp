@@ -35,10 +35,10 @@ int main() {
 //	DenseLinAlgPack::TestingPack::TestGenMatrixBasicOp(std::cout);
 //	DenseLinAlgPack::TestingPack::TestDenseLinAlgPackIO(std::cin,std::cout);
 //	DenseLinAlgPack::TestingPack::TestPivotVecMat(std::cout);
-	bool result = DenseLinAlgPack::TestingPack::TestDenseLinAlgPack( &std::cout );
-	if(result)
-		std::cerr << "DenseLinAlgPack checks out!\n";
-	else
-		std::cerr << "Oops!  At least one of the tests for DenseLinAlgPack failed!\n";
-	return ( result == true ? 0 : -1 );
+  bool result = DenseLinAlgPack::TestingPack::TestDenseLinAlgPack( &std::cout );
+  if(result)
+    std::cerr << "DenseLinAlgPack checks out!\n";
+  else
+    std::cerr << "Oops!  At least one of the tests for DenseLinAlgPack failed!\n";
+  return ( result == true ? 0 : -1 );
 }

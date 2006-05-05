@@ -54,44 +54,44 @@ namespace AbstractLinAlgPack {
   * are consistent.
   */
 class MatrixBasisNonbasis
-	: public MatrixOp
+  : public MatrixOp
 {
 public:
 
     /// Base class for postcondition exceptions
-	class MatrixNotAvailable : public std::runtime_error
-	{public: MatrixNotAvailable(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+  class MatrixNotAvailable : public std::runtime_error
+  {public: MatrixNotAvailable(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
-	/// Get reference to basis Matrix C ([m,m] = size(C))
-	/**
-	  * Only call if rows() > 0 otherwise throws std::logic_error
-	  */
-	virtual const MatrixOp& C() const = 0;
+  /// Get reference to basis Matrix C ([m,m] = size(C))
+  /**
+    * Only call if rows() > 0 otherwise throws std::logic_error
+    */
+  virtual const MatrixOp& C() const = 0;
 
-	/// Get reference to nonsingular version of the basis Matrix C ([m,m] = size(C))
-	/**
-	  * Only call if rows() > 0 otherwise throws std::logic_error/
-	  * If the factorization is not available, then a MatrixNotAvailable exception
-	  * will be thrown.
-	  */
-	virtual const MatrixFactorized& C_nonsingular() const = 0;
+  /// Get reference to nonsingular version of the basis Matrix C ([m,m] = size(C))
+  /**
+    * Only call if rows() > 0 otherwise throws std::logic_error/
+    * If the factorization is not available, then a MatrixNotAvailable exception
+    * will be thrown.
+    */
+  virtual const MatrixFactorized& C_nonsingular() const = 0;
 
-	/// Get reference to non-basis Matrix N ([n-m,n] = size(N))
-	/**
-	  * Only call if cols() > rows() otherwise throws std::logic_error
-	  */
-	virtual const MatrixOp& N() const = 0;
+  /// Get reference to non-basis Matrix N ([n-m,n] = size(N))
+  /**
+    * Only call if cols() > rows() otherwise throws std::logic_error
+    */
+  virtual const MatrixOp& N() const = 0;
 
-	// //////////////////////////////////////
-	// Overridden from MatrixOp
+  // //////////////////////////////////////
+  // Overridden from MatrixOp
 
-	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2, value_type beta) const;
+  /// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const;
 
-	/// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2, value_type beta) const;
+  /// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 };	// end class MatrixBasisNonbasis
 

@@ -35,28 +35,28 @@
 namespace OptionsFromStreamPack {
 
 SetOptionsFromStreamNode::SetOptionsFromStreamNode( const std::string& options_group
-		, int num_options, const char* option_names[], bool exists_optional )
-	: name_map_( options_group, num_options, option_names )
-		, exists_optional_(exists_optional)
+    , int num_options, const char* option_names[], bool exists_optional )
+  : name_map_( options_group, num_options, option_names )
+    , exists_optional_(exists_optional)
 {}
 
 void SetOptionsFromStreamNode::set_options( const OptionsFromStream& options )
 {
-	OptionsFromStream::options_group_t optgrp = options.options_group( name_map_.name() );
-	if( !OptionsFromStream::options_group_exists( optgrp ) ) {
-		TEST_FOR_EXCEPTION(
-			!exists_optional_, std::invalid_argument
-			,"SetOptionsFromStreamNode::set_options(...) : "
-			<< "Error, The options group " << name_map_.name()
-			<< " does not exist" );
-		if(exists_optional_)
-			return;
-	}
-		
-	OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
-	for( ; itr != optgrp.end(); ++itr ) {
-		setOption( name_map_( option_name(itr) ), option_value(itr).c_str() );
-	}
+  OptionsFromStream::options_group_t optgrp = options.options_group( name_map_.name() );
+  if( !OptionsFromStream::options_group_exists( optgrp ) ) {
+    TEST_FOR_EXCEPTION(
+      !exists_optional_, std::invalid_argument
+      ,"SetOptionsFromStreamNode::set_options(...) : "
+      << "Error, The options group " << name_map_.name()
+      << " does not exist" );
+    if(exists_optional_)
+      return;
+  }
+    
+  OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
+  for( ; itr != optgrp.end(); ++itr ) {
+    setOption( name_map_( option_name(itr) ), option_value(itr).c_str() );
+  }
 }
 
 }	// end namespace OptionsFromStreamPack

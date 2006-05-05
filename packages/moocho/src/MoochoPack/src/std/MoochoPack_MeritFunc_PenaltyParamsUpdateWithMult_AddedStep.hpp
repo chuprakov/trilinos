@@ -43,61 +43,61 @@ namespace MoochoPack {
   * MeritFuncPenaltyParams and MeritFuncNLPDirecDeriv.
   */
 class MeritFunc_PenaltyParamsUpdateWithMult_AddedStep
-	: public MeritFunc_PenaltyParamUpdate_AddedStep
+  : public MeritFunc_PenaltyParamUpdate_AddedStep
 {
 public:
 
-	/// <<std comp>> members for merit_func
-	STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  /// <<std comp>> members for merit_func
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
 
-	///
-	MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(const merit_func_ptr_t& merit_func
-		, value_type small_mu = 1e-6, value_type min_mu_ratio = 1e-8
-		, value_type mult_factor = 1e-4 , value_type kkt_near_sol = 1e-1 );
+  ///
+  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(const merit_func_ptr_t& merit_func
+    , value_type small_mu = 1e-6, value_type min_mu_ratio = 1e-8
+    , value_type mult_factor = 1e-4 , value_type kkt_near_sol = 1e-1 );
 
-	// ///////////////////////////////
-	// Overridden from AlgorithmStep
+  // ///////////////////////////////
+  // Overridden from AlgorithmStep
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
 
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss
-		, IterationPack::EDoStepType type, poss_type assoc_step_poss
-		, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss
+    , IterationPack::EDoStepType type, poss_type assoc_step_poss
+    , std::ostream& out, const std::string& leading_str ) const;
 
-	// //////////////////////////////////////////////////////////////////////
-	// Overridden from MeritFunc_PenaltyParamUpdate_AddedStep
+  // //////////////////////////////////////////////////////////////////////
+  // Overridden from MeritFunc_PenaltyParamUpdate_AddedStep
 
-	///
-	void small_mu( value_type small_mu );
-	///
-	value_type small_mu() const;
+  ///
+  void small_mu( value_type small_mu );
+  ///
+  value_type small_mu() const;
 
-	///
-	void min_mu_ratio( value_type min_mu_ratio );
-	///
-	value_type min_mu_ratio() const;
+  ///
+  void min_mu_ratio( value_type min_mu_ratio );
+  ///
+  value_type min_mu_ratio() const;
 
-	///
-	void mult_factor( value_type mult_factor );
-	///
-	value_type mult_factor() const;
+  ///
+  void mult_factor( value_type mult_factor );
+  ///
+  value_type mult_factor() const;
 
-	///
-	void kkt_near_sol( value_type kkt_near_sol );
-	///
-	value_type kkt_near_sol() const;
+  ///
+  void kkt_near_sol( value_type kkt_near_sol );
+  ///
+  value_type kkt_near_sol() const;
 
 private:
-	bool near_solution_;
-	value_type small_mu_;
-	value_type min_mu_ratio_;
-	value_type mult_factor_;
-	value_type kkt_near_sol_;
-	value_type norm_inf_mu_last_;
-	
+  bool near_solution_;
+  value_type small_mu_;
+  value_type min_mu_ratio_;
+  value_type mult_factor_;
+  value_type kkt_near_sol_;
+  value_type norm_inf_mu_last_;
+  
 };	// end class MeritFunc_PenaltyParamsUpdateWithMult_AddedStep
 
 }	// end namespace MoochoPack 

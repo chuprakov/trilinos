@@ -77,27 +77,27 @@ namespace AbstractLinAlgPack {
  \verbatim
   if (correct inertia) and (gamma > warning_tol) then
       The matrix is nonsingular and has the correct inertia, the
-	  initialization or update will succeed and all is good :-)
+    initialization or update will succeed and all is good :-)
   elseif (correct inertia) and (singular_tol < gamma <= warning_tol) then
       The matrix will be considered nonsingular and the initialization
-	  or the update will succeed but a WarnNearSingularUpdateException
-	  will be thrown containing gamma and a warning message.
+    or the update will succeed but a WarnNearSingularUpdateException
+    will be thrown containing gamma and a warning message.
   elseif (correct inertia) and (0.0 < gamma <= singular_tol) then
       The matrix is considered singular, the initialization or update
-	  will not succeeed and a SingularUpdateException will be thrown
-	  containing gamma and an error message.
+    will not succeeed and a SingularUpdateException will be thrown
+    containing gamma and an error message.
   elseif (gamma == 0.0) then
       The matrix is exactly singular, the initialization or update
-	  will not succeed and a SingularUpdateException will be thrown
-	  containing gamma and an error message.
+    will not succeed and a SingularUpdateException will be thrown
+    containing gamma and an error message.
   elseif (incorrect inertia) and (0.0 < gamma < wrong_inertia_tol) then
       The matrix will be considered singular, the initialization or update
-	  will not succeed and a SingularUpdateException will be thrown
-	  containing gamma and an error message.
+    will not succeed and a SingularUpdateException will be thrown
+    containing gamma and an error message.
   elseif (incorrect inertia) and (gamma >= wrong_inertia_tol) then
       The matrix is considered to be nonsingular but to have the wrong inertia,
-	  the initialization or update will not succeed and a WrongInertiaException
-	  will be thrown containing gamma and an error message.
+    the initialization or update will not succeed and a WrongInertiaException
+    will be thrown containing gamma and an error message.
   endif
  \endverbatim
  * The tolerances <tt>warning_tol</tt>, <tt>singular_tol</tt> and <tt>wrong_inertia_tol</tt> are
@@ -112,259 +112,259 @@ namespace AbstractLinAlgPack {
  * the user.
  */
 class MatrixSymAddDelUpdateable
-	: public virtual AbstractLinAlgPack::MatrixBase // doxygen needs full name
+  : public virtual AbstractLinAlgPack::MatrixBase // doxygen needs full name
 {
 public:
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	enum EEigenValType { EIGEN_VAL_POS, EIGEN_VAL_NEG, EIGEN_VAL_ZERO, EIGEN_VAL_UNKNOWN };
-	///
-	/** Struct for the inertia of the matrix.
-	 *
-	 * Any or all of the values <tt>neg_eigens</tt>, <tt>zero_eigens</tt> or <tt>pos_eigens</tt>
-	 * may be <tt>UNKNOWN</tt>.
-	 */
-	struct Inertia {
+  ///
+  enum EEigenValType { EIGEN_VAL_POS, EIGEN_VAL_NEG, EIGEN_VAL_ZERO, EIGEN_VAL_UNKNOWN };
+  ///
+  /** Struct for the inertia of the matrix.
+   *
+   * Any or all of the values <tt>neg_eigens</tt>, <tt>zero_eigens</tt> or <tt>pos_eigens</tt>
+   * may be <tt>UNKNOWN</tt>.
+   */
+  struct Inertia {
         enum { UNKNOWN = -1 };
-		Inertia(
-			int neg_eigen_vals    = UNKNOWN
-			,int zero_eigen_vals  = UNKNOWN
-			,int pos_eigen_vals  = UNKNOWN
-			)
-			: neg_eigens(neg_eigen_vals)
-			,zero_eigens(zero_eigen_vals)
-			,pos_eigens(pos_eigen_vals)
-			{}
-		///
-		int  neg_eigens;
-		///
-		int  zero_eigens;
-		///
-		int  pos_eigens;
-	}; 
-	///
-	/** Struct for pivot tolerances to be used when initializing, and augmenting
-	 * and deleting rows and columns.
-	 */
-	struct PivotTolerances {
-		enum { UNKNOWN = -1 };
-		PivotTolerances()              // 2001/03/08: g++ 2.95.2 requries separate
-			:warning_tol(UNKNOWN)      // constructor for use in default argument
-			,singular_tol(UNKNOWN)     // or you get internalcomplier error later?
-			,wrong_inertia_tol(UNKNOWN)
-			{}
-		PivotTolerances(
-			value_type  _warning_tol
-			,value_type _singular_tol
-			,value_type _wrong_inertia_tol
-			)
-			:warning_tol(_warning_tol)
-			,singular_tol(_singular_tol)
-			,wrong_inertia_tol(_wrong_inertia_tol)
-			{}
-		///
-		value_type warning_tol;
-		///
-		value_type singular_tol;
-		///
-		value_type wrong_inertia_tol;
-	};
-	/// Thrown if the matrix is near singular as a warning.
-	class WarnNearSingularUpdateException : public std::logic_error	{
-	public:
-		WarnNearSingularUpdateException(const std::string& what_arg,value_type _gamma)
-			: std::logic_error(what_arg), gamma(_gamma) {}
-		value_type gamma;
-	};
-	/// Thrown if the matrix is singular and should not have been.
-	class SingularUpdateException : public std::logic_error	{
-	public:
-		SingularUpdateException(const std::string& what_arg,value_type _gamma)
-			: std::logic_error(what_arg), gamma(_gamma) {}
-		value_type gamma;
-	};
-	/// Thrown if matrix has the wrong inertia from what was expected.
-	class WrongInertiaUpdateException : public std::logic_error	{
-	public:
-		WrongInertiaUpdateException(const std::string& what_arg,value_type _gamma)
-			: std::logic_error(what_arg), gamma(_gamma) {}
-		value_type gamma;
-	};
-	/// Thrown if the maximum size is exceeded in augment_update(...).
-	class MaxSizeExceededException : public std::logic_error
-	{public: MaxSizeExceededException(const std::string& what_arg) : std::logic_error(what_arg) {}};
+    Inertia(
+      int neg_eigen_vals    = UNKNOWN
+      ,int zero_eigen_vals  = UNKNOWN
+      ,int pos_eigen_vals  = UNKNOWN
+      )
+      : neg_eigens(neg_eigen_vals)
+      ,zero_eigens(zero_eigen_vals)
+      ,pos_eigens(pos_eigen_vals)
+      {}
+    ///
+    int  neg_eigens;
+    ///
+    int  zero_eigens;
+    ///
+    int  pos_eigens;
+  }; 
+  ///
+  /** Struct for pivot tolerances to be used when initializing, and augmenting
+   * and deleting rows and columns.
+   */
+  struct PivotTolerances {
+    enum { UNKNOWN = -1 };
+    PivotTolerances()              // 2001/03/08: g++ 2.95.2 requries separate
+      :warning_tol(UNKNOWN)      // constructor for use in default argument
+      ,singular_tol(UNKNOWN)     // or you get internalcomplier error later?
+      ,wrong_inertia_tol(UNKNOWN)
+      {}
+    PivotTolerances(
+      value_type  _warning_tol
+      ,value_type _singular_tol
+      ,value_type _wrong_inertia_tol
+      )
+      :warning_tol(_warning_tol)
+      ,singular_tol(_singular_tol)
+      ,wrong_inertia_tol(_wrong_inertia_tol)
+      {}
+    ///
+    value_type warning_tol;
+    ///
+    value_type singular_tol;
+    ///
+    value_type wrong_inertia_tol;
+  };
+  /// Thrown if the matrix is near singular as a warning.
+  class WarnNearSingularUpdateException : public std::logic_error	{
+  public:
+    WarnNearSingularUpdateException(const std::string& what_arg,value_type _gamma)
+      : std::logic_error(what_arg), gamma(_gamma) {}
+    value_type gamma;
+  };
+  /// Thrown if the matrix is singular and should not have been.
+  class SingularUpdateException : public std::logic_error	{
+  public:
+    SingularUpdateException(const std::string& what_arg,value_type _gamma)
+      : std::logic_error(what_arg), gamma(_gamma) {}
+    value_type gamma;
+  };
+  /// Thrown if matrix has the wrong inertia from what was expected.
+  class WrongInertiaUpdateException : public std::logic_error	{
+  public:
+    WrongInertiaUpdateException(const std::string& what_arg,value_type _gamma)
+      : std::logic_error(what_arg), gamma(_gamma) {}
+    value_type gamma;
+  };
+  /// Thrown if the maximum size is exceeded in augment_update(...).
+  class MaxSizeExceededException : public std::logic_error
+  {public: MaxSizeExceededException(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	//@}
+  //@}
 
-	/** @name Public members to be overridden */
-	//@{
+  /** @name Public members to be overridden */
+  //@{
 
-	///
-	virtual ~MatrixSymAddDelUpdateable()
-	{}
+  ///
+  virtual ~MatrixSymAddDelUpdateable()
+  {}
 
-	///
-	/** Initialize to a 1x1 matrix.
-	 *
-	 * Since this is a 1x1 matrix the inetia is given by the sign
-	 * of alpha.
-	 *
-	 * @param  alpha    [in] The single entry in the 1x1 matrix to initialize.
-	 * @param  max_size [in] The maximum size for <tt>rows()</tt> and <tt>cols()</tt> the
-	 *                  maxtix is allowed to become.
-	 */
-	virtual void initialize(
-		value_type    alpha
-		, size_type   max_size
-		) = 0;
+  ///
+  /** Initialize to a 1x1 matrix.
+   *
+   * Since this is a 1x1 matrix the inetia is given by the sign
+   * of alpha.
+   *
+   * @param  alpha    [in] The single entry in the 1x1 matrix to initialize.
+   * @param  max_size [in] The maximum size for <tt>rows()</tt> and <tt>cols()</tt> the
+   *                  maxtix is allowed to become.
+   */
+  virtual void initialize(
+    value_type    alpha
+    , size_type   max_size
+    ) = 0;
 
-	///
-	/** Initialize given a symmetric matrix.
-	 *
-	 * The behavior of this function will vary based on the subclass that implements it.
-	 * Some subclasses may require that <tt>A</tt> be nonsingular and therefore <tt>inertia.zero_eigens</tt>
-	 * should be zero.  
-	 *
-	 * @param  A        [in] Symetric matrix that <tt>this</tt> is initialized with.
-	 * @param  max_size [in] The maximum size <tt>rows()</tt> and <tt>cols()</tt> can become.
-	 * @param  force_factorization
-	 *                  [in] If true, the factorization of the matrix will be forced and
-	 *                  any possible exceptions will be thrown.  If false then the factorization
-	 *                  may not be forced, in which case the client may not know immediatly
-	 *                  that the matrix is singular or has the wrong inertia.
-	 * @param  inertia  [in] The estimated inertia of the matrix.  If the user knows any
-	 *                  of the members of inertia then they should be set.  Some subclasses
-	 *                  may rely on this estimate of the inertia to determine what should be
-	 *                  done.
-	 * @param  pivot_tols
-	 *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
-	 *                  See the intro.  Default is no tolerances.
-	 */
-	virtual void initialize(
-		const DMatrixSliceSym      &A
-		,size_type         max_size
-		,bool              force_factorization
-		,Inertia           inertia
-		,PivotTolerances   pivot_tols            = PivotTolerances()
-		) = 0;
+  ///
+  /** Initialize given a symmetric matrix.
+   *
+   * The behavior of this function will vary based on the subclass that implements it.
+   * Some subclasses may require that <tt>A</tt> be nonsingular and therefore <tt>inertia.zero_eigens</tt>
+   * should be zero.  
+   *
+   * @param  A        [in] Symetric matrix that <tt>this</tt> is initialized with.
+   * @param  max_size [in] The maximum size <tt>rows()</tt> and <tt>cols()</tt> can become.
+   * @param  force_factorization
+   *                  [in] If true, the factorization of the matrix will be forced and
+   *                  any possible exceptions will be thrown.  If false then the factorization
+   *                  may not be forced, in which case the client may not know immediatly
+   *                  that the matrix is singular or has the wrong inertia.
+   * @param  inertia  [in] The estimated inertia of the matrix.  If the user knows any
+   *                  of the members of inertia then they should be set.  Some subclasses
+   *                  may rely on this estimate of the inertia to determine what should be
+   *                  done.
+   * @param  pivot_tols
+   *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
+   *                  See the intro.  Default is no tolerances.
+   */
+  virtual void initialize(
+    const DMatrixSliceSym      &A
+    ,size_type         max_size
+    ,bool              force_factorization
+    ,Inertia           inertia
+    ,PivotTolerances   pivot_tols            = PivotTolerances()
+    ) = 0;
 
-	///
-	/** Return the maximum size the matrix is allowed to become.
-	 */
-	virtual size_type max_size() const = 0;
+  ///
+  /** Return the maximum size the matrix is allowed to become.
+   */
+  virtual size_type max_size() const = 0;
 
-	///
-	/** Return the inertia of the matrix (if it is known).
-	 * If any of the members of the inertia is not known then
-	 * they may be set to <tt>Inertia::UNKNOWN</tt>.  If the matrix is
-	 * nonsingular then <tt>return.zero_eigens == 0</tt> will be true.
-	 */
-	virtual Inertia inertia() const = 0;
+  ///
+  /** Return the inertia of the matrix (if it is known).
+   * If any of the members of the inertia is not known then
+   * they may be set to <tt>Inertia::UNKNOWN</tt>.  If the matrix is
+   * nonsingular then <tt>return.zero_eigens == 0</tt> will be true.
+   */
+  virtual Inertia inertia() const = 0;
 
-	///
-	/** Set the matrix to uninitialized.
-	 */
-	virtual void set_uninitialized() = 0;
+  ///
+  /** Set the matrix to uninitialized.
+   */
+  virtual void set_uninitialized() = 0;
 
-	///
-	/** Update by adding a symmetric row and column.
-	 *
-	 * The update performed is:
-	 \verbatim
+  ///
+  /** Update by adding a symmetric row and column.
+   *
+   * The update performed is:
+   \verbatim
 
-	 [ A     t   ]       
-	 [ t'  alpha ] ==>  A_new
+   [ A     t   ]       
+   [ t'  alpha ] ==>  A_new
 
-	 \endverbatim
-	 * Preconditions:<br>
-	 * \begin{itemize}
-	 * \item <tt>[t != NULL] t->size() == this->rows()</tt> (throw <tt>std::length_error</tt>)
-	 * \item <tt>this->rows() < this->max_size()</tt> (throw <tt>MaxSizeExceededException</tt>)
-	 * \end{itemize}
-	 *
-	 * Postcondiditons:<br>
-	 * The update gives a legal update depending on the
-	 * context of the subclass (nonsigular, positive definite etc.).
-	 * If the subclass requires the matrix to be nonsingular but 
-	 * <tt>inertia.zero_eigens == 0</tt> or the matrix is determined to be singular
-	 * then the exception <tt>SingularUpdateException</tt> will be thrown.
-	 * If the matrix is found to not have the propper inertia then the
-	 * exception <tt>WrongInertiaUpdateException</tt> will be thrown.  This subclass
-	 * may not be able to determine the inertia in which case this exception
-	 * will never be thrown.
-	 * If no exceptions are thrown then <tt>this->rows()</tt> and <tt>this->cols()</tt>
-	 * will increase by one and <tt>this->inertia()</tt> will return the new inertia
-	 * if it is known.
-	 *
-	 * @param  t       [in] DVectorSlice (size == <tt>rows()</tt>) where <tt>t</tt> may be <tt>NULL</tt> in which
-	 *                 case t is considered zero.
-	 * @param  alpha   [in] Scalar added.
-	 * @param  force_refactorization
-	 *                 [in] If true, then the factorization of the matrix will
-	 *                 be performed before the function returns.  If something
-	 *                 goes wrong then an exeception will be thrown here.
-	 * @param  add_eigen_val
-	 *                 [in] Gives the estimate of the new eigen value added
-	 *                 to the matrix.  If the matrix does not agree with this
-	 *                 then an exception will be thrown.
-	 * @param  pivot_tols
-	 *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
-	 *                  See the intro.  Default is no tolerances.
-	 */
-	virtual void augment_update(
-		const DVectorSlice  *t
-		,value_type        alpha
-		,bool              force_refactorization = true
-		,EEigenValType     add_eigen_val         = EIGEN_VAL_UNKNOWN
-		,PivotTolerances   pivot_tols            = PivotTolerances()
-		) = 0;
+   \endverbatim
+   * Preconditions:<br>
+   * \begin{itemize}
+   * \item <tt>[t != NULL] t->size() == this->rows()</tt> (throw <tt>std::length_error</tt>)
+   * \item <tt>this->rows() < this->max_size()</tt> (throw <tt>MaxSizeExceededException</tt>)
+   * \end{itemize}
+   *
+   * Postcondiditons:<br>
+   * The update gives a legal update depending on the
+   * context of the subclass (nonsigular, positive definite etc.).
+   * If the subclass requires the matrix to be nonsingular but 
+   * <tt>inertia.zero_eigens == 0</tt> or the matrix is determined to be singular
+   * then the exception <tt>SingularUpdateException</tt> will be thrown.
+   * If the matrix is found to not have the propper inertia then the
+   * exception <tt>WrongInertiaUpdateException</tt> will be thrown.  This subclass
+   * may not be able to determine the inertia in which case this exception
+   * will never be thrown.
+   * If no exceptions are thrown then <tt>this->rows()</tt> and <tt>this->cols()</tt>
+   * will increase by one and <tt>this->inertia()</tt> will return the new inertia
+   * if it is known.
+   *
+   * @param  t       [in] DVectorSlice (size == <tt>rows()</tt>) where <tt>t</tt> may be <tt>NULL</tt> in which
+   *                 case t is considered zero.
+   * @param  alpha   [in] Scalar added.
+   * @param  force_refactorization
+   *                 [in] If true, then the factorization of the matrix will
+   *                 be performed before the function returns.  If something
+   *                 goes wrong then an exeception will be thrown here.
+   * @param  add_eigen_val
+   *                 [in] Gives the estimate of the new eigen value added
+   *                 to the matrix.  If the matrix does not agree with this
+   *                 then an exception will be thrown.
+   * @param  pivot_tols
+   *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
+   *                  See the intro.  Default is no tolerances.
+   */
+  virtual void augment_update(
+    const DVectorSlice  *t
+    ,value_type        alpha
+    ,bool              force_refactorization = true
+    ,EEigenValType     add_eigen_val         = EIGEN_VAL_UNKNOWN
+    ,PivotTolerances   pivot_tols            = PivotTolerances()
+    ) = 0;
 
-	///
-	/** Update by deleteing a symmetric row and column.
-	 *
-	 \verbatim
-	 
-	               jd
-	     [ A11    a12    A13  ]
-	 A = [ a12'   a22    a23' ] jd  ==>  A_new = [ A11  A13  ]
-	     [ A13'   a23    A33  ]                  [ A13'  A33 ]
-	 
-	 \endverbatim
-	 *
-	 * Preconditions:<br>
-	 * \begin{itemize}
-	 * \item <tt>1 <= jd && jd <= this->rows()</tt> (throw <tt>std::out_of_range</tt>)
-	 * \end{itemize}
-	 *
-	 * Postcondiditons:<br>
-	 * The update give a legal update depending on the
-	 * context of the subclass (nonsigular, positive definite etc.).
-	 * Also <tt>rows()</tt> and <tt>cols()</tt> will decrease by one so this_after<tt>->rows()</tt> == this_before<tt>->rows()</tt> - 1.
-	 *
-	 * @param  jd      [in] The jth row and column to be removed from the matrix.
-	 * @param  force_refactorization
-	 *                 [in] If true, then the factorization of the matrix will
-	 *                 be performed before the function returns.  If something
-	 *                 goes wrong then an exeception will be thrown here.
-	 * @param  drop_eigen_val
-	 *                 [in] Gives the estimate of the eigen value dropped
-	 *                 from the matrix.  If the matrix does not agree with this
-	 *                 then an exception will be thrown.
-	 * @param  pivot_tols
-	 *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
-	 *                  See the intro.  Default is no tolerances.
-	 */
-	virtual void delete_update(
-		size_type          jd
-		,bool              force_refactorization = true
-		,EEigenValType     drop_eigen_val        = EIGEN_VAL_UNKNOWN
-		,PivotTolerances   pivot_tols            = PivotTolerances()
-		) = 0;
+  ///
+  /** Update by deleteing a symmetric row and column.
+   *
+   \verbatim
+   
+                 jd
+       [ A11    a12    A13  ]
+   A = [ a12'   a22    a23' ] jd  ==>  A_new = [ A11  A13  ]
+       [ A13'   a23    A33  ]                  [ A13'  A33 ]
+   
+   \endverbatim
+   *
+   * Preconditions:<br>
+   * \begin{itemize}
+   * \item <tt>1 <= jd && jd <= this->rows()</tt> (throw <tt>std::out_of_range</tt>)
+   * \end{itemize}
+   *
+   * Postcondiditons:<br>
+   * The update give a legal update depending on the
+   * context of the subclass (nonsigular, positive definite etc.).
+   * Also <tt>rows()</tt> and <tt>cols()</tt> will decrease by one so this_after<tt>->rows()</tt> == this_before<tt>->rows()</tt> - 1.
+   *
+   * @param  jd      [in] The jth row and column to be removed from the matrix.
+   * @param  force_refactorization
+   *                 [in] If true, then the factorization of the matrix will
+   *                 be performed before the function returns.  If something
+   *                 goes wrong then an exeception will be thrown here.
+   * @param  drop_eigen_val
+   *                 [in] Gives the estimate of the eigen value dropped
+   *                 from the matrix.  If the matrix does not agree with this
+   *                 then an exception will be thrown.
+   * @param  pivot_tols
+   *                  [in] Tolerances to use to determine singularity, nonsingularity etc.
+   *                  See the intro.  Default is no tolerances.
+   */
+  virtual void delete_update(
+    size_type          jd
+    ,bool              force_refactorization = true
+    ,EEigenValType     drop_eigen_val        = EIGEN_VAL_UNKNOWN
+    ,PivotTolerances   pivot_tols            = PivotTolerances()
+    ) = 0;
 
-	//@}
+  //@}
 
 }; // end class MatrixSymAddDelUpdateable
 

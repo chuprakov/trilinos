@@ -40,48 +40,48 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 class ExampleBasisSystem
-	: public AbstractLinAlgPack::BasisSystemComposite
+  : public AbstractLinAlgPack::BasisSystemComposite
 {
 public:
 
-	/// Calls <tt>this->initialize()</tt>
-	ExampleBasisSystem(
-		const VectorSpace::space_ptr_t       &space_x
-		,const Range1D                       &var_dep
-		,const Range1D                       &var_indep
-		);
-	
-	///
-	/** Initialize given the vector space for the dependent and independent variables.
-	 *
-	 * @param  space_x   [in]
-	 * @param  var_dep   [in]
-	 * @param  var_indep [in]
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	void initialize(
-		const VectorSpace::space_ptr_t       &space_x
-		,const Range1D                       &var_dep
-		,const Range1D                       &var_indep
-		);
+  /// Calls <tt>this->initialize()</tt>
+  ExampleBasisSystem(
+    const VectorSpace::space_ptr_t       &space_x
+    ,const Range1D                       &var_dep
+    ,const Range1D                       &var_indep
+    );
+  
+  ///
+  /** Initialize given the vector space for the dependent and independent variables.
+   *
+   * @param  space_x   [in]
+   * @param  var_dep   [in]
+   * @param  var_indep [in]
+   *
+   * ToDo: Finish documentation!
+   */
+  void initialize(
+    const VectorSpace::space_ptr_t       &space_x
+    ,const Range1D                       &var_dep
+    ,const Range1D                       &var_indep
+    );
 
-	/** @name Overridden from BasisSystemComposite */
-	//@{
+  /** @name Overridden from BasisSystemComposite */
+  //@{
 
-	///
-	void update_D(
-		const MatrixOpNonsing       &C
-		,const MatrixOp             &N
-		,MatrixOp                   *D
-		,EMatRelations               mat_rel
-		) const;
+  ///
+  void update_D(
+    const MatrixOpNonsing       &C
+    ,const MatrixOp             &N
+    ,MatrixOp                   *D
+    ,EMatRelations               mat_rel
+    ) const;
 
-	//@}
+  //@}
 
 private:
-	// Not defined and not to be called!
-	ExampleBasisSystem();
+  // Not defined and not to be called!
+  ExampleBasisSystem();
 
 }; // end class ExampleBasisSystem
 

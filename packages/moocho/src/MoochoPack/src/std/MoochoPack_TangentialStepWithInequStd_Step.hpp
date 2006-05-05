@@ -49,72 +49,72 @@ namespace MoochoPack {
  * ToDo: Finish documentation.
  */
 class TangentialStepWithInequStd_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/// QP solver
-	STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver )
+  /// QP solver
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxed, qp_solver )
 
-	/// QP solver tester
-	STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
+  /// QP solver tester
+  STANDARD_COMPOSITION_MEMBERS( QPSolverRelaxedTester, qp_tester )
 
-	///
-	/** Set the ratio of the number of inequality constraints in the
-	 * active-set of the last two calls before a warm start is attempted.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warm_start_frac )
+  ///
+  /** Set the ratio of the number of inequality constraints in the
+   * active-set of the last two calls before a warm start is attempted.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warm_start_frac )
 
-	///
-	enum EQPTesting { QP_TEST_DEFAULT, QP_TEST, QP_NO_TEST };
+  ///
+  enum EQPTesting { QP_TEST_DEFAULT, QP_TEST, QP_NO_TEST };
 
-	///
-	/** Set how and if the QP solution is tested.
-	 *
-	 * ToDo: Finish documentation.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
+  ///
+  /** Set how and if the QP solution is tested.
+   *
+   * ToDo: Finish documentation.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( EQPTesting, qp_testing )
 
-	///
-	/** Determine if a QPFailure exception is thrown if the QP solver
-	 * returns PRIMAL_FEASIBLE_POINT.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error )
+  ///
+  /** Determine if a QPFailure exception is thrown if the QP solver
+   * returns PRIMAL_FEASIBLE_POINT.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error )
 
-	///
-	/** Determine if a \c QPFailure exception is thrown if the QP solver
-	 * returns \c DUAl_FEASIBLE_POINT.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
+  ///
+  /** Determine if a \c QPFailure exception is thrown if the QP solver
+   * returns \c DUAl_FEASIBLE_POINT.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
 
-	/// Construct and initialize
-	TangentialStepWithInequStd_Step(
-		const qp_solver_ptr_t       &qp_solver
-		,const qp_tester_ptr_t      &qp_tester
-		,value_type                 warm_start_frac             = 0.8
-		,EQPTesting                 qp_testing                  = QP_TEST_DEFAULT
-		,bool                       primal_feasible_point_error = true
-		,bool                       dual_feasible_point_error   = true
-		);
+  /// Construct and initialize
+  TangentialStepWithInequStd_Step(
+    const qp_solver_ptr_t       &qp_solver
+    ,const qp_tester_ptr_t      &qp_tester
+    ,value_type                 warm_start_frac             = 0.8
+    ,EQPTesting                 qp_testing                  = QP_TEST_DEFAULT
+    ,bool                       primal_feasible_point_error = true
+    ,bool                       dual_feasible_point_error   = true
+    );
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
-	IterationPack::CastIQMember<VectorMutable>  dl_iq_;
-	IterationPack::CastIQMember<VectorMutable>  du_iq_;
-	qp_solver_stats_iq_member                                qp_solver_stats_;
-	act_set_stats_iq_member                                  act_set_stats_;
+  IterationPack::CastIQMember<VectorMutable>  dl_iq_;
+  IterationPack::CastIQMember<VectorMutable>  du_iq_;
+  qp_solver_stats_iq_member                                qp_solver_stats_;
+  act_set_stats_iq_member                                  act_set_stats_;
 
-	// not defined and not to be called
-	TangentialStepWithInequStd_Step();
+  // not defined and not to be called
+  TangentialStepWithInequStd_Step();
 
 };	// end class TangentialStepWithInequStd_Step
 

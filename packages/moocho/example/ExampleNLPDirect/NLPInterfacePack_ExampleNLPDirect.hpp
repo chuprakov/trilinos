@@ -68,18 +68,18 @@ namespace NLPInterfacePack {
   
     Gc' = [ C , N ]
   
-  		[ x(m+1) - 1									]
-  		[				x(m+2) - 1						]
-  	C = [							.					]
-  		[								.				]
-  		[									x(m+m) - 1	]
+      [ x(m+1) - 1									]
+      [				x(m+2) - 1						]
+    C = [							.					]
+      [								.				]
+      [									x(m+m) - 1	]
   
   
-  		[ x(1) - 10										]
-  		[				x(2) - 10						]
-  	N = [							.					]
-  		[								.				]
-  		[									x(m) - 10	]
+      [ x(1) - 10										]
+      [				x(2) - 10						]
+    N = [							.					]
+      [								.				]
+      [									x(m) - 10	]
   
  \endverbatim 
  * Here \c Gc is never computed explicitly.
@@ -89,88 +89,88 @@ namespace NLPInterfacePack {
  * file <tt>NLPInterfacePack_ExampleNLPDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
  */
 class ExampleNLPDirect
-	: virtual public NLPDirect
-	, virtual public ExampleNLPObjGrad
+  : virtual public NLPDirect
+  , virtual public ExampleNLPObjGrad
 {
 public:
 
-	///
-	/** Constructor.
-	 *
-	 * @param  vec_space  [in] Smart pointer to a vector space object that will
-	 *                    be used to define the spaces of dependent and independent
-	 *                    variables.
-	 * @param  xo         [in] The initial starting guess for \a x.
-	 * @param  has_bounds [in] If \c true, then the NLP will have bounds.  If \c false
-	 *                    then it will not have bounds.
-	 * @param  dep_bouned [in] If \c true, then the bounds will be on the dependent
-	 *                    variables.  If \c false, then the bounds will be on the
-	 *                    independent variable.  This argument is ignored if
-	 *                    <tt>has_bounds == false</tt>.
-	 */
-	ExampleNLPDirect(
-		const VectorSpace::space_ptr_t&  vec_space
-		,value_type                      xo
-		,bool                            has_bounds
-		,bool                            dep_bounded
-		);
+  ///
+  /** Constructor.
+   *
+   * @param  vec_space  [in] Smart pointer to a vector space object that will
+   *                    be used to define the spaces of dependent and independent
+   *                    variables.
+   * @param  xo         [in] The initial starting guess for \a x.
+   * @param  has_bounds [in] If \c true, then the NLP will have bounds.  If \c false
+   *                    then it will not have bounds.
+   * @param  dep_bouned [in] If \c true, then the bounds will be on the dependent
+   *                    variables.  If \c false, then the bounds will be on the
+   *                    independent variable.  This argument is ignored if
+   *                    <tt>has_bounds == false</tt>.
+   */
+  ExampleNLPDirect(
+    const VectorSpace::space_ptr_t&  vec_space
+    ,value_type                      xo
+    ,bool                            has_bounds
+    ,bool                            dep_bounded
+    );
 
-	/** @name Overridden public members from NLP */
-	//@{
+  /** @name Overridden public members from NLP */
+  //@{
 
-	///
-	void initialize(bool test_setup);
-	///
-	bool is_initialized() const;
+  ///
+  void initialize(bool test_setup);
+  ///
+  bool is_initialized() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden public members from NLPDirect */
-	//@{
+  /** @name Overridden public members from NLPDirect */
+  //@{
 
-	///
-	Range1D var_dep() const;
-	///
-	Range1D var_indep() const;
-	///
-	const mat_fcty_ptr_t factory_D() const;
-	///
-	void calc_point(
-		const Vector     &x
-		,value_type      *f
-		,VectorMutable   *c
-		,bool            recalc_c
-		,VectorMutable   *Gf
-		,VectorMutable   *py
-		,VectorMutable   *rGf
-		,MatrixOp        *GcU
-		,MatrixOp        *D
-		,MatrixOp        *Uz
-		) const;
-	///
-	void calc_semi_newton_step(
-		const Vector    &x
-		,VectorMutable  *c
-		,bool           recalc_c
-		,VectorMutable  *py
-		) const;
+  ///
+  Range1D var_dep() const;
+  ///
+  Range1D var_indep() const;
+  ///
+  const mat_fcty_ptr_t factory_D() const;
+  ///
+  void calc_point(
+    const Vector     &x
+    ,value_type      *f
+    ,VectorMutable   *c
+    ,bool            recalc_c
+    ,VectorMutable   *Gf
+    ,VectorMutable   *py
+    ,VectorMutable   *rGf
+    ,MatrixOp        *GcU
+    ,MatrixOp        *D
+    ,MatrixOp        *Uz
+    ) const;
+  ///
+  void calc_semi_newton_step(
+    const Vector    &x
+    ,VectorMutable  *c
+    ,bool           recalc_c
+    ,VectorMutable  *py
+    ) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////
+  // Private data members
 
-	mat_fcty_ptr_t   factory_D_;         // Matrix space object for D
+  mat_fcty_ptr_t   factory_D_;         // Matrix space object for D
 
-	bool             initialized_;            // flag for if initialized has been called.
+  bool             initialized_;            // flag for if initialized has been called.
 
-	// /////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////
+  // Private member functions
 
-	///
-	void assert_is_initialized() const;
+  ///
+  void assert_is_initialized() const;
 
 };	// end class ExampleNLPDirect
 
@@ -181,9 +181,9 @@ inline
 void ExampleNLPDirect::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
-	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPDirect::assert_is_initialized() : Error, "
-			"ExampleNLPDirect::initialize() has not been called yet." );
+  if( !is_initialized() )
+    throw NLP::UnInitialized("ExampleNLPDirect::assert_is_initialized() : Error, "
+      "ExampleNLPDirect::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

@@ -38,18 +38,18 @@ VectorSpaceFactory::~VectorSpaceFactory()
 
 VectorSpaceFactory::VectorSpaceFactory( const inner_prod_ptr_t& inner_prod )
 {
-	this->inner_prod(inner_prod);
+  this->inner_prod(inner_prod);
 }
 
 void VectorSpaceFactory::inner_prod( const inner_prod_ptr_t& inner_prod )
 {
-	inner_prod_ = inner_prod;
+  inner_prod_ = inner_prod;
 }
 
 const VectorSpaceFactory::inner_prod_ptr_t
 VectorSpaceFactory::inner_prod() const
 {
-	return inner_prod_;
+  return inner_prod_;
 }
 
 } // end namespace AbstractLinAlgPack

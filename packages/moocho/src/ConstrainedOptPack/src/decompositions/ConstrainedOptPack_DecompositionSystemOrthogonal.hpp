@@ -62,84 +62,84 @@ namespace ConstrainedOptPack {
 class DecompositionSystemOrthogonal : public DecompositionSystemVarReductImp {
 public:
 
-	/** @name Constructors / initializers */
-	//@{
+  /** @name Constructors / initializers */
+  //@{
 
-	///
-	DecompositionSystemOrthogonal(
-		const VectorSpace::space_ptr_t           &space_x                    = Teuchos::null
-		,const VectorSpace::space_ptr_t          &space_c                    = Teuchos::null
-		,const basis_sys_ptr_t                   &basis_sys                  = Teuchos::null
-		,const basis_sys_tester_ptr_t            &basis_sys_tester           = Teuchos::null
-		,EExplicitImplicit                       D_imp                       = MAT_IMP_EXPLICIT
-		,EExplicitImplicit                       Uz_imp                      = MAT_IMP_EXPLICIT
-		);
+  ///
+  DecompositionSystemOrthogonal(
+    const VectorSpace::space_ptr_t           &space_x                    = Teuchos::null
+    ,const VectorSpace::space_ptr_t          &space_c                    = Teuchos::null
+    ,const basis_sys_ptr_t                   &basis_sys                  = Teuchos::null
+    ,const basis_sys_tester_ptr_t            &basis_sys_tester           = Teuchos::null
+    ,EExplicitImplicit                       D_imp                       = MAT_IMP_EXPLICIT
+    ,EExplicitImplicit                       Uz_imp                      = MAT_IMP_EXPLICIT
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden from DecompositionSystem */
-	//@{
+  /** @name Overridden from DecompositionSystem */
+  //@{
 
-	///
-	const mat_fcty_ptr_t factory_Y() const;
-	///
-	const mat_nonsing_fcty_ptr_t factory_R() const;
-	///
-	const mat_fcty_ptr_t factory_Uy() const;
+  ///
+  const mat_fcty_ptr_t factory_Y() const;
+  ///
+  const mat_nonsing_fcty_ptr_t factory_R() const;
+  ///
+  const mat_fcty_ptr_t factory_Uy() const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Overridden from DecompositionSystemVarReductImp */
-	//@{
+  /** @name Overridden from DecompositionSystemVarReductImp */
+  //@{
 
-	///
-	void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
-	///
-	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
-		std::ostream                                       *out
-		,EOutputLevel                                      olevel
-		,MatrixOp                                          *Y
-		,MatrixOpNonsing                                   *R
-		,MatrixOp                                          *Uy
-		) const;
-	///
-	void initialize_matrices(
-		std::ostream                                           *out
-		,EOutputLevel                                          olevel
-		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
-		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
-		,MatrixOp                                              *Y
-		,MatrixOpNonsing                                       *R
-		,MatrixOp                                              *Uy
-		,EMatRelations                                         mat_rel
-		) const;
-	///
-	void print_update_matrices(
-		std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
+  ///
+  mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
+    std::ostream                                       *out
+    ,EOutputLevel                                      olevel
+    ,MatrixOp                                          *Y
+    ,MatrixOpNonsing                                   *R
+    ,MatrixOp                                          *Uy
+    ) const;
+  ///
+  void initialize_matrices(
+    std::ostream                                           *out
+    ,EOutputLevel                                          olevel
+    ,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
+    ,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
+    ,MatrixOp                                              *Y
+    ,MatrixOpNonsing                                       *R
+    ,MatrixOp                                              *Uy
+    ,EMatRelations                                         mat_rel
+    ) const;
+  ///
+  void print_update_matrices(
+    std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
 private:
-	
-	// ////////////////////////
-	// Private types
+  
+  // ////////////////////////
+  // Private types
 
-	typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
+  typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
 
-	// ////////////////////////
-	// Private data members
+  // ////////////////////////
+  // Private data members
 
-	mutable S_ptr_t        S_ptr_;
-	// We just hold on to this between calls of uninitialize_matrices() and initialize_matrices()
+  mutable S_ptr_t        S_ptr_;
+  // We just hold on to this between calls of uninitialize_matrices() and initialize_matrices()
 
-	// ////////////////////////
-	// Private member functions
+  // ////////////////////////
+  // Private member functions
 
-	// Not defined and not to be called
-	DecompositionSystemOrthogonal(const DecompositionSystemOrthogonal&);
-	DecompositionSystemOrthogonal& operator=(const DecompositionSystemOrthogonal&);
+  // Not defined and not to be called
+  DecompositionSystemOrthogonal(const DecompositionSystemOrthogonal&);
+  DecompositionSystemOrthogonal& operator=(const DecompositionSystemOrthogonal&);
 
 };	// end class DecompositionSystemOrthogonal
 

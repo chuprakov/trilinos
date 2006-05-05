@@ -42,59 +42,59 @@ namespace MoochoPack {
   * of constraints that are reduced for a full step.
   */
 class MeritFunc_ModifiedL1LargerSteps_AddedStep
-	: public rSQPAlgo_Step
+  : public rSQPAlgo_Step
 {
 public:
 
-	/// <<std comp>> members for merit_func
-	STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
+  /// <<std comp>> members for merit_func
+  STANDARD_COMPOSITION_MEMBERS(MeritFuncNLP,merit_func)
 
-	///
-	MeritFunc_ModifiedL1LargerSteps_AddedStep(
-		  const merit_func_ptr_t& merit_func
-		, value_type	eta
-		, int			after_k_iter				= 3
-		, value_type	obj_increase_threshold		= 1e-4
-		, value_type	max_pos_penalty_increase	= 1.0
-		, value_type	pos_to_neg_penalty_increase	= 1.0
-		, value_type	incr_mult_factor			= 1e-4 );
+  ///
+  MeritFunc_ModifiedL1LargerSteps_AddedStep(
+      const merit_func_ptr_t& merit_func
+    , value_type	eta
+    , int			after_k_iter				= 3
+    , value_type	obj_increase_threshold		= 1e-4
+    , value_type	max_pos_penalty_increase	= 1.0
+    , value_type	pos_to_neg_penalty_increase	= 1.0
+    , value_type	incr_mult_factor			= 1e-4 );
 
-	/// eta.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta)
+  /// eta.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,eta)
 
-	/// after_k_iter.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter)
+  /// after_k_iter.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(int,after_k_iter)
 
-	/// obj_increase_threshold.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,obj_increase_threshold)
+  /// obj_increase_threshold.
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,obj_increase_threshold)
 
-	/// max_pos_penalty_increase
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_pos_penalty_increase)
+  /// max_pos_penalty_increase
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,max_pos_penalty_increase)
 
-	/// pos_to_neg_penalty_increase
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,pos_to_neg_penalty_increase)
+  /// pos_to_neg_penalty_increase
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,pos_to_neg_penalty_increase)
 
-	/// incr_mult_factor
-	STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,incr_mult_factor)
+  /// incr_mult_factor
+  STANDARD_MEMBER_COMPOSITION_MEMBERS(value_type,incr_mult_factor)
 
-	// ///////////////////////////////
-	// Overridden from AlgorithmStep
+  // ///////////////////////////////
+  // Overridden from AlgorithmStep
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
 
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss
-		, IterationPack::EDoStepType type, poss_type assoc_step_poss
-		, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss
+    , IterationPack::EDoStepType type, poss_type assoc_step_poss
+    , std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	// not defined and not to be called.
-	MeritFunc_ModifiedL1LargerSteps_AddedStep();
-	MeritFunc_ModifiedL1LargerSteps_AddedStep(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
-	MeritFunc_ModifiedL1LargerSteps_AddedStep& operator=(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
-	
+  // not defined and not to be called.
+  MeritFunc_ModifiedL1LargerSteps_AddedStep();
+  MeritFunc_ModifiedL1LargerSteps_AddedStep(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
+  MeritFunc_ModifiedL1LargerSteps_AddedStep& operator=(const MeritFunc_ModifiedL1LargerSteps_AddedStep&);
+  
 };	// end class MeritFunc_ModifiedL1LargerSteps_AddedStep
 
 }	// end namespace MoochoPack 

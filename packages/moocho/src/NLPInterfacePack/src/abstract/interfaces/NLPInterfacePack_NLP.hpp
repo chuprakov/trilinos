@@ -40,7 +40,7 @@
 #include "Teuchos_VerboseObject.hpp"
 
 namespace OptionsFromStreamPack {
-	class OptionsFromStream;
+  class OptionsFromStream;
 }
 
 namespace NLPInterfacePack {
@@ -71,7 +71,7 @@ namespace NLPInterfacePack {
      min    f(x)
      s.t.   c(x) = 0
             xl <= x <= xu
-	where:
+  where:
             x    <: space_x
             f(x) <: space_x -> R^1
             c(x) <: space_x -> space_c 
@@ -112,17 +112,17 @@ namespace NLPInterfacePack {
  * The Lagrangian for this problem is defined by:
  \verbatim
 
-	L = f(x) + lambda' * c(x) + nul' * ( xl - x ) + nuu' * ( x - xu )
+  L = f(x) + lambda' * c(x) + nul' * ( xl - x ) + nuu' * ( x - xu )
  \endverbatim
  * The optimality conditions are given by:
  \verbatim
 
-	del(L,x) = del(f,x) + del(c,x) * lambda + nu = 0
-	c(x) = 0
-	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
-	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
-	where:
-		nu = nuu - nul
+  del(L,x) = del(f,x) + del(c,x) * lambda + nu = 0
+  c(x) = 0
+  nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
+  nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
+  where:
+    nu = nuu - nul
  \endverbatim
  * What is unique about this interface is that the vector objects are hidden behind
  * abstact interfaces.  Clients can create vectors from the various vector spaces
@@ -161,12 +161,12 @@ namespace NLPInterfacePack {
      min    f_breve(x_breve)
      s.t.   c_breve(x_breve) = 0
             hl_breve <= h_breve(x_breve) <= hu_breve
-	        xl_breve <= x_breve <= xu_breve
-	where:
-	        x_breve    <: space_x
+          xl_breve <= x_breve <= xu_breve
+  where:
+          x_breve    <: space_x
             f_breve(x_breve) <: space_x_breve -> R^1
-	        c_breve(x_breve) <: space_x_breve -> space_c_breve 
-	        h_breve(x_breve) <: space_x_breve -> space_h_breve
+          c_breve(x_breve) <: space_x_breve -> space_c_breve 
+          h_breve(x_breve) <: space_x_breve -> space_h_breve
             space_x_breve <: R^n_breve
             space_c_breve <: R^n -> R^m_breve
             space_h_breve <: R^n -> R^mI_breve
@@ -291,876 +291,876 @@ namespace NLPInterfacePack {
 class NLP : virtual public Teuchos::VerboseObject<NLP> {
 public:
   
-	typedef AbstractLinAlgPack::Vector         Vector;         // doxygen likes typedef?
-	typedef AbstractLinAlgPack::VectorMutable  VectorMutable;  // doxygen likes typedef?
-	
-	///
-	typedef Teuchos::RefCountPtr<const VectorSpace>  vec_space_ptr_t;
+  typedef AbstractLinAlgPack::Vector         Vector;         // doxygen likes typedef?
+  typedef AbstractLinAlgPack::VectorMutable  VectorMutable;  // doxygen likes typedef?
+  
+  ///
+  typedef Teuchos::RefCountPtr<const VectorSpace>  vec_space_ptr_t;
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
-	/** @name exceptions */
-	//@{
+  /** @name exceptions */
+  //@{
 
-	/// Thrown if any member functions are called before initialize() has been called.
-	class UnInitialized : public std::logic_error
-	{public: UnInitialized(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown if any member functions are called before initialize() has been called.
+  class UnInitialized : public std::logic_error
+  {public: UnInitialized(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/// Thrown from <tt>initialize()</tt> if some logical error occured
-	class InvalidInitialization : public std::logic_error
-	{public: InvalidInitialization(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown from <tt>initialize()</tt> if some logical error occured
+  class InvalidInitialization : public std::logic_error
+  {public: InvalidInitialization(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/// Thrown if an incompatible object is used
-	class IncompatibleType : public std::logic_error
-	{public: IncompatibleType(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown if an incompatible object is used
+  class IncompatibleType : public std::logic_error
+  {public: IncompatibleType(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/// Thrown some bounds do not existe
-	class NoBounds : public std::logic_error
-	{public: NoBounds(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown some bounds do not existe
+  class NoBounds : public std::logic_error
+  {public: NoBounds(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	//@}
+  //@}
 
-	/// Value for an infinite bound.
-	static value_type infinite_bound();
+  /// Value for an infinite bound.
+  static value_type infinite_bound();
 
-	/** @name Constructors, Destructor */
-	//@{
+  /** @name Constructors, Destructor */
+  //@{
 
-	/// Initialize to no reference set to calculation quanities
-	NLP();
-	/// Destructor that cleans all the memory it owns
-	virtual ~NLP();
+  /// Initialize to no reference set to calculation quanities
+  NLP();
+  /// Destructor that cleans all the memory it owns
+  virtual ~NLP();
 
-	//@}
-	
-	/** @name NLP initialization */
-	//@{
+  //@}
+  
+  /** @name NLP initialization */
+  //@{
 
-	///
-	/** Set if the initial point must be within the bounds.
-	 *
-	 * This method must be called before <tt>this->initialize()</tt> is called.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->is_initialized() == false</tt>
-	 * </ul>
-	 */
-	virtual void force_xinit_in_bounds(bool force_xinit_in_bounds) = 0;
-	///
-	/** Returns if the initial point must be within the bounds.
-	  */
-	virtual bool force_xinit_in_bounds() const = 0;
-	///
-	/** Set the options that <tt>this</tt> %NLP may be interested in.
-	 *
-	 * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
-	 * this method is called so <tt>this</tt> had better read the options inside of
-	 * the <tt>this->initialize()</tt> method.
-	 *
-	 * The default implementation is to just ignore these options.
-	 *
-	 * Note that if the subclass overrides this method then it must also override
-	 * the <tt>get_options()</tt> method.
-	 */
-	virtual void set_options( const options_ptr_t& options );
-	///
-	/** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
-	 *
-	 * The default implementation returns <tt>return.get() == NULL</tt>.
-	 */
-	virtual const options_ptr_t& get_options() const;
-	///
-	/** Initialize the NLP before it is used.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt>
-	 * <li> [<tt>this->force_xinit_in_bounds()==true</tt>]
-	 *      <tt>this->xl() <= this->xinit() <= this->xu()</tt>
-	 * <li> <tt>this->num_f_evals() == 0</tt>
-	 * <li> [<tt>this->m() > 0</tt>] <tt>this->num_c_evals() == 0</tt>
-	 * </ul>
-	 *
-	 * Note that subclasses must call this function to reset what needs to be
-	 * reset in this base object.
-	 */
-	virtual void initialize( bool test_setup = false );
-	///
-	/** Return if <tt>this</tt> is initialized.
-	  */
-	virtual bool is_initialized() const = 0;
+  ///
+  /** Set if the initial point must be within the bounds.
+   *
+   * This method must be called before <tt>this->initialize()</tt> is called.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->is_initialized() == false</tt>
+   * </ul>
+   */
+  virtual void force_xinit_in_bounds(bool force_xinit_in_bounds) = 0;
+  ///
+  /** Returns if the initial point must be within the bounds.
+    */
+  virtual bool force_xinit_in_bounds() const = 0;
+  ///
+  /** Set the options that <tt>this</tt> %NLP may be interested in.
+   *
+   * Note that it is allowed for the client to alter <tt>*options.get()</tt> after
+   * this method is called so <tt>this</tt> had better read the options inside of
+   * the <tt>this->initialize()</tt> method.
+   *
+   * The default implementation is to just ignore these options.
+   *
+   * Note that if the subclass overrides this method then it must also override
+   * the <tt>get_options()</tt> method.
+   */
+  virtual void set_options( const options_ptr_t& options );
+  ///
+  /** Get the <tt>OptionsFromStream</tt> object being used to extract the options from.
+   *
+   * The default implementation returns <tt>return.get() == NULL</tt>.
+   */
+  virtual const options_ptr_t& get_options() const;
+  ///
+  /** Initialize the NLP before it is used.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt>
+   * <li> [<tt>this->force_xinit_in_bounds()==true</tt>]
+   *      <tt>this->xl() <= this->xinit() <= this->xu()</tt>
+   * <li> <tt>this->num_f_evals() == 0</tt>
+   * <li> [<tt>this->m() > 0</tt>] <tt>this->num_c_evals() == 0</tt>
+   * </ul>
+   *
+   * Note that subclasses must call this function to reset what needs to be
+   * reset in this base object.
+   */
+  virtual void initialize( bool test_setup = false );
+  ///
+  /** Return if <tt>this</tt> is initialized.
+    */
+  virtual bool is_initialized() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Dimensionality. */
-	//@{
+  /** @name Dimensionality. */
+  //@{
 
-	///
-	/** Return the number of variables.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Default implementation returns <tt>this-space_x()->dim()</tt>.
-	 */
-	virtual size_type n() const;
-	///
-	/** Return the number of general equality constraints.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Default implementation returns <tt>( this->space_c().get() != NULL ? this-space_c()->dim() : 0 )</tt>.
-	 */
-	virtual size_type m() const;
+  ///
+  /** Return the number of variables.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Default implementation returns <tt>this-space_x()->dim()</tt>.
+   */
+  virtual size_type n() const;
+  ///
+  /** Return the number of general equality constraints.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Default implementation returns <tt>( this->space_c().get() != NULL ? this-space_c()->dim() : 0 )</tt>.
+   */
+  virtual size_type m() const;
 
-	//@}
+  //@}
 
-	/** @name Vector space objects */
-	//@{
+  /** @name Vector space objects */
+  //@{
 
-	///
-	/** Vector space object for unknown variables x (dimension n).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * </ul>
-	 */
-	virtual vec_space_ptr_t space_x() const = 0;
-	///
-	/** Vector space object for general equality constraints c(x) (dimension m).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->m() > 0</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>this->m() == 0</tt>] <tt>return.get() == NULL</tt>
-	 * </ul>
-	 */
-	virtual vec_space_ptr_t space_c() const = 0;
+  ///
+  /** Vector space object for unknown variables x (dimension n).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.get() != NULL</tt>
+   * </ul>
+   */
+  virtual vec_space_ptr_t space_x() const = 0;
+  ///
+  /** Vector space object for general equality constraints c(x) (dimension m).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->m() > 0</tt>] <tt>return.get() != NULL</tt>
+   * <li> [<tt>this->m() == 0</tt>] <tt>return.get() == NULL</tt>
+   * </ul>
+   */
+  virtual vec_space_ptr_t space_c() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Bounds on the unknown variables x. */
-	//@{
+  /** @name Bounds on the unknown variables x. */
+  //@{
 
-	///
-	/** Returns the number of variables in <tt>x(i)</tt> for which <tt>xl(i)> -infinite_bound()</tt>
-	 * or <tt>xu(i) < +infinite_bound()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual size_type num_bounded_x() const = 0;
-	///
-	/** Returns the lower bounds on the variables <tt>x</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->xl().get_ele(i) == -NLP::infinite_bound()</tt>.
-	 */
-	virtual const Vector& xl() const = 0;
-	///
-	/** Returns a reference to the vector of upper bounds on the variables <tt>x</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->xu().get_ele(i) == +NLP::infinite_bound()</tt>.
-	 */
-	virtual const Vector& xu() const = 0;
+  ///
+  /** Returns the number of variables in <tt>x(i)</tt> for which <tt>xl(i)> -infinite_bound()</tt>
+   * or <tt>xu(i) < +infinite_bound()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual size_type num_bounded_x() const = 0;
+  ///
+  /** Returns the lower bounds on the variables <tt>x</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Any bounds that are non-existant will return <tt>this->xl().get_ele(i) == -NLP::infinite_bound()</tt>.
+   */
+  virtual const Vector& xl() const = 0;
+  ///
+  /** Returns a reference to the vector of upper bounds on the variables <tt>x</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Any bounds that are non-existant will return <tt>this->xu().get_ele(i) == +NLP::infinite_bound()</tt>.
+   */
+  virtual const Vector& xu() const = 0;
 
-	///
-	/** Set the maximum absolute value for which the variable bounds may be violated
-	 * by when computing function and gradient values.
-	 *
-	 * In other words the client should never never call on the NLP to compute
-	 * a function and gradient evaluation outside of:
-	 \verbatim
+  ///
+  /** Set the maximum absolute value for which the variable bounds may be violated
+   * by when computing function and gradient values.
+   *
+   * In other words the client should never never call on the NLP to compute
+   * a function and gradient evaluation outside of:
+   \verbatim
 
-	   xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
-	 \endverbatim
-	 */
-	virtual value_type max_var_bounds_viol() const = 0;
+     xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+   \endverbatim
+   */
+  virtual value_type max_var_bounds_viol() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Initial guess of NLP solution */
-	//@{
+  /** @name Initial guess of NLP solution */
+  //@{
 
-	///
-	/** Returns a reference to the vector of the initial guess for the solution <tt>x</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.space().is_compatible(*this->space_x()) == true)</tt>
-	 * </ul>
-	 */
-	virtual const Vector& xinit() const = 0;
-	///
-	/** Get the initial value of the Lagrange multipliers lambda.
-	 *
-	 * By default this function just sets them to zero.
-	 *
-	 *
-	 * @param lambda  [out] Pointer to lagrange multipliers for equalities.
-	 *                lambda == NULL is allowed in which case it will not
-	 *                be set.  Must have been created by <tt>this->space_c()->create_member()</tt>.
-	 *                Must be NULL if m() == 0.
-	 * @param nu      [out] Pointer to lagrange multipliers for bounds.
-	 *                nu == NULL is allowed in which case it will not
-	 *                be set.  Must have been created by <tt>this->space_x()->create_member()</tt>.
-	 *                Must be NULL if num_bounded_x() == 0.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual void get_init_lagrange_mult(
-		VectorMutable*   lambda
-		,VectorMutable*  nu
-		) const;
+  ///
+  /** Returns a reference to the vector of the initial guess for the solution <tt>x</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.space().is_compatible(*this->space_x()) == true)</tt>
+   * </ul>
+   */
+  virtual const Vector& xinit() const = 0;
+  ///
+  /** Get the initial value of the Lagrange multipliers lambda.
+   *
+   * By default this function just sets them to zero.
+   *
+   *
+   * @param lambda  [out] Pointer to lagrange multipliers for equalities.
+   *                lambda == NULL is allowed in which case it will not
+   *                be set.  Must have been created by <tt>this->space_c()->create_member()</tt>.
+   *                Must be NULL if m() == 0.
+   * @param nu      [out] Pointer to lagrange multipliers for bounds.
+   *                nu == NULL is allowed in which case it will not
+   *                be set.  Must have been created by <tt>this->space_x()->create_member()</tt>.
+   *                Must be NULL if num_bounded_x() == 0.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual void get_init_lagrange_mult(
+    VectorMutable*   lambda
+    ,VectorMutable*  nu
+    ) const;
 
-	//@}
+  //@}
 
-	/** @name Set and access storage for the objective function value f(x). */
-	//@{
+  /** @name Set and access storage for the objective function value f(x). */
+  //@{
 
-	///
-	/** Set a pointer to an value to be updated when <tt>this->calc_f()</tt> is called.
-	 *
-	 * @param  f  [in] Pointer to objective function value.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_f() == f</tt>
-	 * </ul>
-	 */
-	virtual void set_f(value_type* f);
-	///
-	/** Return pointer passed to <tt>this->set_f()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual value_type* get_f();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_f()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual value_type& f();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_f()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
- 	virtual const value_type& f() const;
+  ///
+  /** Set a pointer to an value to be updated when <tt>this->calc_f()</tt> is called.
+   *
+   * @param  f  [in] Pointer to objective function value.  May be \c NULL.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_f() == f</tt>
+   * </ul>
+   */
+  virtual void set_f(value_type* f);
+  ///
+  /** Return pointer passed to <tt>this->set_f()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual value_type* get_f();
+  ///
+  /** Returns non-<tt>const</tt> <tt>*this->get_f()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual value_type& f();
+  ///
+  /** Returns <tt>const</tt> <tt>*this->get_f()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+   virtual const value_type& f() const;
 
-	//@}
+  //@}
 
-	/** @name Set and access storage for the residual of the general equality constriants c(x). */
-	//@{
+  /** @name Set and access storage for the residual of the general equality constriants c(x). */
+  //@{
 
-	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_c()</tt> is called.
-	 *
-	 * @param  c  [in] Pointer to constraint residual vector.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_c() == c</tt>
-	 * </ul>
-	 */
-	virtual void set_c(VectorMutable* c);
-	///
-	/** Return pointer passed to <tt>this->set_c()</tt>.
-	 */
-	virtual VectorMutable* get_c();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_c()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable& c();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_c()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual const Vector& c() const;
+  ///
+  /** Set a pointer to a vector to be updated when <tt>this->calc_c()</tt> is called.
+   *
+   * @param  c  [in] Pointer to constraint residual vector.  May be \c NULL.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c()) == true</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_c() == c</tt>
+   * </ul>
+   */
+  virtual void set_c(VectorMutable* c);
+  ///
+  /** Return pointer passed to <tt>this->set_c()</tt>.
+   */
+  virtual VectorMutable* get_c();
+  ///
+  /** Returns non-<tt>const</tt> <tt>*this->get_c()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual VectorMutable& c();
+  ///
+  /** Returns <tt>const</tt> <tt>*this->get_c()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual const Vector& c() const;
 
-	//@}
+  //@}
 
-	/** @name Unset calculation quantities */
-	//@{
-	
-	///
-	/** Call to unset all storage quantities (both in this class and all subclasses).
-	 *
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_f() == NULL</tt>
-	 * <li> <tt>this->get_c() == NULL</tt>
-	 * <li> <tt>this->get_c_breve() == NULL</tt>
-	 * <li> <tt>this->get_h_breve() == NULL</tt>
-	 * </ul>
-	 *
-	 * This method must be called by all subclasses that override it.
-	 */
-	virtual void unset_quantities();
+  /** @name Unset calculation quantities */
+  //@{
+  
+  ///
+  /** Call to unset all storage quantities (both in this class and all subclasses).
+   *
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_f() == NULL</tt>
+   * <li> <tt>this->get_c() == NULL</tt>
+   * <li> <tt>this->get_c_breve() == NULL</tt>
+   * <li> <tt>this->get_h_breve() == NULL</tt>
+   * </ul>
+   *
+   * This method must be called by all subclasses that override it.
+   */
+  virtual void unset_quantities();
 
-	//@}
+  //@}
 
-	/** @name Calculation members */
-	//@{
+  /** @name Calculation members */
+  //@{
 
-	///
-	/** Set the scaling of the objective function.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->scale_f() == true</tt>
-	 * </ul>
-	 */
-	virtual void scale_f( value_type scale_f ) = 0;
-	///
-	/** Return the scaling being used for the objective function.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual value_type scale_f() const = 0;
-	///
-	/** Update the value for the objective <tt>f</tt> at the point <tt>x</tt> and put it in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate the object function <tt>f</tt>.
-	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->f()</tt> is updated to \a f(x)
-	 * </ul>
-	 *
-	 * The storage reference for <tt>c</tt> may also be updated at this point (if <tt>get_c() != NULL</tt>)
-	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
-	 * to be updated as a side effect.
-	 */ 
-	virtual void calc_f(const Vector& x, bool newx = true) const;
-	///
-	/** Update the constraint residual vector for <tt>c</tt> at the point <tt>x</tt> and put it in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c</tt>.
-	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->c()</tt> is updated to \a c(x)
-	 * </ul>
-	 *
-	 * The storage reference for <tt>f</tt> may also be updated at this point (if <tt>get_f() != NULL</tt>)
-	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
-	 * to be updated as a side effect.
-	 */ 
-	virtual void calc_c(const Vector& x, bool newx = true) const;
+  ///
+  /** Set the scaling of the objective function.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->scale_f() == true</tt>
+   * </ul>
+   */
+  virtual void scale_f( value_type scale_f ) = 0;
+  ///
+  /** Return the scaling being used for the objective function.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual value_type scale_f() const = 0;
+  ///
+  /** Update the value for the objective <tt>f</tt> at the point <tt>x</tt> and put it in the stored reference.
+   *
+   * @param  x     [in] Point at which to calculate the object function <tt>f</tt>.
+   * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c true, the values in \c x are assumed to not be the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->f()</tt> is updated to \a f(x)
+   * </ul>
+   *
+   * The storage reference for <tt>c</tt> may also be updated at this point (if <tt>get_c() != NULL</tt>)
+   * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
+   * to be updated as a side effect.
+   */ 
+  virtual void calc_f(const Vector& x, bool newx = true) const;
+  ///
+  /** Update the constraint residual vector for <tt>c</tt> at the point <tt>x</tt> and put it in the stored reference.
+   *
+   * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c</tt>.
+   * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c true, the values in \c x are assumed to not be the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->c()</tt> is updated to \a c(x)
+   * </ul>
+   *
+   * The storage reference for <tt>f</tt> may also be updated at this point (if <tt>get_f() != NULL</tt>)
+   * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
+   * to be updated as a side effect.
+   */ 
+  virtual void calc_c(const Vector& x, bool newx = true) const;
 
-	//@}
+  //@}
 
-	/** @name Report final solution */
-	//@{
+  /** @name Report final solution */
+  //@{
 
-	///
-	/** Used by the solver to report the final solution and multipliers.
-	 *
-	 * Call this function to report the final solution of the
-	 * unknows x and the Lagrange multipliers for the
-	 * equality constriants <tt>lambda</tt> and the varaible bounds
-	 * <tt>nu</tt>.  If any of the Lagrange multipliers
-	 * are not known then you can pass <tt>NULL</tt> in for them.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * The default behavior is to just ignore this.
-	 */
-	virtual void report_final_solution(
-		const Vector&    x
-		,const Vector*   lambda
-		,const Vector*   nu
-		,bool            is_optimal
-		);
+  ///
+  /** Used by the solver to report the final solution and multipliers.
+   *
+   * Call this function to report the final solution of the
+   * unknows x and the Lagrange multipliers for the
+   * equality constriants <tt>lambda</tt> and the varaible bounds
+   * <tt>nu</tt>.  If any of the Lagrange multipliers
+   * are not known then you can pass <tt>NULL</tt> in for them.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * The default behavior is to just ignore this.
+   */
+  virtual void report_final_solution(
+    const Vector&    x
+    ,const Vector*   lambda
+    ,const Vector*   nu
+    ,bool            is_optimal
+    );
 
-	//@}
+  //@}
 
-	/** @name Objective and constraint function evaluation counts. */
-	//@{
+  /** @name Objective and constraint function evaluation counts. */
+  //@{
 
-	///
-	/** Gives the number of object function f(x) evaluations called by the solver
-	 * since initialize() was called.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual size_type num_f_evals() const;
-	///
-	/** Gives the number of constraint function c(x) evaluations called by the solver
-	 * since initialize() was called.  Throws exception if <tt>this->m() == 0</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual size_type num_c_evals() const;
+  ///
+  /** Gives the number of object function f(x) evaluations called by the solver
+   * since initialize() was called.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual size_type num_f_evals() const;
+  ///
+  /** Gives the number of constraint function c(x) evaluations called by the solver
+   * since initialize() was called.  Throws exception if <tt>this->m() == 0</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   */
+  virtual size_type num_c_evals() const;
 
-	//@}
+  //@}
 
-	/** @name General inequalities and slack variables */
-	//@{
+  /** @name General inequalities and slack variables */
+  //@{
 
-	///
-	/** Return the number of slack variables (i.e. number of general inequalities).
-	 *
-	 * Default implementation returns
-	 * <tt>(this->space_h_breve().get() ? this->space_h_breve()->dim() : 0)</tt>.
-	 */
-	virtual size_type ns() const;
+  ///
+  /** Return the number of slack variables (i.e. number of general inequalities).
+   *
+   * Default implementation returns
+   * <tt>(this->space_h_breve().get() ? this->space_h_breve()->dim() : 0)</tt>.
+   */
+  virtual size_type ns() const;
 
-	///
-	/** Vector space object for the original equalities <tt>c_breve(x_breve)</tt>
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->m() - this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>this->m() - this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
-	 * </ul>
-	 *
-	 * The default implementation returns <tt>this->space_c()</tt>.
-	 */
-	virtual vec_space_ptr_t space_c_breve() const;
+  ///
+  /** Vector space object for the original equalities <tt>c_breve(x_breve)</tt>
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->m() - this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
+   * <li> [<tt>this->m() - this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
+   * </ul>
+   *
+   * The default implementation returns <tt>this->space_c()</tt>.
+   */
+  virtual vec_space_ptr_t space_c_breve() const;
 
-	///
-	/** Vector space object for the original inequalities <tt>h_breve(x_breve)</tt>
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
-	 * </ul>
-	 *
-	 * The default implementation returns <tt>return.get() == NULL</tt>.
-	 */
-	virtual vec_space_ptr_t space_h_breve() const;
+  ///
+  /** Vector space object for the original inequalities <tt>h_breve(x_breve)</tt>
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->ns() > 0</tt>] <tt>return.get() != NULL</tt>
+   * <li> [<tt>this->ns() == 0</tt>] <tt>return.get() == NULL</tt>
+   * </ul>
+   *
+   * The default implementation returns <tt>return.get() == NULL</tt>.
+   */
+  virtual vec_space_ptr_t space_h_breve() const;
 
-	///
-	/** Returns a reference to the vector of lower bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->ns() > 0</tt> (throw <tt>std::logic_error</tt>)
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->hl_breve().get_ele(i) == -NLP::infinite_bound()</tt>.
-	 *
-	 * The default implementation throws an exception.
-	 */
-	virtual const Vector& hl_breve() const;
+  ///
+  /** Returns a reference to the vector of lower bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->ns() > 0</tt> (throw <tt>std::logic_error</tt>)
+   * </ul>
+   *
+   * Any bounds that are non-existant will return <tt>this->hl_breve().get_ele(i) == -NLP::infinite_bound()</tt>.
+   *
+   * The default implementation throws an exception.
+   */
+  virtual const Vector& hl_breve() const;
 
-	///
-	/** Returns a reference to the vector of upper bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->hu_breve().get_ele(i) == +NLP::infinite_bound()</tt>.
-	 *
-	 * The default implementation throws an exception.
-	 */
-	virtual const Vector& hu_breve() const;
+  ///
+  /** Returns a reference to the vector of upper bounds on the general inequality constraints <tt>h_breve(x_breve)</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Any bounds that are non-existant will return <tt>this->hu_breve().get_ele(i) == +NLP::infinite_bound()</tt>.
+   *
+   * The default implementation throws an exception.
+   */
+  virtual const Vector& hu_breve() const;
 
-	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_c_breve()</tt> is called.
-	 *
-	 * @param  c_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c_breve()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_c_breve() == c_breve</tt>
-	 * </ul>
-	 */
-	virtual void set_c_breve(VectorMutable* c_breve);
-	///
-	/** Return pointer passed to <tt>this->set_c_breve()</tt>.
-	 */
-	virtual VectorMutable* get_c_breve();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_c_breve()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable& c_breve();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_c_breve()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual const Vector& c_breve() const;
+  ///
+  /** Set a pointer to a vector to be updated when <tt>this->calc_c_breve()</tt> is called.
+   *
+   * @param  c_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c_breve()) == true</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_c_breve() == c_breve</tt>
+   * </ul>
+   */
+  virtual void set_c_breve(VectorMutable* c_breve);
+  ///
+  /** Return pointer passed to <tt>this->set_c_breve()</tt>.
+   */
+  virtual VectorMutable* get_c_breve();
+  ///
+  /** Returns non-<tt>const</tt> <tt>*this->get_c_breve()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual VectorMutable& c_breve();
+  ///
+  /** Returns <tt>const</tt> <tt>*this->get_c_breve()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual const Vector& c_breve() const;
 
-	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_h_breve()</tt> is called.
-	 *
-	 * @param  h_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_h_breve()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_h_breve() == h_breve</tt>
-	 * </ul>
-	 */
-	virtual void set_h_breve(VectorMutable* h_breve);
-	///
-	/** Return pointer passed to <tt>this->set_h_breve()</tt>.
-	 */
-	virtual VectorMutable* get_h_breve();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_h_breve()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable& h_breve();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_h_breve()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual const Vector& h_breve() const;
+  ///
+  /** Set a pointer to a vector to be updated when <tt>this->calc_h_breve()</tt> is called.
+   *
+   * @param  h_breve  [in] Pointer to constraint residual vector.  May be \c NULL.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_h_breve()) == true</tt>
+   *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->get_h_breve() == h_breve</tt>
+   * </ul>
+   */
+  virtual void set_h_breve(VectorMutable* h_breve);
+  ///
+  /** Return pointer passed to <tt>this->set_h_breve()</tt>.
+   */
+  virtual VectorMutable* get_h_breve();
+  ///
+  /** Returns non-<tt>const</tt> <tt>*this->get_h_breve()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual VectorMutable& h_breve();
+  ///
+  /** Returns <tt>const</tt> <tt>*this->get_h_breve()</tt>.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   */
+  virtual const Vector& h_breve() const;
 
-	///
-	/** Return the permutation object for the variables.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.space()is_compatible(*this->space_x()) == true</tt>
-	 * </ul>
-	 *
-	 * The default returns <tt>return.is_identity() == true</tt>
-	 */
-	virtual const Permutation& P_var() const;
+  ///
+  /** Return the permutation object for the variables.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.space()is_compatible(*this->space_x()) == true</tt>
+   * </ul>
+   *
+   * The default returns <tt>return.is_identity() == true</tt>
+   */
+  virtual const Permutation& P_var() const;
 
-	///
-	/** Return the permutation object for the constraints.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->m() > 0</tt> (throw <tt>std::logic_error</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.space()is_compatible(*this->space_c()) == true</tt>
-	 * </ul>
-	 *
-	 * The default returns <tt>return.is_identity() == true</tt>
-	 */
-	virtual const Permutation& P_equ() const;
+  ///
+  /** Return the permutation object for the constraints.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->m() > 0</tt> (throw <tt>std::logic_error</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return.space()is_compatible(*this->space_c()) == true</tt>
+   * </ul>
+   *
+   * The default returns <tt>return.is_identity() == true</tt>
+   */
+  virtual const Permutation& P_equ() const;
 
-	///
-	/** Update the constraint residual vector for <tt>c_breve</tt> at the point <tt>x</tt> and put it
-	 * in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c_breve</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->c_breve()</tt> is updated to \a c_breve(x_breve)
-	 * </ul>
-	 *
-	 * The storage reference for <tt>f</tt> and/or <tt>h_breve</tt> may also be updated at this point
-	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_h_breve() != NULL</tt>) but is not guarentied to be.
-	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
-	 */ 
-	virtual void calc_c_breve(const Vector& x, bool newx = true) const;
+  ///
+  /** Update the constraint residual vector for <tt>c_breve</tt> at the point <tt>x</tt> and put it
+   * in the stored reference.
+   *
+   * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c_breve</tt>.
+   * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c false, the values in \c x are not the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>this->get_c_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->c_breve()</tt> is updated to \a c_breve(x_breve)
+   * </ul>
+   *
+   * The storage reference for <tt>f</tt> and/or <tt>h_breve</tt> may also be updated at this point
+   * (if <tt>get_f() != NULL</tt> and/or <tt>get_h_breve() != NULL</tt>) but is not guarentied to be.
+   * But no other quanities from possible subclasses are allowed to be updated as a side effect.
+   */ 
+  virtual void calc_c_breve(const Vector& x, bool newx = true) const;
 
-	///
-	/** Update the constraint residual vector for <tt>h_breve</tt> at the point <tt>x</tt> and put it
-	 * in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>h_breve</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->h_breve()</tt> is updated to \a h_breve(x_breve)
-	 * </ul>
-	 *
-	 * The storage reference for <tt>f</tt> and/or <tt>c_breve</tt> may also be updated at this point
-	 * (if <tt>get_f() != NULL</tt> and/or <tt>get_c_breve() != NULL</tt>) but is not guarentied to be.
-	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
-	 */ 
-	virtual void calc_h_breve(const Vector& x, bool newx = true) const;
+  ///
+  /** Update the constraint residual vector for <tt>h_breve</tt> at the point <tt>x</tt> and put it
+   * in the stored reference.
+   *
+   * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>h_breve</tt>.
+   * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c false, the values in \c x are not the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * <li> <tt>this->get_h_breve() != NULL</tt> (throw <tt>NoRefSet</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>this->h_breve()</tt> is updated to \a h_breve(x_breve)
+   * </ul>
+   *
+   * The storage reference for <tt>f</tt> and/or <tt>c_breve</tt> may also be updated at this point
+   * (if <tt>get_f() != NULL</tt> and/or <tt>get_c_breve() != NULL</tt>) but is not guarentied to be.
+   * But no other quanities from possible subclasses are allowed to be updated as a side effect.
+   */ 
+  virtual void calc_h_breve(const Vector& x, bool newx = true) const;
 
-	//@}
+  //@}
 
-	///
-	/** Struct for objective and constriants (pointer).
-	 *
-	 * Objects of this type are passed on to subclasses and contain pointers to
-	 * quantities to be updated.
-	 */
-	struct ZeroOrderInfo {
-	public:
-		///
+  ///
+  /** Struct for objective and constriants (pointer).
+   *
+   * Objects of this type are passed on to subclasses and contain pointers to
+   * quantities to be updated.
+   */
+  struct ZeroOrderInfo {
+  public:
+    ///
         ZeroOrderInfo() : f(NULL), c(NULL), h(NULL)
-		{}
-		///
-		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in, VectorMutable* h_in )
-			: f(f_in), c(c_in), h(h_in)
-		{}
-		/// Pointer to objective function <tt>f</tt> (Will be NULL if not set)
-		value_type*           f;
-		/// Pointer to constraints residual <tt>c</tt> (Will be NULL if not set)
-		VectorMutable*  c;
-		/// Pointer to inequality constraints <tt>h</tt> (Will be NULL if not set)
-		VectorMutable*  h;
-	}; // end struct ZeroOrderInfo
+    {}
+    ///
+    ZeroOrderInfo( value_type* f_in, VectorMutable* c_in, VectorMutable* h_in )
+      : f(f_in), c(c_in), h(h_in)
+    {}
+    /// Pointer to objective function <tt>f</tt> (Will be NULL if not set)
+    value_type*           f;
+    /// Pointer to constraints residual <tt>c</tt> (Will be NULL if not set)
+    VectorMutable*  c;
+    /// Pointer to inequality constraints <tt>h</tt> (Will be NULL if not set)
+    VectorMutable*  h;
+  }; // end struct ZeroOrderInfo
 
-	/// Return pointer to set quantities
-	const ZeroOrderInfo zero_order_info() const;
+  /// Return pointer to set quantities
+  const ZeroOrderInfo zero_order_info() const;
 
-	/// Return pointer to set <tt>hat</tt> quantities
-	const ZeroOrderInfo zero_order_info_breve() const;
+  /// Return pointer to set <tt>hat</tt> quantities
+  const ZeroOrderInfo zero_order_info_breve() const;
 
 protected:
 
-	/** @name Protected methods to be overridden by subclasses */
-	//@{
+  /** @name Protected methods to be overridden by subclasses */
+  //@{
 
-	///
-	/** Overridden to compute f(x) (and perhaps other quantities if set).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
-	 * <li> <tt>zero_order_info.f != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.f</tt> is updated to \a f(x).
-	 * </ul>
-	 *
-	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info
-	 *                [out] Pointers to \c f, \c c and \c h.
-	 *                On output, <tt>*zero_order_info.f</tt> is updated to \a f(x)
-	 *                If <tt>this->multi_calc() == true</tt> then
-	 *                any of the other quantities pointed to in \c zero_order_info may be set on
-	 *                output, but are not guaranteed to be.
-	 */
-	virtual void imp_calc_f(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
-	///
-	/** Overridden to compute c(x) and perhaps f(x) and/or h(x) (if multiple calculaiton = true).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
-	 * <li> <tt>zero_order_info.c != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.c</tt> is updated to c(x).
-	 * </ul>
-	 *
-	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info
-	 *                [out] Pointers to \c f, \c c and \c h.
-	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c(x)
-	 *                If <tt>this->multi_calc() == true</tt> then
-	 *                any of the other quantities pointed to in \c zero_order_info may be set on
-	 *                output, but are not guaranteed to be.
-	 */
-	virtual void imp_calc_c(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
-	///
-	/** Overridden to compute c_breve(x_breve) and perhaps f(x) and/or h_breve(x_breve)
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
-	 * <li> <tt>zero_order_info.c != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.c</tt> is updated to c_breve(x_breve).
-	 * </ul>
-	 *
-	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info_breve
-	 *                [out] Pointers to \c f, \c c_breve and \c h_breve.
-	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c_breve(x_breve)
-	 *
-	 * The default implementation calls <tt>this->imp_calc_c()</tt>.
-	 */
-	virtual void imp_calc_c_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
-	///
-	/** Overridden to compute h_breve(x_breve) and perhaps f(x) and/or c_breve(x_breve).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
-	 * <li> <tt>zero_order_info.h != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>*zero_order_info.h</tt> is updated to <tt>h_breve(x_breve)</tt>.
-	 * </ul>
-	 *
-	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
-	 * @param zero_order_info_breve
-	 *                [out] Pointers to \c f, \c c_breve and \c h_breve.
-	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h_breve(x_breve)
-	 *
-	 * The default implementation throws an exception.
-	 */
-	virtual void imp_calc_h_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
+  ///
+  /** Overridden to compute f(x) (and perhaps other quantities if set).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+   * <li> <tt>zero_order_info.f != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>*zero_order_info.f</tt> is updated to \a f(x).
+   * </ul>
+   *
+   * @param x       [in]  Unknown vector (size n).
+   * @param newx    [in]  True if is a new point.
+   * @param zero_order_info
+   *                [out] Pointers to \c f, \c c and \c h.
+   *                On output, <tt>*zero_order_info.f</tt> is updated to \a f(x)
+   *                If <tt>this->multi_calc() == true</tt> then
+   *                any of the other quantities pointed to in \c zero_order_info may be set on
+   *                output, but are not guaranteed to be.
+   */
+  virtual void imp_calc_f(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+  ///
+  /** Overridden to compute c(x) and perhaps f(x) and/or h(x) (if multiple calculaiton = true).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+   * <li> <tt>zero_order_info.c != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>*zero_order_info.c</tt> is updated to c(x).
+   * </ul>
+   *
+   * @param x       [in]  Unknown vector (size n).
+   * @param newx    [in]  True if is a new point.
+   * @param zero_order_info
+   *                [out] Pointers to \c f, \c c and \c h.
+   *                On output, <tt>*zero_order_info.c</tt> is updated to \a c(x)
+   *                If <tt>this->multi_calc() == true</tt> then
+   *                any of the other quantities pointed to in \c zero_order_info may be set on
+   *                output, but are not guaranteed to be.
+   */
+  virtual void imp_calc_c(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
+  ///
+  /** Overridden to compute c_breve(x_breve) and perhaps f(x) and/or h_breve(x_breve)
+   *
+   * Preconditions:<ul>
+   * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+   * <li> <tt>zero_order_info.c != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>*zero_order_info.c</tt> is updated to c_breve(x_breve).
+   * </ul>
+   *
+   * @param x       [in]  Unknown vector (size n).
+   * @param newx    [in]  True if is a new point.
+   * @param zero_order_info_breve
+   *                [out] Pointers to \c f, \c c_breve and \c h_breve.
+   *                On output, <tt>*zero_order_info.c</tt> is updated to \a c_breve(x_breve)
+   *
+   * The default implementation calls <tt>this->imp_calc_c()</tt>.
+   */
+  virtual void imp_calc_c_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
+  ///
+  /** Overridden to compute h_breve(x_breve) and perhaps f(x) and/or c_breve(x_breve).
+   *
+   * Preconditions:<ul>
+   * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+   * <li> <tt>zero_order_info.h != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>*zero_order_info.h</tt> is updated to <tt>h_breve(x_breve)</tt>.
+   * </ul>
+   *
+   * @param x       [in]  Unknown vector (size n).
+   * @param newx    [in]  True if is a new point.
+   * @param zero_order_info_breve
+   *                [out] Pointers to \c f, \c c_breve and \c h_breve.
+   *                On output, <tt>*zero_order_info.h</tt> is updated to \a h_breve(x_breve)
+   *
+   * The default implementation throws an exception.
+   */
+  virtual void imp_calc_h_breve(const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info_breve) const;
 
-	//@}
+  //@}
 
-	/// Assert referece has been set for a quanity
-	template<class T>
-	void assert_ref_set(T* p, std::string info) const {
-		StandardCompositionRelationshipsPack::assert_role_name_set(p, false, info);
-	}
+  /// Assert referece has been set for a quanity
+  template<class T>
+  void assert_ref_set(T* p, std::string info) const {
+    StandardCompositionRelationshipsPack::assert_role_name_set(p, false, info);
+  }
 
 private:
 
-	// ////////////////////////////////////////
-	// Private data members
+  // ////////////////////////////////////////
+  // Private data members
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::VectorSpace *space_x;
-	AbstractLinAlgPack::VectorSpace *space_c;
-	AbstractLinAlgPack::VectorSpace *space_c_breve;
-	AbstractLinAlgPack::VectorSpace *space_h_breve;
-	Permutation                     *P_var;
-	Permtuation                     *P_equ;
+  AbstractLinAlgPack::VectorSpace *space_x;
+  AbstractLinAlgPack::VectorSpace *space_c;
+  AbstractLinAlgPack::VectorSpace *space_c_breve;
+  AbstractLinAlgPack::VectorSpace *space_h_breve;
+  Permutation                     *P_var;
+  Permtuation                     *P_equ;
 #else
-	Teuchos::RefCountPtr<Permutation>  P_var_;
-	Teuchos::RefCountPtr<Permutation>  P_equ_;
+  Teuchos::RefCountPtr<Permutation>  P_var_;
+  Teuchos::RefCountPtr<Permutation>  P_equ_;
 #endif
-	mutable ZeroOrderInfo           first_order_info_;
-	mutable ZeroOrderInfo           first_order_info_breve_;
-	mutable size_type				num_f_evals_;
-	mutable size_type				num_c_evals_;
-	
+  mutable ZeroOrderInfo           first_order_info_;
+  mutable ZeroOrderInfo           first_order_info_breve_;
+  mutable size_type				num_f_evals_;
+  mutable size_type				num_c_evals_;
+  
 };	// end class NLP
 
 // /////////////////
@@ -1169,13 +1169,13 @@ private:
 inline
 const NLP::ZeroOrderInfo NLP::zero_order_info() const
 {
-	return first_order_info_;
+  return first_order_info_;
 }
 
 inline
 const NLP::ZeroOrderInfo NLP::zero_order_info_breve() const
 {
-	return first_order_info_breve_;
+  return first_order_info_breve_;
 }
 
 }	// end namespace NLPInterfacePack 

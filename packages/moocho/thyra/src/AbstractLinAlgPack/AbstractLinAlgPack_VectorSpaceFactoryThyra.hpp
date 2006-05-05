@@ -40,67 +40,67 @@ namespace AbstractLinAlgPack {
 class VectorSpaceFactoryThyra : public VectorSpaceFactory {
 public:
 
-	/** @name Constructors / Initializers */
-	//@{
+  /** @name Constructors / Initializers */
+  //@{
 
-	///
-	/** Construct to uninitialized.
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec().get() == NULL</tt>
-	 * </ul>
-	 */
-	VectorSpaceFactoryThyra();
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	VectorSpaceFactoryThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
-	///
-	/** Initalize given a smart pointer to a <tt>Thyra::VetorSpaceFactory</tt> object.
-	 *
-	 * @param  thyra_vec_spc_fcty  [in] Smart pointer to Thyra vector
-	 *
-	 * Preconditioins:<ul>
-	 * <li><tt>thyra_vec_spc_fcty.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec_spc_fcty().get() == thyra_vec_spc_fcty.get()</tt>
-	 * </ul>
-	 */
-	void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
-	///
-	/** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase</tt> object.
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec_spc_fcty().get() == NULL</tt>
-	 * </ul>
-	 */
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > set_uninitialized();
-	///
-	/** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase</tt> object.
-	 *
-	 * If <tt>this->thyra_vec_spc_fcty().count() == 1</tt>, then <tt>this</tt>
-	 * has sole ownership of the <tt>*this->thyra_vec_spc_fcty()</tt> object.
-	 */
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty() const;
+  ///
+  /** Construct to uninitialized.
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec().get() == NULL</tt>
+   * </ul>
+   */
+  VectorSpaceFactoryThyra();
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  VectorSpaceFactoryThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
+  ///
+  /** Initalize given a smart pointer to a <tt>Thyra::VetorSpaceFactory</tt> object.
+   *
+   * @param  thyra_vec_spc_fcty  [in] Smart pointer to Thyra vector
+   *
+   * Preconditioins:<ul>
+   * <li><tt>thyra_vec_spc_fcty.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec_spc_fcty().get() == thyra_vec_spc_fcty.get()</tt>
+   * </ul>
+   */
+  void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > &thyra_vec_spc_fcty );
+  ///
+  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase</tt> object.
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec_spc_fcty().get() == NULL</tt>
+   * </ul>
+   */
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> > set_uninitialized();
+  ///
+  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase</tt> object.
+   *
+   * If <tt>this->thyra_vec_spc_fcty().count() == 1</tt>, then <tt>this</tt>
+   * has sole ownership of the <tt>*this->thyra_vec_spc_fcty()</tt> object.
+   */
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >& thyra_vec_spc_fcty() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from VectorSpaceFactory */
-	//@{
+  /** @name Overridden from VectorSpaceFactory */
+  //@{
 
-	///
-	space_ptr_t create_vec_spc(index_type dim) const;
+  ///
+  space_ptr_t create_vec_spc(index_type dim) const;
 
-	//@}
-	
+  //@}
+  
 private:
 
 #ifdef DOXYGEN_COMPILE
-	const Thyra::VectorSpaceFactoryBase<value_type>                             *thyra_vector_space_factory;
+  const Thyra::VectorSpaceFactoryBase<value_type>                             *thyra_vector_space_factory;
 #else
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >  thyra_vec_spc_fcty_;
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >  thyra_vec_spc_fcty_;
 #endif
 
 }; // end class VectorSpaceFactoryThyra
@@ -112,7 +112,7 @@ inline
 const Teuchos::RefCountPtr<const Thyra::VectorSpaceFactoryBase<value_type> >&
 VectorSpaceFactoryThyra::thyra_vec_spc_fcty() const
 {
-	return thyra_vec_spc_fcty_;
+  return thyra_vec_spc_fcty_;
 }
 
 } // end namespace AbstractLinAlgPack

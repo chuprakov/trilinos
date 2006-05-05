@@ -39,39 +39,39 @@ namespace IterationPack {
 class AlgorithmStepTesting : public AlgorithmStep {
 public:
 
-	///
-	bool do_step(
-		Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
-	void initialize_step(
-		Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
-	void inform_updated(
-		Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
-	void finalize_step(
-		Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss
-		);
-	///
-	void print_step(
-		const Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss ,std::ostream& out, const std::string& leading_str
-		) const;
+  ///
+  bool do_step(
+    Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
+  void initialize_step(
+    Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
+  void inform_updated(
+    Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
+  void finalize_step(
+    Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss
+    );
+  ///
+  void print_step(
+    const Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss ,std::ostream& out, const std::string& leading_str
+    ) const;
 
 private:
-	
-	///
-	void print_step_poss(
-		const Algorithm& algo, poss_type step_poss, EDoStepType type
-		,poss_type assoc_step_poss
-		) const;
+  
+  ///
+  void print_step_poss(
+    const Algorithm& algo, poss_type step_poss, EDoStepType type
+    ,poss_type assoc_step_poss
+    ) const;
 
 };	// end class AlgorithmStepTesting
 

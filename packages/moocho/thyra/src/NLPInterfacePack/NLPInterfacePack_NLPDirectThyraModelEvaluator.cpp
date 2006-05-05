@@ -59,9 +59,9 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
   ,const Thyra::VectorBase<value_type>                            *model_pL
   ,const Thyra::VectorBase<value_type>                            *model_pU
   ,const Thyra::VectorBase<value_type>                            *model_p0
-	)
+  )
 {
-	initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
 }
 
 void NLPDirectThyraModelEvaluator::initialize(
@@ -74,10 +74,10 @@ void NLPDirectThyraModelEvaluator::initialize(
   ,const Thyra::VectorBase<value_type>                            *model_pL
   ,const Thyra::VectorBase<value_type>                            *model_pU
   ,const Thyra::VectorBase<value_type>                            *model_p0
-	)
+  )
 {
   typedef Thyra::ModelEvaluatorBase MEB;
-	initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
   if( p_idx >= 0 ) {
@@ -92,10 +92,10 @@ void NLPDirectThyraModelEvaluator::initialize(
 
 void NLPDirectThyraModelEvaluator::initialize(bool test_setup)
 {
-	if(initialized_) {
-		NLPDirect::initialize(test_setup);
-		return;
-	}
+  if(initialized_) {
+    NLPDirect::initialize(test_setup);
+    return;
+  }
   NLPThyraModelEvaluatorBase::initialize(test_setup);
   NLPDirect::initialize(test_setup);
 }

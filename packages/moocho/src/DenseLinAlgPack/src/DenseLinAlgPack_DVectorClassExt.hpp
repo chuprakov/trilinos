@@ -35,8 +35,8 @@
 
 namespace DenseLinAlgPack {
 
-	typedef VectorTmpl<extended_value_type>       VectorExt;
-	typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
+  typedef VectorTmpl<extended_value_type>       VectorExt;
+  typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
 
 } // end namespace DenseLinAlgPack
 

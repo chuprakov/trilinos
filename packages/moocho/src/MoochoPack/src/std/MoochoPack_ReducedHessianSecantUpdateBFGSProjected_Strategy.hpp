@@ -47,56 +47,56 @@ namespace MoochoPack {
 class ReducedHessianSecantUpdateBFGSProjected_Strategy : public ReducedHessianSecantUpdate_Strategy
 {
 public:
-	
-	///
-	/** <<std comp>> members for the strategy object that will
-	 * perform the guts of the BFGS update.
-	 */
-	STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
+  
+  ///
+  /** <<std comp>> members for the strategy object that will
+   * perform the guts of the BFGS update.
+   */
+  STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
 
-	///
-	/** Set the ratio of the number of inequality constraints in the
-	  * active-set of the last two calls before a projected updating
-	  * for superbasic variables only is started.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, act_set_frac_proj_start )
+  ///
+  /** Set the ratio of the number of inequality constraints in the
+    * active-set of the last two calls before a projected updating
+    * for superbasic variables only is started.
+    */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, act_set_frac_proj_start )
 
-	///
-	/** Set the tolerance for determining if a projected BFGS update is
-	 * valid ???
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, project_error_tol )
+  ///
+  /** Set the tolerance for determining if a projected BFGS update is
+   * valid ???
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, project_error_tol )
 
-	///
-	/** Set the tolerance for Langrange multipliers for fixed variables
-	 * below which rows/cols from rHL_RR will not be dropped.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, super_basic_mult_drop_tol )
-		
-	///
+  ///
+  /** Set the tolerance for Langrange multipliers for fixed variables
+   * below which rows/cols from rHL_RR will not be dropped.
+   */
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, super_basic_mult_drop_tol )
+    
+  ///
     ReducedHessianSecantUpdateBFGSProjected_Strategy(
-		const bfgs_update_ptr_t&      bfgs_update                = NULL
-		,value_type                   act_set_frac_proj_start    = 0.8
-		,value_type                   project_error_tol          = 1e-5
-		,value_type                   super_basic_mult_drop_tol  = 1e-5
-		);      
+    const bfgs_update_ptr_t&      bfgs_update                = NULL
+    ,value_type                   act_set_frac_proj_start    = 0.8
+    ,value_type                   project_error_tol          = 1e-5
+    ,value_type                   super_basic_mult_drop_tol  = 1e-5
+    );      
 
-	///
-	bool perform_update(
-		DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
-		,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
-		,MatrixOp *rHL_k
-		);
-	///
-	void print_step( std::ostream& out, const std::string& leading_str ) const;
+  ///
+  bool perform_update(
+    DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
+    ,std::ostream& out, EJournalOutputLevel olevel, NLPAlgo *algo, NLPAlgoState *s
+    ,MatrixOp *rHL_k
+    );
+  ///
+  void print_step( std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	
-	// /////////////////////////////
-	// Private data members
+  
+  // /////////////////////////////
+  // Private data members
 
-	quasi_newton_stats_iq_member    quasi_newton_stats_;
-	act_set_stats_iq_member         act_set_stats_;
+  quasi_newton_stats_iq_member    quasi_newton_stats_;
+  act_set_stats_iq_member         act_set_stats_;
 
 }; // end class ReducedHessianSecantUpdateBFGSProjected_Strategy
 

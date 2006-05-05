@@ -32,47 +32,47 @@
 namespace ConstrainedOptPack {
 
 MeritFuncCalcNLP::MeritFuncCalcNLP( const MeritFuncNLP* phi, const NLP* nlp )
-	: phi_(phi), nlp_(nlp)
+  : phi_(phi), nlp_(nlp)
 {}
 
 value_type MeritFuncCalcNLP::operator()(const Vector& x) const
 {
-	const size_type
-		m  = nlp().m(),
-		ns = nlp().ns();
-	nlp().calc_f(x);
-	if(m)  nlp().calc_c(x,false);
-	return phi().value(
-		nlp().f()
-		,m  ? &nlp().c()  : NULL
-		,NULL  // h
-		,NULL  // hl
-		,NULL  // hu
-		);
+  const size_type
+    m  = nlp().m(),
+    ns = nlp().ns();
+  nlp().calc_f(x);
+  if(m)  nlp().calc_c(x,false);
+  return phi().value(
+    nlp().f()
+    ,m  ? &nlp().c()  : NULL
+    ,NULL  // h
+    ,NULL  // hl
+    ,NULL  // hu
+    );
 /* RAB: 20020112: ToDo: Get this working
-	if(m)  nlp().calc_c_breve(x,false);
-	if(ns) nlp().calc_h_breve(x,false);
-	return phi().value(
-		nlp().f()
-		,m  ? &nlp().c_breve()  : NULL
-		,ns ? &nlp().h_breve()  : NULL
-		,ns ? &nlp().hl_breve() : NULL
-		,ns ? &nlp().hu_breve() : NULL
-		);
+  if(m)  nlp().calc_c_breve(x,false);
+  if(ns) nlp().calc_h_breve(x,false);
+  return phi().value(
+    nlp().f()
+    ,m  ? &nlp().c_breve()  : NULL
+    ,ns ? &nlp().h_breve()  : NULL
+    ,ns ? &nlp().hl_breve() : NULL
+    ,ns ? &nlp().hu_breve() : NULL
+    );
 */
 }
 
 value_type MeritFuncCalcNLP::deriv() const {
-	return phi().deriv();
+  return phi().deriv();
 }
 
 void MeritFuncCalcNLP::print_merit_func(
-	std::ostream& out, const std::string& L
-	) const
+  std::ostream& out, const std::string& L
+  ) const
 {
-	out	<< L << "*** MeritFuncCalcNLP\n"
-		<< L << "f = f(x), c = c_breve(x_breve), h = h_breve(x_breve)\n";
-	phi().print_merit_func(out,L);
+  out	<< L << "*** MeritFuncCalcNLP\n"
+    << L << "f = f(x), c = c_breve(x_breve), h = h_breve(x_breve)\n";
+  phi().print_merit_func(out,L);
 }
 
 }	// end namespace ConstrainedOptPack

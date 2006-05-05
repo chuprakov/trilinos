@@ -37,8 +37,8 @@ namespace AbstractLinAlgPack {
 
 ///
 enum EApplyBy {
-	APPLY_BY_ROW        ///<
-	,APPLY_BY_COL       ///<
+  APPLY_BY_ROW        ///<
+  ,APPLY_BY_COL       ///<
 };
 
 ///
@@ -48,19 +48,19 @@ enum EApplyBy {
  * ToDo: Finish documentation!
  */
 void apply_op(
-	EApplyBy                        apply_by
-	,const RTOpPack::RTOp           &primary_op
-	,const size_t                   num_multi_vecs
-	,const MultiVector*             multi_vecs[]
-	,const size_t                   num_targ_multi_vecs
-	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOpPack::ReductTarget*        reduct_objs[]         = NULL
-	,const index_type               primary_first_ele     = 1
-	,const index_type               primary_sub_dim       = 0
-	,const index_type               primary_global_offset = 0
-	,const index_type               secondary_first_ele   = 1
-	,const index_type               secondary_sub_dim     = 0
-	);
+  EApplyBy                        apply_by
+  ,const RTOpPack::RTOp           &primary_op
+  ,const size_t                   num_multi_vecs
+  ,const MultiVector*             multi_vecs[]
+  ,const size_t                   num_targ_multi_vecs
+  ,MultiVectorMutable*            targ_multi_vecs[]
+  ,RTOpPack::ReductTarget*        reduct_objs[]         = NULL
+  ,const index_type               primary_first_ele     = 1
+  ,const index_type               primary_sub_dim       = 0
+  ,const index_type               primary_global_offset = 0
+  ,const index_type               secondary_first_ele   = 1
+  ,const index_type               secondary_sub_dim     = 0
+  );
 
 ///
 /** Apply a reduction/transformation operator column by column and reduce the intermediate
@@ -69,20 +69,20 @@ void apply_op(
  * ToDo: Finish documentation!
  */
 void apply_op(
-	EApplyBy                        apply_by
-	,const RTOpPack::RTOp           &primary_op
-	,const RTOpPack::RTOp           &secondary_op
-	,const size_t                   num_multi_vecs
-	,const MultiVector*             multi_vecs[]
-	,const size_t                   num_targ_multi_vecs
-	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOpPack::ReductTarget         *reduct_obj
-	,const index_type               primary_first_ele     = 1
-	,const index_type               primary_sub_dim       = 0
-	,const index_type               primary_global_offset = 0
-	,const index_type               secondary_first_ele   = 1
-	,const index_type               secondary_sub_dim     = 0
-	);
+  EApplyBy                        apply_by
+  ,const RTOpPack::RTOp           &primary_op
+  ,const RTOpPack::RTOp           &secondary_op
+  ,const size_t                   num_multi_vecs
+  ,const MultiVector*             multi_vecs[]
+  ,const size_t                   num_targ_multi_vecs
+  ,MultiVectorMutable*            targ_multi_vecs[]
+  ,RTOpPack::ReductTarget         *reduct_obj
+  ,const index_type               primary_first_ele     = 1
+  ,const index_type               primary_sub_dim       = 0
+  ,const index_type               primary_global_offset = 0
+  ,const index_type               secondary_first_ele   = 1
+  ,const index_type               secondary_sub_dim     = 0
+  );
 
 ///
 /** Interface for a collection of non-mutable vectors (multi-vector, matrix).
@@ -160,252 +160,252 @@ void apply_op(
 class MultiVector : virtual public MatrixOp {
 public:
 
-	///
-	typedef int  access_by_t;
-	///
-	enum {
-		ROW_ACCESS    = 0x1 ///< 
-		,COL_ACCESS   = 0x2 ///<
-		,DIAG_ACCESS  = 0x4 ///<
-	};
-	///
-	typedef Teuchos::RefCountPtr<const Vector>         vec_ptr_t;
-	///
-	typedef Teuchos::RefCountPtr<const MultiVector>    multi_vec_ptr_t;
+  ///
+  typedef int  access_by_t;
+  ///
+  enum {
+    ROW_ACCESS    = 0x1 ///< 
+    ,COL_ACCESS   = 0x2 ///<
+    ,DIAG_ACCESS  = 0x4 ///<
+  };
+  ///
+  typedef Teuchos::RefCountPtr<const Vector>         vec_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<const MultiVector>    multi_vec_ptr_t;
 
-	/** @name Friends */
-	//@{
+  /** @name Friends */
+  //@{
 
-	///
-	friend
-	void AbstractLinAlgPack::apply_op(
-		EApplyBy                        apply_by
-		,const RTOpPack::RTOp           &primary_op
-		,const size_t                   num_multi_vecs
-		,const MultiVector*             multi_vecs[]
-		,const size_t                   num_targ_multi_vecs
-		,MultiVectorMutable*            targ_multi_vecs[]
-		,RTOpPack::ReductTarget*        reduct_objs[]
-		,const index_type               primary_first_ele
-		,const index_type               primary_sub_dim
-		,const index_type               primary_global_offset
-		,const index_type               secondary_first_ele
-		,const index_type               secondary_sub_dim
-		);
-	///
-	friend
-	void AbstractLinAlgPack::apply_op(
-		EApplyBy                        apply_by
-		,const RTOpPack::RTOp           &primary_op
-		,const RTOpPack::RTOp           &secondary_op
-		,const size_t                   num_multi_vecs
-		,const MultiVector*             multi_vecs[]
-		,const size_t                   num_targ_multi_vecs
-		,MultiVectorMutable*            targ_multi_vecs[]
-		,RTOpPack::ReductTarget         *reduct_obj
-		,const index_type               primary_first_ele
-		,const index_type               primary_sub_dim
-		,const index_type               primary_global_offset
-		,const index_type               secondary_first_ele
-		,const index_type               secondary_sub_dim
-		);
+  ///
+  friend
+  void AbstractLinAlgPack::apply_op(
+    EApplyBy                        apply_by
+    ,const RTOpPack::RTOp           &primary_op
+    ,const size_t                   num_multi_vecs
+    ,const MultiVector*             multi_vecs[]
+    ,const size_t                   num_targ_multi_vecs
+    ,MultiVectorMutable*            targ_multi_vecs[]
+    ,RTOpPack::ReductTarget*        reduct_objs[]
+    ,const index_type               primary_first_ele
+    ,const index_type               primary_sub_dim
+    ,const index_type               primary_global_offset
+    ,const index_type               secondary_first_ele
+    ,const index_type               secondary_sub_dim
+    );
+  ///
+  friend
+  void AbstractLinAlgPack::apply_op(
+    EApplyBy                        apply_by
+    ,const RTOpPack::RTOp           &primary_op
+    ,const RTOpPack::RTOp           &secondary_op
+    ,const size_t                   num_multi_vecs
+    ,const MultiVector*             multi_vecs[]
+    ,const size_t                   num_targ_multi_vecs
+    ,MultiVectorMutable*            targ_multi_vecs[]
+    ,RTOpPack::ReductTarget         *reduct_obj
+    ,const index_type               primary_first_ele
+    ,const index_type               primary_sub_dim
+    ,const index_type               primary_global_offset
+    ,const index_type               secondary_first_ele
+    ,const index_type               secondary_sub_dim
+    );
 
-	//@}
+  //@}
 
-	/** @name Clone */
-	//@{
+  /** @name Clone */
+  //@{
 
-	///
-	/** Clone the non-const multi-vector object.
-	 *
-	 * The default implementation returns <tt>return.get()==NULL</tt>.
-	 */
-	virtual multi_vec_ptr_t mv_clone() const;
+  ///
+  /** Clone the non-const multi-vector object.
+   *
+   * The default implementation returns <tt>return.get()==NULL</tt>.
+   */
+  virtual multi_vec_ptr_t mv_clone() const;
 
-	//@}
+  //@}
 
-	/** @name Provide row, column and diagonal access as non-mutable vectors */
-	//@{
+  /** @name Provide row, column and diagonal access as non-mutable vectors */
+  //@{
 
-	///
-	/** Return a bit field for the types of access that are the most convenient.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return & COL_ACCESS || return & ROW_ACCESS || return & DIAG_ACCESS</tt>
-	 * </ul>
-	 */
-	virtual access_by_t access_by() const = 0;
+  ///
+  /** Return a bit field for the types of access that are the most convenient.
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return & COL_ACCESS || return & ROW_ACCESS || return & DIAG_ACCESS</tt>
+   * </ul>
+   */
+  virtual access_by_t access_by() const = 0;
 
-	///
-	/** Get a non-mutable column vector.
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->access_by() & COL_ACCESS</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>space_cols().is_compatible(return->space()) == true</tt>
-	 * </ul>
-	 */
-	virtual vec_ptr_t col(index_type j) const = 0;
-	///
-	/** Get a non-mutable row vector.
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->access_by() & ROW_ACCESS</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>return.get() != NULL</tt>] <tt>space_rows().is_compatible(return->space()) == true</tt>
-	 * </ul>
-	 */
-	virtual vec_ptr_t row(index_type i) const = 0;
-	///
-	/** Get a non-mutable diagonal vector.
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->access_by() & DIAG_ACCESS</tt>] <tt>return.get() != NULL</tt>
-	 * </ul>
-	 */
-	virtual vec_ptr_t diag(int k) const = 0;
+  ///
+  /** Get a non-mutable column vector.
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->access_by() & COL_ACCESS</tt>] <tt>return.get() != NULL</tt>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>space_cols().is_compatible(return->space()) == true</tt>
+   * </ul>
+   */
+  virtual vec_ptr_t col(index_type j) const = 0;
+  ///
+  /** Get a non-mutable row vector.
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->access_by() & ROW_ACCESS</tt>] <tt>return.get() != NULL</tt>
+   * <li> [<tt>return.get() != NULL</tt>] <tt>space_rows().is_compatible(return->space()) == true</tt>
+   * </ul>
+   */
+  virtual vec_ptr_t row(index_type i) const = 0;
+  ///
+  /** Get a non-mutable diagonal vector.
+   *
+   * Postconditions:<ul>
+   * <li> [<tt>this->access_by() & DIAG_ACCESS</tt>] <tt>return.get() != NULL</tt>
+   * </ul>
+   */
+  virtual vec_ptr_t diag(int k) const = 0;
 
-	//@}
+  //@}
 
-	/** @name Sub-view methods */
-	//@{
+  /** @name Sub-view methods */
+  //@{
 
-	///
-	/** Returns a sub-view of the multi vector.
-	 *
-	 * ToDo: Finish documentation!
-	 *
-	 * The default implementation returns a \c MultiVectorSubView object for
-	 * any valid arbitary sub-view.
-	 */
-	virtual multi_vec_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
-	
-	///
-	/** Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
-	 */
-	multi_vec_ptr_t mv_sub_view(
-		const index_type& rl, const index_type& ru
-		,const index_type& cl, const index_type& cu
-		) const;
+  ///
+  /** Returns a sub-view of the multi vector.
+   *
+   * ToDo: Finish documentation!
+   *
+   * The default implementation returns a \c MultiVectorSubView object for
+   * any valid arbitary sub-view.
+   */
+  virtual multi_vec_ptr_t mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
+  
+  ///
+  /** Inlined implementation calls <tt>this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu))</tt>.
+   */
+  multi_vec_ptr_t mv_sub_view(
+    const index_type& rl, const index_type& ru
+    ,const index_type& cl, const index_type& cu
+    ) const;
 
-	//@}
+  //@}
 
 protected:
 
-	/** @name Collective apply_op() methods */
-	//@{
+  /** @name Collective apply_op() methods */
+  //@{
 
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and return an array
-	 * of the reduction objects.
-	 *
-	 * Preconditions:<ul>
-	 * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation calls \c this->apply_op().
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void apply_op(
-		EApplyBy apply_by, const RTOpPack::RTOp& primary_op
-		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
-		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-		,RTOpPack::ReductTarget* reduct_objs[]
-		,const index_type primary_first_ele,   const index_type primary_sub_dim, const index_type primary_global_offset
-		,const index_type secondary_first_ele, const index_type secondary_sub_dim
-		) const;
+  ///
+  /** Apply a reduction/transformation operator row by row, or column by column and return an array
+   * of the reduction objects.
+   *
+   * Preconditions:<ul>
+   * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
+   * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
+   * <li> ToDo: Finish!
+   * </ul>
+   *
+   * The default implementation calls \c this->apply_op().
+   *
+   * ToDo: Finish documentation!
+   */
+  virtual void apply_op(
+    EApplyBy apply_by, const RTOpPack::RTOp& primary_op
+    ,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+    ,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
+    ,RTOpPack::ReductTarget* reduct_objs[]
+    ,const index_type primary_first_ele,   const index_type primary_sub_dim, const index_type primary_global_offset
+    ,const index_type secondary_first_ele, const index_type secondary_sub_dim
+    ) const;
 
-	///
-	/** Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
-	 * reduction objects into one reduction object.
-	 *
-	 * Preconditions:<ul>
-	 * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
-	 * <li> ToDo: Finish!
-	 * </ul>
-	 *
-	 * The default implementation calls \c this->apply_op().
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	virtual void apply_op(
-		EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
-		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
-		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-		,RTOpPack::ReductTarget* reduct_obj
-		,const index_type primary_first_ele, const index_type primary_sub_dim, const index_type primary_global_offset
-		,const index_type secondary_first_ele, const index_type secondary_sub_dim
-		) const;
+  ///
+  /** Apply a reduction/transformation operator row by row, or column by column and reduce the intermediate
+   * reduction objects into one reduction object.
+   *
+   * Preconditions:<ul>
+   * <li> [<tt>apply_by == APPLY_BY_COL</tt>] <tt>(this->access_by() & COL_ACCESS) == true)</tt> (throw <tt>???</tt>)
+   * <li> [<tt>apply_by == APPLY_BY_ROW</tt>] <tt>(this->access_by() & ROW_ACCESS) == true)</tt> (throw <tt>???</tt>)
+   * <li> ToDo: Finish!
+   * </ul>
+   *
+   * The default implementation calls \c this->apply_op().
+   *
+   * ToDo: Finish documentation!
+   */
+  virtual void apply_op(
+    EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
+    ,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
+    ,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
+    ,RTOpPack::ReductTarget* reduct_obj
+    ,const index_type primary_first_ele, const index_type primary_sub_dim, const index_type primary_global_offset
+    ,const index_type secondary_first_ele, const index_type secondary_sub_dim
+    ) const;
 
-	//@}
+  //@}
 
 public:
 
-	/** @name Overridden from MatrixOp */
-	//@{
+  /** @name Overridden from MatrixOp */
+  //@{
 
-	///
-	/** Returns <tt>this->mv_clone()<tt>.
-	 */
-	mat_ptr_t clone() const;
+  ///
+  /** Returns <tt>this->mv_clone()<tt>.
+   */
+  mat_ptr_t clone() const;
 
-	///
-	/** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
-	 */
-	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
+  ///
+  /** Returns <tt>this->mv_sub_view(row_rng,col_rng)</tt> casted to a MatrixOp.
+   */
+  mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 
-	///
-	/** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiag</tt>.
-	 *
-	 * @return Returns <tt>true</tt> and implements the operation if
-	 * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
-	 * && op(*this).access_by() =& MultiVector::COL_ACCESS
-	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
-	 * && mvm_lhs->access_by() & MultiVector::COL_ACCESS</tt>.
-	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
-	 * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
-	 *
-	 * The default implementation relies on column access of <tt>op(*this)</tt>
-	 * and <tt>mwo_lhs</tt> to implement this method.
-	 */
-	bool Mp_StMtM(
-		MatrixOp* mwo_lhs, value_type alpha
-		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-		,BLAS_Cpp::Transp trans_rhs2
-		,value_type beta
-		) const;
+  ///
+  /** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiag</tt>.
+   *
+   * @return Returns <tt>true</tt> and implements the operation if
+   * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
+   * && op(*this).access_by() =& MultiVector::COL_ACCESS
+   * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
+   * && mvm_lhs->access_by() & MultiVector::COL_ACCESS</tt>.
+   * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
+   * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
+   *
+   * The default implementation relies on column access of <tt>op(*this)</tt>
+   * and <tt>mwo_lhs</tt> to implement this method.
+   */
+  bool Mp_StMtM(
+    MatrixOp* mwo_lhs, value_type alpha
+    ,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+    ,BLAS_Cpp::Transp trans_rhs2
+    ,value_type beta
+    ) const;
 
-	///
-	/** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
-	 *
-	 * @return Returns <tt>true</tt> and implements the operation if
-	 * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
-	 * && op(*this).access_by() =& MultiVector::ROW_ACCESS
-	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
-	 * && mvm_lhs->access_by() & MultiVector::ROW_ACCESS</tt>.
-	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
-	 * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
-	 *
-	 * The default implementation relies on row access of <tt>op(*this)</tt>
-	 * and <tt>mwo_lhs</tt> to implement this method.
-	 */
-	bool Mp_StMtM(
-		MatrixOp* mwo_lhs, value_type alpha
-		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-		,value_type beta
-		) const;
+  ///
+  /** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiag</tt>.
+   *
+   * @return Returns <tt>true</tt> and implements the operation if
+   * <tt>dynamic_cast<MatrixSymDiag>(&mwo_rhs1) != NULL
+   * && op(*this).access_by() =& MultiVector::ROW_ACCESS
+   * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
+   * && mvm_lhs->access_by() & MultiVector::ROW_ACCESS</tt>.
+   * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
+   * or <tt>dynamic_cast<const MatrixSymDiag>(&mwo_rhs1) != NULL</tt>.
+   *
+   * The default implementation relies on row access of <tt>op(*this)</tt>
+   * and <tt>mwo_lhs</tt> to implement this method.
+   */
+  bool Mp_StMtM(
+    MatrixOp* mwo_lhs, value_type alpha
+    ,BLAS_Cpp::Transp trans_rhs1
+    ,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+    ,value_type beta
+    ) const;
 
-	//@}
+  //@}
 
 private:
-	
+  
 #ifdef DOXYGEN_COMPILE
-	Vector         *rows;
-	Vector         *columns;
-	Vector         *diagonals;
+  Vector         *rows;
+  Vector         *columns;
+  Vector         *diagonals;
 #endif	
 
 }; // end class MultiVector
@@ -416,11 +416,11 @@ private:
 inline
 MultiVector::multi_vec_ptr_t
 MultiVector::mv_sub_view(
-	const index_type& rl, const index_type& ru
-	,const index_type& cl, const index_type& cu
-	) const
+  const index_type& rl, const index_type& ru
+  ,const index_type& cl, const index_type& cu
+  ) const
 {
-	return this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu));
+  return this->mv_sub_view(Range1D(rl,ru),Range1D(cl,cu));
 }
 
 } // end namespace AbstractLinAlgPack

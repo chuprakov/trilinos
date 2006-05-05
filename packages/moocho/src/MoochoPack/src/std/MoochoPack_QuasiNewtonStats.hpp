@@ -39,33 +39,33 @@ namespace MoochoPack {
 class QuasiNewtonStats {
 public:
 
-	// Public types
+  // Public types
 
-	/// Set to this value if a statistic is not known.
-	enum EUpdate { UNKNOWN, REINITIALIZED, UPDATED, DAMPENED_UPDATED
-		, SKIPED, INDEF_SKIPED };
+  /// Set to this value if a statistic is not known.
+  enum EUpdate { UNKNOWN, REINITIALIZED, UPDATED, DAMPENED_UPDATED
+    , SKIPED, INDEF_SKIPED };
 
-	// Public interface
+  // Public interface
 
-	/// Construct all unknowns
-	QuasiNewtonStats()
-		: update_(UNKNOWN)
-	{}
+  /// Construct all unknowns
+  QuasiNewtonStats()
+    : update_(UNKNOWN)
+  {}
 
-	/// Initialize the statistics
-	void set_updated_stats( EUpdate update )
-	{
-		update_ = update;
-	}
+  /// Initialize the statistics
+  void set_updated_stats( EUpdate update )
+  {
+    update_ = update;
+  }
 
-	///
-	EUpdate updated() const
-	{
-		return update_;
-	}
+  ///
+  EUpdate updated() const
+  {
+    return update_;
+  }
 
 private:
-	EUpdate update_;
+  EUpdate update_;
 
 };	// end class QuasiNewtonStats
 

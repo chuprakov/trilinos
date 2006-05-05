@@ -169,7 +169,7 @@ void V_VmV(VectorMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2);
   */
 template <class V>
 void V_StVpV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs1
-	, const Vector& vs_rhs2);
+  , const Vector& vs_rhs2);
 
 //		end Level 1 BLAS for Vectors
 //@}
@@ -211,7 +211,7 @@ void assign(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
   * Calls: <tt>Mp_StM(&(*gm_lhs)(),alpha,M_rhs,trans_rhs);</tt>
   */
 void M_StM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs
-	, BLAS_Cpp::Transp trans_rhs);
+  , BLAS_Cpp::Transp trans_rhs);
 
 ///
 /** gm_lhs = - op(M_rhs).
@@ -226,7 +226,7 @@ void M_mM(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs) ;
   * Calls: <tt>Mp_M(M_lhs,M_rhs1,trans_rhs1); Mp_M(M_lhs,M_rhs2,trans_rhs2);</tt>
   */
 void M_MpM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 ///
 /** M_lhs = op(M_rhs1) - op(M_rhs2).
@@ -234,7 +234,7 @@ void M_MpM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
   * Calls: <tt>Mp_M(M_lhs,M_rhs1,trans_rhs1); Mp_StM(M_lhs,-1.0,M_rhs2,trans_rhs2);</tt>
   */
 void M_MmM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 ///
 /** M_lhs = alpha * op(M_rhs1) + op(gms_rhs2).
@@ -242,7 +242,7 @@ void M_MmM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
   * Calls: <tt>Mp_StM(M_lhs,alpha,M_rhs1,trans_rhs1);</tt>
   */
 void M_StMpM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , const MatrixOp& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 1 BLAS for Matrices
 //@}
@@ -264,7 +264,7 @@ void M_StMpM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1, BLAS_Cpp
   */
 template <class V>
 void Vp_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const V& V_rhs2);
+  , const V& V_rhs2);
 
 ///
 /** v_lhs = alpha * op(M_rhs1) * V_rhs2.
@@ -273,7 +273,7 @@ void Vp_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans
   */
 template <class V>
 void V_StMtV(VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const V& V_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const V& V_rhs2);
 
 ///
 /** v_lhs = op(M_rhs1) * V_rhs2.
@@ -282,7 +282,7 @@ void V_StMtV(VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
   */
 template <class V>
 void V_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const V& V_rhs2);
+  , const V& V_rhs2);
 
 //		end Level 2 BLAS
 //@}
@@ -303,7 +303,7 @@ void V_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_
   * Calls: <tt>Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);</tt>
   */
 void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 ///
 /** M_lhs = op(M_rhs1) * op(M_rhs2) + beta * gms_rhs.
@@ -311,7 +311,7 @@ void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
   * Calls: <tt>Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,beta);</tt>
   */
 void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2, value_type beta);
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2, value_type beta);
 
 ///
 /** M_lhs = alpha * op(M_rhs1) * op(M_rhs2).
@@ -319,7 +319,7 @@ void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
   * Calls: <tt>Mp_StMtM(M_lhs,alpha,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);</tt>
   */
 void M_StMtM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 ///
 /** M_lhs = op(M_rhs1) * op(M_rhs2).
@@ -327,7 +327,7 @@ void M_StMtM(MatrixOp* M_lhs, value_type alpha, const MatrixOp& M_rhs1
   * Calls: <tt>Mp_MtM(M_lhs,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);</tt>
   */
 void M_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 3 BLAS
 //@}
@@ -346,14 +346,14 @@ void M_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1
 template <class V>
 inline
 void Vp_V(VectorMutable* v_lhs, const V& V_rhs) {
-	Vp_StV(v_lhs,1.0,V_rhs);
+  Vp_StV(v_lhs,1.0,V_rhs);
 }
 
 // v_lhs = - V_rhs.
 template <class V>
 inline
 void V_mV(VectorMutable* v_lhs, const V& V_rhs) {
-	V_StV(v_lhs,-1.0,V_rhs);
+  V_StV(v_lhs,-1.0,V_rhs);
 }
 
 // ///////////////////////////////////////////////////////////////////////////////
@@ -362,13 +362,13 @@ void V_mV(VectorMutable* v_lhs, const V& V_rhs) {
 // M_lhs += op(M_rhs).
 inline
 void Mp_M(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs) {
-	Mp_StM(M_lhs,1.0,M_rhs,trans_rhs);
+  Mp_StM(M_lhs,1.0,M_rhs,trans_rhs);
 }
 
 // M_lhs = - op(M_rhs).
 inline
 void M_mM(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs) {
-	M_StM(M_lhs,-1.0,M_rhs,trans_rhs);
+  M_StM(M_lhs,-1.0,M_rhs,trans_rhs);
 }
 
 // /////////////////////////////////////////////////////////////////////// 
@@ -378,18 +378,18 @@ void M_mM(MatrixOp* M_lhs, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs) {
 template <class V>
 inline
 void Vp_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const V& V_rhs2)
+  , const V& V_rhs2)
 {
-	Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2);
+  Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2);
 }
 
 // v_lhs = op(M_rhs1) * V_rhs2 + beta * v_lhs.
 template <class V>
 inline
 void Vp_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const V& V_rhs2, value_type beta)
+  , const V& V_rhs2, value_type beta)
 {
-	Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2,beta);
+  Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2,beta);
 }
 
 // //////////////////////////////////////////////////////////////////////////////
@@ -398,25 +398,25 @@ void Vp_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans
 // M_lhs += op(M_rhs1) * op(M_rhs2).
 inline
 void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
-	Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
+  Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
 }
 
 // M_lhs = op(M_rhs1) * op(M_rhs2) + beta * gms_rhs.
 inline
 void Mp_MtM(MatrixOp* M_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2, value_type beta)
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2, value_type beta)
 {
-	Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,beta);
+  Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,beta);
 }
 
 // M_lhs = inv(op(M_rhs1)) * op(M_rhs2)
 inline
 void M_InvMtM(MatrixOp* M_lhs, const MatrixNonsing& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2 )
+  , const MatrixOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2 )
 {
-	M_StInvMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
+  M_StInvMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
 }
 
 } // end namespace LinAlgOpPack
@@ -446,47 +446,47 @@ using AbstractLinAlgPack::Mp_MtM_assert_compatibility;
 // v_lhs = V_rhs.
 template <class V>
 void assign(VectorMutable* v_lhs, const V& V_rhs) {
-	Vp_V_assert_compatibility(v_lhs,V_rhs);
-	(*v_lhs) = 0.0;
-	Vp_V(v_lhs,V_rhs);
+  Vp_V_assert_compatibility(v_lhs,V_rhs);
+  (*v_lhs) = 0.0;
+  Vp_V(v_lhs,V_rhs);
 }
 
 // v_lhs = alpha * V_rhs.
 template <class V>
 void V_StV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs) {
-	Vp_V_assert_compatibility(v_lhs,V_rhs);
-	(*v_lhs) = 0.0;
-	Vp_StV(v_lhs,alpha,V_rhs);
+  Vp_V_assert_compatibility(v_lhs,V_rhs);
+  (*v_lhs) = 0.0;
+  Vp_StV(v_lhs,alpha,V_rhs);
 }
 
 // v_lhs = V1_rhs1 + V2_rhs2.
 template <class V1, class V2>
 void V_VpV(VectorMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
-	VopV_assert_compatibility(V1_rhs1,V2_rhs2);
-	Vp_V_assert_compatibility(v_lhs,V1_rhs1);
-	(*v_lhs) = 0.0;
-	Vp_V(v_lhs,V1_rhs1);
-	Vp_V(v_lhs,V2_rhs2);
+  VopV_assert_compatibility(V1_rhs1,V2_rhs2);
+  Vp_V_assert_compatibility(v_lhs,V1_rhs1);
+  (*v_lhs) = 0.0;
+  Vp_V(v_lhs,V1_rhs1);
+  Vp_V(v_lhs,V2_rhs2);
 }
 
 // v_lhs = V_rhs1 - V_rhs2.
 template <class V1, class V2>
 void V_VmV(VectorMutable* v_lhs, const V1& V1_rhs1, const V2& V2_rhs2) {
-	VopV_assert_compatibility(V1_rhs1,V2_rhs2);
-	Vp_V_assert_compatibility(v_lhs,V1_rhs1);
-	(*v_lhs) = 0.0;
-	Vp_V(v_lhs,V1_rhs1);
-	Vp_StV(v_lhs,-1.0,V2_rhs2);
+  VopV_assert_compatibility(V1_rhs1,V2_rhs2);
+  Vp_V_assert_compatibility(v_lhs,V1_rhs1);
+  (*v_lhs) = 0.0;
+  Vp_V(v_lhs,V1_rhs1);
+  Vp_StV(v_lhs,-1.0,V2_rhs2);
 }
 
 // v_lhs = alpha * V_rhs1 + v_rhs2.
 template <class V>
 void V_StVpV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs1
-	, const Vector& v_rhs2)
+  , const Vector& v_rhs2)
 {
-	VopV_assert_compatibility(V_rhs1,v_rhs2);
-	(*v_lhs) = v_rhs2;
-	Vp_StV(v_lhs,alpha,V_rhs1);
+  VopV_assert_compatibility(V_rhs1,v_rhs2);
+  (*v_lhs) = v_rhs2;
+  Vp_StV(v_lhs,alpha,V_rhs1);
 }
 
 // ////////////////////////////////////////////////////////////////
@@ -495,19 +495,19 @@ void V_StVpV(VectorMutable* v_lhs, value_type alpha, const V& V_rhs1
 // v_lhs = alpha * op(M_rhs1) * V_rhs2.
 template <class V>
 void V_StMtV(VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const V& V_rhs2)
+  , BLAS_Cpp::Transp trans_rhs1, const V& V_rhs2)
 {
-	Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);
-	Vp_StMtV(v_lhs,alpha,M_rhs1,trans_rhs1,V_rhs2,0.0);
+  Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);
+  Vp_StMtV(v_lhs,alpha,M_rhs1,trans_rhs1,V_rhs2,0.0);
 }
 
 // v_lhs = op(M_rhs1) * V_rhs2.
 template <class V>
 void V_MtV(VectorMutable* v_lhs, const MatrixOp& M_rhs1, BLAS_Cpp::Transp trans_rhs1
-	, const V& V_rhs2)
+  , const V& V_rhs2)
 {
-	Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);
-	Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2,0.0);
+  Vp_MtV_assert_compatibility(v_lhs,M_rhs1,trans_rhs1,V_rhs2);
+  Vp_StMtV(v_lhs,1.0,M_rhs1,trans_rhs1,V_rhs2,0.0);
 }
 
 } // end namespace LinAlgOpPack

@@ -49,32 +49,32 @@ namespace ConstrainedOptPack {
 class MeritFuncNLPDirecDeriv {
 public:
 
-	///
-	virtual ~MeritFuncNLPDirecDeriv() {}
+  ///
+  virtual ~MeritFuncNLPDirecDeriv() {}
 
-	/** @name To be overridden by subclasses */
-	//@{
+  /** @name To be overridden by subclasses */
+  //@{
 
-	///
-	/** Calculate d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
-	  *
-	  * The value is stored internally by the subclass are returned by its
-	  * deriv() member usually.  The value is also returned from this
-	  * function.
-	  *
-	  * If the sizes of the vectors input do not aggree then
-	  * #std::length_error# exception will be thrown.
-	  */
-	virtual value_type calc_deriv(
-		const Vector    &Gf_k
-		,const Vector   *c_k
-		,const Vector   *h_k
-		,const Vector   *hl
-		,const Vector   *hu
-		,const Vector   &d_k
-		) = 0;
+  ///
+  /** Calculate d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
+    *
+    * The value is stored internally by the subclass are returned by its
+    * deriv() member usually.  The value is also returned from this
+    * function.
+    *
+    * If the sizes of the vectors input do not aggree then
+    * #std::length_error# exception will be thrown.
+    */
+  virtual value_type calc_deriv(
+    const Vector    &Gf_k
+    ,const Vector   *c_k
+    ,const Vector   *h_k
+    ,const Vector   *hl
+    ,const Vector   *hu
+    ,const Vector   &d_k
+    ) = 0;
 
-	//@}
+  //@}
 
 };	// end class MeritFuncNLPDirecDeriv
 

@@ -38,44 +38,44 @@
 namespace MoochoPack {
 
 bool CalcDFromZPZ_Step::do_step(
-	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	)
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+  )
 {
 
-	NLPAlgo	&algo	= rsqp_algo(_algo);
-	NLPAlgoState	&s		= algo.rsqp_state();
+  NLPAlgo	&algo	= rsqp_algo(_algo);
+  NLPAlgoState	&s		= algo.rsqp_state();
 
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
+  EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  std::ostream& out = algo.track().journal_out();
 
-	// print step header.
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using IterationPack::print_algorithm_step;
-		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
-	}
+  // print step header.
+  if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+    using IterationPack::print_algorithm_step;
+    print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
+  }
 
-	// d = Zpz
-	VectorMutable    &d_k    = s.d().set_k(0) = s.Zpz().get_k(0);
+  // d = Zpz
+  VectorMutable    &d_k    = s.d().set_k(0) = s.Zpz().get_k(0);
 
-	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;
-	}
+  if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+    out	<< "\n||d||inf = " << d_k.norm_inf() << std::endl;
+  }
 
-	if( (int)olevel >= (int)PRINT_VECTORS ) {
-		out	<< "\nd_k = \n" << d_k;
-	}
+  if( (int)olevel >= (int)PRINT_VECTORS ) {
+    out	<< "\nd_k = \n" << d_k;
+  }
 
-	return true;
+  return true;
 }
 
 void CalcDFromZPZ_Step::print_step(
-	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
-	) const
+  const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+  ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
+  ) const
 {
-	out
-		<< L << "*** Calculates the search direction d from Zpz\n"
-		<< L << "d_k = Zpz_k \n";
+  out
+    << L << "*** Calculates the search direction d from Zpz\n"
+    << L << "d_k = Zpz_k \n";
 }
 
 } // end namespace MoochoPack

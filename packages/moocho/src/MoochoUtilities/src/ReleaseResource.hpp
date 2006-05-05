@@ -42,16 +42,16 @@ namespace MemMngPack {
 class ReleaseResource {
 public:
 
-	///
-	/** When object is deleted so will the resource if it is not
-	 * needed anymore.
-	 */
-	virtual ~ReleaseResource() {}
+  ///
+  /** When object is deleted so will the resource if it is not
+   * needed anymore.
+   */
+  virtual ~ReleaseResource() {}
 
-	///
-	/** Returns true if a resource is bound to this object.
-	 */
-	virtual bool resource_is_bound() const = 0;
+  ///
+  /** Returns true if a resource is bound to this object.
+   */
+  virtual bool resource_is_bound() const = 0;
 
 };
 

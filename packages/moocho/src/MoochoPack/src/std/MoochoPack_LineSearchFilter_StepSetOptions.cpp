@@ -38,34 +38,34 @@ namespace {
 const int local_num_options = 11;
 
 enum local_EOptions 
-	{
-		GAMMA_THETA
-		,GAMMA_F
-		,F_MIN
-		,GAMMA_ALPHA
-		,DELTA
-		,S_THETA
-		,S_F
-		,THETA_SMALL_FACT
-		,THETA_MAX
-		,ETA_F
-		,BACK_TRACK_FRAC
-	};
+  {
+    GAMMA_THETA
+    ,GAMMA_F
+    ,F_MIN
+    ,GAMMA_ALPHA
+    ,DELTA
+    ,S_THETA
+    ,S_F
+    ,THETA_SMALL_FACT
+    ,THETA_MAX
+    ,ETA_F
+    ,BACK_TRACK_FRAC
+  };
 
 const char* local_SOptions[local_num_options] = 
-	{
-		"gamma_theta"
-		,"gamma_f"
-		,"f_min"
-		,"gamma_alpha"
-		,"delta"
-		,"s_theta"
-		,"s_f"
-		,"theta_small_fact"
-		,"theta_max"
-		,"eta_f"
-		,"back_track_frac"
-	};
+  {
+    "gamma_theta"
+    ,"gamma_f"
+    ,"f_min"
+    ,"gamma_alpha"
+    ,"delta"
+    ,"s_theta"
+    ,"s_f"
+    ,"theta_small_fact"
+    ,"theta_max"
+    ,"eta_f"
+    ,"back_track_frac"
+  };
 
 }
 
@@ -74,60 +74,60 @@ namespace MoochoPack {
 LineSearchFilter_StepSetOptions::LineSearchFilter_StepSetOptions(
   LineSearchFilter_Step* target
   , const char opt_grp_name[] )
-	:
-	OptionsFromStreamPack::SetOptionsFromStreamNode(
-	  opt_grp_name, local_num_options, local_SOptions ),
-	OptionsFromStreamPack::SetOptionsToTargetBase< LineSearchFilter_Step >( target )
-	{
-	}
+  :
+  OptionsFromStreamPack::SetOptionsFromStreamNode(
+    opt_grp_name, local_num_options, local_SOptions ),
+  OptionsFromStreamPack::SetOptionsToTargetBase< LineSearchFilter_Step >( target )
+  {
+  }
 
 void LineSearchFilter_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
-	{
-	using OptionsFromStreamPack::StringToBool;
+  {
+  using OptionsFromStreamPack::StringToBool;
   
-	typedef LineSearchFilter_Step target_t;
-	switch( (local_EOptions)option_num ) {
-		case GAMMA_THETA:
-			target().gamma_theta(::atof(option_value.c_str()));
-			break;
-		case GAMMA_F:
-			target().gamma_f(::atof(option_value.c_str()));
-			break;
-		case F_MIN: {
-			if( option_value == "UNBOUNDED" )
-				target().f_min(target_t::F_MIN_UNBOUNDED);
-			else
-				target().f_min(::atof(option_value.c_str()));
-			break;
-		}
-		case GAMMA_ALPHA:
-			target().gamma_alpha(::atof(option_value.c_str()));
-			break;
-		case DELTA:
-			target().delta(::atof(option_value.c_str()));
-			break;
-		case S_THETA:
-			target().s_theta(::atof(option_value.c_str()));
-			break;
-		case S_F:
-			target().s_f(::atof(option_value.c_str()));
-			break;
-		case THETA_SMALL_FACT:
-			target().theta_small_fact(::atof(option_value.c_str()));
-			break;
-		case THETA_MAX:
-			target().theta_max(::atof(option_value.c_str()));
-			break;
-		case ETA_F:
-			target().eta_f(::atof(option_value.c_str()));
-			break;
-		case BACK_TRACK_FRAC:
-			target().back_track_frac(::atof(option_value.c_str()));
-			break;
-		default:
-			assert(0);	// Local error only?
-		}
-	}
+  typedef LineSearchFilter_Step target_t;
+  switch( (local_EOptions)option_num ) {
+    case GAMMA_THETA:
+      target().gamma_theta(::atof(option_value.c_str()));
+      break;
+    case GAMMA_F:
+      target().gamma_f(::atof(option_value.c_str()));
+      break;
+    case F_MIN: {
+      if( option_value == "UNBOUNDED" )
+        target().f_min(target_t::F_MIN_UNBOUNDED);
+      else
+        target().f_min(::atof(option_value.c_str()));
+      break;
+    }
+    case GAMMA_ALPHA:
+      target().gamma_alpha(::atof(option_value.c_str()));
+      break;
+    case DELTA:
+      target().delta(::atof(option_value.c_str()));
+      break;
+    case S_THETA:
+      target().s_theta(::atof(option_value.c_str()));
+      break;
+    case S_F:
+      target().s_f(::atof(option_value.c_str()));
+      break;
+    case THETA_SMALL_FACT:
+      target().theta_small_fact(::atof(option_value.c_str()));
+      break;
+    case THETA_MAX:
+      target().theta_max(::atof(option_value.c_str()));
+      break;
+    case ETA_F:
+      target().eta_f(::atof(option_value.c_str()));
+      break;
+    case BACK_TRACK_FRAC:
+      target().back_track_frac(::atof(option_value.c_str()));
+      break;
+    default:
+      assert(0);	// Local error only?
+    }
+  }
 
 }	// end namespace MoochoPack 

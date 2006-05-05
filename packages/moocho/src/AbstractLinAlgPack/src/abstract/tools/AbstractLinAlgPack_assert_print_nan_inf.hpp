@@ -60,7 +60,7 @@ class NaNInfException : public std::runtime_error
  * excetion NaNInfException was thrown (throw_except==true).
  */
 bool assert_print_nan_inf( const value_type& val, char name[]
-	, bool throw_excpt, std::ostream* out );
+  , bool throw_excpt, std::ostream* out );
 
 ///
 /** This function asserts if a vector has any NaN or inf entries and optionally
@@ -83,7 +83,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
  * excetion was thrown (throw_except==true).
  */
 bool assert_print_nan_inf( const Vector& v, char name[]
-	, bool throw_excpt, std::ostream* out );
+  , bool throw_excpt, std::ostream* out );
 
 }	// end namespace AbstractLinAlgPack
 

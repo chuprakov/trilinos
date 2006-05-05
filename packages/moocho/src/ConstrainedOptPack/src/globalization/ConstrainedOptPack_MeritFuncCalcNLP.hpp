@@ -44,37 +44,37 @@ namespace ConstrainedOptPack {
 class MeritFuncCalcNLP : public MeritFuncCalc {
 public:
 
-	/** @name Constructors/initializers */
-	//@{
+  /** @name Constructors/initializers */
+  //@{
 
-	/// <<std aggr>> stereotype members for phi.
-	STANDARD_CONST_AGGREGATION_MEMBERS( MeritFuncNLP, phi )
+  /// <<std aggr>> stereotype members for phi.
+  STANDARD_CONST_AGGREGATION_MEMBERS( MeritFuncNLP, phi )
 
-	/// <<std aggr>> stereotype members for nlp.
-	STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
+  /// <<std aggr>> stereotype members for nlp.
+  STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
 
-	///
-	MeritFuncCalcNLP( const MeritFuncNLP* phi = 0, const NLP* nlp = 0 );
+  ///
+  MeritFuncCalcNLP( const MeritFuncNLP* phi = 0, const NLP* nlp = 0 );
 
-	//@}
+  //@}
 
-	/** @name Overridden from MeritFuncCalc */
-	//@{
+  /** @name Overridden from MeritFuncCalc */
+  //@{
 
-	///
-	/** Return the value of the merit function at x.
-	 * Here phi(x) is calculated directly using the nlp.
-	 */
-	value_type operator()(const Vector& x) const;
+  ///
+  /** Return the value of the merit function at x.
+   * Here phi(x) is calculated directly using the nlp.
+   */
+  value_type operator()(const Vector& x) const;
 
-	/// Calls phi().deriv() on phi.
-	value_type deriv() const;
+  /// Calls phi().deriv() on phi.
+  value_type deriv() const;
 
-	/// Calls <tt>phi().print_merit_func()</tt>.
-	void print_merit_func(
-		std::ostream& out, const std::string& leading_str ) const;
+  /// Calls <tt>phi().print_merit_func()</tt>.
+  void print_merit_func(
+    std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
 };	// end class MeritFuncCalcNLP
 

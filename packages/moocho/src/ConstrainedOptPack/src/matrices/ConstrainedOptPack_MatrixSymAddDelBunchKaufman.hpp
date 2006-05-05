@@ -52,171 +52,171 @@ namespace ConstrainedOptPack {
  * or positive eigen value in an efficient manner as well.
  */
 class MatrixSymAddDelBunchKaufman
-	:public virtual MatrixSymOpNonsingSerial
-	,public virtual MatrixSymAddDelUpdateable
-	,public virtual MatrixSymAddDelUpdateableWithOpNonsingular
+  :public virtual MatrixSymOpNonsingSerial
+  ,public virtual MatrixSymAddDelUpdateable
+  ,public virtual MatrixSymAddDelUpdateableWithOpNonsingular
 {
 public:
 
-	/// Initializes with 0x0 and pivot_tols == (0.0,0.0,0.0).
-	MatrixSymAddDelBunchKaufman();
+  /// Initializes with 0x0 and pivot_tols == (0.0,0.0,0.0).
+  MatrixSymAddDelBunchKaufman();
 
-	/// Pivot tolerance used durring the cholesky factorization (it may be zero).
-	void pivot_tols( PivotTolerances pivot_tols );
-	///
-	PivotTolerances	pivot_tols() const;
+  /// Pivot tolerance used durring the cholesky factorization (it may be zero).
+  void pivot_tols( PivotTolerances pivot_tols );
+  ///
+  PivotTolerances	pivot_tols() const;
 
-	/** @name Overridden from MatrixSymAddDelUpdateableWithOpNonsingular */
-	//@{
+  /** @name Overridden from MatrixSymAddDelUpdateableWithOpNonsingular */
+  //@{
 
-	///
-	const MatrixSymOpNonsing& op_interface() const;
-	///
-	MatrixSymAddDelUpdateable& update_interface();
-	///
-	const MatrixSymAddDelUpdateable& update_interface() const;
+  ///
+  const MatrixSymOpNonsing& op_interface() const;
+  ///
+  MatrixSymAddDelUpdateable& update_interface();
+  ///
+  const MatrixSymAddDelUpdateable& update_interface() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixSymAddDelUpdateable */
-	//@{
+  /** @name Overridden from MatrixSymAddDelUpdateable */
+  //@{
 
-	///
-	void initialize(
-		value_type         alpha
-		,size_type         max_size
-		);
-	///
-	void initialize(
-		const DMatrixSliceSym      &A
-		,size_type         max_size
-		,bool              force_factorization
-		,Inertia           inertia
-		,PivotTolerances   pivot_tols
-		);
-	///
-	size_type max_size() const;
-	///
-	Inertia inertia() const;
-	///
-	void set_uninitialized();
-	///
-	void augment_update(
-		const DVectorSlice  *t
-		,value_type        alpha
-		,bool              force_refactorization
-		,EEigenValType     add_eigen_val
-		,PivotTolerances   pivot_tols
-		);
-	///
-	void delete_update(
-		size_type          jd
-		,bool              force_refactorization
-		,EEigenValType     drop_eigen_val
-		,PivotTolerances   pivot_tols
-		);
+  ///
+  void initialize(
+    value_type         alpha
+    ,size_type         max_size
+    );
+  ///
+  void initialize(
+    const DMatrixSliceSym      &A
+    ,size_type         max_size
+    ,bool              force_factorization
+    ,Inertia           inertia
+    ,PivotTolerances   pivot_tols
+    );
+  ///
+  size_type max_size() const;
+  ///
+  Inertia inertia() const;
+  ///
+  void set_uninitialized();
+  ///
+  void augment_update(
+    const DVectorSlice  *t
+    ,value_type        alpha
+    ,bool              force_refactorization
+    ,EEigenValType     add_eigen_val
+    ,PivotTolerances   pivot_tols
+    );
+  ///
+  void delete_update(
+    size_type          jd
+    ,bool              force_refactorization
+    ,EEigenValType     drop_eigen_val
+    ,PivotTolerances   pivot_tols
+    );
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixSymOpNonsingSerial */
-	//@{
+  /** @name Overridden from MatrixSymOpNonsingSerial */
+  //@{
 
-	///
-	size_type rows() const;
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(
-		DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const DVectorSlice& vs_rhs2, value_type beta
-		) const;
-	///
-	void V_InvMtV(
-		DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const DVectorSlice& vs_rhs2
-		)const;
+  ///
+  size_type rows() const;
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(
+    DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    ,const DVectorSlice& vs_rhs2, value_type beta
+    ) const;
+  ///
+  void V_InvMtV(
+    DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+    ,const DVectorSlice& vs_rhs2
+    )const;
 
 private:
 
-	// /////////////////////////////////////////////////////
-	// Private types
+  // /////////////////////////////////////////////////////
+  // Private types
 
-	typedef std::vector<FortranTypes::f_int> IPIV_t;
+  typedef std::vector<FortranTypes::f_int> IPIV_t;
 
-	// /////////////////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////////////////
+  // Private data members
 
-	size_type S_size_;      // The size of the current symmetric matrix.  Size == 0 if flag for uninitialized.
-	bool      S_indef_;     // True if the current matrix is indefinite.
-	bool      fact_updated_;// True if the factorization for the current matrix is updated.  Only meaningful
-	                        // if S_indef_==true.
-	bool      fact_in1_;    // If true then the current factorization is in S_store1_
-	                        // otherwise it is in S_store2_.  Only meaningful if S_indef_==true and
-	                        // fact_updated_==true
-	MatrixSymAddDelUpdateable::Inertia
-	          inertia_;     // Inertial for the indefinite L*D*L' factorization.  If fact_updated_ == false
-	                        // then this will be UNKNOWN.  IF S_indef_==false then this is meaningless.
-	DMatrix S_store1_;    // Storage for the factored matrix in the
-	                        // upper triangle as well as the original matrix
-	                        // in the lower triangle.  This uses the same storage scheme as
-	                        // in MatrixSymPosDefCholFactor.
-	DMatrix S_store2_;    // Storage for the factorization also.  We need
-	                        // two storage locations for the L*D*L factorization
-	                        // in case an update is singular.  This will not
-	                        // be initialized for a p.d. or n.d. matrix.
-	IPIV_t    IPIV_;        // Stores permutations computed by LAPACK
-	mutable DVector
+  size_type S_size_;      // The size of the current symmetric matrix.  Size == 0 if flag for uninitialized.
+  bool      S_indef_;     // True if the current matrix is indefinite.
+  bool      fact_updated_;// True if the factorization for the current matrix is updated.  Only meaningful
+                          // if S_indef_==true.
+  bool      fact_in1_;    // If true then the current factorization is in S_store1_
+                          // otherwise it is in S_store2_.  Only meaningful if S_indef_==true and
+                          // fact_updated_==true
+  MatrixSymAddDelUpdateable::Inertia
+            inertia_;     // Inertial for the indefinite L*D*L' factorization.  If fact_updated_ == false
+                          // then this will be UNKNOWN.  IF S_indef_==false then this is meaningless.
+  DMatrix S_store1_;    // Storage for the factored matrix in the
+                          // upper triangle as well as the original matrix
+                          // in the lower triangle.  This uses the same storage scheme as
+                          // in MatrixSymPosDefCholFactor.
+  DMatrix S_store2_;    // Storage for the factorization also.  We need
+                          // two storage locations for the L*D*L factorization
+                          // in case an update is singular.  This will not
+                          // be initialized for a p.d. or n.d. matrix.
+  IPIV_t    IPIV_;        // Stores permutations computed by LAPACK
+  mutable DVector
               WORK_;        // workspace
-	MatrixSymPosDefCholFactor
-		      S_chol_;      // Used to factorize the matrix
-	                        // when it is p.d. or n.d.
+  MatrixSymPosDefCholFactor
+          S_chol_;      // Used to factorize the matrix
+                          // when it is p.d. or n.d.
 
-	// /////////////////////////////////////////////////////
-	// Private member funcitons.
+  // /////////////////////////////////////////////////////
+  // Private member funcitons.
 
-	///
-	/** Get view of DU.
-	 */
-	DMatrixSliceTriEle DU(size_type S_size, bool fact_in1);
-	///
-	const DMatrixSliceTriEle DU(size_type S_size, bool fact_in1) const;
-	///
-	/** Get view of lower part of S.
-	 */
-	DMatrixSliceSym S(size_type S_size);
-	///
-	const DMatrixSliceSym S(size_type S_size) const;
-	///
-	void assert_initialized() const;
-	///
-	void resize_DU_store( bool in_store1 );
-	///
-	/** Copy the original matrix into the new storage location and factorize it.
-	 *
-	 * Will throw DenseLinAlgLAPack::FactorizationException if singular.
-	 */
-	void copy_and_factor_matrix( size_type S_size, bool fact_in1 );
-	///
-	/** Factor the current set matrix in-place (do not copy the original). 
-	 *
-	 * Will throw DenseLinAlgLAPack::FactorizationException if singular.
-	 */
-	void factor_matrix( size_type S_size, bool fact_in1 );
-	///
-	/** Compute the new inertia and validate that it is what the client says it was.
-	 *
-	 * Will throw exceptions if the matrix is singular or has the wrong inertia.  If
-	 * the matrix is near singular then true will be returned, the update should
-	 * succeed but a warning exception should be thrown
-	 */
-	bool compute_assert_inertia(
-		size_type S_size, bool fact_in1
-		,const Inertia& expected_inertia, const char func_name[]
-		,PivotTolerances pivot_tols, Inertia* comp_inertia, std::ostringstream* err_msg, value_type* gamma );
+  ///
+  /** Get view of DU.
+   */
+  DMatrixSliceTriEle DU(size_type S_size, bool fact_in1);
+  ///
+  const DMatrixSliceTriEle DU(size_type S_size, bool fact_in1) const;
+  ///
+  /** Get view of lower part of S.
+   */
+  DMatrixSliceSym S(size_type S_size);
+  ///
+  const DMatrixSliceSym S(size_type S_size) const;
+  ///
+  void assert_initialized() const;
+  ///
+  void resize_DU_store( bool in_store1 );
+  ///
+  /** Copy the original matrix into the new storage location and factorize it.
+   *
+   * Will throw DenseLinAlgLAPack::FactorizationException if singular.
+   */
+  void copy_and_factor_matrix( size_type S_size, bool fact_in1 );
+  ///
+  /** Factor the current set matrix in-place (do not copy the original). 
+   *
+   * Will throw DenseLinAlgLAPack::FactorizationException if singular.
+   */
+  void factor_matrix( size_type S_size, bool fact_in1 );
+  ///
+  /** Compute the new inertia and validate that it is what the client says it was.
+   *
+   * Will throw exceptions if the matrix is singular or has the wrong inertia.  If
+   * the matrix is near singular then true will be returned, the update should
+   * succeed but a warning exception should be thrown
+   */
+  bool compute_assert_inertia(
+    size_type S_size, bool fact_in1
+    ,const Inertia& expected_inertia, const char func_name[]
+    ,PivotTolerances pivot_tols, Inertia* comp_inertia, std::ostringstream* err_msg, value_type* gamma );
 
-	/// Not defined and not to be called.
-	MatrixSymAddDelBunchKaufman( const MatrixSymAddDelBunchKaufman& );
-	MatrixSymAddDelBunchKaufman& operator=( const MatrixSymAddDelBunchKaufman& );
+  /// Not defined and not to be called.
+  MatrixSymAddDelBunchKaufman( const MatrixSymAddDelBunchKaufman& );
+  MatrixSymAddDelBunchKaufman& operator=( const MatrixSymAddDelBunchKaufman& );
 
 };	// end class MatrixSymAddDelBunchKaufman
 
@@ -226,34 +226,34 @@ private:
 inline
 DMatrixSliceTriEle MatrixSymAddDelBunchKaufman::DU(size_type S_size, bool fact_in1)
 {
-	resize_DU_store(fact_in1);
-	return DenseLinAlgPack::nonconst_tri_ele(
-		( fact_in1 ? S_store1_ : S_store2_ )(1,S_size,2,S_size+1)
-		,BLAS_Cpp::upper );
+  resize_DU_store(fact_in1);
+  return DenseLinAlgPack::nonconst_tri_ele(
+    ( fact_in1 ? S_store1_ : S_store2_ )(1,S_size,2,S_size+1)
+    ,BLAS_Cpp::upper );
 }
 
 inline
 const DMatrixSliceTriEle MatrixSymAddDelBunchKaufman::DU(size_type S_size, bool fact_in1) const
 {
-	return DenseLinAlgPack::tri_ele(
-		( fact_in1 ? S_store1_ : S_store2_ )(1,S_size,2,S_size+1)
-		,BLAS_Cpp::upper);
+  return DenseLinAlgPack::tri_ele(
+    ( fact_in1 ? S_store1_ : S_store2_ )(1,S_size,2,S_size+1)
+    ,BLAS_Cpp::upper);
 }
 
 inline
 DMatrixSliceSym MatrixSymAddDelBunchKaufman::S(size_type S_size)
 {
-	return DenseLinAlgPack::nonconst_sym(
-		S_store1_(2,S_size+1,1,S_size)
-		, BLAS_Cpp::lower );
+  return DenseLinAlgPack::nonconst_sym(
+    S_store1_(2,S_size+1,1,S_size)
+    , BLAS_Cpp::lower );
 }
 
 inline
 const DMatrixSliceSym MatrixSymAddDelBunchKaufman::S(size_type S_size) const
 {
-	return DenseLinAlgPack::sym(
-		S_store1_(2,S_size+1,1,S_size)
-		, BLAS_Cpp::lower );
+  return DenseLinAlgPack::sym(
+    S_store1_(2,S_size+1,1,S_size)
+    , BLAS_Cpp::lower );
 }
 
 }	// namespace ConstrainedOptPack 

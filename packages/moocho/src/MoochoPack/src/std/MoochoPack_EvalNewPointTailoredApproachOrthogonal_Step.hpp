@@ -45,69 +45,69 @@ namespace MoochoPack {
  \endverbatim
  */
 class EvalNewPointTailoredApproachOrthogonal_Step
-	: public EvalNewPointTailoredApproach_Step
+  : public EvalNewPointTailoredApproach_Step
 {
 public:
 
-	///
-	EvalNewPointTailoredApproachOrthogonal_Step(
-		const deriv_tester_ptr_t                &deriv_tester
-		,const bounds_tester_ptr_t              &bounds_tester
-		,EFDDerivTesting                        fd_deriv_testing = FD_DEFAULT
-		);
+  ///
+  EvalNewPointTailoredApproachOrthogonal_Step(
+    const deriv_tester_ptr_t                &deriv_tester
+    ,const bounds_tester_ptr_t              &bounds_tester
+    ,EFDDerivTesting                        fd_deriv_testing = FD_DEFAULT
+    );
 
 protected:
 
-	/** @name Overridden from EvalNewPointTailoredApproach_Step */
-	//@{
+  /** @name Overridden from EvalNewPointTailoredApproach_Step */
+  //@{
 
-	///
-	void uninitialize_Y_Uy(
-		MatrixOp         *Y
-		,MatrixOp        *Uy
-		);
-	///
-	void calc_py_Y_Uy(
-		const NLPDirect       &nlp
-		,const D_ptr_t        &D
-		,VectorMutable        *py
-		,MatrixOp             *Y
-		,MatrixOp             *Uy
-		,EJournalOutputLevel  olevel
-		,std::ostream         &out
-		);
-	///
-	void recalc_py(
-		const MatrixOp           &D
-		,VectorMutable           *py
-		,EJournalOutputLevel     olevel
-		,std::ostream            &out
-		);
-	///
-	void print_calc_py_Y_Uy(
-		std::ostream& out, const std::string& leading_str
-		) const;
+  ///
+  void uninitialize_Y_Uy(
+    MatrixOp         *Y
+    ,MatrixOp        *Uy
+    );
+  ///
+  void calc_py_Y_Uy(
+    const NLPDirect       &nlp
+    ,const D_ptr_t        &D
+    ,VectorMutable        *py
+    ,MatrixOp             *Y
+    ,MatrixOp             *Uy
+    ,EJournalOutputLevel  olevel
+    ,std::ostream         &out
+    );
+  ///
+  void recalc_py(
+    const MatrixOp           &D
+    ,VectorMutable           *py
+    ,EJournalOutputLevel     olevel
+    ,std::ostream            &out
+    );
+  ///
+  void print_calc_py_Y_Uy(
+    std::ostream& out, const std::string& leading_str
+    ) const;
 
-	//@}
+  //@}
 
 private:
 
-	// ///////////////////////////////
-	// Private types
+  // ///////////////////////////////
+  // Private types
 
-	///
-	typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
 
-	// ///////////////////////////////
-	// Private data members
+  // ///////////////////////////////
+  // Private data members
 
-	S_ptr_t   S_ptr_;
+  S_ptr_t   S_ptr_;
 
-	// //////////////////////////////
-	// Private member functions
+  // //////////////////////////////
+  // Private member functions
 
-	// not defined and not to be called
-	EvalNewPointTailoredApproachOrthogonal_Step();
+  // not defined and not to be called
+  EvalNewPointTailoredApproachOrthogonal_Step();
 
 };	// end class EvalNewPointTailoredApproachOrthogonal_Step
 

@@ -44,13 +44,13 @@ namespace ConstrainedOptPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group DirectLineSearchArmQuad {
-		slope_frac = ?;
-		min_frac_step = ?:
-		max_frac_step = ?;
-		max_ls_iter = ?;
+  options_group DirectLineSearchArmQuad {
+    slope_frac = ?;
+    min_frac_step = ?:
+    max_frac_step = ?;
+    max_ls_iter = ?;
     max_out_ls_iter = ?;
-	}
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -76,21 +76,21 @@ namespace ConstrainedOptPack {
   *	\end{description}
   */
 class DirectLineSearchArmQuad_StrategySetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			DirectLineSearchArmQuad_Strategy >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      DirectLineSearchArmQuad_Strategy >
 {
 public:
 
-	///
-	DirectLineSearchArmQuad_StrategySetOptions(
-		  DirectLineSearchArmQuad_Strategy* qp_solver = 0
-		, const char opt_grp_name[] = "DirectLineSearchArmQuad" );
+  ///
+  DirectLineSearchArmQuad_StrategySetOptions(
+      DirectLineSearchArmQuad_Strategy* qp_solver = 0
+    , const char opt_grp_name[] = "DirectLineSearchArmQuad" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class DirectLineSearchArmQuad_StrategySetOptions
 

@@ -39,7 +39,7 @@ namespace DenseLinAlgPack {
   * This operator function calls the function output(os,gms,0).
   */
 inline std::ostream& operator<<(std::ostream& os, const DMatrixSlice& gms) {
-	return output(os, gms, (LinAlgPackIO::fmtflags)(0));
+  return output(os, gms, (LinAlgPackIO::fmtflags)(0));
 }
 
 }	// end namespace DenseLinAlgPack

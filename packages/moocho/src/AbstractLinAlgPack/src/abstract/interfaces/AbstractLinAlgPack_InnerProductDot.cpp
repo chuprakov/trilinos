@@ -33,10 +33,10 @@
 namespace AbstractLinAlgPack {
 
 value_type InnerProductDot::inner_prod(
-	const Vector& v1, const Vector& v2
-	) const
+  const Vector& v1, const Vector& v2
+  ) const
 {
-	return dot(v1,v2);
+  return dot(v1,v2);
 }
 
 } // end namespace AbstractLinAlgPack

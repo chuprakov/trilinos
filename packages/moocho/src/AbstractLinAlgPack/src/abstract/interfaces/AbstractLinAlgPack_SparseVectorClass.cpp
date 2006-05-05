@@ -30,7 +30,7 @@
 
 void AbstractLinAlgPack::SparseVectorUtilityPack::assert_is_sorted(bool is_sorted)
 {
-	if(!is_sorted)
-		throw NotSortedException("SparseVector***<> : The sparse vector is not sorted.");
+  if(!is_sorted)
+    throw NotSortedException("SparseVector***<> : The sparse vector is not sorted.");
 
 }

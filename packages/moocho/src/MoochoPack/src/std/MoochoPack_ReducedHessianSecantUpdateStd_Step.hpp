@@ -47,37 +47,37 @@ namespace MoochoPack {
  * See the printed step documentation for a description.
  */
 class ReducedHessianSecantUpdateStd_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	///
-	/** <<std comp>> members for the strategy interface object that will
-	 * actually perform the secant update.
-	 */
-	STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdate_Strategy, secant_update )
+  ///
+  /** <<std comp>> members for the strategy interface object that will
+   * actually perform the secant update.
+   */
+  STANDARD_COMPOSITION_MEMBERS( ReducedHessianSecantUpdate_Strategy, secant_update )
 
-	///
-	ReducedHessianSecantUpdateStd_Step(
-		const secant_update_ptr_t& secant_update = Teuchos::null
-		);
+  ///
+  ReducedHessianSecantUpdateStd_Step(
+    const secant_update_ptr_t& secant_update = Teuchos::null
+    );
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
-	enum { NO_BASIS_UPDATED_YET = INT_MIN };
-	int                             num_basis_;
-	int                             iter_k_rHL_init_ident_;
-	quasi_newton_stats_iq_member	quasi_newton_stats_;
-	
+  enum { NO_BASIS_UPDATED_YET = INT_MIN };
+  int                             num_basis_;
+  int                             iter_k_rHL_init_ident_;
+  quasi_newton_stats_iq_member	quasi_newton_stats_;
+  
 };	// end class ReducedHessianSecantUpdateStd_Step
 
 }	// end namespace MoochoPack 

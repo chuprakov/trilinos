@@ -92,13 +92,13 @@ namespace AbstractLinAlgPack {
  *            [in] Determines if op(R) = R (no_trans) or op(R) = R' (trans)
  */
 void rank_2_chol_update(
-	const value_type     a
-	,DVectorSlice         *u
-	,const DVectorSlice   &v
-	,DVectorSlice         *w
-	,DMatrixSliceTriEle         *R
-	,BLAS_Cpp::Transp    R_trans
-	);
+  const value_type     a
+  ,DVectorSlice         *u
+  ,const DVectorSlice   &v
+  ,DVectorSlice         *w
+  ,DMatrixSliceTriEle         *R
+  ,BLAS_Cpp::Transp    R_trans
+  );
 
 }  // end namespace AbstractLinAlgPack
 

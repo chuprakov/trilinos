@@ -40,247 +40,247 @@
 
 void DenseLinAlgPack::TestingPack::TestDenseLinAlgPackIO(std::istream& _in, std::ostream& _out) {
 
-	using std::endl;
-	using std::setw;
+  using std::endl;
+  using std::setw;
 
-	try {
+  try {
 
-	using InputStreamHelperPack::eat_comment_lines;
-	using LinAlgPackIO::bind;
-	using LinAlgPackIO::cbind;
-	using LinAlgPackIO::format;
-	
-	_out
+  using InputStreamHelperPack::eat_comment_lines;
+  using LinAlgPackIO::bind;
+  using LinAlgPackIO::cbind;
+  using LinAlgPackIO::format;
+  
+  _out
     << "\n*****************************************************************"
     << "\n*** Testing input/output operators and functions for DVector, ***"
     << "\n*** DVectorSlice, DMatrix and DMatrixSlice.                   ***"
     << "\n*** Must be run with TestDenseLinAlgPackIO.in as input        ***"
     << "\n*****************************************************************\n";
   
-	// Creating a formating object
-	_out	<< "\n  format f(_in);\n"
-			<< "  f.setw(15).showpoint().setprecision(6);\n";
-	format f(_in);
-	f.setw(15).showpoint().setprecision(6);
+  // Creating a formating object
+  _out	<< "\n  format f(_in);\n"
+      << "  f.setw(15).showpoint().setprecision(6);\n";
+  format f(_in);
+  f.setw(15).showpoint().setprecision(6);
 
-	// Testing The eating of comment lines
-	_out	<< "\nTest Eating comment lines.\n"
-			<< "  eat_comment_lines(_in,'*');\n";
-	eat_comment_lines(_in,'*');
+  // Testing The eating of comment lines
+  _out	<< "\nTest Eating comment lines.\n"
+      << "  eat_comment_lines(_in,'*');\n";
+  eat_comment_lines(_in,'*');
 
-	// Test inputing and outputing Vectors and VectorSlices
+  // Test inputing and outputing Vectors and VectorSlices
 
-	_out	<< "\nTest inputing Vectors and VectorSlices (eat_comment_lines(_in,'*') called inbetween)\n"
-			<< "  DVector v1, v2(4), v3, v4(4);\n"
-			<< "\n  _in >> v1;\n";
-	DVector v1, v2(4), v3, v4(4);
-	_in >> v1;							// input (1) : DVector with resizing from 0
-	_out	<< "\n  _out	<< cbind(f,v1);\n";
-	_out	<< cbind(f,v1);
+  _out	<< "\nTest inputing Vectors and VectorSlices (eat_comment_lines(_in,'*') called inbetween)\n"
+      << "  DVector v1, v2(4), v3, v4(4);\n"
+      << "\n  _in >> v1;\n";
+  DVector v1, v2(4), v3, v4(4);
+  _in >> v1;							// input (1) : DVector with resizing from 0
+  _out	<< "\n  _out	<< cbind(f,v1);\n";
+  _out	<< cbind(f,v1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> v2;\n";
-	_in >> v2;							// input (2) : DVector with resizing from sized
-	_out	<< "\n  _out	<< cbind(f,v2);\n";
-	_out	<< cbind(f,v2);
+  _out	<< "\n  _in >> v2;\n";
+  _in >> v2;							// input (2) : DVector with resizing from sized
+  _out	<< "\n  _out	<< cbind(f,v2);\n";
+  _out	<< cbind(f,v2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> v3;\n";
-	_in >> v3;							// input (3) : DVector with resizing from 0
-	_out	<< "\n  _out	<< cbind(f,v3());\n";
-	_out	<< cbind(f,v3());
+  _out	<< "\n  _in >> v3;\n";
+  _in >> v3;							// input (3) : DVector with resizing from 0
+  _out	<< "\n  _out	<< cbind(f,v3());\n";
+  _out	<< cbind(f,v3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> v4();\n";
-	{ DVectorSlice t = v4(); _in >> t; } // input (4) : DVectorSlice with no resizing (must be size 4)
-	_out	<< "\n  _out	<< cbind(f,v4());\n";
-	_out	<< cbind(f,v4());
+  _out	<< "\n  _in >> v4();\n";
+  { DVectorSlice t = v4(); _in >> t; } // input (4) : DVectorSlice with no resizing (must be size 4)
+  _out	<< "\n  _out	<< cbind(f,v4());\n";
+  _out	<< cbind(f,v4());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "  v1.resize(0); v3.resize(0);\n"
-			<< "\n  _in >> bind(f,v1);\n";
-	v1.resize(0); v3.resize(0);
-	_in >> bind(f,v1);				// input (5) : DVector with bound format, resize from 0
-	_out	<< "\n  _out	<< cbind(f,v1);\n";
-	_out	<< cbind(f,v1);
+  _out	<< "  v1.resize(0); v3.resize(0);\n"
+      << "\n  _in >> bind(f,v1);\n";
+  v1.resize(0); v3.resize(0);
+  _in >> bind(f,v1);				// input (5) : DVector with bound format, resize from 0
+  _out	<< "\n  _out	<< cbind(f,v1);\n";
+  _out	<< cbind(f,v1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v2);\n";
-	_in >> bind(f,v2);				// input (6) : DVector with bound format, resize from sized
-	_out	<< "\n  _out	<< cbind(f,v2);\n";
-	_out	<< cbind(f,v2);
+  _out	<< "\n  _in >> bind(f,v2);\n";
+  _in >> bind(f,v2);				// input (6) : DVector with bound format, resize from sized
+  _out	<< "\n  _out	<< cbind(f,v2);\n";
+  _out	<< cbind(f,v2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v3);\n";
-	_in >> bind(f,v3);				// input (7) : DVector with bound format, resize form 0
-	_out	<< "\n  _out	<< cbind(f,v3());\n";
-	_out	<< cbind(f,v3());
+  _out	<< "\n  _in >> bind(f,v3);\n";
+  _in >> bind(f,v3);				// input (7) : DVector with bound format, resize form 0
+  _out	<< "\n  _out	<< cbind(f,v3());\n";
+  _out	<< cbind(f,v3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v4());\n";
-	{ DVectorSlice t = v4(); _in >> bind(f,t); }		// input (8) : DVectorSlice with bound format, no resizing (must be size 4)
-	_out	<< "\n  _out	<< cbind(f,v4());\n";
-	_out	<< cbind(f,v4());
+  _out	<< "\n  _in >> bind(f,v4());\n";
+  { DVectorSlice t = v4(); _in >> bind(f,t); }		// input (8) : DVectorSlice with bound format, no resizing (must be size 4)
+  _out	<< "\n  _out	<< cbind(f,v4());\n";
+  _out	<< cbind(f,v4());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f.ignore_dim(),v1);\n";
-	_in >> bind(f.ignore_dim(),v1);	// input (9) : DVector with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,v1);\n";
-	_out	<< cbind(f,v1);
+  _out	<< "\n  _in >> bind(f.ignore_dim(),v1);\n";
+  _in >> bind(f.ignore_dim(),v1);	// input (9) : DVector with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,v1);\n";
+  _out	<< cbind(f,v1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v2);\n";
-	_in >> bind(f,v2);				// input (10) : DVector with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,v2);\n";
-	_out	<< cbind(f,v2);
+  _out	<< "\n  _in >> bind(f,v2);\n";
+  _in >> bind(f,v2);				// input (10) : DVector with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,v2);\n";
+  _out	<< cbind(f,v2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v3());\n";
-	{ DVectorSlice t = v3(); _in >> bind(f,t); }    // input (11) : DVectorSlice with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,v3());\n";
-	_out	<< cbind(f,v3());
+  _out	<< "\n  _in >> bind(f,v3());\n";
+  { DVectorSlice t = v3(); _in >> bind(f,t); }    // input (11) : DVectorSlice with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,v3());\n";
+  _out	<< cbind(f,v3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,v4());\n";
-	{ DVectorSlice t = v4(); _in >> bind(f,t); }       // input (12) : DVectorSlice with bound format,  ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,v4());\n";
-	_out	<< cbind(f,v4());
+  _out	<< "\n  _in >> bind(f,v4());\n";
+  { DVectorSlice t = v4(); _in >> bind(f,t); }       // input (12) : DVectorSlice with bound format,  ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,v4());\n";
+  _out	<< cbind(f,v4());
 
-	// Test variations of outputing for DVector and DVectorSlice objects
+  // Test variations of outputing for DVector and DVectorSlice objects
 
-	_out	<< "\nTest variations of outputing for Vectors and VectorSlices\n";
+  _out	<< "\nTest variations of outputing for Vectors and VectorSlices\n";
 
-	_out	<< "\n  _out << cbind(f.ignore_dim(),v1);\n";
-	_out << cbind(f.ignore_dim(),v1);
+  _out	<< "\n  _out << cbind(f.ignore_dim(),v1);\n";
+  _out << cbind(f.ignore_dim(),v1);
 
-	_out	<< "\n  _out << cbind(f.no_ignore_dim(), const_cast<const DVectorSlice&>(v1()) );\n";
-	{ const DVectorSlice t = v1(); _out << cbind(f.no_ignore_dim(), t ); }
+  _out	<< "\n  _out << cbind(f.no_ignore_dim(), const_cast<const DVectorSlice&>(v1()) );\n";
+  { const DVectorSlice t = v1(); _out << cbind(f.no_ignore_dim(), t ); }
 
-	_out	<< "\n  _out << cbind(f.ignore_dim().no_insert_newlines(),v1) << cbind(f,v1) << endl;\n";
-	_out << cbind(f.ignore_dim().no_insert_newlines(),v1) << cbind(f,v1) << endl;
+  _out	<< "\n  _out << cbind(f.ignore_dim().no_insert_newlines(),v1) << cbind(f,v1) << endl;\n";
+  _out << cbind(f.ignore_dim().no_insert_newlines(),v1) << cbind(f,v1) << endl;
 
-	// Test inputing and outputing DMatrix and DMatrixSlice objects
+  // Test inputing and outputing DMatrix and DMatrixSlice objects
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\nTest inputing and outputing DMatrix and DMatrixSlice objects (eat_comment_lines(_in,'*') called inbetween)\n"
-			<< "  DMatrix m1, m2(2,2), m3, m4(2,2);\n"
-			<< "\n  _in >> m1;\n";
-	DMatrix m1, m2(2,2), m3, m4(2,2);
-	_in >> m1;							// input (13) : DMatrix with resizing from 0
-	_out	<< "\n  _out	<< cbind(f.no_ignore_dim().insert_newlines(),m1);\n";
-	_out	<< cbind(f.no_ignore_dim().insert_newlines(),m1);
+  _out	<< "\nTest inputing and outputing DMatrix and DMatrixSlice objects (eat_comment_lines(_in,'*') called inbetween)\n"
+      << "  DMatrix m1, m2(2,2), m3, m4(2,2);\n"
+      << "\n  _in >> m1;\n";
+  DMatrix m1, m2(2,2), m3, m4(2,2);
+  _in >> m1;							// input (13) : DMatrix with resizing from 0
+  _out	<< "\n  _out	<< cbind(f.no_ignore_dim().insert_newlines(),m1);\n";
+  _out	<< cbind(f.no_ignore_dim().insert_newlines(),m1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> m2;\n";
-	_in >> m2;							// input (14) : DMatrix with resizing from sized
-	_out	<< "\n  _out	<< cbind(f,m2);\n";
-	_out	<< cbind(f,m2);
+  _out	<< "\n  _in >> m2;\n";
+  _in >> m2;							// input (14) : DMatrix with resizing from sized
+  _out	<< "\n  _out	<< cbind(f,m2);\n";
+  _out	<< cbind(f,m2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> m3;\n";
-	_in >> m3;							// input (15) : DMatrix with resizing from 0
-	_out	<< "\n  _out	<< cbind(f,m3());\n";
-	_out	<< cbind(f,m3());
+  _out	<< "\n  _in >> m3;\n";
+  _in >> m3;							// input (15) : DMatrix with resizing from 0
+  _out	<< "\n  _out	<< cbind(f,m3());\n";
+  _out	<< cbind(f,m3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> m4();\n";
-	{ DMatrixSlice t = m4(); _in >> t; }        // input (16) : DMatrixSlice with no resizing (must be size 4)
-	_out	<< "\n  _out	<< cbind(f,m4());\n";
-	_out	<< cbind(f,m4());
+  _out	<< "\n  _in >> m4();\n";
+  { DMatrixSlice t = m4(); _in >> t; }        // input (16) : DMatrixSlice with no resizing (must be size 4)
+  _out	<< "\n  _out	<< cbind(f,m4());\n";
+  _out	<< cbind(f,m4());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "  m1.resize(0,0); m3.resize(0,0);\n"
-			<< "\n  _in >> bind(f,m1);\n";
-	m1.resize(0,0); m3.resize(0,0);
-	_in >> bind(f,m1);				// input (17) : DMatrix with bound format, resize from 0
-	_out	<< "\n  _out	<< cbind(f,m1);\n";
-	_out	<< cbind(f,m1);
+  _out	<< "  m1.resize(0,0); m3.resize(0,0);\n"
+      << "\n  _in >> bind(f,m1);\n";
+  m1.resize(0,0); m3.resize(0,0);
+  _in >> bind(f,m1);				// input (17) : DMatrix with bound format, resize from 0
+  _out	<< "\n  _out	<< cbind(f,m1);\n";
+  _out	<< cbind(f,m1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m2);\n";
-	_in >> bind(f,m2);				// input (18) : DMatrix with bound format, resize from sized
-	_out	<< "\n  _out	<< cbind(f,m2);\n";
-	_out	<< cbind(f,m2);
+  _out	<< "\n  _in >> bind(f,m2);\n";
+  _in >> bind(f,m2);				// input (18) : DMatrix with bound format, resize from sized
+  _out	<< "\n  _out	<< cbind(f,m2);\n";
+  _out	<< cbind(f,m2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m3);\n";
-	_in >> bind(f,m3);				// input (19) : DMatrix with bound format, resize form 0
-	_out	<< "\n  _out	<< cbind(f,m3());\n";
-	_out	<< cbind(f,m3());
+  _out	<< "\n  _in >> bind(f,m3);\n";
+  _in >> bind(f,m3);				// input (19) : DMatrix with bound format, resize form 0
+  _out	<< "\n  _out	<< cbind(f,m3());\n";
+  _out	<< cbind(f,m3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m4());\n";
-	{ DMatrixSlice t = m4(); _in >> bind(f,t); }   // input (20) : DMatrixSlice with bound format, no resizing (must be size 4)
-	_out	<< "\n  _out	<< cbind(f,m4());\n";
-	_out	<< cbind(f,m4());
+  _out	<< "\n  _in >> bind(f,m4());\n";
+  { DMatrixSlice t = m4(); _in >> bind(f,t); }   // input (20) : DMatrixSlice with bound format, no resizing (must be size 4)
+  _out	<< "\n  _out	<< cbind(f,m4());\n";
+  _out	<< cbind(f,m4());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f.ignore_dim(),m1);\n";
-	_in >> bind(f.ignore_dim(),m1);	// input (21) : DMatrix with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,m1);\n";
-	_out	<< cbind(f,m1);
+  _out	<< "\n  _in >> bind(f.ignore_dim(),m1);\n";
+  _in >> bind(f.ignore_dim(),m1);	// input (21) : DMatrix with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,m1);\n";
+  _out	<< cbind(f,m1);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m2);\n";
-	_in >> bind(f,m2);				// input (22) : DMatrix with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,m2);\n";
-	_out	<< cbind(f,m2);
+  _out	<< "\n  _in >> bind(f,m2);\n";
+  _in >> bind(f,m2);				// input (22) : DMatrix with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,m2);\n";
+  _out	<< cbind(f,m2);
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m3);\n";
-	_in >> bind(f,m3);				// input (23) : DMatrixSlice with bound format, ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,m3());\n";
-	_out	<< cbind(f,m3());
+  _out	<< "\n  _in >> bind(f,m3);\n";
+  _in >> bind(f,m3);				// input (23) : DMatrixSlice with bound format, ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,m3());\n";
+  _out	<< cbind(f,m3());
 
-	eat_comment_lines(_in,'*');
+  eat_comment_lines(_in,'*');
 
-	_out	<< "\n  _in >> bind(f,m4());\n";
-	{ DMatrixSlice t = m4(); _in >> bind(f,t); } // input (24) : DMatrixSlice with bound format,  ignore vector dimension
-	_out	<< "\n  _out	<< cbind(f,m4());\n";
-	_out	<< cbind(f,m4());
+  _out	<< "\n  _in >> bind(f,m4());\n";
+  { DMatrixSlice t = m4(); _in >> bind(f,t); } // input (24) : DMatrixSlice with bound format,  ignore vector dimension
+  _out	<< "\n  _out	<< cbind(f,m4());\n";
+  _out	<< cbind(f,m4());
 
-	// Test variations of outputing for DMatrix and DMatrixSlice objects
+  // Test variations of outputing for DMatrix and DMatrixSlice objects
 
-	_out	<< "\nTest variations of outputing for DMatrix and DMatrixSlice objects\n";
+  _out	<< "\nTest variations of outputing for DMatrix and DMatrixSlice objects\n";
 
-	_out	<< "\n  _out << cbind(f.ignore_dim(),m1);\n";
-	_out << cbind(f.ignore_dim(),m1);
+  _out	<< "\n  _out << cbind(f.ignore_dim(),m1);\n";
+  _out << cbind(f.ignore_dim(),m1);
 
-	_out	<< "\n  _out << cbind(f.no_ignore_dim(), const_cast<const DMatrixSlice&>(m1()) );\n";
-	{ const DMatrixSlice t = m1(); _out << cbind(f.no_ignore_dim(), t ); }
+  _out	<< "\n  _out << cbind(f.no_ignore_dim(), const_cast<const DMatrixSlice&>(m1()) );\n";
+  { const DMatrixSlice t = m1(); _out << cbind(f.no_ignore_dim(), t ); }
 
-	_out	<< "\n  _out << 2*m1.rows() << ' ' << m1.cols() << endl << cbind(f.ignore_dim(),m1) << cbind(f,m1);\n";
-	_out << 2*m1.rows() << ' ' << m1.cols() << endl << cbind(f.ignore_dim(),m1) << cbind(f,m1);
+  _out	<< "\n  _out << 2*m1.rows() << ' ' << m1.cols() << endl << cbind(f.ignore_dim(),m1) << cbind(f,m1);\n";
+  _out << 2*m1.rows() << ' ' << m1.cols() << endl << cbind(f.ignore_dim(),m1) << cbind(f,m1);
 
-	_out	<< "\nIf you read this then no unexpected exceptions occured.\n";
+  _out	<< "\nIf you read this then no unexpected exceptions occured.\n";
 
-	} // end try
-	catch(const std::exception& excpt) {
-		_out << "\nCaught a std::exception: " << excpt.what() << endl;
-	}
-	catch(...) {
-		_out << "\nCaught and unknown exception\n";
-	}
+  } // end try
+  catch(const std::exception& excpt) {
+    _out << "\nCaught a std::exception: " << excpt.what() << endl;
+  }
+  catch(...) {
+    _out << "\nCaught and unknown exception\n";
+  }
 }

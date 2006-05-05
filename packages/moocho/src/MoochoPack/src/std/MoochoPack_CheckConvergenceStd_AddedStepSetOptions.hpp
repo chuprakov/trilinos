@@ -44,10 +44,10 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group CheckConvergenceStd {
-		scale_kkt_error_by   = SCALE_BY_ONE;
-		scale_opt_error_by_Gf = true;
-	}
+  options_group CheckConvergenceStd {
+    scale_kkt_error_by   = SCALE_BY_ONE;
+    scale_opt_error_by_Gf = true;
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -67,21 +67,21 @@ namespace MoochoPack {
   *	\end{description}
   */
 class CheckConvergenceStd_AddedStepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			CheckConvergenceStd_AddedStep >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      CheckConvergenceStd_AddedStep >
 {
 public:
 
-	///
-	CheckConvergenceStd_AddedStepSetOptions(
-		  CheckConvergenceStd_AddedStep* target = 0
-		, const char opt_grp_name[] = "CheckConvergenceStd" );
+  ///
+  CheckConvergenceStd_AddedStepSetOptions(
+      CheckConvergenceStd_AddedStep* target = 0
+    , const char opt_grp_name[] = "CheckConvergenceStd" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class CheckConvergenceStd_AddedStepSetOptions
 

@@ -68,7 +68,7 @@ namespace AbstractLinAlgPack {
   */
 template <class T_COOM>
 std::ostream& output_COOM(std::ostream& os, const T_COOM& coom
-	, SparseLinAlgPackIO::fmtflags extra_flags);
+  , SparseLinAlgPackIO::fmtflags extra_flags);
 
 }	// end namespace AbstractLinAlgPack
 

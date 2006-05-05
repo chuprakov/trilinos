@@ -45,11 +45,11 @@ using ConstrainedOptPack::QPSolverStats;
   * from an AlgorithmState object with the name qp_solver_stats_name.
   */
 class qp_solver_stats_iq_member
-	: public CastIQMember<QPSolverStats>
+  : public CastIQMember<QPSolverStats>
 {
 public:
     qp_solver_stats_iq_member()
-    	: CastIQMember<QPSolverStats>(qp_solver_stats_name)
+      : CastIQMember<QPSolverStats>(qp_solver_stats_name)
     {}
 };
 

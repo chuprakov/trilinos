@@ -41,41 +41,41 @@ namespace ConstrainedOptPack {
  * interface.
  */
 class QPSchurInitKKTSystemHessianFixedFree
-	: public QPSolverRelaxedQPSchur::InitKKTSystem 
+  : public QPSolverRelaxedQPSchur::InitKKTSystem 
 {
 public:
 
-	// ////////////////////////////////
-	// Overridden from InitKKTSystem
+  // ////////////////////////////////
+  // Overridden from InitKKTSystem
 
-	///
-	/** Initialize the KKT system where initially fixed variables are removed and
-	 * no equality constraints are included in Ko.
-	 *
-	 * For this implementation:
-	 *
-	 * ToDo: Finish documentation!
-	 */
-	void initialize_kkt_system(
-		const DVectorSlice&    g
-		,const MatrixOp&  G
-		,value_type           etaL
-		,const SpVectorSlice& dL
-		,const SpVectorSlice& dU
-		,const MatrixOp*  F
-		,BLAS_Cpp::Transp     trans_F
-		,const DVectorSlice*   f
-		,const DVectorSlice&   d
-		,const SpVectorSlice& nu
-		,size_type*           n_R
-		,i_x_free_t*          i_x_free
-		,i_x_fixed_t*         i_x_fixed
-		,bnd_fixed_t*         bnd_fixed
-		,j_f_decomp_t*        j_f_decomp
-		,DVector*              b_X
-		,Ko_ptr_t*            Ko
-		,DVector*              fo
-		) const;
+  ///
+  /** Initialize the KKT system where initially fixed variables are removed and
+   * no equality constraints are included in Ko.
+   *
+   * For this implementation:
+   *
+   * ToDo: Finish documentation!
+   */
+  void initialize_kkt_system(
+    const DVectorSlice&    g
+    ,const MatrixOp&  G
+    ,value_type           etaL
+    ,const SpVectorSlice& dL
+    ,const SpVectorSlice& dU
+    ,const MatrixOp*  F
+    ,BLAS_Cpp::Transp     trans_F
+    ,const DVectorSlice*   f
+    ,const DVectorSlice&   d
+    ,const SpVectorSlice& nu
+    ,size_type*           n_R
+    ,i_x_free_t*          i_x_free
+    ,i_x_fixed_t*         i_x_fixed
+    ,bnd_fixed_t*         bnd_fixed
+    ,j_f_decomp_t*        j_f_decomp
+    ,DVector*              b_X
+    ,Ko_ptr_t*            Ko
+    ,DVector*              fo
+    ) const;
 
 }; // end class QPSchurInitKKTSystemHessianFixedFree
 

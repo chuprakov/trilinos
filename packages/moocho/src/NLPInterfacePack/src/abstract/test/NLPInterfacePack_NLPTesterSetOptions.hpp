@@ -44,28 +44,28 @@ namespace NLPInterfacePack {
  * The options group is:
  \verbatim
 
-	options_group NLPTester {
+  options_group NLPTester {
         print_all = false;
         throw_exception = true;
-	}
+  }
  \endverbatim
  */
 class NLPTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      NLPTester >
 {
 public:
 
-	///
-	NLPTesterSetOptions(
-		  NLPTester* target = 0
-		, const char opt_grp_name[] = "NLPTester" );
+  ///
+  NLPTesterSetOptions(
+      NLPTester* target = 0
+    , const char opt_grp_name[] = "NLPTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class NLPTesterSetOptions
 

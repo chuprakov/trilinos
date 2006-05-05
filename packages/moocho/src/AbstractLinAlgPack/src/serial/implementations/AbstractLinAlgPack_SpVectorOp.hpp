@@ -47,7 +47,7 @@ namespace AbstractLinAlgPack {
  * \end{itemize}
  */
 void add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
-				   , size_type offset = 0, bool add_zeros = true );
+           , size_type offset = 0, bool add_zeros = true );
 
 ///
 /** Add elements from a sparse vector to another sparse vector.
@@ -63,7 +63,7 @@ void add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rh
  * \end{itemize}
  */
 void add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs
-				   , size_type offset = 0, bool add_zeros = true );
+           , size_type offset = 0, bool add_zeros = true );
 
 inline
 ///
@@ -91,18 +91,18 @@ inline
 DenseLinAlgPack::DVectorSlice
 AbstractLinAlgPack::dense_view( SpVectorSlice& sv_rhs )
 {
-	return sv_rhs.nz()
-		? DVectorSlice( &sv_rhs.begin()->value(), sv_rhs.nz(), 2 )
-		: DVectorSlice( NULL, 0, 0 );
+  return sv_rhs.nz()
+    ? DVectorSlice( &sv_rhs.begin()->value(), sv_rhs.nz(), 2 )
+    : DVectorSlice( NULL, 0, 0 );
 }
 
 inline
 const DenseLinAlgPack::DVectorSlice
 AbstractLinAlgPack::dense_view( const SpVectorSlice& sv_rhs )
 {
-	return sv_rhs.nz()
-		? DVectorSlice( &const_cast<SpVectorSlice&>(sv_rhs).begin()->value(), sv_rhs.nz(), 2 )
-		: DVectorSlice( NULL, 0, 0 );
+  return sv_rhs.nz()
+    ? DVectorSlice( &const_cast<SpVectorSlice&>(sv_rhs).begin()->value(), sv_rhs.nz(), 2 )
+    : DVectorSlice( NULL, 0, 0 );
 }
 
 #endif // SP_VECTOR_CLASS_H

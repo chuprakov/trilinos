@@ -81,8 +81,8 @@ class NoNonZeroElementsException : public std::logic_error
   */
 template<class T_Element>
 SparseVectorSlice<T_Element> create_slice(
-	const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_lookup
-	, size_type size, Range1D rng);
+  const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_lookup
+  , size_type size, Range1D rng);
 
 //@}
 
@@ -115,426 +115,426 @@ class SparseVectorSlice;
 template <class T_Element, class T_Alloc = std::allocator<T_Element> >
 class SparseVector {
 public:
-	/** @name Public Types. */
-	//@{
+  /** @name Public Types. */
+  //@{
 
-	///
-	typedef T_Alloc											allocator_type;
-	///
-	typedef T_Element										element_type;
-	///
-	typedef AbstractLinAlgPack::size_type					size_type;
-	///
-	typedef ptrdiff_t										difference_type;
-	///
-	typedef element_type*									iterator;
-	///
-	typedef const element_type*								const_iterator;
+  ///
+  typedef T_Alloc											allocator_type;
+  ///
+  typedef T_Element										element_type;
+  ///
+  typedef AbstractLinAlgPack::size_type					size_type;
+  ///
+  typedef ptrdiff_t										difference_type;
+  ///
+  typedef element_type*									iterator;
+  ///
+  typedef const element_type*								const_iterator;
 
 #if defined(_WINDOWS) || defined(_INTEL_CXX)
 
-	typedef std::reverse_iterator<iterator, element_type
-		, element_type&, element_type*, difference_type>	reverse_iterator;
+  typedef std::reverse_iterator<iterator, element_type
+    , element_type&, element_type*, difference_type>	reverse_iterator;
 
-	typedef std::reverse_iterator<const_iterator
-		, element_type, const element_type&
-		, const element_type*, difference_type>				const_reverse_iterator;
+  typedef std::reverse_iterator<const_iterator
+    , element_type, const element_type&
+    , const element_type*, difference_type>				const_reverse_iterator;
 
 #else
 
-	///
-	typedef std::reverse_iterator<iterator>					reverse_iterator;
-	///
-	typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
+  ///
+  typedef std::reverse_iterator<iterator>					reverse_iterator;
+  ///
+  typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 #endif
 
-	///
-	typedef SparseVectorUtilityPack::DoesNotExistException		DoesNotExistException;
-	///
-	typedef SparseVectorUtilityPack::NotSortedException			NotSortedException;
-	///
-	typedef SparseVectorUtilityPack::DuplicateIndexesException	DuplicateIndexesException;
-	///
-	typedef SparseVectorUtilityPack::OutOfRoomException			OutOfRoomException;
-	///
-	typedef SparseVectorUtilityPack::UnsizedException			UnsizedException;
-	///
-	typedef SparseVectorUtilityPack::NoNonZeroElementsException	NoNonZeroElementsException;
+  ///
+  typedef SparseVectorUtilityPack::DoesNotExistException		DoesNotExistException;
+  ///
+  typedef SparseVectorUtilityPack::NotSortedException			NotSortedException;
+  ///
+  typedef SparseVectorUtilityPack::DuplicateIndexesException	DuplicateIndexesException;
+  ///
+  typedef SparseVectorUtilityPack::OutOfRoomException			OutOfRoomException;
+  ///
+  typedef SparseVectorUtilityPack::UnsizedException			UnsizedException;
+  ///
+  typedef SparseVectorUtilityPack::NoNonZeroElementsException	NoNonZeroElementsException;
 
-	//@}
+  //@}
 
-	/** @name Constuctors */
-	//@{
+  /** @name Constuctors */
+  //@{
 
-	///
-	/** Constructs a sparse vector with no elements (#nz() == dim() == 0#) and
-	  * assumes the elements are not sorted.
-	  */
-	SparseVector(const allocator_type& alloc = allocator_type());
+  ///
+  /** Constructs a sparse vector with no elements (#nz() == dim() == 0#) and
+    * assumes the elements are not sorted.
+    */
+  SparseVector(const allocator_type& alloc = allocator_type());
 
-	/// Constructs a sparse vector with no elements (#nz() == dim() == 0#).
-	SparseVector(bool assume_sorted, const allocator_type& alloc = allocator_type());
+  /// Constructs a sparse vector with no elements (#nz() == dim() == 0#).
+  SparseVector(bool assume_sorted, const allocator_type& alloc = allocator_type());
 
-	/// Constructs a sparse vector of size #size# with storage for #max_nz# elements (#nz() == 0#)
-	SparseVector(size_type size, size_type max_nz, difference_type offset = 0
-		, bool assume_sorted = false, const allocator_type& alloc = allocator_type());
+  /// Constructs a sparse vector of size #size# with storage for #max_nz# elements (#nz() == 0#)
+  SparseVector(size_type size, size_type max_nz, difference_type offset = 0
+    , bool assume_sorted = false, const allocator_type& alloc = allocator_type());
 
-	///
-	/** Constructs a sparse vector from another sparse vector.
-	  *
-	  * Copies the complete state including the same max_nz() but a fresh copy
-	  * of the elements are made.
-	  */
-	SparseVector(const SparseVector<T_Element,T_Alloc>& sp_vec);
+  ///
+  /** Constructs a sparse vector from another sparse vector.
+    *
+    * Copies the complete state including the same max_nz() but a fresh copy
+    * of the elements are made.
+    */
+  SparseVector(const SparseVector<T_Element,T_Alloc>& sp_vec);
 
-	/// Constructs a sparse vector of from a sparse vector slice.
-	SparseVector( SparseVectorSlice<T_Element> sp_vec_slc
-		, const allocator_type& alloc = allocator_type());
+  /// Constructs a sparse vector of from a sparse vector slice.
+  SparseVector( SparseVectorSlice<T_Element> sp_vec_slc
+    , const allocator_type& alloc = allocator_type());
 
-	/// Destructor (frees storage for elements).
-	~SparseVector();
+  /// Destructor (frees storage for elements).
+  ~SparseVector();
 
-	//@}
+  //@}
 
-	///
-	/** Assignment operator.
-	  *
-	  * If #max_nz() > sp_vec.nz()# then no new allocation takes place
-	  * otherwise #this# will will be resized to #sp_vec.nz()#.
-	  */
-	SparseVector<T_Element,T_Alloc>& operator=(const SparseVector<T_Element,T_Alloc>& sp_vec);
+  ///
+  /** Assignment operator.
+    *
+    * If #max_nz() > sp_vec.nz()# then no new allocation takes place
+    * otherwise #this# will will be resized to #sp_vec.nz()#.
+    */
+  SparseVector<T_Element,T_Alloc>& operator=(const SparseVector<T_Element,T_Alloc>& sp_vec);
 
-	///
-	/** Assignment operator.
-	  *
-	  * If #max_nz() > sp_vec_slc.nz()# then no new allocation takes place
-	  * otherwise #this# will will be resized to #sp_vec_slc.nz()#.
-	  */
-	SparseVector<T_Element,T_Alloc>& operator=(const SparseVectorSlice<T_Element>& sp_vec_slc);
+  ///
+  /** Assignment operator.
+    *
+    * If #max_nz() > sp_vec_slc.nz()# then no new allocation takes place
+    * otherwise #this# will will be resized to #sp_vec_slc.nz()#.
+    */
+  SparseVector<T_Element,T_Alloc>& operator=(const SparseVectorSlice<T_Element>& sp_vec_slc);
 
-	/// 
-	/** Returns the degree of memory overlap of this SparseVector and a SparseVectorSlice.
-	  *
-	  * @return 
-	  *		\begin{description}
-	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
-	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
-	  *		\end{description}
-	  */
-	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
+  /// 
+  /** Returns the degree of memory overlap of this SparseVector and a SparseVectorSlice.
+    *
+    * @return 
+    *		\begin{description}
+    *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
+    *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
+    *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
+    *		\end{description}
+    */
+  EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
 
-	/** @name SparseVectorTemplateInterface for linear algebra operations */
-	//@{
+  /** @name SparseVectorTemplateInterface for linear algebra operations */
+  //@{
 
-	/// Return the number of elements in the full vector
-	size_type dim() const;
+  /// Return the number of elements in the full vector
+  size_type dim() const;
 
-	/// Return the number of non-zero elements
-	size_type nz() const;
+  /// Return the number of non-zero elements
+  size_type nz() const;
 
-	///
-	/** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
-	  * , for i = 1,,,#nz()#)
-	  */
-	difference_type offset() const;
+  ///
+  /** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
+    * , for i = 1,,,#nz()#)
+    */
+  difference_type offset() const;
 
-	///
-	/** Return true if the sequence is sorted.
-	  *
-	  * If sorted() was called prior to this then it is garrented to be sorted
-	  * and if assume_sorted(true) was called then a client is assumed to be
-	  * responcible for it being sorted by it can not be garrented to be sorted.
-	  */
-	bool is_sorted() const;
+  ///
+  /** Return true if the sequence is sorted.
+    *
+    * If sorted() was called prior to this then it is garrented to be sorted
+    * and if assume_sorted(true) was called then a client is assumed to be
+    * responcible for it being sorted by it can not be garrented to be sorted.
+    */
+  bool is_sorted() const;
 
-	/** @name Iterator access to elements.
-	  *
-	  * These functions return random access iterators that yield
-	  * SparseElementTemplateInterface objects when dereferenced.
-	  * This is required for the template argument.
-	  */
-	//@{
+  /** @name Iterator access to elements.
+    *
+    * These functions return random access iterators that yield
+    * SparseElementTemplateInterface objects when dereferenced.
+    * This is required for the template argument.
+    */
+  //@{
 
-	///
-	/** Returns iterator that iterates forward through the nonzero elements.
-	  *
-	  * If #is_sorted() == true# then the elements will be forward iterated in accending
-	  * indexes.
-	  */
-	iterator begin();
+  ///
+  /** Returns iterator that iterates forward through the nonzero elements.
+    *
+    * If #is_sorted() == true# then the elements will be forward iterated in accending
+    * indexes.
+    */
+  iterator begin();
 
-	///
-	const_iterator begin() const;
+  ///
+  const_iterator begin() const;
 
-	/// 
-	iterator end();
+  /// 
+  iterator end();
 
-	///
-	const_iterator end() const;
+  ///
+  const_iterator end() const;
 
-	///
-	/** Returns iterator that iterates backward through the nonzero elements.
-	  *
-	  * If #is_sorted() == true# then the elements will be forward iterated in deaccending
-	  * indexes.
-	  */
-	reverse_iterator rbegin();
+  ///
+  /** Returns iterator that iterates backward through the nonzero elements.
+    *
+    * If #is_sorted() == true# then the elements will be forward iterated in deaccending
+    * indexes.
+    */
+  reverse_iterator rbegin();
 
-	///
-	const_reverse_iterator rbegin() const;
+  ///
+  const_reverse_iterator rbegin() const;
 
-	/// 
-	reverse_iterator rend();
+  /// 
+  reverse_iterator rend();
 
-	///
-	const_reverse_iterator rend() const;
-	
-	//	end Iterator access to elements
-	//@}
+  ///
+  const_reverse_iterator rend() const;
+  
+  //	end Iterator access to elements
+  //@}
 
-	//	end SparseVectorTemplateInterface
-	//@}
+  //	end SparseVectorTemplateInterface
+  //@}
 
-	/** @name Element setup and modification */
-	//@{
+  /** @name Element setup and modification */
+  //@{
 
-	///
-	/** Resize to #size# with a maximum of #max_nz# non-zero elements.
-	  *
-	  * This does not preserve the existing elements already in the sparse vector.
-	  * If you pass in #size == 0# or #max_nz == 0# then the storage will be deallocated
-	  * and no storage will be reallocated. 
-	  */
-	void resize(size_type size, size_type max_nz, difference_type offset = 0);
+  ///
+  /** Resize to #size# with a maximum of #max_nz# non-zero elements.
+    *
+    * This does not preserve the existing elements already in the sparse vector.
+    * If you pass in #size == 0# or #max_nz == 0# then the storage will be deallocated
+    * and no storage will be reallocated. 
+    */
+  void resize(size_type size, size_type max_nz, difference_type offset = 0);
 
-	///
-	/** Resize to #size# with a #max_nz# uninitialized non-zero elements.
-	  *
-	  * This function has the same basic behavior as #resize(...)# accept
-	  * on return #nz()# will equal #nz#.  The elements are initialized
-	  * to garbage so it is imparative that the client initialize
-	  * the elements before the sparse vector is used.
-	  */
-	void uninitialized_resize(size_type size, size_type nz, size_type max_nz, difference_type offset = 0);
+  ///
+  /** Resize to #size# with a #max_nz# uninitialized non-zero elements.
+    *
+    * This function has the same basic behavior as #resize(...)# accept
+    * on return #nz()# will equal #nz#.  The elements are initialized
+    * to garbage so it is imparative that the client initialize
+    * the elements before the sparse vector is used.
+    */
+  void uninitialized_resize(size_type size, size_type nz, size_type max_nz, difference_type offset = 0);
 
-	/// Return the max number of elements that can be held without resizing
-	size_type max_nz() const;
+  /// Return the max number of elements that can be held without resizing
+  size_type max_nz() const;
 
-	///
-	/** Add an unsorted element.
-	  *
-	  * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
-	  *
-	  * If you want to add more elements than you have reserved space for in the
-	  * construction or resize operation then you have to mannually copy the
-	  * elements in the sparse vector, resize the sparse vector, and then
-	  * readd the elements including the extra ones you want to add.
-	  */
-	void add_element(element_type ele);
+  ///
+  /** Add an unsorted element.
+    *
+    * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
+    *
+    * If you want to add more elements than you have reserved space for in the
+    * construction or resize operation then you have to mannually copy the
+    * elements in the sparse vector, resize the sparse vector, and then
+    * readd the elements including the extra ones you want to add.
+    */
+  void add_element(element_type ele);
 
-	///
-	/** Add an element into a sorted sequence.
-	  *
-	  * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
-	  *
-	  * If you want to add more elements than you have reserved space for in the
-	  * construction or resize operation then you have to mannually copy the
-	  * elements in the sparse vector, resize the sparse vector, and then
-	  * readd the elements including the extra ones you want to add.
-	  */
-	void insert_element(element_type ele);
+  ///
+  /** Add an element into a sorted sequence.
+    *
+    * If #nz() = max_nz()#) then the exception OutOfRoomException will be thrown.
+    *
+    * If you want to add more elements than you have reserved space for in the
+    * construction or resize operation then you have to mannually copy the
+    * elements in the sparse vector, resize the sparse vector, and then
+    * readd the elements including the extra ones you want to add.
+    */
+  void insert_element(element_type ele);
 
-	///
-	/** Called by the client to inform this sparse vector object that the elements
-	  * be assumed to be in sequence and it is the clients responcibiliy to make sure
-	  * that it is.
-	  */
-	void assume_sorted(bool assume_is_sorted);
+  ///
+  /** Called by the client to inform this sparse vector object that the elements
+    * be assumed to be in sequence and it is the clients responcibiliy to make sure
+    * that it is.
+    */
+  void assume_sorted(bool assume_is_sorted);
 
-	/// Sort the elements into assending order by index.
-	void sort();
+  /// Sort the elements into assending order by index.
+  void sort();
 
-	///
-	/** Assert that sparse vector is sorted.
-	  *
-	  * This function will throw an exception if any of the following are not true:
-	  * \begin{enumerate}
-	  * <li> The sequence is not sorted by index (#NotSortedException#)
-	  * <li> There are duplicate indexes (#DuplicateIndexesException#)
-	  * <li> The indexes are out of range (#std::out_of_range#)
-	  * \end{enumerate}
-	  *
-	  * This function will throw an exception for the first error it finds.
-	  */
-	void assert_valid_and_sorted() const;
+  ///
+  /** Assert that sparse vector is sorted.
+    *
+    * This function will throw an exception if any of the following are not true:
+    * \begin{enumerate}
+    * <li> The sequence is not sorted by index (#NotSortedException#)
+    * <li> There are duplicate indexes (#DuplicateIndexesException#)
+    * <li> The indexes are out of range (#std::out_of_range#)
+    * \end{enumerate}
+    *
+    * This function will throw an exception for the first error it finds.
+    */
+  void assert_valid_and_sorted() const;
 
-	//@}
+  //@}
 
-	/** @name Lookup an element.
-	  *
-	  * If element v(i) exists, then a pointer to the element will
-	  * be returned.  If v(i) does not exist, then the NULL pointer
-	  * will be returned.
-	  *
-	  * If i is out of range then a std::out_of_range exception will be
-	  * thrown.
-	  * 
-	  * If the elements are sored then this operation is O(log(nz))
-	  * for a binary search.  Otherwise, it requries a O(nz) linear
-	  * search.
-	  */
-	//@{
+  /** @name Lookup an element.
+    *
+    * If element v(i) exists, then a pointer to the element will
+    * be returned.  If v(i) does not exist, then the NULL pointer
+    * will be returned.
+    *
+    * If i is out of range then a std::out_of_range exception will be
+    * thrown.
+    * 
+    * If the elements are sored then this operation is O(log(nz))
+    * for a binary search.  Otherwise, it requries a O(nz) linear
+    * search.
+    */
+  //@{
 
-	///
-	element_type* lookup_element(size_type i);
-	///
-	const element_type* lookup_element(size_type i) const;
+  ///
+  element_type* lookup_element(size_type i);
+  ///
+  const element_type* lookup_element(size_type i) const;
 
-	//@}
+  //@}
 
-	/** @name Creating a slice (subregion) of the sparse vector.
-	  *
-	  * If the vector is not sorted (#is_sorted() == false#) then all of these
-	  * functions will throw an exception (#NotSortedException#).
-	  *
-	  * ** Say something about the cost of these operations! **
-	  */
-	//@{
+  /** @name Creating a slice (subregion) of the sparse vector.
+    *
+    * If the vector is not sorted (#is_sorted() == false#) then all of these
+    * functions will throw an exception (#NotSortedException#).
+    *
+    * ** Say something about the cost of these operations! **
+    */
+  //@{
 
-	///
-	/** Allow an implicit conversion to a SparseVectorSlice<> object.
-	  *
-	  * This is a very cheap operation.
-	  */
-	operator SparseVectorSlice<T_Element>();
+  ///
+  /** Allow an implicit conversion to a SparseVectorSlice<> object.
+    *
+    * This is a very cheap operation.
+    */
+  operator SparseVectorSlice<T_Element>();
 
-	///
-	operator const SparseVectorSlice<T_Element>() const;
+  ///
+  operator const SparseVectorSlice<T_Element>() const;
 
-	///
-	/** Returns a SparseVectorSlice representing the entire sparse vector.
-	  *
-	  * It is used to provide a quick, explicit conversion so that
-	  * the SparseVector object can be used in functions that
-	  * expect a SparseVectorSlice object.
-	  */
-	SparseVectorSlice<T_Element> operator()();
+  ///
+  /** Returns a SparseVectorSlice representing the entire sparse vector.
+    *
+    * It is used to provide a quick, explicit conversion so that
+    * the SparseVector object can be used in functions that
+    * expect a SparseVectorSlice object.
+    */
+  SparseVectorSlice<T_Element> operator()();
 
-	///
-	const SparseVectorSlice<T_Element> operator()() const;
+  ///
+  const SparseVectorSlice<T_Element> operator()() const;
 
-	/// 
-	/** Returns a continous subregion of the SparseVector object.
-	  *
-	  * The returned SparseVectorSlice object represents the range of the rng argument.
-	  *
-	  * Preconditions: <ul>
-	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
-	  *		<li> #dim() > 0#	(throw #UnsizedException#)
-	  *		</ul>
-	  *
-	  * Postconditions: <ul>
-	  *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
-	  *     <li> contains all of the elements in the range.
-	  *		</ul>
-	  *
-	  * @param	rng		Index range [lbound,ubound] of the region being returned.
-	  */
-	SparseVectorSlice<T_Element> operator()(const Range1D& rng);
+  /// 
+  /** Returns a continous subregion of the SparseVector object.
+    *
+    * The returned SparseVectorSlice object represents the range of the rng argument.
+    *
+    * Preconditions: <ul>
+    *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
+    *		<li> #dim() > 0#	(throw #UnsizedException#)
+    *		</ul>
+    *
+    * Postconditions: <ul>
+    *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
+    *     <li> contains all of the elements in the range.
+    *		</ul>
+    *
+    * @param	rng		Index range [lbound,ubound] of the region being returned.
+    */
+  SparseVectorSlice<T_Element> operator()(const Range1D& rng);
 
-	///
-	const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
+  ///
+  const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
 
-	/// 
-	/** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
-	  * 
-	  * Preconditions: <ul>
-	  *		<li> #lbound > 1# (throw #out_of_range#)
-	  *		<li> #lbound < ubound# (throw #out_of_range#)
-	  *		<li> #ubound <= this->dim()# (throw #out_of_range#)
-	  *		</ul>
-	  *
-	  * Postconditions: <ul>
-	  *		<li> returned#.dim() == ubound() - lbound() + 1#
-	  *     <li> contains all of the elements in the range.
-	  *		</ul>
-	  *
-	  * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
-	  * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.
-	  */
-	SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound);
+  /// 
+  /** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
+    * 
+    * Preconditions: <ul>
+    *		<li> #lbound > 1# (throw #out_of_range#)
+    *		<li> #lbound < ubound# (throw #out_of_range#)
+    *		<li> #ubound <= this->dim()# (throw #out_of_range#)
+    *		</ul>
+    *
+    * Postconditions: <ul>
+    *		<li> returned#.dim() == ubound() - lbound() + 1#
+    *     <li> contains all of the elements in the range.
+    *		</ul>
+    *
+    * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
+    * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.
+    */
+  SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound);
 
-	/// Same as above.
-	const SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound) const;
+  /// Same as above.
+  const SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound) const;
 
-	//@}
+  //@}
 
 private:
 
-	// /////////////////////////////////////////////////////////////////////////
-	// Private types
+  // /////////////////////////////////////////////////////////////////////////
+  // Private types
 
-	///
-	typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> SpVecIndexLookup;
+  ///
+  typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> SpVecIndexLookup;
 
-	// /////////////////////////////////////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////////////////////////////////////
+  // Private data members
 
-	allocator_type			alloc_;			// allocator used to allocate memory
-	size_type				size_;			// the number of elements in the full vector
-	size_type				max_nz_;		// the amount of storage that has been allocated
+  allocator_type			alloc_;			// allocator used to allocate memory
+  size_type				size_;			// the number of elements in the full vector
+  size_type				max_nz_;		// the amount of storage that has been allocated
 //  commented out because of problems with MS Visual C++ 5.0
 //	std::vector<element_type, allocator_type>	ele_;
-	SpVecIndexLookup		index_lookup_;	// Acts as storage for elements and caching of searches.
-	bool					assume_sorted_;	// true if the client said that you can assume sorted.
-	bool					know_is_sorted_; // true if it has been varified that is sorted.
+  SpVecIndexLookup		index_lookup_;	// Acts as storage for elements and caching of searches.
+  bool					assume_sorted_;	// true if the client said that you can assume sorted.
+  bool					know_is_sorted_; // true if it has been varified that is sorted.
 
-	// //////////////////////////
-	// Private member functions
+  // //////////////////////////
+  // Private member functions
 
-	// Throw a NotSortedException of is_sorted() == false
-	void assert_is_sorted() const {
-		SparseVectorUtilityPack::assert_is_sorted(is_sorted());
-	}
+  // Throw a NotSortedException of is_sorted() == false
+  void assert_is_sorted() const {
+    SparseVectorUtilityPack::assert_is_sorted(is_sorted());
+  }
 
-	/// Assert (#OutOfRoom#) that there is room for n elements.
-	void assert_space(size_type n) const {
+  /// Assert (#OutOfRoom#) that there is room for n elements.
+  void assert_space(size_type n) const {
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
-		if(index_lookup_.nz() + n > max_nz_)
-			throw OutOfRoomException("SparseVector<T_Element,T_Alloc>::assert_space():  There is not storage for this many elements");
+    if(index_lookup_.nz() + n > max_nz_)
+      throw OutOfRoomException("SparseVector<T_Element,T_Alloc>::assert_space():  There is not storage for this many elements");
 #endif
-	}
+  }
 
-	/// Assert #dim() > 0# (#UnsizedException#) and #index_lookup_.ele() != 0# (#NoNonZeroElementsException#)
-	void assert_sized_with_mem_set() const {
-		if(!dim())
-			throw UnsizedException("SparseVector<...>::assert_sized_with_mem_set() : "
-				"Error: The sparse vector is unsized");
-		if(!index_lookup_.ele()) {
-			throw NoNonZeroElementsException("SparseVector<...>::assert_sized_with_mem_set() : "
-				"Error: There is no memory set.");
-		}
-	}
+  /// Assert #dim() > 0# (#UnsizedException#) and #index_lookup_.ele() != 0# (#NoNonZeroElementsException#)
+  void assert_sized_with_mem_set() const {
+    if(!dim())
+      throw UnsizedException("SparseVector<...>::assert_sized_with_mem_set() : "
+        "Error: The sparse vector is unsized");
+    if(!index_lookup_.ele()) {
+      throw NoNonZeroElementsException("SparseVector<...>::assert_sized_with_mem_set() : "
+        "Error: There is no memory set.");
+    }
+  }
 
-	/// Return the entire vector slice
-	SparseVectorSlice<T_Element> get_whole_sp_vec() {
-		return SparseVectorSlice<T_Element>(index_lookup_.ele(), index_lookup_.nz()
-					, index_lookup_.offset(), size_, is_sorted());
-	}
+  /// Return the entire vector slice
+  SparseVectorSlice<T_Element> get_whole_sp_vec() {
+    return SparseVectorSlice<T_Element>(index_lookup_.ele(), index_lookup_.nz()
+          , index_lookup_.offset(), size_, is_sorted());
+  }
 
-	///
-	const SparseVectorSlice<T_Element> get_whole_sp_vec() const {
-		return SparseVectorSlice<T_Element>(index_lookup_.ele(), index_lookup_.nz()
-					, index_lookup_.offset(), size_, is_sorted());
-	}
+  ///
+  const SparseVectorSlice<T_Element> get_whole_sp_vec() const {
+    return SparseVectorSlice<T_Element>(index_lookup_.ele(), index_lookup_.nz()
+          , index_lookup_.offset(), size_, is_sorted());
+  }
 
-	/// Return a SparseVectorSlice (inplementation for indexing operators)
-	SparseVectorSlice<T_Element> get_slice(const Range1D& rng) const {
-		assert_is_sorted();
-		return create_slice(index_lookup_, size_, rng);
-	}
+  /// Return a SparseVectorSlice (inplementation for indexing operators)
+  SparseVectorSlice<T_Element> get_slice(const Range1D& rng) const {
+    assert_is_sorted();
+    return create_slice(index_lookup_, size_, rng);
+  }
 
 };	// end class SparseVector
 
@@ -560,261 +560,261 @@ private:
 template <class T_Element>
 class SparseVectorSlice {
 public:
-	/** @name Public types. */
-	//@{
+  /** @name Public types. */
+  //@{
 
-	///
-	typedef T_Element										element_type;
-	///
-	typedef AbstractLinAlgPack::size_type					size_type;
-	///
-	typedef ptrdiff_t										difference_type;
-	///
-	typedef element_type*									iterator;
-	///
-	typedef const element_type*								const_iterator;
+  ///
+  typedef T_Element										element_type;
+  ///
+  typedef AbstractLinAlgPack::size_type					size_type;
+  ///
+  typedef ptrdiff_t										difference_type;
+  ///
+  typedef element_type*									iterator;
+  ///
+  typedef const element_type*								const_iterator;
 
 #if defined(_WINDOWS) || defined(_INTEL_CXX)
 
-	typedef std::reverse_iterator<iterator, element_type
-		, element_type&, element_type*, difference_type>	reverse_iterator;
+  typedef std::reverse_iterator<iterator, element_type
+    , element_type&, element_type*, difference_type>	reverse_iterator;
 
-	typedef std::reverse_iterator<const_iterator
-		, element_type, const element_type&
-		, const element_type*, difference_type>				const_reverse_iterator;
+  typedef std::reverse_iterator<const_iterator
+    , element_type, const element_type&
+    , const element_type*, difference_type>				const_reverse_iterator;
 
 #else
 
-	///
-	typedef std::reverse_iterator<iterator>					reverse_iterator;
-	///
-	typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
+  ///
+  typedef std::reverse_iterator<iterator>					reverse_iterator;
+  ///
+  typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 #endif
 
-	///
-	typedef SparseVectorUtilityPack::DoesNotExistException	DoesNotExistException;
-	///
-	typedef SparseVectorUtilityPack::NotSortedException		NotSortedException;
+  ///
+  typedef SparseVectorUtilityPack::DoesNotExistException	DoesNotExistException;
+  ///
+  typedef SparseVectorUtilityPack::NotSortedException		NotSortedException;
 
-	//@}
+  //@}
 
-	/** @name Constuctors
-	  *
-	  * The default copy constructor is allowed since it has the proper semantics.
-	  */
-	//@{
+  /** @name Constuctors
+    *
+    * The default copy constructor is allowed since it has the proper semantics.
+    */
+  //@{
 
-	///
-	/** Constructs a sparse vector slice from an array of elements.
-	  *
-	  * Here a pointer to an array of elements is used instead of a
-	  * pointer to std::vector<T_Ele,T_Alloc> in order to insulated
-	  * this class from the type of allocator used since this information
-	  * is not needed.
-	  *
-	  * A sparse vector slice with no nonzero elements can be constructed by
-	  * setting nz == 0;
-	  *
-	  * Preconditions: <ul>
-	  *		<li> #ele != 0#
-	  *		<li> #size >= nz#
-	  *		</ul>
-	  *
-	  * @param	ele		pointer to array of elements (length #nz#)
-	  * @param	offset	offset for the indexes of the elements. index = ele[i].index() + offset
-	  * @param	size	number of elements in the full vector
-	  * @param	nz		number of non-zero elements in vector
-	  */
-	SparseVectorSlice(element_type ele[], size_type nz, difference_type offset, size_type size
-		, bool assume_sorted = false);
+  ///
+  /** Constructs a sparse vector slice from an array of elements.
+    *
+    * Here a pointer to an array of elements is used instead of a
+    * pointer to std::vector<T_Ele,T_Alloc> in order to insulated
+    * this class from the type of allocator used since this information
+    * is not needed.
+    *
+    * A sparse vector slice with no nonzero elements can be constructed by
+    * setting nz == 0;
+    *
+    * Preconditions: <ul>
+    *		<li> #ele != 0#
+    *		<li> #size >= nz#
+    *		</ul>
+    *
+    * @param	ele		pointer to array of elements (length #nz#)
+    * @param	offset	offset for the indexes of the elements. index = ele[i].index() + offset
+    * @param	size	number of elements in the full vector
+    * @param	nz		number of non-zero elements in vector
+    */
+  SparseVectorSlice(element_type ele[], size_type nz, difference_type offset, size_type size
+    , bool assume_sorted = false);
 
-	//@}
+  //@}
 
-	///
-	/** Constructs a sparse vector slice view from another sparse vector slice.
-	  */
-	void bind(SparseVectorSlice svs);
+  ///
+  /** Constructs a sparse vector slice view from another sparse vector slice.
+    */
+  void bind(SparseVectorSlice svs);
 
-	/// 
-	/** Returns the degree of memory overlap of this SparseVector and a SparseVectorSlice.
-	  *
-	  * @return 
-	  *		\begin{description}
-	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
-	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
-	  *		\end{description}
-	  */
-	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
+  /// 
+  /** Returns the degree of memory overlap of this SparseVector and a SparseVectorSlice.
+    *
+    * @return 
+    *		\begin{description}
+    *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
+    *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
+    *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
+    *		\end{description}
+    */
+  EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
 
-	/** @name Sparse Vector Templated interface for linear algebra operations */
-	//@{
+  /** @name Sparse Vector Templated interface for linear algebra operations */
+  //@{
 
-	/// Return the number of elements in the full vector
-	size_type dim() const;
+  /// Return the number of elements in the full vector
+  size_type dim() const;
 
-	/// Return the number of non-zero elements
-	size_type nz() const;
+  /// Return the number of non-zero elements
+  size_type nz() const;
 
-	///
-	/** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
-	  * , for i = 1,,,#nz()#)
-	  */
-	difference_type offset() const;
+  ///
+  /** Return the offset for the indexes (ith real index = #begin()[i-1]->index() + offset()#
+    * , for i = 1,,,#nz()#)
+    */
+  difference_type offset() const;
 
-	///
-	/** Return true if the sequence is assumed sorted.
-	  */
-	bool is_sorted() const;
+  ///
+  /** Return true if the sequence is assumed sorted.
+    */
+  bool is_sorted() const;
 
-	///
-	iterator begin();
+  ///
+  iterator begin();
 
-	///
-	const_iterator begin() const;
+  ///
+  const_iterator begin() const;
 
-	/// 
-	iterator end();
+  /// 
+  iterator end();
 
-	///
-	const_iterator end() const;
+  ///
+  const_iterator end() const;
 
-	///
-	reverse_iterator rbegin();
+  ///
+  reverse_iterator rbegin();
 
-	///
-	const_reverse_iterator rbegin() const;
+  ///
+  const_reverse_iterator rbegin() const;
 
-	/// 
-	reverse_iterator rend();
+  /// 
+  reverse_iterator rend();
 
-	///
-	const_reverse_iterator rend() const;
+  ///
+  const_reverse_iterator rend() const;
 
-	//@}
+  //@}
 
-	/** @name Lookup an element.
-	  *
-	  * If element v(i) exists, then a pointer to the element will
-	  * be returned.  If v(i) does not exist, then the NULL pointer
-	  * will be returned.
-	  *
-	  * If i is out of range then a std::out_of_range exception will be
-	  * thrown.
-	  * 
-	  * If the elements are sored then this operation is O(log(nz))
-	  * for a binary search.  Otherwise, it requries a O(nz) linear
-	  * search.
-	  */
-	//@{
+  /** @name Lookup an element.
+    *
+    * If element v(i) exists, then a pointer to the element will
+    * be returned.  If v(i) does not exist, then the NULL pointer
+    * will be returned.
+    *
+    * If i is out of range then a std::out_of_range exception will be
+    * thrown.
+    * 
+    * If the elements are sored then this operation is O(log(nz))
+    * for a binary search.  Otherwise, it requries a O(nz) linear
+    * search.
+    */
+  //@{
 
-	///
-	element_type* lookup_element(size_type i);
-	///
-	const element_type* lookup_element(size_type i) const;
+  ///
+  element_type* lookup_element(size_type i);
+  ///
+  const element_type* lookup_element(size_type i) const;
 
-	//@}
+  //@}
 
-	/** @name Creating a slice (subregion) of the sparse vector */
-	//@{
+  /** @name Creating a slice (subregion) of the sparse vector */
+  //@{
 
-	/// 
-	/** Returns a SparseVectorSlice<> reference to this object.
-	  *
-	  * It is included for uniformity with SparseVector.
-	  */
-	SparseVectorSlice<T_Element>& operator()();
+  /// 
+  /** Returns a SparseVectorSlice<> reference to this object.
+    *
+    * It is included for uniformity with SparseVector.
+    */
+  SparseVectorSlice<T_Element>& operator()();
 
-	///
-	const SparseVectorSlice<T_Element>& operator()() const;
+  ///
+  const SparseVectorSlice<T_Element>& operator()() const;
 
-	/// Allow address to be taken of an rvalue of this object
-	SparseVectorSlice* operator&()
-	{    return this; }
+  /// Allow address to be taken of an rvalue of this object
+  SparseVectorSlice* operator&()
+  {    return this; }
 
-	const SparseVectorSlice* operator&() const
-	{    return this; }
+  const SparseVectorSlice* operator&() const
+  {    return this; }
 
-	/// 
-	/** Returns a continous subregion of the SparseVector object.
-	  *
-	  * The returned SparseVectorSlice object represents the range of the rng argument.
-	  *
-	  * Preconditions: <ul>
-	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
-	  *		<li> #dim() > 0#	(throw #UnsizedException#)
-	  *		</ul>
-	  *
-	  * Postconditions: <ul>
-	  *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
-	  *     <li> contains all of the elements in the range.
-	  *		</ul>
-	  *
-	  * @param	rng		Index range [lbound,ubound] of the region being returned.
-	  */
-	SparseVectorSlice<T_Element> operator()(const Range1D& rng);
+  /// 
+  /** Returns a continous subregion of the SparseVector object.
+    *
+    * The returned SparseVectorSlice object represents the range of the rng argument.
+    *
+    * Preconditions: <ul>
+    *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
+    *		<li> #dim() > 0#	(throw #UnsizedException#)
+    *		</ul>
+    *
+    * Postconditions: <ul>
+    *		<li> returned#.dim() == rng.ubound() - rng.lbound() + 1#
+    *     <li> contains all of the elements in the range.
+    *		</ul>
+    *
+    * @param	rng		Index range [lbound,ubound] of the region being returned.
+    */
+  SparseVectorSlice<T_Element> operator()(const Range1D& rng);
 
-	///
-	const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
+  ///
+  const SparseVectorSlice<T_Element> operator()(const Range1D& rng) const;
 
-	/// 
-	/** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
-	  * 
-	  * Preconditions: <ul>
-	  *		<li> #lbound > 1# (throw #out_of_range#)
-	  *		<li> #lbound < ubound# (throw #out_of_range#)
-	  *		<li> #ubound <= this->dim()# (throw #out_of_range#)
-	  *		</ul>
-	  *
-	  * Postconditions: <ul>
-	  *		<li> returned#.dim() == ubound() - lbound() + 1#
-	  *     <li> contains all of the elements in the range.
-	  *		</ul>
-	  *
-	  * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
-	  * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.
-	  */
-	SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound);
+  /// 
+  /** Returns a SparseVectorSlice object for the continous subregion [ubound, lbound].
+    * 
+    * Preconditions: <ul>
+    *		<li> #lbound > 1# (throw #out_of_range#)
+    *		<li> #lbound < ubound# (throw #out_of_range#)
+    *		<li> #ubound <= this->dim()# (throw #out_of_range#)
+    *		</ul>
+    *
+    * Postconditions: <ul>
+    *		<li> returned#.dim() == ubound() - lbound() + 1#
+    *     <li> contains all of the elements in the range.
+    *		</ul>
+    *
+    * @param	lbound		Lower bound of range [lbound,ubound] of the region being returned.
+    * @param	ubound		Upper bound of range [lbound,ubound] of the region being returned.
+    */
+  SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound);
 
-	///
-	const SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound) const;
+  ///
+  const SparseVectorSlice<T_Element> operator()(size_type lbound, size_type ubound) const;
 
-	//@}
+  //@}
 
 private:
-	// /////////////////////////////////////////////////////////////////////////
-	// Private types
+  // /////////////////////////////////////////////////////////////////////////
+  // Private types
 
-	///
-	typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> index_lookup_type;
+  ///
+  typedef SparseVectorUtilityPack::SpVecIndexLookup<element_type> index_lookup_type;
 
-	// /////////////////////////////////////////////////////////////////////////
-	// Private data members
+  // /////////////////////////////////////////////////////////////////////////
+  // Private data members
 
-	index_lookup_type		index_lookup_;	// Acts as storage and cacheing
-	size_type				size_;			// size of the full vector
-	bool					assume_sorted_;	// true if the client said that you can assume sorted.
+  index_lookup_type		index_lookup_;	// Acts as storage and cacheing
+  size_type				size_;			// size of the full vector
+  bool					assume_sorted_;	// true if the client said that you can assume sorted.
 
 
-	// /////////////////////////////////////////////////////////////////////////
-	// Private member functions
+  // /////////////////////////////////////////////////////////////////////////
+  // Private member functions
 
-	// Throw a NotSortedException of is_sorted() == false
-	void assert_is_sorted() const {
-		SparseVectorUtilityPack::assert_is_sorted(is_sorted());
-	}
+  // Throw a NotSortedException of is_sorted() == false
+  void assert_is_sorted() const {
+    SparseVectorUtilityPack::assert_is_sorted(is_sorted());
+  }
 
-	/// Return a SparseVectorSlice (inplementation for indexing operators)
-	SparseVectorSlice<T_Element> get_slice(const Range1D& rng) const {
-		assert_is_sorted();
-		return create_slice(index_lookup_, size_, rng);
-	}
+  /// Return a SparseVectorSlice (inplementation for indexing operators)
+  SparseVectorSlice<T_Element> get_slice(const Range1D& rng) const {
+    assert_is_sorted();
+    return create_slice(index_lookup_, size_, rng);
+  }
 
-	/// Not defined and not to be called
-	SparseVectorSlice();
-	/// Not defined and not to be called
-	SparseVectorSlice<element_type>& operator=(const SparseVectorSlice<element_type>&);
+  /// Not defined and not to be called
+  SparseVectorSlice();
+  /// Not defined and not to be called
+  SparseVectorSlice<element_type>& operator=(const SparseVectorSlice<element_type>&);
 
 };	// end class SparseVectorSlice
 
@@ -830,12 +830,12 @@ namespace SparseVectorUtilityPack {
   */
 template< class T_Element >
 inline const T_Element* lookup_element( const SpVecIndexLookup<T_Element>& index_lookup
-	, typename SpVecIndexLookup<T_Element>::index_type index, bool is_sorted )
+  , typename SpVecIndexLookup<T_Element>::index_type index, bool is_sorted )
 {
-	size_type poss;	
-	return ( ( poss = index_lookup.find_element(index,is_sorted) ) < index_lookup.nz() )
-		? index_lookup.ele() + poss
-		: NULL;
+  size_type poss;	
+  return ( ( poss = index_lookup.find_element(index,is_sorted) ) < index_lookup.nz() )
+    ? index_lookup.ele() + poss
+    : NULL;
 }
 
 }	// end namespace SparseVectorUtilityPack
@@ -847,111 +847,111 @@ inline const T_Element* lookup_element( const SpVecIndexLookup<T_Element>& index
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::SparseVector(const allocator_type& alloc)
-	: alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(false), know_is_sorted_(false)
+  : alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(false), know_is_sorted_(false)
 {}
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::SparseVector(bool assume_sorted,const allocator_type& alloc)
-	: alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(assume_sorted), know_is_sorted_(false)
+  : alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(assume_sorted), know_is_sorted_(false)
 {}
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::SparseVector(size_type size, size_type max_nz
-	  , difference_type offset, bool assume_sorted, const allocator_type& alloc)
-	: alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(assume_sorted), know_is_sorted_(false)
+    , difference_type offset, bool assume_sorted, const allocator_type& alloc)
+  : alloc_(alloc), size_(0), max_nz_(0), assume_sorted_(assume_sorted), know_is_sorted_(false)
 {
-	resize(size,max_nz,offset);
+  resize(size,max_nz,offset);
 }
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::~SparseVector() {
-	resize(0,0);
+  resize(0,0);
 }
 
 // SparseVectorTemplateInterface for linear algebra operations
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::dim() const {
-	return size_;
+  return size_;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::nz() const {
-	return index_lookup_.nz();
+  return index_lookup_.nz();
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::difference_type SparseVector<T_Element,T_Alloc>::offset() const {
-	return index_lookup_.offset();
+  return index_lookup_.offset();
 }
 
 template <class T_Element, class T_Alloc>
 inline bool SparseVector<T_Element,T_Alloc>::is_sorted() const {
-	return nz() <= 1 || assume_sorted_ || know_is_sorted_;
+  return nz() <= 1 || assume_sorted_ || know_is_sorted_;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::begin() {
-	return index_lookup_.nz() ? index_lookup_.ele() : NULL;
+  return index_lookup_.nz() ? index_lookup_.ele() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::begin() const {
-	return index_lookup_.nz() ? index_lookup_.ele() : NULL;
+  return index_lookup_.nz() ? index_lookup_.ele() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::end() {
-	return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
+  return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::end() const {
-	return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
+  return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() {
-	return reverse_iterator(end());
+  return reverse_iterator(end());
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() const {
-	return const_reverse_iterator(end());
+  return const_reverse_iterator(end());
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rend() {
-	return reverse_iterator(begin());
+  return reverse_iterator(begin());
 }
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rend() const {
-	return const_reverse_iterator(begin());
+  return const_reverse_iterator(begin());
 }
 
 // Element setup and modification
 
 template <class T_Element, class T_Alloc>
 inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::max_nz() const {
-	return max_nz_;
+  return max_nz_;
 }
 
 template <class T_Element, class T_Alloc>
 inline void SparseVector<T_Element,T_Alloc>::add_element(element_type ele) {
-	assert_space(1);
-	assume_sorted_ = know_is_sorted_ = false;
+  assert_space(1);
+  assume_sorted_ = know_is_sorted_ = false;
 #ifdef _PG_CXX
-	new (index_lookup_.ele() + index_lookup_.nz()) element_type;
+  new (index_lookup_.ele() + index_lookup_.nz()) element_type;
 #else
-	alloc_.construct(index_lookup_.ele() + index_lookup_.nz(), ele);
+  alloc_.construct(index_lookup_.ele() + index_lookup_.nz(), ele);
 #endif
-	index_lookup_.incr_nz();
+  index_lookup_.incr_nz();
 }
 
 template <class T_Element, class T_Alloc>
 inline void SparseVector<T_Element,T_Alloc>::assume_sorted(bool assume_is_sorted) {
-	assume_sorted_ = assume_is_sorted;
+  assume_sorted_ = assume_is_sorted;
 }
 
 // Lookup an element
@@ -961,7 +961,7 @@ inline
 typename SparseVector<T_Element,T_Alloc>::element_type*
 SparseVector<T_Element,T_Alloc>::lookup_element(size_type i)
 {
-	return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
+  return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
 }
 
 template <class T_Element, class T_Alloc>
@@ -969,49 +969,49 @@ inline
 const typename SparseVector<T_Element,T_Alloc>::element_type*
 SparseVector<T_Element,T_Alloc>::lookup_element(size_type i) const
 {
-	return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
+  return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
 }
 
 // Creating a slice (subregion) of the sparse vector
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::operator SparseVectorSlice<T_Element>() {
-	return get_whole_sp_vec();
+  return get_whole_sp_vec();
 }
 
 template <class T_Element, class T_Alloc>
 inline SparseVector<T_Element,T_Alloc>::operator const SparseVectorSlice<T_Element>() const {
-	return get_whole_sp_vec();
+  return get_whole_sp_vec();
 }
 
 template <class T_Element, class T_Alloc>
 inline SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()() {
-	return get_whole_sp_vec();
+  return get_whole_sp_vec();
 }
 
 template <class T_Element, class T_Alloc>
 inline const SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()() const {
-	return get_whole_sp_vec();
+  return get_whole_sp_vec();
 }
 
 template <class T_Element, class T_Alloc>
 inline SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()(const Range1D& rng) {
-	return get_slice(rng);
+  return get_slice(rng);
 }
 
 template <class T_Element, class T_Alloc>
 inline const SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()(const Range1D& rng) const {
-	return get_slice(rng);
+  return get_slice(rng);
 }
 
 template <class T_Element, class T_Alloc>
 inline SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()(size_type lbound, size_type ubound) {
-	return get_slice(Range1D(lbound,ubound));
+  return get_slice(Range1D(lbound,ubound));
 }
 
 template <class T_Element, class T_Alloc>
 inline const SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::operator()(size_type lbound, size_type ubound) const {
-	return get_slice(Range1D(lbound,ubound));
+  return get_slice(Range1D(lbound,ubound));
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////
@@ -1021,78 +1021,78 @@ inline const SparseVectorSlice<T_Element> SparseVector<T_Element,T_Alloc>::opera
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element>::SparseVectorSlice(element_type ele[], size_type nz
-	  , difference_type offset, size_type size, bool assume_sorted)
-	: index_lookup_(ele,nz,offset), size_(size), assume_sorted_(assume_sorted)
+    , difference_type offset, size_type size, bool assume_sorted)
+  : index_lookup_(ele,nz,offset), size_(size), assume_sorted_(assume_sorted)
 {}
 
 template <class T_Element>
 inline void SparseVectorSlice<T_Element>::bind(SparseVectorSlice svs)
 {
-	index_lookup_	= svs.index_lookup_;
-	size_			= svs.size_;
-	assume_sorted_	= svs.assume_sorted_;
+  index_lookup_	= svs.index_lookup_;
+  size_			= svs.size_;
+  assume_sorted_	= svs.assume_sorted_;
 }
 
 // Sparse Vector Templated interface for linear algebra operations
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::dim() const {
-	return size_;
+  return size_;
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::nz() const {
-	return index_lookup_.nz();
+  return index_lookup_.nz();
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::difference_type SparseVectorSlice<T_Element>::offset() const {
-	return index_lookup_.offset();
+  return index_lookup_.offset();
 }
 
 template <class T_Element>
 inline bool SparseVectorSlice<T_Element>::is_sorted() const {
-	return nz() <= 1 || assume_sorted_;
+  return nz() <= 1 || assume_sorted_;
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::begin() {
-	return index_lookup_.ele();
+  return index_lookup_.ele();
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::begin() const {
-	return index_lookup_.ele();
+  return index_lookup_.ele();
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::end() {
-	return index_lookup_.ele() + index_lookup_.nz();
+  return index_lookup_.ele() + index_lookup_.nz();
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::end() const {
-	return index_lookup_.ele() +  index_lookup_.nz();
+  return index_lookup_.ele() +  index_lookup_.nz();
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rbegin() {
-	return reverse_iterator(end());
+  return reverse_iterator(end());
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rbegin() const {
-	return const_reverse_iterator(end());
+  return const_reverse_iterator(end());
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rend() {
-	return reverse_iterator(begin());
+  return reverse_iterator(begin());
 }
 
 template <class T_Element>
 inline typename SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rend() const {
-	return const_reverse_iterator(begin());
+  return const_reverse_iterator(begin());
 }
 
 // Lookup an element
@@ -1102,7 +1102,7 @@ inline
 typename SparseVectorSlice<T_Element>::element_type*
 SparseVectorSlice<T_Element>::lookup_element(size_type i)
 {
-	return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
+  return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
 }
 
 template <class T_Element>
@@ -1110,39 +1110,39 @@ inline
 const typename SparseVectorSlice<T_Element>::element_type*
 SparseVectorSlice<T_Element>::lookup_element(size_type i) const
 {
-	return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
+  return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
 }
 
 // Creating a slice (subregion) of the sparse vector
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element>& SparseVectorSlice<T_Element>::operator()() {
-	return *this;
+  return *this;
 }
 
 template <class T_Element>
 inline const SparseVectorSlice<T_Element>& SparseVectorSlice<T_Element>::operator()() const {
-	return *this;
+  return *this;
 }
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element> SparseVectorSlice<T_Element>::operator()(const Range1D& rng) {
-	return get_slice(rng);
+  return get_slice(rng);
 }
 
 template <class T_Element>
 inline const SparseVectorSlice<T_Element> SparseVectorSlice<T_Element>::operator()(const Range1D& rng) const {
-	return get_slice(rng);
+  return get_slice(rng);
 }
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element> SparseVectorSlice<T_Element>::operator()(size_type lbound, size_type ubound) {
-	return get_slice(Range1D(lbound,ubound));
+  return get_slice(Range1D(lbound,ubound));
 }
 
 template <class T_Element>
 inline const SparseVectorSlice<T_Element> SparseVectorSlice<T_Element>::operator()(size_type lbound, size_type ubound) const {
-	return get_slice(Range1D(lbound,ubound));
+  return get_slice(Range1D(lbound,ubound));
 }
 
 } // end namespace AbstractLinAlgPack 

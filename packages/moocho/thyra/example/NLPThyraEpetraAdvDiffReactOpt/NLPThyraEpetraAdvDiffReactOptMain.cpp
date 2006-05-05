@@ -113,14 +113,14 @@ const int numLOWSFactoryTypes =
 
 int main( int argc, char* argv[] )
 {
-	using Teuchos::rcp;
-	using Teuchos::OSTab;
-	using MoochoPack::MoochoSolver;
-	using NLPInterfacePack::NLP;
-	using NLPInterfacePack::NLPDirectThyraModelEvaluator;
-	using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
-	using Teuchos::CommandLineProcessor;
-	typedef AbstractLinAlgPack::value_type  Scalar;
+  using Teuchos::rcp;
+  using Teuchos::OSTab;
+  using MoochoPack::MoochoSolver;
+  using NLPInterfacePack::NLP;
+  using NLPInterfacePack::NLPDirectThyraModelEvaluator;
+  using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
+  using Teuchos::CommandLineProcessor;
+  typedef AbstractLinAlgPack::value_type  Scalar;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
@@ -131,14 +131,14 @@ int main( int argc, char* argv[] )
 
   Teuchos::RefCountPtr<Teuchos::FancyOStream> out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
-	try {
-	
-		// Create the solver object
-		MoochoSolver  solver;
+  try {
+  
+    // Create the solver object
+    MoochoSolver  solver;
 
-		//
-		// Get options from the command line
-		//
+    //
+    // Get options from the command line
+    //
 
     const ELOWSFactoryType LOWSFactoryTypeValues[numLOWSFactoryTypes] = {
       LOWSF_AMESOS
@@ -169,7 +169,7 @@ int main( int argc, char* argv[] )
     double              x0              = 0.0;
     double              p0              = 1.0;
     double              reactionRate    = 1.0;
-		bool                do_sim          = false;
+    bool                do_sim          = false;
     bool                use_direct      = false;
     bool                use_black_box   = false;
     bool                use_finite_diff = true;
@@ -193,52 +193,52 @@ int main( int argc, char* argv[] )
     std::string         stateSoluFileBase   = "";
     std::string         paramSoluFileBase   = "";
 
-		CommandLineProcessor  clp;
+    CommandLineProcessor  clp;
     clp.throwExceptions(false);
     clp.addOutputSetupOptions(true);
 
-		clp.setOption( "len-x", &len_x, "Mesh dimension in the x direction (Overridden by --geom-file-base)." );
-		clp.setOption( "len-y", &len_y, "Mesh dimension in the y direction (Overridden by --geom-file-base)." );
-		clp.setOption( "local-nx", &local_nx, "Number of local discretization segments in the x direction (Overridden by --geom-file-base)." );
-		clp.setOption( "local-ny", &local_ny, "Number of local discretization segments in the y direction (Overridden by --geom-file-base)." );
-		clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file to read the mesh from." );
-		clp.setOption( "np", &np, "The number of optimization parameters (If < 0 then all of boundary is used)" );
-		clp.setOption( "beta", &beta, "Regularization." );
-		clp.setOption( "x0", &x0, "Initial guess for the state." );
-		clp.setOption( "p0", &p0, "Initial guess or nonminal value for optimization parameters." );
-		clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
-		clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
-		clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
-		clp.setOption( "black-box", "all-at-once",  &use_black_box, "Flag for if we do black-box NAND or all-at-once SAND." );
-		//clp.setOption( "use-finite-diff", "use-finite-diff",  &use_finite_diff, "Flag for if we are using finite differences or not." );
-		clp.setOption( "fd-step-len", &fd_step_len, "The finite-difference step length." );
-		clp.setOption( "fwd-newton-tol", &fwd_newton_tol, "Nonlinear residual tolerance for the forward Newton solve." );
-		clp.setOption( "fwd-newton-max-iters", &fwd_newton_max_iters, "Max number of iterations for the forward Newton solve." );
-		clp.setOption( "lowsf", &lowsFactoryType
+    clp.setOption( "len-x", &len_x, "Mesh dimension in the x direction (Overridden by --geom-file-base)." );
+    clp.setOption( "len-y", &len_y, "Mesh dimension in the y direction (Overridden by --geom-file-base)." );
+    clp.setOption( "local-nx", &local_nx, "Number of local discretization segments in the x direction (Overridden by --geom-file-base)." );
+    clp.setOption( "local-ny", &local_ny, "Number of local discretization segments in the y direction (Overridden by --geom-file-base)." );
+    clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file to read the mesh from." );
+    clp.setOption( "np", &np, "The number of optimization parameters (If < 0 then all of boundary is used)" );
+    clp.setOption( "beta", &beta, "Regularization." );
+    clp.setOption( "x0", &x0, "Initial guess for the state." );
+    clp.setOption( "p0", &p0, "Initial guess or nonminal value for optimization parameters." );
+    clp.setOption( "reaction-rate", &reactionRate, "The rate of the reaction" );
+    clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
+    clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
+    clp.setOption( "black-box", "all-at-once",  &use_black_box, "Flag for if we do black-box NAND or all-at-once SAND." );
+    //clp.setOption( "use-finite-diff", "use-finite-diff",  &use_finite_diff, "Flag for if we are using finite differences or not." );
+    clp.setOption( "fd-step-len", &fd_step_len, "The finite-difference step length." );
+    clp.setOption( "fwd-newton-tol", &fwd_newton_tol, "Nonlinear residual tolerance for the forward Newton solve." );
+    clp.setOption( "fwd-newton-max-iters", &fwd_newton_max_iters, "Max number of iterations for the forward Newton solve." );
+    clp.setOption( "lowsf", &lowsFactoryType
                    ,numLOWSFactoryTypes,LOWSFactoryTypeValues,LOWSFactoryTypeNames
                    ,"The implementation for the LinearOpWithSolveFactory object used to solve the state linear systems" );
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-		clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
-		clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
-		clp.setOption( "lowsf-params-used-file", &lowsfParamsUsedFile, "File to write the LOWSF parameters that where actually used to." );
+    clp.setOption( "lowsf-params-file", &lowsfParamsFile, "LOWSF parameters XML file (must be compatible with --lowsf=???" );
+    clp.setOption( "lowsf-extra-params", &lowsfExtraParams, "Extra LOWSF parameters specified as a string in XML format (must be compatible with --lowsf=???" );
+    clp.setOption( "lowsf-params-used-file", &lowsfParamsUsedFile, "File to write the LOWSF parameters that where actually used to." );
 #endif
-		clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
+    clp.setOption( "use-prec", "no-use-prec",  &usePrec, "Flag for if preconditioning is used or not" );
     clp.setOption( "print-on-all-procs", "print-on-root-proc", &printOnAllProcs, "Print on all processors or just the root processor?" );
-		clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
-		clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
-		clp.setOption( "x-guess-file", &stateGuessFileBase, "Base file name to read the guess of the state x from." );
-		clp.setOption( "scale-x-guess", &scaleStateGuess, "Amount to scale the guess for x read in by --x-guess-file." );
-		clp.setOption( "p-guess-file", &paramGuessFileBase, "Base file name to read the guess of the parameters p from." );
-		clp.setOption( "scale-p-guess", &scaleParamGuess, "Amount to scale the guess for p read in by --p-guess-file." );
-		clp.setOption( "x-solu-file", &stateSoluFileBase, "Base file name to write the state solution x to." );
-		clp.setOption( "p-solu-file", &paramSoluFileBase, "Base file name to write the parameter solution p to." );
+    clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
+    clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
+    clp.setOption( "x-guess-file", &stateGuessFileBase, "Base file name to read the guess of the state x from." );
+    clp.setOption( "scale-x-guess", &scaleStateGuess, "Amount to scale the guess for x read in by --x-guess-file." );
+    clp.setOption( "p-guess-file", &paramGuessFileBase, "Base file name to read the guess of the parameters p from." );
+    clp.setOption( "scale-p-guess", &scaleParamGuess, "Amount to scale the guess for p read in by --p-guess-file." );
+    clp.setOption( "x-solu-file", &stateSoluFileBase, "Base file name to write the state solution x to." );
+    clp.setOption( "p-solu-file", &paramSoluFileBase, "Base file name to write the parameter solution p to." );
     solver.setup_commandline_processor(&clp);
 
-		CommandLineProcessor::EParseCommandLineReturn
-			parse_return = clp.parse(argc,argv,&std::cerr);
+    CommandLineProcessor::EParseCommandLineReturn
+      parse_return = clp.parse(argc,argv,&std::cerr);
 
-		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
-			return parse_return;
+    if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
+      return parse_return;
 
     //
     // Setup the output streams
@@ -268,9 +268,9 @@ int main( int argc, char* argv[] )
       << "\n*** NLPThyraEpetraAdvDiffReactOptMain, numProcs="<<numProcs
       << "\n***\n";
     
-		//
-		// Create the Thyra::ModelEvaluator object
-		//
+    //
+    // Create the Thyra::ModelEvaluator object
+    //
 
     *out << "\nCreate the GLpApp::GLpYUEpetraDataPool object ...\n";
 
@@ -373,9 +373,9 @@ int main( int argc, char* argv[] )
       epetraThyraModel->setInitialGuess(epetraThyraModel_initialGuess);
     }
 
-		//
-		// Create the NLP
-		//
+    //
+    // Create the NLP
+    //
     
     Teuchos::RefCountPtr<NLP> nlp;
 
@@ -425,11 +425,11 @@ int main( int argc, char* argv[] )
     // Set the journal file
     solver.set_journal_out(journalOut);
     
-		// Set the NLP
-		solver.set_nlp(nlp);
+    // Set the NLP
+    solver.set_nlp(nlp);
 
-		// Solve the NLP
-		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
+    // Solve the NLP
+    const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
 
     if( stateSoluFileBase != "" && epetraThyraModel->getFinalPoint().get_x().get() ) {
       *out << "\nWriting the state solution \'x\' to the file(s) with base name \""<<stateSoluFileBase<<"\" ...\n";
@@ -446,15 +446,15 @@ int main( int argc, char* argv[] )
       Teuchos::writeParameterListToXmlFile(*lowsfPL,lowsfParamsUsedFile);
     }
 #endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
-		
-		//
-		// Return the solution status (0 if sucessfull)
-		//
+    
+    //
+    // Return the solution status (0 if sucessfull)
+    //
 
-		return solution_status;
+    return solution_status;
 
-	}
+  }
   TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
 
-	return MoochoSolver::SOLVE_RETURN_EXCEPTION;
+  return MoochoSolver::SOLVE_RETURN_EXCEPTION;
 }

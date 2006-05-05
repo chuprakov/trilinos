@@ -62,42 +62,42 @@ namespace MoochoPack {
  * computing inacurate solutions so we must select a new decomposition.
  */
 class CheckDecompositionFromPy_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full name
+  : public IterationPack::AlgorithmStep // doxygen needs full name
 {
 public:
 
-	///
-	STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_cond )
+  ///
+  STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_decomposition_cond_change_frac )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_cond )
 
-	///
-	CheckDecompositionFromPy_Step(
-		const new_decomp_strategy_ptr_t   &new_decomp_strategy
-		,value_type                       max_decomposition_cond_change_frac = 100.0
-		);
+  ///
+  CheckDecompositionFromPy_Step(
+    const new_decomp_strategy_ptr_t   &new_decomp_strategy
+    ,value_type                       max_decomposition_cond_change_frac = 100.0
+    );
 
-	/// Call the reset initialization of all defaults.
-	void reset();
+  /// Call the reset initialization of all defaults.
+  void reset();
 
-	/** @name Overridden from AlgorithmStep */
-	//@{
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	//@}
+  /** @name Overridden from AlgorithmStep */
+  //@{
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  //@}
 
 private:
 
-	value_type  beta_min_;
+  value_type  beta_min_;
 
-	// Not defined and not to be called
-	CheckDecompositionFromPy_Step();
+  // Not defined and not to be called
+  CheckDecompositionFromPy_Step();
 
 }; // end class CheckDecompositionFromPy_Step
 

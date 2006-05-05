@@ -51,73 +51,73 @@ namespace ConstrainedOptPack {
   * are allowed.
   */
 class MeritFuncNLPModL1
-	: public MeritFuncNLP
-	, public MeritFuncNLPDirecDeriv
-	, public MeritFuncPenaltyParams
+  : public MeritFuncNLP
+  , public MeritFuncNLPDirecDeriv
+  , public MeritFuncPenaltyParams
 {
 public:
 
-	/// Initializes deriv() = 0 and mu() = 0
-	MeritFuncNLPModL1();
+  /// Initializes deriv() = 0 and mu() = 0
+  MeritFuncNLPModL1();
 
-	/** @name Overridden from MeritFuncNLP */
-	//@{
+  /** @name Overridden from MeritFuncNLP */
+  //@{
 
-	///
-	value_type value(
-		value_type             f
-		,const Vector    *c
-		,const Vector    *h
-		,const Vector    *hl
-		,const Vector    *hu
-		) const;
+  ///
+  value_type value(
+    value_type             f
+    ,const Vector    *c
+    ,const Vector    *h
+    ,const Vector    *hl
+    ,const Vector    *hu
+    ) const;
 
-	///
-	value_type deriv() const;
+  ///
+  value_type deriv() const;
 
-	///
-	void print_merit_func(
-		std::ostream& out, const std::string& leading_str ) const;
+  ///
+  void print_merit_func(
+    std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MeritFuncNLPDirecDeriv */
-	//@{
+  /** @name Overridden from MeritFuncNLPDirecDeriv */
+  //@{
 
-	///
-	/** If the value n passed to resize(n) does not
-	  * equal the size of the vector parameters then
-	  * an exception #MeritFuncNLP::InvalidInitialization#
-	  * will be thrown.
-	  */
-	value_type calc_deriv(
-		const Vector    &Gf_k
-		,const Vector   *c_k
-		,const Vector   *h_k
-		,const Vector   *hl
-		,const Vector   *hu
-		,const Vector   &d_k
-		);
-	
-	//@}
+  ///
+  /** If the value n passed to resize(n) does not
+    * equal the size of the vector parameters then
+    * an exception #MeritFuncNLP::InvalidInitialization#
+    * will be thrown.
+    */
+  value_type calc_deriv(
+    const Vector    &Gf_k
+    ,const Vector   *c_k
+    ,const Vector   *h_k
+    ,const Vector   *hl
+    ,const Vector   *hu
+    ,const Vector   &d_k
+    );
+  
+  //@}
 
-	/** @name Overridden from MeritFuncPenaltyParams */
-	//@{
+  /** @name Overridden from MeritFuncPenaltyParams */
+  //@{
 
-	///
-	void set_space_c( const VectorSpace::space_ptr_t& space_c );
+  ///
+  void set_space_c( const VectorSpace::space_ptr_t& space_c );
 
-	///
-	VectorMutable& set_mu();
+  ///
+  VectorMutable& set_mu();
 
-	///
-	const Vector& get_mu() const;
+  ///
+  const Vector& get_mu() const;
 
-	//@}
+  //@}
 
 private:
-	value_type                   deriv_;
-	VectorSpace::vec_mut_ptr_t   mu_;
+  value_type                   deriv_;
+  VectorSpace::vec_mut_ptr_t   mu_;
 
 };	// end class MeritFuncNLPModL1
 

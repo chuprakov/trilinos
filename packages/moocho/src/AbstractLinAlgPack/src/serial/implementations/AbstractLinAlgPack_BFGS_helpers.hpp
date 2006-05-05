@@ -60,12 +60,12 @@ namespace AbstractLinAlgPack {
  * Otherwise it will return false.
  */
 bool BFGS_sTy_suff_p_d(
-	const Vector    &s
-	,const Vector   &y
-	,const value_type     *sTy        = NULL
-	,std::ostream         *out        = NULL
-	,const char           func_name[] = NULL
-	);
+  const Vector    &s
+  ,const Vector   &y
+  ,const value_type     *sTy        = NULL
+  ,std::ostream         *out        = NULL
+  ,const char           func_name[] = NULL
+  );
 
 //@}
 

@@ -45,65 +45,65 @@ namespace AbstractLinAlgPack {
  * the line \ref MatrixSymWithOpSerial_funcs "non-member functions" that are provided.
  */
 class MatrixSymOpSerial
-	: virtual public MatrixOpSerial
-	, virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
+  : virtual public MatrixOpSerial
+  , virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
 {
 public:
 
-	///
-	using MatrixSymOp::Mp_StPtMtP;
+  ///
+  using MatrixSymOp::Mp_StPtMtP;
 
-	///
-	/** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
-	  *
-	  * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
-	  * that the matrix is symmetric.  Of course, a more efficient implementation
-	  * is often needed and the sublcass would like to override this.
-	  */
-	virtual void Mp_StPtMtP(
-		DMatrixSliceSym* sym_lhs, value_type alpha
-		,EMatRhsPlaceHolder dummy_place_holder
-		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-		,value_type beta
-		) const;
+  ///
+  /** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
+    *
+    * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
+    * that the matrix is symmetric.  Of course, a more efficient implementation
+    * is often needed and the sublcass would like to override this.
+    */
+  virtual void Mp_StPtMtP(
+    DMatrixSliceSym* sym_lhs, value_type alpha
+    ,EMatRhsPlaceHolder dummy_place_holder
+    ,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+    ,value_type beta
+    ) const;
 
-	///
-	/** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
-	  *
-	  * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
-	  * that the matrix is symmetric.  Of course, a more efficient implementation
-	  * is often needed and the sublcass would like to override this.
-	  */
-	virtual void Mp_StMtMtM(
-		DMatrixSliceSym* sym_lhs, value_type alpha
-		,EMatRhsPlaceHolder dummy_place_holder
-		,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-		,value_type beta
-		) const;
+  ///
+  /** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
+    *
+    * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
+    * that the matrix is symmetric.  Of course, a more efficient implementation
+    * is often needed and the sublcass would like to override this.
+    */
+  virtual void Mp_StMtMtM(
+    DMatrixSliceSym* sym_lhs, value_type alpha
+    ,EMatRhsPlaceHolder dummy_place_holder
+    ,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+    ,value_type beta
+    ) const;
 
-	/** @name Overridden from MatrixSymOp */
-	//@{
+  /** @name Overridden from MatrixSymOp */
+  //@{
 
-	/// Must be overridden to call <tt>MatrixOpSerial::space_rows()</tt>
-	const VectorSpace& space_rows() const;
+  /// Must be overridden to call <tt>MatrixOpSerial::space_rows()</tt>
+  const VectorSpace& space_rows() const;
 
-	/// symwo_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
- 	void Mp_StPtMtP(
-		MatrixSymOp* symwo_lhs, value_type alpha
-		,EMatRhsPlaceHolder dummy_place_holder
-		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-		,value_type beta
-		) const;
+  /// symwo_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
+   void Mp_StPtMtP(
+    MatrixSymOp* symwo_lhs, value_type alpha
+    ,EMatRhsPlaceHolder dummy_place_holder
+    ,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+    ,value_type beta
+    ) const;
 
-	/// symwo_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
-	void Mp_StMtMtM(
-		MatrixSymOp* symwo_lhs, value_type alpha
-		,EMatRhsPlaceHolder dummy_place_holder
-		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-		,value_type beta
-		) const;
+  /// symwo_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
+  void Mp_StMtMtM(
+    MatrixSymOp* symwo_lhs, value_type alpha
+    ,EMatRhsPlaceHolder dummy_place_holder
+    ,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+    ,value_type beta
+    ) const;
 
-	//@}
+  //@}
 
 };	// end class MatrixSymOpSerial
 
@@ -114,27 +114,27 @@ public:
 inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
-	DMatrixSliceSym* sym_lhs, value_type alpha
-	,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymOpSerial& M
-	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-	,value_type beta = 1.0
-	)
+  DMatrixSliceSym* sym_lhs, value_type alpha
+  ,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
+  ,const MatrixSymOpSerial& M
+  ,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+  ,value_type beta = 1.0
+  )
 {
-	M.Mp_StPtMtP(sym_lhs,alpha,dummy_place_holder,gpms_rhs,gpms_rhs_trans,beta);
+  M.Mp_StPtMtP(sym_lhs,alpha,dummy_place_holder,gpms_rhs,gpms_rhs_trans,beta);
 }
 
 inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
-	DMatrixSliceSym* sym_lhs, value_type alpha
-	,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymOpSerial& M
-	,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-	,value_type beta = 1.0
-	)
+  DMatrixSliceSym* sym_lhs, value_type alpha
+  ,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
+  ,const MatrixSymOpSerial& M
+  ,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+  ,value_type beta = 1.0
+  )
 {
-	M.Mp_StMtMtM(sym_lhs,alpha,dummy_place_holder,mwo_rhs,mwo_rhs_trans,beta);
+  M.Mp_StMtMtM(sym_lhs,alpha,dummy_place_holder,mwo_rhs,mwo_rhs_trans,beta);
 }
 
 //@}

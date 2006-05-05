@@ -31,7 +31,7 @@
 #include "Teuchos_TestForException.hpp"
 
 namespace {
-	const char name_Gc[] = "Gc";
+  const char name_Gc[] = "Gc";
 } // end namespace
 
 namespace NLPInterfacePack {
@@ -39,12 +39,12 @@ namespace NLPInterfacePack {
 // constructors
 
 NLPFirstOrder::NLPFirstOrder()
-	: Gc_(NULL)
+  : Gc_(NULL)
 {}
 
 void NLPFirstOrder::initialize(bool test_setup) {
-	num_Gc_evals_ = 0;
-	NLPObjGrad::initialize(test_setup);
+  num_Gc_evals_ = 0;
+  NLPObjGrad::initialize(test_setup);
 }
 
 // BasisSystem
@@ -52,7 +52,7 @@ void NLPFirstOrder::initialize(bool test_setup) {
 const NLPFirstOrder::basis_sys_ptr_t
 NLPFirstOrder::basis_sys() const
 {
-	return Teuchos::null;
+  return Teuchos::null;
 }
 
 // <<std aggr>> members for Gc
@@ -60,39 +60,39 @@ NLPFirstOrder::basis_sys() const
 void NLPFirstOrder::set_Gc(MatrixOp* Gc)
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	Gc_ = Gc;
+  Gc_ = Gc;
 }
 
 MatrixOp* NLPFirstOrder::get_Gc()
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::get_role_name(Gc_, false, name_Gc);
+  return StandardCompositionRelationshipsPack::get_role_name(Gc_, false, name_Gc);
 }
 
 MatrixOp& NLPFirstOrder::Gc()
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
+  return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
 }
 
 const MatrixOp& NLPFirstOrder::Gc() const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
+  return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
 }
 
 void NLPFirstOrder::unset_quantities()
 {
-	NLPObjGrad::unset_quantities();
-	Gc_ = NULL;
+  NLPObjGrad::unset_quantities();
+  Gc_ = NULL;
 }
 
 // calculations
@@ -100,19 +100,19 @@ void NLPFirstOrder::unset_quantities()
 void NLPFirstOrder::calc_Gc(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	StandardCompositionRelationshipsPack::assert_role_name_set(Gc_, "NLP::calc_Gc()", name_Gc);
-	imp_calc_Gc(x,newx,first_order_info());
-	num_Gc_evals_++;
+  StandardCompositionRelationshipsPack::assert_role_name_set(Gc_, "NLP::calc_Gc()", name_Gc);
+  imp_calc_Gc(x,newx,first_order_info());
+  num_Gc_evals_++;
 }
 
 size_type NLPFirstOrder::num_Gc_evals() const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+  TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
-	return num_Gc_evals_;
+  return num_Gc_evals_;
 }
 
 }	// end namespace NLPInterfacePack 

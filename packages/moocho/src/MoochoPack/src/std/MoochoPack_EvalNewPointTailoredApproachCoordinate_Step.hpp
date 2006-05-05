@@ -41,54 +41,54 @@ namespace MoochoPack {
   * <tt>Y = [ I; 0 ]</tt><br>
   */
 class EvalNewPointTailoredApproachCoordinate_Step
-	: public EvalNewPointTailoredApproach_Step
+  : public EvalNewPointTailoredApproach_Step
 {
 public:
 
-	///
-	EvalNewPointTailoredApproachCoordinate_Step(
-		  const deriv_tester_ptr_t& 	deriv_tester
-		, const bounds_tester_ptr_t&	bounds_tester
-		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
-		);
+  ///
+  EvalNewPointTailoredApproachCoordinate_Step(
+      const deriv_tester_ptr_t& 	deriv_tester
+    , const bounds_tester_ptr_t&	bounds_tester
+    , EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
+    );
 
 protected:
 
-	/** @name Overridden from EvalNewPointTailoredApproach_Step */
-	//@{
+  /** @name Overridden from EvalNewPointTailoredApproach_Step */
+  //@{
 
-	///
-	void uninitialize_Y_Uy(
-		MatrixOp         *Y
-		,MatrixOp        *Uy
-		);
-	///
-	void calc_py_Y_Uy(
-		const NLPDirect       &nlp
-		,const D_ptr_t        &D
-		,VectorMutable        *py
-		,MatrixOp             *Y
-		,MatrixOp             *Uy
-		,EJournalOutputLevel  olevel
-		,std::ostream         &out
-		);
-	///
-	void recalc_py(
-		const MatrixOp           &D
-		,VectorMutable           *py
-		,EJournalOutputLevel     olevel
-		,std::ostream            &out
-		);
-	///
-	void print_calc_py_Y_Uy(
-		std::ostream& out, const std::string& leading_str
-		) const;
+  ///
+  void uninitialize_Y_Uy(
+    MatrixOp         *Y
+    ,MatrixOp        *Uy
+    );
+  ///
+  void calc_py_Y_Uy(
+    const NLPDirect       &nlp
+    ,const D_ptr_t        &D
+    ,VectorMutable        *py
+    ,MatrixOp             *Y
+    ,MatrixOp             *Uy
+    ,EJournalOutputLevel  olevel
+    ,std::ostream         &out
+    );
+  ///
+  void recalc_py(
+    const MatrixOp           &D
+    ,VectorMutable           *py
+    ,EJournalOutputLevel     olevel
+    ,std::ostream            &out
+    );
+  ///
+  void print_calc_py_Y_Uy(
+    std::ostream& out, const std::string& leading_str
+    ) const;
 
-	//@}
+  //@}
 
 private:
-	// not defined and not to be called
-	EvalNewPointTailoredApproachCoordinate_Step();
+  // not defined and not to be called
+  EvalNewPointTailoredApproachCoordinate_Step();
 
 };	// end class EvalNewPointTailoredApproachCoordinate_Step
 

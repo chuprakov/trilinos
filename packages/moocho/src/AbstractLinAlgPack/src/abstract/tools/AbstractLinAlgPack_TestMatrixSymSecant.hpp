@@ -37,14 +37,14 @@ namespace AbstractLinAlgPack {
  *            output.
  */
 bool TestMatrixSymSecant(
-	const MatrixOp        &B
-	,const Vector       &s
-	,const Vector       &y
-	,value_type               warning_tol
-	,value_type               error_tol
-	,bool                     print_all_warnings
-	,std::ostream             *out
-	,bool                     trase                 = true
-	);
+  const MatrixOp        &B
+  ,const Vector       &s
+  ,const Vector       &y
+  ,value_type               warning_tol
+  ,value_type               error_tol
+  ,bool                     print_all_warnings
+  ,std::ostream             *out
+  ,bool                     trase                 = true
+  );
 
 } // end namespace AbstractLinAlgPack

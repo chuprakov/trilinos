@@ -40,65 +40,65 @@ namespace AbstractLinAlgPack {
 class InnerProductThyra : public InnerProduct {
 public:
 
-	/** @name Constructors / Initializers */
-	//@{
+  /** @name Constructors / Initializers */
+  //@{
 
-	///
-	/** Construct to uninitialized.
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec().get() == NULL</tt>
-	 * </ul>
-	 */
-	InnerProductThyra();
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	InnerProductThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
-	///
-	/** Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
-	 *
-	 * @param  thyra_vec_spc  [in] Smart pointer to Thyra vector
-	 *
-	 * Preconditioins:<ul>
-	 * <li><tt>thyra_vec_spc.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec_spc().get() == thyra_vec_spc.get()</tt>
-	 * </ul>
-	 */
-	void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
-	///
-	/** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
-	 *
-	 * Postconditioins:<ul>
-	 * <li><tt>this->thyra_vec_spc().get() == NULL</tt>
-	 * </ul>
-	 */
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
-	///
-	/** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
-	 *
-	 * If <tt>this->thyra_vec_spc().count() == 1</tt>, then <tt>this</tt>
-	 * has sole ownership of the <tt>*this->thyra_vec_spc()</tt> object.
-	 */
-	const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc() const;
+  ///
+  /** Construct to uninitialized.
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec().get() == NULL</tt>
+   * </ul>
+   */
+  InnerProductThyra();
+  ///
+  /** Calls <tt>this->initialize()</tt>.
+   */
+  InnerProductThyra( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
+  ///
+  /** Initalize given a smart pointer to a <tt>Thyra::VetorSpace</tt> object.
+   *
+   * @param  thyra_vec_spc  [in] Smart pointer to Thyra vector
+   *
+   * Preconditioins:<ul>
+   * <li><tt>thyra_vec_spc.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+   * </ul>
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec_spc().get() == thyra_vec_spc.get()</tt>
+   * </ul>
+   */
+  void initialize( const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > &thyra_vec_spc );
+  ///
+  /** Set to uninitialized and return smart pointer to the internal <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+   *
+   * Postconditioins:<ul>
+   * <li><tt>this->thyra_vec_spc().get() == NULL</tt>
+   * </ul>
+   */
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> > set_uninitialized();
+  ///
+  /** Return a (converted) smart pointer to the internal smart pointer to the <tt>Thyra::VectorSpaceBase<value_type> </tt> object.
+   *
+   * If <tt>this->thyra_vec_spc().count() == 1</tt>, then <tt>this</tt>
+   * has sole ownership of the <tt>*this->thyra_vec_spc()</tt> object.
+   */
+  const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >& thyra_vec_spc() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from InnerProduct */
-	//@{
-	///
-	value_type inner_prod(const Vector& v1, const Vector& v2) const;
-	//@}
+  /** @name Overridden from InnerProduct */
+  //@{
+  ///
+  value_type inner_prod(const Vector& v1, const Vector& v2) const;
+  //@}
 
 private:
 
 #ifdef DOXYGEN_COMPILE
-	const Thyra::VectorSpaceBase<value_type>                              *thyra_vector_space;
+  const Thyra::VectorSpaceBase<value_type>                              *thyra_vector_space;
 #else
-	Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >  thyra_vec_spc_;
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >  thyra_vec_spc_;
 #endif
 
 }; // end class InnerProductThyra
@@ -110,7 +110,7 @@ inline
 const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >&
 InnerProductThyra::thyra_vec_spc() const
 {
-	return thyra_vec_spc_;
+  return thyra_vec_spc_;
 }
 
 } // end namespace AbstractLinAlgPack

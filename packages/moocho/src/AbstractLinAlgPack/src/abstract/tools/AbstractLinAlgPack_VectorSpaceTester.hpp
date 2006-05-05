@@ -55,93 +55,93 @@ namespace AbstractLinAlgPack {
 class VectorSpaceTester {
 public:
 
-	/// Members for option \c print_all_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all_tests )
+  /// Members for option \c print_all_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all_tests )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
-	/// Members for option \c print_vectors() (see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_vectors )
+  /// Members for option \c print_vectors() (see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_vectors )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
-	/// Members for option \c throw_exception() (see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
+  /// Members for option \c throw_exception() (see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
-	/// Members for option \c num_random_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
+  /// Members for option \c num_random_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
-	/// Members for option \c () warning_tol(see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+  /// Members for option \c () warning_tol(see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
-	/// Members for option \c error_tol() (see Teuchos_StandardMemberCompositionMacros.hpp).
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+  /// Members for option \c error_tol() (see Teuchos_StandardMemberCompositionMacros.hpp).
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 #ifdef DOXYGEN_COMPILE
-		;
+    ;
 #endif		
 
-	///
-	/** Constructor (set default options).
-	 *
-	 * These default options are appropriate for even the largest vector spaces.
-	 */
-	VectorSpaceTester(
-		bool         print_all_tests  = false
-		,bool        print_vectors    = false
-		,bool        throw_exception  = true
-		,size_type   num_random_tests = 4
-		,value_type  warning_tol      = 1e-14
-		,value_type  error_tol        = 1e-10
-		);
+  ///
+  /** Constructor (set default options).
+   *
+   * These default options are appropriate for even the largest vector spaces.
+   */
+  VectorSpaceTester(
+    bool         print_all_tests  = false
+    ,bool        print_vectors    = false
+    ,bool        throw_exception  = true
+    ,size_type   num_random_tests = 4
+    ,value_type  warning_tol      = 1e-14
+    ,value_type  error_tol        = 1e-10
+    );
 
-	///
-	virtual ~VectorSpaceTester() {}
+  ///
+  virtual ~VectorSpaceTester() {}
 
-	///
-	/** Run a vector space and the vectors it creates through a set of comprehensive tets.
-	 *
-	 * @param  space  [in] The vector space object to test.
-	 * @param  out    [in/out] If <tt>out != NULL</tt> then output will be sent to <tt>*out</tt>.
-	 *
-	 * The behavior of this function greatly depends on a number of options (see \c VectorSpaceTester()
-	 * for the default values for these options).  Access functions to set these options are provided
-	 * by the prototypes of the macro <tt>STANDARD_MEMBER_COMPOSITION_MEMBERS()</tt>.
-	 * <ul>
-	 * <li> <b><tt>print_all_tests(bool)</tt></b>:  If <tt>print_all_tests() == true</tt>, then some output will be sent to
-	 *      <tt>*out</tt> for every test performed.  This is useful to see all of tests that are performed and
-	 *      in debugging.
-	 * <li> <b><tt>print_vectors(bool)</tt></b>:  If <tt>print_vectors() == true</tt>, then all of the vectors will be printed
-	 *      that are created durring the tests.  This option is really only needed durring initial debugging
-	 *      and should only be used with small vector spaces since it will produce a lot of <tt>O(space.dim())</tt>
-	 *      output.
-	 * <li> <b><tt>throw_exception(bool)</tt></b>:  If <tt>throw_exception() == true</tt>, then any object that throws
-	 *      an unexpected exception will cause that exception to be thrown clear of of this function.  If
-	 *      <tt>out != NULL</tt> then the <tt>what()</tt> string will be printed to <tt>*out</tt> before the exception
-	 *      is rethrown.  If <tt>throw_exception() == false</tt>, then all exceptions will be caught, printed to 
-	 *      <tt>*out</tt> and then <tt>false</tt> is returned from the function.
-	 * <li> <b><tt>num_random_tests(int)</tt></b>:  This is the number of random tests to perform per category of test.
-	 *      A higher number will result is better validation but will consume more CPU time.
-	 * <li> <b><tt>warning_tol(value_type)</tt></b>:  Any test with a relative error greater than <tt>warning_tol()</tt> will
-	 *      result in a warning message printed to <tt>*out</tt>.
-	 * <li> <b><tt>error_tol(value_type)</tt></b>:  Any test with a relative error greater than <tt>erfor_tol()</tt> will
-	 *      result in an error message printed to <tt>*out</tt> and the function will immediatly return <tt>false</tt>.
-	 * </ul>
-	 */
-	virtual bool check_vector_space(
-		const VectorSpace &space
-		,std::ostream     *out
-		) const;
+  ///
+  /** Run a vector space and the vectors it creates through a set of comprehensive tets.
+   *
+   * @param  space  [in] The vector space object to test.
+   * @param  out    [in/out] If <tt>out != NULL</tt> then output will be sent to <tt>*out</tt>.
+   *
+   * The behavior of this function greatly depends on a number of options (see \c VectorSpaceTester()
+   * for the default values for these options).  Access functions to set these options are provided
+   * by the prototypes of the macro <tt>STANDARD_MEMBER_COMPOSITION_MEMBERS()</tt>.
+   * <ul>
+   * <li> <b><tt>print_all_tests(bool)</tt></b>:  If <tt>print_all_tests() == true</tt>, then some output will be sent to
+   *      <tt>*out</tt> for every test performed.  This is useful to see all of tests that are performed and
+   *      in debugging.
+   * <li> <b><tt>print_vectors(bool)</tt></b>:  If <tt>print_vectors() == true</tt>, then all of the vectors will be printed
+   *      that are created durring the tests.  This option is really only needed durring initial debugging
+   *      and should only be used with small vector spaces since it will produce a lot of <tt>O(space.dim())</tt>
+   *      output.
+   * <li> <b><tt>throw_exception(bool)</tt></b>:  If <tt>throw_exception() == true</tt>, then any object that throws
+   *      an unexpected exception will cause that exception to be thrown clear of of this function.  If
+   *      <tt>out != NULL</tt> then the <tt>what()</tt> string will be printed to <tt>*out</tt> before the exception
+   *      is rethrown.  If <tt>throw_exception() == false</tt>, then all exceptions will be caught, printed to 
+   *      <tt>*out</tt> and then <tt>false</tt> is returned from the function.
+   * <li> <b><tt>num_random_tests(int)</tt></b>:  This is the number of random tests to perform per category of test.
+   *      A higher number will result is better validation but will consume more CPU time.
+   * <li> <b><tt>warning_tol(value_type)</tt></b>:  Any test with a relative error greater than <tt>warning_tol()</tt> will
+   *      result in a warning message printed to <tt>*out</tt>.
+   * <li> <b><tt>error_tol(value_type)</tt></b>:  Any test with a relative error greater than <tt>erfor_tol()</tt> will
+   *      result in an error message printed to <tt>*out</tt> and the function will immediatly return <tt>false</tt>.
+   * </ul>
+   */
+  virtual bool check_vector_space(
+    const VectorSpace &space
+    ,std::ostream     *out
+    ) const;
 
 private:
 
-	///
-	void check_test(value_type err, std::ostream* out, bool* success) const;
+  ///
+  void check_test(value_type err, std::ostream* out, bool* success) const;
 
 }; // end class VectorSpaceTester
 

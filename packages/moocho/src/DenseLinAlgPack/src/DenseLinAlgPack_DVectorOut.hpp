@@ -41,7 +41,7 @@ namespace DenseLinAlgPack {
   * This operator function calls the function output(os,vs,0).
   */
 inline std::ostream& operator<<(std::ostream& os, const DVectorSlice& vs) {
-	return output(os, vs, (LinAlgPackIO::fmtflags)(0));
+  return output(os, vs, (LinAlgPackIO::fmtflags)(0));
 }
 
 }	// end namespace DenseLinAlgPack

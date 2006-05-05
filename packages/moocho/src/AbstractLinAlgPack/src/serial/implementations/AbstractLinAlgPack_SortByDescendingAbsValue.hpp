@@ -41,11 +41,11 @@ namespace AbstractLinAlgPack {
   */
 class SortByDescendingAbsValue {
 public:
-	bool operator()( const AbstractLinAlgPack::SpVector::element_type& x
-		, const AbstractLinAlgPack::SpVector::element_type& y ) const
-	{
-		return ::fabs(x.value()) > ::fabs(y.value());
-	}
+  bool operator()( const AbstractLinAlgPack::SpVector::element_type& x
+    , const AbstractLinAlgPack::SpVector::element_type& y ) const
+  {
+    return ::fabs(x.value()) > ::fabs(y.value());
+  }
 };	// end class AbsMultVal
 
 

@@ -32,17 +32,17 @@
 #include "AbstractLinAlgPack_GenPermMatrixSlice.hpp"
 
 std::ostream& AbstractLinAlgPack::operator<<(
-	std::ostream& out, const GenPermMatrixSlice& P
-	)
+  std::ostream& out, const GenPermMatrixSlice& P
+  )
 {
-	out	<< P.rows() << " " << P.cols() << " " << P.nz() << std::endl;
-	if( P.is_identity() ) {
-		out << "identity matrix\n";
-	}
-	else if( P.nz() ) {
-		for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr )
-			out << " " << itr->row_i() << ":" << itr->col_j();
-		out << std::endl;
-	}
-	return out;
+  out	<< P.rows() << " " << P.cols() << " " << P.nz() << std::endl;
+  if( P.is_identity() ) {
+    out << "identity matrix\n";
+  }
+  else if( P.nz() ) {
+    for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr )
+      out << " " << itr->row_i() << ":" << itr->col_j();
+    out << std::endl;
+  }
+  return out;
 }

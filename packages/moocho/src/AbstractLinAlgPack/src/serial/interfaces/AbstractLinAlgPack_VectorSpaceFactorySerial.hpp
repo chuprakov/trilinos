@@ -40,21 +40,21 @@ namespace AbstractLinAlgPack {
  * ToDo: Finish documentation!
  */
 class VectorSpaceFactorySerial
-	: public AbstractLinAlgPack::VectorSpaceFactory // doxygen needs full name
+  : public AbstractLinAlgPack::VectorSpaceFactory // doxygen needs full name
 {
 public:
 
-	///
-	VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod = Teuchos::null );
+  ///
+  VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
-	/** @name Overridden from VectorSpaceFactory */
-	//@{
+  /** @name Overridden from VectorSpaceFactory */
+  //@{
 
-	///
-	space_ptr_t create_vec_spc(index_type dim) const;
+  ///
+  space_ptr_t create_vec_spc(index_type dim) const;
 
-	//@}
-	
+  //@}
+  
 }; // end class VectorSpaceFactorySerial
 
 } // end namespace AbstractLinAlgPack

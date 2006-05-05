@@ -41,35 +41,35 @@ template< class T >
 class SetOptionsToTargetBase {
 public:
 
-	/// 
-	SetOptionsToTargetBase( T* target = 0 )
-		: target_(target)
-	{}
+  /// 
+  SetOptionsToTargetBase( T* target = 0 )
+    : target_(target)
+  {}
 
-	/** @name <<std aggr>> stereotype members for target.
-	  */
-	//@{
+  /** @name <<std aggr>> stereotype members for target.
+    */
+  //@{
 
-	///
-	void set_target(T* target)
-	{	target_ = target; }
-	///
-	T* get_target()
-	{	return target_; }
-	///
-	const T* get_target() const
-	{	return target_; }
-	///
-	T& target()
-	{	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
-	///
-	const T& target() const
-	{	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
+  ///
+  void set_target(T* target)
+  {	target_ = target; }
+  ///
+  T* get_target()
+  {	return target_; }
+  ///
+  const T* get_target() const
+  {	return target_; }
+  ///
+  T& target()
+  {	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
+  ///
+  const T& target() const
+  {	return StandardCompositionRelationshipsPack::role_name(target_, false, "target"); }
 
-	//@}
+  //@}
 
 private:
-	T* target_;
+  T* target_;
 
 };	// end class SetOptionsToTargetBase
 

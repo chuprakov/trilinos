@@ -48,44 +48,44 @@ namespace AbstractLinAlgPack {
   *
   * The specification for these interfaces is as follows:
   *
-	\begin{verbatim}
-	class SparseElementTemplateInterface {
-	public:
-		typedef ....	value_type;
-		typedef ....	indice_type;
+  \begin{verbatim}
+  class SparseElementTemplateInterface {
+  public:
+    typedef ....	value_type;
+    typedef ....	indice_type;
 
-		value_type&		value();
-		value_type		value() const;
-		indice_type		indice() const;
-	};
+    value_type&		value();
+    value_type		value() const;
+    indice_type		indice() const;
+  };
 
-	class SparseVectorTemplateInterface {
-	public:
-		typedef ...		difference_type;
-		typedef ...		element_type;	// SparseElementTemplateInterface compliant
-		typedef ...		iterator;		// *(iter) yields a element_type
-		typedef ...		const_iterator;	// *(iter) yields a const element_type
-		typedef ...		reverse_iterator;	// *(iter) yields a element_type
-		typedef ...		const_reverse_iterator;	// *(iter) yields a const element_type
+  class SparseVectorTemplateInterface {
+  public:
+    typedef ...		difference_type;
+    typedef ...		element_type;	// SparseElementTemplateInterface compliant
+    typedef ...		iterator;		// *(iter) yields a element_type
+    typedef ...		const_iterator;	// *(iter) yields a const element_type
+    typedef ...		reverse_iterator;	// *(iter) yields a element_type
+    typedef ...		const_reverse_iterator;	// *(iter) yields a const element_type
 
-		// Information
-		size_type		size() const;	// size of the full vector
-		size_type		nz() const;		// number of nonzero elements
-		difference_type	offset() const;	// ith real real indice = begin()[i-1] + offset()
-		bool			is_sorted() const;	// true if elements are sorted by indice
+    // Information
+    size_type		size() const;	// size of the full vector
+    size_type		nz() const;		// number of nonzero elements
+    difference_type	offset() const;	// ith real real indice = begin()[i-1] + offset()
+    bool			is_sorted() const;	// true if elements are sorted by indice
 
-		// iterate forward (sorted) through elemlents
-		iterator		begin();
-		const_iterator	begin() const;
-		iterator		end();
-		const_iterator	end() const;
+    // iterate forward (sorted) through elemlents
+    iterator		begin();
+    const_iterator	begin() const;
+    iterator		end();
+    const_iterator	end() const;
 
-		// iterate backward (sorted) through elemlents
-		reverse_iterator		rbegin();
-		const_reverse_iterator	rbegin() const;
-		reverse_iterator		rend();
-		const_reverse_iterator	rend() const;
-	};
+    // iterate backward (sorted) through elemlents
+    reverse_iterator		rbegin();
+    const_reverse_iterator	rbegin() const;
+    reverse_iterator		rend();
+    const_reverse_iterator	rend() const;
+  };
 /end{verbatim}
   *
   * In all of these functions where we have some operation that yields a dense vector
@@ -152,17 +152,17 @@ void Vp_StSV(DVectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs);
 /// vs_lhs += alpha * op(gms_rhs1) * sv_rhs2 (BLAS xGEMV)
 template<class T_SpVec>
 void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 /// vs_lhs += alpha * op(tri_gms_rhs1) * sv_rhs2 (BLAS xTRMV)
 template<class T_SpVec>
 void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 /// vs_lhs += alpha * op(sym_gms_rhs1) * sv_rhs2 (BLAS xSYMV)
 template<class T_SpVec>
 void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
+  , BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 //@}
 

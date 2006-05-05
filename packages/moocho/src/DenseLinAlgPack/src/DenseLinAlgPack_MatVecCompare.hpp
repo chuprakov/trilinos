@@ -56,11 +56,11 @@ using TestingHelperPack::update_success;
 ///
 const value_type sqrt_eps
 #if defined(_GNU_GXX)
-	= std::sqrt(std::numeric_limits<value_type>::epsilon());
+  = std::sqrt(std::numeric_limits<value_type>::epsilon());
 #elif defined(_CPQ_CXX)
-	= ::sqrt(std::numeric_limits<value_type>::epsilon());
+  = ::sqrt(std::numeric_limits<value_type>::epsilon());
 #else
-	= ::sqrt(std::numeric_limits<value_type>::epsilon());
+  = ::sqrt(std::numeric_limits<value_type>::epsilon());
 #endif
 
 ///
@@ -71,7 +71,7 @@ bool comp(const DVectorSlice& vs, value_type alpha);
 
 ///
 bool comp(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
-	, const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2);
+  , const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2);
 
 /////
 //bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2);
@@ -80,7 +80,7 @@ inline
 ///
 bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2)
 {
-	return comp(gms1, BLAS_Cpp::no_trans, gms2, BLAS_Cpp::no_trans);
+  return comp(gms1, BLAS_Cpp::no_trans, gms2, BLAS_Cpp::no_trans);
 }
 
 ///

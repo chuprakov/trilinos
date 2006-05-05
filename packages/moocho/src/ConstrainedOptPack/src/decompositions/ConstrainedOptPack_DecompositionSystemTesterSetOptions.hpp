@@ -63,21 +63,21 @@ namespace ConstrainedOptPack {
   \endverbatim
   */
 class DecompositionSystemTesterSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			DecompositionSystemTester >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      DecompositionSystemTester >
 {
 public:
 
-	///
-	DecompositionSystemTesterSetOptions(
-		  DecompositionSystemTester* target = 0
-		, const char opt_grp_name[] = "DecompositionSystemTester" );
+  ///
+  DecompositionSystemTesterSetOptions(
+      DecompositionSystemTester* target = 0
+    , const char opt_grp_name[] = "DecompositionSystemTester" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class DecompositionSystemTesterSetOptions
 

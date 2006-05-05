@@ -94,108 +94,108 @@ class NLPVarReductPerm : virtual public NLP
 {
 public: 
 
-	/** @name Public types */
-	//@{
+  /** @name Public types */
+  //@{
 
-	///
-	typedef Teuchos::RefCountPtr<
-		const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+  ///
+  typedef Teuchos::RefCountPtr<
+    const Teuchos::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
-	/// Thrown if an invalid basis selection is made
-	class InvalidBasis : public std::logic_error
-	{public: InvalidBasis(const std::string& what_arg) : std::logic_error(what_arg) {}};
+  /// Thrown if an invalid basis selection is made
+  class InvalidBasis : public std::logic_error
+  {public: InvalidBasis(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	//@}	
+  //@}	
 
-	/** @name Abstract factories for Permutation objects */
-	//@{
+  /** @name Abstract factories for Permutation objects */
+  //@{
 
-	///
-	virtual const perm_fcty_ptr_t factory_P_var() const = 0;
-	///
-	virtual const perm_fcty_ptr_t factory_P_equ() const = 0;
+  ///
+  virtual const perm_fcty_ptr_t factory_P_var() const = 0;
+  ///
+  virtual const perm_fcty_ptr_t factory_P_equ() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Return ranges for the partitioning of variables and constraints */
-	//@{
+  /** @name Return ranges for the partitioning of variables and constraints */
+  //@{
 
-	///
-	virtual Range1D var_dep() const = 0;
-	///
-	virtual Range1D var_indep() const = 0;
-	///
-	virtual Range1D equ_decomp() const = 0;
-	///
-	virtual Range1D equ_undecomp() const = 0;
+  ///
+  virtual Range1D var_dep() const = 0;
+  ///
+  virtual Range1D var_indep() const = 0;
+  ///
+  virtual Range1D equ_decomp() const = 0;
+  ///
+  virtual Range1D equ_undecomp() const = 0;
 
-	//@}
+  //@}
 
-	/** @name Basis manipulation functions */
-	//@{
-	
-	/// Returns true if the NLP can suggest one or more basis selections.
-	virtual bool nlp_selects_basis() const = 0;
+  /** @name Basis manipulation functions */
+  //@{
+  
+  /// Returns true if the NLP can suggest one or more basis selections.
+  virtual bool nlp_selects_basis() const = 0;
 
-	///
-	/** Returns the next basis the %NLP has and sets the NLP to the returned basis.
-	 *
-	 * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
-	 * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>
-	 * @param  P_equ        [out] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
-	 * @param  equ_decomp   [out] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
-	 *
-	 * Postconditions:  The %NLP is set to the basis returned in the arguments and <tt>this->get_basis()</tt> will return the same basis.
-	 *
-	 * This member returns \c true if the %NLP has another basis to select, and is \c false if not.
-	 * If \c false is returned the client has the option of selecting another basis on its own
-	 * and passing it to the %NLP by calling <tt>this->set_basis()</tt>.
-	 */
-	virtual bool get_next_basis(
-		Permutation*  P_var,   Range1D* var_dep
-		,Permutation* P_equ,   Range1D* equ_decomp
-		) = 0;
-	
-	///
-	/** Sets the basis the that the %NLP will use to permute the problem.
-	 *
-	 * @param  P_var        [in] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
-	 * @param  var_dep      [in] Range of dependent variables in <tt>x_new(var_dep)</tt>
-	 * @param  P_equ        [in] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
-	 * @param  equ_decomp   [in] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
-	 *
-	 * Preconditions: The input basis meets the <A ref=BasisAssertions>basis assertions</A> stated above or an \c InvalidBasis exceptin
-	 * is thrown.
-	 *
-	 * Postconditions:  The %NLP is set to the basis given in the arguments and <tt>this->get_basis()</tt> will return this same basis.
-	 */
-	virtual void set_basis(
-		const Permutation   &P_var,   const Range1D  &var_dep
-		,const Permutation  *P_equ,   const Range1D  *equ_decomp
-		) =  0;
+  ///
+  /** Returns the next basis the %NLP has and sets the NLP to the returned basis.
+   *
+   * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
+   * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>
+   * @param  P_equ        [out] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
+   * @param  equ_decomp   [out] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
+   *
+   * Postconditions:  The %NLP is set to the basis returned in the arguments and <tt>this->get_basis()</tt> will return the same basis.
+   *
+   * This member returns \c true if the %NLP has another basis to select, and is \c false if not.
+   * If \c false is returned the client has the option of selecting another basis on its own
+   * and passing it to the %NLP by calling <tt>this->set_basis()</tt>.
+   */
+  virtual bool get_next_basis(
+    Permutation*  P_var,   Range1D* var_dep
+    ,Permutation* P_equ,   Range1D* equ_decomp
+    ) = 0;
+  
+  ///
+  /** Sets the basis the that the %NLP will use to permute the problem.
+   *
+   * @param  P_var        [in] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
+   * @param  var_dep      [in] Range of dependent variables in <tt>x_new(var_dep)</tt>
+   * @param  P_equ        [in] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
+   * @param  equ_decomp   [in] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
+   *
+   * Preconditions: The input basis meets the <A ref=BasisAssertions>basis assertions</A> stated above or an \c InvalidBasis exceptin
+   * is thrown.
+   *
+   * Postconditions:  The %NLP is set to the basis given in the arguments and <tt>this->get_basis()</tt> will return this same basis.
+   */
+  virtual void set_basis(
+    const Permutation   &P_var,   const Range1D  &var_dep
+    ,const Permutation  *P_equ,   const Range1D  *equ_decomp
+    ) =  0;
 
-	///
-	/** Returns the basis selection currently being used by the NLP.
-	 *
-	 * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
-	 * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>
-	 * @param  P_equ        [out] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
-	 * @param  equ_decomp   [out] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
-	 */
-	virtual void get_basis(
-		Permutation*  P_var,   Range1D* var_dep
-		,Permutation* P_equ,   Range1D* equ_decomp
-		) const = 0;
-	
-	//@}
+  ///
+  /** Returns the basis selection currently being used by the NLP.
+   *
+   * @param  P_var        [out] Variable permutations defined as <tt>P_var'*x_old -> x_new = [ x(var_dep); x(var_indep) ]</tt>
+   * @param  var_dep      [out] Range of dependent variables in <tt>x_new(var_dep)</tt>
+   * @param  P_equ        [out] Equality constraint permutations defined as <tt>P_equ'*c_old -> c_new = [ c(equ_decomp); c(equ_undecomp) ]</tt>
+   * @param  equ_decomp   [out] Range of decomposed equalities in <tt>c_new(equ_decomp)</tt>
+   */
+  virtual void get_basis(
+    Permutation*  P_var,   Range1D* var_dep
+    ,Permutation* P_equ,   Range1D* equ_decomp
+    ) const = 0;
+  
+  //@}
 
 private:
 
 #ifdef DOXYGEN_COMPILE
-	Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
-	Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
+  Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_var;
+  Teuchos::AbstractFactory<AbstractLinAlgPack::Permutation>    *factory_P_equ;
 #endif	
-	
+  
 }; // end class NLPVarReductPerm
 
 } // end namespace NLPInterfacePack 

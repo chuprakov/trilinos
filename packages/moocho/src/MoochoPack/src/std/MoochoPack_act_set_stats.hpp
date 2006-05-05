@@ -42,11 +42,11 @@ extern const std::string act_set_stats_name;
   * from an AlgorithmState object with the name act_set_stats_name.
   */
 class act_set_stats_iq_member
-	: public CastIQMember<ActSetStats>
+  : public CastIQMember<ActSetStats>
 {
 public:
     act_set_stats_iq_member()
-    	: CastIQMember<ActSetStats>(act_set_stats_name)
+      : CastIQMember<ActSetStats>(act_set_stats_name)
     {}
 };
 

@@ -42,11 +42,11 @@ extern const std::string quasi_newton_stats_name;
   * from an AlgorithmState object with the name quasi_newton_stats_name.
   */
 class quasi_newton_stats_iq_member
-	: public CastIQMember<QuasiNewtonStats>
+  : public CastIQMember<QuasiNewtonStats>
 {
 public:
     quasi_newton_stats_iq_member()
-    	: CastIQMember<QuasiNewtonStats>(quasi_newton_stats_name)
+      : CastIQMember<QuasiNewtonStats>(quasi_newton_stats_name)
     {}
 };
 

@@ -35,47 +35,47 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 2;
+  const int local_num_options = 2;
 
-	const char options_group_name[] = "LineSearchWatchDog";
+  const char options_group_name[] = "LineSearchWatchDog";
 
-	enum local_EOptions {
-		OPT_KKT_ERR_THESHOLD,
-		FEAS_KKT_ERR_THESHOLD
-	};
+  enum local_EOptions {
+    OPT_KKT_ERR_THESHOLD,
+    FEAS_KKT_ERR_THESHOLD
+  };
 
-	const char* local_SOptions[local_num_options]	= {
-		"opt_kkt_err_threshold",
-		"feas_kkt_err_threshold"
-	};
+  const char* local_SOptions[local_num_options]	= {
+    "opt_kkt_err_threshold",
+    "feas_kkt_err_threshold"
+  };
 
 }
 
 namespace MoochoPack {
 
 LineSearchWatchDog_StepSetOptions::LineSearchWatchDog_StepSetOptions(
-			LineSearchWatchDog_Step* target )
-	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
-			  options_group_name, local_num_options, local_SOptions )
-		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			LineSearchWatchDog_Step >( target )
+      LineSearchWatchDog_Step* target )
+  :	OptionsFromStreamPack::SetOptionsFromStreamNode(
+        options_group_name, local_num_options, local_SOptions )
+    , OptionsFromStreamPack::SetOptionsToTargetBase<
+      LineSearchWatchDog_Step >( target )
 {}
 
 void LineSearchWatchDog_StepSetOptions::setOption(
-	int option_num, const std::string& option_value )
+  int option_num, const std::string& option_value )
 {
-	switch( (local_EOptions)option_num ) {
-		case OPT_KKT_ERR_THESHOLD: {
-			target().opt_kkt_err_threshold( ::fabs( ::atof( option_value.c_str() ) ) );
-			break;
-		}
-		case FEAS_KKT_ERR_THESHOLD: {
-			target().feas_kkt_err_threshold( ::fabs( ::atof( option_value.c_str() ) ) );
-			break;
-		}
-		default:
-			assert(0);	// Local error only?
-	}
+  switch( (local_EOptions)option_num ) {
+    case OPT_KKT_ERR_THESHOLD: {
+      target().opt_kkt_err_threshold( ::fabs( ::atof( option_value.c_str() ) ) );
+      break;
+    }
+    case FEAS_KKT_ERR_THESHOLD: {
+      target().feas_kkt_err_threshold( ::fabs( ::atof( option_value.c_str() ) ) );
+      break;
+    }
+    default:
+      assert(0);	// Local error only?
+  }
 }
 
 }	// end namespace MoochoPack 

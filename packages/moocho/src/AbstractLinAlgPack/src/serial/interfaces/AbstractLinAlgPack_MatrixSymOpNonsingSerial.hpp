@@ -41,10 +41,10 @@ namespace AbstractLinAlgPack {
   * efficiently.
   */
 class MatrixSymOpNonsingSerial 
-	: virtual public MatrixSymOpSerial
-	, virtual public MatrixSymNonsingSerial
-	, virtual public AbstractLinAlgPack::MatrixOpNonsing      // doxygen needs full name
-	, virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
+  : virtual public MatrixSymOpSerial
+  , virtual public MatrixSymNonsingSerial
+  , virtual public AbstractLinAlgPack::MatrixOpNonsing      // doxygen needs full name
+  , virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
 {};
 
 }	// end namespace AbstractLinAlgPack

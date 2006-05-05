@@ -34,14 +34,14 @@
 #include "InputStreamHelperPack_EatInputComment.hpp"
 
 std::istream& InputStreamHelperPack::eat_comment_lines(std::istream& is
-	, char comment_identifier)
+  , char comment_identifier)
 {
-	const int many = 1000;
-	is >> std::ws;
-	char c;
-	while( ( c = is.peek() ) == comment_identifier || c == '\n' ) {
-		is.ignore(many,'\n');
-		is >> std::ws; // Eat whitespace up to the next line
-	}
-	return is;
+  const int many = 1000;
+  is >> std::ws;
+  char c;
+  while( ( c = is.peek() ) == comment_identifier || c == '\n' ) {
+    is.ignore(many,'\n');
+    is >> std::ws; // Eat whitespace up to the next line
+  }
+  return is;
 }

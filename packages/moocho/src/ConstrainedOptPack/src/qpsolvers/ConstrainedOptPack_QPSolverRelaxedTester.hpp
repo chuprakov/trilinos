@@ -44,26 +44,26 @@ namespace ConstrainedOptPack {
  * The optimality conditions checked are:
  \verbatim
 
-	Linear dependence of gradients:
-	  
-	(2)  d(L)/d(d) = g + G*d - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
-	               = g + G*d + nu + op(E)'*mu + op(F)'*lambda = 0
-	  
-	     where: nu = nuU - nuL, mu = muU - muL
+  Linear dependence of gradients:
+    
+  (2)  d(L)/d(d) = g + G*d - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
+                 = g + G*d + nu + op(E)'*mu + op(F)'*lambda = 0
+    
+       where: nu = nuU - nuL, mu = muU - muL
 
-	Feasibility:
-	  
-	(4.1)  etaL <=  eta
-	(4.2)  dL   <=  d                       <= dU
-	(4.3)  eL   <=  op(E)*d - b*eta         <= eU
-	(4.4)  op(F)*d + (1 - eta) * f  = 0
+  Feasibility:
+    
+  (4.1)  etaL <=  eta
+  (4.2)  dL   <=  d                       <= dU
+  (4.3)  eL   <=  op(E)*d - b*eta         <= eU
+  (4.4)  op(F)*d + (1 - eta) * f  = 0
 
-	Complementarity:
+  Complementarity:
 
-	(5.1)  nu(i) * (dL - d)(i), if nu(i) <= 0, i = 1...n
-	(5.2)  nu(i) * (d - dU)(i), if nu(i) >= 0, i = 1...n
-	(5.3)  mu(j) * (eL - op(E)*d + b*eta)(j), if mu(j) <= 0, j = 1...m_in
-	(5.4)  mu(j) * (op(E)*d - b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
+  (5.1)  nu(i) * (dL - d)(i), if nu(i) <= 0, i = 1...n
+  (5.2)  nu(i) * (d - dU)(i), if nu(i) >= 0, i = 1...n
+  (5.3)  mu(j) * (eL - op(E)*d + b*eta)(j), if mu(j) <= 0, j = 1...m_in
+  (5.4)  mu(j) * (op(E)*d - b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
  \endverbatim
  * The realtive error of each of these conditions is checked.  Specifically,
  * here is how the errors are computed which are compared to the error and warning
@@ -77,9 +77,9 @@ namespace ConstrainedOptPack {
     comp_err(i) = gamma(i) * (op(A)*x - b)(i) / ( 1 + opt_scale + ||op(A).row(i)'*x||inf )
         ,for gamma(i) != 0
 
-   	where:
-	    op(A)*x <= b
-	    opt_scale = ||g||inf + ||G*d||inf + ||nu||inf + ||op(E)'*mu||inf + ||op(F)'*lambda||inf
+     where:
+      op(A)*x <= b
+      opt_scale = ||g||inf + ||G*d||inf + ||nu||inf + ||op(E)'*mu||inf + ||op(F)'*lambda||inf
                     + |(eta - etaL) * (b'*mu + f'*lambda)|
  \endverbatim
  * Above, <tt>op(A)*x <= b</tt> can represent any of the constraints in
@@ -134,198 +134,198 @@ namespace ConstrainedOptPack {
 class QPSolverRelaxedTester {
 public:
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_warning_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_warning_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_error_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_error_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_warning_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_warning_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_error_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_error_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_warning_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_warning_tol )
 
-	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_error_tol )
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, comp_error_tol )
 
-	///
-	QPSolverRelaxedTester(
-		value_type    opt_warning_tol   = 1e-10
-		,value_type   opt_error_tol     = 1e-5
-		,value_type   feas_warning_tol  = 1e-10
-		,value_type   feas_error_tol    = 1e-5
-		,value_type   comp_warning_tol  = 1e-10
-		,value_type   comp_error_tol    = 1e-5
-		);
+  ///
+  QPSolverRelaxedTester(
+    value_type    opt_warning_tol   = 1e-10
+    ,value_type   opt_error_tol     = 1e-5
+    ,value_type   feas_warning_tol  = 1e-10
+    ,value_type   feas_error_tol    = 1e-5
+    ,value_type   comp_warning_tol  = 1e-10
+    ,value_type   comp_error_tol    = 1e-5
+    );
 
-	///
-	virtual ~QPSolverRelaxedTester() {}
+  ///
+  virtual ~QPSolverRelaxedTester() {}
 
-	///
-	/** Check the optimality conditions for the solved (or partially solved) QP.
-	 *
-	 * The default implementation calls the function \c check_optimality_conditions()
-	 * which accepts various sets of constraints.
-	 *
-	 *	@param	solution_type
-	 *						[in] Value returned from \c QPSolverRelaxed::solve_qp().
-	 *							Even though all of the optimality conditions are
-	 *							checked the optimality conditions that are actually
-	 *							enforced is determined by this argument.
-	 *								OPTIMAL_SOLUTION : All of the optimality conditions
-	 *									are enforced.
-	 *								PRIMAL_FEASIBLE_POINT : Only the optimality conditions
-	 *								 	(4.1)-(4.4) are enforced.
-	 *								DUAL_FEASIBLE_POINT: Only the optimality condtions
-	 *								 	(2) and (6.1)-(6.4) are enforced.
-	 *								SUBOPTIMAL_POINT : None of the optimality conditions
-	 *								 	are enforced.
-	 *	@param	out			[out] If <tt>!=NULL</tt>, the output is sent to this stream.
-	 *	@param	print_all_warnings
-	 *						[in] If \c true, then all errors greater than \c warning_tol will
-	 *							be printed.
-	 *	@param	g			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	G			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	etaL		[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	dL			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	dU			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	E			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	trans_E		[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	b			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	eL			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	eU			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	F			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	trans_F		[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	f			[in] Input to \c QPSolverRelaxed::solve_qp().
-	 *	@param	obj_d		[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	eta			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	d 			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	nu			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	mu 			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	Ed			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *	@param	Fd			[in] Output from \c QPSolverRelaxed::solve_qp().
-	 *
-	 * @return <tt>true</tt> if all of the errors are greater than the error tolerances
-	 * 	, otherwise it returns <tt>false</tt>
-	 */
-	virtual bool check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector& dL, const Vector& dU
-		,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
-		,const Vector& eL, const Vector& eU
-		,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
-		,const value_type* obj_d
-		,const value_type* eta, const Vector* d
-		,const Vector* nu
-		,const Vector* mu, const Vector* Ed
-		,const Vector* lambda, const Vector* Fd
-		);
+  ///
+  /** Check the optimality conditions for the solved (or partially solved) QP.
+   *
+   * The default implementation calls the function \c check_optimality_conditions()
+   * which accepts various sets of constraints.
+   *
+   *	@param	solution_type
+   *						[in] Value returned from \c QPSolverRelaxed::solve_qp().
+   *							Even though all of the optimality conditions are
+   *							checked the optimality conditions that are actually
+   *							enforced is determined by this argument.
+   *								OPTIMAL_SOLUTION : All of the optimality conditions
+   *									are enforced.
+   *								PRIMAL_FEASIBLE_POINT : Only the optimality conditions
+   *								 	(4.1)-(4.4) are enforced.
+   *								DUAL_FEASIBLE_POINT: Only the optimality condtions
+   *								 	(2) and (6.1)-(6.4) are enforced.
+   *								SUBOPTIMAL_POINT : None of the optimality conditions
+   *								 	are enforced.
+   *	@param	out			[out] If <tt>!=NULL</tt>, the output is sent to this stream.
+   *	@param	print_all_warnings
+   *						[in] If \c true, then all errors greater than \c warning_tol will
+   *							be printed.
+   *	@param	g			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	G			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	etaL		[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	dL			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	dU			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	E			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	trans_E		[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	b			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	eL			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	eU			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	F			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	trans_F		[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	f			[in] Input to \c QPSolverRelaxed::solve_qp().
+   *	@param	obj_d		[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	eta			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	d 			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	nu			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	mu 			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	Ed			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *	@param	Fd			[in] Output from \c QPSolverRelaxed::solve_qp().
+   *
+   * @return <tt>true</tt> if all of the errors are greater than the error tolerances
+   * 	, otherwise it returns <tt>false</tt>
+   */
+  virtual bool check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector& dL, const Vector& dU
+    ,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+    ,const Vector& eL, const Vector& eU
+    ,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
+    ,const value_type* obj_d
+    ,const value_type* eta, const Vector* d
+    ,const Vector* nu
+    ,const Vector* mu, const Vector* Ed
+    ,const Vector* lambda, const Vector* Fd
+    );
 
-	///
-	/** Check the optimality conditions without general equality constrants.
-	 */
-	virtual bool check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector& dL, const Vector& dU
-		,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
-		,const Vector& eL, const Vector& eU
-		,const value_type* obj_d
-		,const value_type* eta, const Vector* d
-		,const Vector* nu
-		,const Vector* mu, const Vector* Ed
-		);
+  ///
+  /** Check the optimality conditions without general equality constrants.
+   */
+  virtual bool check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector& dL, const Vector& dU
+    ,const MatrixOp& E, BLAS_Cpp::Transp trans_E, const Vector& b
+    ,const Vector& eL, const Vector& eU
+    ,const value_type* obj_d
+    ,const value_type* eta, const Vector* d
+    ,const Vector* nu
+    ,const Vector* mu, const Vector* Ed
+    );
 
-	///
-	/** Check the optimality conditions general inequality constrants.
-	 */
-	virtual bool check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector& dL, const Vector& dU
-		,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
-		,const value_type* obj_d
-		,const value_type* eta, const Vector* d
-		,const Vector* nu
-		,const Vector* lambda, const Vector* Fd
-		);
+  ///
+  /** Check the optimality conditions general inequality constrants.
+   */
+  virtual bool check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector& dL, const Vector& dU
+    ,const MatrixOp& F, BLAS_Cpp::Transp trans_F, const Vector& f
+    ,const value_type* obj_d
+    ,const value_type* eta, const Vector* d
+    ,const Vector* nu
+    ,const Vector* lambda, const Vector* Fd
+    );
 
 
-	///
-	/** Check the optimality conditions without general equality or inequality
-	 * constrants (no relaxation needed).
-	 */
-	virtual bool check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,const Vector& dL, const Vector& dU
-		,const value_type* obj_d
-		,const Vector* d
-		,const Vector* nu
-		);
+  ///
+  /** Check the optimality conditions without general equality or inequality
+   * constrants (no relaxation needed).
+   */
+  virtual bool check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,const Vector& dL, const Vector& dU
+    ,const value_type* obj_d
+    ,const Vector* d
+    ,const Vector* nu
+    );
 
-	///
-	/** This is a more flexible function where the client can
-	 * set different constraints to be included.
-	 *
-	 */
-	virtual bool check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector* dL, const Vector* dU
-		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
-		,const Vector* eL, const Vector* eU
-		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
-		,const value_type* obj_d
-		,const value_type* eta, const Vector* d
-		,const Vector* nu
-		,const Vector* mu, const Vector* Ed
-		,const Vector* lambda, const Vector* Fd
-		);
+  ///
+  /** This is a more flexible function where the client can
+   * set different constraints to be included.
+   *
+   */
+  virtual bool check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector* dL, const Vector* dU
+    ,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+    ,const Vector* eL, const Vector* eU
+    ,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+    ,const value_type* obj_d
+    ,const value_type* eta, const Vector* d
+    ,const Vector* nu
+    ,const Vector* mu, const Vector* Ed
+    ,const Vector* lambda, const Vector* Fd
+    );
 
 protected:
 
-	///
-	/** Subclasses are to override this to implement the testing code.
-	 *
-	 * There is a default implementation that is very general and
-	 * should be considered good enough for most applications.
-	 */
-	virtual bool imp_check_optimality_conditions(
-		QPSolverStats::ESolutionType solution_type
-		,const value_type infinite_bound
-		,std::ostream* out, bool print_all_warnings, bool print_vectors
-		,const Vector& g, const MatrixSymOp& G
-		,value_type etaL
-		,const Vector* dL, const Vector* dU
-		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
-		,const Vector* eL, const Vector* eU
-		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
-		,const value_type* obj_d
-		,const value_type* eta, const Vector* d
-		,const Vector* nu
-		,const Vector* mu, const Vector* Ed
-		,const Vector* lambda, const Vector* Fd
-		);
+  ///
+  /** Subclasses are to override this to implement the testing code.
+   *
+   * There is a default implementation that is very general and
+   * should be considered good enough for most applications.
+   */
+  virtual bool imp_check_optimality_conditions(
+    QPSolverStats::ESolutionType solution_type
+    ,const value_type infinite_bound
+    ,std::ostream* out, bool print_all_warnings, bool print_vectors
+    ,const Vector& g, const MatrixSymOp& G
+    ,value_type etaL
+    ,const Vector* dL, const Vector* dU
+    ,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+    ,const Vector* eL, const Vector* eU
+    ,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+    ,const value_type* obj_d
+    ,const value_type* eta, const Vector* d
+    ,const Vector* nu
+    ,const Vector* mu, const Vector* Ed
+    ,const Vector* lambda, const Vector* Fd
+    );
 
 };	// end class QPSolverRelaxedTester
 

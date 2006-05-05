@@ -47,35 +47,35 @@ namespace IterationPack {
 class AlgorithmTrackerComposite : public AlgorithmTracker {
 public:
 
-	///
-	typedef Teuchos::RefCountPtr<AlgorithmTracker>      track_ptr_t;
-	///
-	typedef std::list<track_ptr_t>                                    track_list_t;
-	///
-	AlgorithmTrackerComposite(const ostream_ptr_t& journal_out);
-	/// Give access to the list of \c AlgorithmTracker object pointers.
-	track_list_t& tracks();
-	///
-	const track_list_t& tracks() const;
+  ///
+  typedef Teuchos::RefCountPtr<AlgorithmTracker>      track_ptr_t;
+  ///
+  typedef std::list<track_ptr_t>                                    track_list_t;
+  ///
+  AlgorithmTrackerComposite(const ostream_ptr_t& journal_out);
+  /// Give access to the list of \c AlgorithmTracker object pointers.
+  track_list_t& tracks();
+  ///
+  const track_list_t& tracks() const;
 
-	/**  @name Overridden from AlgorithmTracker */
-	//@{
+  /**  @name Overridden from AlgorithmTracker */
+  //@{
 
-	///
-	void initialize();
-	///
-	void output_iteration(const Algorithm& algo) const;
-	///
-	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+  ///
+  void initialize();
+  ///
+  void output_iteration(const Algorithm& algo) const;
+  ///
+  void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
 
-	//@}
+  //@}
 
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AlgorithmTracker  *tracks;
+  AlgorithmTracker  *tracks;
 #else
-	track_list_t    tracks_;
+  track_list_t    tracks_;
 #endif
 
 };	// end class AlgorithmTrackerComposite
@@ -87,14 +87,14 @@ inline
 AlgorithmTrackerComposite::track_list_t&
 AlgorithmTrackerComposite::tracks()
 { 
-	return tracks_;
+  return tracks_;
 }
 
 inline
 const AlgorithmTrackerComposite::track_list_t&
 AlgorithmTrackerComposite::tracks() const
 { 
-	return tracks_;
+  return tracks_;
 }
 
 }	// end namespace IterationPack 

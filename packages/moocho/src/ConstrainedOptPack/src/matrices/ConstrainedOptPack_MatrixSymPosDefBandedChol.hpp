@@ -66,154 +66,154 @@ namespace ConstrainedOptPack {
 class MatrixSymPosDefBandedChol	: public MatrixSymWithOpFactorized
 {
 public:
-	
-	///
-	typedef Teuchos::RefCountPtr<
-		MemMngPack::ReleaseResource>  release_resource_ptr_t;
+  
+  ///
+  typedef Teuchos::RefCountPtr<
+    MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
-	// //////////////
+  // //////////////
     // Constructors
 
-	///
-	/** Construct and Initialize.
-	 *
-	 * This constructor just calls #this->initialize(...)#.
-	 */
-	MatrixSymPosDefBandedChol(
-		size_type                         n                       = 0
-		,size_type                        kd                      = 0
-		,DMatrixSlice                   *MB                     = NULL
-		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
-		,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
-		,DMatrixSlice                   *UB                     = NULL
-		,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
-		,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
-		,bool                             update_factor           = false
-		,value_type                       scale                   = 1.0
-		);
+  ///
+  /** Construct and Initialize.
+   *
+   * This constructor just calls #this->initialize(...)#.
+   */
+  MatrixSymPosDefBandedChol(
+    size_type                         n                       = 0
+    ,size_type                        kd                      = 0
+    ,DMatrixSlice                   *MB                     = NULL
+    ,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
+    ,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
+    ,DMatrixSlice                   *UB                     = NULL
+    ,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
+    ,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
+    ,bool                             update_factor           = false
+    ,value_type                       scale                   = 1.0
+    );
 
-	// ///////////////////////////
+  // ///////////////////////////
     // Access representation
 
-	///
-	/** Initialize
-	 *
-	 * If called with all of the default arguments then #this# will become uninitialized.
-	 *
-	 * ToDo: Finish pre and post conditions!
-	 *
-	 * @param  n        [in] Determines the size of the banded matrix (n x n).
-	 *                  If #n == 0# then all of the following arguments should be left at
-	 *                  their defaults and #this# will become uninitialized.
-	 * @param  kd       [in] Determines the band width of the matrix as defined by xPBTRF(...).
-	 * @param  MB       [in/state] If #MB != NULL# then this matrix (size (kd+1) x n) is used to store
-	 *                  the original banded matrix #MB# in the format of xPBTRF(...).  This matrix must
-	 *                  be initialized on input.
-	 * @param  MB_release_resource_ptr
-	 *                  [in] Only significant if #MB != NULL#.  Points to a resource to
-	 *                  be released when #MB# is no longer needed.
-	 * @param  MB_uplo  [in] Determines if #MB# is stores the upper or lower triangular elements.
-	 * @param  UB       [in/state] If #UB != NULL# then this matrix (size (kd+1) x n) is used to store
-	 *                  the Cholesky factor of the banded matrix in the format of xPBTRF(...).
-	 *                  This matrix may or may not be initialized on input.
-	 *                  If #update_factor == false# this this matrix must  already be initialized.
-	 *                  If #update_factor == true# then this matrix will be computed.
+  ///
+  /** Initialize
+   *
+   * If called with all of the default arguments then #this# will become uninitialized.
+   *
+   * ToDo: Finish pre and post conditions!
+   *
+   * @param  n        [in] Determines the size of the banded matrix (n x n).
+   *                  If #n == 0# then all of the following arguments should be left at
+   *                  their defaults and #this# will become uninitialized.
+   * @param  kd       [in] Determines the band width of the matrix as defined by xPBTRF(...).
+   * @param  MB       [in/state] If #MB != NULL# then this matrix (size (kd+1) x n) is used to store
+   *                  the original banded matrix #MB# in the format of xPBTRF(...).  This matrix must
+   *                  be initialized on input.
+   * @param  MB_release_resource_ptr
+   *                  [in] Only significant if #MB != NULL#.  Points to a resource to
+   *                  be released when #MB# is no longer needed.
+   * @param  MB_uplo  [in] Determines if #MB# is stores the upper or lower triangular elements.
+   * @param  UB       [in/state] If #UB != NULL# then this matrix (size (kd+1) x n) is used to store
+   *                  the Cholesky factor of the banded matrix in the format of xPBTRF(...).
+   *                  This matrix may or may not be initialized on input.
+   *                  If #update_factor == false# this this matrix must  already be initialized.
+   *                  If #update_factor == true# then this matrix will be computed.
 2	 *                  If #UB == NULL# then storage for the Cholesky factor will be computed
-	 *                  on the fly and will be factored.
-	 * @param  UB_release_resource_ptr
-	 *                  [in] Only significant if #UB != NULL#.  Points to a resource to
-	 *                  be released when #UB# is no longer needed.
-	 * @param  UB_uplo  [in] Determines if #UB# is stores the upper or lower triangular elements.
-	 * @param  update_factor
-	 *                  [in] If true then the factor will be computed within this function call.
-	 * @param  scale    [in] Only significant if #MB != NULL# or #UB != NULL# (see intro).
-	 */
-	void initialize(
-		size_type                         n                       = 0
-		,size_type                        kd                      = 0
-		,DMatrixSlice                   *MB                     = NULL
-		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
-		,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
-		,DMatrixSlice                   *UB                     = NULL
-		,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
-		,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
-		,bool                             update_factor           = false
-		,value_type                       scale                   = 1.0
-		);
+   *                  on the fly and will be factored.
+   * @param  UB_release_resource_ptr
+   *                  [in] Only significant if #UB != NULL#.  Points to a resource to
+   *                  be released when #UB# is no longer needed.
+   * @param  UB_uplo  [in] Determines if #UB# is stores the upper or lower triangular elements.
+   * @param  update_factor
+   *                  [in] If true then the factor will be computed within this function call.
+   * @param  scale    [in] Only significant if #MB != NULL# or #UB != NULL# (see intro).
+   */
+  void initialize(
+    size_type                         n                       = 0
+    ,size_type                        kd                      = 0
+    ,DMatrixSlice                   *MB                     = NULL
+    ,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
+    ,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
+    ,DMatrixSlice                   *UB                     = NULL
+    ,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
+    ,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
+    ,bool                             update_factor           = false
+    ,value_type                       scale                   = 1.0
+    );
 
-	///
-	size_type kd() const;
-	///
-	/** Get view of MB.
-	 */
-	DMatrixSlice& MB();
-	///
-	const DMatrixSlice& MB() const;
-	///
-	BLAS_Cpp::Uplo MB_uplo() const;
-	///
-	/** Get view of UB.
-	 */
-	DMatrixSlice& UB();
-	///
-	const DMatrixSlice& UB() const;
-	///
-	BLAS_Cpp::Uplo UB_uplo() const;
+  ///
+  size_type kd() const;
+  ///
+  /** Get view of MB.
+   */
+  DMatrixSlice& MB();
+  ///
+  const DMatrixSlice& MB() const;
+  ///
+  BLAS_Cpp::Uplo MB_uplo() const;
+  ///
+  /** Get view of UB.
+   */
+  DMatrixSlice& UB();
+  ///
+  const DMatrixSlice& UB() const;
+  ///
+  BLAS_Cpp::Uplo UB_uplo() const;
 
-	// /////////////////////////////
-	// Overridden from MatrixOp
+  // /////////////////////////////
+  // Overridden from MatrixOp
 
-	///
-	size_type rows() const;
-	///
-	size_type nz() const;
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2, value_type beta) const;
-	///
-	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const SpVectorSlice& sv_rhs2, value_type beta) const;
-	///
-	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const DVectorSlice& vs_rhs3, value_type beta) const;
-	///
-	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const SpVectorSlice& sv_rhs3, value_type beta) const;
+  ///
+  size_type rows() const;
+  ///
+  size_type nz() const;
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const;
+  ///
+  void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const SpVectorSlice& sv_rhs2, value_type beta) const;
+  ///
+  void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
+    , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    , BLAS_Cpp::Transp M_rhs2_trans
+    , const DVectorSlice& vs_rhs3, value_type beta) const;
+  ///
+  void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
+    , const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+    , BLAS_Cpp::Transp M_rhs2_trans
+    , const SpVectorSlice& sv_rhs3, value_type beta) const;
 
-	// //////////////////////////////////
-	// Overridden from MatrixFactorized
+  // //////////////////////////////////
+  // Overridden from MatrixFactorized
 
-	/// With throw exception if factorization is not allowed.
-	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const DVectorSlice& vs_rhs2) const;
+  /// With throw exception if factorization is not allowed.
+  void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2) const;
 
 private:
-	
-	// /////////////////////////////
-	// Private data members
+  
+  // /////////////////////////////
+  // Private data members
 
-	size_type                       n_;
-	size_type                       kd_;
-	DMatrixSlice                  MB_;
-	release_resource_ptr_t          MB_release_resource_ptr_;
-	BLAS_Cpp::Uplo                  MB_uplo_;
-	mutable DMatrixSlice          UB_;
-	mutable release_resource_ptr_t  UB_release_resource_ptr_;
-	mutable BLAS_Cpp::Uplo          UB_uplo_;
-	mutable bool                    factor_updated_;
-	value_type                      scale_;
+  size_type                       n_;
+  size_type                       kd_;
+  DMatrixSlice                  MB_;
+  release_resource_ptr_t          MB_release_resource_ptr_;
+  BLAS_Cpp::Uplo                  MB_uplo_;
+  mutable DMatrixSlice          UB_;
+  mutable release_resource_ptr_t  UB_release_resource_ptr_;
+  mutable BLAS_Cpp::Uplo          UB_uplo_;
+  mutable bool                    factor_updated_;
+  value_type                      scale_;
 
-	// /////////////////////////////
-	// Private member functions
+  // /////////////////////////////
+  // Private member functions
 
-	void assert_initialized() const;
-	void update_factorization() const;
+  void assert_initialized() const;
+  void update_factorization() const;
 
 }; // end class MatrixSymPosDefBandedChol
 
@@ -223,43 +223,43 @@ private:
 inline
 size_type MatrixSymPosDefBandedChol::kd() const
 {
-	return kd_;
+  return kd_;
 }
 
 inline
 DMatrixSlice& MatrixSymPosDefBandedChol::MB()
 {
-	return MB_;
+  return MB_;
 }
 
 inline
 const DMatrixSlice& MatrixSymPosDefBandedChol::MB() const
 {
-	return MB_;
+  return MB_;
 }
 
 inline
 BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::MB_uplo() const
 {
-	return MB_uplo_;
+  return MB_uplo_;
 }
 
 inline
 DMatrixSlice& MatrixSymPosDefBandedChol::UB()
 {
-	return UB_;
+  return UB_;
 }
 
 inline
 const DMatrixSlice& MatrixSymPosDefBandedChol::UB() const
 {
-	return UB_;
+  return UB_;
 }
 
 inline
 BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::UB_uplo() const
 {
-	return UB_uplo_;
+  return UB_uplo_;
 }
 
 } // end namespace ConstrainedOptPack

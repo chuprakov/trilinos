@@ -42,12 +42,12 @@ namespace MoochoPack {
  * The options group is:
  *
  \verbatim
-	options_group MeritFuncPenaltyParamUpdate {
-	    small_mu     = 1e-6;
-	    min_mu_ratio = 1e-8;
-	    mult_factor  = 1e-4;
-	    kkt_near_sol = 1.0;
-	}
+  options_group MeritFuncPenaltyParamUpdate {
+      small_mu     = 1e-6;
+      min_mu_ratio = 1e-8;
+      mult_factor  = 1e-4;
+      kkt_near_sol = 1.0;
+  }
  \endverbatim
  *
  * <ul>
@@ -64,20 +64,20 @@ namespace MoochoPack {
  * </ul>
  */
 class MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			MeritFunc_PenaltyParamUpdate_AddedStep >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      MeritFunc_PenaltyParamUpdate_AddedStep >
 {
 public:
 
-	///
-	MeritFunc_PenaltyParamUpdate_AddedStepSetOptions(
-		MeritFunc_PenaltyParamUpdate_AddedStep* target = 0 );
+  ///
+  MeritFunc_PenaltyParamUpdate_AddedStepSetOptions(
+    MeritFunc_PenaltyParamUpdate_AddedStep* target = 0 );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
 

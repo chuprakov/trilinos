@@ -43,30 +43,30 @@ namespace ConstrainedOptPack {
 class MeritFuncCalcNLE : public MeritFuncCalc {
 public:
 
-	/// <<std aggr>> stereotype members for phi.
-	STANDARD_CONST_AGGREGATION_MEMBERS( MeritFuncNLE, phi )
+  /// <<std aggr>> stereotype members for phi.
+  STANDARD_CONST_AGGREGATION_MEMBERS( MeritFuncNLE, phi )
 
-	/// <<std aggr>> stereotype members for nlp.
-	STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
+  /// <<std aggr>> stereotype members for nlp.
+  STANDARD_CONST_AGGREGATION_MEMBERS( NLP, nlp )
 
-	///
-	MeritFuncCalcNLE( const MeritFuncNLE* phi = 0, const NLP* nlp = 0 );
+  ///
+  MeritFuncCalcNLE( const MeritFuncNLE* phi = 0, const NLP* nlp = 0 );
 
-	// ////////////////////////////////////////////
-	// Overridden from MeritFuncCalc
+  // ////////////////////////////////////////////
+  // Overridden from MeritFuncCalc
 
-	///
-	/** Return the value of the merit function at x.
-	  * Here phi(x) is calculated directly using the nlp.
-	  */
-	value_type operator()(const Vector& x) const;
+  ///
+  /** Return the value of the merit function at x.
+    * Here phi(x) is calculated directly using the nlp.
+    */
+  value_type operator()(const Vector& x) const;
 
-	/// Calls phi().deriv() on phi.
-	value_type deriv() const;
+  /// Calls phi().deriv() on phi.
+  value_type deriv() const;
 
-	/// Calls phi().print_merit_func(....).
-	void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const;
+  /// Calls phi().print_merit_func(....).
+  void print_merit_func(std::ostream& out
+    , const std::string& leading_str) const;
 
 };	// end class MeritFuncCalcNLE
 

@@ -44,16 +44,16 @@ namespace MoochoPack {
   * The options group is:
   *
   \begin{verbatim}
-	options_group LineSearch2ndOrderCorrect {
-	    newton_olevel           = PRINT_NOTHING;
-	    constr_norm_threshold   = 1e-3;
-	    constr_incr_ratio       = 5.0;
-	    after_k_iter            = 3;
-	    forced_constr_reduction = LESS_X_D;
-	    forced_reduct_ratio     = 1.0;
-	    max_step_ratio          = 0.7;
-	    max_newton_iter         = 3;
-	}
+  options_group LineSearch2ndOrderCorrect {
+      newton_olevel           = PRINT_NOTHING;
+      constr_norm_threshold   = 1e-3;
+      constr_incr_ratio       = 5.0;
+      after_k_iter            = 3;
+      forced_constr_reduction = LESS_X_D;
+      forced_reduct_ratio     = 1.0;
+      max_step_ratio          = 0.7;
+      max_newton_iter         = 3;
+  }
   \end{verbatim}
   *
   * \begin{description}
@@ -97,21 +97,21 @@ namespace MoochoPack {
   *	\end{description}
   */
 class LineSearch2ndOrderCorrect_StepSetOptions
-	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
-		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			LineSearch2ndOrderCorrect_Step >
+  : public OptionsFromStreamPack::SetOptionsFromStreamNode 
+    , public OptionsFromStreamPack::SetOptionsToTargetBase<
+      LineSearch2ndOrderCorrect_Step >
 {
 public:
 
-	///
-	LineSearch2ndOrderCorrect_StepSetOptions(
-		  LineSearch2ndOrderCorrect_Step* target = 0
-		, const char opt_grp_name[] = "LineSearch2ndOrderCorrect" );
+  ///
+  LineSearch2ndOrderCorrect_StepSetOptions(
+      LineSearch2ndOrderCorrect_Step* target = 0
+    , const char opt_grp_name[] = "LineSearch2ndOrderCorrect" );
 
 protected:
 
-	/// Overridden from SetOptionsFromStreamNode
-	void setOption( int option_num, const std::string& option_value );
+  /// Overridden from SetOptionsFromStreamNode
+  void setOption( int option_num, const std::string& option_value );
 
 };	// end class LineSearch2ndOrderCorrect_StepSetOptions
 

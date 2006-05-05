@@ -55,81 +55,81 @@ extern const std::string alpha_vu_name;
 
 
 class IpState 
-	: public MoochoPack::NLPAlgoState
-	{
+  : public MoochoPack::NLPAlgoState
+  {
 
-	public:
-		///********** Iteration Quantities **************
+  public:
+    ///********** Iteration Quantities **************
 
-		/// mu: barrier parameter
-		STATE_SCALAR_IQ_DECL(barrier_parameter)
+    /// mu: barrier parameter
+    STATE_SCALAR_IQ_DECL(barrier_parameter)
 
-		/// barrier_obj: objective value with 
-		//   barrier term included
-		STATE_SCALAR_IQ_DECL(barrier_obj)
+    /// barrier_obj: objective value with 
+    //   barrier term included
+    STATE_SCALAR_IQ_DECL(barrier_obj)
 
-		/// grad_barrier_obj: gradient of the objective
-		//   with barrier term included
-		STATE_VECTOR_IQ_DECL(grad_barrier_obj)
+    /// grad_barrier_obj: gradient of the objective
+    //   with barrier term included
+    STATE_VECTOR_IQ_DECL(grad_barrier_obj)
 
-		/// e_tol: current error tolerance for inner loop
-		STATE_SCALAR_IQ_DECL(e_tol)
+    /// e_tol: current error tolerance for inner loop
+    STATE_SCALAR_IQ_DECL(e_tol)
 
-		/// comp_err_mu: perturbed complementarity error for barrier sub problem
-		STATE_SCALAR_IQ_DECL(comp_err_mu)
+    /// comp_err_mu: perturbed complementarity error for barrier sub problem
+    STATE_SCALAR_IQ_DECL(comp_err_mu)
 
-		/// Vu - diagonal matrix of upper bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagStd, Vu)
+    /// Vu - diagonal matrix of upper bound multipliers
+    STATE_IQ_DECL(MatrixSymDiagStd, Vu)
 
-		/// Vl - diagonal matrix of lower bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagStd, Vl)
+    /// Vl - diagonal matrix of lower bound multipliers
+    STATE_IQ_DECL(MatrixSymDiagStd, Vl)
 
-		/// invXu - (Xu)^-1 - matrix of 1/(xu-x) diagonal
-		STATE_IQ_DECL(MatrixSymDiagStd, invXu)
+    /// invXu - (Xu)^-1 - matrix of 1/(xu-x) diagonal
+    STATE_IQ_DECL(MatrixSymDiagStd, invXu)
 
-		/// invXl - (Xl)^-1 - matrix of 1/(x-xl) diagonal
-		STATE_IQ_DECL(MatrixSymDiagStd, invXl)
+    /// invXl - (Xl)^-1 - matrix of 1/(x-xl) diagonal
+    STATE_IQ_DECL(MatrixSymDiagStd, invXl)
 
-		/// rHB - reduced Hessian of the barrier term (Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymOp, rHB)
+    /// rHB - reduced Hessian of the barrier term (Z_Sigma_Z)
+    STATE_IQ_DECL(MatrixSymOp, rHB)
 
-		/// B - overall reduced 'Hessian' (Z_W_Z+Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymOp, B)
+    /// B - overall reduced 'Hessian' (Z_W_Z+Z_Sigma_Z)
+    STATE_IQ_DECL(MatrixSymOp, B)
 
-		/// Full space Sigma (invXl*Vl-invXu*Vu)
-		STATE_IQ_DECL(MatrixSymDiagStd, Sigma)
+    /// Full space Sigma (invXl*Vl-invXu*Vu)
+    STATE_IQ_DECL(MatrixSymDiagStd, Sigma)
 
-		/// w_sigma:  crossterm correction for sigma (Z' * Sigma * Y * py)
-		STATE_VECTOR_IQ_DECL(w_sigma) 
+    /// w_sigma:  crossterm correction for sigma (Z' * Sigma * Y * py)
+    STATE_VECTOR_IQ_DECL(w_sigma) 
 
-		/// dvl:  Search direction for lower bound multipliers ( n x 1 )
-		STATE_VECTOR_IQ_DECL(dvl)
+    /// dvl:  Search direction for lower bound multipliers ( n x 1 )
+    STATE_VECTOR_IQ_DECL(dvl)
 
-		/// dvu:  Search direction for upper bound multipliers ( n x 1 )
-		STATE_VECTOR_IQ_DECL(dvu)
+    /// dvu:  Search direction for upper bound multipliers ( n x 1 )
+    STATE_VECTOR_IQ_DECL(dvu)
 
-		/// alpha_vl: step size for vl
-		STATE_SCALAR_IQ_DECL(alpha_vl)
+    /// alpha_vl: step size for vl
+    STATE_SCALAR_IQ_DECL(alpha_vl)
 
-		/// alpha_vl: step size for vu
-		STATE_SCALAR_IQ_DECL(alpha_vu)
+    /// alpha_vl: step size for vu
+    STATE_SCALAR_IQ_DECL(alpha_vu)
 
-		///
-		/** Construct
-		 *
-		 * 
-		 */
-		IpState(
-		  const decomp_sys_ptr_t& decomp_sys   = Teuchos::null
-		  ,const vec_space_ptr_t& space_x      = Teuchos::null
-		  ,const vec_space_ptr_t& space_c      = Teuchos::null
-		  ,const vec_space_ptr_t& space_range  = Teuchos::null
-		  ,const vec_space_ptr_t& space_null   = Teuchos::null
-		  );
+    ///
+    /** Construct
+     *
+     * 
+     */
+    IpState(
+      const decomp_sys_ptr_t& decomp_sys   = Teuchos::null
+      ,const vec_space_ptr_t& space_x      = Teuchos::null
+      ,const vec_space_ptr_t& space_c      = Teuchos::null
+      ,const vec_space_ptr_t& space_range  = Teuchos::null
+      ,const vec_space_ptr_t& space_null   = Teuchos::null
+      );
 
-		virtual ~IpState();
+    virtual ~IpState();
 
-	}; // end class IpState
+  }; // end class IpState
 
 } // end namespace MoochoPack
 

@@ -45,28 +45,28 @@ namespace IterationPack {
   */
 class CastIQMemberBase {
 public:
-	///
-	/** Name returns the name of the iteration quantity
-	 */
-	const std::string& iq_name() const;
-	///
-	/** Returns if the iteration quantity exists in the state object.
-	 */
-	bool exists_in( const AlgorithmState& s ) const;
+  ///
+  /** Name returns the name of the iteration quantity
+   */
+  const std::string& iq_name() const;
+  ///
+  /** Returns if the iteration quantity exists in the state object.
+   */
+  bool exists_in( const AlgorithmState& s ) const;
 protected:
-	///
-	CastIQMemberBase( const std::string iq_name );
-	///
-	void cache_iq_id( const AlgorithmState& s ) const;
-	///
-	void throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const;
-	///
-	const std::string					iq_name_;
-	///
-	mutable AlgorithmState::iq_id_type	iq_id_;
+  ///
+  CastIQMemberBase( const std::string iq_name );
+  ///
+  void cache_iq_id( const AlgorithmState& s ) const;
+  ///
+  void throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const;
+  ///
+  const std::string					iq_name_;
+  ///
+  mutable AlgorithmState::iq_id_type	iq_id_;
 private:
-	enum { NOT_SET_YET = AlgorithmState::DOES_NOT_EXIST - 1 };
-	CastIQMemberBase(); // not defined and not to be called.
+  enum { NOT_SET_YET = AlgorithmState::DOES_NOT_EXIST - 1 };
+  CastIQMemberBase(); // not defined and not to be called.
 };	// end class CastIQMemberBase
 
 ///
@@ -107,14 +107,14 @@ private:
     public:
         bool do_step( algo, ... )
         {
-        	AlgorithmState &s = algo.state();
-        	x_step_(s).set_k(0) = 5.0;
+          AlgorithmState &s = algo.state();
+          x_step_(s).set_k(0) = 5.0;
         }
     private:
-    	x_step_iq_member x_step_;
+      x_step_iq_member x_step_;
     }
-	\endcode
-	\code
+  \endcode
+  \code
     // /////////////////////////////////////////////////////////////////
     // MyStep2.h
     
@@ -124,12 +124,12 @@ private:
     public:
         bool do_step( algo, ... )
         {
-        	AlgorithmState &s = algo.state();
-        	double x_step = x_step_(s).get_k(0);
-        	cout << "\nx_step = " << x_step << std::endl;
+          AlgorithmState &s = algo.state();
+          double x_step = x_step_(s).get_k(0);
+          cout << "\nx_step = " << x_step << std::endl;
         }
     private:
-    	x_step_iq_member x_step_;
+      x_step_iq_member x_step_;
     }
  \endcode
  * In the above example, an <tt>O(s.num_iter_quantities())</tt> search for the \c iq_id
@@ -144,23 +144,23 @@ private:
 template < class T >
 class CastIQMember : public CastIQMemberBase {
 public:
-	/// Construct with the name of an iteration quantity.
-	CastIQMember( const std::string iq_name );
-	///
-	/** Get the iteration quantity from an AlgorithmState object.
-	  *
-	  * If the iteration quantity of the name iq_namt does not
-	  * exist then a AlgorithmState::DoesNotExist exception
-	  * will be thrown.  If the type of the iteration quantity
-	  * is not of the type IterQuantityAcess<T> (as determined
-	  * by dynamic_cast<T>) then the exception InvalidTypeCastException:
-	  * will be thrown with a helpful error message.
-	  */
-	IterQuantityAccess<T>& operator()( AlgorithmState& s ) const;
-	///
-	const IterQuantityAccess<T>& operator()( const AlgorithmState& s ) const;
+  /// Construct with the name of an iteration quantity.
+  CastIQMember( const std::string iq_name );
+  ///
+  /** Get the iteration quantity from an AlgorithmState object.
+    *
+    * If the iteration quantity of the name iq_namt does not
+    * exist then a AlgorithmState::DoesNotExist exception
+    * will be thrown.  If the type of the iteration quantity
+    * is not of the type IterQuantityAcess<T> (as determined
+    * by dynamic_cast<T>) then the exception InvalidTypeCastException:
+    * will be thrown with a helpful error message.
+    */
+  IterQuantityAccess<T>& operator()( AlgorithmState& s ) const;
+  ///
+  const IterQuantityAccess<T>& operator()( const AlgorithmState& s ) const;
 private:
-	CastIQMember();	// not defined and not to be called
+  CastIQMember();	// not defined and not to be called
 };	// end class CastIQMember<T>
 
 // //////////////////////////////////////////
@@ -168,35 +168,35 @@ private:
 
 template < class T >
 CastIQMember<T>::CastIQMember( const std::string iq_name )
-	:  CastIQMemberBase(iq_name)
+  :  CastIQMemberBase(iq_name)
 {}
 
 template < class T >
 IterQuantityAccess<T>&
 CastIQMember<T>::operator()( AlgorithmState& s ) const
 {
-	cache_iq_id(s);
-	if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
-		throw_cast_error(iq_id_,typeid(T).name());
-	IterQuantityAccess<T>
-		*p = dynamic_cast<IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
-	if( !p )
-		throw_cast_error(iq_id_,typeid(T).name());
-	return *p;	
+  cache_iq_id(s);
+  if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
+    throw_cast_error(iq_id_,typeid(T).name());
+  IterQuantityAccess<T>
+    *p = dynamic_cast<IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
+  if( !p )
+    throw_cast_error(iq_id_,typeid(T).name());
+  return *p;	
 }
 
 template < class T >
 const IterQuantityAccess<T>&
 CastIQMember<T>::operator()( const AlgorithmState& s ) const
 {
-	cache_iq_id(s);
-	if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
-		throw_cast_error(iq_id_,typeid(T).name());
-	const IterQuantityAccess<T>
-		*p = dynamic_cast<const IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
-	if( !p )
-		throw_cast_error(iq_id_,typeid(T).name());
-	return *p;	
+  cache_iq_id(s);
+  if( iq_id_ == AlgorithmState::DOES_NOT_EXIST )
+    throw_cast_error(iq_id_,typeid(T).name());
+  const IterQuantityAccess<T>
+    *p = dynamic_cast<const IterQuantityAccess<T>*>( &s.iter_quant( iq_id_ ) );
+  if( !p )
+    throw_cast_error(iq_id_,typeid(T).name());
+  return *p;	
 }
 
 }	// namespace IterationPack

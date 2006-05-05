@@ -38,77 +38,77 @@
 namespace MoochoPack {
 
 LineSearchFailureNewDecompositionSelection_Step::LineSearchFailureNewDecompositionSelection_Step(
-	const line_search_step_ptr_t        &line_search_step
-	,const new_decomp_strategy_ptr_t    &new_decomp_strategy
-	)
-	:line_search_step_(line_search_step)
-	,new_decomp_strategy_(new_decomp_strategy)
-	,last_ls_failure_k_(-100) // has not failed yet
+  const line_search_step_ptr_t        &line_search_step
+  ,const new_decomp_strategy_ptr_t    &new_decomp_strategy
+  )
+  :line_search_step_(line_search_step)
+  ,new_decomp_strategy_(new_decomp_strategy)
+  ,last_ls_failure_k_(-100) // has not failed yet
 {}
 
 bool LineSearchFailureNewDecompositionSelection_Step::do_step(
-	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	)
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+  )
 {
-	try {
-		return line_search_step().do_step(_algo,step_poss,type,assoc_step_poss);
-	}
-	catch(const LineSearchFailure& lsf_excpt) {
-		NLPAlgo        &algo = rsqp_algo(_algo);
-		NLPAlgoState   &s    = algo.rsqp_state();
+  try {
+    return line_search_step().do_step(_algo,step_poss,type,assoc_step_poss);
+  }
+  catch(const LineSearchFailure& lsf_excpt) {
+    NLPAlgo        &algo = rsqp_algo(_algo);
+    NLPAlgoState   &s    = algo.rsqp_state();
 
-		EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-		std::ostream& out = algo.track().journal_out();
+    EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+    std::ostream& out = algo.track().journal_out();
 
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
-			out	<< "\nLine search failed "
-				<< " (k = " << algo.state().k() << ")\n"
-				<< "LineSearchFailure description: " << lsf_excpt.what() << "\n";
-		}
+    if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
+      out	<< "\nLine search failed "
+        << " (k = " << algo.state().k() << ")\n"
+        << "LineSearchFailure description: " << lsf_excpt.what() << "\n";
+    }
 
-		if( last_ls_failure_k_ == s.k() - 1 ) {
-			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
-				out	<< "\nThe line search failed again even with a new decomposition!"
-					<< " (k = " << algo.state().k() << ")\n"
-					<< "We quit!\n";
-			}
-			throw;
-		}
+    if( last_ls_failure_k_ == s.k() - 1 ) {
+      if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
+        out	<< "\nThe line search failed again even with a new decomposition!"
+          << " (k = " << algo.state().k() << ")\n"
+          << "We quit!\n";
+      }
+      throw;
+    }
 
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
-			out	<< "\nSelecting a new decomposition..."
-				<< " (k = " << algo.state().k() << ")\n";
-		}
+    if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
+      out	<< "\nSelecting a new decomposition..."
+        << " (k = " << algo.state().k() << ")\n";
+    }
 
-		last_ls_failure_k_ = s.k();
-		return new_decomp_strategy().new_decomposition(algo,step_poss,type,assoc_step_poss);
-	}
-	return false;	// will never be executed.
+    last_ls_failure_k_ = s.k();
+    return new_decomp_strategy().new_decomposition(algo,step_poss,type,assoc_step_poss);
+  }
+  return false;	// will never be executed.
 }
 
 void LineSearchFailureNewDecompositionSelection_Step::print_step(
-	const Algorithm& algo
-	,poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
-	,std::ostream& out, const std::string& L
-	) const
+  const Algorithm& algo
+  ,poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
+  ,std::ostream& out, const std::string& L
+  ) const
 {
-	out
-		<< L << "do line search step : " << typeid(line_search_step()).name() << std::endl;
-	line_search_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"    ");
-	out
-		<< L << "end line search step\n"
-		<< L << "if thrown line_search_failure then\n"
-		<< L << "  if line search failed at the last iteration also then\n"
-		<< L << "    throw line_search_failure\n"
-		<< L << "  end\n"
-		<< L << "  new decomposition selection : " << typeid(new_decomp_strategy()).name() << std::endl
-		;
-	new_decomp_strategy().print_new_decomposition(
-		rsqp_algo(algo),step_poss,type,assoc_step_poss,out, L + "    " );
-	out
-		<< L << "  end new decomposition selection\n"
-		<< L << "end\n"
-		;
+  out
+    << L << "do line search step : " << typeid(line_search_step()).name() << std::endl;
+  line_search_step().print_step(algo,step_poss,type,assoc_step_poss,out,L+"    ");
+  out
+    << L << "end line search step\n"
+    << L << "if thrown line_search_failure then\n"
+    << L << "  if line search failed at the last iteration also then\n"
+    << L << "    throw line_search_failure\n"
+    << L << "  end\n"
+    << L << "  new decomposition selection : " << typeid(new_decomp_strategy()).name() << std::endl
+    ;
+  new_decomp_strategy().print_new_decomposition(
+    rsqp_algo(algo),step_poss,type,assoc_step_poss,out, L + "    " );
+  out
+    << L << "  end new decomposition selection\n"
+    << L << "end\n"
+    ;
 }
 
 } // end namespace MoochoPack

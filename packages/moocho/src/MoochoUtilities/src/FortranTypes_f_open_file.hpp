@@ -40,7 +40,7 @@ namespace FortranTypes {
 
 ///
 enum EOpenStatus { OPEN_OLD = 0, OPEN_NEW = 1, OPEN_SCRATCH = 2
-	, OPEN_UNKNOWN = 3 };
+  , OPEN_UNKNOWN = 3 };
 ///
 enum EOpenForm { OPEN_FORMATTED = 0, OPEN_UNFORMATTED = 1 };
 ///
@@ -68,9 +68,9 @@ enum EOpenAccess { OPEN_SEQUENTIAL = 0, OPEN_DIRECT = 1 };
   * the exception OpenException will be thrown.
   */
 void f_open_file( const f_int iunit, const char file[]
-	, EOpenStatus status = OPEN_UNKNOWN, EOpenForm form = OPEN_FORMATTED
-	, EOpenBlank blank = OPEN_NULL, EOpenAccess access = OPEN_SEQUENTIAL
-	, f_int recl = -1 );
+  , EOpenStatus status = OPEN_UNKNOWN, EOpenForm form = OPEN_FORMATTED
+  , EOpenBlank blank = OPEN_NULL, EOpenAccess access = OPEN_SEQUENTIAL
+  , f_int recl = -1 );
 
 /** Close a Fortran file given its unit number.
   *

@@ -46,12 +46,12 @@ namespace AbstractLinAlgPack {
   * elements are lower.
   */
 void imp_sparse_bnd_diff(
-	  int						sign
-	, const SpVectorSlice		&sv
-	, BLAS_Cpp::Uplo			uplo
-	, const DVectorSlice			&v
-	, DVectorSlice				*r
-	);
+    int						sign
+  , const SpVectorSlice		&sv
+  , BLAS_Cpp::Uplo			uplo
+  , const DVectorSlice			&v
+  , DVectorSlice				*r
+  );
 
 }	// end namespace AbstractLinAlgPack
 

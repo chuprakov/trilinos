@@ -40,28 +40,28 @@ namespace MoochoPack {
 /** Delegates the line search to a <tt>DirectLineSearch_Strategy</tt> object.
  */
 class LineSearchDirect_Step
-	: public IterationPack::AlgorithmStep // doxygen needs full path
+  : public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
-	/// Set the direct line search algorithm object
-	STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
-	///
-	LineSearchDirect_Step(
-		const direct_line_search_ptr_t& direct_line_search = Teuchos::null
-		);
+  /// Set the direct line search algorithm object
+  STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
+  ///
+  LineSearchDirect_Step(
+    const direct_line_search_ptr_t& direct_line_search = Teuchos::null
+    );
 
-	/** Overridden from AlgorithmStep */
-	//@{
+  /** Overridden from AlgorithmStep */
+  //@{
 
-	///
-	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss);
-	///
-	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
+  ///
+  bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss);
+  ///
+  void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
+    , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
-	//@}
+  //@}
 
 };	// end class LineSearchDirect_Step
 

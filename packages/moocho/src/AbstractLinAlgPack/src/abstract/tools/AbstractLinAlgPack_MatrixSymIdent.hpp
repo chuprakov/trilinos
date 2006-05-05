@@ -41,71 +41,71 @@ namespace AbstractLinAlgPack {
  */
 class MatrixSymIdent : virtual public MatrixSymOpNonsing {
 public:
-	
-	/** @name Constructors/initializers */
-	//@{
+  
+  /** @name Constructors/initializers */
+  //@{
 
-	/// Calls <tt>this->initialize()</tt>.
-	MatrixSymIdent(
-		const VectorSpace::space_ptr_t&          vec_space = Teuchos::null
-		,const value_type                        scale     = 1.0
-		);
+  /// Calls <tt>this->initialize()</tt>.
+  MatrixSymIdent(
+    const VectorSpace::space_ptr_t&          vec_space = Teuchos::null
+    ,const value_type                        scale     = 1.0
+    );
 
-	///
-	void initialize(
-		const VectorSpace::space_ptr_t&          vec_space
-		,const value_type                        scale       = 1.0
-	);
+  ///
+  void initialize(
+    const VectorSpace::space_ptr_t&          vec_space
+    ,const value_type                        scale       = 1.0
+  );
 
-	//@}
+  //@}
 
-	/** @name Access */
-	//@{
+  /** @name Access */
+  //@{
 
-	///
-	value_type scale() const;
+  ///
+  value_type scale() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixBase */
-	//@{
+  /** @name Overridden from MatrixBase */
+  //@{
 
-	/// Returns 0 if not initalized.
-	size_type rows() const;
-	/// Returns <tt>this->rows()</tt>
-	size_type nz() const;
+  /// Returns 0 if not initalized.
+  size_type rows() const;
+  /// Returns <tt>this->rows()</tt>
+  size_type nz() const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixOp */
-	//@{
+  /** @name Overridden from MatrixOp */
+  //@{
 
-	///
-	const VectorSpace& space_cols() const;
-	///
-	std::ostream& output(std::ostream& out) const;
-	///
-	void Vp_StMtV(
-		VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const Vector& v_rhs2, value_type beta ) const;
+  ///
+  const VectorSpace& space_cols() const;
+  ///
+  std::ostream& output(std::ostream& out) const;
+  ///
+  void Vp_StMtV(
+    VectorMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    ,const Vector& v_rhs2, value_type beta ) const;
 
-	//@}
+  //@}
 
-	/** @name Overridden from MatrixNonsing */
-	//@{
+  /** @name Overridden from MatrixNonsing */
+  //@{
 
-	///
-	void V_InvMtV(
-		VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const Vector& v_rhs2 ) const;
+  ///
+  void V_InvMtV(
+    VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
+    ,const Vector& v_rhs2 ) const;
 
-	//@}
+  //@}
 
 private:
 
-	VectorSpace::space_ptr_t  vec_space_;
-	value_type                scale_;
-	
+  VectorSpace::space_ptr_t  vec_space_;
+  value_type                scale_;
+  
 }; // end class MatrixSymIdent
 
 // ///////////////////////////////////////////
@@ -114,7 +114,7 @@ private:
 inline
 value_type MatrixSymIdent::scale() const
 {
-	return scale_;
+  return scale_;
 }
 
 } // end namespace AbstractLinAlgPack

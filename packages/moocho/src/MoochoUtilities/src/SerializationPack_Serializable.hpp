@@ -15,23 +15,23 @@ namespace SerializationPack {
  */
 class Serializable {
 public:
-	
-	///
-	virtual ~Serializable() {}
+  
+  ///
+  virtual ~Serializable() {}
 
-	///
-	/** Serialize the object to a stream.
-	 *
-	 * Todo: Finish documentation!
-	 */
-	virtual void serialize( std::ostream &out ) const = 0;
+  ///
+  /** Serialize the object to a stream.
+   *
+   * Todo: Finish documentation!
+   */
+  virtual void serialize( std::ostream &out ) const = 0;
 
-	///
-	/** Un-serialize the object from a stream.
-	 *
-	 * Todo: Finish documentation!
-	 */
-	virtual void unserialize( std::istream &in ) = 0;
+  ///
+  /** Un-serialize the object from a stream.
+   *
+   * Todo: Finish documentation!
+   */
+  virtual void unserialize( std::istream &in ) = 0;
 
 };
 

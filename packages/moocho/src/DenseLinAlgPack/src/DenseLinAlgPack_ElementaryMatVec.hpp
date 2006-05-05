@@ -35,16 +35,16 @@ namespace DenseLinAlgPack {
 
 /// creates an n sized vector with all zeros accepts the ith element is one.
 inline DVector e_vec(size_type i, size_type n) {
-	DenseLinAlgPack::DVector v(0.0,n);
-	v(i) = 1.0;
-	return v;
+  DenseLinAlgPack::DVector v(0.0,n);
+  v(i) = 1.0;
+  return v;
 }
 
 /// creates an n x n identity matrix
 inline DMatrix eye(size_type n) {
-	DMatrix mat(0.0,n,n);
-	mat.diag() = 1.0;
-	return mat;
+  DMatrix mat(0.0,n,n);
+  mat.diag() = 1.0;
+  return mat;
 }
 
 }	// namespace DenseLinAlgPack
