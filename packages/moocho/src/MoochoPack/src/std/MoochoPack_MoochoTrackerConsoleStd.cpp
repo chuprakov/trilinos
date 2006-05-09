@@ -44,18 +44,19 @@ using std::setw;
 using std::left;
 using std::right;
 using std::setprecision;
+using std::fixed;
 
 // Static members
-int		MoochoTrackerConsoleStd::w_i2_		= 2;
-char	MoochoTrackerConsoleStd::ul_i2_[]	= "--";
-int		MoochoTrackerConsoleStd::w_i4_		= 4;
-char	MoochoTrackerConsoleStd::ul_i4_[]	= "----";
-int		MoochoTrackerConsoleStd::p2_		= 1;
-int		MoochoTrackerConsoleStd::w_p2_		= 8;
-char	MoochoTrackerConsoleStd::ul_p2_[]	= "--------";
-int		MoochoTrackerConsoleStd::p3_		= 2;
-int		MoochoTrackerConsoleStd::w_p3_		= 9;
-char	MoochoTrackerConsoleStd::ul_p3_[]	= "---------";
+int   MoochoTrackerConsoleStd::w_i2_     = 2;
+char  MoochoTrackerConsoleStd::ul_i2_[]  = "--";
+int   MoochoTrackerConsoleStd::w_i4_     = 4;
+char  MoochoTrackerConsoleStd::ul_i4_[]  = "----";
+int   MoochoTrackerConsoleStd::p2_       = 1;
+int   MoochoTrackerConsoleStd::w_p2_     = 8;
+char  MoochoTrackerConsoleStd::ul_p2_[]  = "--------";
+int   MoochoTrackerConsoleStd::p3_       = 2;
+int   MoochoTrackerConsoleStd::w_p3_     = 9;
+char  MoochoTrackerConsoleStd::ul_p3_[]  = "---------";
 
 MoochoTrackerConsoleStd::MoochoTrackerConsoleStd(
   const ostream_ptr_t&   o
@@ -85,12 +86,15 @@ void MoochoTrackerConsoleStd::initialize()
 
 void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
 {
-  const NLPAlgo  &algo = rsqp_algo(p_algo);
+  const NLPAlgo      &algo = rsqp_algo(p_algo);
   const NLPAlgoState &s    = algo.rsqp_state();
-  const NLP       &nlp  = algo.nlp(); 
+  const NLP          &nlp  = algo.nlp(); 
   
   const size_type
     m = nlp.m();
+
+  const int
+    nb = nlp.num_bounded_x();
 
   if(s.k() == 0) {
     print_top_header(s,algo);
@@ -107,7 +111,7 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
   // Output a row for the iteration
   
   // Get a Quasi-Newton statistics.
-  const QuasiNewtonStats	*quasi_newt_stats =
+  const QuasiNewtonStats  *quasi_newt_stats =
     ( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
       ? &quasi_newton_stats_(s).get_k(0)
       : NULL );
@@ -161,10 +165,12 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
     o << " " << right << setw(w_i2_) << "-";
   }
   // #act
-  if( s.nu().updated_k(0) )
-    o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
-  else
-    o	<< " " << right << setw(w_i4_) << "-";
+  if(nb) {
+    if( s.nu().updated_k(0) )
+      o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
+    else
+      o  << " " << right << setw(w_i4_) << "-";
+  }
   // ||Ypy||2
   if( m && s.Ypy().updated_k(0) )
     o << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
@@ -185,6 +191,8 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
     o << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
   else
     o << " " << right << setw(w_p2_) << "-";
+  // time(s)
+  o << " " << setprecision(p3_) << right << setw(w_p3_) << timer_.read();
 
   o << std::endl;
 
@@ -196,13 +204,16 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
 {
   using Teuchos::dyn_cast;
 
-  const NLPAlgo           &algo    = rsqp_algo(p_algo);
-  const NLPAlgoState          &s       = algo.rsqp_state();
+  const NLPAlgo        &algo    = rsqp_algo(p_algo);
+  const NLPAlgoState   &s       = algo.rsqp_state();
   const NLPObjGrad     &nlp     = dyn_cast<const NLPObjGrad>(algo.nlp()); 
   const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
   
   const size_type
     m = nlp.m();
+
+  const int
+    nb = nlp.num_bounded_x();
 
   std::ostream& o = this->o();
 
@@ -213,20 +224,22 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
   }
   else {
     o
-      << " " << right << ul_i4_ 		// "k"
-      << " " << right << ul_p3_		// "f"
-      << " " << right << ul_p3_		// "||c||s"
-      << " " << right << ul_p3_		// "||rGL||s"
-      << " " << right << ul_i2_		// "QN"
-      << " " << right << ul_i4_		// "#act"
-      << endl;
+      << " " << right << ul_i4_    // "k"
+      << " " << right << ul_p3_    // "f"
+      << " " << right << ul_p3_    // "||c||s"
+      << " " << right << ul_p3_    // "||rGL||s"
+      << " " << right << ul_i2_    // "QN"
+      ;
+    if(nb)
+      o << " " << right << ul_i4_; // "#act"
+    o << endl;
   }
 
   // //////////////////////////////////////////
   // Output a row for the final iteration
   
   // Get a Quasi-Newton statistics.
-  const QuasiNewtonStats	*quasi_newt_stats =
+  const QuasiNewtonStats  *quasi_newt_stats =
     ( quasi_newton_stats_.exists_in(s) && quasi_newton_stats_(s).updated_k(0)
       ? &quasi_newton_stats_(s).get_k(0)
       : NULL );
@@ -278,10 +291,12 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
     o << " " << right << setw(w_i2_) << "-";
   }
   // #act
-  if( s.nu().updated_k(0) )
-    o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
-  else
-    o	<< " " << right << setw(w_i4_) << "-";
+  if(nb) {
+    if( s.nu().updated_k(0) )
+      o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
+    else
+      o  << " " << right << setw(w_i4_) << "-";
+  }
   // ||Ypy||2
   if( m && s.Ypy().updated_k(0) )
     o << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
@@ -326,7 +341,7 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
       assert(0);
   }
 
-  o	<< "\nNumber of function evaluations:\n"
+  o  << "\nNumber of function evaluations:\n"
     <<     "-------------------------------\n"
     << "f(x)  : " << nlp.num_f_evals() << endl
     << "c(x)  : " << ( m ? nlp.num_c_evals() : 0 ) << endl
@@ -352,7 +367,7 @@ void MoochoTrackerConsoleStd::print_top_header(const NLPAlgoState &s
   NLPAlgoState::space_c_ptr_t
     space_c = s.get_space_c();
 
-  o	<< "\n\n********************************\n"
+  o  << "\n\n********************************\n"
     << "*** Start of rSQP Iterations ***\n"
     << "n = " << s.space_x().dim()
     << ", m = " << ( space_c.get() ? space_c->dim() : 0 )
@@ -360,19 +375,19 @@ void MoochoTrackerConsoleStd::print_top_header(const NLPAlgoState &s
   try {
     if(space_c.get()) {
       if( s.Gc().updated_k(0) )
-        o	<< s.Gc().get_k(0).nz() << endl;
+        o  << s.Gc().get_k(0).nz() << endl;
       else
-        o	<< "?\n";
+        o  << "?\n";
     }
     else {
-      o	<< 0 << endl;
+      o  << 0 << endl;
     }
   }
   catch( const AlgorithmState::DoesNotExist& ) {
-      o	<< "?\n";
+      o  << "?\n";
   }
   if( algo.nlp().scale_f() != 1.0 ) {
-    o	<< "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
+    o  << "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
   }
 }
 
@@ -381,29 +396,40 @@ void MoochoTrackerConsoleStd::print_header(const NLPAlgoState &s
 {
   std::ostream& o = this->o();
 
+  const NLP  &nlp = algo.nlp(); 
+
+  const int
+    nb = nlp.num_bounded_x();
+
   o
     << endl
     << " " << left << setw(w_i4_) << "k"
     << " " << left << setw(w_p3_) << "f"
     << " " << left << setw(w_p3_) << "||c||s"
     << " " << left << setw(w_p3_) << "||rGL||s"
-    << " " << left << setw(w_i2_) << "QN"
-    << " " << left << setw(w_i4_) << "#act"
+    << " " << left << setw(w_i2_) << "QN";
+  if(nb)
+    o << " " << left << setw(w_i4_) << "#act";
+  o
     << " " << left << setw(w_p2_) << "||Ypy||2"
     << " " << left << setw(w_p2_) << "||Zpz||2"
     << " " << left << setw(w_p2_) << "||d||inf"
     << " " << left << setw(w_p2_) << "alpha"
+    << " " << left << setw(w_p3_) << "time(s)"
     << endl
-    << " " << right << ul_i4_ 		// "k"
-    << " " << right << ul_p3_		// "f"
-    << " " << right << ul_p3_		// "||c||s"
-    << " " << right << ul_p3_		// "||rGL||s"
-    << " " << right << ul_i2_		// "QN"
-    << " " << right << ul_i4_		// "#act"
-    << " " << right << ul_p2_		// "||Ypy||2"
-    << " " << right << ul_p2_		// "||Zpz||2"
-    << " " << right << ul_p2_		// "||d||inf"
-    << " " << right << ul_p2_		// "alpha"
+    << " " << right << ul_i4_    // "k"
+    << " " << right << ul_p3_    // "f"
+    << " " << right << ul_p3_    // "||c||s"
+    << " " << right << ul_p3_    // "||rGL||s"
+    << " " << right << ul_i2_;   // "QN"
+    if(nb)
+      o << " " << right << ul_i4_; // "#act"
+  o
+    << " " << right << ul_p2_    // "||Ypy||2"
+    << " " << right << ul_p2_    // "||Zpz||2"
+    << " " << right << ul_p2_    // "||d||inf"
+    << " " << right << ul_p2_    // "alpha"
+    << " " << right << ul_p3_    // "time(s)"
     << endl;
 }
 
