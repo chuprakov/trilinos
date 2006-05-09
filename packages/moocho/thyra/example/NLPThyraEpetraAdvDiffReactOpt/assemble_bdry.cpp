@@ -27,7 +27,7 @@ class Epetra_BLAS;
 int compproduct(Epetra_SerialDenseVector &, double *, double *);
 int compproduct(Epetra_SerialDenseVector &, double *, double *, double *);
 
-// #define GLPAPP_SHOW_BOUNDARY_ASSEMBLY
+//#define GLPAPP_SHOW_BOUNDARY_ASSEMBLY
 
 /**  \brief Performs finite-element assembly of face mass matrices.
 
@@ -149,7 +149,6 @@ int assemble_bdry(
     R = rcp(new Epetra_FECrsMatrix(Copy,standardmap,0));
   // NOTE: The data map is the same as for the volume matrices. Later, when
   // FillComplete is called, we will fix the proper domain and range maps. 
-
   // Declare quantities needed for the call to the local assembly routine.
   const int numNodesPerEdge = 2;
   Epetra_IntSerialDenseVector epetra_nodes(numNodesPerEdge);
@@ -191,9 +190,9 @@ int assemble_bdry(
     *out
       << "\nEdge global nodes = ("<<global_id_0<<","<<global_id_1<<"),"
       << " local nodes = ("<<local_id_0<<","<<local_id_1<<"),"
+      << " (x0,y0)(x1,y1)=("<<x0<<","<<y0<<")("<<x1<<","<<y1<<"),"
       << " Bt = ["<<Bt(0,0)<<","<<Bt(0,1)<<";"<<Bt(1,0)<<","<<Bt(1,1)<<"]\n";
 #endif
-
 
     const int format = Epetra_FECrsMatrix::COLUMN_MAJOR;
     err = B->InsertGlobalValues(epetra_nodes,Bt,format);

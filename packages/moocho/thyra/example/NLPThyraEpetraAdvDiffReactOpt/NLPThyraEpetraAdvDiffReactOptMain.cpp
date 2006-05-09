@@ -165,6 +165,7 @@ int main( int argc, char* argv[] )
     int                 local_ny        = 4;
     std::string         geomFileBase    = "";
     int                 np              = -1;
+    bool                normalizeBasis  = false;
     double              beta            = 1.0;
     double              x0              = 0.0;
     double              p0              = 1.0;
@@ -202,7 +203,8 @@ int main( int argc, char* argv[] )
     clp.setOption( "local-nx", &local_nx, "Number of local discretization segments in the x direction (Overridden by --geom-file-base)." );
     clp.setOption( "local-ny", &local_ny, "Number of local discretization segments in the y direction (Overridden by --geom-file-base)." );
     clp.setOption( "geom-file-base", &geomFileBase, "Base name of geometry file to read the mesh from." );
-    clp.setOption( "np", &np, "The number of optimization parameters (If < 0 then all of boundary is used)" );
+    clp.setOption( "np", &np, "The number of optimization parameters p (If < 0 then all of boundary is used)" );
+    clp.setOption( "normalize-basis", "no-normalize-basis", &normalizeBasis, "Normalize the basis for the parameters p or not." );
     clp.setOption( "beta", &beta, "Regularization." );
     clp.setOption( "x0", &x0, "Initial guess for the state." );
     clp.setOption( "p0", &p0, "Initial guess or nonminal value for optimization parameters." );
@@ -284,7 +286,7 @@ int main( int argc, char* argv[] )
 
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),np,x0,p0,reactionRate);
+    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),len_x,len_y,np,x0,p0,reactionRate,normalizeBasis);
     epetraModel.setOStream(journalOut);
     if(dump_all) epetraModel.setVerbLevel(Teuchos::VERB_EXTREME);
     

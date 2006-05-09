@@ -28,10 +28,13 @@ namespace GLpApp {
 
 AdvDiffReactOptModel::AdvDiffReactOptModel(
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
+  ,const double                                              len_x
+  ,const double                                              len_y
   ,const int                                                 np
   ,const double                                              x0
   ,const double                                              p0
   ,const double                                              reactionRate
+  ,const bool                                                normalizeBasis
   )
   :dat_(dat),np_(np),reactionRate_(reactionRate)
 {
@@ -55,49 +58,61 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   //
   // Initialize the basis matrix for p such that p_bar = B_bar * p
   //
-  TEST_FOR_EXCEPTION(
-    np_ > map_p_bar_->NumGlobalElements(), std::logic_error
-    ,"Error, np="<<np_<<" can not be greater than map_p_bar_->NumGlobalElements()="
-    <<map_p_bar_->NumGlobalElements()<<"!"
-    );
   if( np_ > 0 ) {
+    //
+    // Create a sine series basis for y (the odd part of a Fourier series basis)
+    //
+    const Epetra_SerialDenseMatrix &ipcoords = *dat_->getipcoords();
+    const Epetra_IntSerialDenseVector &pindx = *dat_->getpindx();
+    Epetra_Map overlapmap(-1,pindx.M(),const_cast<int*>(pindx.A()),1,comm);
+    const double pi = 2.0 * std::asin(1.0);
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *out << "\npi="<<pi<<"\n";
+#endif
     map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,comm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
-    if( np_ == 1 ) {
-      // Just make B_bar a column with ones!
-      B_bar_->PutScalar(1.0);
-    }
-    else if( np_ > 1 ) {
-      //
-      // Create a random local B_bar that will be the same no matter how the
-      // problem is distributed.
-      //
-      typedef Teuchos::ScalarTraits<double> ST;
+    (*B_bar_)(0)->PutScalar(1.0); // First column is all ones!
+    if( np_ > 1 ) {
       const int numBndyNodes        = map_p_bar_->NumMyElements();
       const int *bndyNodeGlobalIDs  = map_p_bar_->MyGlobalElements();
       for( int i = 0; i < numBndyNodes; ++i ) {
-        (*B_bar_)[0][i] = 1.0;
-        ST::seedrandom(bndyNodeGlobalIDs[i]);
+        const int global_id = bndyNodeGlobalIDs[i];
+        const int local_id = overlapmap.LID(bndyNodeGlobalIDs[i]);
+        const double x = ipcoords(local_id,0), y = ipcoords(local_id,1);
+        double z = -1.0, L = -1.0;
+        if( x < 1e-10 || len_x - 1e-10 < x ) {
+          z = y;
+          L = len_y;
+        }
+        else {
+          z = x;
+          L = len_x;
+        }
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+        *out << "\ni="<<i<<",global_id="<<global_id<<",local_id="<<local_id<<",x="<<x<<",y="<<y<<",z="<<z<<"\n";
+#endif
         for( int j = 1; j < np_; ++j ) {
-          (*B_bar_)[j][i] = 0.5*(ST::random() + 1.0) + 1.0; // [1.0,2.0]
+          (*B_bar_)[j][i] = std::sin(j*pi*z/L);
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+          *out << "\nB("<<i<<","<<j<<")="<<(*B_bar_)[j][i]<<"\n";
+#endif
         }
       }
-      //
-      // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
-      //
-      Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
-        thyra_B_bar = Thyra::create_MPIMultiVectorBase(
-          B_bar_
-          ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
-          ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
-          ),
-        thyra_fact_R;
-      sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
-      Thyra::scale(double(numBndyNodes)/double(np_),&*thyra_B_bar); // Each row should sum to around one!
-      // We just discard the "R" factory thyra_fact_R
-    }
-    else {
-      TEST_FOR_EXCEPT(true); // Should never get here!
+      if(normalizeBasis) {
+        //
+        // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
+        //
+        Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
+          thyra_B_bar = Thyra::create_MPIMultiVectorBase(
+            B_bar_
+            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
+            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
+            ),
+          thyra_fact_R;
+        sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
+        Thyra::scale(double(numBndyNodes)/double(np_),&*thyra_B_bar); // Each row should sum to around one!
+        // We just discard the "R" factory thyra_fact_R
+      }
     }
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *out << "\nB_bar =\n\n";

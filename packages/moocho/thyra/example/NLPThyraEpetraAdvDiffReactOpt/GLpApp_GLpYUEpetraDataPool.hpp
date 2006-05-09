@@ -127,8 +127,11 @@ private:
   /** \brief Edge mass matrix.*/
   Teuchos::RefCountPtr<Epetra_FECrsMatrix> R_;
 
-  /** \brief Augmented system matrix: \n
-   [ I  Jac* ] \n
+  /** \brief Basis matrix for p_bar=B*p.*/
+  Teuchos::RefCountPtr<Epetra_MultiVector> B_bar_;
+
+  /** \brief Augmented system matrix:
+   [ I  Jac* ]
    [Jac  0   ]
   */
   Teuchos::RefCountPtr<Epetra_CrsMatrix> Augmat_;
