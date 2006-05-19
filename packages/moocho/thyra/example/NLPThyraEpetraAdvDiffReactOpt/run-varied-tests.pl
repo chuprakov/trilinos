@@ -11,9 +11,8 @@ my $base_options =
 ." --no-use-prec"
 ; # Can be overridden by --extra-args!
 
-my $do_serial = 0;
-
-my $mpi_go = "mpirun -machinefile ~/bin/linux/machinelist-sahp6556 -np";
+# mpi_go = "mpirun -machinefile ~/bin/linux/machinelist-sahp6556 -np"
+my $mpi_go = "";
 
 my $exe = "$base_base_dir/NLPThyraEpetraAdvDiffReactOpt.exe";
 
@@ -65,7 +64,6 @@ my $bb_options_file = "";
 my $extra_args = "";
 
 GetOptions(
-  "do-serial!"              => \$do_serial,
   "mpi-go=s"                => \$mpi_go,
   "exe=s"                   => \$exe,
   "len-x=f"                 => \$len_x,
@@ -105,6 +103,8 @@ GetOptions(
   "bb-options-file=s"       => \$bb_options_file,
   "extra-args=s"            => \$extra_args
   );
+
+my $do_serial =  ($mpi_go eq "" );
 
 $max_num_procs = $starting_num_procs if($starting_num_procs > $max_num_procs);
 $max_model_np = $starting_model_np if($starting_model_np > $max_model_np);
