@@ -105,9 +105,11 @@ bool CheckConvergenceStd_Strategy::Converged(
     norm_inf_Gf_k = 0.0,
     norm_inf_GLrGL_k = 0.0;
 
-  if( n > m && scale_opt_error_by_Gf() ) {
-    assert_print_nan_inf( norm_inf_Gf_k = Gf_iq.get_k(0).norm_inf(),
-                "||Gf_k||inf",true,&out);
+  if( n > m && scale_opt_error_by_Gf() && Gf_iq.updated_k(0) ) {
+    assert_print_nan_inf(
+      norm_inf_Gf_k = Gf_iq.get_k(0).norm_inf(),
+      "||Gf_k||inf",true,&out
+      );
   }
 
   // NOTE:

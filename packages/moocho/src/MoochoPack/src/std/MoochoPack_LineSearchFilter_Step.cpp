@@ -35,6 +35,7 @@
 #include "MoochoPack_LineSearchFilter_Step.hpp"
 #include "MoochoPack_Exceptions.hpp"
 #include "MoochoPack_moocho_algo_conversion.hpp"
+#include "NLPInterfacePack_NLPObjGrad.hpp"
 #include "IterationPack_print_algorithm_step.hpp"
 #include "AbstractLinAlgPack_VectorOut.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
@@ -166,7 +167,14 @@ bool LineSearchFilter_Step::do_step(
 
   // Setup some necessary parameters
   // Assuming that f_iq, Gf_iq, c_iq, h_iq are updated for k
-  const value_type Gf_t_dk = Gf_iq.get_k(0).inner_product( s.d().get_k(0) );
+  const value_type Gf_t_dk =
+    (
+      Gf_iq.updated_k(0)
+      ? Gf_iq.get_k(0).inner_product( s.d().get_k(0) )
+      : dyn_cast<NLPInterfacePack::NLPObjGrad>(*nlp_).calc_Gf_prod(
+        x_iq.get_k(0),s.d().get_k(0)
+        )
+      );
   const value_type theta_k = CalculateTheta_k( c_iq, h_iq, 0);
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
     out << "\ntheta_k = ||c_k||1/c_k.dim() = " << theta_k << std::endl;
@@ -525,11 +533,12 @@ void LineSearchFilter_Step::print_step(
 }
   
 bool LineSearchFilter_Step::ValidatePoint( 
-  IterQuantityAccess<VectorMutable>& x,
-  IterQuantityAccess<value_type>& f,
-  IterQuantityAccess<VectorMutable>* c,
-  IterQuantityAccess<VectorMutable>* h,
-  bool throw_excpt ) const
+  const IterQuantityAccess<VectorMutable>& x,
+  const IterQuantityAccess<value_type>& f,
+  const IterQuantityAccess<VectorMutable>* c,
+  const IterQuantityAccess<VectorMutable>* h,
+  const bool throw_excpt
+  ) const
 {
 
   using AbstractLinAlgPack::assert_print_nan_inf;
@@ -544,6 +553,71 @@ bool LineSearchFilter_Step::ValidatePoint(
   return false;
 }
   
+bool LineSearchFilter_Step::CheckFilterAcceptability( 
+  const value_type f, 
+  const value_type theta,
+  const AlgorithmState& s
+  ) const
+{
+  bool accepted = true;
+
+  const IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
+    
+  if (filter_iq.updated_k(-1))
+  {
+    const Filter_T &current_filter = filter_iq.get_k(-1);
+    
+    for (Filter_T::const_iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
+    {	
+      if (f >= entry->f && theta >= entry->theta)
+      {
+        accepted = false;
+        break;
+      }
+    }
+  }
+
+  return accepted;
+}
+
+bool LineSearchFilter_Step::CheckArmijo( 
+  const value_type Gf_t_dk, 
+  const value_type alpha_k, 
+  const IterQuantityAccess<value_type>& f_iq
+  ) const
+{
+  bool accepted = false;
+
+  // Check Armijo on objective fn
+  double f_kp1 = f_iq.get_k(+1);
+  double f_k = f_iq.get_k(0);
+  double lhs = f_k - f_kp1;
+  double rhs = -eta_f_*alpha_k*Gf_t_dk;
+  if ( lhs >= rhs )
+  {
+    // Accept pt, do NOT augment filter
+    accepted = true;
+  }
+
+  return accepted;
+}
+
+bool LineSearchFilter_Step::CheckFractionalReduction( 
+  const IterQuantityAccess<value_type>& f_iq,
+  const value_type gamma_f_used,
+  const value_type theta_kp1, 
+  const value_type theta_k
+  ) const
+{
+  bool accepted = false;
+  if (theta_kp1 <= (1-gamma_theta_)*theta_k
+      || f_iq.get_k(+1) <= f_iq.get_k(0)-gamma_f_used*theta_k )
+  {
+    // Accept pt and augment filter
+    accepted = true;
+  }
+  return accepted;
+}
 
 void LineSearchFilter_Step::UpdatePoint( 
   const VectorMutable& d,
@@ -573,10 +647,10 @@ void LineSearchFilter_Step::UpdatePoint(
 }
 
 value_type LineSearchFilter_Step::CalculateAlphaMin( 
-  value_type gamma_f_used,
-  value_type Gf_t_dk,
-  value_type theta_k, 
-  value_type theta_small
+  const value_type gamma_f_used,
+  const value_type Gf_t_dk,
+  const value_type theta_k, 
+  const value_type theta_small
   ) const
 {
   value_type alpha_min = 0;
@@ -594,14 +668,12 @@ value_type LineSearchFilter_Step::CalculateAlphaMin(
   {
     alpha_min = gamma_theta_;
   }
-
   return alpha_min * gamma_alpha_;
 }
 
-
 value_type LineSearchFilter_Step::CalculateTheta_k( 
-  IterQuantityAccess<VectorMutable>* c,
-  IterQuantityAccess<VectorMutable>* h,
+  const IterQuantityAccess<VectorMutable>* c,
+  const IterQuantityAccess<VectorMutable>* h,
   int k
   ) const
 {
@@ -618,7 +690,7 @@ value_type LineSearchFilter_Step::CalculateTheta_k(
 
 value_type LineSearchFilter_Step::CalculateGammaFUsed(
   const IterQuantityAccess<value_type> &f,
-  value_type theta_k,
+  const value_type theta_k,
   const EJournalOutputLevel olevel,
   std::ostream &out
   ) const
@@ -645,88 +717,21 @@ bool LineSearchFilter_Step::ShouldSwitchToArmijo(
   const value_type Gf_t_dk,
   const value_type alpha_k,
   const value_type theta_k,
-  const value_type theta_small) const
+  const value_type theta_small
+  ) const
 {
-  if (theta_k < theta_small && Gf_t_dk < 0)
-  {
-    if (pow(-Gf_t_dk, s_f_)*alpha_k - delta_*pow(theta_k, s_theta_) > 0)
-    {
+  if (theta_k < theta_small && Gf_t_dk < 0) {
+    if (pow(-Gf_t_dk, s_f_)*alpha_k - delta_*pow(theta_k, s_theta_) > 0) {
       return true;
     }
   }
-
   return false;
-}
-
-
-bool LineSearchFilter_Step::CheckArmijo( 
-  value_type Gf_t_dk, 
-  value_type alpha_k, 
-  const IterQuantityAccess<value_type>& f_iq ) const
-{
-  bool accepted = false;
-
-  // Check Armijo on objective fn
-  double f_kp1 = f_iq.get_k(+1);
-  double f_k = f_iq.get_k(0);
-  double lhs = f_k - f_kp1;
-  double rhs = -eta_f_*alpha_k*Gf_t_dk;
-  if ( lhs >= rhs )
-  {
-    // Accept pt, do NOT augment filter
-    accepted = true;
-  }
-
-  return accepted;
-}
-
-bool LineSearchFilter_Step::CheckFractionalReduction( 
-  const IterQuantityAccess<value_type>& f_iq,
-  value_type gamma_f_used,
-  value_type theta_kp1, 
-  value_type theta_k ) const
-{
-  bool accepted = false;
-  if (theta_kp1 <= (1-gamma_theta_)*theta_k
-      || f_iq.get_k(+1) <= f_iq.get_k(0)-gamma_f_used*theta_k )
-  {
-    // Accept pt and augment filter
-    accepted = true;
-  }
-
-  return accepted;
-}
-
-
-bool LineSearchFilter_Step::CheckFilterAcceptability( 
-  value_type f, 
-  value_type theta,
-  AlgorithmState& s) const
-{
-  bool accepted = true;
-
-  IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
-    
-  if (filter_iq.updated_k(-1))
-  {
-    Filter_T& current_filter = filter_iq.get_k(-1);
-    
-    for (Filter_T::iterator entry = current_filter.begin(); entry != current_filter.end(); entry++)
-    {	
-      if (f >= entry->f && theta >= entry->theta)
-      {
-        accepted = false;
-        break;
-      }
-    }
-  }
-
-  return accepted;
 }
 
 
 void LineSearchFilter_Step::UpdateFilter( IterationPack::AlgorithmState& s ) const
 {
+  
   IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
   if (!filter_iq.updated_k(0))
@@ -742,16 +747,17 @@ void LineSearchFilter_Step::UpdateFilter( IterationPack::AlgorithmState& s ) con
       filter_iq.set_k(0);
     }
   }
+
 }
 
-
 void LineSearchFilter_Step::AugmentFilter( 
-  value_type gamma_f_used,
-  value_type f,
-  value_type theta,
+  const value_type gamma_f_used,
+  const value_type f,
+  const value_type theta,
   IterationPack::AlgorithmState& s,
   const EJournalOutputLevel olevel,
-  std::ostream &out ) const
+  std::ostream &out
+  ) const
 {
 
   const value_type
@@ -792,6 +798,7 @@ void LineSearchFilter_Step::AugmentFilter(
 
   // Now append the current point
   current_filter.push_front(FilterEntry(f_with_boundary, theta_with_boundary, s.k()));
+
 }
 
 // static

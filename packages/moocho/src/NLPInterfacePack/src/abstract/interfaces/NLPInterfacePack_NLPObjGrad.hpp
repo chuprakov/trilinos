@@ -94,6 +94,23 @@ public:
 
   //@}
 
+  /** @name Information */
+  //@{
+
+  /** \brief Determine if the objective gradient is supported or not.
+   *
+   * The default implementation returns <tt>true</tt>.
+   */
+  virtual bool supports_Gf() const;
+
+  /** \brief Determine if the objective gradient product is supported or not.
+   *
+   * The default implementation returns <tt>true</tt>.
+   */
+  virtual bool supports_Gf_prod() const;
+
+  //@}
+
   /** @name <<std aggr>> members for the gradient of the objective function Gf(x) */
   //@{
 
@@ -104,6 +121,7 @@ public:
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
    * <li> [<tt>Gf != NULL</tt>] <tt>Gf->space().is_compatible(*this->space_x()) == true</tt>
    *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
    * </ul>
@@ -118,6 +136,7 @@ public:
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
    * </ul>
    */
   virtual VectorMutable* get_Gf();
@@ -126,6 +145,7 @@ public:
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
    * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
    * </ul>
    */
@@ -135,6 +155,7 @@ public:
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
    * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
    * </ul>
    */
@@ -177,6 +198,7 @@ public:
    *
    * Preconditions:<ul>
    * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
    * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
    * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
    * </ul>
@@ -190,6 +212,34 @@ public:
    * to be updated as a side effect (i.e. no higher order derivatives).
    */ 
   virtual void calc_Gf(const Vector& x, bool newx = true) const;
+
+  ///
+  /** Calculate the inner product <tt>Gf(x)'*d</tt> at the point <tt>x</tt> and put it in the stored reference.
+   *
+   * @param  x     [in] Base point
+   * @param  d     [in] Direction to compute the product along.
+   * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+   *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+   *               If \c true, the values in \c x are assumed to not be the same as the last call to a
+   *               <tt>this->calc_*(x,newx)</tt> member.
+   *
+   * Preconditions:<ul>
+   * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+   * <li> <tt>this->supports_Gf()</tt>
+   * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
+   * </ul>
+   *
+   * Postconditions:<ul>
+   * <li> <tt>return</tt> gives the desired product.
+   * </ul>
+   *
+   * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c
+   * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
+   * to be updated as a side effect (i.e. no higher order derivatives).
+   */ 
+  virtual value_type calc_Gf_prod(const Vector& x, const Vector& d, bool newx = true) const;
+
+  //@}
 
   //@}
 

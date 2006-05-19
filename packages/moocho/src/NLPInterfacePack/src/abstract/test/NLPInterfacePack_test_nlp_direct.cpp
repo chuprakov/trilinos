@@ -161,6 +161,8 @@ bool NLPInterfacePack::test_nlp_direct(
   
   // Test the NLPDirect interface now!
 
+  const bool supports_Gf = nlp->supports_Gf();
+
   if(out)
     *out << "\nCalling nlp->calc_point(...) at nlp->xinit() ...\n";
   const size_type
@@ -181,12 +183,14 @@ bool NLPInterfacePack::test_nlp_direct(
     D   =                         nlp->factory_D()->create(),
     Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : Teuchos::null;
   nlp->calc_point(
-    nlp->xinit(), NULL, c.get(), true, Gf.get(), py.get(), rGf.get()
+    nlp->xinit(), NULL, c.get(), true, supports_Gf?Gf.get():NULL, py.get(), rGf.get()
     ,GcU.get(), D.get(), Uz.get() );
   if(out) {
-    *out << "\n||Gf||inf  = " << Gf->norm_inf();
-    if(nlp_tester.print_all())
-      *out << "\nGf =\n" << *Gf;
+    if(supports_Gf) {
+      *out << "\n||Gf||inf  = " << Gf->norm_inf();
+      if(nlp_tester.print_all())
+        *out << "\nGf =\n" << *Gf;
+    }
     *out << "\n||py||inf  = " << py->norm_inf();
     if(nlp_tester.print_all())
       *out << "\npy =\n" << *py;
@@ -220,7 +224,7 @@ bool NLPInterfacePack::test_nlp_direct(
     ,nlp->num_bounded_x() ? &nlp->xl() : NULL
     ,nlp->num_bounded_x() ? &nlp->xu() : NULL
     ,c.get()
-    ,Gf.get(),py.get(),rGf.get(),GcU.get(),D.get(),Uz.get()
+    ,supports_Gf?Gf.get():NULL,py.get(),rGf.get(),GcU.get(),D.get(),Uz.get()
     ,print_all_warnings, out
     );
   update_success( result, &success );

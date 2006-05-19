@@ -44,7 +44,6 @@ using std::setw;
 using std::left;
 using std::right;
 using std::setprecision;
-using std::fixed;
 
 // Static members
 int   MoochoTrackerConsoleStd::w_i2_     = 2;
@@ -192,7 +191,7 @@ void MoochoTrackerConsoleStd::output_iteration(const Algorithm& p_algo) const
   else
     o << " " << right << setw(w_p2_) << "-";
   // time(s)
-  o << " " << setprecision(p3_) << right << setw(w_p3_) << timer_.read();
+  o << " " << setprecision(7) << right << setw(w_p3_) << timer_.read();
 
   o << std::endl;
 
@@ -312,6 +311,13 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
     o << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
   else
     o << " " << right << setw(w_p2_) << "-";
+  // alpha
+  if( s.alpha().updated_k(0) )
+    o << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
+  else
+    o << " " << right << setw(w_p2_) << "-";
+  // time(s)
+  o << " " << setprecision(7) << right << setw(w_p3_) << timer_.read();
 
   o << endl;
 

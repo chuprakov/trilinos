@@ -71,6 +71,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   NLPDirect           &nlp    = dyn_cast<NLPDirect>(algo.nlp());
 
   EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
+  EJournalOutputLevel ns_olevel = algo.algo_cntr().null_space_journal_output_level();
   std::ostream& out = algo.track().journal_out();
 
   // print step header.
@@ -85,10 +86,14 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   Teuchos::VerboseObjectTempState<NLP>
     nlpOutputTempState(rcp(&nlp,false),Teuchos::getFancyOStream(rcp(&out,false)),convertToVerbLevel(olevel));
 
+  const Range1D
+    var_dep = nlp.var_dep(),
+    var_indep = nlp.var_indep();
+
   const size_type
     n  = nlp.n(),
     m  = nlp.m(),
-    r  = nlp.var_dep().size();
+    r  = var_dep.size();
 
   TEST_FOR_EXCEPTION(
     m > r, TestFailed
@@ -132,10 +137,21 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   Vector &x = x_iq.get_k(0);
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-    out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
+    out << "\n||x_k||inf            = " << x.norm_inf();
+    if( var_dep.size() )
+      out << "\n||x(var_dep)_k||inf   = " << x.sub_view(var_dep)->norm_inf();
+    if( var_indep.size() )
+      out << "\n||x(var_indep)_k||inf = " << x.sub_view(var_indep)->norm_inf();
+    out << std::endl;
   }
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out << "\nx_k = \n" << x;
+    if( var_dep.size() )
+      out << "\nx(var_dep)_k = \n" << *x.sub_view(var_dep);
+  }
+  if( static_cast<int>(ns_olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+    if( var_indep.size() )
+      out << "\nx(var_indep)_k = \n" << *x.sub_view(var_indep);
   }
 
   // If c_k is not updated then we must compute it
@@ -169,6 +185,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     D_ptr = cZ_k.D_ptr();
 
   // Compute all the quantities.
+  const bool supports_Gf = nlp.supports_Gf();
   Teuchos::RefCountPtr<MatrixOp>
     GcU = (m > r) ? nlp.factory_GcU()->create() : Teuchos::null; // ToDo: Reuse GcU somehow? 
   VectorMutable
@@ -179,7 +196,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     ,!s.f().updated_k(0) ? &s.f().set_k(0) : NULL         // f
     ,&s.c().get_k(0)                                      // c
     ,recalc_c                                             // recalc_c
-    ,&s.Gf().set_k(0)                                     // Gf
+    ,supports_Gf?&s.Gf().set_k(0):NULL                    // Gf
     ,&py_k                                                // -inv(C)*c
     ,&s.rGf().set_k(0)                                    // rGf
     ,GcU.get()                                            // GcU
@@ -193,7 +210,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
     out << "\nQuantities computed directly from NLPDirect nlp object ...\n";
     out << "\nf_k           = " << s.f().get_k(0);
     out << "\n||c_k||inf    = " << s.c().get_k(0).norm_inf();
-    out << "\n||Gf_k||inf   = " << s.Gf().get_k(0).norm_inf();
+    if(supports_Gf)
+      out << "\n||Gf_k||inf   = " << s.Gf().get_k(0).norm_inf();
     out << "\n||py_k||inf   = " << s.py().get_k(0).norm_inf();
     out << "\n||rGf_k||inf  = " << s.rGf().get_k(0).norm_inf();
     out << std::endl;
@@ -201,7 +219,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
   if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
     out	<< "\nc_k  = \n" << s.c().get_k(0);
-    out	<< "\nGf_k = \n" << s.Gf().get_k(0);
+    if(supports_Gf)
+      out	<< "\nGf_k = \n" << s.Gf().get_k(0);
     out	<< "\npy_k = \n" << s.py().get_k(0);
     out	<< "\nrGf_k = \n" << s.rGf().get_k(0);
     out << std::endl;
@@ -214,7 +233,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
   if(algo.algo_cntr().check_results()) {
     assert_print_nan_inf(s.f().get_k(0),   "f_k",true,&out); 
     assert_print_nan_inf(s.c().get_k(0),   "c_k",true,&out); 
-    assert_print_nan_inf(s.Gf().get_k(0),  "Gf_k",true,&out); 
+    if(supports_Gf)
+      assert_print_nan_inf(s.Gf().get_k(0),  "Gf_k",true,&out); 
     assert_print_nan_inf(s.py().get_k(0),  "py_k",true,&out);
     assert_print_nan_inf(s.rGf().get_k(0), "rGf_k",true,&out);
   }
@@ -235,7 +255,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
       ,has_bounds ? &nlp.xl() : (const Vector*)NULL
       ,has_bounds ? &nlp.xu() : (const Vector*)NULL
       ,&s.c().get_k(0)
-      ,&s.Gf().get_k(0)
+      ,supports_Gf?&s.Gf().get_k(0):NULL
       ,&s.py().get_k(0)
       ,&s.rGf().get_k(0)
       ,GcU.get()
@@ -306,7 +326,7 @@ void EvalNewPointTailoredApproach_Step::print_step(
     << L << "*** Evaluate the new point for the \"Tailored Approach\"\n"
     << L << "if nlp is not initialized then initialize the nlp\n"
     << L << "if x is not updated for any k then set x_k = xinit\n"
-    << L << "Gf_k = Gf(x_k) <: space_x\n"
+    << L << "if Gf is supported then set Gf_k = Gf(x_k) <: space_x\n"
     << L << "For Gc(:,equ_decomp) = [ C' ; N' ] <: space_x:space_c(equ_decomp) compute:\n"
     << L << "  py_k = -inv(C)*c_k\n"
     << L << "  D = -inv(C)*N <: R^(n x (n-m))\n"

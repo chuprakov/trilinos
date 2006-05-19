@@ -41,6 +41,7 @@
 #include "AbstractLinAlgPack_VectorSpace.hpp"
 #include "AbstractLinAlgPack_VectorStdOps.hpp"
 #include "AbstractLinAlgPack_LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack_LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack_assert_print_nan_inf.hpp"
 #include "TestingHelperPack_update_success.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -117,7 +118,7 @@ bool NLPDirectTester::finite_diff_check(
 
   using TestingHelperPack::update_success;
 
-  bool success = true, result, preformed_fd;
+  bool success = true, preformed_fd;
   if(out) {
     *out << std::boolalpha
        << std::endl
@@ -126,9 +127,6 @@ bool NLPDirectTester::finite_diff_check(
        << "*********************************************************\n";
   }
 
-  const size_type
-    n  = nlp->n(),
-    m  = nlp->m();
   const Range1D
     var_dep      = nlp->var_dep(),
     var_indep    = nlp->var_indep(),
@@ -162,7 +160,7 @@ bool NLPDirectTester::finite_diff_check(
     switch( Gf_testing_method() ) {
       case FD_COMPUTE_ALL: {
         // Compute FDGf outright
-        assert(0); // ToDo: update above!
+        TEST_FOR_EXCEPT(true); // ToDo: update above!
         break;
       }
       case FD_DIRECTIONAL: {
@@ -209,20 +207,19 @@ bool NLPDirectTester::finite_diff_check(
             max_warning_viol = my_max( max_warning_viol, calc_err );
             ++num_warning_viol;
           }
+          if(out)
+            *out
+              << "\nrel_err(Gf'*y,FDGf'*y) = "
+              << "rel_err(" << Gf_y << "," << FDGf_y << ") = "
+              << calc_err << endl;
           if( calc_err >= Gf_error_tol() ) {
             if(out) {
               *out
-                << "\nError, rel_err(Gf'*y,FDGf'*y) = "
-                << "rel_err(" << Gf_y << "," << FDGf_y << ") = "
-                << calc_err << endl;
+                << "Error, above relative error exceeded Gf_error_tol = " << Gf_error_tol() << endl;
               if(dump_all()) {
                 *out << "\ny =\n" << *y;
               }
-              *out
-                << "exceeded Gf_error_tol = " << Gf_error_tol() << endl
-                << "Stoping the tests!\n";
             }
-            return false;
           }
         }
         if(out && num_warning_viol)
@@ -235,7 +232,7 @@ bool NLPDirectTester::finite_diff_check(
         break;
       }
       default:
-        assert(0); // Invalid value
+        TEST_FOR_EXCEPT(true); // Invalid value
     }
   }
 
@@ -284,27 +281,24 @@ bool NLPDirectTester::finite_diff_check(
     assert_print_nan_inf(sum_t2, "sum(-FDC*py)",true,out);
     const value_type
       calc_err = ::fabs( ( sum_c - sum_t2 )/( ::fabs(sum_c) + ::fabs(sum_t2) + small_num ) );
+    if(out)
+      *out
+        << "\nrel_err(sum(c),sum(-FDC*py)) = "
+        << "rel_err(" << sum_c << "," << sum_t2 << ") = "
+        << calc_err << endl;
     if( calc_err >= Gc_error_tol() ) {
       if(out)
         *out
-          << "\nError, rel_err(sum(c),sum(-FDC*py)) = "
-          << "rel_err(" << sum_c << "," << sum_t2 << ") = "
-          << calc_err << endl
-          << "exceeded Gc_error_tol = " << Gc_error_tol() << endl
-          << "Stoping the tests!\n";
+          << "Error, above relative error exceeded Gc_error_tol = " << Gc_error_tol() << endl;
       if(print_all_warnings)
         *out << "\nt1 = [ -py; 0 ] =\n" << *t1
            << "\nt2 = FDA'*t1 = -FDC*py =\n"   << *t2;
       update_success( false, &success );
-      return false;
     }
     if( calc_err >= Gc_warning_tol() ) {
       if(out)
         *out
-          << "\nWarning, rel_err(sum(c),sum(-FDC*py)) = "
-          << "rel_err(" << sum_c << "," << sum_t2 << ") = "
-          << calc_err << endl
-          << "exceeded Gc_warning_tol = " << Gc_warning_tol() << endl;
+          << "\nWarning, above relative error exceeded Gc_warning_tol = " << Gc_warning_tol() << endl;
     }
   }
 
@@ -363,7 +357,7 @@ bool NLPDirectTester::finite_diff_check(
         update_success( result, &success );
         if(!result) return false;
 */
-        assert(0); // Todo: Implement above!
+        TEST_FOR_EXCEPT(true); // Todo: Implement above!
         break;
       }
       case FD_DIRECTIONAL: {
@@ -386,7 +380,7 @@ bool NLPDirectTester::finite_diff_check(
         if(out)
           *out
             << "\nComparing finite difference products -FDC*D*y with FDN*y for "
-              "random y's ...\n";
+              "random vectors y ...\n";
         VectorSpace::vec_mut_ptr_t
           y  = space_x->sub_space(var_indep)->create_member(),
           t1 = space_x->create_member(),
@@ -437,6 +431,11 @@ bool NLPDirectTester::finite_diff_check(
             sum_t3 = sum(*t3);
           const value_type
             calc_err = ::fabs( ( sum_t2 - sum_t3 )/( ::fabs(sum_t2) + ::fabs(sum_t3) + small_num ) );
+          if(out)
+            *out
+              << "\nrel_err(sum(-FDC*D*y),sum(FDN*y)) = "
+              << "rel_err(" << sum_t3 << "," << sum_t2 << ") = "
+              << calc_err << endl;
           if( calc_err >= Gc_warning_tol() ) {
             max_warning_viol = my_max( max_warning_viol, calc_err );
             ++num_warning_viol;
@@ -444,18 +443,14 @@ bool NLPDirectTester::finite_diff_check(
           if( calc_err >= Gc_error_tol() ) {
             if(out)
               *out
-                << "\nError, rel_err(sum(-FDC*D*y),sum(FDN*y)) = "
-                << "rel_err(" << sum_t3 << "," << sum_t2 << ") = "
-                << calc_err << endl
-                << "exceeded Gc_error_tol = " << Gc_error_tol() << endl
+                << "Error, above relative error exceeded Gc_error_tol = " << Gc_error_tol() << endl
                 << "Stoping the tests!\n";
             if(print_all_warnings)
               *out << "\ny =\n" << *y
-                 << "\nt1 = [ -D*y; 0 ] =\n" << *t1
-                 << "\nt2 =  FDA' * [ 0; y ] = FDN * y =\n" << *t2
-                 << "\nt3 =  FDA' * t1 = -FDC * D * y =\n" << *t3;
+                   << "\nt1 = [ -D*y; 0 ] =\n" << *t1
+                   << "\nt2 =  FDA' * [ 0; y ] = FDN * y =\n" << *t2
+                   << "\nt3 =  FDA' * t1 = -FDC * D * y =\n" << *t3;
             update_success( false, &success );
-            return false;
           }
         }
         if(out && num_warning_viol)
@@ -468,7 +463,7 @@ bool NLPDirectTester::finite_diff_check(
         break;
       }
       default:
-        assert(0);
+        TEST_FOR_EXCEPT(true);
     }
   }
 
@@ -489,39 +484,103 @@ bool NLPDirectTester::finite_diff_check(
         sum_rGf      = sum(*rGf);
       const value_type
         calc_err = ::fabs( ( sum_rGf_tmp - sum_rGf )/( ::fabs(sum_rGf_tmp) + ::fabs(sum_rGf) + small_num ) );
+      if(out)
+        *out
+          << "\nrel_err(sum(rGf_tmp),sum(rGf)) = "
+          << "rel_err(" << sum_rGf_tmp << "," << sum_rGf << ") = "
+          << calc_err << endl;
       if( calc_err >= Gc_error_tol() ) {
         if(out)
           *out
-            << "\nError, rel_err(sum(rGf_tmp),sum(rGf)) = "
-            << "rel_err(" << sum_rGf_tmp << "," << sum_rGf << ") = "
-            << calc_err << endl
-            << "exceeded Gc_error_tol = " << Gc_error_tol() << endl
-            << "Stoping the tests!\n";
+            << "Error, above relative error exceeded Gc_error_tol = " << Gc_error_tol() << endl;
         if(print_all_warnings)
           *out << "\nrGf_tmp =\n" << *rGf_tmp
              << "\nrGf =\n"   << *rGf;
         update_success( false, &success );
-        return false;
       }
       if( calc_err >= Gc_warning_tol() ) {
         if(out)
           *out
-            << "\nWarning, rel_err(sum(rGf_tmp),sum(rGf)) = "
-            << "rel_err(" << sum_rGf_tmp << "," << sum_rGf << ") = "
-            << calc_err << endl
-            << "exceeded Gc_warning_tol = " << Gc_warning_tol() << endl;
+            << "\nWarning, above relative error exceeded Gc_warning_tol = "
+            << Gc_warning_tol() << endl;
+      }
+    }
+    else if( D ) {
+      if(out)
+        *out
+          << "\nComparing rGf'*y with the finite difference product"
+          << " fd_prod(f,[D*y;y]) for random vectors y ...\n";
+      VectorSpace::vec_mut_ptr_t
+        y  = space_x->sub_space(var_indep)->create_member(),
+        t  = space_x->create_member();
+      value_type max_warning_viol = 0.0;
+      int num_warning_viol = 0;
+      const int num_fd_directions_used = ( num_fd_directions() > 0 ? num_fd_directions() : 1 );
+      for( int direc_i = 1; direc_i <= num_fd_directions_used; ++direc_i ) {
+        if( num_fd_directions() > 0 ) {
+          random_vector( rand_y_l, rand_y_u, y.get() );
+          if(out)
+            *out
+              << "\n****"
+              << "\n**** Random directional vector " << direc_i << " ( ||y||_1 / n = "
+              << (y->norm_1() / y->dim()) << " )"
+              << "\n***\n";
+        }
+        else {
+          *y = 1.0;
+          if(out)
+            *out
+              << "\n****"
+              << "\n**** Ones vector y ( ||y||_1 / n = "<<(y->norm_1()/y->dim())<<" )"
+              << "\n***\n";
+        }
+        // t = [ D*y; y ]
+        LinAlgOpPack::V_MtV(&*t->sub_view(var_dep),*D,BLAS_Cpp::no_trans,*y);
+        *t->sub_view(var_indep) = *y;
+        value_type fd_rGf_y = 0.0;
+        // fd_Gf_y
+        preformed_fd = fd_deriv_prod.calc_deriv_product(
+          xo,xl,xu
+          ,*t,NULL,NULL,true,nlp,&fd_rGf_y,NULL,out,dump_all(),dump_all()
+          );
+        if( !preformed_fd )
+          goto FD_NOT_PREFORMED;
+        if(out) *out << "fd_prod(f,[D*y;y]) = " << fd_rGf_y << "\n";
+        // rGf_y = rGf'*y
+        const value_type rGf_y = dot(*rGf,*y);
+        if(out) *out << "rGf'*y = " << rGf_y << "\n";
+        // Compare fd_rGf_y and rGf*y
+        const value_type
+          calc_err = ::fabs( ( rGf_y - fd_rGf_y )/( ::fabs(rGf_y) + ::fabs(fd_rGf_y) + small_num ) );
+        if( calc_err >= Gc_warning_tol() ) {
+          max_warning_viol = my_max( max_warning_viol, calc_err );
+          ++num_warning_viol;
+        }
+        if(out)
+          *out
+            << "\nrel_err(rGf'*y,fd_prod(f,[D*y;y])) = "
+            << "rel_err(" << fd_rGf_y << "," << rGf_y << ") = "
+            << calc_err << endl;
+        if( calc_err >= Gf_error_tol() ) {
+          if(out)
+            *out << "Error, above relative error exceeded Gc_error_tol = " << Gc_error_tol() << endl;
+          if(print_all_warnings)
+            *out << "\ny =\n" << *y
+                 << "\nt = [ D*y; y ] =\n" << *t;
+          update_success( false, &success );
+        }
       }
     }
     else {
-      assert(0); //  ToDo: Must validate rGf without Gf and D!
+      TEST_FOR_EXCEPT(true); // ToDo: Test rGf without D? (This is not going to be easy!)
     }
   }
-
+  
   // ///////////////////////////////////////////////////
   // (5) Check GcU, and/or Uz (for undecomposed equalities)
 
   if(GcU || Uz) {
-    assert(0); // ToDo: Implement!
+    TEST_FOR_EXCEPT(true); // ToDo: Implement!
   }
   
 FD_NOT_PREFORMED:
@@ -541,11 +600,16 @@ FD_NOT_PREFORMED:
         << "Error, found a NaN or Inf.  Stoping tests\n";
     success = false;
   }
-
-  if( out && success )
-    *out
-      << "\nCongradulations, all the finite difference errors where within the\n"
+  
+  if( out ) {
+    if( success )
+      *out
+        << "\nCongradulations, all the finite difference errors where within the\n"
         "specified error tolerances!\n";
+    else
+      *out
+        << "\nOh no, at least one of the above finite difference tests failed!\n";
+  }
 
   return success;
 

@@ -162,7 +162,6 @@ bool EvalNewPointStd_Step::do_step(
 
   Vector &x = x_iq.get_k(0);
 
-
   Range1D  var_dep(Range1D::INVALID), var_indep(Range1D::INVALID);
   if( s.get_decomp_sys().get() ) {
     const ConstrainedOptPack::DecompositionSystemVarReduct

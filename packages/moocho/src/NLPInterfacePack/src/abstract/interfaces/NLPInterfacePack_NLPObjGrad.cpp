@@ -46,6 +46,18 @@ void NLPObjGrad::initialize(bool test_setup) {
   NLP::initialize(test_setup);
 }
 
+// Information
+
+bool NLPObjGrad::supports_Gf() const
+{
+  return true;
+}
+
+bool NLPObjGrad::supports_Gf_prod() const
+{
+  return false;
+}
+
 // <<std aggr>> members for Gf
 
 void NLPObjGrad::set_Gf(VectorMutable* Gf)
@@ -81,6 +93,15 @@ void NLPObjGrad::calc_Gf(const Vector& x, bool newx) const
   StandardCompositionRelationshipsPack::assert_role_name_set(Gf_, "NLP::calc_Gf()", name_Gf);
   imp_calc_Gf(x,newx,obj_grad_info());
   num_Gf_evals_++;
+}
+
+value_type NLPObjGrad::calc_Gf_prod(const Vector& x, const Vector& d, bool newx) const
+{
+  TEST_FOR_EXCEPTION(
+    true,std::logic_error
+    ,"Error, the function calc_Gf_prod(...) is not implemented for the class "
+    << typeid(*this).name() << "!"
+    );
 }
 
 size_type NLPObjGrad::num_Gf_evals() const

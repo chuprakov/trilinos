@@ -220,71 +220,91 @@ private:
   // Private member functions
 
   // Validate input parameters - fix if possible
-  bool ValidatePoint( IterQuantityAccess<VectorMutable>& x,
-                      IterQuantityAccess<value_type>& f,
-                      IterQuantityAccess<VectorMutable>* c,
-                      IterQuantityAccess<VectorMutable>* h,
-                      bool throw_excpt ) const;
+  bool ValidatePoint(
+    const IterQuantityAccess<VectorMutable>& x,
+    const IterQuantityAccess<value_type>& f,
+    const IterQuantityAccess<VectorMutable>* c,
+    const IterQuantityAccess<VectorMutable>* h,
+    const bool throw_excpt
+    ) const;
 
   // Check that new point is not within taboo region of filter
-  bool CheckFilterAcceptability( value_type f, 
-                                 value_type theta,
-                                 AlgorithmState& s ) const;
-
+  bool CheckFilterAcceptability(
+    const value_type f, 
+    const value_type theta,
+    const AlgorithmState& s
+    ) const;
+  
   // Check the Armijo condition on f
-  bool CheckArmijo( value_type Gf_t_dk, 
-                    value_type alpha_k, 
-                    const IterQuantityAccess<value_type>& f_iq ) const;
+  bool CheckArmijo(
+    const value_type Gf_t_dk, 
+    const value_type alpha_k, 
+    const IterQuantityAccess<value_type>& f_iq
+    ) const;
 
   // Check if f or c has sufficient reduction
-  bool CheckFractionalReduction( const IterQuantityAccess<value_type>& f_iq,
-                                 value_type gamma_f_used,
-                                 value_type theta_kp1, 
-                                 value_type theta_k ) const;
+  bool CheckFractionalReduction(
+    const IterQuantityAccess<value_type>& f_iq,
+    const value_type gamma_f_used,
+    const value_type theta_kp1, 
+    const value_type theta_k
+    ) const;
 
   // Calculate the new point given d and alpha
-  void UpdatePoint( const VectorMutable& d,
-                    value_type alpha, 
-                    IterQuantityAccess<VectorMutable>& x,
-                    IterQuantityAccess<value_type>& f,
-                    IterQuantityAccess<VectorMutable>* c,
-                    IterQuantityAccess<VectorMutable>* h,
-                    NLP& nlp ) const;
+  void UpdatePoint(
+    const VectorMutable& d,
+    value_type alpha, 
+    IterQuantityAccess<VectorMutable>& x,
+    IterQuantityAccess<value_type>& f,
+    IterQuantityAccess<VectorMutable>* c,
+    IterQuantityAccess<VectorMutable>* h,
+    NLP& nlp
+    ) const;
 
   // Calculate the minimum alpha before hitting restoration phase
-  value_type CalculateAlphaMin( value_type gamma_f_used,
-                                value_type Gf_t_dk, 
-                                value_type theta_k,
-                                value_type theta_small ) const;
+  value_type CalculateAlphaMin(
+    const value_type gamma_f_used,
+    const value_type Gf_t_dk, 
+    const value_type theta_k,
+    const value_type theta_small
+    ) const;
 
   // Calculate the constraint norm
-  value_type CalculateTheta_k( IterQuantityAccess<VectorMutable>* c,
-                               IterQuantityAccess<VectorMutable>* h,
-                               int k ) const;
+  value_type CalculateTheta_k(
+    const IterQuantityAccess<VectorMutable>* c,
+    const IterQuantityAccess<VectorMutable>* h,
+    int k
+    ) const;
 
   // Calculate the value of gamma_k to use
-  value_type CalculateGammaFUsed( const IterQuantityAccess<value_type> &f,
-                                  value_type theta_k,
-                                  const EJournalOutputLevel olevel,
-                                  std::ostream &out ) const;
+  value_type CalculateGammaFUsed(
+    const IterQuantityAccess<value_type> &f,
+    const value_type theta_k,
+    const EJournalOutputLevel olevel,
+    std::ostream &out
+    ) const;
 
   // decide if we should switch to Armijo for objective
-  bool ShouldSwitchToArmijo( value_type Gf_t_dk,
-                             value_type alpha_k,
-                             value_type theta_k,
-                             value_type theta_small ) const;
+  bool ShouldSwitchToArmijo(
+    const value_type Gf_t_dk,
+    const value_type alpha_k,
+    const value_type theta_k,
+    const value_type theta_small
+    ) const;
 
   // Update the filter from the last iteration
   void UpdateFilter( IterationPack::AlgorithmState& s ) const;
 
   // Update the filter from the last iteration and Augment it with
   // the new point
-  void AugmentFilter(	value_type gamma_f_used,
-                      value_type f_with_boundary,
-                      value_type theta_with_boundary,
-                      IterationPack::AlgorithmState& s,
-                      const EJournalOutputLevel olevel,
-                      std::ostream &out ) const;
+  void AugmentFilter(
+    const value_type gamma_f_used,
+    const value_type f_with_boundary,
+    const value_type theta_with_boundary,
+    IterationPack::AlgorithmState& s,
+    const EJournalOutputLevel olevel,
+    std::ostream &out
+    ) const;
     
 };	// end class LineSearchFilter_Step
 
