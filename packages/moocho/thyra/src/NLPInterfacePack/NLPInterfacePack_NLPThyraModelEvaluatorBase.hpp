@@ -204,6 +204,11 @@ protected:
   /** \brief . */
   void copy_from_model_p( const Thyra::VectorBase<value_type> *model_p, VectorMutable* x_I ) const;
   /** \brief . */
+  void set_x(
+    const Vector                                      &x
+    ,Thyra::ModelEvaluatorBase::InArgs<value_type>    *model_inArgs_inout
+    ) const;
+  /** \brief . */
   void preprocessBaseInOutArgs(
     const Vector                                      &x
     ,bool                                             newx

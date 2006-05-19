@@ -23,14 +23,18 @@ public:
 
   /** \brief Constructor. */
   AdvDiffReactOptModel(
-    Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
-    ,const double                                              len_x          = 1.0
-    ,const double                                              len_y          = 1.0
-    ,const int                                                 np             = -1
-    ,const double                                              x0             = 0.0
-    ,const double                                              p0             = 1.0
-    ,const double                                              reactionRate   = 1.0
-    ,const bool                                                normalizeBasis = false
+    const Teuchos::RefCountPtr<const Epetra_Comm>  &comm
+    ,const double                                  beta
+    ,const double                                  len_x     // Ignored if meshFile is *not* empty
+    ,const double                                  len_y     // Ignored if meshFile is *not* empty
+    ,const int                                     local_nx  // Ignored if meshFile is *not* empty
+    ,const int                                     local_ny  // Ignored if meshFile is *not* empty
+    ,const char                                    meshFile[]
+    ,const int                                     np
+    ,const double                                  x0
+    ,const double                                  p0
+    ,const double                                  reactionRate
+    ,const bool                                    normalizeBasis
     );
 
   /** \brief . */

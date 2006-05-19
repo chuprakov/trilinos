@@ -387,6 +387,38 @@ void NLPThyraModelEvaluatorBase::copy_from_model_p( const Thyra::VectorBase<valu
   *x_I = AbstractLinAlgPack::VectorMutableThyra(Teuchos::rcp(const_cast<Thyra::VectorBase<value_type>*>(model_p),false));
 }
 
+void NLPThyraModelEvaluatorBase::set_x(
+  const Vector                                      &x
+  ,Thyra::ModelEvaluatorBase::InArgs<value_type>    *model_inArgs_inout
+  ) const
+{
+  using Teuchos::dyn_cast;
+  using Teuchos::RefCountPtr;
+  using Teuchos::rcp_const_cast;
+  using Teuchos::rcp_dynamic_cast;
+  using AbstractLinAlgPack::VectorMutableThyra;
+  typedef Thyra::ModelEvaluatorBase MEB;
+  //
+  // Set the input arguments
+  //
+  MEB::InArgs<value_type> &model_inArgs = *model_inArgs_inout;
+  if( basis_sys_.get() ) {
+    const Range1D
+      var_dep   = basis_sys_->var_dep(),
+      var_indep = basis_sys_->var_indep();
+    RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
+    if(p_idx_>=0) xI = x.sub_view(var_indep);
+    model_inArgs.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
+    if(p_idx_ >= 0)
+      model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
+  }
+  else { // no dependent vars
+    TEST_FOR_EXCEPT(p_idx_<0);
+    model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
+  }
+}
+
+
 void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
   const Vector                                      &x
   ,bool                                             newx
@@ -417,20 +449,7 @@ void NLPThyraModelEvaluatorBase::preprocessBaseInOutArgs(
   // Set the input arguments
   //
   MEB::InArgs<value_type> &model_inArgs = *model_inArgs_inout;
-  if( basis_sys_.get() ) {
-    const Range1D
-      var_dep   = basis_sys_->var_dep(),
-      var_indep = basis_sys_->var_indep();
-    RefCountPtr<const Vector> xD = x.sub_view(var_dep), xI;
-    if(p_idx_>=0) xI = x.sub_view(var_indep);
-    model_inArgs.set_x(dyn_cast<const VectorMutableThyra>(*xD).thyra_vec().assert_not_null());
-    if(p_idx_ >= 0)
-      model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(*xI).thyra_vec().assert_not_null());
-  }
-  else { // no dependent vars
-    TEST_FOR_EXCEPT(p_idx_<0);
-    model_inArgs.set_p(p_idx_,dyn_cast<const VectorMutableThyra>(x).thyra_vec().assert_not_null());
-  }
+  set_x(x,&model_inArgs);
   //
   // Set the output arguments
   //

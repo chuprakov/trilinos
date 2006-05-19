@@ -1,8 +1,9 @@
 #include "GLpApp_AdvDiffReactOptModel.hpp"
-#include "Teuchos_ScalarTraits.hpp"
-#include "Teuchos_VerboseObject.hpp"
 #include "Epetra_SerialComm.h"
 #include "Epetra_CrsMatrix.h"
+#include "Teuchos_ScalarTraits.hpp"
+#include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_TimeMonitor.hpp"
 
 // For orthogonalization of the basis B_bar
 #include "sillyModifiedGramSchmidt.hpp" // This is just an example!
@@ -12,6 +13,18 @@
 //#define GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
 
 namespace {
+
+Teuchos::RefCountPtr<Teuchos::Time>
+  initalizationTimer    = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Init"),
+  evalTimer             = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval"),
+  p_bar_Timer           = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:p_bar"),
+  R_p_bar_Timer         = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:R_p_bar"),
+  f_Timer               = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:f"),
+  g_Timer               = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:g"),
+  W_Timer               = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:W"),
+  DfDp_Timer            = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:DfDp"),
+  DgDx_Timer            = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:DgDx"),
+  DgDp_Timer            = Teuchos::TimeMonitor::getNewTimer("AdvDiffReact:Eval:DgDp");
 
 inline double sqr( const double& s ) { return s*s; }
 
@@ -27,34 +40,39 @@ inline double dot( const Epetra_Vector &x, const Epetra_Vector &y )
 namespace GLpApp {
 
 AdvDiffReactOptModel::AdvDiffReactOptModel(
-  Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   const& dat
-  ,const double                                              len_x
-  ,const double                                              len_y
-  ,const int                                                 np
-  ,const double                                              x0
-  ,const double                                              p0
-  ,const double                                              reactionRate
-  ,const bool                                                normalizeBasis
+  const Teuchos::RefCountPtr<const Epetra_Comm>  &comm
+  ,const double                                  beta
+  ,const double                                  len_x     // Ignored if meshFile is *not* empty
+  ,const double                                  len_y     // Ignored if meshFile is *not* empty
+  ,const int                                     local_nx  // Ignored if meshFile is *not* empty
+  ,const int                                     local_ny  // Ignored if meshFile is *not* empty
+  ,const char                                    meshFile[]
+  ,const int                                     np
+  ,const double                                  x0
+  ,const double                                  p0
+  ,const double                                  reactionRate
+  ,const bool                                    normalizeBasis
   )
-  :dat_(dat),np_(np),reactionRate_(reactionRate)
+  :np_(np),reactionRate_(reactionRate)
 {
-
+  Teuchos::TimeMonitor initalizationTimerMonitor(*initalizationTimer);
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
   Teuchos::OSTab tab(out);
   *out << "\nEntering AdvDiffReactOptModel::AdvDiffReactOptModel(...) ...\n";
 #endif
-
+  //
+  // Initalize the data pool object
+  //
+  dat_ = Teuchos::rcp(new GLpApp::GLpYUEpetraDataPool(comm,beta,len_x,len_y,local_nx,local_ny,meshFile,false));
   //
   // Get the maps
   //
-  const Epetra_SerialComm serialComm;
-  const Epetra_Comm &comm = dat_->getA()->OperatorDomainMap().Comm();
   map_x_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorDomainMap()));
   map_p_bar_ = Teuchos::rcp(new Epetra_Map(dat_->getB()->OperatorDomainMap()));
   map_f_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorRangeMap()));
-  map_g_ = Teuchos::rcp(new Epetra_Map(1,1,0,comm));
+  map_g_ = Teuchos::rcp(new Epetra_Map(1,1,0,*comm));
   //
   // Initialize the basis matrix for p such that p_bar = B_bar * p
   //
@@ -64,12 +82,12 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
     //
     const Epetra_SerialDenseMatrix &ipcoords = *dat_->getipcoords();
     const Epetra_IntSerialDenseVector &pindx = *dat_->getpindx();
-    Epetra_Map overlapmap(-1,pindx.M(),const_cast<int*>(pindx.A()),1,comm);
+    Epetra_Map overlapmap(-1,pindx.M(),const_cast<int*>(pindx.A()),1,*comm);
     const double pi = 2.0 * std::asin(1.0);
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *out << "\npi="<<pi<<"\n";
 #endif
-    map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,comm));
+    map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,*comm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
     (*B_bar_)(0)->PutScalar(1.0); // First column is all ones!
     if( np_ > 1 ) {
@@ -308,6 +326,7 @@ AdvDiffReactOptModel::createOutArgs() const
 
 void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outArgs ) const
 {
+  Teuchos::TimeMonitor evalTimerMonitor(*evalTimer);
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     dout = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -329,6 +348,12 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   const Epetra_Vector *p_in = inArgs.get_p(0).get();
   const Epetra_Vector &p = (p_in ? *p_in : *p0_);
   const Epetra_Vector &x = *inArgs.get_x();
+#ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
+    *dout << "\nx =\n\n";
+    x.Print(*Teuchos::OSTab(dout).getOStream());
+    *dout << "\np =\n\n";
+    p.Print(*Teuchos::OSTab(dout).getOStream());
+#endif
   //
   // Get the output arguments
   //
@@ -344,6 +369,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   // p_bar = B_bar*p
   Teuchos::RefCountPtr<const Epetra_Vector> p_bar;
   if(np_ > 0) {
+    Teuchos::TimeMonitor p_bar_TimerMonitor(*p_bar_Timer);
     Teuchos::RefCountPtr<Epetra_Vector> _p_bar;
     _p_bar = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
     _p_bar->Multiply('N','N',1.0,*B_bar_,p,0.0);
@@ -355,6 +381,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   // R_p_bar = R*p_bar = R*(B_bar*p)
   Teuchos::RefCountPtr<const Epetra_Vector> R_p_bar;
   if( g_out || DgDp_trans_out ) {
+    Teuchos::TimeMonitor R_p_bar_TimerMonitor(*R_p_bar_Timer);
       Teuchos::RefCountPtr<Epetra_Vector>
       _R_p_bar = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
     dat_->getR()->Multiply(false,*p_bar,*_R_p_bar);
@@ -367,6 +394,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // f = A*x + reationRate*Ny(x) + B*(B_bar*p)
     //
+    Teuchos::TimeMonitor f_TimerMonitor(*f_Timer);
     Epetra_Vector &f = *f_out;
     Epetra_Vector Ax(*map_f_);
     dat_->getA()->Multiply(false,x,Ax);
@@ -383,6 +411,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // g = 0.5 * (x-q)'*H*(x-q) + 0.5*regBeta*(B_bar*p)'*R*(B_bar*p)
     //
+    Teuchos::TimeMonitor g_TimerMonitor(*g_Timer);
     Epetra_Vector &g = *g_out;
     Epetra_Vector xq(x);
     xq.Update(-1.0, *q_, 1.0);
@@ -406,6 +435,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // W = A + reationRate*Npy(x)
     //
+    Teuchos::TimeMonitor W_TimerMonitor(*W_Timer);
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_out);
     if(reactionRate_!=0.0)
       dat_->computeNpy(Teuchos::rcp(&x,false));
@@ -449,6 +479,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // DfDp = B*B_bar
     //
+    Teuchos::TimeMonitor DfDp_TimerMonitor(*DfDp_Timer);
     Epetra_CrsMatrix   *DfDp_op = NULL;
     Epetra_MultiVector *DfDp_mv = NULL;
     if(out.get() && dumpAll)
@@ -533,6 +564,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // DgDx' = H*(x-q)
     //
+    Teuchos::TimeMonitor DgDx_TimerMonitor(*DgDx_Timer);
     Epetra_Vector &DgDx_trans = *(*DgDx_trans_out)(0);
     Epetra_Vector xq(x);
     xq.Update(-1.0,*q_,1.0);
@@ -552,6 +584,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     // DgDp' = regBeta*B_bar'*(R*(B_bar*p))
     //
+    Teuchos::TimeMonitor DgDp_TimerMonitor(*DgDp_Timer);
     Epetra_Vector &DgDp_trans = *(*DgDp_trans_out)(0);
     if(np_ > 0) {
       DgDp_trans.Multiply('T','N',dat_->getbeta(),*B_bar_,*R_p_bar,0.0);

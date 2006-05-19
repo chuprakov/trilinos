@@ -31,6 +31,8 @@
 
 #include "NLPInterfacePack_NLPThyraModelEvaluatorBase.hpp"
 #include "NLPInterfacePack_NLPDirect.hpp"
+#include "Thyra_DirectionalFiniteDiffCalculator.hpp"
+#include "Teuchos_StandardCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -44,6 +46,9 @@ class NLPDirectThyraModelEvaluator
   , virtual public NLPThyraModelEvaluatorBase
 {
 public:
+
+  /** \brief Utility object that computes directional finite differences */
+  STANDARD_COMPOSITION_MEMBERS( Thyra::DirectionalFiniteDiffCalculator<value_type>, direcFiniteDiffCalculator )
 
   /** \brief Initialize to uninitialized */
   NLPDirectThyraModelEvaluator();
@@ -85,6 +90,18 @@ public:
   void initialize(bool test_setup);
   /** \brief . */
   void unset_quantities();
+
+  //@}
+
+  /** @name Overridden public members from NLPObjGrad */
+  //@{
+
+  /** \brief . */
+  bool supports_Gf() const;
+  /** \brief . */
+  bool supports_Gf_prod() const;
+  /** \brief . */
+  value_type calc_Gf_prod(const Vector& x, const Vector& d, bool newx) const;
 
   //@}
 

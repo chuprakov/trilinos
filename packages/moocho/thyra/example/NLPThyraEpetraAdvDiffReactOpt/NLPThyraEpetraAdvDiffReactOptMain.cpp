@@ -6,6 +6,7 @@
 #include "Thyra_MultiVectorSerialization.hpp"
 #include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
+#include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
@@ -89,6 +90,10 @@ void writeVectorToFile(
   mvSerializer.serialize(vec,out_file);
 }
 
+//
+// Linear Solver option
+//
+
 enum ELOWSFactoryType {
   LOWSF_AMESOS
 #ifdef HAVE_AZTECOO_THYRA
@@ -109,6 +114,54 @@ const int numLOWSFactoryTypes =
 #endif
 ;
 
+const ELOWSFactoryType LOWSFactoryTypeValues[numLOWSFactoryTypes] = {
+  LOWSF_AMESOS
+#ifdef HAVE_AZTECOO_THYRA
+  ,LOWSF_AZTECOO
+#endif
+#ifdef HAVE_BELOS_THYRA
+  ,LOWSF_BELOS
+#endif
+};
+
+const char* LOWSFactoryTypeNames[numLOWSFactoryTypes] = {
+  "amesos"
+#ifdef HAVE_AZTECOO_THYRA
+  ,"aztecoo"
+#endif
+#ifdef HAVE_BELOS_THYRA
+  ,"belos"
+#endif
+};
+
+//
+// Finite difference method
+//
+
+const int numFDMethodTypes = 7;
+
+Thyra::DirectionalFiniteDiffCalculatorTypes::EFDMethodType fdMethodTypeValues[numFDMethodTypes] =
+{
+  Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_ONE
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_TWO
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_TWO_CENTRAL
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_TWO_AUTO
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_FOUR
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_FOUR_CENTRAL
+  ,Thyra::DirectionalFiniteDiffCalculatorTypes::FD_ORDER_FOUR_AUTO
+};
+
+const char* fdMethodTypeNames[numFDMethodTypes] =
+{
+  "order-one"
+  ,"order-two"
+  ,"order-two-central"
+  ,"order-two-auto"
+  ,"order-four"
+  ,"order-four-central"
+  ,"order-four-auto"
+};
+
 } // namespace
 
 int main( int argc, char* argv[] )
@@ -120,6 +173,7 @@ int main( int argc, char* argv[] )
   using NLPInterfacePack::NLPDirectThyraModelEvaluator;
   using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
   using Teuchos::CommandLineProcessor;
+  namespace DFDT = Thyra::DirectionalFiniteDiffCalculatorTypes;
   typedef AbstractLinAlgPack::value_type  Scalar;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
@@ -140,25 +194,6 @@ int main( int argc, char* argv[] )
     // Get options from the command line
     //
 
-    const ELOWSFactoryType LOWSFactoryTypeValues[numLOWSFactoryTypes] = {
-      LOWSF_AMESOS
-#ifdef HAVE_AZTECOO_THYRA
-      ,LOWSF_AZTECOO
-#endif
-#ifdef HAVE_BELOS_THYRA
-      ,LOWSF_BELOS
-#endif
-    };
-    const char* LOWSFactoryTypeNames[numLOWSFactoryTypes] = {
-      "amesos"
-#ifdef HAVE_AZTECOO_THYRA
-      ,"aztecoo"
-#endif
-#ifdef HAVE_BELOS_THYRA
-      ,"belos"
-#endif
-    };
-
     double              len_x           = 1.0;
     double              len_y           = 1.0;
     int                 local_nx        = 3;
@@ -173,9 +208,10 @@ int main( int argc, char* argv[] )
     bool                do_sim          = false;
     bool                use_direct      = false;
     bool                use_black_box   = false;
-    bool                use_finite_diff = true;
+    bool                use_finite_diff = false;
+    DFDT::EFDMethodType fd_method_type  = DFDT::FD_ORDER_ONE;
     double              fd_step_len     = 1e-4;
-    double              fwd_newton_tol  = 1e-8;
+    double              fwd_newton_tol  = -1.0; // Determine automatically
     int                 fwd_newton_max_iters  = 20;
     ELOWSFactoryType    lowsFactoryType = LOWSF_AMESOS;
 #if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
@@ -212,8 +248,11 @@ int main( int argc, char* argv[] )
     clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     clp.setOption( "use-direct", "use-first-order",  &use_direct, "Flag for if we use the NLPDirect or NLPFirstOrderInfo implementation." );
     clp.setOption( "black-box", "all-at-once",  &use_black_box, "Flag for if we do black-box NAND or all-at-once SAND." );
-    //clp.setOption( "use-finite-diff", "use-finite-diff",  &use_finite_diff, "Flag for if we are using finite differences or not." );
-    clp.setOption( "fd-step-len", &fd_step_len, "The finite-difference step length." );
+    clp.setOption( "use-finite-diff", "no-use-finite-diff",  &use_finite_diff, "Flag for if we are using finite differences or not." );
+    clp.setOption( "finite-diff-type", &fd_method_type
+                   ,numFDMethodTypes,fdMethodTypeValues,fdMethodTypeNames
+                   ,"The type of finite differences used [---use-finite-diff]" );
+    clp.setOption( "fd-step-len", &fd_step_len, "The finite-difference step length ( < 0 determine automatically )." );
     clp.setOption( "fwd-newton-tol", &fwd_newton_tol, "Nonlinear residual tolerance for the forward Newton solve." );
     clp.setOption( "fwd-newton-max-iters", &fwd_newton_max_iters, "Max number of iterations for the forward Newton solve." );
     clp.setOption( "lowsf", &lowsFactoryType
@@ -274,7 +313,7 @@ int main( int argc, char* argv[] )
     // Create the Thyra::ModelEvaluator object
     //
 
-    *out << "\nCreate the GLpApp::GLpYUEpetraDataPool object ...\n";
+    *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
 
 #ifdef HAVE_MPI
     Epetra_MpiComm comm(MPI_COMM_WORLD);
@@ -282,11 +321,11 @@ int main( int argc, char* argv[] )
     Epetra_SerialComm comm;
 #endif
 
-    GLpApp::GLpYUEpetraDataPool dat(Teuchos::rcp(&comm,false),beta,len_x,len_y,local_nx,local_ny,geomFileBase.c_str(),false);
-
-    *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
-
-    GLpApp::AdvDiffReactOptModel epetraModel(Teuchos::rcp(&dat,false),len_x,len_y,np,x0,p0,reactionRate,normalizeBasis);
+    GLpApp::AdvDiffReactOptModel
+      epetraModel(
+        Teuchos::rcp(&comm,false),beta,len_x,len_y,local_nx,local_ny,geomFileBase.c_str()
+        ,np,x0,p0,reactionRate,normalizeBasis
+        );
     epetraModel.setOStream(journalOut);
     if(dump_all) epetraModel.setVerbLevel(Teuchos::VERB_EXTREME);
     
@@ -375,6 +414,20 @@ int main( int argc, char* argv[] )
       epetraThyraModel->setInitialGuess(epetraThyraModel_initialGuess);
     }
 
+    Teuchos::RefCountPtr<std::ostream>
+      modelEvalLogOut;
+    if(procRank==0)
+      modelEvalLogOut = rcp(new std::ofstream("ModelEvaluationLog.out"));
+    else
+      modelEvalLogOut = rcp(new Teuchos::oblackholestream());
+    Teuchos::RefCountPtr<Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar> >
+      loggerThyraModel
+      = rcp(
+        new Thyra::DefaultEvaluationLoggerModelEvaluator<Scalar>(
+          epetraThyraModel,modelEvalLogOut
+          )
+        );
+    
     //
     // Create the NLP
     //
@@ -382,9 +435,16 @@ int main( int argc, char* argv[] )
     Teuchos::RefCountPtr<NLP> nlp;
 
     if(do_sim) {
-      nlp = rcp(new NLPFirstOrderThyraModelEvaluator(epetraThyraModel,-1,-1));
+      nlp = rcp(new NLPFirstOrderThyraModelEvaluator(loggerThyraModel,-1,-1));
     }
     else {
+      // Setup finite difference object
+      RefCountPtr<Thyra::DirectionalFiniteDiffCalculator<Scalar> > direcFiniteDiffCalculator;
+      if(use_finite_diff) {
+        direcFiniteDiffCalculator = rcp(new Thyra::DirectionalFiniteDiffCalculator<Scalar>());
+        direcFiniteDiffCalculator->fd_method_type(fd_method_type);
+        direcFiniteDiffCalculator->fd_step_size(fd_step_len);
+      }
       if( use_black_box ) {
         // Create a Thyra::NonlinearSolverBase object to solve and eliminate the
         // state variables and the state equations
@@ -394,14 +454,16 @@ int main( int argc, char* argv[] )
         stateSolver->defaultMaxNewtonIterations(fwd_newton_max_iters);
         // Create the reduced  Thyra::ModelEvaluator object for p -> g_hat(p)
         Teuchos::RefCountPtr<Thyra::DefaultStateEliminationModelEvaluator<Scalar> >
-          reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(epetraThyraModel,stateSolver));
+          reducedThyraModel = rcp(new Thyra::DefaultStateEliminationModelEvaluator<Scalar>(loggerThyraModel,stateSolver));
         Teuchos::RefCountPtr<Thyra::ModelEvaluator<Scalar> >
           finalReducedThyraModel;
         if(use_finite_diff) {
           // Create the finite-difference wrapped Thyra::ModelEvaluator object
           Teuchos::RefCountPtr<Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar> >
-            fdReducedThyraModel = rcp(new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(reducedThyraModel));
-          fdReducedThyraModel->fdStepLen(fd_step_len);
+            fdReducedThyraModel = rcp(
+              new Thyra::DefaultFiniteDifferenceModelEvaluator<Scalar>(
+                reducedThyraModel,direcFiniteDiffCalculator)
+              );
           finalReducedThyraModel = fdReducedThyraModel;
         }
         else {
@@ -412,10 +474,15 @@ int main( int argc, char* argv[] )
       }
       else {
         if(use_direct) {
-          nlp = rcp(new NLPDirectThyraModelEvaluator(epetraThyraModel,0,0));
+          Teuchos::RefCountPtr<NLPDirectThyraModelEvaluator>
+            nlpDirect = rcp(new NLPDirectThyraModelEvaluator(loggerThyraModel,0,0));
+          if(use_finite_diff) {
+            nlpDirect->set_direcFiniteDiffCalculator(direcFiniteDiffCalculator);
+          }
+          nlp = nlpDirect;
         }
         else {
-          nlp = rcp(new NLPFirstOrderThyraModelEvaluator(epetraThyraModel,0,0));
+          nlp = rcp(new NLPFirstOrderThyraModelEvaluator(loggerThyraModel,0,0));
         }
       }
     }
