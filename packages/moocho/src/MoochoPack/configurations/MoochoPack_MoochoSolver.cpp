@@ -51,6 +51,7 @@
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_oblackholestream.hpp"
 #include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_TimeMonitor.hpp"
 
 namespace MoochoPack {
 
@@ -472,14 +473,18 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
   
   if(do_summary_outputting()) {
     *summary_out_used_	<< "\n  total time = " << timer.read() << " sec.\n";
-    if( solver_.algo_timing() )
+    if( solver_.algo_timing() ) {
+      Teuchos::TimeMonitor::format().setRowsBetweenLines(100);
       solver_.print_algorithm_times( *summary_out_used_ );
+      *summary_out_used_ << "\n\n";
+      Teuchos::TimeMonitor::summarize(*summary_out_used_);
+    }
   }
   
   // Print workspace usage statistics
   if(do_summary_outputting())
     *summary_out_used_
-      << "\n*** Statistics for autmatic array workspace:"
+      << "\n*** Statistics for automatic array workspace:"
       << "\nNumber of megabytes of preallocated workspace                = "
       << workspace_MB_
       << "\nNumber of allocations using preallocated workspace           = "
@@ -790,7 +795,7 @@ void MoochoSolver::update_solver() const
     if(do_summary_outputting())
       *summary_out_used_
         << "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
-        "workspace for autmatic arrays only ...\n";
+        "workspace for automatic arrays only ...\n";
     Teuchos::set_default_workspace_store(
       Teuchos::rcp(new Teuchos::WorkspaceStoreInitializeable(static_cast<size_t>(1e+6*workspace_MB_)))
       );
