@@ -3,10 +3,10 @@
 #include "NLPInterfacePack_NLPDirectThyraModelEvaluator.hpp"
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
-#include "Thyra_MultiVectorSerialization.hpp"
 #include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
 #include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
+#include "Thyra_ParallelMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
@@ -39,55 +39,29 @@
 
 namespace {
 
-const int maxProcOrder = 4; // Good for 9,999 processors!
+typedef AbstractLinAlgPack::value_type  Scalar;
 
-std::string getParallelFileName( const std::string &fileNameBase )
-{
-  std::ostringstream parallelFileName;
-  parallelFileName
-    << fileNameBase
-    << "."
-    << std::setfill('0')
-    << std::right << std::setw(maxProcOrder)
-    << Teuchos::GlobalMPISession::getNProc()
-    << "."
-    << std::setfill('0')
-    << std::right << std::setw(maxProcOrder)
-    << Teuchos::GlobalMPISession::getRank()
-    ;
-  return parallelFileName.str();
-}
-
-Teuchos::RefCountPtr<Thyra::VectorBase<double> >
+Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> >
 readVectorFromFile(
   const std::string                                                   &fileNameBase
-  ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<double> >  &vs
+  ,const Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<Scalar> >  &vs
   ,const double                                                       scaleBy = 1.0
   )
 {
-  const std::string fileName = getParallelFileName(fileNameBase);
-  std::ifstream in_file(fileName.c_str());
-  TEST_FOR_EXCEPTION(
-    in_file.eof(), std::logic_error
-    ,"Error, the file \""<<fileName<<"\" could not be opened for input!"
-    );
-  Teuchos::RefCountPtr<Thyra::VectorBase<double> >
-    vec = Thyra::createMember(vs);
-  Thyra::MultiVectorSerialization<double> mvSerializer;
-  mvSerializer.unserialize(in_file,&*vec);
+  Thyra::ParallelMultiVectorFileIO<Scalar> fileIO;
+  Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> >
+    vec = fileIO.readVectorFromFile(fileNameBase,vs);
   Thyra::Vt_S(&*vec,scaleBy);
   return vec;
 }
 
 void writeVectorToFile(
-  const Thyra::VectorBase<double>    &vec
+  const Thyra::VectorBase<Scalar>    &vec
   ,const std::string                 &fileNameBase
   )
 {
-  const std::string fileName = getParallelFileName(fileNameBase);
-  std::ofstream out_file(fileName.c_str());
-  Thyra::MultiVectorSerialization<double> mvSerializer;
-  mvSerializer.serialize(vec,out_file);
+  Thyra::ParallelMultiVectorFileIO<Scalar> fileIO;
+  fileIO.writeToFile(vec,fileNameBase);
 }
 
 //
@@ -174,12 +148,13 @@ int main( int argc, char* argv[] )
   using NLPInterfacePack::NLPFirstOrderThyraModelEvaluator;
   using Teuchos::CommandLineProcessor;
   namespace DFDT = Thyra::DirectionalFiniteDiffCalculatorTypes;
-  typedef AbstractLinAlgPack::value_type  Scalar;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
   const int procRank = mpiSession.getRank();
   const int numProcs = mpiSession.getNProc();
+
+  Teuchos::Time timer("");
   
   bool dummySuccess = true;
 
@@ -230,6 +205,8 @@ int main( int argc, char* argv[] )
     std::string         stateSoluFileBase   = "";
     std::string         paramSoluFileBase   = "";
 
+    int                 numProcsPerCluster  = -1;
+
     CommandLineProcessor  clp;
     clp.throwExceptions(false);
     clp.addOutputSetupOptions(true);
@@ -273,6 +250,7 @@ int main( int argc, char* argv[] )
     clp.setOption( "scale-p-guess", &scaleParamGuess, "Amount to scale the guess for p read in by --p-guess-file." );
     clp.setOption( "x-solu-file", &stateSoluFileBase, "Base file name to write the state solution x to." );
     clp.setOption( "p-solu-file", &paramSoluFileBase, "Base file name to write the parameter solution p to." );
+    clp.setOption( "num-procs-per-cluster", &numProcsPerCluster, "Number of processors in a cluster (<=0 means only one cluster)." );
     solver.setup_commandline_processor(&clp);
 
     CommandLineProcessor::EParseCommandLineReturn
@@ -306,21 +284,57 @@ int main( int argc, char* argv[] )
 
     *out
       << "\n***"
-      << "\n*** NLPThyraEpetraAdvDiffReactOptMain, numProcs="<<numProcs
+      << "\n*** NLPThyraEpetraAdvDiffReactOptMain, Global numProcs = "<<numProcs
       << "\n***\n";
+
+    int clusterRank = -1;
+    int numClusters = -1;
+#ifdef HAVE_MPI
+    MPI_Comm mpiComm = MPI_COMM_WORLD;
+    if( numProcsPerCluster > 0 ) {
+      *out << "\nCreating communicator for local cluster of "<<numProcsPerCluster<<" processors ...\n";
+      numClusters = numProcs/numProcsPerCluster;
+      const int remainingProcs = numProcs%numProcsPerCluster;
+      TEST_FOR_EXCEPTION(
+        remainingProcs!=0,std::logic_error
+        ,"Error, The number of processors per cluster numProcsPerCluster="<<numProcsPerCluster
+        << " does not divide into the global number of processors numProcs="<<numProcs
+        << " and instead has remainder="<<remainingProcs<<"!"
+        );
+      // Determine which cluster this processor is part of and what the global
+      // processor ranges are.
+      clusterRank = procRank / numProcsPerCluster; // Integer division!
+      *out << "\nclusterRank = " << clusterRank << "\n";
+      const int firstClusterProcRank = clusterRank * numProcsPerCluster;
+      const int lastClusterProcRank = firstClusterProcRank + numProcsPerCluster - 1;
+      *out << "\nclusterProcRange = ["<<firstClusterProcRank<<","<<lastClusterProcRank<<"]\n";
+      // Create the group and the communicator for this cluster of processors
+      MPI_Group globalGroup = MPI_GROUP_NULL;
+      MPI_Comm_group(MPI_COMM_WORLD,&globalGroup);
+      int procRanges[1][3];
+      procRanges[0][0] = firstClusterProcRank;
+      procRanges[0][1] = lastClusterProcRank;
+      procRanges[0][2] = 1;
+      MPI_Group clusterGroup = MPI_GROUP_NULL;
+      MPI_Group_range_incl(globalGroup,1,&procRanges[0],&clusterGroup);
+      MPI_Comm clusterComm = MPI_COMM_NULL;
+      MPI_Comm_create(MPI_COMM_WORLD,clusterGroup,&clusterComm);
+      mpiComm = clusterComm;
+    }
+#endif
     
     //
     // Create the Thyra::ModelEvaluator object
     //
-
+    
     *out << "\nCreate the GLpApp::AdvDiffReactOptModel wrapper object ...\n";
-
+    
 #ifdef HAVE_MPI
-    Epetra_MpiComm comm(MPI_COMM_WORLD);
+    Epetra_MpiComm comm(mpiComm);
 #else
     Epetra_SerialComm comm;
 #endif
-
+    
     GLpApp::AdvDiffReactOptModel
       epetraModel(
         Teuchos::rcp(&comm,false),beta,len_x,len_y,local_nx,local_ny,geomFileBase.c_str()
@@ -402,7 +416,7 @@ int main( int argc, char* argv[] )
     }
     
     if(1) {
-      Thyra::ModelEvaluatorBase::InArgs<double> epetraThyraModel_initialGuess = epetraThyraModel->createInArgs();
+      Thyra::ModelEvaluatorBase::InArgs<Scalar> epetraThyraModel_initialGuess = epetraThyraModel->createInArgs();
       if(stateGuessFileBase != "") {
         *out << "\nReading the guess of the state \'x\' from the file(s) with base name \""<<stateGuessFileBase<<"\" ...\n";
         epetraThyraModel_initialGuess.set_x(readVectorFromFile(stateGuessFileBase,epetraThyraModel->get_x_space(),scaleStateGuess));
@@ -427,6 +441,35 @@ int main( int argc, char* argv[] )
           epetraThyraModel,modelEvalLogOut
           )
         );
+
+    if( numClusters > 0 ) {
+
+      Teuchos::RefCountPtr<const Thyra::VectorBase<Scalar> >
+        x0 = epetraThyraModel->getNominalValues().get_x();
+      double nrm_x0;
+      
+      *out << "\nTiming a global reduction across just this cluster: ||x0||_1 = ";
+      timer.start(true);
+      nrm_x0 = Thyra::norm_1(*x0);
+      *out << nrm_x0 << "\n";
+      timer.stop();
+      *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
+      
+      *out << "\nTiming a global reduction across the entire set of processors: ||x0||_1 = ";
+      timer.start(true);
+      RTOpPack::ROpNorm1<Scalar> norm_1_op;
+      Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
+      const Thyra::VectorBase<Scalar>* vecs[] = { &*x0 };
+      Teuchos::dyn_cast<const Thyra::MPIVectorBase<Scalar> >(*x0).applyOp(
+        MPI_COMM_WORLD,norm_1_op,1,vecs,0,static_cast<Thyra::VectorBase<Scalar>**>(NULL),&*norm_1_targ
+        ,0,0,0
+        );
+      nrm_x0 = norm_1_op(*norm_1_targ);
+      *out << nrm_x0 << "\n";
+      timer.stop();
+      *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
+      
+    }
     
     //
     // Create the NLP
