@@ -48,11 +48,14 @@
 #include "Teuchos_dyn_cast.hpp"
 
 namespace NLPInterfacePack {
+
+
   
 // Overridden public members from NLP
 
 void NLPThyraModelEvaluatorBase::initialize(bool test_setup)
 {
+  updateInitialGuessAndBounds();
   if(initialized_) {
     NLPObjGrad::initialize(test_setup);
     return;
@@ -213,19 +216,14 @@ void NLPThyraModelEvaluatorBase::imp_calc_Gf(
 // Protected functions to be used by subclasses
 
 NLPThyraModelEvaluatorBase::NLPThyraModelEvaluatorBase()
-  :initialized_(false),obj_scale_(1.0)
+  :initialized_(false),obj_scale_(1.0),has_bounds_(false)
+  ,force_xinit_in_bounds_(true),num_bounded_x_(0)
 {}
 
 void NLPThyraModelEvaluatorBase::initializeBase(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
-  ,const Thyra::VectorBase<value_type>                            *model_xL
-  ,const Thyra::VectorBase<value_type>                            *model_xU
-  ,const Thyra::VectorBase<value_type>                            *model_x0
-  ,const Thyra::VectorBase<value_type>                            *model_pL
-  ,const Thyra::VectorBase<value_type>                            *model_pU
-  ,const Thyra::VectorBase<value_type>                            *model_p0
   )
 {
 
@@ -278,10 +276,6 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     DfDp_supports_mv_ = false;
   }
   //
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_initialGuess = model->getNominalValues();
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_lowerBounds = model->getLowerBounds();
-  Thyra::ModelEvaluatorBase::InArgs<value_type> model_upperBounds = model->getUpperBounds();
-  //
   VectorSpace::space_ptr_t space_xI;
   if(p_idx >= 0)
     space_xI = Teuchos::rcp(new VectorSpaceThyra(model_->get_p_space(p_idx)));
@@ -326,18 +320,6 @@ void NLPThyraModelEvaluatorBase::initializeBase(
         )
       );
 
-    if(!no_model_x) {
-      VectorSpace::vec_mut_ptr_t xinit_D = xinit_->sub_view(basis_sys_->var_dep());
-      if(model_x0)  copy_from_model_x( model_x0, xinit_D.get() );
-      else       copy_from_model_x( model_initialGuess.get_x().get(), &*xinit_D );
-      VectorSpace::vec_mut_ptr_t xl_D = xl_->sub_view(basis_sys_->var_dep());
-      if(model_xL)  copy_from_model_x( model_xL, xl_D.get() );
-      else       copy_from_model_x( model_lowerBounds.get_x().get(), &*xl_D );
-      VectorSpace::vec_mut_ptr_t xu_D = xu_->sub_view(basis_sys_->var_dep());
-      if(model_xU)  copy_from_model_x( model_xU, xu_D.get() );
-      else       copy_from_model_x( model_upperBounds.get_x().get(), &*xu_D );
-    }
-
   }
   else {
 
@@ -346,22 +328,56 @@ void NLPThyraModelEvaluatorBase::initializeBase(
     basis_sys_ = Teuchos::null;
 
   }
-
-  if(p_idx >= 0) {
-    Range1D var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
-    VectorSpace::vec_mut_ptr_t xinit_I = xinit_->sub_view(var_indep);
-    if(model_p0) copy_from_model_p( model_p0, &*xinit_I );
-    else      copy_from_model_p( model_initialGuess.get_p(p_idx).get(), &*xinit_I );
-    VectorSpace::vec_mut_ptr_t xl_I = xl_->sub_view(var_indep);
-    if(model_pL) copy_from_model_p( model_pL, &*xl_I );
-    else      copy_from_model_p( model_lowerBounds.get_p(p_idx).get(), &*xl_I );
-    VectorSpace::vec_mut_ptr_t xu_I = xu_->sub_view(var_indep);
-    if(model_pU) copy_from_model_p( model_pU, &*xu_I );
-    else      copy_from_model_p( model_upperBounds.get_p(p_idx).get(), &*xu_I );
-  }
   
   if(g_idx >= 0) {
     model_g_ = createMember(model_->get_g_space(g_idx));
+  }
+
+  updateInitialGuessAndBounds();
+
+}
+
+void NLPThyraModelEvaluatorBase::updateInitialGuessAndBounds()
+{
+
+  using Teuchos::dyn_cast;
+  using AbstractLinAlgPack::VectorSpaceThyra;
+  using AbstractLinAlgPack::VectorMutableThyra;
+  using AbstractLinAlgPack::MatrixOpNonsingThyra;
+  typedef ::Thyra::ModelEvaluatorBase MEB;
+
+  Thyra::ModelEvaluatorBase::OutArgs<value_type>
+    model_outArgs = model_->createOutArgs();
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+    model_space_x = model_->get_x_space();
+  const bool
+    no_model_x = (model_space_x.get() == NULL);
+  Teuchos::RefCountPtr<const Thyra::VectorSpaceBase<value_type> >
+    model_space_f = model_->get_f_space();
+  const bool
+    no_model_f = (model_space_f.get() == NULL);
+
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_initialGuess = model_->getNominalValues();
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_lowerBounds = model_->getLowerBounds();
+  Thyra::ModelEvaluatorBase::InArgs<value_type> model_upperBounds = model_->getUpperBounds();
+
+  if(!no_model_x) {
+    VectorSpace::vec_mut_ptr_t xinit_D = xinit_->sub_view(basis_sys_->var_dep());
+    copy_from_model_x( model_initialGuess.get_x().get(), &*xinit_D );
+    VectorSpace::vec_mut_ptr_t xl_D = xl_->sub_view(basis_sys_->var_dep());
+    copy_from_model_x( model_lowerBounds.get_x().get(), &*xl_D );
+    VectorSpace::vec_mut_ptr_t xu_D = xu_->sub_view(basis_sys_->var_dep());
+    copy_from_model_x( model_upperBounds.get_x().get(), &*xu_D );
+  }
+
+  if(p_idx_ >= 0) {
+    Range1D var_indep = ( basis_sys_.get() ? basis_sys_->var_indep() : Range1D() );
+    VectorSpace::vec_mut_ptr_t xinit_I = xinit_->sub_view(var_indep);
+    copy_from_model_p( model_initialGuess.get_p(p_idx_).get(), &*xinit_I );
+    VectorSpace::vec_mut_ptr_t xl_I = xl_->sub_view(var_indep);
+    copy_from_model_p( model_lowerBounds.get_p(p_idx_).get(), &*xl_I );
+    VectorSpace::vec_mut_ptr_t xu_I = xu_->sub_view(var_indep);
+    copy_from_model_p( model_upperBounds.get_p(p_idx_).get(), &*xu_I );
   }
 
 }

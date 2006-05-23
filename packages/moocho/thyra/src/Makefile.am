@@ -56,6 +56,12 @@ NLP_INTERFACE_PACK_THYRA_CPP = \
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPDirectThyraModelEvaluator.cpp\
   $(srcdir)/NLPInterfacePack/NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.cpp
 
+MOOCHO_PACK_THYRA_HPP = \
+  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.hpp
+
+MOOCHO_PACK_THYRA_CPP = \
+  $(srcdir)/MoochoPack/MoochoPack_ThyraModelEvaluatorSolver.cpp
+
 #
 # Specify locations of include files within Trilinos
 #
@@ -78,11 +84,13 @@ MOOCHO_THYRA_LIB = libmoochothyra.a
 
 MOOCHO_THYRA_H = \
 	$(ABSTRACT_LIN_ALG_PACK_THYRA_HPP) \
-	$(NLP_INTERFACE_PACK_THYRA_HPP)
+	$(NLP_INTERFACE_PACK_THYRA_HPP) \
+  $(MOOCHO_PACK_THYRA_HPP)
 
 libmoochothyra_a_SOURCES = \
 	$(ABSTRACT_LIN_ALG_PACK_THYRA_CPP) \
-	$(NLP_INTERFACE_PACK_THYRA_CPP)
+	$(NLP_INTERFACE_PACK_THYRA_CPP) \
+  $(MOOCHO_PACK_THYRA_CPP)
 
 # --------------------------------------------------------------------
 # For using a special archiver

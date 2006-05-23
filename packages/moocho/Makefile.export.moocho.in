@@ -8,6 +8,7 @@ include @abs_top_builddir@/../rtop/Makefile.export.rtop
 @ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@_MOOCHO_THYRA_INCLUDES =\
   -I@abs_top_srcdir@/thyra/src/AbstractLinAlgPack\
   -I@abs_top_srcdir@/thyra/src/NLPInterfacePack\
+  -I@abs_top_srcdir@/thyra/src/MoochoPack\
   $(EPETRAEXT_INCLUDES)
 @ENABLE_MOOCHO_THYRA_TRUE@@ENABLE_EPETRAEXT_THYRA_TRUE@_MOOCHO_THYRA_LIBS =\
   -L@abs_top_builddir@/thyra/src -lmoochothyra \

@@ -54,31 +54,19 @@ NLPDirectThyraModelEvaluator::NLPDirectThyraModelEvaluator(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
-  ,const Thyra::VectorBase<value_type>                            *model_xL
-  ,const Thyra::VectorBase<value_type>                            *model_xU
-  ,const Thyra::VectorBase<value_type>                            *model_x0
-  ,const Thyra::VectorBase<value_type>                            *model_pL
-  ,const Thyra::VectorBase<value_type>                            *model_pU
-  ,const Thyra::VectorBase<value_type>                            *model_p0
   )
 {
-  initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initialize(model,p_idx,g_idx);
 }
 
 void NLPDirectThyraModelEvaluator::initialize(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
-  ,const Thyra::VectorBase<value_type>                            *model_xL
-  ,const Thyra::VectorBase<value_type>                            *model_xU
-  ,const Thyra::VectorBase<value_type>                            *model_x0
-  ,const Thyra::VectorBase<value_type>                            *model_pL
-  ,const Thyra::VectorBase<value_type>                            *model_pU
-  ,const Thyra::VectorBase<value_type>                            *model_p0
   )
 {
   typedef Thyra::ModelEvaluatorBase MEB;
-  initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initializeBase(model,p_idx,g_idx);
   Thyra::ModelEvaluatorBase::OutArgs<double> model_outArgs = model->createOutArgs();
   MEB::DerivativeProperties model_W_properties = model_outArgs.get_W_properties();
   if( p_idx >= 0 ) {

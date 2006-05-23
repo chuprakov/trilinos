@@ -189,13 +189,10 @@ protected:
     const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
     ,const int                                                      p_idx
     ,const int                                                      g_idx
-    ,const Thyra::VectorBase<value_type>                            *model_xL      = NULL
-    ,const Thyra::VectorBase<value_type>                            *model_xU      = NULL
-    ,const Thyra::VectorBase<value_type>                            *model_x0      = NULL
-    ,const Thyra::VectorBase<value_type>                            *model_pL      = NULL
-    ,const Thyra::VectorBase<value_type>                            *model_pU      = NULL
-    ,const Thyra::VectorBase<value_type>                            *model_p0      = NULL
     );
+
+  /** \brief Update the initial guess and bounds . */
+  void updateInitialGuessAndBounds();
 
   /** \brief . */
   void assert_is_initialized() const;

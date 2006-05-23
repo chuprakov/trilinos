@@ -56,30 +56,18 @@ NLPFirstOrderThyraModelEvaluator::NLPFirstOrderThyraModelEvaluator(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model   
   ,const int                                                      p_idx 
   ,const int                                                      g_idx 
-  ,const Thyra::VectorBase<value_type>                            *model_xL
-  ,const Thyra::VectorBase<value_type>                            *model_xU
-  ,const Thyra::VectorBase<value_type>                            *model_x0
-  ,const Thyra::VectorBase<value_type>                            *model_pL
-  ,const Thyra::VectorBase<value_type>                            *model_pU
-  ,const Thyra::VectorBase<value_type>                            *model_p0
   )
 {
-  initialize(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initialize(model,p_idx,g_idx);
 }
 
 void NLPFirstOrderThyraModelEvaluator::initialize(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> >  &model
   ,const int                                                      p_idx
   ,const int                                                      g_idx
-  ,const Thyra::VectorBase<value_type>                            *model_xL
-  ,const Thyra::VectorBase<value_type>                            *model_xU
-  ,const Thyra::VectorBase<value_type>                            *model_x0
-  ,const Thyra::VectorBase<value_type>                            *model_pL
-  ,const Thyra::VectorBase<value_type>                            *model_pU
-  ,const Thyra::VectorBase<value_type>                            *model_p0
   )
 {
-  initializeBase(model,p_idx,g_idx,model_xL,model_xU,model_x0,model_pL,model_pU,model_p0);
+  initializeBase(model,p_idx,g_idx);
 }
   
 // Overridden public members from NLP

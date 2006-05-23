@@ -30,6 +30,7 @@ noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt
 
 NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
+  $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp\
   $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
   $(srcdir)/GenSQP_YUEpetraVector.cpp\
   $(srcdir)/assemble.cpp\
@@ -43,6 +44,7 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/quadrature.cpp\
   $(srcdir)/usr_par.cpp\
   $(srcdir)/rect2DMeshGenerator.cpp\
+  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
   $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 
 #NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files
