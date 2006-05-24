@@ -38,7 +38,7 @@ public:
     );
 
   /** \brief . */
-  void set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q );
+  void set_q( Teuchos::RefCountPtr<const Epetra_Vector> const& q );
 
   /** \name Overridden from EpetraExt::ModelEvaluator . */
   //@{
@@ -86,7 +86,7 @@ private:
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   dat_;
   int                                                 np_;
   double                                              reactionRate_;
-  Teuchos::RefCountPtr<Epetra_Vector>                 q_;
+  Teuchos::RefCountPtr<const Epetra_Vector>           q_;
 
   Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
   Teuchos::RefCountPtr<Epetra_MultiVector>            B_bar_;

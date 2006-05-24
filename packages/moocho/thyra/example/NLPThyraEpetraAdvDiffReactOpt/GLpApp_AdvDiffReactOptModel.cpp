@@ -173,7 +173,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
 #endif
 }
 
-void AdvDiffReactOptModel::set_q( Teuchos::RefCountPtr<Epetra_Vector> const& q )
+void AdvDiffReactOptModel::set_q( Teuchos::RefCountPtr<const Epetra_Vector> const& q )
 {
   q_ = q;
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
