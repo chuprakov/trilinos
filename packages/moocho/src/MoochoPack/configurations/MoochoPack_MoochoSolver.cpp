@@ -156,11 +156,7 @@ void MoochoSolver::set_output_context(
     }
   }
 
-  if(
-    output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_FALSE
-    && numProcs > 1
-    )
-  {
+  if( numProcs > 1 ) {
     file_proc_postfix_ = Teuchos::Utils::getParallelExtension(procRank,numProcs);
   }
   else {
@@ -562,6 +558,8 @@ const NLPSolverClientInterface& MoochoSolver::get_solver() const
 Teuchos::RefCountPtr<std::ostream>
 MoochoSolver::generate_output_file(const std::string &fileNameBase) const
 {
+  if( output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_TRUE )
+    return Teuchos::rcp(new Teuchos::oblackholestream());
   std::string fileName = fileNameBase;
   if(file_context_postfix_.length())
     fileName += "." + file_context_postfix_;
