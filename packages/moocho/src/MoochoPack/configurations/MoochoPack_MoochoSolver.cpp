@@ -629,6 +629,8 @@ void MoochoSolver::update_solver() const
   //
   // Get the options (or lack of)
   //
+
+  bool MoochoSolver_opt_grp_existed = true;
     
   if(reconfig_solver_) {
     
@@ -644,7 +646,6 @@ void MoochoSolver::update_solver() const
     // Read in some options for "MoochoSolver" if needed
     //
     
-    bool MoochoSolver_opt_grp_existed = true;
     if( options_used_.get() ) {
       
       options_used_->reset_unaccessed_options_groups();
@@ -743,11 +744,6 @@ void MoochoSolver::update_solver() const
       }
 
     }
-  
-    if( do_algo_outputting() && !MoochoSolver_opt_grp_existed )
-      *algo_out_used_
-        << "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
-        "Using a default set of options ...\n";
     
   }
   
@@ -756,6 +752,11 @@ void MoochoSolver::update_solver() const
   //
 
   generate_output_streams();  
+  
+  if( do_algo_outputting() && !MoochoSolver_opt_grp_existed )
+    *algo_out_used_
+      << "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
+      "Using a default set of options ...\n";
 
   //
   // Configure the algorithm
