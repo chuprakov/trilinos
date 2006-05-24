@@ -5,11 +5,8 @@ use Getopt::Long;
 
 my $base_base_dir = cwd();
 
-my $base_options = 
-" --moocho-options-file=$base_base_dir/Moocho.opt"
-." --do-opt --use-first-order"
-." --no-use-prec"
-; # Can be overridden by --extra-args!
+my $base_options_file = "$base_base_dir/Moocho.opt";
+# Can be overridden by --extra-args!
 
 # mpi_go = "mpirun -machinefile ~/bin/linux/machinelist-sahp6556 -np"
 my $mpi_go = "";
@@ -27,6 +24,8 @@ my $beta = 1.0;
 
 my $starting_num_procs = 1;
 my $max_num_procs = 1;
+
+my $num_procs_per_cluster=-1;
 
 my $starting_model_np = 1;
 my $max_model_np = 1;
@@ -47,11 +46,11 @@ my $solve_fwd_prob = 0;
 my $x0 = 0.0001;
 my $p0 = 1.0;
 my $p_solu_scale = 1.001;
-my $fwd_init_options_file;
-my $fwd_options_file;
+my $fwd_init_options_file = "";
+my $fwd_options_file = "";
 
 my $do_analytic = 0;
-my $inv_options_file;
+my $inv_options_file = "";
 
 my $do_finite_diff = 0;
 my $fd_step_len = -1.0;
@@ -75,6 +74,7 @@ GetOptions(
   "beta=f"                  => \$beta,
   "starting-num-procs=i"    => \$starting_num_procs,
   "max-num-procs=i"         => \$max_num_procs,
+  "num-procs-per-cluster=s" => \$num_procs_per_cluster,
   "starting-model-np=i"     => \$starting_model_np,
   "max-model-np=i"          => \$max_model_np,
   "incr-model-np=i"         => \$incr_model_np,
@@ -87,6 +87,7 @@ GetOptions(
   "starting-block-size=i"   => \$starting_block_size,
   "max-block-size=i"        => \$max_block_size,
   "incr-block-size=i"       => \$incr_block_size,
+  "base-options-file=s"     => \$base_options_file,
   "solve-fwd-prob!"         => \$solve_fwd_prob,
   "x0=f"                    => \$x0,
   "p0=f"                    => \$p0,
@@ -110,6 +111,17 @@ $max_num_procs = $starting_num_procs if($starting_num_procs > $max_num_procs);
 $max_model_np = $starting_model_np if($starting_model_np > $max_model_np);
 $max_block_size = $starting_block_size if($starting_block_size > $max_block_size);
 
+make_abs_path(\$exe);
+make_abs_path(\$base_options_file);
+make_abs_path(\$amesos_params_file);
+make_abs_path(\$aztecoo_params_file);
+make_abs_path(\$belos_params_file);
+make_abs_path(\$fwd_init_options_file);
+make_abs_path(\$fwd_options_file);
+make_abs_path(\$inv_options_file);
+make_abs_path(\$fd_options_file);
+make_abs_path(\$bb_options_file);
+
 mkchdir("runs");
 
 my $model_np = $starting_model_np;
@@ -124,20 +136,34 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 
     mkchdir("num_procs-$num_procs") if($vary_num_procs);
 
-    if($global_ny > 0) {
-      $local_ny = $global_ny / $num_procs;
+    my $num_procs_per_cluster_used = -1;
+    if($num_procs_per_cluster > 0) {
+      $num_procs_per_cluster_used = $num_procs_per_cluster;
     }
     else {
-      $len_y = $len_y * $num_procs;
+      $num_procs_per_cluster_used = $num_procs;
+    }
+
+    my $len_y_used = $len_y;
+
+    if($global_ny > 0) {
+      $local_ny = $global_ny / $num_procs_per_cluster_used;
+    }
+    else {
+      $len_y_used = $len_y * $num_procs_per_cluster_used;
     }
 
     my $cmnd_first =
       ( $do_serial ? "" : "$mpi_go $num_procs" )
-      ." $exe $base_options"
-      ." --len-x=$len_x --len-y=$len_y --local-nx=$local_nx --local-ny=$local_ny"
-      ." --np=$model_np"
+      ." $exe --moocho-options-file=$base_options_file"
+      ." --len-x=$len_x --len-y=$len_y_used --local-nx=$local_nx --local-ny=$local_ny"
       ." --reaction-rate=$reaction_rate --beta=$beta"
+      ." --np=$model_np --x0=$x0 --p0=$p0"
       ;
+
+    if($num_procs_per_cluster > 0) {
+      $cmnd_first .= " --num-procs-per-cluster=$num_procs_per_cluster";
+    }
 
     my $cmnd_last =
       " $extra_args"
@@ -231,6 +257,14 @@ sub min {
   return ( $a < $b ? $a : $b );
 }
 
+sub make_abs_path {
+  my $file_name_ref = shift;
+  return if($$file_name_ref eq "");
+  if(substr($$file_name_ref,0,1) eq ".") {
+    $$file_name_ref = $base_base_dir . "/" . $$file_name_ref;
+  }
+}
+
 sub mkchdir {
   my $dir_name = shift;
   mkdir $dir_name, 0777;
@@ -274,7 +308,7 @@ sub run_case {
       my $fwdcmnd =
         $cmnd
         ." --moocho-options-file=$fwd_init_options_file"
-        ." --x0=$x0 --p0=$p0 --do-sim --use-first-order --x-solu-file=x.out --p-solu-file=p.out";
+        ." --do-sim --use-first-order --x-solu-file=x.out --p-solu-file=p.out";
 
       run_test($fwdcmnd);
 
@@ -315,8 +349,7 @@ sub run_case {
           $cmnd 
             ." --black-box --use-finite-diff --fd-step-len=$bb_fd_step_len"
             ." --moocho-options-file=$bb_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out"
-            ." --x-solu-file=x.out --p-solu-file=p.out";
+            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
         run_test($invcmnd);
         chdir("..") if($build_subdirs);
       }
@@ -327,8 +360,7 @@ sub run_case {
           $cmnd 
             ." --use-finite-diff --fd-step-len=$fd_step_len"
             ." --moocho-options-file=$fd_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out"
-            ." --x-solu-file=x.out --p-solu-file=p.out";
+            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
         run_test($invcmnd);
         chdir("..") if($build_subdirs);
       }
@@ -338,8 +370,7 @@ sub run_case {
         my $invcmnd =
           $cmnd 
             ." --moocho-options-file=$inv_options_file"
-            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out"
-            ." --x-solu-file=x.out --p-solu-file=p.out";
+            ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
         run_test($invcmnd);
         chdir("..") if($build_subdirs);
       }

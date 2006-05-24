@@ -70,7 +70,11 @@
 # ************************************************************************
 #@HEADER
 
-SOURCES = $(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
+# Note: This file gets included by automake and these statements are
+# interpreted and imported into the create makefiles.  This is very nice
+# indeed!
+
+SOURCES = $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES) $(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -93,7 +97,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
-noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt$(EXEEXT)
+noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt$(EXEEXT) \
+	MultiPeriodNLPThyraEpetraAdvDiffReactOpt$(EXEEXT)
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/MakefileExeStub.mak
 subdir = thyra/example/NLPThyraEpetraAdvDiffReactOpt
@@ -117,8 +122,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Moocho_Config.h
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
-	GLpApp_AdvDiffReactOptModel.$(OBJEXT) \
+am__objects_1 = GLpApp_AdvDiffReactOptModel.$(OBJEXT) \
 	GLpApp_AdvDiffReactOptModelCreator.$(OBJEXT) \
 	GLpApp_GLpYUEpetraDataPool.$(OBJEXT) \
 	GenSQP_YUEpetraVector.$(OBJEXT) assemble.$(OBJEXT) \
@@ -127,16 +131,17 @@ am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
 	nonlinjac.$(OBJEXT) nonlinvec.$(OBJEXT) print2MATLAB.$(OBJEXT) \
 	quadrature.$(OBJEXT) usr_par.$(OBJEXT) \
 	rect2DMeshGenerator.$(OBJEXT) \
-	Thyra_RealLinearOpWithSolveFactoryCreator.$(OBJEXT) \
+	Thyra_RealLinearOpWithSolveFactoryCreator.$(OBJEXT)
+am_MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
+	$(am__objects_1) \
+	MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.$(OBJEXT)
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
+	$(am_MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS)
+am__DEPENDENCIES_1 =
+am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS = $(am__objects_1) \
 	NLPThyraEpetraAdvDiffReactOptMain.$(OBJEXT)
 NLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
 	$(am_NLPThyraEpetraAdvDiffReactOpt_OBJECTS)
-am__DEPENDENCIES_1 =
-@USING_GNUMAKE_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-@USING_GNUMAKE_TRUE@am__DEPENDENCIES_2 = $(shell $(am__DEPENDENCIES_1) \
-@USING_GNUMAKE_TRUE@	$(top_srcdir)/config/strip_dup_libs.pl \
-@USING_GNUMAKE_TRUE@	$(_EXPORT_LIBS))
-am__DEPENDENCIES_3 = $(am__DEPENDENCIES_2)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -144,6 +149,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/GenSQP_YUEpetraVector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/assemble.Po \
@@ -160,8 +166,10 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
-DIST_SOURCES = $(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
+SOURCES = $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES) \
+	$(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
+DIST_SOURCES = $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES) \
+	$(NLPThyraEpetraAdvDiffReactOpt_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -301,6 +309,31 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
+  $(common_sources) \
+  $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
+
+NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
+NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES = \
+  $(common_sources) \
+  $(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
+
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
+@ENABLE_MOOCHO_THYRA_TRUE@MOOCHO_THYRA_LIB = $(top_builddir)/thyra/src/libmoochothyra.a
+common_dependencies = \
+  $(top_builddir)/src/libmoocho.a \
+  $(MOOCHO_THYRA_LIB)
+
+_EXPORT_INCLUDES = $(MOOCHO_INCLUDES) $(BELOS_INCLUDES) $(IFPACK_INCLUDES) $(AZTECOO_INCLUDES) $(AMESOS_INCLUDES)
+_EXPORT_LIBS = $(MOOCHO_LIBS) $(BELOS_LIBS) $(IFPACK_LIBS) $(AZTECOO_LIBS) $(AMESOS_LIBS)
+@USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(_EXPORT_INCLUDES))
+@USING_GNUMAKE_TRUE@EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(_EXPORT_LIBS))
+@USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(_EXPORT_INCLUDES)
+@USING_GNUMAKE_FALSE@EXPORT_LIBS = $(_EXPORT_LIBS)
+AM_CPPFLAGS = $(EXPORT_INCLUDES)
+common_ldadd = $(EXPORT_LIBS)
+common_sources = \
   $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
   $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp\
   $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
@@ -316,24 +349,8 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/quadrature.cpp\
   $(srcdir)/usr_par.cpp\
   $(srcdir)/rect2DMeshGenerator.cpp\
-  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
-  $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
+  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp
 
-
-#NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files
-NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
-NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
-common_dependencies = \
-  $(top_builddir)/src/libmoocho.a
-
-_EXPORT_INCLUDES = $(MOOCHO_INCLUDES) $(BELOS_INCLUDES) $(IFPACK_INCLUDES) $(AZTECOO_INCLUDES) $(AMESOS_INCLUDES)
-_EXPORT_LIBS = $(MOOCHO_LIBS) $(BELOS_LIBS) $(IFPACK_LIBS) $(AZTECOO_LIBS) $(AMESOS_LIBS)
-@USING_GNUMAKE_FALSE@EXPORT_INCLUDES = $(_EXPORT_INCLUDES)
-@USING_GNUMAKE_TRUE@EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(_EXPORT_INCLUDES))
-@USING_GNUMAKE_FALSE@EXPORT_LIBS = $(_EXPORT_LIBS)
-@USING_GNUMAKE_TRUE@EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(_EXPORT_LIBS))
-AM_CPPFLAGS = $(EXPORT_INCLUDES)
-common_ldadd = $(EXPORT_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -370,6 +387,9 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt$(EXEEXT): $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS) $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES) 
+	@rm -f MultiPeriodNLPThyraEpetraAdvDiffReactOpt$(EXEEXT)
+	$(CXXLINK) $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_LDFLAGS) $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS) $(MultiPeriodNLPThyraEpetraAdvDiffReactOpt_LDADD) $(LIBS)
 NLPThyraEpetraAdvDiffReactOpt$(EXEEXT): $(NLPThyraEpetraAdvDiffReactOpt_OBJECTS) $(NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES) 
 	@rm -f NLPThyraEpetraAdvDiffReactOpt$(EXEEXT)
 	$(CXXLINK) $(NLPThyraEpetraAdvDiffReactOpt_LDFLAGS) $(NLPThyraEpetraAdvDiffReactOpt_OBJECTS) $(NLPThyraEpetraAdvDiffReactOpt_LDADD) $(LIBS)
@@ -384,6 +404,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GenSQP_YUEpetraVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assemble.Po@am__quote@
@@ -669,6 +690,22 @@ Thyra_RealLinearOpWithSolveFactoryCreator.obj: $(srcdir)/Thyra_RealLinearOpWithS
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po' tmpdepfile='$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Thyra_RealLinearOpWithSolveFactoryCreator.obj `if test -f '$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; then $(CYGPATH_W) '$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; fi`
+
+MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o: $(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o -MD -MP -MF "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo" -c -o MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o `test -f '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo" "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po"; else rm -f "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp' object='MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po' tmpdepfile='$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o `test -f '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
+
+MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.obj: $(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.obj -MD -MP -MF "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo" -c -o MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.obj `if test -f '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; then $(CYGPATH_W) '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo" "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po"; else rm -f "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp' object='MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po' tmpdepfile='$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.obj `if test -f '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; then $(CYGPATH_W) '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp'; fi`
 
 NLPThyraEpetraAdvDiffReactOptMain.o: $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NLPThyraEpetraAdvDiffReactOptMain.o -MD -MP -MF "$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Tpo" -c -o NLPThyraEpetraAdvDiffReactOptMain.o `test -f '$(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp; \

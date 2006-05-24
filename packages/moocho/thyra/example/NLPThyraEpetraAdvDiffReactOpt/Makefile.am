@@ -26,9 +26,35 @@
 # ************************************************************************
 # @HEADER
 
-noinst_PROGRAMS = NLPThyraEpetraAdvDiffReactOpt
+noinst_PROGRAMS = \
+  NLPThyraEpetraAdvDiffReactOpt \
+  MultiPeriodNLPThyraEpetraAdvDiffReactOpt
 
 NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
+  $(common_sources) \
+  $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
+
+NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
+NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
+
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES = \
+  $(common_sources) \
+  $(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
+
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
+MultiPeriodNLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
+
+square.1.000: $(srcdir)/data/square/square.1.000
+	cp $(srcdir)/data/square/square.1.000 square.1.000
+	cp $(srcdir)/data/square/square.2.000 square.2.000
+	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
+	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
+
+include $(top_srcdir)/MakefileExeStub.mak
+
+CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector
+
+common_sources = \
   $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
   $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp\
   $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
@@ -44,20 +70,4 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(srcdir)/quadrature.cpp\
   $(srcdir)/usr_par.cpp\
   $(srcdir)/rect2DMeshGenerator.cpp\
-  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
-  $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
-
-#NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) input_mesh_files
-NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
-NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
-
-
-square.1.000: $(srcdir)/data/square/square.1.000
-	cp $(srcdir)/data/square/square.1.000 square.1.000
-	cp $(srcdir)/data/square/square.2.000 square.2.000
-	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
-	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
-
-include $(top_srcdir)/MakefileExeStub.mak
-
-CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector
+  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp

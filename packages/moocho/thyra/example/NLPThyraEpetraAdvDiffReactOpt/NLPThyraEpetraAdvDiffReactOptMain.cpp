@@ -63,9 +63,7 @@ int main( int argc, char* argv[] )
     epetraModelCreator.setupCLP(&clp);
     lowsfCreator.setupCLP(&clp);
     solver.setupCLP(&clp);
-    clp.setOption( "dump-all", "no-dump-all",  &dump_all, "Flag for if we dump everything to STDOUT" );
     clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
-    clp.setOption( "num-procs-per-cluster", &numProcsPerCluster, "Number of processors in a cluster (<=0 means only one cluster)." );
 
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -101,40 +99,8 @@ int main( int argc, char* argv[] )
       << "\n*** NLPThyraEpetraAdvDiffReactOptMain, Global numProcs = "<<numProcs
       << "\n***\n";
 
-    int clusterRank = -1;
-    int numClusters = -1;
 #ifdef HAVE_MPI
     MPI_Comm mpiComm = MPI_COMM_WORLD;
-    if( numProcsPerCluster > 0 ) {
-      *out << "\nCreating communicator for local cluster of "<<numProcsPerCluster<<" processors ...\n";
-      numClusters = numProcs/numProcsPerCluster;
-      const int remainingProcs = numProcs%numProcsPerCluster;
-      TEST_FOR_EXCEPTION(
-        remainingProcs!=0,std::logic_error
-        ,"Error, The number of processors per cluster numProcsPerCluster="<<numProcsPerCluster
-        << " does not divide into the global number of processors numProcs="<<numProcs
-        << " and instead has remainder="<<remainingProcs<<"!"
-        );
-      // Determine which cluster this processor is part of and what the global
-      // processor ranges are.
-      clusterRank = procRank / numProcsPerCluster; // Integer division!
-      *out << "\nclusterRank = " << clusterRank << "\n";
-      const int firstClusterProcRank = clusterRank * numProcsPerCluster;
-      const int lastClusterProcRank = firstClusterProcRank + numProcsPerCluster - 1;
-      *out << "\nclusterProcRange = ["<<firstClusterProcRank<<","<<lastClusterProcRank<<"]\n";
-      // Create the group and the communicator for this cluster of processors
-      MPI_Group globalGroup = MPI_GROUP_NULL;
-      MPI_Comm_group(MPI_COMM_WORLD,&globalGroup);
-      int procRanges[1][3];
-      procRanges[0][0] = firstClusterProcRank;
-      procRanges[0][1] = lastClusterProcRank;
-      procRanges[0][2] = 1;
-      MPI_Group clusterGroup = MPI_GROUP_NULL;
-      MPI_Group_range_incl(globalGroup,1,&procRanges[0],&clusterGroup);
-      MPI_Comm clusterComm = MPI_COMM_NULL;
-      MPI_Comm_create(MPI_COMM_WORLD,clusterGroup,&clusterComm);
-      mpiComm = clusterComm;
-    }
 #endif
 
     Teuchos::RefCountPtr<Epetra_Comm> comm = Teuchos::null;
@@ -181,34 +147,6 @@ int main( int argc, char* argv[] )
         );
     }
 
-    if( numClusters > 0 ) {
-      
-      Teuchos::RefCountPtr<const Thyra::VectorBase<Scalar> >
-        x0 = epetraThyraModel->getNominalValues().get_x();
-      double nrm_x0;
-      
-      *out << "\nTiming a global reduction across just this cluster: ||x0||_1 = ";
-      timer.start(true);
-      nrm_x0 = Thyra::norm_1(*x0);
-      *out << nrm_x0 << "\n";
-      timer.stop();
-      *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
-      
-      *out << "\nTiming a global reduction across the entire set of processors: ||x0||_1 = ";
-      timer.start(true);
-      RTOpPack::ROpNorm1<Scalar> norm_1_op;
-      Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
-      const Thyra::VectorBase<Scalar>* vecs[] = { &*x0 };
-      Teuchos::dyn_cast<const Thyra::MPIVectorBase<Scalar> >(*x0).applyOp(
-        MPI_COMM_WORLD,norm_1_op,1,vecs,0,static_cast<Thyra::VectorBase<Scalar>**>(NULL),&*norm_1_targ
-        ,0,0,0
-        );
-      nrm_x0 = norm_1_op(*norm_1_targ);
-      *out << nrm_x0 << "\n";
-      timer.stop();
-      *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
-      
-    }
     //
     // Solve the NLP
     //
@@ -227,7 +165,7 @@ int main( int argc, char* argv[] )
     solver.writeFinalSolution(out.get());
     
     //
-    // Return the solution status (0 if sucessfull)
+    // Return the solution status (0 if successful)
     //
 
     return solution_status;
