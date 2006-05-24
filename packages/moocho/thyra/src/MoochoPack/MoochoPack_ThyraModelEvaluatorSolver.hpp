@@ -58,6 +58,12 @@ public:
   
   /** \brief . */
   const MoochoSolver& getSolver() const;
+
+  /** \brief . */
+  void setDoSim( const bool doSim );
+
+  /** \brief . */
+  bool getDoSim() const;
   
   /** \brief . */
   void setModel(
@@ -70,9 +76,22 @@ public:
   void readInitialGuess(
     std::ostream *out = NULL
     );
+    
+  /** \brief . */
+  void setInitialGuess(
+    const Teuchos::RefCountPtr<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
+    );
+    
+  /** \brief . */
+  void setInitialGuess(
+    const Thyra::ModelEvaluatorBase::InArgs<value_type> &initialGuess
+    );
   
   /** \brief . */
   MoochoSolver::ESolutionStatus	solve();
+    
+  /** \brief . */
+  const Thyra::ModelEvaluatorBase::InArgs<value_type>& getFinalPoint() const;
   
   /** \brief . */
   void writeFinalSolution(

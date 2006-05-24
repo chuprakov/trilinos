@@ -144,6 +144,16 @@ const MoochoSolver& ThyraModelEvaluatorSolver::getSolver() const
   return solver_;
 }
 
+void ThyraModelEvaluatorSolver::setDoSim( const bool doSim )
+{
+  do_sim_ = doSim;
+}
+
+bool ThyraModelEvaluatorSolver::getDoSim() const
+{
+  return do_sim_;
+}
+
 void ThyraModelEvaluatorSolver::setModel(
   const Teuchos::RefCountPtr<Thyra::ModelEvaluator<value_type> > &model
   ,const int                                                     p_idx
@@ -284,6 +294,22 @@ void ThyraModelEvaluatorSolver::readInitialGuess(
   }
   nominalModel_->setNominalValues(initialGuess);
 }
+
+void ThyraModelEvaluatorSolver::setInitialGuess(
+  const Teuchos::RefCountPtr<const Thyra::ModelEvaluatorBase::InArgs<value_type> > &initialGuess
+  )
+{
+  nominalModel_->setNominalValues(initialGuess);
+}
+
+void ThyraModelEvaluatorSolver::setInitialGuess(
+  const Thyra::ModelEvaluatorBase::InArgs<value_type> &initialGuess
+  )
+{
+  nominalModel_->setNominalValues(
+    Teuchos::rcp(new Thyra::ModelEvaluatorBase::InArgs<value_type>(initialGuess))
+    );
+}
   
 MoochoSolver::ESolutionStatus	ThyraModelEvaluatorSolver::solve()
 {
@@ -307,6 +333,12 @@ void ThyraModelEvaluatorSolver::writeFinalSolution(
       *out << "\nWriting the parameter solution \'p\' to the file(s) with base name \""<<paramSoluFileBase_<<"\" ...\n";
     writeVectorToFile(*finalPointModel_->getFinalPoint().get_p(p_idx_),paramSoluFileBase_);
   }
+}
+
+const Thyra::ModelEvaluatorBase::InArgs<value_type>&
+ThyraModelEvaluatorSolver::getFinalPoint() const
+{
+  return finalPointModel_->getFinalPoint();
 }
 
 } // namespace MoochoPack
