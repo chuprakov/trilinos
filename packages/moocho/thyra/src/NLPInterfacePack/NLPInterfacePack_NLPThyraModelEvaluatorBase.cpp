@@ -48,8 +48,6 @@
 #include "Teuchos_dyn_cast.hpp"
 
 namespace NLPInterfacePack {
-
-
   
 // Overridden public members from NLP
 
