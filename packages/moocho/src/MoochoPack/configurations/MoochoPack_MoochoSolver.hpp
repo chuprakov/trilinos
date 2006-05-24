@@ -162,17 +162,23 @@ public:
   ///
   typedef Teuchos::RefCountPtr<std::ostream>       ostream_ptr_t;
   ///
-  enum ESolutionStatus {
-    SOLVE_RETURN_SOLVED            =  0
-    ,SOLVE_RETURN_NLP_TEST_FAILED  = -1
-    ,SOLVE_RETURN_MAX_ITER         = -2
-    ,SOLVE_RETURN_MAX_RUN_TIME     = -3
-    ,SOLVE_RETURN_EXCEPTION        = -4
+  enum EOutputToBlackHole {
+    OUTPUT_TO_BLACK_HOLE_DEFAULT
+    ,OUTPUT_TO_BLACK_HOLE_TRUE
+    ,OUTPUT_TO_BLACK_HOLE_FALSE
   };
-
+  ///
   enum EConfigOptions {
     MAMA_JAMA
     ,INTERIOR_POINT
+  };
+  ///
+  enum ESolutionStatus {
+    SOLVE_RETURN_SOLVED            =  0
+    ,SOLVE_RETURN_NLP_TEST_FAILED  =  1
+    ,SOLVE_RETURN_MAX_ITER         =  2
+    ,SOLVE_RETURN_MAX_RUN_TIME     =  3
+    ,SOLVE_RETURN_EXCEPTION        =  4
   };
 
   //@}
@@ -307,6 +313,11 @@ public:
    */
   const options_ptr_t& get_options() const;
 
+  //@}
+
+  /** \name Exception handling */
+  //@{
+
   ///
   /** Set the error output and whether exceptions will be thrown from these functions or not.
    *
@@ -340,6 +351,30 @@ public:
    * written to.
    */
   const ostream_ptr_t& error_out() const;
+
+  //@}
+
+  /** \name Collective outputting control */
+  //@{
+
+  /** \brief Setup the context for outputting.
+   *
+   * \param  output_to_black_hole
+   *           [in] Determines if output will be sent to black-hole streams or not.
+   * \param  file_context_postfix
+   *           [in] Prefix to attach to every file name for default output files.
+   */
+  void set_output_context(
+    const std::string    &file_context_postfix
+    ,EOutputToBlackHole  output_to_black_hole  = OUTPUT_TO_BLACK_HOLE_DEFAULT
+    ,const int           procRank              = -1           
+    ,const int           numProcs              = -1
+    );
+  
+  //@}
+
+  /** \name Individual outputting control */
+  //@{
 
   ///
   /** Turn on and off console outputting.
@@ -552,33 +587,6 @@ public:
    */
   const ostream_ptr_t& get_algo_out() const;
 
-  ///
-  /** Set all output streams to <tt>Teuchos::oblackholestream</tt> unless
-   * set otherwise.
-   *
-   * @param  send_all_output_to_black_hole
-   *               [in] If <tt>true</tt> then all output (i.e. journal, summary
-   *               console, algo etc.) will all be sent to a stream object
-   *               <tt>Teuchos::oblackholestream</tt>.  If <tt>false</tt>
-   *               then the default behavior is maintained.
-   *
-   * This feature is designed to be used in special situations such as
-   * in SPMD mode where only one process should do outputtting.  The
-   * root process should call <tt>send_all_output_to_black_hole(false)</tt>
-   * and all of the slave processes should call
-   * <tt>send_all_output_to_black_hole(true)</tt>.
-   *
-   * Note, this function must be called before <tt>solve_nlp()</tt>.
-   */
-  void send_all_output_to_black_hole( bool send_all_output_to_black_hole );
-
-  ///
-  /** Returns the current value of <tt>send_all_output_to_black_hole</tt> set by
-   * <tt>send_all_output_to_black_hole()</tt>.
-   *
-   */
-  bool send_all_output_to_black_hole() const;
-
   //@}
 
   /** @name Solve the NLP */
@@ -723,11 +731,20 @@ private:
   mutable ostream_ptr_t     summary_out_used_; // actually used (can be NULL if do_summary_outputting == false)
   mutable ostream_ptr_t     journal_out_used_; // actually used (can be NULL if do_journal_outputting == false)
   mutable ostream_ptr_t     algo_out_used_;    // actually used (can be NULL if do_algo_outputting == false)
-  bool                      send_all_output_to_black_hole_;
+  mutable ostream_ptr_t     stats_out_used_;   // actually used
+  EOutputToBlackHole        output_to_black_hole_;
+  std::string               file_context_postfix_;
+  std::string               file_proc_postfix_;
 #endif
 
   // ////////////////////////////////////
   // Private member functions
+
+  ///
+  Teuchos::RefCountPtr<std::ostream> generate_output_file(const std::string &fileNameBase) const;
+
+  ///
+  void generate_output_streams() const;
 
   ///
   void update_solver() const;

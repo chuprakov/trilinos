@@ -51,7 +51,9 @@
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_oblackholestream.hpp"
 #include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_TimeMonitor.hpp"
+#include "Teuchos_Utils.hpp"
 
 namespace MoochoPack {
 
@@ -75,9 +77,16 @@ MoochoSolver::MoochoSolver(
   ,do_journal_outputting_(true)
   ,do_algo_outputting_(true)
   ,configuration_(MAMA_JAMA)
-  ,error_out_used_(Teuchos::VerboseObjectBase::getDefaultOStream())
-  ,send_all_output_to_black_hole_(false)
+  ,output_to_black_hole_(OUTPUT_TO_BLACK_HOLE_DEFAULT)
+  ,file_context_postfix_("")
+  ,file_proc_postfix_("")
 {
+  
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    defaultOut = Teuchos::VerboseObjectBase::getDefaultOStream();
+  error_out_used_ = defaultOut;
+
+  set_output_context("");
 
   commandLineOptionsFromStreamProcessor_.options_file_name_opt_name(
     "moocho-options-file");
@@ -114,6 +123,57 @@ void MoochoSolver::setup_commandline_processor(
   commandLineOptionsFromStreamProcessor_.setup_commandline_processor(clp);
 }
 
+void MoochoSolver::set_output_context(
+  const std::string    &file_context_postfix
+  ,EOutputToBlackHole  output_to_black_hole
+  ,const int           procRank_in
+  ,const int           numProcs_in
+  )
+{
+
+  file_context_postfix_ = file_context_postfix;
+
+  output_to_black_hole_ = output_to_black_hole;
+  
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    defaultOut = Teuchos::VerboseObjectBase::getDefaultOStream();
+  
+  const int procRank
+    = ( procRank_in >= 0 ? procRank_in : Teuchos::GlobalMPISession::getRank() );
+  const int numProcs
+    = ( numProcs_in > 0 ? numProcs_in : Teuchos::GlobalMPISession::getNProc() );
+
+  if(output_to_black_hole_==OUTPUT_TO_BLACK_HOLE_DEFAULT) {
+    if( numProcs > 1 && defaultOut->getOutputToRootOnly() >= 0 ) {
+      output_to_black_hole_
+        = ( defaultOut->getOutputToRootOnly()==procRank
+            ? OUTPUT_TO_BLACK_HOLE_FALSE
+            : OUTPUT_TO_BLACK_HOLE_TRUE
+          );
+    }
+    else {
+      output_to_black_hole_ = OUTPUT_TO_BLACK_HOLE_FALSE;
+    }
+  }
+
+  if(
+    output_to_black_hole_ == OUTPUT_TO_BLACK_HOLE_FALSE
+    && numProcs > 1
+    )
+  {
+    file_proc_postfix_ = Teuchos::Utils::getParallelExtension(procRank,numProcs);
+  }
+  else {
+    file_proc_postfix_ = "";
+  }
+  
+  summary_out_used_ = Teuchos::null;
+  journal_out_used_ = Teuchos::null;
+  algo_out_used_ = Teuchos::null;
+  stats_out_used_ = Teuchos::null;
+
+}
+
 void MoochoSolver::set_nlp(const nlp_ptr_t& nlp)
 {
   nlp_ = nlp;
@@ -128,7 +188,6 @@ MoochoSolver::get_nlp() const
 
 void MoochoSolver::set_track(const track_ptr_t& track)
 {
-  namespace mmp = MemMngPack;
   track_ = track;
   solver_.set_track(Teuchos::null); // Force the track objects to be rebuilt and added!
 }
@@ -141,7 +200,6 @@ MoochoSolver::get_track() const
   
 void MoochoSolver::set_config( const config_ptr_t& config )
 {
-  namespace mmp = MemMngPack;
   config_ = config;
   solver_.set_config(Teuchos::null); // Must unset the config object.
   reconfig_solver_ = true;
@@ -177,7 +235,6 @@ void MoochoSolver::set_error_handling(
   )
 
 {
-  namespace mmp = MemMngPack;
   if( error_out_.get() != NULL ) {
     if( error_out.get() == NULL )
       error_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -204,7 +261,6 @@ MoochoSolver::error_out() const
 
 void MoochoSolver::set_console_out( const ostream_ptr_t& console_out )
 {
-  namespace mmp = MemMngPack;
   console_out_      = console_out;
   console_out_used_ = Teuchos::null;  // Remove every reference to this ostream object!
   solver_.set_track(Teuchos::null);
@@ -218,7 +274,6 @@ MoochoSolver::get_console_out() const
 
 void MoochoSolver::set_summary_out( const ostream_ptr_t& summary_out )
 {
-  namespace mmp = MemMngPack;
   summary_out_      = summary_out;
   summary_out_used_ = Teuchos::null;
   solver_.set_track(Teuchos::null);     // Remove every reference to this ostream object!
@@ -232,7 +287,6 @@ MoochoSolver::get_summary_out() const
 
 void MoochoSolver::set_journal_out( const ostream_ptr_t& journal_out )
 {
-  namespace mmp = MemMngPack;
   journal_out_      = journal_out;
   journal_out_used_ = Teuchos::null;
   solver_.set_track(Teuchos::null);     // Remove every reference to this ostream object!
@@ -246,7 +300,6 @@ MoochoSolver::get_journal_out() const
 
 void MoochoSolver::set_algo_out( const ostream_ptr_t& algo_out )
 {
-  namespace mmp = MemMngPack;
   algo_out_      = algo_out;
   algo_out_used_ = Teuchos::null;
 }
@@ -255,33 +308,6 @@ const MoochoSolver::ostream_ptr_t&
 MoochoSolver::get_algo_out() const
 {
   return algo_out_;
-}
-
-void MoochoSolver::send_all_output_to_black_hole(
-  bool send_all_output_to_black_hole
-  )
-{
-  send_all_output_to_black_hole_ = send_all_output_to_black_hole;
-  if(send_all_output_to_black_hole) {
-    Teuchos::RefCountPtr<std::ostream>  obh = Teuchos::rcp(new Teuchos::oblackholestream);
-    set_error_handling(throw_exceptions(),obh);
-    set_algo_out(obh);
-    set_console_out(obh);
-    set_summary_out(obh);
-    set_journal_out(obh);
-  }
-  else {
-    set_error_handling(throw_exceptions(),Teuchos::null);
-    set_algo_out(Teuchos::null);
-    set_console_out(Teuchos::null);
-    set_summary_out(Teuchos::null);
-    set_journal_out(Teuchos::null);
-  }
-}
-
-bool MoochoSolver::send_all_output_to_black_hole() const
-{
-  return send_all_output_to_black_hole_;
 }
 
 // Solve the NLP
@@ -533,12 +559,58 @@ const NLPSolverClientInterface& MoochoSolver::get_solver() const
 
 // private
 
+Teuchos::RefCountPtr<std::ostream>
+MoochoSolver::generate_output_file(const std::string &fileNameBase) const
+{
+  std::string fileName = fileNameBase;
+  if(file_context_postfix_.length())
+    fileName += "." + file_context_postfix_;
+  if(file_proc_postfix_.length())
+    fileName += "." + file_proc_postfix_;
+  fileName += ".out";
+  return Teuchos::rcp(new std::ofstream(fileName.c_str()));
+}
+
+void MoochoSolver::generate_output_streams() const
+{
+  if( do_console_outputting() && console_out_used_.get() == NULL ) {
+    if( console_out_.get() != NULL )
+      console_out_used_ = console_out_;
+    else
+      console_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
+  }
+  if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
+    if( summary_out_.get() == NULL )
+      summary_out_used_ = generate_output_file("MoochoSummary");
+    else
+      summary_out_used_ = summary_out_;
+  }
+  if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
+    if( journal_out_.get() == NULL )
+      journal_out_used_ = generate_output_file("MoochoJournal");
+    else
+      journal_out_used_ = journal_out_;
+  }
+  else {
+    journal_out_used_ = Teuchos::rcp(new Teuchos::oblackholestream());
+  }
+  if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
+    if( algo_out_.get() == NULL )
+      algo_out_used_ = generate_output_file("MoochoAlgo");
+    else
+      algo_out_used_ = algo_out_;
+  }
+  if( generate_stats_file_ && stats_out_used_.get() == NULL ) {
+    stats_out_used_ = generate_output_file("MoochoStats");
+  }
+}
+
 void MoochoSolver::update_solver() const
 {
+
   using std::endl;
   using std::setw;
   using StopWatchPack::stopwatch;
-  namespace mmp = MemMngPack;
   using Teuchos::RefCountPtr;
   namespace ofsp = OptionsFromStreamPack;
   using ofsp::OptionsFromStream;
@@ -552,168 +624,145 @@ void MoochoSolver::update_solver() const
   TEST_FOR_EXCEPTION(
     nlp_.get() == NULL, std::logic_error
     ,"MoochoSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
-    
+
+  
   //
   // Get the options (or lack of)
   //
-  
-  if( options_used_.get() == NULL ) {
-    if( options_.get() == NULL ) {
-      options_used_ = commandLineOptionsFromStreamProcessor_.process_and_get_options();
+    
+  if(reconfig_solver_) {
+    
+    if( options_used_.get() == NULL ) {
+      if( options_.get() == NULL ) {
+        options_used_ = commandLineOptionsFromStreamProcessor_.process_and_get_options();
+      }
+      else
+        options_used_ = options_;
     }
-    else
-      options_used_ = options_;
-  }
-  
-  //
-  // Read in some options for "MoochoSolver" if needed
-  //
-
-  bool MoochoSolver_opt_grp_existed = true;
-  if( options_used_.get() && (reconfig_solver_ || solver_.get_track().get() == NULL ) )
-  {
     
-    options_used_->reset_unaccessed_options_groups();
+    //
+    // Read in some options for "MoochoSolver" if needed
+    //
     
-    const std::string optgrp_name = "MoochoSolver";
-    OptionsFromStream::options_group_t optgrp = options_used_->options_group( optgrp_name );
-    if( OptionsFromStream::options_group_exists( optgrp ) ) {
+    bool MoochoSolver_opt_grp_existed = true;
+    if( options_used_.get() ) {
       
-      const int num_opt = 12;
-      enum EOptions {
-        WORKSPACE_MB
-        ,OBJ_SCALE
-        ,TEST_NLP
-        ,CONSOLE_OUTPUTTING
-        ,SUMMARY_OUTPUTTING
-        ,JOURNAL_OUTPUTTING
-        ,ALGO_OUTPUTTING
-        ,PRINT_ALGO
-        ,ALGO_TIMING
-        ,GENERATE_STATS_FILE
-        ,PRINT_OPT_GRP_NOT_ACCESSED
-        ,CONFIGURATION
-      };
-      const char* SOptions[num_opt] = {
-        "workspace_MB"
-        ,"obj_scale"
-        ,"test_nlp"
-        ,"console_outputting"
-        ,"summary_outputting"
-        ,"journal_outputting"
-        ,"algo_outputting"
-        ,"print_algo"
-        ,"algo_timing"
-        ,"generate_stats_file"
-        ,"print_opt_grp_not_accessed"
-        ,"configuration"
-      };
+      options_used_->reset_unaccessed_options_groups();
       
-      const int num_config_opt = 2;
-
-      const char* SConfigOptions[num_config_opt] = {
-        "mama_jama"
-        ,"interior_point"
-      };
-
-      StringToIntMap	config_map( optgrp_name, num_config_opt, SConfigOptions );
-
-      StringToIntMap	opt_map( optgrp_name, num_opt, SOptions );
-      
-      OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
-      for( ; itr != optgrp.end(); ++itr ) {
-        switch( (EOptions)opt_map( ofsp::option_name(itr) ) ) {
-          case WORKSPACE_MB:
-            workspace_MB_ = ::atof( ofsp::option_value(itr).c_str() );
-            break;
-          case OBJ_SCALE:
-            obj_scale_ = ::atof( ofsp::option_value(itr).c_str() );
-            break;
-          case TEST_NLP:
-            test_nlp_ = StringToBool( "test_nlp", ofsp::option_value(itr).c_str() );
-            break;
-          case CONSOLE_OUTPUTTING:
-            do_console_outputting_ = StringToBool( "console_outputting", ofsp::option_value(itr).c_str() );
-            break;
-          case SUMMARY_OUTPUTTING:
-            do_summary_outputting_ = StringToBool( "summary_outputting", ofsp::option_value(itr).c_str() );
-            break;
-          case JOURNAL_OUTPUTTING:
-            do_journal_outputting_ = StringToBool( "journal_outputting", ofsp::option_value(itr).c_str() );
-            break;
-          case ALGO_OUTPUTTING:
-            do_algo_outputting_ = StringToBool( "algo_outputting", ofsp::option_value(itr).c_str() );
-            break;
-          case PRINT_ALGO:
-            print_algo_ = StringToBool( "print_algo", ofsp::option_value(itr).c_str() );
-            break;
-          case ALGO_TIMING:
-            algo_timing_ = StringToBool( "algo_timing", ofsp::option_value(itr).c_str() );
-            break;
-          case GENERATE_STATS_FILE:
-            generate_stats_file_ = StringToBool( "generate_stats_file", ofsp::option_value(itr).c_str() );
-            break;
-          case PRINT_OPT_GRP_NOT_ACCESSED:
-            print_opt_grp_not_accessed_ = StringToBool( "algo_timing", ofsp::option_value(itr).c_str() );
-            break;
-            case CONFIGURATION:
-            configuration_ = config_map( ofsp::option_value(itr).c_str() );
+      const std::string optgrp_name = "MoochoSolver";
+      OptionsFromStream::options_group_t optgrp = options_used_->options_group( optgrp_name );
+      if( OptionsFromStream::options_group_exists( optgrp ) ) {
+        
+        const int num_opt = 12;
+        enum EOptions {
+          WORKSPACE_MB
+          ,OBJ_SCALE
+          ,TEST_NLP
+          ,CONSOLE_OUTPUTTING
+          ,SUMMARY_OUTPUTTING
+          ,JOURNAL_OUTPUTTING
+          ,ALGO_OUTPUTTING
+          ,PRINT_ALGO
+          ,ALGO_TIMING
+          ,GENERATE_STATS_FILE
+          ,PRINT_OPT_GRP_NOT_ACCESSED
+          ,CONFIGURATION
+        };
+        const char* SOptions[num_opt] = {
+          "workspace_MB"
+          ,"obj_scale"
+          ,"test_nlp"
+          ,"console_outputting"
+          ,"summary_outputting"
+          ,"journal_outputting"
+          ,"algo_outputting"
+          ,"print_algo"
+          ,"algo_timing"
+          ,"generate_stats_file"
+          ,"print_opt_grp_not_accessed"
+          ,"configuration"
+        };
+        
+        const int num_config_opt = 2;
+        
+        const char* SConfigOptions[num_config_opt] = {
+          "mama_jama"
+          ,"interior_point"
+        };
+        
+        StringToIntMap	config_map( optgrp_name, num_config_opt, SConfigOptions );
+        
+        StringToIntMap	opt_map( optgrp_name, num_opt, SOptions );
+        
+        OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
+        for( ; itr != optgrp.end(); ++itr ) {
+          switch( (EOptions)opt_map( ofsp::option_name(itr) ) ) {
+            case WORKSPACE_MB:
+              workspace_MB_ = ::atof( ofsp::option_value(itr).c_str() );
               break;
-          default:
-            assert(0);	// this would be a local programming error only.
+            case OBJ_SCALE:
+              obj_scale_ = ::atof( ofsp::option_value(itr).c_str() );
+              break;
+            case TEST_NLP:
+              test_nlp_ = StringToBool( "test_nlp", ofsp::option_value(itr).c_str() );
+              break;
+            case CONSOLE_OUTPUTTING:
+              do_console_outputting_ = StringToBool( "console_outputting", ofsp::option_value(itr).c_str() );
+              break;
+            case SUMMARY_OUTPUTTING:
+              do_summary_outputting_ = StringToBool( "summary_outputting", ofsp::option_value(itr).c_str() );
+              break;
+            case JOURNAL_OUTPUTTING:
+              do_journal_outputting_ = StringToBool( "journal_outputting", ofsp::option_value(itr).c_str() );
+              break;
+            case ALGO_OUTPUTTING:
+              do_algo_outputting_ = StringToBool( "algo_outputting", ofsp::option_value(itr).c_str() );
+              break;
+            case PRINT_ALGO:
+              print_algo_ = StringToBool( "print_algo", ofsp::option_value(itr).c_str() );
+              break;
+            case ALGO_TIMING:
+              algo_timing_ = StringToBool( "algo_timing", ofsp::option_value(itr).c_str() );
+              break;
+            case GENERATE_STATS_FILE:
+              generate_stats_file_ = StringToBool( "generate_stats_file", ofsp::option_value(itr).c_str() );
+              break;
+            case PRINT_OPT_GRP_NOT_ACCESSED:
+              print_opt_grp_not_accessed_ = StringToBool( "algo_timing", ofsp::option_value(itr).c_str() );
+              break;
+            case CONFIGURATION:
+              configuration_ = config_map( ofsp::option_value(itr).c_str() );
+              break;
+            default:
+              assert(0);	// this would be a local programming error only.
+          }
         }
       }
-    }
-    else {
-      MoochoSolver_opt_grp_existed = false;
-    }
-  }
+      else {
+        MoochoSolver_opt_grp_existed = false;
+      }
 
+    }
+  
+    if( do_algo_outputting() && !MoochoSolver_opt_grp_existed )
+      *algo_out_used_
+        << "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
+        "Using a default set of options ...\n";
+    
+  }
+  
   //
   // Get the output streams if needed
   //
-  
-  if( do_console_outputting() && console_out_used_.get() == NULL ) {
-    if( console_out_.get() != NULL )
-      console_out_used_ = console_out_;
-    else
-      console_out_used_ = Teuchos::VerboseObjectBase::getDefaultOStream();
-  }
-  if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
-    if( summary_out_.get() == NULL )
-      summary_out_used_ = Teuchos::rcp(new std::ofstream("MoochoSummary.out"));
-    else
-      summary_out_used_ = summary_out_;
-  }
-  if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
-    if( journal_out_.get() == NULL )
-      journal_out_used_ = Teuchos::rcp(new std::ofstream("MoochoJournal.out"));
-    else
-      journal_out_used_ = journal_out_;
-  }
-  else {
-    journal_out_used_ = Teuchos::rcp(new Teuchos::oblackholestream());
-  }
-  if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
-    if( algo_out_.get() == NULL )
-      algo_out_used_ = Teuchos::rcp(new std::ofstream("MoochoAlgo.out"));
-    else
-      algo_out_used_ = algo_out_;
-  }
-  
-  if( do_algo_outputting() && !MoochoSolver_opt_grp_existed )
-    *algo_out_used_
-      << "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
-      "Using a default set of options ...\n";
+
+  generate_output_streams();  
 
   //
   // Configure the algorithm
   //
     
-  bool did_reconfigured_solver = false;
   if(reconfig_solver_) {
-    did_reconfigured_solver = true;
-      
+    
     //
     // Print the headers for the output files
     //
@@ -842,15 +891,12 @@ void MoochoSolver::update_solver() const
       solver_options_setter.set_options( *options_used_ );
     }
     
-    did_reconfigured_solver = true;
-    reconfig_solver_    = false;
-  }
+    reconfig_solver_ = false;
+
+    //
+    // Set up the track objects
+    //
     
-  //
-  // Set up the track objects if needed
-  //
-    
-  if( solver_.get_track().get() == NULL ) {
     RefCountPtr<AlgorithmTrackerComposite>
       composite_track = Teuchos::rcp(new AlgorithmTrackerComposite(journal_out_used_));
     if(do_console_outputting())
@@ -859,28 +905,24 @@ void MoochoSolver::update_solver() const
     if(do_summary_outputting())
       composite_track->tracks().push_back(
         Teuchos::rcp(new MoochoTrackerSummaryStd(summary_out_used_,journal_out_used_)) );
-    if(generate_stats_file_) {
-      ostream_ptr_t
-        stats_out = Teuchos::rcp(new std::ofstream("MoochoStats.out"));
-      assert( !stats_out->eof() );
+    if(stats_out_used_.get()) {
       composite_track->tracks().push_back(
-        Teuchos::rcp(new MoochoTrackerStatsStd(stats_out,stats_out)) );
+        Teuchos::rcp(new MoochoTrackerStatsStd(stats_out_used_,stats_out_used_)) );
     }
     if( track_.get() ) {
       track_->set_journal_out(journal_out_used_);
       composite_track->tracks().push_back( track_ );
     }
     solver_.set_track( composite_track );
-  }
     
-  //
-  // Configure and print the algorithm if needed
-  //
-  
-  if( did_reconfigured_solver ) {
+    //
+    // Configure and print the algorithm if needed
+    //
+    
     solver_.configure_algorithm(algo_out_used_.get());
     if( do_algo_outputting() && print_algo_ )
       solver_.print_algorithm(*algo_out_used_);
+
   }
   
 }
