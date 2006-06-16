@@ -53,7 +53,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   ,const double                                  reactionRate
   ,const bool                                    normalizeBasis
   )
-  :np_(np),reactionRate_(reactionRate)
+  :np_(np)
 {
   Teuchos::TimeMonitor initalizationTimerMonitor(*initalizationTimer);
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
@@ -70,6 +70,8 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   // Get the maps
   //
   map_x_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorDomainMap()));
+  map_p_.resize(Np_);
+  map_p_[p_rx_idx] = Teuchos::rcp(new Epetra_Map(1,1,0,*comm));
   map_p_bar_ = Teuchos::rcp(new Epetra_Map(dat_->getB()->OperatorDomainMap()));
   map_f_ = Teuchos::rcp(new Epetra_Map(dat_->getA()->OperatorRangeMap()));
   map_g_ = Teuchos::rcp(new Epetra_Map(1,1,0,*comm));
@@ -87,7 +89,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *out << "\npi="<<pi<<"\n";
 #endif
-    map_p_ = Teuchos::rcp(new Epetra_Map(np_,np_,0,*comm));
+    map_p_[p_bndy_idx] = Teuchos::rcp(new Epetra_Map(np_,np_,0,*comm));
     B_bar_ = Teuchos::rcp(new Epetra_MultiVector(*map_p_bar_,np_));
     (*B_bar_)(0)->PutScalar(1.0); // First column is all ones!
     if( np_ > 1 ) {
@@ -124,7 +126,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
           thyra_B_bar = Thyra::create_MPIMultiVectorBase(
             B_bar_
             ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
-            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_)))
+            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_[p_bndy_idx])))
             ),
           thyra_fact_R;
         sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
@@ -139,7 +141,7 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   }
   else {
     // B_bar = I implicitly!
-    map_p_ = map_p_bar_;
+    map_p_[p_bndy_idx] = map_p_bar_;
   }
   //
   // Create vectors
@@ -147,14 +149,19 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
   x0_ = Teuchos::rcp(new Epetra_Vector(*map_x_));
   //xL_ = Teuchos::rcp(new Epetra_Vector(*map_x_));
   //xU_ = Teuchos::rcp(new Epetra_Vector(*map_x_));
-  p0_ = Teuchos::rcp(new Epetra_Vector(*map_p_));
+  p0_.resize(Np_);
+  p0_[p_bndy_idx] = Teuchos::rcp(new Epetra_Vector(*map_p_[p_bndy_idx]));
+  p0_[p_rx_idx] = Teuchos::rcp(new Epetra_Vector(*map_p_[p_rx_idx]));
+  pL_.resize(Np_);
+  pU_.resize(Np_);
   //pL_ = Teuchos::rcp(new Epetra_Vector(*map_p_));
   //pU_ = Teuchos::rcp(new Epetra_Vector(*map_p_));
   //
   // Initialize the vectors
   //
   x0_->PutScalar(x0);
-  p0_->PutScalar(p0);
+  p0_[p_bndy_idx]->PutScalar(p0);
+  p0_[p_rx_idx]->PutScalar(reactionRate);
   //
   // Initialize the graph for W
   //
@@ -202,8 +209,8 @@ AdvDiffReactOptModel::get_f_map() const
 Teuchos::RefCountPtr<const Epetra_Map>
 AdvDiffReactOptModel::get_p_map(int l) const
 {
-  TEST_FOR_EXCEPT(l!=0);
-  return map_p_;
+  TEST_FOR_EXCEPT(!(0<=l<=Np_));
+  return map_p_[l];
 }
 
 Teuchos::RefCountPtr<const Epetra_Map>
@@ -222,8 +229,8 @@ AdvDiffReactOptModel::get_x_init() const
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_init(int l) const
 {
-  TEST_FOR_EXCEPT(l!=0);
-  return p0_;
+  TEST_FOR_EXCEPT(!(0<=l<=Np_));
+  return p0_[l];
 }
 
 Teuchos::RefCountPtr<const Epetra_Vector>
@@ -241,15 +248,15 @@ AdvDiffReactOptModel::get_x_upper_bounds() const
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_lower_bounds(int l) const
 {
-  TEST_FOR_EXCEPT(l!=0);
-  return pL_;
+  TEST_FOR_EXCEPT(!(0<=l<=Np_));
+  return pL_[l];
 }
 
 Teuchos::RefCountPtr<const Epetra_Vector>
 AdvDiffReactOptModel::get_p_upper_bounds(int l) const
 {
-  TEST_FOR_EXCEPT(l!=0);
-  return pU_;
+  TEST_FOR_EXCEPT(!(0<=l<=Np_));
+  return pL_[l];
 }
 
 Teuchos::RefCountPtr<Epetra_Operator>
@@ -271,7 +278,7 @@ AdvDiffReactOptModel::createInArgs() const
 {
   InArgsSetup inArgs;
   inArgs.setModelEvalDescription(this->description());
-  inArgs.set_Np(1);
+  inArgs.set_Np(2);
   inArgs.setSupports(IN_ARG_x,true);
   return inArgs;
 }
@@ -281,12 +288,12 @@ AdvDiffReactOptModel::createOutArgs() const
 {
   OutArgsSetup outArgs;
   outArgs.setModelEvalDescription(this->description());
-  outArgs.set_Np_Ng(1,1);
+  outArgs.set_Np_Ng(2,1);
   outArgs.setSupports(OUT_ARG_f,true);
   outArgs.setSupports(OUT_ARG_W,true);
   outArgs.set_W_properties(
     DerivativeProperties(
-      reactionRate_!=0.0 ? DERIV_LINEARITY_NONCONST : DERIV_LINEARITY_CONST
+      DERIV_LINEARITY_NONCONST
       ,DERIV_RANK_FULL
       ,true // supportsAdjoint
       )
@@ -345,8 +352,10 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
   //
   // Get the input arguments
   //
-  const Epetra_Vector *p_in = inArgs.get_p(0).get();
-  const Epetra_Vector &p = (p_in ? *p_in : *p0_);
+  const Epetra_Vector *p_in = inArgs.get_p(p_bndy_idx).get();
+  const Epetra_Vector &p = (p_in ? *p_in : *p0_[p_bndy_idx]);
+  const Epetra_Vector *rx_vec_in = inArgs.get_p(p_rx_idx).get();
+  const double        reactionRate = ( rx_vec_in ? (*rx_vec_in)[0] : (*p0_[p_rx_idx])[0] );
   const Epetra_Vector &x = *inArgs.get_x();
 #ifdef GLPAPP_ADVDIFFREACT_OPTMODEL_DUMP_STUFF
     *dout << "\nx =\n\n";
@@ -399,9 +408,9 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     Epetra_Vector Ax(*map_f_);
     dat_->getA()->Multiply(false,x,Ax);
     f.Update(1.0,Ax,0.0);
-    if(reactionRate_!=0.0) {
+    if(reactionRate!=0.0) {
       dat_->computeNy(Teuchos::rcp(&x,false));
-      f.Update(reactionRate_,*dat_->getNy(),1.0);
+      f.Update(reactionRate,*dat_->getNy(),1.0);
     }
     Epetra_Vector Bp(*map_f_);
     dat_->getB()->Multiply(false,*p_bar,Bp);
@@ -437,7 +446,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
     //
     Teuchos::TimeMonitor W_TimerMonitor(*W_Timer);
     Epetra_CrsMatrix &DfDx = dyn_cast<Epetra_CrsMatrix>(*W_out);
-    if(reactionRate_!=0.0)
+    if(reactionRate!=0.0)
       dat_->computeNpy(Teuchos::rcp(&x,false));
     Teuchos::RefCountPtr<Epetra_CrsMatrix>
       dat_A = dat_->getA(),
@@ -451,7 +460,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
       TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_A_num_row_entries);
 #endif
-      if(reactionRate_!=0.0) {
+      if(reactionRate!=0.0) {
         int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
         dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
 #ifdef _DEBUG
@@ -461,7 +470,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
 #ifdef _DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
-          DfDx_row_vals[k] = dat_A_row_vals[k] + reactionRate_ * dat_Npy_row_vals[k];
+          DfDx_row_vals[k] = dat_A_row_vals[k] + reactionRate * dat_Npy_row_vals[k];
         }
       }
       else {

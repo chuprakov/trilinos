@@ -138,7 +138,8 @@ void MultiVectorMutableThyra::apply_op(
 {
   MultiVector::apply_op(
     apply_by,primary_op,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
-    ,reduct_objs,primary_first_ele,primary_sub_dim,primary_global_offset
+    ,reduct_objs
+    ,primary_first_ele,primary_sub_dim,primary_global_offset
     ,secondary_first_ele,secondary_sub_dim
     ); // ToDo: Specialize!
 }
@@ -154,7 +155,8 @@ void MultiVectorMutableThyra::apply_op(
 {
   MultiVector::apply_op(
     apply_by,primary_op,secondary_op,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
-    ,reduct_obj,primary_first_ele,primary_sub_dim,primary_global_offset
+    ,reduct_obj
+    ,primary_first_ele,primary_sub_dim,primary_global_offset
     ,secondary_first_ele,secondary_sub_dim
     ); // ToDo: Specialize!
 }

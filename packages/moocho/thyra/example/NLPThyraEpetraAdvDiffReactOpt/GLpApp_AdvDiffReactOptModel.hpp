@@ -8,6 +8,7 @@
 #include "Epetra_Comm.h"
 #include "Epetra_CrsGraph.h"
 #include "Teuchos_VerboseObject.hpp"
+#include "Teuchos_Array.hpp"
 
 namespace GLpApp {
 
@@ -79,13 +80,22 @@ public:
 private:
 
   // /////////////////////////////////////
+  // Private types
+
+  typedef Teuchos::Array<Teuchos::RefCountPtr<const Epetra_Map> >  RCP_Eptra_Map_Array_t;
+  typedef Teuchos::Array<Teuchos::RefCountPtr<Epetra_Vector> >     RCP_Eptra_Vector_Array_t;
+
+  // /////////////////////////////////////
   // Private member data
+
+  static const int Np_         = 2; // Number of axiliary parameters
+  static const int p_bndy_idx  = 0; // index for boundary flux parameters
+  static const int p_rx_idx    = 1; // index for reaction rate parameter
 
   bool      isInitialized_;
 
   Teuchos::RefCountPtr<GLpApp::GLpYUEpetraDataPool>   dat_;
   int                                                 np_;
-  double                                              reactionRate_;
   Teuchos::RefCountPtr<const Epetra_Vector>           q_;
 
   Teuchos::RefCountPtr<const Epetra_Map>              map_p_bar_;
@@ -93,18 +103,18 @@ private:
 
   Teuchos::RefCountPtr<const Epetra_Comm>  epetra_comm_;
   Teuchos::RefCountPtr<const Epetra_Map>   map_x_;
-  Teuchos::RefCountPtr<const Epetra_Map>   map_p_;
+  RCP_Eptra_Map_Array_t                    map_p_;
   Teuchos::RefCountPtr<const Epetra_Map>   map_f_;
   Teuchos::RefCountPtr<const Epetra_Map>   map_g_;
 
+  Teuchos::RefCountPtr<Epetra_Vector> x0_;
   Teuchos::RefCountPtr<Epetra_Vector> xL_;
   Teuchos::RefCountPtr<Epetra_Vector> xU_;
-  Teuchos::RefCountPtr<Epetra_Vector> pL_;
-  Teuchos::RefCountPtr<Epetra_Vector> pU_;
+  RCP_Eptra_Vector_Array_t            p0_;
+  RCP_Eptra_Vector_Array_t            pL_;
+  RCP_Eptra_Vector_Array_t            pU_;
   Teuchos::RefCountPtr<Epetra_Vector> gL_;
   Teuchos::RefCountPtr<Epetra_Vector> gU_;
-  Teuchos::RefCountPtr<Epetra_Vector> x0_;
-  Teuchos::RefCountPtr<Epetra_Vector> p0_;
 
   Teuchos::RefCountPtr<Epetra_CrsGraph>  W_graph_;
 
