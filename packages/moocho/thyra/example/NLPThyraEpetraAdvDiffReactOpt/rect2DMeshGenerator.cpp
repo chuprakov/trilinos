@@ -31,7 +31,7 @@ void GLpApp::rect2DMeshGenerator(
   //
   // Validate input
   //
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPT(len_x <= 0.0);
   TEST_FOR_EXCEPT(len_y <= 0.0);
   TEST_FOR_EXCEPT(local_nx <= 0);

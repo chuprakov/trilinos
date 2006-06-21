@@ -62,7 +62,7 @@ void DecompositionSystemVarReductImp::initialize(
 {
   namespace rcp = MemMngPack;
   size_type num_vars = 0;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     basis_sys.get() != NULL && (space_x.get() == NULL || space_c.get() == NULL)
     ,std::invalid_argument
@@ -71,7 +71,7 @@ void DecompositionSystemVarReductImp::initialize(
 #endif
   if(basis_sys.get()) {
     num_vars = basis_sys->var_dep().size() + basis_sys->var_indep().size();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     const size_type
       space_x_dim = space_x->dim(),
       space_c_dim = space_c->dim(),
@@ -371,7 +371,7 @@ void DecompositionSystemVarReductImp::update_decomp(
          << "objects may not be independent of each other!\n"; 
   }
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   // Validate setup
   TEST_FOR_EXCEPTION(
     basis_sys_.get() == NULL, std::logic_error
@@ -387,7 +387,7 @@ void DecompositionSystemVarReductImp::update_decomp(
     var_indep(r+1,n),
     equ_decomp   = this->equ_decomp();
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   // Validate input
   TEST_FOR_EXCEPTION(
       Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL

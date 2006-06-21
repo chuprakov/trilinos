@@ -11,7 +11,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   const VectorMutableThyra *vmthyra_vec = dynamic_cast<const VectorMutableThyra*>(&vec);
@@ -28,7 +28,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     vec.get_sub_vector( Range1D(), &vec_sv );
     RTOpPack::SubVectorView<value_type> _thyra_vec_sv;
     _thyra_vec->acquireDetachedView( convert(Range1D()), &_thyra_vec_sv );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements
@@ -55,7 +55,7 @@ void AbstractLinAlgPack::free_thyra_vector(
   ,Teuchos::RefCountPtr<const Thyra::VectorBase<value_type> >    *thyra_vec
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   *thyra_vec = Teuchos::null;  // This works in both cases above!
@@ -67,7 +67,7 @@ void AbstractLinAlgPack::get_thyra_vector(
   ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec
   )
 { 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec==NULL || thyra_vec==NULL, std::invalid_argument, "Error!" );
 #endif
   VectorMutableThyra *vmthyra_vec = dynamic_cast<VectorMutableThyra*>(vec);
@@ -84,7 +84,7 @@ void AbstractLinAlgPack::get_thyra_vector(
     vec->get_sub_vector( Range1D(), &vec_sv );
     RTOpPack::SubVectorView<value_type> _thyra_vec_sv;
     _thyra_vec->acquireDetachedView( convert(Range1D()), &_thyra_vec_sv );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec_sv.subDim() != _thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements
@@ -111,7 +111,7 @@ void AbstractLinAlgPack::commit_thyra_vector(
   ,Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >          *thyra_vec_in
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec==NULL || thyra_vec_in==NULL, std::invalid_argument, "Error!" );
 #endif
   Teuchos::RefCountPtr<Thyra::VectorBase<value_type> >  &thyra_vec = *thyra_vec_in;
@@ -127,7 +127,7 @@ void AbstractLinAlgPack::commit_thyra_vector(
     thyra_vec->acquireDetachedView( convert(Range1D()), &thyra_vec_sv );
     RTOpPack::MutableSubVector vec_sv;
     vec->get_sub_vector( Range1D(), &vec_sv );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION( vec_sv.subDim() != thyra_vec_sv.subDim(), std::logic_error, "Error!" );
 #endif
     // Copy the elements

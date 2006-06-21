@@ -79,7 +79,7 @@ void BasisSystemComposite::initialize_space_x(
   )
 {
   namespace mmp = MemMngPack;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     space_xD.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_space_x(...): Error!" );
@@ -125,7 +125,7 @@ void BasisSystemComposite::initialize_Gc(
 {
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     space_x.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
@@ -137,7 +137,7 @@ void BasisSystemComposite::initialize_Gc(
     n            = space_x->dim(),
     m            = space_c->dim(),
     var_dep_size = var_dep.size();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     C.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize_Gc(...): Error!" );
@@ -192,7 +192,7 @@ void BasisSystemComposite::get_C_N(
   )
 {
   using Teuchos::dyn_cast;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     Gc == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
@@ -200,7 +200,7 @@ void BasisSystemComposite::get_C_N(
   const size_type
     n = Gc->rows(),
     m = Gc->cols();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
@@ -241,7 +241,7 @@ void BasisSystemComposite::get_C_N(
   const size_type
     n = Gc.rows(),
     m = Gc.cols();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     C == NULL, std::invalid_argument
     ,"BasisSystemComposite::get_C_N(...): Error!" );
@@ -326,7 +326,7 @@ void BasisSystemComposite::initialize(
   )
 {
   namespace mmp = MemMngPack;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     space_x.get() == NULL, std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );
@@ -335,7 +335,7 @@ void BasisSystemComposite::initialize(
     ,"BasisSystemComposite::initialize(...): Error!" );
 #endif
   const size_type n = space_x->dim(), m = space_c->dim();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     var_dep.size() + var_indep.size() != space_x->dim(), std::invalid_argument
     ,"BasisSystemComposite::initialize(...): Error!" );

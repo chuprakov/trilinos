@@ -72,7 +72,7 @@ void MatrixConvertToSparseEncap::initialize(
   const size_type mese_rows = mese->rows(), mese_cols = mese->cols();
   const Range1D row_rng = RangePack::full_range(row_rng_in,1,mese_rows);
   const Range1D col_rng = RangePack::full_range(col_rng_in,1,mese_cols);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_head[] = "MatrixConvertToSparseEncap::initialize(...): Error!";
   TEST_FOR_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
   TEST_FOR_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );

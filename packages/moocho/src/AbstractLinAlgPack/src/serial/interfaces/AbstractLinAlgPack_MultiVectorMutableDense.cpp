@@ -240,7 +240,7 @@ bool MultiVectorMutableDense::syrk(
   ,value_type beta, MatrixSymOp* sym_lhs
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     sym_lhs == NULL, std::invalid_argument
     ,"MultiVectorMutableDense::syrk(...) : Error!" );

@@ -93,7 +93,7 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 
 void VectorMutableSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::MutableSubVector* sub_vec )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( !sub_vec, std::logic_error ,"VectorMutableSubView::get_sub_vector(...): Error!" );
 #endif
   const index_type this_dim = this->dim();
@@ -106,7 +106,7 @@ void VectorMutableSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::Muta
 
 void VectorMutableSubView::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorMutableSubView::commit_sub_vector(...): Error!" );
 #endif
   const index_type this_offset = space_impl().rng().lbound() - 1;

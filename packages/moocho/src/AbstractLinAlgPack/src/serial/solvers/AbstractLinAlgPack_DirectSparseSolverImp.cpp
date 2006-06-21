@@ -57,7 +57,7 @@ void DirectSparseSolverImp::BasisMatrixImp::initialize(
   ,const fact_nonzeros_ptr_t     &fact_nonzeros
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::BasisMatrixImp::initialize(...): Error!";
   TEST_FOR_EXCEPTION( dim < 0, std::logic_error, msg_err );
   TEST_FOR_EXCEPTION( fact_struc.get() == NULL, std::logic_error, msg_err );
@@ -141,7 +141,7 @@ void DirectSparseSolverImp::analyze_and_factor(
 {
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
   TEST_FOR_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
   TEST_FOR_EXCEPTION( col_perm == NULL, std::logic_error, msg_err );
@@ -193,7 +193,7 @@ void DirectSparseSolverImp::factor(
 {
   namespace mmp = MemMngPack;
   using Teuchos::dyn_cast;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
   // ToDo: Validate that A is compatible!
   TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
@@ -203,7 +203,7 @@ void DirectSparseSolverImp::factor(
   // Get reference to factorization structure object
   const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
   BasisMatrix::fact_struc_ptr_t              fact_struc;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     fact_struc_in.get() == NULL && this_fact_struc.get() == NULL
     ,std::logic_error

@@ -131,7 +131,7 @@ void BasisSystemPermDirectSparse::update_basis(
   const size_type
     n  = Gc.rows(),
     m  = Gc.cols();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
   TEST_FOR_EXCEPTION(
     Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
@@ -216,7 +216,7 @@ void BasisSystemPermDirectSparse::set_basis(
   const size_type
     n  = Gc.rows(),
     m  = Gc.cols();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
   TEST_FOR_EXCEPTION(
     P_equ == NULL || equ_decomp == NULL, std::invalid_argument
@@ -279,7 +279,7 @@ void BasisSystemPermDirectSparse::select_basis(
   using Teuchos::dyn_cast;
   if(out)
     *out << "\nUsing a direct sparse solver to select a new basis ...\n";
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   // Validate input
   const char msg_err_head[] = "BasisSystemPermDirectSparse::set_basis(...) : Error!";
   TEST_FOR_EXCEPTION(
@@ -289,7 +289,7 @@ void BasisSystemPermDirectSparse::select_basis(
   const size_type
     n  = Gc->rows(),
     m  = Gc->cols();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   // Validate input
   const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz();
   TEST_FOR_EXCEPTION(

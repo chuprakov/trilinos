@@ -57,7 +57,7 @@ void MatrixOpNonsingAggr::initialize(
   ,BLAS_Cpp::Transp     mns_trans
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     mwo.get() == NULL, std::invalid_argument
     ,"MatrixOpNonsingAggr::initialize(...): Error!" );

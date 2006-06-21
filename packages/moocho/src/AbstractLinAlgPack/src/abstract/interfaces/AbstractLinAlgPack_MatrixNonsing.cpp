@@ -117,7 +117,7 @@ void MatrixNonsing::M_StInvMtM(
   using Teuchos::dyn_cast;
   using BLAS_Cpp::no_trans;
   using BLAS_Cpp::trans;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     C_lhs == NULL, std::invalid_argument
     ,"MatrixNonsing::M_StInvMtM(...) : Error!" );
@@ -128,7 +128,7 @@ void MatrixNonsing::M_StInvMtM(
     C_cols = C_lhs->cols();
   const size_type
     op_B_cols = BLAS_Cpp::cols( B.rows(), B.cols(), B_trans );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   // We can't check vector spaces since *this may not support MatrixOp
   // However, we could dynamic cast to see if MatrixOp is supported and then
   // be able to use Mp_MtM_assert_compatibility() but this is okay for now.

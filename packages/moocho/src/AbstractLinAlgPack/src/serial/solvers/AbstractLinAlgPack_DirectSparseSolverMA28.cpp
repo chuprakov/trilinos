@@ -119,13 +119,13 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
     &fn = dyn_cast<const FactorizationNonzerosMA28>(*this->get_fact_nonzeros());
 
   // Validate input
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
 #endif
   const size_type y_dim = y->dim(), x_dim = x.dim();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     fs.rank_ != y_dim, std::invalid_argument
     ,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
@@ -429,7 +429,7 @@ void DirectSparseSolverMA28::imp_factor(
     nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
   // Validate input
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     m != fs.m_ || n != fs.n_ || fs.nz_ != nz, std::invalid_argument
     ,"DirectSparseSolverMA28::imp_factor(...) : Error, "

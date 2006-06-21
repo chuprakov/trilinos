@@ -68,7 +68,7 @@ void VectorSpaceBlocked::get_vector_space_position(
   index_type i, int* kth_vector_space, index_type* kth_global_offset ) const
 {
   // Validate the preconditions
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     i < 1 || this->dim() < i, std::out_of_range
     ,"VectorSpaceBlocked::get_vector_space_position(...): Error, i = "
@@ -85,7 +85,7 @@ void VectorSpaceBlocked::get_vector_space_position(
     }
     ++(*kth_vector_space);
   }
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert(*kth_vector_space < vector_spaces_.size());
 #endif
 }
@@ -159,7 +159,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
   // Validate the preconditions
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     dim < rng.ubound(), std::out_of_range
     ,"VectorSpaceBlocked::sub_space(...): Error, rng = "
@@ -173,7 +173,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   this->get_vector_space_position(rng.lbound(),&kth_vector_space,&kth_global_offset);
   const vector_spaces_t      &vector_spaces      = vector_spaces_;      // Need to examine in debugger!
   const vec_spaces_offsets_t &vec_spaces_offsets = vec_spaces_offsets_;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vector_spaces.size() );
 #endif
   if( rng.lbound() == kth_global_offset + 1
@@ -188,7 +188,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
   int           end_kth_vector_space  = -1;
   index_type    end_kth_global_offset = 0;
   this->get_vector_space_position(rng.ubound(),&end_kth_vector_space,&end_kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= end_kth_vector_space && end_kth_vector_space <= vector_spaces.size() );
   assert( end_kth_vector_space > kth_vector_space );
 #endif

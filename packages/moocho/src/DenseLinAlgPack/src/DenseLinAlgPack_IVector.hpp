@@ -67,9 +67,9 @@ public:
   /// Resize on assignment
   IVector& operator=(const IVector&);
 
-  /// 1-based element access (range checked if _DEBUG is defined)
+  /// 1-based element access (range checked if TEUCHOS_DEBUG is defined)
   reference operator()(size_type i);
-  /// 1-based element access (range checked if _DEBUG is defined)
+  /// 1-based element access (range checked if TEUCHOS_DEBUG is defined)
   const_reference operator()(size_type i) const;
 
   /// STL iterator
@@ -106,7 +106,7 @@ inline IVector& IVector::operator=(const IVector& iv)
 
 inline IVector::reference IVector::operator()(size_type i)
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 1 <= i && i <= static_cast<size_type>(size()) );
 #endif
   return operator[](i-1);
@@ -114,7 +114,7 @@ inline IVector::reference IVector::operator()(size_type i)
 
 inline IVector::const_reference IVector::operator()(size_type i) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 1 <= i && i <= static_cast<size_type>(size()) );
 #endif
   return const_cast<IVector*>(this)->operator[](i-1);

@@ -93,7 +93,7 @@ VectorSpace::sub_space(const Range1D& rng_in) const
   namespace mmp = MemMngPack;
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rng.ubound() > dim, std::out_of_range
     ,"VectorSpace::sub_space(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "

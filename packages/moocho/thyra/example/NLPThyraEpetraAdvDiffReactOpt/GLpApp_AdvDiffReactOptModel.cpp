@@ -457,17 +457,17 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       dat_A->ExtractMyRowView(i,dat_A_num_row_entries,dat_A_row_vals,dat_A_row_inds);
       int DfDx_num_row_entries=0; double *DfDx_row_vals=0; int *DfDx_row_inds=0;
       DfDx.ExtractMyRowView(i,DfDx_num_row_entries,DfDx_row_vals,DfDx_row_inds);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPT(DfDx_num_row_entries!=dat_A_num_row_entries);
 #endif
       if(reactionRate!=0.0) {
         int dat_Npy_num_row_entries=0; double *dat_Npy_row_vals=0; int *dat_Npy_row_inds=0;
         dat_Npy->ExtractMyRowView(i,dat_Npy_num_row_entries,dat_Npy_row_vals,dat_Npy_row_inds);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
         TEST_FOR_EXCEPT(dat_A_num_row_entries!=dat_Npy_num_row_entries);
 #endif
         for(int k = 0; k < DfDx_num_row_entries; ++k) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=dat_Npy_row_inds[k]||dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
           DfDx_row_vals[k] = dat_A_row_vals[k] + reactionRate * dat_Npy_row_vals[k];
@@ -475,7 +475,7 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
       }
       else {
         for(int k = 0; k < DfDx_num_row_entries; ++k) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
           TEST_FOR_EXCEPT(dat_A_row_inds[k]!=DfDx_row_inds[k]);
 #endif
           DfDx_row_vals[k] = dat_A_row_vals[k];
@@ -527,11 +527,11 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
           dat_B->ExtractMyRowView(i,dat_B_num_row_entries,dat_B_row_vals,dat_B_row_inds);
           int DfDp_num_row_entries=0; double *DfDp_row_vals=0; int *DfDp_row_inds=0;
           DfDp_op->ExtractMyRowView(i,DfDp_num_row_entries,DfDp_row_vals,DfDp_row_inds);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
           TEST_FOR_EXCEPT(DfDp_num_row_entries!=dat_B_num_row_entries);
 #endif
           for(int k = 0; k < DfDp_num_row_entries; ++k) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
             TEST_FOR_EXCEPT(dat_B_row_inds[k]!=DfDp_row_inds[k]);
 #endif
             DfDp_row_vals[k] = dat_B_row_vals[k];

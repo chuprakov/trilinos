@@ -92,7 +92,7 @@ void MatrixOpNonsingThyra::V_InvMtV(
 {
   using Teuchos::dyn_cast;
   using BLAS_Cpp::trans_trans;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     v_lhs==NULL, std::invalid_argument
     ,"MatrixOpThyra::Vp_StMtV(...): Error!"

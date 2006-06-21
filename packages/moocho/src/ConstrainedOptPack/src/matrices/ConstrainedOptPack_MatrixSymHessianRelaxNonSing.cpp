@@ -149,7 +149,7 @@ void MatrixSymHessianRelaxNonSing::initialize(
   )
 {
   namespace mmp = MemMngPack;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSymHessianRelaxNonSing::initialize(...) : Error!";
   TEST_FOR_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
   TEST_FOR_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
@@ -158,7 +158,7 @@ void MatrixSymHessianRelaxNonSing::initialize(
   TEST_FOR_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
 #endif
   if( space.get() ) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     const size_type space_dim = space->dim();
     TEST_FOR_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
 #endif

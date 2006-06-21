@@ -284,7 +284,7 @@ MultiVectorMutableCols::diag(int k)
 MultiVectorMutable::multi_vec_mut_ptr_t
 MultiVectorMutableCols::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const size_type rows = this->rows();
   TEST_FOR_EXCEPTION(
     !( row_rng.full_range() || (row_rng.lbound() == 1 && row_rng.ubound() == rows) )

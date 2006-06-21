@@ -102,7 +102,7 @@ void VectorMutableBlocked::apply_op(
     n = this->dim();
 
   // Validate the compatibility of the vectors!
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     !(1 <= first_ele_in && first_ele_in <= n), std::out_of_range
     ,"VectorMutableBlocked::apply_op(...): Error, "
@@ -147,7 +147,7 @@ void VectorMutableBlocked::apply_op(
     vecs_args(wss,num_vecs);
   {for(int k = 0; k < num_vecs; ++k) {
     vecs_args[k] = dynamic_cast<const VectorMutableBlocked*>(vecs[k]);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error vecs["<<k<<"] "
@@ -160,7 +160,7 @@ void VectorMutableBlocked::apply_op(
     targ_vecs_args(wss,num_targ_vecs);
   {for(int k = 0; k < num_targ_vecs; ++k) {
     targ_vecs_args[k] = dynamic_cast<VectorMutableBlocked*>(targ_vecs[k]);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       targ_vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
       ,"VectorMutableBlocked::apply_op(...): Error targ_vecs["<<k<<"] "
@@ -254,7 +254,7 @@ value_type VectorMutableBlocked::get_ele(index_type i) const
   int         kth_vector_space  = -1;
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(i,&kth_vector_space,&kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
   return vecs_[kth_vector_space]->get_ele( i - kth_global_offset );
@@ -302,7 +302,7 @@ void VectorMutableBlocked::get_sub_vector( const Range1D& rng_in, RTOpPack::SubV
   int         kth_vector_space  = -1;
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(rng.lbound(),&kth_vector_space,&kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
   if( rng.lbound() + rng.size() <= kth_global_offset + 1 + vecs_[kth_vector_space]->dim() ) {
@@ -328,7 +328,7 @@ void VectorMutableBlocked::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(
     sub_vec->globalOffset()+1,&kth_vector_space,&kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
   if( sub_vec->globalOffset() + sub_vec->subDim() <= kth_global_offset +  vecs_[kth_vector_space]->dim() ) {
@@ -358,7 +358,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
   // Validate the preconditions
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     dim < rng.ubound(), std::out_of_range
     ,"VectorMutableBlocked::sub_view(...): Error, rng = "
@@ -380,7 +380,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   vec_space_->get_vector_space_position(rng.lbound(),&kth_vector_space,&kth_global_offset);
   const VectorSpace::space_ptr_t*  vector_spaces      = vec_space_->vector_spaces();
   const index_type*                vec_spaces_offsets = vec_space_->vector_spaces_offsets();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs.size() );
 #endif
   if( rng.lbound() == kth_global_offset + 1
@@ -395,7 +395,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
   int           end_kth_vector_space  = -1;
   index_type    end_kth_global_offset = 0;
   vec_space_->get_vector_space_position(rng.ubound(),&end_kth_vector_space,&end_kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= end_kth_vector_space && end_kth_vector_space <= vecs.size() );
   assert( end_kth_vector_space > kth_vector_space );
 #endif
@@ -448,7 +448,7 @@ void VectorMutableBlocked::set_ele( index_type i, value_type val )
   int         kth_vector_space  = -1;
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(i,&kth_vector_space,&kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
   vecs_[kth_vector_space]->set_ele( i - kth_global_offset, val );
@@ -461,7 +461,7 @@ void VectorMutableBlocked::set_sub_vector( const RTOpPack::SparseSubVector& sub_
   index_type  kth_global_offset = 0;
   vec_space_->get_vector_space_position(
     sub_vec.globalOffset()+1,&kth_vector_space,&kth_global_offset);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
   if( sub_vec.globalOffset() + sub_vec.subDim() <= kth_global_offset +  vecs_[kth_vector_space]->dim() ) {

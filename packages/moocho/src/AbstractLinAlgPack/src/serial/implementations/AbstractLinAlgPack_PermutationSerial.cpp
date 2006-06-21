@@ -136,7 +136,7 @@ void PermutationSerial::permute(
   ,VectorMutable      *y
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,x,y) : Error!" );
@@ -186,7 +186,7 @@ void PermutationSerial::permute(
   ,VectorMutable      *y
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     y == NULL, std::invalid_argument
     ,"PermutationSerial::permute(P_trans,y) : Error!" );

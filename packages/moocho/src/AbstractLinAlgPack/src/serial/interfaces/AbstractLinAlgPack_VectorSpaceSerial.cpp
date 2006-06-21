@@ -37,7 +37,7 @@
 #include "DenseLinAlgPack_DVectorClass.hpp"
 #include "Teuchos_TestForException.hpp"
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 #define CLASS_MEMBER_PTRS \
 const VectorSpaceSerial  *_this = this; \
 const size_type *_dim = &dim_;
@@ -116,7 +116,7 @@ VectorSpaceSerial::sub_space(const Range1D& rng_in) const
   namespace mmp = MemMngPack;
   const size_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorSpaceSerial::sub_view(...) : Error, "

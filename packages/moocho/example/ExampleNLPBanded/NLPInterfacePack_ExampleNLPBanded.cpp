@@ -73,7 +73,7 @@ ExampleNLPBanded::ExampleNLPBanded(
   ,diag_vary_(diag_vary)
   ,fu_( sym_basis ? 3 : 6 )
 {
-#ifdef _DEBUG	
+#ifdef TEUCHOS_DEBUG	
   const char msg_err_head[] = "ExampleNLPBanded::ExampleNLPBanded(...) : Error";
   TEST_FOR_EXCEPTION(
     nD <= 0, std::invalid_argument
@@ -304,7 +304,7 @@ bool ExampleNLPBanded::imp_get_next_basis(
   // Also, if the general inequality constraints are begin
   // converted to equalities with slacks, make the slack variables
   // basic variables also (after the nD variables).
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert(var_perm_full);
   assert(equ_perm_full);
   assert(rank);

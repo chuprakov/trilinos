@@ -143,7 +143,7 @@ void ExampleNLPDirect::calc_point(
 
   // Validate the input
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     x.dim() != n, std::invalid_argument
     ,"ExampleNLPDirect::calc_point(...), Error x.dim() = " << x.dim()

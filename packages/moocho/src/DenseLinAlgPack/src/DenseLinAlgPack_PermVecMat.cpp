@@ -30,7 +30,7 @@
 #include "DenseLinAlgPack_DMatrixClass.hpp"
 #include "DenseLinAlgPack_IVector.hpp"
 
-#ifdef _DEBUG   // Debug only!
+#ifdef TEUCHOS_DEBUG   // Debug only!
 bool DenseLinAlgPack::PermVecMat_print = false;
 #include <iostream>
 #include "DenseLinAlgPack_PermOut.hpp"
@@ -96,7 +96,7 @@ void DenseLinAlgPack::inv_perm_ele(const DVectorSlice& y, const IVector& perm, D
 {
   i_assert_perm_size(y.dim(),perm.size());
   i_assert_perm_size(x->dim(),perm.size());
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   if( PermVecMat_print ) {
     std::cerr
       << "enter inv_perm_ele(y,perm,x):\n"
@@ -113,7 +113,7 @@ void DenseLinAlgPack::inv_perm_ele(const DVectorSlice& y, const IVector& perm, D
     perm_itr	= perm.begin();
   while(y_itr != y_end)
     (*x)(*perm_itr++) = *y_itr++;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   if( PermVecMat_print ) {
     std::cerr
       << "inv_perm_ele(y,perm,x):\n"

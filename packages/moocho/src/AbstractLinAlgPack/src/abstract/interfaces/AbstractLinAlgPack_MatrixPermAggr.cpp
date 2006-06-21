@@ -60,7 +60,7 @@ void MatrixPermAggr::initialize(
   ,const mat_ptr_t     &mat_perm
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     mat_orig.get() == NULL, std::invalid_argument
     ,"MatrixPermAggr::initialize(...): Error!" );

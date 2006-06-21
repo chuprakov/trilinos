@@ -47,7 +47,7 @@
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 #include "DenseLinAlgPack_PermVecMat.hpp"
 #endif
 

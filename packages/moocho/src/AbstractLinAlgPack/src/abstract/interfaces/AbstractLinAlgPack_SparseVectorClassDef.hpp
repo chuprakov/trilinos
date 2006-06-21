@@ -52,7 +52,7 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
     rng = Range1D(1,size);
   }
   else {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     assert( rng.ubound() <= size );
 #endif
   }
@@ -305,7 +305,7 @@ template <class T_Element, class T_Alloc>
 void SparseVector<T_Element,T_Alloc>::uninitialized_resize(size_type size, size_type nz, size_type max_nz
   , difference_type offset)
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     nz > max_nz, std::length_error
     ,"SparseVector<...>::uninitialized_resize(...) : nz can not be greater"
@@ -331,7 +331,7 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
           : poss_type(0,SpVecIndexLookup::BEFORE_ELE)
         );
     // Make sure this element does not already exist!
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       nz() && poss.rel == SpVecIndexLookup::EQUAL_TO_ELE, std::length_error
       ,"SparseVector<...>::insert_element(...) : Error, this index"
@@ -373,7 +373,7 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
     p < index_lookup_.ele() + index_lookup_.nz(); ++p)
   {
     typename T_Element::index_type curr_index = p->index() + offset();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       (1 > curr_index) || (curr_index > dim()), std::out_of_range
       ,"SparseVector<...>::assert_valid_and_sorted():"
@@ -385,7 +385,7 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
       last_index = curr_index;
       continue;
     }
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       curr_index < last_index, NotSortedException
       ,"SparseVector<...>::assert_valid_and_sorted():"

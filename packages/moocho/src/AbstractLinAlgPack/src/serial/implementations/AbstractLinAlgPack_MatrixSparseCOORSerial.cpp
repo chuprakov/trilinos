@@ -83,7 +83,7 @@ void MatrixSparseCOORSerial::set_buffers(
   ,bool                          check_input
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_err[] = "MatrixSparseCOORSerial::set_buffer(...) : Error,!";
   TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err );
   TEST_FOR_EXCEPTION( val == NULL || row_i == NULL || col_j == NULL, std::invalid_argument, msg_err );
@@ -234,7 +234,7 @@ void MatrixSparseCOORSerial::reinitialize(
   )
 {
   namespace rcp = MemMngPack;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char msg_err_head[] = "MatrixSparseCOORSerial::reinitialize(...) : Error";
   TEST_FOR_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err_head<<"!" );
   TEST_FOR_EXCEPTION( rows <= 0 || cols <= 0 , std::invalid_argument, msg_err_head<<"!" );
@@ -256,7 +256,7 @@ void MatrixSparseCOORSerial::reinitialize(
 
   }
   else {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     TEST_FOR_EXCEPTION(
       max_nz <= max_nz_, std::invalid_argument
       ,msg_err_head << "Buffers set up by client in set_buffers() only allows storage for "
@@ -272,7 +272,7 @@ void MatrixSparseCOORSerial::reinitialize(
 
 void MatrixSparseCOORSerial::reset_to_load_values()
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rows_ == 0 || cols_ == 0, std::invalid_argument
     ,"MatrixSparseCOORSerial::reset_to_load_values(...) : Error, "
@@ -292,7 +292,7 @@ void MatrixSparseCOORSerial::get_load_nonzeros_buffers(
   ,index_type    **col_j
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     max_nz_load_ != 0 , std::logic_error
     ,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
@@ -328,7 +328,7 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
   ,index_type    **col_j
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     max_nz_load_ == 0 , std::logic_error
     ,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
@@ -381,7 +381,7 @@ void MatrixSparseCOORSerial::finish_construction( bool test_setup )
 
 // Overridden from MatrixExtractSparseElements
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 #define VALIDATE_ROW_COL_IN_RANGE() \
 TEST_FOR_EXCEPTION( \
   i < 1 || rows_ < i, std::invalid_argument \
@@ -403,7 +403,7 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
   ,index_type           du
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
   TEST_FOR_EXCEPTION(
     element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE
@@ -497,7 +497,7 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
   ,const index_type     col_offset
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
   TEST_FOR_EXCEPTION(
     element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE

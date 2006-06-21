@@ -124,12 +124,12 @@ class MatrixCOORTmplItfcItr {
 public:
   MatrixCOORTmplItfcItr( const T_Scalar* value, const T_Index* row_i, const T_Index* col_j, T_Index nz )
     : ele_(value,row_i,col_j)
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     , nz_left_(nz)
 #endif
   {}
   void operator++() {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
     --nz_left_;
 #endif
     ele_.increment();
@@ -140,7 +140,7 @@ public:
   {	assert_nz(); return &ele_; }
 private:
   MatrixCOORTmplItfcItrEleView<T_Scalar,T_Index>  ele_;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   T_Index   nz_left_;
   void assert_nz() const
   {

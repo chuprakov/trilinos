@@ -152,7 +152,7 @@ void AbstractLinAlgPack::max_abs_ele(
 
 void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
 #endif
   TEST_FOR_EXCEPT(0!=RTOp_TOp_add_scalar_set_alpha(alpha,&add_scalar_op.op()));
@@ -162,7 +162,7 @@ void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 
 void AbstractLinAlgPack::Vt_S( VectorMutable* v_lhs, const value_type& alpha )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
   if( alpha == 0.0 ) {
@@ -178,7 +178,7 @@ void AbstractLinAlgPack::Vt_S( VectorMutable* v_lhs, const value_type& alpha )
 void AbstractLinAlgPack::Vp_StV(
   VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs)
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
   TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
@@ -203,7 +203,7 @@ void AbstractLinAlgPack::ele_wise_prod(
   const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
   , VectorMutable* v_lhs )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
   TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op()));
@@ -216,7 +216,7 @@ void AbstractLinAlgPack::ele_wise_divide(
   const value_type& alpha, const Vector& v_rhs1, const Vector& v_rhs2
   , VectorMutable* v_lhs )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
   TEST_FOR_EXCEPT(0!=RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
@@ -233,7 +233,7 @@ void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 
 void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutable* v )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
   //TEST_FOR_EXCEPT(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));

@@ -77,7 +77,7 @@ public:
   /// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i < subDim())</tt>)
   const Scalar& operator[](Teuchos_Index i) const
     {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPTION(
         !( 1 <= i && i < subDim_ ), std::logic_error
         ,"Error, index i="<<i<<" does not fall in the range [0,"<<(subDim_-1)<<"]!"
@@ -133,7 +133,7 @@ public:
 template<class Scalar>
 void assign_entries( const MutableSubVectorT1B<Scalar> *msv, const SubVectorT1B<Scalar> &sv )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPT(msv==NULL);
   TEST_FOR_EXCEPT(msv->subDim() != sv.subDim());
 #endif
@@ -205,7 +205,7 @@ public:
   /// One-based indexing (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
   const Scalar& operator()(Teuchos_Index i, Teuchos_Index j) const
     {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPTION(
         !( 1 <= i && i < subDim_ ), std::logic_error
         ,"Error, index i="<<i<<" does not fall in the range [1,"<<(subDim_-1)<<"]!"
@@ -220,7 +220,7 @@ public:
   /// Return a <tt>SubVectorT1B</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL (1<=j<=numSubCols()</tt>)
   SubVectorT1B<Scalar> col( const Teuchos_Index j ) const
     {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPTION(
         !( 1 <= j && j <= numSubCols_ ), std::logic_error
         ,"Error, index j="<<j<<" does not fall in the range [1,"<<(numSubCols_-1)<<"]!"
@@ -286,7 +286,7 @@ public:
   /// Return a <tt>MutableSubVectorT1B</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL && (1<=j<=numSubCols()</tt>)
   MutableSubVectorT1B<Scalar> col( const Teuchos_Index j ) const
     {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
       TEST_FOR_EXCEPTION(
         !( 1 <= j && j <= this->numSubCols() ), std::logic_error
         ,"Error, index j="<<j<<" does not fall in the range [1,"<<(this->numSubCols())<<"]!"
@@ -299,7 +299,7 @@ public:
 template<class Scalar>
 void assign_entries( const MutableSubMultiVectorT1B<Scalar> *msmv, const SubMultiVectorT1B<Scalar> &smv )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPT(msmv==NULL);
   TEST_FOR_EXCEPT(msmv->subDim() != smv.subDim());
   TEST_FOR_EXCEPT(msmv->numSubCols() != smv.numSubCols());

@@ -81,7 +81,7 @@ void NLPSecondOrder::calc_HL(
   const Vector& x, const Vector* lambda, bool newpoint
   ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
 #endif
   StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);

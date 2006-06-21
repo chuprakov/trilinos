@@ -43,7 +43,7 @@ NLPWBCounterExample::NLPWBCounterExample(
   :is_initialized_(false),nlp_selects_basis_(nlp_selects_basis),basis_selection_was_given_(false)
   ,linear_obj_(linear_obj),n_orig_(3),m_orig_(2),Gc_orig_nz_(4),a_(a),b_(b)
 {
-#ifdef _DEBUG	
+#ifdef TEUCHOS_DEBUG	
   const char msg_err_head[] = "NLPWBCounterExample::NLPWBCounterExample(...) : Error";
   TEST_FOR_EXCEPTION( !(b >= 0),        std::invalid_argument, msg_err_head<<"!" );
   TEST_FOR_EXCEPTION( !(a + b*b != 0),  std::invalid_argument, msg_err_head<<"!" );
@@ -168,7 +168,7 @@ bool NLPWBCounterExample::imp_get_next_basis(
   ,size_type   *rank
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert(var_perm_full); assert(equ_perm_full); assert(rank_full); assert(rank);
 #endif
   if(basis_selection_was_given_) return false; // Already gave this basis selection

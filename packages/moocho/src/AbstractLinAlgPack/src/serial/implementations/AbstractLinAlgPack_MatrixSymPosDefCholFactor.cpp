@@ -1560,7 +1560,7 @@ void MatrixSymPosDefCholFactor::read_matrix(  std::istream &in, BLAS_Cpp::Uplo Q
   if( Q_uplo == BLAS_Cpp::lower ) {
     for( int i = 1; i <= Q_dim; ++i ) {
       for( int j = 1; j <= i; ++j ) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
         TEST_FOR_EXCEPTION(
           in.eof(), std::logic_error
           ,"MatrixSymPosDefCholFactor::read_matrix(in,lower,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"
@@ -1573,7 +1573,7 @@ void MatrixSymPosDefCholFactor::read_matrix(  std::istream &in, BLAS_Cpp::Uplo Q
   else {
     for( int i = 1; i <= Q_dim; ++i ) {
       for( int j = i; j <= Q_dim; ++j ) {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
         TEST_FOR_EXCEPTION(
           in.eof(), std::logic_error
           ,"MatrixSymPosDefCholFactor::read_matrix(in,upper,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"

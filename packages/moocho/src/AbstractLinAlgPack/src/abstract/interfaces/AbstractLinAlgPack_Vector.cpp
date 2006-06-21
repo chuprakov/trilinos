@@ -212,7 +212,7 @@ Vector::sub_view( const Range1D& rng_in ) const
   namespace rcp = MemMngPack;
   const index_type dim = this->dim();
   const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rng.ubound() > dim, std::out_of_range
     ,"Vector::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
@@ -229,7 +229,7 @@ Vector::sub_view( const Range1D& rng_in ) const
 void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec_inout ) const
 {
   const Range1D rng = rng_in.full_range() ? Range1D(1,this->space().dim()) : rng_in;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     this->space().dim() < rng.ubound(), std::out_of_range
     ,"Vector::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()

@@ -45,7 +45,7 @@ VectorSubView::VectorSubView( const vec_ptr_t& vec, const Range1D& rng )
 void VectorSubView::initialize( const vec_ptr_t& vec, const Range1D& rng )
 {
   namespace rcp = MemMngPack;
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     vec.get() == NULL, std::invalid_argument
     ,"VectorSubView::initialize(...) : Error!" );
@@ -98,7 +98,7 @@ void VectorSubView::apply_op(
   // These are not in-core vectors so ...
   int k;
   const index_type this_dim = this->dim();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     sub_dim_in < 0
     || !(1 <= first_ele_in && first_ele_in <= this_dim)
@@ -157,7 +157,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 
 void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::get_sub_vector(...): Error!" );
 #endif
   const index_type this_dim = this->dim();
@@ -170,7 +170,7 @@ void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* 
 
 void VectorSubView::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::free_sub_vector(...): Error!" );
 #endif
   const index_type this_offset = space_.rng().lbound() - 1;

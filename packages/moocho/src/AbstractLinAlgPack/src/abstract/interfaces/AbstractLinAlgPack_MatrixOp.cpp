@@ -458,7 +458,7 @@ void AbstractLinAlgPack::Mp_StM(
     "the rhs matix argument of type \'" << typeid(*mwo_lhs).name()
     << "\' could not implement the operation!" );
     
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     !mwo_lhs->space_rows().is_compatible(
       trans_rhs == no_trans ? M_rhs.space_rows() : M_rhs.space_cols() )

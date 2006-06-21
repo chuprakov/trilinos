@@ -497,7 +497,7 @@ int RTOp_ROp_get_sub_vector_set_range(
 
 int RTOp_ROp_get_sub_vector_destroy( struct RTOp_RTOp* op )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   assert( op->vtbl );
   assert( op->obj_data );
 #endif

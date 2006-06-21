@@ -41,13 +41,13 @@ VectorSpaceSubSpace::VectorSpaceSubSpace( const space_ptr_t& full_space, const R
 
 void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range1D& rng )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     full_space.get() == NULL, std::invalid_argument
     ,"VectorSpaceSubSpace::initialize(...): Error!" );
 #endif
   const index_type n = full_space->dim();
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     !rng.full_range() && rng.ubound() > n, std::out_of_range
     ,"VectorSpaceSubSpace::initialize(...): Error, "
@@ -64,7 +64,7 @@ void VectorSpaceSubSpace::set_uninitialized()
   rng_        = Range1D::Invalid;
 }
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 {
   const index_type n = this->dim();

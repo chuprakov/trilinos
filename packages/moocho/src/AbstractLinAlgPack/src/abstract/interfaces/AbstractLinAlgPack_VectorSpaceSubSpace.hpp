@@ -144,7 +144,7 @@ const Range1D& VectorSpaceSubSpace::rng() const
   return rng_;
 }
 
-#ifndef _DEBUG
+#ifndef TEUCHOS_DEBUG
 inline
 void VectorSpaceSubSpace::validate_range(const Range1D&) const
 {}

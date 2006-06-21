@@ -59,7 +59,7 @@ NLPFirstOrder::basis_sys() const
 
 void NLPFirstOrder::set_Gc(MatrixOp* Gc)
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   Gc_ = Gc;
@@ -67,7 +67,7 @@ void NLPFirstOrder::set_Gc(MatrixOp* Gc)
 
 MatrixOp* NLPFirstOrder::get_Gc()
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   return StandardCompositionRelationshipsPack::get_role_name(Gc_, false, name_Gc);
@@ -75,7 +75,7 @@ MatrixOp* NLPFirstOrder::get_Gc()
 
 MatrixOp& NLPFirstOrder::Gc()
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
@@ -83,7 +83,7 @@ MatrixOp& NLPFirstOrder::Gc()
 
 const MatrixOp& NLPFirstOrder::Gc() const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
@@ -99,7 +99,7 @@ void NLPFirstOrder::unset_quantities()
 
 void NLPFirstOrder::calc_Gc(const Vector& x, bool newx) const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   StandardCompositionRelationshipsPack::assert_role_name_set(Gc_, "NLP::calc_Gc()", name_Gc);
@@ -109,7 +109,7 @@ void NLPFirstOrder::calc_Gc(const Vector& x, bool newx) const
 
 size_type NLPFirstOrder::num_Gc_evals() const
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
   return num_Gc_evals_;

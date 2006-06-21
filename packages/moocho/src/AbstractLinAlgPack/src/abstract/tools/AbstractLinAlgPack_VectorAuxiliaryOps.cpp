@@ -392,7 +392,7 @@ void AbstractLinAlgPack::force_in_bounds(
   ,VectorMutable* x
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(x==NULL,std::logic_error,"force_in_bounds(...), Error");
 #endif
   const Vector*  vecs[2]      = { &xl, &xu };

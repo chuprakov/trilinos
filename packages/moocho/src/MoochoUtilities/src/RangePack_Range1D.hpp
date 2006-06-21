@@ -53,7 +53,7 @@ namespace RangePack {
  * but will never change <tt>size() == 0</tt>.
  *
  * Constructing using <tt>\ref Range1D::Range1D "Range1D(lbound,ubound)"</tt> yields a finite dimensional range.
- * The validity of constructed range will only be checked if \c _DEBUG is defined.
+ * The validity of constructed range will only be checked if \c TEUCHOS_DEBUG is defined.
  *
  * There are many \ref Range1D_funcs_grp "non-member functions" that can be used with <tt>%Range1D</tt> objects.
  *
@@ -288,7 +288,7 @@ Range1D& Range1D::operator-=( Index incr ) {
 // See Range1D.cpp
 inline
 void Range1D::assert_valid_range(int lbound, int ubound) const {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     lbound < 1, std::range_error
     ,"Range1D::assert_valid_range(): Error, lbound ="<<lbound<<" must be greater than 0." );

@@ -108,7 +108,7 @@ void perm_cols(const IVector& col_perm, DMatrixSlice* gms);
 /// Permute a GenMatrixSlices rows and columns
 void perm_rows_cols(const IVector& row_perm, const IVector& col_perm, DMatrixSlice* gms);
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 extern bool PermVecMat_print;
 #endif
 

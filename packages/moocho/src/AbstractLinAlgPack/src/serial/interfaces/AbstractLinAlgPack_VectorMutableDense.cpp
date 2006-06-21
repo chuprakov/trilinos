@@ -37,7 +37,7 @@
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
 #define CLASS_MEMBER_PTRS \
 const VectorMutableDense   *_this = this; \
 const DVectorSlice                *_v; \
@@ -116,7 +116,7 @@ void VectorMutableDense::apply_op(
   ) const
 {
   CLASS_MEMBER_PTRS
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   AbstractLinAlgPack::apply_op_validate_input(
     "VectorMutableDense::apply_op(...)"
     ,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
@@ -213,7 +213,7 @@ VectorMutableDense::sub_view( const Range1D& rng_in )
   namespace rcp = MemMngPack;
   const size_type this_dim = this->dim();
   const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorMutableDense::sub_view(...) : Error, "
@@ -232,7 +232,7 @@ void VectorMutableDense::get_sub_vector(
   CLASS_MEMBER_PTRS
   const size_type  this_dim = v_.dim();
   const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     rng.ubound() > this_dim, std::out_of_range
     ,"VectorMutableDense::get_sub_vector(...) : Error, "

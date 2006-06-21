@@ -49,7 +49,7 @@ void MatrixIdentConcatStd::initialize(
     ,BLAS_Cpp::Transp                  D_trans
   )
 {
-#ifdef _DEBUG
+#ifdef TEUCHOS_DEBUG
   TEST_FOR_EXCEPTION(
     space_cols.get() == NULL, std::invalid_argument
     ,"MatrixIdentConcatStd::initialize(...): Error, "
