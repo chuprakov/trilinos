@@ -77,17 +77,10 @@ int main(int argc, char *argv[]) {
 		 MyGlobalElements.Values(),0, Comm);
 
   // create a vector based on map
-  Epetra_Vector xxx(Map);
+  Epetra_Vector x(Map);
   for( int i=0 ; i<NumMyElements ; ++i )
     xxx[i] = 10*( Comm.MyPID()+1 );
-
-  if( Comm.MyPID() == 0 ){
-    double val = 12;
-    int pos = 3;
-    xxx.SumIntoGlobalValues(1,0,&val,&pos);
-  }
-  
-  cout << xxx;
+  cout << x;
 
   // create a target map, in which all the elements are on proc 0
   int NumMyElements_target;
@@ -102,11 +95,11 @@ int main(int argc, char *argv[]) {
   Epetra_Export Exporter(Map,TargetMap);
 
   // work on vectors
-  Epetra_Vector yyy(TargetMap);
+  Epetra_Vector y(TargetMap);
 
-  yyy.Export(xxx,Exporter,Add);
+  y.Export(x,Exporter,Add);
 
-  cout << yyy;
+  cout << y;
 
 #ifdef HAVE_MPI
   MPI_Finalize();

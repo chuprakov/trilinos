@@ -135,7 +135,7 @@ stability\footnote{Another package, Teuchos, covered in
   ScaLAPACK is supported through Amesos, see
   Chapter~\ref{chap:amesos}.}.
 
-The primary difference is that Epetra\_LAPACK is a ``thin'' layer on the
+Another class, Epetra\_LAPACK, provides a ``thin'' layer on
 top of LAPACK, while Epetra\_SerialDenseSolver attempts to provide easy
 access to the more robust dense linear solvers.
 
@@ -163,7 +163,7 @@ double rcond=Solve.RCOND();
 returns the reciprocal of the condition number of matrix {\tt D} (or -1
 if not computed).
 
-\TriExe{epetra/ex11.cpp} outlines some of the capabilities of the
+\TriExe{epetra/ex11.cpp} outlines some of the capabilities of the \newline
 Epetra\_SerialDenseSolver class.
 
 %%%
@@ -307,12 +307,9 @@ distributed operations. \\
   Epetra\_Operator class; see Section~\ref{sec:operator}.
 \end{remark}
 
-The process of creating a sparse matrix is more involved than the
-process for dense matrices. This is because, in order to obtain
-excellent numerical performance, one has to provide an estimation of
-the nonzero elements on each row of the sparse matrix. (Recall that
-dynamic allocation of new memory and copying the old storage into the
-new one is an expensive operation.)
+Creating a sparse matrix may be more complicated than creating a dense matrix.
+It is worthwhile to take steps to avoid unnecessary dynamic memory activities
+due to uncertainty in the number of elements in each row.
 
 As a general rule, the process of constructing a (distributed) sparse
 matrix is as follows:
@@ -362,7 +359,7 @@ of nonzeros per row. In general, this can be done in two ways:
   \verb!NumMyElements()!, containing the nonzero elements of each row.
 \end{itemize}
 
-The first approach is trivial: the matrix is create with the simple
+The first approach is trivial: the matrix is created with the simple
 instruction
 \begin{verbatim}
 Epetra_CrsMatrix A(Copy,Map,3);

@@ -426,7 +426,8 @@ Epetra also defines some functions to set vector elements in local or
 global index space.  \verb!ReplaceMyValues! or \verb!SumIntoMyValues!
 will replace or sum values into a vector with a given indexed list of
 values, with indexes in the {\em local} index space;
-\verb!ReplaceGlobalValues! or \verb!SumIntoGlobalValues! will replace or
+\verb!ReplaceGlobalValues! or \newline
+\verb!SumIntoGlobalValues! will replace or
 sum values into a vector with a given indexed list of values in the {\em
   global} index space (but locally owned). It is important to note that
 no process may set vector entries locally owned by another process. In
@@ -530,7 +531,7 @@ multi-vector with constant value \\
 \section{Epetra\_Import and Epetra\_Export classes}
 \label{sec:import_export}
 
-The Epetra\_Import and Epetra\_Export classes suites apply off-processor
+The Epetra\_Import and Epetra\_Export classes apply off-processor
 communication. Epetra\_Import and Epetra\_Export are used to construct a
 communication plan that can be called repeatedly by computational
 classes such the Epetra multi-vectors of the Epetra matrices.
@@ -543,7 +544,7 @@ global IDs of elements that we want to import later.
 Using an Epetra\_Import object means that the calling process knows what
 it wants to receive, while an Epetra\_Export object means that it knows
 what it wants to send. An Epetra\_Import object can be used to do an
-Export as a reserve operation (and equivalently an Epetra\_Export can be
+Export as a reverse operation (and equivalently an Epetra\_Export can be
 used to do an Import). In the particular case of bijective maps, either
 Epetra\_Import or Epetra\_Export is appropriate.
 
@@ -556,8 +557,7 @@ following example. Suppose that the double-precision distributed vector
 that elements 1 and 2 are replicated over the two processes. Suppose
 that we want to bring all the components of \verb!x!  to process 0,
 summing up the contributions of elements 1 and 2 from the 2 processes.
-This is done in the following example (the complete code is reported in
-\TriExe{epetra/ex9.cpp}).
+This is done in the following example (c.f.~\TriExe{epetra/ex9.cpp}).
 \begin{verbatim}
   int NumGlobalElements = 4; // global dimension of the problem
 
