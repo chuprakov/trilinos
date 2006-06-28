@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
   // create a vector based on map
   Epetra_Vector x(Map);
   for( int i=0 ; i<NumMyElements ; ++i )
-    xxx[i] = 10*( Comm.MyPID()+1 );
+    x[i] = 10*( Comm.MyPID()+1 );
   cout << x;
 
   // create a target map, in which all the elements are on proc 0
