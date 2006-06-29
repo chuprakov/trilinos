@@ -123,10 +123,10 @@ AdvDiffReactOptModel::AdvDiffReactOptModel(
         // Use modified Gram-Schmidt to create an orthonormal version of B_bar!
         //
         Teuchos::RefCountPtr<Thyra::MultiVectorBase<double> >
-          thyra_B_bar = Thyra::create_MPIMultiVectorBase(
+          thyra_B_bar = Thyra::create_MultiVector(
             B_bar_
-            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
-            ,Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_[p_bndy_idx])))
+            ,Thyra::create_VectorSpace(Teuchos::rcp(new Epetra_Map(*map_p_bar_)))
+            ,Thyra::create_VectorSpace(Teuchos::rcp(new Epetra_Map(*map_p_[p_bndy_idx])))
             ),
           thyra_fact_R;
         sillyModifiedGramSchmidt(&*thyra_B_bar,&thyra_fact_R);
@@ -547,10 +547,10 @@ void AdvDiffReactOptModel::evalModel( const InArgs& inArgs, const OutArgs& outAr
         // to do this cleanly with Epetra alone!
         Teuchos::RefCountPtr<Epetra_Vector>
           etaVec = Teuchos::rcp(new Epetra_Vector(*map_p_bar_));
-        Teuchos::RefCountPtr<const Thyra::MPIVectorSpaceBase<double> >
-          space_p_bar = Thyra::create_MPIVectorSpaceBase(Teuchos::rcp(new Epetra_Map(*map_p_bar_)));
+        Teuchos::RefCountPtr<const Thyra::SpmdVectorSpaceBase<double> >
+          space_p_bar = Thyra::create_VectorSpace(Teuchos::rcp(new Epetra_Map(*map_p_bar_)));
         Teuchos::RefCountPtr<Thyra::VectorBase<double> >
-          thyra_etaVec = Thyra::create_MPIVectorBase(etaVec,space_p_bar);
+          thyra_etaVec = Thyra::create_Vector(etaVec,space_p_bar);
         for( int i = 0; i < map_p_bar_->NumGlobalElements(); ++i ) {
           Thyra::assign(&*thyra_etaVec,0.0);
           Thyra::set_ele(i,1.0,&*thyra_etaVec);

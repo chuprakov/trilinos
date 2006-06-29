@@ -1,6 +1,6 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "Thyra_ParallelMultiVectorFileIO.hpp"
+#include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
@@ -139,7 +139,7 @@ int main( int argc, char* argv[] )
 
     if(matchingVecFile != "") {
       *out << "\nReading the matching vector \'q\' from the file(s) with base name \""<<matchingVecFile<<"\" ...\n";
-      Thyra::ParallelMultiVectorFileIO<Scalar> fileIO;
+      Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
       epetraModel->set_q(
         Thyra::get_Epetra_Vector(
           *epetraModel->get_x_map(),fileIO.readVectorFromFile(matchingVecFile,epetraThyraModel->get_x_space())

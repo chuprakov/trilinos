@@ -1,7 +1,7 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
-#include "Thyra_ParallelMultiVectorFileIO.hpp"
-#include "Thyra_DefaultClusteredMPIProductVectorSpace.hpp"
+#include "Thyra_SpmdMultiVectorFileIO.hpp"
+#include "Thyra_DefaultClusteredSpmdProductVectorSpace.hpp"
 #include "Thyra_DefaultMultiPeriodModelEvaluator.hpp"
 #include "Thyra_VectorSpaceTester.hpp"
 #include "RTOpPack_MPI_apply_op_decl.hpp"
@@ -14,9 +14,12 @@
 #include "Teuchos_arrayArg.hpp"
 #include "Thyra_RealLinearOpWithSolveFactoryCreator.hpp"
 #include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
+#include "Teuchos_DefaultComm.hpp"
 #ifdef HAVE_MPI
+#  include "Teuchos_DefaultMpiComm.hpp"
 #  include "Epetra_MpiComm.h"
 #else
+#  include "Teuchos_DefaultSerialComm.hpp"
 #  include "Epetra_SerialComm.h"
 #endif
 
@@ -29,6 +32,7 @@ typedef AbstractLinAlgPack::value_type  Scalar;
 int main( int argc, char* argv[] )
 {
   using Teuchos::rcp;
+  using Teuchos::null;
   using Teuchos::RefCountPtr;
   using Teuchos::OpaqueWrapper;
   using Teuchos::OSTab;
@@ -36,6 +40,7 @@ int main( int argc, char* argv[] )
   using MoochoPack::ThyraModelEvaluatorSolver;
   using Teuchos::CommandLineProcessor;
   typedef Thyra::ModelEvaluatorBase MEB;
+  typedef Thyra::Index Index;
 
   Teuchos::GlobalMPISession mpiSession(&argc,&argv);
 
@@ -44,7 +49,7 @@ int main( int argc, char* argv[] )
 
   Teuchos::Time timer("");
   
-  bool dummySuccess = true;
+  bool result, success = true;
 
   Teuchos::RefCountPtr<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
@@ -64,6 +69,7 @@ int main( int argc, char* argv[] )
     int                 numProcsPerCluster     = -1;
     double              perturbedParamScaling  = 1.0;
     bool                dumpAll                = false;
+    bool                skipSolve              = false;
 
     CommandLineProcessor  clp;
     clp.throwExceptions(false);
@@ -75,6 +81,7 @@ int main( int argc, char* argv[] )
     clp.setOption( "num-procs-per-cluster", &numProcsPerCluster, "Number of processes in a cluster (<=0 means only one cluster)." );
     clp.setOption( "p-perturb-scaling", &perturbedParamScaling, "Scaling for perturbed paramters from the initial forward solve." );
     clp.setOption( "dump-all", "no-dump-all", &dumpAll, "Set to true, then a bunch of debugging output will be created." );
+    clp.setOption( "skip-solve", "no-skip-solve", &skipSolve, "Temporary flag for skip solve for testing." );
 
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
@@ -91,9 +98,10 @@ int main( int argc, char* argv[] )
     int numClusters = -1;
 #ifdef HAVE_MPI
     RefCountPtr<OpaqueWrapper<MPI_Comm> >
-      intraClusterComm = Teuchos::opaqueWrapper<MPI_Comm>(MPI_COMM_WORLD),
-      interClusterComm = Teuchos::null;
-    if( numProcsPerCluster > 0 ) {
+      intraClusterMpiComm = Teuchos::opaqueWrapper<MPI_Comm>(MPI_COMM_WORLD),
+      interClusterMpiComm = Teuchos::null;
+    //if( numProcsPerCluster > 0 ) {
+    if(1) {
       *out << "\nCreating communicator for local cluster of "<<numProcsPerCluster<<" processes ...\n";
       numClusters = numProcs/numProcsPerCluster;
       const int remainingProcs = numProcs%numProcsPerCluster;
@@ -111,48 +119,48 @@ int main( int argc, char* argv[] )
       const int lastClusterProcRank = firstClusterProcRank + numProcsPerCluster - 1;
       *out << "\nclusterProcRange = ["<<firstClusterProcRank<<","<<lastClusterProcRank<<"]\n";
       // Create the communicator for this cluster of processes
-      *out << "\nCreating intraClusterComm ...";
-      MPI_Comm rawIntraClusterComm = MPI_COMM_NULL;
+      *out << "\nCreating intraClusterMpiComm ...";
+      MPI_Comm rawIntraClusterMpiComm = MPI_COMM_NULL;
       MPI_Comm_split(
         MPI_COMM_WORLD        // comm
         ,clusterRank          // color (will all be put in the same output comm)
         ,0                    // key (not important here)
-        ,&rawIntraClusterComm // newcomm
+        ,&rawIntraClusterMpiComm // newcomm
         );
-      intraClusterComm = Teuchos::opaqueWrapper(rawIntraClusterComm,MPI_Comm_free);
+      intraClusterMpiComm = Teuchos::opaqueWrapper(rawIntraClusterMpiComm,MPI_Comm_free);
       if(1) {
-        *out << "\nintraClusterComm:";
+        *out << "\nintraClusterMpiComm:";
         Teuchos::OSTab tab(out);
         int rank, size;
-        MPI_Comm_size(*intraClusterComm,&size);
-        MPI_Comm_rank(*intraClusterComm,&rank);
+        MPI_Comm_size(*intraClusterMpiComm,&size);
+        MPI_Comm_rank(*intraClusterMpiComm,&rank);
         *out << "\nsize="<<size;
         *out << "\nrank="<<rank;
         *out << "\n";
       }
       // Create the communicator for just the root process in each cluster
-      *out << "\nCreating interClusterComm ...";
-      MPI_Comm rawInterClusterComm = MPI_COMM_NULL;
+      *out << "\nCreating interClusterMpiComm ...";
+      MPI_Comm rawInterClusterMpiComm = MPI_COMM_NULL;
       MPI_Comm_split(
         MPI_COMM_WORLD                                  // comm
         ,procRank==firstClusterProcRank?0:MPI_UNDEFINED // color
         ,0                                              // key
-        ,&rawInterClusterComm                           // newcomm
+        ,&rawInterClusterMpiComm                           // newcomm
         );
-      if(rawInterClusterComm!=MPI_COMM_NULL)
-        interClusterComm = Teuchos::opaqueWrapper(rawInterClusterComm,MPI_Comm_free);
+      if(rawInterClusterMpiComm!=MPI_COMM_NULL)
+        interClusterMpiComm = Teuchos::opaqueWrapper(rawInterClusterMpiComm,MPI_Comm_free);
       else
-        interClusterComm = Teuchos::opaqueWrapper(rawInterClusterComm);
+        interClusterMpiComm = Teuchos::opaqueWrapper(rawInterClusterMpiComm);
       if(1) {
-        *out << "\ninterClusterComm:";
+        *out << "\ninterClusterMpiComm:";
         Teuchos::OSTab tab(out);
-        if(*interClusterComm==MPI_COMM_NULL) {
+        if(*interClusterMpiComm==MPI_COMM_NULL) {
           *out << " NULL\n";
         }
         else {
           int rank, size;
-          MPI_Comm_size(*interClusterComm,&size);
-          MPI_Comm_rank(*interClusterComm,&rank);
+          MPI_Comm_size(*interClusterMpiComm,&size);
+          MPI_Comm_rank(*interClusterMpiComm,&rank);
           *out << "\nsize="<<size;
           *out << "\nrank="<<rank;
           *out << "\n";
@@ -163,8 +171,8 @@ int main( int argc, char* argv[] )
 
     Teuchos::RefCountPtr<Epetra_Comm> comm = Teuchos::null;
 #ifdef HAVE_MPI
-    comm = Teuchos::rcp(new Epetra_MpiComm(*intraClusterComm));
-    Teuchos::set_extra_data(intraClusterComm,"mpiComm",&comm);
+    comm = Teuchos::rcp(new Epetra_MpiComm(*intraClusterMpiComm));
+    Teuchos::set_extra_data(intraClusterMpiComm,"mpiComm",&comm);
 #else
     comm = Teuchos::rcp(new Epetra_SerialComm());
 #endif
@@ -199,12 +207,16 @@ int main( int argc, char* argv[] )
     
 #ifdef HAVE_MPI
 
-    if( numClusters > 0 ) {
-
+    //if( numClusters > 0 ) {
+    if(1) {
+      
       *out << "\nCreate block parallel vector spaces for multi-period model.x and model.f ...\n";
-      Teuchos::RefCountPtr<Thyra::DefaultClusteredMPIProductVectorSpace<Scalar> >
+      Teuchos::RefCountPtr<const Teuchos::Comm<Index> >
+        intraClusterComm = rcp(new Teuchos::MpiComm<Index>(intraClusterMpiComm)),
+        interClusterComm = Teuchos::createMpiComm<Index>(interClusterMpiComm);
+      Teuchos::RefCountPtr<Thyra::DefaultClusteredSpmdProductVectorSpace<Scalar> >
         x_bar_space = Teuchos::rcp(
-          new Thyra::DefaultClusteredMPIProductVectorSpace<Scalar>(
+          new Thyra::DefaultClusteredSpmdProductVectorSpace<Scalar>(
             intraClusterComm
             ,0 // clusterRootRank
             ,interClusterComm
@@ -215,7 +227,7 @@ int main( int argc, char* argv[] )
             )
           ),
         f_bar_space = Teuchos::rcp(
-          new Thyra::DefaultClusteredMPIProductVectorSpace<Scalar>(
+          new Thyra::DefaultClusteredSpmdProductVectorSpace<Scalar>(
             intraClusterComm
             ,0 // clusterRootRank
             ,interClusterComm
@@ -230,14 +242,20 @@ int main( int argc, char* argv[] )
       vectorSpaceTester.show_all_tests(true);
       vectorSpaceTester.dump_all(dumpAll);
 
+#ifdef RTOPPACK_SPMD_APPLY_OP_DUMP
       RTOpPack::show_mpi_apply_op_dump = dumpAll;
-      Thyra::MPIVectorBase<Scalar>::show_dump = dumpAll;
+#endif
+#ifdef THYRA_SPMD_VECTOR_BASE_DUMP
+      Thyra::SpmdVectorBase<Scalar>::show_dump = dumpAll;
+#endif
 
       *out << "\nTesting the vector space x_bar_space ...\n";
-      vectorSpaceTester.check(*x_bar_space,&*OSTab(out).getOStream());
+      result = vectorSpaceTester.check(*x_bar_space,&*OSTab(out).getOStream());
+      if(!result) success = false;
 
       *out << "\nTesting the vector space f_bar_space ...\n";
-      vectorSpaceTester.check(*f_bar_space,&*OSTab(out).getOStream());
+      result = vectorSpaceTester.check(*f_bar_space,&*OSTab(out).getOStream());
+      if(!result) success = false;
       
       Teuchos::RefCountPtr<const Thyra::VectorBase<Scalar> >
         x0 = epetraThyraModel->getNominalValues().get_x();
@@ -255,8 +273,9 @@ int main( int argc, char* argv[] )
       RTOpPack::ROpNorm1<Scalar> norm_1_op;
       Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
       const Thyra::VectorBase<Scalar>* vecs[] = { &*x0 };
-      Teuchos::dyn_cast<const Thyra::MPIVectorBase<Scalar> >(*x0).applyOp(
-        MPI_COMM_WORLD,norm_1_op,1,vecs,0,static_cast<Thyra::VectorBase<Scalar>**>(NULL),&*norm_1_targ
+      Teuchos::dyn_cast<const Thyra::SpmdVectorBase<Scalar> >(*x0).applyOp(
+        &*Teuchos::DefaultComm<Index>::getComm()
+        ,norm_1_op,1,vecs,0,static_cast<Thyra::VectorBase<Scalar>**>(NULL),&*norm_1_targ
         ,0,-1,0
         );
       nrm_x0 = norm_1_op(*norm_1_targ);
@@ -264,8 +283,12 @@ int main( int argc, char* argv[] )
       timer.stop();
       *out << "\n    time = " << timer.totalElapsedTime() << " seconds\n";
 
+#ifdef RTOPPACK_SPMD_APPLY_OP_DUMP
       RTOpPack::show_mpi_apply_op_dump = false;
-      Thyra::MPIVectorBase<Scalar>::show_dump = false;
+#endif
+#ifdef THYRA_SPMD_VECTOR_BASE_DUMP
+      Thyra::SpmdVectorBase<Scalar>::show_dump = false;
+#endif
 
       const int N = 1;
       const int z_index = 1;
@@ -291,6 +314,9 @@ int main( int argc, char* argv[] )
     }
 
 #endif // HAVE_MPI
+
+    if(skipSolve)
+      return ( success ? 0 : 1 );
 
     MoochoSolver::ESolutionStatus solution_status;
 
@@ -392,8 +418,8 @@ int main( int argc, char* argv[] )
     return solution_status;
     
   }
-  TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
-    
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,success)
+
   return MoochoSolver::SOLVE_RETURN_EXCEPTION;
   
 }

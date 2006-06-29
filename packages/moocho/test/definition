@@ -494,3 +494,18 @@
 #    COMM = MPI(2,4);
 #}
 
+
+# These following tests are just to make sure the
+# Thyra::DefaultClusteredSpmdVector[Space] classes work correctly!
+
+(FRAMEWORK,INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --num-procs-per-cluster=1 --skip-solve;
+    COMM = MPI,SERIAL;
+}
+
+(FRAMEWORK,INSTALL) {
+    TESTS = ../thyra/example/NLPThyraEpetraAdvDiffReactOpt/MultiPeriodNLPThyraEpetraAdvDiffReactOpt.exe;
+    ARGS = --num-procs-per-cluster=2 --skip-solve;
+    COMM = MPI(2,4,6,8);
+}

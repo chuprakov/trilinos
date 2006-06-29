@@ -32,7 +32,7 @@
 #include "Thyra_DefaultFiniteDifferenceModelEvaluator.hpp"
 #include "Thyra_DefaultStateEliminationModelEvaluator.hpp"
 #include "Thyra_DefaultEvaluationLoggerModelEvaluator.hpp"
-#include "Thyra_ParallelMultiVectorFileIO.hpp"
+#include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DampenedNewtonNonlinearSolver.hpp"
 #include "Thyra_VectorStdOps.hpp"
 
@@ -47,7 +47,7 @@ readVectorFromFile(
   ,const double                                                       scaleBy = 1.0
   )
 {
-  Thyra::ParallelMultiVectorFileIO<Scalar> fileIO;
+  Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
   Teuchos::RefCountPtr<Thyra::VectorBase<Scalar> >
     vec = fileIO.readVectorFromFile(fileNameBase,vs);
   Thyra::Vt_S(&*vec,scaleBy);
@@ -59,7 +59,7 @@ void writeVectorToFile(
   ,const std::string                 &fileNameBase
   )
 {
-  Thyra::ParallelMultiVectorFileIO<Scalar> fileIO;
+  Thyra::SpmdMultiVectorFileIO<Scalar> fileIO;
   fileIO.writeToFile(vec,fileNameBase);
 }
 
