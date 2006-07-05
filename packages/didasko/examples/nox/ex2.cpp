@@ -353,19 +353,19 @@ int main( int argc, char **argv )
     Teuchos::rcp(new SimpleProblemInterface(&Problem) );
   
   // Create the top level parameter list
-  Teuchos::RefCountPtr<NOX::Parameter::List> nlParamsPtr =
-    Teuchos::rcp(new NOX::Parameter::List);
-  NOX::Parameter::List& nlParams = *(nlParamsPtr.get());
+  Teuchos::RefCountPtr<Teuchos::ParameterList> nlParamsPtr =
+    Teuchos::rcp(new Teuchos::ParameterList);
+  Teuchos::ParameterList& nlParams = *(nlParamsPtr.get());
 
   // Set the nonlinear solver method
-  nlParams.setParameter("Nonlinear Solver", "Line Search Based");
+  nlParams.set("Nonlinear Solver", "Line Search Based");
 
   // Set the printing parameters in the "Printing" sublist
-  NOX::Parameter::List& printParams = nlParams.sublist("Printing");
-  printParams.setParameter("MyPID", Comm.MyPID()); 
-  printParams.setParameter("Output Precision", 3);
-  printParams.setParameter("Output Processor", 0);
-  printParams.setParameter("Output Information", 
+  Teuchos::ParameterList& printParams = nlParams.sublist("Printing");
+  printParams.set("MyPID", Comm.MyPID()); 
+  printParams.set("Output Precision", 3);
+  printParams.set("Output Processor", 0);
+  printParams.set("Output Information", 
 			NOX::Utils::OuterIteration + 
 			NOX::Utils::OuterIterationStatusTest + 
 			NOX::Utils::InnerIteration +
@@ -375,23 +375,23 @@ int main( int argc, char **argv )
 
   // start definition of nonlinear solver parameters
   // Sublist for line search 
-  NOX::Parameter::List& searchParams = nlParams.sublist("Line Search");
-  searchParams.setParameter("Method","More'-Thuente");
+  Teuchos::ParameterList& searchParams = nlParams.sublist("Line Search");
+  searchParams.set("Method","More'-Thuente");
 
   // Sublist for direction
-  NOX::Parameter::List& dirParams = nlParams.sublist("Direction");
-  dirParams.setParameter("Method", "Newton");
+  Teuchos::ParameterList& dirParams = nlParams.sublist("Direction");
+  dirParams.set("Method", "Newton");
 
-  NOX::Parameter::List& newtonParams = dirParams.sublist("Newton");
-  newtonParams.setParameter("Forcing Term Method", "Constant");
+  Teuchos::ParameterList& newtonParams = dirParams.sublist("Newton");
+  newtonParams.set("Forcing Term Method", "Constant");
 
   // Sublist for linear solver for the Newton method
-  NOX::Parameter::List& lsParams = newtonParams.sublist("Linear Solver");
-  lsParams.setParameter("Aztec Solver", "GMRES");  
-  lsParams.setParameter("Max Iterations", 800);  
-  lsParams.setParameter("Tolerance", 1e-4);
-  lsParams.setParameter("Output Frequency", 50);    
-  lsParams.setParameter("Aztec Preconditioner", "ilu"); 
+  Teuchos::ParameterList& lsParams = newtonParams.sublist("Linear Solver");
+  lsParams.set("Aztec Solver", "GMRES");  
+  lsParams.set("Max Iterations", 800);  
+  lsParams.set("Tolerance", 1e-4);
+  lsParams.set("Output Frequency", 50);    
+  lsParams.set("Aztec Preconditioner", "ilu"); 
 
   Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Problem.GetMatrix(), false );
 
@@ -434,7 +434,7 @@ int main( int argc, char **argv )
 
   // Print the answer
   cout << "\n" << "-- Parameter List From Solver --" << "\n";
-  solver.getParameterList().print(cout);
+  solver.getList().print(cout);
 
   // Get the Epetra_Vector with the final solution from the solver
   const NOX::Epetra::Group & finalGroup = 
