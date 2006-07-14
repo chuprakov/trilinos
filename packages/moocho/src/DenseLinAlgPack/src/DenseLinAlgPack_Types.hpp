@@ -33,6 +33,8 @@
 #include "RangePack_Range1D.hpp"
 #include "BLAS_Cpp_Types.hpp"
 
+namespace MemMngPack {}
+
 namespace DenseLinAlgPack {
 
 /* * @name {\bf DenseLinAlgPack Type Declarations}.

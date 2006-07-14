@@ -31,6 +31,8 @@
 
 #include <stdexcept>
 
+namespace MemMngPack {}
+
 namespace IterationPack {
 
 ///
