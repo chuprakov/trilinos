@@ -50,7 +50,7 @@ private:
   const static char* LOWSFactoryTypeNames_[numLOWSFactoryTypes_];
   
   ELOWSFactoryType    lowsFactoryType_;
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#if defined(HAVE_TEUCHOS_EXTENDED)
   std::string         lowsfParamsFile_;
   std::string         lowsfExtraParams_;
   std::string         lowsfParamsUsedFile_;

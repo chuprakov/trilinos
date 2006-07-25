@@ -13,7 +13,7 @@
 #ifdef HAVE_IFPACK_THYRA
 #  include "Thyra_IfpackPreconditionerFactory.hpp"
 #endif
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#if defined(HAVE_TEUCHOS_EXTENDED)
 #  include "Teuchos_XMLParameterListHelpers.hpp"
 #endif
 
@@ -49,7 +49,7 @@ RealLinearOpWithSolveFactoryCreator:: LOWSFactoryTypeNames_[
 
 RealLinearOpWithSolveFactoryCreator::RealLinearOpWithSolveFactoryCreator()
   :lowsFactoryType_(LOWSF_AMESOS)
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#if defined(HAVE_TEUCHOS_EXTENDED)
   ,lowsfParamsFile_("")
   ,lowsfExtraParams_("")
   ,lowsfParamsUsedFile_("")
@@ -66,7 +66,7 @@ void RealLinearOpWithSolveFactoryCreator::setupCLP(
     ,numLOWSFactoryTypes_,LOWSFactoryTypeValues_,LOWSFactoryTypeNames_
     ,"The implementation for the LinearOpWithSolveFactory object used to solve the state linear systems"
     );
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#if defined(HAVE_TEUCHOS_EXTENDED)
   clp->setOption(
     "lowsf-params-file", &lowsfParamsFile_
     ,"LOWSF parameters XML file (must be compatible with --lowsf=???)"
@@ -123,7 +123,7 @@ RealLinearOpWithSolveFactoryCreator::createLOWSF( std::ostream *out_arg ) const
   Teuchos::RefCountPtr<Teuchos::ParameterList>
     lowsfPL = Teuchos::rcp(new Teuchos::ParameterList("LOWSF"));
   if(1) {
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#if defined(HAVE_TEUCHOS_EXTENDED)
     if(lowsfParamsFile_.length()) {
       Teuchos::updateParametersFromXmlFile(lowsfParamsFile_,&*lowsfPL);
       if(out.get()) {
@@ -138,7 +138,7 @@ RealLinearOpWithSolveFactoryCreator::createLOWSF( std::ostream *out_arg ) const
         lowsfPL->print(*OSTab(out).getOStream(),0,true);
       }
     }
-#endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#endif // defined(HAVE_TEUCHOS_EXTENDED)
     lowsFactory->setParameterList(lowsfPL);
     if(out.get()) {
       *out << "\nList of all valid LOWSF parameters:\n";
@@ -157,13 +157,12 @@ void RealLinearOpWithSolveFactoryCreator::writeParamsUsedFile(
   const LinearOpWithSolveFactoryBase<double> &lowsFactory
   ) const
 {
+#if defined(HAVE_TEUCHOS_EXTENDED)
   // Write the LOWSF parameters that were used:
-#if defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
   if(lowsfParamsUsedFile_ != "" ) {
     Teuchos::writeParameterListToXmlFile(*lowsFactory.getParameterList(),lowsfParamsUsedFile_);
   }
-#endif // defined(HAVE_TEUCHOS_EXTENDED) && defined(HAVE_TEUCHOS_EXPAT)
+#endif // defined(HAVE_TEUCHOS_EXTENDED)
 }
-
 
 } // namespace Thyra
