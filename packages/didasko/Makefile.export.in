@@ -1,7 +1,7 @@
 @HAVE_DIDASKO_EPETRA_TRUE@EPETRA_INCLUDES= -I$(top_builddir)/../epetra/src -I$(top_srcdir)/../epetra/src
 @HAVE_DIDASKO_EPETRA_TRUE@EPETRA_LIB= $(top_builddir)/../epetra/src/libepetra.a
 
-@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_INCLUDES= -I$(top_builddir)/../epetraext/src -I$(top_srcdir)/../epetraext/src/inout
+@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_INCLUDES= -I$(top_builddir)/../epetraext/src -I$(top_srcdir)/../epetraext/src/ -I$(top_srcdir)/../epetraext/src/inout -I$(top_srcdir)/../epetraext/src/transform
 @HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_LIB= $(top_builddir)/../epetraext/src/libepetraext.a
 
 @HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_INCLUDES= -I$(top_builddir)/../triutils/src -I$(top_srcdir)/../triutils/src
