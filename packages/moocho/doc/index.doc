@@ -2,9 +2,9 @@
 
 MOOCHO (Multifunctional Object-Oriented arCHitecture for Optimization) is
 designed to solve large-scale, equality and inequality nonlinearly
-constrained, non-convex optimization using reduced-space successive quadratic
-programming (SQP) methods.  The most general form of the optimization problem
-to be solved is:
+constrained, non-convex optimization problems (i.e. nonlinear programs) using
+reduced-space successive quadratic programming (SQP) methods.  The most
+general form of the optimization problem that can be solved is:
 
 \f[
 \begin{array}{rcl}
@@ -15,28 +15,28 @@ to be solved is:
 \f]
 
 where \f$x\in\Re^n\f$ the optimization variables,
-\f$f(x)\in\in\Re^n\rightarrow\Re\f$ is the nonlinear scalar objective
-function, \f$c(x)=0\f$, where \f$c(x)\in\Re^n\rightarrow\Re^m\f$, are the
-nonlinear constraints, and \f$x_L\f$, and \f$x_U\f$ are the upper and lower
-bounds on the optimization variables.  The current algorithms in MOOCHO are
-well suited to solving optimization problems with massive numbers of unknown
-variables and equations but few so-called degrees of optimization freedom
-(i.e. the number of variables minus the number of equality constraints).
-Various line-search based globalization methods are available, including exact
-penalty functions and a form of the filter method.  The algorithms in MOOCHO
-are provably locally and globally convergent for a wide class of problems in
-theory but in practice the behavior and the performance of the algorithms
-varies greatly from problem to problem.
+\f$f(x)\in\Re^n\rightarrow\Re\f$ is the nonlinear scalar objective function,
+\f$c(x)=0\f$ (where \f$c(x)\in\Re^n\rightarrow\Re^m\f$) are the nonlinear
+constraints, and \f$x_L\f$ and \f$x_U\f$ are the upper and lower bounds on the
+variables.  The current algorithms in MOOCHO are well suited to solving
+optimization problems with massive numbers of unknown variables and equations
+but few so-called degrees of optimization freedom (i.e. the degrees of freedom
+= \f$n-m\f$ = the number of variables minus the number of equality
+constraints).  Various line-search based globalization methods are available,
+including exact penalty functions and a form of the filter method.  The
+algorithms in MOOCHO are provably locally and globally convergent for a wide
+class of problems in theory but in practice the behavior and the performance
+of the algorithms varies greatly from problem to problem.
 
 MOOCHO was initially developed to solve general sparse optimization problems
 where there is no clear distinction between state variables and optimization
-parameters.  For these types of problems, a serial sparse direct solver is
+parameters.  For these types of problems a serial sparse direct solver must be
 used (only if you have MA28) to find a square basis for the variable reduction
-decompositions that are used.
+decompositions current supported.
 
 More recently, MOOCHO has been interfaced through <tt>Thyra</tt> and the
-<tt>Thyra::ModelEvaluator</tt> to address very large-scale
-simulation-constrained problems that take the form:
+<tt>Thyra::ModelEvaluator</tt> to address very large-scale, massively
+parallel, simulation-constrained optimization problems that take the form:
 
 \f[
 \begin{array}{rcl}
@@ -52,12 +52,14 @@ optimization parameters and \f$c(y,u)=0\f$ are the discrete nonlinear state
 simulation equations.  Here the state Jacobian \f$\frac{\partial c}{\partial
 y}\f$ must be square and nonsingular and the partitioning of
 \f$x=\left[\begin{array}{cc} y^T & u^T \end{array}\right]^T\f$ into state
-\f$y\f$ and optimization \f$u\f$ variables must be know up a priori.  All of
-the functionality needed for MOOCHO to solve a simulation-constrained
-optimization problem can be specified through subclassing the
-<tt>Thyra::ModelEvaluator</tt> interface.  Epetra-based applications can
-instead implement the <tt>EpetraExt::ModelEvaluator</tt> interface and never
-need to work with Thyra.
+variables \f$y\f$ and optimization variables \f$u\f$ must be known <em>a
+priori</em> and this partitioning can not change during a solve.  All of the
+functionality needed for MOOCHO to solve a simulation-constrained optimization
+problem can be specified through sub-classing the
+<tt>Thyra::ModelEvaluator</tt> interface, and related <tt>Thyra</tt>
+interfaces.  Epetra-based applications can instead implement the
+<tt>EpetraExt::ModelEvaluator</tt> interface and never need to work with Thyra
+directly except in trivial and transparent ways.
 
 For simulation-constrained optimization problems, MOOCHO can utilize the full
 power of the massively parallel iterative linear solvers and preconditioners
@@ -67,21 +69,24 @@ direct solves in Amesos, the preconditioners in Ifpack and ML, and the
 iterative Krylov solvers in AztecOO and Belos (which is not being released but
 is available in the development version of Trilinos).  For small to moderate
 numbers of optimization parameters, the only bottleneck to parallel
-scalability is the linear solver used for the state Jacobian \f$\frac{\partial
-c}{\partial y}\f$ which is controlled by the simulation application and the
-Trilinos linear solvers and preconditioners themselves.  The reduced-space SQP
-algorithms in MOOCHO itself are highly scalable.
+scalability is the linear solver used to solve linear systems involving the
+state Jacobian \f$\frac{\partial c}{\partial y}\f$.  The reduced-space SQP
+algorithms in MOOCHO itself exhibit extremely good parallel scalability.  The
+parallel scalability of the linear solvers is controlled by the simulation
+application and the Trilinos linear solvers and preconditioners themselves.
+Typically, the parallel scalability is limited by the preconditioners as the
+problem is partitioned to more and more processes.
 
 MOOCHO also includes a minimally invasive mode for reduced-space SQP where the
 simulator application only needs to compute the objective and constraint
 functions \f$f(y,u)\in\Re^{n_y+n_u}\rightarrow\Re\f$ and
-\f$c(y,u)\in\Re^{n_y+n_u}\rightarrow\Re^{n_y}\f$ and solve for linear systems
-with \f$\frac{\partial c}{\partial y}\f$.  All other derivatives can be
-approximated with directional finite differences but any exact derivatives
-that can be computed by the application are happily accepted and fully
-utilized by MOOCHO through the <tt>Thyra::ModelEvaluator</tt> interface.
+\f$c(y,u)\in\Re^{n_y+n_u}\rightarrow\Re^{n_y}\f$ and solve only forward linear
+systems involving \f$\frac{\partial c}{\partial y}\f$.  All other derivatives
+can be approximated with directional finite differences but any exact
+derivatives that can be computed by the application are happily accepted and
+fully utilized by MOOCHO through the <tt>Thyra::ModelEvaluator</tt> interface.
 
-Specific documentation on the algorithms that MOOCHO implements and the use of
-MOOCHO will be added shortly as well as detailed examples.
+<b>Note:</b> Specific documentation on the algorithms that MOOCHO implements
+and the use of MOOCHO will be added shortly as well as detailed examples.
 
 */
