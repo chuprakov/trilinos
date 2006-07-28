@@ -1,0 +1,16 @@
+WebTrilinos -- History of visible changes
+=========================================
+
+This file reports (some of) the visible changes to WebTrilinos.
+Please submit WebTrilinos bugs at software.sandia.gov/buzgilla, or
+report bugs to marzio.sala _AT_ gmail.com.
+
+------------------------------------------------------------------------------
+
+July 2006
+
+* First version of WebTrilinos. This is spin-off of the MatrixPortal project,
+  developed within the ML package. MatrixPortal still exists within
+  WebTrilinos, and it is completed by a C++ and Python web interface. The new
+  version is also much easier to configure and use.
+

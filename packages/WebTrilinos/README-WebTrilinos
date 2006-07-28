@@ -1,0 +1,9 @@
+Welcome to WebTrilinos, the Web interface of (part of) Trilinos.
+
+The WebTrilinos documentation is maintained on the web page of the package,
+see 
+
+http://software.sandia.gov/trilinos/packages/webtrilinos.
+
+You can also give a look into the WebTrilinos/doc subdirectory, which contains
+detailed information on what WebTrilinos is, and how to install it.
