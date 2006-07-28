@@ -3,12 +3,7 @@
 
 //#include "Epetra_config.h"
 
-#ifdef HAVE_MPI
-#include "Epetra_MpiComm.h"
-#include "mpi.h"
-#else
-#include "Epetra_SerialComm.h"
-#endif
+#include <iostream>
 
 #include "Epetra_Map.h"
 #include "Epetra_MultiVector.h"
@@ -18,28 +13,26 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_FECrsMatrix.h"
 #include "Epetra_LinearProblem.h"
-//#include "AztecOO.h"
-//#include "AztecOO_Operator.h"
 #include "Epetra_LAPACK.h"
 #include "Epetra_FEVector.h"
 #include "Epetra_IntSerialDenseVector.h"
 #include "Epetra_SerialDenseMatrix.h"
 #include "Epetra_SerialDenseVector.h"
-
-#include "usr_par.h"
-
-
 #include "GenSQP_DataPool.hpp"
 #include "GenSQP_YUEpetraVector.hpp"
-#include "includes.h"
+#include "Epetra_SerialDenseMatrix.h"
+#include "Epetra_SerialDenseVector.h"
+
+#ifdef HAVE_MPI
+#  include "Epetra_MpiComm.h"
+#else
+#  include "Epetra_SerialComm.h"
+#endif
 
 namespace GLpApp {
 
-/**
-    \brief Implements the GenSQP::DataPool interface module for the parallel
-    Ginzburg-Landau (GLp) application.
-*/
-class GLpYUEpetraDataPool : public GenSQP::DataPool {
+class GLpYUEpetraDataPool : public GenSQP::DataPool
+{
 public:
 
   GLpYUEpetraDataPool(
@@ -151,6 +144,43 @@ private:
 
 };
 
+class Usr_Par {
+public:
+
+  Usr_Par();
+
+  Epetra_SerialDenseMatrix Nodes;
+  Epetra_SerialDenseVector Weights;
+
+  Epetra_SerialDenseMatrix N;
+
+  Epetra_SerialDenseMatrix Nx1;
+
+  Epetra_SerialDenseMatrix Nx2;
+
+  Epetra_SerialDenseMatrix S1;
+  Epetra_SerialDenseMatrix S2;
+  Epetra_SerialDenseMatrix S3;
+
+  Epetra_SerialDenseVector Nw;
+
+  Epetra_SerialDenseMatrix NNw;
+
+  Epetra_SerialDenseMatrix * NNNw;
+
+  Epetra_SerialDenseMatrix * NdNdx1Nw;
+
+  Epetra_SerialDenseMatrix * NdNdx2Nw;
+
+  ~Usr_Par() {
+    delete [] NNNw;
+    delete [] NdNdx1Nw;
+    delete [] NdNdx2Nw;
+  }
+  
+  void Print(ostream& os) const;
+};
+
 } // namespace GLpApp
 
-#endif
+#endif // GLPAPP_GLPYUEPETRADATAPOOL_H

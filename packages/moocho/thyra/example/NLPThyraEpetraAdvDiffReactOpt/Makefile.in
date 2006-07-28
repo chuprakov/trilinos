@@ -122,16 +122,11 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/Moocho_Config.h
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am__objects_1 = GLpApp_AdvDiffReactOptModel.$(OBJEXT) \
+am__objects_1 = Thyra_RealLinearOpWithSolveFactoryCreator.$(OBJEXT) \
+	GLpApp_AdvDiffReactOptModel.$(OBJEXT) \
 	GLpApp_AdvDiffReactOptModelCreator.$(OBJEXT) \
 	GLpApp_GLpYUEpetraDataPool.$(OBJEXT) \
-	GenSQP_YUEpetraVector.$(OBJEXT) assemble.$(OBJEXT) \
-	assemble_bdry.$(OBJEXT) lassembly.$(OBJEXT) \
-	meshreader.$(OBJEXT) nonlinhessvec.$(OBJEXT) \
-	nonlinjac.$(OBJEXT) nonlinvec.$(OBJEXT) print2MATLAB.$(OBJEXT) \
-	quadrature.$(OBJEXT) usr_par.$(OBJEXT) \
-	rect2DMeshGenerator.$(OBJEXT) \
-	Thyra_RealLinearOpWithSolveFactoryCreator.$(OBJEXT)
+	GenSQP_YUEpetraVector.$(OBJEXT) rect2DMeshGenerator.$(OBJEXT)
 am_MultiPeriodNLPThyraEpetraAdvDiffReactOpt_OBJECTS =  \
 	$(am__objects_1) \
 	MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.$(OBJEXT)
@@ -152,15 +147,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/assemble.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/assemble_bdry.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/lassembly.Po ./$(DEPDIR)/meshreader.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/nonlinhessvec.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/nonlinjac.Po ./$(DEPDIR)/nonlinvec.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/print2MATLAB.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/quadrature.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/rect2DMeshGenerator.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/usr_par.Po
+@AMDEP_TRUE@	./$(DEPDIR)/rect2DMeshGenerator.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -189,7 +176,9 @@ BUILD_TESTS_TRUE = @BUILD_TESTS_TRUE@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/../thyra/example/operator_vector
+CPPFLAGS = @CPPFLAGS@ -I$(top_srcdir)/../thyra/example/operator_vector \
+  -I$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp
+
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -334,22 +323,12 @@ _EXPORT_LIBS = $(MOOCHO_LIBS) $(BELOS_LIBS) $(IFPACK_LIBS) $(AZTECOO_LIBS) $(AME
 AM_CPPFLAGS = $(EXPORT_INCLUDES)
 common_ldadd = $(EXPORT_LIBS)
 common_sources = \
-  $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
-  $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp\
-  $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
-  $(srcdir)/GenSQP_YUEpetraVector.cpp\
-  $(srcdir)/assemble.cpp\
-  $(srcdir)/assemble_bdry.cpp\
-  $(srcdir)/lassembly.cpp\
-  $(srcdir)/meshreader.cpp\
-  $(srcdir)/nonlinhessvec.cpp\
-  $(srcdir)/nonlinjac.cpp\
-  $(srcdir)/nonlinvec.cpp\
-  $(srcdir)/print2MATLAB.cpp\
-  $(srcdir)/quadrature.cpp\
-  $(srcdir)/usr_par.cpp\
-  $(srcdir)/rect2DMeshGenerator.cpp\
-  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp
+  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
 
 all: all-am
 
@@ -407,17 +386,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NLPThyraEpetraAdvDiffReactOptMain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assemble.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assemble_bdry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lassembly.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/meshreader.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonlinhessvec.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonlinjac.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonlinvec.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print2MATLAB.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quadrature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect2DMeshGenerator.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/usr_par.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -435,246 +404,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-GLpApp_AdvDiffReactOptModel.o: $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModel.o -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" -c -o GLpApp_AdvDiffReactOptModel.o `test -f '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp' object='GLpApp_AdvDiffReactOptModel.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModel.o `test -f '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp
-
-GLpApp_AdvDiffReactOptModel.obj: $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModel.obj -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" -c -o GLpApp_AdvDiffReactOptModel.obj `if test -f '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp' object='GLpApp_AdvDiffReactOptModel.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModel.obj `if test -f '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_AdvDiffReactOptModel.cpp'; fi`
-
-GLpApp_AdvDiffReactOptModelCreator.o: $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModelCreator.o -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" -c -o GLpApp_AdvDiffReactOptModelCreator.o `test -f '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp' object='GLpApp_AdvDiffReactOptModelCreator.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModelCreator.o `test -f '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp
-
-GLpApp_AdvDiffReactOptModelCreator.obj: $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModelCreator.obj -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" -c -o GLpApp_AdvDiffReactOptModelCreator.obj `if test -f '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp' object='GLpApp_AdvDiffReactOptModelCreator.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModelCreator.obj `if test -f '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp'; fi`
-
-GLpApp_GLpYUEpetraDataPool.o: $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_GLpYUEpetraDataPool.o -MD -MP -MF "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" -c -o GLpApp_GLpYUEpetraDataPool.o `test -f '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po"; else rm -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp' object='GLpApp_GLpYUEpetraDataPool.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po' tmpdepfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_GLpYUEpetraDataPool.o `test -f '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp' || echo '$(srcdir)/'`$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp
-
-GLpApp_GLpYUEpetraDataPool.obj: $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_GLpYUEpetraDataPool.obj -MD -MP -MF "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" -c -o GLpApp_GLpYUEpetraDataPool.obj `if test -f '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po"; else rm -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp' object='GLpApp_GLpYUEpetraDataPool.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po' tmpdepfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_GLpYUEpetraDataPool.obj `if test -f '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; then $(CYGPATH_W) '$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp'; fi`
-
-GenSQP_YUEpetraVector.o: $(srcdir)/GenSQP_YUEpetraVector.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GenSQP_YUEpetraVector.o -MD -MP -MF "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" -c -o GenSQP_YUEpetraVector.o `test -f '$(srcdir)/GenSQP_YUEpetraVector.cpp' || echo '$(srcdir)/'`$(srcdir)/GenSQP_YUEpetraVector.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" "$(DEPDIR)/GenSQP_YUEpetraVector.Po"; else rm -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GenSQP_YUEpetraVector.cpp' object='GenSQP_YUEpetraVector.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GenSQP_YUEpetraVector.Po' tmpdepfile='$(DEPDIR)/GenSQP_YUEpetraVector.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GenSQP_YUEpetraVector.o `test -f '$(srcdir)/GenSQP_YUEpetraVector.cpp' || echo '$(srcdir)/'`$(srcdir)/GenSQP_YUEpetraVector.cpp
-
-GenSQP_YUEpetraVector.obj: $(srcdir)/GenSQP_YUEpetraVector.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GenSQP_YUEpetraVector.obj -MD -MP -MF "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" -c -o GenSQP_YUEpetraVector.obj `if test -f '$(srcdir)/GenSQP_YUEpetraVector.cpp'; then $(CYGPATH_W) '$(srcdir)/GenSQP_YUEpetraVector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GenSQP_YUEpetraVector.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" "$(DEPDIR)/GenSQP_YUEpetraVector.Po"; else rm -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/GenSQP_YUEpetraVector.cpp' object='GenSQP_YUEpetraVector.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GenSQP_YUEpetraVector.Po' tmpdepfile='$(DEPDIR)/GenSQP_YUEpetraVector.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GenSQP_YUEpetraVector.obj `if test -f '$(srcdir)/GenSQP_YUEpetraVector.cpp'; then $(CYGPATH_W) '$(srcdir)/GenSQP_YUEpetraVector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/GenSQP_YUEpetraVector.cpp'; fi`
-
-assemble.o: $(srcdir)/assemble.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assemble.o -MD -MP -MF "$(DEPDIR)/assemble.Tpo" -c -o assemble.o `test -f '$(srcdir)/assemble.cpp' || echo '$(srcdir)/'`$(srcdir)/assemble.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assemble.Tpo" "$(DEPDIR)/assemble.Po"; else rm -f "$(DEPDIR)/assemble.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/assemble.cpp' object='assemble.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assemble.Po' tmpdepfile='$(DEPDIR)/assemble.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assemble.o `test -f '$(srcdir)/assemble.cpp' || echo '$(srcdir)/'`$(srcdir)/assemble.cpp
-
-assemble.obj: $(srcdir)/assemble.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assemble.obj -MD -MP -MF "$(DEPDIR)/assemble.Tpo" -c -o assemble.obj `if test -f '$(srcdir)/assemble.cpp'; then $(CYGPATH_W) '$(srcdir)/assemble.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/assemble.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assemble.Tpo" "$(DEPDIR)/assemble.Po"; else rm -f "$(DEPDIR)/assemble.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/assemble.cpp' object='assemble.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assemble.Po' tmpdepfile='$(DEPDIR)/assemble.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assemble.obj `if test -f '$(srcdir)/assemble.cpp'; then $(CYGPATH_W) '$(srcdir)/assemble.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/assemble.cpp'; fi`
-
-assemble_bdry.o: $(srcdir)/assemble_bdry.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assemble_bdry.o -MD -MP -MF "$(DEPDIR)/assemble_bdry.Tpo" -c -o assemble_bdry.o `test -f '$(srcdir)/assemble_bdry.cpp' || echo '$(srcdir)/'`$(srcdir)/assemble_bdry.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assemble_bdry.Tpo" "$(DEPDIR)/assemble_bdry.Po"; else rm -f "$(DEPDIR)/assemble_bdry.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/assemble_bdry.cpp' object='assemble_bdry.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assemble_bdry.Po' tmpdepfile='$(DEPDIR)/assemble_bdry.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assemble_bdry.o `test -f '$(srcdir)/assemble_bdry.cpp' || echo '$(srcdir)/'`$(srcdir)/assemble_bdry.cpp
-
-assemble_bdry.obj: $(srcdir)/assemble_bdry.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assemble_bdry.obj -MD -MP -MF "$(DEPDIR)/assemble_bdry.Tpo" -c -o assemble_bdry.obj `if test -f '$(srcdir)/assemble_bdry.cpp'; then $(CYGPATH_W) '$(srcdir)/assemble_bdry.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/assemble_bdry.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/assemble_bdry.Tpo" "$(DEPDIR)/assemble_bdry.Po"; else rm -f "$(DEPDIR)/assemble_bdry.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/assemble_bdry.cpp' object='assemble_bdry.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/assemble_bdry.Po' tmpdepfile='$(DEPDIR)/assemble_bdry.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assemble_bdry.obj `if test -f '$(srcdir)/assemble_bdry.cpp'; then $(CYGPATH_W) '$(srcdir)/assemble_bdry.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/assemble_bdry.cpp'; fi`
-
-lassembly.o: $(srcdir)/lassembly.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lassembly.o -MD -MP -MF "$(DEPDIR)/lassembly.Tpo" -c -o lassembly.o `test -f '$(srcdir)/lassembly.cpp' || echo '$(srcdir)/'`$(srcdir)/lassembly.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lassembly.Tpo" "$(DEPDIR)/lassembly.Po"; else rm -f "$(DEPDIR)/lassembly.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/lassembly.cpp' object='lassembly.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lassembly.Po' tmpdepfile='$(DEPDIR)/lassembly.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lassembly.o `test -f '$(srcdir)/lassembly.cpp' || echo '$(srcdir)/'`$(srcdir)/lassembly.cpp
-
-lassembly.obj: $(srcdir)/lassembly.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lassembly.obj -MD -MP -MF "$(DEPDIR)/lassembly.Tpo" -c -o lassembly.obj `if test -f '$(srcdir)/lassembly.cpp'; then $(CYGPATH_W) '$(srcdir)/lassembly.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/lassembly.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lassembly.Tpo" "$(DEPDIR)/lassembly.Po"; else rm -f "$(DEPDIR)/lassembly.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/lassembly.cpp' object='lassembly.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lassembly.Po' tmpdepfile='$(DEPDIR)/lassembly.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lassembly.obj `if test -f '$(srcdir)/lassembly.cpp'; then $(CYGPATH_W) '$(srcdir)/lassembly.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/lassembly.cpp'; fi`
-
-meshreader.o: $(srcdir)/meshreader.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT meshreader.o -MD -MP -MF "$(DEPDIR)/meshreader.Tpo" -c -o meshreader.o `test -f '$(srcdir)/meshreader.cpp' || echo '$(srcdir)/'`$(srcdir)/meshreader.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/meshreader.Tpo" "$(DEPDIR)/meshreader.Po"; else rm -f "$(DEPDIR)/meshreader.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/meshreader.cpp' object='meshreader.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/meshreader.Po' tmpdepfile='$(DEPDIR)/meshreader.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o meshreader.o `test -f '$(srcdir)/meshreader.cpp' || echo '$(srcdir)/'`$(srcdir)/meshreader.cpp
-
-meshreader.obj: $(srcdir)/meshreader.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT meshreader.obj -MD -MP -MF "$(DEPDIR)/meshreader.Tpo" -c -o meshreader.obj `if test -f '$(srcdir)/meshreader.cpp'; then $(CYGPATH_W) '$(srcdir)/meshreader.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/meshreader.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/meshreader.Tpo" "$(DEPDIR)/meshreader.Po"; else rm -f "$(DEPDIR)/meshreader.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/meshreader.cpp' object='meshreader.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/meshreader.Po' tmpdepfile='$(DEPDIR)/meshreader.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o meshreader.obj `if test -f '$(srcdir)/meshreader.cpp'; then $(CYGPATH_W) '$(srcdir)/meshreader.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/meshreader.cpp'; fi`
-
-nonlinhessvec.o: $(srcdir)/nonlinhessvec.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinhessvec.o -MD -MP -MF "$(DEPDIR)/nonlinhessvec.Tpo" -c -o nonlinhessvec.o `test -f '$(srcdir)/nonlinhessvec.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinhessvec.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinhessvec.Tpo" "$(DEPDIR)/nonlinhessvec.Po"; else rm -f "$(DEPDIR)/nonlinhessvec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinhessvec.cpp' object='nonlinhessvec.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinhessvec.Po' tmpdepfile='$(DEPDIR)/nonlinhessvec.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinhessvec.o `test -f '$(srcdir)/nonlinhessvec.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinhessvec.cpp
-
-nonlinhessvec.obj: $(srcdir)/nonlinhessvec.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinhessvec.obj -MD -MP -MF "$(DEPDIR)/nonlinhessvec.Tpo" -c -o nonlinhessvec.obj `if test -f '$(srcdir)/nonlinhessvec.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinhessvec.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinhessvec.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinhessvec.Tpo" "$(DEPDIR)/nonlinhessvec.Po"; else rm -f "$(DEPDIR)/nonlinhessvec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinhessvec.cpp' object='nonlinhessvec.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinhessvec.Po' tmpdepfile='$(DEPDIR)/nonlinhessvec.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinhessvec.obj `if test -f '$(srcdir)/nonlinhessvec.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinhessvec.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinhessvec.cpp'; fi`
-
-nonlinjac.o: $(srcdir)/nonlinjac.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinjac.o -MD -MP -MF "$(DEPDIR)/nonlinjac.Tpo" -c -o nonlinjac.o `test -f '$(srcdir)/nonlinjac.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinjac.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinjac.Tpo" "$(DEPDIR)/nonlinjac.Po"; else rm -f "$(DEPDIR)/nonlinjac.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinjac.cpp' object='nonlinjac.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinjac.Po' tmpdepfile='$(DEPDIR)/nonlinjac.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinjac.o `test -f '$(srcdir)/nonlinjac.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinjac.cpp
-
-nonlinjac.obj: $(srcdir)/nonlinjac.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinjac.obj -MD -MP -MF "$(DEPDIR)/nonlinjac.Tpo" -c -o nonlinjac.obj `if test -f '$(srcdir)/nonlinjac.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinjac.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinjac.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinjac.Tpo" "$(DEPDIR)/nonlinjac.Po"; else rm -f "$(DEPDIR)/nonlinjac.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinjac.cpp' object='nonlinjac.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinjac.Po' tmpdepfile='$(DEPDIR)/nonlinjac.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinjac.obj `if test -f '$(srcdir)/nonlinjac.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinjac.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinjac.cpp'; fi`
-
-nonlinvec.o: $(srcdir)/nonlinvec.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinvec.o -MD -MP -MF "$(DEPDIR)/nonlinvec.Tpo" -c -o nonlinvec.o `test -f '$(srcdir)/nonlinvec.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinvec.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinvec.Tpo" "$(DEPDIR)/nonlinvec.Po"; else rm -f "$(DEPDIR)/nonlinvec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinvec.cpp' object='nonlinvec.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinvec.Po' tmpdepfile='$(DEPDIR)/nonlinvec.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinvec.o `test -f '$(srcdir)/nonlinvec.cpp' || echo '$(srcdir)/'`$(srcdir)/nonlinvec.cpp
-
-nonlinvec.obj: $(srcdir)/nonlinvec.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT nonlinvec.obj -MD -MP -MF "$(DEPDIR)/nonlinvec.Tpo" -c -o nonlinvec.obj `if test -f '$(srcdir)/nonlinvec.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinvec.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinvec.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/nonlinvec.Tpo" "$(DEPDIR)/nonlinvec.Po"; else rm -f "$(DEPDIR)/nonlinvec.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/nonlinvec.cpp' object='nonlinvec.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/nonlinvec.Po' tmpdepfile='$(DEPDIR)/nonlinvec.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nonlinvec.obj `if test -f '$(srcdir)/nonlinvec.cpp'; then $(CYGPATH_W) '$(srcdir)/nonlinvec.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/nonlinvec.cpp'; fi`
-
-print2MATLAB.o: $(srcdir)/print2MATLAB.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT print2MATLAB.o -MD -MP -MF "$(DEPDIR)/print2MATLAB.Tpo" -c -o print2MATLAB.o `test -f '$(srcdir)/print2MATLAB.cpp' || echo '$(srcdir)/'`$(srcdir)/print2MATLAB.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/print2MATLAB.Tpo" "$(DEPDIR)/print2MATLAB.Po"; else rm -f "$(DEPDIR)/print2MATLAB.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/print2MATLAB.cpp' object='print2MATLAB.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/print2MATLAB.Po' tmpdepfile='$(DEPDIR)/print2MATLAB.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o print2MATLAB.o `test -f '$(srcdir)/print2MATLAB.cpp' || echo '$(srcdir)/'`$(srcdir)/print2MATLAB.cpp
-
-print2MATLAB.obj: $(srcdir)/print2MATLAB.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT print2MATLAB.obj -MD -MP -MF "$(DEPDIR)/print2MATLAB.Tpo" -c -o print2MATLAB.obj `if test -f '$(srcdir)/print2MATLAB.cpp'; then $(CYGPATH_W) '$(srcdir)/print2MATLAB.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/print2MATLAB.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/print2MATLAB.Tpo" "$(DEPDIR)/print2MATLAB.Po"; else rm -f "$(DEPDIR)/print2MATLAB.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/print2MATLAB.cpp' object='print2MATLAB.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/print2MATLAB.Po' tmpdepfile='$(DEPDIR)/print2MATLAB.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o print2MATLAB.obj `if test -f '$(srcdir)/print2MATLAB.cpp'; then $(CYGPATH_W) '$(srcdir)/print2MATLAB.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/print2MATLAB.cpp'; fi`
-
-quadrature.o: $(srcdir)/quadrature.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quadrature.o -MD -MP -MF "$(DEPDIR)/quadrature.Tpo" -c -o quadrature.o `test -f '$(srcdir)/quadrature.cpp' || echo '$(srcdir)/'`$(srcdir)/quadrature.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quadrature.Tpo" "$(DEPDIR)/quadrature.Po"; else rm -f "$(DEPDIR)/quadrature.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/quadrature.cpp' object='quadrature.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/quadrature.Po' tmpdepfile='$(DEPDIR)/quadrature.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quadrature.o `test -f '$(srcdir)/quadrature.cpp' || echo '$(srcdir)/'`$(srcdir)/quadrature.cpp
-
-quadrature.obj: $(srcdir)/quadrature.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quadrature.obj -MD -MP -MF "$(DEPDIR)/quadrature.Tpo" -c -o quadrature.obj `if test -f '$(srcdir)/quadrature.cpp'; then $(CYGPATH_W) '$(srcdir)/quadrature.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/quadrature.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/quadrature.Tpo" "$(DEPDIR)/quadrature.Po"; else rm -f "$(DEPDIR)/quadrature.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/quadrature.cpp' object='quadrature.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/quadrature.Po' tmpdepfile='$(DEPDIR)/quadrature.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quadrature.obj `if test -f '$(srcdir)/quadrature.cpp'; then $(CYGPATH_W) '$(srcdir)/quadrature.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/quadrature.cpp'; fi`
-
-usr_par.o: $(srcdir)/usr_par.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT usr_par.o -MD -MP -MF "$(DEPDIR)/usr_par.Tpo" -c -o usr_par.o `test -f '$(srcdir)/usr_par.cpp' || echo '$(srcdir)/'`$(srcdir)/usr_par.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/usr_par.Tpo" "$(DEPDIR)/usr_par.Po"; else rm -f "$(DEPDIR)/usr_par.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/usr_par.cpp' object='usr_par.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/usr_par.Po' tmpdepfile='$(DEPDIR)/usr_par.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o usr_par.o `test -f '$(srcdir)/usr_par.cpp' || echo '$(srcdir)/'`$(srcdir)/usr_par.cpp
-
-usr_par.obj: $(srcdir)/usr_par.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT usr_par.obj -MD -MP -MF "$(DEPDIR)/usr_par.Tpo" -c -o usr_par.obj `if test -f '$(srcdir)/usr_par.cpp'; then $(CYGPATH_W) '$(srcdir)/usr_par.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/usr_par.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/usr_par.Tpo" "$(DEPDIR)/usr_par.Po"; else rm -f "$(DEPDIR)/usr_par.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/usr_par.cpp' object='usr_par.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/usr_par.Po' tmpdepfile='$(DEPDIR)/usr_par.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o usr_par.obj `if test -f '$(srcdir)/usr_par.cpp'; then $(CYGPATH_W) '$(srcdir)/usr_par.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/usr_par.cpp'; fi`
-
-rect2DMeshGenerator.o: $(srcdir)/rect2DMeshGenerator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.o -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.o `test -f '$(srcdir)/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(srcdir)/rect2DMeshGenerator.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.o `test -f '$(srcdir)/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(srcdir)/rect2DMeshGenerator.cpp
-
-rect2DMeshGenerator.obj: $(srcdir)/rect2DMeshGenerator.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.obj -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.obj `if test -f '$(srcdir)/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(srcdir)/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/rect2DMeshGenerator.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.obj `if test -f '$(srcdir)/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(srcdir)/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/rect2DMeshGenerator.cpp'; fi`
-
 Thyra_RealLinearOpWithSolveFactoryCreator.o: $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Thyra_RealLinearOpWithSolveFactoryCreator.o -MD -MP -MF "$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Tpo" -c -o Thyra_RealLinearOpWithSolveFactoryCreator.o `test -f '$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp' || echo '$(srcdir)/'`$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Tpo" "$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po"; else rm -f "$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Tpo"; exit 1; fi
@@ -690,6 +419,86 @@ Thyra_RealLinearOpWithSolveFactoryCreator.obj: $(srcdir)/Thyra_RealLinearOpWithS
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.Po' tmpdepfile='$(DEPDIR)/Thyra_RealLinearOpWithSolveFactoryCreator.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Thyra_RealLinearOpWithSolveFactoryCreator.obj `if test -f '$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; then $(CYGPATH_W) '$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp'; fi`
+
+GLpApp_AdvDiffReactOptModel.o: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModel.o -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" -c -o GLpApp_AdvDiffReactOptModel.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp' object='GLpApp_AdvDiffReactOptModel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModel.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp
+
+GLpApp_AdvDiffReactOptModel.obj: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModel.obj -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" -c -o GLpApp_AdvDiffReactOptModel.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp' object='GLpApp_AdvDiffReactOptModel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModel.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp'; fi`
+
+GLpApp_AdvDiffReactOptModelCreator.o: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModelCreator.o -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" -c -o GLpApp_AdvDiffReactOptModelCreator.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp' object='GLpApp_AdvDiffReactOptModelCreator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModelCreator.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp
+
+GLpApp_AdvDiffReactOptModelCreator.obj: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_AdvDiffReactOptModelCreator.obj -MD -MP -MF "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" -c -o GLpApp_AdvDiffReactOptModelCreator.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo" "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po"; else rm -f "$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp' object='GLpApp_AdvDiffReactOptModelCreator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.Po' tmpdepfile='$(DEPDIR)/GLpApp_AdvDiffReactOptModelCreator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_AdvDiffReactOptModelCreator.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp'; fi`
+
+GLpApp_GLpYUEpetraDataPool.o: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_GLpYUEpetraDataPool.o -MD -MP -MF "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" -c -o GLpApp_GLpYUEpetraDataPool.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po"; else rm -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp' object='GLpApp_GLpYUEpetraDataPool.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po' tmpdepfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_GLpYUEpetraDataPool.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp
+
+GLpApp_GLpYUEpetraDataPool.obj: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GLpApp_GLpYUEpetraDataPool.obj -MD -MP -MF "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" -c -o GLpApp_GLpYUEpetraDataPool.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo" "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po"; else rm -f "$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp' object='GLpApp_GLpYUEpetraDataPool.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.Po' tmpdepfile='$(DEPDIR)/GLpApp_GLpYUEpetraDataPool.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GLpApp_GLpYUEpetraDataPool.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp'; fi`
+
+GenSQP_YUEpetraVector.o: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GenSQP_YUEpetraVector.o -MD -MP -MF "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" -c -o GenSQP_YUEpetraVector.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" "$(DEPDIR)/GenSQP_YUEpetraVector.Po"; else rm -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp' object='GenSQP_YUEpetraVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GenSQP_YUEpetraVector.Po' tmpdepfile='$(DEPDIR)/GenSQP_YUEpetraVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GenSQP_YUEpetraVector.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp
+
+GenSQP_YUEpetraVector.obj: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT GenSQP_YUEpetraVector.obj -MD -MP -MF "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" -c -o GenSQP_YUEpetraVector.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo" "$(DEPDIR)/GenSQP_YUEpetraVector.Po"; else rm -f "$(DEPDIR)/GenSQP_YUEpetraVector.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp' object='GenSQP_YUEpetraVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/GenSQP_YUEpetraVector.Po' tmpdepfile='$(DEPDIR)/GenSQP_YUEpetraVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GenSQP_YUEpetraVector.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp'; fi`
+
+rect2DMeshGenerator.o: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.o -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.o `test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp' || echo '$(srcdir)/'`$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
+
+rect2DMeshGenerator.obj: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rect2DMeshGenerator.obj -MD -MP -MF "$(DEPDIR)/rect2DMeshGenerator.Tpo" -c -o rect2DMeshGenerator.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/rect2DMeshGenerator.Tpo" "$(DEPDIR)/rect2DMeshGenerator.Po"; else rm -f "$(DEPDIR)/rect2DMeshGenerator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp' object='rect2DMeshGenerator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/rect2DMeshGenerator.Po' tmpdepfile='$(DEPDIR)/rect2DMeshGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rect2DMeshGenerator.obj `if test -f '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; then $(CYGPATH_W) '$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp'; fi`
 
 MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o: $(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o -MD -MP -MF "$(DEPDIR)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.Tpo" -c -o MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.o `test -f '$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp' || echo '$(srcdir)/'`$(srcdir)/MultiPeriodNLPThyraEpetraAdvDiffReactOptMain.cpp; \
@@ -887,11 +696,11 @@ uninstall-am: uninstall-info-am
 	uninstall-am uninstall-info-am
 
 
-square.1.000: $(srcdir)/data/square/square.1.000
-	cp $(srcdir)/data/square/square.1.000 square.1.000
-	cp $(srcdir)/data/square/square.2.000 square.2.000
-	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
-	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
+square.1.000: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.1.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.1.000 square.1.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.2.000 square.2.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.000 square.9x9.2.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.001 square.9x9.2.001
 
 include $(top_builddir)/Makefile.export.moocho
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

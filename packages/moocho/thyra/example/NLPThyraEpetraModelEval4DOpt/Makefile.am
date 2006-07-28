@@ -30,10 +30,10 @@ noinst_PROGRAMS = NLPThyraEpetraModelEval4DOpt
 
 NLPThyraEpetraModelEval4DOpt_SOURCES = \
   $(srcdir)/NLPThyraEpetraModelEval4DOptMain.cpp\
-  $(top_srcdir)/../epetraext/example/model_evaluator/EpetraModelEval4DOpt.cpp
+  $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.cpp
 NLPThyraEpetraModelEval4DOpt_DEPENDENCIES = $(common_dependencies)
 NLPThyraEpetraModelEval4DOpt_LDADD = $(common_ldadd)
 
 include $(top_srcdir)/MakefileExeStub.mak
 
-AM_CPPFLAGS += -I$(top_srcdir)/../epetraext/example/model_evaluator
+AM_CPPFLAGS += -I$(top_srcdir)/../epetraext/example/model_evaluator/4dopt

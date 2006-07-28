@@ -44,30 +44,21 @@ MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES = \
 MultiPeriodNLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
 MultiPeriodNLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
 
-square.1.000: $(srcdir)/data/square/square.1.000
-	cp $(srcdir)/data/square/square.1.000 square.1.000
-	cp $(srcdir)/data/square/square.2.000 square.2.000
-	cp $(srcdir)/data/square/square.9x9.2.000 square.9x9.2.000
-	cp $(srcdir)/data/square/square.9x9.2.001 square.9x9.2.001
+square.1.000: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.1.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.1.000 square.1.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.2.000 square.2.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.000 square.9x9.2.000
+	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.001 square.9x9.2.001
 
 include $(top_srcdir)/MakefileExeStub.mak
 
-CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector
+CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector \
+  -I$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp
 
 common_sources = \
-  $(srcdir)/GLpApp_AdvDiffReactOptModel.cpp\
-  $(srcdir)/GLpApp_AdvDiffReactOptModelCreator.cpp\
-  $(srcdir)/GLpApp_GLpYUEpetraDataPool.cpp\
-  $(srcdir)/GenSQP_YUEpetraVector.cpp\
-  $(srcdir)/assemble.cpp\
-  $(srcdir)/assemble_bdry.cpp\
-  $(srcdir)/lassembly.cpp\
-  $(srcdir)/meshreader.cpp\
-  $(srcdir)/nonlinhessvec.cpp\
-  $(srcdir)/nonlinjac.cpp\
-  $(srcdir)/nonlinvec.cpp\
-  $(srcdir)/print2MATLAB.cpp\
-  $(srcdir)/quadrature.cpp\
-  $(srcdir)/usr_par.cpp\
-  $(srcdir)/rect2DMeshGenerator.cpp\
-  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp
+  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GenSQP_YUEpetraVector.cpp\
+  $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/rect2DMeshGenerator.cpp
