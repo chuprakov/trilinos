@@ -1,0 +1,95 @@
+<?
+include 'config.php';
+?>
+
+<h1>Testing page of WebTrilinos</h1>
+
+<ol>
+  <li>
+  We now try to execute a simple c++ program. The program is:
+<pre>
+#include <iostream>
+
+int main(int argc, char* argv[])
+{
+  std::cout << "Hello, WebTrilinos World!" << std::endl;
+  return(EXIT_SUCCESS);
+}
+</pre>
+  The output is reported below, and it should contain the hello message. 
+  If it does not, please check your installation.
+<pre>
+<?
+$program = "";
+$program .= "#include <iostream>\n";
+$program .= "int main(int argc, char* argv[]) {\n";
+$program .= '  std::cout << "Hello, WebTrilinos World!" << std::endl;';
+$program .= " return(EXIT_SUCCESS); } \n";
+
+global $TempDirectory;
+global $CXX;
+
+$timestamp = date("y-m-d_H.i.s", time());
+
+$configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
+$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+if(!is_dir("$TempDirectory/WebTrilinos"))
+  mkdir("$TempDirectory/WebTrilinos", 0777);
+
+$configFile = fopen($configFileName, 'w')
+  or die("can't open $configFileName: $php_errormsg");
+if (-1 == fwrite($configFile, $program)) { 
+  die("can't write to $configFileName: $php_errormsg"); }
+fclose($configFile);
+
+passthru("$CXX $configFileName -o $configExe 2>&1");
+passthru("$configExe 2>&1");
+
+?>
+</pre>
+
+<br>
+<br>
+<li>We now try a basic PyTrilinos command, by
+executing the instruction 
+<tt>python -c "from PyTrilinos import Epetra; comm = Epetra.PyComm(); print
+  comm"</tt>. You should see something like <tt>::Processor 0 of 1 total
+processors.</tt> If an error arises, please check
+your installation.
+<pre>
+<?
+global $PYTHONPATH;
+
+$command = "";
+if ($PYTHONPATH != "")
+  $command .= "PYTHONPATH=$PYTHONPATH ";
+$command .= 'python -c "from PyTrilinos import Epetra; comm = Epetra.PyComm(); print comm" 2>&1';
+passthru($command);
+?>
+</pre>
+
+<br>
+<br>
+<li>We now try to import all the required PyTrilinos packages, by
+executing the instruction 
+<tt>python -c "from PyTrilinos import Epetra, EpetraExt, Amesos, IFPACK,
+  AztecOO, ML</tt>. Nothing should be printed on screen; if an error arises, please check
+your installation.
+<pre>
+<?
+global $PYTHONPATH;
+
+$command = "";
+if ($PYTHONPATH != "")
+  $command .= "PYTHONPATH=$PYTHONPATH ";
+$command .= 'python -c "from PyTrilinos import Epetra, EpetraExt, Amesos,
+IFPACK, AztecOO, ML" 2 > &1';
+passthru($command);
+?>
+</pre>
+
+</ol>
+
+<br>
+<br>
+Go back to the <a href="../index.html">home page</a>.

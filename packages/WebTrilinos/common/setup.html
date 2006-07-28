@@ -1,0 +1,109 @@
+<h1>Setup Page for WebTrilinos</h1>
+
+<?
+$WebTrilinosDirectory = $_POST["WebTrilinosDirectory"];
+$HTMLImageDirectory   = $_POST["HTMLImageDirectory"];
+$TempDirectory        = $_POST["TempDirectory"];
+$INCLUDES             = $_POST["INCLUDES"];
+$LDFLAGS              = $_POST["LDFLAGS"];
+$LIBS                 = $_POST["LIBS"];
+$PYTHONPATH           = $_POST["PYTHONPATH"];
+$CXX                  = $_POST["CXX"];
+$WebHost              = $_POST["WebHost"];
+
+if ($_POST["mode"] != "")
+{
+  echo "<h2>This is the generated <tt>config.php</tt> file. Please copy the ";
+  echo "text below into <tt>$WebTrilinosDirectory/common/config.php</tt>.";
+  echo "</h2>";
+echo "<font color=red>";
+    echo '<tt>$WebTrilinosDirectory = '. $WebTrilinosDirectory . ";</tt><br>";
+    echo '<tt>$HTMLImageDirectory   = '. $HTMLImageDirectory . ";</tt><br>";
+    echo '<tt>$TempDirectory        = '. $TempDirectory . ";</tt><br>";
+    echo '<tt>$INCLUDES             = '. $INCLUDES . ";</tt><br>";
+    echo '<tt>$LIBS                 = '. $LIBS . ";</tt><br>";
+    echo '<tt>$PYTHONPATH           = '. $PYTHONPATH . ";</tt><br>";
+    echo '<tt>$CXX                  = '. $CXX . ";</tt><br>";
+    echo '<tt>$WebHost              = '. $WebHost . ";</tt><br>";
+    echo '<tt>$HBMatrixDirectory    = '. $WebTrilinosDirectory .
+      "/data/HB/;</tt><br>";
+    echo '<tt>$XMLMatrixDirectory   = '. $WebTrilinosDirectory .
+      "/data/XML/;</tt><br>";
+    echo '<tt>$ImageDirectory       = '. $WebTrilinosDirectory .
+      "/tmp/;</tt><br>";
+    echo "</font>";
+  echo "<hl>";
+}
+
+?>
+
+<form method="POST" action=index.html>
+  <p>This variable specifies the location of the WebTrilinos files. The files
+  in this directory must be in the location of your httpdocs, as specified by
+  your web server. A possible value could be
+  <tt>/var/www/html/WebTrilinos</tt>.
+  <br><input type="text" name=WebTrilinosDirectory
+  value="<? global $WebTrilinos; echo $WebTrilinosDirectory;?>" size=40>
+
+  <P>
+  <p>This variable specifies the location of the automatically 
+  generated imnage files. This must be a valid HTTP location.
+  typical value is <tt>/tmp/</tt>.
+  <br><input type="text" name=HTMLImageDirectory 
+  value="<? global $HTMLImageDirectory; echo $HTMLImageDirectory;?>" size=40>
+
+  <P>
+  <p>This variable specifies the location of the temp files directory. A 
+  typical value is <tt>/tmp/</tt>.
+  <br><input type="text" name=TempDirectory 
+  value="<? global $TempDirectory; echo $TempDirectory;?>" size=40>
+
+  <P>
+  <p>This variable specifies the location of Trilinos' header files.
+  A typical value is <tt>-L/my_trilinos_home/LINUX_SERIAL/include/</tt>.
+  <br><input type="text" name=INCLUDES 
+  value="<? global $INCLUDES; echo $INCLUDES;?>" size=40>
+
+  <P>
+  <p>This variable specifies the LDFLAGS for the linking of Trilinos'
+  examples. A typical value is 
+  <tt>-L/my_trilinos_home/LINUX_SERIAL/lib/</tt>.
+  <br><input type="text" name=LDFLAGS 
+  value="<? global $LDFLAGS; echo $LDFLAGS;?>" size=40>
+
+  <P>
+  <p>This variable specifies the LIBS for the linking of Trilinos'
+  examples. A typical value is:
+  <tt>-lml -lifpack -laztecoo -lamesos -lgaleri -lepetraext -lepetra -lteuchos
+    -llapack -lblas</tt>. You might need <tt>-lf2c -lm</tt>, depending on the
+  installations.
+  <br><input type="text" name=LIBS 
+  value="<? global $LIBS; echo $LIBS;?>" size=40>
+
+  <P>
+  <p>This variable specifies the path for python packages.
+  A typical value is:
+  <tt>my_trilinos_home/LINUX_SERIAL/lib/python2.4/site-packages/</tt>.
+  <br><input type="text" name=PYTHONPATH 
+  value="<? global $PYTHONPATH; echo $PYTHONPATH;?>" size=40>
+
+  <P>
+  <p>This variable specifies the C++ compiler to be used. 
+  A typical value is <tt>g++</tt>.
+  <br><input type="text" name=CXX
+  value="<? global $CXX; echo $CXX;?>" size=40>
+
+  <P>
+  <p>This variable gives the name of the web server hosting WebTrilinos.
+  <br><input type="text" name=WebHost 
+  value="<? global $WebHost; echo $WebHost;?>" size=40>
+  <p>
+  <p>
+
+  <input type=submit class=submitPrimary value="generate config.php" name="mode">
+</form>
+
+<br>
+<br>
+Go to the <a href=testing.html>setup</a> testing, or go back to the
+<a href="../index.html">home page</a>.
