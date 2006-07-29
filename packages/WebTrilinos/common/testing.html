@@ -1,8 +1,10 @@
+<img src=../img/webtrilinos_logo.jpg height=60>
+
 <?
 include 'config.php';
 ?>
 
-<h1>Testing page of WebTrilinos</h1>
+<h1>Testing Page</h1>
 
 <ol>
   <li>We try to <tt>touch</tt> a file in  <tt>
@@ -61,8 +63,66 @@ if (-1 == fwrite($configFile, $program)) {
   die("can't write to $configFileName: $php_errormsg"); }
 fclose($configFile);
 
+echo "<font color=blue>";
 passthru("$CXX $configFileName -o $configExe 2>&1");
 passthru("$configExe 2>&1");
+echo "</font>";
+
+?>
+</pre>
+
+  <br>
+  <br>
+  <li>
+  We now try to execute a simple c++ program that uses Epetra. The program is:
+<pre>
+#include <iostream>
+#include "Epetra_ConfigDefs.h"
+#include "Epetra_SerialComm.h"
+
+int main(int argc, char* argv[])
+{
+  Epetra_SerialComm Comm;
+  std::cout << Comm;
+  return(EXIT_SUCCESS);
+}
+</pre>
+  The output is reported below, and it should contain the printout of the
+  Epetra communicator object.
+  If it does not, please check your installation.
+<pre>
+<?
+$program = "";
+$program .= "#include <iostream>\n";
+$program .= '#include "Epetra_ConfigDefs.h"' . "\n";
+$program .= '#include "Epetra_SerialComm.h"' . "\n";
+$program .= "int main(int argc, char* argv[]) {\n";
+$program .= 'Epetra_SerialComm Comm;std::cout << Comm;';
+$program .= " return(EXIT_SUCCESS); } \n";
+
+global $TempDirectory;
+global $INCLUDES;
+global $LDFLAGS;
+global $LIBS;
+global $CXX;
+
+$timestamp = date("y-m-d_H.i.s", time());
+
+$configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
+$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+if(!is_dir("$TempDirectory/WebTrilinos"))
+  mkdir("$TempDirectory/WebTrilinos", 0777);
+
+$configFile = fopen($configFileName, 'w')
+  or die("can't open $configFileName: $php_errormsg");
+if (-1 == fwrite($configFile, $program)) { 
+  die("can't write to $configFileName: $php_errormsg"); }
+fclose($configFile);
+
+echo "<font color=blue>";
+passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1");
+passthru("$configExe 2>&1");
+echo "</font>";
 
 ?>
 </pre>
@@ -124,12 +184,13 @@ passthru("$configExe 2>&1");
 <br>
 <br>
 <br>
+<br>
 <li>We now try a basic PyTrilinos command, by
 executing the instruction 
 <tt>python -c "from PyTrilinos import Epetra; comm = Epetra.PyComm(); print
   comm"</tt>. You should see something like <tt>::Processor 0 of 1 total
 processors.</tt> If you don't see it, check your installation.
-your installation.
+Please also verify that the are no line breaks in your
 <pre>
 <?
 global $PYTHONPATH;
@@ -138,7 +199,9 @@ $command = "";
 if ($PYTHONPATH != "")
   $command .= "PYTHONPATH=$PYTHONPATH ";
 $command .= 'python -c "from PyTrilinos import Epetra; comm = Epetra.PyComm(); print comm" 2>&1';
+echo "<font color=blue>";
 passthru($command);
+echo "</font>";
 ?>
 </pre>
 
@@ -158,7 +221,9 @@ if ($PYTHONPATH != "")
   $command .= "PYTHONPATH=$PYTHONPATH ";
 $command .= 'python -c "from PyTrilinos import Epetra, EpetraExt, Amesos,
 IFPACK, AztecOO, ML" 2 > &1';
+echo "<font color=blue>";
 passthru($command);
+echo "</font>";
 ?>
 </pre>
 
@@ -167,5 +232,10 @@ passthru($command);
 <br>
 <br>
 If everything is fine, then you should be able to use WebTrilinos!
-Go back to the <a href="../index.html">home page</a> and test the C++, Python
+Go back to the <a href="../index.html">WebTrilinos home page</a> and test the C++, Python
 and MatrixPortal module!
+<br>
+<br>
+<p>For more details, please check the official
+<a href=http://software.sandia.gov/trilinos/packages/webtrilinos>WebTrilinos'
+  web page</a>.

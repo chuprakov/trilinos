@@ -1,4 +1,7 @@
-<h1>This is the "Basic Requirements" page of WebTrilinos</h1>
+<img src=../img/webtrilinos_logo.jpg height=60>
+
+<br>
+<h1>Basic Requirements</h1>
 
 <p>Please check the following:
 <ol>
@@ -12,6 +15,13 @@ Trilinos directory.
 
 <br>
 <br>
+<li><b>IMPORTANT</b>: You probably want to add a password protection to the directories 
+  <tt>WebTrilinos/c++</tt> and <tt>WebTrilinos/python</tt>! Instructions
+on how to do it can be found 
+<a href=http://httpd.apache.org/docs/1.3/howto/auth.html>here</a>. The
+MatrixPortal module can be left without protections, depending on your needs.
+<br>
+<br>
 <li>
 You need PHP installed on your system. PHP must process both <tt>.php</tt> and
 <tt>.html</tt> files. The line below should not contain any <tt>&lt;?</tt> or
@@ -19,22 +29,27 @@ You need PHP installed on your system. PHP must process both <tt>.php</tt> and
 that PHP takes care of <tt>.html</tt> as well.
 
 <P>
+<font color=blue>
 <? echo "Simple test for PHP!"; ?>
+</font>
 
 <br>
 <br>
 <li>
 <p>You need <tt>convert</tt> installed on your system. Below you have the
 location of <tt>convert</tt> as defined by <tt>/bin/env</tt>.
-<p><? passthru("echo /bin/env convert"); ?>. 
+<p>
+<font color=blue>
+  <? passthru("echo /bin/env convert"); ?>. 
+</font>
 <p>If nothing is found, then you
 will not be able to plot the sparsity pattern in the MatrixPortal module.
 
 <br>
 <br>
 <li>You need PyChart to plot results in the MatrixPortal module. If you don't
-have it, you can still use MatrixPortal and the other modules, but without
-graphs. PyChart can be downloaded at the web page
+have it, you can still WebTrilinos, but without
+graphs in the MatrixPortal module. PyChart can be downloaded at the web page
 <a href=http://home.gna.org/pychart/>http://home.gna.org/pychart/</a>.  Below
 you have the output of <tt>python -c "from pychart import *"</tt>. If nothing
 is reported, PyChart is correctly installed on your system.
@@ -46,3 +61,7 @@ is reported, PyChart is correctly installed on your system.
 <br>
 Go to the <a href=setup.html>setup</a> page, or go back to the
 <a href="../index.html">home page</a>.
+<br>
+<p>For more details, please check the official
+<a href=http://software.sandia.gov/trilinos/packages/webtrilinos>WebTrilinos'
+  web page</a>.
