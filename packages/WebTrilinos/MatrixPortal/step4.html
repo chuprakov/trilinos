@@ -479,10 +479,11 @@ if ($_POST['plot'] == "plot/replot")
 
     global $PYTHONPATH;
     global $TempDirectory;
+    global $ImageDirectory;
     global $HTMLImageDirectory;
 
     $command = "PYTHONPATH=$PYTHONPATH ";
-    $command .= 'python ' . $TempDirectory . '/gnuplot-' . $timestamp . ".dat --format=png --scale=3 --output=" . $TempDirectory . "/gnuplot-" . $timestamp . ".png 2>&1";
+    $command .= 'python ' . $TempDirectory . '/gnuplot-' . $timestamp . ".dat --format=png --scale=3 --output=" . $ImageDirectory . "/gnuplot-" . $timestamp . ".png 2>&1";
     passthru($command);
 
     echo '<img src=' . $HTMLImageDirectory . '/gnuplot-' . $timestamp . '.png>';

@@ -1,5 +1,5 @@
 EXTRA_DIST = index.html help.html \
-	     setpath.py
+	     setpath.py \
              ex_Amesos.py  ex_Comm.py \
 	     ex_Map.py     ex_ML.py \
 	     ex_AztecOO.py ex_IFPACK.py \

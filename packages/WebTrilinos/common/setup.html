@@ -15,88 +15,101 @@ if ($_POST["mode"] != "")
 {
   echo "<h2>This is the generated <tt>config.php</tt> file. Please copy the ";
   echo "text below into <tt>$WebTrilinosDirectory/common/config.php</tt>.";
+  echo "You might want to keep a copy of the original <tt>config.php</tt> file.";
+  echo "Note that the &lt;? and ?&gt; characters must be included in the file, ";
+  echo "and that each variable content must be on the same line.";
   echo "</h2>";
-echo "<font color=red>";
-    echo '<tt>$WebTrilinosDirectory = '. $WebTrilinosDirectory . ";</tt><br>";
-    echo '<tt>$HTMLImageDirectory   = '. $HTMLImageDirectory . ";</tt><br>";
-    echo '<tt>$TempDirectory        = '. $TempDirectory . ";</tt><br>";
-    echo '<tt>$INCLUDES             = '. $INCLUDES . ";</tt><br>";
-    echo '<tt>$LIBS                 = '. $LIBS . ";</tt><br>";
-    echo '<tt>$PYTHONPATH           = '. $PYTHONPATH . ";</tt><br>";
-    echo '<tt>$CXX                  = '. $CXX . ";</tt><br>";
-    echo '<tt>$WebHost              = '. $WebHost . ";</tt><br>";
-    echo '<tt>$HBMatrixDirectory    = '. $WebTrilinosDirectory .
-      "/data/HB/;</tt><br>";
-    echo '<tt>$XMLMatrixDirectory   = '. $WebTrilinosDirectory .
-      "/data/XML/;</tt><br>";
-    echo '<tt>$ImageDirectory       = '. $WebTrilinosDirectory .
-      "/tmp/;</tt><br>";
-    echo "</font>";
+  echo "<font color=red>";
+  echo "<tt>&lt;?</tt><br>";
+  echo '<tt>$WebTrilinosDirectory = "'. $WebTrilinosDirectory . '";</tt><br>';
+  echo '<tt>$HTMLImageDirectory   = "'. $HTMLImageDirectory . '";</tt><br>';
+  echo '<tt>$TempDirectory        = "'. $TempDirectory . '";</tt><br>';
+  echo '<tt>$INCLUDES             = "'. $INCLUDES . '";</tt><br>';
+  echo '<tt>$LDFLAGS              = "'. $LDFLAGS . '";</tt><br>';
+  echo '<tt>$LIBS                 = "'. $LIBS . '";</tt><br>';
+  echo '<tt>$PYTHONPATH           = "'. $PYTHONPATH . '";</tt><br>';
+  echo '<tt>$CXX                  = "'. $CXX . '";</tt><br>';
+  echo '<tt>$WebHost              = "'. $WebHost . '";</tt><br>';
+  echo '<tt>$HBMatrixDirectory    = "'. $WebTrilinosDirectory .  '/data/HB/";</tt><br>';
+  echo '<tt>$XMLMatrixDirectory   = "'. $WebTrilinosDirectory .  '/data/XML/";</tt><br>';
+  echo '<tt>$ImageDirectory       = "'. $WebTrilinosDirectory .  '/tmp/";</tt><br>';
+  echo "<tt>?&gt;</tt>";
+  echo "</font>";
   echo "<hl>";
+  echo "<br>";
+  echo "<br>";
+  echo "If these settings are correct, proceed to the ";
+  echo "<a href=testing.html>testing</a> page.";
+  echo "<br>";
 }
 
 ?>
 
-<form method="POST" action=index.html>
+<form method="POST" action=setup.html>
   <p>This variable specifies the location of the WebTrilinos files. The files
   in this directory must be in the location of your httpdocs, as specified by
-  your web server. A possible value could be
+  your web server. If you are looking at this page from the web,
+  your already know the location httpdocs! A possible value could be
   <tt>/var/www/html/WebTrilinos</tt>.
   <br><input type="text" name=WebTrilinosDirectory
-  value="<? global $WebTrilinos; echo $WebTrilinosDirectory;?>" size=40>
+  value="<? global $WebTrilinos; echo $WebTrilinosDirectory;?>" size=60>
 
   <P>
   <p>This variable specifies the location of the automatically 
   generated imnage files. This must be a valid HTTP location.
-  typical value is <tt>/tmp/</tt>.
+  typical value is <tt>http://my.site.com/WebTrilinos/tmp/</tt>.
   <br><input type="text" name=HTMLImageDirectory 
-  value="<? global $HTMLImageDirectory; echo $HTMLImageDirectory;?>" size=40>
+  value="<? global $HTMLImageDirectory; echo $HTMLImageDirectory;?>" size=60>
 
   <P>
   <p>This variable specifies the location of the temp files directory. A 
   typical value is <tt>/tmp/</tt>.
   <br><input type="text" name=TempDirectory 
-  value="<? global $TempDirectory; echo $TempDirectory;?>" size=40>
+  value="<? global $TempDirectory; echo $TempDirectory;?>" size=60>
 
   <P>
   <p>This variable specifies the location of Trilinos' header files.
-  A typical value is <tt>-L/my_trilinos_home/LINUX_SERIAL/include/</tt>.
+  A typical value is <tt>-I/my_trilinos_home/LINUX_SERIAL/include/</tt>
+  (note the <tt>-I</tt> before the directory).
   <br><input type="text" name=INCLUDES 
-  value="<? global $INCLUDES; echo $INCLUDES;?>" size=40>
+  value="<? global $INCLUDES; echo $INCLUDES;?>" size=60>
 
   <P>
   <p>This variable specifies the LDFLAGS for the linking of Trilinos'
   examples. A typical value is 
-  <tt>-L/my_trilinos_home/LINUX_SERIAL/lib/</tt>.
+  <tt>-L/my_trilinos_home/LINUX_SERIAL/lib/</tt>
+  (note the <tt>-L</tt> before the directory). You might need to add
+  other locations, like for instance <tt>-L/my/home/lib</tt>.
   <br><input type="text" name=LDFLAGS 
-  value="<? global $LDFLAGS; echo $LDFLAGS;?>" size=40>
+  value="<? global $LDFLAGS; echo $LDFLAGS;?>" size=60>
 
   <P>
   <p>This variable specifies the LIBS for the linking of Trilinos'
   examples. A typical value is:
   <tt>-lml -lifpack -laztecoo -lamesos -lgaleri -lepetraext -lepetra -lteuchos
     -llapack -lblas</tt>. You might need <tt>-lf2c -lm</tt>, depending on the
-  installations.
+  installations. Other Trilinos third-party libraries may be needed as well
+  (for example, <tt>-lmetis</tt> depending on your configuration).
   <br><input type="text" name=LIBS 
-  value="<? global $LIBS; echo $LIBS;?>" size=40>
+  value="<? global $LIBS; echo $LIBS;?>" size=60>
 
   <P>
   <p>This variable specifies the path for python packages.
   A typical value is:
   <tt>my_trilinos_home/LINUX_SERIAL/lib/python2.4/site-packages/</tt>.
   <br><input type="text" name=PYTHONPATH 
-  value="<? global $PYTHONPATH; echo $PYTHONPATH;?>" size=40>
+  value="<? global $PYTHONPATH; echo $PYTHONPATH;?>" size=60>
 
   <P>
   <p>This variable specifies the C++ compiler to be used. 
   A typical value is <tt>g++</tt>.
   <br><input type="text" name=CXX
-  value="<? global $CXX; echo $CXX;?>" size=40>
+  value="<? global $CXX; echo $CXX;?>" size=60>
 
   <P>
   <p>This variable gives the name of the web server hosting WebTrilinos.
   <br><input type="text" name=WebHost 
-  value="<? global $WebHost; echo $WebHost;?>" size=40>
+  value="<? global $WebHost; echo $WebHost;?>" size=60>
   <p>
   <p>
 

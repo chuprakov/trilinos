@@ -1,7 +1,10 @@
 EPETRA_INCLUDES= -I$(top_builddir)/../epetra/src -I$(top_srcdir)/../epetra/src
 EPETRA_LIB= $(top_builddir)/../epetra/src/libepetra.a
 
-EPETRAEXT_INCLUDES= -I$(top_builddir)/../epetraext/src -I$(top_srcdir)/../epetraext/src/inout
+EPETRAEXT_INCLUDES= -I$(top_builddir)/../epetraext/src \
+		    -I$(top_srcdir)/../epetraext/src/ \
+		    -I$(top_srcdir)/../epetraext/src/inout \
+		    -I$(top_srcdir)/../epetraext/src/transform
 EPETRAEXT_LIB= $(top_builddir)/../epetraext/src/libepetraext.a
 
 AMESOS_INCLUDES= -I$(top_builddir)/../amesos/src -I$(top_srcdir)/../amesos/src

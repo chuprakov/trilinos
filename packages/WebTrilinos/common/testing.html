@@ -5,6 +5,25 @@ include 'config.php';
 <h1>Testing page of WebTrilinos</h1>
 
 <ol>
+  <li>We try to <tt>touch</tt> a file in  <tt>
+    <? global $WebTrilinosDirectory; echo $WebTrilinosDirectory; ?>/tmp/</tt>. Remember that
+  you have to use <tt>chmod go+rwx WebTrilinos/tmp</tt>, since PHP does not
+  operate as "you".
+  <?
+  global $WebTrilinosDirectory;
+  $ourFileName = $WebTrilinosDirectory . "/tmp/test";
+  if (!$ourFileHandle = fopen($ourFileName, 'w'))
+  {
+    echo "<FONT COLOR=RED>";
+    echo "<P>can't open file: CHECK PERMISSIONS by executing the command:";
+    echo "<br><tt>cd WebTrilinos; chmod go+rwx tmp</tt> in the httpdocs.";
+    echo "</FONT>";
+  }
+  fclose($ourFileHandle);
+  ?>
+
+  <br>
+  <br>
   <li>
   We now try to execute a simple c++ program. The program is:
 <pre>
@@ -48,13 +67,68 @@ passthru("$configExe 2>&1");
 ?>
 </pre>
 
+  <br>
+  <br>
+  <li>
+  We now try to execute a simple c++ program that uses Epetra. The program is:
+<pre>
+#include <iostream>
+#include "Epetra_ConfigDefs.h"
+#include "Epetra_SerialComm.h"
+
+int main(int argc, char* argv[])
+{
+  Epetra_SerialComm Comm;
+  std::cout << Comm;
+  return(EXIT_SUCCESS);
+}
+</pre>
+  The output is reported below, and it should contain the printout of the
+  Epetra communicator object.
+  If it does not, please check your installation.
+<pre>
+<?
+$program = "";
+$program .= "#include <iostream>\n";
+$program .= '#include "Epetra_ConfigDefs.h"' . "\n";
+$program .= '#include "Epetra_SerialComm.h"' . "\n";
+$program .= "int main(int argc, char* argv[]) {\n";
+$program .= 'Epetra_SerialComm Comm;std::cout << Comm;';
+$program .= " return(EXIT_SUCCESS); } \n";
+
+global $TempDirectory;
+global $INCLUDES;
+global $LDFLAGS;
+global $LIBS;
+global $CXX;
+
+$timestamp = date("y-m-d_H.i.s", time());
+
+$configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
+$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+if(!is_dir("$TempDirectory/WebTrilinos"))
+  mkdir("$TempDirectory/WebTrilinos", 0777);
+
+$configFile = fopen($configFileName, 'w')
+  or die("can't open $configFileName: $php_errormsg");
+if (-1 == fwrite($configFile, $program)) { 
+  die("can't write to $configFileName: $php_errormsg"); }
+fclose($configFile);
+
+passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1");
+passthru("$configExe 2>&1");
+
+?>
+</pre>
+
+<br>
 <br>
 <br>
 <li>We now try a basic PyTrilinos command, by
 executing the instruction 
 <tt>python -c "from PyTrilinos import Epetra; comm = Epetra.PyComm(); print
   comm"</tt>. You should see something like <tt>::Processor 0 of 1 total
-processors.</tt> If an error arises, please check
+processors.</tt> If you don't see it, check your installation.
 your installation.
 <pre>
 <?
@@ -92,4 +166,6 @@ passthru($command);
 
 <br>
 <br>
-Go back to the <a href="../index.html">home page</a>.
+If everything is fine, then you should be able to use WebTrilinos!
+Go back to the <a href="../index.html">home page</a> and test the C++, Python
+and MatrixPortal module!

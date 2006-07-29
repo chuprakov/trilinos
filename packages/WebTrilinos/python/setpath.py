@@ -43,16 +43,28 @@ libDir = "lib.%s-%s" % (get_platform(), sys.version[0:3])
 # Get the full path to the build directories
 fullPath   = os.path.normpath(os.path.join(myDir, "..", "src", "build", libDir,
                                            "PyTrilinos"))
-epetraPath = os.path.normpath(os.path.join(myDir, "..", "..", "..", "epetra",
+epetraPath = os.path.normpath(os.path.join(myDir, "..", "..", "epetra",
                                            "python", "src", "build", libDir,
                                            "PyTrilinos"))
-epetraextPath = os.path.normpath(os.path.join(myDir, "..", "..", "..", "epetraext",
+epetraextPath = os.path.normpath(os.path.join(myDir, "..", "..", "epetraext",
                                            "python", "src", "build", libDir,
                                            "PyTrilinos"))
-galeriPath = os.path.normpath(os.path.join(myDir, "..", "..", "..", "galeri",
+galeriPath = os.path.normpath(os.path.join(myDir, "..", "..", "galeri",
                                              "python", "src", "build", libDir,
                                              "PyTrilinos"))
-aztecooPath = os.path.normpath(os.path.join(myDir, "..", "..", "..", "aztecoo",
+aztecooPath = os.path.normpath(os.path.join(myDir, "..", "..", "aztecoo",
+                                            "python", "src", "build", libDir,
+                                            "PyTrilinos"))
+mlPath = os.path.normpath(os.path.join(myDir, "..", "..", "ml",
+                                            "python", "src", "build", libDir,
+                                            "PyTrilinos"))
+ifpackPath = os.path.normpath(os.path.join(myDir, "..", "..", "ifpack",
+                                            "python", "src", "build", libDir,
+                                            "PyTrilinos"))
+amesosPath = os.path.normpath(os.path.join(myDir, "..", "..", "amesos",
+                                            "python", "src", "build", libDir,
+                                            "PyTrilinos"))
+teuchosPath = os.path.normpath(os.path.join(myDir, "..", "..", "teuchos",
                                             "python", "src", "build", libDir,
                                             "PyTrilinos"))
 
@@ -68,3 +80,11 @@ if galeriPath:
     sys.path.insert(2,galeriPath)
 if aztecooPath:
     sys.path.insert(3,aztecooPath)
+if mlPath:
+    sys.path.insert(4,mlPath)
+if ifpackPath:
+    sys.path.insert(5,ifpackPath)
+if amesosPath:
+    sys.path.insert(6,amesosPath)
+if teuchosPath:
+    sys.path.insert(7,teuchosPath)

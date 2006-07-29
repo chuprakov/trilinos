@@ -1,6 +1,9 @@
 #! /bin/env python
-fom PyTrilinos import Epetra, AztecOO, Amesos, IFPACK, ML
-from Numeric import *
+try:
+  import setpath
+  import Epetra, IFPACK, AztecOO
+except:
+  from PyTrilinos import Epetra, AztecOO, IFPACK
 
 Comm = Epetra.PyComm()
 
