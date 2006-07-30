@@ -331,7 +331,7 @@
     $files = array();
     $dir = opendir($HBMatrixDirectory) or die ($php_errormsg);
     while (false !== ($file = readdir($dir))) {
-      if (is_file("$HBMatrixDirectory/$file")) {
+      if (is_file("$HBMatrixDirectory/$file") && $file != "index.html") {
         $files[] = $file;
       }
     }
@@ -365,7 +365,7 @@
     $files = array();
     $dir = opendir($XMLMatrixDirectory) or die ($php_errormsg);
     while (false !== ($file = readdir($dir))) {
-      if (is_file("$XMLMatrixDirectory/$file")) {
+      if (is_file("$XMLMatrixDirectory/$file") && $file != "index.html") {
         $files[] = $file;
       }
     }

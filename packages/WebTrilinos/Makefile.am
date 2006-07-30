@@ -64,20 +64,20 @@ config/acx_lapack.m4                      config/tac_arg_with_incdirs.m4 \
 config/acx_pthread.m4                     config/tac_arg_with_lapacklib.m4 \
 config/config.guess                       config/tac_arg_with_libdirs.m4 \
 config/config.sub                         config/tac_arg_with_package.m4 \
-config/strip_dup_incl_paths.pl            config/strip_dup_libs_.pl \
-config/tac_arg_with_perl.pl \
 bootstrap \
 index.html \
 ChangeLog-WebTrilinos     README-WebTrilinos \
 common/index.html         common/basic.html \
-common/setup.html         testing.html \
+common/setup.html         common/testing.html \
 common/favicon.ico        common/footer.html \
-common/util.php           config.php \
+common/util.php           common/config.php \
 common/load_images.js     common/header.html \
 common/header.php         common/styles.css \
-common/WebTrilinos_config common/WebTrilinos_config~ \
+common/WebTrilinos_config.h.in common/WebTrilinos_config.h.in~ \
 data/index.html \
-data/HB/index.html        common/XML/index.html \
+data/HB/index.html \
+data/HB/fidap005.rua \
+data/XML/index.html \
 tmp/index.html \
 img/beginner.png             img/rd100.png \
 img/trilinos_normal.png      img/recirc1.png \

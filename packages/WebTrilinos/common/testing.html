@@ -18,7 +18,8 @@ include 'config.php';
   {
     echo "<FONT COLOR=RED>";
     echo "<P>can't open file: CHECK PERMISSIONS by executing the command:";
-    echo "<br><tt>cd WebTrilinos; chmod go+rwx tmp</tt> in the httpdocs.";
+    echo "<br><tt>chmod go+rwx $WebTrilinosDirectory/tmp</tt>";
+    echo "<br>then reload this page.";
     echo "</FONT>";
   }
   fclose($ourFileHandle);
@@ -38,7 +39,9 @@ int main(int argc, char* argv[])
 }
 </pre>
   The output is reported below, and it should contain the hello message. 
-  If it does not, please check your installation.
+  If it does not, please check your installation, then reload this page.
+  Problems may arise from incorrect location of header files, LDFLAGS, or
+  LIBS.
 <pre>
 <?
 $program = "";
@@ -89,7 +92,10 @@ int main(int argc, char* argv[])
 </pre>
   The output is reported below, and it should contain the printout of the
   Epetra communicator object.
-  If it does not, please check your installation.
+  If it does not, please check your installation, then reload this page.
+  Recall that you need to <tt>make install</tt> Trilinos to use WebTrilinos.
+  Problems may arise from the incorrect location of header files, LDFLAGS,
+  LIBS.
 <pre>
 <?
 $program = "";
@@ -145,7 +151,7 @@ int main(int argc, char* argv[])
 </pre>
   The output is reported below, and it should contain the printout of the
   Epetra communicator object.
-  If it does not, please check your installation.
+  If it does not, please check your installation, then reload this page.
 <pre>
 <?
 $program = "";
@@ -232,7 +238,7 @@ echo "</font>";
 <br>
 <br>
 If everything is fine, then you should be able to use WebTrilinos!
-Go back to the <a href="../index.html">WebTrilinos home page</a> and test the C++, Python
+Go back to the installed <a href="../index.html">WebTrilinos page</a> and test the C++, Python
 and MatrixPortal module!
 <br>
 <br>
