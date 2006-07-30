@@ -393,9 +393,10 @@ function check_data()
 # ===========================================================================
 function logFile($PAGE_NAME)
 {
+  global $WebTrilinosDirectory;
   $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
   $REMOTE_HOST = @getHostByAddr($REMOTE_ADDR);
-  $FILE = "/var/www/html/MatrixPortal/_log.txt";
+  $FILE = $WebTrilinosDirectory . "/log.txt";
 
   $fp = fopen($FILE, "a");
 
