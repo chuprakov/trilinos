@@ -16,9 +16,9 @@ function print_problem_and_result($ProblemIDs, $ResultIDs, $flag)
   echo '<input type=hidden name=ResultIDs value="' .  $ResultIDs . '">';
   echo '<input type="hidden" name=mode value="' . $Mode  . '">';
   echo '<table border=0><cols=3>';
-  echo '<tr><td>Problem IDs</td>';
+  echo '<tr><td><i>Problem IDs</i></td>';
   echo '<td>&nbsp;&nbsp;&nbsp;</td>';
-  echo '<td>Recordered Results</td></tr>';
+  echo '<td><i>Recordered Results</i></td></tr>';
   echo '<td valign=top><ol>';
   $done = 0;
   $done2 = 0;

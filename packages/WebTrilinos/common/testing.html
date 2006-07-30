@@ -25,6 +25,41 @@ include 'config.php';
   fclose($ourFileHandle);
   ?>
 
+  <br><br>
+  <li>We try to <tt>touch</tt> a file in  <tt>
+    <? global $HBMatrixDirectory; echo $HBMatrixDirectory; ?>/tmp/</tt> and
+  <? global $XMLMatrixDirectory; echo $XMLMatrixDirectory; ?>. Remember that
+  you have to use <tt>chmod go+rwx 
+    <? global $HBMatrixDirectory; echo $HBMatrixDirectory; ?></tt>, then
+  <tt>chmod go+rwx 
+    <? global $XMLMatrixDirectory; echo $XMLMatrixDirectory; ?></tt>, 
+ since PHP does not operate as "you".
+  <?
+  global $HBMatrixDirectory;
+  global $XMLMatrixDirectory;
+  $ourFileName = $HBMatrixDirectory;
+  if (!$ourFileHandle = fopen($ourFileName, 'w'))
+  {
+    echo "<FONT COLOR=RED>";
+    echo "<P>can't open file: CHECK PERMISSIONS by executing the command:";
+    echo "<br><tt>chmod go+rwx $HBMatrixDirectory</tt>";
+    echo "<br>then reload this page.";
+    echo "</FONT>";
+  }
+  fclose($ourFileHandle);
+
+  $ourFileName = $XMLMatrixDirectory;
+  if (!$ourFileHandle = fopen($ourFileName, 'w'))
+  {
+    echo "<FONT COLOR=RED>";
+    echo "<P>can't open file: CHECK PERMISSIONS by executing the command:";
+    echo "<br><tt>chmod go+rwx $HBMatrixDirectory</tt>";
+    echo "<br>then reload this page.";
+    echo "</FONT>";
+  }
+  fclose($ourFileHandle);
+  ?>
+
   <br>
   <br>
   <li>

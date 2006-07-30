@@ -12,6 +12,7 @@ $LIBS                 = $_POST["LIBS"];
 $PYTHONPATH           = $_POST["PYTHONPATH"];
 $CXX                  = $_POST["CXX"];
 $WebHost              = $_POST["WebHost"];
+$Password             = $_POST["Password"];
 
 if ($_POST["mode"] != "")
 {
@@ -35,6 +36,7 @@ if ($_POST["mode"] != "")
   echo '<tt>$HBMatrixDirectory    = "'. $WebTrilinosDirectory .  '/data/HB/";</tt><br>';
   echo '<tt>$XMLMatrixDirectory   = "'. $WebTrilinosDirectory .  '/data/XML/";</tt><br>';
   echo '<tt>$ImageDirectory       = "'. $WebTrilinosDirectory .  '/tmp/";</tt><br>';
+  echo '<tt>$Password             = "'. $Password .  '";</tt><br>';
   echo "<tt>?&gt;</tt>";
   echo "</font>";
   echo "<hl>";
@@ -131,6 +133,13 @@ system.
   you want.
   <br><input type="text" name=WebHost 
   value="<? global $WebHost; echo $WebHost;?>" size=60>
+
+  <P>
+  <p>Please specify the a password for the upload section of MatrixPortal.
+  Trusted users will be able to upload matrices in Harwell/Boeing and XML
+  format.
+  <br><input type="text" name=Password 
+  value="<? global $Password; echo $Password;?>" size=60>
   <p>
   <p>
 
