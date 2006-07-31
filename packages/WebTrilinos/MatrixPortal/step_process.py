@@ -52,14 +52,16 @@ count = 0
 analysis_count = 0
   
 # -------------------------------------------------------------------------
-# checks on parameters and location of the HB and H5 files
+# checks on parameters and location of the HB and XML files
 # -------------------------------------------------------------------------
-MAX_MATRIX_ROWS = 256 * 256
-MAX_MATRIX_NONZEROS = MAX_MATRIX_ROWS * 5
-MAX_ITERATIONS = 1550
-MAX_KSPACE = 200
-HB_REPOSITORY = "/home/chinella/Web/MatrixPortal/HBMatrices/"
-H5_REPOSITORY = "/home/chinella/Web/MatrixPortal/H5Matrices/"
+sys.path.insert(1, "../common")
+import config
+MAX_MATRIX_ROWS     = config.MAX_MATRIX_ROWS
+MAX_MATRIX_NONZEROS = config.MAX_MATRIX_NONZEROS
+MAX_ITERATIONS      = config.MAX_ITERATIONS
+MAX_KSPACE          = config.MAX_KSPACE
+HB_REPOSITORY       = config.HB_REPOSITORY
+XML_REPOSITORY      = config.XML_REPOSITORY
 
 # -------------------------------------------------------------------------
 def set_type(List, name, type, value):  
@@ -167,8 +169,16 @@ def generator(problemID, comm, List):
     NullSpace = "not-set"
     print "</div>"
 
-  elif problemID[0:3] == "XML_":
-    print "TO BE DONE";
+  elif problemID[0:4] == "XML_":
+    FileName = XML_REPOSITORY + problemID[4:];
+    XMLReader = EpetraExt.XMLReader(comm, FileName)
+    Map = XMLReader.ReadMap("map")
+    LHS = XMLReader.ReadMultiVector("LHS")
+    RHS = XMLReader.ReadMultiVector("RHS")
+    ExactSolution = XMLReader.ReadMultiVector("ExactSolution")
+    Matrix = XMLReader.ReadCrsMatrix("A")
+    NullSpace = "not-set"
+    print "</div>"
 
   else:
     parts = string.split(problemID, '_');

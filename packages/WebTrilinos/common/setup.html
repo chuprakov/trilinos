@@ -67,6 +67,18 @@ if ($_POST["mode"] != "")
   echo '<tt>$Password             = "'. $Password .  '";</tt><br>';
   echo "<tt>?&gt;</tt>";
   echo "</font>";
+  echo "<br><br>";
+  echo "<h2>This is instead the generated <tt>config.py</tt> file. Please copy the";
+  echo " text below into <tt>$WebTrilinosDirectory/common/config.py</tt>. ";
+  echo "</h2>";
+  echo "<font color=red>";
+  echo "<tt>MAX_MATRIX_ROWS = 256 * 256</tt><br>";
+  echo "<tt>MAX_MATRIX_NONZEROS = 256 * 256 * 5</tt><br>";
+  echo "<tt>MAX_ITERATIONS = 1550</tt><br>";
+  echo "<tt>MAX_KSPACE = 60</tt><br>";
+  echo '<tt>HB_REPOSITORY = "' . $WebTrilinosDirectory . '/data/HB"</tt><br>';
+  echo '<tt>XML_REPOSITORY = "' . $WebTrilinosDirectory . '/data/XML"</tt><br>';
+  echo "</font>";
   echo "<hl>";
   echo "<br>";
   echo "<br>";

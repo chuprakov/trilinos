@@ -9,8 +9,31 @@ report bugs to marzio.sala _AT_ gmail.com.
 
 July 2006
 
+* Added a web-based configuration process, that is much easier and cleaner
+  than before. Two configuration files, common/config.php and common/config.py
+  now contains all the variables required by WebTrilinos. A testing page is
+  added.
+
+* Added support for XML and HB files.
+
+* First version of WebTrilinos web pages on software.sandia.gov, which 
+  details on its download, design and usage.
+
 * First version of WebTrilinos. This is spin-off of the MatrixPortal project,
   developed within the ML package. MatrixPortal still exists within
-  WebTrilinos, and it is completed by a C++ and Python web interface. The new
-  version is also much easier to configure and use.
+  WebTrilinos, and it is completed by a C++ and Python web interface. 
+
+------------------------------------------------------------------------------
+
+April 2006
+
+* MatrixPortal is born. MatrixPortal is a problem solving environment for
+  sparse linear systems.
+
+------------------------------------------------------------------------------
+
+March 2006
+
+* First version of the web interface, developed within the python 
+  subdirectory of the ML package.
 

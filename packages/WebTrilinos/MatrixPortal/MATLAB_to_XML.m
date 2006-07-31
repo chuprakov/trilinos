@@ -1,16 +1,13 @@
 %
-% Writes a linear system in EpetraExt/XML format. A is a sparse matrix,
-% and LHS and RHS are the left-hand side and the right-hand side. Exact
-% is the exact solution. All vectors can be multivectors (that is, have
-% more than one column).
-%
-% The linear system is 
+% Writes a linear system in EpetraExt/XML format. The linear system is 
 %   A * LHS = RHS
-% and the initial solution to be used by iterative methods is StartingSolution
+% A is a sparse matrix, and LHS and RHS are the left-hand side and the
+% right-hand side.  ExactSolution is the exact solution, if known. All vectors
+% can be multivectors (that is, have more than one column).
 %
 % The function returns a non-zero error code is an error occurs.
 %
-function ierr = write(FileName, A, LHS, RHS, StartingSolution)
+function ierr = write(FileName, A, LHS, RHS, ExactSolution)
 
   n = size(A, 1);
   % problems should be square
@@ -77,10 +74,10 @@ function ierr = write(FileName, A, LHS, RHS, StartingSolution)
 
   % then the Exact vector
 
-  fprintf(fid, '<MultiVector Label="StartingSolution" Length="%d" NumVectors="%d" Type="double">\n', n, m);
+  fprintf(fid, '<MultiVector Label="ExactSolution" Length="%d" NumVectors="%d" Type="double">\n', n, m);
   for i = 1:n
     for j =1:m
-      fprintf(fid, '%e ', StartingSolution(i, j));
+      fprintf(fid, '%e ', ExactSolution(i, j));
     end
     fprintf(fid, '\n');
   end
