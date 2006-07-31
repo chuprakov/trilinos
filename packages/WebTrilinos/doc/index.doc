@@ -1,0 +1,16 @@
+/*! \mainpage WebTrilinos: A Web Interface to Trilinos
+
+WebTrilinos documentation is maintained 
+<a href=http://software.sandia.gov/trilinos/packages/webtrilinos>here</a>.
+This web page only reports the ChangeLog and README file from the development
+version. Please contact the developers for more details on the source code.
+
+<br>
+This is the latest ChangeLog file:
+\include ChangeLog-Amesos
+
+<br>
+This is the latest README file:
+\include README-Amesos
+
+*/
