@@ -1,4 +1,6 @@
 %
+% ierr = MATLAB_to_XML(FileName, A, LHS, RHS, ExactSolution)
+%
 % Writes a linear system in EpetraExt/XML format. The linear system is 
 %   A * LHS = RHS
 % A is a sparse matrix, and LHS and RHS are the left-hand side and the
@@ -7,7 +9,7 @@
 %
 % The function returns a non-zero error code is an error occurs.
 %
-function ierr = write(FileName, A, LHS, RHS, ExactSolution)
+function ierr = MATLAB_to_XML(FileName, A, LHS, RHS, ExactSolution)
 
   n = size(A, 1);
   % problems should be square
