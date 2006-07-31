@@ -78,6 +78,7 @@ data/index.html \
 data/HB/index.html \
 data/HB/fidap005.rua \
 data/XML/index.html \
+data/XML/sample.xml \
 tmp/index.html \
 img/beginner.png             img/rd100.png \
 img/trilinos_normal.png      img/recirc1.png \
@@ -92,6 +93,7 @@ MatrixPortal/calculator.html MatrixPortal/index.html \
 MatrixPortal/step1.html      MatrixPortal/step1C.html \
 MatrixPortal/step2.html      MatrixPortal/step2.html \
 MatrixPortal/step3.html      MatrixPortal/step4.html \
+MatrixPortal/MATLAB_to_XML.m \
 MatrixPortal/step_process.py \
 MatrixPortal/help/footer.html \
 MatrixPortal/help/header.html \
