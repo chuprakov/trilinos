@@ -1,12 +1,12 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
+#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_oblackholestream.hpp"
-#include "Thyra_RealLinearOpWithSolveFactoryCreator.hpp"
 #include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #ifdef HAVE_MPI
 #  include "Epetra_MpiComm.h"
@@ -44,9 +44,9 @@ int main( int argc, char* argv[] )
   try {
   
     // Create the solver object
-    Thyra::RealLinearOpWithSolveFactoryCreator lowsfCreator;
-    GLpApp::AdvDiffReactOptModelCreator epetraModelCreator;
-    ThyraModelEvaluatorSolver solver;
+    GLpApp::AdvDiffReactOptModelCreator     epetraModelCreator;
+    Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
+    ThyraModelEvaluatorSolver               solver;
 
     //
     // Get options from the command line
@@ -63,6 +63,7 @@ int main( int argc, char* argv[] )
     epetraModelCreator.setupCLP(&clp);
     lowsfCreator.setupCLP(&clp);
     solver.setupCLP(&clp);
+
     clp.setOption( "q-vec-file", &matchingVecFile, "Base file name to read the objective state matching vector q (i.e. ||x-q||_M in objective)." );
 
     CommandLineProcessor::EParseCommandLineReturn
@@ -70,6 +71,8 @@ int main( int argc, char* argv[] )
 
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
+
+    lowsfCreator.readParameters();
 
     //
     // Setup the output streams
@@ -124,7 +127,9 @@ int main( int argc, char* argv[] )
     *out << "\nCreate the Thyra::LinearOpWithSolveFactory object ...\n";
 
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
-      lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).getOStream().get());
+      lowsFactory = lowsfCreator.createLinearSolveStrategy("");
+    // ToDo: Set the output stream before calling this!
+    ///lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).getOStream().get());
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
