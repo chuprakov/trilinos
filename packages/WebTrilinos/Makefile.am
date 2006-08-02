@@ -145,6 +145,16 @@ all-local:
 	@echo "        | - WebTrilinos-developers@software.sandia.gov       |"
 	@echo "        |                                                    |"
 	@echo "        | Have fun!                                          |"
+if HAVE_MPI
+	@echo "        |                                                    |"
+	@echo "        | NOTE: YOU HAVE CONFIGURED TRILINOS WITH SUPPORT    |"
+	@echo "        |       FOR MPI. WebTrilinos CURRENTLY DOES NOT      |"
+	@echo "        |       SUPPORT MPI. YOU WILL BE ABLE TO COMPILE AND |"
+	@echo "        |       RUN ALL THE EXAMPLES, BUT INSTALLING         |"
+	@echo "        |       WebTrilinos ON A WEB SERVER WILL REQUIRE TO  |"
+	@echo "        |       HACK FEW MPI COMMANDS (LIKE lamboot/lamhalt) |"
+	@echo "        |       IN THE SCRIPTS. SEE DETAILS ON THE WEB PAGES |"
+endif
 	@echo "        +----------------------------------------------------+"
 	@echo 
 
