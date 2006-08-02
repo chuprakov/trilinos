@@ -135,8 +135,10 @@ all-local:
 	@echo "        | c++ examples work, and \"make run-pytests\" to verify|"
 	@echo "        | that the python scripts are ok.                    |"
 	@echo "        |                                                    |"
-	@echo "        | *Note that WebTrilinos must be manually installed  |"
-	@echo "        |  operational* Details are reported on the web site |"
+	@echo "        | *Note that WebTrilinos must be manually installed* |"
+	@echo "        | *to be operational through a web browser*          |"
+	@echo "        |                                                    |"
+	@echo "        | Details are reported on the web site               |"
 	@echo "        | http://software.sandia.gov/trilinos/packages/      |"
 	@echo "        |        webtrilinos/installation.html               |"
 	@echo "        |                                                    |"
@@ -154,6 +156,7 @@ if HAVE_MPI
 	@echo "        |       WebTrilinos ON A WEB SERVER WILL REQUIRE TO  |"
 	@echo "        |       HACK FEW MPI COMMANDS (LIKE lamboot/lamhalt) |"
 	@echo "        |       IN THE SCRIPTS. SEE DETAILS ON THE WEB PAGES |"
+	@echo "        |       OR RE-CONFIGURE *WITHOUT* MPI SUPPORT.       |"
 endif
 	@echo "        +----------------------------------------------------+"
 	@echo 

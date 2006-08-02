@@ -158,6 +158,19 @@ TAC_ARG_WITH_LIBDIRS
 TAC_ARG_WITH_INCDIRS
 
 # ------------------------------------------------------------------------
+# Checks for libraries
+# ------------------------------------------------------------------------
+
+TAC_ARG_WITH_BLASLIB
+TAC_ARG_WITH_LAPACKLIB
+
+# find or choose to supply valid blas and lapack libraries
+ACX_BLAS([], [AC_MSG_ERROR([[Cannot find blas library, specify a path using --with-ldflags=-I<DIR> (ex. --with-ldflags=-I/usr/path/lib) or a specific library using --with-blas=DIR/LIB (for example --with-blas=/usr/path/lib/libcxml.a)]])])
+ACX_LAPACK([], [AC_MSG_ERROR([[Cannot find lapack library, specify a path using --with-ldflags=-I<DIR> (ex. --with-ldflags=-I/usr/path/lib) or a specific library using --with-lapack=DIR/LIB (ex.  --with-lapack=/usr/path/lib/libcxml.a)]])])
+
+# end of the list of libraries that don't need to be checked for if
+# tests and examples are disabled.
+# ------------------------------------------------------------------------
 # Checks for linker characteristics
 # ------------------------------------------------------------------------
 
