@@ -3,11 +3,14 @@
 
 #include "NLPInterfacePack_NLPFirstOrderThyraModelEvaluator.hpp"
 #include "EpetraModelEval4DOpt.hpp"
-#include "Thyra_DefaultModelEvaluatorWithSolveFactory.hpp"
-#include "Thyra_EpetraModelEvaluator.hpp"
-#include "Thyra_AmesosLinearOpWithSolveFactory.hpp"
 #include "MoochoPack_MoochoSolver.hpp"
+#include "Thyra_DefaultModelEvaluatorWithSolveFactory.hpp"
+#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
+#include "Thyra_EpetraModelEvaluator.hpp"
+#include "Teuchos_GlobalMPISession.hpp"
+#include "Teuchos_VerboseObject.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
+#include "Teuchos_StandardCatchMacros.hpp"
 
 /* * \mainpage Example optimization problem using <tt>Thyra::ModelEvaluator</tt> and <tt>EpetraExt::ModelEvaluator</tt>.
 
@@ -22,11 +25,16 @@ int main( int argc, char* argv[] )
   using Teuchos::CommandLineProcessor;
   typedef AbstractLinAlgPack::value_type  Scalar;
 
-#ifdef HAVE_MPI
-  MPI_Init(&argc,&argv);
-#endif
+  bool dummySuccess = true;
+
+  Teuchos::GlobalMPISession mpiSession(&argc,&argv);
+
+  Teuchos::RefCountPtr<Teuchos::FancyOStream>
+    out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
   try {
+
+    Thyra::DefaultRealLinearSolverBuilder lowsfCreator;
   
     //
     // Get options from the command line
@@ -46,6 +54,8 @@ int main( int argc, char* argv[] )
 
     CommandLineProcessor  clp(false); // Don't throw exceptions
 
+    lowsfCreator.setupCLP(&clp);
+
     clp.setOption( "xt0", &xt0 );
     clp.setOption( "xt1", &xt1 );
     clp.setOption( "pt0", &pt0 );
@@ -58,12 +68,14 @@ int main( int argc, char* argv[] )
     clp.setOption( "do-sim", "do-opt",  &do_sim, "Flag for if only the square constraints are solved" );
     clp.setOption( "external-lowsf", "internal-lowsf", &externalFactory
                    ,"Determines of the Thyra::LinearOpWithSolveFactory is used externally or internally to the Thyra::EpetraModelEvaluator object"  );
-  
+ 
     CommandLineProcessor::EParseCommandLineReturn
       parse_return = clp.parse(argc,argv,&std::cerr);
 
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
+
+    lowsfCreator.readParameters(out.get());
 
     //
     // Create the NLP
@@ -77,7 +89,7 @@ int main( int argc, char* argv[] )
     // Create the Thyra::EpetraModelEvaluator object
 
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<double> >
-      lowsFactory = rcp(new Thyra::AmesosLinearOpWithSolveFactory());
+      lowsFactory = lowsfCreator.createLinearSolveStrategy("");
 
     Teuchos::RefCountPtr<Thyra::EpetraModelEvaluator>
       epetraThyraModel = rcp(new Thyra::EpetraModelEvaluator());
@@ -117,6 +129,9 @@ int main( int argc, char* argv[] )
 
     // Solve the NLP
     const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
+
+    // Write the parameters that where read
+    lowsfCreator.writeParamsFile(*lowsFactory);
     
     //
     // Return the solution status (0 if sucessfull)
@@ -125,12 +140,7 @@ int main( int argc, char* argv[] )
     return solution_status;
 
   }
-  catch(const std::exception& excpt) {
-    std::cerr << "\nCaught a std::exception " << excpt.what() << std::endl;
-  }
-  catch(...) {
-    std::cerr << "\nCaught an unknown exception\n";
-  }
+  TEUCHOS_STANDARD_CATCH_STATEMENTS(true,*out,dummySuccess)
 
   return MoochoSolver::SOLVE_RETURN_EXCEPTION;
 }

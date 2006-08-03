@@ -6,7 +6,6 @@
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
-#include "Teuchos_oblackholestream.hpp"
 #include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #ifdef HAVE_MPI
 #  include "Epetra_MpiComm.h"
@@ -72,7 +71,7 @@ int main( int argc, char* argv[] )
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
 
-    lowsfCreator.readParameters();
+    lowsfCreator.readParameters(out.get());
 
     //
     // Setup the output streams
@@ -128,7 +127,7 @@ int main( int argc, char* argv[] )
 
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
       lowsFactory = lowsfCreator.createLinearSolveStrategy("");
-    // ToDo: Set the output stream before calling this!
+    // ToDo: Set the output stream before calling above!
     ///lowsFactory = lowsfCreator.createLOWSF(OSTab(journalOut).getOStream().get());
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
@@ -167,7 +166,11 @@ int main( int argc, char* argv[] )
     // Solve the NLP
     const MoochoSolver::ESolutionStatus	solution_status = solver.solve();
 
+    // Write the solution to file
     solver.writeFinalSolution(out.get());
+    
+    // Write the final parameters to file
+    lowsfCreator.writeParamsFile(*lowsFactory);
     
     //
     // Return the solution status (0 if successful)

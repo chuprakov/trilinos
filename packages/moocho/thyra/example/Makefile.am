@@ -26,8 +26,10 @@
 # ************************************************************************
 # @HEADER
 
-if ENABLE_AMESOS_THYRA
-AMESOS_THYRA_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
+if ENABLE_MOOCHO_STRATIMIKOS
+if ENABLE_EPETRAEXT_THYRA
+MOOCHO_STRATIMIKOS_EXAMPLES = NLPThyraEpetraModelEval4DOpt NLPThyraEpetraAdvDiffReactOpt
+endif
 endif
 
-SUBDIRS = $(AMESOS_THYRA_EXAMPLES)
+SUBDIRS = $(MOOCHO_STRATIMIKOS_EXAMPLES)

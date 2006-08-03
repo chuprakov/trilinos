@@ -1,19 +1,18 @@
 #include "GLpApp_AdvDiffReactOptModelCreator.hpp"
+#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #include "Thyra_EpetraModelEvaluator.hpp"
 #include "Thyra_SpmdMultiVectorFileIO.hpp"
 #include "Thyra_DefaultClusteredSpmdProductVectorSpace.hpp"
 #include "Thyra_DefaultMultiPeriodModelEvaluator.hpp"
 #include "Thyra_VectorSpaceTester.hpp"
+#include "Thyra_DefaultRealLinearSolverBuilder.hpp"
 #include "RTOpPack_MPI_apply_op_decl.hpp"
 #include "Teuchos_OpaqueWrapper.hpp"
 #include "Teuchos_GlobalMPISession.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardCatchMacros.hpp"
 #include "Teuchos_VerboseObject.hpp"
-#include "Teuchos_oblackholestream.hpp"
 #include "Teuchos_arrayArg.hpp"
-#include "Thyra_RealLinearOpWithSolveFactoryCreator.hpp"
-#include "MoochoPack_ThyraModelEvaluatorSolver.hpp"
 #include "Teuchos_DefaultComm.hpp"
 #ifdef HAVE_MPI
 #  include "Teuchos_DefaultMpiComm.hpp"
@@ -56,8 +55,8 @@ int main( int argc, char* argv[] )
 
   try {
   
-    Thyra::RealLinearOpWithSolveFactoryCreator lowsfCreator;
-    GLpApp::AdvDiffReactOptModelCreator epetraModelCreator;
+    Thyra::DefaultRealLinearSolverBuilder   lowsfCreator;
+    GLpApp::AdvDiffReactOptModelCreator     epetraModelCreator;
 
     // Create the solver object
     ThyraModelEvaluatorSolver solver;
@@ -78,6 +77,7 @@ int main( int argc, char* argv[] )
     epetraModelCreator.setupCLP(&clp);
     lowsfCreator.setupCLP(&clp);
     solver.setupCLP(&clp);
+
     clp.setOption( "num-procs-per-cluster", &numProcsPerCluster, "Number of processes in a cluster (<=0 means only one cluster)." );
     clp.setOption( "p-perturb-scaling", &perturbedParamScaling, "Scaling for perturbed paramters from the initial forward solve." );
     clp.setOption( "dump-all", "no-dump-all", &dumpAll, "Set to true, then a bunch of debugging output will be created." );
@@ -88,6 +88,8 @@ int main( int argc, char* argv[] )
 
     if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
       return parse_return;
+
+    lowsfCreator.readParameters(out.get());
 
     *out
       << "\n***"
@@ -189,7 +191,8 @@ int main( int argc, char* argv[] )
     *out << "\nCreate the Thyra::LinearOpWithSolveFactory object ...\n";
 
     Teuchos::RefCountPtr<Thyra::LinearOpWithSolveFactoryBase<Scalar> >
-      lowsFactory = lowsfCreator.createLOWSF(OSTab(out).getOStream().get());
+      lowsFactory = lowsfCreator.createLinearSolveStrategy("");
+    // ToDo: Set the output stream before calling above!
     
     *out << "\nCreate the Thyra::EpetraModelEvaluator wrapper object ...\n";
     
@@ -405,11 +408,11 @@ int main( int argc, char* argv[] )
     // Solve the inverse problem
     solution_status = solver.solve();
     
-    //
     // Write the final solution
-    //
-    
     solver.writeFinalSolution(out.get());
+    
+    // Write the final parameters to file
+    lowsfCreator.writeParamsFile(*lowsFactory);
     
     //
     // Return the solution status (0 if successful)

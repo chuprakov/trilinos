@@ -26,6 +26,8 @@
 # ************************************************************************
 # @HEADER
 
+all-local: square.1.000 _run-varied-tests.pl
+
 noinst_PROGRAMS = \
   NLPThyraEpetraAdvDiffReactOpt \
   MultiPeriodNLPThyraEpetraAdvDiffReactOpt
@@ -34,7 +36,7 @@ NLPThyraEpetraAdvDiffReactOpt_SOURCES = \
   $(common_sources) \
   $(srcdir)/NLPThyraEpetraAdvDiffReactOptMain.cpp
 
-NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies) square.1.000
+NLPThyraEpetraAdvDiffReactOpt_DEPENDENCIES = $(common_dependencies)
 NLPThyraEpetraAdvDiffReactOpt_LDADD = $(common_ldadd)
 
 MultiPeriodNLPThyraEpetraAdvDiffReactOpt_SOURCES = \
@@ -50,13 +52,15 @@ square.1.000: $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/squ
 	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.000 square.9x9.2.000
 	cp $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/data/square/square.9x9.2.001 square.9x9.2.001
 
+_run-varied-tests.pl : run-varied-tests.pl
+	cp $(srcdir)/run-varied-tests.pl _run-varied-tests.pl
+
 include $(top_srcdir)/MakefileExeStub.mak
 
 CPPFLAGS += -I$(top_srcdir)/../thyra/example/operator_vector \
   -I$(top_srcdir)/../epetraext/example/model_evaluator/GLpApp
 
 common_sources = \
-  $(srcdir)/Thyra_RealLinearOpWithSolveFactoryCreator.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModel.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_AdvDiffReactOptModelCreator.cpp\
   $(top_srcdir)/../epetraext/example/model_evaluator/GLpApp/GLpApp_GLpYUEpetraDataPool.cpp\

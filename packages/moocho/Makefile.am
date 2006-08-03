@@ -96,9 +96,7 @@ EXAMPLE_SUBDIR=example
 endif
 
 if ENABLE_MOOCHO_THYRA
-if ENABLE_EPETRAEXT_THYRA
 MOOCHO_THYRA_SUBDIR=thyra
-endif
 endif
 
 SUBDIRS = src $(MOOCHO_THYRA_SUBDIR) $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
@@ -107,7 +105,6 @@ SUBDIRS = src $(MOOCHO_THYRA_SUBDIR) $(EXAMPLE_SUBDIR) $(TEST_SUBDIR)
 ## The below targets allow you to use the new
 ## testharness to run the test suite as make targets
 ## #######################################################################
-
 
 TRILINOS_HOME_DIR=@abs_top_srcdir@/../..
 TRILINOS_BUILD_DIR=@abs_top_builddir@/../..

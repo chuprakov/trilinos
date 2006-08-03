@@ -124,6 +124,8 @@ make_abs_path(\$bb_options_file);
 
 mkchdir("runs");
 
+my $rtn = 0;
+
 my $model_np = $starting_model_np;
 my $vary_model_np = ( $model_np < $max_model_np );
 for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
@@ -175,11 +177,12 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 
       my $cmnd =
         $cmnd_first
-        ." --lowsf=amesos --lowsf-params-file=\"$amesos_params_file\""
+        ." ".extra_linear_solver_cmndline("Amesos")
+        ." --linear-solver-params-file=\"$amesos_params_file\""
         .$cmnd_last
         ;
 
-      run_case($cmnd);
+      0!=run_case($cmnd) || ($rtn=1);
 
       chdir "..";
 
@@ -191,11 +194,12 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 
       my $cmnd =
         $cmnd_first
-        ." --lowsf=aztecoo --lowsf-params-file=\"$aztecoo_params_file\""
+        ." ".extra_linear_solver_cmndline("AztecOO")
+        ." --linear-solver-params-file=\"$aztecoo_params_file\""
         .$cmnd_last
         ;
 
-      run_case($cmnd);
+      0!=run_case($cmnd) || ($rtn=1);
 
       chdir "..";
 
@@ -207,11 +211,12 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 
       my $cmnd =
         $cmnd_first
-        ." --lowsf=belos --lowsf-params-file=\"$belos_params_file\""
+        ." ".extra_linear_solver_cmndline("Belos")
+        ." --linear-solver-params-file=\"$belos_params_file\""
         .$cmnd_last
         ;
 
-      run_case($cmnd,1,0);
+      0!=run_case($cmnd,1,0) || ($rtn=1);
 
       my $block_size = min($starting_block_size,$model_np+1);
       my $loop_max_block_size = min($max_block_size,$model_np+1);
@@ -227,7 +232,7 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
           .$cmnd_last
           ;
 
-        run_case($cmnd,0,1,($vary_block_size?"../../fwd":"../fwd"));
+        0!=run_case($cmnd,0,1,($vary_block_size?"../../fwd":"../fwd")) || ($rtn=1);
 
         chdir("..") if($vary_block_size);
 
@@ -246,6 +251,11 @@ for( ; $model_np <= $max_model_np; $model_np += $incr_model_np ) {
 }
 
 chdir "..";
+
+print "\nEnd Result: TEST PASSED\n" if $rtn==0;
+print "\nEnd Result: TEST FAILED\n" if $rtn!=0;
+
+exit $rtn;
 
 #
 # Subroutines
@@ -271,11 +281,16 @@ sub mkchdir {
   chdir $dir_name;
 }
 
+sub extra_linear_solver_cmndline {
+  my $solver_name = shift;
+  return "--extra-linear-solver-params=\"<ParameterList><Parameter name=\\\"Linear Solver Type\\\" type=\\\"string\\\" value=\\\"${solver_name}\\\"/></ParameterList>\""
+}
+
 sub run_cmnd {
     my  $cmnd = shift;
     $cmnd .= " 2>&1 | tee run-test.out";
     print "\nRunning command: $cmnd\n";
-    system($cmnd);
+    return system($cmnd);
 }
 
 sub run_test {
@@ -285,7 +300,7 @@ sub run_test {
     "\n***"
     ,"\n*** $curr_dir"
     ,"\n***\n";
-  run_cmnd($cmnd);
+  return run_cmnd($cmnd);
 }
 
 sub run_case {
@@ -299,6 +314,8 @@ sub run_case {
   $do_inv_prob = 1 if(!defined($do_inv_prob));
   $fwd_dir = cwd()."/fwd" if (!defined($fwd_dir));
 
+  my $rtn = 0;
+
   if($solve_fwd_prob) {
 
     if($do_fwd_prob) {
@@ -310,7 +327,7 @@ sub run_case {
         ." --moocho-options-file=$fwd_init_options_file"
         ." --do-sim --use-first-order --x-solu-file=x.out --p-solu-file=p.out";
 
-      run_test($fwdcmnd);
+      0!=run_test($fwdcmnd) || ($rtn=1);
 
       chdir "..";
 
@@ -322,7 +339,7 @@ sub run_case {
         ." --do-sim --use-first-order --x-guess-file=../fwd-init/x.out --p-guess-file=../fwd-init/p.out --scale-p-guess=$p_solu_scale"
         ." --x-solu-file=x.out --p-solu-file=p.out";
 
-      run_test($fwdcmnd);
+      0!=run_test($fwdcmnd) || ($rtn=1);
 
       chdir "..";
 
@@ -350,7 +367,7 @@ sub run_case {
             ." --black-box --use-finite-diff --fd-step-len=$bb_fd_step_len"
             ." --moocho-options-file=$bb_options_file"
             ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        run_test($invcmnd);
+        0!=run_test($invcmnd) || ($rtn=1);
         chdir("..") if($build_subdirs);
       }
 
@@ -361,7 +378,7 @@ sub run_case {
             ." --use-finite-diff --fd-step-len=$fd_step_len"
             ." --moocho-options-file=$fd_options_file"
             ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        run_test($invcmnd);
+        0!=run_test($invcmnd) || ($rtn=1);
         chdir("..") if($build_subdirs);
       }
 
@@ -371,7 +388,7 @@ sub run_case {
           $cmnd 
             ." --moocho-options-file=$inv_options_file"
             ." --q-vec-file=$fwd_dir/../fwd-init/x.out --x-guess-file=$fwd_dir/x.out --p-guess-file=$fwd_dir/p.out";
-        run_test($invcmnd);
+        0!=run_test($invcmnd) || ($rtn=1);
         chdir("..") if($build_subdirs);
       }
 
@@ -382,8 +399,10 @@ sub run_case {
   }
   else {
 
-    run_test($cmnd);
+    0!=run_test($cmnd) || ($rtn=1);
 
   }
+
+  return $rtn;
 
 }
