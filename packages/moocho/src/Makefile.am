@@ -34,6 +34,28 @@ all-local:
 	@echo ""
 
 # ------------------------------------------------------------------------
+# Install the script that creates a Moocho.opt file automatically.  This
+# allows users to easily access this script and to use it to create moocho
+# solver options.
+# ------------------------------------------------------------------------
+
+install-data-local:
+	$(mkinstalldirs) $(exec_prefix)/tools/moocho ; \
+	$(mkinstalldirs) $(exec_prefix)/tools/moocho/Shared ; \
+	$(mkinstalldirs) $(exec_prefix)/tools/moocho/MamaJama ; \
+	$(mkinstalldirs) $(exec_prefix)/tools/moocho/IpConfig ; \
+	cp $(srcdir)/MoochoPack/configurations/generate-opt-file.pl $(exec_prefix)/tools/moocho/. ; \
+	chmod a+x $(exec_prefix)/tools/moocho/generate-opt-file.pl ; \
+	cp $(srcdir)/MoochoPack/configurations/Moocho.opt.MoochoSolver $(exec_prefix)/tools/moocho/. ; \
+	cp $(srcdir)/MoochoPack/configurations/Shared/Moocho.opt.DecompositionSystemStateStepBuilderStd $(exec_prefix)/tools/moocho/Shared/. ; \
+	cp $(srcdir)/MoochoPack/configurations/MamaJama/Moocho.opt.NLPAlgoConfigMamaJama $(exec_prefix)/tools/moocho/MamaJama/. ; \
+	cp $(srcdir)/MoochoPack/configurations/IpConfig/Moocho.opt.NLPAlgoConfigIP $(exec_prefix)/tools/moocho/IpConfig/.
+
+# Above, I need to just copy the generate-opt-file.pl file stright over to
+# keep its execute permissions!
+
+
+# ------------------------------------------------------------------------
 # For each category, create two variables - NAME and NAME_H. The
 # second is the list of headers to be installed, i.e., any header that
 # might someday be needed by some other code outside New_Package. The first is
@@ -62,9 +84,11 @@ MOOCHO_UTILITIES_HPP = \
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToBool.hpp\
   $(srcdir)/MoochoUtilities/src/OptionsFromStreamPack_StringToIntMap.hpp\
   $(srcdir)/MoochoUtilities/src/ProfileHackPack_profile_hack.hpp\
+  $(srcdir)/MoochoUtilities/src/ReleaseResource.hpp\
   $(srcdir)/MoochoUtilities/src/RangePack_Range1D.hpp\
   $(srcdir)/MoochoUtilities/src/SerializationPack_Serializable.hpp\
   $(srcdir)/MoochoUtilities/src/SpecialASCII.hpp\
+  $(srcdir)/MoochoUtilities/src/StandardCompositionRelationshipsPack.hpp\
   $(srcdir)/MoochoUtilities/src/StopWatchPack_stopwatch.hpp\
   $(srcdir)/MoochoUtilities/src/StrideIterPack_StrideIter.hpp\
   $(srcdir)/MoochoUtilities/src/TestingHelperPack_update_success.hpp
@@ -101,6 +125,7 @@ ITERATION_PACK_HPP = \
   $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguous.hpp \
   $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDecl.hpp \
   $(srcdir)/IterationPack/src/IterationPack_IterQuantityAccessContiguousDef.hpp \
+  $(srcdir)/IterationPack/src/IterationPack_PublicTypes.ud \
   $(srcdir)/IterationPack/src/IterationPack_Types.hpp \
   $(srcdir)/IterationPack/src/IterationPack_cast_iq.hpp \
   $(srcdir)/IterationPack/src/IterationPack_print_algorithm_step.hpp
@@ -154,6 +179,7 @@ RTOP_PACK_BASE_C = \
   $(srcdir)/RTOpPack/src/base/RTOp_reduct_sum_values.c
 
 RTOP_PACK_BASE_HPP = \
+  $(srcdir)/RTOpPack/src/base/RTOpPack_OldTypes.hpp\
   $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpC.hpp\
   $(srcdir)/RTOpPack/src/base/RTOpPack_RTOpCPostMod.hpp\
   $(srcdir)/RTOpPack/src/base/RTOp_get_reduct_op.hpp\
@@ -255,38 +281,38 @@ RTOP_PACK_STD_OPS_CPP =
 DENSE_LIN_ALG_PACK_HPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
-  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgLAPack_Types.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_AssertOp.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_BLAS_Cpp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAsTriSym.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixAssign.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixInFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOpBLAS.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOut.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DMatrixOutFunc.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorAssign.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClass.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassExt.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorClassTmpl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorInFunc.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_DVectorOp.hpp\
@@ -305,6 +331,8 @@ DENSE_LIN_ALG_PACK_HPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_C_Decl.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LAPACK_Cpp.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPack.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDecl.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_LinAlgOpPackDef.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatVecCompare.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_MatlabPack.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Options.hpp\
@@ -312,6 +340,7 @@ DENSE_LIN_ALG_PACK_HPP = \
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermIn.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermOut.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PermVecMat.hpp\
+  $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_PublicTypes.ud\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_Types.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_assert_print_nan_inf.hpp\
   $(srcdir)/DenseLinAlgPack/src/DenseLinAlgPack_delete_row_col.hpp\
@@ -361,6 +390,7 @@ ABSTRACT_LIN_ALG_PACK_MA28_CPP =
 endif
 
 ABSTRACT_LIN_ALG_PACK_HPP = \
+  $(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_PublicTypes.ud\
   $(srcdir)/AbstractLinAlgPack/src/AbstractLinAlgPack_Types.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_AssertOp.hpp\
   $(srcdir)/AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPack_BasisSystem.hpp\
@@ -601,6 +631,7 @@ ABSTRACT_LIN_ALG_PACK_F = \
 # ToDo: Add configure-time logic to only build this if it is missing from $LIBS
 
 NLP_INTERFACE_PACK_HPP = \
+  $(srcdir)/NLPInterfacePack/src/NLPInterfacePack_PublicTypes.ud\
   $(srcdir)/NLPInterfacePack/src/NLPInterfacePack_Types.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLP.hpp\
   $(srcdir)/NLPInterfacePack/src/abstract/interfaces/NLPInterfacePack_NLPDirect.hpp\
@@ -645,6 +676,7 @@ NLP_INTERFACE_PACK_CPP = \
   $(srcdir)/NLPInterfacePack/src/serial/NLPInterfacePack_NLPSerialPreprocessExplJac.cpp
 
 CONSTRAINED_OPT_PACK_HPP = \
+  $(srcdir)/ConstrainedOptPack/src/ConstrainedOptPack_PublicTypes.ud\
   $(srcdir)/ConstrainedOptPack/src/ConstrainedOptPack_Types.hpp\
   $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystem.hpp\
   $(srcdir)/ConstrainedOptPack/src/decompositions/ConstrainedOptPack_DecompositionSystemCoordinate.hpp\
@@ -1028,7 +1060,7 @@ endif
 # I have not been able to find any kind of "or" for Automake
 # conditionals. JW
 
- libmoocho_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
+libmoocho_a_LIBADD = $(TRILINOS_TEMPLATE_OBJS) $(XTRALDADD)
 
 # --------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)

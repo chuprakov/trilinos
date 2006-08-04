@@ -26,27 +26,12 @@
 # ************************************************************************
 # @HEADER
 
-#
-# Build the external example for users to see how to do this.
-#
+install-data-local:
+	$(mkinstalldirs) $(exec_prefix)/example/moocho/NLPWBCounterExample ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPWBCounterExampleMain.cpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_NLPWBCounterExample.cpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_NLPWBCounterExample.hpp $(exec_prefix)/example/moocho/NLPWBCounterExample/. ; \
+	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/NLPWBCounterExample/Makefile
 
-if USING_EXPORT_MAKEFILES
-EXTERNAL_MAKEFILE_EXAMPLE = external
-endif
-
-SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
-
-#
-# Build the actual test program in the build directory so that
-# we can test this.
-#
-
-noinst_PROGRAMS = NLPWBCounterExample
-
-NLPWBCounterExample_SOURCES = \
-  $(srcdir)/NLPWBCounterExampleMain.cpp\
-  $(srcdir)/NLPInterfacePack_NLPWBCounterExample.cpp
-NLPWBCounterExample_DEPENDENCIES = $(common_dependencies)
-NLPWBCounterExample_LDADD = $(common_ldadd)
-
-include $(top_srcdir)/MakefileExeStub.mak
+sample-makefile:
+	cp Makefile.external.stub $(srcdir)/Makefile.external.sample

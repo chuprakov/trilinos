@@ -26,6 +26,21 @@
 # ************************************************************************
 # @HEADER
 
+#
+# Build the external example for users to see how to do this.
+#
+
+if USING_EXPORT_MAKEFILES
+EXTERNAL_MAKEFILE_EXAMPLE = external
+endif
+
+SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
+
+#
+# Build the actual test program in the build directory so that
+# we can test this.
+#
+
 all-local: square.1.000 _run-varied-tests.pl
 
 noinst_PROGRAMS = \

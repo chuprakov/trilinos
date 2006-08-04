@@ -324,6 +324,8 @@ AC_CONFIG_FILES([
     example/ExampleNLPDirect/Makefile
     example/ExampleNLPFirstOrder/Makefile
     example/NLPWBCounterExample/Makefile
+    example/NLPWBCounterExample/external/Makefile
+    example/NLPWBCounterExample/external/Makefile.external.stub
     test/Makefile
     test/MoochoUtilities/Makefile
     test/IterationPack/Makefile
@@ -333,6 +335,8 @@ AC_CONFIG_FILES([
     thyra/example/Makefile
     thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile
+    thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile
+    thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub
     ])
 
 AC_OUTPUT()

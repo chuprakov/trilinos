@@ -5984,7 +5984,7 @@ fi
 # Output files
 # ------------------------------------------------------------------------
 
-                                                                                                                                                                          ac_config_files="$ac_config_files Makefile Makefile.export.moocho src/Makefile example/Makefile example/ExampleNLPBanded/Makefile example/ExampleNLPDirect/Makefile example/ExampleNLPFirstOrder/Makefile example/NLPWBCounterExample/Makefile test/Makefile test/MoochoUtilities/Makefile test/IterationPack/Makefile test/DenseLinAlgPack/Makefile thyra/Makefile thyra/src/Makefile thyra/example/Makefile thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile"
+                                                                                                                                                                                                                  ac_config_files="$ac_config_files Makefile Makefile.export.moocho src/Makefile example/Makefile example/ExampleNLPBanded/Makefile example/ExampleNLPDirect/Makefile example/ExampleNLPFirstOrder/Makefile example/NLPWBCounterExample/Makefile example/NLPWBCounterExample/external/Makefile example/NLPWBCounterExample/external/Makefile.external.stub test/Makefile test/MoochoUtilities/Makefile test/IterationPack/Makefile test/DenseLinAlgPack/Makefile thyra/Makefile thyra/src/Makefile thyra/example/Makefile thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub"
 
 
 cat >confcache <<\_ACEOF
@@ -6642,6 +6642,8 @@ do
   "example/ExampleNLPDirect/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/ExampleNLPDirect/Makefile" ;;
   "example/ExampleNLPFirstOrder/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/ExampleNLPFirstOrder/Makefile" ;;
   "example/NLPWBCounterExample/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/NLPWBCounterExample/Makefile" ;;
+  "example/NLPWBCounterExample/external/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/NLPWBCounterExample/external/Makefile" ;;
+  "example/NLPWBCounterExample/external/Makefile.external.stub" ) CONFIG_FILES="$CONFIG_FILES example/NLPWBCounterExample/external/Makefile.external.stub" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/MoochoUtilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/MoochoUtilities/Makefile" ;;
   "test/IterationPack/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/IterationPack/Makefile" ;;
@@ -6651,6 +6653,8 @@ do
   "thyra/example/Makefile" ) CONFIG_FILES="$CONFIG_FILES thyra/example/Makefile" ;;
   "thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile" ) CONFIG_FILES="$CONFIG_FILES thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile" ;;
   "thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile" ) CONFIG_FILES="$CONFIG_FILES thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile" ;;
+  "thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile" ) CONFIG_FILES="$CONFIG_FILES thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile" ;;
+  "thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub" ) CONFIG_FILES="$CONFIG_FILES thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "src/Moocho_Config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/Moocho_Config.h:src/Moocho_Config.h.in" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
