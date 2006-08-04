@@ -34,13 +34,13 @@ _LOCAL_LINK_FLAGS = $(MOOCHO_LIBS)  $(STRATIMIKOS_LIBS)
 #
 
 LOCAL_OBJECTS = NLPThyraEpetraAdvDiffReactOptMain.o \
- GLpApp_AdvDiffReactOptModel.o\
- GLpApp_AdvDiffReactOptModelCreator.o\
- GLpApp_GLpYUEpetraDataPool.o\
- GenSQP_YUEpetraVector.o\
+ GLpApp_AdvDiffReactOptModel.o \
+ GLpApp_AdvDiffReactOptModelCreator.o \
+ GLpApp_GLpYUEpetraDataPool.o \
+ GenSQP_YUEpetraVector.o \
  rect2DMeshGenerator.o
 
-NLPThyraEpetraAdvDiffReactOpt.exe : $(LOCAL_OBJECTS)
+NLPThyraEpetraAdvDiffReactOpt.exe: $(LOCAL_OBJECTS)
 	$(LOCAL_CXXLD) $(LOCAL_CXXFLAGS) $(LOCAL_OBJECTS) $(LOCAL_LINK_FLAGS) -o $@
 
 .cpp.o:
