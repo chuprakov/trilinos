@@ -92,7 +92,7 @@ function ierr = MATLAB_to_XML(FileName, A, LHS, RHS, ExactSolution)
   
   fprintf(fid, '<PointMatrix Label="A" Rows="%d" Columns="%d" Nonzeros="%d" Type="double" StartingIndex="0">\n', n, n, nnz);
   for i = 1:nnz
-    fprintf(fid, '%d %d %e\n', rows(i) - 1, cols(i) - 1, vals(i));
+    fprintf(fid, '%d %d %.15e\n', rows(i) - 1, cols(i) - 1, vals(i));
   end
   fprintf(fid, '</PointMatrix>\n');
 
