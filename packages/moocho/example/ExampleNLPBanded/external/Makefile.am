@@ -26,27 +26,12 @@
 # ************************************************************************
 # @HEADER
 
-#
-# Build the external example for users to see how to do this.
-#
+install-data-local:
+	$(mkinstalldirs) $(exec_prefix)/example/moocho/ExampleNLPBanded ; \
+	$(INSTALL_DATA) $(srcdir)/../ExampleNLPBandedMain.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.cpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPInterfacePack_ExampleNLPBanded.hpp $(exec_prefix)/example/moocho/ExampleNLPBanded/. ; \
+	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/ExampleNLPBanded/Makefile
 
-if USING_EXPORT_MAKEFILES
-EXTERNAL_MAKEFILE_EXAMPLE = external
-endif
-
-SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
-
-#
-# Build the actual test program in the build directory so that
-# we can test this.
-#
-
-noinst_PROGRAMS = ExampleNLPBanded
-
-ExampleNLPBanded_SOURCES = \
-  $(srcdir)/ExampleNLPBandedMain.cpp\
-  $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
-ExampleNLPBanded_DEPENDENCIES = $(common_dependencies)
-ExampleNLPBanded_LDADD = $(common_ldadd)
-
-include $(top_srcdir)/MakefileExeStub.mak
+sample-makefile:
+	cp Makefile.external.stub $(srcdir)/Makefile.external.sample

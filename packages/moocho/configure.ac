@@ -321,6 +321,8 @@ AC_CONFIG_FILES([
     src/Makefile
     example/Makefile
     example/ExampleNLPBanded/Makefile
+    example/ExampleNLPBanded/external/Makefile
+    example/ExampleNLPBanded/external/Makefile.external.stub
     example/ExampleNLPDirect/Makefile
     example/ExampleNLPFirstOrder/Makefile
     example/NLPWBCounterExample/Makefile
@@ -334,6 +336,8 @@ AC_CONFIG_FILES([
     thyra/src/Makefile
     thyra/example/Makefile
     thyra/example/NLPThyraEpetraModelEval4DOpt/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile
+    thyra/example/NLPThyraEpetraModelEval4DOpt/external/Makefile.external.stub
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile
     thyra/example/NLPThyraEpetraAdvDiffReactOpt/external/Makefile.external.stub

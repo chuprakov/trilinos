@@ -26,27 +26,12 @@
 # ************************************************************************
 # @HEADER
 
-#
-# Build the external example for users to see how to do this.
-#
+install-data-local:
+	$(mkinstalldirs) $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraModelEval4DOpt ; \
+	$(INSTALL_DATA) $(srcdir)/../NLPThyraEpetraModelEval4DOptMain.cpp $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraModelEval4DOpt/. ; \
+	$(INSTALL_DATA) $(top_srcdir)/../epetraext/example/model_evaluator/4dopt/EpetraModelEval4DOpt.* \
+           $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraModelEval4DOpt/. ; \
+	$(INSTALL_DATA) Makefile.external.stub $(exec_prefix)/example/moocho/thyra/NLPThyraEpetraModelEval4DOpt/Makefile
 
-if USING_EXPORT_MAKEFILES
-EXTERNAL_MAKEFILE_EXAMPLE = external
-endif
-
-SUBDIRS = $(EXTERNAL_MAKEFILE_EXAMPLE)
-
-#
-# Build the actual test program in the build directory so that
-# we can test this.
-#
-
-noinst_PROGRAMS = ExampleNLPBanded
-
-ExampleNLPBanded_SOURCES = \
-  $(srcdir)/ExampleNLPBandedMain.cpp\
-  $(srcdir)/NLPInterfacePack_ExampleNLPBanded.cpp
-ExampleNLPBanded_DEPENDENCIES = $(common_dependencies)
-ExampleNLPBanded_LDADD = $(common_ldadd)
-
-include $(top_srcdir)/MakefileExeStub.mak
+sample-makefile:
+	cp Makefile.external.stub $(srcdir)/Makefile.external.sample

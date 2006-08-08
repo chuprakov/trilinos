@@ -442,7 +442,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/example/NLPWBCounterExample/external $(distdir)/thyra/example/NLPThyraEpetraAdvDiffReactOpt/external
+	$(mkdir_p) $(distdir)/. $(distdir)/config $(distdir)/example/ExampleNLPBanded/external $(distdir)/example/NLPWBCounterExample/external $(distdir)/thyra/example/NLPThyraEpetraAdvDiffReactOpt/external $(distdir)/thyra/example/NLPThyraEpetraModelEval4DOpt/external
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
