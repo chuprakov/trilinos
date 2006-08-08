@@ -9,6 +9,7 @@ $PYTHONPATH = "/home/msala/Trilinos/LINUX_SERIAL/lib/python2.4/site-packages/";
 $CXX = "g++";
 $WebHost = "D-INFK/COLAB";
 $HBMatrixDirectory = "/var/www/html/WebTrilinos/data/HB/";
+$MMMatrixDirectory = "/var/www/html/WebTrilinos/data/MM/";
 $XMLMatrixDirectory = "/var/www/html/WebTrilinos/data/XML/";
 $ImageDirectory = "/var/www/html/WebTrilinos/tmp/";
 $Password = "xxx.yyy";
