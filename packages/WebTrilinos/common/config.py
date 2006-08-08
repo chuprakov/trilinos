@@ -8,7 +8,7 @@ MAX_ITERATIONS = 1550
 MAX_KSPACE = 60
 # This is the location of HB linear systems
 HB_REPOSITORY = "/var/www/html/WebTrilinos/data/HB/"
-# This is the location of MM linear systems
+# This is the location of MatrixMarket linear systems
 MM_REPOSITORY = "/var/www/html/WebTrilinos/data/MM/"
 # This is the location of XML linear systems
 XML_REPOSITORY = "/var/www/html/WebTrilinos/data/XML/"
