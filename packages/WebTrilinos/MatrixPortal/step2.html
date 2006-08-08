@@ -207,31 +207,34 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
         </select></td>
       </tr>
       <tr>
-        <td>Solution (unless present in H/B file): </td>
+        <td>Solution: </td>
         <td>
         <select name="solution">
         <option value="random">Random
         <option value="zero">Zero
         <option value="constant">Constant
+        <option value="from_file">from file
         </select></td>
       </tr>
       <tr>
-        <td>Starting Solution (unless present in H/B file): </td>
+        <td>Starting Solution: </td>
         <td>
         <select name="starting_solution">
         <option value="zero">Zero
         <option value="random">Random
         <option value="constant">Constant
+        <option value="from_file">from file
         </select></td>
       </tr>
       <tr>
-        <td>Right-hand size (unless present in H/B file): </td>
+        <td>Right-hand size: </td>
         <td>
         <select name="rhs">
         <option value="matvec">b = A * x
         <option value="zero">Zero
         <option value="random">Random
         <option value="constant">Constant
+        <option value="from_file">from file
         </select></td>
       </tr>
         <? begin_select_parameter('phi', "evaluation: type", "s"); ?>
@@ -437,14 +440,6 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
 
     <tr><td>&nbsp;</tr></tr>
 
-    <? begin_select_parameter("Strategy to compute lambda_max", "eigen-analysis: type", "s"); ?>
-    <? add_select_parameter("power-method", "10 steps of the power method"); ?>
-    <? add_select_parameter("cg", "10 steps of CG"); ?>
-    <? add_select_parameter("Anorm", "infinite norm of the matrix"); ?>
-    <? end_select_parameter(); ?>
-
-    <tr><td>&nbsp;</tr></tr>
-
     <? begin_select_parameter("Damping factor for aggregation", "aggregation: damping factor", "d"); ?>
     <? add_select_parameter("1.333", "classical SA: 1.333"); ?>
     <? add_select_parameter("0.0", "Non-smoothed Aggregation: 0.0"); ?>
@@ -452,8 +447,33 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
     <? add_select_parameter("1.5", "SA with 1.5"); ?>
     <? end_select_parameter(); ?>
 
-    <? begin_select_parameter("Aggregation scheme", "aggregation: type", "s"); ?>
-    <? add_select_parameter("Uncoupled-MIS", "Uncoupled-MIS"); ?>
+    <? begin_select_parameter("Strategy to compute lambda_max (for smoothed aggr. only)", "eigen-analysis: type", "s"); ?>
+    <? add_select_parameter("power-method", "10 steps of the power method"); ?>
+    <? add_select_parameter("cg", "10 steps of CG"); ?>
+    <? add_select_parameter("Anorm", "infinite norm of the matrix"); ?>
+    <? end_select_parameter(); ?>
+
+    <tr><td>&nbsp;</tr></tr>
+
+    <? begin_select_parameter("Aggregation scheme for level 0 (finest level)", "aggregation: type (level 0)", "s"); ?>
+    <? add_select_parameter("Uncoupled", "Uncoupled"); ?>
+    <? add_select_parameter("MIS", "MIS"); ?>
+    <? add_select_parameter("METIS", "METIS"); ?>
+    <? end_select_parameter(); ?>
+
+    <? begin_select_parameter("Aggregation scheme for level 1", "aggregation: type (level 1)", "s"); ?>
+    <? add_select_parameter("Uncoupled", "Uncoupled"); ?>
+    <? add_select_parameter("MIS", "MIS"); ?>
+    <? add_select_parameter("METIS", "METIS"); ?>
+    <? end_select_parameter(); ?>
+
+    <? begin_select_parameter("Aggregation scheme for level 2", "aggregation: type (level 2)", "s"); ?>
+    <? add_select_parameter("Uncoupled", "Uncoupled"); ?>
+    <? add_select_parameter("MIS", "MIS"); ?>
+    <? add_select_parameter("METIS", "METIS"); ?>
+    <? end_select_parameter(); ?>
+
+    <? begin_select_parameter("Aggregation scheme for level >= 3", "aggregation: type (level 3)", "s"); ?>
     <? add_select_parameter("Uncoupled", "Uncoupled"); ?>
     <? add_select_parameter("MIS", "MIS"); ?>
     <? add_select_parameter("METIS", "METIS"); ?>
@@ -517,8 +537,8 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
 
     <? begin_select_parameter("pre or post smoother", "smoother: pre or post", "s"); ?>
     <? add_select_parameter("both", "both"); ?>
-    <? add_select_parameter("presmoother", "pre"); ?>
-    <? add_select_parameter("postsmoother", "post"); ?>
+    <? add_select_parameter("pre", "pre"); ?>
+    <? add_select_parameter("post", "post"); ?>
     <? end_select_parameter(); ?>
 
     <? begin_select_parameter("Damping factor (for relaxation smoothers only)", "smoother: damping factor", "d"); ?>
@@ -546,15 +566,17 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
          add_select_parameter("$i", "$i"); ?>
     <? end_select_parameter(); ?>
 
-    <? begin_select_parameter("Level-of-fill (for IC and ILU only)", "smoother: level-of-fill", "i"); ?>
+    <? begin_select_parameter("Level-of-fill (for IC and ILU only)", "smoother: ifpack level-of-fill", "i"); ?>
     <? for ($i = 0; $i < 6; ++$i)
          add_select_parameter("$i", "$i"); ?>
     <? end_select_parameter(); ?>
 
-    <? begin_select_parameter("Overlap (for IC and ILU only)", "smoother: overlap", "i"); ?>
+    <? if (0) { ?>
+    <? begin_select_parameter("Overlap (for IC and ILU only)", "smoother: ifpack overlap", "i"); ?>
     <? for ($i = 0; $i < 6; ++$i)
          add_select_parameter("$i", "$i"); ?>
     <? end_select_parameter(); ?>
+    <? } ?>
 
     </table><br />
 

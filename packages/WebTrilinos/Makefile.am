@@ -79,6 +79,7 @@ data/HB/index.html \
 data/HB/fidap005.rua \
 data/XML/index.html \
 data/XML/sample.xml \
+data/MM/index.html \
 tmp/index.html \
 img/beginner.png             img/rd100.png \
 img/trilinos_normal.png      img/recirc1.png \

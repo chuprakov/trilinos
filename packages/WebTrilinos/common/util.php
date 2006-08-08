@@ -280,7 +280,9 @@ function process()
   $command = "";
   if ($PYTHONPATH != "")
     $command .= "PYTHONPATH=$PYTHONPATH ";
-  $command .= "python $WebTrilinosDirectory/MatrixPortal/step_process.py $configFileName 2>&1;";
+  $command .= "python $WebTrilinosDirectory/MatrixPortal/step_process.py $configFileName 2>&1;"; 
+  // to print results on a file, do for instance:
+  // | tee $ImageDirectory/output.txt;";
   passthru($command);
 }
 

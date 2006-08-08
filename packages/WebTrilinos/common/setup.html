@@ -62,6 +62,7 @@ if ($_POST["mode"] != "")
   echo '<tt>$CXX                  = "'. $CXX . '";</tt><br>';
   echo '<tt>$WebHost              = "'. $WebHost . '";</tt><br>';
   echo '<tt>$HBMatrixDirectory    = "'. $WebTrilinosDirectory .  '/data/HB/";</tt><br>';
+  echo '<tt>$MMMatrixDirectory   = "'. $WebTrilinosDirectory .  '/data/MM/";</tt><br>';
   echo '<tt>$XMLMatrixDirectory   = "'. $WebTrilinosDirectory .  '/data/XML/";</tt><br>';
   echo '<tt>$ImageDirectory       = "'. $WebTrilinosDirectory .  '/tmp/";</tt><br>';
   echo '<tt>$Password             = "'. $Password .  '";</tt><br>';
@@ -77,6 +78,7 @@ if ($_POST["mode"] != "")
   echo "<tt>MAX_ITERATIONS = 1550</tt><br>";
   echo "<tt>MAX_KSPACE = 60</tt><br>";
   echo '<tt>HB_REPOSITORY = "' . $WebTrilinosDirectory . '/data/HB"</tt><br>';
+  echo '<tt>MM_REPOSITORY = "' . $WebTrilinosDirectory . '/data/MM"</tt><br>';
   echo '<tt>XML_REPOSITORY = "' . $WebTrilinosDirectory . '/data/XML"</tt><br>';
   echo "</font>";
   echo "<hl>";
@@ -177,8 +179,8 @@ the file.
 
   <P>
   <p>Please specify the a password for the upload section of MatrixPortal.
-  Trusted users will be able to upload matrices in Harwell/Boeing and XML
-  format.
+  Trusted users will be able to upload matrices in Harwell/Boeing,
+  MatrixMarket and XML format.
   <br><input type="text" name=Password 
   value="<? global $Password; echo $Password;?>" size=60>
   <p>

@@ -391,6 +391,40 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
   <input type=submit class=submitPrimary value="add to cart"><br></form>
 
   <li>
+  Linear problems from the locally hosted MatrixMarket collection:
+  <p>
+
+  <form action="#" enctype="multipart/form-data" method="post" name="inputForm">
+  <?
+    global $MMMatrixDirectory;
+    $files = array();
+    $dir = opendir($MMMatrixDirectory) or die ($php_errormsg);
+    while (false !== ($file = readdir($dir))) {
+    if (is_dir("$MMMatrixDirectory/$file") && $file != "." && $file != "..") {
+        $files[] = $file;
+      }
+    }
+    closedir($dir);                  
+
+    echo "<select name=type size=" . count($files) . '>';
+        
+      foreach ($files as $file) {
+        echo "<option value=MM_" . $file . ">" . $file . "</option>";
+      }
+              
+    echo "</select>";
+  ?>
+
+  <p>Label this problem as <input type="text" name=MyLabel size=10 value="">&nbsp;then&nbsp;
+
+  <input type="hidden" name="ProblemIDs" value="<? global $ProblemIDs; echo $ProblemIDs; ?>" >
+  <input type="hidden" name="ResultIDs" value="<? global $ResultIDs; echo $ResultIDs; ?>" >
+  <input type="hidden" name=mode value="<? global $Mode; echo $Mode; ?>">
+  <input type="hidden" name=state value="add">
+
+  <input type=submit class=submitPrimary value="add to cart"><br></form>
+
+  <li>
   Linear problems in XML format
   (<a href=MATLAB_to_XML.m><tt>.m</tt> script to convert MATLAB data to XML</a>):
   <p>

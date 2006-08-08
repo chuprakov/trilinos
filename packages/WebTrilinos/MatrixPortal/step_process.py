@@ -61,6 +61,7 @@ MAX_MATRIX_NONZEROS = config.MAX_MATRIX_NONZEROS
 MAX_ITERATIONS      = config.MAX_ITERATIONS
 MAX_KSPACE          = config.MAX_KSPACE
 HB_REPOSITORY       = config.HB_REPOSITORY
+MM_REPOSITORY       = config.MM_REPOSITORY
 XML_REPOSITORY      = config.XML_REPOSITORY
 
 # -------------------------------------------------------------------------
@@ -169,6 +170,37 @@ def generator(problemID, comm, List):
     NullSpace = "not-set"
     print "</div>"
 
+  elif problemID[0:3] == "MM_":
+    # read matrix first, then use its map for the vectors
+    # FIXME: to check for vectors here
+    FileName = MM_REPOSITORY + problemID[3:] + "/A.mm";
+    (ierr, Matrix) = EpetraExt.MatrixMarketFileToCrsMatrix(FileName, comm)
+    Map = Matrix.RowMatrixRowMap()
+    FileName = MM_REPOSITORY + problemID[3:] + "/ExactSolution.mm";
+
+    if os.path.isfile(FileName):
+      (ierr, ExactSolution) = EpetraExt.MatrixMarketFileToMultiVector(FileName, Map)
+    else:
+      ExactSolution = Epetra.Vector(Map)
+      ExactSolution.PutScalar(0.0)
+
+    FileName = MM_REPOSITORY + problemID[3:] + "/RHS.mm";
+    if os.path.isfile(FileName):
+      (ierr, RHS) = EpetraExt.MatrixMarketFileToMultiVector(FileName, Map)
+    else:
+      RHS = Epetra.MultiVector(Map, ExactSolution.NumVectors())
+      RHS.PutScalar(0.0)
+
+    FileName = MM_REPOSITORY + problemID[3:] + "/LHS.mm";
+    if os.path.isfile(FileName):
+      (ierr, LHS) = EpetraExt.MatrixMarketFileToMultiVector(FileName, Map)
+    else:
+      LHS = Epetra.MultiVector(Map, RHS.NumVectors())
+      LHS.PutScalar(0.0)
+
+    NullSpace = "not-set"
+    print "</div>"
+
   elif problemID[0:4] == "XML_":
     FileName = XML_REPOSITORY + problemID[4:];
     XMLReader = EpetraExt.XMLReader(comm, FileName)
@@ -238,26 +270,33 @@ def generator(problemID, comm, List):
     raise("PARAMETER_ERROR");
 
   # FIXME???
-  if (List.has_key('solution') == True) & (List.has_key('starting_solution') == True) & (List.has_key('rhs') == True):
-
+  if List.has_key('solution') == True:
     if List['solution'] == "zero":
       ExactSolution.PutScalar(0.0)
     elif List['solution'] == "random":
       ExactSolution.Random()
     elif List['solution'] == "constant":
       ExactSolution.PutScalar(1.0)
+    elif List['solution'] == "from_file":
+      # do nothing
+      ciao = 2.0
     else:
       raise("PARAMETER_ERROR");
 
+  if List.has_key('starting_solution') == True:
     if List['starting_solution'] == "zero":
       LHS.PutScalar(0.0)
     elif List['starting_solution'] == "random":
       LHS.Random()
     elif List['starting_solution'] == "constant":
       LHS.PutScalar(1.0)
+    elif List['starting_solution'] == "from_file":
+      # do nothing
+      ciao = 2.0
     else:
       raise("PARAMETER_ERROR");
   
+  if List.has_key('rhs') == True:
     if List['rhs'] == "zero":
       RHS.PutScalar(0.0)
     elif List['rhs'] == "random":
@@ -266,6 +305,9 @@ def generator(problemID, comm, List):
       RHS.PutScalar(1.0)
     elif List['rhs'] == "matvec":
       Matrix.Apply(ExactSolution, RHS);
+    elif List['rhs'] == "from_file":
+      # do nothing
+      ciao = 2.0
     else:
       raise("PARAMETER_ERROR");
 
@@ -359,8 +401,9 @@ def perform_ML(Label, Map, Matrix, LHS, RHS, ExactSolution, NullSpace, List):
 
   Time = Epetra.Time(Matrix.Comm())
 
-  if NumProcs > 1:
-    List['coarse: type'] = 'symmetric Gauss-Seidel';
+  # FIXME: ???
+  #if NumProcs > 1:
+  #List['coarse: type'] = 'symmetric Gauss-Seidel';
 
   Prec = ML.MultiLevelPreconditioner(Matrix, False);
   if NullSpace == "not-set":
