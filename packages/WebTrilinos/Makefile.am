@@ -96,6 +96,7 @@ MatrixPortal/step2.html      MatrixPortal/step2.html \
 MatrixPortal/step3.html      MatrixPortal/step4.html \
 MatrixPortal/MATLAB_to_XML.m \
 MatrixPortal/step_process.py \
+MatrixPortal/step_test.txt \
 MatrixPortal/help/footer.html \
 MatrixPortal/help/header.html \
 MatrixPortal/help/step1_collections.html \
