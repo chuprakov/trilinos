@@ -1,0 +1,38 @@
+#
+# Note: all relative paths are relative to package/doc!
+#
+@INCLUDE = Doxyfile.options
+#@INCLUDE = stratimikos/doc/TagFiles # Requires @INCLUDE_PAH=$(TRILINOS_HOME)/packages
+@INCLUDE=thyra/doc/TagFiles # Requires @INCLUDE_PAH=$(TRILINOS_HOME)/packages
+TAGFILES += \
+  $(TRILINOS_HOME)/packages/common/tag_files/epetra.tag=$(TRILINOS_HOME)/packages/epetra/doc/html \
+  $(TRILINOS_HOME)/packages/common/tag_files/EpetraThyra.tag=$(TRILINOS_HOME)/packages/epetra/thyra/doc/html \
+  $(TRILINOS_HOME)/packages/common/tag_files/epetraext.tag=$(TRILINOS_HOME)/packages/epetraext/doc/html \
+  $(TRILINOS_HOME)/packages/common/tag_files/EpetraExtThyra.tag=$(TRILINOS_HOME)/packages/epetraext/thyra/doc/html \
+  $(TRILINOS_HOME)/packages/common/tag_files/stratimikos.tag=$(TRILINOS_HOME)/packages/stratimikos/doc/html
+#
+# Package options
+#
+PROJECT_NAME           = "MOOCHO"
+OUTPUT_DIRECTORY       = .
+#
+# What and how documentation is extracted
+#
+INPUT                  = ./index.doc
+IMAGE_PATH             =
+EXAMPLE_PATH           = ../example ../thyra/example
+EXCLUDE                = 
+EXAMPLE_PATTERNS       =
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+# Conditional sections
+#
+ENABLED_SECTIONS       = BUILD_HTML
+#
+# Links to other packages
+#
+TAGFILES              += $(TRILINOS_HOME)/packages/common/tag_files/moochoBrowser.tag=$(TRILINOS_HOME)/packages/moocho/browser/doc/html
+ALLEXTERNALS           = YES
+EXTERNAL_GROUPS        = YES

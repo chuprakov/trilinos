@@ -1,5 +1,22 @@
 /** \mainpage MOOCHO: Multi-functional Object-Oriented arCHitecture for Optimization
 
+<b>WARNING!</b>  This documention is currently under active construction!
+
+\section moocho_outline_sec Outline
+
+<ul>
+<li>\ref mooch_intro_sec
+\if BUILD_HTML <li>\ref moocho_pdf_version_sec \endif \if BUILD_LATEX <li>\ref moocho_html_version_sec \endif
+<li>\ref moocho_quickstart_sec
+  <ul>
+  <li>\ref moocho_configure_install_sec
+  <li>\ref moocho_installed_examples_sec
+  </ul>
+<li>\ref moocho_browse_sec
+</ul>
+
+\section mooch_intro_sec Introduction
+
 MOOCHO (Multifunctional Object-Oriented arCHitecture for Optimization) is
 designed to solve large-scale, equality and inequality nonlinearly
 constrained, non-convex optimization problems (i.e. nonlinear programs) using
@@ -86,7 +103,375 @@ can be approximated with directional finite differences but any exact
 derivatives that can be computed by the application are happily accepted and
 fully utilized by MOOCHO through the <tt>Thyra::ModelEvaluator</tt> interface.
 
+A more detailed mathematical overview of nonlinear programming and the
+algorithms that MOOCHO implements are described in the document <a
+href="MoochoOverview.pdf">An Overview of MOOCHO"</a>.
+
+
 <b>Note:</b> Specific documentation on the algorithms that MOOCHO implements
 and the use of MOOCHO will be added shortly as well as detailed examples.
+
+\if BUILD_HTML
+
+\section moocho_pdf_version_sec PDF Version of this Document
+
+An PDF version of his doxygen collection can be found <a href="./MoochoReference.pdf">here</a>
+
+\endif
+
+\if BUILD_LATEX
+
+\section moocho_html_version_sec Hyper-linked HTML version of this Document
+
+The doxygen-generated hyper-linked version of his document can be found at the
+Trilinos website under the link to MOOCHO.
+
+\endif
+
+\section moocho_quickstart_sec MOOCHO Quickstart
+
+In order to get started using MOOCHO to solve your NLPs you must first build
+MOOCHO as part of Trilinos and install it.  When MOOCHO is installed with
+Trilinos, several complete examples are also installed that show how to define
+NLPs, compile and link against the installed headers and libraries, and how to
+run the MOOCHO solvers.
+
+Below, we briefly describe \ref moocho_configure_install_sec, and accessing
+the \ref moocho_installed_examples_sec.
+
+\subsection moocho_configure_install_sec Configuring, Building, and Installing MOOCHO
+
+Complete details on the configuration, building, and installing of Trilinos
+are described in the <a ref="???">Trilinos Installation Guide</a>.  However,
+we give a quick overview of one such installation that works on Linux systems
+using g++.
+
+Here we describe the configuration, build, and installation process for a
+directory structure that looks like:
+
+\verbatim
+
+  $TRILINOS_BASE_DIR
+   |
+   |-- Trilinos
+   |
+    -- BUILDS
+        |
+         -- DEBUG
+
+\endverbatim
+
+where <tt>$TRILINOS_BASE_DIR</tt> is some base directory such as
+<tt>TRILINOS_BASE_DIR=~/PROJECTS/Trilinos.base</tt>.  However, in general, the
+build directory (show as <tt>$TRILINOS_BASE_DIR/BUILDS/DEBUG</tt> above) can be
+any directory you want but should not be the same as the base directory for
+Trilinos.  In the most general case, we will assume that
+<tt>$TRILINOS_BUILD_DIR</tt> is the base build directory; in this section, we
+assume that <tt>TRILINOS_BUILD_DIR=$TRILINOS_BASE_DIR/BUILDS/DEBUG</tt>.
+
+Here are the steps needed to configure, build, and install MOOCHO along with
+the rest of Trilinos:
+
+<ol>
+
+<li><b>Obtain an expanded source directory tree for Trilinos and create a
+build directory</b>
+
+Once you have created the directories <tt>$TRILINOS_BASE_DIR</tt> and
+<tt>$TRILINOS_BASE_DIR/BUILDS/DEBUG</tt> you need to get a copy of the Trilinos
+source.
+
+If you have CVS access you can obtain the version of the day through the main
+development trunk or can check out a specific tagged release.  For example, to
+obtain the version of the day you would perform:
+
+\verbatim
+
+  cd $TRILINOS_BASE_DIR
+  cvs -d :ext:userid@software.sandia.gov:/space/CVS co Trilinos
+
+\endverbatim
+
+where <tt>userid</tt> is your user ID on the CVS server.  For further details
+on working with CVS access to Trilinos, see the <a href="???">Trilinos
+Developers Guide</a>.
+
+If you do not have CVS access you can obtain an tar-bar for a release of
+Trilinos from the <a href="???">Trilinos Releases Download Page</a>.  Once you
+have the tar ball, you can expand it into the directory
+<tt>$TRILINOS_BASE_DIR</tt> as follows:
+
+\verbatim
+
+  cd $TRILINOS_BASE_DIR
+  tar -xzvf ~/Trilnos.xxx
+
+\endverbatim
+
+<li><b>Create a configuration script</b>
+
+By far the hardest part of building and installing Trilinos is figuring out
+how to write the configuration script.  The best place to find example
+configure scripts that at least have a chance of being correct on specific
+systems is to look at Trilinos test harness scripts in the directory:
+
+\verbatim
+
+  Trilinos/commonTools/test/harness/invoke-configure
+
+\endverbatim
+
+Older scripts that have worked on a wider variety of systems in the past can
+be found in the directory:
+
+\verbatim
+
+  Trilinos/sampleScripts
+
+\endverbatim
+
+Warning!  The above scripts are likely to be currently broken for even the
+same systems for which they where developed.  These scripts really only
+provide ideas for different combinations to try to get a configure script to
+work on your system.
+
+Below is an example configure script called <tt>do-configure</tt> that might
+be used to configure Trilinos with MOOCHO support (but might not actually work
+on any actual computer on Earth):
+
+\verbatim
+
+$TRILINOS_BASE_DIR/Trilinos/configure \
+--prefix=$TRILINOS_INSTALL_DIR \
+--with-install="/usr/bin/install -p" \
+--with-gnumake \
+--enable-export-makefiles \
+--with-cflags="-g -O0 -ansi -Wall" \
+--with-cxxflags="-g -O0 -ansi -Wall -ftrapv -pedantic -Wconversion" \
+--enable-mpi --with-mpi-compilers \
+--with-incdirs="-I${HOME}/include" \
+--with-ldflags="-L${HOME}/lib/LINUX_MPI" \
+--with-libs="-ldscpack -lumfpack -lamd -lparmetis-3.1 -lmetis-4.0 -lskit" \
+--with-blas=-lblas \
+--with-lapack=-lapack \
+--with-flibs="-lg2c" \
+--disable-default-packages \
+--enable-teuchos --enable-teuchos-extended --disable-teuchos-complex \
+  --enable-teuchos-abc --enable-teuchos-debug \
+--enable-thyra \
+--enable-epetra \
+--enable-triutils \
+--enable-epetraext \
+--enable-amesos --enable-amesos-umfpack --enable-amesos-dscpack \
+--enable-aztecoo \
+--enable-ifpack --enable-ifpack-metis --enable-ifpack-sparskit \
+--enable-ml --with-ml_metis --with-ml_parmetis3x \
+--enable-stratimikos \
+--enable-moocho
+
+\endverbatim
+
+The above script is almost completely platform dependent in most cases, except
+for everything below <tt>--disable-default-packages</tt> for enable options
+for individual packages.  A few points about the above configure script are
+worth mentioning.  First, some of the package enable options such as
+<tt>--enable-epetra</tt> should be unnecessary once other options such as
+<tt>--enable-epetraext</tt> are included but to be safe it is a good idea to
+be explicit about what packages to build in case the built in top-level
+configure logic is wrong.  Second, it is a good idea to include the options
+<tt>--enable-teuchos-debug</tt> and <tt>--enable-teuchos-abc</tt> when you
+first start working with Trilinos to help catch coding errors on your part
+(and perhaps on the part of Trilinos developers).  Third, the above script
+show enabled support for several third-party libraries such as UMFPACK,
+DSCPACK, SparseKit, and Metis.  You are responsible for installing these third
+party libraries yourself if you want the extra capabilities that they enable.
+Otherwise, to get started, a simpler script such as the follow can be used to
+begin with:
+
+\verbatim
+
+$TRILINOS_BASE_DIR/Trilinos/configure \
+--prefix=$TRILINOS_INSTALL_DIR \
+--with-install="/usr/bin/install -p" \
+--with-gnumake \
+--enable-export-makefiles \
+--with-cflags="-g -O0 -ansi -Wall" \
+--with-cxxflags="-g -O0 -ansi -Wall -ftrapv -pedantic -Wconversion" \
+--enable-mpi --with-mpi-compilers \
+--with-blas=-lblas \
+--with-lapack=-lapack \
+--with-flibs="-lg2c" \
+--disable-default-packages \
+--enable-teuchos --enable-teuchos-extended --disable-teuchos-complex \
+  --enable-teuchos-abc --enable-teuchos-debug \
+--enable-thyra \
+--enable-epetra \
+--enable-triutils \
+--enable-epetraext \
+--enable-amesos \
+--enable-aztecoo \
+--enable-ifpack \
+--enable-ml \
+--enable-stratimikos \
+--enable-moocho
+
+\endverbatim
+
+As a final step, you can make the <tt>do-configure</tt> script executable and
+this is assumed below.
+
+<li><b>Configure, build, and install Trilinos</b>
+
+Once you have a configure script, you can configure and build Trilinos as
+follows:
+
+\verbatim
+
+  cd $TRILINOS_BUILD_DIR
+  ./do-configure
+  make
+  make install
+
+\endverbatim
+
+If a problem does occur, it usually occurs during configuration.  Often trial
+and error is required to get the configuration to complete successfully.
+
+Once the Trilinos build completes (which can take hours on a slower machine if
+a lot of packages are enabled) you should test Trilinos using something like:
+
+\verbatim
+
+  make runtest-mpi TRILINOS_MPI_GO="mpirun -np "
+
+\endverbatim
+
+If you not enable MPI, you run run the serial test suite as:
+
+\verbatim
+
+  make runtest-serial
+
+\endverbatim
+
+Some of the tests in the test suite may fail if you have not enabled
+everything and this is okay.  Once you feel good about the build, you can
+install Trilinos as follows:
+
+\verbatim
+
+  make install
+
+\endverbatim
+
+If everything goes smoothly, then Trilinos will be installed with the
+following directory structure:
+
+\verbatim
+
+  $TRILINOS_INSTALL_DIR
+   |
+   |-- examples
+   |
+   |-- include
+   |
+   |-- libs
+   |
+    -- tools
+
+\endverbatim
+
+Once the install competes, you can move on to building and running the
+external MOOCHO examples as describe in the next section.
+
+</ol>
+
+\subsection moocho_installed_examples_sec Installed NLP Examples
+
+When the configure option <tt>--enable-export-makefiles</tt> is included, a
+set of examples are installed in the directory specified by
+<tt>--prefix=$TRILINOS_INSTALL_DIR</tt> and the directory structure will look
+something like:
+
+\verbatim
+
+  $TRILINOS_INSTALL_DIR
+   |
+   |-- examples
+   |    |
+   |     -- moocho
+   |         |
+   |         |-- NLPWBCounterExample
+   |         |
+   |         |-- ExampleNLPBanded
+   |         |
+   |         |-- thyra
+   |              |
+   |              |-- NLPThyraEpetraModelEval4DOpt
+   |              |
+   |               -- NLPThyraEpetraAdvDiffReactOpt
+   |
+    -- tools
+        |
+         -- moocho
+
+\endverbatim
+
+Note that the directory <tt>$TRILINOS_INSTALL_DIR/examples/moocho/thyra</tt>
+will not be installed if <tt>--enable-export-makefiles</tt> is not included
+(or is disabled) or if <tt>--enable-thyra</tt> is missing or
+<tt>--disable-moocho-thyra</tt> is specified at configure time.
+
+Each installed example contains a simple makefile that is ready to build each
+of the examples and to demonstrate several important features of MOOCHO.  Each
+makefile shows how to compile and link against the installed header files and
+libraries.  These makefiles use the Trilinos export makefile system to make it
+easy to get all of the compiler and linker options and get the right libraries
+in the build process.  The user is encouraged to copy these examples to their
+own directory and modify them to solve their NLPs.
+
+Specific examples can be examined through the links below but we first go
+through the common features of these examples here for one of the
+<tt>%Thyra::%ModelEvaluator examples</tt>.
+
+One common feature of all of these examples is the makefile that is generated.
+For the <tt>NLPWBCounterExample</tt> example (that is
+described ???here???) the makefile looks like:
+
+<!-- The below is from the base path ../example added to the
+EXAMPLE_PATH doxygen variable -->
+\verbinclude NLPWBCounterExample/external/Makefile.external.sample
+
+By using the macros starting with <tt>MOOCHO_</tt> one is guaranteed that the
+same compiler with the same options are used to build the client's code that
+were used to build Trilinos.  Of particular importance are
+<tt>MOOCHO_CXX</tt>, <tt>MOOCHO_DEFS</tt>, <tt>MOOCHO_CPPFLAGS</tt>, and
+<tt>MOOCHO_CXXLD</tt> since these ensure that the same C++ compiler and the
+same <tt>-D</tt> macro definitions are used.  These are critical to compiling
+compatible code in many cases.  The macros <tt>MOOCHO_LIBS</tt> contain all of
+the libraries needed to link executables and they include all of the libraries
+in their lower level dependent Trilinos packages.  For example, you don't
+explicitly see the libraries for say %Teuchos, but you can be user that they
+are there.
+
+This makefile gets created with the following lines commented in or out
+depending on if <tt>--enable-gnumake</tt> was specified or not:
+
+<!-- The below is from the base path ../thyra/example added to the
+EXAMPLE_PATH doxygen variable -->
+\dontinclude NLPWBCounterExample/external/Makefile.external.sample
+\skip For platforms where perl and GNUMake are used
+\until LOCAL_LINK_FLAGS = $(_LOCAL_LINK_FLAGS)
+
+In the above example, support for GNU Make is enabled which results in scripts
+being called to clean up the list of include paths and libraries and have
+duplicate entries removed.
+
+\section moocho_browse_sec Browse all of MOOCHO as a single doxygen collection
+
+You can browse all of MOOCHO as a <A HREF="../../browser/doc/html/index.html">single
+doxygen collection</A>. Warning, this is not the recommended way to learn
+about MOOCHO software.  However, this is a good way to browse the <a
+href="../../browser/doc/html/dirs.html">directory structure of MOOCHO</a>, to <ahref="../../browser/doc/html/files.html">locate files</a>, etc.
 
 */
