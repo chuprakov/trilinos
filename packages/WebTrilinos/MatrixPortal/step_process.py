@@ -27,10 +27,10 @@ import math
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 #
-#Questions about WebTrilinos? Contact Marzio Sala (marzio.sala@gmail.com)
+#Questions about WebTrilinos? Contact Marzio Sala (marzio.sala _AT_ gmail.com)
 #
 #
-# \author Marzio Sala, COLAB/ETHZ
+# \author Marzio Sala, ETHZ
 #
 # \date Last updated on Aug-06
 # 
