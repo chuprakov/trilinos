@@ -22,8 +22,7 @@ DIDASKO, the tutorial of Trilinos, offers a quick overview of Trilinos.
 The reader can find a variety of examples on several Trilinos packages. Each
 example is documented with comments and suggestions, some in the source file
 itself, and some others in the PDF document. The PDF version of the tutorial
-can be found in the Trilinos web page, or in file
-TRILINOS_HOME/packages/didasko/doc/tutorial.pdf.
+can be found in the Trilinos web page.
 
 Usually, a Trilinos package interoperates with other Trilinos packages (and
 with external packages as well). To be used efficiently, the examples
@@ -47,10 +46,6 @@ Then, the code checks for installed libraries, like for instance
 \code
 #if defined(HAVE_DIDASKO_EPETRA)
 \endcode
-
-\note All the examples are compiled using autoconf and autotools. Each directory
-also contain a \c Makefile, called \c classicMakefile, which gives \e some
-suggestions about how to write a Makefile that does not depend on autotools.
 
 <P>In the following, we report the source code of each of the examples.
 Packages are reported in alphabetical order.

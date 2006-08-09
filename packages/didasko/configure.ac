@@ -38,13 +38,11 @@
 # Initialization 
 # ------------------------------------------------------------------------
 
-
-
-# This must be the first line in configure.ac.
-# Optional 3rd argument is email address for bugs.
-
 # package name, version number, and e-mail address below
-AC_INIT(didasko, 1.0, msala@sandia.gov)
+# From Trilinos 7.0, the version number should be as for Trilinos itself,
+# since the tutorial is so stricly related to Trilinos. Remember to change it 
+# a few lines below as well.
+AC_INIT(didasko, 7.0, marzio.sala@gmail.com)
 
 # Hello World!
 #
@@ -95,7 +93,7 @@ AC_CANONICAL_TARGET
 # Use automake
 
 # Package name and version below
-AM_INIT_AUTOMAKE(Didasko, 1.0)
+AM_INIT_AUTOMAKE(Didasko, 7.0)
 
 # Specify required version of autoconf.
 

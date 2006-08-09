@@ -11,7 +11,7 @@ all-local:
 ## #######################################################################
 EXTRA_DIST = Doxyfile          \
              mainpage.doxygen  \
-	     ../src/Trilinos60Tutorial.pdf \
+	     ../src/Trilinos70Tutorial.pdf \
              didasko_logo.jpeg
 
 # ------------------------------------------------------------------------

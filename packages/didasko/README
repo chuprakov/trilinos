@@ -4,14 +4,15 @@
 
 This directory is organized as follows:
 
-- doc/tutorial.pdf:     PDF document containing the tutorial (114 pages)
+- doc/Trilinos70Tutorial.pdf:  PDF document containing the tutorial
 
 - doc/Doxyfile:         doxygen documentation, type `doxygen' at the 
                         command line (in the doc subdirectory)
                         to create the Doxygen files
 
 - src/                  latex files of the tutorial, type `make' at the
-                        command line to compile the LaTeX sources
+                        command line to compile the LaTeX sources 
+                        (not included in the distribution)
 
 - examples/             contains all the examples discussed in the PDF
                         document. The examples will be compiled if DIDASKO
@@ -22,12 +23,16 @@ This directory is organized as follows:
         suggested usage
         ===============
 
-1) print the PDF document
+1) print the PDF document;
 
-2) configure and compile the examples
+2) configure and compile the examples;
 
 3) if Doxygen is installed on your system, type `doxygen' in the doc/
    subdirectory, then open with your favorite browser the file
-   doc/html/index.html
+   doc/html/index.html. You can also use the web page
 
-4) send bugs, comments and suggestions to msala@sandia.gov
+   http://software.sandia.gov/trilinos/packages/didasko/
+
+   to browse the examples' sources online;
+
+4) send bugs, comments and suggestions to marzio.sala _AT_ gmail.com.
