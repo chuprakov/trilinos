@@ -45,8 +45,7 @@
 #include "Trilinos_Util_CrsMatrixGallery.h"
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"
-#include "AnasaziBlockKrylovSchur.hpp"
-#include "AnasaziBasicSort.hpp"
+#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 
 int main(int argc, char *argv[]) {
     
@@ -64,7 +63,7 @@ int main(int argc, char *argv[]) {
   typedef Epetra_Operator OP;
   typedef Anasazi::MultiVecTraits<double, Epetra_MultiVector> MVT;
 
-  int ierr;
+  bool ierr;
 
   // Get our processor ID (0 if running serial)
   int MyPID = Comm.MyPID();
@@ -98,8 +97,7 @@ int main(int argc, char *argv[]) {
   // The Teuchos::RefCountPtr is a reference counting pointer that handles
   // garbage collection for us, so that we can perform memory allocation without
   // having to worry about freeing memory manually.
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix() );
-
+  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix(), false );
 
   // Create an Anasazi MultiVector, based on Epetra MultiVector
   const Epetra_Map * Map = &(A->RowMap());
@@ -115,28 +113,23 @@ int main(int argc, char *argv[]) {
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double,MV,OP>(A, ivec) );
 
   // The 2-D laplacian is symmetric. Specify this in the eigenproblem.
-  MyProblem->SetSymmetric(true);
+  MyProblem->setHermitian(true);
 
   // Specify the desired number of eigenvalues
-  MyProblem->SetNEV( nev );
+  MyProblem->setNEV( nev );
 
   // Signal that we are done setting up the eigenvalue problem
-  ierr = MyProblem->SetProblem();
+  ierr = MyProblem->setProblem();
 
-  // Check the return from SetProblem(). If this is non-zero, there was an
+  // Check the return from setProblem(). If this is true, there was an
   // error. This probably means we did not specify enough information for
   // the eigenproblem.
-  assert(ierr==0);
-
-
-  // Create an output manager
-  Teuchos::RefCountPtr<Anasazi::OutputManager<double> > MyOM = 
-    Teuchos::rcp(  new Anasazi::OutputManager<double>( MyPID ) );
+  assert(ierr == true);
 
   // Specify the verbosity level. Options include:
-  // Anasazi::Error 
+  // Anasazi::Errors 
   //   This option is always set
-  // Anasazi::Warning 
+  // Anasazi::Warnings 
   //   Warnings (less severe than errors)
   // Anasazi::IterationDetails 
   //   Details at each iteration, such as the current eigenvalues
@@ -145,20 +138,12 @@ int main(int argc, char *argv[]) {
   // Anasazi::TimingDetails
   //   A summary of the timing info for the solve() routine
   // Anasazi::FinalSummary 
-  //   A final summary (we will call this manually below)
+  //   A final summary 
   // Anasazi::Debug 
   //   Debugging information
-  MyOM->SetVerbosity( Anasazi::Warning );
+  int verbosity = Anasazi::Warnings + Anasazi::Errors + Anasazi::FinalSummary + Anasazi::TimingDetails;
 
-
-  // Create the parameter list for the eigensolver
-  Teuchos::ParameterList MyPL;
-  MyPL.set( "Block Size", blocksize);
-  MyPL.set( "Max Blocks", 20 );
-  MyPL.set( "Max Restarts", 100 );
-  MyPL.set( "Tol", 1.0e-8 );
-
-  // Create the sort manager
+  // Choose which eigenvalues to compute
   // Choices are:
   // LM - target the largest magnitude  [default]
   // SM - target the smallest magnitude 
@@ -167,21 +152,24 @@ int main(int argc, char *argv[]) {
   // LI - target the largest imaginary
   // SI - target the smallest imaginary
   std::string which("SM");
-  Teuchos::RefCountPtr<Anasazi::BasicSort<double,MV,OP> > MySM =
-    Teuchos::rcp( new Anasazi::BasicSort<double,MV,OP>(which) );
+
+  // Create the parameter list for the eigensolver
+  Teuchos::ParameterList MyPL;
+  MyPL.set( "Verbosity", verbosity );
+  MyPL.set( "Which", which );
+  MyPL.set( "Block Size", blocksize );
+  MyPL.set( "Num Blocks", 20 );
+  MyPL.set( "Maximum Restarts", 100 );
+  MyPL.set( "Convergence Tolerance", 1.0e-8 );
 
   // Create the Block Krylov Schur solver
-  // This takes as inputs the eigenvalue problem, the sort manager
-  // that we specified above, the output manager, and the solver parameters
-  Anasazi::BlockKrylovSchur<double,MV,OP> 
-    MyBlockKrylovSchur(MyProblem, MySM, MyOM, MyPL );
+  // This takes as inputs the eigenvalue problem and the solver parameters
+  Anasazi::BlockKrylovSchurSolMgr<double,MV,OP> 
+    MyBlockKrylovSchur(MyProblem, MyPL );
 
   // Solve the eigenvalue problem, and save the return code
   Anasazi::ReturnType solverreturn = MyBlockKrylovSchur.solve();
 
-  // Print results from eigensolver
-  MyBlockKrylovSchur.currentStatus();
-  
   // Check return code of the solver: Unconverged, Failed, or OK
   switch (solverreturn) {
 
@@ -195,44 +183,37 @@ int main(int argc, char *argv[]) {
     return 0;
     break;
 
-  // FAILED
-  case Anasazi::Failed:
+  // CONVERGED
+  case Anasazi::Converged:
     if (verbose) 
-      cout << "Anasazi::BlockKrylovSchur::solve() failed!" << endl;
-#ifdef HAVE_MPI
-    MPI_Finalize();
-#endif
-    return 1;
-    break;
-
-  // OK
-  case Anasazi::Ok:
-    if (verbose) 
-      cout << "Anasazi::BlockKrylovSchur::solve()\n" 
-           << "        converged in " << MyBlockKrylovSchur.GetNumIters() 
-           << " iterations with " << MyBlockKrylovSchur.GetNumRestarts() 
-           << " restarts." << endl;
+      cout << "Anasazi::BlockKrylovSchur::solve() converged!" << endl;
     break;
   }
 
+  // Get eigensolution struct
+  Anasazi::Eigensolution<double, Epetra_MultiVector> sol = MyProblem->getSolution();
+
+  // Get the number of eigenpairs returned
+  int numev = sol.numVecs;
+
   // Get eigenvectors
-  Teuchos::RefCountPtr<Epetra_MultiVector >  evecs = MyProblem->GetEvecs();
+  Teuchos::RefCountPtr<Epetra_MultiVector> evecs = sol.Evecs;
 
   // Get eigenvalues
-  Teuchos::RefCountPtr<std::vector<double> > evals = MyProblem->GetEvals();
+  std::vector<Anasazi::Value<double> > evals = sol.Evals;
 
   // Test residuals
-  // Generate a (nev x nev) dense matrix for the eigenvalues...
+  // Generate a (numev x numev) dense matrix for the eigenvalues...
   // This matrix is automatically initialized to zero
-  Teuchos::SerialDenseMatrix<int, double> D(nev, nev);
+  Teuchos::SerialDenseMatrix<int, double> D(numev, numev);
 
-  // Add the eigenvalues on the diagonals
-  for (int i=0; i<nev; i++) {
-    D(i,i) = (*evals)[i];
+  // Add the eigenvalues on the diagonals (only the real part since problem is Hermitian)
+  for (int i=0; i<numev; i++) {
+    D(i,i) = evals[i].realpart;
   }
 
   // Generate a multivector for the product of the matrix and the eigenvectors
-  Epetra_MultiVector R(*Map, nev); 
+  Epetra_MultiVector R(*Map, numev); 
 
   // R = A*evecs
   A->Apply( *evecs, R );
@@ -243,7 +224,7 @@ int main(int argc, char *argv[]) {
 
   // Compute the 2-norm of each vector in the MultiVector
   // and store them to a std::vector<double>
-  std::vector<double> normR(nev);
+  std::vector<double> normR(numev);
   MVT::MvNorm( R, &normR );
 
   // Output results to screen
@@ -254,8 +235,8 @@ int main(int argc, char *argv[]) {
          << "------------------------------------------------------\n"
          << "  evals\t\t\tnormR\n"
          << "------------------------------------------------------\n";
-    for( int i=0 ; i<nev ; ++i ) {
-      cout << "  " << (*evals)[i] << "\t\t" << normR[i] << endl;
+    for( int i=0 ; i<numev ; ++i ) {
+      cout << "  " << evals[i].realpart << "\t\t" << normR[i] << endl;
     }
     cout << "******************************************************\n" << endl;
   }

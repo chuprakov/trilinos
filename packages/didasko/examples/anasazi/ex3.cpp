@@ -45,8 +45,7 @@
 #include "Trilinos_Util_CrsMatrixGallery.h"
 #include "AnasaziBasicEigenproblem.hpp"
 #include "AnasaziEpetraAdapter.hpp"
-#include "AnasaziBlockKrylovSchur.hpp"
-#include "AnasaziBasicSort.hpp"
+#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 
 int main(int argc, char *argv[]) {
     
@@ -62,9 +61,10 @@ int main(int argc, char *argv[]) {
   // Some typedefs for oft-used data types
   typedef Epetra_MultiVector MV;
   typedef Epetra_Operator OP;
-  typedef Anasazi::MultiVecTraits<double, Epetra_MultiVector> MVT;
+  typedef Anasazi::MultiVecTraits<double, MV> MVT;
+  typedef Anasazi::OperatorTraits<double, MV, OP> OPT;
 
-  int ierr;
+  bool ierr;
 
   // Get our processor ID (0 if running serial)
   int MyPID = Comm.MyPID();
@@ -98,8 +98,7 @@ int main(int argc, char *argv[]) {
   // The Teuchos::RefCountPtr is a reference counting pointer that handles
   // garbage collection for us, so that we can perform memory allocation without
   // having to worry about freeing memory manually.
-  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix() );
-
+  Teuchos::RefCountPtr<Epetra_CrsMatrix> A = Teuchos::rcp( Gallery.GetMatrix(), false );
 
   // Create an Anasazi MultiVector, based on Epetra MultiVector
   const Epetra_Map * Map = &(A->RowMap());
@@ -109,34 +108,28 @@ int main(int argc, char *argv[]) {
   // Fill it with random numbers
   ivec->Random();
 
-
   // Setup the eigenproblem, with the matrix A and the initial vectors ivec
   Teuchos::RefCountPtr< Anasazi::BasicEigenproblem<double,MV,OP> > MyProblem = 
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double,MV,OP>(A, ivec) );
 
-  // The 2-D laplacian is symmetric. Specify this in the eigenproblem.
-  MyProblem->SetSymmetric(false);
+  // The problem is non-symmetric. Specify this in the eigenproblem.
+  MyProblem->setHermitian(false);
 
   // Specify the desired number of eigenvalues
-  MyProblem->SetNEV( nev );
+  MyProblem->setNEV( nev );
 
   // Signal that we are done setting up the eigenvalue problem
-  ierr = MyProblem->SetProblem();
+  ierr = MyProblem->setProblem();
 
-  // Check the return from SetProblem(). If this is non-zero, there was an
+  // Check the return from setProblem(). If this is true, there was an
   // error. This probably means we did not specify enough information for
   // the eigenproblem.
-  assert(ierr==0);
-
-
-  // Create an output manager
-  Teuchos::RefCountPtr<Anasazi::OutputManager<double> > MyOM = 
-    Teuchos::rcp(  new Anasazi::OutputManager<double>( MyPID ) );
+  assert(ierr);
 
   // Specify the verbosity level. Options include:
-  // Anasazi::Error 
+  // Anasazi::Errors
   //   This option is always set
-  // Anasazi::Warning 
+  // Anasazi::Warnings 
   //   Warnings (less severe than errors)
   // Anasazi::IterationDetails 
   //   Details at each iteration, such as the current eigenvalues
@@ -145,20 +138,12 @@ int main(int argc, char *argv[]) {
   // Anasazi::TimingDetails
   //   A summary of the timing info for the solve() routine
   // Anasazi::FinalSummary 
-  //   A final summary (we will call this manually below)
+  //   A final summary 
   // Anasazi::Debug 
   //   Debugging information
-  MyOM->SetVerbosity( Anasazi::Warning );
+  int verbosity = Anasazi::Warnings + Anasazi::Errors + Anasazi::FinalSummary;
 
-
-  // Create the parameter list for the eigensolver
-  Teuchos::ParameterList MyPL;
-  MyPL.set( "Block Size", blocksize);
-  MyPL.set( "Max Blocks", 5 );
-  MyPL.set( "Max Restarts", 300 );
-  MyPL.set( "Tol", 1.0e-8 );
-
-  // Create the sort manager
+  // Choose which eigenvalues to compute
   // Choices are:
   // LM - target the largest magnitude  [default]
   // SM - target the smallest magnitude 
@@ -167,20 +152,23 @@ int main(int argc, char *argv[]) {
   // LI - target the largest imaginary
   // SI - target the smallest imaginary
   std::string which("SM");
-  Teuchos::RefCountPtr<Anasazi::BasicSort<double,MV,OP> > MySM =
-    Teuchos::rcp( new Anasazi::BasicSort<double,MV,OP>(which) );
+
+  // Create the parameter list for the eigensolver
+  Teuchos::ParameterList MyPL;
+  MyPL.set( "Verbosity", verbosity );
+  MyPL.set( "Which", which );
+  MyPL.set( "Block Size", blocksize );
+  MyPL.set( "Num Blocks", 5 );
+  MyPL.set( "Maximum Restarts", 300 );
+  MyPL.set( "Convergence Tolerance", 1.0e-8 );
 
   // Create the Block Krylov Schur solver
-  // This takes as inputs the eigenvalue problem, the sort manager
-  // that we specified above, the output manager, and the solver parameters
-  Anasazi::BlockKrylovSchur<double,MV,OP> 
-    MyBlockKrylovSchur(MyProblem, MySM, MyOM, MyPL );
+  // This takes as inputs the eigenvalue problem and the solver parameters
+  Anasazi::BlockKrylovSchurSolMgr<double,MV,OP> 
+    MyBlockKrylovSchur(MyProblem, MyPL );
 
   // Solve the eigenvalue problem, and save the return code
   Anasazi::ReturnType solverreturn = MyBlockKrylovSchur.solve();
-
-  // Print results from eigensolver
-  MyBlockKrylovSchur.currentStatus();
 
   // Check return code of the solver: Unconverged, Failed, or OK
   switch (solverreturn) {
@@ -195,94 +183,100 @@ int main(int argc, char *argv[]) {
     return 0;
     break;
 
-  // FAILED
-  case Anasazi::Failed:
-    if (verbose)
-      cout << "Anasazi::BlockKrylovSchur::solve() failed!" << endl;
-#ifdef HAVE_MPI
-    MPI_Finalize();
-#endif
-    return 1;
-    break;
-
-  // OK
-  case Anasazi::Ok:
+  // CONVERGED
+  case Anasazi::Converged:
     if (verbose) 
-      cout << "Anasazi::BlockKrylovSchur::solve()\n" 
-           << "        converged in " << MyBlockKrylovSchur.GetNumIters() 
-           << " iterations with " << MyBlockKrylovSchur.GetNumRestarts() 
-           << " restarts." << endl;
+      cout << "Anasazi::BlockKrylovSchur::solve() converged!" << endl;
     break;
   }
 
+  // Get eigensolution struct
+  Anasazi::Eigensolution<double, Epetra_MultiVector> sol = MyProblem->getSolution();
+
+  // Get the number of eigenpairs returned
+  int numev = sol.numVecs;
+
+  // Get the index vector for the eigenvector storage
+  std::vector<int> index = sol.index;
+  
+  // Get eigenvectors
+  Teuchos::RefCountPtr<Epetra_MultiVector> evecs = sol.Evecs;
+  
   // Get eigenvalues
   // Because the matrix is nonsymmetric (and the eigenvalues are potentially 
-  // complex), GetEvals() returns a vector of length 2*nev:
-  // evals = [ real(lambda_1)   ]
-  //         [      ...
-  //         [ real(lambda_nev) ]
-  //         [ imag(lambda_1)   ]
-  //         [      ...
-  //         [ imag(labmda_nev) ]
-  Teuchos::RefCountPtr<std::vector<double> > evals = MyProblem->GetEvals();
-
-  // Get eigenvectors
-  // This returns a multivector, with 2*nev vectors
-  // The real part of the eigenvectors is in the first nev vectors
-  // The imaginary part of the eigenvectors is in the last nev vectors
-  Teuchos::RefCountPtr< Epetra_MultiVector > evecs = MyProblem->GetEvecs();
-  // Extract the real and imaginary parts of the eigenvectors into two
-  // separate vectors
-  Teuchos::RefCountPtr< Epetra_MultiVector > evecr = 
-    Teuchos::rcp( new Epetra_MultiVector(View,*evecs,0  ,nev) );
-  Teuchos::RefCountPtr< Epetra_MultiVector > eveci = 
-    Teuchos::rcp( new Epetra_MultiVector(View,*evecs,nev,nev) );
-
-  // Test residuals
-  // Generate (nev x nev) dense matrices for the eigenvalues
-  // These matrices are automatically initialized to zero
-  Teuchos::SerialDenseMatrix<int, double> Dr(nev, nev), Di(nev, nev);
-
-  // Put the eigenvalues on the diagonals
-  for (int i=0; i<nev; i++) {
-    Dr(i,i) = (*evals)[i];
-    Di(i,i) = (*evals)[nev+i];
-  }
-
-  // Generate a multivector for the residual
-  Epetra_MultiVector R(*Map,nev);
-
-  // Also declare a vector<double> to hold the norm
-  std::vector<double> normRr(nev), normRi(nev);
-
-  // Compute the residual, manually performing the complex arithmetic
-  // R = A*evecs - evecs*D = A*(evecr+i*eveci) - (evecr+i*eveci)*(Dr+i*Di)
-  //   = (A*evecr-evecr*Dr+eveci*Di) + i*(A*eveci-evecr*Di-eveci*Dr)
-
-  // Real part: A*evecr-evecr*Dr+eveci*Di
-  A->Apply( *evecr, R );
-  MVT::MvTimesMatAddMv( -1.0, *evecr, Dr, 1.0, R );
-  MVT::MvTimesMatAddMv( +1.0, *eveci, Di, 1.0, R );
+  // complex), Evals is a vector of length numev where each entry is a pair
+  // with a real and imaginary part.
+  std::vector<Anasazi::Value<double> > evals = sol.Evals;
   
-  // Compute the 2-norm of the real part of the residual vectors
-  MVT::MvNorm( R, &normRr );
-
-  // Imag part: A*eveci-evecr*Di-eveci*Dr
-  A->Apply( *eveci, R );
-  MVT::MvTimesMatAddMv( -1.0, *evecr, Di, 1.0, R );
-  MVT::MvTimesMatAddMv( -1.0, *eveci, Dr, 1.0, R );
-
-  // Compute the 2-norm of the imag part of the residual vectors
-  MVT::MvNorm( R, &normRi );
-
-  // We will use the LAPACK wrapper in Teuchos to compute the
-  // complex absolute value
+  // Compute residuals.
   Teuchos::LAPACK<int,double> lapack;
-
-  for (int i=0; i<nev; i++) {
-    normRr[i] = lapack.LAPY2(normRr[i],normRi[i]);
+  std::vector<double> normA(numev);
+  
+  int i=0;
+  std::vector<int> curind(1);
+  std::vector<double> resnorm(1), tempnrm(1);
+  Teuchos::RefCountPtr<MV> evecr, eveci, tempAevec;
+  Epetra_MultiVector Aevec(*Map,numev);
+  
+  // Compute A*evecs
+  OPT::Apply( *A, *evecs, Aevec );
+  
+  Teuchos::SerialDenseMatrix<int,double> Breal(1,1), Bimag(1,1);
+  while (i<numev) {
+    if (index[i]==0) {
+      // Get a view of the current eigenvector (evecr)
+      curind[0] = i;
+      evecr = MVT::CloneView( *evecs, curind );
+      
+      // Get a copy of A*evecr
+      tempAevec = MVT::CloneCopy( Aevec, curind );
+      
+      // Compute A*evecr - lambda*evecr
+      Breal(0,0) = evals[i].realpart;
+      MVT::MvTimesMatAddMv( -1.0, *evecr, Breal, 1.0, *tempAevec );
+      
+      // Compute the norm of the residual and increment counter
+      MVT::MvNorm( *tempAevec, &resnorm );
+      normA[i] = resnorm[0]/Teuchos::ScalarTraits<double>::magnitude( evals[i].realpart );
+      i++;
+    } else {
+      // Get a view of the real part of the eigenvector (evecr)
+      curind[0] = i;
+      evecr = MVT::CloneView( *evecs, curind );
+      
+      // Get a copy of A*evecr
+      tempAevec = MVT::CloneCopy( Aevec, curind );
+      
+      // Get a view of the imaginary part of the eigenvector (eveci)
+      curind[0] = i+1;
+      eveci = MVT::CloneView( *evecs, curind );
+      
+      // Set the eigenvalue into Breal and Bimag
+      Breal(0,0) = evals[i].realpart;
+      Bimag(0,0) = evals[i].imagpart;
+      
+      // Compute A*evecr - evecr*lambdar + eveci*lambdai
+      MVT::MvTimesMatAddMv( -1.0, *evecr, Breal, 1.0, *tempAevec );
+      MVT::MvTimesMatAddMv( 1.0, *eveci, Bimag, 1.0, *tempAevec );
+      MVT::MvNorm( *tempAevec, &tempnrm );
+      
+      // Get a copy of A*eveci
+      tempAevec = MVT::CloneCopy( Aevec, curind );
+      
+      // Compute A*eveci - eveci*lambdar - evecr*lambdai
+      MVT::MvTimesMatAddMv( -1.0, *evecr, Bimag, 1.0, *tempAevec );
+      MVT::MvTimesMatAddMv( -1.0, *eveci, Breal, 1.0, *tempAevec );
+      MVT::MvNorm( *tempAevec, &resnorm );
+      
+      // Compute the norms and scale by magnitude of eigenvalue
+      normA[i] = lapack.LAPY2( tempnrm[i], resnorm[i] ) /
+	lapack.LAPY2( evals[i].realpart, evals[i].imagpart );
+      normA[i+1] = normA[i];
+      
+      i=i+2;
+    }
   }
-
+  
   // Output results to screen
   if(verbose) {
     cout << scientific << showpos << setprecision(6) << showpoint;
@@ -291,18 +285,18 @@ int main(int argc, char *argv[]) {
          << "------------------------------------------------------\n"
          << "  real(evals)\t\timag(evals)\tnormR\n"
          << "------------------------------------------------------\n";
-    for(int i=0; i<nev; ++i) {
-      cout << "  " << (*evals)[i] << "\t\t" << (*evals)[nev+i] 
-           << "\t" << normRr[i] << endl;
+    for(int i=0; i<numev; ++i) {
+      cout << "  " << evals[i].realpart << "\t\t" << evals[i].imagpart
+           << "\t" << normA[i] << endl;
     }
     cout << "******************************************************\n" << endl;
   }
-
-
+  
+  
 #ifdef HAVE_MPI
   MPI_Finalize();
 #endif
-
+  
   return(EXIT_SUCCESS);
 }
 

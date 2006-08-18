@@ -58,7 +58,7 @@ ex3_LDADD = $(DIDASKO_LIBS) \
             $(FLIBS)
 
 ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex4_CXXFLAGS = $(DIDASKO_INCLUDES)
 ex4_LDADD = $(DIDASKO_LIBS) \
             $(LIBS)         \
             $(LAPACK_LIBS)  \
