@@ -31,7 +31,7 @@
 // Use of ML as a black-box smoothed aggregation preconditioner
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ML) && defined(HAVE_DIDASKO_TRIUTILS)
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ML) && defined(HAVE_DIDASKO_TRIUTILS) && defined(HAVE_DIDASKO_AZTECOO) && defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
@@ -136,6 +136,8 @@ int main(int argc, char *argv[])
   puts("Please configure Didasko with:\n"
        "--enable-epetra\n"
        "--enable-teuchos\n"
+       "--enable-triutils\n"
+       "--enable-aztecoo\n"
        "--enable-ml");
 
 #ifdef HAVE_MPI
