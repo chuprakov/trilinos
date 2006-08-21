@@ -38,7 +38,7 @@ include 'config.php';
   <li>We try to <tt>touch</tt> a file in  <tt>
     <? global $WebTrilinosDirectory; echo $WebTrilinosDirectory; ?>/tmp/</tt>. Remember that
   you have to use <tt>chmod go+rwx WebTrilinos/tmp</tt>, since PHP does not
-  operate as "you".
+  operate as "you". If nothing is reported below, this test is fine.
   <?
   global $WebTrilinosDirectory;
   $ourFileName = $WebTrilinosDirectory . "/tmp/test";
@@ -55,28 +55,30 @@ include 'config.php';
 
   <br><br>
   <li>We try to <tt>touch</tt> a file in  <tt>
-    <? global $HBMatrixDirectory; echo $HBMatrixDirectory; ?>/tmp/</tt> and
-  <? global $XMLMatrixDirectory; echo $XMLMatrixDirectory; ?>. Remember that
+    <? global $HBMatrixDirectory; echo $HBMatrixDirectory; ?></tt> and
+  <tt><? global $XMLMatrixDirectory; echo $XMLMatrixDirectory; ?></tt>. Remember that
   you have to use <tt>chmod go+rwx 
     <? global $HBMatrixDirectory; echo $HBMatrixDirectory; ?></tt>, then
   <tt>chmod go+rwx 
     <? global $XMLMatrixDirectory; echo $XMLMatrixDirectory; ?></tt>, 
- since PHP does not operate as "you".
+  since PHP does not operate as "you". If nothing is reported below,
+  this test is fine.
   <?
   global $HBMatrixDirectory;
   global $XMLMatrixDirectory;
-  $ourFileName = $HBMatrixDirectory;
+  $ourFileName = $HBMatrixDirectory . "/delete.me";
   if (!$ourFileHandle = fopen($ourFileName, 'w'))
   {
     echo "<FONT COLOR=RED>";
     echo "<P>can't open file: CHECK PERMISSIONS by executing the command:";
     echo "<br><tt>chmod go+rwx $HBMatrixDirectory</tt>";
     echo "<br>then reload this page.";
+    echo "<br>Last PHP error that occured: <FONT COLOR=BLUE>$php_errormsg</FONT>";
     echo "</FONT>";
   }
   fclose($ourFileHandle);
 
-  $ourFileName = $XMLMatrixDirectory;
+  $ourFileName = $XMLMatrixDirectory . "/delete.me";
   if (!$ourFileHandle = fopen($ourFileName, 'w'))
   {
     echo "<FONT COLOR=RED>";
@@ -119,7 +121,7 @@ global $CXX;
 $timestamp = date("y-m-d_H.i.s", time());
 
 $configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
-$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+$configExe = "$TempDirectory/WebTrilinos/test1-$timestamp.exe";
 if(!is_dir("$TempDirectory/WebTrilinos"))
   mkdir("$TempDirectory/WebTrilinos", 0777);
 
@@ -130,8 +132,8 @@ if (-1 == fwrite($configFile, $program)) {
 fclose($configFile);
 
 echo "<font color=blue>";
-passthru("$CXX $configFileName -o $configExe 2>&1");
-passthru("$configExe 2>&1");
+passthru("$CXX $configFileName -o $configExe 2>&1 && $configExe 2>&1");
+passthru("/bin/rm -f $configExe");
 echo "</font>";
 
 ?>
@@ -178,7 +180,7 @@ global $CXX;
 $timestamp = date("y-m-d_H.i.s", time());
 
 $configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
-$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+$configExe = "$TempDirectory/WebTrilinos/test2-$timestamp.exe";
 if(!is_dir("$TempDirectory/WebTrilinos"))
   mkdir("$TempDirectory/WebTrilinos", 0777);
 
@@ -189,8 +191,9 @@ if (-1 == fwrite($configFile, $program)) {
 fclose($configFile);
 
 echo "<font color=blue>";
-passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1");
-passthru("$configExe 2>&1");
+passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1 &&
+$configExe 2>&1");
+passthru("/bin/rm -f $configExe");
 echo "</font>";
 
 ?>
@@ -234,7 +237,7 @@ global $CXX;
 $timestamp = date("y-m-d_H.i.s", time());
 
 $configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
-$configExe = "$TempDirectory/WebTrilinos/$timestamp.exe";
+$configExe = "$TempDirectory/WebTrilinos/test3-$timestamp.exe";
 if(!is_dir("$TempDirectory/WebTrilinos"))
   mkdir("$TempDirectory/WebTrilinos", 0777);
 
@@ -244,8 +247,9 @@ if (-1 == fwrite($configFile, $program)) {
   die("can't write to $configFileName: $php_errormsg"); }
 fclose($configFile);
 
-passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1");
-passthru("$configExe 2>&1");
+passthru("$CXX $configFileName $INCLUDES $LDFLAGS $LIBS -o $configExe 2>&1 &&
+$configExe 2>&1");
+passthru("/bin/rm -f $configExe");
 
 ?>
 </pre>
