@@ -29,9 +29,10 @@
 
 try:
   import setpath
-  imprt Epetra
+  import Epetra
 except:
   from PyTrilinos import Epetra
+import math
 
 Comm = Epetra.PyComm()
 
@@ -50,8 +51,10 @@ ExactSolution = Epetra.MultiVector(Map, 1)
 ExactSolutionView = ExactSolution.ExtractView()
 n = ExactSolution.MyLength()
 for i in xrange(0, n):
-  ExactSolutionView[0][i] = sin(i * 3.1415 / n) * sin(i * 3.1415 / n)
+  ExactSolutionView[0][i] = math.sin(i * 3.1415 / n) * math.sin(i * 3.1415 / n)
 
 LHS = Epetra.MultiVector(Map, 1)
 RHS = Epetra.MultiVector(Map, 1)
 Matrix.Multiply(False, ExactSolution, RHS)
+
+print RHS

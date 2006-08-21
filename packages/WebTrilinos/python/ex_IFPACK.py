@@ -57,3 +57,14 @@ Prec.SetParameters(IFPACKList)
 Prec.Initialize()
 Prec.Compute()
 
+
+LHS = Epetra.Vector(Map); LHS.PutScalar(0.0)
+RHS = Epetra.Vector(Map); RHS.Random()
+
+Solver = AztecOO.AztecOO(Matrix, LHS, RHS)
+
+Solver.SetPrecOperator(Prec)
+Solver.SetAztecOption(AztecOO.AZ_output, 16)
+Solver.Iterate(1550, 1e-5)
+
+print Solver.NumIters(), Solver.TrueResidual()

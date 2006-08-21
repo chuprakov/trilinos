@@ -56,3 +56,16 @@ MLList = {
 Prec = ML.MultiLevelPreconditioner(Matrix, False)
 Prec.SetParameterList(MLList)
 Prec.ComputePreconditioner()
+
+LHS = Epetra.Vector(Map); LHS.PutScalar(0.0)
+RHS = Epetra.Vector(Map); RHS.Random()
+
+Solver = AztecOO.AztecOO(Matrix, LHS, RHS)
+
+Solver.SetPrecOperator(Prec)
+Solver.SetAztecOption(AztecOO.AZ_output, 16)
+Solver.Iterate(1550, 1e-5)
+
+del Prec
+
+print Solver.NumIters(), Solver.TrueResidual()

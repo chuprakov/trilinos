@@ -82,7 +82,7 @@ Insert template:
 <P>Insert your PyTrilinos script below.
 <p><textarea NAME="script" COLS=<? global $cols; echo $cols; ?>
   ROWS=<? global $rows; echo $rows; ?>>
-<?  if ($_POST["mode"] != "Reset Script") echo $_POST["script"]; ?>
+<? // if ($_POST["mode"] != "Reset Script") echo $_POST["script"]; ?>
 <? if ($_POST["mode"] == "Insert") {
 if ($_POST["template"] == "comm") {
   include 'ex_Comm.py';
@@ -101,7 +101,10 @@ if ($_POST["template"] == "comm") {
 } else if ($_POST["template"] == "ml") {
   include 'ex_ML.py';
 } 
-} ?>
+} else {
+echo $_POST["script"];
+}
+?>
 </textarea>
 <p><input type=submit class=submitSecondary value="Run Script" name="mode">&nbsp;&nbsp;or
 &nbsp;&nbsp;

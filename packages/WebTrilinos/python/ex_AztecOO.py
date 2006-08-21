@@ -46,10 +46,8 @@ for i in MyGlobalElements:
 
 Matrix.FillComplete()
 
-ExactSolution = Epetra.MultiVector(Map, 1)
-ExactSolutionView = ExactSolution.ExtractView()
-n = ExactSolution.MyLength()
-for i in xrange(0, n):
+LHS = Epetra.Vector(Map); LHS.PutScalar(0.0)
+RHS = Epetra.Vector(Map); RHS.Random()
 
 Solver = AztecOO.AztecOO(Matrix, LHS, RHS)
 
@@ -58,3 +56,5 @@ Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_dom_decomp)
 Solver.SetAztecOption(AztecOO.AZ_subdomain_solve, AztecOO.AZ_ilu)
 Solver.SetAztecOption(AztecOO.AZ_output, 16)
 Solver.Iterate(1550, 1e-5)
+
+print Solver.NumIters(), Solver.TrueResidual()

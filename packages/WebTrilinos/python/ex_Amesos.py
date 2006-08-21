@@ -32,6 +32,7 @@ try:
   import Epetra, Amesos
 except:
   from PyTrilinos import Epetra, Amesos
+from math import sin
 
 Comm = Epetra.PyComm()
 

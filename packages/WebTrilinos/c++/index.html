@@ -32,7 +32,7 @@ Questions about WebTrilinos? Contact Marzio Sala (marzio.sala _AT_ gmail.com)
   include '../common/util.php';
   setBodyAttributes('onload="grabFocus();"'); 
   setFilename('index.html');
-  setTitle('Matrix Portal -- Custom Script');
+  setTitle('Matrix Portal -- Custom Code');
   include '../common/config.php';
   include '../common/header.html';
   include '../util.php';
@@ -69,7 +69,7 @@ if (parseFloat(ScriptEngineMajorVersion() + "." + ScriptEngineMinorVersion()) >=
 
 <!-- begin content ######################################################### -->
 
-<b>C++ Script Page</b><a href="help.html"
+<b>C++ Code Page</b><a href="help.html"
     onclick='window.open(this.href,null,"height=400,width=400,status=yes,toolbar=no,menubar=no,location=no"); return false;' 
     class="help">?</a></p>
 
@@ -91,7 +91,7 @@ if (parseFloat(ScriptEngineMajorVersion() + "." + ScriptEngineMinorVersion()) >=
 <option name=template value=ML>Using ML with AztecOO</option>
 </select>&nbsp;
 <input type=submit class=submitPrimary value=Insert name="mode">&nbsp;&nbsp;or&nbsp;&nbsp;
-<input type=submit class=submitPrimary value="Reset Script" name="mode">
+<input type=submit class=submitPrimary value="Reset Code" name="mode">
 <p>Text area with 
 <select name=rows>
   <? global $rows; echo "<option value=$rows>$rows</option>"; ?>
@@ -123,8 +123,8 @@ if ($ENABLE_MPI == TRUE) {
    }
    echo "</select>";
    }   ?>
-   processors.<br>
-<p><textarea NAME="script" COLS=<? global $cols; echo $cols; ?>
+   <br>
+<p><textarea NAME="code" COLS=<? global $cols; echo $cols; ?>
   ROWS=<? global $rows; echo $rows; ?>>
 <? if ($_POST["mode"] == "Insert") {
 if ($_POST["template"] == "Epetra_Comm") {
@@ -150,15 +150,16 @@ if ($_POST["template"] == "Epetra_Comm") {
 } else if ($_POST["template"] == "ML") {
   include 'ml/ex_simple.cpp';
 } 
-} else if ($_POST["mode"] != "Reset Script") echo $_POST["script"]; ?>
+}  else if ($_POST["mode"] != "Reset Code") echo $_POST["code"]; 
+?>
 </textarea>
-<p><input type=submit class=submitSecondary value="Run Script" name="mode">&nbsp;&nbsp;
+<p><input type=submit class=submitSecondary value="Run Code" name="mode">&nbsp;&nbsp;
 &nbsp;&nbsp;
-<input type="button" id="convert" class=submitPrimary value="Color Script" onclick="colorCode(this.form);" />
+<input type="button" id="convert" class=submitPrimary value="Color Code" onclick="colorCode(this.form);" />
 </form>
 
 <?
-if ($_POST["mode"] == "Run Script")
+if ($_POST["mode"] == "Run Code")
 {
   global $TempDirectory;
 
@@ -173,7 +174,7 @@ if ($_POST["mode"] == "Run Script")
 
   $configFile = fopen($configFileName, 'w')
     or die("can't open $configFileName: $php_errormsg");
-  if (-1 == fwrite($configFile, $_POST["script"])) { 
+  if (-1 == fwrite($configFile, $_POST["code"])) { 
     die("can't write to $configFileName: $php_errormsg"); }
   fclose($configFile) 
     or die("can't close $configFileName: $php_errormsg");
@@ -190,7 +191,7 @@ if ($_POST["mode"] == "Run Script")
   passthru($command);
   echo '</pre></div>';
 
-  echo '<p>The output of the script is reported below.<p>';
+  echo '<p>The output of the code is reported below.<p>';
   echo '<p><div class=outputBox><pre>';
 
   $command = "cd $TempDirectory/WebTrilinos;";
