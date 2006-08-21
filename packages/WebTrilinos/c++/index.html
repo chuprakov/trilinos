@@ -160,12 +160,17 @@ if ($_POST["template"] == "Epetra_Comm") {
 <?
 if ($_POST["mode"] == "Run Script")
 {
+  global $TempDirectory;
+
   echo '<p>Compiler errors are reported below';
   echo '<div class=outputBox><pre>';
 
   $timestamp = date("y-m-d_H.i.s", time());
 
-  $configFileName = "$TempDirectory/configs/$timestamp.cpp";
+  if (!is_dir("$TempDirectory/WebTrilinos")) mkdir("$TempDirectory/WebTrilinos");
+
+  $configFileName = "$TempDirectory/WebTrilinos/$timestamp.cpp";
+
   $configFile = fopen($configFileName, 'w')
     or die("can't open $configFileName: $php_errormsg");
   if (-1 == fwrite($configFile, $_POST["script"])) { 
@@ -174,20 +179,13 @@ if ($_POST["mode"] == "Run Script")
     or die("can't close $configFileName: $php_errormsg");
   chmod($configFileName, 0664);
 
-  $includes = "-I/home/msala/Trilinos/LINUX_MPI/include";
-  $ldflags = "-L/home/msala/lib -L/home/masala/Trilinos/LINUX_MPI/lib";
-  $libs = "-lml -lifpack -laztecoo -lamesos -lgaleri -lepetraext -lepetra -lteuchos";
-  $extra_libs = "-llapack -lblas";
-  $command = "cd $TempDirectory/configs;";
-  
-  global $ENABLE_MPI;
   global $INCLUDES;
   global $LDFLAGS;
   global $LIBS;
   global $CXX;
 
-  $command .= "$CXX $INCLUDES $LDFLAGS $LIBS ";
-  $command .= "-DHAVE_CONFIG_H $includes $timestamp.cpp $ldflags $libs $extra_libs -o $timestamp.exe 2>&1";
+  $command .= "$CXX $configFileName $INCLUDES $LDFLAGS $LIBS ";
+  $command .= "-DHAVE_CONFIG_H -o $TempDirectory/WebTrilinos/$timestamp.exe 2>&1";
 
   passthru($command);
   echo '</pre></div>';
@@ -195,25 +193,9 @@ if ($_POST["mode"] == "Run Script")
   echo '<p>The output of the script is reported below.<p>';
   echo '<p><div class=outputBox><pre>';
 
-  $command = "cd $TempDirectory/configs;";
-  if ($ENABLE_MPI == TRUE)
-  {
-    global $MPI_BOOT;
-    global $MPI_HALT;
-    global $MPI_RUN;
+  $command = "cd $TempDirectory/WebTrilinos;";
+  $command.= "./$timestamp.exe 2>&1 ";
 
-    $NumProcs = $_POST["NumProcs"];
-    if ($NumProcs > 16)
-      $NumProcs = 16;
-
-    if ($MPI_BOOT != "") $command.= "$MPI_BOOT > /dev/null; ";
-    $command.= "$MPI_RUN -np $NumProcs ./$timestamp.exe 2>&1 && ";
-    if ($MPI_HALT != "") $command.= "$MPI_HALT > /dev/null;";
-  } 
-  else
-  {
-    $command.= "./$timestamp.exe 2>&1 ";
-  }
   passthru($command);
 
   echo '</pre></div>';
