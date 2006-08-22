@@ -26,7 +26,7 @@
 # ************************************************************************
 #@HEADER
 
-include $(top_builddir)/Makefile.export
+include $(top_builddir)/Makefile.export.didasko
 
 EXAMPLE = ex1
 EXEEXT = .exe
@@ -34,9 +34,17 @@ EXEEXT = .exe
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex1_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex1_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex1_LDADD = $(EXPORT_LIBS)
+
+if USING_GNUMAKE
+EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(DIDASKO_INCLUDES))
+EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(DIDASKO_LIBS))
+else
+EXPORT_INCLUDES = $(DIDASKO_INCLUDES)
+EXPORT_LIBS = $(DIDASKO_LIBS)
+endif
+
+AM_CPPFLAGS = $(EXPORT_INCLUDES)
+
+

@@ -35,50 +35,56 @@
 /* Define to 1 if you have the <cstdlib> header file. */
 #undef HAVE_CSTDLIB
 
-/* Define if want to build with amesos enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_AMESOS
 
-/* Define if want to build with anasazi enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_ANASAZI
 
-/* Define if want to build with aztecoo enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_AZTECOO
 
-/* Define if want to build with epetra enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_EPETRA
 
-/* Define if want to build with epetraext enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_EPETRAEXT
 
 /* Define if want to build didasko-examples */
 #undef HAVE_DIDASKO_EXAMPLES
 
-/* Define if want to build with ifpack enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_IFPACK
 
 /* Define if want to build with latex enabled */
 #undef HAVE_DIDASKO_LATEX
 
-/* Define if want to build with ml enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_ML
 
-/* Define if want to build with nox enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_NOX
 
 /* Define if want to build didasko-tests */
 #undef HAVE_DIDASKO_TESTS
 
-/* Define if want to build with teuchos enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_TEUCHOS
 
-/* Define if want to build with tpetra enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_TPETRA
 
-/* Define if want to build with triutils enabled */
+/* Define if want to build with didasko enabled */
 #undef HAVE_DIDASKO_TRIUTILS
 
 /* Define if want to build examples */
 #undef HAVE_EXAMPLES
+
+/* Define if you want to build export makefiles. */
+#undef HAVE_EXPORT_MAKEFILES
+
+/* Define if you are using gnumake - this will shorten your link lines. */
+#undef HAVE_GNUMAKE
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -118,6 +124,9 @@
 
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
+
+/* Define if want to build nox-epetra */
+#undef HAVE_NOX_EPETRA
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

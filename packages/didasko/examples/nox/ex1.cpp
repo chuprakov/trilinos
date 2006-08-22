@@ -40,7 +40,7 @@
 // it should be run with one process.
  
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_NOX)
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_NOX) && defined(HAVE_NOX_EPETRA)
 
 #include <iostream>
 #include "Epetra_ConfigDefs.h"
@@ -328,6 +328,9 @@ int main(int argc, char *argv[])
 #endif
   puts("Please configure Didasko with:");
   puts("--enable-epetra");
+  puts("--enable-nox-epetra");
+  puts("--enable-ifpack");
+  puts("--enable-aztecoo");
   puts("--enable-nox");
 
 #ifdef HAVE_MPI

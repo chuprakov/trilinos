@@ -27,7 +27,7 @@
 #@HEADER
 
 
-include $(top_builddir)/Makefile.export
+include $(top_builddir)/Makefile.export.didasko
 
 EXAMPLE = ex1 ex2 ex3 ex4 ex5 ex6 ex7
 EXEEXT = .exe
@@ -35,57 +35,40 @@ EXEEXT = .exe
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex1_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex1_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex1_LDADD = $(EXPORT_LIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex2_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex2_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex2_LDADD = $(EXPORT_LIBS)
 
 ex3_SOURCES = $(srcdir)/ex3.cpp
-ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex3_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex3_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex3_LDADD = $(EXPORT_LIBS)
 
 ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex4_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex4_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex4_LDADD = $(EXPORT_LIBS)
 
 ex5_SOURCES = $(srcdir)/ex5.cpp
-ex5_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex5_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex5_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex5_LDADD = $(EXPORT_LIBS)
 
 ex6_SOURCES = $(srcdir)/ex6.cpp
-ex6_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex6_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex6_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex6_LDADD = $(EXPORT_LIBS)
 
 ex7_SOURCES = $(srcdir)/ex7.cpp
-ex7_CXXFLAGS = $(DIDASKO_INCLUDES) 
-ex7_LDADD = $(DIDASKO_LIBS) \
-            $(LIBS)         \
-            $(LAPACK_LIBS)  \
-            $(BLAS_LIBS)    \
-            $(FLIBS)
+ex7_CXXFLAGS = $(EXPORT_INCLUDES) 
+ex7_LDADD = $(EXPORT_LIBS)
+
+if USING_GNUMAKE
+EXPORT_INCLUDES = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_incl_paths.pl $(DIDASKO_INCLUDES))
+EXPORT_LIBS = $(shell $(PERL_EXE) $(top_srcdir)/config/strip_dup_libs.pl $(DIDASKO_LIBS))
+else
+EXPORT_INCLUDES = $(DIDASKO_INCLUDES)
+EXPORT_LIBS = $(DIDASKO_LIBS)
+endif
+
+AM_CPPFLAGS = $(EXPORT_INCLUDES)
+

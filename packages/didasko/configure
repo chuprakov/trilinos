@@ -311,7 +311,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot MPI_TEMP_CXX MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP HAVE_DIDASKO_EPETRA_TRUE HAVE_DIDASKO_EPETRA_FALSE HAVE_DIDASKO_EPETRAEXT_TRUE HAVE_DIDASKO_EPETRAEXT_FALSE HAVE_DIDASKO_NOX_TRUE HAVE_DIDASKO_NOX_FALSE HAVE_DIDASKO_ML_TRUE HAVE_DIDASKO_ML_FALSE HAVE_DIDASKO_AMESOS_TRUE HAVE_DIDASKO_AMESOS_FALSE HAVE_DIDASKO_IFPACK_TRUE HAVE_DIDASKO_IFPACK_FALSE HAVE_DIDASKO_TEUCHOS_TRUE HAVE_DIDASKO_TEUCHOS_FALSE HAVE_DIDASKO_ANASAZI_TRUE HAVE_DIDASKO_ANASAZI_FALSE HAVE_DIDASKO_TRIUTILS_TRUE HAVE_DIDASKO_TRIUTILS_FALSE HAVE_DIDASKO_AZTECOO_TRUE HAVE_DIDASKO_AZTECOO_FALSE HAVE_DIDASKO_LATEX_TRUE HAVE_DIDASKO_LATEX_FALSE BUILD_ZOLTAN_TRUE BUILD_ZOLTAN_FALSE HAVE_DIDASKO_TPETRA_TRUE HAVE_DIDASKO_TPETRA_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE FLIBS BLAS_LIBS LAPACK_LIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot MPI_TEMP_CXX MPI_CXX HAVE_MPI_TRUE HAVE_MPI_FALSE MPI_CXX_EXISTS MPI_CC_EXISTS MPI_F77_EXISTS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE F77 FFLAGS ac_ct_F77 RANLIB ac_ct_RANLIB USE_ALTERNATE_AR_TRUE USE_ALTERNATE_AR_FALSE ALTERNATE_AR CXXCPP EGREP USING_EXPORT_MAKEFILES_TRUE USING_EXPORT_MAKEFILES_FALSE PERL_EXE HAVE_PERL USING_PERL_TRUE USING_PERL_FALSE USING_GNUMAKE_TRUE USING_GNUMAKE_FALSE HAVE_DIDASKO_EPETRA_TRUE HAVE_DIDASKO_EPETRA_FALSE HAVE_DIDASKO_EPETRAEXT_TRUE HAVE_DIDASKO_EPETRAEXT_FALSE HAVE_DIDASKO_NOX_TRUE HAVE_DIDASKO_NOX_FALSE HAVE_NOX_EPETRA_TRUE HAVE_NOX_EPETRA_FALSE HAVE_DIDASKO_ML_TRUE HAVE_DIDASKO_ML_FALSE HAVE_DIDASKO_AMESOS_TRUE HAVE_DIDASKO_AMESOS_FALSE HAVE_DIDASKO_IFPACK_TRUE HAVE_DIDASKO_IFPACK_FALSE HAVE_DIDASKO_TEUCHOS_TRUE HAVE_DIDASKO_TEUCHOS_FALSE HAVE_DIDASKO_ANASAZI_TRUE HAVE_DIDASKO_ANASAZI_FALSE HAVE_DIDASKO_TRIUTILS_TRUE HAVE_DIDASKO_TRIUTILS_FALSE HAVE_DIDASKO_AZTECOO_TRUE HAVE_DIDASKO_AZTECOO_FALSE HAVE_DIDASKO_TPETRA_TRUE HAVE_DIDASKO_TPETRA_FALSE HAVE_DIDASKO_LATEX_TRUE HAVE_DIDASKO_LATEX_FALSE BUILD_ZOLTAN_TRUE BUILD_ZOLTAN_FALSE BUILD_EXAMPLES_TRUE BUILD_EXAMPLES_FALSE BUILD_TESTS_TRUE BUILD_TESTS_FALSE FLIBS BLAS_LIBS LAPACK_LIBS TRILINOS_TEMPLATE_OBJS ac_aux_dir LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -875,23 +875,61 @@ Optional Features:
   --enable-mpi            MPI support
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-  --enable-epetra         Enables EPETRA examples.
-  --enable-epetraext      Enables EPETRAEXT examples.
+  --enable-export-makefiles
+                          Creates export makefiles in the install (prefix)
+                          directory. This option requires perl to be set in
+                          your path or defined with --with-perl=<perl
+                          executable>. Note that the export makefiles are
+                          always created and used in the build directory, but
+                          will not be installable without this option to
+                          change the paths. (default is yes)
+  --enable-epetra         Enables EPETRA examples. Can be overridden with
+                          --disable-didasko-epetra.
+  --enable-didasko-epetra Enables EPETRA examples.
+  --enable-epetraext      Enables EPETRAEXT examples. Can be overridden with
+                          --disable-didasko-epetraext.
+  --enable-didasko-epetraext
+                          Enables EPETRAEXT examples.
   --enable-nox            Enables NOX examples, requires --enable-epetra
+                          --enable-nox-epetra. Can be overridden with
+                          --disable-didasko-nox.
+  --enable-didasko-nox    Enables NOX examples, requires --enable-epetra
                           --enable-nox-epetra
-  --enable-ml             Enables ML examples.
-  --enable-amesos         Enables AMESOS examples.
-  --enable-ifpack         Enables IFPACK examples.
+  --enable-nox-epetra     Required when enabling NOX examples (default is
+                          no)
+  --enable-ml             Enables ML examples. Can be overridden with
+                          --disable-didasko-ml.
+  --enable-didasko-ml     Enables ML examples.
+  --enable-amesos         Enables AMESOS examples. Can be overridden with
+                          --disable-didasko-amesos.
+  --enable-didasko-amesos Enables AMESOS examples.
+  --enable-ifpack         Enables IFPACK examples. Can be overridden with
+                          --disable-didasko-ifpack.
+  --enable-didasko-ifpack Enables IFPACK examples.
   --enable-teuchos        Enables TEUCHOS examples, requires --enable_epetra.
-  --enable-anasazi        Enables ANASAZI examples.
-  --enable-triutils       Enables TRIUTILS examples.
+                          Can be overridden with --disable-didasko-teuchos.
+  --enable-didasko-teuchos
+                          Enables TEUCHOS examples, requires --enable_epetra.
+  --enable-anasazi        Enables ANASAZI examples. Can be overridden with
+                          --disable-didasko-anasazi.
+  --enable-didasko-anasazi
+                          Enables ANASAZI examples.
+  --enable-triutils       Enables TRIUTILS examples. Can be overridden with
+                          --disable-didasko-triutils.
+  --enable-didasko-triutils
+                          Enables TRIUTILS examples.
   --enable-aztecoo        Enables AZTECOO examples, requires --enable-teuchos.
+                          Can be overridden with --disable-didasko-aztecoo.
+  --enable-didasko-aztecoo
+                          Enables AZTECOO examples, requires --enable-teuchos.
+  --enable-tpetra         Enables TPETRA examples. Can be overridden with
+                          --disable-didasko-tpetra.
+  --enable-didasko-tpetra Enables TPETRA examples.
   --enable-latex          Enables compilation of LaTeX source files. (default
                           is no)
   --enable-epetraext-zoltan
                           Enable EpetraExt interface support for Zoltan
                           (default is no)
-  --enable-tpetra         Enables TPETRA examples.
   --enable-examples       Build examples for all Trilinos packages (not all
                           packages are sensitive to this option) (default is
                           yes)
@@ -939,6 +977,16 @@ Optional Packages:
   --with-ldflags          additional LDFLAGS flags to be added: will prepend
                           to LDFLAGS
   --with-ar               override archiver command (default is "ar cru")
+  --with-perl             supply a perl executable. For example
+                          --with-perl=/usr/bin/perl.
+  --with-gnumake          Gnu's make has special functions we can use to
+                          eliminate redundant paths in the build and link
+                          lines. Enable this if you use gnu-make to build
+                          Trilinos. This requires that perl is in your path or
+                          that you have specified the perl executable with
+                          --with-perl=<perl executable>. Configure will check
+                          for the existence of the perl executable and quit
+                          with an error if it is not found. (default is no)
   --with-libdirs          OBSOLETE use --with-ldflags instead. (ex.
                           --with-ldflags="-L<DIR> -L<DIR2>")
   --with-incdirs          additional directories containing include files:
@@ -3810,7 +3858,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3813:" \
+echo "$as_me:3861:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -6094,6 +6142,210 @@ esac
 
 
 # ------------------------------------------------------------------------
+# Checks for Makefile.export related systems
+# ------------------------------------------------------------------------
+
+# Check whether --enable-export-makefiles or --disable-export-makefiles was given.
+if test "${enable_export_makefiles+set}" = set; then
+  enableval="$enable_export_makefiles"
+  ac_cv_use_export_makefiles=$enableval
+else
+  ac_cv_use_export_makefiles=yes
+fi;
+
+echo "$as_me:$LINENO: checking whether to build export makefiles" >&5
+echo $ECHO_N "checking whether to build export makefiles... $ECHO_C" >&6
+
+if test "X$ac_cv_use_export_makefiles" != "Xno"; then
+
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_EXPORT_MAKEFILES
+_ACEOF
+
+
+else
+
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+
+fi
+
+
+
+if test X${ac_cv_use_export_makefiles} = Xyes; then
+  USING_EXPORT_MAKEFILES_TRUE=
+  USING_EXPORT_MAKEFILES_FALSE='#'
+else
+  USING_EXPORT_MAKEFILES_TRUE='#'
+  USING_EXPORT_MAKEFILES_FALSE=
+fi
+
+
+# Check for perl to run scripts (Required dependency)
+
+
+
+# Check whether --with-perl or --without-perl was given.
+if test "${with_perl+set}" = set; then
+  withval="$with_perl"
+
+echo "$as_me:$LINENO: checking for user supplied perl executable" >&5
+echo $ECHO_N "checking for user supplied perl executable... $ECHO_C" >&6
+echo "$as_me:$LINENO: result: ${withval}" >&5
+echo "${ECHO_T}${withval}" >&6
+USER_SPECIFIED_PERL=yes
+PERL_EXE="${withval}"
+
+else
+
+USER_SPECIFIED_PERL=no
+
+fi;
+
+if test "X${USER_SPECIFIED_PERL}" = "Xyes"; then
+  as_ac_File=`echo "ac_cv_file_${PERL_EXE}" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for ${PERL_EXE}" >&5
+echo $ECHO_N "checking for ${PERL_EXE}... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "${PERL_EXE}"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  HAVE_PERL=yes
+else
+  HAVE_PERL=no
+fi
+
+  PERL_EXE=${PERL_EXE}
+
+else
+  # Extract the first word of "perl", so it can be a program name with args.
+set dummy perl; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_HAVE_PERL+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_PERL"; then
+  ac_cv_prog_HAVE_PERL="$HAVE_PERL" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_HAVE_PERL="yes"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_prog_HAVE_PERL" && ac_cv_prog_HAVE_PERL="no"
+fi
+fi
+HAVE_PERL=$ac_cv_prog_HAVE_PERL
+if test -n "$HAVE_PERL"; then
+  echo "$as_me:$LINENO: result: $HAVE_PERL" >&5
+echo "${ECHO_T}$HAVE_PERL" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  PERL_EXE=perl
+
+fi
+
+
+if test X${HAVE_PERL} = Xyes; then
+  USING_PERL_TRUE=
+  USING_PERL_FALSE='#'
+else
+  USING_PERL_TRUE='#'
+  USING_PERL_FALSE=
+fi
+
+
+
+if test "X$HAVE_PERL" != "Xyes" &&
+   test "X$ac_cv_use_export_makefiles" != "Xno"; then
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+  { { echo "$as_me:$LINENO: error: Failed to find the perl executable.  The flag --enable-export-makefiles requires perl to be either in your path or explicitly defined by the flag --with-perl=<executable>.  If you do not require the export makefiles to be installed via 'make install', you can disable the export makefiles with --disable-export-makefiles." >&5
+echo "$as_me: error: Failed to find the perl executable.  The flag --enable-export-makefiles requires perl to be either in your path or explicitly defined by the flag --with-perl=<executable>.  If you do not require the export makefiles to be installed via 'make install', you can disable the export makefiles with --disable-export-makefiles." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# Check for using gnumake to clean up link lines via
+# gnumake's "shell" command. Optional dependency.
+
+
+
+
+# Check whether --with-gnumake or --without-gnumake was given.
+if test "${with_gnumake+set}" = set; then
+  withval="$with_gnumake"
+  ac_cv_use_gnumake=$withval
+else
+  ac_cv_use_gnumake=no
+fi;
+
+echo "$as_me:$LINENO: checking whether gnumake specific code should be enabled" >&5
+echo $ECHO_N "checking whether gnumake specific code should be enabled... $ECHO_C" >&6
+
+if test "X$ac_cv_use_gnumake" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_GNUMAKE
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+if test "X$ac_cv_use_gnumake" = "Xyes"; then
+  USING_GNUMAKE_TRUE=
+  USING_GNUMAKE_FALSE='#'
+else
+  USING_GNUMAKE_TRUE='#'
+  USING_GNUMAKE_FALSE=
+fi
+
+
+
+if test "X$HAVE_PERL" != "Xyes" &&
+   test "X$ac_cv_use_gnumake" != "Xno"; then
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+  { { echo "$as_me:$LINENO: error: The flag --with-gnumake requires perl to be in your path.  The perl executable can alternatively be explicitly defined by the flag --with-perl=<executable>." >&5
+echo "$as_me: error: The flag --with-gnumake requires perl to be in your path.  The perl executable can alternatively be explicitly defined by the flag --with-perl=<executable>." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+
+# ------------------------------------------------------------------------
 # Checks for compiler characteristics - Epetra_ConfigDefs.h uses these,
 # so it makes sense to leave them in - see PORTABILITY in this directory
 # ------------------------------------------------------------------------
@@ -6701,16 +6953,31 @@ fi
 #
 #
 
+
 # Check whether --enable-epetra or --disable-epetra was given.
 if test "${enable_epetra+set}" = set; then
   enableval="$enable_epetra"
-  ac_cv_use_epetra=$enableval
+  ac_cv_implicit_use_epetra=$enableval
 else
-  ac_cv_use_epetra=no
+  ac_cv_implicit_use_epetra=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional epetra dependent code" >&5
-echo $ECHO_N "checking whether to build optional epetra dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_epetra_default=$ac_cv_implicit_use_epetra
+else
+  ac_cv_didasko_using_epetra_default=no
+fi
+
+# Check whether --enable-didasko-epetra or --disable-didasko-epetra was given.
+if test "${enable_didasko_epetra+set}" = set; then
+  enableval="$enable_didasko_epetra"
+  ac_cv_use_epetra=$enableval
+else
+  ac_cv_use_epetra=$ac_cv_didasko_using_epetra_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional epetra dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional epetra dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_epetra" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6735,18 +7002,35 @@ else
   HAVE_DIDASKO_EPETRA_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-epetraext or --disable-epetraext was given.
 if test "${enable_epetraext+set}" = set; then
   enableval="$enable_epetraext"
-  ac_cv_use_epetraext=$enableval
+  ac_cv_implicit_use_epetraext=$enableval
 else
-  ac_cv_use_epetraext=no
+  ac_cv_implicit_use_epetraext=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional epetraext dependent code" >&5
-echo $ECHO_N "checking whether to build optional epetraext dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_epetraext_default=$ac_cv_implicit_use_epetraext
+else
+  ac_cv_didasko_using_epetraext_default=no
+fi
+
+# Check whether --enable-didasko-epetraext or --disable-didasko-epetraext was given.
+if test "${enable_didasko_epetraext+set}" = set; then
+  enableval="$enable_didasko_epetraext"
+  ac_cv_use_epetraext=$enableval
+else
+  ac_cv_use_epetraext=$ac_cv_didasko_using_epetraext_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional epetraext dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional epetraext dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_epetraext" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6771,18 +7055,35 @@ else
   HAVE_DIDASKO_EPETRAEXT_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-nox or --disable-nox was given.
 if test "${enable_nox+set}" = set; then
   enableval="$enable_nox"
-  ac_cv_use_nox=$enableval
+  ac_cv_implicit_use_nox=$enableval
 else
-  ac_cv_use_nox=no
+  ac_cv_implicit_use_nox=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional nox dependent code" >&5
-echo $ECHO_N "checking whether to build optional nox dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_nox_default=$ac_cv_implicit_use_nox
+else
+  ac_cv_didasko_using_nox_default=no
+fi
+
+# Check whether --enable-didasko-nox or --disable-didasko-nox was given.
+if test "${enable_didasko_nox+set}" = set; then
+  enableval="$enable_didasko_nox"
+  ac_cv_use_nox=$enableval
+else
+  ac_cv_use_nox=$ac_cv_didasko_using_nox_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional nox dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional nox dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_nox" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6807,18 +7108,71 @@ else
   HAVE_DIDASKO_NOX_FALSE=
 fi
 
+
+
 #
+
+# Check whether --enable-nox-epetra or --disable-nox-epetra was given.
+if test "${enable_nox_epetra+set}" = set; then
+  enableval="$enable_nox_epetra"
+  ac_cv_use_nox_epetra=$enableval
+else
+  ac_cv_use_nox_epetra=no
+fi;
+
+echo "$as_me:$LINENO: checking whether to use nox-epetra" >&5
+echo $ECHO_N "checking whether to use nox-epetra... $ECHO_C" >&6
+
+if test "X$ac_cv_use_nox_epetra" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_NOX_EPETRA
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_nox_epetra" = "Xyes"; then
+  HAVE_NOX_EPETRA_TRUE=
+  HAVE_NOX_EPETRA_FALSE='#'
+else
+  HAVE_NOX_EPETRA_TRUE='#'
+  HAVE_NOX_EPETRA_FALSE=
+fi
+
+#
+
 
 # Check whether --enable-ml or --disable-ml was given.
 if test "${enable_ml+set}" = set; then
   enableval="$enable_ml"
-  ac_cv_use_ml=$enableval
+  ac_cv_implicit_use_ml=$enableval
 else
-  ac_cv_use_ml=no
+  ac_cv_implicit_use_ml=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional ml dependent code" >&5
-echo $ECHO_N "checking whether to build optional ml dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_ml_default=$ac_cv_implicit_use_ml
+else
+  ac_cv_didasko_using_ml_default=no
+fi
+
+# Check whether --enable-didasko-ml or --disable-didasko-ml was given.
+if test "${enable_didasko_ml+set}" = set; then
+  enableval="$enable_didasko_ml"
+  ac_cv_use_ml=$enableval
+else
+  ac_cv_use_ml=$ac_cv_didasko_using_ml_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional ml dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional ml dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_ml" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6843,18 +7197,35 @@ else
   HAVE_DIDASKO_ML_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-amesos or --disable-amesos was given.
 if test "${enable_amesos+set}" = set; then
   enableval="$enable_amesos"
-  ac_cv_use_amesos=$enableval
+  ac_cv_implicit_use_amesos=$enableval
 else
-  ac_cv_use_amesos=no
+  ac_cv_implicit_use_amesos=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional amesos dependent code" >&5
-echo $ECHO_N "checking whether to build optional amesos dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_amesos_default=$ac_cv_implicit_use_amesos
+else
+  ac_cv_didasko_using_amesos_default=no
+fi
+
+# Check whether --enable-didasko-amesos or --disable-didasko-amesos was given.
+if test "${enable_didasko_amesos+set}" = set; then
+  enableval="$enable_didasko_amesos"
+  ac_cv_use_amesos=$enableval
+else
+  ac_cv_use_amesos=$ac_cv_didasko_using_amesos_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional amesos dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional amesos dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_amesos" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6879,18 +7250,35 @@ else
   HAVE_DIDASKO_AMESOS_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-ifpack or --disable-ifpack was given.
 if test "${enable_ifpack+set}" = set; then
   enableval="$enable_ifpack"
-  ac_cv_use_ifpack=$enableval
+  ac_cv_implicit_use_ifpack=$enableval
 else
-  ac_cv_use_ifpack=no
+  ac_cv_implicit_use_ifpack=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional ifpack dependent code" >&5
-echo $ECHO_N "checking whether to build optional ifpack dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_ifpack_default=$ac_cv_implicit_use_ifpack
+else
+  ac_cv_didasko_using_ifpack_default=no
+fi
+
+# Check whether --enable-didasko-ifpack or --disable-didasko-ifpack was given.
+if test "${enable_didasko_ifpack+set}" = set; then
+  enableval="$enable_didasko_ifpack"
+  ac_cv_use_ifpack=$enableval
+else
+  ac_cv_use_ifpack=$ac_cv_didasko_using_ifpack_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional ifpack dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional ifpack dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_ifpack" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6915,18 +7303,35 @@ else
   HAVE_DIDASKO_IFPACK_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-teuchos or --disable-teuchos was given.
 if test "${enable_teuchos+set}" = set; then
   enableval="$enable_teuchos"
-  ac_cv_use_teuchos=$enableval
+  ac_cv_implicit_use_teuchos=$enableval
 else
-  ac_cv_use_teuchos=no
+  ac_cv_implicit_use_teuchos=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional teuchos dependent code" >&5
-echo $ECHO_N "checking whether to build optional teuchos dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_teuchos_default=$ac_cv_implicit_use_teuchos
+else
+  ac_cv_didasko_using_teuchos_default=no
+fi
+
+# Check whether --enable-didasko-teuchos or --disable-didasko-teuchos was given.
+if test "${enable_didasko_teuchos+set}" = set; then
+  enableval="$enable_didasko_teuchos"
+  ac_cv_use_teuchos=$enableval
+else
+  ac_cv_use_teuchos=$ac_cv_didasko_using_teuchos_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional teuchos dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional teuchos dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_teuchos" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6941,7 +7346,6 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-#
 
 
 if test "X$ac_cv_use_teuchos" = "Xyes"; then
@@ -6952,18 +7356,35 @@ else
   HAVE_DIDASKO_TEUCHOS_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-anasazi or --disable-anasazi was given.
 if test "${enable_anasazi+set}" = set; then
   enableval="$enable_anasazi"
-  ac_cv_use_anasazi=$enableval
+  ac_cv_implicit_use_anasazi=$enableval
 else
-  ac_cv_use_anasazi=no
+  ac_cv_implicit_use_anasazi=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional anasazi dependent code" >&5
-echo $ECHO_N "checking whether to build optional anasazi dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_anasazi_default=$ac_cv_implicit_use_anasazi
+else
+  ac_cv_didasko_using_anasazi_default=no
+fi
+
+# Check whether --enable-didasko-anasazi or --disable-didasko-anasazi was given.
+if test "${enable_didasko_anasazi+set}" = set; then
+  enableval="$enable_didasko_anasazi"
+  ac_cv_use_anasazi=$enableval
+else
+  ac_cv_use_anasazi=$ac_cv_didasko_using_anasazi_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional anasazi dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional anasazi dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_anasazi" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -6988,18 +7409,35 @@ else
   HAVE_DIDASKO_ANASAZI_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-triutils or --disable-triutils was given.
 if test "${enable_triutils+set}" = set; then
   enableval="$enable_triutils"
-  ac_cv_use_triutils=$enableval
+  ac_cv_implicit_use_triutils=$enableval
 else
-  ac_cv_use_triutils=no
+  ac_cv_implicit_use_triutils=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional triutils dependent code" >&5
-echo $ECHO_N "checking whether to build optional triutils dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_triutils_default=$ac_cv_implicit_use_triutils
+else
+  ac_cv_didasko_using_triutils_default=no
+fi
+
+# Check whether --enable-didasko-triutils or --disable-didasko-triutils was given.
+if test "${enable_didasko_triutils+set}" = set; then
+  enableval="$enable_didasko_triutils"
+  ac_cv_use_triutils=$enableval
+else
+  ac_cv_use_triutils=$ac_cv_didasko_using_triutils_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional triutils dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional triutils dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_triutils" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -7024,18 +7462,35 @@ else
   HAVE_DIDASKO_TRIUTILS_FALSE=
 fi
 
+
+
 #
+
 
 # Check whether --enable-aztecoo or --disable-aztecoo was given.
 if test "${enable_aztecoo+set}" = set; then
   enableval="$enable_aztecoo"
-  ac_cv_use_aztecoo=$enableval
+  ac_cv_implicit_use_aztecoo=$enableval
 else
-  ac_cv_use_aztecoo=no
+  ac_cv_implicit_use_aztecoo=no
 fi;
 
-echo "$as_me:$LINENO: checking whether to build optional aztecoo dependent code" >&5
-echo $ECHO_N "checking whether to build optional aztecoo dependent code... $ECHO_C" >&6
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_aztecoo_default=$ac_cv_implicit_use_aztecoo
+else
+  ac_cv_didasko_using_aztecoo_default=no
+fi
+
+# Check whether --enable-didasko-aztecoo or --disable-didasko-aztecoo was given.
+if test "${enable_didasko_aztecoo+set}" = set; then
+  enableval="$enable_didasko_aztecoo"
+  ac_cv_use_aztecoo=$enableval
+else
+  ac_cv_use_aztecoo=$ac_cv_didasko_using_aztecoo_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional aztecoo dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional aztecoo dependent code in didasko... $ECHO_C" >&6
 
 if test "X$ac_cv_use_aztecoo" != "Xno"; then
   echo "$as_me:$LINENO: result: yes" >&5
@@ -7059,6 +7514,61 @@ else
   HAVE_DIDASKO_AZTECOO_TRUE='#'
   HAVE_DIDASKO_AZTECOO_FALSE=
 fi
+
+
+
+#
+
+
+# Check whether --enable-tpetra or --disable-tpetra was given.
+if test "${enable_tpetra+set}" = set; then
+  enableval="$enable_tpetra"
+  ac_cv_implicit_use_tpetra=$enableval
+else
+  ac_cv_implicit_use_tpetra=no
+fi;
+
+if test "Xyes" != "Xno"; then
+  ac_cv_didasko_using_tpetra_default=$ac_cv_implicit_use_tpetra
+else
+  ac_cv_didasko_using_tpetra_default=no
+fi
+
+# Check whether --enable-didasko-tpetra or --disable-didasko-tpetra was given.
+if test "${enable_didasko_tpetra+set}" = set; then
+  enableval="$enable_didasko_tpetra"
+  ac_cv_use_tpetra=$enableval
+else
+  ac_cv_use_tpetra=$ac_cv_didasko_using_tpetra_default
+fi;
+
+echo "$as_me:$LINENO: checking whether to build optional tpetra dependent code in didasko" >&5
+echo $ECHO_N "checking whether to build optional tpetra dependent code in didasko... $ECHO_C" >&6
+
+if test "X$ac_cv_use_tpetra" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_DIDASKO_TPETRA 1
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_tpetra" = "Xyes"; then
+  HAVE_DIDASKO_TPETRA_TRUE=
+  HAVE_DIDASKO_TPETRA_FALSE='#'
+else
+  HAVE_DIDASKO_TPETRA_TRUE='#'
+  HAVE_DIDASKO_TPETRA_FALSE=
+fi
+
+
 
 #
 
@@ -7132,41 +7642,6 @@ else
   BUILD_ZOLTAN_FALSE=
 fi
 
-
-
-# Check whether --enable-tpetra or --disable-tpetra was given.
-if test "${enable_tpetra+set}" = set; then
-  enableval="$enable_tpetra"
-  ac_cv_use_tpetra=$enableval
-else
-  ac_cv_use_tpetra=no
-fi;
-
-echo "$as_me:$LINENO: checking whether to build optional tpetra dependent code" >&5
-echo $ECHO_N "checking whether to build optional tpetra dependent code... $ECHO_C" >&6
-
-if test "X$ac_cv_use_tpetra" != "Xno"; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_DIDASKO_TPETRA 1
-_ACEOF
-
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-
-
-if test "X$ac_cv_use_tpetra" = "Xyes"; then
-  HAVE_DIDASKO_TPETRA_TRUE=
-  HAVE_DIDASKO_TPETRA_FALSE='#'
-else
-  HAVE_DIDASKO_TPETRA_TRUE='#'
-  HAVE_DIDASKO_TPETRA_FALSE=
-fi
 
 #
 # ------------------------------------------------------------------------
@@ -7435,7 +7910,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:7438: \"$ac_link\") >&5
+(eval echo $as_me:7913: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -7513,7 +7988,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:7516: \"$ac_link\") >&5
+(eval echo $as_me:7991: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -10409,7 +10884,7 @@ fi
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-                                                                                                                                                                          ac_config_files="$ac_config_files Makefile Makefile.export doc/Makefile examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile examples/tpetra/Makefile test/Makefile"
+                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile Makefile.export Makefile.export.didasko doc/Makefile examples/Makefile examples/amesos/Makefile examples/anasazi/Makefile examples/aztecoo/Makefile examples/epetra/Makefile examples/epetraext/Makefile examples/ifpack/Makefile examples/ml/Makefile examples/nox/Makefile examples/teuchos/Makefile examples/triutils/Makefile examples/HBMatrices/Makefile examples/tpetra/Makefile test/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -10552,6 +11027,27 @@ echo "$as_me: error: conditional \"USE_ALTERNATE_AR\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${USING_EXPORT_MAKEFILES_TRUE}" && test -z "${USING_EXPORT_MAKEFILES_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USING_EXPORT_MAKEFILES\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USING_EXPORT_MAKEFILES\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${USING_PERL_TRUE}" && test -z "${USING_PERL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USING_PERL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USING_PERL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${USING_GNUMAKE_TRUE}" && test -z "${USING_GNUMAKE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USING_GNUMAKE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USING_GNUMAKE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_DIDASKO_EPETRA_TRUE}" && test -z "${HAVE_DIDASKO_EPETRA_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_EPETRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -10570,6 +11066,13 @@ if test -z "${HAVE_DIDASKO_NOX_TRUE}" && test -z "${HAVE_DIDASKO_NOX_FALSE}"; th
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_NOX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAVE_DIDASKO_NOX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_NOX_EPETRA_TRUE}" && test -z "${HAVE_NOX_EPETRA_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_NOX_EPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_NOX_EPETRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -10622,6 +11125,13 @@ echo "$as_me: error: conditional \"HAVE_DIDASKO_AZTECOO\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${HAVE_DIDASKO_TPETRA_TRUE}" && test -z "${HAVE_DIDASKO_TPETRA_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_TPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_DIDASKO_TPETRA\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_DIDASKO_LATEX_TRUE}" && test -z "${HAVE_DIDASKO_LATEX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_LATEX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -10633,13 +11143,6 @@ if test -z "${BUILD_ZOLTAN_TRUE}" && test -z "${BUILD_ZOLTAN_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_ZOLTAN\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_ZOLTAN\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${HAVE_DIDASKO_TPETRA_TRUE}" && test -z "${HAVE_DIDASKO_TPETRA_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"HAVE_DIDASKO_TPETRA\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"HAVE_DIDASKO_TPETRA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -11103,6 +11606,7 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "Makefile.export" ) CONFIG_FILES="$CONFIG_FILES Makefile.export" ;;
+  "Makefile.export.didasko" ) CONFIG_FILES="$CONFIG_FILES Makefile.export.didasko" ;;
   "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
   "examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
   "examples/amesos/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/amesos/Makefile" ;;
@@ -11279,12 +11783,22 @@ s,@USE_ALTERNATE_AR_FALSE@,$USE_ALTERNATE_AR_FALSE,;t t
 s,@ALTERNATE_AR@,$ALTERNATE_AR,;t t
 s,@CXXCPP@,$CXXCPP,;t t
 s,@EGREP@,$EGREP,;t t
+s,@USING_EXPORT_MAKEFILES_TRUE@,$USING_EXPORT_MAKEFILES_TRUE,;t t
+s,@USING_EXPORT_MAKEFILES_FALSE@,$USING_EXPORT_MAKEFILES_FALSE,;t t
+s,@PERL_EXE@,$PERL_EXE,;t t
+s,@HAVE_PERL@,$HAVE_PERL,;t t
+s,@USING_PERL_TRUE@,$USING_PERL_TRUE,;t t
+s,@USING_PERL_FALSE@,$USING_PERL_FALSE,;t t
+s,@USING_GNUMAKE_TRUE@,$USING_GNUMAKE_TRUE,;t t
+s,@USING_GNUMAKE_FALSE@,$USING_GNUMAKE_FALSE,;t t
 s,@HAVE_DIDASKO_EPETRA_TRUE@,$HAVE_DIDASKO_EPETRA_TRUE,;t t
 s,@HAVE_DIDASKO_EPETRA_FALSE@,$HAVE_DIDASKO_EPETRA_FALSE,;t t
 s,@HAVE_DIDASKO_EPETRAEXT_TRUE@,$HAVE_DIDASKO_EPETRAEXT_TRUE,;t t
 s,@HAVE_DIDASKO_EPETRAEXT_FALSE@,$HAVE_DIDASKO_EPETRAEXT_FALSE,;t t
 s,@HAVE_DIDASKO_NOX_TRUE@,$HAVE_DIDASKO_NOX_TRUE,;t t
 s,@HAVE_DIDASKO_NOX_FALSE@,$HAVE_DIDASKO_NOX_FALSE,;t t
+s,@HAVE_NOX_EPETRA_TRUE@,$HAVE_NOX_EPETRA_TRUE,;t t
+s,@HAVE_NOX_EPETRA_FALSE@,$HAVE_NOX_EPETRA_FALSE,;t t
 s,@HAVE_DIDASKO_ML_TRUE@,$HAVE_DIDASKO_ML_TRUE,;t t
 s,@HAVE_DIDASKO_ML_FALSE@,$HAVE_DIDASKO_ML_FALSE,;t t
 s,@HAVE_DIDASKO_AMESOS_TRUE@,$HAVE_DIDASKO_AMESOS_TRUE,;t t
@@ -11299,12 +11813,12 @@ s,@HAVE_DIDASKO_TRIUTILS_TRUE@,$HAVE_DIDASKO_TRIUTILS_TRUE,;t t
 s,@HAVE_DIDASKO_TRIUTILS_FALSE@,$HAVE_DIDASKO_TRIUTILS_FALSE,;t t
 s,@HAVE_DIDASKO_AZTECOO_TRUE@,$HAVE_DIDASKO_AZTECOO_TRUE,;t t
 s,@HAVE_DIDASKO_AZTECOO_FALSE@,$HAVE_DIDASKO_AZTECOO_FALSE,;t t
+s,@HAVE_DIDASKO_TPETRA_TRUE@,$HAVE_DIDASKO_TPETRA_TRUE,;t t
+s,@HAVE_DIDASKO_TPETRA_FALSE@,$HAVE_DIDASKO_TPETRA_FALSE,;t t
 s,@HAVE_DIDASKO_LATEX_TRUE@,$HAVE_DIDASKO_LATEX_TRUE,;t t
 s,@HAVE_DIDASKO_LATEX_FALSE@,$HAVE_DIDASKO_LATEX_FALSE,;t t
 s,@BUILD_ZOLTAN_TRUE@,$BUILD_ZOLTAN_TRUE,;t t
 s,@BUILD_ZOLTAN_FALSE@,$BUILD_ZOLTAN_FALSE,;t t
-s,@HAVE_DIDASKO_TPETRA_TRUE@,$HAVE_DIDASKO_TPETRA_TRUE,;t t
-s,@HAVE_DIDASKO_TPETRA_FALSE@,$HAVE_DIDASKO_TPETRA_FALSE,;t t
 s,@BUILD_EXAMPLES_TRUE@,$BUILD_EXAMPLES_TRUE,;t t
 s,@BUILD_EXAMPLES_FALSE@,$BUILD_EXAMPLES_FALSE,;t t
 s,@BUILD_TESTS_TRUE@,$BUILD_TESTS_TRUE,;t t

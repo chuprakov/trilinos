@@ -191,6 +191,11 @@ AC_C_CONST
 AC_C_INLINE
 
 # ------------------------------------------------------------------------
+# Checks for Makefile.export related systems
+# ------------------------------------------------------------------------
+TAC_ARG_ENABLE_EXPORT_MAKEFILES(yes)
+
+# ------------------------------------------------------------------------
 # Checks for compiler characteristics - Epetra_ConfigDefs.h uses these, 
 # so it makes sense to leave them in - see PORTABILITY in this directory
 # ------------------------------------------------------------------------
@@ -260,43 +265,64 @@ AC_CXX_STD_SPRINTF
 # ------------------------------------------------------------------------
 #
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(epetra, [Enables EPETRA examples.], DIDASKO_EPETRA)
-AM_CONDITIONAL(HAVE_DIDASKO_EPETRA, test "X$ac_cv_use_epetra" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, epetra, DIDASKO_EPETRA,
+  HAVE_DIDASKO_EPETRA, yes,
+  [Enables EPETRA examples.], 
+  [Enables EPETRA examples.  Can be overridden with --disable-didasko-epetra.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(epetraext, [Enables EPETRAEXT examples.],
-			       DIDASKO_EPETRAEXT)
-AM_CONDITIONAL(HAVE_DIDASKO_EPETRAEXT, test "X$ac_cv_use_epetraext" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, epetraext, DIDASKO_EPETRAEXT,
+  HAVE_DIDASKO_EPETRAEXT, yes,
+  [Enables EPETRAEXT examples.],
+  [Enables EPETRAEXT examples.  Can be overridden with --disable-didasko-epetraext.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(nox, [Enables NOX examples, requires
-				     --enable-epetra --enable-nox-epetra],
-				     DIDASKO_NOX)
-AM_CONDITIONAL(HAVE_DIDASKO_NOX, test "X$ac_cv_use_nox" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, nox, DIDASKO_NOX,
+  HAVE_DIDASKO_NOX, yes,
+  [Enables NOX examples, requires --enable-epetra --enable-nox-epetra],
+  [Enables NOX examples, requires --enable-epetra --enable-nox-epetra.  Can be overridden with --disable-didasko-nox.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(ml, [Enables ML examples.], DIDASKO_ML)
-AM_CONDITIONAL(HAVE_DIDASKO_ML, test "X$ac_cv_use_ml" = "Xyes")
+TAC_ARG_ENABLE_FEATURE_SUB(nox, epetra, [Required when enabling NOX examples], 
+  NOX_EPETRA, no)
+AM_CONDITIONAL(HAVE_NOX_EPETRA, test "X$ac_cv_use_nox_epetra" = "Xyes")
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(amesos, [Enables AMESOS examples.], DIDASKO_AMESOS)
-AM_CONDITIONAL(HAVE_DIDASKO_AMESOS, test "X$ac_cv_use_amesos" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, ml, DIDASKO_ML,
+  HAVE_DIDASKO_ML, yes,
+  [Enables ML examples.],
+  [Enables ML examples.  Can be overridden with --disable-didasko-ml.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(ifpack, [Enables IFPACK examples.], DIDASKO_IFPACK)
-AM_CONDITIONAL(HAVE_DIDASKO_IFPACK, test "X$ac_cv_use_ifpack" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, amesos, DIDASKO_AMESOS,
+  HAVE_DIDASKO_AMESOS, yes,
+  [Enables AMESOS examples.],
+  [Enables AMESOS examples.  Can be overridden with --disable-didasko-amesos.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(teuchos, [Enables TEUCHOS examples, requires
-				--enable_epetra.], DIDASKO_TEUCHOS)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, ifpack, DIDASKO_IFPACK,
+  HAVE_DIDASKO_IFPACK, yes,
+  [Enables IFPACK examples.],
+  [Enables IFPACK examples.  Can be overridden with --disable-didasko-ifpack.])
 #
-AM_CONDITIONAL(HAVE_DIDASKO_TEUCHOS, test "X$ac_cv_use_teuchos" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, teuchos, DIDASKO_TEUCHOS,
+  HAVE_DIDASKO_TEUCHOS, yes,
+  [Enables TEUCHOS examples, requires --enable_epetra.],
+  [Enables TEUCHOS examples, requires --enable_epetra.  Can be overridden with --disable-didasko-teuchos.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(anasazi, [Enables ANASAZI examples.],
-				DIDASKO_ANASAZI)
-AM_CONDITIONAL(HAVE_DIDASKO_ANASAZI, test "X$ac_cv_use_anasazi" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, anasazi, DIDASKO_ANASAZI,
+  HAVE_DIDASKO_ANASAZI, yes,
+  [Enables ANASAZI examples.],
+  [Enables ANASAZI examples.  Can be overridden with --disable-didasko-anasazi.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(triutils, [Enables TRIUTILS examples.], DIDASKO_TRIUTILS)
-AM_CONDITIONAL(HAVE_DIDASKO_TRIUTILS, test "X$ac_cv_use_triutils" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, triutils, DIDASKO_TRIUTILS,
+  HAVE_DIDASKO_TRIUTILS, yes,
+  [Enables TRIUTILS examples.],
+  [Enables TRIUTILS examples.  Can be overridden with --disable-didasko-triutils.])
 #
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(aztecoo, [Enables AZTECOO examples, requires
-					 --enable-teuchos.],
-					 DIDASKO_AZTECOO)
-AM_CONDITIONAL(HAVE_DIDASKO_AZTECOO, test "X$ac_cv_use_aztecoo" = "Xyes")
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, aztecoo, DIDASKO_AZTECOO,
+  HAVE_DIDASKO_AZTECOO, yes,
+  [Enables AZTECOO examples, requires --enable-teuchos.],
+  [Enables AZTECOO examples, requires --enable-teuchos.  Can be overridden with --disable-didasko-aztecoo.])
+#
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(didasko, tpetra, DIDASKO_TPETRA,
+  HAVE_DIDASKO_TPETRA, yes,
+  [Enables TPETRA examples.],
+  [Enables TPETRA examples.  Can be overridden with --disable-didasko-tpetra.])
 #
 TAC_ARG_ENABLE_OPTION(latex, [Enables compilation of LaTeX source files.],
 		      DIDASKO_LATEX, no)
@@ -307,8 +333,6 @@ TAC_ARG_ENABLE_FEATURE_SUB( epetraext, zoltan, [Enable EpetraExt interface
 						no)
 AM_CONDITIONAL(BUILD_ZOLTAN, [test "X$ac_cv_use_epetraext_zoltan" != "Xno"])
 
-TAC_ARG_ENABLE_CAN_USE_PACKAGE(tpetra, [Enables TPETRA examples.], DIDASKO_TPETRA)
-AM_CONDITIONAL(HAVE_DIDASKO_TPETRA, test "X$ac_cv_use_tpetra" = "Xyes")
 #
 # ------------------------------------------------------------------------
 # Checks if tests and examples should be built
@@ -430,7 +454,8 @@ AC_SUBST(ac_aux_dir)
 #  to add a new directory.
 AC_CONFIG_FILES([
 		Makefile 
-		Makefile.export 
+		Makefile.export
+		Makefile.export.didasko 
                 doc/Makefile
 		examples/Makefile
 		examples/amesos/Makefile

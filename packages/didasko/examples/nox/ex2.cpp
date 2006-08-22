@@ -39,7 +39,7 @@
 // using NOX 
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_NOX)
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_NOX) && defined(HAVE_NOX_EPETRA)
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
@@ -467,6 +467,9 @@ int main(int argc, char *argv[])
 #endif
   puts("Please configure Didasko with:");
   puts("--enable-epetra");
+  puts("--enable-ifpack");
+  puts("--enable-aztecoo");
+  puts("--enable-nox-epetra");
   puts("--enable-nox\n");
 
 #ifdef HAVE_MPI

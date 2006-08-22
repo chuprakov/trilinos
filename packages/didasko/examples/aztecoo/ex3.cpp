@@ -32,7 +32,7 @@
 // The linear system is created using MatrixGallery
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_AMESOS) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS)
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_TRIUTILS)
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
@@ -120,9 +120,8 @@ int main(int argc, char *argv[])
 
   puts("Please configure Didasko with:\n"
        "--enable-epetra\n"
-       "--enable-teuchos\n"
        "--enable-triutils\n"
-       "--enable-amesos\n");
+       "--enable-aztecoo\n");
 
 #ifdef HAVE_MPI
   MPI_Finalize();
