@@ -32,14 +32,14 @@
 \ChapterAuthors{Christopher Baker, Heidi Thornquist}
 
 \begin{introchapter}
-Two goals existed for the development of the Anasazi eigensolver package: interoperability
+Two goals motivated the development of the Anasazi eigensolver package: interoperability
 and extensibility. The intention of \emph{interoperability} is to ease the use of Anasazi
 in a wide range of application environments. To this end, the algorithms written in Anasazi utilize an
 abstract interface for operators and vectors, allowing the user to leverage existing
 linear algebra libraries. The concept of \emph{extensibility} drives 
 development of Anasazi to allow users to make efficient use of Anasazi codes while
 simultaneously enabling them to easily develop their own code in the Anasazi framework.
-This is encouraged by promoting code modularization and stratified level of access to
+This is encouraged by promoting code modularization and multiple levels of access to
 solvers and their data.
 
 In this Chapter, we outline the Anasazi eigensolver framework and motivate the design.
@@ -58,15 +58,15 @@ In particular, we present
 \label{sec:anasazi:opvec}
 
 The Anasazi eigensolver package utilizes abstract interfaces for operators and
-multivectors. The goal of this is to leverage existing linear algebra libraries for use in
-Anasazi. Algorithms in Anasazi are developed at a high-level, without knowing the type of
-the underlying linear algebra objects. The choice in linear algebra is made through
-templating, and access to the functionality of the underlying objects is provided via the
-traits classes Anasazi::MultiVecTraits and Anasazi::OperatorTraits.
+multivectors. The goals of this are to leverage existing linear algebra libraries and to
+protect previous software investment. Algorithms in Anasazi are developed at a high-level,
+where the underlying linear algebra objects are opaque. The choice in linear algebra is
+made through templating, and access to the functionality of the underlying objects is
+provided via the traits classes Anasazi::MultiVecTraits and Anasazi::OperatorTraits.
 
 These classes define opaque interfaces, specifying the operations that multivector and
 operator classes must support in order to be used in Anasazi without exposing low-level
-details of the underlying data structures. 
+details of the underlying data structures.
 
 The benefit of using a templated traits class over inheritance is that the latter requires
 the user to derive multivectors and operators from Anasazi-defined abstract
@@ -76,8 +76,8 @@ classes.
 
 Anasazi::MultiVecTraits provides routines for the creation of multivectors, as well as
 their manipulation. In order to use a specific scalar type and multivector type with
-Anasazi, there must exist a specialization of Anasazi::MultiVecTraits for this pair of
-classes. A full list of methods required by Anasazi::MultiVecTraits is given in
+Anasazi, there must exist a template specialization of Anasazi::MultiVecTraits for this
+pair of classes. A full list of methods required by Anasazi::MultiVecTraits is given in
 Table~\ref{tab:anasazi:mvt}.
 
 \begin{table}
@@ -88,16 +88,14 @@ Method name & Description \\
 \hline\hline
 Clone           & Creates a new empty multivector containing a specified number of columns.  \\\hline
 CloneCopy       & Creates a new multivector with a copy of the contents of an existing multivector (deep copy). \\\hline
-CloneCopy       & Creates a new multivector with a copy of the selected contents of an existing multivector (deep copy).  \\\hline
 CloneView       & Creates a new multivector that shares the selected contents of an existing multivector (shallow copy).  \\\hline
-GetVecLength    & Obtain the vector length of a multivector.  \\\hline
-GetNumberVecs   & Obtain the number of vectors in a multivector.  \\\hline
-MvTimesMatAddMv & Apply a SerialDenseMatrix $M$ to the multivector, $mv \leftarrow \alpha A M + \beta mv$.  \\\hline
+GetVecLength    & Returns the vector length of a multivector.  \\\hline
+GetNumberVecs   & Returns the number of vectors in a multivector.  \\\hline
+MvTimesMatAddMv & Apply a SerialDenseMatrix $M$ to another multivector $A$, $B \leftarrow \alpha A M + \beta B$.  \\\hline
 MvAddMv         & Perform $mv \leftarrow \alpha A + \beta B$.  \\\hline
 MvTransMv       & Compute the matrix $C \leftarrow \alpha A^H B$.  \\\hline
 MvDot           & Compute the vector $b$ where the components are the individual dot-products of the $i$-th columns of $A$ and $B$, i.e. $b[i] = A[i]^H B[i]$.  \\\hline
-MvScale         & Scale a multivector by a user-provided scalar. \\\hline
-MvScale         & Scale each column of a multivector according to a user-provided array of scalars. \\\hline
+MvScale         & Scale the columns of a multivector. \\\hline
 MvNorm          & Compute the 2-norm of each individual vector of $A$.  \\\hline
 SetBlock        & Copy the vectors in $A$ to a subset of vectors in $B$. \\\hline
 MvRandom        & Replace the vectors in $A$ with random vectors.  \\\hline
@@ -150,7 +148,7 @@ ease of use. For example, efficient memory use and low-level data access require
 scientific codes can lead to complicated interfaces and violations of standard
 object-oriented development practices.
 
-In Anasazi, this problem is address by providing a multi-tiered access strategy for
+In Anasazi, this problem is addressed by providing a multi-tiered access strategy for
 eigensolver algorithms. Anasazi users have the choice of interfacing at one of two levels:
 either working at a high-level with a eigensolver manager or working at a low-level
 directly with an eigensolver.
@@ -159,7 +157,7 @@ Consider as an example the block Davidson iteration. The essence of this iterati
 distilled into the following algorithm:
 \begin{enumerate}
   \item apply preconditioner $N$ to the current residuals: $H = N R$
-  \item use $H$ to expand current Krylov basis $V$
+  \item use $H$ to expand current basis $V$
   \item use new $V$ to compute a projected eigenproblem
   \item solve the projected eigenproblem and form the Ritz vectors $X$ and Ritz values
     $\Theta$ 
@@ -207,16 +205,17 @@ criteria defined by that particular status test. After a solver returns from
 \verb!iterate()!, the caller has the option of accessing the state associated with the
 solver and re-initializing the solver with a new state.
 
-While this method of interfacing with the solver is powerful, it can be very tedious,
-requiring a number of support classes to be constructed as well as requiring the
-management of calls to \verb!iterate()!. The Anasazi::SolverManager class was developed to
-address this. A solver manager is a class that wraps around an eigensolver,
+While this method of interfacing with the solver is powerful, it can be tedious.
+This method requires that user construct a number of support classes, in addition to
+managing call to \verb!Eigensolver::iterate()!.
+The Anasazi::SolverManager class was developed to
+address this complaint. A solver manager is a class that wraps around an eigensolver,
 providing additional functionality while also handling lower-level interaction with the
-eigensolver that a user may not wish to handle. Solver managers are intended to be very
+eigensolver that a user may not wish to handle. Solver managers are intended to be 
 easy to use, while still providing the features and flexibility needed to solve real-world
 eigenvalue problems. For example, the Anasazi::BlockDavidsonSolMgr takes only two
 arguments in its constructor: an Anasazi::Eigenproblem specifying the eigenvalue problem
-to be solver and a Teuchos::ParameterList of options specific to this solver manager. The
+to be solved and a Teuchos::ParameterList of options specific to this solver manager. The
 solver manager instantiates an eigensolver, along with the status tests and other support
 classes needed by the eigensolver. To solve the eigenvalue problem, the user simply calls
 the \verb!solve()! method of the solver manager. The solver manager performs repeated
@@ -264,20 +263,10 @@ usage.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:anasazi:eigenproblem}
 
-One of the goals of Anasazi is to provide a framework for eigenvalue
-computations while leaving as much flexibility as possible to users. It is towards
-this goal that the Anasazi::Eigenproblem abstract base class exists. By
-providing a base class for an eigenvalue problem which users can extend, Anasazi
-allows them to specify properties that are specific to their eigenvalue
-problems. Anasazi::Eigenproblem is also a container for the solutions
-from the eigensolver. However, by requiring eigenproblems to derive from
-Anasazi::Eigenproblem, Anasazi defines a minimum interface that can be
-expected of all eigenvalue problems by the classes that will work with the
-problems (e.g., eigensolvers and status testers).
-
-By storing the operators associated with an eigenproblem, as well as the
-solutions computed by an eigensolver, Anasazi::Eigenproblem acts as a
-repository for information related to an eigenvalue problem. 
+Anasazi::Eigenproblem is a container for the components of an eigenvalue problem, as well
+as the solutions. By requiring eigenproblems to derive from Anasazi::Eigenproblem, Anasazi
+defines a minimum interface that can be expected of all eigenvalue problems by the classes
+that will work with the problems (e.g., eigensolvers and status testers).
 
 Both the eigenproblem and the eigensolver in Anasazi are templated 
 on the scalar type, the multivector type and the operator type. Before
@@ -297,7 +286,7 @@ the parameters of the eigenproblem. These methods are:
 \item \verb!setHermitian! - specify whether the problem is Hermitian
 \end{itemize}
 In addition to these \textbf{set} methods, Anasazi::Eigenproblem defines
-a method \verb!setProblem()! which gives the class the opportunity to perform
+a method \verb!setProblem()! that gives the class the opportunity to perform
 any initialization that may be necessary before the problem is handed off to an
 eigensolver, in addition to verifying that the problem has been adequately defined. 
 
@@ -346,16 +335,16 @@ are real. Similarly, the eigenspace can always be represented by a multivector o
 \verb!numVecs!, even for non-symmetric eigenproblems over the real field. The storage
 scheme for eigenvectors requires more finesse.
 
-When solving real symmetric eigenproblems, the eigenvectors are always real, and can be
-stored in a single column of a multivector. When solving eigenproblems over a complex
-field, whether Hermitian or non-Hermitian, the eigenvectors may be complex, but the multivector
-is defined over the complex field, so that this poses no problem. However, real
-non-symmetric problems can have complex eigenvectors, which prohibits a one-for-one
-storage scheme using a real multivector.  Fortunately, the eigenvectors in this scenario
-occur as complex conjugate pairs, so the pair can be stored in two real vectors. This
-permits a compressed storage scheme, which uses an index vector stored in the
-Eigensolution, allowing conjugate pair eigenvectors to be easily retrieved from
-\verb!Evecs!. 
+When solving real symmetric eigenproblems, the eigenvectors can always be chosen to be
+real, and therefore can be stored in a single column of a real multivector. When solving
+eigenproblems over a complex field, whether Hermitian or non-Hermitian, the eigenvectors
+may be complex, but the multivector is defined over the complex field, so that this poses
+no problem. However, real non-symmetric problems can have complex eigenvectors, which
+prohibits a one-for-one storage scheme using a real multivector.  Fortunately, the
+eigenvectors in this scenario occur as complex conjugate pairs, so the pair can be stored
+in two real vectors. This permits a compressed storage scheme, which uses an index vector
+stored in the Eigensolution, allowing conjugate pair eigenvectors to be easily retrieved
+from \verb!Evecs!. 
 
 The integers in Anasazi::Eigensolution::index take one of three values: $\{0, +1, -1\}$.
 These values allow the eigenvectors to be retrieved as follows:
@@ -644,11 +633,11 @@ the abstract class Anasazi::OrthoManager. This class provides five methods:
 \begin{itemize}
   \item \verb!innerProd(X,Y,Z)! - performs the inner product defined by the manager.
   \item \verb!norm(X)! - computes the norm induced by \verb!innerProd()!.
-  \item \verb!project(X,C,Q)! - makes $X$ orthogonal to orthonormal basis $Q$, optionally returning the
-    coefficients of X in Q.
-  \item \verb!normalize(X,R)! - returns an orthonormal basis for $colspan(X)$, optionally
+  \item \verb!project(X,C,Q)! - given an orthonormal basis $Q$, projects $X$ onto to the space perpindicular to
+    $colspan(Q)$, optionally returning the coefficients of $X$ in $Q$.
+  \item \verb!normalize(X,B)! - returns an orthonormal basis for $colspan(X)$, optionally
     returning the coefficients of $X$ in the computed basis.
-  \item \verb!projectAndNormalize(X,C,R,Q)! - computes an orthonormal basis for subspace
+  \item \verb!projectAndNormalize(X,C,B,Q)! - computes an orthonormal basis for subspace
     $colspan(X) - colspan(Q)$, optionally returning the coefficients of
     $X$ in $Q$ and the new basis.
 \end{itemize}
@@ -660,7 +649,7 @@ augment the column span of a rank-deficient multivector in order to create an or
 basis with the same number of columns as the input multivector. In this case, the code
 \begin{verbatim}
 orthoman.project(X,C,Q);
-orthoman.normalize(X,R);
+orthoman.normalize(X,B);
 \end{verbatim}
 \noindent could result in an orthonormal basis $X$ that is not orthogonal to the basis in $Q$.
 
@@ -750,8 +739,8 @@ This file simply defines specializations of the Anasazi::MultiVecTraits
 and Anasazi::OperatorTraits classes, while also including the Epetra
 header files defining the multivector and operator classes.
 
-Because Epetra makes exclusive use of double precision arithmetic, choosing
-Epetra\_Operator and Epetra\_MultiVector makes sense only for the
+Because Epetra makes exclusive use of double precision arithmetic, 
+Epetra\_Operator and Epetra\_MultiVector are used only with 
 scalar type \verb!double!. For brevity, it is useful to declare type definitions
 for these classes:
 \begin{verbatim}
@@ -904,7 +893,7 @@ stored by the solver manager) as follows:
 Four examples are provided with the tutorial:
 \begin{itemize}
 \item \TriExe{anasazi/ex1.cpp}: compute the eigenvectors
-corresponding to the lowest eigenvalues for a 2D Laplace problem using the block
+corresponding to the smallest eigenvalues for a 2D Laplace problem using the block
 Krylov Schur solver
 \item \TriExe{anasazi/ex2.cpp}: solves the problem from \verb!ex1! 
 using instead the block Davidson eigensolver
