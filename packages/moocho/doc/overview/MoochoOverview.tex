@@ -6,15 +6,19 @@
 \usepackage{latexsym}
 \input{rab_commands}
 \newtheorem{dumb_fact}{Dumb Fact}[section]
+\newcommand{\mychapter}[1]{\section{#1}}
+\newcommand{\mysection}[1]{\subsection{#1}}
+\newcommand{\mysubsection}[1]{\subsubsection{#1}}
+\newcommand{\mysubsubsection}[1]{\subsubsection*{#1}}
 
 % If you want to relax some of the SAND98-0730 requirements, use the "relax"
 % option. It adds spaces and boldface in the table of contents, and does not
 % force the page layout sizes.
-% e.g. \documentclass[relax,12pt]{SANDreport}
+% e.g. {}\documentclass[relax,12pt]{SANDreport}
 %
 % You can also use the "strict" option, which applies even more of the
 % SAND98-0730 guidelines. It gets rid of section numbers which are often
-% useful; e.g. \documentclass[strict]{SANDreport}
+% useful; e.g. {}\documentclass[strict]{SANDreport}
 
 % ---------------------------------------------------------------------------- %
 %
@@ -27,7 +31,7 @@ An Overview of MOOCHO \\[2ex]
 The Multifunctional Object-Oriented arCHitecture for Optimization
 }
 \author{
-Roscoe A. Bartlett \\ Optimization/Uncertainty Estim \\ \\ Sandia National
+Roscoe A. Bartlett \\ Department of Optimization and Uncertainty Estimation \\ \\ Sandia National
 Laboratories\footnote{ Sandia is a multiprogram laboratory operated by Sandia
 Corporation, a Lockheed-Martin Company, for the United States Department of
 Energy under Contract DE-AC04-94AL85000.}, Albuquerque NM 87185 USA, \\ }
@@ -112,7 +116,7 @@ provided in a companion document [???].
 The authors would like to thank ...
 
 The format of this report is based on information found
-in~\cite{Sand98-0730}.
+in~{}\cite{Sand98-0730}.
 
 % ------------------------------------------------------------------------ %
 % The table of contents and list of figures and tables
@@ -166,12 +170,12 @@ MOOCHO is an object-oriented C++ software package building gradient-based
 algorithms for large-scale nonlinear programing.  MOOCHO is designed to allow
 the incorporation of many different algorithms and to allow external
 configuration of specialized linear-algebra objects such as vectors, matrices
-and linear solvers.  Data-structure independence has been recognized as an
-important feature missing in current optimization software
-\cite{ref:wright_1999}.
+and linear solvers (i.e.\ through Thyra).  Data-structure independence has
+been recognized as an important feature missing in current optimization
+software {}\cite{ref:wright_1999}.
 
 While the MOOCHO framework can be used to implement many different types of
-optimization methods (e.g.~Generalized Reduced Gradient (GR) [???], Augmented
+optimization methods (e.g.\ Generalized Reduced Gradient (GR) [???], Augmented
 Lagrangian (AL) [???], Successive Quadratic Programming (SQP) [???] etc.) the
 main focus has been SQP methods.  Successive quadratic programming (SQP)
 related methods are attractive mainly because they generally require the
@@ -186,8 +190,8 @@ Quasi-Newton methods for approximating the reduced Hessian of the Lagrangian
 are also very efficient for NLPs with few degrees of freedom.  Another
 advantage of rSQP is that a decomposition for the equality constraints can be
 used which only requires solves with a basis of the Jacobian of the
-constraints (see Section \ref{moocho:sec:rSQP}) and therefore can utilize very
-specialized application-specific data structures and linear solvers.
+constraints (see Section {}\ref{moocho:sec:rSQP}) and therefore can utilize
+very specialized application-specific data structures and linear solvers.
 Therefore, rSQP methods can be tailored to exploit the structure of
 simulation-constrained optimization problems and can show excellent parallel
 algorithmic scalability.
@@ -213,42 +217,37 @@ MOOCHO.
 % RAB: I have edited to here on 8/4/2006
 %
 
-In the next section (Section \ref{moocho:sec:sqp_background}), the
-basic mathematical structure of SQP methods is presented.  This
-presentation is intended to establish the nomenclature of MOOCHO for
-users and developers.  This nomenclature is key to being able to
-understand and modify the MOOCHO algorithms.  Appendix
-\ref{app:moocho_nomenclature_summary} contains a summary of this
-notation.  The basic software design of MOOCHO that both users and
-developers must understand is described in Section
-\ref{moocho:sec:basic_software_design}.  This is followed in Section
-\ref{moocho:sec:nlp_and_lin_alg_itfc} by a basic description of the
-linear algebra and NLP interfaces for MOOCHO.  These interfaces
-provide the foundation for allowing the types of specialized data
-structures and linear solvers that an advanced user would use with
-MOOCHO.  Section \ref{moocho:sec:solve_explicit_nlps} discusses a
-software-based use of MOOCHO for general NLPs where explicit gradient
-entries are computed.  Apart from using a predeveloped interface to
-MOOCHO (e.g.~AMPL), this is the simplest use case for MOOCHO.  This
-section includes a complete example NLP with numerious C++ code
-excepts.  This discussion is followed up in Section
-\ref{moocho:sec:solve_specialized_nlps} by an example NLP that
-specializes all of the linear algebra and NLP interfaces, uses
-application specific linear solvers, and runs on a distributed-memory
-parallel computer using MPI.  This example represents the most
-advanced use case for MOOCHO and provides the needed foundation for
-even the most advanced interface to a sophisticated application.
-Section
-\ref{moocho:sec:algo_configurations} describes the algorithm
-configuration classes that are used to build MOOCHO algorithms and
-includes a fairly detailed discussion of a default configuration
-called ``MamaJama''.  Details of the input and output files for MOOCHO
-(for the ``MamaJama'' configuration and an example NLP) are discussed
-in Section \ref{rsqp:sec:detailed_example}. This section describes
-the example printouts that are included in Appendix
-\ref{app:ex_moocho_printout}.  Finally, Appendix
-\ref{app:moocho_install} describes the installation for the base
-distribution of MOOCHO which is a first step to using MOOCHO.
+In the next section (Section {}\ref{moocho:sec:sqp_background}), the basic
+mathematical structure of SQP methods is presented.  This presentation is
+intended to establish the nomenclature of MOOCHO for users and developers.
+This nomenclature is key to being able to understand and modify the MOOCHO
+algorithms.  Appendix {}\ref{app:moocho_nomenclature_summary} contains a
+summary of this notation.  The basic software design of MOOCHO that both users
+and developers must understand is described in Section
+{}\ref{moocho:sec:basic_software_design}.  This is followed in Section
+{}\ref{moocho:sec:nlp_and_lin_alg_itfc} by a basic description of the linear
+algebra and NLP interfaces for MOOCHO.  These interfaces provide the
+foundation for allowing the types of specialized data structures and linear
+solvers that an advanced user would use with MOOCHO.  Section
+{}\ref{moocho:sec:solve_explicit_nlps} discusses a software-based use of
+MOOCHO for general NLPs where explicit gradient entries are computed.  Apart
+from using a predeveloped interface to MOOCHO (e.g.\ AMPL), this is the
+simplest use case for MOOCHO.  This section includes a complete example NLP
+with numerious C++ code excerpts.  This discussion is followed up in Section
+{}\ref{moocho:sec:solve_specialized_nlps} by an example NLP that specializes
+all of the linear algebra and NLP interfaces, uses application specific linear
+solvers, and runs on a distributed-memory parallel computer using MPI.  This
+example represents the most advanced use case for MOOCHO and provides the
+needed foundation for even the most advanced interface to a sophisticated
+application.  Section {}\ref{moocho:sec:algo_configurations} describes the
+algorithm configuration classes that are used to build MOOCHO algorithms and
+includes a fairly detailed discussion of a default configuration called
+``MamaJama''.  Details of the input and output files for MOOCHO (for the
+``MamaJama'' configuration and an example NLP) are discussed in Section
+{}\ref{rsqp:sec:detailed_example}. This section describes the example
+printouts that are included in Appendix {}\ref{app:ex_moocho_printout}.
+Finally, Appendix {}\ref{app:moocho_install} describes the installation for
+the base distribution of MOOCHO which is a first step to using MOOCHO.
 
 %
 \section{Mathematical Background}
@@ -278,35 +277,35 @@ MOOCHO can be used to solve NLPs of the general form:
 \end{tabbing}
 \esinglespace}
 
-Above, we have been very careful to define vector spaces for the
-relevant vectors and nonlinear operators.  In general, only vectors
-from the same vector space are compatible and can participate in
-linear-algebra operations.  Mathematically, the only requirement for
-the compatibility of real-valued vector spaces should be that the
-dimensions match up and that the same inner products are used.
-However, having the same dimensionality will not be sufficient to
-allow the compatibility of vectors from different vector spaces in the
-implementation.  The vector spaces become very important later when
-the NLP interfaces and the implementation of MOOCHO is discussed in
-more detail in Section \ref{moocho:sec:nlp_and_lin_alg_itfc} and in
-\cite{ref:moochodevguide}.
+Above, we have been very careful to define vector spaces for the relevant
+vectors and nonlinear operators.  In general, only vectors from the same
+vector space are compatible and can participate in linear-algebra operations.
+Mathematically, the only requirement for the compatibility of real-valued
+vector spaces should be that the dimensions match up and that the same inner
+products are used [???].  However, having the same dimension and inner product
+will not always be sufficient to allow the compatibility of vectors from
+different vector spaces in the implementation (e.g.\ coeffieients of parallel
+vectors can have different distributions to processes).  Vector spaces become
+important later when the NLP interfaces and the implementation of MOOCHO is
+discussed in more detail in Section {}\ref{moocho:sec:nlp_and_lin_alg_itfc}
+and in {}\cite{ref:moochodevguide}.
 
-We assume that the operators $f(x)$ and $c_j(x)$ for $j = 1 \ldots m$
-in (\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:equ}) are
-nonlinear functions with at least second-order continuous derivatives.
-The rSQP algorithms described later only require first-order
-information for $f(x)$ and $c_j(x)$ in the form of a vector $\nabla
-f(x)$ and a matrix $\nabla c(x)$ respectively.  The bound inequality
-constraints in (\ref{moocho:eqn:nlp:bnds}) may have lower bounds equal
-to $-\infty$ and/or upper bounds equal to $+\infty$.  The absences of
-some of these bounds can be exploited by many SQP algorithms.
+We assume that $f(x)$ and $c_j(x)$ for $j = 1 \ldots m$ in
+(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:equ}) are nonlinear functions
+with at least second-order continuous derivatives.  The rSQP algorithms
+described later only require first-order information (derivatives) for $f(x)$
+and $c_j(x)$.  However, these first derivatives can be provided by finite
+differences if missing.  The simple bound inequality constraints in
+(\ref{moocho:eqn:nlp:bnds}) may have lower bounds equal to $-\infty$ and/or
+upper bounds equal to $+\infty$.  The absences of some of these bounds can be
+exploited by many of the algorithms.
 
-It is very desirable for the functions $f(x)$ and $c(x)$ to at least
-be defined (i.e.~no NaN or Inf return values) everywhere in the set
-defined by the relaxed variable bounds $x_L - \delta \leq x \leq x_U +
+It is very desirable for the functions $f(x)$ and $c(x)$ to at least be
+defined (i.e.\ no {}\texttt{NaN} or {\texttt{Inf} return values) everywhere in
+the set defined by the relaxed variable bounds $x_L - \delta \leq x \leq x_U +
 \delta$.  Here, $\delta$ (see the method
 \texttt{max\_var\_bounds\_viol()} in the Doxygen documentation for the
-\texttt{\textit{NLP}} interface) is a relaxation (i.e.~wiggle room)
+\texttt{\textit{NLP}} interface) is a relaxation (i.e.\ wiggle room)
 that the user can set to allow the optimization algorithm to compute
 $f(x)$ and $c(x)$ outside the strict variable bounds $x_L \le x \le
 x_U$ in order to compute finite differences and the like.  The SQP
@@ -335,20 +334,15 @@ NLP are defined by
 {\bsinglespace
 \begin{eqnarray}
 L(x,\lambda,\nu_L,\nu_U)
- & = & \left\{ f(x) + \lambda^T c(x) + \nu_L^T ( x_L - x ) + \nu_U^T ( x - x_U ) \right\} \:\in\:\RE
-\label{moocho:eqn:L_def}
+& = & f(x) + \lambda^T c(x) + \nu_L^T ( x_L - x ) + \nu_U^T ( x - x_U ) \; \:\in\:\RE
+\label{moocho:eqn:L_def} \\
+\nabla_{x} L(x,\lambda,\nu)
+& = & \nabla f(x) + \nabla c(x) \lambda + \nu \; \:\in\:\mathcal{X}
+\label{moocho:eqn:GL_def} \\
+\nabla_{xx}^2 L(x,\lambda)
+& = & \nabla^2 f(x) + \sum^m_{j=1} \lambda_{(j)} \nabla^2 c_j(x) \; \:\in\: \mathcal{X}|\mathcal{X}
+\label{moocho:eqn:HL_def}
 \end{eqnarray}
-%
-\begin{equation}
-\nabla_{x} L(x,\lambda,\nu) = \left\{ \nabla f(x) + \nabla c(x) \lambda + \nu
-   \right\} \:\in\:\mathcal{X}
-\label{moocho:eqn:GL_def}
-\end{equation}
-%
-\begin{equation}
-\nabla_{xx}^2 L(x,\lambda) = \left\{ \nabla^2 f(x) + \sum^m_{j=1} \lambda_{(j)} \nabla^2 c_j(x) \right\}
-	\:\in\: \mathcal{X}|\mathcal{X} \label{moocho:eqn:HL_def}
-\end{equation}
 %
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -361,47 +355,31 @@ L(x,\lambda,\nu_L,\nu_U)
 \>	$\nu \equiv \nu_U - \nu_L \:\in\:\mathcal{X}$.
 \end{tabbing}
 
-Above, we use the notation $\lambda_{(j)}$ with the subscript in
-parentheses to denote the $j^{\mbox{th}}$ component of the vector
-$\lambda$ and to differentiate this from a simple math accent.  Also,
-$\nabla c(x) : \mathcal{X} \rightarrow \mathcal{X}|\mathcal{C}$ is
-used to denote a nonlinear operator (the gradient of the equality
-constraints $\nabla c(x)$ in this case) that maps from the vector
-space $\mathcal{X}$ to a matrix space $\mathcal{X}|\mathcal{C}$ where
-the columns and rows in this matrix space lie in the vector spaces
-$\mathcal{X}$ and $\mathcal{C}$ respectively.  The returned matrix
-object $A = \nabla c \in \mathcal{X}|\mathcal{C}$ defines a linear
-operator where $q = A p$ maps vector from $p \in \mathcal{C}$ to $q
-\in \mathcal{X}$.  The transposed matrix object $A^T$ defines a linear
-operator where $q = A^T p$ maps vector from $p \in \mathcal{X}$ to $q
-\in \mathcal{C}$.
+Above, we use the notation $\lambda_{(j)}$ with the subscript in parentheses
+to denote the one-based $j^{\mbox{th}}$ component of the vector $\lambda$ and
+to differentiate this from a simple math accent.  Also, $\nabla c(x) :
+{}\mathcal{X} {}\rightarrow {}\mathcal{X}|\mathcal{C}$ is used to denote a
+nonlinear operator (the gradient of the equality constraints $\nabla c(x)$ in
+this case) that maps from the vector space $\mathcal{X}$ to a linear-operator
+space $\mathcal{X}|\mathcal{C}$ where the range and the domain are the vector
+spaces $\mathcal{X}$ and $\mathcal{C}$ respectively.  The returned object $A =
+{}\nabla c {}\in\mathcal{X}|\mathcal{C}$ defines a linear operator where $q =
+A p$ maps vector from $p \in\mathcal{C}$ to $q {}\in\mathcal{X}$.  The
+transposed object $A^T$ defines a linear operator where $q = A^T p$ maps
+vector from $p {}\in\mathcal{X}$ to $q {}\in\mathcal{C}$.
 
-Note how the vector and matrix spaces in the above
-expressions match up.  For example, the vectors and matrices in
-(\ref{moocho:eqn:GL_def}) can be replaced by their vector and matrix
-spaces as
-
-\[
- \left\{ \nabla f(x) + \nabla c(x) \lambda + \nu \right\}
-\Rightarrow
- \left\{ \mathcal{X} + (\mathcal{X}|\mathcal{C}) \mathcal{C} + (\mathcal{X}|\mathcal{H}) \mathcal{H}
- + \mathcal{X} \right\}
-\Rightarrow \mathcal{X}.
-\]
-
-The compatibility of vectors and matrices in linear-algebra operations
-is determined by the compatibility of the associated vector spaces.
-At all times, we must know to which vector or matrix space a
-linear-algebra quantity belongs.
-
-Given the definition of the Lagrangian and its derivatives in (\ref{moocho:eqn:L_def})--(\ref{moocho:eqn:HL_def}),
-the first- and second-order necessary KKT optimality conditions \cite{ref:nash_sofer_1996} for a
-solution $(x^*, \lambda^*, \nu^*_L, \nu^*_U)$ to (\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}) are given in
-(\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:HL_psd}).  There are four different categories of optimality
-conditions shown here: linear dependence of gradients (\ref{moocho:eqn:kkt:lin_dep_grads}), feasibility
-(\ref{moocho:eqn:kkt:equ_feas})--(\ref{moocho:eqn:kkt:bnds_feas}), non-negativity of Lagrange multipliers
-for inequalities (\ref{moocho:eqn:kkt:nonneg_bnds_mult}),
-complementarity (\ref{moocho:eqn:kkt:xl_comp})--(\ref{moocho:eqn:kkt:xu_comp}), and curvature
+Given the definition of the Lagrangian and its derivatives in
+(\ref{moocho:eqn:L_def})--(\ref{moocho:eqn:HL_def}), the first- and
+second-order necessary KKT optimality conditions {}\cite{ref:nash_sofer_1996}
+for a solution $(x^*, \lambda^*, \nu^*_L, \nu^*_U)$ to
+(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}) are given in
+(\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:HL_psd}).  There
+are four different categories of optimality conditions: linear dependence of
+gradients (\ref{moocho:eqn:kkt:lin_dep_grads}), feasibility
+(\ref{moocho:eqn:kkt:equ_feas})--(\ref{moocho:eqn:kkt:bnds_feas}),
+non-negativity of Lagrange multipliers for inequalities
+(\ref{moocho:eqn:kkt:nonneg_bnds_mult}), complementarity
+(\ref{moocho:eqn:kkt:xl_comp})--(\ref{moocho:eqn:kkt:xu_comp}), and curvature
 (\ref{moocho:eqn:kkt:HL_psd}).
 
 {\bsinglespace
@@ -441,29 +419,22 @@ d^T \: \nabla_{xx}^2 L(x^*,\lambda^*) \: d \geq 0, \;\; \mbox{for all feasible d
 \end{equation}
 \esinglespace}
 
-Sufficient conditions for optimality require that stronger assumptions
-be made about the NLP (e.g.~constraint qualification on $c(x)$ and
-perhaps conditions on third-order curvature in case $d^T
-\: \nabla_{xx}^2 L(x^*,\lambda^*) \: d = 0$ in
-(\ref{moocho:eqn:kkt:HL_psd})).
+Sufficient conditions for optimality require that stronger assumptions be made
+about the NLP (e.g.\ a constraint qualification on $c(x)$ and perhaps
+conditions on third-order curvature in case
+%
+\[
+d^T \: \nabla_{xx}^2 L(x^*,\lambda^*) \: d = 0
+\]
+%
+in (\ref{moocho:eqn:kkt:HL_psd})).
 
-To solve a NLP, an SQP algorithm must first be supplied an initial
-guess for the unknown variables $x_0$ and in some cases also the
-Lagrange multipliers $\lambda_0$ and $\nu_0$.  The optimization
-algorithms implemented in MOOCHO generally require that $x_0$ satisfy
-the variable bounds in (\ref{moocho:eqn:nlp:bnds}), and if not, then
-the elements of $x_0$ are forced in bounds.  The matrix $\nabla c(x)$
-is abstracted behind a set of object-oriented interfaces.  An rSQP
-algorithm only needs to perform matrix-vector multiplication with
-$\nabla c(x)$ and solve for a square, nonsingular basis of $\nabla
-c(x)$ through a \texttt{\textit{BasisSystem}} interface.  The
-implementation of $\nabla c(x)$ is completely abstracted away from the
-optimization algorithm.  A simpler interface to NLPs has also been
-developed where the matrix $\nabla c(x)$ is never represented even
-implicitly (i.e.~no matrix-vector products) and only specific
-quantities are supplied to the rSQP algorithm (see the ``Tailored
-Approach'' in \cite{ref:schmid_rsqp_1994} and the ``direct
-sensitivity'' NLP interface in \cite{ref:moochodevguide}).
+To solve a NLP, an SQP algorithm must first be supplied an initial guess for
+the unknown variables $x_0$ and in some cases also initial guesses for the
+Lagrange multipliers $\lambda_0$ and $\nu_0$.  The optimization algorithms
+implemented in MOOCHO generally require that $x_0$ satisfy the variable bounds
+in (\ref{moocho:eqn:nlp:bnds}), and if not, then the elements of $x_0$ are
+forced in bounds.
 
 %
 \subsection{Successive Quadratic Programming (SQP)}
@@ -471,7 +442,7 @@ sensitivity'' NLP interface in \cite{ref:moochodevguide}).
 %
 
 A popular class of methods for solving NLPs is successive quadratic
-programming (SQP) \cite{ref:boggs_tolle_1996}.  An SQP method is
+programming (SQP) {}\cite{ref:boggs_tolle_1996}.  An SQP method is
 equivalent, in many cases, to applying Newton's method to solve the
 optimality conditions represented by
 (\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:equ_feas}).
@@ -501,21 +472,21 @@ the linear subproblem (also known as the KKT system) takes the form
 \hspace{4ex}where:\hspace{5ex}\= \\
 \>	$d = x_{k+1} - x_k \:\in\:\mathcal{X}$ \\
 \>	$d_{\lambda} = \lambda_{k+1} - \lambda_k \:\in\:\mathcal{C}$ \\
-\>	$W \approx \nabla_{xx}^2 L(x_k,\lambda_k) \:\in\:\mathcal{X}|\mathcal{X}$ \\
+\>	$W = \nabla_{xx}^2 L(x_k,\lambda_k) \:\in\:\mathcal{X}|\mathcal{X}$ \\
 \>	$A = \nabla c(x_k) \:\in\:\mathcal{X}|\mathcal{C}$ \\
 \>	$c = c(x_k) \:\in\:\mathcal{C}$.
 \end{tabbing}
 \esinglespace}
 
 The Newton matrix in (\ref{rsqp:eqn:full_kkt_sys}) is known as the KKT matrix.
-By substituting $d_{\lambda} = \lambda_{k+1} - \lambda_k$ into (\ref{rsqp:eqn:full_kkt_sys})
-and simplifying, this linear system becomes equivalent to the optimality conditions of
-the following QP
+By substituting $d_{\lambda} = {}\lambda_{k+1} - {}\lambda_k$ into
+(\ref{rsqp:eqn:full_kkt_sys}) and simplifying, this linear system becomes
+equivalent to the optimality conditions of the following QP.
 
 {\bsinglespace
 \begin{eqnarray}
-\mbox{min}  &  & g^T d + \myonehalf d^T W d                   \label{moocho:eqn:qp_newton:obj} \\
-\mbox{s.t.} &  & A^T d + c = 0                                \label{moocho:eqn:qp_newton:equ}
+\mbox{min}  &  & g^T d + \myonehalf d^T W d   \label{moocho:eqn:qp_newton:obj} \\
+\mbox{s.t.} &  & A^T d + c = 0                \label{moocho:eqn:qp_newton:equ}
 \end{eqnarray}
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -523,9 +494,9 @@ the following QP
 \end{tabbing}
 \esinglespace}
 
-The advantage of the QP formulation over the Newton linear system formulation is that
-inequality constraints can be directly added to the QP and a relaxation can be defined
-which yields the following QP
+The advantage of the QP formulation over the Newton linear system formulation
+is that inequality constraints can be directly added to the QP and a
+relaxation can be defined which yields the following QP.
 
 {\bsinglespace
 \begin{eqnarray}
@@ -540,56 +511,54 @@ which yields the following QP
 \end{tabbing}
 \esinglespace}
 
-Near the solution of the NLP,
-the set of active constraints for
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) will be the same
-as the optimal active-set for the NLP in
-(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds})
-\cite[Theorem 18.1]{ref:nocedal_wright_1999}.
+Near the solution of the NLP, the set of optimal active constraints for
+(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) will be the same as
+the optimal active-set for the NLP in
+(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}) {}\cite[Theorem
+18.1]{ref:nocedal_wright_1999}.
 
 The relaxation of the QP shown in
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is only one
-form of a relaxation but has the essential properties.  Note that the
-solution $\eta = 1$ and $d = 0$ is always feasible by construction.
-The penalty function $M(\eta)$ is either a linear or quadratic term
-where if $\frac{\partial M(\eta)}{\partial \eta}|_{\eta = 0}$ is
-sufficiently large then an unrelaxed solution (i.e.~$\eta = 0$) will
-be obtained if a feasible region for the original QP exists.  For
-example, the penalty term may take a form such as $M(\eta) =
-(\tilde{M}) \eta$ or $M(\eta) = (\tilde{M})(\eta + \myonehalf \eta^2)$
-where $\tilde{M}$ is a large constant often called ``big M''.
+(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is only one form of a
+relaxation but has some essential properties.  For example, the solution $\eta
+= 1$ and $d = 0$ is always feasible by construction.  However, the solution
+$\eta = 1$ and $d = 0$ is of little practical use since it results in zero
+steps.  The penalty function $M(\eta)$ is either linear or quadratic where if
+$\frac{\partial M(\eta)}{\partial {}\eta}|_{\eta = 0}$ is sufficiently large
+then an unrelaxed solution (i.e.\ $\eta = 0$) will be obtained if a feasible
+region for the original QP exists.  For example, the penalty term may take a
+form such as $M(\eta) = {}\eta \tilde{M}$ or $M(\eta) = (\eta + {}\myonehalf
+{}\eta^2)\tilde{M}$ where $\tilde{M}$ is a large constant often called ``big
+M''.  The default QP solver in MOOCHO, QPSchur [???], is careful not to allow
+the ill-conditioning associated with $\tilde{M}$ to impact the solution unless
+it is needed for an infeasible QP.
 
-Once a new estimate of the solution ($x_{k+1}$, $\lambda_{k+1}$,
-$\nu_{k+1}$) is computed, the error in the optimality conditions
-(\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:bnds_feas})
-is checked.  If these KKT errors are within some specified tolerance,
-the algorithm is terminated with the optimal solution.  If the KKT
-error is too large, the NLP functions and gradients are then computed
-at the new point $x_{k+1}$ and another QP subproblem
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is solved
-which generates another step $d$ and so on.  This algorithm is
-continued until a solution is found or the algorithm runs into trouble
-(there can be many causes for algorithm failure), or it is prematurely
-terminated because it is taking too long (i.e.~maxumum number of
-iterations or runtime is exceeded).
+Once a new estimate of the solution ($x_{k+1}$, $\lambda_{k+1}$, $\nu_{k+1}$)
+is computed, the error in the optimality conditions
+(\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:bnds_feas}) is
+checked.  If these KKT errors are within some specified tolerance, the
+algorithm is terminated with the optimal solution.  If the KKT error is too
+large, the NLP functions and gradients are then computed at the new point
+$x_{k+1}$ and another QP subproblem
+(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is solved which
+generates another step $d$ and so on.  This algorithm is continued until a
+solution is found or the algorithm runs into trouble (there can be many causes
+for algorithm failure), or it is prematurely terminated because it is taking
+too long (i.e.\ maxumum number of iterations or maximum runtime is exceeded).
 
-The iterates generated from $x_{k+1} = x_k + d$ are generally only
-guaranteed to converge to a local solution to the first-order KKT
-conditions when close to the solution.  Therefore, globalization
-methods are used to insure (given a few, sometimes strong, assumptions
-are satisfied) the SQP algorithm will converge to a local solution
-from remote starting points.  One popular class of globalization
-methods are line search methods.  In a line search method, once the
-step $d$ is computed from the QP subproblem, a line search procedure
-is used to find a step length $\alpha$ such that $x_{k+1} = x_k +
-\alpha d$ gives {\em sufficient reduction} in the value of a
-{\em merit function} $\phi(x_{k+1}) < \phi(x_k)$.  A merit function
-is used to balance a trade-off between minimizing the objective
-function $f(x)$ and reducing the error in the constraints $c(x)$.  A
-commonly used merit function is the $\ell_1$ defined by
-(\ref{moocho:eqn:phi_L1}) where $\mu$ is a penalty parameter that is
-adjusted to insure descent along the SQP step $x_k + \alpha d$ for
-$\alpha > 0$.
+The iterates generated from $x_{k+1} = x_k + d$ are generally only guaranteed
+to converge to a local solution to the first-order KKT conditions when close
+to the solution.  Therefore, globalization methods are used to insure (given a
+few, sometimes strong, assumptions are satisfied) the SQP algorithm will
+converge to a local solution from remote starting points.  One popular class
+of globalization methods are line search methods.  In a line search method,
+once the step $d$ is computed from the QP subproblem, a line search procedure
+is used to find a step length $\alpha$ such that $x_{k+1} = x_k + {}\alpha d$
+gives {\em sufficient reduction} in the value of a {\em merit function}
+$\phi(x_{k+1}) < \phi(x_k)$.  A merit function is used to balance a trade-off
+between minimizing the objective function $f(x)$ and reducing the error in the
+constraints $c(x)$.  A commonly used merit function is the $\ell_1$
+(\ref{moocho:eqn:phi_L1}) where $\mu$ is a penalty parameter that is adjusted
+to insure descent along the SQP step $x_k + \alpha d$ for $\alpha > 0$.
 
 {\bsinglespace
 \begin{equation}
@@ -598,30 +567,29 @@ $\alpha > 0$.
 \end{equation}
 \esinglespace}
 
-An alternative line search based on a ``Filter'' has also been implemented which generally
-performs better and does not require the maintenance of a penalty parameter $\mu$.
-Other globalization methods such as trust region (using a merit function or the filter)
-can also be applied to SQP.
+An alternative line search based on a ``Filter'' has also been implemented
+which generally performs better and does not require the maintenance of a
+penalty parameter $\mu$.  Other globalization methods such as trust region
+(using a merit function or the filter) can also be applied to SQP but no trust
+region method is currently implemented in MOOCHO.
 
-Because SQP is essentially equivalent to applying Newton's method to
-the optimality conditions, it can be shown to be quadratically
-convergent near the solution of the NLP
-\cite{ref:nocedal_overton_1985}.  It is this fast rate of convergence
-that makes SQP the method of choice for many applications.  However,
-there are many theoretical and practical details that need to be
-considered.  One difficulty is that in order to achieve quadratic
-convergence the exact Hessian of the Lagrangian $W$ is needed, which
-requires exact second-order information $\nabla^2 f(x)$ and $\nabla^2
-c_j(x)$, $j = 1 \ldots m$.  For many NLP applications, second
-derivatives are not readily available and it is too expensive and/or
-inaccurate to compute them numerically.  Other difficulties with SQP
-include how to deal with an indefinite Hessian $W$.  Also, for large
-problems, the full QP subproblem in
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) can be
-extremely expensive to solve directly.  These and other difficulties
-have motivated the research of large-scale decomposition methods for
-SQP.  One class of these methods is reduced-space (or reduced Hessian)
-SQP, or rSQP for short.
+Because SQP is essentially equivalent to applying Newton's method to the
+optimality conditions, it can be shown to be quadratically convergent near the
+solution of the NLP {}\cite{ref:nocedal_overton_1985}.  It is this fast rate
+of convergence that makes SQP the method of choice for many applications.
+However, there are many theoretical and practical details that need to be
+considered.  One difficulty is that in order to achieve quadratic convergence
+the exact Hessian of the Lagrangian $W$ is needed, which requires exact
+second-order information $\nabla^2 f(x)$ and $\nabla^2 c_j(x)$, $j = 1 \ldots
+m$.  For many NLP applications, second derivatives are not readily available
+and it is too expensive and/or inaccurate to compute them using finite
+differences.  Other difficulties with SQP include how to deal with an
+indefinite producted Hessian.  Also, for large problems, the full QP
+subproblem in (\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) can be
+extremely expensive to solve directly.  These and other difficulties have
+motivated the research of large-scale decomposition methods for SQP.  One
+class of these methods is reduced-space (or reduced Hessian) SQP, or rSQP for
+short.
 
 %
 \subsection{Reduced-Space Successive Quadratic Programming (rSQP)}
@@ -629,15 +597,14 @@ SQP, or rSQP for short.
 %
 
 In a reduced-space SQP (rSQP) method, the full-space QP subproblem
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is decomposed
-into two smaller subproblems that, in many cases, are easier to solve.
-To see how this is done, first a null-space decomposition
-\cite[Section 18.3]{ref:nocedal_wright_1999}
-is computed for some linearly independent set of the
-linearized equality constraints $A_d \:\in\:\mathcal{X}|\mathcal{C}_d$
-where $c_d(x)\:\in\:\mathcal{C}_d\:\in\:\RE\:^{r}$ are the decomposed
-and $c_u(x)\:\in\:\mathcal{C}_u\:\in\:\RE\:^{(m-r)}$ are the
-undecomposed equality constraints and
+(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) is decomposed into
+two smaller subproblems that, in many cases, are easier to solve.  To see how
+this is done, first a null-space decomposition {}\cite[Section
+18.3]{ref:nocedal_wright_1999} is computed for some linearly independent set
+of the linearized equality constraints $A_d \:\in\:\mathcal{X}|\mathcal{C}_d$
+where $c_d(x)\:\in\:\mathcal{C}_d\:\in\:\RE\:^{r}$ are the decomposed and
+$c_u(x)\:\in\:\mathcal{C}_u\:\in\:\RE\:^{(m-r)}$ are the undecomposed equality
+constraints and
 
 {\bsinglespace
 \begin{equation}
@@ -650,10 +617,12 @@ c(x) =
 \end{equation}
 \esinglespace}
 %
-Above, the vector space $\mathcal{C} = \mathcal{C}_d \times \mathcal{C}_u$ denotes a concatenated vector space
-(also known as a product of vector spaces) with a dimension which is the sum of the constituent vector spaces
-$|\mathcal{C}| = |\mathcal{C}_d| + |\mathcal{C}_u| = r + (m - r) = m$.
-This decomposition is defined by a null-space matrix $Z$ and a matrix $Y$ with the following properties:
+Above, the vector space $\mathcal{C} = \mathcal{C}_d \times \mathcal{C}_u$
+denotes a blocked vector space (also known as a product space) with a
+dimension which is the sum of the constituent vector spaces $|\mathcal{C}| =
+|\mathcal{C}_d| + |\mathcal{C}_u| = r + (m - r) = m$.  This decomposition is
+defined by a null-space linear operator $Z$ and a linear operator $Y$ with the following
+properties:
 
 {\bsinglespace
 \begin{equation}
@@ -672,28 +641,35 @@ Y \:\in\:\mathcal{X}|\mathcal{Y}
 \end{tabbing}
 \esinglespace}
 %
-It is important to distinguish the spaces $\mathcal{Z}$ and $\mathcal{Y}$ from the the
-matrices $Z$ and $Y$.  The null-space matrix $Z\:\in\:\mathcal{X}|\mathcal{Z}$
-is a linear operator that maps vectors from the space $u\:\in\:\mathcal{Z}$ to vectors in the space
-of the unknowns $v = Z u \:\in\:\mathcal{X}$.  The matrix $Y\:\in\:\mathcal{X}|\mathcal{Y}$
-is a linear operator that maps vectors from the space $u\:\in\:\mathcal{Y}$ to vectors in the space
-of the unknowns $v = Y u \:\in\:\mathcal{X}$.
+It is important to distinguish the vector spaces $\mathcal{Z}$ and
+$\mathcal{Y}$ from the the linear operators $Z$ and $Y$.  The null-space
+linear operator $Z\:\in\:\mathcal{X}|\mathcal{Z}$ is a linear operator that
+maps vectors from the space $u\:\in\:\mathcal{Z}$ to vectors in the space of
+the unknowns $v = Z u \:\in\:\mathcal{X}$.  The linear operator
+$Y\:\in\:\mathcal{X}|\mathcal{Y}$ is a linear operator that maps vectors from
+the space $u\:\in\:\mathcal{Y}$ to vectors in the space of the unknowns $v = Y
+u \:\in\:\mathcal{X}$.
 
-In many presentations of reduced-space SQP, the matrix $Y$ is referred to as the ``range-space''
-matrix since several popular choices of this matrix form a basis for the range space
-of $A_d$.  However, note that the matrix $Y$ need not be a true basis matrix for the range-space of
-$A_d$ in order to satisfy the nonsingularity property in (\ref{moocho:eqn:Z_Y_def}).
-For this reason, here the matrix $Y$ will be referred to as the ``quasi-range-space'' matrix to make this
-distinction.
+In many presentations of reduced-space SQP, the linear operator $Y$ is
+referred to as the ``range-space'' linear operator since several popular
+choices of this linear operator form a basis for the range space of $A_d$.
+However, note that the linear operator $Y$ need not be a true basis linear
+operator for the range-space of $A_d$ in order to satisfy the nonsingularity
+property in (\ref{moocho:eqn:Z_Y_def}).  For this reason, here the linear
+operator $Y$ will be referred to as the ``quasi-range-space'' linear operator
+to make this distinction.
 
-By using (\ref{moocho:eqn:Z_Y_def}), the search direction $d$
-can be broken down into $d = (1-\eta) Y p_y + Z p_z$, where $p_y \:\in\:\mathcal{Y}$ and $p_z \:\in\:\mathcal{Z}$ are the
-known as the quasi-normal (or quasi-range space) and tangential (or null space) steps respectively.
-By substituting $d = (1-\eta) Y p_y + Z p_z$ into
-(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) we obtain the quasi-normal
-(\ref{moocho:eqn:range_space_step}) and tangential (\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ})
-subproblems.  In (\ref{moocho:eqn:rsqp:obj}), $\zeta \leq 1 $ is a damping parameter which can be used to insure
-descent of the merit function $\phi(x_{k+1}+\alpha d)$.\\[1ex]
+By using (\ref{moocho:eqn:Z_Y_def}), the search direction $d$ can be broken
+down into $d = (1-\eta) Y p_y + Z p_z$, where $p_y \:\in\:\mathcal{Y}$ and
+$p_z \:\in\:\mathcal{Z}$ are the known as the quasi-normal (or quasi-range
+space) and tangential (or null space) steps respectively.  By substituting $d
+= (1-\eta) Y p_y + Z p_z$ into
+(\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) we obtain the
+quasi-normal (\ref{moocho:eqn:range_space_step}) and tangential
+(\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) subproblems.  In
+(\ref{moocho:eqn:rsqp:obj}), $\zeta \leq 1 $ is a damping parameter which can
+be used to insure descent of the merit function $\phi(x_{k+1}+\alpha
+d)$.\\[1ex]
 
 {\bsinglespace
 \begin{center}\textbf{Quasi-Normal (Quasi-Range-Space) Subproblem}\end{center}
@@ -704,7 +680,7 @@ p_y = - R^{-1} c_d \:\in\:\mathcal{Y}
 \hspace{4ex}where: $R \equiv [(A_d)^T Y]  \:\in\:\mathcal{C}_d|\mathcal{Y}$
 	(nonsingular via (\ref{moocho:eqn:Z_Y_def})). \\[2ex]
 
-\begin{center}\textbf{Tangential (Range-Space) Subproblem (Relaxed)}\end{center}
+\begin{center}\textbf{Tangential (Null-Space) Subproblem (Relaxed)}\end{center}
 \begin{eqnarray}
 \mbox{min}  &  & (g^r + \zeta w)^T p_z + \myonehalf p_z^T [Z^T W Z] p_z + M(\eta)
                  \label{moocho:eqn:rsqp:obj} \\
@@ -726,19 +702,19 @@ p_y = - R^{-1} c_d \:\in\:\mathcal{Y}
 \end{tabbing}
 \esinglespace}
 
-By using this decomposition, the Lagrange multipliers $\lambda_d$ for
-the decomposed equality constraints ($(A_d)^T d + c_d = 0$) do not
-need to be computed in order to produce steps $d = (1-\eta) Y p_y + Z
-p_z$.  However, these multipliers can be used to determine the penalty
-parameter $\mu$ for the merit function \cite[page
-544]{ref:nocedal_wright_1999} or to compute the Lagrangian function.
-Alternatively, a multiplier free method for computing $\mu$ has been
-developed and tested with good results \cite{ref:schmid_rsqp_1994}.
-In any case, it is useful to compute these multipliers at the solution
-of the NLP since they give the sensitivity of the objective function
-to those constraints \cite[page 436]{ref:nash_sofer_1996}.  An
-expression for computing $\lambda_d$ can be derived by applying
-(\ref{moocho:eqn:Z_Y_def}) to $Y^T \nabla L(x,\lambda,\nu)$ to yield
+By using this decomposition, the Lagrange multipliers $\lambda_d$ for the
+decomposed equality constraints ($(A_d)^T d + c_d = 0$) do not need to be
+computed in order to produce steps $d = (1-\eta) Y p_y + Z p_z$.  However,
+these multipliers can be used to determine the penalty parameter $\mu$ for the
+merit function {}\cite[page 544]{ref:nocedal_wright_1999} or to compute the
+Lagrangian function.  Alternatively, a multiplier free method for computing
+$\mu$ has been developed and tested with good results
+{}\cite{ref:schmid_rsqp_1994}.  In any case, it is useful to compute these
+multipliers at the solution of the NLP since they give the sensitivity of the
+objective function to those constraints {}\cite[page
+436]{ref:nash_sofer_1996}.  An expression for computing $\lambda_d$ can be
+derived by applying (\ref{moocho:eqn:Z_Y_def}) to $Y^T \nabla
+L(x,\lambda,\nu)=0$ to yield
 
 {\bsinglespace
 \begin{equation}
@@ -748,28 +724,26 @@ expression for computing $\lambda_d$ can be derived by applying
 \end{equation}
 \esinglespace}
 
-There are many details that need to be worked out in order to
-implement an rSQP algorithm and there are opportunities for a lot of
-variability.  There are some significant decisions that need to be
-made: how to compute the null-space decomposition that defines the
-matrices $Z$, $Y$, $R$, $U_z$ and $U_y$, and how the reduced Hessian
-$Z^T W Z$ and the cross term $w$ in (\ref{moocho:eqn:rsqp:obj}) are
-calculated (or approximated).
+There are many details that need to be worked out in order to implement an
+rSQP algorithm and there are opportunities for a lot of variability.  There
+are some significant decisions that need to be made such as how to compute the
+null-space decomposition that defines the matrices $Z$, $Y$, $R$, $U_z$ and
+$U_y$; and how the reduced Hessian $Z^T W Z$ and the cross term $w$ in
+(\ref{moocho:eqn:rsqp:obj}) are calculated (or approximated).
 
-There are several different ways to compute decomposition matrices $Z$
-and $Y$ that satisfy (\ref{moocho:eqn:Z_Y_def})
-\cite{ref:schmid_accel_1993}.  For small-scale rSQP, an orthonormal
-$Z$ and $Y$ ($Z^T Y = 0$, $Z^T Z = I$, $Y^T Y = I$) can be computed
-using a QR factorization of $A_d$ \cite{ref:nocedal_overton_1985}.
-This decomposition gives rise to rSQP algorithms with many desirable
-properties.  However, using a QR factorization when $A_d$ is of very
-large dimension is prohibitively expensive.  Therefore, other choices
-for $Z$ and $Y$ have been investigated that are more appropriate for
-large-scale rSQP.  Methods that are more computationally tractable are
-based on a variable-reduction decomposition
-\cite{ref:schmid_accel_1993}.  In a variable-reduction decomposition,
-the variables are partitioned into dependent $x_D$ and independent
-$x_I$ sets
+There are several different ways to compute decomposition matrices $Z$ and $Y$
+that satisfy (\ref{moocho:eqn:Z_Y_def}) {}\cite{ref:schmid_accel_1993}.  For
+small-scale rSQP, an orthonormal $Z$ and $Y$ ($Z^T Y = 0$, $Z^T Z = I$, $Y^T Y
+= I$) can be computed using a QR factorization of $A_d$
+{}\cite{ref:nocedal_overton_1985}.  This decomposition gives rise to rSQP
+algorithms with many desirable properties.  However, using a QR factorization
+when $A_d$ is of very large dimension is prohibitively expensive.  MOOCHO
+currently does not implement a orthonormal QR decomposition but one can be
+added if needed at some point.  Other choices for $Z$ and $Y$ have been
+investigated that are more appropriate for large-scale rSQP.  Methods that are
+more computationally tractable are based on a variable-reduction decomposition
+{}\cite{ref:schmid_accel_1993}.  In a variable-reduction decomposition, the
+variables are partitioned into dependent $x_D$ and independent $x_I$ sets
 
 {\bsinglespace
 \begin{eqnarray}
@@ -785,23 +759,21 @@ x = {\bmat{c} x_D \\ x_I \emat} & & \:\in\: \mathcal{X}_D \times \mathcal{X}_I
 \end{tabbing}
 \esinglespace}
 
-such that the Jacobian of the constraints $A^T$ is partitioned as
-shown in (\ref{moocho:eqn:basis_partitioning}) where $C$ is a square,
-nonsingular matrix known as the basis matrix.  The variables $x_D$ and
-$x_I$ are also called the state and design (or controls) variables
-\cite{GBiros_OGhattas_1999a} in some applications or the basic and
-nonbasic variables \cite{ref:murtagh_minos_1995} in others.  What is
-important about this partitioning of variables is that the $x_D$
-variables define the selection of the basis matrix $C$, nothing more.
-Some types of optimization algorithms give more significance to this
-partitioning of variables (for example, in MINOS
-\cite{ref:murtagh_minos_1995} the basic variables are also variables
-that are not at an active bound) however no extra significance can be
-attributed here.
+such that the Jacobian of the constraints $A^T$ is partitioned as shown in
+(\ref{moocho:eqn:basis_partitioning}) where $C$ is a square, nonsingular
+linear operator known as the basis matrix.  The variables $x_D$ and $x_I$ are
+also called the state and design (or controls) variables
+{}\cite{GBiros_OGhattas_1999a} in some contexts or the basic and nonbasic
+variables {}\cite{ref:murtagh_minos_1995} in others.  What is important about
+this partitioning of variables is that the $x_D$ variables define the
+selection of the basis matrix $C$, nothing more.  Some types of optimization
+algorithms give more significance to this partitioning of variables (for
+example, in MINOS {}\cite{ref:murtagh_minos_1995} the basic variables are also
+variables that are not at an active bound) however no extra significance can
+be attributed here.
 
-This basis selection is
-used to define a variable-reduction null-space matrix $Z$ in
-(\ref{moocho:eqn:vr:Z}) which also determines $U_z$ in
+This basis selection is used to define a variable-reduction null-space matrix
+$Z$ in (\ref{moocho:eqn:vr:Z}) which also determines $U_z$ in
 (\ref{moocho:eqn:vr:Uz}).
 
 {\bsinglespace
@@ -855,49 +827,70 @@ U_y & = & E - F N^T C^{-T}                          \label{moocho:eqn:vr_ortho:U
 \end{eqnarray}
 \esinglespace}
 
-The orthogonal decomposition ($Z^T Y = 0$, $Z^T Z \neq I$, $Y^T Y \neq
-I$) defined in (\ref{moocho:eqn:vr:Z})--(\ref{moocho:eqn:vr:Uz}) and
+The orthogonal decomposition ($Z^T Y = 0$, $Z^T Z \neq I$, $Y^T Y \neq I$)
+defined in (\ref{moocho:eqn:vr:Z})--(\ref{moocho:eqn:vr:Uz}) and
 (\ref{moocho:eqn:vr_ortho:Y})--(\ref{moocho:eqn:vr_ortho:Uy}) is more
-numerically stable than the coordinate decomposition and has other
-desirable properties in the context of rSQP
-\cite{ref:schmid_accel_1993}.  However, the amount of dense linear
-algebra required to compute the factorizations needed to solve for
-linear systems with $R$ (\ref{moocho:eqn:vr_ortho:R}) is $O((n-r)^2
-r)$ floating point operations (flops) which can dominate the cost of
-the algorithm for larger $(n-r)$.  Therefore, for larger $(n-r)$, the
-coordinate decomposition ($Z^T Y \neq 0$, $Z^T Z \neq I$, $Y^T Y \neq
-I$) defined in (\ref{moocho:eqn:vr:Z})--(\ref{moocho:eqn:vr:Uz}) and
-(\ref{moocho:eqn:vr_coor:Y})--(\ref{moocho:eqn:vr_coor:Uy}) is
-preferred because it is cheaper but the downside is that it is also
-more susceptible to problems associated with a poor selection of
-dependent variables and ill-conditioning in the basis matrix $C$ that
-can result in greatly degraded performance and even failure of an rSQP
-algorithm.  See the option \texttt{quasi\-\_range\-\_space\-\_matrix}
-in Section \ref{moocho:sec:solver_options}.
+numerically stable than the coordinate decomposition defined in
+(\ref{moocho:eqn:vr:Z})--(\ref{moocho:eqn:vr:Uz}) and
+(\ref{moocho:eqn:vr_coor:Y})--(\ref{moocho:eqn:vr_coor:Uy}) and has other
+desirable properties in the context of rSQP {}\cite{ref:schmid_accel_1993}.
 
-Another important decision is how to compute the reduced Hessian $Z^T
-W Z$.  For many NLPs, second derivative information is not available
-to compute the Hessian of the Lagrangian $W$ directly.  In these
-cases, first derivative information can be used to approximate $B
-\approx Z^T W Z$ using quasi-Newton methods (e.g.~BFGS)
-\cite{ref:nocedal_overton_1985}.  When $(n-r)$ is small, $B$ is small
-and cheap to update.  Under the proper conditions the resulting
-quasi-Newton, rSQP algorithm has a superlinear rate of local
-convergence (even using $w$ = 0 in (\ref{moocho:eqn:rsqp:obj}))
-\cite{ref:biegler_et_al_1995}.  Even when $(n-r)$ is large,
-limited-memory quasi-Newton methods can still be used, but the price
-one pays is in only being able to achieve a linear rate of convergence
-(with a small rate constant hopefully).  For some classes of NLPs,
-good approximations of the Hessian $W$ are available and may have
-specialized properties (i.e.~structure) that makes computing the exact
-reduced Hessian $B = Z^T W Z$ computationally feasible (i.e.~see NMPC
-in \cite{RABartlett_2001}).  See the options
+Solutions with linear systems with $R$ in (\ref{moocho:eqn:vr_ortho:R}) are
+solved through the formula
+%
+\begin{equation}
+R^{-1} = ( I - D \: S^{-1} \: D^T ) C^{-1}
+\label{moocho:eqn:vr_ortho:R:SMW}
+\end{equation}
+%
+where $D = -C^{-1} N {}\in\mathcal{X}_D|\mathcal{X}_I$ and $S = I + D^T D
+{}\in\mathcal{X}_I|\mathcal{X}_I$ are explicitly computed, and the symmetric
+positive definite matrix $S$ is factored using a dense Cholesky method.
+Therefore, applying $R^{-1}$ only requires a solve with the basis matrix $C$
+and applying the factors of $S$.  However, the $n_I$ linear solves needed to
+form $D = -C^{-1} N$ and the $O((n-r)^2 r)$ dense linear algebra required to
+compute $D^T D$ can dominate the cost of the algorithm for larger $(n-r)$.
+
+For larger $(n-r)$ if adjoint solves with $C^T$ are available, the coordinate
+decomposition ($Z^T Y {}\neq 0$, $Z^T Z {}\neq I$, $Y^T Y \neq I$) defined in
+(\ref{moocho:eqn:vr:Z})--(\ref{moocho:eqn:vr:Uz}) and
+(\ref{moocho:eqn:vr_coor:Y})--(\ref{moocho:eqn:vr_coor:Uy}) is preferred
+because it is cheaper but the downside is that it is also more susceptible to
+problems associated with a poor selection of dependent variables and
+ill-conditioning in the basis matrix $C$ that can result in greatly degraded
+performance and even failure of an rSQP algorithm.  See the MOOCHO option
+\texttt{quasi\-\_range\-\_space\-\_matrix} in Section
+{}\ref{moocho:sec:solver_options} for selecting between the orthogonal and the
+coordinate decompositions.
+
+It is also important to note that MOOCHO can be used to solve
+nonequality-constrained optimization problems ($m=0$) and square nonlinear
+equations ($m=n$).  A nonequality-constrained optimization problem is handled
+by using $Z=I$ and $Y=\{\mbox{empty}\}$.  A square nonlinear problem is
+handled using $Z=\{\mbox{empty}\}$ and $Y=I$.  Simpler algorithms are also
+configured in these two cases.
+
+Another important decision is how to compute the reduced Hessian $Z^T W Z$.
+For many NLPs, second derivative information is not available to compute the
+Hessian of the Lagrangian $W$ directly.  In these cases, first derivative
+information can be used to approximate the reduced Hessian $B {}\approx Z^T W
+Z$ using quasi-Newton methods (e.g.\ BFGS) {}\cite{ref:nocedal_overton_1985}.
+When $(n-r)$ is small, $B$ is small and cheap to update.  Under the proper
+conditions the resulting quasi-Newton, rSQP algorithm has a superlinear rate
+of local convergence (even using $w$ = 0 in (\ref{moocho:eqn:rsqp:obj}))
+{}\cite{ref:biegler_et_al_1995}.  When $(n-r)$ is large, limited-memory
+quasi-Newton methods can be used, but the price one pays is in only being able
+to achieve a linear rate of convergence (with a small rate constant
+hopefully).  For some classes of NLPs, good approximations of the Hessian $W$
+are available and may have specialized properties (i.e.\ structure) that makes
+computing the exact reduced Hessian $B = Z^T W Z$ computationally feasible
+(i.e.\ see NMPC in {}\cite{RABartlett_2001}).  See the options
 \texttt{exact\_reduced\_hessian} and \texttt{quasi\_newton} in Section
-\ref{moocho:sec:solver_options}.  Other options include solving for
+{}\ref{moocho:sec:solver_options}.  Other options include solving for
 system with the exact reduced Hessian $B = Z^T W Z$ iteratively which
 only requires matrix-vector products with $W$ which can be computed
 efficiently using automatic differentiation (for instance) in some
-cases \cite{ref:adolc_1996}.
+cases {}\cite{ref:adolc_1996}.
 
 In addition to variations that affect the convergence behavior of the
 rSQP algorithm, such as null-space decompositions, approximations used
@@ -908,7 +901,7 @@ implementation options.  For example, linear systems such as
 iterative solvers and the reduced QP subproblem in
 (\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) can be
 solved using a variety of methods (active set vs. interior point) and
-software \cite{ref:schmid_qpkwik_1994}.
+software {}\cite{ref:schmid_qpkwik_1994}.
 
 %
 \subsection{General Inequalities, Slack Variables and Basis Permutations}
@@ -919,7 +912,7 @@ Up to this point, only simple variable bounds in
 (\ref{moocho:eqn:nlp:bnds}) have been considered and the SQP and rSQP
 algorithms have been presented in this context.  However, the actual
 underlying NLP may include general inequalities and take the form
-
+%
 {\bsinglespace
 \begin{eqnarray}
 \mbox{min}  &  & \breve{f}(\breve{x})                                     \label{moocho:eqn:nlporig:obj} \\
@@ -949,35 +942,35 @@ current basis selection into the ordering in
 (\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}).  The exact
 mapping from
 (\ref{moocho:eqn:nlporig:obj})--(\ref{moocho:eqn:nlporig:bnds}) to
-(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}) is given below
-
+(\ref{moocho:eqn:nlp:obj})--(\ref{moocho:eqn:nlp:bnds}) is
+%
 {\bsinglespace
 \begin{eqnarray}
 x & = & Q_x {\bmat{c} \breve{x} \\ \breve{s} \emat} \label{moocho:eqn:nlpmap:x} \\
 x_L & = & Q_x {\bmat{c} \breve{x}^L \\ \breve{h}^L \emat} \label{moocho:eqn:nlpmap:xl} \\
 x_U & = & Q_x {\bmat{c} \breve{x}_u \\ \breve{h}_u \emat} \label{moocho:eqn:nlpmap:xu} \\
-c(x) & = & Q_c {\bmat{c} \breve{c}(\breve{x}) \\ \breve{h}(\breve{x}) - \breve{s} \emat}
-	\label{moocho:eqn:nlpmap:c}
+c(x) & = & Q_c {\bmat{c} \breve{c}(\breve{x}) \\ \breve{h}(\breve{x}) - \breve{s} \emat}.
+\label{moocho:eqn:nlpmap:c}
 \end{eqnarray}
 \esinglespace}
 
-Here we consider the implications of the above transformation in the context of
-rSQP algorithms.
+Here we consider the implications of the above transformation in the context
+of rSQP algorithms.
 
-Note if $Q_x = I$ and $Q_c = I$ that the matrix $\nabla c$ takes the form:
-
+Note if $Q_x = I$ and $Q_c = I$ that the matrix $\nabla c$ takes the form
+%
 \begin{equation}
 \nabla c = {\bmat{cc} \nabla \breve{c} & \nabla \breve{h} \\ & -I \emat}
 	\label{moocho:eqn:Gc_orig}
 \end{equation}
 
-One question to ask is how the Lagrange multipliers for
-the original constraints can be extracted from the optimal solution
-$(x,\lambda,\nu)$ that satisfies the optimality conditions
-in (\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:HL_psd})?
-First, consider the linear dependence of gradients optimality condition
-for the NLP formulation in (\ref{moocho:eqn:nlporig:obj})--(\ref{moocho:eqn:nlporig:bnds})
-
+One question to ask is how the Lagrange multipliers for the original
+constraints can be extracted from the optimal solution $(x,\lambda,\nu)$ that
+satisfies the optimality conditions in
+(\ref{moocho:eqn:kkt:lin_dep_grads})--(\ref{moocho:eqn:kkt:HL_psd})?  First,
+consider the linear dependence of gradients optimality condition for the NLP
+formulation in (\ref{moocho:eqn:nlporig:obj})--(\ref{moocho:eqn:nlporig:bnds})
+%
 \begin{equation}
 \nabla_{\breve{x}} \breve{L}(\breve{x}^*,\breve{\lambda}^*,\breve{\lambda_I}^*,\breve{\nu}^*)
 = \nabla \breve{f}(\breve{x}^*) + \nabla \breve{c}(\breve{x}^*) \breve{\lambda}^*
@@ -985,12 +978,12 @@ for the NLP formulation in (\ref{moocho:eqn:nlporig:obj})--(\ref{moocho:eqn:nlpo
 \label{moocho:eqn:kktorig:lin_dep_grads}
 \end{equation}
 
-To see how the Lagrange multiples $\lambda^*$ and $\nu^*$ can be used to compute
-$\breve{\lambda}^*$, $\breve{\lambda_I}^*$ and $\breve{\nu}^*$ one simply has
-to substitute (\ref{moocho:eqn:nlpmap:x}) and (\ref{moocho:eqn:nlpmap:c})
-with $Q_x = I$ and $Q_c = I$ into (\ref{moocho:eqn:kkt:lin_dep_grads})
-and expand as follows
-
+To see how the Lagrange multiples $\lambda^*$ and $\nu^*$ can be used to
+compute $\breve{\lambda}^*$, $\breve{\lambda_I}^*$ and $\breve{\nu}^*$ one
+simply has to substitute (\ref{moocho:eqn:nlpmap:x}) and
+(\ref{moocho:eqn:nlpmap:c}) with $Q_x = I$ and $Q_c = I$, for instance, into
+(\ref{moocho:eqn:kkt:lin_dep_grads}) and expand as follows
+%
 \begin{eqnarray}
 \nabla_{x} L(x,\lambda,\nu)
  & = & \nabla f + \nabla c \lambda + \nu \nonumber \\
@@ -1005,38 +998,38 @@ and expand as follows
 	\emat}.
 	\label{moocho:eqn:kkt:compare_lagr}
 \end{eqnarray}
-
-By comparing (\ref{moocho:eqn:kktorig:lin_dep_grads}) and (\ref{moocho:eqn:kkt:compare_lagr})
-it is clear that the mapping is
-$\breve{\lambda} = \lambda_{\breve{c}}$, $\breve{\lambda}_I = \lambda_{\breve{h}} = \nu_{\breve{s}}$
-and $\breve{\nu} = \nu_{\breve{x}}$.  For arbitrary $Q_x$ and $Q_c$ it is also easy to
-perform the mapping of the solution.  What is interesting about
-(\ref{moocho:eqn:kkt:compare_lagr}) is that it says that for general inequalities
-$\breve{h}_j(\breve{x})$ that are not active at the solution (i.e.~$(\nu_{\breve{s}})_{(j)} = 0$), the
-Lagrange multiplier for the converted equality constraint $(\lambda_{\breve{h}})_{(j)}$ will be zero.
-This means that these converted inequalities can be eliminated from the problem and not impact the
-solution (which is what we would have expected).  Zero multiplier values means that constraints
-will not impact the optimality conditions or the Hessian of the Lagrangian.
+%
+By comparing (\ref{moocho:eqn:kktorig:lin_dep_grads}) and
+(\ref{moocho:eqn:kkt:compare_lagr}) it is clear that the mapping is
+$\breve{\lambda} = \lambda_{\breve{c}}$, $\breve{\lambda}_I =
+\lambda_{\breve{h}} = \nu_{\breve{s}}$ and $\breve{\nu} = \nu_{\breve{x}}$.
+For arbitrary $Q_x$ and $Q_c$ it is also easy to perform the mapping of the
+solution.  What is interesting about (\ref{moocho:eqn:kkt:compare_lagr}) is
+that it says that for general inequalities $\breve{h}_j(\breve{x})$ that are
+not active at the solution (i.e.\ $(\nu_{\breve{s}})_{(j)} = 0$), the Lagrange
+multiplier for the converted equality constraint $(\lambda_{\breve{h}})_{(j)}$
+will be zero.  This means that these converted inequalities can be eliminated
+from the problem and not impact the solution (which is what one would have
+expected).  Zero multiplier values means that constraints will not impact the
+optimality conditions or the Hessian of the Lagrangian.
 
 The basis selection shown in (\ref{moocho:eqn:lin_indep_constr}) and
-(\ref{rsqp:eqn:x_D_I}) is determined by the permutation matrices $Q_x$ and $Q_c$
-and these permutation matrices can be partitioned as follows:
-
+(\ref{rsqp:eqn:x_D_I}) is determined by the permutation matrices $Q_x$ and
+$Q_c$ and these permutation matrices can be partitioned as
+%
 \begin{eqnarray}
 Q_{x} & = & {\bmat{c} Q_{xD} \\ Q_{xI} \emat} \label{moocho:eqn:Qx} \\
 Q_{c} & = & {\bmat{c} Q_{cD} \\ Q_{cU} \emat} \label{moocho:eqn:Qc}.
 \end{eqnarray}
-
-A valid basis selection can always be determined by simply including all of the slacks
-$\breve{s}$ in the full basis and then finding a sub-basis for $\nabla \breve{c}$.  To show
-how this can be done, suppose that $\nabla \breve{c}$ is full rank and
-the permutation matrix $(\breve{Q}^x)^T = {\bmat{cc} (\breve{Q}_{xD})^T
-& (\breve{Q}_{xI})^T \emat}$ selects a basis
-$\breve{C} = (\nabla \breve{c})^T (\breve{Q}_{xD})^T$.
-Then the following basis selection for the transformed NLP (with $Q_c = I$)
-could always be used
-regardless of the properties or implementation of $\nabla \breve{h}$
-
+%
+A valid basis selection can always be determined by simply including all of
+the slacks $\breve{s}$ in the full basis and then finding a sub-basis for
+$\nabla \breve{c}$.  To show how this can be done, suppose that $\nabla
+\breve{c}$ is full column rank and the permutation matrix $(\breve{Q}^x)^T =
+{\bmat{cc} (\breve{Q}_{xD})^T & (\breve{Q}_{xI})^T \emat}$ selects a basis
+$\breve{C} = (\nabla \breve{c})^T (\breve{Q}_{xD})^T$.  Then the basis
+selection for the transformed NLP (with $Q_c = I$)
+%
 \begin{eqnarray}
 Q_x & = & {\bmat{ccc}
  \breve{Q}_{xD}  &                &     \\
@@ -1045,47 +1038,50 @@ Q_x & = & {\bmat{ccc}
 \emat} \\
 C & = & {\bmat{cc} ( \breve{Q}_{xD} \nabla \breve{c} )^T \\ ( \breve{Q}_{xD} \nabla \breve{h} )^T & -I \emat}
 	\label{moocho:eqn:C_with_slacks} \\
-N & = & {\bmat{c} ( \breve{Q}_{xI} \nabla \breve{c} )^T \\ ( \breve{Q}_{xI} \nabla \breve{h} )^T \emat}.
+N & = & {\bmat{c} ( \breve{Q}_{xI} \nabla \breve{c} )^T \\ ( \breve{Q}_{xI} \nabla \breve{h} )^T \emat}
 \end{eqnarray}
+%
+could always be used regardless of the properties or implementation of $\nabla
+\breve{h}$.
 
 Notice that basis matrix in (\ref{moocho:eqn:C_with_slacks}) is lower block
 triangular with non-singular blocks on the diagonal.  It is therefore straightforward to solve
 for linear systems with this basis matrix.  In fact, the direct sensitivity matrix
 $D = C^{-1} N$ takes the form
-
+%
 \begin{equation}
-D = - {\bmat{cc}
+D = - {\bmat{c}
 	( \breve{Q}_{xD} \nabla \breve{c} )^{-T} ( \breve{Q}_{xI} \nabla \breve{c} )^{T} \\
     ( \breve{Q}_{xD} \nabla \breve{h} )^T ( \breve{Q}_{xD} \nabla \breve{c} )^{-T} ( \breve{Q}_{xI} \nabla \breve{c} )^{T}
-      & -( \breve{Q}_{xI} \nabla \breve{h} )^T
+      -( \breve{Q}_{xI} \nabla \breve{h} )^T
 \emat}.
 \label{moocho:eqn:D_with_slacks}
 \end{equation}
-
-The structure of (\ref{moocho:eqn:D_with_slacks}) is significant in
-the context of active-set QP solvers that solve the reduced QP
-subproblem in
+%
+Note that if the forward sensitivities $( \breve{Q}_{xD} {}\nabla {}\breve{c}
+)^{-T} ( \breve{Q}_{xI} {}\nabla {}\breve{c} )^{T}$ are computed up front then
+this is little extra cost in forming this decomposition.  The structure of
+(\ref{moocho:eqn:D_with_slacks}) is significant in the context of active-set
+QP solvers that solve the reduced QP subproblem in
 (\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) using a
-variable-reduction null-space decomposition.  A row of $D$
-corresponding to a general inequality constraint only has to be
-computed if the slack for the constraint is at a bound.  Also note
-that the above transformation does not increase the number of degrees
-of freedom of the NLP since $n-m = \breve{n}-\breve{m}$.  All of this
-means that adding general inequalities to a NLP imparts little extra
-cost for the rSQP algorithm as long as these constraints are not
-active.
+variable-reduction null-space decomposition.  When an implicit adjoint method
+is used, a row of $D$ corresponding to a general inequality constraint only
+has to be computed if the slack for the constraint is at a bound.  Also note
+that the above transformation does not increase the total number of degrees of
+freedom of the NLP since $n-m = {}\breve{n}-\breve{m}$.  All of this means
+that adding general inequalities to a NLP imparts little extra cost for an
+active-set rSQP algorithm if the forward/direct sensitivity method is used or
+if these constraints are not active when using the adjoint method.
 
-For reasons of stability and algorithm efficiency, it may be desirable
-to keep at least some of the slack variables out of the basis and this
-can be accommodated also but is more complex to describe.
+For reasons of stability and algorithm efficiency, it may be desirable to keep
+at least some of the slack variables out of the basis and this can be
+accommodated also but is more complex to describe.
 
-Most of the steps in an SQP algorithm do not need to know that there
-are general inequalities in the underlying NLP formulation but some
-steps do (i.e.~globalization methods and basis selection).  Therefore,
-those steps in an SQP algorithm that need access to this information
-are allowed to access the underlying NLP in a limited manner (see the
-Doxygen documentation for the class
-\texttt{NLP\-Interface\-Pack\-::\textit{NLP}}).
+Most of the steps in an SQP algorithm do not need to know that there are
+general inequalities in the underlying NLP formulation but some steps do
+(i.e.\ globalization methods and basis selection).  Therefore, those steps in
+an SQP algorithm that need access to this information are allowed more
+detailed access of the underlying NLP in a limited manner.
 
 %
 \section{Overview of Software Architecture, Solvers, and Examples}
@@ -1132,7 +1128,7 @@ Doxygen documentation for the class
 % one appendix, put \setcounter{secnumdepth}{0} after \appendix
 %
 \appendix
-%\input{apdx_ThyraOperatorVectorClassDecl}
+\input{apdx_MoochoEqnGuide}
 
 %\begin{SANDdistribution}
 %\end{SANDdistribution}
