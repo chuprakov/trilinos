@@ -41,7 +41,7 @@ Energy under Contract DE-AC04-94AL85000.}, Albuquerque NM 87185 USA, \\ }
 % Set some things we need for SAND reports. These are mandatory
 %
 \SANDnum{SAND2006-xxx}
-\SANDprintDate{??? 2005}
+\SANDprintDate{??? 2006}
 \SANDauthor{
 Roscoe A. Bartlett \\ Optimization/Uncertainty Estim \\ \\
 }
@@ -202,7 +202,7 @@ as anyone who uses MOOCHO to solve an optimization problem using a
 pre-existing MOOCHO algorithm.  A MOOCHO user can vary from someone who uses a
 predeveloped interface to a modeling environment like AMPL
 {}\cite{ref:ampl_1993} to someone who uses MOOCHO to solve a discrietized
-PDE-constrained optimization problem on a massively parallel computer using
+simulation-constrained optimization problem on a massively parallel computer using
 specialized application-specific data structures and linear solvers
 {}\cite{ref:biros_1999}.  While the first type of user does not need to write
 any C++ code and does not even need to know what C++ is, the latter type of
@@ -244,7 +244,7 @@ algorithm configuration classes that are used to build MOOCHO algorithms and
 includes a fairly detailed discussion of a default configuration called
 ``MamaJama''.  Details of the input and output files for MOOCHO (for the
 ``MamaJama'' configuration and an example NLP) are discussed in Section
-{}\ref{rsqp:sec:detailed_example}. This section describes the example
+{}\ref{moocho:sec:detailed_example}. This section describes the example
 printouts that are included in Appendix {}\ref{app:ex_moocho_printout}.
 Finally, Appendix {}\ref{app:moocho_install} describes the installation for
 the base distribution of MOOCHO which is a first step to using MOOCHO.
@@ -301,11 +301,12 @@ upper bounds equal to $+\infty$.  The absences of some of these bounds can be
 exploited by many of the algorithms.
 
 It is very desirable for the functions $f(x)$ and $c(x)$ to at least be
-defined (i.e.\ no {}\texttt{NaN} or {\texttt{Inf} return values) everywhere in
-the set defined by the relaxed variable bounds $x_L - \delta \leq x \leq x_U +
-\delta$.  Here, $\delta$ (see the method
-\texttt{max\_var\_bounds\_viol()} in the Doxygen documentation for the
-\texttt{\textit{NLP}} interface) is a relaxation (i.e.\ wiggle room)
+defined (i.e.\ no {}\texttt{NaN} or {}\texttt{Inf} return values) everywhere
+in the set defined by the relaxed variable bounds $x_L - \delta \leq x \leq
+x_U +
+{}\delta$.  Here, $\delta$ (see the method
+{}\texttt{max\_var\_bounds\_viol()} in the Doxygen documentation for the
+{}\texttt{\textit{NLP}} interface) is a relaxation (i.e.\ wiggle room)
 that the user can set to allow the optimization algorithm to compute
 $f(x)$ and $c(x)$ outside the strict variable bounds $x_L \le x \le
 x_U$ in order to compute finite differences and the like.  The SQP
@@ -342,7 +343,7 @@ L(x,\lambda,\nu_L,\nu_U)
 \nabla_{xx}^2 L(x,\lambda)
 & = & \nabla^2 f(x) + \sum^m_{j=1} \lambda_{(j)} \nabla^2 c_j(x) \; \:\in\: \mathcal{X}|\mathcal{X}
 \label{moocho:eqn:HL_def}
-\end{eqnarray}
+\end{eqnarray}}
 %
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -466,7 +467,7 @@ the linear subproblem (also known as the KKT system) takes the form
 	\nabla_x L \\
 	c
 \emat}
-\label{rsqp:eqn:full_kkt_sys}
+\label{moocho:eqn:full_kkt_sys}
 \end{equation}
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -478,9 +479,9 @@ the linear subproblem (also known as the KKT system) takes the form
 \end{tabbing}
 \esinglespace}
 
-The Newton matrix in (\ref{rsqp:eqn:full_kkt_sys}) is known as the KKT matrix.
+The Newton matrix in (\ref{moocho:eqn:full_kkt_sys}) is known as the KKT matrix.
 By substituting $d_{\lambda} = {}\lambda_{k+1} - {}\lambda_k$ into
-(\ref{rsqp:eqn:full_kkt_sys}) and simplifying, this linear system becomes
+(\ref{moocho:eqn:full_kkt_sys}) and simplifying, this linear system becomes
 equivalent to the optimality conditions of the following QP.
 
 {\bsinglespace
@@ -666,8 +667,8 @@ space) and tangential (or null space) steps respectively.  By substituting $d
 = (1-\eta) Y p_y + Z p_z$ into
 (\ref{moocho:eqn:qp:obj})--(\ref{moocho:eqn:qp:eta_bnd}) we obtain the
 quasi-normal (\ref{moocho:eqn:range_space_step}) and tangential
-(\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) subproblems.  In
-(\ref{moocho:eqn:rsqp:obj}), $\zeta \leq 1 $ is a damping parameter which can
+(\ref{moocho:eqn:moocho:obj})--(\ref{moocho:eqn:moocho:inequ}) subproblems.  In
+(\ref{moocho:eqn:moocho:obj}), $\zeta \leq 1 $ is a damping parameter which can
 be used to insure descent of the merit function $\phi(x_{k+1}+\alpha
 d)$.\\[1ex]
 
@@ -683,11 +684,11 @@ p_y = - R^{-1} c_d \:\in\:\mathcal{Y}
 \begin{center}\textbf{Tangential (Null-Space) Subproblem (Relaxed)}\end{center}
 \begin{eqnarray}
 \mbox{min}  &  & (g^r + \zeta w)^T p_z + \myonehalf p_z^T [Z^T W Z] p_z + M(\eta)
-                 \label{moocho:eqn:rsqp:obj} \\
+                 \label{moocho:eqn:moocho:obj} \\
 \mbox{s.t.} &  & U_z p_z + (1-\eta) u = 0 
-                 \label{moocho:eqn:rsqp:equ} \\
+                 \label{moocho:eqn:moocho:equ} \\
             &  & b_L \leq Z p_z - (Y p_y) \eta \leq b_U	
-                 \label{moocho:eqn:rsqp:inequ}
+                 \label{moocho:eqn:moocho:inequ}
 \end{eqnarray}
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -729,7 +730,7 @@ rSQP algorithm and there are opportunities for a lot of variability.  There
 are some significant decisions that need to be made such as how to compute the
 null-space decomposition that defines the matrices $Z$, $Y$, $R$, $U_z$ and
 $U_y$; and how the reduced Hessian $Z^T W Z$ and the cross term $w$ in
-(\ref{moocho:eqn:rsqp:obj}) are calculated (or approximated).
+(\ref{moocho:eqn:moocho:obj}) are calculated (or approximated).
 
 There are several different ways to compute decomposition matrices $Z$ and $Y$
 that satisfy (\ref{moocho:eqn:Z_Y_def}) {}\cite{ref:schmid_accel_1993}.  For
@@ -750,7 +751,7 @@ variables are partitioned into dependent $x_D$ and independent $x_I$ sets
 x_D & & \:\in\:\mathcal{X}_D \\
 x_I & & \:\in\:\mathcal{X}_I \\
 x = {\bmat{c} x_D \\ x_I \emat} & & \:\in\: \mathcal{X}_D \times \mathcal{X}_I
-\label{rsqp:eqn:x_D_I} \\
+\label{moocho:eqn:x_D_I} \\
 \end{eqnarray}
 \begin{tabbing}
 \hspace{4ex}where:\hspace{5ex}\= \\
@@ -859,7 +860,7 @@ because it is cheaper but the downside is that it is also more susceptible to
 problems associated with a poor selection of dependent variables and
 ill-conditioning in the basis matrix $C$ that can result in greatly degraded
 performance and even failure of an rSQP algorithm.  See the MOOCHO option
-\texttt{quasi\-\_range\-\_space\-\_matrix} in Section
+{}\texttt{quasi\-\_range\-\_space\-\_matrix} in Section
 {}\ref{moocho:sec:solver_options} for selecting between the orthogonal and the
 coordinate decompositions.
 
@@ -877,7 +878,7 @@ information can be used to approximate the reduced Hessian $B {}\approx Z^T W
 Z$ using quasi-Newton methods (e.g.\ BFGS) {}\cite{ref:nocedal_overton_1985}.
 When $(n-r)$ is small, $B$ is small and cheap to update.  Under the proper
 conditions the resulting quasi-Newton, rSQP algorithm has a superlinear rate
-of local convergence (even using $w$ = 0 in (\ref{moocho:eqn:rsqp:obj}))
+of local convergence (even using $w$ = 0 in (\ref{moocho:eqn:moocho:obj}))
 {}\cite{ref:biegler_et_al_1995}.  When $(n-r)$ is large, limited-memory
 quasi-Newton methods can be used, but the price one pays is in only being able
 to achieve a linear rate of convergence (with a small rate constant
@@ -885,7 +886,7 @@ hopefully).  For some classes of NLPs, good approximations of the Hessian $W$
 are available and may have specialized properties (i.e.\ structure) that makes
 computing the exact reduced Hessian $B = Z^T W Z$ computationally feasible
 (i.e.\ see NMPC in {}\cite{RABartlett_2001}).  See the options
-\texttt{exact\_reduced\_hessian} and \texttt{quasi\_newton} in Section
+{}\texttt{exact\_reduced\_hessian} and {}\texttt{quasi\_newton} in Section
 {}\ref{moocho:sec:solver_options}.  Other options include solving for
 system with the exact reduced Hessian $B = Z^T W Z$ iteratively which
 only requires matrix-vector products with $W$ which can be computed
@@ -899,7 +900,7 @@ and globalization methods, there are also many different
 implementation options.  For example, linear systems such as
 (\ref{moocho:eqn:range_space_step}) can be solved using direct or
 iterative solvers and the reduced QP subproblem in
-(\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) can be
+(\ref{moocho:eqn:moocho:obj})--(\ref{moocho:eqn:moocho:inequ}) can be
 solved using a variety of methods (active set vs. interior point) and
 software {}\cite{ref:schmid_qpkwik_1994}.
 
@@ -1014,7 +1015,7 @@ expected).  Zero multiplier values means that constraints will not impact the
 optimality conditions or the Hessian of the Lagrangian.
 
 The basis selection shown in (\ref{moocho:eqn:lin_indep_constr}) and
-(\ref{rsqp:eqn:x_D_I}) is determined by the permutation matrices $Q_x$ and
+(\ref{moocho:eqn:x_D_I}) is determined by the permutation matrices $Q_x$ and
 $Q_c$ and these permutation matrices can be partitioned as
 %
 \begin{eqnarray}
@@ -1063,7 +1064,7 @@ Note that if the forward sensitivities $( \breve{Q}_{xD} {}\nabla {}\breve{c}
 this is little extra cost in forming this decomposition.  The structure of
 (\ref{moocho:eqn:D_with_slacks}) is significant in the context of active-set
 QP solvers that solve the reduced QP subproblem in
-(\ref{moocho:eqn:rsqp:obj})--(\ref{moocho:eqn:rsqp:inequ}) using a
+(\ref{moocho:eqn:moocho:obj})--(\ref{moocho:eqn:moocho:inequ}) using a
 variable-reduction null-space decomposition.  When an implicit adjoint method
 is used, a row of $D$ corresponding to a general inequality constraint only
 has to be computed if the slack for the constraint is at a bound.  Also note
@@ -1084,8 +1085,661 @@ an SQP algorithm that need access to this information are allowed more
 detailed access of the underlying NLP in a limited manner.
 
 %
-\section{Overview of Software Architecture, Solvers, and Examples}
+\section{Basic Software Architecture of MOOCHO}
+\label{moocho:sec:basic_software_design}
 %
+
+MOOCHO is implemented in C++ using advanced object-oriented software
+engineering principles.  However, using MOOCHO to solve certain types of NLPs
+does not require any deep knowledge of object-orientation or C++.  By copying
+and modifying example programs it should be possible for a non-C++ expert to
+implement and solve many different NLPs using MOOCHO.  However, solving more
+advanced NLPs which utilize specialized application-specific data structures
+and linear solvers does require more detailed knowledge of C++ and some
+knowledge of object orientation.  Although the included example applications
+should provide a straightforward roadmap for getting started with such an
+application.  For simulation-constrained optimization based on parallel
+Epetra-compatible [???] data structures, using MOOCHO requires almost know
+deep knowledge of MOOCHO's interfaces.
+
+%
+\subsection{High-Level Object Diagram for MOOCHO}
+%
+
+There are many different ways to present MOOCHO.  Here, we take a top down
+approach.  This overview is critcal to understanding how to use MOOCHO to
+solve complex NLPs.
+
+{\bsinglespace
+\begin{figure}[t]
+\begin{center}
+%\fbox{
+\includegraphics*[bb= 0.0in 0.0in 5.2in 4.4in,scale=0.70
+]{MoochoObjDiagram}
+%}
+\end{center}
+\caption{
+\label{moocho:fig:moocho_obj_diag}
+UML object diagram : Course grained object diagram for MOOCHO
+}
+\end{figure}
+\esinglespace}
+
+Figure {}\ref{moocho:fig:moocho_obj_diag} shows a high-level object diagram of a
+MOOCHO application, ready to solve a user-defined NLP.  The NLP object
+{}\texttt{aNLP} is created by the user and defines the functions and gradients
+for the NLP to be solved (see Section {}\ref{moocho:sec:example_nlps}).
+Closely associated with the NLP object is a {}\texttt{\textit{BasisSystem}}
+object.  The {}\texttt{\textit{BasisSystem}} object is used to specify and
+specialize the implementation of the basis matrix $C$.  This
+{}\texttt{\textit{BasisSystem}} object is used by variable-reduction
+null-space decompositions.  Each NLP object is expected to supply a
+{}\texttt{\textit{BasisSystem}} object.  The NLP and
+{}\texttt{\textit{BasisSystem}} objects collaborate with the optimization
+algorithm though a set of abstract linear-algebra interfaces.  By creating a
+specialized NLP subclass (and the associated linear algebra and
+{}\texttt{\textit{BasisSystem}} subclasses) an advanced user can fully take
+over the implementation of all of the major linear-algebra computations in a
+MOOCHO algorithm.  This includes having full freedom to choose the data
+structures for all of the vectors and the matrices $A$, $C$, $N$, $W$ and how
+nearly every linear-algebra operation is performed.  This also includes the
+ability to use fully transparent parallel linear algebra on a parallel
+computer even though none of the core MOOCHO code has any concept of
+parallelism.  The linear algebra objects associated with the
+{}\texttt{\texttt{NLP}} and {}\texttt{\textit{Basis\-System}} objects define
+the foundation for every major computation in a SCOPT optimization algorithm.
+The exact requirements of the application and the details of the NLP and
+linear algebra interfaces that satisfy these requirements are discussed in
+Section {}\ref{moocho:sec:nlp_and_lin_alg_itfc}.  A complete infrastructure
+for parallel simulation constrained optimization is supported through the
+MOOCHO/Thyra adatpers described in the User's Guide [???] and mentioned in
+Section ???.  Directly interacting with the MOOCHO linear algebra and NLP
+interfaces is not recommended.
+
+Once a user has developed {}\texttt{\textit{NLP}} and
+{}\texttt{\textit{BasisSystem}} classes (i.e.\ indirectly using
+{}\texttt{Thyra} and {}\texttt{Thyra::ModelEvaluator}) for their specialized
+application, an {}\texttt{\textit{NLP}} object can be passed on to a
+{}\texttt{Moocho\-Solver} object.  The {}\texttt{Moocho\-Solver} class is a
+convenient ``facade'' (see {}\cite{ref:gama_et_al_1995}) that brings together
+many different components that are needed to build a complete optimization
+algorithm in a way that is transparent to the user.  The
+{}\texttt{Moocho\-Solver} object will instantiate an optimization algorithm
+(given a default or a user-defined configuration object) and will then solve
+the NLP, returning the solution (or partial solution on failure) to the
+{}\texttt{\textit{NLP}} object itself.  Figure
+{}\ref{moocho:fig:moocho_obj_diag} also shows the course grained layout of a
+MOOCHO algorithm.  An advanced user can solve even the most complex
+specialized NLP without needing to understanding how these algorithmic objects
+work together to implement an optimization algorithm.  One only needs to
+understand the algorithmic framework in order to tinker with the optimization
+algorithms themselves.  Understanding the underlying algorithmic framework is
+crucial for algorithm developers.
+
+An example of using MOOCHO to solve a very large and specialized NLP on a
+distributed memory parallel computer using MPI with Epetra and Thyra is
+described in Section ???.
+
+While MOOCHO offers complete flexibility to solve many different types of
+specialized NLPs in diverse application areas such as dynamic optimization and
+control (see {}\cite{ref:biegler_et_al_2001}) and PDEs (see
+{}\cite{ref:biros_1999}) it can also be used to solve more generic NLPs such
+as are supported by modeling systems like GAMS {}\cite{ref:brooke_gams_1997}
+or AMPL {}\cite{ref:ampl_1993}.  For serial NLPs which can compute explicit
+Jacobian entries for $A$, all that a user needs to do is to create a subclass
+of {}\texttt{NLPSerialPreprocessExplJac} and define the problem functions and
+derivatives.  For these types of NLPs, a default
+{}\texttt{\textit{BasisSystem}} subclass is already defined which can use one
+of a number of different dense or sparse direct linear solvers to implement
+all of the required functionality.  A simple example NLP that derives from
+{}\texttt{NLPSerialPreprocessExplJac} is described in detail in Section ???.
+
+%
+\section{Overview of NLP and Linear-Algebra Interfaces}
+\label{moocho:sec:nlp_and_lin_alg_itfc}
+%
+
+All of the high-level optimization code in MOOCHO is designed to allow
+arbitrary implementations of the linear-algebra objects.  It is the NLP object
+that defines the basic foundation for all of the linear algebra used by a SCOPT
+optimization algorithm.  The NLP object accomplishes this by exposing a set of
+abstract linear algebra objects.  Before the specifics of the NLP and linear
+algebra interfaces are described, the specific requirements for SCOPT
+optimization algorithms are described in Section
+{}\ref{moocho:sec:nlp_requirements}.  This is followed by the descriptions of
+the linear algebra and NLP interfaces in Sections
+{}\ref{moocho:sec:ALAP_overview} and
+{}\ref{moocho:sec:nlpinterfacepack_overview} respectively.
+
+%
+\subsection{Basic Applicaton Requirements for SCOPT Optimization with MOOCHO}
+\label{moocho:sec:nlp_requirements}
+% 
+
+The requirements for large-scale gradient-based SCOPT optimization
+algorithms implemented in MOOCHO can broken down into three different
+levels: \textit{direct SCOPT}, \textit{adjoint SCOPT}, and
+{}\textit{full-Newton SCOPT}.  These three levels represent different
+levels of intrusiveness and functionality from the underlying
+application that are used the implement the NLP.
+
+{\bsinglespace
+\begin{table}
+{\small\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+%
+\begin{minipage}{12ex}
+\begin{center}
+\hspace{0in}\\
+Optimization level
+\end{center}
+\end{minipage}
+%
+& \begin{minipage}{70ex}
+\begin{center}
+\hspace{0in}\\
+Application requirements \\
+(additive between levels) \\
+\end{center}
+\end{minipage} \\
+%
+\hline
+{}\textit{Direct SCOPT}
+& \begin{minipage}{70ex}
+\hspace{0in}\\
+\begin{tabular}{ll}
+Evaluation of objective: & $x \in \mathcal{X} \rightarrow f \in \RE$ \\
+Evaluation of constraints residual: & $x  \in \mathcal{X} \rightarrow c \in \mathcal{C}$ \\
+Evaluation of objective gradient: & $x  \in \mathcal{X} \rightarrow \nabla f \in \mathcal{X}$ \\
+Evaluation of direct sensitivity matrix: & $D = -C^{-1} N  \in \mathcal{X}_D|\mathcal{X}_I$ \\
+Evaluation of Newton step: & $p_y = -C^{-1} c(x)  \in \mathcal{X}_D$ \\
+\end{tabular}
+\end{minipage} \\
+\hline
+{}\textit{Adjoint SCOPT}
+& \begin{minipage}{70ex}
+\hspace{0in}\\
+Ability to perform mat-vec products: \\
+$p = A q, \; q = A^{T} q, \; \mbox{for} \; q \in \mathcal{C}, p \in \mathcal{X}$ \\
+Ability to solve linear systems: \\
+$p = C^{-1} q, \; q = C^{-T} q, \; \mbox{for} \; q \in \mathcal{C}_d, p \in \mathcal{X}_D$ \\
+\end{minipage} \\
+\hline
+{}\textit{Full-Newton SCOPT}
+& \begin{minipage}{70ex}
+\hspace{0in}\\
+Ability to perform mat-vec products:\\
+$p = W q, \; \mbox{for} \; q \in \mathcal{X}, p \in \mathcal{X}$ \\
+\end{minipage} \\
+\hline
+\end{tabular}
+\end{center}}
+\caption[Minimum Application Requirements for levels of invasiveness
+ for Simulation-Constrained Optimization (SCOPT)]{
+\label{moocho:tbl:SCOPT_requirements}
+Minimum Application Requirements for levels of invasiveness for
+Simulation-Constrained Optimization (SCOPT).  }
+\end{table}
+\esinglespace}
+
+The most basic level of requirements is for \textit{direct SCOPT} methods.
+This level only requires forward lienar solves with the basis matrix for
+specific right-hand-side vectors.  Most applications that utilize an exact
+Newton-type method for solving the simulation problem can compute the
+solutions to these linear systems [???].  Both the orthogonal and the
+coordinate variable-reduction null-space decompositions can be implemented
+with just the quantities $D = -C^{-1} N$ and $p_y = C^{-1} c$.  In addition,
+many different types of globalization methods can also be used (both line
+search and trust region methods complete with second-order corrections for the
+constraints).
+
+The next level of requirements is for \textit{adjoint SCOPT} methods.  This
+level requires the ability to perform mat-vec products and linear solves with
+the nontransposed and transposed State Jacobian with arbitary vectors.  Much
+more efficient and robust optimization algorithms can be implemented using
+this functionality.  For example, the ability to solve for transposed systems
+with the basis matrix $C$ provides the ability to compute estimates for the
+Lagrange multipliers $\lambda$ and the ability to compute reduced gradients at
+a cost independent of the number of optimization parameters.
+
+The highest level of requirements is for \textit{full-Newton SCOPT}
+methods.  The minimum requirements for these methods is the ability
+to compute mat-vec products with an approximation of the Hessian
+of the Lagrangian $W$.
+
+The last set of requirements for SCOPT methods is the requirements on
+vectors.  There is a great diversity of specialized vector or array
+operations that optimization methods must perform.  This difficult set
+of requirements is handled by a design for vector
+reduction/transformation operators (RTOp) which is discribed in
+{}\cite{ref:rtop_toms} and mentioned in Section
+{}\ref{moocho:sec:ALAP_overview}.
+
+Note that this set of requirements satisfies all the requirements of
+the SCOPT optimization interfaces described by Heinkenschloss \&
+Vicente in {}\cite{ref:opt_ctrl_itfc}.
+
+
+%
+\subsection{Overview of {}\texttt{AbstractLinAlgPack}: Interfaces to Linear Algebra Objects}
+\label{moocho:sec:ALAP_overview}
+%
+
+The linear algebra interfaces described in this section serve two roles.  The
+first role is to abstract the linear algebra objects assoicated with the NLP
+interface such as the vector objects for the unknowns $x$, the residual of the
+constraints $c$ and the gradient of the objective function $\nabla f$; and the
+matrix objects for the gradients of the constraints $A$, the Hessian of the
+Lagrangian $W$ and the variable-reduction matrices $C$, $N$, $E$ and $F$.  The
+second role of the linear algebra interfaces is to abstract objects that are
+specific to the optimization algorithms such as for quasi-Newton
+approximations for the Hessian and the reduced Hessian of the Lagragian.  The
+objects from the latter group are obviously dependent on objects from the
+former group in various ways.  This latter role greatly increases the
+complexity and functionality of these interfaces.
+
+Figure {}\ref{moocho:fig:AbstractLinAlgPack} shows a UML class diagram of the
+basic linear algebra abstractions.  The foundation for all the linear algebra
+is a vector space.  A vector space object is represented though an abstract
+interface called {}\texttt{\textit{VectorSpace}}.  A
+{}\texttt{\textit{VectorSpace}} object primarily acts as an ``abstract
+factory'' {}\cite{ref:gama_et_al_1995} and creates vectors from the vector
+space using the {}\texttt{\textit{create\_member()}} method.
+{}\texttt{\textit{Vector\-Space}} objects can also be used to check for
+compatibility using the {}\texttt{\textit{is\_compatible()}} method.  Every
+{}\texttt{\textit{Vector\-Space}} object has a dimension.  Therefore a
+{}\texttt{\textit{Vector\-Space}} object can not be used to represent an
+infinite-dimensional vector space.  Every vector space object is also equipped
+with an scalar (i.e.\ inner) product that is used to introduce scaling into
+the problem as described in {}\cite{ref:opt_ctrl_itfc}.  Just because two
+vectors from different vector spaces have the same dimension (and the same
+inner product) does not automatically imply that the implementations will be
+compatible.  For example, distributed parallel vectors may have the same
+global dimension but the vector elements may be distributed to processors
+differently (we say that they have different ``maps'') and are therefore not
+easily compatible in the RTOp sense.  This is an important concept to
+remember.
+
+{\bsinglespace
+\begin{figure}[t]
+\begin{center}
+%\fbox{
+\includegraphics*[bb= 0.0in 0.0in 7.9in 5.6in,scale=0.70
+]{AbstractLinAlgPack}
+%}
+\end{center}
+\caption{\label{moocho:fig:AbstractLinAlgPack}
+UML class diagram : {}\texttt{AbstractLinAlgPack}, abstract interfaces to linear algebra
+}
+\end{figure}
+\esinglespace}
+
+Vector implementations are abstracted behind interfaces.  The vector
+interfaces are broken up into two levels: {}\texttt{\textit{Vector}} and
+{}\texttt{\textit{Vector\-Mutable}}.  The {}\texttt{\textit{Vector}} interface
+is an immutable interface where vector objects can not be changed by the
+client.  The {}\texttt{\textit{Vector\-Mutable}} interface extends the
+{}\texttt{\textit{Vector}} interface in allowing clients to change the
+elements in the vector.  These vector interfaces are very powerful and allow
+the client to perform many different types of operations.  The foundation of
+all vector functionality is the ability to allow clients to apply user-defined
+{}\texttt{RTOp} operators to perform arbitrary reductions and transformations
+(see the method {}\texttt{\textit{apply\_op(...)}}). The ability to write
+these types of user-defined operators is critical to the implementation of
+advanced optimization algorithms {}\cite{ref:rtop_toms}.  A single RTOp
+application method is the only method that a vector implementation is required
+to provide (in addition to some trivial methods such as returning the vector
+space object) which makes it fairly easy to add a new vector implementation.
+In addition to allowing clients to apply {}\texttt{RTOp} operators, the other
+major feature is the ability to create arbitrary subviews of a vector (using
+the {}\texttt{\textit{sub\_view()}} methods) as abstract vector objects.  This
+is an important feature in that it allows the optimization algorithm to access
+the subvectors associated with the dependent (i.e.\ state) and independent
+(i.e.\ design) variables separately (in addition to any other arbitrary range
+of vector elements).  Suppport for subviews is supported by default by every
+vector implementation through default view subclasses (see the class
+{}\texttt{Vector\-Mutable\-Subview}) that rely only on the {}\texttt{RTOp}
+application methods.  The last bit of major functionality is the ability of
+the client to extract an explicit view of a subset of the vector elements.
+This is needed in a few parts of an optimization algorithm for such tasks as
+dense quasi-Newton updating of the reduced Hessian in a serial setting and the
+implementation of the compact LBFGS matrix in a distributed parallel setting.
+Aside from vectors being important in their own right, vectors are also the
+major type of data that is communicated between higher-level interfaces such
+as linear operators (i.e.\ matrices) and function evaluators (i.e.\ NLP
+interfaces).
+
+The basic matrix (i.e.\ linear operator) interfaces are also shown in Figure
+{}\ref{moocho:fig:AbstractLinAlgPack}.  The {}\texttt{\textit{Matrix\-Op}}
+interface is for general rectangular matrices.  Associated with any
+{}\texttt{\textit{Matrix\-Op}} object is a column space and a row space shown
+as {}\texttt{space\_cols} and {}\texttt{space\_rows} respectively in the
+figure.  Since column and row {}\texttt{\textit{Vector\-Space}} objects have a
+finite dimension, this implies that every matrix object also has finite row
+and column dimensions.  Therefore, these matrix interfaces can not be used to
+represent an infinite-dimensional linear operator.  Note that all
+finite-dimensional linear operators can be represented as a matrix (which is
+unique) so the distinction between a finite-dimensional matrix and a
+finite-dimensional linear operator is insignificant.  The column and row
+spaces of a matrix object identify the vector spaces for vectors that are
+compatible with the columns and rows of the matrix respectively.  For example,
+if the matrix $A$ is represented as a {}\texttt{\textit{Matrix\-Op}} object
+then the vectors $y$ and $x$ would have to lie in the column and row spaces
+respectively in order to perform the matrix-vector product $y = A x$.  Note
+that despite name, a {}\texttt{\textit{Matrix\-Op}} object does not provide
+any type of efficient access to matrix elements.  If explicit matrix elements
+are required, then the matrix object can support other defined matrix
+interfaces in order to extract the elements in a sparse (see the interfaces
+{}\texttt{\textit{Matrix\-Extract\-Sparse\-Elements}} and
+{}\texttt{\textit{Matrix\-Convert\-To\-Sparse}}) or dense (see the interfaces
+{}\texttt{\textit{Matrix\-Op\-Get\-GMS...}}) format.
+
+These matrix interfaces go beyond what most other abstract
+matrix/linear-operator interfaces have attempted.  Other abstract
+linear-operator interfaces only allow the forward applications of $y = A x$ or
+the transpose (adjoint) $y = A^T x$ for vector-vector mappings.  In addition
+to this basic functionality, every {}\texttt{\textit{Matrix\-Op}} object can
+provide arbitrary subviews as {}\texttt{\textit{Matrix\-Op}} objects through
+the {}\texttt{\textit{sub\_view(...)}} methods.  These methods have default
+implementations based on default view subclasses which, fundamentally, is
+supported by the ability to take arbitrary subview of vectors.  This ability
+to create these subviews is critical in order to access the basis matrices in
+(\ref{moocho:eqn:basis_partitioning}) given a Jacobian object {}\texttt{Gc}
+for $\nabla c$.  These matrix interfaces also allow much more general types of
+linear-algebra operations.  The matrix {}\texttt{\textit{Matrix\-Op}}
+interface allows the client to perform level 1, 2 and 3 BLAS operations (see
+{}\cite{ref:moochodevguide} for a discussion of the convention for naming
+functions for linear-algebra operations)
+
+{\bsinglespace
+\begin{eqnarray*}
+B & = & \alpha \, op(A) + B \\
+y & = & \alpha \, op(A) \,  x + \beta y \\
+C & = & \alpha \, op(A) \, op(B) + \beta C.
+\end{eqnarray*}
+\esinglespace}
+
+One of the significant aspects of these linear-algebra operations is
+that an abstract {}\texttt{\textit{Matrix\-Op}} object can apprear on
+the left-hand-side.  This adds a whole set of issues (i.e.\ multiple
+dispatch) that are not present in other linear-algebra interfaces.
+
+The matrix interfaces assume that the matrix operator or the transpose
+of the matrix operator can be applied.  Therefore, a correct
+{}\texttt{\textit{Matrix\-Op}} implementation must be able to perform
+the transposed as well as the non-transposed operation.  This
+requirement is important when the NLP interfaces are discussed later.
+
+Of all of the functionality in the {}\texttt{\textit{Matrix\-Op}}
+interface, the only pure virtual method is the method for the level-2
+BLAS operation for matrix-vector multiplication.  All other methods
+have reasonable default implementations based on this one method.
+Therefore, generating a new concreate {}\texttt{\textit{Matrix\-Op}}
+subclass is usually fairly easy.  If the default implementations of
+some of the other methods are found to be inefficient in important
+cases, then they can be overridden to provide better, more specialized
+implementations.  This design allows for a pay as you go approach to
+developing implementations of linear algebra objects and this
+philosophy applies to all of the linear algebra interfaces in
+{}\texttt{Abstract\-Lin\-Alg\-Pack} as well.
+
+Several specializations of the {}\texttt{\textit{Matrix\-Op}} interface are
+also required in order to implement an advanced optimization algorithm.  All
+symmetric matrices are abstracted by the {}\texttt{\textit{Matrix\-Sym\-Op}}
+interface.  This interface is required in order for the operation $C =
+\alpha\,op(B)\,op(A)\,op(B^T) + \beta C$ to be guarantied to maintain the
+symmetry of the matrix $C$.  Note that a symmetric matrix requires that the
+column and row spaces be the same.
+
+The specialization {}\texttt{\textit{Matrix\-Op\-Nonsing}} is
+for nonsingular square matrices that can be used to solve for linear
+systems.  As a result, the level-2 and level-3 BLAS operations
+
+{\bsinglespace
+\begin{eqnarray*}
+y & = & op(A^{-1}) \, x \\
+C & = & \alpha \, op(A^{-1}) \, op(B) \\
+C & = & \alpha \, op(B) \, op(A^{-1})
+\end{eqnarray*}
+\esinglespace}
+
+are supported.  The solution of linear systems represented by these
+operations can be implemented in a number of different ways.  A direct
+factorization followed by back solves or alternatively a
+preconditioned iterative solver (i.e.\ GMRES or some other Krylov
+subspace method) could be used.  Or, a more specialized solution
+process could be employed which is tailored to the special properties
+of the matrix (i.e.\ banded matrices).
+
+ToDo: Discuss the specification for inexact solves.
+
+The last major matrix interface
+{}\texttt{\textit{Matrix\-Sym\-Op\-Nonsing}} is for symmetric
+nonsingular matrices.  This interface allows the implementation of the
+operation $C = \alpha\,op(B)\,op(A^{-1})\,op(B^T)$ and guarantees
+that $C$ will be a symmetric matrix.
+
+Figure {}\ref{moocho:fig:AbstractLinAlgPack} shows two other specializations of
+the {}\texttt{Matrix\-Op} interface that have not been discussed yet,
+{}\texttt{Multi\-Vector} and {}\texttt{Multi\-Vector\-Mutable}.  A
+multi-vector is special kind of matrix where access the rows, columns and/or
+diagonals may be permitted as {}\texttt{\textit{Vector}} and
+{}\texttt{\textit{Vector\-Mutable}} views.  The primary role for a
+multi-vector object is the creation of tall, thin matrices where each column
+vector is accessable.  It is these types of
+{}\texttt{\textit{Vector\-Mutable}} ojects that are created by the
+{}\texttt{\textit{create\_members(num\_vecs)}} method on
+{}\texttt{\textit{Vector\-Space}}.  The row space for these types of
+{}\texttt{\textit{Multi\-Vector\-Mutable}} {}\texttt{\textit{Matrix\-Op}}
+objects are assumed to be small, serial vector spaces in all cases.  The
+ability of a {}\texttt{\textit{Vector\-Space}} object to create
+{}\texttt{\textit{Multi\-Vector\-Mutable}} objects with an arbitrary number of
+columns implies that every {}\texttt{\textit{Vector\-Space}} object can create
+other, small serial {}\texttt{\textit{Vector\-Space}} objects of arbitrary
+dimension.  In order to directly allow this functionality, the method
+{}\texttt{\textit{small\_vec\_spc\_fcty()}} (not shown) returns a factory
+object for creating these vector spaces.  Since
+{}\texttt{\textit{Multi\-Vector}} is a type of {}\texttt{\textit{Matrix\-Op}},
+can can be passed into all of the level-3 BLAS methods on
+{}\texttt{\textit{Matrix\-Op}} and {}\texttt{\textit{Matrix\-Op\-Nonsing}}.
+By passing a {}\texttt{\textit{Multi\-Vector\-Mutable}} object (from the
+correct vector space) as the target object for any of these linear algebra
+operations guarantees that the operation will be supported since it can always
+be performed, column by column, using the level-2 BLAS methods.
+
+\label{moocho:page:BasisSystem}
+
+A major part of an rSQP algorithm, based on a variable-reduction null-space
+decomposition, is the selection of a basis.  The fundamental abstraction for
+this task is {}\texttt{\textit{BasisS\-ystem}} (as first introduced in Figure
+{}\ref{moocho:fig:moocho_obj_diag}).  The {}\texttt{\textit{update\_basis()}}
+method takes the rectangular Jacobian {}\texttt{Gc} ($\nabla c$) and returns a
+{}\texttt{\textit{Matrix\-Op\-Nonsing}} object for the basis matrix $C$.  This
+interface assumes that the variables are already sorted according to
+(\ref{moocho:eqn:x_D_I}).  For many applications, the selection of the basis is
+known {\em a priori} (e.g.\ simulation-constrained optimization [???]).  For
+other applications, it is not clear what the best basis selection should be.
+For the latter type of application, the basis selection can be performed
+on-the-fly and result in one or more different basis selections during the
+course of an optimization algorithm.  The
+{}\texttt{\textit{Basis\-System\-Perm}} specialization allows the optimization
+algorithm to either ask the basis system object for a good basis selection
+(\texttt{\textit{select\_basis()}}) or can tell the basis system object what
+basis to use (\texttt{\textit{select\_basis()}}).  The selection of dependent
+$x_D$ and independent $x_I$ variables and the selection of the decomposed
+$c_d(x)$ and undecomposed $c_u(x)$ constraints is represented by
+{}\texttt{\textit{Permutation}} objects.  The protocol for handling basis
+changes is somewhat complicated and is beyond the scope of this discussion.
+Note that the {}\texttt{\textit{Basis\-System\-Perm}} interface is optional
+and does not have to be supported by an application.
+
+Note that it is likely that a future version of MOOCHO might use a set of
+linear algrebra interfaces that is directly based on the new Thyra interfaces
+that are part of Trilinos.
+
+%
+\subsection{Overview of {}\texttt{NLPInterfacePack}: Interfaces to Nonlinear Programs}
+\label{moocho:sec:nlpinterfacepack_overview}
+%
+
+The hierarchy of NLP interfaces that all MOOCHO optimization
+algorithms are based on is shown in Figure
+{}\ref{moocho:fig:NLPInterfacePack}.  These NLP interfaces act primarily
+as evaluators for the functions and gradients that define the NLP.
+These interfaces represent the various levels of intrusiveness into an
+application area.
+
+The base-level NLP interface is called {}\texttt{\textit{NLP}} which defines
+the nonlinear program.  An {}\texttt{\textit{NLP}} object defines the vector
+spaces for the variables $\mathcal{X}$ and the constraints $\mathcal{C}$ as
+{}\texttt{\textit{Vector\-Space}} objects {}\texttt{space\_x} and
+{}\texttt{space\_c} respecitively.  The {}\texttt{\textit{NLP}} interface
+allows access to the initial guess of the solution $x_0$ and the bounds $x_L$
+and $x_U$ as {}\texttt{\textit{Vector}} objects {}\texttt{x\_init},
+{}\texttt{xl} and {}\texttt{xu} respectively.  This interface also provides
+access to {}\texttt{\textit{Permutation}} objects {}\texttt{P\_var} and
+{}\texttt{P\_var} for permutation matrices $Q_x$ and $Q_c$, respectively.
+These matrices are used to permute from the orignal order of variables and
+constraints according to the basis selection (see Section
+{}\ref{moocho:sec:nlp_with_slacks}).
+
+The {}\texttt{\textit{NLP}} interface allows clients to evaluate just
+the zero-order quantities $f(x) \in \RE$ and $c(x) \in \mathcal{C}$ as
+scalar and {}\texttt{\textit{Vector\-Mutable}} objects respectively.
+Many different steps in an optimization algorithm do not require
+sensitivities for the problem functions.  Examples include several
+different line search and trust region globalization methods
+(i.e.\ Filter and exact merit function).  Nongradient-based
+optimization methods could also be implemented through this interface
+but smoothness and continuity of the variables and functions is
+assumed by default.  Note that this interface is the same as a NAND
+(nested analysis and design) approach if there are no equality
+constraints (i.e.\ removed using nonlinear elimination).  The
+{}\texttt{\textit{NLP}} interface can also be used for unconstrained
+optimization (i.e.\ $|\mathcal{C}| = m = 0$) or for a system of
+nonlinear equations (i.e.\ $|\mathcal{X}| = n = |\mathcal{C}| = m$).
+
+As mentioned in Section {}\ref{moocho:sec:nlp_with_slacks}, some parts of an
+optimization algorithm can benefit greatly from knowing about general
+inequality constraints and become less effective when these constraints are
+converted to equalities using slack variables.  These steps in the
+optimization algorithm can compute the quantities $\breve{c}(\breve{x})$ and
+$\breve{h}(\breve{x})$ independently and access the bounds $\breve{h}_L$ and
+$\breve{h}_U$ through the {}\texttt{\textit{NLP}} interface as well.
+
+{\bsinglespace
+\begin{figure}[t]
+\begin{center}
+%\fbox{
+\includegraphics*[bb= 0.0in 0.0in 4.2in 4.05in,scale=0.80
+]{NLPInterfacePack}
+%}
+\end{center}
+\caption{
+\label{moocho:fig:NLPInterfacePack}
+UML class diagram : {}\texttt{NLPInterfacePack}, abstract interfaces nonliner programs
+}
+\end{figure}
+\esinglespace}
+
+The next level of NLP interface is {}\texttt{\textit{NLPObjGrad}}.
+This interface simply adds the ability to compute the gradient of the
+objective function $\nabla f(x) \in \mathcal{X}$ as a
+{}\texttt{\textit{VectorMutable}} object {}\texttt{Gf}.  For many
+applications, it is far easier and less expensive to compute
+sensitivities for the objective function than it is for the
+constraints.  That is why this functionality is considered more
+general than sensitivities for the constraints and is therefore higher
+in the inheritance hierarchy than interfaces the include sensitivities
+for $\nabla c$.
+
+Sensitivities for the constraints $\nabla c$ are broken up into two separate
+interfaces based on the requirements for \textit{direct SCOPT} verses
+{}\textit{adjoint SCOPT} methods.  These interfaces represent the different
+capabilities of the underlying application code.
+
+For applications that can only satisfy the requirements for
+{}\textit{direct SCOPT} there is the {}\texttt{\textit{NLP\-Direct}}
+interface.  As the name implies, the {}\texttt{\textit{NLP\-Direct}}
+interface only requires the direct sensitivity matrix $D = -C^{-1} N$
+and the solution to the Newton linear systems $p_y = C^{-1} c$ be
+computed.  With usually minor modifications, almost any application
+code that uses a Newton method for the forward solution can be used to
+implement the
+{}\texttt{\textit{NLPDirect}} interface (see [???] for example).
+
+The {}\texttt{\textit{NLP\-First\-Order}} interface is for applications
+can implement the requirements for \textit{adjoint SCOPT} methods.
+This NLP interface assumes that the application can, at the very
+least, form and maintain a
+{}\texttt{\textit{Matrix\-Op}} object {}\texttt{Gc} for the gradient of
+the constriants $\nabla c$.  Recall that this implies that mat-vec
+products with both $\nabla c^T$ \underline{and} $\nabla c$.  Note that
+operations of the form $p = \nabla c^T q$ can always be approximated
+using directional finite differences (i.e.\ $p = \nabla c^T \, q
+\approx \lim_{\epsilon \rightarrow 0} ( c(x+\epsilon q) - c(x) ) /
+\epsilon )$) but operations of the form $q = \nabla c \, p$ can not.
+Therefore, this interface can not simply be approximated using finite
+differences.  However, the reverse mode of AD can generally be used to
+implement products of the form $q = \nabla c \, p$ in an efficient manner
+without having to actually form the matrix object $\nabla c$ first
+{}\cite{ref:adolc_1996}.  In order to fully support the requirements for
+{}\textit{adjoint SCOPT} methods, a {}\texttt{\textit{NLP\-First\-Order}} object must
+supply a {}\texttt{\textit{Basis\-System}} object that may be specialized for
+the application's {}\texttt{Gc} matrix object.  See
+{}\cite{ref:moochodevguide} for a discussion of how variable-reduction
+null-space decompositions use a {}\texttt{\textit{Basis\-System}} object to
+define all of the required matrices.
+
+The highest level of requirements for \textit{full-Newton SCOPT}
+methods is satisfied by the {}\texttt{\textit{NLP\-Second\-Order}}
+interface.  This NLP interface allows the optimization algorithm to
+compute a {}\texttt{\textit{Matrix\-Sym\-Op}} matrix object {}\texttt{HL}
+for the Hessian of the Lagrangian $W =
+\nabla^2_{xx} L = \nabla^2 f(x) + \sum^m_{j=1} \lambda_j \nabla^2
+c_j(x)$.  How this Hessian matrix object is used can vary greatly.  This
+matrix object can be used to compute the exact reduced Hessian $B = Z^T W Z$
+or can be used to form the full KKT matrix (in some cases).  Many other
+possibilities exist but the best approach will be very much application
+dependent.  MOOCHO currently does not support a full-space SQP algorithm and
+therefore there are currently no facilities for solving linear system with the
+KKT matrix $W$.
+
+Figure {}\ref{moocho:fig:NLPInterfacePack} shows another NLP interface that has
+not been discussed yet, {}\texttt{\textit{NLP\-Var\-Reduct\-Perm}}.  This
+interface allows the NLP object and MOOCHO optimization algorithm to
+collaborate in changing the basis and defining new permutations for the
+variables and the constraints shown as the permutation matrices
+{}\texttt{P\_var} and {}\texttt{P\_var} on the {}\texttt{\textit{NLP}}
+interface respectively.  This interface is considered a mix-in interface that
+concrete NLP subclasses should only support if changing the basis selection is
+possible.  If an NLP subclass supports the
+{}\texttt{\textit{NLP\-Var\-Reduct\-Perm}} and
+{}\texttt{\textit{NLP\-First\-Order}} interfaces, it is also required that the
+{}\texttt{\textit{Basis\-System}} object exposed by the
+{}\texttt{\textit{NLP\-First\-Order}} interface also support the
+{}\texttt{\textit{Basis\-System\-Perm}} interface.  A carefully designed
+calloboration between the {}\texttt{\textit{NLP\-Var\-Reduct\-Perm}} and
+{}\texttt{\textit{Basis\-System\-Perm}} interfaces, which is mediated by a
+MOOCHO algorithm, makes it possible for the basis selection to change during
+the course of an algorithm.  This functionality will generally only be
+supportable by NLPs that provide explicit Jacobian entries and use direct
+linear solvers.  For most specialized applications, the selection of the basis
+is fixed and unchangeble (e.g.\ simulation-constrained optimization [???]).
+Therefore, an NLP subclass does not have to support the
+{}\texttt{\textit{NLP\-Var\-Reduct\-Perm}} or
+{}\texttt{\textit{Basis\-System\-Perm}} interfaces to be used with MOOCHO.
+
+In summary, the {}\texttt{\textit{NLP}}, {}\texttt{\textit{NLP\-Direct}},
+{}\texttt{\textit{NLP\-First\-Order}} and
+{}\texttt{\textit{NLP\-Second\-Order}} interfaces represent the four different
+levels of invasiveness to applications for optimization.  The
+{}\texttt{\textit{NLP}} interface without equality constraints can used to
+implement basic NAND (i.e.\ black-box) optimization algorithms while on the
+other extreme the {}\texttt{\textit{NLP\-Second\-Order}} interface can be used
+to implement fully-coupled invasive SCOPT methods with access to second
+derivatives.
 
 %
 \section{Defining Optimization Problems}
@@ -1102,6 +1756,420 @@ detailed access of the underlying NLP in a limited manner.
 %
 \section{Solving Optimization Problems with MOOCHO}
 %
+
+%
+\subsection{Basic properties of MOOCHO Algorithms}
+%
+
+All MOOCHO algorithms share a few different properties that are described
+below.
+
+%
+\subsubsection{Solver options}
+\label{moocho:sec:solver_options}
+%
+
+Various options can be set in a flexible and user friendly format (see the
+class {}\texttt{Options\-From\-Stream}).  Options are clustered into different
+``options groups''.  An example excerpt from an options file is shown in
+Appendix {}\ref{app:ex_moocho_printout:opt}.  These and many other options may
+be included in the {}\texttt{Moocho.opt} file.
+
+The options that can be used with {}\texttt{MoochoSolver} and the ``MamaJama''
+configuration are described in the Doxygen documentation for the class
+{}\texttt{MoochoPack\-::MoochoSolver}.  A skeleton for a {}\texttt{Moocho.opt}
+file can be created using the {}\texttt{generate-opt-file.pl} perl script.
+
+Documenting MOOCHO is a major task and this issue is discussed in more detail
+in the next section.
+
+%
+\subsubsection{Algorithm Description and Iteration Output}
+\label{moocho:sec:algo_descr_iter_out}
+%
+
+One of the greatest challenges in developing software of any kind is in
+maintaining documentation.  This is especially a problem with software
+developed in a research environment.  Without good documentation, software can
+be very difficult to understand and maintain.  In addition to the Doxygen
+generated documentation, which is very effective in describing interfaces and
+other specifications, there is also a need to document the more dynamic parts
+of an optimization algorithm.  Highly flexible and dynamic software, which
+MOOCHO is designed to be, can be very hard to understand just by looking at
+the source code and static documentation.
+
+A problem that often occurs with numerical research codes is that the
+algorithm described in some paper is not what is actually implemented in the
+software.  This can cause great confusion later on when someone else tries to
+maintain the code.  Some of these discrepancies are only minor implementation
+issues while others seriously impact the behavior of the algorithm.
+
+Primarily, two features have been implemented to aid in the documentation of a
+MOOCHO algorithm: the configured algorithm description can be printed out
+before the algorithm is run, and information is output about a running
+algorithm.
+
+The first feature is that a printout of a configured MOOCHO algorithm can be
+produced by setting the option
+{}\texttt{Moocho\-Solver\{\-print\-\_algo\-=true\-\}}, where this is shorthand
+for the {}\texttt{print\-\_algo} option in the {}\texttt{Moocho\-Solver}
+options group.  With this option set to {}\texttt{true}, the algorithm
+description is printed to the {}\texttt{MoochoAlgo.out} file before the
+algorithm is run.  The algorithm is printed using Matlab-like syntax.  The
+identifier names for iteration quantities used in this printout are largely
+the same as used in the source code.  There is a very careful mapping between
+the names used in the mathematical notation of the SQP algorithm and the
+identifiers used in the source code and algorithm printout.  This mapping for
+identifiers is given in Appendix {}\ref{app:moocho_nomenclature_summary}.
+Each iteration quantity name in the algorithm printout has {}\texttt{'\_k'},
+{}\texttt{'\_kp1'} or {}\texttt{'\_km1'} appended to the end of it to
+designate the iterations $(k)$, $(k+1)$ or $(k-1)$ respectively, for which the
+quantity was calculated.  Much of the difficulty in understanding an
+algorithm, whether in mathematical notation or implemented in source code, is
+in knowing precisely what a quantity represents.  By using a careful mapping
+of names and identifiers, it is much easier to understand and maintain
+numerical software.
+
+This algorithm printout is put together by the {}\texttt{NLP\-Algo} object
+(through functionality in the base class
+{}\texttt{Iteration\-Pack\-::Algorithm}) as well as the
+{}\textit{\texttt{Algorithm\-Step}} objects.  Each step is responsible for
+printing out its own part of the algorithm.  The code for producing this
+output is included in the same source file as each of the
+{}\texttt{do\_step(...)}  functions for each {}\textit{\texttt{AlgorithmStep}}
+subclass.  Therefore, this documentation is decoupled from other steps as much
+as the implementation code is, and maintaining the documentation is more
+urgent since it is in the same source file.  An example of this printout for
+an rSQP algorithm generated by the ``MamaJama'' configuration is shown in
+Appendix {}\ref{app:ex_moocho_printout:algo}.  Each Step object is given a name
+that other steps refer to it by (to initiate minor loops for instance).  Also,
+the name of the concrete subclass which implements each step is included as a
+guide to help track down the implementations.
+
+Many of the options specified in the input file are shown in the printed
+algorithm.  The user can therefore study the algorithm printout to see what
+effect some of the options have.  For example, the option
+{}\texttt{NLP\-Solver\-Client\-Interface\{\-opt\_tol\-\}} is shown in Step 5
+(``CheckConvergence'') in Appendix {}\ref{app:ex_moocho_printout:algo}.  Some
+of the options determine the algorithm configuration, which affects what steps
+are included, how steps are set up and in what order they are included.  The
+option names are not specifically shown in the algorithm printout.  For
+example, the option
+{}\texttt{NLPAlgo\-\_Config\-MamaJama\{\-max\-\_dof\-\_quasi\-\_newton\-\_dense\-\}}
+determines when the algorithm configuration will switch from using dense BFGS
+to using limited-memory BFGS but this identifier name
+{}\texttt{max\-\_dof\-\_quasi\-\_newton\-\_dense} is not shown anywhere in the
+listing.  However, the configuration object can print out a short log (to the
+{}\texttt{MoochoAlgo.out} file) to show the user how these options impact the
+configuration of the algorithm (search for the identifier
+{}\texttt{max\-\_dof\-\_quasi\-\_newton\-\_dense} in Appendix
+{}\ref{app:ex_moocho_printout:algo} to see how this option is used in the
+logic during algorithm configuration).
+
+In addition to this printed algorithm, output can be sent to a journal file
+{}\texttt{Moocho\-Journal.out} while the algorithm is run to display
+information about each step's computations.  The names given to quantities in
+the journal output are the same as in the algorithm printout.  The level of
+output is determined by the option
+{}\texttt{NLP\-Solver\-Client\-Interface\{\-journal\-\_print\-\_level\-\}}
+and the value {}\texttt{PRINT\-\_ALGORITHM\-\_STEPS} is usually the most
+appropriate and does not produce excessive output.  Lower output levels can be
+set for generating less output for faster execution times while higher output
+levels can be set to generate lots of information that is useful in debugging
+or for other purposes.  See Appendix {}\ref{app:ex_moocho_printout:journal}
+for an example of this type of printout.
+
+A more detailed look at the output files {}\texttt{Moocho\-Algo.out} and
+{}\texttt{Moocho\-Journal.out} is given starting on page
+{}\pageref{moocho:sec:detailed_example} in the context of a specific
+example NLP.
+
+%
+\subsubsection{Algorithm Summary and Timing}
+%
+
+In addition to the more detailed information that can be printed to the file
+{}\texttt{Moocho\-Journal.out}, summary information about each MOOCHO
+iteration is printed to the file {}\texttt{Moocho\-Summary.out}.  Also, if the
+option {}\texttt{Moocho\-Solver\{\-algo\_timing\-=true\-\}} is set, then
+this file will also get a summary table of the run-times and statistics for
+each step.  These timings are printed out in tabular format giving the time,
+in seconds, each step consumed for each iteration as well as the sum of the
+times of all the steps.  The bottom of the table gives step statistics: the
+total times for each step for all the iterations (\texttt{total(sec)}), the
+average step time per iteration (\texttt{av(sec)/k}), the minimum step time
+(\texttt{min(sec)}), the maximum step time (\texttt{max(sec)}) and the total
+percentage of time each step consumed (\texttt{\%total}).  See Appendix
+{}\ref{app:ex_moocho_printout:summary} for an example of a
+{}\texttt{Moocho\-Summary.out} file.
+
+This timing information can be used to determine where the bottlenecks are in
+the algorithm for a particular NLP.  Of course, for very small NLPs the
+runtime is dominated by overhead and not numerical computations, so timing of
+small problems is not terribly interesting.
+
+Less detailed information can also be printed to the console through the
+{}\texttt{Moocho\-Solver} class (see Appendix
+{}\ref{app:ex_moocho_printout:console}).
+
+A more detailed look at the console output and the output file
+{}\texttt{Moocho\-Summary.out} is given starting on page
+{}\pageref{moocho:sec:detailed_example} in the context of a specific example
+NLP.
+
+%
+\subsubsection{Algorithm and NLP Testing and Validation}
+\label{moocho:sec:testing_and_validation}
+%
+
+Many computations are performed in order to solve a nonlinear program (NLP)
+using a numerical optimization method.  If there is a significant error
+(programming bug or round-off errors) in any step of the computation, the
+numerical algorithm will not be able to solve the NLP, or at least not to a
+satisfactory tolerance.  When a user goes to solve a NLP that he or she has
+written and the optimization algorithm fails or the solution found does not
+seem reasonable, the user is left to wonder what went wrong.  Could the NLP be
+coded incorrectly?  Is there a bug in the optimization software that has gone
+up till now undetected?  For any non-trivial NLP or optimization algorithm it
+is very difficult to diagnose such a problem, especially if the user is not an
+expert in optimization.  Even if the user is an expert, the typical
+investigative process is still very tedious and time consuming.
+
+Fortunately, it is possible to validate the consistency of the NLP
+implementation (i.e.~gradients are consistent with function evaluations) as
+well as many of the major steps of the optimization algorithm.  Such tests can
+be implemented in a way that the added cost (runtime and storage) is of only
+the same order as the computations themselves and therefore are not
+prohibitively expensive.  There are several possible sources for such errors.
+These sources of errors, from the most likely to the least likely are:
+
+\begin{enumerate}
+\item Errors in the NLP implementation
+\item Errors in the user specialized parts of the optimization algorithm
+(e.g.~a specialized {}\texttt{\textit{BasisSystem}} object)
+\item Errors in the core optimization code
+\item Or, errors in the compiler or runtime environment.
+\end{enumerate}
+
+There are many ways to make a mistake in coding the NLP interface.  For
+instance, assuming the user's NLP model is valid (i.e.~continuous and
+differentiable), the user may have made a mistake in writing the code that
+computes $f(x)$, $c(x)$, $\nabla f(x)$ and/or $\nabla c(x)$.  Suppose the
+gradient of the constraints matrix $\nabla c$ is not consistent with $c(x)$
+but only in some regions.  The matrix $\nabla c$ may be used by a generic
+{}\texttt{\textit{Basis\-System}} object to find and factor the basis matrix
+$C$ and therefore, the entire algorithm would be affected.  To validate
+$\nabla c$, the entire matrix could be computed by finite differences of
+course and then compared to the $\nabla c$ computed by the NLP interface, but
+this would be way too expensive in runtime ($O(n m)$) and storage ($O(n m)$)
+costs for larger NLPs.  Computing each individual component of the gradients
+by finite differences is an option but it must be explicitly turned on (see
+the option
+{}\texttt{NLP\-First\-Deriv\-Tester\{\-fd\-\_testing\-\_method\-=FD\-\_COMPUTE\-\_ALL\-\}}).
+As a compromise, by default, directional finite differencing can be used to
+show that $\nabla c$ is not consistent with $c(x)$, but can not strictly prove
+that $\nabla c$ is completely correct.  This works as follows.  The
+optimization algorithm asks the NLP interface to compute $\nabla c_k$ at a
+point $x_k$.  Then, at the same point $x_k$, for a random vector $v$, the
+matrix-vector product $\nabla c(x_k) v$ is approximated, using central finite
+differences for instance, as $\nabla c(x_k) v \approx t_1 = ( c(x_k + h v) -
+c(x_k - h v) ) / 2 h$ where $h \approx 10^{-5}$ (where $h$ can be set by the
+user through the options in the options group
+{}\texttt{Calc\-Finite\-Diff\-Prod}).  Then the matrix-vector product $t_2 =
+\nabla c_k v$ would be computed using the $\nabla c_k$ matrix object computed
+by the NLP interface and the resultant vectors $t_1$ and $t_2$ are then
+compared.  Even if the user did an exemplary job of implementing the NLP
+interface, the computed $t_1$ and $t_2$ vectors will not be exactly equal
+(i.e.~$t_1
+\neq t_2$) due to unavoidable round-off errors.  Therefore, we need
+some type of measure of how well $t_1$ and $t_2$ compare.  For every such test
+in MOOCHO there are defined error (\texttt{error\_tol}) and warning
+(\texttt{warning\_tol}) tolerances that are adjustable by the user.  Any
+relative error greater than {}\texttt{error\_tol} will cause the optimization
+algorithm to be terminated with an error message printed.  Any relative error
+greater than {}\texttt{warning\_tol} will be printed to the journal file to
+warn the user of some possible problems.  For example, relative errors greater
+than {}\texttt{warning\_tol} = $10^{-12}$ but smaller than
+{}\texttt{error\_tol} = $10^{-8}$ may concern us, but the algorithm still may
+be able to solve the NLP.  The finite-difference testing of the NLP interface
+can be controlled by setting options in the
+{}\texttt{NLP\-First\-Deriv\-Tester} and {}\texttt{Calc\-Finite\-Diff\-Prod}
+options groups as shown in Appendix {}\ref{app:ex_moocho_printout:opt}.
+Testing the NLP's interface at just one point, such as the initial guess
+$x^0$, is not sufficient to validate the NLP interface.  For example, suppose
+we have a constraint $c_{10}(x) = x_2^3$ with $\partial c_{10} / \partial x_2
+= 3 x_2 ^ 2$.  If the derivative was coded as $\partial c_{10} / \partial x_2
+= 3 x_2$ by accident, this would appear exactly correct at the points $x_2 =
+0$ and $x_2 = 1$ but would not be correct for any other values of $x_2$.
+Therefore, it is important to test the NLP interface at {}\underline{every}
+SQP iteration if one really wants to validate the NLP interface.  Of course,
+just because the NLP interface is consistent, does not mean it implements the
+model the user had in mind, but this is a different matter.  If the NLP is
+unbounded or infeasible, the SQP algorithm will determine this (but the error
+message produced by the algorithm may not be able to state exactly the cause
+of the problem).
+
+Every major computation in a SQP algorithm can be validated, at least
+partially, with little extra cost.  For example, an interface that is used to
+solve for a linear system $x = A^{-1} b$ such as the
+{}\texttt{\textit{Matrix\-Op\-Nonsing}} can be checked by computing $q = A x$
+and then comparing $q$ to $b$.  Computations can also be validated for the
+null-space decomposition (see {}\texttt{Decomposition\-System\-Tester}) and QP
+solver (see {}\texttt{QPSolver\-Relaxed\-Tester}) objects.  Since
+sophisticated users can come in and replace any of these objects, it is a good
+idea to be able to test everything that can realistically be tested whenever
+the correctness of the algorithm is in question or new objects are being
+integrated and tested.  Much of this testing code is already in place in
+MOOCHO, but more is needed for more complete validation.
+
+Such careful testing and validation code can save lots of debugging time and
+also help avoid reporting incorrect results which can be embarrassing in an
+academic research setting or costly in business setting.  Testing and
+validation is no small matter and should be taken seriously, especially in a
+dynamic environment with lots of variability like MOOCHO.
+
+%
+\subsubsection{Algorithm Interruption}
+\label{moocho:sec:interruption}
+%
+
+All MOOCHO algorithms can be interrupted at any time while the algorithm is
+running.  When running in batch mode (i.e.\ the user has access to standard in
+and standard out in the console) then typing {}\textbf{Cntrl-C} will cause the
+algorithm to pause at the end of the current algorithm step and memu like the
+following will appear:
+%
+{\small\begin{verbatim}
+IterationPack::Algorithm::interrupt(): Received signal SIGINT.  Wait for
+the end of the current step and respond to an interactive query,  k
+ill the process by sending another signal (i.e. SIGKILL).
+
+IterationPack::Algorithm: Received signal SIGINT.
+Just completed current step curr_step_name = "EvalNewPoint", curr_step_poss = 1
+of steps [1...9].
+Do you want to:
+  (a) Abort the program immediately?
+  (c) Continue with the algorithm?
+  (s) Gracefully terminate the algorithm at the end of this step?
+  (i) Gracefully terminate the algorithm at the end of this iteration?
+Answer a, c, s or i ?
+\end{verbatim}}
+%
+To terminate the algorithm gracefully at the end of the current step, type
+{}\texttt{s}, which brings up the next question:
+%
+{\small\begin{verbatim}
+Terminate the algorithm with true (t) or false (f) ?
+\end{verbatim}}
+%
+Answering false, which is interpreted as failure, results in the algorithm
+exiting immediately with the partial solution being returned to the NLP object
+and everything being cleaned up correctly on exit.  The full output from this
+type of interrupt looks like:
+%
+{\small\begin{verbatim}
+********************************
+*** Start of rSQP Iterations ***
+n = 1331, m = 1111, nz = 1478741
+
+ k    f         ||c||s    ||rGL||s  QN ||Ypy||2 ||Zpz||2 ||d||inf alpha    time(s)
+ ---- --------- --------- --------- -- -------- -------- -------- -------- ---------
+    0       2.1      0.11     0.095 IN   1e+001        7        5        1     1.152
+    1       4.3   0.00025      0.27 UP      0.1        2      0.1        1     2.294
+    2       4.1  8.5e-006      0.25 DU    0.007        3      0.3        1     3.405
+
+IterationPack::Algorithm::interrupt(): Received signal SIGINT.  Wait for the end of
+the current step and respond to an interactive query,  kill the process by sending
+another signal (i.e. SIGKILL).
+
+IterationPack::Algorithm: Received signal SIGINT.
+Just completed current step curr_step_name = "EvalNewPoint",  curr_step_poss = 1 of
+steps [1...9].
+Do you want to:
+  (a) Abort the program immediately?
+  (c) Continue with the algorithm?
+  (s) Gracefully terminate the algorithm at the end of this step?
+  (i) Gracefully terminate the algorithm at the end of this iteration?
+Answer a, c, s or i ? s
+
+Terminate the algorithm with true (t) or false (f) ? f
+
+ ---- --------- --------- --------- --
+    3       3.4         -         -  -        -        -        -        -     7.762
+
+Total time = 7.762 sec
+
+Oops!  Not the solution.  The user terminated the algorithm and said to return non-optimal!
+
+Number of function evaluations:
+-------------------------------
+f(x)  : 10
+c(x)  : 10
+Gf(x) : 5
+Gc(x) : 5
+Some algorithmic error occured!
+\end{verbatim}}
+%
+A MOOCHO algorithm can also be interrupted without access to standard in or
+standard out (i.e.\ when running in batch mode) by setting up an interrupt
+file.  When the interrupt file is found, the algorithm is terminated.  MOOCHO
+must be told to look for an interrupt file by setting the option
+{}\texttt{IterationPack\_Algorithm\{interrupt\_file\_name=''interrupt.in''\}}
+where any file name can be substituted for the name
+{}\texttt{``interrupt.in''}.  At the end of each algorithm step, MOOCHO will
+look for the file ``interrupt.in''.  If it finds the file it will read it for
+termination instructions.  For example, a terminate file that contains
+
+\begin{verbatim}
+i f
+\end{verbatim}
+
+will result in the algorithm terminating at the end of the current iteration
+with the condition 'false' which means failure.  The output generated from
+this type of interrupt looks something like:
+%
+{\small\begin{verbatim}
+********************************
+*** Start of rSQP Iterations ***
+n = 1331, m = 1111, nz = 1478741
+
+ k    f         ||c||s    ||rGL||s  QN ||Ypy||2 ||Zpz||2 ||d||inf alpha    time(s)
+ ---- --------- --------- --------- -- -------- -------- -------- -------- ---------
+    0       2.1      0.11     0.095 IN   1e+001        7        5        1     1.161
+    1       4.3   0.00025      0.27 UP      0.1        2      0.1        1     2.293
+    2       4.1  8.5e-006      0.25 DU    0.007        3      0.3        1     3.455
+
+IterationPack::Algorithm: Found the interrupt file "interrupt.in"!
+Just completed current step curr_step_name = "EvalNewPoint",  curr_step_poss = 1 of
+steps [1...9].
+Read a value of abort_mode = 'i': Will abort the program gracefully at the end of
+this iteration!
+Read a value of terminate_bool = 'f': Will return a failure flag!
+
+    3       3.4  1.6e-005      0.23 DU    0.006        7        2        1     4.616
+ ---- --------- --------- --------- --
+    3       3.4  1.6e-005      0.23 DU    0.006        7        2        1     4.626
+
+Total time = 4.626 sec
+
+Oops!  Not the solution.  The user terminated the algorithm and said to return
+non-optimal!
+
+Number of function evaluations:
+-------------------------------
+f(x)  : 11
+c(x)  : 11
+Gf(x) : 5
+Gc(x) : 5
+Some algorithmic error occured!
+\end{verbatim}}
+
+Currently when an algorithm is interrupted and terminated, only the current
+status of the solution variables are returned to the NLP and no internal
+checkpointing is performed.  Therefore, a user should not expect to be able to
+restart an interrupted algorithm and have it behave the same as if it was
+never interrupted.  MOOCHO currently does not support general checkpointing
+and restarting but this is a feature that is on the wish list for MOOCHO.
 
 %
 \subsection{Algorithm configurations for MOOCHO}
